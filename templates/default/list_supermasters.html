@@ -32,7 +32,7 @@
                         {% if perm_sm_edit %}
                         <td class="text-end">
                             <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_supermaster&master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
-                                <i class="bi bi-trash me-1"></i>{% trans %}Delete{% endtrans %}
+                                <i class="bi bi-trash text-danger me-1"></i><span class="text-danger">{% trans %}Delete{% endtrans %}</span>
                             </a>
                         </td>
                         {% endif %}
@@ -42,9 +42,9 @@
             </table>
         </div>
         {% else %}
-        <div class="text-center py-5">
-            <i class="bi bi-server display-4 text-muted mb-3"></i>
-            <p class="text-muted">{% trans %}There are no supermasters to show in this listing.{% endtrans %}</p>
+        <div class="text-center py-4">
+            <i class="bi bi-server fs-1 text-muted mb-2"></i>
+            <p class="text-muted mb-0">{% trans %}There are no supermasters to show in this listing.{% endtrans %}</p>
         </div>
         {% endif %}
         

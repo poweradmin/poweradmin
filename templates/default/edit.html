@@ -103,101 +103,119 @@
 <hr>
 {% endif %}
 
-{% if idn_zone_name %}
-<h5 class="mb-3">{% trans %}Edit zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name_to_display }})</h5>
-{% else %}
-<h5 class="mb-3">{% trans %}Edit zone{% endtrans %} "{{ zone_name_to_display }}"</h5>
-{% endif %}
-
-<div>
-    {{ pagination | raw }}
-</div>
-
-{% if not records %}
-<table class="table table-striped table-hover table-sm">
-    <tr>
-        <td>{% trans %}This zone does not have any records.{% endtrans %}</td>
-    </tr>
-</table>
-<hr>
-{% else %}
-
-<form class="needs-validation" method="post" action="" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <input type="hidden" name="serial" value="{{ serial }}">
-
-    <p>
-        {% if perm_edit != "none" and iface_edit_save_changes_top %}
-        <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Save changes{% endtrans %}">
-        <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans %}Reset{% endtrans %}">
-        {% endif %}
-    </p>
-
-    <table class="table table-striped table-hover table-sm">
-        <tr>
-            {% if iface_edit_show_id %}
-            <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id&sort_direction={{ record_sort_by == 'id' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
-                    {% trans %}Id{% endtrans %}
-                </a>
-                {% if record_sort_by == 'id' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <strong>
+            <i class="bi bi-pencil-square me-2"></i>
+            {% if idn_zone_name %}
+            {% trans %}Edit zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name_to_display }})
+            {% else %}
+            {% trans %}Edit zone{% endtrans %} "{{ zone_name_to_display }}"
             {% endif %}
-            <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=name&sort_direction={{ record_sort_by == 'name' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
-                    {% trans %}Name{% endtrans %}
-                </a>
-                {% if record_sort_by == 'name' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=type&sort_direction={{ record_sort_by == 'type' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
-                    {% trans %}Type{% endtrans %}
-                </a>
-                {% if record_sort_by == 'type' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=content&sort_direction={{ record_sort_by == 'content' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
-                    {% trans %}Content{% endtrans %}
-                </a>
-                {% if record_sort_by == 'content' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=prio&sort_direction={{ record_sort_by == 'prio' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
-                    {% trans %}Priority{% endtrans %}
-                </a>
-                {% if record_sort_by == 'prio' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=ttl&sort_direction={{ record_sort_by == 'ttl' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
-                    {% trans %}TTL{% endtrans %}
-                </a>
-                {% if record_sort_by == 'ttl' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            {% if iface_record_comments %}
-            <th>{% trans %}Comment{% endtrans %}</th>
+        </strong>
+        <div>
+            {% if perm_edit != "none" and iface_edit_save_changes_top %}
+            <button class="btn btn-primary btn-sm" type="submit" form="edit-zone-form" name="commit">
+                <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
+            </button>
+            <button class="btn btn-secondary btn-sm" type="reset" form="edit-zone-form" name="reset">
+                <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
+            </button>
             {% endif %}
-            <th>
-                <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=disabled&sort_direction={{ record_sort_by == 'disabled' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
-                    {% trans %}Disabled{% endtrans %}
-                </a>
-                {% if record_sort_by == 'disabled' %}
-                    <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
-                {% endif %}
-            </th>
-            <th>&nbsp;</th>
-        </tr>
+            {% if pdnssec_use %}
+            {% if is_secured %}
+            <a href="index.php?page=dnssec&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-shield-lock me-1 text-white"></i>{% trans %}DNSSEC{% endtrans %}
+            </a>
+            {% endif %}
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <div class="mb-3">
+            {{ pagination | raw }}
+        </div>
+        
+        {% if not records %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle me-2"></i>{% trans %}This zone does not have any records.{% endtrans %}
+        </div>
+        {% else %}
+        
+        <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            <input type="hidden" name="serial" value="{{ serial }}">
+            
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-sm">
+                    <thead class="table-light">
+                    <tr>
+                        {% if iface_edit_show_id %}
+                        <th>
+                            <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=id&sort_direction={{ record_sort_by == 'id' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                                {% trans %}Id{% endtrans %}
+                            </a>
+                            {% if record_sort_by == 'id' %}
+                                <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                            {% endif %}
+                        </th>
+                        {% endif %}
+                        <th>
+                            <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=name&sort_direction={{ record_sort_by == 'name' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                                {% trans %}Name{% endtrans %}
+                            </a>
+                            {% if record_sort_by == 'name' %}
+                                <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                            {% endif %}
+                        </th>
+                        <th>
+                            <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=type&sort_direction={{ record_sort_by == 'type' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                                {% trans %}Type{% endtrans %}
+                            </a>
+                            {% if record_sort_by == 'type' %}
+                                <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                            {% endif %}
+                        </th>
+                        <th>
+                            <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=content&sort_direction={{ record_sort_by == 'content' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                                {% trans %}Content{% endtrans %}
+                            </a>
+                            {% if record_sort_by == 'content' %}
+                                <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                            {% endif %}
+                        </th>
+                        <th>
+                            <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=prio&sort_direction={{ record_sort_by == 'prio' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                                {% trans %}Priority{% endtrans %}
+                            </a>
+                            {% if record_sort_by == 'prio' %}
+                                <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                            {% endif %}
+                        </th>
+                        <th>
+                            <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=ttl&sort_direction={{ record_sort_by == 'ttl' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                                {% trans %}TTL{% endtrans %}
+                            </a>
+                            {% if record_sort_by == 'ttl' %}
+                                <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                            {% endif %}
+                        </th>
+                        {% if iface_record_comments %}
+                        <th>{% trans %}Comment{% endtrans %}</th>
+                        {% endif %}
+                        <th>
+                            <a href="index.php?page=edit&id={{ zone_id }}&record_sort_by=disabled&sort_direction={{ record_sort_by == 'disabled' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                                {% trans %}Disabled{% endtrans %}
+                            </a>
+                            {% if record_sort_by == 'disabled' %}
+                                <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
+                            {% endif %}
+                        </th>
+                        <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
         {% for r in records %}
 
         {% if not(r['type'] == "SOA" or (r['type'] == "NS" and perm_edit == "own_as_client")) %}
@@ -263,11 +281,13 @@
             {% elseif r['type'] == "SOA" and perm_edit != "all" or r['type'] == "NS" and perm_edit == "own_as_client" %}
             <td>&nbsp;</td>
             {% else %}
-            <td class="{{ iface_record_comments ? 'col-sm-1' : 'col-sm-2' }}">
-                <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_record&id={{ r['id'] }}&domain={{ zone_id }}">
-                    <i class="bi bi-pencil-square"></i> {% if not iface_record_comments %}{% trans %}Edit{% endtrans %}{% endif %}</a>
-                <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_record&id={{ r['id'] }}&domain={{ zone_id }}">
-                    <i class="bi bi-trash"></i> {% if not iface_record_comments %}{% trans %}Delete{% endtrans %}{% endif %}</a>
+            <td class="{{ iface_record_comments ? 'col-sm-1' : 'col-sm-2' }} text-end">
+                <div class="gap-2">
+                    <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_record&id={{ r['id'] }}&domain={{ zone_id }}">
+                        <i class="bi bi-pencil-square text-primary"></i> {% if not iface_record_comments %}{% trans %}Edit{% endtrans %}{% endif %}</a>
+                    <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_record&id={{ r['id'] }}&domain={{ zone_id }}">
+                        <i class="bi bi-trash text-danger"></i> {% if not iface_record_comments %}{% trans %}Delete{% endtrans %}{% endif %}</a>
+                </div>
             </td>
             {% endif %}
         </tr>
@@ -289,325 +309,326 @@
             <td colspan="2">
                 {% if perm_edit != "none" %}
                 <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_comment&id={{ zone_id }}">
-                    <i class="bi bi-pencil-square"></i> {% trans %}Edit comment{% endtrans %}</a>
+                    <i class="bi bi-pencil-square text-primary"></i> {% trans %}Edit comment{% endtrans %}</a>
                 {% endif %}
             </td>
         </tr>
-            {% endif %}
-    </table>
+        {% endif %}
+                    </tbody>
+                </table>
+            </div>
 
     {% if perm_edit != "none" and not iface_edit_save_changes_top %}
-    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Save changes{% endtrans %}">
-    <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans %}Reset{% endtrans %}">
-    {% endif %}
-
-    {% if pdnssec_use %}
-    {% if is_secured %}
-    <input class="btn btn-secondary btn-sm" type="button" name="dnssec"
-           onclick="location.href = 'index.php?page=dnssec&id={{ zone_id }}'" value="{% trans %}DNSSEC{% endtrans %}">
-    <input class="btn btn-secondary btn-sm" type="submit" name="unsign_zone"
-           value="{% trans %}Unsign this zone{% endtrans %}">
-    {% else %}
-    <input class="btn btn-secondary btn-sm" type="submit" name="sign_zone"
-           value="{% trans %}Sign this zone{% endtrans %}">
-    {% endif %}
+    <div class="card-footer py-3 mt-3">
+        <button class="btn btn-primary btn-sm" type="submit" name="commit">
+            <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
+        </button>
+        <button class="btn btn-secondary btn-sm" type="reset" name="reset">
+            <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
+        </button>
+        
+        {% if pdnssec_use %}
+        {% if is_secured %}
+        <button class="btn btn-secondary btn-sm" type="submit" name="unsign_zone">
+            <i class="bi bi-shield-x me-1 text-white"></i>{% trans %}Unsign this zone{% endtrans %}
+        </button>
+        {% else %}
+        <button class="btn btn-secondary btn-sm" type="submit" name="sign_zone">
+            <i class="bi bi-shield-check me-1 text-white"></i>{% trans %}Sign this zone{% endtrans %}
+        </button>
+        {% endif %}
+        {% endif %}
+    </div>
     {% endif %}
 </form>
-<hr>
+</div>
+</div>
 {% endif %}
 
 {% if perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1" %}
 {% if domain_type != "SLAVE" and not iface_edit_add_record_top %}
-<form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <input type="hidden" name="domain" value="{{ zone_id }}">
-    <table class="table table-striped table-hover table-sm">
-        <tr>
-            <th>{% trans %}Name{% endtrans %}</th>
-            <th>&nbsp;</th>
-            <th>{% trans %}Type{% endtrans %}</th>
-            <th>{% trans %}Content{% endtrans %}</th>
-            <th>{% trans %}Priority{% endtrans %}</th>
-            <th>{% trans %}TTL{% endtrans %}</th>
-            {% if iface_record_comments %}
-                <th>{% trans %}Comment{% endtrans %}</th>
-            {% endif %}
-        </tr>
-        <tr>
-            <td class="col-sm-2"><input class="form-control form-control-sm" type="text" name="name" value="" data-testid="record-name-input">.{{
-                idn_zone_name ?: zone_name }}
-            </td>
-            <td>IN</td>
-            <td class="col-sm-1">
-                <select id="recordTypeSelectBottom"  class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom')">
-                    {% set rev = false %}
-                    {% for record_type in record_types %}
-                    {% set add = "" %}
-                    {% if is_reverse_zone and record_type == "PTR" %}
-                    {% set add = "SELECTED" %}
-                    {% endif %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            <input type="hidden" name="domain" value="{{ zone_id }}">
+            
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-sm">
+                    <thead class="table-light">
+                    <tr>
+                        <th>{% trans %}Name{% endtrans %}</th>
+                        <th>&nbsp;</th>
+                        <th>{% trans %}Type{% endtrans %}</th>
+                        <th>{% trans %}Content{% endtrans %}</th>
+                        <th>{% trans %}Priority{% endtrans %}</th>
+                        <th>{% trans %}TTL{% endtrans %}</th>
+                        {% if iface_record_comments %}
+                            <th>{% trans %}Comment{% endtrans %}</th>
+                        {% endif %}
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        <td class="col-sm-2">
+                            <input class="form-control form-control-sm" type="text" name="name" value="" data-testid="record-name-input">.{{ idn_zone_name ?: zone_name }}
+                        </td>
+                        <td>IN</td>
+                        <td class="col-sm-1">
+                            <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom')">
+                                {% set rev = false %}
+                                {% for record_type in record_types %}
+                                {% set add = "" %}
+                                {% if is_reverse_zone and record_type == "PTR" %}
+                                {% set add = "SELECTED" %}
+                                {% endif %}
 
-                    {% if iface_add_reverse_record and record_type == "A" %}
-                    {% set add = "SELECTED" %}
-                    {% set rev = true %}
-                    {% endif %}
-                    <option {{ add }} value="{{ record_type }}">{{ record_type }}</option>
-                    {% endfor %}
-                </select>
-            </td>
-            <td>
-                <div id="contentInputContainerBottom">
-                    <input id="recordContentBottom" class="form-control form-control-sm" type="text" name="content" value="" data-testid="record-content-input" required>
+                                {% if iface_add_reverse_record and record_type == "A" %}
+                                {% set add = "SELECTED" %}
+                                {% set rev = true %}
+                                {% endif %}
+                                <option {{ add }} value="{{ record_type }}">{{ record_type }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <div id="contentInputContainerBottom">
+                                <input id="recordContentBottom" class="form-control form-control-sm" type="text" name="content" value="" data-testid="record-content-input" required>
+                            </div>
+                            <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
+                        </td>
+                        <td class="col-sm-1">
+                            <input class="form-control form-control-sm" type="number" name="prio" value="0" min="0" max="65535" pattern="[0-9]*">
+                        </td>
+                        <td class="col-sm-1">
+                            <input class="form-control form-control-sm" type="number" name="ttl" min="0" max="2147483647" pattern="[0-9]*" value="{{ dns_ttl }}" required>
+                            <div class="invalid-feedback">{% trans %}Provide TTL{% endtrans %}</div>
+                        </td>
+                        {% if iface_record_comments %}
+                            <td><input class="form-control form-control-sm" type="text" name="comment" value=""></td>
+                        {% endif %}
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-3">
+                {% if not is_reverse_zone and iface_add_reverse_record %}
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="reverse" name="reverse" data-testid="add-reverse-record-checkbox">
+                    <label class="form-check-label text-secondary" for="reverse">
+                        {% trans %}Also add a PTR record in the matching zone{% endtrans %}
+                    </label>
                 </div>
-                <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
-            </td>
-            <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="prio" value="0"
-                                        min="0" max="65535" pattern="[0-9]*"></td>
-            <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="ttl"
-                                        min="0" max="2147483647" pattern="[0-9]*" value="{{ dns_ttl }}" required>
-                <div class="invalid-feedback">{% trans %}Provide TTL{% endtrans %}</div>
-            </td>
-            {% if iface_record_comments %}
-                <td><input class="form-control form-control-sm" type="text" name="comment" value=""></td>
-            {% endif %}
-        </tr>
-    </table>
-    <input class="btn btn-primary btn-sm" type="submit" name="commit"
-           value="{% trans %}Add record{% endtrans %}" data-testid="add-record-button">
+                {% endif %}
 
-    {% if not is_reverse_zone and iface_add_reverse_record %}
-    <span class="align-middle">
-        &nbsp;
-        <input class="form-check-input" type="checkbox" name="reverse" data-testid="add-reverse-record-checkbox">
-        <span class="text-secondary"> {% trans %}Also add a PTR record in the matching zone{% endtrans %}</span>
-    </span>
-    {% endif %}
-
-    {% if is_reverse_zone and iface_add_domain_record %}
-    <span class="align-middle">
-        &nbsp;
-        <input class="form-check-input" type="checkbox" name="create_domain_record" data-testid="add-domain-record-checkbox">
-        <span class="text-secondary"> {% trans %}Also add an A/AAAA record in the matching zone{% endtrans %}</span>
-    </span>
-    {% endif %}
-</form>
-<hr>
+                {% if is_reverse_zone and iface_add_domain_record %}
+                <div class="form-check mb-2">
+                    <input class="form-check-input" type="checkbox" id="create_domain_record" name="create_domain_record" data-testid="add-domain-record-checkbox">
+                    <label class="form-check-label text-secondary" for="create_domain_record">
+                        {% trans %}Also add an A/AAAA record in the matching zone{% endtrans %}
+                    </label>
+                </div>
+                {% endif %}
+                
+                <button class="btn btn-primary btn-sm" type="submit" name="commit" data-testid="add-record-button">
+                    <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
 {% endif %}
 
-<div class="container">
-    <div class="row">
-        <div class="col">
-            {% if perm_zone_master_add and domain_type != "SLAVE"%}
-            <form class="needs-validation" method="post" action="" novalidate>
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
-                <table>
-                    <tr>
-                        <td><strong>{% trans %}Save as new template{% endtrans %}</strong></td>
-                    </tr>
-                    <tr>
-                        <td>{% trans %}Template Name{% endtrans %}</td>
-                        <td>
-                            <input class="form-control form-control-sm" type="text" name="templ_name" value="" required>
-                            <div class="invalid-feedback">{% trans %}Provide template name{% endtrans %}</div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>{% trans %}Template Description{% endtrans %}</td>
-                        <td><input class="form-control form-control-sm" type="text" name="templ_descr" value=""></td>
-                    </tr>
-                </table>
-                <br>
-                <input class="btn btn-secondary btn-sm" type="submit" name="save_as"
-                       value="{% trans %}Save as template{% endtrans %}">
-                {% endif %}
-            </form>
-            {% endif %}
+<div class="row">
+    <div class="col-md-6 mb-4">
+        {% if perm_zone_master_add and domain_type != "SLAVE" %}
+        <div class="card shadow-sm">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-save me-2"></i>{% trans %}Save as new template{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted mb-3">{% trans %}Create a reusable template from this zone's records{% endtrans %}</p>
+                
+                <form class="needs-validation" method="post" action="" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    
+                    <div class="mb-3">
+                        <label for="templ_name" class="form-label">{% trans %}Template Name{% endtrans %}</label>
+                        <input id="templ_name" class="form-control form-control-sm" type="text" name="templ_name" value="" required>
+                        <div class="invalid-feedback">{% trans %}Provide template name{% endtrans %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="templ_descr" class="form-label">{% trans %}Template Description{% endtrans %}</label>
+                        <input id="templ_descr" class="form-control form-control-sm" type="text" name="templ_descr" value="">
+                        <small class="text-muted">{% trans %}Optional description for this template{% endtrans %}</small>
+                    </div>
+                    
+                    <button class="btn btn-secondary btn-sm" type="submit" name="save_as">
+                        <i class="bi bi-save me-1 text-white"></i>{% trans %}Save as template{% endtrans %}
+                    </button>
+                </form>
+            </div>
         </div>
-        <div class="col">
-            <div id="meta">
-                <table>
-                    <tr>
-                        <th colspan="2">{% trans %}Owner of zone{% endtrans %}</th>
-                    </tr>
-
-                    {% if owners == "-1" %}
-                    <tr>
-                        <td>{% trans %}No owner set for this zone.{% endtrans %}</td>
-                    </tr>
-                    {% else %}
+        {% endif %}
+    </div>
+    
+    <div class="col-md-6 mb-4">
+        <div class="card shadow-sm">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-gear me-2"></i>{% trans %}Zone Settings{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 text-muted">{% trans %}Owner of zone{% endtrans %}</h6>
+                {% if owners == "-1" %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>{% trans %}No owner set for this zone.{% endtrans %}
+                </div>
+                {% else %}
+                <div class="mb-3">
+                    <ul class="list-group">
                     {% if meta_edit %}
-                    {% for owner in owners %}
-                    <tr>
-                        <form method="post" action="index.php?page=edit&id={{ zone_id }}">
-                            <input type="hidden" name="_token" value="{{ csrf_token }}">
-                            <td>
-                                {% if owner["fullname"] %}
-                                {{ owner["fullname"] }}
-                                {% else %}
-                                {{ owner["username"] }}
-                                {% endif %}
-                            </td>
-                            <td>
-                                <input type="hidden" name="delete_owner" value="{{ owner['id'] }}">
-                                <input class="btn btn-outline-danger btn-sm" type="submit" name="co"
-                                       value="{% trans %}Delete{% endtrans %}">
-                            </td>
-                        </form>
-                    </tr>
-                    {% endfor %}
-                    {% else %}
-                    {% for owner in owners %}
-                    <tr>
-                        <td>
+                        {% for owner in owners %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
                             {% if owner["fullname"] %}
                             {{ owner["fullname"] }}
                             {% else %}
                             {{ owner["username"] }}
                             {% endif %}
-                        </td>
-                        <td>&nbsp;</td>
-                    </tr>
-                    {% endfor %}
-                    {% endif %}
-                    {% endif %}
-
-                    {% if meta_edit %}
-                    <form method="post" action="index.php?page=edit&id={{ zone_id }}">
-                        <input type="hidden" name="_token" value="{{ csrf_token }}">
-                        <input type="hidden" name="domain" value="{{ zone_id }}">
-                        <tr>
-                            <td>
-                                <select class="form-select form-select-sm" name="newowner">
-
-                                    {% for user in users %}
-                                    {% set add = "" %}
-
-                                    {% if user["id"] == session_userid %}
-                                    <option {{ add }} value="{{ user['id'] }}">{{ user["fullname"] }}</option>
-                                    {% elseif perm_view_others %}
-                                    <option value="{{ user['id'] }}">
-                                        {% if user["fullname"] %}
-                                        {{ user["fullname"] }}
-                                        {% else %}
-                                        {{ user["username"] }}
-                                        {% endif %}
-                                    </option>
-                                    {% endif %}
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <input class="btn btn-outline-secondary btn-sm" type="submit" name="co"
-                                       value="{% trans %}Add{% endtrans %}">
-                            </td>
-                        </tr>
-                    </form>
-                    {% endif %}
-                    <tr>
-                        <th colspan="2">{% trans %}Type{% endtrans %}</th>
-                    </tr>
-
-                    {% if meta_edit %}
-                    <form action="index.php?page=edit&id={{ zone_id }}" method="post">
-                        <input type="hidden" name="_token" value="{{ csrf_token }}">
-                        <input type="hidden" name="domain" value="{{ zone_id }}">
-                        <tr>
-                            <td>
-                                <select class="form-select form-select-sm" name="newtype">
-                                    {% for type in zone_types %}
-                                    {% set add = '' %}
-                                    {% if type == domain_type %}
-                                    {% set add = "SELECTED" %}
-                                    {% endif %}
-                                    <option {{ add }} value="{{ type }}">{{ type | lower }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <input class="btn btn-outline-secondary btn-sm" type="submit" name="type_change"
-                                       value="{% trans %}Change{% endtrans %}">
-                            </td>
-                        </tr>
-                    </form>
+                            
+                            <form method="post" action="index.php?page=edit&id={{ zone_id }}" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="delete_owner" value="{{ owner['id'] }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm" name="co">
+                                    <i class="bi bi-trash text-danger"></i>
+                                </button>
+                            </form>
+                        </li>
+                        {% endfor %}
                     {% else %}
-                    <tr>
-                        <td>{{ domain_type | lower }}</td>
-                        <td>&nbsp;</td>
-                    </tr>
-                    {% endif %}
-
-                    {% if domain_type == "SLAVE" %}
-                    <tr>
-                        <th colspan="2">{% trans %}IP address of master NS{% endtrans %}</th>
-                    </tr>
-
-                    {% if meta_edit %}
-                    <form action="index.php?page=edit&id={{ zone_id }}" method="post">
-                        <input type="hidden" name="_token" value="{{ csrf_token }}">
-                        <input type="hidden" name="domain" value="{{ zone_id }}">
-                        <tr>
-                            <td>
-                                <input class="form-control form-control-sm" type="text" name="new_master"
-                                       value="{{ slave_master }}">
-                            </td>
-                            <td>
-                                <input class="btn btn-outline-secondary btn-sm" type="submit" name="slave_master_change"
-                                       value="{% trans %}Change{% endtrans %}">
-                            </td>
-                        </tr>
-                    </form>
-                    {% else %}
-                    <tr>
-                        <td>{{ slave_master }}</td>
-                        <td>&nbsp;</td>
-                    </tr>
-                    {% endif %}
-                    {% endif %}
-
-                    <tr>
-                        <th colspan="2">{% trans %}Template{% endtrans %}</th>
-                    </tr>
-
-                    {% if meta_edit %}
-                    <form action="index.php?page=edit&id={{ zone_id }}" method="post">
-                        <input type="hidden" name="_token" value="{{ csrf_token }}">
-                        <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
-                        <tr>
-                            <td>
-                                <select class="form-select form-select-sm" name="zone_template">
-                                    <option value="none">none</option>
-                                    {% for zone_template in zone_templates %}
-                                    {% set add = '' %}
-                                    {% if zone_template['id'] == zone_template_id %}
-                                    {% set add = "SELECTED" %}
-                                    {% endif %}
-                                    <option {{ add }} value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
-                                    {% endfor %}
-                                </select>
-                            </td>
-                            <td>
-                                <input class="btn btn-outline-secondary btn-sm" type="submit" name="template_change"
-                                       value="{% trans %}Change{% endtrans %}">
-                            </td>
-                        </tr>
-                    </form>
-                    {% else %}
-                    <tr>
-                        <td>
-                            {% if zone_template_details %}
-                            {{ zone_template_details['name'] | lower }}
+                        {% for owner in owners %}
+                        <li class="list-group-item">
+                            {% if owner["fullname"] %}
+                            {{ owner["fullname"] }}
                             {% else %}
-                            none
+                            {{ owner["username"] }}
                             {% endif %}
-                        </td>
-                        <td>&nbsp;</td>
-                    </tr>
+                        </li>
+                        {% endfor %}
                     {% endif %}
-                </table>
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if meta_edit %}
+                <form method="post" action="index.php?page=edit&id={{ zone_id }}" class="mb-4">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="domain" value="{{ zone_id }}">
+                    <div class="input-group">
+                        <select class="form-select form-select-sm" name="newowner">
+                            {% for user in users %}
+                            {% set add = "" %}
+                            {% if user["id"] == session_userid %}
+                            <option {{ add }} value="{{ user['id'] }}">{{ user["fullname"] }}</option>
+                            {% elseif perm_view_others %}
+                            <option value="{{ user['id'] }}">
+                                {% if user["fullname"] %}
+                                {{ user["fullname"] }}
+                                {% else %}
+                                {{ user["username"] }}
+                                {% endif %}
+                            </option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-outline-secondary btn-sm" type="submit" name="co">
+                            <i class="bi bi-plus"></i> {% trans %}Add{% endtrans %}
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+
+                <h6 class="card-subtitle mb-2 text-muted">{% trans %}Type{% endtrans %}</h6>
+                {% if meta_edit %}
+                <form action="index.php?page=edit&id={{ zone_id }}" method="post" class="mb-4">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="domain" value="{{ zone_id }}">
+                    <div class="input-group">
+                        <select class="form-select form-select-sm" name="newtype">
+                            {% for type in zone_types %}
+                            {% set add = '' %}
+                            {% if type == domain_type %}
+                            {% set add = "SELECTED" %}
+                            {% endif %}
+                            <option {{ add }} value="{{ type }}">{{ type | lower }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-outline-secondary btn-sm" type="submit" name="type_change">
+                            <i class="bi bi-arrow-repeat"></i> {% trans %}Change{% endtrans %}
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <p class="card-text mb-4"><span class="badge bg-secondary">{{ domain_type | lower }}</span></p>
+                {% endif %}
+
+                {% if domain_type == "SLAVE" %}
+                <h6 class="card-subtitle mb-2 text-muted">{% trans %}IP address of master NS{% endtrans %}</h6>
+                {% if meta_edit %}
+                <form action="index.php?page=edit&id={{ zone_id }}" method="post" class="mb-4">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="domain" value="{{ zone_id }}">
+                    <div class="input-group">
+                        <input class="form-control form-control-sm" type="text" name="new_master" value="{{ slave_master }}">
+                        <button class="btn btn-outline-secondary btn-sm" type="submit" name="slave_master_change">
+                            <i class="bi bi-arrow-repeat"></i> {% trans %}Change{% endtrans %}
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <p class="card-text mb-4"><code>{{ slave_master }}</code></p>
+                {% endif %}
+                {% endif %}
+
+                <h6 class="card-subtitle mb-2 text-muted">{% trans %}Template{% endtrans %}</h6>
+                {% if meta_edit %}
+                <form action="index.php?page=edit&id={{ zone_id }}" method="post">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
+                    <div class="input-group">
+                        <select class="form-select form-select-sm" name="zone_template">
+                            <option value="none">none</option>
+                            {% for zone_template in zone_templates %}
+                            {% set add = '' %}
+                            {% if zone_template['id'] == zone_template_id %}
+                            {% set add = "SELECTED" %}
+                            {% endif %}
+                            <option {{ add }} value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-outline-secondary btn-sm" type="submit" name="template_change">
+                            <i class="bi bi-arrow-repeat"></i> {% trans %}Change{% endtrans %}
+                        </button>
+                    </div>
+                </form>
+                {% else %}
+                <p class="card-text">
+                    {% if zone_template_details %}
+                    <span class="badge bg-info">{{ zone_template_details['name'] | lower }}</span>
+                    {% else %}
+                    <span class="badge bg-secondary">none</span>
+                    {% endif %}
+                </p>
+                {% endif %}
             </div>
         </div>
     </div>
 </div>
+{% endif %}
 
 <script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>
 

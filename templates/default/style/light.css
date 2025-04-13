@@ -119,3 +119,19 @@ input[type=number]::-webkit-outer-spin-button {
     position: relative;
     padding-right: 3rem; /* Provide enough space for the button */
 }
+
+/* Smaller close button for modals */
+.btn-close-sm {
+    padding: 0.25rem;
+    font-size: 0.875rem;
+    width: 0.5em;
+    height: 0.5em;
+    opacity: 0.75;
+}
+
+/* Code output styling for light mode */
+.code-output {
+    background-color: #f8f9fa;
+    color: #212529;
+    border: none;
+}

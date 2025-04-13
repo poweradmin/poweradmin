@@ -77,9 +77,9 @@
         <div class="modal fade" tabindex="-1" id="logModal">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header bg-body-secondary">
-                        <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>{% trans %}Log Details{% endtrans %}</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="modal-header">
+                        <h6 class="modal-title"><i class="bi bi-info-circle me-2"></i>{% trans %}Log Details{% endtrans %}</h6>
+                        <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                     </div>
@@ -98,7 +98,8 @@
                 logDetailsModal.addEventListener('show.bs.modal', event => {
                     const triggerButton = event.relatedTarget;
                     const logDetailsContent = triggerButton.getAttribute('data-bs-content');
-                    logDetailsModal.querySelector('.modal-body').innerHTML = logDetailsContent;
+                    const modalBody = logDetailsModal.querySelector('.modal-body');
+                    modalBody.innerHTML = `<div class="log-details">${logDetailsContent}</div>`;
                 });
             }
         </script>

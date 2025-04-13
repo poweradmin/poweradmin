@@ -13,77 +13,109 @@
     </ol>
 </nav>
 
-{% if idn_zone_name %}
-<h5 class="mb-3">{% trans %}Add record to zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name }})</h5>
-{% else %}
-<h5 class="mb-3">{% trans %}Add record to zone{% endtrans %} "{{ zone_name }}"</h5>
-{% endif %}
-
-<form class="needs-validation" method="post" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <input type="hidden" name="domain" value="{{ zone_id }}">
-    <table class="table table-striped table-sm">
-        <tr>
-            <td>{% trans %}Name{% endtrans %}</td>
-            <td>&nbsp;</td>
-            <td>{% trans %}Type{% endtrans %}</td>
-            <td>{% trans %}Content{% endtrans %}</td>
-            <td>{% trans %}Priority{% endtrans %}</td>
-            <td>{% trans %}TTL{% endtrans %}</td>
-            {% if iface_record_comments %}
-                <td>{% trans %}Comment{% endtrans %}</td>
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong>
+            <i class="bi bi-plus-circle me-2"></i>
+            {% if idn_zone_name %}
+            {% trans %}Add record to zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name }})
+            {% else %}
+            {% trans %}Add record to zone{% endtrans %} "{{ zone_name }}"
             {% endif %}
-        </tr>
-        <tr>
-            <td class="col-sm-2"><input class="form-control form-control-sm" type="text" name="name" value="{{ name }}">.{{
-                idn_zone_name ?: zone_name }}
-            </td>
-            <td>IN</td>
-            <td class="col-sm-1">
-                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent')">
-                    {% for record_type in types %}
-                    {% set add = '' %}
-                    {% if type == record_type %}
-                    {% set add = 'selected' %}
-                    {% elseif is_reverse_zone and record_type == 'PTR' %}
-                    {% set add = 'selected' %}
-                    {% endif %}
-                    <option {{ add }} value="{{ record_type }}">{{ record_type }}</option>
-                    {% endfor %}
-                </select>
-            </td>
-            <td>
-                <div id="contentInputContainer">
-                    <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="{{ content }}" required>
+        </strong>
+    </div>
+    
+    <div class="card-body">
+        <p class="small text-muted mb-3">{% trans %}Create a new DNS record in this zone{% endtrans %}</p>
+        
+        <form class="needs-validation" method="post" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            <input type="hidden" name="domain" value="{{ zone_id }}">
+            
+            <div class="table-responsive">
+                <table class="table table-striped table-sm">
+                    <thead class="table-light">
+                        <tr>
+                            <th>{% trans %}Name{% endtrans %}</th>
+                            <th>&nbsp;</th>
+                            <th>{% trans %}Type{% endtrans %}</th>
+                            <th>{% trans %}Content{% endtrans %}</th>
+                            <th>{% trans %}Priority{% endtrans %}</th>
+                            <th>{% trans %}TTL{% endtrans %}</th>
+                            {% if iface_record_comments %}
+                                <th>{% trans %}Comment{% endtrans %}</th>
+                            {% endif %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="col-sm-2">
+                                <input class="form-control form-control-sm" type="text" name="name" value="{{ name }}">.{{ idn_zone_name ?: zone_name }}
+                            </td>
+                            <td>IN</td>
+                            <td class="col-sm-1">
+                                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent')">
+                                    {% for record_type in types %}
+                                    {% set add = '' %}
+                                    {% if type == record_type %}
+                                    {% set add = 'selected' %}
+                                    {% elseif is_reverse_zone and record_type == 'PTR' %}
+                                    {% set add = 'selected' %}
+                                    {% endif %}
+                                    <option {{ add }} value="{{ record_type }}">{{ record_type }}</option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <div id="contentInputContainer">
+                                    <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="{{ content }}" required>
+                                </div>
+                                <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
+                            </td>
+                            <td class="col-sm-1">
+                                <input class="form-control form-control-sm" type="number" name="prio" value="{{ prio }}" min="0" max="65535" pattern="[0-9]*">
+                            </td>
+                            <td class="col-sm-1">
+                                <input class="form-control form-control-sm" type="number" name="ttl" value="{{ ttl }}" min="0" max="2147483647" pattern="[0-9]*" required>
+                            </td>
+                            {% if iface_record_comments %}
+                                <td>
+                                    <input class="form-control form-control-sm" type="text" name="comment" value="">
+                                </td>
+                            {% endif %}
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-4">
+                {% if not is_reverse_zone and iface_add_reverse_record %}
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="reverse" name="reverse">
+                    <label class="form-check-label text-secondary" for="reverse">
+                        {% trans %}Also add a PTR record in the matching zone{% endtrans %}
+                    </label>
                 </div>
-                <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
-            </td>
-            <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="prio"
-                                        value="{{ prio }}" min="0" max="65535" pattern="[0-9]*"></td>
-            <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="ttl" value="{{ ttl }}"
-                                        min="0" max="2147483647" pattern="[0-9]*" required></td>
-            {% if iface_record_comments %}
-                <td><input class="form-control form-control-sm" type="text" name="comment" value=""></td>
-            {% endif %}
-        </tr>
-    </table>
-    <br>
-    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Add record{% endtrans %}">
-
-    {% if not is_reverse_zone and iface_add_reverse_record %}
-    <span class="align-middle">
-        &nbsp;
-        <input class="form-check-input" type="checkbox" name="reverse">
-        <span class="text-secondary"> {% trans %}Also add a PTR record in the matching zone{% endtrans %}</span>
-    </span>
-    {% endif %}
-    {% if is_reverse_zone and iface_add_domain_record %}
-    <span class="align-middle">
-        &nbsp;
-        <input class="form-check-input" type="checkbox" name="create_domain_record">
-        <span class="text-secondary"> {% trans %}Also add an A/AAAA record in the matching zone{% endtrans %}</span>
-    </span>
-    {% endif %}
-</form>
+                {% endif %}
+                
+                {% if is_reverse_zone and iface_add_domain_record %}
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="create_domain_record" name="create_domain_record">
+                    <label class="form-check-label text-secondary" for="create_domain_record">
+                        {% trans %}Also add an A/AAAA record in the matching zone{% endtrans %}
+                    </label>
+                </div>
+                {% endif %}
+                
+                <button class="btn btn-primary btn-sm" type="submit" name="commit">
+                    <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
+                </button>
+                <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>

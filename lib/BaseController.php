@@ -121,6 +121,7 @@ abstract class BaseController
                 'iface_zone_comments' => $this->configManager->get('interface', 'show_zone_comments'),
                 'iface_add_reverse_record' => $this->configManager->get('interface', 'add_reverse_record'),
                 'iface_add_domain_record' => $this->configManager->get('interface', 'add_domain_record'),
+                'iface_migrations_show' => $this->configManager->get('interface', 'show_migrations'),
                 'db_type' => $this->configManager->get('database', 'type', 'mysql'),
                 'db_debug' => $this->configManager->get('database', 'debug'),
                 'dblog_use' => $this->configManager->get('logging', 'database_enabled'),

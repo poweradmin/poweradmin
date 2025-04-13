@@ -246,6 +246,13 @@ label, .form-label {
     color: #a7acb1 !important;
 }
 
+/* Code output styling for dark mode */
+.code-output {
+    background-color: var(--bg-dark-secondary);
+    color: #d1d5db;
+    border: none;
+}
+
 .card a {
     color: var(--text-secondary);
     background: var(--bg-dark-striped-odd);
@@ -310,12 +317,32 @@ input[type=number]::-webkit-outer-spin-button {
     background-color: var(--bg-dark-secondary) !important;
 }
 
+.modal-header .modal-title {
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
 .modal-header .btn-close, .modal-footer .btn-close {
     background-color: var(--text-secondary);
 }
 
+/* Smaller close button for modals */
+.btn-close-sm {
+    padding: 0.25rem;
+    font-size: 0.875rem;
+    width: 0.5em;
+    height: 0.5em;
+    opacity: 0.75;
+}
+
 .modal-body {
     background-color: var(--bg-dark);
+    color: var(--text-light);
+}
+
+/* Log details in modal */
+.modal-body .log-details {
+    color: #b7b7b8; /* Softer light color, same as --text-secondary */
 }
 
 /* Alert close button alignment */

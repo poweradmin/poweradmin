@@ -13,91 +13,120 @@
     </ol>
 </nav>
 
-{% if idn_zone_name %}
-<h5 class="mb-3">{% trans %}Edit record in zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name }})</h5>
-{% else %}
-<h5 class="mb-3">{% trans %}Edit record in zone{% endtrans %} "{{ zone_name }}"</h5>
-{% endif %}
-
-<form class="needs-validation" method="post" action="index.php?page=edit_record&id={{ record_id }}" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table class="table table-striped table-hover table-sm">
-        <thead>
-        <tr>
-            <th>{% trans %}Name{% endtrans %}</th>
-            <th>&nbsp;</th>
-            <th>{% trans %}Type{% endtrans %}</th>
-            <th>{% trans %}Content{% endtrans %}</th>
-            <th>{% trans %}Priority{% endtrans %}</th>
-            <th>{% trans %}TTL{% endtrans %}</th>
-            {% if iface_record_comments %}
-                <th>{% trans %}Comment{% endtrans %}</th>
-            {% endif %}
-            <th>{% trans %}Disabled{% endtrans %}</th>
-        </tr>
-        </thead>
-        <tr>
-            {% if zone_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client")
-            and user_is_zone_owner == "0" %}
-            <td>{{ record["name"] }}</td>
-            <td>IN</td>
-            <td>{{ record["type"] }}</td>
-            <td>{{ record['content'] }}</td>
-            <td>{{ record["prio"] }}</td>
-            <td>{{ record["ttl"] }}</td>
-            {% if iface_record_comments %}
-                <td>{{ record["comment"] }}</td>
-            {% endif %}
-            {$ endif %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong>
+            <i class="bi bi-pencil-square me-2"></i>
+            {% if idn_zone_name %}
+            {% trans %}Edit record in zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name }})
             {% else %}
-            <td>
-                <input type="hidden" name="rid" value="{{ record_id }}">
-                <input type="hidden" name="zid" value="{{ zid }}">
-                <input class="form-control form-control-sm" type="text" name="name" value="{{ record['record_name'] }}">
-                .{{ idn_zone_name ?: zone_name }}
-            </td>
-            <td>IN</td>
-            <td>
-                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent')">
-                    {% set found_selected_type = false %}
-                    {% for type_available in recordTypes %}
-                    {% if type_available == record["type"] %}
-                    {% set add = "SELECTED" %}
-                    {% set found_selected_type = true %}
-                    {% else %}
-                    {% set add = "" %}
-                    {% endif %}
-                    <option {{ add }} value="{{ type_available }}">{{ type_available }}</option>
-                    {% endfor %}
+            {% trans %}Edit record in zone{% endtrans %} "{{ zone_name }}"
+            {% endif %}
+        </strong>
+    </div>
+    
+    <div class="card-body">
+        <p class="small text-muted mb-3">{% trans %}Modify DNS record properties{% endtrans %}</p>
+        
+        <form class="needs-validation" method="post" action="index.php?page=edit_record&id={{ record_id }}" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-sm">
+                    <thead class="table-light">
+                    <tr>
+                        <th>{% trans %}Name{% endtrans %}</th>
+                        <th>&nbsp;</th>
+                        <th>{% trans %}Type{% endtrans %}</th>
+                        <th>{% trans %}Content{% endtrans %}</th>
+                        <th>{% trans %}Priority{% endtrans %}</th>
+                        <th>{% trans %}TTL{% endtrans %}</th>
+                        {% if iface_record_comments %}
+                            <th>{% trans %}Comment{% endtrans %}</th>
+                        {% endif %}
+                        <th>{% trans %}Disabled{% endtrans %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr>
+                        {% if zone_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client")
+                        and user_is_zone_owner == "0" %}
+                        <td>{{ record["name"] }}</td>
+                        <td>IN</td>
+                        <td>{{ record["type"] }}</td>
+                        <td>{{ record['content'] }}</td>
+                        <td>{{ record["prio"] }}</td>
+                        <td>{{ record["ttl"] }}</td>
+                        {% if iface_record_comments %}
+                            <td>{{ record["comment"] }}</td>
+                        {% endif %}
+                        {$ endif %}
+                        {% else %}
+                        <td>
+                            <input type="hidden" name="rid" value="{{ record_id }}">
+                            <input type="hidden" name="zid" value="{{ zid }}">
+                            <input class="form-control form-control-sm" type="text" name="name" value="{{ record['record_name'] }}">
+                            .{{ idn_zone_name ?: zone_name }}
+                        </td>
+                        <td>IN</td>
+                        <td>
+                            <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent')">
+                                {% set found_selected_type = false %}
+                                {% for type_available in recordTypes %}
+                                {% if type_available == record["type"] %}
+                                {% set add = "SELECTED" %}
+                                {% set found_selected_type = true %}
+                                {% else %}
+                                {% set add = "" %}
+                                {% endif %}
+                                <option {{ add }} value="{{ type_available }}">{{ type_available }}</option>
+                                {% endfor %}
 
-                    {% if not found_selected_type %}
-                    <option selected value="{{ record['type'] }}">{{ record['type'] }}</option>
-                    {% endif %}
-                </select>
-            </td>
-            <td>
-                <div id="contentInputContainer">
-                    <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="{{ record['content'] }}" required>
-                </div>
-                <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
-            </td>
-            <td><input class="form-control form-control-sm" type="number" name="prio" min="0" max="65535"
-                       pattern="[0-9]*" value="{{ record['prio'] }}"></td>
-            <td><input class="form-control form-control-sm" type="number" name="ttl" min="0" max="2147483647"
-                       pattern="[0-9]*" value="{{ record['ttl'] }}"></td>
-            {% if iface_record_comments %}
-                <td>
-                    <textarea class="form-control form-control-sm" name="comment" rows="1">{{ comment }}</textarea>
-                </td>
-            {% endif %}
-            <td>
-                <input class="form-check-input" type="checkbox" name="disabled" {% if record['disabled'] == 1 %}checked{% endif %}>
-            </td>
-            {% endif %}
-        </tr>
-    </table>
-    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Update{% endtrans %}">&nbsp;&nbsp;
-    <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans %}Reset{% endtrans %}">&nbsp;&nbsp;
-</form>
+                                {% if not found_selected_type %}
+                                <option selected value="{{ record['type'] }}">{{ record['type'] }}</option>
+                                {% endif %}
+                            </select>
+                        </td>
+                        <td>
+                            <div id="contentInputContainer">
+                                <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="{{ record['content'] }}" required>
+                            </div>
+                            <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
+                        </td>
+                        <td><input class="form-control form-control-sm" type="number" name="prio" min="0" max="65535"
+                                pattern="[0-9]*" value="{{ record['prio'] }}"></td>
+                        <td><input class="form-control form-control-sm" type="number" name="ttl" min="0" max="2147483647"
+                                pattern="[0-9]*" value="{{ record['ttl'] }}"></td>
+                        {% if iface_record_comments %}
+                            <td>
+                                <textarea class="form-control form-control-sm" name="comment" rows="1">{{ comment }}</textarea>
+                            </td>
+                        {% endif %}
+                        <td class="text-center">
+                            <div class="form-check d-inline-block">
+                                <input class="form-check-input" type="checkbox" name="disabled" id="disabledCheckbox" {% if record['disabled'] == 1 %}checked{% endif %}>
+                                <label class="form-check-label visually-hidden" for="disabledCheckbox">{% trans %}Disabled{% endtrans %}</label>
+                            </div>
+                        </td>
+                        {% endif %}
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="mt-4">
+                <button class="btn btn-primary btn-sm" type="submit" name="commit">
+                    <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}
+                </button>
+                <button class="btn btn-secondary btn-sm" type="reset" name="reset">
+                    <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
+                </button>
+                <a href="index.php?page=edit&id={{ zid }}" class="btn btn-outline-secondary btn-sm">
+                    <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
 
 <script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>

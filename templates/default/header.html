@@ -134,7 +134,10 @@
 
 {% if install_error %}
 <div class="container">
-    <div class="alert alert-danger bg-danger bg-opacity-10 py-2 small" role="alert"><strong class="text-danger">Error:</strong> {{ install_error | raw }}</div>
+    <div class="alert alert-danger bg-danger bg-opacity-10 py-2 border border-danger install-error" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2 text-danger"></i>
+        <strong class="text-danger">Error:</strong> <span class="text-danger">{{ install_error | raw }}</span>
+    </div>
 </div>
 {% endif %}
 
