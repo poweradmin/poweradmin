@@ -84,7 +84,7 @@ label, .form-label {
 
 /* Table styles */
 .table {
-    color: var(--text-muted) !important;
+    color: var(--text-light) !important;
     background-color: var(--bg-dark-accent);
 }
 
@@ -143,7 +143,7 @@ table tfoot tr td,
 }
 
 .table td {
-    color: var(--text-muted) !important;
+    color: var(--text-light) !important;
     padding-left: 1rem !important;
     padding-right: 1rem !important;
 }
@@ -155,10 +155,12 @@ table tfoot tr td,
 
 .table-striped > tbody > tr:nth-of-type(odd) > * {
     background-color: var(--bg-dark-striped-odd);
+    color: var(--text-light) !important;
 }
 
 .table-striped > tbody > tr:nth-of-type(even) > * {
     background-color: var(--bg-dark-secondary);
+    color: var(--text-light) !important;
 }
 
 /* Dropdown components */
