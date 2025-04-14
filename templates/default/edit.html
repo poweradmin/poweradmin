@@ -15,8 +15,13 @@
 
 {% if (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and domain_type != "SLAVE" and iface_edit_add_record_top %}
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
+        <div>
+            <a href="index.php?page=add_record&id={{ zone_id }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-table me-1 text-white"></i>{% trans %}Multi-record mode{% endtrans %}
+            </a>
+        </div>
     </div>
     <div class="card-body">
         <form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
@@ -148,6 +153,7 @@
             <div>
                 <form id="delete-records-form" method="post" action="index.php?page=delete_records" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="zone_id" value="{{ zone_id }}">
                     <button type="submit" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
                         <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
                     </button>
@@ -396,8 +402,13 @@
 {% if perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1" %}
 {% if domain_type != "SLAVE" and not iface_edit_add_record_top %}
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
+        <div>
+            <a href="index.php?page=add_record&id={{ zone_id }}" class="btn btn-primary btn-sm">
+                <i class="bi bi-table me-1 text-white"></i>{% trans %}Multi-record mode{% endtrans %}
+            </a>
+        </div>
     </div>
     <div class="card-body">
         <form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>

@@ -130,17 +130,28 @@ class DeleteRecordsController extends BaseController
             }
         }
 
-        if ($deleted_count > 0) {
-            if ($deleted_count == 1) {
-                $this->setMessage('search', 'success', _('The record has been deleted successfully.'));
-            } else {
-                $this->setMessage('search', 'success', sprintf(_('%d records have been deleted successfully.'), $deleted_count));
-            }
-        } else {
-            $this->setMessage('search', 'error', _('No records could be deleted. Please check permissions.'));
+        $redirectPage = 'search';
+        $messageKey = 'search';
+        $redirectParams = [];
+
+        // Check if this was submitted from a zone edit page
+        if (isset($_POST['zone_id']) && is_numeric($_POST['zone_id'])) {
+            $redirectPage = 'edit';
+            $messageKey = 'edit';
+            $redirectParams['id'] = $_POST['zone_id'];
         }
 
-        $this->redirect('index.php', ['page' => 'search']);
+        if ($deleted_count > 0) {
+            if ($deleted_count == 1) {
+                $this->setMessage($messageKey, 'success', _('The record has been deleted successfully.'));
+            } else {
+                $this->setMessage($messageKey, 'success', sprintf(_('%d records have been deleted successfully.'), $deleted_count));
+            }
+        } else {
+            $this->setMessage($messageKey, 'error', _('No records could be deleted. Please check permissions.'));
+        }
+
+        $this->redirect('index.php', array_merge(['page' => $redirectPage], $redirectParams));
     }
 
     public function showRecords($record_ids): void
@@ -171,14 +182,26 @@ class DeleteRecordsController extends BaseController
         }
 
         if (empty($records)) {
-            $this->setMessage('search', 'error', _('No valid records selected for deletion or you lack permission to delete them.'));
-            $this->redirect('index.php', ['page' => 'search']);
+            $redirectPage = 'search';
+            $messageKey = 'search';
+            $redirectParams = [];
+
+            // Check if this was submitted from a zone edit page
+            if (isset($_POST['zone_id']) && is_numeric($_POST['zone_id'])) {
+                $redirectPage = 'edit';
+                $messageKey = 'edit';
+                $redirectParams['id'] = $_POST['zone_id'];
+            }
+
+            $this->setMessage($messageKey, 'error', _('No valid records selected for deletion or you lack permission to delete them.'));
+            $this->redirect('index.php', array_merge(['page' => $redirectPage], $redirectParams));
             return;
         }
 
         $this->render('delete_records.html', [
             'records' => $records,
-            'total_records' => count($records)
+            'total_records' => count($records),
+            'zone_id' => $_POST['zone_id'] ?? null
         ]);
     }
 }

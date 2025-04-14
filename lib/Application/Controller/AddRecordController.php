@@ -105,7 +105,12 @@ class AddRecordController extends BaseController
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $this->addRecord();
+
+            if (isset($_POST['multi_record_mode']) && isset($_POST['records']) && is_array($_POST['records'])) {
+                $this->addMultipleRecords();
+            } else {
+                $this->addRecord();
+            }
         }
         $this->showForm();
     }
@@ -139,23 +144,25 @@ class AddRecordController extends BaseController
         $zone_id = (int)$_GET['id'];
 
         if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
-            $this->setMessage('add_record', 'error', _('This record was not valid and could not be added.'));
+            $this->setMessage('edit', 'error', _('This record was not valid and could not be added.'));
+            $this->redirect('index.php?page=edit&id=' . $zone_id);
             return;
         }
 
         if (isset($_POST['reverse'])) {
             $reverseRecord = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
             $message = $reverseRecord ? _('Record successfully added. A matching PTR record was also created.') : _('The record was successfully added.');
-            $this->setMessage('add_record', 'success', $message);
+            $this->setMessage('edit', 'success', $message);
         } elseif (isset($_POST['create_domain_record'])) {
             $domainRecord = $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
             $message = $domainRecord ? _('Record successfully added. A matching A record was also created.') : _('The record was successfully added.');
-            $this->setMessage('add_record', 'success', $message);
+            $this->setMessage('edit', 'success', $message);
         } else {
-            $this->setMessage('add_record', 'success', _('The record was successfully added.'));
+            $this->setMessage('edit', 'success', _('The record was successfully added.'));
         }
 
-        unset($_POST);
+        // Redirect back to zone edit page
+        $this->redirect('index.php?page=edit&id=' . $zone_id);
     }
 
     private function showForm(): void
@@ -258,5 +265,61 @@ class AddRecordController extends BaseController
             $this->setMessage('add_record', 'error', $result['message']);
             return false;
         }
+    }
+
+    private function addMultipleRecords(): void
+    {
+        $zone_id = (int)$_GET['id'];
+        $records = $_POST['records'] ?? [];
+        $successCount = 0;
+        $failureCount = 0;
+
+        if (empty($records)) {
+            $this->setMessage('edit', 'error', _('No records were provided.'));
+            $this->redirect('index.php?page=edit&id=' . $zone_id);
+            return;
+        }
+
+        foreach ($records as $record) {
+            // Skip incomplete records
+            if (empty($record['content']) || empty($record['type'])) {
+                continue;
+            }
+
+            $name = $record['name'] ?? '';
+            $content = $record['content'];
+            $type = $record['type'];
+            $prio = isset($record['prio']) && $record['prio'] !== '' ? (int)$record['prio'] : 0;
+            $ttl = isset($record['ttl']) && $record['ttl'] !== '' ? (int)$record['ttl'] : $this->config->get('dns', 'ttl', 3600);
+            $comment = $record['comment'] ?? '';
+
+            if ($this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
+                $successCount++;
+
+                // Handle reverse or domain record creation for individual records
+                if (isset($record['reverse']) && $record['reverse']) {
+                    $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+                } elseif (isset($record['create_domain_record']) && $record['create_domain_record']) {
+                    $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
+                }
+            } else {
+                $failureCount++;
+            }
+        }
+
+        if ($successCount > 0) {
+            $message = sprintf(_('%d record(s) were successfully added.'), $successCount);
+            if ($failureCount > 0) {
+                $message .= ' ' . sprintf(_('%d record(s) failed to be added.'), $failureCount);
+                $this->setMessage('edit', 'warning', $message);
+            } else {
+                $this->setMessage('edit', 'success', $message);
+            }
+        } else {
+            $this->setMessage('edit', 'error', _('Failed to add any records.'));
+        }
+
+        // Redirect back to zone edit page
+        $this->redirect('index.php?page=edit&id=' . $zone_id);
     }
 }

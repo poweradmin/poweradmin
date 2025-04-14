@@ -72,7 +72,7 @@ class SearchController extends BaseController
 
         // Create pagination service
         $paginationService = new PaginationService();
-        
+
         // Get zones rows per page
         $zone_rowamount = $paginationService->getUserRowsPerPage($default_rowamount);
         // Override with POST parameter if available for zones
@@ -83,7 +83,7 @@ class SearchController extends BaseController
                 $zone_rowamount = $post_rows_per_page;
             }
         }
-        
+
         // Get records rows per page
         $record_rowamount = $paginationService->getUserRowsPerPage($default_rowamount);
         // Override with POST parameter if available for records
@@ -94,7 +94,7 @@ class SearchController extends BaseController
                 $record_rowamount = $post_rows_per_page;
             }
         }
-        
+
         // Backward compatibility
         if ($this->isPost() && isset($_POST['rows_per_page']) && is_numeric($_POST['rows_per_page'])) {
             $post_rows_per_page = (int)$_POST['rows_per_page'];
