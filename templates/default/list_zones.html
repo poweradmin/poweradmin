@@ -23,7 +23,33 @@
     </div>
     
     <div class="card-body">
-        <div class="pb-3 text-secondary">{% trans %}Total number of zones:{% endtrans %} {{ count_zones_all_letterstart }} / {{ count_zones_view }}</div>
+        <div class="d-flex justify-content-between align-items-center pb-3">
+            <div class="text-secondary">{% trans %}Total number of zones:{% endtrans %} {{ count_zones_all_letterstart }} / {{ count_zones_view }}</div>
+            
+            <div class="d-flex align-items-center">
+                <label for="rows-per-page" class="me-2 text-secondary">{% trans %}Rows per page:{% endtrans %}</label>
+                <select id="rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="changeRowsPerPage(this.value)">
+                    <option value="10" {{ iface_rowamount == 10 ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ iface_rowamount == 20 ? 'selected' : '' }}>20</option>
+                    <option value="50" {{ iface_rowamount == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ iface_rowamount == 100 ? 'selected' : '' }}>100</option>
+                </select>
+                
+                <script>
+                    // Initialize rows per page from localStorage on page load
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const storedValue = UserSettings.getSetting('rows_per_page');
+                        if (storedValue) {
+                            // If the current URL doesn't include rows_per_page parameter, use the stored value
+                            const urlParams = new URLSearchParams(window.location.search);
+                            if (!urlParams.has('rows_per_page')) {
+                                changeRowsPerPage(storedValue);
+                            }
+                        }
+                    });
+                </script>
+            </div>
+        </div>
 
         {% if count_zones_view > iface_rowamount %}
         <div class="mb-3">

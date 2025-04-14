@@ -117,6 +117,26 @@ function do_search_with_records_page(records_page) {
     document.getElementsByName("do_search")[0].click();
 }
 
+function do_search_with_rows_per_page(rowsPerPage) {
+    // Save to localStorage
+    UserSettings.saveSetting('rows_per_page', rowsPerPage);
+    
+    // Update the form's hidden input for rows_per_page
+    const form = document.search_form;
+    form.rows_per_page.value = rowsPerPage;
+    
+    // Reset pagination to first page
+    form.zones_page.value = 1;
+    form.records_page.value = 1;
+    
+    // Submit the form to refresh results
+    if (typeof form.submit === 'function') {
+        form.submit();
+    } else {
+        document.getElementsByName("do_search")[0].click();
+    }
+}
+
 const queryState = (() => {
     let previousQuery = '';
 

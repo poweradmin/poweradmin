@@ -95,9 +95,18 @@ class PaginationPresenter
     private function createPageUrl(int $pageNumber): string
     {
         $url = str_replace('{PageNumber}', $pageNumber, $this->urlPattern);
+
+        // Add ID parameter if present
         if ($this->id !== '') {
             $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'id=' . urlencode($this->id);
         }
+
+        // Add rows_per_page parameter if present in the current request
+        if (isset($_GET['rows_per_page'])) {
+            $rowsPerPage = (int) $_GET['rows_per_page'];
+            $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'rows_per_page=' . $rowsPerPage;
+        }
+
         return $url;
     }
 

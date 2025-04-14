@@ -66,7 +66,12 @@ class EditController extends BaseController
 
     public function run(): void
     {
-        $iface_rowamount = $this->config->get('interface', 'rows_per_page', 10);
+        // Get default rows per page from config
+        $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
+
+        // Create pagination service and get user preference
+        $paginationService = new PaginationService();
+        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount);
         $configManager = ConfigurationManager::getInstance();
         $iface_show_id = $configManager->get('interface', 'show_record_id', false);
         $iface_edit_add_record_top = $configManager->get('interface', 'position_record_form_top', false);

@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Query\RecordSearch;
 use Poweradmin\Application\Query\ZoneSearch;
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 
@@ -66,7 +67,21 @@ class SearchController extends BaseController
         $_SESSION['record_sort_by'] = $record_sort_by;
         $_SESSION['record_sort_by_direction'] = $record_sort_direction;
 
-        $iface_rowamount = $this->config->get('interface', 'rows_per_page', 10);
+        // Get default rows per page from config
+        $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
+
+        // Create pagination service and get user preference
+        $paginationService = new PaginationService();
+        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount);
+
+        // Override with POST parameter if available
+        if ($this->isPost() && isset($_POST['rows_per_page']) && is_numeric($_POST['rows_per_page'])) {
+            $post_rows_per_page = (int)$_POST['rows_per_page'];
+            // Validate against allowed values
+            if (in_array($post_rows_per_page, [10, 20, 50, 100])) {
+                $iface_rowamount = $post_rows_per_page;
+            }
+        }
         $iface_zone_comments = $this->config->get('interface', 'show_zone_comments', true);
         $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
 

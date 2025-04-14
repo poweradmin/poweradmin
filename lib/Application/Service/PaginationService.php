@@ -26,10 +26,45 @@ use Poweradmin\Domain\Model\Pagination;
 
 class PaginationService
 {
+    private array $allowedRowsPerPage = [10, 20, 50, 100];
+
+    /**
+     * Create a pagination object with proper validation
+     */
     public function createPagination(int $totalItems, int $itemsPerPage, int $currentPage): Pagination
     {
+        // Validate and sanitize items per page
+        $itemsPerPage = $this->getValidatedItemsPerPage($itemsPerPage);
+
+        // Validate current page
         $currentPage = max(1, min($currentPage, (int) ceil($totalItems / $itemsPerPage)));
 
         return new Pagination($totalItems, $itemsPerPage, $currentPage);
+    }
+
+    /**
+     * Get user preference for items per page with validation
+     *
+     * @param int $defaultRowsPerPage Default rows per page from config
+     * @return int Validated rows per page value
+     */
+    public function getUserRowsPerPage(int $defaultRowsPerPage): int
+    {
+        // Check if user has specified a preference via URL
+        $userRowsPerPage = isset($_GET['rows_per_page']) ? (int)$_GET['rows_per_page'] : null;
+
+        return $this->getValidatedItemsPerPage($userRowsPerPage ?? $defaultRowsPerPage);
+    }
+
+    /**
+     * Validate that the requested items per page is one of the allowed values
+     */
+    private function getValidatedItemsPerPage(?int $itemsPerPage): int
+    {
+        if ($itemsPerPage === null || !in_array($itemsPerPage, $this->allowedRowsPerPage)) {
+            return $this->allowedRowsPerPage[0]; // Default to first allowed value
+        }
+
+        return $itemsPerPage;
     }
 }

@@ -146,14 +146,39 @@
         </div>
         {% else %}
         
-        <div class="mb-3">
-            <form id="delete-records-form" method="post" action="index.php?page=delete_records" class="d-inline">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
-                <button type="submit" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
-                    <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
-                </button>
-                <div id="selected-records-container"></div>
-            </form>
+        <div class="mb-3 d-flex justify-content-between align-items-center">
+            <div>
+                <form id="delete-records-form" method="post" action="index.php?page=delete_records" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <button type="submit" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
+                        <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
+                    </button>
+                    <div id="selected-records-container"></div>
+                </form>
+            </div>
+            <div class="d-flex align-items-center">
+                <label for="rows-per-page" class="me-2 text-secondary">{% trans %}Rows per page:{% endtrans %}</label>
+                <select id="rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="changeRowsPerPage(this.value)">
+                    <option value="10" {{ row_amount == 10 ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ row_amount == 20 ? 'selected' : '' }}>20</option>
+                    <option value="50" {{ row_amount == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ row_amount == 100 ? 'selected' : '' }}>100</option>
+                </select>
+                
+                <script>
+                    // Initialize rows per page from localStorage on page load
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const storedValue = UserSettings.getSetting('rows_per_page');
+                        if (storedValue) {
+                            // If the current URL doesn't include rows_per_page parameter, use the stored value
+                            const urlParams = new URLSearchParams(window.location.search);
+                            if (!urlParams.has('rows_per_page')) {
+                                changeRowsPerPage(storedValue);
+                            }
+                        }
+                    });
+                </script>
+            </div>
         </div>
         
         <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate>
@@ -337,6 +362,10 @@
         {% endif %}
                     </tbody>
                 </table>
+            </div>
+            
+            <div class="py-3">
+                {{ pagination | raw }}
             </div>
 
     {% if perm_edit != "none" and not iface_edit_save_changes_top %}
