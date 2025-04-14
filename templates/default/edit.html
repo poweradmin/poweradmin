@@ -131,6 +131,11 @@
             <a href="index.php?page=edit&id={{ zone_id }}&export_csv=1" class="btn btn-secondary btn-sm">
                 <i class="bi bi-file-earmark-spreadsheet me-1 text-white"></i>{% trans %}Export CSV{% endtrans %}
             </a>
+            {% if not is_reverse_zone and perm_edit != "none" %}
+            <a href="index.php?page=batch_ptr_record&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-arrow-repeat me-1 text-white"></i>{% trans %}Batch PTR Records{% endtrans %}
+            </a>
+            {% endif %}
             {% if pdnssec_use %}
             {% if is_secured %}
             <a href="index.php?page=dnssec&id={{ zone_id }}" class="btn btn-secondary btn-sm">

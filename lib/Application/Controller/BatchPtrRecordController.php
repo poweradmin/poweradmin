@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
@@ -38,7 +37,6 @@ class BatchPtrRecordController extends BaseController
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
     private BatchReverseRecordCreator $batchReverseRecordCreator;
-    private $csrfTokenService;
 
     public function __construct(array $request)
     {
@@ -46,7 +44,6 @@ class BatchPtrRecordController extends BaseController
 
         $this->logger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $this->csrfTokenService = new CsrfTokenService();
 
         $reverseRecordCreator = new ReverseRecordCreator(
             $this->db,
@@ -85,8 +82,13 @@ class BatchPtrRecordController extends BaseController
             $this->checkId();
             $zone_id = htmlspecialchars($_GET['id']);
             $zone_type = $this->dnsRecord->get_domain_type($zone_id);
+            $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
             $perm_edit = Permission::getEditPermission($this->db);
             $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+
+            // Check if this is a reverse zone
+            $isReverseZone = DnsHelper::isReverseZone($zone_name);
+            $this->checkCondition($isReverseZone, _("Batch PTR record creation is not available for reverse zones."));
 
             // Only check permissions if accessing from a specific zone
             $this->checkCondition($zone_type == "SLAVE"
@@ -188,29 +190,30 @@ class BatchPtrRecordController extends BaseController
     {
         $hasZoneId = isset($_GET['id']) && !empty($_GET['id']);
         $file_version = time();
+        $zone_id = "";
+        $zone_name = "";
+        $idn_zone_name = "";
+        $isReverseZone = false;
+        $preFillDomain = "";
 
         if ($hasZoneId) {
             $zone_id = htmlspecialchars($_GET['id']);
             $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
+            $preFillDomain = $zone_name;
 
             if (str_starts_with($zone_name, "xn--")) {
                 $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
             } else {
                 $idn_zone_name = "";
             }
-        } else {
-            $zone_id = null;
-            $zone_name = '';
-            $idn_zone_name = '';
-            $isReverseZone = false;
         }
 
         $this->render('batch_ptr_record.html', [
             'network_type' => $formData['network_type'] ?? 'ipv4',
             'network_prefix' => $formData['network_prefix'] ?? '',
             'host_prefix' => $formData['host_prefix'] ?? '',
-            'domain' => $formData['domain'] ?? '',
+            'domain' => $formData['domain'] ?? $preFillDomain,
             'ttl' => $this->config->get('dns', 'ttl', 86400),
             'ipv6_count' => $formData['ipv6_count'] ?? 256,
             'comment' => $formData['comment'] ?? '',
