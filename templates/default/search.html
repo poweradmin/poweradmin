@@ -24,7 +24,8 @@
             <input type="hidden" name="records_page" value="{{ records_page }}">
             <input type="hidden" name="zone_sort_by_direction" value="{{ zone_sort_direction }}">
             <input type="hidden" name="record_sort_by_direction" value="{{ record_sort_direction }}">
-            <input type="hidden" id="rows_per_page_input" name="rows_per_page" value="{{ iface_rowamount }}">
+            <input type="hidden" id="zones_rows_per_page_input" name="zones_rows_per_page" value="{{ zone_rowamount }}">
+            <input type="hidden" id="records_rows_per_page_input" name="records_rows_per_page" value="{{ record_rowamount }}">
 
             <div class="row">
                 <div class="col-md-12">
@@ -88,6 +89,17 @@
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <span><i class="bi bi-globe2 me-2"></i>{% trans %}Zones found{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_zones }}</span></span>
+        {% if total_zones > zone_rowamount %}
+        <div class="d-flex align-items-center">
+            <label for="zones-rows-per-page" class="me-2 text-secondary small mb-0">{% trans %}Rows per page:{% endtrans %}</label>
+            <select id="zones-rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="do_search_with_zones_rows_per_page(this.value)">
+                <option value="10" {{ zone_rowamount == 10 ? 'selected' : '' }}>10</option>
+                <option value="20" {{ zone_rowamount == 20 ? 'selected' : '' }}>20</option>
+                <option value="50" {{ zone_rowamount == 50 ? 'selected' : '' }}>50</option>
+                <option value="100" {{ zone_rowamount == 100 ? 'selected' : '' }}>100</option>
+            </select>
+        </div>
+        {% endif %}
     </div>
     <div class="card-body p-0">
         <form method="post" action="index.php?page=delete_domains">
@@ -176,9 +188,9 @@
                 </table>
             </div>
 
-            {% if total_zones > iface_rowamount %}
+            {% if total_zones > zone_rowamount %}
             {% set max_visible_pages = 9 %}
-            {% set total_zone_pages = (total_zones / iface_rowamount) | round(0, 'ceil') %}
+            {% set total_zone_pages = (total_zones / zone_rowamount) | round(0, 'ceil') %}
             {% set half_visible_pages = max_visible_pages // 2 %}
             {% set zones_start_page = (zones_page - half_visible_pages) > 0 ? (zones_page - half_visible_pages) : 1 %}
             {% set zones_end_page = min(zones_start_page + max_visible_pages - 1, total_zone_pages) %}
@@ -220,17 +232,6 @@
                         {% endif %}
                     </ul>
                 </nav>
-                <div class="d-flex justify-content-center align-items-center pt-2">
-                    <div class="d-flex align-items-center">
-                        <label for="rows-per-page" class="me-2 text-secondary small">{% trans %}Rows per page:{% endtrans %}</label>
-                        <select id="rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="do_search_with_rows_per_page(this.value)">
-                            <option value="10" {{ iface_rowamount == 10 ? 'selected' : '' }}>10</option>
-                            <option value="20" {{ iface_rowamount == 20 ? 'selected' : '' }}>20</option>
-                            <option value="50" {{ iface_rowamount == 50 ? 'selected' : '' }}>50</option>
-                            <option value="100" {{ iface_rowamount == 100 ? 'selected' : '' }}>100</option>
-                        </select>
-                    </div>
-                </div>
             </div>
             {% endif %}
 
@@ -252,6 +253,17 @@
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <span><i class="bi bi-list-columns me-2"></i>{% trans %}Records found{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_records }}</span></span>
+        {% if total_records > record_rowamount %}
+        <div class="d-flex align-items-center">
+            <label for="records-rows-per-page" class="me-2 text-secondary small mb-0">{% trans %}Rows per page:{% endtrans %}</label>
+            <select id="records-rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="do_search_with_records_rows_per_page(this.value)">
+                <option value="10" {{ record_rowamount == 10 ? 'selected' : '' }}>10</option>
+                <option value="20" {{ record_rowamount == 20 ? 'selected' : '' }}>20</option>
+                <option value="50" {{ record_rowamount == 50 ? 'selected' : '' }}>50</option>
+                <option value="100" {{ record_rowamount == 100 ? 'selected' : '' }}>100</option>
+            </select>
+        </div>
+        {% endif %}
     </div>
     <div class="card-body p-0">
         <form method="post" action="index.php?page=delete_records">
@@ -358,9 +370,9 @@
                 </table>
             </div>
 
-            {% if total_records > iface_rowamount %}
+            {% if total_records > record_rowamount %}
             {% set max_visible_pages = 9 %}
-            {% set total_records_pages = (total_records / iface_rowamount) | round(0, 'ceil') %}
+            {% set total_records_pages = (total_records / record_rowamount) | round(0, 'ceil') %}
             {% set half_visible_pages = max_visible_pages // 2 %}
             {% set records_start_page = (records_page - half_visible_pages) > 0 ? (records_page - half_visible_pages) : 1 %}
             {% set records_end_page = min(records_start_page + max_visible_pages - 1, total_records_pages) %}
@@ -402,17 +414,6 @@
                         {% endif %}
                     </ul>
                 </nav>
-                <div class="d-flex justify-content-center align-items-center pt-2">
-                    <div class="d-flex align-items-center">
-                        <label for="rows-per-page" class="me-2 text-secondary small">{% trans %}Rows per page:{% endtrans %}</label>
-                        <select id="rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="do_search_with_rows_per_page(this.value)">
-                            <option value="10" {{ iface_rowamount == 10 ? 'selected' : '' }}>10</option>
-                            <option value="20" {{ iface_rowamount == 20 ? 'selected' : '' }}>20</option>
-                            <option value="50" {{ iface_rowamount == 50 ? 'selected' : '' }}>50</option>
-                            <option value="100" {{ iface_rowamount == 100 ? 'selected' : '' }}>100</option>
-                        </select>
-                    </div>
-                </div>
             </div>
             {% endif %}
 

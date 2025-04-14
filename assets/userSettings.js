@@ -89,16 +89,25 @@ const UserSettings = (function() {
     /**
      * Apply rows per page setting to the current URL
      * @param {number} rowsPerPage - Number of rows per page
+     * @param {string} pageType - Type of page (zones, edit, search_zones, search_records)
      */
-    function applyRowsPerPageSetting(rowsPerPage) {
-        // Save setting to localStorage
-        saveSetting('rows_per_page', rowsPerPage);
+    function applyRowsPerPageSetting(rowsPerPage, pageType = 'zones') {
+        // Save setting to localStorage with page-specific key
+        saveSetting(`rows_per_page_${pageType}`, rowsPerPage);
         
         // Get current URL and parse it
         const url = new URL(window.location.href);
         
+        // For search page, we need to handle differently as it uses form submission
+        if (pageType === 'search_zones' || pageType === 'search_records') {
+            return rowsPerPage; // Just return the value to be used by form submission
+        }
+        
+        // For other pages, we update URL parameters
+        const paramName = `rows_per_page${pageType !== 'zones' ? `_${pageType}` : ''}`;
+        
         // Update or add rows_per_page parameter
-        url.searchParams.set('rows_per_page', rowsPerPage);
+        url.searchParams.set(paramName, rowsPerPage);
         
         // If we have a page parameter, reset it to 1
         if (url.searchParams.has('start')) {
@@ -113,21 +122,32 @@ const UserSettings = (function() {
      * Initialize rows per page setting from URL or localStorage
      * @param {Array} availableOptions - Array of available rows per page options
      * @param {number} defaultValue - Default value from system config
+     * @param {string} pageType - Type of page (zones, edit, search_zones, search_records)
      * @returns {number} The active rows per page setting
      */
-    function initRowsPerPage(availableOptions, defaultValue) {
-        // Check URL parameter first
+    function initRowsPerPage(availableOptions, defaultValue, pageType = 'zones') {
+        // For search page, we check localStorage only
+        if (pageType === 'search_zones' || pageType === 'search_records') {
+            const storedValue = getSetting(`rows_per_page_${pageType}`, null);
+            if (storedValue !== null && availableOptions.includes(Number(storedValue))) {
+                return Number(storedValue);
+            }
+            return defaultValue;
+        }
+        
+        // For other pages, we check URL first
         const url = new URL(window.location.href);
-        const urlParam = url.searchParams.get('rows_per_page');
+        const paramName = `rows_per_page${pageType !== 'zones' ? `_${pageType}` : ''}`;
+        const urlParam = url.searchParams.get(paramName);
         
         if (urlParam && !isNaN(Number(urlParam)) && availableOptions.includes(Number(urlParam))) {
             // Save to localStorage and return
-            saveSetting('rows_per_page', Number(urlParam));
+            saveSetting(`rows_per_page_${pageType}`, Number(urlParam));
             return Number(urlParam);
         }
         
         // Check localStorage next
-        const storedValue = getSetting('rows_per_page', null);
+        const storedValue = getSetting(`rows_per_page_${pageType}`, null);
         if (storedValue !== null && availableOptions.includes(Number(storedValue))) {
             return Number(storedValue);
         }
@@ -150,7 +170,8 @@ const UserSettings = (function() {
 /**
  * Updates the rows per page setting
  * @param {number} rowsPerPage - The new rows per page value
+ * @param {string} pageType - Type of page (zones, edit, search_zones, search_records)
  */
-function changeRowsPerPage(rowsPerPage) {
-    UserSettings.applyRowsPerPageSetting(rowsPerPage);
+function changeRowsPerPage(rowsPerPage, pageType = 'zones') {
+    return UserSettings.applyRowsPerPageSetting(rowsPerPage, pageType);
 }

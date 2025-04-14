@@ -70,16 +70,38 @@ class SearchController extends BaseController
         // Get default rows per page from config
         $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
 
-        // Create pagination service and get user preference
+        // Create pagination service
         $paginationService = new PaginationService();
-        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount);
-
-        // Override with POST parameter if available
+        
+        // Get zones rows per page
+        $zone_rowamount = $paginationService->getUserRowsPerPage($default_rowamount);
+        // Override with POST parameter if available for zones
+        if ($this->isPost() && isset($_POST['zones_rows_per_page']) && is_numeric($_POST['zones_rows_per_page'])) {
+            $post_rows_per_page = (int)$_POST['zones_rows_per_page'];
+            // Validate against allowed values
+            if (in_array($post_rows_per_page, [10, 20, 50, 100])) {
+                $zone_rowamount = $post_rows_per_page;
+            }
+        }
+        
+        // Get records rows per page
+        $record_rowamount = $paginationService->getUserRowsPerPage($default_rowamount);
+        // Override with POST parameter if available for records
+        if ($this->isPost() && isset($_POST['records_rows_per_page']) && is_numeric($_POST['records_rows_per_page'])) {
+            $post_rows_per_page = (int)$_POST['records_rows_per_page'];
+            // Validate against allowed values
+            if (in_array($post_rows_per_page, [10, 20, 50, 100])) {
+                $record_rowamount = $post_rows_per_page;
+            }
+        }
+        
+        // Backward compatibility
         if ($this->isPost() && isset($_POST['rows_per_page']) && is_numeric($_POST['rows_per_page'])) {
             $post_rows_per_page = (int)$_POST['rows_per_page'];
             // Validate against allowed values
             if (in_array($post_rows_per_page, [10, 20, 50, 100])) {
-                $iface_rowamount = $post_rows_per_page;
+                $zone_rowamount = $post_rows_per_page;
+                $record_rowamount = $post_rows_per_page;
             }
         }
         $iface_zone_comments = $this->config->get('interface', 'show_zone_comments', true);
@@ -108,7 +130,7 @@ class SearchController extends BaseController
                 $permission_view,
                 $zone_sort_by,
                 $zone_sort_direction,
-                $iface_rowamount,
+                $zone_rowamount,
                 $iface_zone_comments,
                 $zones_page
             );
@@ -125,7 +147,7 @@ class SearchController extends BaseController
                 $record_sort_by,
                 $record_sort_direction,
                 $iface_search_group_records,
-                $iface_rowamount,
+                $record_rowamount,
                 $iface_record_comments,
                 $records_page,
             );
@@ -133,10 +155,10 @@ class SearchController extends BaseController
             $totalRecords = $recordSearch->getTotalRecords($parameters, $permission_view, $iface_search_group_records);
         }
 
-        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount, $iface_zone_comments, $iface_record_comments);
+        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $zone_rowamount, $record_rowamount, $iface_zone_comments, $iface_record_comments);
     }
 
-    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount, $iface_zone_comments, $iface_record_comments): void
+    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $zone_rowamount, $record_rowamount, $iface_zone_comments, $iface_record_comments): void
     {
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
@@ -157,7 +179,8 @@ class SearchController extends BaseController
             'total_records' => $totalRecords,
             'zones_page' => $zones_page,
             'records_page' => $records_page,
-            'iface_rowamount' => $iface_rowamount,
+            'zone_rowamount' => $zone_rowamount,
+            'record_rowamount' => $record_rowamount,
             'iface_zone_comments' => $iface_zone_comments,
             'iface_record_comments' => $iface_record_comments,
             'edit_permission' => Permission::getEditPermission($this->db),

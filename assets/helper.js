@@ -117,16 +117,34 @@ function do_search_with_records_page(records_page) {
     document.getElementsByName("do_search")[0].click();
 }
 
-function do_search_with_rows_per_page(rowsPerPage) {
-    // Save to localStorage
-    UserSettings.saveSetting('rows_per_page', rowsPerPage);
+function do_search_with_zones_rows_per_page(rowsPerPage) {
+    // Save setting and get value
+    rowsPerPage = changeRowsPerPage(rowsPerPage, 'search_zones');
     
     // Update the form's hidden input for rows_per_page
     const form = document.search_form;
-    form.rows_per_page.value = rowsPerPage;
+    form.zones_rows_per_page.value = rowsPerPage;
     
     // Reset pagination to first page
     form.zones_page.value = 1;
+    
+    // Submit the form to refresh results
+    if (typeof form.submit === 'function') {
+        form.submit();
+    } else {
+        document.getElementsByName("do_search")[0].click();
+    }
+}
+
+function do_search_with_records_rows_per_page(rowsPerPage) {
+    // Save setting and get value
+    rowsPerPage = changeRowsPerPage(rowsPerPage, 'search_records');
+    
+    // Update the form's hidden input for rows_per_page
+    const form = document.search_form;
+    form.records_rows_per_page.value = rowsPerPage;
+    
+    // Reset pagination to first page
     form.records_page.value = 1;
     
     // Submit the form to refresh results
