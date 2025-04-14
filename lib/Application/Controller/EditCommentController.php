@@ -43,10 +43,10 @@ class EditCommentController extends BaseController
 
     public function run(): void
     {
-        $iface_zone_comments = $this->config->get('interface', 'zone_comments', false);
+        $iface_zone_comments = $this->config->get('interface', 'show_zone_comments', true);
 
         if (!$iface_zone_comments) {
-            $this->showError(_("You do not have the permission to edit this comment."));
+            $this->showError(_("Zone comments feature is disabled in configuration."));
         }
 
         $perm_view = Permission::getViewPermission($this->db);
@@ -64,7 +64,22 @@ class EditCommentController extends BaseController
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_type = $dnsRecord->get_domain_type($zone_id);
-        $perm_edit_comment = $zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0";
+
+        // Check permission to edit comment - directly reuse the logic from edit_zone_comment method
+        $is_admin = UserManager::verify_permission($this->db, 'user_is_ueberuser');
+
+        // Permission check logic matches what's in DnsRecord->edit_zone_comment
+        // Users can edit if:
+        // 1. They are an admin (uberuser) OR
+        // 2. It's not a slave zone AND they have edit permission AND (they have 'all' permission OR they own the zone)
+        $can_edit = $is_admin ||
+                   ($zone_type != "SLAVE" &&
+                    $perm_edit != "none" &&
+                    ($perm_edit == "all" ||
+                     (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner)));
+
+        // For the form, we need to know if editing is disabled
+        $perm_edit_comment = !$can_edit;
 
         if (isset($_POST["commit"])) {
             $this->validateCsrfToken();
