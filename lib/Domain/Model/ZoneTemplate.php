@@ -334,34 +334,22 @@ class ZoneTemplate
     public function add_zone_templ_record(int $zone_templ_id, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
         if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
-            $error = new ErrorMessage(_("You do not have the permission to add a record to this zone."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_("You do not have the permission to add a record to this zone."));
             return false;
         }
 
         if ($content == '') {
-            $error = new ErrorMessage(_('Your content field doesnt have a legit value.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_('Your content field doesnt have a legit value.'));
             return false;
         }
 
         if ($name == '') {
-            $error = new ErrorMessage(_('Invalid hostname.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_('Invalid hostname.'));
             return false;
         }
 
         if (!Dns::is_valid_rr_prio($prio, $type)) {
-            $error = new ErrorMessage(_('Invalid value for prio field.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_('Invalid value for prio field.'));
             return false;
         }
 
@@ -395,26 +383,17 @@ class ZoneTemplate
     public function edit_zone_templ_record(array $record): bool
     {
         if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
-            $error = new ErrorMessage(_("You do not have the permission to edit this record."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
             return false;
         }
 
         if ($record['name'] == "") {
-            $error = new ErrorMessage(_('Invalid hostname.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_('Invalid hostname.'));
             return false;
         }
 
         if (!Dns::is_valid_rr_prio($record['prio'], $record['type'])) {
-            $error = new ErrorMessage(_('Invalid value for prio field.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_('Invalid value for prio field.'));
             return false;
         }
 

@@ -627,9 +627,7 @@ class DnsRecord
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
             if ($record['type'] == "SOA") {
-                $error = new ErrorMessage(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+                $this->messageService->addSystemError(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
                 return false;
             } else {
                 $pdns_db_name = $this->config->get('database', 'pdns_name');
@@ -640,10 +638,7 @@ class DnsRecord
                 return true;
             }
         } else {
-            $error = new ErrorMessage(_("You do not have the permission to delete this record."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;
         }
     }
@@ -781,21 +776,14 @@ class DnsRecord
                         }
                         return true;
                     } else {
-                        $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "add_domain", "could not create zone"));
-                        $errorPresenter = new ErrorPresenter();
-                        $errorPresenter->present($error);
+                        $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "add_domain", "could not create zone"));
                     }
                 }
             } else {
-                $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "add_domain"));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+                $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s'), "add_domain"));
             }
         } else {
-            $error = new ErrorMessage(_("You do not have the permission to add a master zone."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_("You do not have the permission to add a master zone."));
             return false;
         }
     }
@@ -824,9 +812,7 @@ class DnsRecord
             $this->db->query("DELETE FROM $domains_table WHERE id=" . $this->db->quote($id, 'integer'));
             return true;
         } else {
-            $error = new ErrorMessage(_("You do not have the permission to delete a zone."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
         }
     }
 
@@ -930,10 +916,7 @@ class DnsRecord
         if ($result) {
             return $result["name"];
         } else {
-            $error = new ErrorMessage("Domain does not exist.");
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError("Domain does not exist.");
             return false;
         }
     }

@@ -347,10 +347,7 @@ class Dns
                 return false;
             }
             if (strlen($hostname_label) < 1 || strlen($hostname_label) > 63) {
-                $error = new ErrorMessage(_('Given hostname or one of the labels is too short or too long.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
-
+                $this->messageService->addSystemError(_('Given hostname or one of the labels is too short or too long.'));
                 return false;
             }
         }
@@ -362,41 +359,26 @@ class Dns
                 $array = explode("/", $hostname_labels[1]);
             }
             if (count($array) != 2) {
-                $error = new ErrorMessage(_('Invalid hostname.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
-
+                $this->messageService->addSystemError(_('Invalid hostname.'));
                 return false;
             }
             if (!is_numeric($array[0]) || $array[0] < 0 || $array[0] > 255) {
-                $error = new ErrorMessage(_('Invalid hostname.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
-
+                $this->messageService->addSystemError(_('Invalid hostname.'));
                 return false;
             }
             if (!is_numeric($array[1]) || $array[1] < 25 || $array[1] > 31) {
-                $error = new ErrorMessage(_('Invalid hostname.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
-
+                $this->messageService->addSystemError(_('Invalid hostname.'));
                 return false;
             }
         } else {
             if (substr_count($hostname, "/") > 0) {
-                $error = new ErrorMessage(_('Given hostname has too many slashes.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
-
+                $this->messageService->addSystemError(_('Given hostname has too many slashes.'));
                 return false;
             }
         }
 
         if ($dns_strict_tld_check && !TopLevelDomain::isValidTopLevelDomain($hostname)) {
-            $error = new ErrorMessage(_('You are using an invalid top level domain.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_('You are using an invalid top level domain.'));
             return false;
         }
 
@@ -416,9 +398,7 @@ class Dns
 
         if (filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
             if ($answer) {
-                $error = new ErrorMessage(_('This is not a valid IPv4 address.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+                MessageService::create()->addSystemError(_('This is not a valid IPv4 address.'));
             }
             return false;
         }
@@ -439,9 +419,7 @@ class Dns
 
         if (filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
             if ($answer) {
-                $error = new ErrorMessage(_('This is not a valid IPv6 address.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+                MessageService::create()->addSystemError(_('This is not a valid IPv6 address.'));
             }
             return false;
         }
@@ -493,10 +471,7 @@ class Dns
     public static function is_valid_printable(string $string): bool
     {
         if (!preg_match('/^[[:print:]]+$/', trim($string))) {
-            $error = new ErrorMessage(_('Invalid characters have been used in this record.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            MessageService::create()->addSystemError(_('Invalid characters have been used in this record.'));
             return false;
         }
         return true;
@@ -510,10 +485,7 @@ class Dns
     public static function has_html_tags(string $string): bool
     {
         if (preg_match('/[<>]/', trim($string))) {
-            $error = new ErrorMessage(_('You cannot use html tags for this type of record.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            MessageService::create()->addSystemError(_('You cannot use html tags for this type of record.'));
             return true;
         }
         return false;
@@ -538,9 +510,7 @@ class Dns
         $pattern = '/(?<!\\\\)"/';
 
         if (preg_match($pattern, $subContent)) {
-            $error = new ErrorMessage(_('Backslashes must precede all quotes (") in TXT content'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
+            MessageService::create()->addSystemError(_('Backslashes must precede all quotes (") in TXT content'));
             return false;
         }
 
@@ -560,10 +530,7 @@ class Dns
         }
 
         if (!str_starts_with($string, '"') || !str_ends_with($string, '"')) {
-            $error = new ErrorMessage(_('Add quotes around TXT record content.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            MessageService::create()->addSystemError(_('Add quotes around TXT record content.'));
             return false;
         }
 
@@ -590,10 +557,7 @@ class Dns
         $response = $this->db->queryOne($query);
 
         if (!empty($response)) {
-            $error = new ErrorMessage(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
             return false;
         }
 
@@ -619,10 +583,7 @@ class Dns
 
         $response = $this->db->queryOne($query);
         if ($response) {
-            $error = new ErrorMessage(_('This is not a valid record. There is already exists a CNAME with this name.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_('This is not a valid record. There is already exists a CNAME with this name.'));
             return false;
         }
         return true;
@@ -663,10 +624,7 @@ class Dns
     {
 
         if ($name == $zone) {
-            $error = new ErrorMessage(_('Empty CNAME records are not allowed.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            MessageService::create()->addSystemError(_('Empty CNAME records are not allowed.'));
             return false;
         }
         return true;
@@ -689,10 +647,7 @@ class Dns
 
         $response = $this->db->queryOne($query);
         if ($response) {
-            $error = new ErrorMessage(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
             return false;
         }
         return true;
@@ -715,10 +670,7 @@ class Dns
 
         for ($i = 0; ($i < 2); $i++) {
             if (!preg_match("/^([^\s]{1,1000})|\"([^\"]{1,998}\")$/i", $fields[$i])) {
-                $error = new ErrorMessage(_('Invalid value for content field of HINFO record.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
-
+                MessageService::create()->addSystemError(_('Invalid value for content field of HINFO record.'));
                 return false;
             }
         }
@@ -802,10 +754,7 @@ class Dns
     public static function is_valid_rr_soa_name(string $name, string $zone): bool
     {
         if ($name != $zone) {
-            $error = new ErrorMessage(_('Invalid value for name field of SOA record. It should be the name of the zone.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            MessageService::create()->addSystemError(_('Invalid value for name field of SOA record. It should be the name of the zone.'));
             return false;
         }
         return true;
@@ -834,10 +783,7 @@ class Dns
     public function is_valid_rr_srv_name(mixed &$name): bool
     {
         if (strlen($name) > 255) {
-            $error = new ErrorMessage(_('The hostname is too long.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_('The hostname is too long.'));
             return false;
         }
 
@@ -897,10 +843,7 @@ class Dns
         }
 
         if (!is_numeric($ttl) || $ttl < 0 || $ttl > 2147483647) {
-            $error = new ErrorMessage(_('Invalid value for TTL field. It should be numeric.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            MessageService::create()->addSystemError(_('Invalid value for TTL field. It should be numeric.'));
             return false;
         }
 
