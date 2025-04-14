@@ -88,6 +88,18 @@ label, .form-label {
     background-color: var(--bg-dark-accent);
 }
 
+/* Override bootstrap table-light in dark mode */
+.table-light, 
+.table-light>td, 
+.table-light>th,
+tr.table-light,
+thead.table-light,
+tbody.table-light,
+tfoot.table-light {
+    background-color: var(--bg-dark-secondary) !important;
+    color: var(--text-light) !important;
+}
+
 .table tr {
     border-color: var(--text-muted);
 }
@@ -109,6 +121,25 @@ label, .form-label {
 .table > thead > tr > th a:focus {
     color: var(--text-light);
     background-color: transparent;
+}
+
+/* Table footer styling for dark mode */
+.table tfoot tr,
+tfoot tr,
+table tfoot tr,
+#recordsTable tfoot tr,
+.table-striped tfoot tr {
+    background-color: var(--bg-dark-secondary) !important;
+    color: var(--text-light) !important;
+}
+
+.table tfoot tr td,
+tfoot tr td,
+table tfoot tr td,
+#recordsTable tfoot tr td,
+.table-striped tfoot tr td {
+    background-color: var(--bg-dark-secondary) !important;
+    border-color: var(--border-dark) !important;
 }
 
 .table td {

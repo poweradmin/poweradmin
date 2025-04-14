@@ -109,17 +109,19 @@
                             </td>
                         </tr>
                     </tbody>
+                    <tfoot>
+                        <tr class="table-light">
+                            <td colspan="{% if iface_record_comments %}9{% else %}8{% endif %}" class="text-end">
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="addNewRecord()">
+                                    <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add another record{% endtrans %}
+                                </button>
+                            </td>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             
-            <div class="mb-3 multi-record-control">
-                <button type="button" class="btn btn-secondary btn-sm" onclick="addNewRecord()">
-                    <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add another record{% endtrans %}
-                </button>
-            </div>
-            
             <div class="mt-4">
-                
                 <button class="btn btn-primary btn-sm" type="submit" name="commit">
                     <i class="bi bi-plus-circle me-1 text-white"></i>
                     <span>{% trans %}Add records{% endtrans %}</span>
