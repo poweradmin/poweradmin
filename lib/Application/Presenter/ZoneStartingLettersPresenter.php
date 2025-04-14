@@ -28,7 +28,7 @@ class ZoneStartingLettersPresenter
     {
         $html = '<span class="text-secondary">' . _('Show zones beginning with') . "</span><br>";
         $html .= '<nav>';
-        $html .= '<ul class="pagination d-flex flex-wrap">';
+        $html .= '<ul class="pagination pagination-sm d-flex flex-wrap">';
 
         // Preserve rows_per_page parameter if set
         $rowsPerPageParam = isset($_GET['rows_per_page']) ? '&rows_per_page=' . (int)$_GET['rows_per_page'] : '';
