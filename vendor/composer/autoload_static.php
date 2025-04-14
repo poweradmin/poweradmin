@@ -568,6 +568,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Application\\Controller\\AddZoneTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/AddZoneTemplController.php',
         'Poweradmin\\Application\\Controller\\AddZoneTemplRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/AddZoneTemplRecordController.php',
         'Poweradmin\\Application\\Controller\\BatchPtrRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/BatchPtrRecordController.php',
+        'Poweradmin\\Application\\Controller\\BulkRecordAddController' => __DIR__ . '/../..' . '/lib/Application/Controller/BulkRecordAddController.php',
         'Poweradmin\\Application\\Controller\\BulkRegistrationController' => __DIR__ . '/../..' . '/lib/Application/Controller/BulkRegistrationController.php',
         'Poweradmin\\Application\\Controller\\ChangePasswordController' => __DIR__ . '/../..' . '/lib/Application/Controller/ChangePasswordController.php',
         'Poweradmin\\Application\\Controller\\DeleteDomainController' => __DIR__ . '/../..' . '/lib/Application/Controller/DeleteDomainController.php',

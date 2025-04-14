@@ -305,7 +305,8 @@ class Dns
         $dns_top_level_tld_check = $this->config->get('dns', 'top_level_tld_check');
         $dns_strict_tld_check = $this->config->get('dns', 'strict_tld_check');
 
-        if ($hostname == ".") {
+        // Special case for root zone (@) or @.domain format
+        if ($hostname == "." || $hostname == "@" || str_starts_with($hostname, "@.")) {
             return true;
         }
 
@@ -313,10 +314,7 @@ class Dns
 
         # The full domain name may not exceed a total length of 253 characters.
         if (strlen($hostname) > 253) {
-            $error = new ErrorMessage(_('The hostname is too long.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->setErrorMessage(_('The hostname is too long.'));
             return false;
         }
 
@@ -330,34 +328,22 @@ class Dns
         foreach ($hostname_labels as $hostname_label) {
             if ($wildcard == 1 && !isset($first)) {
                 if (!preg_match('/^(\*|[\w\-\/]+)$/', $hostname_label)) {
-                    $error = new ErrorMessage(_('You have invalid characters in your hostname.'));
-                    $errorPresenter = new ErrorPresenter();
-                    $errorPresenter->present($error);
-
+                    $this->messageService->setErrorMessage(_('You have invalid characters in your hostname.'));
                     return false;
                 }
                 $first = 1;
             } else {
                 if (!preg_match('/^[\w\-\/]+$/', $hostname_label)) {
-                    $error = new ErrorMessage(_('You have invalid characters in your hostname.'));
-                    $errorPresenter = new ErrorPresenter();
-                    $errorPresenter->present($error);
-
+                    $this->messageService->setErrorMessage(_('You have invalid characters in your hostname.'));
                     return false;
                 }
             }
             if (str_starts_with($hostname_label, "-")) {
-                $error = new ErrorMessage(_('A hostname can not start or end with a dash.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
-
+                $this->messageService->setErrorMessage(_('A hostname can not start or end with a dash.'));
                 return false;
             }
             if (str_ends_with($hostname_label, "-")) {
-                $error = new ErrorMessage(_('A hostname can not start or end with a dash.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
-
+                $this->messageService->setErrorMessage(_('A hostname can not start or end with a dash.'));
                 return false;
             }
             if (strlen($hostname_label) < 1 || strlen($hostname_label) > 63) {
@@ -660,10 +646,7 @@ class Dns
 
         $response = $this->db->queryOne($query);
         if ($response) {
-            $error = new ErrorMessage(_('This is not a valid CNAME. There already exists a record with this name.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->setErrorMessage(_('This is not a valid CNAME. There already exists a record with this name.'));
             return false;
         }
         return true;
@@ -860,24 +843,15 @@ class Dns
 
         $fields = explode('.', $name, 3);
         if (!preg_match('/^_[\w\-]+$/i', $fields[0])) {
-            $error = new ErrorMessage(_('Invalid service value in name field of SRV record.'), $name);
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->setErrorMessage(_('Invalid service value in name field of SRV record.'));
             return false;
         }
         if (!preg_match('/^_[\w]+$/i', $fields[1])) {
-            $error = new ErrorMessage(_('Invalid protocol value in name field of SRV record.'), $name);
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->setErrorMessage(_('Invalid protocol value in name field of SRV record.'));
             return false;
         }
         if (!$this->is_valid_hostname_fqdn($fields[2], 0)) {
-            $error = new ErrorMessage(_('Invalid FQDN value in name field of SRV record.'), $name);
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->setErrorMessage(_('Invalid FQDN value in name field of SRV record.'));
             return false;
         }
         $name = join('.', $fields);
@@ -894,24 +868,15 @@ class Dns
     {
         $fields = preg_split("/\s+/", trim($content), 3);
         if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) {
-            $error = new ErrorMessage(_('Invalid value for the priority field of the SRV record.'), $name);
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->setErrorMessage(_('Invalid value for the priority field of the SRV record.'));
             return false;
         }
         if (!is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 65535) {
-            $error = new ErrorMessage(_('Invalid value for the weight field of the SRV record.'), $name);
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->setErrorMessage(_('Invalid value for the weight field of the SRV record.'));
             return false;
         }
         if ($fields[2] == "" || ($fields[2] != "." && !$this->is_valid_hostname_fqdn($fields[2], 0))) {
-            $error = new ErrorMessage(_('Invalid SRV target.'), $name);
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->setErrorMessage(_('Invalid SRV target.'));
             return false;
         }
         $content = join(' ', $fields);

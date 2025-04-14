@@ -1,0 +1,98 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+            {% if idn_zone_name %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            {% else %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ zone_name }}</a>
+            {% endif %}
+        </li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Bulk add records{% endtrans %}</li>
+    </ol>
+</nav>
+
+{% if message %}
+<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% endif %}
+
+<div class="card">
+    <div class="card-header">
+        <strong>{{ 'Bulk Add Records'|trans }}</strong>
+    </div>
+    <div class="card-body">
+        <p class="small text-muted mb-3">{{ 'Add multiple DNS records to this zone at once'|trans }}</p>
+
+        <form class="needs-validation" method="post" action="index.php?page=bulk_record_add&id={{ zone_id }}" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <!-- Form fields on the left side -->
+                    <div class="mb-3">
+                        <label for="records" class="form-label">{{ 'Records'|trans }}</label>
+                        <textarea class="form-control form-control-sm" id="records" name="records" rows="15" required>{% if failed_records %}{{ failed_records | join('\n') }}{% endif %}</textarea>
+                        <div class="invalid-feedback">{% trans %}Provide at least one record{% endtrans %}</div>
+                        <small class="form-text text-muted">{{ 'Format: name,type,content,priority,ttl,comment (one record per line)'|trans }}</small>
+                        <small class="form-text text-muted d-block">{{ 'Example: www,A,192.168.1.1,0,3600,web server'|trans }}</small>
+                        <small class="form-text text-muted d-block">{{ 'Priority and TTL are optional (defaults: priority=0, ttl='|trans }}{{ default_ttl }})</small>
+                        <small class="form-text text-muted d-block">{{ 'Comment is optional'|trans }}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-sm btn-primary" name="submit">{{ 'Add Records'|trans }}</button>
+                        <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-sm btn-secondary">{{ 'Cancel'|trans }}</a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <!-- Information panel on the right side -->
+                    <div class="card border-info">
+                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
+                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{{ 'Instructions'|trans }}
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                {{ 'This tool allows you to create multiple DNS records at once.'|trans }}
+                            </p>
+                            <p class="card-text mb-0">
+                                {{ 'Guidelines:'|trans }}
+                            </p>
+                            <ul class="mb-0 ps-4">
+                                <li>{{ 'Enter one record per line using CSV format'|trans }}</li>
+                                <li>{{ 'Required fields: name, type, content'|trans }}</li>
+                                <li>{{ 'Optional fields: priority, ttl, comment'|trans }}</li>
+                                <li>{{ 'Records are validated before creation'|trans }}</li>
+                                <li>{{ 'For CNAME, MX, SRV records, make sure content ends with a dot (.)'|trans }}</li>
+                                <li>{{ 'Use @ for records at the zone apex (root domain)'|trans }}</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="card border-warning mt-3">
+                        <div class="card-header bg-warning bg-opacity-10 text-warning border-warning">
+                            <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>{{ 'Record Type Examples'|trans }}
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                {{ 'Common record type formats:'|trans }}
+                            </p>
+                            <ul class="mb-0 ps-4">
+                                <li>A: www,A,192.168.1.1</li>
+                                <li>AAAA: www,AAAA,2001:db8::1</li>
+                                <li>CNAME: www2,CNAME,www.example.com.</li>
+                                <li>TXT: _acme,TXT,"verification=12345"</li>
+                                <li>MX: @,MX,mail.example.com.,10 <small class="text-muted">(@ will be replaced with the zone name)</small></li>
+                                <li>SPF: @,TXT,"v=spf1 mx a ip4:192.168.0.0/24 ~all"</li>
+                                <li>SRV: _sip._tcp,SRV,sip.example.com.,0,5060,3600 <small class="text-muted">(format: name,type,target,weight,port,ttl)</small></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>

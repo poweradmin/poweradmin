@@ -18,8 +18,11 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
         <div>
-            <a href="index.php?page=add_record&id={{ zone_id }}" class="btn btn-primary btn-sm">
+            <a href="index.php?page=add_record&id={{ zone_id }}" class="btn btn-primary btn-sm me-1">
                 <i class="bi bi-table me-1 text-white"></i>{% trans %}Multi-record mode{% endtrans %}
+            </a>
+            <a href="index.php?page=bulk_record_add&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-file-earmark-text me-1 text-white"></i>{% trans %}Bulk add{% endtrans %}
             </a>
         </div>
     </div>
@@ -405,8 +408,11 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
         <div>
-            <a href="index.php?page=add_record&id={{ zone_id }}" class="btn btn-primary btn-sm">
+            <a href="index.php?page=add_record&id={{ zone_id }}" class="btn btn-primary btn-sm me-1">
                 <i class="bi bi-table me-1 text-white"></i>{% trans %}Multi-record mode{% endtrans %}
+            </a>
+            <a href="index.php?page=bulk_record_add&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-file-earmark-text me-1 text-white"></i>{% trans %}Bulk add{% endtrans %}
             </a>
         </div>
     </div>

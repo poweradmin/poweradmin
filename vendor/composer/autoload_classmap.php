@@ -379,6 +379,7 @@ return array(
     'Poweradmin\\Application\\Controller\\AddZoneTemplController' => $baseDir . '/lib/Application/Controller/AddZoneTemplController.php',
     'Poweradmin\\Application\\Controller\\AddZoneTemplRecordController' => $baseDir . '/lib/Application/Controller/AddZoneTemplRecordController.php',
     'Poweradmin\\Application\\Controller\\BatchPtrRecordController' => $baseDir . '/lib/Application/Controller/BatchPtrRecordController.php',
+    'Poweradmin\\Application\\Controller\\BulkRecordAddController' => $baseDir . '/lib/Application/Controller/BulkRecordAddController.php',
     'Poweradmin\\Application\\Controller\\BulkRegistrationController' => $baseDir . '/lib/Application/Controller/BulkRegistrationController.php',
     'Poweradmin\\Application\\Controller\\ChangePasswordController' => $baseDir . '/lib/Application/Controller/ChangePasswordController.php',
     'Poweradmin\\Application\\Controller\\DeleteDomainController' => $baseDir . '/lib/Application/Controller/DeleteDomainController.php',
