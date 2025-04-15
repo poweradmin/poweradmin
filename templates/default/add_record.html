@@ -39,21 +39,20 @@
                     <thead class="table-light">
                         <tr>
                             <th>{% trans %}Name{% endtrans %}</th>
-                            <th style="width: 30px;">&nbsp;</th>
-                            <th style="width: 170px;">{% trans %}Type{% endtrans %}</th>
+                            <th>{% trans %}Type{% endtrans %}</th>
                             <th>{% trans %}Content{% endtrans %}</th>
-                            <th style="width: 80px;">{% trans %}Priority{% endtrans %}</th>
-                            <th style="width: 100px;">{% trans %}TTL{% endtrans %}</th>
+                            <th>{% trans %}Priority{% endtrans %}</th>
+                            <th>{% trans %}TTL{% endtrans %}</th>
                             {% if iface_record_comments %}
                                 <th>{% trans %}Comment{% endtrans %}</th>
                             {% endif %}
                             {% if not is_reverse_zone and iface_add_reverse_record %}
-                                <th style="width: 80px;" class="text-center">{% trans %}Add PTR{% endtrans %}</th>
+                                <th class="text-center">{% trans %}Add PTR{% endtrans %}</th>
                             {% endif %}
                             {% if is_reverse_zone and iface_add_domain_record %}
-                                <th style="width: 80px;" class="text-center">{% trans %}Add A/AAAA{% endtrans %}</th>
+                                <th class="text-center">{% trans %}Add A/AAAA{% endtrans %}</th>
                             {% endif %}
-                            <th class="multi-record-column" style="width: 110px;"></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody id="recordsTableBody">
@@ -61,7 +60,6 @@
                             <td>
                                 <input class="form-control form-control-sm name-field" type="text" name="records[0][name]" value="{{ name }}">
                             </td>
-                            <td class="text-center" style="width: 30px;">IN</td>
                             <td>
                                 <select class="form-select form-select-sm record-type-select" name="records[0][type]" onchange="updateContentInput(this, this.closest('tr').querySelector('.content-container'), this.closest('tr').querySelector('.record-content')); updatePtrCheckboxVisibility(this);">
                                     {% for record_type in types %}
@@ -102,9 +100,9 @@
                                     <input class="form-check-input" type="checkbox" name="records[0][create_domain_record]">
                                 </td>
                             {% endif %}
-                            <td class="multi-record-column">
+                            <td>
                                 <button type="button" class="btn btn-danger btn-sm remove-record" onclick="removeRecord(this)">
-                                    <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete{% endtrans %}
+                                    <i class="bi bi-trash text-white"></i>
                                 </button>
                             </td>
                         </tr>
