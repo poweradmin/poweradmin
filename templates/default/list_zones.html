@@ -147,7 +147,11 @@
                         {% endif %}
 
                         {% if iface_zonelist_template %}
-                        <td>{{ zone["template"] }}</td>
+                        <td>
+                            {% if zone["template"] %}
+                            <span class="badge bg-secondary text-white">{{ zone["template"] }}</span>
+                            {% endif %}
+                        </td>
                         {% endif %}
 
                         {% if pdnssec_use %}
