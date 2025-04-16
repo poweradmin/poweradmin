@@ -1,0 +1,72 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zone_templ">{% trans %}Zone templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Zones using template{% endtrans %} "{{ template.name }}"</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-globe me-2"></i>{% trans %}Zones using template{% endtrans %} "{{ template.name }}"</strong>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-sm mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>{% trans %}Domain name{% endtrans %}</th>
+                    <th>{% trans %}Type{% endtrans %}</th>
+                    <th>{% trans %}Records{% endtrans %}</th>
+                    <th>{% trans %}Owner{% endtrans %}</th>
+                    <th>{% trans %}Comment{% endtrans %}</th>
+                    <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% if not zones %}
+                <tr>
+                    <td colspan="6" class="text-center py-3">{% trans %}No domains using this template{% endtrans %}</td>
+                </tr>
+                {% endif %}
+                {% for zone in zones %}
+                <tr>
+                    <td>{{ zone.name }}</td>
+                    <td>
+                        <span class="badge {% if zone.type == 'MASTER' %}bg-primary{% elseif zone.type == 'SLAVE' %}bg-secondary{% else %}bg-light text-dark{% endif %}">
+                            {{ zone.type }}
+                        </span>
+                    </td>
+                    <td>{{ zone.count_records|default(0) }}</td>
+                    <td>
+                        {% if zone.owner_fullname %}
+                        {{ zone.owner_fullname }}
+                        {% elseif zone.owner_name %}
+                        {{ zone.owner_name }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>{{ zone.comment }}</td>
+                    <td class="text-end">
+                        <div class="gap-2">
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="index.php?page=edit&id={{ zone.id }}">
+                                <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer py-3">
+        <a class="btn btn-secondary btn-sm" href="index.php?page=list_zone_templ">
+            <i class="bi bi-arrow-left me-1 text-white"></i>{% trans %}Back to templates{% endtrans %}
+        </a>
+    </div>
+</div>

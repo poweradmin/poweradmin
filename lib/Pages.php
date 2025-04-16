@@ -82,6 +82,7 @@ class Pages
             'list_supermasters',
             'list_zone_templ',
             'list_zones',
+            'list_template_zones',
             'login',
             'logout',
             'migrations',

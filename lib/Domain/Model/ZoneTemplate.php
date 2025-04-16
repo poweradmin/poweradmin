@@ -552,6 +552,59 @@ class ZoneTemplate
     }
 
     /**
+     * Get detailed information about zones using a specific template
+     *
+     * @param int $zone_templ_id zone template id
+     * @param int $userid user id
+     *
+     * @return array array of zone details
+     */
+    public function get_zones_using_template(int $zone_templ_id, int $userid): array
+    {
+        $perm_edit = Permission::getEditPermission($this->db);
+
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $sql_add = '';
+        if ($perm_edit != "all") {
+            $sql_add = " AND zones.domain_id = $domains_table.id 
+                    AND zones.owner = " . $this->db->quote($userid, 'integer');
+        }
+
+        $query = "SELECT $domains_table.id,
+                $domains_table.name,
+                $domains_table.type,
+                Record_Count.count_records,
+                zones.owner,
+                zones.comment,
+                u.username as owner_name,
+                u.fullname as owner_fullname
+                FROM $domains_table
+                LEFT JOIN zones ON $domains_table.id=zones.domain_id
+                LEFT JOIN users u ON zones.owner=u.id
+                LEFT JOIN (
+                    SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
+                ) Record_Count ON Record_Count.domain_id=$domains_table.id
+                WHERE 1=1" . $sql_add . "
+                AND zone_templ_id = " . $this->db->quote($zone_templ_id, 'integer') . "
+                GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, 
+                        Record_Count.count_records, zones.owner, zones.comment, 
+                        u.username, u.fullname
+                ORDER BY $domains_table.name";
+
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute();
+            return $stmt->fetchAll();
+        } catch (\PDOException $e) {
+            error_log('Failed to get list of zones using template: ' . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
      * Modify zone template
      *
      * @param array $details array of new zone template details

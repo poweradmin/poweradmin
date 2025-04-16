@@ -597,6 +597,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Application\\Controller\\ListLogZonesController' => __DIR__ . '/../..' . '/lib/Application/Controller/ListLogZonesController.php',
         'Poweradmin\\Application\\Controller\\ListPermTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/ListPermTemplController.php',
         'Poweradmin\\Application\\Controller\\ListSupermastersController' => __DIR__ . '/../..' . '/lib/Application/Controller/ListSupermastersController.php',
+        'Poweradmin\\Application\\Controller\\ListTemplateZonesController' => __DIR__ . '/../..' . '/lib/Application/Controller/ListTemplateZonesController.php',
         'Poweradmin\\Application\\Controller\\ListZoneTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/ListZoneTemplController.php',
         'Poweradmin\\Application\\Controller\\ListZonesController' => __DIR__ . '/../..' . '/lib/Application/Controller/ListZonesController.php',
         'Poweradmin\\Application\\Controller\\LoginController' => __DIR__ . '/../..' . '/lib/Application/Controller/LoginController.php',

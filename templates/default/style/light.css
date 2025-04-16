@@ -97,7 +97,8 @@ footer a, footer a:hover, footer a:focus {
 
 /* Search results action buttons */
 .btn-outline-primary:hover .text-primary,
-.btn-outline-danger:hover .text-danger {
+.btn-outline-danger:hover .text-danger,
+.btn-outline-secondary:hover .text-secondary {
     color: #fff !important;
 }
 

@@ -408,6 +408,7 @@ return array(
     'Poweradmin\\Application\\Controller\\ListLogZonesController' => $baseDir . '/lib/Application/Controller/ListLogZonesController.php',
     'Poweradmin\\Application\\Controller\\ListPermTemplController' => $baseDir . '/lib/Application/Controller/ListPermTemplController.php',
     'Poweradmin\\Application\\Controller\\ListSupermastersController' => $baseDir . '/lib/Application/Controller/ListSupermastersController.php',
+    'Poweradmin\\Application\\Controller\\ListTemplateZonesController' => $baseDir . '/lib/Application/Controller/ListTemplateZonesController.php',
     'Poweradmin\\Application\\Controller\\ListZoneTemplController' => $baseDir . '/lib/Application/Controller/ListZoneTemplController.php',
     'Poweradmin\\Application\\Controller\\ListZonesController' => $baseDir . '/lib/Application/Controller/ListZonesController.php',
     'Poweradmin\\Application\\Controller\\LoginController' => $baseDir . '/lib/Application/Controller/LoginController.php',

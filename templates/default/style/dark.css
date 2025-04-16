@@ -66,7 +66,7 @@ label, .form-label {
 }
 
 /* Improve form text visibility in dark theme */
-.form-text, small.text-muted, .text-muted, span.text-muted, label span.text-muted, 
+.form-text, small.text-muted, .text-muted, span.text-muted, label span.text-muted,
 .form-label .text-muted, .form-control-sm, small {
     color: #a7acb1 !important;
 }
@@ -89,9 +89,9 @@ label, .form-label {
 }
 
 /* Override bootstrap table-light in dark mode */
-.table-light, 
-.table-light>td, 
-.table-light>th,
+.table-light,
+.table-light > td,
+.table-light > th,
 tr.table-light,
 thead.table-light,
 tbody.table-light,
@@ -233,6 +233,21 @@ table tfoot tr td,
     color: #ffffff !important;
 }
 
+.btn-outline-secondary {
+    border-color: #6c757d !important;
+    color: #6c757d !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-secondary:hover i,
+.btn-outline-secondary:hover .text-secondary {
+    color: #ffffff !important;
+}
+
 .btn-outline-danger {
     border-color: #dc3545 !important;
     color: #dc3545 !important;
@@ -254,8 +269,8 @@ table tfoot tr td,
 }
 
 .card .small.text-muted,
-.card .small, 
-.card p.small, 
+.card .small,
+.card p.small,
 .card-body p.small {
     color: #a7acb1 !important;
 }
@@ -270,7 +285,7 @@ table tfoot tr td,
 
 /* Make all text in cards more visible */
 .card-text.text-muted,
-.card p, 
+.card p,
 .card li,
 .card small,
 .card .card-body p,
