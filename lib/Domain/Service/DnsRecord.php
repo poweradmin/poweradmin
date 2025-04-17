@@ -1324,7 +1324,8 @@ class DnsRecord
         if ($letterstart != 'all' && $letterstart != 1) {
             $query_addon .= " AND $domains_table.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
         } elseif ($letterstart == 1) {
-            $query_addon .= " AND " . DbCompat::substr($config->get('db_type')) . "($domains_table.name,1,1) " . DbCompat::regexp($config->get('db_type')) . " '[0-9]'";
+            $db_type = $config->get('database', 'type');
+            $query_addon .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
         }
 
 
