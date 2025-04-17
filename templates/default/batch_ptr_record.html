@@ -21,10 +21,10 @@
 
 <div class="card">
     <div class="card-header">
-        <strong>{{ 'Batch PTR Records'|trans }}</strong>
+        <strong>{% trans %}Batch PTR Records{% endtrans %}</strong>
     </div>
     <div class="card-body">
-        <p class="small text-muted mb-3">{{ 'Create multiple PTR (reverse DNS) records at once for an IP range'|trans }}</p>
+        <p class="small text-muted mb-3">{% trans %}Create multiple PTR (reverse DNS) records at once for an IP range{% endtrans %}</p>
 
         <form class="needs-validation" method="post" action="index.php?page=batch_ptr_record{% if has_zone_id %}&id={{ zone_id }}{% endif %}" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
@@ -33,55 +33,55 @@
                 <div class="col-md-5">
                     <!-- Form fields on the left side -->
                     <div class="mb-3">
-                        <label for="network_type" class="form-label">{{ 'IP Version'|trans }}</label>
+                        <label for="network_type" class="form-label">{% trans %}IP Version{% endtrans %}</label>
                         <select id="network_type" name="network_type" class="form-select form-select-sm">
-                            <option value="ipv4" {% if network_type == 'ipv4' %}selected{% endif %}>{{ 'IPv4 network'|trans }}</option>
-                            <option value="ipv6" {% if network_type == 'ipv6' %}selected{% endif %}>{{ 'IPv6 (/64 network)'|trans }}</option>
+                            <option value="ipv4" {% if network_type == 'ipv4' %}selected{% endif %}>{% trans %}IPv4 network{% endtrans %}</option>
+<!--                            <option value="ipv6" {% if network_type == 'ipv6' %}selected{% endif %}>{% trans %}IPv6 (/64 network){% endtrans %}</option>-->
                         </select>
                     </div>
                     
                     <div class="mb-3">
-                        <label for="network_prefix" class="form-label">{{ 'Network Prefix'|trans }}</label>
+                        <label for="network_prefix" class="form-label">{% trans %}Network Prefix{% endtrans %}</label>
                         <input type="text" id="network_prefix" name="network_prefix" value="{{ network_prefix }}" class="form-control form-control-sm" required>
                         <div class="invalid-feedback">{% trans %}Please provide a network prefix{% endtrans %}</div>
-                        <small class="form-text text-muted ipv4-help">{{ 'e.g., "192.168.1.0/24" or "10.0.0.0/20"'|trans }}</small>
-                        <small class="form-text text-muted ipv6-help">{{ 'e.g., "2001:db8:1:1"'|trans }}</small>
+                        <small class="form-text text-muted ipv4-help">{% trans %}e.g., "192.168.1.0/24" or "10.0.0.0/20"{% endtrans %}</small>
+                        <small class="form-text text-muted ipv6-help">{% trans %}e.g., "2001:db8:1:1"{% endtrans %}</small>
                     </div>
 
                     <div class="mb-3">
-                        <label for="host_prefix" class="form-label">{{ 'Host Prefix'|trans }} <span class="text-muted">({{ 'Optional'|trans }})</span></label>
+                        <label for="host_prefix" class="form-label">{% trans %}Host Prefix{% endtrans %} <span class="text-muted">({% trans %}Optional{% endtrans %})</span></label>
                         <input type="text" id="host_prefix" name="host_prefix" value="{{ host_prefix }}" class="form-control form-control-sm">
-                        <small class="form-text text-muted">{{ 'Leave empty to use just the domain for PTR records'|trans }}</small>
+                        <small class="form-text text-muted">{% trans %}Leave empty to use just the domain for PTR records{% endtrans %}</small>
                     </div>
 
                     <div class="mb-3">
-                        <label for="domain" class="form-label">{{ 'Domain'|trans }}</label>
+                        <label for="domain" class="form-label">{% trans %}Domain{% endtrans %}</label>
                         <input type="text" id="domain" name="domain" value="{{ domain }}" class="form-control form-control-sm" required>
                         <div class="invalid-feedback">{% trans %}Required{% endtrans %}</div>
                     </div>
 
                     <div class="mb-3 ipv6-count">
-                        <label for="ipv6_count" class="form-label">{{ 'IPv6 Count'|trans }}</label>
+                        <label for="ipv6_count" class="form-label">{% trans %}IPv6 Count{% endtrans %}</label>
                         <input type="number" id="ipv6_count" name="ipv6_count" value="{{ ipv6_count }}" min="1" max="1000" class="form-control form-control-sm" required>
                     </div>
 
                     <div class="mb-3">
-                        <span class="text-muted">{{ 'Using default TTL value from configuration'|trans }}</span>
+                        <span class="text-muted">{% trans %}Using default TTL value from configuration{% endtrans %}</span>
                     </div>
 
                     {% if iface_record_comments %}
                     <div class="mb-3">
-                        <label for="comment" class="form-label">{{ 'Comment'|trans }}</label>
+                        <label for="comment" class="form-label">{% trans %}Comment{% endtrans %}</label>
                         <input type="text" id="comment" name="comment" value="{{ comment }}" class="form-control form-control-sm">
                     </div>
                     {% endif %}
 
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-sm btn-primary">{{ 'Create PTR Records'|trans }}</button>
+                        <button type="submit" class="btn btn-sm btn-primary">{% trans %}Create PTR Records{% endtrans %}</button>
                         {% if has_zone_id %}
-                        <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-sm btn-secondary">{{ 'Cancel'|trans }}</a>
+                        <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-sm btn-secondary">{% trans %}Cancel{% endtrans %}</a>
                         {% else %}
-                        <a href="index.php" class="btn btn-sm btn-secondary">{{ 'Cancel'|trans }}</a>
+                        <a href="index.php" class="btn btn-sm btn-secondary">{% trans %}Cancel{% endtrans %}</a>
                         {% endif %}
                     </div>
                 </div>
@@ -90,11 +90,11 @@
                     <!-- Information panel on the right side -->
                     <div class="card mb-3 border-warning">
                         <div class="card-header bg-warning bg-opacity-10 text-warning border-warning">
-                            <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>{{ 'Important Information'|trans }}
+                            <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>{% trans %}Important Information{% endtrans %}
                         </div>
                         <div class="card-body">
                             <p class="card-text">
-                                <strong>{{ 'Warning'|trans }}:</strong> {{ 'This will create multiple PTR records at once. For IPv4, supported networks are:'|trans }}
+                                <strong>{% trans %}Warning{% endtrans %}:</strong> {% trans %}This will create multiple PTR records at once. For IPv4, supported networks are:{% endtrans %}
                             </p>
                             <ul class="mb-0 ps-4">
                                 <li>/24 (256 records)</li>
@@ -108,18 +108,18 @@
                     
                     <div class="card border-info">
                         <div class="card-header bg-info bg-opacity-10 text-info border-info">
-                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{{ 'Requirements'|trans }}
+                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{% trans %}Requirements{% endtrans %}
                         </div>
                         <div class="card-body">
                             <p class="card-text">
-                                {{ 'You must have the appropriate reverse zone already created in PowerDNS before using this feature.'|trans }}
+                                {% trans %}You must have the appropriate reverse zone already created in PowerDNS before using this feature.{% endtrans %}
                             </p>
                             <p class="card-text mb-0">
-                                {{ 'For example:'|trans }}
+                                {% trans %}For example:{% endtrans %}
                             </p>
                             <ul class="mb-0 ps-4">
-                                <li>{{ 'For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-addr.arpa'|trans }}</li>
-                                <li>{{ 'For larger networks, you will need the corresponding reverse zones (e.g., 168.192.in-addr.arpa for a /16 network)'|trans }}</li>
+                                <li>{% trans %}For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-addr.arpa{% endtrans %}</li>
+                                <li>{% trans %}For larger networks, you will need the corresponding reverse zones (e.g., 168.192.in-addr.arpa for a /16 network){% endtrans %}</li>
                             </ul>
                         </div>
                     </div>

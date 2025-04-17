@@ -155,7 +155,7 @@
                             <ul class="small">
                                 {% for item in user_permissions %}
                                 {% set descr = item['descr'] %}
-                                <li>{{ descr|trans }} <span class="text-muted">({{ item['name'] }})</span></li>
+                                <li>{% trans %}{{ descr }}{% endtrans %} <span class="text-muted">({{ item['name'] }})</span></li>
                                 {% endfor %}
                             </ul>
                         </div>

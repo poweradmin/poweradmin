@@ -19,10 +19,10 @@
 
 <div class="card">
     <div class="card-header">
-        <strong>{{ 'Bulk Add Records'|trans }}</strong>
+        <strong>{% trans %}Bulk Add Records{% endtrans %}</strong>
     </div>
     <div class="card-body">
-        <p class="small text-muted mb-3">{{ 'Add multiple DNS records to this zone at once'|trans }}</p>
+        <p class="small text-muted mb-3">{% trans %}Add multiple DNS records to this zone at once{% endtrans %}</p>
 
         <form class="needs-validation" method="post" action="index.php?page=bulk_record_add&id={{ zone_id }}" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
@@ -31,18 +31,18 @@
                 <div class="col-md-6">
                     <!-- Form fields on the left side -->
                     <div class="mb-3">
-                        <label for="records" class="form-label">{{ 'Records'|trans }}</label>
+                        <label for="records" class="form-label">{% trans %}Records{% endtrans %}</label>
                         <textarea class="form-control form-control-sm" id="records" name="records" rows="15" required>{% if failed_records %}{{ failed_records | join('\n') }}{% endif %}</textarea>
                         <div class="invalid-feedback">{% trans %}Provide at least one record{% endtrans %}</div>
-                        <small class="form-text text-muted">{{ 'Format: name,type,content,priority,ttl,comment (one record per line)'|trans }}</small>
-                        <small class="form-text text-muted d-block">{{ 'Example: www,A,192.168.1.1,0,3600,web server'|trans }}</small>
-                        <small class="form-text text-muted d-block">{{ 'Priority and TTL are optional (defaults: priority=0, ttl='|trans }}{{ default_ttl }})</small>
-                        <small class="form-text text-muted d-block">{{ 'Comment is optional'|trans }}</small>
+                        <small class="form-text text-muted">{% trans %}Format: name,type,content,priority,ttl,comment (one record per line){% endtrans %}</small>
+                        <small class="form-text text-muted d-block">{% trans %}Example: www,A,192.168.1.1,0,3600,web server{% endtrans %}</small>
+                        <small class="form-text text-muted d-block">{% trans %}Priority and TTL are optional (defaults: priority=0, ttl={{ default_ttl }}){% endtrans %}</small>
+                        <small class="form-text text-muted d-block">{% trans %}Comment is optional{% endtrans %}</small>
                     </div>
 
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-sm btn-primary" name="submit">{{ 'Add Records'|trans }}</button>
-                        <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-sm btn-secondary">{{ 'Cancel'|trans }}</a>
+                        <button type="submit" class="btn btn-sm btn-primary" name="submit">{% trans %}Add Records{% endtrans %}</button>
+                        <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-sm btn-secondary">{% trans %}Cancel{% endtrans %}</a>
                     </div>
                 </div>
                 
@@ -50,33 +50,33 @@
                     <!-- Information panel on the right side -->
                     <div class="card border-info">
                         <div class="card-header bg-info bg-opacity-10 text-info border-info">
-                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{{ 'Instructions'|trans }}
+                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{% trans %}Instructions{% endtrans %}
                         </div>
                         <div class="card-body">
                             <p class="card-text">
-                                {{ 'This tool allows you to create multiple DNS records at once.'|trans }}
+                                {% trans %}This tool allows you to create multiple DNS records at once.{% endtrans %}
                             </p>
                             <p class="card-text mb-0">
-                                {{ 'Guidelines:'|trans }}
+                                {% trans %}Guidelines:{% endtrans %}
                             </p>
                             <ul class="mb-0 ps-4">
-                                <li>{{ 'Enter one record per line using CSV format'|trans }}</li>
-                                <li>{{ 'Required fields: name, type, content'|trans }}</li>
-                                <li>{{ 'Optional fields: priority, ttl, comment'|trans }}</li>
-                                <li>{{ 'Records are validated before creation'|trans }}</li>
-                                <li>{{ 'For CNAME, MX, SRV records, make sure content ends with a dot (.)'|trans }}</li>
-                                <li>{{ 'Use @ for records at the zone apex (root domain)'|trans }}</li>
+                                <li>{% trans %}Enter one record per line using CSV format{% endtrans %}</li>
+                                <li>{% trans %}Required fields: name, type, content{% endtrans %}</li>
+                                <li>{% trans %}Optional fields: priority, ttl, comment{% endtrans %}</li>
+                                <li>{% trans %}Records are validated before creation{% endtrans %}</li>
+                                <li>{% trans %}For CNAME, MX, SRV records, make sure content ends with a dot (.){% endtrans %}</li>
+                                <li>{% trans %}Use @ for records at the zone apex (root domain){% endtrans %}</li>
                             </ul>
                         </div>
                     </div>
                     
                     <div class="card border-warning mt-3">
                         <div class="card-header bg-warning bg-opacity-10 text-warning border-warning">
-                            <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>{{ 'Record Type Examples'|trans }}
+                            <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>{% trans %}Record Type Examples{% endtrans %}
                         </div>
                         <div class="card-body">
                             <p class="card-text">
-                                {{ 'Common record type formats:'|trans }}
+                                {% trans %}Common record type formats:{% endtrans %}
                             </p>
                             <ul class="mb-0 ps-4">
                                 <li>A: www,A,192.168.1.1</li>

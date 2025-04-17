@@ -12,10 +12,10 @@
 
 <div class="card">
     <div class="card-header">
-        <strong>{{ 'Bulk Registration'|trans }}</strong>
+        <strong>{% trans %}Bulk Registration{% endtrans %}</strong>
     </div>
     <div class="card-body">
-        <p class="small text-muted mb-3">{{ 'Create multiple DNS zones at once'|trans }}</p>
+        <p class="small text-muted mb-3">{% trans %}Create multiple DNS zones at once{% endtrans %}</p>
 
         <form class="needs-validation" method="post" action="index.php?page=bulk_registration" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
@@ -24,7 +24,7 @@
                 <div class="col-md-5">
                     <!-- Form fields on the left side -->
                     <div class="mb-3">
-                        <label for="owner" class="form-label">{{ 'Owner'|trans }}</label>
+                        <label for="owner" class="form-label">{% trans %}Owner{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="owner" name="owner" required>
                             {% set default_user_set = false %}
                             {% for user in users %}
@@ -40,7 +40,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="dom_type" class="form-label">{{ 'Zone Type'|trans }}</label>
+                        <label for="dom_type" class="form-label">{% trans %}Zone Type{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="dom_type" name="dom_type">
                             {% for type in available_zone_types %}
                             {% if type == iface_zone_type_default %}
@@ -54,7 +54,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="zone_template" class="form-label">{{ 'Template'|trans }}</label>
+                        <label for="zone_template" class="form-label">{% trans %}Template{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="zone_template" name="zone_template">
                             <option value="none">none</option>
                             {% for zone_template in zone_templates %}
@@ -64,15 +64,15 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="domains" class="form-label">{{ 'Domains'|trans }}</label>
+                        <label for="domains" class="form-label">{% trans %}Domains{% endtrans %}</label>
                         <textarea class="form-control form-control-sm" id="domains" name="domains" rows="10" required>{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
                         <div class="invalid-feedback">{% trans %}Provide a domain name(s){% endtrans %}</div>
-                        <small class="form-text text-muted">{{ 'Type one domain per line'|trans }}</small>
+                        <small class="form-text text-muted">{% trans %}Type one domain per line{% endtrans %}</small>
                     </div>
 
                     <div class="mb-3">
-                        <button type="submit" class="btn btn-sm btn-primary" name="submit">{{ 'Add Zones'|trans }}</button>
-                        <a href="index.php?page=list_zones" class="btn btn-sm btn-secondary">{{ 'Cancel'|trans }}</a>
+                        <button type="submit" class="btn btn-sm btn-primary" name="submit">{% trans %}Add Zones{% endtrans %}</button>
+                        <a href="index.php?page=list_zones" class="btn btn-sm btn-secondary">{% trans %}Cancel{% endtrans %}</a>
                     </div>
                 </div>
                 
@@ -80,19 +80,19 @@
                     <!-- Information panel on the right side -->
                     <div class="card border-info">
                         <div class="card-header bg-info bg-opacity-10 text-info border-info">
-                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{{ 'Instructions'|trans }}
+                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{% trans %}Instructions{% endtrans %}
                         </div>
                         <div class="card-body">
                             <p class="card-text">
-                                {{ 'This tool allows you to create multiple DNS zones at once.'|trans }}
+                                {% trans %}This tool allows you to create multiple DNS zones at once.{% endtrans %}
                             </p>
                             <p class="card-text mb-0">
-                                {{ 'Guidelines:'|trans }}
+                                {% trans %}Guidelines:{% endtrans %}
                             </p>
                             <ul class="mb-0 ps-4">
-                                <li>{{ 'Enter one domain name per line in the Domains field'|trans }}</li>
-                                <li>{{ 'Select a zone template to apply standard records to all zones'|trans }}</li>
-                                <li>{{ 'The chosen owner will have full access to all created zones'|trans }}</li>
+                                <li>{% trans %}Enter one domain name per line in the Domains field{% endtrans %}</li>
+                                <li>{% trans %}Select a zone template to apply standard records to all zones{% endtrans %}</li>
+                                <li>{% trans %}The chosen owner will have full access to all created zones{% endtrans %}</li>
                             </ul>
                         </div>
                     </div>
