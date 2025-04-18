@@ -131,8 +131,9 @@ class DeleteRecordsController extends BaseController
 
                     DnsRecord::delete_record_zone_templ($this->db, $record_id);
 
-                    // Delete corresponding PTR record if this was an A or AAAA record
-                    if ($hasPtrRecord) {
+                    // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
+                    $delete_ptr = isset($_POST['delete_ptr']) && $_POST['delete_ptr'] === '1';
+                    if ($hasPtrRecord && $delete_ptr) {
                         $this->reverseRecordCreator->deleteReverseRecord(
                             $record_info['type'],
                             $record_info['content'],

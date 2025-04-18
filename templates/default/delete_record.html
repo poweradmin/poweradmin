@@ -69,13 +69,39 @@
         </div>
         {% endif %}
         
+        {% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="delete_ptr" name="delete_ptr" checked 
+                   onclick="updateDeleteLink(this.checked)">
+            <label class="form-check-label" for="delete_ptr">
+                {% trans %}Also delete corresponding PTR record (if exists){% endtrans %}
+            </label>
+        </div>
+        {% endif %}
+        
         <div class="mt-4">
-            <a href="index.php?page=delete_record&id={{ record_id }}&confirm=1" class="btn btn-danger btn-sm">
+            <a href="index.php?page=delete_record&id={{ record_id }}&confirm=1{% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}&delete_ptr=1{% endif %}" 
+               id="delete_link" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this record{% endtrans %}
             </a>
             <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-secondary btn-sm">
                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this record{% endtrans %}
             </a>
         </div>
+        
+        {% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}
+        <script>
+            function updateDeleteLink(checked) {
+                const deleteLink = document.getElementById('delete_link');
+                const baseUrl = 'index.php?page=delete_record&id={{ record_id }}&confirm=1';
+                
+                if (checked) {
+                    deleteLink.href = baseUrl + '&delete_ptr=1';
+                } else {
+                    deleteLink.href = baseUrl + '&delete_ptr=0';
+                }
+            }
+        </script>
+        {% endif %}
     </div>
 </div>

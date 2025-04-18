@@ -123,8 +123,9 @@ class DeleteRecordController extends BaseController
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
                 $dnsRecord->update_soa_serial($zid);
 
-                // Delete corresponding PTR record if this was an A or AAAA record
-                if ($hasPtrRecord) {
+                // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
+                $delete_ptr = isset($_GET['delete_ptr']) && $_GET['delete_ptr'] === '1';
+                if ($hasPtrRecord && $delete_ptr) {
                     $deletedPtrRecord = $this->reverseRecordCreator->deleteReverseRecord(
                         $record_info['type'],
                         $record_info['content'],
