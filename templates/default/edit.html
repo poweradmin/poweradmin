@@ -286,7 +286,7 @@
             {% endif %}
             {% if r['type'] == "SOA" or r['type'] == "NS" and perm_edit == "own_as_client" %}
             <td class="col-sm-2">{{ r['name'] }}</td>
-            <td class="col-sm-1">{{ r['type'] }}</td>
+            <td class="col-sm-1"><span class="badge {% if r['type'] == 'SOA' %}bg-dark{% elseif r['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ r['type'] }}</span></td>
             <td>{{ r['content'] }}</td>
             <td>-</td>
             <td class="col-sm-1">{{ r['ttl'] }}</td>
@@ -298,21 +298,8 @@
             <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
                                         name="record[{{ r['id'] }}][name]" value="{{ r['name'] }}"></td>
             <td class="col-sm-1">
-                <select id="recordTypeSelect{{ r['id'] }}" class="form-select form-select-sm" name="record[{{ r['id'] }}][type]" onchange="updateContentInput('recordTypeSelect{{ r['id'] }}', 'contentInputContainer{{ r['id'] }}', 'recordContent{{ r['id'] }}')">
-                    {% set found_selected_type = false %}
-                    {% for type_available in types %}
-                    {% if type_available == r['type'] %}
-                    {% set add = "SELECTED" %}
-                    {% set found_selected_type = true %}
-                    {% else %}
-                    {% set add = "" %}
-                    {% endif %}
-                    <option {{ add }} value="{{ type_available }}">{{ type_available }}</option>
-                    {% endfor %}
-                    {% if not found_selected_type %}
-                    <option selected value="{{ r['type'] }}">{{ r['type'] }}</option>
-                    {% endif %}
-                </select>
+                <input type="hidden" name="record[{{ r['id'] }}][type]" value="{{ r['type'] }}">
+                <span class="badge {% if r['type'] == 'A' %}bg-primary{% elseif r['type'] == 'AAAA' %}bg-info{% elseif r['type'] == 'CNAME' %}bg-success{% elseif r['type'] == 'MX' %}bg-warning{% elseif r['type'] == 'TXT' %}bg-secondary{% elseif r['type'] == 'PTR' %}bg-danger{% elseif r['type'] == 'SOA' %}bg-dark{% elseif r['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ r['type'] }}</span>
             </td>
             <td>
                 <div id="contentInputContainer{{ r['id'] }}">
