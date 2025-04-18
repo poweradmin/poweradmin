@@ -156,7 +156,7 @@ class BatchReverseRecordCreator
                     $skipCount++;
                     continue;
                 }
-                
+
                 // Calculate the IP for this host in the network
                 $hostIp = $networkAddress + $i;
                 $ipOctets = [
@@ -371,7 +371,7 @@ class BatchReverseRecordCreator
                     $skipCount++;
                     continue;
                 }
-                
+
                 // Generate a hex value for the last part
                 $hex = dechex($i);
                 $ip = $networkPrefix . '::' . $hex;

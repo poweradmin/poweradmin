@@ -37,6 +37,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
@@ -44,6 +45,7 @@ class DeleteRecordsController extends BaseController
 {
     private LegacyLogger $logger;
     private RecordCommentService $recordCommentService;
+    private ReverseRecordCreator $reverseRecordCreator;
 
     public function __construct(array $request)
     {
@@ -52,6 +54,14 @@ class DeleteRecordsController extends BaseController
         $this->logger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $this->reverseRecordCreator = new ReverseRecordCreator(
+            $this->db,
+            $this->getConfig(),
+            $this->logger,
+            $dnsRecord
+        );
     }
 
     public function run(): void
@@ -83,6 +93,15 @@ class DeleteRecordsController extends BaseController
             if ($zid !== null) {
                 $domain_id = $dnsRecord->recid_to_domid($record_id);
 
+                // Check if this is an A or AAAA record that might have a corresponding PTR record
+                $hasPtrRecord = false;
+                if (
+                    ($record_info['type'] === 'A' || $record_info['type'] === 'AAAA') &&
+                    $this->config->get('interface', 'add_reverse_record', false)
+                ) {
+                    $hasPtrRecord = true;
+                }
+
                 if ($dnsRecord->delete_record($record_id)) {
                     $deleted_count++;
                     $affected_zones[$zid] = true;
@@ -111,6 +130,15 @@ class DeleteRecordsController extends BaseController
                     }
 
                     DnsRecord::delete_record_zone_templ($this->db, $record_id);
+
+                    // Delete corresponding PTR record if this was an A or AAAA record
+                    if ($hasPtrRecord) {
+                        $this->reverseRecordCreator->deleteReverseRecord(
+                            $record_info['type'],
+                            $record_info['content'],
+                            $record_info['name']
+                        );
+                    }
 
                     if (!$dnsRecord->has_similar_records($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
                         $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
@@ -143,9 +171,9 @@ class DeleteRecordsController extends BaseController
 
         if ($deleted_count > 0) {
             if ($deleted_count == 1) {
-                $this->setMessage($messageKey, 'success', _('The record has been deleted successfully.'));
+                $this->setMessage($messageKey, 'success', _('The record has been deleted successfully. Any corresponding PTR records were also removed.'));
             } else {
-                $this->setMessage($messageKey, 'success', sprintf(_('%d records have been deleted successfully.'), $deleted_count));
+                $this->setMessage($messageKey, 'success', sprintf(_('%d records have been deleted successfully. Any corresponding PTR records were also removed.'), $deleted_count));
             }
         } else {
             $this->setMessage($messageKey, 'error', _('No records could be deleted. Please check permissions.'));

@@ -70,7 +70,7 @@ class ReverseRecordCreator
         return $this->createErrorResponse('Failed to create a reverse record due to an unknown error.');
     }
 
-    private function getContentRev($type, $content): ?string
+    public function getContentRev($type, $content): ?string
     {
         if ($type === 'A') {
             $content_array = preg_split("/\./", $content);
@@ -79,6 +79,58 @@ class ReverseRecordCreator
             return DnsRecord::convert_ipv6addr_to_ptrrec($content);
         }
         return null;
+    }
+
+    /**
+     * Find and delete the corresponding PTR record for a given A or AAAA record
+     *
+     * @param string $type Record type (A or AAAA)
+     * @param string $content IP address from A/AAAA record
+     * @param string $name Hostname from A/AAAA record
+     * @return bool True if a matching PTR record was found and deleted
+     */
+    public function deleteReverseRecord($type, $content, $name): bool
+    {
+        if ($type !== 'A' && $type !== 'AAAA') {
+            return false;
+        }
+
+        $contentRev = $this->getContentRev($type, $content);
+        if ($contentRev === null) {
+            return false;
+        }
+
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        // Look for a PTR record pointing to this name
+        $query = "SELECT id, domain_id FROM $records_table 
+                  WHERE type = 'PTR' AND name = ? 
+                  AND (content = ? OR content LIKE ?)";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$contentRev, $name, "$name.%"]);
+
+        $result = $stmt->fetch();
+        if ($result) {
+            $recordId = $result['id'];
+            $domainId = $result['domain_id'];
+
+            $dnsRecord = new DnsRecord($this->db, $this->config);
+            if ($dnsRecord->delete_record($recordId)) {
+                $dnsRecord->update_soa_serial($domainId);
+
+                if ($this->config->get('dnssec', 'enabled')) {
+                    $zone_name = $dnsRecord->get_domain_name_by_id($domainId);
+                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
+                    $dnssecProvider->rectifyZone($zone_name);
+                }
+
+                return true;
+            }
+        }
+
+        return false;
     }
 
     private function addReverseRecord($zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool

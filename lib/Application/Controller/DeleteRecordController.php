@@ -37,6 +37,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
@@ -46,6 +47,7 @@ class DeleteRecordController extends BaseController
 
     private LegacyLogger $logger;
     private RecordCommentService $recordCommentService;
+    private ReverseRecordCreator $reverseRecordCreator;
 
     public function __construct(array $request)
     {
@@ -54,6 +56,14 @@ class DeleteRecordController extends BaseController
         $this->logger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $this->reverseRecordCreator = new ReverseRecordCreator(
+            $this->db,
+            $this->getConfig(),
+            $this->logger,
+            $dnsRecord
+        );
     }
 
     public function run(): void
@@ -74,6 +84,17 @@ class DeleteRecordController extends BaseController
 
         if (isset($_GET['confirm'])) {
             $record_info = $dnsRecord->get_record_from_id($record_id);
+
+            // Check if this is an A or AAAA record that might have a corresponding PTR record
+            $hasPtrRecord = false;
+            $deletedPtrRecord = false;
+            if (
+                ($record_info['type'] === 'A' || $record_info['type'] === 'AAAA') &&
+                $this->config->get('interface', 'add_reverse_record', false)
+            ) {
+                $hasPtrRecord = true;
+            }
+
             if ($dnsRecord->delete_record($record_id)) {
                 if (isset($record_info['prio'])) {
                     $this->logger->log_info(sprintf(
@@ -102,6 +123,15 @@ class DeleteRecordController extends BaseController
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
                 $dnsRecord->update_soa_serial($zid);
 
+                // Delete corresponding PTR record if this was an A or AAAA record
+                if ($hasPtrRecord) {
+                    $deletedPtrRecord = $this->reverseRecordCreator->deleteReverseRecord(
+                        $record_info['type'],
+                        $record_info['content'],
+                        $record_info['name']
+                    );
+                }
+
                 if ($this->config->get('dnssec', 'enabled', false)) {
                     $zone_name = $dnsRecord->get_domain_name_by_id($zid);
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
@@ -110,9 +140,20 @@ class DeleteRecordController extends BaseController
 
                 if (!$dnsRecord->has_similar_records($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
                     $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
-                    $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));
+
+                    if ($deletedPtrRecord) {
+                        $this->setMessage('edit', 'success', _('The record and its corresponding PTR record have been deleted successfully.'));
+                    } elseif ($hasPtrRecord) {
+                        $this->setMessage('edit', 'success', _('The record has been deleted successfully. No matching PTR record was found.'));
+                    } else {
+                        $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));
+                    }
                 } elseif ($this->config->get('interface', 'show_record_comments', false)) {
-                    $this->setMessage('edit', 'warn', _('The record was deleted but the comment was preserved because similar records exist.'));
+                    if ($deletedPtrRecord) {
+                        $this->setMessage('edit', 'warn', _('The record and its corresponding PTR record were deleted but the comment was preserved because similar records exist.'));
+                    } else {
+                        $this->setMessage('edit', 'warn', _('The record was deleted but the comment was preserved because similar records exist.'));
+                    }
                 }
 
                 $this->redirect('index.php', ['page' => 'edit', 'id' => $zid]);
