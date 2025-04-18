@@ -216,5 +216,6 @@ return [
         'timezone' => 'UTC',                           // Default timezone
         'record_comments_sync' => false,               // Enable bidirectional comment sync between A and PTR records (added in 3.9.0)
         'edit_conflict_resolution' => 'last_writer_wins', // Options: 'last_writer_wins', 'only_latest_version', '3_way_merge'
+        'display_errors' => false,                     // Display PHP errors (false for production) (added in 4.0.0)
     ],
 ];
