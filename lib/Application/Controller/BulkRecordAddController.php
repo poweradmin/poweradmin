@@ -83,7 +83,7 @@ class BulkRecordAddController extends BaseController
         $this->checkCondition($zone_type == "SLAVE"
             || $perm_edit == "none"
             || ($perm_edit == "own" || $perm_edit == "own_as_client")
-            && !$user_is_zone_owner, _("You do not have the permission to add records to this zone."));
+            && !$user_is_zone_owner, _('You do not have the permission to add records to this zone.'));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -97,7 +97,7 @@ class BulkRecordAddController extends BaseController
     {
         $constraints = [
             'records' => [
-                new Assert\NotBlank(message: _("Please provide at least one record."))
+                new Assert\NotBlank(message: _('Please provide at least one record.'))
             ]
         ];
 
@@ -125,7 +125,7 @@ class BulkRecordAddController extends BaseController
 
             // Expected format: name,type,content,priority,ttl
             if (count($parts) < 3) {
-                $failed_records[] = $line . " - " . _("Invalid format. Expected at least: name,type,content");
+                $failed_records[] = $line . " - " . _('Invalid format. Expected at least: name,type,content');
                 continue;
             }
 
@@ -167,7 +167,7 @@ class BulkRecordAddController extends BaseController
             $valid_types = $isReverseZone ? RecordType::getReverseZoneTypes($isDnsSecEnabled) : RecordType::getDomainZoneTypes($isDnsSecEnabled);
 
             if (!in_array($type, $valid_types)) {
-                $failed_records[] = $line . " - " . _("Invalid record type.");
+                $failed_records[] = $line . " - " . _('Invalid record type.');
                 continue;
             }
 
@@ -213,7 +213,7 @@ class BulkRecordAddController extends BaseController
                         $prio
                     ), $zone_id);
                 } else {
-                    $failed_records[] = $line . " - " . _("Record could not be added.");
+                    $failed_records[] = $line . " - " . _('Record could not be added.');
                 }
             } catch (\Exception $e) {
                 $failed_records[] = $line . " - " . $e->getMessage();
@@ -255,7 +255,7 @@ class BulkRecordAddController extends BaseController
     {
         $constraints = [
             'id' => [
-                new Assert\NotBlank(message: _("Zone ID is required."))
+                new Assert\NotBlank(message: _('Zone ID is required.'))
             ]
         ];
 

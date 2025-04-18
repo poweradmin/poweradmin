@@ -36,7 +36,7 @@
                         <div class="invalid-feedback">{% trans %}Provide at least one record{% endtrans %}</div>
                         <small class="form-text text-muted">{% trans %}Format: name,type,content,priority,ttl,comment (one record per line){% endtrans %}</small>
                         <small class="form-text text-muted d-block">{% trans %}Example: www,A,192.168.1.1,0,3600,web server{% endtrans %}</small>
-                        <small class="form-text text-muted d-block">{% trans %}Priority and TTL are optional (defaults: priority=0, ttl={{ default_ttl }}){% endtrans %}</small>
+                        <small class="form-text text-muted d-block">{{ 'Priority and TTL are optional (defaults: priority=0, ttl=' | trans }}{{ default_ttl }})</small>
                         <small class="form-text text-muted d-block">{% trans %}Comment is optional{% endtrans %}</small>
                     </div>
 
@@ -83,9 +83,9 @@
                                 <li>AAAA: www,AAAA,2001:db8::1</li>
                                 <li>CNAME: www2,CNAME,www.example.com.</li>
                                 <li>TXT: _acme,TXT,"verification=12345"</li>
-                                <li>MX: @,MX,mail.example.com.,10 <small class="text-muted">(@ will be replaced with the zone name)</small></li>
+                                <li>MX: @,MX,mail.example.com.,10 <small class="text-muted">{{ '(@ will be replaced with the zone name)' | trans }}</small></li>
                                 <li>SPF: @,TXT,"v=spf1 mx a ip4:192.168.0.0/24 ~all"</li>
-                                <li>SRV: _sip._tcp,SRV,sip.example.com.,0,5060,3600 <small class="text-muted">(format: name,type,target,weight,port,ttl)</small></li>
+                                <li>SRV: _sip._tcp,SRV,sip.example.com.,0,5060,3600 <small class="text-muted">{{ '(format: name,type,target,weight,port,ttl)' | trans }}</small></li>
                             </ul>
                         </div>
                     </div>
