@@ -64,7 +64,9 @@ class HttpClient implements ApiClient
         $responseData = json_decode($response, true);
 
         if ($responseCode >= 400) {
-            throw new ApiErrorException($responseData['error'] ?? 'An unknown API error occurred');
+            throw new ApiErrorException(
+                $responseData['error'] ?? sprintf('HTTP Error %d: %s', $responseCode, $response)
+            );
         }
 
         return [
