@@ -146,6 +146,7 @@ class BatchPtrRecordController extends BaseController
         $comment = $_POST['comment'] ?? '';
         $zone_id = isset($_GET['id']) ? (int)$_GET['id'] : 0; // Use 0 when no zone_id is provided
         $ipv6_count = isset($_POST['ipv6_count']) ? (int)$_POST['ipv6_count'] : 256;
+        $createForwardRecords = isset($_POST['create_forward_records']) && $_POST['create_forward_records'] === 'on';
 
         try {
             if ($networkType === 'ipv4') {
@@ -157,7 +158,8 @@ class BatchPtrRecordController extends BaseController
                     $ttl,
                     $prio,
                     $comment,
-                    $_SESSION['userlogin'] ?? ''
+                    $_SESSION['userlogin'] ?? '',
+                    $createForwardRecords
                 );
             } else { // IPv6
                 $result = $this->batchReverseRecordCreator->createIPv6Network(
@@ -169,7 +171,8 @@ class BatchPtrRecordController extends BaseController
                     $prio,
                     $comment,
                     $_SESSION['userlogin'] ?? '',
-                    $ipv6_count
+                    $ipv6_count,
+                    $createForwardRecords
                 );
             }
 
@@ -217,6 +220,7 @@ class BatchPtrRecordController extends BaseController
             'ttl' => $this->config->get('dns', 'ttl', 86400),
             'ipv6_count' => $formData['ipv6_count'] ?? 256,
             'comment' => $formData['comment'] ?? '',
+            'create_forward_records' => $formData['create_forward_records'] ?? '',
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,

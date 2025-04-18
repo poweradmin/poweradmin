@@ -60,6 +60,7 @@ class BatchReverseRecordCreator
      * @param int $prio Priority for the records
      * @param string $comment Optional comment for the records
      * @param string $account Optional account name
+     * @param bool $createForwardRecords Whether to create corresponding A/AAAA records in forward zone
      *
      * @return array Result of the operation
      */
@@ -71,7 +72,8 @@ class BatchReverseRecordCreator
         int $ttl,
         int $prio = 0,
         string $comment = '',
-        string $account = ''
+        string $account = '',
+        bool $createForwardRecords = false
     ): array {
         $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
 
@@ -139,7 +141,7 @@ class BatchReverseRecordCreator
             // Use the first IP in the network range
             $testIpOctets = $octets;
             $testReverseDomain = $this->buildReverseIPv4Domain($testIpOctets, $cidr);
-            $testFqdn = $hostPrefix . '-0.' . $domain;
+            $testFqdn = $hostPrefix . '0.' . $domain;
 
             // Get the reverse zone ID
             $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($testReverseDomain);
@@ -149,6 +151,12 @@ class BatchReverseRecordCreator
 
             // If we get here, the reverse zone exists, so proceed with creating all records
             for ($i = 0; $i < $hostCount; $i++) {
+                // Skip network address (0) and broadcast address (last IP in range)
+                if ($i === 0 || $i === $hostCount - 1) {
+                    $skipCount++;
+                    continue;
+                }
+                
                 // Calculate the IP for this host in the network
                 $hostIp = $networkAddress + $i;
                 $ipOctets = [
@@ -162,7 +170,7 @@ class BatchReverseRecordCreator
 
                 // Generate hostname based on whether host prefix is provided
                 if (!empty($hostPrefix)) {
-                    $name = $hostPrefix . '-' . $i;
+                    $name = $hostPrefix . $i;
                     $fqdn = $name . '.' . $domain;
                 } else {
                     // If no host prefix, use just the IP address as the hostname
@@ -191,6 +199,28 @@ class BatchReverseRecordCreator
 
                 try {
                     $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ttl, $prio, $comment, $account);
+
+                    // Create forward A record if requested
+                    if ($result && $createForwardRecords) {
+                        // Find or get domain ID for the forward zone
+                        $forward_domain_id = $this->dnsRecord->get_domain_id_by_name($domain);
+                        if ($forward_domain_id) {
+                            // Create the hostname for the A record
+                            $hostname = !empty($hostPrefix) ? $hostPrefix . $i . '.' . $domain : $domain;
+
+                            // Check if the record already exists
+                            if (!$this->dnsRecord->record_exists($forward_domain_id, $hostname, 'A', $ip)) {
+                                try {
+                                    // Add the A record
+                                    $this->dnsRecord->add_record($forward_domain_id, $hostname, 'A', $ip, $ttl, $prio);
+                                } catch (\Exception $e) {
+                                    // Don't stop execution for forward record failures
+                                    $errors[] = "Failed to create forward A record for $ip: " . $e->getMessage();
+                                }
+                            }
+                        }
+                    }
+
                     if ($result) {
                         $successCount++;
                     } else {
@@ -238,6 +268,7 @@ class BatchReverseRecordCreator
      * @param string $comment Optional comment for the records
      * @param string $account Optional account name
      * @param int $count Number of records to create (default 256)
+     * @param bool $createForwardRecords Whether to create corresponding A/AAAA records in forward zone
      *
      * @return array Result of the operation
      */
@@ -250,7 +281,8 @@ class BatchReverseRecordCreator
         int $prio = 0,
         string $comment = '',
         string $account = '',
-        int $count = 256
+        int $count = 256,
+        bool $createForwardRecords = false
     ): array {
         $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
 
@@ -290,7 +322,7 @@ class BatchReverseRecordCreator
             // Add support for known IPv6 reverse zone format
             $hardcodedZone = '0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
 
-            $testFqdn = $hostPrefix . '-0.' . $domain;
+            $testFqdn = $hostPrefix . '0.' . $domain;
 
             // Try all methods to get the reverse zone ID
             $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($testReverseDomain);
@@ -334,13 +366,19 @@ class BatchReverseRecordCreator
 
             // If we get here, the reverse zone exists, so proceed with creating all records
             for ($i = 0; $i < $count; $i++) {
+                // Skip 0 for IPv6 as well (equivalent to network address)
+                if ($i === 0) {
+                    $skipCount++;
+                    continue;
+                }
+                
                 // Generate a hex value for the last part
                 $hex = dechex($i);
                 $ip = $networkPrefix . '::' . $hex;
 
                 // Generate hostname based on whether host prefix is provided
                 if (!empty($hostPrefix)) {
-                    $name = $hostPrefix . '-' . $hex;
+                    $name = $hostPrefix . $hex;
                     $fqdn = $name . '.' . $domain;
                 } else {
                     // If no host prefix, use just the domain
@@ -392,6 +430,28 @@ class BatchReverseRecordCreator
 
                 try {
                     $result = $this->addReverseRecord($zone_id, $reverseDomain, $fqdn, $ttl, $prio, $comment, $account);
+
+                    // Create forward AAAA record if requested
+                    if ($result && $createForwardRecords) {
+                        // Find or get domain ID for the forward zone
+                        $forward_domain_id = $this->dnsRecord->get_domain_id_by_name($domain);
+                        if ($forward_domain_id) {
+                            // Create the hostname for the AAAA record
+                            $hostname = !empty($hostPrefix) ? $hostPrefix . $hex . '.' . $domain : $domain;
+
+                            // Check if the record already exists
+                            if (!$this->dnsRecord->record_exists($forward_domain_id, $hostname, 'AAAA', $ip)) {
+                                try {
+                                    // Add the AAAA record
+                                    $this->dnsRecord->add_record($forward_domain_id, $hostname, 'AAAA', $ip, $ttl, $prio);
+                                } catch (\Exception $e) {
+                                    // Don't stop execution for forward record failures
+                                    $errors[] = "Failed to create forward AAAA record for $ip: " . $e->getMessage();
+                                }
+                            }
+                        }
+                    }
+
                     if ($result) {
                         $successCount++;
                     } else {

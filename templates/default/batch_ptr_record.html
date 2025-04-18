@@ -76,6 +76,11 @@
                     </div>
                     {% endif %}
 
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" id="create_forward_records" name="create_forward_records" class="form-check-input" {% if create_forward_records == 'on' %}checked{% endif %}>
+                        <label for="create_forward_records" class="form-check-label">{% trans %}Create forward A/AAAA records in primary zone{% endtrans %}</label>
+                    </div>
+
                     <div class="mb-3">
                         <button type="submit" class="btn btn-sm btn-primary">{% trans %}Create PTR Records{% endtrans %}</button>
                         {% if has_zone_id %}
