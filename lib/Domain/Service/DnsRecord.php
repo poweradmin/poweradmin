@@ -731,14 +731,22 @@ class DnsRecord
                         $hm = $dns_hostmaster;
                         $ttl = $dns_ttl;
 
+                        // Get SOA parameters from config
+                        $soa_refresh = $this->config->get('dns', 'soa_refresh', 28800);
+                        $soa_retry = $this->config->get('dns', 'soa_retry', 7200);
+                        $soa_expire = $this->config->get('dns', 'soa_expire', 604800);
+                        $soa_minimum = $this->config->get('dns', 'soa_minimum', 86400);
+
                         $this->set_timezone();
                         $serial = date("Ymd") . "00";
-                        $dns_soa = $this->config->get('dns', 'soa');
+
+                        // Construct complete SOA record with all parameters
+                        $soa_content = "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
 
                         $query = "INSERT INTO $records_table (domain_id, name, content, type, ttl, prio) VALUES ("
                             . $db->quote($domain_id, 'integer') . ","
                             . $db->quote($domain, 'text') . ","
-                            . $db->quote($ns1 . ' ' . $hm . ' ' . $serial . ' ' . $dns_soa, 'text') . ","
+                            . $db->quote($soa_content, 'text') . ","
                             . $db->quote('SOA', 'text') . ","
                             . $db->quote($ttl, 'integer') . ","
                             . $db->quote(0, 'integer') . ")";

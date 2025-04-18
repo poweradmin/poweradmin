@@ -695,6 +695,12 @@ class ZoneTemplate
         $dns_ns4 = $this->config->get('dns', 'ns4');
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
 
+        // Get SOA parameters for SOA records
+        $soa_refresh = $this->config->get('dns', 'soa_refresh', 28800);
+        $soa_retry = $this->config->get('dns', 'soa_retry', 7200);
+        $soa_expire = $this->config->get('dns', 'soa_expire', 604800);
+        $soa_minimum = $this->config->get('dns', 'soa_minimum', 86400);
+
         $serial = date("Ymd");
         $serial .= "00";
 
@@ -704,6 +710,23 @@ class ZoneTemplate
         $val = str_replace('[NS2]', $dns_ns2, $val);
         $val = str_replace('[NS3]', $dns_ns3, $val);
         $val = str_replace('[NS4]', $dns_ns4, $val);
-        return str_replace('[HOSTMASTER]', $dns_hostmaster, $val);
+        $val = str_replace('[HOSTMASTER]', $dns_hostmaster, $val);
+
+        // Add SOA value placeholders
+        $val = str_replace('[SOA_REFRESH]', $soa_refresh, $val);
+        $val = str_replace('[SOA_RETRY]', $soa_retry, $val);
+        $val = str_replace('[SOA_EXPIRE]', $soa_expire, $val);
+        $val = str_replace('[SOA_MINIMUM]', $soa_minimum, $val);
+
+        // Check if this is an SOA record that's missing the SOA parameters
+        if (strpos($val, 'SOA') !== false) {
+            $parts = explode(' ', $val);
+            // If we have an SOA record but it only has 3 parts (ns, hostmaster, serial), add the missing SOA parameters
+            if (count($parts) == 3) {
+                $val .= " $soa_refresh $soa_retry $soa_expire $soa_minimum";
+            }
+        }
+
+        return $val;
     }
 }
