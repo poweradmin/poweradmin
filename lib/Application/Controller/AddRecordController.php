@@ -144,15 +144,31 @@ class AddRecordController extends BaseController
         $zone_id = (int)$_GET['id'];
 
         if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
-            $this->setMessage('edit', 'error', _('This record was not valid and could not be added.'));
+            // Check if there are system errors to display
+            $systemErrors = $this->getSystemErrors();
+            if (!empty($systemErrors)) {
+                $this->setMessage('edit', 'error', end($systemErrors));
+            } else {
+                $this->setMessage('edit', 'error', _('This record was not valid and could not be added. It may already exist or contain invalid data.'));
+            }
             $this->redirect('index.php?page=edit&id=' . $zone_id);
             return;
         }
 
         if (isset($_POST['reverse'])) {
-            $reverseRecord = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
-            $message = $reverseRecord ? _('Record successfully added. A matching PTR record was also created.') : _('The record was successfully added.');
-            $this->setMessage('edit', 'success', $message);
+            $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+
+            if ($reverseResult && isset($reverseResult['success']) && $reverseResult['success']) {
+                $message = _('Record successfully added. A matching PTR record was also created.');
+                $this->setMessage('edit', 'success', $message);
+            } elseif ($reverseResult && isset($reverseResult['success']) && !$reverseResult['success'] && isset($reverseResult['message'])) {
+                // Reverse record creation failed with a specific message
+                $message = _('Record successfully added, but PTR record creation failed: ') . $reverseResult['message'];
+                $this->setMessage('edit', 'warning', $message);
+            } else {
+                // Reverse record creation failed without a specific message
+                $this->setMessage('edit', 'success', _('The record was successfully added, but PTR record creation failed.'));
+            }
         } elseif (isset($_POST['create_domain_record'])) {
             $domainRecord = $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
             $message = $domainRecord ? _('Record successfully added. A matching A record was also created.') : _('The record was successfully added.');
@@ -227,7 +243,7 @@ class AddRecordController extends BaseController
         );
     }
 
-    private function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment): bool
+    private function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment): array
     {
         $result = $this->reverseRecordCreator->createReverseRecord(
             $name,
@@ -240,12 +256,11 @@ class AddRecordController extends BaseController
             $_SESSION['userlogin']
         );
 
-        if ($result['success']) {
-            return true;
-        } else {
+        if (isset($result['success']) && !$result['success']) {
             $this->setMessage('add_record', 'error', $result['message']);
-            return false;
         }
+
+        return $result;
     }
 
     private function createDomainRecord(string $name, string $type, string $content, string $zone_id, string $comment): bool

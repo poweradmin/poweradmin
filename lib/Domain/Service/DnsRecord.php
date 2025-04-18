@@ -454,8 +454,15 @@ class DnsRecord
             return false;
         }
 
-        $this->db->beginTransaction();
         $name = strtolower($name); // powerdns only searches for lower case records
+
+        // Check if a record with the same name, type, and content already exists
+        if ($this->record_exists($zone_id, $name, $type, $content)) {
+            $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
+            return false;
+        }
+
+        $this->db->beginTransaction();
 
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';

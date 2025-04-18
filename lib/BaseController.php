@@ -541,4 +541,24 @@ abstract class BaseController
         header("Location: $sanitizeUrl");
         exit;
     }
+
+    /**
+     * Gets system errors from the MessageService
+     *
+     * @return array System errors
+     */
+    public function getSystemErrors(): array
+    {
+        $messages = $this->messageService->getMessages('system');
+        if ($messages) {
+            $errors = [];
+            foreach ($messages as $message) {
+                if ($message['type'] === 'error') {
+                    $errors[] = $message['content'];
+                }
+            }
+            return $errors;
+        }
+        return [];
+    }
 }

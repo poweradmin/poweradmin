@@ -61,6 +61,14 @@ class ReverseRecordCreator
             return $this->createErrorResponse(sprintf(_('There is no matching reverse-zone for: %s.'), $contentRev));
         }
 
+        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
+        $fqdn_name = sprintf("%s.%s", $name, $zone_name);
+
+        // Check for duplicate PTR record before attempting to add
+        if ($this->ptrRecordExists($zoneRevId, $contentRev, $fqdn_name)) {
+            return $this->createErrorResponse(sprintf(_('A PTR record for %s pointing to %s already exists.'), $contentRev, $fqdn_name));
+        }
+
         $isRecordAdded = $this->addReverseRecord($zone_id, $zoneRevId, $name, $contentRev, $ttl, $prio, $comment, $account);
 
         if ($isRecordAdded) {
@@ -138,6 +146,8 @@ class ReverseRecordCreator
         $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
         $fqdn_name = sprintf("%s.%s", $name, $zone_name);
 
+        // Duplicate check moved to the main createReverseRecord method
+
         if ($this->dnsRecord->add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
             $this->logger->log_info(sprintf(
                 'client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
@@ -176,5 +186,34 @@ class ReverseRecordCreator
             'type' => 'error',
             'message' => $message,
         ];
+    }
+
+    /**
+     * Check if an identical PTR record already exists
+     *
+     * @param int $zone_id Domain ID
+     * @param string $name Record name
+     * @param string $content Record content
+     * @return bool True if identical record exists
+     */
+    private function ptrRecordExists(int $zone_id, string $name, string $content): bool
+    {
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $query = "SELECT COUNT(*) FROM $records_table 
+                  WHERE domain_id = :zone_id 
+                  AND name = :name 
+                  AND type = 'PTR' 
+                  AND content = :content";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([
+            ':zone_id' => $zone_id,
+            ':name' => $name,
+            ':content' => $content
+        ]);
+
+        return (int)$stmt->fetchColumn() > 0;
     }
 }
