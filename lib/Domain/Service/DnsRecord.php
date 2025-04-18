@@ -634,7 +634,23 @@ class DnsRecord
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
             if ($record['type'] == "SOA") {
-                $this->messageService->addSystemError(_('You are trying to delete the SOA record. You are not allowed to remove it, unless you remove the entire zone.'));
+                // SOA record deletion is based on permissions
+                // Own_as_client users cannot delete SOA records
+                if ($perm_edit == "own_as_client") {
+                    $this->messageService->addSystemError(_('You do not have the permission to delete SOA records.'));
+                    return false;
+                }
+                
+                // Admins and regular zone owners can delete SOA records
+                $pdns_db_name = $this->config->get('database', 'pdns_name');
+                $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+                
+                $query = "DELETE FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
+                $this->db->query($query);
+                return true;
+            } elseif ($record['type'] == "NS" && $perm_edit == "own_as_client") {
+                // Users with own_as_client permission cannot delete NS records
+                $this->messageService->addSystemError(_('You do not have the permission to delete NS records.'));
                 return false;
             } else {
                 $pdns_db_name = $this->config->get('database', 'pdns_name');
