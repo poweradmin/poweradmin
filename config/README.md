@@ -34,7 +34,7 @@ This directory contains the configuration files for Poweradmin.
 If you're migrating from an earlier version of Poweradmin that used `inc/config.inc.php`, you can use the migration script:
 
 ```
-php scripts/migrate-config.php
+php config/migrate-config.php
 ```
 
 This will:
@@ -42,11 +42,30 @@ This will:
 2. Convert it to the new format
 3. Save it as `config/settings.php`
 
-Important migration notes:
-- UI style values have changed from 'ignite'/'spark' to 'light'/'dark'
-- Some parameters have been renamed (e.g., database collation settings)
+### Important Migration Notes
 
-It is recommended to migrate to the new configuration format as soon as possible, as support for the old format will be completely removed in the next major release.
+#### Prerequisites
+- The script requires a valid `inc/config.inc.php` file to exist (it will not use config-defaults.inc.php)
+- The script must be run from the command line for security reasons
+
+#### Migration Process
+1. The script reads your existing old configuration from `inc/config.inc.php`
+2. It converts only settings that were present in your old configuration file
+3. New features that didn't exist in the old configuration use defaults from settings.defaults.php
+4. The migrated configuration is saved to `config/settings.php` in a readable format
+5. You have the option to back up your old configuration file
+
+#### Key Conversions
+- **Theme/Style**: Old style values are converted to the new format:
+  - 'ignite' → 'light'
+  - 'spark' → 'dark'
+  - Any other value will default to 'light'
+- **Templates**: The theme is always set to 'default', with the template path preserved
+- **SOA Settings**: The combined SOA string (e.g., '28800 7200 604800 86400') is split into individual settings:
+  - refresh, retry, expire, minimum
+- **New Features**: Password policies, account lockout settings, mail configuration, and record types all use the defaults from settings.defaults.php
+
+It is recommended to migrate to the new configuration format as soon as possible, as support for the old format will be completely removed in the next major release. After migration, both configuration formats will work in version 4.0.0, but future versions will only support the new format.
 
 ## Configuration Structure
 
