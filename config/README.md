@@ -42,22 +42,26 @@ This will:
 2. Convert it to the new format
 3. Save it as `config/settings.php`
 
+Important migration notes:
+- UI style values have changed from 'ignite'/'spark' to 'light'/'dark'
+- Some parameters have been renamed (e.g., database collation settings)
+
 It is recommended to migrate to the new configuration format as soon as possible, as support for the old format will be completely removed in the next major release.
 
 ## Configuration Structure
 
 The configuration is organized into logical groups:
 
-- `database`: Database connection settings
-- `security`: Security-related settings
-- `interface`: User interface settings
-- `dns`: DNS-related settings
-- `mail`: Email configuration
-- `dnssec`: DNSSEC settings
-- `pdns_api`: PowerDNS API configuration
-- `logging`: Logging settings
-- `ldap`: LDAP authentication settings
-- `misc`: Miscellaneous settings
+- `database`: Database connection settings (host, port, user, password, name, type, charset, collation)
+- `security`: Security-related settings (session_key, password_encryption, password_policy, account_lockout)
+- `interface`: User interface settings (language, theme, style, rows_per_page, UI elements)
+- `dns`: DNS-related settings (nameservers, TTL, SOA defaults, validation settings)
+- `mail`: Email configuration (SMTP, sendmail options, templates)
+- `dnssec`: DNSSEC settings (note: the 'command' parameter will be deprecated in the future)
+- `pdns_api`: PowerDNS API configuration (url, key)
+- `logging`: Logging settings (type, level, database_enabled, syslog options)
+- `ldap`: LDAP authentication settings (uri, base_dn, attributes, filters)
+- `misc`: Miscellaneous settings (timezone, stats display, experimental features)
 
 ## Example
 
@@ -70,12 +74,15 @@ The configuration is organized into logical groups:
     'password' => 'your_secure_password',
     'name' => 'powerdns',
     'type' => 'mysql',
+    'charset' => 'utf8',
+    'collation' => 'utf8_general_ci',
 ],
 
 // Interface settings
 'interface' => [
     'language' => 'en_EN',
-    'theme' => 'ignite',
+    'theme' => 'default',
+    'style' => 'dark', // Options: 'light', 'dark' (old config used 'ignite'/'spark')
     'rows_per_page' => 15,
 ],
 ```
