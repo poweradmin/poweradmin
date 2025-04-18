@@ -23,6 +23,7 @@
 namespace Poweradmin\Infrastructure\Api;
 
 use Poweradmin\Domain\Error\ApiErrorException;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class HttpClient implements ApiClient
 {
@@ -57,16 +58,26 @@ class HttpClient implements ApiClient
 
         if ($response === false) {
             $error = error_get_last();
-            throw new ApiErrorException($error['message'] ?? 'An unknown API error occurred');
+            $displayErrors = $this->shouldDisplayErrors();
+
+            $errorMessage = $displayErrors
+                ? ($error['message'] ?? 'Error fetching API response')
+                : 'An unknown API error occurred';
+
+            throw new ApiErrorException($errorMessage);
         }
 
         $responseCode = $this->getResponseCode($http_response_header);
         $responseData = json_decode($response, true);
 
         if ($responseCode >= 400) {
-            throw new ApiErrorException(
-                $responseData['error'] ?? sprintf('HTTP Error %d: %s', $responseCode, $response)
-            );
+            $displayErrors = $this->shouldDisplayErrors();
+
+            $errorMessage = $responseData['error'] ?? ($displayErrors
+                ? sprintf('HTTP Error %d: %s', $responseCode, $response)
+                : 'An unknown API error occurred');
+
+            throw new ApiErrorException($errorMessage);
         }
 
         return [
@@ -83,5 +94,11 @@ class HttpClient implements ApiClient
         }
 
         return null;
+    }
+
+    private function shouldDisplayErrors(): bool
+    {
+        $configManager = ConfigurationManager::getInstance();
+        return (bool)$configManager->get('misc', 'display_errors');
     }
 }
