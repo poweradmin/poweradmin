@@ -33,8 +33,8 @@ class LocaleManagerTest extends TestCase
 
     public function testSetsLocaleWhenSupportedLocaleProvided()
     {
-        $this->localeManager->setLocale('fr_FR');
-        $this->assertEquals('fr_FR.UTF-8', setlocale(LC_ALL, 0));
+        $this->localeManager->setLocale('en_EN');
+        $this->assertEquals('en_EN.UTF-8', setlocale(LC_ALL, 0));
     }
 
     public function testDoesNotSetLocaleWhenUnsupportedLocaleProvided()
