@@ -235,4 +235,43 @@ class ConfigurationManagerTest extends TestCase
         $this->assertTrue($newConfig['dnssec']['enabled']);
         $this->assertTrue($newConfig['logging']['syslog_enabled']);
     }
+
+    /**
+     * Test if theme path configuration settings are loaded and accessible correctly
+     * This test verifies the specific configuration that caused the issue in the bug report
+     */
+    public function testThemeConfigurationSettings()
+    {
+        // Mock the configuration manager with the default settings (problematic)
+        $this->mockConfigurationManager([
+            'interface' => [
+                'theme' => 'default',
+                'style' => 'light',
+                'theme_base_path' => 'templates',
+            ]
+        ]);
+
+        $config = ConfigurationManager::getInstance();
+
+        // Verify the default configuration values that caused the issue
+        $this->assertEquals('templates', $config->get('interface', 'theme_base_path'));
+        $this->assertEquals('default', $config->get('interface', 'theme'));
+        $this->assertEquals('light', $config->get('interface', 'style'));
+
+        // Mock the configuration manager with the fixed settings
+        $this->mockConfigurationManager([
+            'interface' => [
+                'theme' => 'default',
+                'style' => 'light',
+                'theme_base_path' => 'templates/default',
+            ]
+        ]);
+
+        $config = ConfigurationManager::getInstance();
+
+        // Verify the fixed configuration values
+        $this->assertEquals('templates/default', $config->get('interface', 'theme_base_path'));
+        $this->assertEquals('default', $config->get('interface', 'theme'));
+        $this->assertEquals('light', $config->get('interface', 'style'));
+    }
 }
