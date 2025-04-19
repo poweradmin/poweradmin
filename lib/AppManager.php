@@ -64,7 +64,9 @@ class AppManager
         $theme_base_path = $this->configuration->get('interface', 'theme_base_path', 'templates');
         $theme = $this->configuration->get('interface', 'theme', 'default');
         $theme_path = $theme_base_path . '/' . $theme;
-        $loader = new FilesystemLoader([$theme_path, $theme_base_path . '/default']);
+
+        // Look directly in the theme path for templates, not in subdirectories
+        $loader = new FilesystemLoader([$theme_path]);
         $this->templateRenderer = new Environment($loader, ['debug' => false]);
 
         if ($this->configuration->get('misc', 'display_stats', false)) {

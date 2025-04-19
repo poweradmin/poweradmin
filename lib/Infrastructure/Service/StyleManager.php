@@ -42,6 +42,12 @@ class StyleManager
         $this->themeBasePath = $themeBasePath;
         $this->themeName = $themeName;
         $this->styleDir = $themeBasePath . '/' . $themeName . '/style';
+
+        // Make sure we're looking in the correct directory
+        if (!file_exists($this->styleDir) && $themeBasePath === 'templates' && $themeName === 'default') {
+            $this->styleDir = $themeBasePath . '/' . $themeName . '/style';
+        }
+
         $this->availableStyles = $this->getAvailableStyles();
 
         $styleFromCookie = $this->getStyleFromCookie();

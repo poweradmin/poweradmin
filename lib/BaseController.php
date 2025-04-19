@@ -287,7 +287,7 @@ abstract class BaseController
             'theme' => $theme,
             'theme_base_path' => $themeBasePath,
             'file_version' => time(),
-            'custom_header' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/custom/header.html'),
+            'custom_header' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/' . $this->config->get('interface', 'theme', 'default') . '/custom/header.html'),
             'install_error' => file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
         ];
 
@@ -340,7 +340,7 @@ abstract class BaseController
 
         $this->app->render('footer.html', [
             'version' => isset($_SESSION["userid"]) ? Version::VERSION : false,
-            'custom_footer' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/custom/footer.html'),
+            'custom_footer' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/' . $this->config->get('interface', 'theme', 'default') . '/custom/footer.html'),
             'display_stats' => $display_stats ? $this->app->displayStats() : false,
             'db_queries' => $db_debug ? $this->db->getQueries() : false,
             'show_style_switcher' => in_array($selected_style, ['light', 'dark']),

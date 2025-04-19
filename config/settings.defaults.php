@@ -1,7 +1,8 @@
 <?php
+
 /**
  * Poweradmin Settings Configuration File
- * 
+ *
  * Copy this file to settings.php and modify to customize your installation.
  * This file contains all configuration settings that override defaults.
  */
@@ -71,7 +72,7 @@ return [
         'theme' => 'default',                 // Theme name to use (default, custom, etc.) (added in 4.0.0)
         'style' => 'light',                   // UI Style options: 'light', 'dark' (added in 4.0.0)
         'theme_base_path' => 'templates',     // Base path for theme templates (added in 4.0.0)
-        
+
         // UI Element Settings
         'show_record_id' => true,             // Show record ID column in edit mode (added in 3.9.0)
         'position_record_form_top' => false,  // Position the "Add record" form at the top of the page (added in 3.9.0)
@@ -81,7 +82,7 @@ return [
         'display_serial_in_zone_list' => false,
         'display_template_in_zone_list' => false,
         'search_group_records' => false,      // Group records by name and content in search results (added in 3.8.0)
-        
+
         // Zone Editing Features
         'add_reverse_record' => true,         // Enable checkbox to add PTR record from regular zone view (added in 2.1.7)
         'add_domain_record' => true,          // Enable checkbox to add A/AAAA record from reverse zone view
@@ -98,15 +99,15 @@ return [
         'ns3' => '',
         'ns4' => '',
         'ttl' => 86400,                            // Default TTL for new records (86400 = 24 hours)
-        
+
         // SOA Record Settings
         'soa_refresh' => 28800,                    // 8 hours
         'soa_retry' => 7200,                       // 2 hours
         'soa_expire' => 604800,                    // 1 week
         'soa_minimum' => 86400,                    // 24 hours (SOA settings added in 2.2.3)
-        
+
         'zone_type_default' => 'MASTER',           // Options: 'MASTER', 'NATIVE' (added in 2.1.9)
-        
+
         // Validation Settings
         'strict_tld_check' => false,               // Strict validation of TLDs
         'top_level_tld_check' => false,            // Prevent creation of top-level domains (added in 2.1.7)
@@ -156,7 +157,7 @@ return [
         'email_signature' => 'DNS Admin',
         'email_title' => 'Your DNS Account Information'
     ],
-    
+
     /**
      * DNSSEC Settings
      */
@@ -165,7 +166,7 @@ return [
         'debug' => false,                          // Enable DNSSEC debug logging (added in 2.1.9)
         'command' => '/usr/bin/pdnsutil',          // Path to pdnsutil command (added in 2.1.7, will be deprecated)
     ],
-    
+
     /**
      * PowerDNS API Settings
      */
@@ -173,7 +174,7 @@ return [
         'url' => '',                               // PowerDNS API URL, e.g., 'http://127.0.0.1:8081' (added in 3.7.0)
         'key' => '',                               // PowerDNS API key (added in 3.7.0)
     ],
-    
+
     /**
      * Logging Settings
      */
@@ -181,13 +182,13 @@ return [
         'type' => 'null',                          // Options: 'null', 'native' (added in 3.9.0)
         'level' => 'info',                         // Options: 'debug', 'info', 'notice', 'warning', 'error', 'critical', 'alert', 'emergency' (added in 3.9.0)
         'database_enabled' => false,               // Enable logging zone and record changes to the database (added in 3.2.0)
-        
+
         // Syslog Settings
         'syslog_enabled' => false,                 // Write authentication attempts to syslog (added in 2.1.6)
         'syslog_identity' => 'poweradmin',         // Syslog identity (added in 2.1.6)
         'syslog_facility' => LOG_USER,             // Syslog facility (added in 2.1.6)
     ],
-    
+
     /**
      * LDAP Settings
      */
@@ -207,7 +208,7 @@ return [
         // '(objectClass=person)(memberOf=cn=admins,ou=groups,dc=poweradmin,dc=org)'
         // '(cn=*admin*)'
     ],
-    
+
     /**
      * Miscellaneous Settings
      */

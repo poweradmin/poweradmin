@@ -640,11 +640,11 @@ class DnsRecord
                     $this->messageService->addSystemError(_('You do not have the permission to delete SOA records.'));
                     return false;
                 }
-                
+
                 // Admins and regular zone owners can delete SOA records
                 $pdns_db_name = $this->config->get('database', 'pdns_name');
                 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-                
+
                 $query = "DELETE FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
                 $this->db->query($query);
                 return true;
