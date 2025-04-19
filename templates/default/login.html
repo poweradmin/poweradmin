@@ -4,37 +4,41 @@
 </div>
 {% endif %}
 
-<h5>{% trans %}Log in{% endtrans %}</h5>
-<form class="needs-validation" method="post" action="index.php" novalidate>
-    <input type="hidden" name="_token" value="{{ login_token }}">
-    <input type="hidden" name="query_string" value="{{ query_string }}">
-    <div class="row g-2 col-sm-4 col-md-6 col-lg-4">
-        <div class="col-12">
-            <label for="username" class="form-label">{% trans %}Username{% endtrans %}</label>
-            <input type="text" data-testid="username-input" class="form-control form-control-sm" id="username" name="username" required>
-            <div data-testid="username-error" class="invalid-feedback">{% trans %}Please provide a username{% endtrans %}</div>
-        </div>
-        <div class="col-12">
-            <label for="password" class="form-label">{% trans %}Password{% endtrans %}</label>
-            <div class="input-group">
-                <input type="password" data-testid="password-input" class="form-control form-control-sm" id="password" name="password" required>
-                <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
-                <div data-testid="password-error" class="invalid-feedback">{% trans %}Please provide a password{% endtrans %}</div>
-            </div>
-        </div>
-        {% if show_language_selector %}
-        <div class="col-12">
-            <label for="language" class="form-label">{% trans %}Language{% endtrans %}</label>
-            <select class="form-select form-select-sm" id="language" name="userlang">
-                {{ locale_options | raw }}
-            </select>
-        </div>
-        {% endif %}
-        <div class="col-12">
-            <input type="submit" data-testid="login-button" name="authenticate" class="btn btn-primary btn-sm" value=" {% trans %}Go{% endtrans %} ">
-        </div>
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h5 class="mb-0">{% trans %}Log in{% endtrans %}</h5>
     </div>
-</form>
+    <div class="card-body p-4">
+        <form class="needs-validation" method="post" action="index.php" novalidate>
+            <input type="hidden" name="_token" value="{{ login_token }}">
+            <input type="hidden" name="query_string" value="{{ query_string }}">
+            <div class="mb-3">
+                <label for="username" class="form-label">{% trans %}Username{% endtrans %}</label>
+                <input type="text" data-testid="username-input" class="form-control" id="username" name="username" required>
+                <div data-testid="username-error" class="invalid-feedback">{% trans %}Please provide a username{% endtrans %}</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">{% trans %}Password{% endtrans %}</label>
+                <div class="input-group">
+                    <input type="password" data-testid="password-input" class="form-control" id="password" name="password" required>
+                    <button class="btn btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
+                    <div data-testid="password-error" class="invalid-feedback">{% trans %}Please provide a password{% endtrans %}</div>
+                </div>
+            </div>
+            {% if show_language_selector %}
+            <div class="mb-3">
+                <label for="language" class="form-label">{% trans %}Language{% endtrans %}</label>
+                <select class="form-select" id="language" name="userlang">
+                    {{ locale_options | raw }}
+                </select>
+            </div>
+            {% endif %}
+            <div class="d-grid">
+                <button type="submit" data-testid="login-button" name="authenticate" class="btn btn-secondary">{% trans %}Log in{% endtrans %}</button>
+            </div>
+        </form>
+    </div>
+</div>
 <script type="text/javascript">
     <!--
     document.getElementById('username').focus();

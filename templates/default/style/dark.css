@@ -11,6 +11,7 @@
     --border-dark: #373b3e;
     --primary-blue: #0d6efd;
     --input-border: #ced4da;
+    --card-shadow: rgba(0, 0, 0, 0.2);
 }
 
 /* Base layout */
@@ -205,6 +206,39 @@ table tfoot tr td,
     background-color: var(--bg-dark-accent);
     border: 1px solid var(--border-dark) !important;
     color: var(--text-light);
+    box-shadow: 0 0.5rem 1rem var(--card-shadow);
+}
+
+/* Login form specific styles */
+.card.shadow-sm {
+    max-width: 450px;
+    margin: 2rem auto;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    background-color: var(--bg-dark-accent);
+}
+
+.card-header {
+    padding: 1.25rem;
+    background-color: var(--bg-dark-secondary) !important;
+    border-bottom: 1px solid var(--border-dark) !important;
+}
+
+.card-header h5 {
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.btn-secondary {
+    padding: 0.6rem;
+    font-weight: 500;
+    transition: all 0.2s ease-in-out;
+    background-color: #6c757d;
+}
+
+.btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
 }
 
 /* Search icon in dark mode */
