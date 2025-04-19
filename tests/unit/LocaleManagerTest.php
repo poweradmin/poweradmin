@@ -31,11 +31,11 @@ class LocaleManagerTest extends TestCase
         ini_set('error_log', $this->originalLogDestination);
     }
 
-//    public function testSetsLocaleWhenSupportedLocaleProvided()
-//    {
-//        $this->localeManager->setLocale('fr_FR');
-//        $this->assertEquals('fr_FR.UTF-8', setlocale(LC_ALL, 0));
-//    }
+    public function testSetsLocaleWhenSupportedLocaleProvided()
+    {
+        $this->localeManager->setLocale('fr_FR');
+        $this->assertEquals('fr_FR.UTF-8', setlocale(LC_ALL, 0));
+    }
 
     public function testDoesNotSetLocaleWhenUnsupportedLocaleProvided()
     {
