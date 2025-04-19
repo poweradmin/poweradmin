@@ -1819,7 +1819,7 @@ msgstr ""
 
 #: templates/default/login.html:7
 msgid "Log in"
-msgstr "Log in"
+msgstr "Se connecter"
 
 #: templates/default/login.html:15
 msgid "Please provide a username"
@@ -1831,11 +1831,11 @@ msgstr "Please provide a password"
 
 #: templates/default/login.html:27
 msgid "Language"
-msgstr "Language"
+msgstr "Langue"
 
 #: templates/default/login.html:34
 msgid "Go"
-msgstr "Go"
+msgstr "Connexion"
 
 #: templates/default/batch_ptr_record.html:27
 msgid "Create multiple PTR (reverse DNS) records at once for an IP range"

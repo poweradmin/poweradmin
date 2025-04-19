@@ -1840,11 +1840,11 @@ msgstr "Please provide a password"
 
 #: templates/default/login.html:27
 msgid "Language"
-msgstr "Language"
+msgstr "Sprache"
 
 #: templates/default/login.html:34
 msgid "Go"
-msgstr "Go"
+msgstr "Anmelden"
 
 #: templates/default/batch_ptr_record.html:27
 msgid "Create multiple PTR (reverse DNS) records at once for an IP range"

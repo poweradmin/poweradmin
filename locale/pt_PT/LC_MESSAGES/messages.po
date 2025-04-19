@@ -1821,7 +1821,7 @@ msgstr "Idioma"
 
 #: templates/default/login.html:34
 msgid "Go"
-msgstr "Go"
+msgstr "Entrar"
 
 #: templates/default/batch_ptr_record.html:27
 msgid "Create multiple PTR (reverse DNS) records at once for an IP range"
