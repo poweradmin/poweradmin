@@ -22,6 +22,8 @@
 
 namespace Poweradmin;
 
+use Poweradmin\Infrastructure\Service\MessageService;
+
 /**
  * Class LocaleManager
  * Manages locale settings for the application.
@@ -76,6 +78,15 @@ class LocaleManager
 
         if (!setlocale(LC_ALL, $locales)) {
             error_log("Failed to set locale '$locale'. Selected locale may be unsupported on this system.");
+
+            // Add user-facing error message
+            $errorMessage = sprintf(
+                "Failed to set locale '%s'. This locale appears to be disabled on the server. Please contact your administrator or choose another language.",
+                $locale
+            );
+            $messageService = new MessageService();
+            $messageService->addSystemError($errorMessage);
+
             return;
         }
 
