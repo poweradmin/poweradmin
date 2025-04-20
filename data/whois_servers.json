@@ -48,6 +48,7 @@
   "cn.com": "whois.centralnic.com",
   "co": "whois.nic.co",
   "co.nl": "whois.co.nl",
+  "co.uk": "whois.nic.uk",
   "com": "whois.verisign-grs.com",
   "coop": "whois.nic.coop",
   "cx": "whois.nic.cx",
@@ -197,7 +198,6 @@
   "tn": "whois.ati.tn",
   "to": "whois.tonic.to",
   "top": "whois.nic.top",
-  "tp": "whois.domains.tl",
   "tr": "whois.nic.tr",
   "travel": "whois.nic.travel",
   "tw": "whois.twnic.net.tw",
@@ -226,6 +226,5 @@
   "ws": "whois.website.ws",
   "xxx": "whois.nic.xxx",
   "xyz": "whois.nic.xyz",
-  "yu": "whois.ripe.net",
   "za.com": "whois.centralnic.com"
 }
