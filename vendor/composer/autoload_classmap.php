@@ -29,6 +29,7 @@ return array(
     'Cake\\Core\\ConventionsTrait' => $vendorDir . '/cakephp/core/ConventionsTrait.php',
     'Cake\\Core\\EventAwareApplicationInterface' => $vendorDir . '/cakephp/core/EventAwareApplicationInterface.php',
     'Cake\\Core\\Exception\\CakeException' => $vendorDir . '/cakephp/core/Exception/CakeException.php',
+    'Cake\\Core\\Exception\\HttpErrorCodeInterface' => $vendorDir . '/cakephp/core/Exception/HttpErrorCodeInterface.php',
     'Cake\\Core\\Exception\\MissingPluginException' => $vendorDir . '/cakephp/core/Exception/MissingPluginException.php',
     'Cake\\Core\\HttpApplicationInterface' => $vendorDir . '/cakephp/core/HttpApplicationInterface.php',
     'Cake\\Core\\InstanceConfigTrait' => $vendorDir . '/cakephp/core/InstanceConfigTrait.php',

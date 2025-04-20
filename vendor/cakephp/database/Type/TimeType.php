@@ -89,7 +89,6 @@ class TimeType extends BaseType implements BatchCastingInterface
             return $value;
         }
 
-        /** @phpstan-ignore-next-line */
         if ($value instanceof DateTimeInterface || $value instanceof ChronosTime) {
             return new $this->_className($value->format($this->_format));
         }

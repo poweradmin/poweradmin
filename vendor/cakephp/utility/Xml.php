@@ -390,7 +390,7 @@ class Xml
      *
      * @param array<string, mixed> $data Array with information to create children
      * @return void
-     * @psalm-param {dom: \DOMDocument, node: \DOMDocument|\DOMElement, key: string, format: string, ?value: mixed} $data
+     * @phpstan-param array{dom: \DOMDocument, node: \DOMNode, key: string, format: string, value?: mixed} $data
      */
     protected static function _createChild(array $data): void
     {
@@ -401,9 +401,7 @@ class Xml
         $key = $data['key'];
         $format = $data['format'];
         $value = $data['value'];
-        /** @var \DOMDocument $dom */
         $dom = $data['dom'];
-        /** @var \DOMNode $node */
         $node = $data['node'];
         $childNS = null;
         $childValue = null;

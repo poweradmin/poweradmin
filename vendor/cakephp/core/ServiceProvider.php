@@ -34,7 +34,7 @@ abstract class ServiceProvider extends AbstractServiceProvider implements Bootab
     /**
      * List of ids of services this provider provides.
      *
-     * @var list<string>
+     * @var array<string>
      * @see ServiceProvider::provides()
      */
     protected array $provides = [];

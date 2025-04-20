@@ -394,13 +394,17 @@ using the Manager class :
                 $pdo = new PDO('sqlite::memory:', null, null, [
                     PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
                 ]);
-                $configArray = require 'phinx.php';
+                $configPath = __DIR__ . '/../phinx.php';
+                $configArray = require $configPath;
                 $configArray['environments']['test'] = [
                     'adapter'    => 'sqlite',
                     'connection' => $pdo,
                     'name' => ':memory:',
                 ];
-                $config = new Config($configArray);
+                $config = new Config(
+                    $configArray,
+                    $configPath
+                 );
                 $manager = new Manager($config, new StringInput(' '), new NullOutput());
                 $manager->migrate('test');
                 $manager->seed('test');

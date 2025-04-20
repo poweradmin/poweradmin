@@ -218,6 +218,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Cake\\Core\\ConventionsTrait' => __DIR__ . '/..' . '/cakephp/core/ConventionsTrait.php',
         'Cake\\Core\\EventAwareApplicationInterface' => __DIR__ . '/..' . '/cakephp/core/EventAwareApplicationInterface.php',
         'Cake\\Core\\Exception\\CakeException' => __DIR__ . '/..' . '/cakephp/core/Exception/CakeException.php',
+        'Cake\\Core\\Exception\\HttpErrorCodeInterface' => __DIR__ . '/..' . '/cakephp/core/Exception/HttpErrorCodeInterface.php',
         'Cake\\Core\\Exception\\MissingPluginException' => __DIR__ . '/..' . '/cakephp/core/Exception/MissingPluginException.php',
         'Cake\\Core\\HttpApplicationInterface' => __DIR__ . '/..' . '/cakephp/core/HttpApplicationInterface.php',
         'Cake\\Core\\InstanceConfigTrait' => __DIR__ . '/..' . '/cakephp/core/InstanceConfigTrait.php',

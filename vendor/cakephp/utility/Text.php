@@ -43,7 +43,7 @@ class Text
     /**
      * Default HTML tags which must not be counted for truncating text.
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected static array $_defaultHtmlNoCount = [
         'style',
@@ -100,7 +100,7 @@ class Text
      * @param string $separator The token to split the data on.
      * @param string $leftBound The left boundary to ignore separators in.
      * @param string $rightBound The right boundary to ignore separators in.
-     * @return list<string> Array of tokens in $data.
+     * @return array<string> Array of tokens in $data.
      */
     public static function tokenize(
         string $data,
@@ -215,7 +215,7 @@ class Text
 
         $dataKeys = array_keys($data);
         $hashKeys = array_map(
-            fn ($str) => hash('xxh128', $str),
+            fn($str) => hash('xxh128', $str),
             $dataKeys,
         );
         /** @var array<string, string> $tempData */
