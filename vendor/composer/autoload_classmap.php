@@ -446,6 +446,7 @@ return array(
     'Poweradmin\\Application\\Service\\UserAuthenticationService' => $baseDir . '/lib/Application/Service/UserAuthenticationService.php',
     'Poweradmin\\Application\\Service\\UserEventLogger' => $baseDir . '/lib/Application/Service/UserEventLogger.php',
     'Poweradmin\\Application\\Service\\UserService' => $baseDir . '/lib/Application/Service/UserService.php',
+    'Poweradmin\\Application\\Service\\WhoisService' => $baseDir . '/lib/Application/Service/WhoisService.php',
     'Poweradmin\\Application\\Service\\ZoneService' => $baseDir . '/lib/Application/Service/ZoneService.php',
     'Poweradmin\\BaseController' => $baseDir . '/lib/BaseController.php',
     'Poweradmin\\Domain\\Error\\ApiErrorException' => $baseDir . '/lib/Domain/Error/ApiErrorException.php',

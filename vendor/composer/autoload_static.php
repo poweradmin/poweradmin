@@ -635,6 +635,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Application\\Service\\UserAuthenticationService' => __DIR__ . '/../..' . '/lib/Application/Service/UserAuthenticationService.php',
         'Poweradmin\\Application\\Service\\UserEventLogger' => __DIR__ . '/../..' . '/lib/Application/Service/UserEventLogger.php',
         'Poweradmin\\Application\\Service\\UserService' => __DIR__ . '/../..' . '/lib/Application/Service/UserService.php',
+        'Poweradmin\\Application\\Service\\WhoisService' => __DIR__ . '/../..' . '/lib/Application/Service/WhoisService.php',
         'Poweradmin\\Application\\Service\\ZoneService' => __DIR__ . '/../..' . '/lib/Application/Service/ZoneService.php',
         'Poweradmin\\BaseController' => __DIR__ . '/../..' . '/lib/BaseController.php',
         'Poweradmin\\Domain\\Error\\ApiErrorException' => __DIR__ . '/../..' . '/lib/Domain/Error/ApiErrorException.php',
