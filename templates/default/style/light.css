@@ -5,7 +5,6 @@
     --bg-light: rgb(248, 249, 250);
     --primary-blue: #0d6efd;
     --input-border: #ced4da;
-    --card-shadow: rgba(0, 0, 0, 0.05);
 }
 
 /* Base layout */
@@ -39,21 +38,14 @@ footer a, footer a:hover, footer a:focus {
 }
 
 /* Card components */
-.card {
-    border: 1px solid var(--border-color);
-    box-shadow: 0 0.5rem 1rem var(--card-shadow);
-}
-
 .card i {
     color: var(--text-muted);
 }
 
 /* Login form specific styles */
-.card.shadow-sm {
-    max-width: 450px;
-    margin: 2rem auto;
-    border-radius: 0.5rem;
-    overflow: hidden;
+.login-card {
+    max-width: 380px;
+    margin: 0 auto;
 }
 
 .card-header {
@@ -67,14 +59,17 @@ footer a, footer a:hover, footer a:focus {
     color: #495057;
 }
 
-.btn-secondary {
-    padding: 0.6rem;
+.btn-primary, .btn-secondary {
+    padding: 0.375rem 0.75rem;
     font-weight: 500;
     transition: all 0.2s ease-in-out;
+}
+
+.btn-secondary {
     background-color: #6c757d;
 }
 
-.btn-secondary:hover {
+.btn-primary:hover, .btn-secondary:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
 }

@@ -11,7 +11,6 @@
     --border-dark: #373b3e;
     --primary-blue: #0d6efd;
     --input-border: #ced4da;
-    --card-shadow: rgba(0, 0, 0, 0.2);
 }
 
 /* Base layout */
@@ -210,12 +209,14 @@ table tfoot tr td,
 }
 
 /* Login form specific styles */
-.card.shadow-sm {
-    max-width: 450px;
-    margin: 2rem auto;
-    border-radius: 0.5rem;
-    overflow: hidden;
-    background-color: var(--bg-dark-accent);
+.login-card {
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+/* Other form cards can be wider */
+.form-card {
+    max-width: 700px;
 }
 
 .card-header {
@@ -229,14 +230,17 @@ table tfoot tr td,
     color: var(--text-light);
 }
 
-.btn-secondary {
-    padding: 0.6rem;
+.btn-primary, .btn-secondary {
+    padding: 0.375rem 0.75rem;
     font-weight: 500;
     transition: all 0.2s ease-in-out;
+}
+
+.btn-secondary {
     background-color: #6c757d;
 }
 
-.btn-secondary:hover {
+.btn-primary:hover, .btn-secondary:hover {
     transform: translateY(-1px);
     box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
 }
