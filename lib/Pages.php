@@ -88,6 +88,7 @@ class Pages
             'migrations',
             'search',
             'users',
+            'whois',
         ];
     }
 }

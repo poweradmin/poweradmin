@@ -417,6 +417,7 @@ return array(
     'Poweradmin\\Application\\Controller\\MigrationsController' => $baseDir . '/lib/Application/Controller/MigrationsController.php',
     'Poweradmin\\Application\\Controller\\SearchController' => $baseDir . '/lib/Application/Controller/SearchController.php',
     'Poweradmin\\Application\\Controller\\UsersController' => $baseDir . '/lib/Application/Controller/UsersController.php',
+    'Poweradmin\\Application\\Controller\\WhoisController' => $baseDir . '/lib/Application/Controller/WhoisController.php',
     'Poweradmin\\Application\\Http\\Request' => $baseDir . '/lib/Application/Http/Request.php',
     'Poweradmin\\Application\\Presenter\\LocalePresenter' => $baseDir . '/lib/Application/Presenter/LocalePresenter.php',
     'Poweradmin\\Application\\Presenter\\PaginationPresenter' => $baseDir . '/lib/Application/Presenter/PaginationPresenter.php',

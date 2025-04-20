@@ -136,6 +136,11 @@
                 <i class="bi bi-arrow-repeat me-1 text-white"></i>{% trans %}Batch PTR Records{% endtrans %}
             </a>
             {% endif %}
+            {% if perm_is_godlike and whois_enabled %}
+            <a href="index.php?page=whois&zone_id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-search-heart me-1 text-white"></i>{% trans %}WHOIS{% endtrans %}
+            </a>
+            {% endif %}
             {% if pdnssec_use %}
             {% if is_secured %}
             <a href="index.php?page=dnssec&id={{ zone_id }}" class="btn btn-secondary btn-sm">

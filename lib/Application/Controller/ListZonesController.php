@@ -125,6 +125,8 @@ class ListZonesController extends BaseController
             'perm_edit' => $perm_edit,
             'perm_zone_master_add' => UserManager::verify_permission($this->db, 'zone_master_add'),
             'perm_zone_slave_add' => UserManager::verify_permission($this->db, 'zone_slave_add'),
+            'perm_is_godlike' => UserManager::verify_permission($this->db, 'user_is_ueberuser'),
+            'whois_enabled' => $this->config->get('whois', 'enabled', false),
         ]);
     }
 

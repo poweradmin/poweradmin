@@ -312,7 +312,8 @@ abstract class BaseController
                 'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? _('Default session encryption key is used, please set it in your configuration file.') : false,
                 'auth_used' => $_SESSION["auth_used"] != "ldap",
                 'dblog_use' => $dblog_use,
-                'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false)
+                'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
+                'whois_enabled' => $this->config->get('whois', 'enabled', false)
             ]);
         }
 

@@ -251,6 +251,7 @@ class EditController extends BaseController
             'meta_edit' => $meta_edit,
             'perm_zone_master_add' => UserManager::verify_permission($this->db, 'zone_master_add'),
             'perm_view_others' => UserManager::verify_permission($this->db, 'user_view_others'),
+            'perm_is_godlike' => UserManager::verify_permission($this->db, 'user_is_ueberuser'),
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_types' => $types,
             'row_start' => $row_start,
@@ -272,7 +273,8 @@ class EditController extends BaseController
             'iface_record_comments' => $iface_record_comments,
             'iface_zone_comments' => $iface_zone_comments,
             'serial' => DnsRecord::get_soa_serial($soa_record),
-            'file_version' => time()
+            'file_version' => time(),
+            'whois_enabled' => $this->config->get('whois', 'enabled', false)
         ]);
     }
 

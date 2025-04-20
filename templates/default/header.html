@@ -113,6 +113,15 @@
                     </ul>
                 </li>
                 {% endif %}
+                {% if perm_is_godlike and whois_enabled %}
+                <li class="p-1">
+                    <a href="index.php?page=whois" class="nav-link text-secondary text-center"><i
+                            class="bi bi-search-heart"></i></a>
+                    <a href="index.php?page=whois" class="text-secondary text-decoration-none">
+                        {% trans %}WHOIS{% endtrans %}
+                    </a>
+                </li>
+                {% endif %}
                 <li class="p-1">
                     <a href="#" class="nav-link text-secondary"><i class="bi bi-person-circle"></i></a>
                     <a class="text-secondary text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"

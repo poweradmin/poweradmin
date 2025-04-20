@@ -219,4 +219,14 @@ return [
         'edit_conflict_resolution' => 'last_writer_wins', // Options: 'last_writer_wins', 'only_latest_version', '3_way_merge'
         'display_errors' => false,                     // Display PHP errors (false for production) (added in 4.0.0)
     ],
+
+    /**
+     * WHOIS Settings
+     */
+    'whois' => [
+        'enabled' => false,                            // Enable WHOIS lookup functionality
+        'default_server' => '',                        // Optional default WHOIS server (empty to use server from the WHOIS database)
+        'socket_timeout' => 10,                        // Socket timeout in seconds for WHOIS queries
+        'restrict_to_admin' => true,                   // Only allow administrators (user_is_ueberuser) to use WHOIS functionality
+    ],
 ];

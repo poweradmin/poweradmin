@@ -606,6 +606,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Application\\Controller\\MigrationsController' => __DIR__ . '/../..' . '/lib/Application/Controller/MigrationsController.php',
         'Poweradmin\\Application\\Controller\\SearchController' => __DIR__ . '/../..' . '/lib/Application/Controller/SearchController.php',
         'Poweradmin\\Application\\Controller\\UsersController' => __DIR__ . '/../..' . '/lib/Application/Controller/UsersController.php',
+        'Poweradmin\\Application\\Controller\\WhoisController' => __DIR__ . '/../..' . '/lib/Application/Controller/WhoisController.php',
         'Poweradmin\\Application\\Http\\Request' => __DIR__ . '/../..' . '/lib/Application/Http/Request.php',
         'Poweradmin\\Application\\Presenter\\LocalePresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/LocalePresenter.php',
         'Poweradmin\\Application\\Presenter\\PaginationPresenter' => __DIR__ . '/../..' . '/lib/Application/Presenter/PaginationPresenter.php',

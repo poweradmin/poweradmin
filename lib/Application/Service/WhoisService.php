@@ -255,7 +255,7 @@ class WhoisService
      * @param string $response Raw WHOIS response
      * @return string Formatted response
      */
-    private function formatWhoisResponse(string $response): string
+    public function formatWhoisResponse(string $response): string
     {
         // Remove excess whitespace and normalize line endings
         $response = trim($response);

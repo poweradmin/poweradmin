@@ -172,6 +172,12 @@
                                     <i class="bi bi-pencil-square text-primary"></i>
                                     <span class="d-none d-md-inline">{% trans %}Edit{% endtrans %}</span>
                                 </a>
+                                {% if perm_is_godlike and whois_enabled %}
+                                <a class="btn btn-outline-secondary btn-sm" href="index.php?page=whois&zone_id={{ zone['id'] }}" data-testid="whois-zone-{{ zone['id'] }}">
+                                    <i class="bi bi-search-heart text-secondary"></i>
+                                    <span class="d-none d-md-inline">{% trans %}WHOIS{% endtrans %}</span>
+                                </a>
+                                {% endif %}
                                 {% if perm_edit == "all" or (perm_edit == "own" and user_is_zone_owner) %}
                                 <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_domain&id={{ zone['id'] }}" data-testid="delete-zone-{{ zone['id'] }}">
                                     <i class="bi bi-trash text-danger"></i>
