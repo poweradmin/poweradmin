@@ -26,6 +26,7 @@ class WhoisService
 {
     private array $whoisServers = [];
     private string $dataFile;
+    private int $socketTimeout = 10;
 
     /**
      * WhoisService constructor.
@@ -141,5 +142,128 @@ class WhoisService
     public function refresh(): bool
     {
         return $this->loadWhoisServers();
+    }
+
+    /**
+     * Set socket timeout in seconds
+     *
+     * @param int $seconds Timeout in seconds
+     * @return void
+     */
+    public function setSocketTimeout(int $seconds): void
+    {
+        $this->socketTimeout = max(1, $seconds);
+    }
+
+    /**
+     * Query a WHOIS server for domain information
+     *
+     * @param string $domain The domain name to query
+     * @param string|null $server Specific WHOIS server to query (optional)
+     * @return string|null The WHOIS response or null if the query failed
+     */
+    public function query(string $domain, ?string $server = null): ?string
+    {
+        $domain = strtolower(trim($domain));
+
+        // If no server is specified, try to find one
+        if ($server === null) {
+            $server = $this->getWhoisServerForDomain($domain);
+            if ($server === null) {
+                return null; // No WHOIS server found for this domain
+            }
+        }
+
+        // Standard WHOIS port
+        $port = 43;
+
+        // Create a socket connection to the WHOIS server
+        $socket = @fsockopen($server, $port, $errno, $errstr, $this->socketTimeout);
+        if (!$socket) {
+            return null; // Connection failed
+        }
+
+        // Set socket timeout for read/write operations
+        stream_set_timeout($socket, $this->socketTimeout);
+
+        // Send the query
+        fwrite($socket, $domain . "\r\n");
+
+        // Read the response
+        $response = '';
+        while (!feof($socket)) {
+            $buffer = fgets($socket, 1024);
+            if ($buffer === false) {
+                break; // Read error
+            }
+            $response .= $buffer;
+
+            // Check for socket timeout
+            $info = stream_get_meta_data($socket);
+            if ($info['timed_out']) {
+                break; // Socket timed out
+            }
+        }
+
+        // Close the connection
+        fclose($socket);
+
+        return $response ?: null;
+    }
+
+    /**
+     * Get WHOIS information for a domain with formatting
+     *
+     * @param string $domain The domain name to query
+     * @return array An array with keys 'success', 'data', and 'error'
+     */
+    public function getWhoisInfo(string $domain): array
+    {
+        $result = [
+            'success' => false,
+            'data' => null,
+            'error' => null
+        ];
+
+        try {
+            $whoisServer = $this->getWhoisServerForDomain($domain);
+
+            if ($whoisServer === null) {
+                $result['error'] = 'No WHOIS server found for this domain';
+                return $result;
+            }
+
+            $response = $this->query($domain, $whoisServer);
+
+            if ($response === null) {
+                $result['error'] = 'Failed to retrieve WHOIS information';
+                return $result;
+            }
+
+            $result['success'] = true;
+            $result['data'] = $this->formatWhoisResponse($response);
+        } catch (\Exception $e) {
+            $result['error'] = 'Error: ' . $e->getMessage();
+        }
+
+        return $result;
+    }
+
+    /**
+     * Format WHOIS response for better readability
+     *
+     * @param string $response Raw WHOIS response
+     * @return string Formatted response
+     */
+    private function formatWhoisResponse(string $response): string
+    {
+        // Remove excess whitespace and normalize line endings
+        $response = trim($response);
+        $response = str_replace(["\r\n", "\r"], "\n", $response);
+
+        // Remove consecutive empty lines
+        $response = preg_replace("/\n{3,}/", "\n\n", $response);
+
+        return $response;
     }
 }

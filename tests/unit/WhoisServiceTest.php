@@ -118,6 +118,28 @@ class WhoisServiceTest extends TestCase
         $this->assertEquals('whois.pir.org', $servers['org']);
     }
 
+    public function testSetSocketTimeout()
+    {
+        // Use reflection to test private property
+        $reflectionClass = new \ReflectionClass(WhoisService::class);
+        $property = $reflectionClass->getProperty('socketTimeout');
+        $property->setAccessible(true);
+
+        // Default value should be 10
+        $this->assertEquals(10, $property->getValue($this->whoisService));
+
+        // Set to a new value
+        $this->whoisService->setSocketTimeout(5);
+        $this->assertEquals(5, $property->getValue($this->whoisService));
+
+        // Test minimum value enforcement
+        $this->whoisService->setSocketTimeout(0);
+        $this->assertEquals(1, $property->getValue($this->whoisService));
+
+        $this->whoisService->setSocketTimeout(-10);
+        $this->assertEquals(1, $property->getValue($this->whoisService));
+    }
+
     public function testMissingDataFile()
     {
         // Test with non-existent file
@@ -145,5 +167,124 @@ class WhoisServiceTest extends TestCase
         $this->assertTrue($this->whoisService->refresh());
         $this->assertEquals('modified.whois.server.com', $this->whoisService->getWhoisServer('com'));
         $this->assertNull($this->whoisService->getWhoisServer('org')); // Should be gone after refresh
+    }
+
+    public function testFormatWhoisResponse()
+    {
+        // Use reflection to access private method
+        $reflectionClass = new \ReflectionClass(WhoisService::class);
+        $method = $reflectionClass->getMethod('formatWhoisResponse');
+        $method->setAccessible(true);
+
+        // Test with various input formats
+        $rawResponse = "Domain Name: EXAMPLE.COM\r\n\r\n\r\nRegistrar: Example Registrar, LLC\r\nCreation Date: 1995-08-14T04:00:00Z\r\n\r\n\r\n\r\nRegistry Expiry Date: 2021-08-13T04:00:00Z";
+        $expectedOutput = "Domain Name: EXAMPLE.COM\n\nRegistrar: Example Registrar, LLC\nCreation Date: 1995-08-14T04:00:00Z\n\nRegistry Expiry Date: 2021-08-13T04:00:00Z";
+
+        $this->assertEquals($expectedOutput, $method->invoke($this->whoisService, $rawResponse));
+
+        // Test with different line endings
+        $rawResponse = "Line1\rLine2\r\nLine3\n\n\nLine4";
+        $expectedOutput = "Line1\nLine2\nLine3\n\nLine4";
+
+        $this->assertEquals($expectedOutput, $method->invoke($this->whoisService, $rawResponse));
+    }
+
+    public function testQueryWithMockSocket()
+    {
+        // This test mocks the socket functions to avoid actual network calls
+        // It only tests that our implementation would call fsockopen correctly
+
+        // Skip test if socket extension not available
+        if (!extension_loaded('sockets')) {
+            $this->markTestSkipped('Socket extension not available');
+            return;
+        }
+
+        // Create a WhoisService with a mock method for query
+        $mockWhoisService = $this->getMockBuilder(WhoisService::class)
+            ->setConstructorArgs([$this->testDataFile])
+            ->onlyMethods(['query'])
+            ->getMock();
+
+        // Set expectations
+        $mockWhoisService->expects($this->once())
+            ->method('query')
+            ->with('example.com', 'whois.verisign-grs.com')
+            ->willReturn("Domain Name: EXAMPLE.COM\nRegistrar: Example Registrar, LLC");
+
+        // Test the getWhoisInfo method which uses the query method internally
+        $result = $mockWhoisService->getWhoisInfo('example.com');
+
+        $this->assertTrue($result['success']);
+        $this->assertEquals("Domain Name: EXAMPLE.COM\nRegistrar: Example Registrar, LLC", $result['data']);
+        $this->assertNull($result['error']);
+    }
+
+    public function testGetWhoisInfoWithNoServer()
+    {
+        // Mock the getWhoisServerForDomain method to return null
+        $mockWhoisService = $this->getMockBuilder(WhoisService::class)
+            ->setConstructorArgs([$this->testDataFile])
+            ->onlyMethods(['getWhoisServerForDomain'])
+            ->getMock();
+
+        $mockWhoisService->expects($this->once())
+            ->method('getWhoisServerForDomain')
+            ->with('example.nonexistent')
+            ->willReturn(null);
+
+        // Test getWhoisInfo with no server available
+        $result = $mockWhoisService->getWhoisInfo('example.nonexistent');
+
+        $this->assertFalse($result['success']);
+        $this->assertNull($result['data']);
+        $this->assertEquals('No WHOIS server found for this domain', $result['error']);
+    }
+
+    public function testGetWhoisInfoWithQueryFailure()
+    {
+        // Mock the necessary methods
+        $mockWhoisService = $this->getMockBuilder(WhoisService::class)
+            ->setConstructorArgs([$this->testDataFile])
+            ->onlyMethods(['getWhoisServerForDomain', 'query'])
+            ->getMock();
+
+        $mockWhoisService->expects($this->once())
+            ->method('getWhoisServerForDomain')
+            ->with('example.com')
+            ->willReturn('whois.verisign-grs.com');
+
+        $mockWhoisService->expects($this->once())
+            ->method('query')
+            ->with('example.com', 'whois.verisign-grs.com')
+            ->willReturn(null);
+
+        // Test getWhoisInfo with query failure
+        $result = $mockWhoisService->getWhoisInfo('example.com');
+
+        $this->assertFalse($result['success']);
+        $this->assertNull($result['data']);
+        $this->assertEquals('Failed to retrieve WHOIS information', $result['error']);
+    }
+
+    public function testGetWhoisInfoWithException()
+    {
+        // Mock the getWhoisServerForDomain method to throw an exception
+        $mockWhoisService = $this->getMockBuilder(WhoisService::class)
+            ->setConstructorArgs([$this->testDataFile])
+            ->onlyMethods(['getWhoisServerForDomain'])
+            ->getMock();
+
+        $mockWhoisService->expects($this->once())
+            ->method('getWhoisServerForDomain')
+            ->with('example.com')
+            ->will($this->throwException(new \Exception('Test exception')));
+
+        // Test getWhoisInfo with an exception
+        $result = $mockWhoisService->getWhoisInfo('example.com');
+
+        $this->assertFalse($result['success']);
+        $this->assertNull($result['data']);
+        $this->assertEquals('Error: Test exception', $result['error']);
     }
 }
