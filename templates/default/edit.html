@@ -145,18 +145,18 @@
             {% endif %}
         </div>
     </div>
-    
+
     <div class="card-body">
         <div class="mb-3">
             {{ pagination | raw }}
         </div>
-        
+
         {% if not records %}
         <div class="alert alert-info">
             <i class="bi bi-info-circle me-2"></i>{% trans %}This zone does not have any records.{% endtrans %}
         </div>
         {% else %}
-        
+
         <div class="mb-3 d-flex justify-content-between align-items-center">
             <div>
                 <form id="delete-records-form" method="post" action="index.php?page=delete_records" class="d-inline">
@@ -176,7 +176,7 @@
                     <option value="50" {{ row_amount == 50 ? 'selected' : '' }}>50</option>
                     <option value="100" {{ row_amount == 100 ? 'selected' : '' }}>100</option>
                 </select>
-                
+
                 <script>
                     // Initialize rows per page from localStorage on page load
                     document.addEventListener('DOMContentLoaded', function() {
@@ -192,11 +192,11 @@
                 </script>
             </div>
         </div>
-        
+
         <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="serial" value="{{ serial }}">
-            
+
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm">
                     <thead class="table-light">
@@ -362,7 +362,7 @@
                     </tbody>
                 </table>
             </div>
-            
+
             <div class="py-3">
                 {{ pagination | raw }}
             </div>
@@ -375,7 +375,7 @@
         <button class="btn btn-secondary btn-sm" type="reset" name="reset">
             <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
         </button>
-        
+
         {% if pdnssec_use %}
         {% if is_secured %}
         <button class="btn btn-secondary btn-sm" type="submit" name="unsign_zone">
@@ -412,7 +412,7 @@
         <form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
-            
+
             <table class="table table-striped table-hover table-sm">
                 <tr>
                     <th>{% trans %}Name{% endtrans %}</th>
@@ -502,22 +502,22 @@
             </div>
             <div class="card-body">
                 <p class="small text-muted mb-3">{% trans %}Create a reusable template from this zone's records{% endtrans %}</p>
-                
+
                 <form class="needs-validation" method="post" action="" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
-                    
+
                     <div class="mb-3">
                         <label for="templ_name" class="form-label">{% trans %}Template Name{% endtrans %}</label>
                         <input id="templ_name" class="form-control form-control-sm" type="text" name="templ_name" value="" required>
                         <div class="invalid-feedback">{% trans %}Provide template name{% endtrans %}</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="templ_descr" class="form-label">{% trans %}Template Description{% endtrans %}</label>
                         <input id="templ_descr" class="form-control form-control-sm" type="text" name="templ_descr" value="">
                         <small class="text-muted">{% trans %}Optional description for this template{% endtrans %}</small>
                     </div>
-                    
+
                     <button class="btn btn-secondary btn-sm" type="submit" name="save_as">
                         <i class="bi bi-save me-1 text-white"></i>{% trans %}Save as template{% endtrans %}
                     </button>
@@ -526,7 +526,7 @@
         </div>
         {% endif %}
     </div>
-    
+
     <div class="col-md-6 mb-4">
         <div class="card shadow-sm">
             <div class="card-header py-3">
@@ -549,7 +549,7 @@
                             {% else %}
                             {{ owner["username"] }}
                             {% endif %}
-                            
+
                             <form method="post" action="index.php?page=edit&id={{ zone_id }}" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                                 <input type="hidden" name="delete_owner" value="{{ owner['id'] }}">
@@ -694,7 +694,7 @@
             checkbox.addEventListener('change', toggleOpacity);
             toggleOpacity();
         });
-        
+
         // Handle record selection checkboxes
         const recordCheckboxes = document.getElementsByName('record_id[]');
         for (let i = 0; i < recordCheckboxes.length; i++) {
@@ -702,23 +702,23 @@
                 updateDeleteButtonState('delete-selected-records', recordCheckboxes);
             });
         }
-        
+
         // Initialize delete button state
         updateDeleteButtonState('delete-selected-records', recordCheckboxes);
-        
+
         // Handle delete form submission
         document.getElementById('delete-records-form').addEventListener('submit', function(e) {
             // Get all checked checkboxes
             const checkedBoxes = document.querySelectorAll('input[name="record_id[]"]:checked');
-            
+
             if (checkedBoxes.length === 0) {
                 e.preventDefault();
                 return;
             }
-            
+
             const container = document.getElementById('selected-records-container');
             container.innerHTML = '';
-            
+
             // Clone checked checkboxes to the delete form
             checkedBoxes.forEach(function(checkbox) {
                 const clone = document.createElement('input');

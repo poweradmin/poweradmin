@@ -16,7 +16,7 @@
             <p>{% trans %}You are about to delete the supermaster{% endtrans %}: <strong>"{{ master_ip }}"</strong></p>
             <p class="mb-0">{% trans %}This action cannot be undone. Are you sure you want to proceed?{% endtrans %}</p>
         </div>
-        
+
         <div class="card mb-4">
             <div class="card-header py-2">
                 <strong>{% trans %}Supermaster Details{% endtrans %}</strong>
@@ -41,7 +41,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="mt-4">
             <a href="index.php?page=delete_supermaster&master_ip={{ master_ip }}&ns_name={{ info['ns_name'] }}&confirm=1" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this supermaster{% endtrans %}

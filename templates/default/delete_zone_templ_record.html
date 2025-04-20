@@ -17,7 +17,7 @@
             <i class="bi bi-exclamation-triangle-fill me-1"></i>
             {% trans %}You are about to delete a record from template{% endtrans %} <strong>"{{ templ_details['name'] }}"</strong>. {% trans %}This action cannot be undone.{% endtrans %}
         </div>
-        
+
         <div class="card mb-4">
             <div class="card-header py-2">
                 <strong>{% trans %}Record Details{% endtrans %}</strong>
@@ -47,7 +47,7 @@
                 </div>
             </div>
         </div>
-        
+
         <div class="mt-4">
             <a href="index.php?page=delete_zone_templ_record&id={{ record_id }}&zone_templ_id={{ zone_templ_id }}&confirm=1" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this record{% endtrans %}

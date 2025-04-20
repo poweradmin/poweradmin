@@ -20,16 +20,16 @@
     <div class="card-body">
         <div class="alert alert-danger bg-danger bg-opacity-10">
             <h5 class="alert-heading text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
-            
+
             {% if idn_zone_name %}
             <p>{% trans %}You are about to delete the zone{% endtrans %}: <strong>"{{ idn_zone_name }}"</strong> ({{ zone_info['name'] }})</p>
             {% else %}
             <p>{% trans %}You are about to delete the zone{% endtrans %}: <strong>"{{ zone_info['name'] }}"</strong></p>
             {% endif %}
-            
+
             <p class="mb-0">{% trans %}This action cannot be undone. Are you sure you want to proceed?{% endtrans %}</p>
         </div>
-        
+
         <div class="card mb-4">
             <div class="card-header py-2">
                 <strong>{% trans %}Zone Details{% endtrans %}</strong>
@@ -54,14 +54,14 @@
                 </div>
             </div>
         </div>
-        
+
         {% if slave_master_exists %}
         <div class="alert alert-warning bg-warning bg-opacity-10">
             <h5 class="alert-heading text-warning"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Important Note{% endtrans %}</h5>
             <p class="mb-0">{% trans %}You are about to delete a slave zone of which the master nameserver is a supermaster. Deleting the zone now, will result in temporary removal only. Whenever the supermaster sends a notification for this zone, it will be added again!{% endtrans %}</p>
         </div>
         {% endif %}
-        
+
         <div class="mt-4">
             <a href="index.php?page=delete_domain&id={{ zone_id }}&confirm=1" class="btn btn-danger btn-sm" data-testid="confirm-delete-zone">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this zone{% endtrans %}

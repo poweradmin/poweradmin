@@ -56,7 +56,7 @@
             {% for record in records %}
             <input type="hidden" name="record_id[]" value="{{ record['id'] }}">
             {% endfor %}
-            
+
             {# Check if any A or AAAA records are being deleted #}
             {% set has_ip_records = false %}
             {% for record in records %}
@@ -64,7 +64,7 @@
                     {% set has_ip_records = true %}
                 {% endif %}
             {% endfor %}
-            
+
             {% if has_ip_records %}
             <div class="form-check mb-3">
                 <input class="form-check-input" type="checkbox" id="delete_ptr" name="delete_ptr" value="1" checked>
@@ -73,7 +73,7 @@
                 </label>
             </div>
             {% endif %}
-            
+
             <button type="submit" name="confirm" value="1" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete these records{% endtrans %}
             </button>

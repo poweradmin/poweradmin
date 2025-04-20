@@ -13,10 +13,10 @@
     </div>
     <div class="card-body">
         <p class="small text-muted mb-3">{% trans %}Create a new template with a specific set of permissions that can be assigned to users{% endtrans %}</p>
-        
+
         <form class="needs-validation" method="post" action="index.php?page=add_perm_templ" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
-            
+
             <div class="row mb-4">
                 <div class="col-md-6">
                     <div class="mb-3">
@@ -32,7 +32,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="card mb-4">
                 <div class="card-header py-2">
                     <div class="d-flex justify-content-between align-items-center">
@@ -71,7 +71,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="mb-3">
                 <button type="submit" class="btn btn-primary btn-sm" name="commit">
                     <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add Template{% endtrans %}
@@ -88,7 +88,7 @@
 function toggleAllPermissions() {
     const selectAll = document.getElementById('select-all');
     const checkboxes = document.querySelectorAll('.permission-checkbox');
-    
+
     checkboxes.forEach(checkbox => {
         checkbox.checked = selectAll.checked;
     });
@@ -98,14 +98,14 @@ function toggleAllPermissions() {
 document.addEventListener('DOMContentLoaded', function() {
     const checkboxes = document.querySelectorAll('.permission-checkbox');
     const selectAll = document.getElementById('select-all');
-    
+
     checkboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             // If any checkbox is unchecked, uncheck the "select all" checkbox
             if (!this.checked) {
                 selectAll.checked = false;
             }
-            
+
             // If all checkboxes are checked, check the "select all" checkbox
             const allChecked = Array.from(checkboxes).every(cb => cb.checked);
             if (allChecked) {

@@ -12,10 +12,10 @@
     </div>
     <div class="card-body">
         <p class="small text-muted mb-3">{% trans %}Create a new user account with appropriate permissions{% endtrans %}</p>
-        
+
         <form class="needs-validation" method="post" action="index.php?page=add_user" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
-            
+
             <div class="row">
                 <div class="col-md-6">
                     <!-- Left Column: User Information -->
@@ -24,19 +24,19 @@
                         <input class="form-control form-control-sm" type="text" id="username" name="username" value="{{ username }}" required>
                         <div class="invalid-feedback">{% trans %}Provide user name{% endtrans %}</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="fullname" class="form-label">{% trans %}Fullname{% endtrans %}</label>
                         <input class="form-control form-control-sm" type="text" id="fullname" name="fullname" value="{{ fullname }}">
                         <small class="text-muted">{% trans %}Optional: User's full name for identification{% endtrans %}</small>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="email" class="form-label">{% trans %}Email address{% endtrans %}</label>
                         <input class="form-control form-control-sm" type="email" id="email" name="email" value="{{ email }}" required>
                         <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="password" class="form-label">{% trans %}Password{% endtrans %}</label>
                         <div class="input-group input-group-sm">
@@ -45,28 +45,28 @@
                             {% if not ldap_use %}<div class="invalid-feedback">{% trans %}Provide user password{% endtrans %}</div>{% endif %}
                         </div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <div class="form-check d-flex align-items-center gap-2">
-                            <input class="form-check-input" id="auto_generate" type="checkbox" name="auto_generate_password" value="1" 
+                            <input class="form-check-input" id="auto_generate" type="checkbox" name="auto_generate_password" value="1"
                                    onclick="togglePasswordField(); disablePasswordField(); toggleEmailOption();">
                             <label class="form-check-label" for="auto_generate">{% trans %}Auto-generate password{% endtrans %}</label>
-                            <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right" 
+                            <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right"
                                title="{% trans %}Generate a secure password that meets all requirements{% endtrans %}"></i>
                         </div>
                     </div>
-                    
+
                     {% if mail_enabled %}
                     <div class="mb-3" id="send_email_row" style="display: none;">
                         <div class="form-check d-flex align-items-center gap-2">
                             <input class="form-check-input" id="send_email" type="checkbox" name="send_email" value="1" checked>
                             <label class="form-check-label" for="send_email">{% trans %}Send password by email{% endtrans %}</label>
-                            <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right" 
+                            <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right"
                                title="{% trans %}Send login credentials to user's email address{% endtrans %}"></i>
                         </div>
                     </div>
                     {% endif %}
-                    
+
                     {% if user_edit_templ_perm %}
                     <div class="mb-3">
                         <label for="perm_templ" class="form-label">{% trans %}Permission template{% endtrans %}</label>
@@ -83,20 +83,20 @@
                         <small class="text-muted">{% trans %}Select permissions for this user{% endtrans %}</small>
                     </div>
                     {% endif %}
-                    
+
                     <div class="mb-3">
                         <label for="description" class="form-label">{% trans %}Description{% endtrans %}</label>
                         <textarea class="form-control form-control-sm" id="description" rows="3" name="descr">{{ description }}</textarea>
                         <small class="text-muted">{% trans %}Optional information about this user{% endtrans %}</small>
                     </div>
-                    
+
                     <div class="mb-3">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="active" name="active" value="1" {{ active_checked }}>
                             <label class="form-check-label" for="active">{% trans %}Enabled{% endtrans %}</label>
                         </div>
                     </div>
-                    
+
                     {% if ldap_use %}
                     <div class="mb-3">
                         <div class="form-check">
@@ -107,7 +107,7 @@
                         <small class="text-muted">{% trans %}Use external LDAP directory for authentication{% endtrans %}</small>
                     </div>
                     {% endif %}
-                    
+
                     <div class="mb-3">
                         <button type="submit" class="btn btn-primary btn-sm" name="commit">
                             <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add User{% endtrans %}
@@ -117,7 +117,7 @@
                         </a>
                     </div>
                 </div>
-                
+
                 <div class="col-md-6">
                     <!-- Right Column: Password Requirements -->
                     <div class="card border-info">
@@ -151,7 +151,7 @@
                             </ul>
                         </div>
                     </div>
-                    
+
                     <div class="card border-warning mt-3">
                         <div class="card-header bg-warning bg-opacity-10 text-warning border-warning">
                             <i class="bi bi-info-circle-fill me-2 text-warning"></i>{% trans %}User Permissions{% endtrans %}

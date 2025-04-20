@@ -43,7 +43,7 @@
                                 </div>
                             </div>
                         </div>
-                        
+
                         <div class="col-md-7">
                             <div class="mb-3">
                                 <label class="form-label small">{% trans %}Search In{% endtrans %}</label>
@@ -444,7 +444,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', () => {
         queryState.setPreviousQuery(document.search_form.query.value);
-        
+
         // Handle zone selection checkboxes
         const zoneCheckboxes = document.getElementsByName('zone_id[]');
         for (let i = 0; i < zoneCheckboxes.length; i++) {
@@ -452,7 +452,7 @@
                 updateDeleteButtonState('delete-zones-button', zoneCheckboxes);
             });
         }
-        
+
         // Handle record selection checkboxes
         const recordCheckboxes = document.getElementsByName('record_id[]');
         for (let i = 0; i < recordCheckboxes.length; i++) {
@@ -460,7 +460,7 @@
                 updateDeleteButtonState('delete-records-button', recordCheckboxes);
             });
         }
-        
+
         // Initialize delete button states
         updateDeleteButtonState('delete-zones-button', zoneCheckboxes);
         updateDeleteButtonState('delete-records-button', recordCheckboxes);

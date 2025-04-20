@@ -24,16 +24,16 @@
             {% endif %}
         </strong>
     </div>
-    
+
     <div class="card-body">
         <p class="small text-muted mb-3">{% trans %}Create a new DNS record in this zone{% endtrans %}</p>
-        
+
         <form class="needs-validation" method="post" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
-            
+
             <input type="hidden" name="multi_record_mode" value="1">
-            
+
             <div class="table-responsive">
                 <table class="table table-striped table-sm" id="recordsTable">
                     <thead class="table-light">
@@ -118,7 +118,7 @@
                     </tfoot>
                 </table>
             </div>
-            
+
             <div class="mt-4">
                 <button class="btn btn-primary btn-sm" type="submit" name="commit">
                     <i class="bi bi-plus-circle me-1 text-white"></i>
@@ -144,17 +144,17 @@
         const tableBody = document.getElementById('recordsTableBody');
         const recordCount = tableBody.querySelectorAll('.record-row').length;
         const newRowIndex = recordCount;
-        
+
         const firstRow = tableBody.querySelector('.record-row');
         const newRow = firstRow.cloneNode(true);
-        
+
         // Update all input names with the new index
         newRow.querySelectorAll('input, select').forEach(input => {
             const name = input.getAttribute('name');
             if (name) {
                 input.setAttribute('name', name.replace(/\[\d+\]/, '[' + newRowIndex + ']'));
             }
-            
+
             // Clear values except for TTL which should keep the default
             if (!name.includes('[ttl]')) {
                 if (input.tagName === 'SELECT') {
@@ -164,25 +164,25 @@
                 }
             }
         });
-        
+
         tableBody.appendChild(newRow);
         updateDeleteButtons();
-        
+
         // Initialize the PTR checkbox visibility for the new row
         const typeSelect = newRow.querySelector('.record-type-select');
         if (typeSelect) {
             updatePtrCheckboxVisibility(typeSelect);
         }
     }
-    
+
     function removeRecord(button) {
         const row = button.closest('tr');
         const tableBody = document.getElementById('recordsTableBody');
-        
+
         // Don't remove if it's the last row
         if (tableBody.querySelectorAll('.record-row').length > 1) {
             row.remove();
-            
+
             // Reindex the remaining rows
             tableBody.querySelectorAll('.record-row').forEach((row, index) => {
                 row.querySelectorAll('input, select').forEach(input => {
@@ -192,16 +192,16 @@
                     }
                 });
             });
-            
+
             updateDeleteButtons();
         }
     }
-    
+
     function updateDeleteButtons() {
         const tableBody = document.getElementById('recordsTableBody');
         const rowCount = tableBody.querySelectorAll('.record-row').length;
         const deleteButtons = tableBody.querySelectorAll('.remove-record');
-        
+
         // Disable delete buttons if only one row, enable otherwise
         deleteButtons.forEach(button => {
             if (rowCount <= 1) {
@@ -213,16 +213,16 @@
             }
         });
     }
-    
+
     function updatePtrCheckboxVisibility(selectElement) {
         if (!selectElement) return;
-        
+
         const row = selectElement.closest('tr');
         if (!row) return;
-        
+
         const ptrCheckbox = row.querySelector('.ptr-checkbox');
         if (!ptrCheckbox) return;
-        
+
         // Only show the PTR checkbox for A and AAAA record types
         const recordType = selectElement.value;
         if (recordType === 'A' || recordType === 'AAAA') {
@@ -232,7 +232,7 @@
             ptrCheckbox.checked = false;
         }
     }
-    
+
     // Set initial PTR checkbox visibility on page load
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.record-type-select').forEach(function(select) {

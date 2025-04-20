@@ -39,7 +39,7 @@
 <!--                            <option value="ipv6" {% if network_type == 'ipv6' %}selected{% endif %}>{% trans %}IPv6 (/64 network){% endtrans %}</option>-->
                         </select>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="network_prefix" class="form-label">{% trans %}Network Prefix{% endtrans %}</label>
                         <input type="text" id="network_prefix" name="network_prefix" value="{{ network_prefix }}" class="form-control form-control-sm" required>
@@ -90,7 +90,7 @@
                         {% endif %}
                     </div>
                 </div>
-                
+
                 <div class="col-md-7">
                     <!-- Information panel on the right side -->
                     <div class="card mb-3 border-warning">
@@ -110,7 +110,7 @@
                             </ul>
                         </div>
                     </div>
-                    
+
                     <div class="card border-info">
                         <div class="card-header bg-info bg-opacity-10 text-info border-info">
                             <i class="bi bi-info-circle-fill me-2 text-info"></i>{% trans %}Requirements{% endtrans %}

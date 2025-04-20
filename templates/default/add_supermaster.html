@@ -15,21 +15,21 @@
             <div class="card-body">
                 <form class="needs-validation" method="post" action="index.php?page=add_supermaster" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
-                    
+
                     <div class="mb-3">
                         <label for="master_ip" class="form-label">{% trans %}IP address of supermaster{% endtrans %}</label>
                         <input class="form-control form-control-sm" type="text" id="master_ip" name="master_ip" value="{{ master_ip }}" required>
                         <small class="form-text text-muted">{% trans %}Enter the IP address of the master nameserver{% endtrans %}</small>
                         <div class="invalid-feedback">{% trans %}Provide ip address{% endtrans %}</div>
                     </div>
-                    
+
                     <div class="mb-3">
                         <label for="ns_name" class="form-label">{% trans %}Hostname in NS record{% endtrans %}</label>
                         <input class="form-control form-control-sm" type="text" id="ns_name" name="ns_name" value="{{ ns_name }}" required>
                         <small class="form-text text-muted">{% trans %}Enter the hostname as it appears in the NS record{% endtrans %}</small>
                         <div class="invalid-feedback">{% trans %}Provide host name{% endtrans %}</div>
                     </div>
-                    
+
                     <div class="mb-4">
                         <label for="account" class="form-label">{% trans %}Account{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="account" name="account">
@@ -55,7 +55,7 @@
                         </select>
                         <small class="form-text text-muted">{% trans %}Select the account that will own this supermaster{% endtrans %}</small>
                     </div>
-                    
+
                     <div class="mt-4">
                         <button type="submit" name="submit" class="btn btn-sm btn-primary">
                             <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add supermaster{% endtrans %}
@@ -68,7 +68,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-4">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
