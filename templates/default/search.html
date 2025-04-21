@@ -170,13 +170,13 @@
                         {% endif %}
                         <td class="text-end">
                             <div class="gap-2">
-                                {% if whois_enabled %}
+                                {% if perm_is_godlike and whois_enabled %}
                                 <a class="btn btn-sm btn-outline-secondary"
                                 href="index.php?page=whois&zone_id={{ zone['id'] }}" data-testid="whois-zone-{{ zone['id'] }}">
                                     <i class="bi bi-search-heart text-secondary"></i> <span class="d-none d-md-inline text-secondary">{% trans %}WHOIS{% endtrans %}</span>
                                 </a>
                                 {% endif %}
-                                {% if rdap_enabled %}
+                                {% if perm_is_godlike and rdap_enabled %}
                                 <a class="btn btn-sm btn-outline-secondary"
                                 href="index.php?page=rdap&zone_id={{ zone['id'] }}" data-testid="rdap-zone-{{ zone['id'] }}">
                                     <i class="bi bi-search text-secondary"></i> <span class="d-none d-md-inline text-secondary">{% trans %}RDAP{% endtrans %}</span>
