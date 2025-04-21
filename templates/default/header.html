@@ -113,12 +113,21 @@
                     </ul>
                 </li>
                 {% endif %}
-                {% if perm_is_godlike and whois_enabled %}
+                {% if (not whois_restrict_to_admin or perm_is_godlike) and whois_enabled %}
                 <li class="p-1">
                     <a href="index.php?page=whois" class="nav-link text-secondary text-center"><i
                             class="bi bi-search-heart"></i></a>
                     <a href="index.php?page=whois" class="text-secondary text-decoration-none">
                         {% trans %}WHOIS{% endtrans %}
+                    </a>
+                </li>
+                {% endif %}
+                {% if (not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled %}
+                <li class="p-1">
+                    <a href="index.php?page=rdap" class="nav-link text-secondary text-center"><i
+                            class="bi bi-search-heart-fill"></i></a>
+                    <a href="index.php?page=rdap" class="text-secondary text-decoration-none">
+                        {% trans %}RDAP{% endtrans %}
                     </a>
                 </li>
                 {% endif %}

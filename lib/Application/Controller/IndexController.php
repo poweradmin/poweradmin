@@ -66,6 +66,10 @@ class IndexController extends BaseController
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
             'migrations_show' => $this->config->get('interface', 'show_migrations', false),
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),
+            'whois_enabled' => $this->config->get('whois', 'enabled', false),
+            'rdap_enabled' => $this->config->get('rdap', 'enabled', false),
+            'whois_restrict_to_admin' => $this->config->get('whois', 'restrict_to_admin', true),
+            'rdap_restrict_to_admin' => $this->config->get('rdap', 'restrict_to_admin', true),
         ]);
     }
 }
