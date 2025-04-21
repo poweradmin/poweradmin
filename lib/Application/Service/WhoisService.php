@@ -75,6 +75,30 @@ class WhoisService
     {
         $tld = strtolower(trim($tld));
 
+        // Check if this might be an IDN TLD
+        if (preg_match('/[^\x20-\x7E]/', $tld)) {
+            // Try to convert to punycode and check if we have a server for that
+            $punycodeTld = idn_to_ascii($tld, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+            if ($punycodeTld !== false && isset($this->whoisServers[$punycodeTld])) {
+                return $this->whoisServers[$punycodeTld];
+            }
+        }
+        // Check if this is a punycode TLD with xn-- prefix and we have a Unicode version
+        elseif (strpos($tld, 'xn--') === 0) {
+            try {
+                // Try to convert to Unicode and check if we have a server for that
+                $unicodeTld = idn_to_utf8($tld, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+                if (
+                    $unicodeTld !== false && $unicodeTld !== $tld &&
+                    isset($this->whoisServers[$unicodeTld])
+                ) {
+                    return $this->whoisServers[$unicodeTld];
+                }
+            } catch (\Exception $e) {
+                // Conversion failed, continue with regular lookup
+            }
+        }
+
         // Direct match
         if (isset($this->whoisServers[$tld])) {
             return $this->whoisServers[$tld];
@@ -139,6 +163,36 @@ class WhoisService
      *
      * @return bool True if refresh was successful, false otherwise
      */
+    /**
+     * Convert domain to IDNA ASCII (punycode) format for WHOIS query
+     *
+     * @param string $domain Domain name that might contain Unicode characters
+     * @return string Domain name in ASCII format
+     */
+    private function convertToIdnaPunycode(string $domain): string
+    {
+        // Check if conversion is needed
+        if (!preg_match('/[^\x20-\x7E]/', $domain)) {
+            return $domain; // Already ASCII
+        }
+
+        // Split the domain into labels and convert each part
+        $parts = explode('.', $domain);
+        foreach ($parts as &$part) {
+            if (preg_match('/[^\x20-\x7E]/', $part)) {
+                $punycode = idn_to_ascii($part, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+                $part = $punycode !== false ? $punycode : $part;
+            }
+        }
+
+        return implode('.', $parts);
+    }
+
+    /**
+     * Refresh whois servers data by reloading from the JSON file
+     *
+     * @return bool True if refresh was successful, false otherwise
+     */
     public function refresh(): bool
     {
         return $this->loadWhoisServers();
@@ -166,6 +220,9 @@ class WhoisService
     {
         $domain = strtolower(trim($domain));
 
+        // Convert IDN to punycode for the WHOIS query
+        $domainForQuery = $this->convertToIdnaPunycode($domain);
+
         // If no server is specified, try to find one
         if ($server === null) {
             $server = $this->getWhoisServerForDomain($domain);
@@ -187,7 +244,7 @@ class WhoisService
         stream_set_timeout($socket, $this->socketTimeout);
 
         // Send the query
-        fwrite($socket, $domain . "\r\n");
+        fwrite($socket, $domainForQuery . "\r\n");
 
         // Read the response
         $response = '';
