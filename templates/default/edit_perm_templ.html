@@ -70,7 +70,7 @@
                                     </div>
                                 </td>
                                 <td><code>{{ permission['name'] }}</code></td>
-                                <td>{% trans %}{{ descr }}{% endtrans %}</td>
+                                <td>{{ descr | trans }}</td>
                             </tr>
                             {% endfor %}
                             </tbody>
