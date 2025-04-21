@@ -206,7 +206,7 @@ class RdapService
 
     /**
      * Perform HTTP request to RDAP server
-     * 
+     *
      * @param string $url The full URL to query
      * @return string|null The response content or null on failure
      */
