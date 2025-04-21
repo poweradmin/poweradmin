@@ -17,10 +17,10 @@
             <div class="row mb-3">
                 <div class="col-md-6">
                     <div class="input-group">
-                        <input type="text" class="form-control" id="domain" name="domain" placeholder="{% trans %}Enter domain name{% endtrans %}" value="{{ domain }}">
-                        <button type="submit" class="btn btn-primary">
-                            <i class="bi bi-search me-1 text-white"></i>{% trans %}Lookup{% endtrans %}
-                        </button>
+                    <input type="text" class="form-control" id="domain" name="domain" placeholder="{% trans %}Enter domain name{% endtrans %}" value="{{ utf8_domain ?: domain }}">
+                    <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search me-1 text-white"></i>{% trans %}Lookup{% endtrans %}
+                    </button>
                     </div>
                     <div class="form-text">
                         {% trans %}Enter a domain name (e.g., example.com) to lookup its WHOIS information{% endtrans %}
@@ -31,7 +31,7 @@
 
         {% if domain %}
             <div class="mt-4">
-                <h5>{% trans %}WHOIS results for{% endtrans %} {{ domain }}</h5>
+                <h5>{% trans %}WHOIS results for{% endtrans %} {{ utf8_domain ?: domain }}</h5>
                 {% if result.success %}
                     <div class="whois-results p-3 mt-3 bg-light">
                         <pre class="mb-0">{{ result.data }}</pre>

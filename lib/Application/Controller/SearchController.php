@@ -160,6 +160,8 @@ class SearchController extends BaseController
 
     private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $zone_rowamount, $record_rowamount, $iface_zone_comments, $iface_record_comments): void
     {
+        $whois_enabled = $this->config->get('whois', 'enabled', false);
+
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
             'zone_sort_direction' => $zone_sort_direction,
@@ -185,6 +187,7 @@ class SearchController extends BaseController
             'iface_record_comments' => $iface_record_comments,
             'edit_permission' => Permission::getEditPermission($this->db),
             'user_id' => $_SESSION['userid'],
+            'whois_enabled' => $whois_enabled,
         ]);
     }
 

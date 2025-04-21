@@ -70,6 +70,7 @@ class WhoisController extends BaseController
 
         $this->render('whois.html', [
             'domain' => $domain,
+            'utf8_domain' => function_exists('idn_to_utf8') && preg_match('/^xn--/', $domain) ? idn_to_utf8($domain, IDNA_NONTRANSITIONAL_TO_ASCII) : $domain,
             'result' => $result,
             'custom_server' => $this->config->get('whois', 'default_server', '')
         ]);
@@ -87,6 +88,14 @@ class WhoisController extends BaseController
         // Check if a domain was submitted through the form
         if ($this->isPost() && isset($this->getRequest()['domain'])) {
             $domain = trim($this->getRequest()['domain']);
+
+            // Convert Unicode domain to Punycode if needed
+            if (preg_match('/[^\x20-\x7E]/', $domain) && function_exists('idn_to_ascii')) {
+                $punycode = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+                if ($punycode !== false) {
+                    $domain = $punycode;
+                }
+            }
         }
         // Check if a zone_id was provided
         elseif (isset($this->getRequest()['zone_id'])) {
