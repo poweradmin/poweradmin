@@ -161,6 +161,7 @@ class SearchController extends BaseController
     private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $zone_rowamount, $record_rowamount, $iface_zone_comments, $iface_record_comments): void
     {
         $whois_enabled = $this->config->get('whois', 'enabled', false);
+        $rdap_enabled = $this->config->get('rdap', 'enabled', false);
 
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
@@ -188,6 +189,7 @@ class SearchController extends BaseController
             'edit_permission' => Permission::getEditPermission($this->db),
             'user_id' => $_SESSION['userid'],
             'whois_enabled' => $whois_enabled,
+            'rdap_enabled' => $rdap_enabled,
         ]);
     }
 

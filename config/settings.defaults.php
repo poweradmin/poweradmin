@@ -229,4 +229,14 @@ return [
         'socket_timeout' => 10,                        // Socket timeout in seconds for WHOIS queries
         'restrict_to_admin' => true,                   // Only allow administrators (user_is_ueberuser) to use WHOIS functionality
     ],
+
+    /**
+     * RDAP Settings
+     */
+    'rdap' => [
+        'enabled' => false,                            // Enable RDAP lookup functionality
+        'default_server' => '',                        // Optional default RDAP server URL (empty to use server from the RDAP database)
+        'request_timeout' => 10,                       // HTTP request timeout in seconds for RDAP queries
+        'restrict_to_admin' => true,                   // Only allow administrators (user_is_ueberuser) to use RDAP functionality
+    ],
 ];

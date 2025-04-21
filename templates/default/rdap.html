@@ -1,0 +1,51 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}RDAP Lookup{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <strong><i class="bi bi-search me-2"></i>{% trans %}RDAP Lookup{% endtrans %}</strong>
+    </div>
+
+    <div class="card-body">
+        <form method="post" action="index.php?page=rdap">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <div class="input-group">
+                    <input type="text" class="form-control" id="domain" name="domain" placeholder="{% trans %}Enter domain name{% endtrans %}" value="{{ utf8_domain ?: domain }}">
+                    <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search me-1 text-white"></i>{% trans %}Lookup{% endtrans %}
+                    </button>
+                    </div>
+                    <div class="form-text">
+                        {% trans %}Enter a domain name (e.g., example.com) to lookup its RDAP information{% endtrans %}
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        {% if domain %}
+            <div class="mt-4">
+                <h5>{% trans %}RDAP results for{% endtrans %} {{ utf8_domain ?: domain }}</h5>
+                {% if result.success %}
+                    <div class="rdap-results p-3 mt-3 bg-light">
+                        <pre class="mb-0">{{ result.data }}</pre>
+                    </div>
+                {% elseif result.error %}
+                    <div class="alert alert-danger mt-3">
+                        {{ result.error }}
+                    </div>
+                {% else %}
+                    <div class="alert alert-info mt-3">
+                        {% trans %}Please enter a domain name to perform an RDAP lookup.{% endtrans %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+</div>

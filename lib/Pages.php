@@ -89,6 +89,7 @@ class Pages
             'search',
             'users',
             'whois',
+            'rdap',
         ];
     }
 }
