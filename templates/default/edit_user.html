@@ -37,7 +37,7 @@
                         <div class="input-group input-group-sm">
                             <input class="form-control form-control-sm" type="password" id="password" name="password"
                                    {% if (not perm_passwd_edit_others and (edit_own_perm and user['uid'] != session_user_id) or use_ldap_checked) %}disabled{% endif %}>
-                            <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill text-secondary" id="eye"></i></button>
                         </div>
                         <small class="text-muted">{% trans %}Leave empty to keep current password{% endtrans %}</small>
                     </div>
@@ -155,7 +155,7 @@
                             <ul class="small">
                                 {% for item in user_permissions %}
                                 {% set descr = item['descr'] %}
-                                <li>{% trans %}{{ descr }}{% endtrans %} <span class="text-muted">({{ item['name'] }})</span></li>
+                                <li>{{ descr|trans }} <span class="text-muted">({{ item['name'] }})</span></li>
                                 {% endfor %}
                             </ul>
                         </div>

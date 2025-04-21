@@ -63,7 +63,7 @@
                                     </div>
                                 </td>
                                 <td><code>{{ perm['name'] }}</code></td>
-                                <td>{% trans %}{{ descr }}{% endtrans %}</td>
+                                <td>{{ descr|trans }}</td>
                             </tr>
                             {% endfor %}
                             </tbody>

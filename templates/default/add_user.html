@@ -41,7 +41,7 @@
                         <label for="password" class="form-label">{% trans %}Password{% endtrans %}</label>
                         <div class="input-group input-group-sm">
                             <input class="form-control form-control-sm" type="password" id="password" name="password" value="" {% if not ldap_use %}required{% endif %}>
-                            <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
+                            <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill text-secondary" id="eye"></i></button>
                             {% if not ldap_use %}<div class="invalid-feedback">{% trans %}Provide user password{% endtrans %}</div>{% endif %}
                         </div>
                     </div>
