@@ -126,9 +126,9 @@ class ZoneSearch extends BaseSearch
             LEFT JOIN users u on z.owner = u.id
             LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=$domains_table.id
             WHERE
-                ($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
-            ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
-            ($iface_zone_comments && $parameters['comments'] ? " OR z.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ' ' .
+                (($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
+            ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
+            ($iface_zone_comments && $parameters['comments'] ? " OR z.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ')' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ' ORDER BY ' . $sort_zones_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
@@ -162,28 +162,30 @@ class ZoneSearch extends BaseSearch
      *
      * @param array $parameters An array of search parameters.
      * @param mixed $search_string The search string to be used in the query.
+     * @param bool $reverse Whether to perform a reverse search or not.
      * @param mixed $reverse_search_string The reversed search string to be used in the query.
      * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
      * @return int The number of zones found.
      */
-    public function getFoundZones(array $parameters, mixed $search_string, mixed $reverse_search_string, string $permission_view): int
+    public function getFoundZones(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view): int
     {
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
+        // Build a query that correctly applies permission filters for accurate counting
         $zonesQuery = "
         SELECT
-            COUNT(*)
+            COUNT(DISTINCT $domains_table.id)
         FROM
             $domains_table
         LEFT JOIN zones z on $domains_table.id = z.domain_id
         LEFT JOIN users u on z.owner = u.id
         LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=$domains_table.id
         WHERE
-            ($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
-            ($parameters['reverse'] ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ') ' .
-            ($parameters['comments'] ? " OR z.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ' ' .
+            (($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
+            ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
+            ($parameters['comments'] ? " OR z.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ')' .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '');
 
         return (int)$this->db->queryOne($zonesQuery);
