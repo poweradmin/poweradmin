@@ -20,7 +20,7 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %}</label>
-                        <input data-testid="zone-name-input" class="form-control form-control-sm" type="text" id="domain" name="domain" value="" required>
+                        <input data-testid="zone-name-input" class="form-control form-control-sm" type="text" id="domain" name="domain" value="{{ domain_value }}" required>
                         <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
                         <small class="text-muted">{% trans %}Example: example.com{% endtrans %}</small>
                     </div>
@@ -29,9 +29,9 @@
                         <label for="owner" class="form-label">{% trans %}Owner{% endtrans %}</label>
                         <select data-testid="zone-owner-select" class="form-select form-select-sm" id="owner" name="owner">
                             {% for user in users %}
-                            {% if user['id'] == session_user_id %}
+                            {% if (user['id'] == owner_value) %}
                             <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
-                            {% elseif perm_view_others %}
+                            {% elseif perm_view_others or user['id'] == session_user_id %}
                             <option value="{{ user['id'] }}">{{ user['fullname'] }}</option>
                             {% endif %}
                             {% endfor %}
@@ -43,7 +43,7 @@
                         <label for="dom_type" class="form-label">{% trans %}Type{% endtrans %}</label>
                         <select data-testid="zone-type-select" class="form-select form-select-sm" id="dom_type" name="dom_type">
                             {% for type in available_zone_types %}
-                            {% if type == iface_zone_type_default %}
+                            {% if type == dom_type_value %}
                             {% set selected = 'selected' %}
                             {% else %}
                             {% set selected = '' %}
@@ -57,9 +57,9 @@
                     <div class="mb-3">
                         <label for="zone_template" class="form-label">{% trans %}Template{% endtrans %}</label>
                         <select data-testid="zone-template-select" class="form-select form-select-sm" id="zone_template" name="zone_template">
-                            <option value="none">none</option>
+                            <option value="none" {% if zone_template_value == 'none' %}selected{% endif %}>none</option>
                             {% for zone_template in zone_templates %}
-                            <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
+                            <option value="{{ zone_template['id'] }}" {% if zone_template_value == zone_template['id'] %}selected{% endif %}>{{ zone_template['name'] }}</option>
                             {% endfor %}
                         </select>
                         <small class="text-muted">{% trans %}Optional: Apply predefined records from a template{% endtrans %}</small>
@@ -68,7 +68,7 @@
                     {% if pdnssec_use %}
                     <div class="mb-3">
                         <div class="form-check">
-                            <input data-testid="dnssec-checkbox" class="form-check-input" type="checkbox" id="dnssec" name="dnssec" value="1" checked>
+                            <input data-testid="dnssec-checkbox" class="form-check-input" type="checkbox" id="dnssec" name="dnssec" value="1" {% if not is_post or dnssec_checked %}checked{% endif %}>
                             <label class="form-check-label" for="dnssec">{% trans %}Enable DNSSEC{% endtrans %}</label>
                         </div>
                         <small class="text-muted">{% trans %}Secure this zone with DNSSEC signing{% endtrans %}</small>

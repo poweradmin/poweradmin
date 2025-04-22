@@ -138,15 +138,64 @@ class AddZoneMasterController extends BaseController
         $perm_view_others = UserManager::verify_permission($this->db, 'user_view_others');
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
 
+        // Keep the submitted zone name if there was an error
+        $domain_value = isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
+
+        // Safely handle the zone template value
+        if (isset($_POST['zone_template'])) {
+            // If it's 'none', keep it as is
+            if ($_POST['zone_template'] === 'none') {
+                $zone_template_value = 'none';
+            } else {
+                // Otherwise, ensure it's a valid integer
+                $template_id = filter_var($_POST['zone_template'], FILTER_VALIDATE_INT);
+                // Get the list of valid template IDs
+                $templates = $zone_templates->get_list_zone_templ($_SESSION['userid']);
+                $valid_template_ids = array_column($templates, 'id');
+                $zone_template_value = ($template_id !== false && in_array($template_id, $valid_template_ids)) ?
+                    $template_id : 'none';
+            }
+        } else {
+            $zone_template_value = 'none';
+        }
+
+        // Safely handle the owner value - ensure it's an integer
+        if (isset($_POST['owner'])) {
+            $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
+            // Verify that the owner ID exists among valid users
+            $valid_users = UserManager::show_users($this->db);
+            $valid_owner_ids = array_column($valid_users, 'id');
+            $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
+        } else {
+            $owner_value = $_SESSION['userid'];
+        }
+
+        // Safely handle the domain type value
+        $valid_domain_types = array("MASTER", "NATIVE");
+        $dom_type_value = isset($_POST['dom_type']) && in_array($_POST['dom_type'], $valid_domain_types) ?
+            $_POST['dom_type'] : $this->config->get('interface', 'zone_type_default', 'NATIVE');
+
+        $is_post_request = !empty($_POST);
+
+        // Create a sanitized version of the DNSSEC checkbox status
+        $dnssec_checked = isset($_POST['dnssec']) && $_POST['dnssec'] == '1';
+
         $this->render('add_zone_master.html', [
             'perm_view_others' => $perm_view_others,
             'session_user_id' => $_SESSION['userid'],
-            'available_zone_types' => array("MASTER", "NATIVE"),
+            'available_zone_types' => $valid_domain_types,
             'users' => UserManager::show_users($this->db),
             'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
             'iface_zone_type_default' => $this->config->get('interface', 'zone_type_default', 'NATIVE'),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
             'pdnssec_use' => $this->config->get('dnssec', 'enabled', false),
+            'domain_value' => $domain_value,
+            'zone_template_value' => $zone_template_value,
+            'owner_value' => $owner_value,
+            'dom_type_value' => $dom_type_value,
+            'is_post' => $is_post_request,
+            'dnssec_checked' => $dnssec_checked,
+            // Don't pass raw POST data to the template for security
         ]);
     }
 }

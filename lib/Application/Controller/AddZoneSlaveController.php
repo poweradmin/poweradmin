@@ -124,10 +124,32 @@ class AddZoneSlaveController extends BaseController
 
     private function showForm(): void
     {
+        // Keep the submitted values if there was an error
+        $domain_value = isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
+        $slave_master_value = isset($_POST['slave_master']) ? htmlspecialchars($_POST['slave_master']) : '';
+
+        // Safely handle the owner value - ensure it's an integer
+        if (isset($_POST['owner'])) {
+            $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
+            // Verify that the owner ID exists among valid users
+            $valid_users = UserManager::show_users($this->db);
+            $valid_owner_ids = array_column($valid_users, 'id');
+            $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
+        } else {
+            $owner_value = $_SESSION['userid'];
+        }
+
+        $is_post_request = !empty($_POST);
+
         $this->render('add_zone_slave.html', [
             'users' => UserManager::show_users($this->db),
             'session_user_id' => $_SESSION['userid'],
             'perm_view_others' => UserManager::verify_permission($this->db, 'user_view_others'),
+            'domain_value' => $domain_value,
+            'slave_master_value' => $slave_master_value,
+            'owner_value' => $owner_value,
+            'is_post' => $is_post_request,
+            // Don't pass raw POST data to the template for security
         ]);
     }
 }

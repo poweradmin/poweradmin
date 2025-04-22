@@ -328,13 +328,13 @@ class Dns
         foreach ($hostname_labels as $hostname_label) {
             if ($wildcard == 1 && !isset($first)) {
                 if (!preg_match('/^(\*|[\w\-\/]+)$/', $hostname_label)) {
-                    $this->messageService->addSystemError(_('You have invalid characters in your hostname.'));
+                    $this->messageService->addSystemError(_('You have invalid characters in your zone name.'));
                     return false;
                 }
                 $first = 1;
             } else {
                 if (!preg_match('/^[\w\-\/]+$/', $hostname_label)) {
-                    $this->messageService->addSystemError(_('You have invalid characters in your hostname.'));
+                    $this->messageService->addSystemError(_('You have invalid characters in your zone name.'));
                     return false;
                 }
             }
