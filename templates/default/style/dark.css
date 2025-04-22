@@ -107,8 +107,6 @@ tfoot.table-light {
 .table > thead > tr > th {
     color: var(--text-muted);
     background-color: var(--bg-dark-secondary);
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
 }
 
 .table > thead > tr > th a {
@@ -144,8 +142,6 @@ table tfoot tr td,
 
 .table td {
     color: var(--text-light) !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
 }
 
 .table-hover > tbody > tr:hover > * {
