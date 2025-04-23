@@ -537,6 +537,7 @@ return array(
     'Poweradmin\\Infrastructure\\Utility\\DependencyCheck' => $baseDir . '/lib/Infrastructure/Utility/DependencyCheck.php',
     'Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever' => $baseDir . '/lib/Infrastructure/Utility/IpAddressRetriever.php',
     'Poweradmin\\Infrastructure\\Utility\\LanguageCode' => $baseDir . '/lib/Infrastructure/Utility/LanguageCode.php',
+    'Poweradmin\\Infrastructure\\Utility\\NaturalSorting' => $baseDir . '/lib/Infrastructure/Utility/NaturalSorting.php',
     'Poweradmin\\Infrastructure\\Utility\\SimpleSizeFormatter' => $baseDir . '/lib/Infrastructure/Utility/SimpleSizeFormatter.php',
     'Poweradmin\\Infrastructure\\Utility\\SortHelper' => $baseDir . '/lib/Infrastructure/Utility/SortHelper.php',
     'Poweradmin\\LocaleManager' => $baseDir . '/lib/LocaleManager.php',

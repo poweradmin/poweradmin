@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Utility\NaturalSorting;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 
 class DbZoneRepository implements ZoneRepositoryInterface
@@ -32,12 +33,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
     private object $db;
     private string $db_type;
     private ?string $pdns_db_name;
+    private NaturalSorting $naturalSorting;
 
     public function __construct($db, $config)
     {
         $this->db = $db;
         $this->db_type = $config->get('database', 'type');
         $this->pdns_db_name = $config->get('database', 'pdns_name');
+        $this->naturalSorting = new NaturalSorting();
     }
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
@@ -199,7 +202,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         }
 
         $query .= " ORDER BY " . ($sortBy == "$domains_table.name" ?
-            SortHelper::getZoneSortOrder($domains_table, $this->db_type, $sortDirection) :
+            $this->naturalSorting->getReverseZoneSortOrder("$domains_table.name", $this->db_type, $sortDirection) :
             "$sortBy $sortDirection");
 
         // Add limit and offset for pagination
