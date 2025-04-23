@@ -67,7 +67,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
             return ctype_alpha($letter) || is_numeric($letter);
         });
     }
-    
+
     /**
      * Get reverse zones with efficient database-level filtering and pagination
      *
@@ -82,12 +82,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
      * @return array|int Array of reverse zones or count if countOnly is true
      */
     public function getReverseZones(
-        string $permType, 
-        int $userId, 
-        string $reverseType = 'all', 
-        int $offset = 0, 
-        int $limit = 25, 
-        string $sortBy = 'name', 
+        string $permType,
+        int $userId,
+        string $reverseType = 'all',
+        int $offset = 0,
+        int $limit = 25,
+        string $sortBy = 'name',
         string $sortDirection = 'ASC',
         bool $countOnly = false
     ) {
@@ -95,15 +95,15 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $records_table = $this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records';
         $cryptokeys_table = $this->pdns_db_name ? $this->pdns_db_name . '.cryptokeys' : 'cryptokeys';
         $domainmetadata_table = $this->pdns_db_name ? $this->pdns_db_name . '.domainmetadata' : 'domainmetadata';
-        
+
         // Determine what fields to select
         if ($countOnly) {
             // Use a subquery for accurate counting without GROUP BY complications
             $selectFields = "COUNT(*) as count";
-            
+
             // Initialize params array for count query
             $params = [];
-            
+
             // For count queries, use a simpler join structure
             $query = "SELECT $selectFields 
                      FROM (
@@ -111,13 +111,13 @@ class DbZoneRepository implements ZoneRepositoryInterface
                          FROM $domains_table
                          LEFT JOIN zones ON $domains_table.id = zones.domain_id
                          WHERE 1=1";
-                         
+
             if ($permType == 'own') {
                 $query .= " AND zones.owner = :userId";
                 $params[':userId'] = $userId;
             }
-            
-            // Add reverse zone type filter 
+
+            // Add reverse zone type filter
             $query .= " AND (";
             if ($reverseType == 'all' || $reverseType == 'ipv4') {
                 $query .= "$domains_table.name LIKE '%.in-addr.arpa'";
@@ -125,21 +125,21 @@ class DbZoneRepository implements ZoneRepositoryInterface
                     $query .= " OR ";
                 }
             }
-            
+
             if ($reverseType == 'all' || $reverseType == 'ipv6') {
                 $query .= "$domains_table.name LIKE '%.ip6.arpa'";
             }
             $query .= ")";
-            
+
             $query .= ") AS distinct_domains";
-            
+
             // Execute count query
             $stmt = $this->db->prepare($query);
             foreach ($params as $param => $value) {
                 $stmt->bindValue($param, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
             }
             $stmt->execute();
-            
+
             return (int)$stmt->fetchColumn();
         } else {
             $selectFields = "$domains_table.id, 
@@ -151,7 +151,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
                            COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
                            zones.comment";
         }
-        
+
         // Build the base query
         $query = "SELECT $selectFields
                  FROM $domains_table
@@ -161,14 +161,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
                  LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
                  LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'
                  WHERE 1=1";
-        
+
         // Add permission filter
         $params = [];
         if ($permType == 'own') {
             $query .= " AND zones.owner = :userId";
             $params[':userId'] = $userId;
         }
-        
+
         // Add reverse zone type filter at database level
         $query .= " AND (";
         if ($reverseType == 'all' || $reverseType == 'ipv4') {
@@ -177,18 +177,18 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 $query .= " OR ";
             }
         }
-        
+
         if ($reverseType == 'all' || $reverseType == 'ipv6') {
             $query .= "$domains_table.name LIKE '%.ip6.arpa'";
         }
         $query .= ")";
-        
-        // GROUP BY only needed for non-count queries - 
+
+        // GROUP BY only needed for non-count queries -
         // count queries are already handled and returned above
-        
+
         // Group by needed fields
         $query .= " GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, users.username, users.fullname, zones.comment";
-        
+
         // Add sorting
         if ($sortBy == 'owner') {
             $sortBy = 'users.username';
@@ -197,31 +197,31 @@ class DbZoneRepository implements ZoneRepositoryInterface
         } else {
             $sortBy = "$domains_table.$sortBy";
         }
-        
-        $query .= " ORDER BY " . ($sortBy == "$domains_table.name" ? 
-            SortHelper::getZoneSortOrder($domains_table, $this->db_type, $sortDirection) : 
+
+        $query .= " ORDER BY " . ($sortBy == "$domains_table.name" ?
+            SortHelper::getZoneSortOrder($domains_table, $this->db_type, $sortDirection) :
             "$sortBy $sortDirection");
-        
+
         // Add limit and offset for pagination
         $query .= " LIMIT :limit OFFSET :offset";
         $params[':limit'] = $limit;
         $params[':offset'] = $offset;
-        
+
         // Execute query
         $stmt = $this->db->prepare($query);
         foreach ($params as $param => $value) {
             $stmt->bindValue($param, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
         }
         $stmt->execute();
-        
+
         if ($countOnly) {
             return (int)$stmt->fetchColumn();
         }
-        
+
         // Process results
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $zones = [];
-        
+
         foreach ($results as $row) {
             $name = $row['name'];
             if (!isset($zones[$name])) {
@@ -238,12 +238,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
                     'users' => []
                 ];
             }
-            
+
             $zones[$name]['owners'][] = $row['username'];
             $zones[$name]['full_names'][] = $row['fullname'] ?: '';
             $zones[$name]['users'][] = $row['username'];
         }
-        
+
         return $zones;
     }
 }

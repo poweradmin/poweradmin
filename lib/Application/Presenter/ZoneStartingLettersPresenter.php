@@ -32,7 +32,7 @@ class ZoneStartingLettersPresenter
 
         // Preserve rows_per_page parameter if set
         $rowsPerPageParam = isset($_GET['rows_per_page']) ? '&rows_per_page=' . (int)$_GET['rows_per_page'] : '';
-        
+
         // Determine the correct page based on the current URL
         $currentPage = isset($_GET['page']) ? $_GET['page'] : 'list_zones';
 

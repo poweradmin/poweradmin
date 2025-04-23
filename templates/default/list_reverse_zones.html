@@ -268,20 +268,8 @@ function toggleZoneCheckboxes() {
 
 // Function to handle rows per page change
 function changeRowsPerPage(value) {
-    // Store the value in localStorage for persistence
-    UserSettings.setSetting('rows_per_page', value);
-    
-    // Redirect to the current page with the new rows_per_page parameter
-    const urlParams = new URLSearchParams(window.location.search);
-    urlParams.set('rows_per_page', value);
-    
-    // Keep the reverse zone type filter if it exists
-    if (urlParams.has('reverse_type')) {
-        // It's already there, no need to add it
-    } else if (document.getElementById('reverse-type-filter')) {
-        urlParams.set('reverse_type', document.getElementById('reverse-type-filter').value);
-    }
-    
-    window.location.href = 'index.php?' + urlParams.toString();
+    // Use the UserSettings module with proper pageType for reverse zones
+    // The pageType 'zones' is used for all zone listing pages
+    return UserSettings.applyRowsPerPageSetting(value, 'zones');
 }
 </script>

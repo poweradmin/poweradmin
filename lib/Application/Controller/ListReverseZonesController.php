@@ -100,8 +100,8 @@ class ListReverseZonesController extends BaseController
 
         // Always get the total count of ALL reverse zones (regardless of filter)
         $count_all_reverse_zones = $this->zoneService->countReverseZones(
-            $perm_view, 
-            $_SESSION['userid'], 
+            $perm_view,
+            $_SESSION['userid'],
             'all',  // Always count all reverse zones for the total
             $zone_sort_by,
             $zone_sort_direction
@@ -109,8 +109,8 @@ class ListReverseZonesController extends BaseController
 
         // Get the actual zones for the current page with efficient DB filtering
         $reverse_zones = $this->zoneService->getReverseZones(
-            $perm_view, 
-            $_SESSION['userid'], 
+            $perm_view,
+            $_SESSION['userid'],
             $reverse_zone_type,
             $row_start,
             $iface_rowamount,
@@ -120,16 +120,16 @@ class ListReverseZonesController extends BaseController
 
         // Get counts for each type
         $count_ipv4_zones = $this->zoneService->countReverseZones(
-            $perm_view, 
-            $_SESSION['userid'], 
+            $perm_view,
+            $_SESSION['userid'],
             'ipv4',
             $zone_sort_by,
             $zone_sort_direction
         );
 
         $count_ipv6_zones = $this->zoneService->countReverseZones(
-            $perm_view, 
-            $_SESSION['userid'], 
+            $perm_view,
+            $_SESSION['userid'],
             'ipv6',
             $zone_sort_by,
             $zone_sort_direction
@@ -171,7 +171,20 @@ class ListReverseZonesController extends BaseController
 
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $presenter = new PaginationPresenter($pagination, 'index.php?page=list_reverse_zones&start={PageNumber}' . (isset($_GET['reverse_type']) ? '&reverse_type=' . htmlspecialchars($_GET['reverse_type']) : ''));
+
+        $paginationUrl = 'index.php?page=list_reverse_zones&start={PageNumber}';
+
+        // Add reverse_type parameter if it exists
+        if (isset($_GET['reverse_type'])) {
+            $paginationUrl .= '&reverse_type=' . htmlspecialchars($_GET['reverse_type']);
+        }
+
+        // Add rows_per_page parameter if it exists
+        if (isset($_GET['rows_per_page'])) {
+            $paginationUrl .= '&rows_per_page=' . htmlspecialchars($_GET['rows_per_page']);
+        }
+
+        $presenter = new PaginationPresenter($pagination, $paginationUrl);
 
         return $presenter->present();
     }
@@ -220,39 +233,39 @@ class ListReverseZonesController extends BaseController
                     AND r.type = 'PTR'
                     AND d.name NOT LIKE '%.arpa'
                   ORDER BY LENGTH(d.name) DESC";
-                  
+
         $stmt = $this->db->prepare($query);
-        
+
         // Bind all zone IDs
         $paramIndex = 1;
         foreach ($reverseZoneIds as $zoneId) {
             $stmt->bindValue($paramIndex, $zoneId, \PDO::PARAM_INT);
             $paramIndex++;
         }
-        
+
         $stmt->execute();
         $matches = $stmt->fetchAll();
-        
+
         // Process results to build the final association map
         // We use a tracking array to ensure we only count each PTR record once for its best match
         $processedPtrs = [];
-        
+
         foreach ($matches as $match) {
             $reverseDomainId = $match['reverse_domain_id'];
             $forwardDomainId = $match['forward_domain_id'];
             $forwardDomainName = $match['forward_domain_name'];
             $ptrContent = $match['ptr_content'];
-            
+
             // Create a tracking key for this specific PTR record
             $ptrKey = $reverseDomainId . '-' . $ptrContent;
-            
+
             // Only process each PTR record once (the first match will be the most specific due to ORDER BY)
             if (isset($processedPtrs[$ptrKey])) {
                 continue;
             }
-            
+
             $processedPtrs[$ptrKey] = true;
-            
+
             // Create or update the forward zone entry for this reverse zone
             if (!isset($associatedZones[$reverseDomainId][$forwardDomainId])) {
                 $associatedZones[$reverseDomainId][$forwardDomainId] = [
@@ -264,7 +277,7 @@ class ListReverseZonesController extends BaseController
                 $associatedZones[$reverseDomainId][$forwardDomainId]['ptr_records']++;
             }
         }
-        
+
         // Convert associative arrays to indexed arrays for consistent output format
         foreach ($reverseZoneIds as $zoneId) {
             if (isset($associatedZones[$zoneId]) && is_array($associatedZones[$zoneId])) {
@@ -273,7 +286,7 @@ class ListReverseZonesController extends BaseController
                 $associatedZones[$zoneId] = [];
             }
         }
-        
+
         return $associatedZones;
     }
 
