@@ -82,6 +82,7 @@ return [
         'display_serial_in_zone_list' => false,
         'display_template_in_zone_list' => false,
         'search_group_records' => false,      // Group records by name and content in search results (added in 3.8.0)
+        'reverse_zone_sort' => 'natural',     // Reverse zone sorting algorithm: 'natural' (default) or 'hierarchical' (experimental) (added in 4.0.0)
 
         // Zone Editing Features
         'add_reverse_record' => true,         // Enable checkbox to add PTR record from regular zone view (added in 2.1.7)

@@ -40,10 +40,12 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
 
 class ListReverseZonesController extends BaseController
 {
     private ZoneService $zoneService;
+    private ReverseZoneSorting $reverseZoneSorting;
 
     public function run(): void
     {
@@ -53,9 +55,10 @@ class ListReverseZonesController extends BaseController
         $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
 
-        // Initialize repository and service
+        // Initialize repository and services
         $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $this->zoneService = new ZoneService($zoneRepository);
+        $this->reverseZoneSorting = new ReverseZoneSorting();
 
         $this->listReverseZones();
     }
@@ -117,6 +120,34 @@ class ListReverseZonesController extends BaseController
             $zone_sort_by,
             $zone_sort_direction
         );
+
+        // Apply custom sorting when sorting by name
+        if ($zone_sort_by === 'name' && !empty($reverse_zones)) {
+            // Get the sorting type from configuration (natural is default)
+            $sort_type = $this->config->get('interface', 'reverse_zone_sort', 'natural');
+
+            // Extract just the names for sorting
+            $zone_names = array_map(function ($zone) {
+                return $zone['name'];
+            }, $reverse_zones);
+
+            // Sort the names using the configured sorting method
+            $sorted_names = $this->reverseZoneSorting->sortDomains($zone_names, $sort_type);
+
+            // Reorder the zones array based on the sorted names
+            $sorted_zones = [];
+            foreach ($sorted_names as $name) {
+                foreach ($reverse_zones as $zone) {
+                    if ($zone['name'] === $name) {
+                        $sorted_zones[] = $zone;
+                        break;
+                    }
+                }
+            }
+
+            // Replace the original zones with the sorted ones
+            $reverse_zones = $sorted_zones;
+        }
 
         // Get counts for each type
         $count_ipv4_zones = $this->zoneService->countReverseZones(
