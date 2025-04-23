@@ -59,12 +59,6 @@ footer a, footer a:hover, footer a:focus {
     color: #495057;
 }
 
-.btn-primary, .btn-secondary {
-    padding: 0.375rem 0.75rem;
-    font-weight: 500;
-    transition: all 0.2s ease-in-out;
-}
-
 .btn-secondary {
     background-color: #6c757d;
 }
