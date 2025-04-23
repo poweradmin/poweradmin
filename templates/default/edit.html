@@ -30,7 +30,7 @@
         <form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
-            <table class="table table-striped table-hover table-sm">
+            <table class="table table-striped table-hover table-sm add-record-form">
                 <tr>
                     <th>{% trans %}Name{% endtrans %}</th>
                     <th>{% trans %}Type{% endtrans %}</th>
@@ -203,7 +203,7 @@
             <input type="hidden" name="serial" value="{{ serial }}">
 
             <div class="table-responsive">
-                <table class="table table-striped table-hover table-sm">
+                <table class="table table-striped table-hover table-sm add-record-form">
                     <thead class="table-light">
                     <tr>
                         <th class="text-center" style="width: 40px;">
@@ -418,7 +418,7 @@
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
 
-            <table class="table table-striped table-hover table-sm">
+            <table class="table table-striped table-hover table-sm add-record-form">
                 <tr>
                     <th>{% trans %}Name{% endtrans %}</th>
                     <th>{% trans %}Type{% endtrans %}</th>

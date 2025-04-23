@@ -32,11 +32,14 @@ class ZoneStartingLettersPresenter
 
         // Preserve rows_per_page parameter if set
         $rowsPerPageParam = isset($_GET['rows_per_page']) ? '&rows_per_page=' . (int)$_GET['rows_per_page'] : '';
+        
+        // Determine the correct page based on the current URL
+        $currentPage = isset($_GET['page']) ? $_GET['page'] : 'list_zones';
 
         if ($letterStart === "1") {
             $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">0-9</span></li>';
         } elseif ($digitsAvailable) {
-            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"index.php?page=list_zones&letter=1" . $rowsPerPageParam . "\">0-9</a></li>";
+            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"index.php?page=" . $currentPage . "&letter=1" . $rowsPerPageParam . "\">0-9</a></li>";
         } else {
             $html .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">0-9</span></li>';
         }
@@ -45,7 +48,7 @@ class ZoneStartingLettersPresenter
             if ($letter === $letterStart) {
                 $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
             } elseif (in_array($letter, $availableChars)) {
-                $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"index.php?page=list_zones&letter=" . $letter . $rowsPerPageParam . "\">" . $letter . "</a></li>";
+                $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"index.php?page=" . $currentPage . "&letter=" . $letter . $rowsPerPageParam . "\">" . $letter . "</a></li>";
             } else {
                 $html .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
             }
@@ -54,7 +57,7 @@ class ZoneStartingLettersPresenter
         if ($letterStart === 'all') {
             $html .= '<li class="page-item active"><span class="page-link" href="#">' . _('Show all') . '</span></li>';
         } else {
-            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"index.php?page=list_zones&letter=all" . $rowsPerPageParam . "\">" . _('Show all') . '</a></li>';
+            $html .= "<li class=\"page-item\"><a class=\"page-link\" href=\"index.php?page=" . $currentPage . "&letter=all" . $rowsPerPageParam . "\">" . _('Show all') . '</a></li>';
         }
 
         $html .= "</ul>";

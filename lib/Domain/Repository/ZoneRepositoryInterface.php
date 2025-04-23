@@ -25,4 +25,28 @@ namespace Poweradmin\Domain\Repository;
 interface ZoneRepositoryInterface
 {
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array;
+    
+    /**
+     * Get reverse zones with efficient database-level filtering and pagination
+     *
+     * @param string $permType Permission type ('all', 'own')
+     * @param int $userId User ID (used when permType is 'own')
+     * @param string $reverseType Filter by reverse zone type ('all', 'ipv4', 'ipv6')
+     * @param int $offset Pagination offset
+     * @param int $limit Maximum number of records to return
+     * @param string $sortBy Column to sort by
+     * @param string $sortDirection Sort direction ('ASC' or 'DESC')
+     * @param bool $countOnly If true, returns only the count of matching zones
+     * @return array|int Array of reverse zones or count if countOnly is true
+     */
+    public function getReverseZones(
+        string $permType, 
+        int $userId, 
+        string $reverseType = 'all', 
+        int $offset = 0, 
+        int $limit = 25, 
+        string $sortBy = 'name', 
+        string $sortDirection = 'ASC',
+        bool $countOnly = false
+    );
 }

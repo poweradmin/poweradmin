@@ -325,6 +325,10 @@ abstract class BaseController
             $vars['system_messages'] = $systemMessages;
         }
 
+        // Add the current page to the header variables
+        $currentPage = $this->request['page'] ?? 'index';
+        $vars['current_page'] = $currentPage;
+
         $this->app->render('header.html', $vars);
     }
 

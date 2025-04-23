@@ -105,6 +105,23 @@ footer a, footer a:hover, footer a:focus {
 }
 
 /* Table styles */
+.table > thead > tr > th {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.table td {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+/* Add record form tables have reduced padding */
+.add-record-form th,
+.add-record-form td {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+}
+
 .table > thead > tr > th a {
     color: inherit;
     background-color: transparent;

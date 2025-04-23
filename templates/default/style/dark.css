@@ -107,6 +107,15 @@ tfoot.table-light {
 .table > thead > tr > th {
     color: var(--text-muted);
     background-color: var(--bg-dark-secondary);
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+/* Add record form tables have reduced padding */
+.add-record-form th,
+.add-record-form td {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
 }
 
 .table > thead > tr > th a {
@@ -142,6 +151,8 @@ table tfoot tr td,
 
 .table td {
     color: var(--text-light) !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
 }
 
 .table-hover > tbody > tr:hover > * {

@@ -1,13 +1,19 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Zones{% endtrans %}</li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_forward_zones">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Forward Zones{% endtrans %}</li>
     </ol>
 </nav>
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-        <strong><i class="bi bi-diagram-3 me-2"></i>{% trans %}List zones{% endtrans %}</strong>
+        <div class="d-flex align-items-center">
+            <strong><i class="bi bi-diagram-3 me-2"></i>{% trans %}Forward Zones{% endtrans %}</strong>
+            <a href="index.php?page=list_reverse_zones" class="btn btn-sm btn-outline-secondary ms-3">
+                <i class="bi bi-arrow-right me-1 text-secondary"></i>{% trans %}Reverse Zones{% endtrans %}
+            </a>
+        </div>
         <div>
             {% if perm_zone_master_add %}
             <a href="index.php?page=add_zone_master" class="btn btn-primary btn-sm">
@@ -61,8 +67,8 @@
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">
-                    {% if count_zones_view > iface_rowamount and count_zones_all_letterstart == "0" or count_zones_view == 0 %}
-                    <tr><td>{% trans %}There are no zones to show in this listing.{% endtrans %}</td></tr>
+                    {% if zones|length == 0 %}
+                    <tr><td>{% trans %}There are no forward zones to show in this listing.{% endtrans %}</td></tr>
                     {% else %}
                     <thead class="table-light">
                     <tr>
@@ -70,24 +76,24 @@
                             <input type="checkbox" class="form-check-input" id="select_zones" onClick="toggleZoneCheckboxes()"/>
                         </th>
                         <th>
-                            <a href="index.php?page=list_zones&zone_sort_by=name&zone_sort_by_direction={{ zone_sort_by == 'name' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="index.php?page=list_forward_zones&zone_sort_by=name&zone_sort_by_direction={{ zone_sort_by == 'name' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Name{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'name' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
                         <th>
-                            <a href="index.php?page=list_zones&zone_sort_by=type&zone_sort_by_direction={{ zone_sort_by == 'type' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="index.php?page=list_forward_zones&zone_sort_by=type&zone_sort_by_direction={{ zone_sort_by == 'type' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Type{% endtrans %}</a>
                             {{ zone_sort_by == 'type' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
                         <th>
-                            <a href="index.php?page=list_zones&zone_sort_by=count_records&zone_sort_by_direction={{ zone_sort_by == 'count_records' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="index.php?page=list_forward_zones&zone_sort_by=count_records&zone_sort_by_direction={{ zone_sort_by == 'count_records' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Records{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'count_records' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
                         <th>
-                            <a href="index.php?page=list_zones&zone_sort_by=owner&zone_sort_by_direction={{ zone_sort_by == 'owner' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="index.php?page=list_forward_zones&zone_sort_by=owner&zone_sort_by_direction={{ zone_sort_by == 'owner' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Owner{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'owner' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
@@ -172,13 +178,10 @@
                                 </a>
                                 {% endif %}
                                 {% if perm_zone_master_add %}
-                                {% set zoneName = zone['name'] %}
-                                {% if not (zoneName ends with 'in-addr.arpa' or zoneName ends with 'ip6.arpa') %}
                                 <a class="btn btn-outline-secondary btn-sm" href="index.php?page=batch_ptr_record&id={{ zone['id'] }}">
                                     <i class="bi bi-arrow-repeat text-secondary"></i>
                                     <span class="d-none d-md-inline">{% trans %}PTR{% endtrans %}</span>
                                 </a>
-                                {% endif %}
                                 {% endif %}
                                 <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit&id={{ zone['id'] }}" data-testid="edit-zone-{{ zone['id'] }}">
                                     <i class="bi bi-pencil-square text-primary"></i>
