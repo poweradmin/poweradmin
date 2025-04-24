@@ -76,7 +76,7 @@ class AppInitializer
         if (!$newConfigExists && !$oldConfigExists) {
             $messageService = new MessageService();
             $messageService->displayHtmlError(
-                _('No configuration file found. Please use the <a href="install/">installer</a> to create one, or create a config/settings.php file manually. The legacy format (inc/config.inc.php) is also supported but deprecated and will be removed in a future version.')
+                _('No configuration file found. Please use the <a href="install/">installer</a> to create one, or create a config/settings.php file manually.')
             );
         }
     }
