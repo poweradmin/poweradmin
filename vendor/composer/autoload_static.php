@@ -602,7 +602,6 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Application\\Controller\\ListSupermastersController' => __DIR__ . '/../..' . '/lib/Application/Controller/ListSupermastersController.php',
         'Poweradmin\\Application\\Controller\\ListTemplateZonesController' => __DIR__ . '/../..' . '/lib/Application/Controller/ListTemplateZonesController.php',
         'Poweradmin\\Application\\Controller\\ListZoneTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/ListZoneTemplController.php',
-        'Poweradmin\\Application\\Controller\\ListZonesController' => __DIR__ . '/../..' . '/lib/Application/Controller/ListZonesController.php',
         'Poweradmin\\Application\\Controller\\LoginController' => __DIR__ . '/../..' . '/lib/Application/Controller/LoginController.php',
         'Poweradmin\\Application\\Controller\\LogoutController' => __DIR__ . '/../..' . '/lib/Application/Controller/LogoutController.php',
         'Poweradmin\\Application\\Controller\\MigrationsController' => __DIR__ . '/../..' . '/lib/Application/Controller/MigrationsController.php',

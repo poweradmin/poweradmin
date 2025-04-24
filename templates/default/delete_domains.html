@@ -1,7 +1,13 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+        {% if is_reverse_zone %}
+        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        {% else %}
+        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        {% endif %}
+    </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Delete zones{% endtrans %}</li>
     </ol>
 </nav>
@@ -68,9 +74,19 @@
                         <button type="submit" name="confirm" class="btn btn-danger btn-sm">
                             <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete these zones{% endtrans %}
                         </button>
-                        <a href="index.php?page=list_zones" class="btn btn-secondary btn-sm">
-                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep these zones{% endtrans %}
-                        </a>
+                        {% if is_reverse_zone %}
+                            <a href="index.php?page=list_reverse_zones" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep these zones{% endtrans %}
+                            </a>
+                        {% elseif is_mixed_zones %}
+                            <a href="index.php?page=list_forward_zones" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep these zones{% endtrans %}
+                            </a>
+                        {% else %}
+                            <a href="index.php?page=list_forward_zones" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep these zones{% endtrans %}
+                            </a>
+                        {% endif %}
                     </div>
                 </form>
             </div>

@@ -35,8 +35,8 @@
                 {% endif %}
                 {% if perm_view_zone_own or perm_view_zone_other or perm_zone_master_add or perm_zone_slave_add %}
                 <li class="p-1">
-                    <a href="index.php?page=list_zones" class="nav-link text-{{ current_page in ['list_zones', 'list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] ? 'primary' : 'secondary' }}"><i class="bi bi-diagram-3"></i></a>
-                    <a class="text-{{ current_page in ['list_zones', 'list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a href="index.php?page=list_forward_zones" class="nav-link text-{{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] ? 'primary' : 'secondary' }}"><i class="bi bi-diagram-3"></i></a>
+                    <a class="text-{{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Zones{% endtrans %}</a>
                     <ul class="dropdown-menu">

@@ -35,6 +35,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -116,8 +117,14 @@ class AddZoneSlaveController extends BaseController
                     $master
                 ), $zone_id);
 
-                $this->setMessage('list_zones', 'success', _('Zone has been added successfully.'));
-                $this->redirect('index.php', ['page' => 'list_zones']);
+                // Check if the zone is a reverse zone and redirect accordingly
+                if (DnsHelper::isReverseZone($zone)) {
+                    $this->setMessage('list_reverse_zones', 'success', _('Zone has been added successfully.'));
+                    $this->redirect('index.php', ['page' => 'list_reverse_zones']);
+                } else {
+                    $this->setMessage('list_forward_zones', 'success', _('Zone has been added successfully.'));
+                    $this->redirect('index.php', ['page' => 'list_forward_zones']);
+                }
             }
         }
     }

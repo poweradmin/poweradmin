@@ -413,7 +413,6 @@ return array(
     'Poweradmin\\Application\\Controller\\ListSupermastersController' => $baseDir . '/lib/Application/Controller/ListSupermastersController.php',
     'Poweradmin\\Application\\Controller\\ListTemplateZonesController' => $baseDir . '/lib/Application/Controller/ListTemplateZonesController.php',
     'Poweradmin\\Application\\Controller\\ListZoneTemplController' => $baseDir . '/lib/Application/Controller/ListZoneTemplController.php',
-    'Poweradmin\\Application\\Controller\\ListZonesController' => $baseDir . '/lib/Application/Controller/ListZonesController.php',
     'Poweradmin\\Application\\Controller\\LoginController' => $baseDir . '/lib/Application/Controller/LoginController.php',
     'Poweradmin\\Application\\Controller\\LogoutController' => $baseDir . '/lib/Application/Controller/LogoutController.php',
     'Poweradmin\\Application\\Controller\\MigrationsController' => $baseDir . '/lib/Application/Controller/MigrationsController.php',

@@ -12,7 +12,7 @@ describe('Error Handling and Edge Cases', () => {
       cy.clearCookies();
       
       // Try to access a protected page
-      cy.visit('/index.php?page=list_zones');
+      cy.visit('/index.php?page=list_forward_zones');
       
       // Should redirect to login
       cy.url().should('include', '/index.php?page=login');
@@ -44,7 +44,7 @@ describe('Error Handling and Edge Cases', () => {
       cy.get('[data-testid="add-zone-button"]').dblclick();
       
       // Check we end up on the correct page
-      cy.url().should('include', '/index.php?page=list_zones');
+      cy.url().should('include', '/index.php?page=list_forward_zones');
       
       // Clean up
       cy.contains('tr', 'concurrent-test.com').within(() => {
@@ -60,7 +60,7 @@ describe('Error Handling and Edge Cases', () => {
       cy.get('[data-testid="list-zones-link"]').click();
       
       // Try to access an invalid page number
-      cy.visit('/index.php?page=list_zones&letter=all&start=9999');
+      cy.visit('/index.php?page=list_forward_zones&letter=all&start=9999');
       
       // Should show first page or error message
       cy.get('[data-testid="zones-table"]').should('be.visible');
@@ -85,8 +85,8 @@ describe('Error Handling and Edge Cases', () => {
       // Go forward
       cy.go('forward');
       
-      // Should be on zones list
-      cy.url().should('include', '/index.php?page=list_zones');
+      // Should be on forward zones list
+      cy.url().should('include', '/index.php?page=list_forward_zones');
       
       // Clean up
       cy.contains('tr', 'navigation-test.com').within(() => {

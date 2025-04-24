@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
@@ -120,6 +121,7 @@ class EditRecordController extends BaseController
             'user_is_zone_owner' => $user_is_zone_owner,
             'iface_record_comments' => $iface_record_comments,
             'comment' => $recordComment ? $recordComment->getComment() : '',
+            'is_reverse_zone' => DnsHelper::isReverseZone($zone_name),
         ]);
     }
 

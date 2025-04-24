@@ -12,7 +12,7 @@ describe('Master Zone Management', () => {
         cy.get('[data-testid="zone-name-input"]').type('example.com');
         cy.get('[data-testid="add-zone-button"]').click();
 
-        cy.url().should('include', '/index.php?page=list_zones');
+        cy.url().should('include', '/index.php?page=list_forward_zones');
         cy.get('[data-testid="alert-message"]').should('contain', 'Zone has been added successfully.');
     });
 
@@ -21,7 +21,7 @@ describe('Master Zone Management', () => {
         cy.get('[data-testid="zone-name-input"]').type('1.168.192.in-addr.arpa');
         cy.get('[data-testid="add-zone-button"]').click();
 
-        cy.url().should('include', '/index.php?page=list_zones');
+        cy.url().should('include', '/index.php?page=list_reverse_zones');
         cy.get('[data-testid="alert-message"]').should('contain', 'Zone has been added successfully.');
     });
 

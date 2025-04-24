@@ -34,7 +34,7 @@ class ZoneStartingLettersPresenter
         $rowsPerPageParam = isset($_GET['rows_per_page']) ? '&rows_per_page=' . (int)$_GET['rows_per_page'] : '';
 
         // Determine the correct page based on the current URL
-        $currentPage = isset($_GET['page']) ? $_GET['page'] : 'list_zones';
+        $currentPage = isset($_GET['page']) ? $_GET['page'] : 'list_forward_zones';
 
         if ($letterStart === "1") {
             $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">0-9</span></li>';

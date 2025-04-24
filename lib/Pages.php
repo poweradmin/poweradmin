@@ -81,7 +81,6 @@ class Pages
             'list_perm_templ',
             'list_supermasters',
             'list_zone_templ',
-            'list_zones',
             'list_forward_zones',
             'list_reverse_zones',
             'list_template_zones',

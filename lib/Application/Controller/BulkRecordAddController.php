@@ -248,6 +248,7 @@ class BulkRecordAddController extends BaseController
             'failed_records' => $failed_records,
             'default_ttl' => $this->config->get('dns', 'ttl', 3600),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
+            'is_reverse_zone' => DnsHelper::isReverseZone($zone_name),
         ]);
     }
 

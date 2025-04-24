@@ -36,6 +36,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
@@ -58,8 +59,8 @@ class DeleteDomainsController extends BaseController
     {
         $zone_ids = $_POST['zone_id'] ?? null;
         if (!$zone_ids) {
-            $this->setMessage('list_zones', 'error', _('No zone selected for deletion.'));
-            $this->redirect('index.php', ['page' => 'list_zones']);
+            $this->setMessage('list_forward_zones', 'error', _('No zone selected for deletion.'));
+            $this->redirect('index.php', ['page' => 'list_forward_zones']);
             return;
         }
 
@@ -91,22 +92,38 @@ class DeleteDomainsController extends BaseController
                 $this->recordCommentService->deleteCommentsByDomainId($zone_id);
             }
 
+            // Always redirect to list_forward_zones after multiple zone deletions
             if (count($deleted_zones) == 1) {
-                $this->setMessage('list_zones', 'success', _('Zone has been deleted successfully.'));
+                $this->setMessage('list_forward_zones', 'success', _('Zone has been deleted successfully.'));
             } else {
-                $this->setMessage('list_zones', 'success', _('Zones have been deleted successfully.'));
+                $this->setMessage('list_forward_zones', 'success', _('Zones have been deleted successfully.'));
             }
-            $this->redirect('index.php', ['page' => 'list_zones']);
+            $this->redirect('index.php', ['page' => 'list_forward_zones']);
         }
     }
 
     public function showDomains($zone_ids): void
     {
         $zones = $this->getZoneInfo($zone_ids);
+        // Check if we're dealing with only reverse zones, only forward zones, or mixed
+        $all_reverse = true;
+        $all_forward = true;
+
+        foreach ($zones as $zone) {
+            $is_reverse = DnsHelper::isReverseZone($zone['name']);
+            if ($is_reverse) {
+                $all_forward = false;
+            } else {
+                $all_reverse = false;
+            }
+        }
+
         $this->render('delete_domains.html', [
             'perm_edit' => Permission::getEditPermission($this->db),
             'zones' => $zones,
-            'error' => _("You do not have the permission to delete a zone.")
+            'error' => _("You do not have the permission to delete a zone."),
+            'is_reverse_zone' => $all_reverse, // If all zones are reverse, use reverse breadcrumb
+            'is_mixed_zones' => (!$all_reverse && !$all_forward) // Flag for mixed zone types
         ]);
     }
 

@@ -37,6 +37,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -107,8 +108,6 @@ class AddZoneMasterController extends BaseController
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif ($dnsRecord->add_domain($this->db, $zone_name, $owner, $dom_type, '', $zone_template)) {
-            $this->setMessage('list_zones', 'success', _('Zone has been added successfully.'));
-
             $zone_id = $dnsRecord->get_zone_id_from_name($zone_name);
             $this->logger->log_info(sprintf(
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
@@ -129,7 +128,14 @@ class AddZoneMasterController extends BaseController
                 $dnssecProvider->rectifyZone($zone_name);
             }
 
-            $this->redirect('index.php', ['page' => 'list_zones']);
+            // Check if the zone is a reverse zone and redirect accordingly
+            if (DnsHelper::isReverseZone($zone_name)) {
+                $this->setMessage('list_reverse_zones', 'success', _('Zone has been added successfully.'));
+                $this->redirect('index.php', ['page' => 'list_reverse_zones']);
+            } else {
+                $this->setMessage('list_forward_zones', 'success', _('Zone has been added successfully.'));
+                $this->redirect('index.php', ['page' => 'list_forward_zones']);
+            }
         }
     }
 

@@ -39,6 +39,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
@@ -190,6 +191,7 @@ class DeleteRecordController extends BaseController
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
             'record_info' => $dnsRecord->get_record_from_id($record_id),
+            'is_reverse_zone' => DnsHelper::isReverseZone($zone_name),
         ]);
     }
 }

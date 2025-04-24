@@ -37,6 +37,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -110,8 +111,14 @@ class DeleteDomainController extends BaseController
 
             $this->recordCommentService->deleteCommentsByDomainId($zone_id);
 
-            $this->setMessage('list_zones', 'success', _('Zone has been deleted successfully.'));
-            $this->redirect('index.php', ['page' => 'list_zones']);
+            // Check if the zone is a reverse zone and redirect accordingly
+            if (DnsHelper::isReverseZone($zone_info['name'])) {
+                $this->setMessage('list_reverse_zones', 'success', _('Zone has been deleted successfully.'));
+                $this->redirect('index.php', ['page' => 'list_reverse_zones']);
+            } else {
+                $this->setMessage('list_forward_zones', 'success', _('Zone has been deleted successfully.'));
+                $this->redirect('index.php', ['page' => 'list_forward_zones']);
+            }
         }
     }
 
@@ -142,6 +149,7 @@ class DeleteDomainController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'zone_owners' => $zone_owners,
             'slave_master_exists' => $slave_master_exists,
+            'is_reverse_zone' => DnsHelper::isReverseZone($zone_info['name']),
         ]);
     }
 }
