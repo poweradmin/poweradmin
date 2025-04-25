@@ -378,28 +378,30 @@
                 {{ pagination | raw }}
             </div>
 
-    {% if perm_edit != "none" and not iface_edit_save_changes_top %}
-    <div class="card-footer py-3 mt-3">
-        <button class="btn btn-primary btn-sm" type="submit" name="commit">
-            <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
-        </button>
-        <button class="btn btn-secondary btn-sm" type="reset" name="reset">
-            <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
-        </button>
-
-        {% if pdnssec_use %}
-        {% if is_secured %}
-        <button class="btn btn-secondary btn-sm" type="submit" name="unsign_zone">
-            <i class="bi bi-shield-x me-1 text-white"></i>{% trans %}Unsign this zone{% endtrans %}
-        </button>
-        {% else %}
-        <button class="btn btn-secondary btn-sm" type="submit" name="sign_zone">
-            <i class="bi bi-shield-check me-1 text-white"></i>{% trans %}Sign this zone{% endtrans %}
-        </button>
-        {% endif %}
-        {% endif %}
-    </div>
     {% endif %}
+</div>
+
+{% if perm_edit != "none" and not iface_edit_save_changes_top %}
+<div class="card-footer py-3">
+    <button class="btn btn-primary btn-sm" type="submit" name="commit">
+        <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
+    </button>
+    <button class="btn btn-secondary btn-sm" type="reset" name="reset">
+        <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
+    </button>
+
+    {% if pdnssec_use %}
+    {% if is_secured %}
+    <button class="btn btn-secondary btn-sm" type="submit" name="unsign_zone">
+        <i class="bi bi-shield-x me-1 text-white"></i>{% trans %}Unsign this zone{% endtrans %}
+    </button>
+    {% else %}
+    <button class="btn btn-secondary btn-sm" type="submit" name="sign_zone">
+        <i class="bi bi-shield-check me-1 text-white"></i>{% trans %}Sign this zone{% endtrans %}
+    </button>
+    {% endif %}
+    {% endif %}
+</div>
 </form>
 </div>
 </div>

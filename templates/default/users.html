@@ -15,7 +15,7 @@
         {% endif %}
     </div>
     <div class="card-body p-0">
-        <form method="post" action="index.php?page=users">
+        <form method="post" action="index.php?page=users" id="user-form">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">
@@ -136,17 +136,17 @@
                     </tbody>
                 </table>
             </div>
-
-            {% if permissions['user_edit_own'] or permissions['user_edit_others'] %}
-            <div class="card-footer py-3">
-                <button type="submit" class="btn btn-primary btn-sm" name="commit">
-                    <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}
-                </button>
-                <button type="reset" class="btn btn-secondary btn-sm" name="reset">
-                    <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
-                </button>
-            </div>
-            {% endif %}
         </form>
     </div>
+    
+    {% if permissions['user_edit_own'] or permissions['user_edit_others'] %}
+    <div class="card-footer py-3">
+        <button type="submit" class="btn btn-primary btn-sm" form="user-form" name="commit">
+            <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}
+        </button>
+        <button type="reset" class="btn btn-secondary btn-sm" form="user-form" name="reset">
+            <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
+        </button>
+    </div>
+    {% endif %}
 </div>

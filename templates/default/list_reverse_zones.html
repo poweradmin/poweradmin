@@ -99,7 +99,7 @@
 
         <!-- Alphabetical pagination removed as it's not relevant for reverse zones -->
 
-        <form method="post" action="index.php?page=delete_domains">
+        <form method="post" action="index.php?page=delete_domains" id="delete-zones-form">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">
@@ -243,16 +243,16 @@
             <div class='py-3'>
                 {{ pagination | raw }}
             </div>
-
-            {% if perm_edit == "all" or perm_edit == "own" %}
-            <div class="card-footer py-3 mt-3">
-                <button type="submit" name="commit" class="btn btn-danger btn-sm">
-                    <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete zone(s){% endtrans %}
-                </button>
-            </div>
-            {% endif %}
         </form>
     </div>
+    
+    {% if perm_edit == "all" or perm_edit == "own" %}
+    <div class="card-footer py-3">
+        <button type="submit" name="commit" form="delete-zones-form" class="btn btn-danger btn-sm">
+            <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete zone(s){% endtrans %}
+        </button>
+    </div>
+    {% endif %}
 </div>
 
 <script>
