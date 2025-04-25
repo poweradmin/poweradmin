@@ -29,7 +29,7 @@ class ReverseDomainNaturalSortingTest extends TestCase
     public function testGetNaturalSortOrderForPostgres(): void
     {
         $field = 'domains.name';
-        $expectedSql = "SUBSTRING($field FROM '\.arpa$') ASC, LENGTH(SUBSTRING($field FROM '^[0-9]+')) ASC, $field ASC";
+        $expectedSql = "LENGTH(SUBSTRING($field FROM '^[0-9]+')) ASC, $field ASC";
 
         $result = $this->reverseDomainNaturalSorting->getNaturalSortOrder($field, 'pgsql');
         $this->assertEquals($expectedSql, $result, "Natural sort order for PostgreSQL should match expected SQL");

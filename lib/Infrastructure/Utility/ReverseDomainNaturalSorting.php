@@ -54,8 +54,8 @@ class ReverseDomainNaturalSorting
             // MySQL and SQLite can use the same approach with arithmetic operators
             'mysql', 'mysqli', 'sqlite' => "$field+0<>0 $direction, $field+0 $direction, $field $direction",
 
-            // PostgreSQL needs a different approach using string functions
-            'pgsql' => "SUBSTRING($field FROM '\.arpa$') $direction, LENGTH(SUBSTRING($field FROM '^[0-9]+')) $direction, $field $direction",
+            // PostgreSQL optimized specifically for reverse domains
+            'pgsql' => "LENGTH(SUBSTRING($field FROM '^[0-9]+')) $direction, $field $direction",
 
             // Fallback for unknown database types
             default => "$field $direction",
