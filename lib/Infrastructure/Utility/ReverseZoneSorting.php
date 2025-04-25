@@ -48,9 +48,9 @@ class ReverseZoneSorting
         if ($sortType === 'hierarchical') {
             return $this->getNetworkBasedSortOrder($field, $dbType, $direction);
         } else {
-            // Use natural sorting from NaturalSorting class (default behavior)
-            $naturalSorting = new NaturalSorting();
-            return $naturalSorting->getReverseZoneSortOrder($field, $dbType, $direction);
+            // Use specialized natural sorting for reverse domains (default behavior)
+            $naturalSorting = new ReverseDomainNaturalSorting();
+            return $naturalSorting->getNaturalSortOrder($field, $dbType, $direction);
         }
     }
 

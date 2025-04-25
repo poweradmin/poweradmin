@@ -727,6 +727,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Infrastructure\\Utility\\LanguageCode' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/LanguageCode.php',
         'Poweradmin\\Infrastructure\\Utility\\NaturalSorting' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/NaturalSorting.php',
         'Poweradmin\\Infrastructure\\Utility\\ReverseDomainHierarchySorting' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/ReverseDomainHierarchySorting.php',
+        'Poweradmin\\Infrastructure\\Utility\\ReverseDomainNaturalSorting' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/ReverseDomainNaturalSorting.php',
         'Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/ReverseZoneSorting.php',
         'Poweradmin\\Infrastructure\\Utility\\SimpleSizeFormatter' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/SimpleSizeFormatter.php',
         'Poweradmin\\Infrastructure\\Utility\\SortHelper' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/SortHelper.php',

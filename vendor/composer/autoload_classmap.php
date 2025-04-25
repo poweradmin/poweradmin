@@ -538,6 +538,7 @@ return array(
     'Poweradmin\\Infrastructure\\Utility\\LanguageCode' => $baseDir . '/lib/Infrastructure/Utility/LanguageCode.php',
     'Poweradmin\\Infrastructure\\Utility\\NaturalSorting' => $baseDir . '/lib/Infrastructure/Utility/NaturalSorting.php',
     'Poweradmin\\Infrastructure\\Utility\\ReverseDomainHierarchySorting' => $baseDir . '/lib/Infrastructure/Utility/ReverseDomainHierarchySorting.php',
+    'Poweradmin\\Infrastructure\\Utility\\ReverseDomainNaturalSorting' => $baseDir . '/lib/Infrastructure/Utility/ReverseDomainNaturalSorting.php',
     'Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting' => $baseDir . '/lib/Infrastructure/Utility/ReverseZoneSorting.php',
     'Poweradmin\\Infrastructure\\Utility\\SimpleSizeFormatter' => $baseDir . '/lib/Infrastructure/Utility/SimpleSizeFormatter.php',
     'Poweradmin\\Infrastructure\\Utility\\SortHelper' => $baseDir . '/lib/Infrastructure/Utility/SortHelper.php',
