@@ -482,6 +482,7 @@ return array(
     'Poweradmin\\Domain\\Service\\Dns' => $baseDir . '/lib/Domain/Service/Dns.php',
     'Poweradmin\\Domain\\Service\\DnsFormatter' => $baseDir . '/lib/Domain/Service/DnsFormatter.php',
     'Poweradmin\\Domain\\Service\\DnsRecord' => $baseDir . '/lib/Domain/Service/DnsRecord.php',
+    'Poweradmin\\Domain\\Service\\DnsValidationService' => $baseDir . '/lib/Domain/Service/DnsValidationService.php',
     'Poweradmin\\Domain\\Service\\DnssecProvider' => $baseDir . '/lib/Domain/Service/DnssecProvider.php',
     'Poweradmin\\Domain\\Service\\DomainRecordCreator' => $baseDir . '/lib/Domain/Service/DomainRecordCreator.php',
     'Poweradmin\\Domain\\Service\\PasswordEncryptionService' => $baseDir . '/lib/Domain/Service/PasswordEncryptionService.php',

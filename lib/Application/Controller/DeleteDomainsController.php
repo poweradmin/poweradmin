@@ -59,8 +59,15 @@ class DeleteDomainsController extends BaseController
     {
         $zone_ids = $_POST['zone_id'] ?? null;
         if (!$zone_ids) {
-            $this->setMessage('list_forward_zones', 'error', _('No zone selected for deletion.'));
-            $this->redirect('index.php', ['page' => 'list_forward_zones']);
+            $referrer = $_SERVER['HTTP_REFERER'] ?? null;
+            $return_page = 'list_forward_zones';
+
+            if ($referrer && str_contains($referrer, 'list_reverse_zones')) {
+                $return_page = 'list_reverse_zones';
+            }
+
+            $this->setMessage($return_page, 'error', _('No zone selected for deletion.'));
+            $this->redirect('index.php', ['page' => $return_page]);
             return;
         }
 
@@ -92,13 +99,23 @@ class DeleteDomainsController extends BaseController
                 $this->recordCommentService->deleteCommentsByDomainId($zone_id);
             }
 
-            // Always redirect to list_forward_zones after multiple zone deletions
-            if (count($deleted_zones) == 1) {
-                $this->setMessage('list_forward_zones', 'success', _('Zone has been deleted successfully.'));
-            } else {
-                $this->setMessage('list_forward_zones', 'success', _('Zones have been deleted successfully.'));
+            // Determine if we should redirect to reverse or forward zones page
+            $all_reverse = true;
+            foreach ($deleted_zones as $zone) {
+                if (!DnsHelper::isReverseZone($zone['name'])) {
+                    $all_reverse = false;
+                    break;
+                }
             }
-            $this->redirect('index.php', ['page' => 'list_forward_zones']);
+
+            $return_page = $all_reverse ? 'list_reverse_zones' : 'list_forward_zones';
+
+            if (count($deleted_zones) == 1) {
+                $this->setMessage($return_page, 'success', _('Zone has been deleted successfully.'));
+            } else {
+                $this->setMessage($return_page, 'success', _('Zones have been deleted successfully.'));
+            }
+            $this->redirect('index.php', ['page' => $return_page]);
         }
     }
 

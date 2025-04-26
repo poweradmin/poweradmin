@@ -83,8 +83,11 @@ class ListReverseZonesController extends BaseController
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
 
+        // Set count_zones_edit to at least 1 to ensure checkboxes are displayed
+        // This is needed because in list_reverse_zones.html the checkboxes are conditionally displayed
+        // based on count_zones_edit > 0
         $count_zones_view = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_view);
-        $count_zones_edit = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_edit);
+        $count_zones_edit = max(1, DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_edit));
 
         list($zone_sort_by, $zone_sort_direction) = $this->getZoneSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'owner']);
 
