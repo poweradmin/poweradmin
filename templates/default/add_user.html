@@ -6,19 +6,16 @@
     </ol>
 </nav>
 
-<div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-person-plus me-2"></i>{% trans %}Add User{% endtrans %}</strong>
-    </div>
-    <div class="card-body">
-        <p class="small text-muted mb-3">{% trans %}Create a new user account with appropriate permissions{% endtrans %}</p>
-
-        <form class="needs-validation" method="post" action="index.php?page=add_user" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
-
-            <div class="row">
-                <div class="col-md-6">
-                    <!-- Left Column: User Information -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-person-plus me-2"></i>{% trans %}Add User{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=add_user" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    
                     <div class="mb-3">
                         <label for="username" class="form-label">{% trans %}Username{% endtrans %}</label>
                         <input class="form-control form-control-sm" type="text" id="username" name="username" value="{{ username }}" required>
@@ -108,63 +105,83 @@
                     </div>
                     {% endif %}
 
-                    <div class="mb-3">
-                        <button type="submit" class="btn btn-primary btn-sm" name="commit">
-                            <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add User{% endtrans %}
-                        </button>
-                        <a href="index.php?page=users" class="btn btn-secondary btn-sm">
-                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <!-- Right Column: Password Requirements -->
-                    <div class="card border-info">
-                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
-                            <i class="bi bi-shield-lock-fill me-2 text-info"></i>{% trans %}Password Requirements{% endtrans %}
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm" name="commit">
+                                <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add User{% endtrans %}
+                            </button>
+                            <a href="index.php?page=users" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
                         </div>
-                        <div class="card-body">
-                            <ul class="mb-0">
-                                {% if password_policy.enabled %}
-                                    {% if password_policy.min_length %}
-                                    <li>{% trans %}Minimum length{% endtrans %}: {{ password_policy.min_length }} {% trans %}characters{% endtrans %}</li>
-                                    {% endif %}
-                                    {% if password_policy.require_uppercase %}
-                                    <li>{% trans %}Must contain uppercase letters{% endtrans %}</li>
-                                    {% endif %}
-                                    {% if password_policy.require_lowercase %}
-                                    <li>{% trans %}Must contain lowercase letters{% endtrans %}</li>
-                                    {% endif %}
-                                    {% if password_policy.require_numbers %}
-                                    <li>{% trans %}Must contain numbers{% endtrans %}</li>
-                                    {% endif %}
-                                    {% if password_policy.require_special %}
-                                    <li>
-                                        {% trans %}Must contain special characters{% endtrans %}
-                                        <span class="text-muted">({{ password_policy.special_characters }})</span>
-                                    </li>
-                                    {% endif %}
-                                {% else %}
-                                    <li>{% trans %}No specific password requirements{% endtrans %}</li>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Account Information{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-shield-lock text-primary me-2"></i>{% trans %}Password Requirements{% endtrans %}</h6>
+                        <ul class="mb-0 ps-4 small">
+                            {% if password_policy.enabled %}
+                                {% if password_policy.min_length %}
+                                <li>{% trans %}Minimum length{% endtrans %}: {{ password_policy.min_length }} {% trans %}characters{% endtrans %}</li>
                                 {% endif %}
-                            </ul>
-                        </div>
+                                {% if password_policy.require_uppercase %}
+                                <li>{% trans %}Must contain uppercase letters{% endtrans %}</li>
+                                {% endif %}
+                                {% if password_policy.require_lowercase %}
+                                <li>{% trans %}Must contain lowercase letters{% endtrans %}</li>
+                                {% endif %}
+                                {% if password_policy.require_numbers %}
+                                <li>{% trans %}Must contain numbers{% endtrans %}</li>
+                                {% endif %}
+                                {% if password_policy.require_special %}
+                                <li>
+                                    {% trans %}Must contain special characters{% endtrans %}
+                                    <span class="text-muted">({{ password_policy.special_characters }})</span>
+                                </li>
+                                {% endif %}
+                            {% else %}
+                                <li>{% trans %}No specific password requirements{% endtrans %}</li>
+                            {% endif %}
+                        </ul>
                     </div>
-
-                    <div class="card border-warning mt-3">
-                        <div class="card-header bg-warning bg-opacity-10 text-warning border-warning">
-                            <i class="bi bi-info-circle-fill me-2 text-warning"></i>{% trans %}User Permissions{% endtrans %}
-                        </div>
-                        <div class="card-body">
-                            <p class="small mb-0">
-                                {% trans %}When creating a new user, they will receive permissions based on the selected template. You can modify these permissions later by editing the user.{% endtrans %}
-                            </p>
-                        </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-key text-warning me-2"></i>{% trans %}User Permissions{% endtrans %}</h6>
+                        <p class="small mb-0">
+                            {% trans %}When creating a new user, they will receive permissions based on the selected template. You can modify these permissions later by editing the user.{% endtrans %}
+                        </p>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}User Management Tips{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}Create descriptive usernames that are easy to identify{% endtrans %}</li>
+                            <li>{% trans %}Adding a full name helps with user identification{% endtrans %}</li>
+                            <li>{% trans %}Users can be disabled instead of deleted to preserve their settings{% endtrans %}</li>
+                            <li>{% trans %}Auto-generating passwords is recommended for better security{% endtrans %}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

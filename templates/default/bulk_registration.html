@@ -16,19 +16,16 @@
 <div class="alert alert-{{ message.type }}">{{ message.content }}</div>
 {% endif %}
 
-<div class="card shadow-sm mb-4">
-    <div class="card-header">
-        <strong>{% trans %}Bulk Registration{% endtrans %}</strong>
-    </div>
-    <div class="card-body">
-        <p class="small text-muted mb-3">{% trans %}Create multiple DNS zones at once{% endtrans %}</p>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=bulk_registration" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
 
-        <form class="needs-validation" method="post" action="index.php?page=bulk_registration" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
-
-            <div class="row">
-                <div class="col-md-5">
-                    <!-- Form fields on the left side -->
                     <div class="mb-3">
                         <label for="owner" class="form-label">{% trans %}Owner{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="owner" name="owner" required>
@@ -76,35 +73,63 @@
                         <small class="form-text text-muted">{% trans %}Type one domain per line{% endtrans %}</small>
                     </div>
 
-                    <div class="mb-3">
-                        <button type="submit" class="btn btn-sm btn-primary" name="submit">{% trans %}Add Zones{% endtrans %}</button>
-                        <a href="index.php?page=list_forward_zones" class="btn btn-sm btn-secondary">{% trans %}Cancel{% endtrans %}</a>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" class="btn btn-sm btn-primary" name="submit">
+                                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add Zones{% endtrans %}
+                            </button>
+                            <a href="index.php?page=list_forward_zones" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
                     </div>
-                </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                <div class="col-md-7">
-                    <!-- Information panel on the right side -->
-                    <div class="card border-info">
-                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
-                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{% trans %}Instructions{% endtrans %}
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                {% trans %}This tool allows you to create multiple DNS zones at once.{% endtrans %}
-                            </p>
-                            <p class="card-text mb-0">
-                                {% trans %}Guidelines:{% endtrans %}
-                            </p>
-                            <ul class="mb-0 ps-4">
-                                <li>{% trans %}Enter one domain name per line in the Domains field{% endtrans %}</li>
-                                <li>{% trans %}Select a zone template to apply standard records to all zones{% endtrans %}</li>
-                                <li>{% trans %}The chosen owner will have full access to all created zones{% endtrans %}</li>
-                            </ul>
-                        </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About Bulk Registration{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-card-list text-primary me-2"></i>{% trans %}Instructions{% endtrans %}</h6>
+                        <p class="small mb-1">{% trans %}This tool allows you to create multiple DNS zones at once.{% endtrans %}</p>
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}Enter one domain name per line in the Domains field{% endtrans %}</li>
+                            <li>{% trans %}Select a zone template to apply standard records to all zones{% endtrans %}</li>
+                            <li>{% trans %}The chosen owner will have full access to all created zones{% endtrans %}</li>
+                        </ul>
+                    </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-gear text-success me-2"></i>{% trans %}How It Works{% endtrans %}</h6>
+                        <p class="small mb-0">{% trans %}The system will attempt to create each zone with the same settings. Failed domains will be displayed so you can correct any issues and try again.{% endtrans %}</p>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}Tips & Recommendations{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}Use NATIVE zone type for most standard setups{% endtrans %}</li>
+                            <li>{% trans %}Create a template first if you need standard records for all zones{% endtrans %}</li>
+                            <li>{% trans %}You can copy and paste a list of domains from a spreadsheet{% endtrans %}</li>
+                            <li>{% trans %}Make sure the domain names follow valid DNS naming conventions{% endtrans %}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

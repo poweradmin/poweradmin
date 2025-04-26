@@ -7,10 +7,10 @@
 </nav>
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
-                <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add Supermaster{% endtrans %}</strong>
+                <strong><i class="bi bi-server me-2"></i>{% trans %}Add Supermaster{% endtrans %}</strong>
             </div>
             <div class="card-body">
                 <form class="needs-validation" method="post" action="index.php?page=add_supermaster" novalidate>
@@ -30,7 +30,7 @@
                         <div class="invalid-feedback">{% trans %}Provide host name{% endtrans %}</div>
                     </div>
 
-                    <div class="mb-4">
+                    <div class="mb-3">
                         <label for="account" class="form-label">{% trans %}Account{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="account" name="account">
                             {% for user in users %}
@@ -56,28 +56,45 @@
                         <small class="form-text text-muted">{% trans %}Select the account that will own this supermaster{% endtrans %}</small>
                     </div>
 
-                    <div class="mt-4">
-                        <button type="submit" name="submit" class="btn btn-sm btn-primary">
-                            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add supermaster{% endtrans %}
-                        </button>
-                        <a href="index.php?page=list_supermasters" class="btn btn-sm btn-secondary">
-                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
-                        </a>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" name="submit" class="btn btn-sm btn-primary">
+                                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add supermaster{% endtrans %}
+                            </button>
+                            <a href="index.php?page=list_supermasters" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}All fields are required{% endtrans %}</small>
                     </div>
                 </form>
             </div>
         </div>
     </div>
 
-    <div class="col-md-4">
+    <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Information{% endtrans %}</strong>
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About Supermasters{% endtrans %}</strong>
             </div>
-            <div class="card-body">
-                <p>{% trans %}A supermaster is a PowerDNS authoritative server that automatically pushes new zones to its slaves.{% endtrans %}</p>
-                <p>{% trans %}When a slave receives a notification from a supermaster, it adds the domain and sets the supermaster's IP address as the master address.{% endtrans %}</p>
-                <p class="mb-0 small text-muted">{% trans %}Note: The hostname must match exactly what appears in the NS record of the zone.{% endtrans %}</p>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-diagram-3 text-primary me-2"></i>{% trans %}What is a Supermaster?{% endtrans %}</h6>
+                        <p class="mb-1 small">{% trans %}A supermaster is a PowerDNS authoritative server that automatically pushes new zones to its slaves.{% endtrans %}</p>
+                    </div>
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-arrow-repeat text-success me-2"></i>{% trans %}How it works{% endtrans %}</h6>
+                        <p class="mb-1 small">{% trans %}When a slave receives a notification from a supermaster, it adds the domain and sets the supermaster's IP address as the master address.{% endtrans %}</p>
+                    </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Important Notes{% endtrans %}</h6>
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}The hostname must match exactly what appears in the NS record of the zone.{% endtrans %}</li>
+                            <li>{% trans %}Ensure your firewall allows DNS notifications between masters and slaves.{% endtrans %}</li>
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

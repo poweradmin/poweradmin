@@ -12,18 +12,16 @@
     </ol>
 </nav>
 
-<div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add Master Zone{% endtrans %}</strong>
-    </div>
-    <div class="card-body">
-        <p class="small text-muted mb-3">{% trans %}Create a new master DNS zone with optional template{% endtrans %}</p>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-globe me-2"></i>{% trans %}Add Master Zone{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=add_zone_master" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
 
-        <form class="needs-validation" method="post" action="index.php?page=add_zone_master" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
-
-            <div class="row">
-                <div class="col-md-6">
                     <div class="mb-3">
                         <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %}</label>
                         <input data-testid="zone-name-input" class="form-control form-control-sm" type="text" id="domain" name="domain" value="{{ domain_value }}" required>
@@ -81,42 +79,61 @@
                     </div>
                     {% endif %}
 
-                    <div class="mb-3">
-                        <button data-testid="add-zone-button" class="btn btn-primary btn-sm" type="submit" name="submit">
-                            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
-                        </button>
-                        <a href="index.php?page=list_forward_zones" class="btn btn-secondary btn-sm">
-                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
-                        </a>
-                    </div>
-                </div>
-
-                <div class="col-md-6">
-                    <div class="card border-info">
-                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
-                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{% trans %}About Master Zones{% endtrans %}
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button data-testid="add-zone-button" class="btn btn-primary btn-sm" type="submit" name="submit">
+                                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
+                            </button>
+                            <a href="index.php?page=list_forward_zones" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
                         </div>
-                        <div class="card-body">
-                            <p>{% trans %}A master zone is a zone for which this PowerDNS server is the primary authority. You can add, edit and delete records in master zones.{% endtrans %}</p>
-
-                            <p class="mb-0">{% trans %}After creating the zone, you will be redirected to add DNS records to it.{% endtrans %}</p>
-                        </div>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
                     </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Zone Information{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-database-fill text-primary me-2"></i>{% trans %}About Master Zones{% endtrans %}</h6>
+                        <p class="mb-1 small">{% trans %}A master zone is a zone for which this PowerDNS server is the primary authority. You can add, edit and delete records in master zones.{% endtrans %}</p>
+                        <p class="mb-0 small">{% trans %}After creating the zone, you will be redirected to add DNS records to it.{% endtrans %}</p>
+                    </div>
+                    
                     {% if pdnssec_use %}
-                    <div class="card border-warning mt-3">
-                        <div class="card-header bg-warning bg-opacity-10 text-warning border-warning">
-                            <i class="bi bi-shield-lock-fill me-2 text-warning"></i>{% trans %}DNSSEC Information{% endtrans %}
-                        </div>
-                        <div class="card-body">
-                            <p>{% trans %}DNSSEC (Domain Name System Security Extensions) adds cryptographic signatures to DNS records to protect against spoofing and cache poisoning attacks.{% endtrans %}</p>
-
-                            <p class="mb-0">{% trans %}When enabled, PowerDNS will automatically generate and manage the necessary keys and signatures for the zone.{% endtrans %}</p>
-                        </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-shield-lock text-warning me-2"></i>{% trans %}DNSSEC Information{% endtrans %}</h6>
+                        <p class="mb-1 small">{% trans %}DNSSEC (Domain Name System Security Extensions) adds cryptographic signatures to DNS records to protect against spoofing and cache poisoning attacks.{% endtrans %}</p>
+                        <p class="mb-0 small">{% trans %}When enabled, PowerDNS will automatically generate and manage the necessary keys and signatures for the zone.{% endtrans %}</p>
                     </div>
                     {% endif %}
                 </div>
             </div>
-        </form>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}Quick Tips{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}Use fully qualified domain names (example.com){% endtrans %}</li>
+                            <li>{% trans %}Select a template to automatically create common DNS records{% endtrans %}</li>
+                            <li>{% trans %}NATIVE zone type is recommended for most setups{% endtrans %}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>

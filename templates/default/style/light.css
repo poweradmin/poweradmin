@@ -163,6 +163,27 @@ input[type=number]::-webkit-outer-spin-button {
     opacity: 0.75;
 }
 
+/* Accordion styles */
+.accordion-button:not(.collapsed) {
+    color: var(--bs-body-color);
+    background-color: var(--bs-card-cap-bg);
+}
+
+.accordion-button::after {
+    filter: none;
+}
+
+.accordion-button:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.permission-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
 /* Code output styling for light mode */
 .code-output {
     background-color: #f8f9fa;

@@ -25,19 +25,16 @@
 <div class="alert alert-{{ message.type }}">{{ message.content }}</div>
 {% endif %}
 
-<div class="card shadow-sm mb-4">
-    <div class="card-header">
-        <strong>{% trans %}Batch PTR Records{% endtrans %}</strong>
-    </div>
-    <div class="card-body">
-        <p class="small text-muted mb-3">{% trans %}Create multiple PTR (reverse DNS) records at once for an IP range{% endtrans %}</p>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-arrow-left-right me-2"></i>{% trans %}Batch PTR Records{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=batch_ptr_record{% if has_zone_id %}&id={{ zone_id }}{% endif %}" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
 
-        <form class="needs-validation" method="post" action="index.php?page=batch_ptr_record{% if has_zone_id %}&id={{ zone_id }}{% endif %}" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
-
-            <div class="row">
-                <div class="col-md-5">
-                    <!-- Form fields on the left side -->
                     <div class="mb-3">
                         <label for="network_type" class="form-label">{% trans %}IP Version{% endtrans %}</label>
                         <select id="network_type" name="network_type" class="form-select form-select-sm">
@@ -72,7 +69,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <span class="text-muted">{% trans %}Using default TTL value from configuration{% endtrans %}</span>
+                        <span class="text-muted small">{% trans %}Using default TTL value from configuration{% endtrans %}</span>
                     </div>
 
                     {% if iface_record_comments %}
@@ -87,56 +84,75 @@
                         <label for="create_forward_records" class="form-check-label">{% trans %}Create forward A/AAAA records in primary zone{% endtrans %}</label>
                     </div>
 
-                    <div class="mb-3">
-                        <button type="submit" class="btn btn-sm btn-primary">{% trans %}Create PTR Records{% endtrans %}</button>
-                        {% if has_zone_id %}
-                        <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-sm btn-secondary">{% trans %}Cancel{% endtrans %}</a>
-                        {% else %}
-                        <a href="index.php" class="btn btn-sm btn-secondary">{% trans %}Cancel{% endtrans %}</a>
-                        {% endif %}
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" class="btn btn-sm btn-primary">
+                                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Create PTR Records{% endtrans %}
+                            </button>
+                            {% if has_zone_id %}
+                            <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                            {% else %}
+                            <a href="index.php" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                            {% endif %}
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
                     </div>
-                </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                <div class="col-md-7">
-                    <!-- Information panel on the right side -->
-                    <div class="card mb-3 border-warning">
-                        <div class="card-header bg-warning bg-opacity-10 text-warning border-warning">
-                            <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>{% trans %}Important Information{% endtrans %}
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                <strong>{% trans %}Warning{% endtrans %}:</strong> {% trans %}This will create multiple PTR records at once. For IPv4, supported networks are:{% endtrans %}
-                            </p>
-                            <ul class="mb-0 ps-4">
-                                <li>/24 (256 records)</li>
-                                <li>/23 (512 records)</li>
-                                <li>/22 (1024 records)</li>
-                                <li>/21 (2048 records)</li>
-                                <li>/20 (4096 records)</li>
-                            </ul>
-                        </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}PTR Record Information{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Important Information{% endtrans %}</h6>
+                        <p class="small mb-1">{% trans %}This will create multiple PTR records at once. For IPv4, supported networks are:{% endtrans %}</p>
+                        <ul class="mb-0 ps-4 small">
+                            <li>/24 (256 records)</li>
+                            <li>/23 (512 records)</li>
+                            <li>/22 (1024 records)</li>
+                            <li>/21 (2048 records)</li>
+                            <li>/20 (4096 records)</li>
+                        </ul>
                     </div>
-
-                    <div class="card border-info">
-                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
-                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{% trans %}Requirements{% endtrans %}
-                        </div>
-                        <div class="card-body">
-                            <p class="card-text">
-                                {% trans %}You must have the appropriate reverse zone already created in PowerDNS before using this feature.{% endtrans %}
-                            </p>
-                            <p class="card-text mb-0">
-                                {% trans %}For example:{% endtrans %}
-                            </p>
-                            <ul class="mb-0 ps-4">
-                                <li>{% trans %}For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-addr.arpa{% endtrans %}</li>
-                                <li>{% trans %}For larger networks, you will need the corresponding reverse zones (e.g., 168.192.in-addr.arpa for a /16 network){% endtrans %}</li>
-                            </ul>
-                        </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-clipboard-check text-primary me-2"></i>{% trans %}Requirements{% endtrans %}</h6>
+                        <p class="small mb-1">{% trans %}You must have the appropriate reverse zone already created in PowerDNS before using this feature.{% endtrans %}</p>
+                        <p class="small mb-1">{% trans %}For example:{% endtrans %}</p>
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-addr.arpa{% endtrans %}</li>
+                            <li>{% trans %}For larger networks, you will need the corresponding reverse zones (e.g., 168.192.in-addr.arpa for a /16 network){% endtrans %}</li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}Quick Tips{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}Use the Host Prefix field to add a prefix to all hostnames (e.g., "server-" becomes server-1, server-2, etc.){% endtrans %}</li>
+                            <li>{% trans %}Check "Create forward A/AAAA records" to automatically create matching forward records{% endtrans %}</li>
+                            <li>{% trans %}For a /24 network, the last octet will be used as the host number{% endtrans %}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 

@@ -12,18 +12,16 @@
     </ol>
 </nav>
 
-<div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-plus-circle-dotted me-2"></i>{% trans %}Add Slave Zone{% endtrans %}</strong>
-    </div>
-    <div class="card-body">
-        <p class="small text-muted mb-3">{% trans %}Create a new slave zone that will replicate from a master DNS server{% endtrans %}</p>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-cloud-download me-2"></i>{% trans %}Add Slave Zone{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=add_zone_slave" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
 
-        <form class="needs-validation" method="post" action="index.php?page=add_zone_slave" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
-
-            <div class="row">
-                <div class="col-md-6">
                     <div class="mb-3">
                         <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %}</label>
                         <input class="form-control form-control-sm" type="text" id="domain" name="domain" value="{{ domain_value }}" required>
@@ -64,38 +62,57 @@
                         <small class="text-muted">{% trans %}User responsible for this zone{% endtrans %}</small>
                     </div>
 
-                    <div class="mb-3">
-                        <button class="btn btn-primary btn-sm" type="submit" name="submit">
-                            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
-                        </button>
-                        <a href="index.php?page=list_forward_zones" class="btn btn-secondary btn-sm">
-                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
-                        </a>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button class="btn btn-primary btn-sm" type="submit" name="submit">
+                                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
+                            </button>
+                            <a href="index.php?page=list_forward_zones" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
                     </div>
-                </div>
+                </form>
+            </div>
+        </div>
+    </div>
 
-                <div class="col-md-6">
-                    <div class="card border-info">
-                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
-                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{% trans %}About Slave Zones{% endtrans %}
-                        </div>
-                        <div class="card-body">
-                            <p>{% trans %}A slave zone is a read-only copy of a zone hosted on another DNS server. PowerDNS will automatically fetch and update zone data from the master server.{% endtrans %}</p>
-
-                            <p class="mb-0">{% trans %}You cannot edit records in a slave zone - all changes must be made on the master server.{% endtrans %}</p>
-                        </div>
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Zone Information{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-cloud-download text-primary me-2"></i>{% trans %}About Slave Zones{% endtrans %}</h6>
+                        <p class="small mb-1">{% trans %}A slave zone is a read-only copy of a zone hosted on another DNS server. PowerDNS will automatically fetch and update zone data from the master server.{% endtrans %}</p>
+                        <p class="small mb-0">{% trans %}You cannot edit records in a slave zone - all changes must be made on the master server.{% endtrans %}</p>
                     </div>
-
-                    <div class="card border-warning mt-3">
-                        <div class="card-header bg-warning bg-opacity-10 text-warning border-warning">
-                            <i class="bi bi-exclamation-triangle-fill me-2 text-warning"></i>{% trans %}Important{% endtrans %}
-                        </div>
-                        <div class="card-body">
-                            <p class="mb-0">{% trans %}Make sure that this PowerDNS server is allowed to transfer the zone from the master server. The master server must have an allow-transfer or similar configuration permitting zone transfers to this server's IP address.{% endtrans %}</p>
-                        </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Important Notes{% endtrans %}</h6>
+                        <p class="small mb-0">{% trans %}Make sure that this PowerDNS server is allowed to transfer the zone from the master server. The master server must have an allow-transfer or similar configuration permitting zone transfers to this server's IP address.{% endtrans %}</p>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}Quick Tips{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}You can specify multiple master servers by separating IP addresses with commas{% endtrans %}</li>
+                            <li>{% trans %}Slave zones will automatically update when the master server sends a notification{% endtrans %}</li>
+                            <li>{% trans %}To test the connection, check the PowerDNS logs after adding the zone{% endtrans %}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
