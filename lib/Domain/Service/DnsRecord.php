@@ -1304,12 +1304,10 @@ class DnsRecord
         return $ret;
     }
 
-// TODO: letterstart limitation and userid permission limitiation should be applied at the same time?
-// fixme: letterstart 'all' forbids searching for domains that actually start with 'all'
     /** Get Count of Zones
      *
      * @param string $perm 'all', 'own' uses session 'userid'
-     * @param string $letterstart Starting letters to match [default='all']
+     * @param string $letterstart Starting letters to match (single letter or '1' for numbers) [default='all' for no filtering]
      * @param string $zone_type Type of zones to count ['all', 'forward', 'reverse'] [default='all']
      *
      * @return int Count of zones matched
@@ -1332,11 +1330,14 @@ class DnsRecord
             $tables .= ', zones';
         }
 
-        if ($letterstart != 'all' && $letterstart != 1) {
-            $query_addon .= " AND $domains_table.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
-        } elseif ($letterstart == 1) {
-            $db_type = $config->get('database', 'type');
-            $query_addon .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+        // Single letter filter (a through z) or numeric filter (1)
+        if ($letterstart !== 'all') {
+            if ($letterstart === '1') {
+                $db_type = $config->get('database', 'type');
+                $query_addon .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+            } else {
+                $query_addon .= " AND $domains_table.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
+            }
         }
 
         // Add filter for forward/reverse zones
