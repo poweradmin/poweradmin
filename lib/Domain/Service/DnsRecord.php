@@ -1311,45 +1311,13 @@ class DnsRecord
      * @param string $zone_type Type of zones to count ['all', 'forward', 'reverse'] [default='all']
      *
      * @return int Count of zones matched
+     * @deprecated Use ZoneCountService::countZones() instead
      */
     public static function zone_count_ng($db, $config, string $perm, string $letterstart = 'all', string $zone_type = 'forward'): int
     {
-        $pdns_db_name = $config->get('database', 'pdns_name');
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-
-        $tables = $domains_table;
-        $query_addon = '';
-
-        if ($perm != "own" && $perm != "all") {
-            return 0;
-        }
-
-        if ($perm == "own") {
-            $query_addon = " AND zones.domain_id = $domains_table.id
-                AND zones.owner = " . $db->quote($_SESSION['userid'], 'integer');
-            $tables .= ', zones';
-        }
-
-        // Single letter filter (a through z) or numeric filter (1)
-        if ($letterstart !== 'all') {
-            if ($letterstart === '1') {
-                $db_type = $config->get('database', 'type');
-                $query_addon .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
-            } else {
-                $query_addon .= " AND $domains_table.name LIKE " . $db->quote($letterstart . "%", 'text') . " ";
-            }
-        }
-
-        // Add filter for forward/reverse zones
-        if ($zone_type == 'forward') {
-            $query_addon .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
-        } elseif ($zone_type == 'reverse') {
-            $query_addon .= " AND ($domains_table.name LIKE '%.in-addr.arpa' OR $domains_table.name LIKE '%.ip6.arpa')";
-        }
-
-        $query = "SELECT COUNT($domains_table.id) AS count_zones FROM $tables WHERE 1=1 $query_addon";
-
-        return $db->queryOne($query);
+        // Create ZoneCountService instance for handling the zone count functionality
+        $zoneCountService = new ZoneCountService($db, $config);
+        return $zoneCountService->countZones($perm, $letterstart, $zone_type);
     }
 
     /** Get a Record from a Record ID

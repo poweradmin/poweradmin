@@ -40,6 +40,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
@@ -77,8 +78,9 @@ class ListForwardZonesController extends BaseController
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $count_zones_view = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_view);
-        $count_zones_edit = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_edit);
+        $zoneCountService = new ZoneCountService($this->db, $this->getConfig());
+        $count_zones_view = $zoneCountService->countZones($perm_view);
+        $count_zones_edit = $zoneCountService->countZones($perm_edit);
 
         $letter_start = 'all';
         if ($count_zones_view > $iface_rowamount) {
@@ -91,7 +93,7 @@ class ListForwardZonesController extends BaseController
             }
         }
 
-        $count_zones_all_letterstart = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_view, $letter_start);
+        $count_zones_all_letterstart = $zoneCountService->countZones($perm_view, $letter_start);
 
         list($zone_sort_by, $zone_sort_direction) = $this->getZoneSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'owner']);
 

@@ -489,6 +489,7 @@ return array(
     'Poweradmin\\Domain\\Service\\SessionService' => $baseDir . '/lib/Domain/Service/SessionService.php',
     'Poweradmin\\Domain\\Service\\UserContextService' => $baseDir . '/lib/Domain/Service/UserContextService.php',
     'Poweradmin\\Domain\\Service\\Validator' => $baseDir . '/lib/Domain/Service/Validator.php',
+    'Poweradmin\\Domain\\Service\\ZoneCountService' => $baseDir . '/lib/Domain/Service/ZoneCountService.php',
     'Poweradmin\\Domain\\Utility\\DnsHelper' => $baseDir . '/lib/Domain/Utility/DnsHelper.php',
     'Poweradmin\\Domain\\Utility\\DnssecDataTransformer' => $baseDir . '/lib/Domain/Utility/DnssecDataTransformer.php',
     'Poweradmin\\Domain\\Utility\\DnssecTransformer' => $baseDir . '/lib/Domain/Utility/DnssecTransformer.php',

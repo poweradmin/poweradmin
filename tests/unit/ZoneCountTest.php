@@ -3,7 +3,7 @@
 namespace unit;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
@@ -11,14 +11,16 @@ class ZoneCountTest extends TestCase
 {
     private PDOLayer $dbMock;
     private ConfigurationManager $configMock;
+    private ZoneCountService $zoneCountService;
 
     protected function setUp(): void
     {
         $this->dbMock = $this->createMock(PDOLayer::class);
         $this->configMock = $this->createMock(ConfigurationManager::class);
+        $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);
     }
 
-    public function testZoneCountNgWithAllZonesAndAllPermissions(): void
+    public function testCountZonesWithAllZonesAndAllPermissions(): void
     {
         // Configure mocks
         $this->configMock->method('get')
@@ -36,11 +38,11 @@ class ZoneCountTest extends TestCase
             ->method('queryOne')
             ->willReturn(10);
 
-        $result = DnsRecord::zone_count_ng($this->dbMock, $this->configMock, 'all');
+        $result = $this->zoneCountService->countZones('all');
         $this->assertEquals(10, $result);
     }
 
-    public function testZoneCountNgWithForwardZonesOnly(): void
+    public function testCountZonesWithForwardZonesOnly(): void
     {
         // Configure mocks
         $this->configMock->method('get')
@@ -58,11 +60,11 @@ class ZoneCountTest extends TestCase
             ->method('queryOne')
             ->willReturn(8);
 
-        $result = DnsRecord::zone_count_ng($this->dbMock, $this->configMock, 'all', 'all', 'forward');
+        $result = $this->zoneCountService->countZones('all', 'all', 'forward');
         $this->assertEquals(8, $result);
     }
 
-    public function testZoneCountNgWithReverseZonesOnly(): void
+    public function testCountZonesWithReverseZonesOnly(): void
     {
         // Configure mocks
         $this->configMock->method('get')
@@ -80,11 +82,11 @@ class ZoneCountTest extends TestCase
             ->method('queryOne')
             ->willReturn(2);
 
-        $result = DnsRecord::zone_count_ng($this->dbMock, $this->configMock, 'all', 'all', 'reverse');
+        $result = $this->zoneCountService->countZones('all', 'all', 'reverse');
         $this->assertEquals(2, $result);
     }
 
-    public function testZoneCountNgWithOwnPermissionsOnly(): void
+    public function testCountZonesWithOwnPermissionsOnly(): void
     {
         // Set up session for 'own' permission test
         $_SESSION['userid'] = 5;
@@ -105,14 +107,14 @@ class ZoneCountTest extends TestCase
             ->method('queryOne')
             ->willReturn(3);
 
-        $result = DnsRecord::zone_count_ng($this->dbMock, $this->configMock, 'own');
+        $result = $this->zoneCountService->countZones('own');
         $this->assertEquals(3, $result);
 
         // Clean up session
         unset($_SESSION['userid']);
     }
 
-    public function testZoneCountNgWithLetterFilter(): void
+    public function testCountZonesWithLetterFilter(): void
     {
         // Configure mocks
         $this->configMock->method('get')
@@ -130,11 +132,11 @@ class ZoneCountTest extends TestCase
             ->method('queryOne')
             ->willReturn(5);
 
-        $result = DnsRecord::zone_count_ng($this->dbMock, $this->configMock, 'all', 'a');
+        $result = $this->zoneCountService->countZones('all', 'a');
         $this->assertEquals(5, $result);
     }
 
-    public function testZoneCountNgWithNumericFilter(): void
+    public function testCountZonesWithNumericFilter(): void
     {
         // Configure mocks
         $this->configMock->method('get')
@@ -152,11 +154,11 @@ class ZoneCountTest extends TestCase
             ->method('queryOne')
             ->willReturn(2);
 
-        $result = DnsRecord::zone_count_ng($this->dbMock, $this->configMock, 'all', 1);
+        $result = $this->zoneCountService->countZones('all', '1');
         $this->assertEquals(2, $result);
     }
 
-    public function testZoneCountNgWithDatabasePrefix(): void
+    public function testCountZonesWithDatabasePrefix(): void
     {
         // Configure mocks
         $this->configMock->method('get')
@@ -174,16 +176,16 @@ class ZoneCountTest extends TestCase
             ->method('queryOne')
             ->willReturn(10);
 
-        $result = DnsRecord::zone_count_ng($this->dbMock, $this->configMock, 'all');
+        $result = $this->zoneCountService->countZones('all');
         $this->assertEquals(10, $result);
     }
 
-    public function testZoneCountNgWithInvalidPermissions(): void
+    public function testCountZonesWithInvalidPermissions(): void
     {
         $this->dbMock->expects($this->never())
             ->method('queryOne');
 
-        $result = DnsRecord::zone_count_ng($this->dbMock, $this->configMock, 'invalid');
+        $result = $this->zoneCountService->countZones('invalid');
         $this->assertEquals(0, $result);
     }
 }

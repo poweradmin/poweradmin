@@ -38,6 +38,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
@@ -86,8 +87,9 @@ class ListReverseZonesController extends BaseController
         // Set count_zones_edit to at least 1 to ensure checkboxes are displayed
         // This is needed because in list_reverse_zones.html the checkboxes are conditionally displayed
         // based on count_zones_edit > 0
-        $count_zones_view = DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_view);
-        $count_zones_edit = max(1, DnsRecord::zone_count_ng($this->db, $this->getConfig(), $perm_edit));
+        $zoneCountService = new ZoneCountService($this->db, $this->getConfig());
+        $count_zones_view = $zoneCountService->countZones($perm_view);
+        $count_zones_edit = max(1, $zoneCountService->countZones($perm_edit));
 
         list($zone_sort_by, $zone_sort_direction) = $this->getZoneSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'owner']);
 
