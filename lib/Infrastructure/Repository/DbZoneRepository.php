@@ -24,11 +24,11 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Utility\NaturalSorting;
 use Poweradmin\Infrastructure\Utility\ReverseDomainNaturalSorting;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
-use Poweradmin\Infrastructure\Utility\SortHelper;
 
 class DbZoneRepository implements ZoneRepositoryInterface
 {
@@ -242,7 +242,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
                 $zones[$name] = [
                     'id' => $row['id'],
                     'name' => $name,
-                    'utf8_name' => idn_to_utf8(htmlspecialchars($name), IDNA_NONTRANSITIONAL_TO_ASCII),
+                    'utf8_name' => DnsIdnService::toUtf8($name),
                     'type' => $row['type'],
                     'count_records' => $row['count_records'],
                     'comment' => $row['comment'] ?? '',

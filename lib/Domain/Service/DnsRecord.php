@@ -28,6 +28,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
@@ -1229,6 +1230,7 @@ class DnsRecord
             if ($perm == "own") {
                 $sql_add = " AND zones.domain_id = $domains_table.id AND zones.owner = " . $this->db->quote($userid, 'integer');
             }
+
             if ($letterstart != 'all' && $letterstart != 1) {
                 $sql_add .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = " . $this->db->quote($letterstart, 'text') . " ";
             } elseif ($letterstart == 1) {
@@ -1278,26 +1280,29 @@ class DnsRecord
         $ret = array();
         while ($r = $result->fetch()) {
             //FIXME: name is not guaranteed to be unique with round-robin record sets
-            $ret[$r["name"]]["id"] = $r["id"];
-            $ret[$r["name"]]["name"] = $r["name"];
-            $ret[$r["name"]]["utf8_name"] = idn_to_utf8(htmlspecialchars($r["name"]), IDNA_NONTRANSITIONAL_TO_ASCII);
-            $ret[$r["name"]]["type"] = $r["type"];
-            $ret[$r["name"]]["count_records"] = $r["count_records"];
-            $ret[$r["name"]]["comment"] = $r["comment"] ?? '';
-            $ret[$r["name"]]["owners"][] = $r["username"];
-            $ret[$r["name"]]["full_names"][] = $r["fullname"] ?: '';
-            $ret[$r["name"]]["users"][] = $r["username"];
+            $domainName = $r["name"];
+            $utf8Name = DnsIdnService::toUtf8($domainName);
+
+            $ret[$domainName]["id"] = $r["id"];
+            $ret[$domainName]["name"] = $domainName;
+            $ret[$domainName]["utf8_name"] = $utf8Name;
+            $ret[$domainName]["type"] = $r["type"];
+            $ret[$domainName]["count_records"] = $r["count_records"];
+            $ret[$domainName]["comment"] = $r["comment"] ?? '';
+            $ret[$domainName]["owners"][] = $r["username"];
+            $ret[$domainName]["full_names"][] = $r["fullname"] ?: '';
+            $ret[$domainName]["users"][] = $r["username"];
 
             if ($pdnssec_use) {
-                $ret[$r["name"]]["secured"] = $r["secured"];
+                $ret[$domainName]["secured"] = $r["secured"];
             }
 
             if ($iface_zonelist_serial) {
-                $ret[$r["name"]]["serial"] = $this->get_serial_by_zid($r["id"]);
+                $ret[$domainName]["serial"] = $this->get_serial_by_zid($r["id"]);
             }
 
             if ($iface_zonelist_template) {
-                $ret[$r["name"]]["template"] = ZoneTemplate::get_zone_templ_name($this->db, $r["id"]);
+                $ret[$domainName]["template"] = ZoneTemplate::get_zone_templ_name($this->db, $r["id"]);
             }
         }
 

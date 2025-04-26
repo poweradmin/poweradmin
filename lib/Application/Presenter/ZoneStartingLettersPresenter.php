@@ -44,6 +44,7 @@ class ZoneStartingLettersPresenter
             $html .= '<li class="page-item disabled"><span class="page-link" tabindex="-1">0-9</span></li>';
         }
 
+        // First show all ASCII letters
         foreach (range('a', 'z') as $letter) {
             if ($letter === $letterStart) {
                 $html .= '<li class="page-item active"><span class="page-link" tabindex="-1">' . $letter . '</span></li>';
