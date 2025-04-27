@@ -424,7 +424,7 @@ class EditController extends BaseController
                 'HOSTMASTER' => $this->config->get('dns', 'hostmaster', '') ?? '',
             ];
 
-            ZoneTemplate::add_zone_templ_save_as($this->db, $template_name, $description, $_SESSION['userid'], $records, $options, $dnsRecord->get_domain_name_by_id($zone_id));
+            $zoneTemplate->add_zone_templ_save_as($template_name, $description, $_SESSION['userid'], $records, $options, $dnsRecord->get_domain_name_by_id($zone_id));
             $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
         }
     }

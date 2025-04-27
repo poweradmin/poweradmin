@@ -228,7 +228,8 @@ class UserManager
             $query = "DELETE FROM users WHERE id = " . $this->db->quote($uid, 'integer');
             $this->db->query($query);
 
-            ZoneTemplate::delete_zone_templ_userid($this->db, $uid);
+            $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+            $zoneTemplate->delete_zone_templ_userid($uid);
         }
         return true;
     }
