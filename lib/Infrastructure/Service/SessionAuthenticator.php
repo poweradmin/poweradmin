@@ -50,6 +50,7 @@ class SessionAuthenticator extends LoggingService
     private CsrfTokenService $csrfTokenService;
     private LdapAuthenticator $ldapAuthenticator;
     private SqlAuthenticator $sqlAuthenticator;
+    private LoginAttemptService $loginAttemptService;
 
     public function __construct(PDOLayer $connection, ConfigurationManager $configManager)
     {
