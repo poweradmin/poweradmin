@@ -299,7 +299,7 @@ class ZoneTemplate
         $stmt->execute([':id' => $id]);
         $db->setLimit(0);
 
-        $ret[] = array();
+        $ret = [];
         $retCount = 0;
         while ($r = $stmt->fetch()) {
             // Call get_record_from_id for each row.
