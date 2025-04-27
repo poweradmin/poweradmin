@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\DbZoneLogger;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
@@ -70,12 +71,12 @@ class ListLogZonesController extends BaseController
         $logs_per_page = $configManager->get('interface', 'rows_per_page', 50);
 
         if (isset($_GET['name']) && $_GET['name'] != '') {
-            $number_of_logs = $this->dbZoneLogger->count_logs_by_domain(idn_to_ascii($_GET['name']));
+            $number_of_logs = $this->dbZoneLogger->count_logs_by_domain(DnsIdnService::toPunycode($_GET['name']));
             $number_of_pages = ceil($number_of_logs / $logs_per_page);
             if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
                 die('Unknown page');
             }
-            $logs = $this->dbZoneLogger->get_logs_for_domain(idn_to_ascii($_GET['name']), $logs_per_page, ($selected_page - 1) * $logs_per_page);
+            $logs = $this->dbZoneLogger->get_logs_for_domain(DnsIdnService::toPunycode($_GET['name']), $logs_per_page, ($selected_page - 1) * $logs_per_page);
         } else {
             $number_of_logs = $this->dbZoneLogger->count_all_logs();
             $number_of_pages = ceil($number_of_logs / $logs_per_page);

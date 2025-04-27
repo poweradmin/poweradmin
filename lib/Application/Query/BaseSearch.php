@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Query;
 
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 abstract class BaseSearch
@@ -67,7 +68,7 @@ abstract class BaseSearch
             $parameters['wildcard'] = true;
         }
 
-        $needle = idn_to_ascii(trim($parameters['query']), IDNA_NONTRANSITIONAL_TO_ASCII);
+        $needle = DnsIdnService::toPunycode(trim($parameters['query']));
         $search_string = ($parameters['wildcard'] ? '%' : '') . $needle . ($parameters['wildcard'] ? '%' : '');
         return array($reverse_search_string, $parameters, $search_string);
     }

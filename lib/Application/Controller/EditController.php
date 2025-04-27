@@ -44,6 +44,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -216,7 +217,7 @@ class EditController extends BaseController
 
         $zone_name_to_display = $dnsRecord->get_domain_name_by_id($zone_id);
         if (str_starts_with($zone_name_to_display, "xn--")) {
-            $idn_zone_name = idn_to_utf8($zone_name_to_display, IDNA_NONTRANSITIONAL_TO_ASCII);
+            $idn_zone_name = DnsIdnService::toUtf8($zone_name_to_display);
         } else {
             $idn_zone_name = "";
         }

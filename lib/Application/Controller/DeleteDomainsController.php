@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -167,7 +168,7 @@ class DeleteDomainsController extends BaseController
             }
 
             if (str_starts_with($zones[$zone_id]['name'], "xn--")) {
-                $zones[$zone_id]['idn_zone_name'] = idn_to_utf8($zones[$zone_id]['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
+                $zones[$zone_id]['idn_zone_name'] = DnsIdnService::toUtf8($zones[$zone_id]['name']);
             } else {
                 $zones[$zone_id]['idn_zone_name'] = "";
             }

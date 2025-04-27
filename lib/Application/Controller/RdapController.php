@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\RdapService;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 
 class RdapController extends BaseController
@@ -69,7 +70,7 @@ class RdapController extends BaseController
 
         $this->render('rdap.html', [
             'domain' => $domain,
-            'utf8_domain' => function_exists('idn_to_utf8') && preg_match('/^xn--/', $domain) ? idn_to_utf8($domain, IDNA_NONTRANSITIONAL_TO_ASCII) : $domain,
+            'utf8_domain' => preg_match('/^xn--/', $domain) ? DnsIdnService::toUtf8($domain) : $domain,
             'result' => $result,
             'custom_server' => $this->config->get('rdap', 'default_server', '')
         ]);
@@ -89,8 +90,8 @@ class RdapController extends BaseController
             $domain = trim($this->getRequest()['domain']);
 
             // Convert Unicode domain to Punycode if needed
-            if (preg_match('/[^\x20-\x7E]/', $domain) && function_exists('idn_to_ascii')) {
-                $punycode = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+            if (preg_match('/[^\x20-\x7E]/', $domain)) {
+                $punycode = DnsIdnService::toPunycode($domain);
                 if ($punycode !== false) {
                     $domain = $punycode;
                 }

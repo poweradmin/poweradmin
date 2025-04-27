@@ -36,6 +36,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 
@@ -109,7 +110,7 @@ class DnssecAddKeyController extends BaseController
         }
 
         if (str_starts_with($domain_name, "xn--")) {
-            $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+            $idn_zone_name = DnsIdnService::toUtf8($domain_name);
         } else {
             $idn_zone_name = "";
         }

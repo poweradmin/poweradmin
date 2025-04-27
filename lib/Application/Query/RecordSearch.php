@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Query;
 
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 
 class RecordSearch extends BaseSearch
@@ -117,7 +118,7 @@ class RecordSearch extends BaseSearch
         $foundRecords = array();
         while ($record = $recordsResponse->fetch()) {
             $found_record = $record;
-            $found_record['name'] = idn_to_utf8($found_record['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
+            $found_record['name'] = DnsIdnService::toUtf8($found_record['name']);
             $found_record['disabled'] = $found_record['disabled'] == '1' ? _('Yes') : _('No');
             $foundRecords[] = $found_record;
         }

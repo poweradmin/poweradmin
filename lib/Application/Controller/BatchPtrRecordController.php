@@ -26,6 +26,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
@@ -206,7 +207,7 @@ class BatchPtrRecordController extends BaseController
             $preFillDomain = $zone_name;
 
             if (str_starts_with($zone_name, "xn--")) {
-                $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+                $idn_zone_name = DnsIdnService::toUtf8($zone_name);
             } else {
                 $idn_zone_name = "";
             }

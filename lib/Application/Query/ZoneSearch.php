@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Query;
 
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 
 class ZoneSearch extends BaseSearch
@@ -72,7 +73,7 @@ class ZoneSearch extends BaseSearch
                 $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
                 $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
                 $found_zone = $zones[$zone_id][0];
-                $found_zone['name'] = idn_to_utf8($found_zone['name'], IDNA_NONTRANSITIONAL_TO_ASCII);
+                $found_zone['name'] = DnsIdnService::toUtf8($found_zone['name']);
                 $foundZones[] = $found_zone;
             }
         }

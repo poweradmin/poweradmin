@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\WhoisService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 
 class WhoisController extends BaseController
@@ -70,7 +71,7 @@ class WhoisController extends BaseController
 
         $this->render('whois.html', [
             'domain' => $domain,
-            'utf8_domain' => function_exists('idn_to_utf8') && preg_match('/^xn--/', $domain) ? idn_to_utf8($domain, IDNA_NONTRANSITIONAL_TO_ASCII) : $domain,
+            'utf8_domain' => preg_match('/^xn--/', $domain) ? DnsIdnService::toUtf8($domain) : $domain,
             'result' => $result,
             'custom_server' => $this->config->get('whois', 'default_server', '')
         ]);
@@ -90,8 +91,8 @@ class WhoisController extends BaseController
             $domain = trim($this->getRequest()['domain']);
 
             // Convert Unicode domain to Punycode if needed
-            if (preg_match('/[^\x20-\x7E]/', $domain) && function_exists('idn_to_ascii')) {
-                $punycode = idn_to_ascii($domain, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+            if (preg_match('/[^\x20-\x7E]/', $domain)) {
+                $punycode = DnsIdnService::toPunycode($domain);
                 if ($punycode !== false) {
                     $domain = $punycode;
                 }

@@ -91,7 +91,7 @@ class AddZoneMasterController extends BaseController
         $pdnssec_use = $this->config->get('pdnssec', 'use', false);
         $dns_third_level_check = $this->config->get('dns', 'third_level_check', false);
 
-        $zone_name = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
+        $zone_name = DnsIdnService::toPunycode(trim($_POST['domain']));
         $dom_type = $_POST["dom_type"];
         $owner = $_POST['owner'];
         $zone_template = $_POST['zone_template'] ?? "none";

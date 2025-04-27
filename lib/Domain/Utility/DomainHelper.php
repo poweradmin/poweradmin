@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Utility;
 
+use Poweradmin\Domain\Service\DnsIdnService;
+
 class DomainHelper
 {
     private const NEWLINE_PATTERNS = '/\r\n|\r|\n/';
@@ -41,7 +43,7 @@ class DomainHelper
                 continue;
             }
 
-            $asciiDomain = idn_to_ascii($domain, IDNA_NONTRANSITIONAL_TO_ASCII);
+            $asciiDomain = DnsIdnService::toPunycode($domain);
             if ($asciiDomain !== false) {
                 $domains[] = strtolower($asciiDomain);
             }

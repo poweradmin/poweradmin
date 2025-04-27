@@ -38,6 +38,7 @@ use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 
@@ -73,7 +74,7 @@ class DnssecController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);
         if (str_starts_with($domain_name, "xn--")) {
-            $idn_zone_name = idn_to_utf8($domain_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+            $idn_zone_name = DnsIdnService::toUtf8($domain_name);
         } else {
             $idn_zone_name = "";
         }

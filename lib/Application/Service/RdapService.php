@@ -2,6 +2,8 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Domain\Service\DnsIdnService;
+
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
@@ -78,7 +80,7 @@ class RdapService
         // Check if this might be an IDN TLD
         if (preg_match('/[^\x20-\x7E]/', $tld)) {
             // Try to convert to punycode and check if we have a server for that
-            $punycodeTld = idn_to_ascii($tld, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+            $punycodeTld = DnsIdnService::toPunycode($tld);
             if ($punycodeTld !== false && isset($this->rdapServers[$punycodeTld])) {
                 return $this->rdapServers[$punycodeTld];
             }
@@ -87,7 +89,7 @@ class RdapService
         elseif (strpos($tld, 'xn--') === 0) {
             try {
                 // Try to convert to Unicode and check if we have a server for that
-                $unicodeTld = idn_to_utf8($tld, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+                $unicodeTld = DnsIdnService::toUtf8($tld);
                 if (
                     $unicodeTld !== false && $unicodeTld !== $tld &&
                     isset($this->rdapServers[$unicodeTld])
@@ -196,7 +198,7 @@ class RdapService
         $parts = explode('.', $domain);
         foreach ($parts as &$part) {
             if (preg_match('/[^\x20-\x7E]/', $part)) {
-                $punycode = idn_to_ascii($part, IDNA_DEFAULT, INTL_IDNA_VARIANT_UTS46);
+                $punycode = DnsIdnService::toPunycode($part);
                 $part = $punycode !== false ? $punycode : $part;
             }
         }

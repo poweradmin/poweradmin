@@ -40,6 +40,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
@@ -101,7 +102,7 @@ class EditRecordController extends BaseController
         $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
 
         if (str_starts_with($zone_name, "xn--")) {
-            $idn_zone_name = idn_to_utf8($zone_name, IDNA_NONTRANSITIONAL_TO_ASCII);
+            $idn_zone_name = DnsIdnService::toUtf8($zone_name);
         } else {
             $idn_zone_name = "";
         }

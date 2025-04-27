@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -89,7 +90,7 @@ class AddZoneSlaveController extends BaseController
         $type = "SLAVE";
         $owner = $_POST['owner'];
         $master = $_POST['slave_master'];
-        $zone = idn_to_ascii(trim($_POST['domain']), IDNA_NONTRANSITIONAL_TO_ASCII);
+        $zone = DnsIdnService::toPunycode(trim($_POST['domain']));
 
         $dns = new Dns($this->db, $this->getConfig());
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
