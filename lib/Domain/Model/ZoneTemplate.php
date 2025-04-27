@@ -180,29 +180,26 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_zone_templ($db, int $zone_templ_id): bool
+    public function delete_zone_templ(int $zone_templ_id): bool
     {
-        if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
-            $error = new ErrorMessage(_("You do not have the permission to delete zone templates."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+            $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
             // Delete the zone template
             $query = "DELETE FROM zone_templ"
-                . " WHERE id = " . $db->quote($zone_templ_id, 'integer');
-            $db->query($query);
+                . " WHERE id = " . $this->db->quote($zone_templ_id, 'integer');
+            $this->db->query($query);
 
             // Delete the zone template records
             $query = "DELETE FROM zone_templ_records"
-                . " WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
-            $db->query($query);
+                . " WHERE zone_templ_id = " . $this->db->quote($zone_templ_id, 'integer');
+            $this->db->query($query);
 
             // Delete references to zone template
             $query = "DELETE FROM records_zone_templ"
-                . " WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
-            $db->query($query);
+                . " WHERE zone_templ_id = " . $this->db->quote($zone_templ_id, 'integer');
+            $this->db->query($query);
             return true;
         }
     }
@@ -210,23 +207,19 @@ class ZoneTemplate
     /**
      * Delete all zone templates for specific user
      *
-     * @param $db
      * @param int $userid User ID
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_zone_templ_userid($db, int $userid): bool
+    public function delete_zone_templ_userid(int $userid): bool
     {
-        if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
-            $error = new ErrorMessage(_("You do not have the permission to delete zone templates."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+            $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
             $query = "DELETE FROM zone_templ"
-                . " WHERE owner = " . $db->quote($userid, 'integer');
-            $db->query($query);
+                . " WHERE owner = " . $this->db->quote($userid, 'integer');
+            $this->db->query($query);
             return true;
         }
     }
@@ -419,17 +412,14 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_zone_templ_record($db, int $rid): bool
+    public function delete_zone_templ_record(int $rid): bool
     {
-        if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
-            $error = new ErrorMessage(_("You do not have the permission to delete this record."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+            $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;
         } else {
-            $query = "DELETE FROM zone_templ_records WHERE id = " . $db->quote($rid, 'integer');
-            $db->query($query);
+            $query = "DELETE FROM zone_templ_records WHERE id = " . $this->db->quote($rid, 'integer');
+            $this->db->query($query);
             return true;
         }
     }
@@ -467,41 +457,38 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function add_zone_templ_save_as($db, string $template_name, string $description, int $userid, array $records, array $options, string $domain = ''): bool
+    public function add_zone_templ_save_as(string $template_name, string $description, int $userid, array $records, array $options, string $domain = ''): bool
     {
-        if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
-            $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+            $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } else {
-            $db->beginTransaction();
+            $this->db->beginTransaction();
 
             $query = "INSERT INTO zone_templ (name, descr, owner)
 			VALUES ("
-                . $db->quote($template_name, 'text') . ", "
-                . $db->quote($description, 'text') . ", "
-                . $db->quote($userid, 'integer') . ")";
+                . $this->db->quote($template_name, 'text') . ", "
+                . $this->db->quote($description, 'text') . ", "
+                . $this->db->quote($userid, 'integer') . ")";
 
-            $db->exec($query);
+            $this->db->exec($query);
 
-            $zone_templ_id = $db->lastInsertId();
+            $zone_templ_id = $this->db->lastInsertId();
 
             foreach ($records as $record) {
                 list($name, $content) = self::replaceWithTemplatePlaceholders($domain, $record, $options);
 
                 $query2 = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
-                    . $db->quote($zone_templ_id, 'integer') . ","
-                    . $db->quote($name, 'text') . ","
-                    . $db->quote($record['type'], 'text') . ","
-                    . $db->quote($content, 'text') . ","
-                    . $db->quote($record['ttl'], 'integer') . ","
-                    . $db->quote($record['prio'] ?? 0, 'integer') . ")";
-                $db->exec($query2);
+                    . $this->db->quote($zone_templ_id, 'integer') . ","
+                    . $this->db->quote($name, 'text') . ","
+                    . $this->db->quote($record['type'], 'text') . ","
+                    . $this->db->quote($content, 'text') . ","
+                    . $this->db->quote($record['ttl'], 'integer') . ","
+                    . $this->db->quote($record['prio'] ?? 0, 'integer') . ")";
+                $this->db->exec($query2);
             }
 
-            $db->commit();
+            $this->db->commit();
         }
         return true;
     }
@@ -612,20 +599,14 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function edit_zone_templ($db, array $details, int $zone_templ_id, $user_id): bool
+    public function edit_zone_templ(array $details, int $zone_templ_id, $user_id): bool
     {
-        $zone_name_exists = ZoneTemplate::zone_templ_name_and_id_exists($db, $details['templ_name'], $zone_templ_id);
-        if (!(UserManager::verify_permission($db, 'zone_master_add'))) {
-            $error = new ErrorMessage(_("You do not have the permission to add a zone template."));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+        $zone_name_exists = $this->zone_templ_name_and_id_exists($details['templ_name'], $zone_templ_id);
+        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+            $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
-            $error = new ErrorMessage(_('Zone template with this name already exists, please choose another one.'));
-            $errorPresenter = new ErrorPresenter();
-            $errorPresenter->present($error);
-
+            $this->messageService->addSystemError(_('Zone template with this name already exists, please choose another one.'));
             return false;
         } else {
             $query = 'UPDATE zone_templ SET name=:templ_name, descr=:templ_descr';
@@ -642,7 +623,7 @@ class ZoneTemplate
                 $params['templ_owner'] = $user_id;
             }
             $query .= ' WHERE id=:templ_id';
-            $stmt = $db->prepare($query);
+            $stmt = $this->db->prepare($query);
 
             $stmt->execute($params);
 
@@ -667,16 +648,15 @@ class ZoneTemplate
     /**
      * Check if zone template name and id exists
      *
-     * @param $db
      * @param string $zone_templ_name zone template name
      * @param int $zone_templ_id zone template id
      *
      * @return bool number of matching templates
      */
-    public static function zone_templ_name_and_id_exists($db, string $zone_templ_name, int $zone_templ_id): bool
+    public function zone_templ_name_and_id_exists(string $zone_templ_name, int $zone_templ_id): bool
     {
-        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = {$db->quote($zone_templ_name, 'text')} AND id != {$db->quote($zone_templ_id, 'integer')}";
-        return $db->queryOne($query);
+        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = {$this->db->quote($zone_templ_name, 'text')} AND id != {$this->db->quote($zone_templ_id, 'integer')}";
+        return $this->db->queryOne($query);
     }
 
     /**

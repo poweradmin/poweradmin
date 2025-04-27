@@ -408,7 +408,8 @@ class EditController extends BaseController
     public function saveAsTemplate(string $zone_id): void
     {
         $template_name = htmlspecialchars($_POST['templ_name']) ?? '';
-        if (ZoneTemplate::zone_templ_name_exists($this->db, $template_name)) {
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        if ($zoneTemplate->zone_templ_name_exists($template_name)) {
             $this->showError(_('Zone template with this name already exists, please choose another one.'));
         } elseif ($template_name == '') {
             $this->showError(_("Template name can't be an empty string."));
