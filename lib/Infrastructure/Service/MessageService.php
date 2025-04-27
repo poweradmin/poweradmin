@@ -321,10 +321,10 @@ EOF;
     /**
      * Get a new instance of MessageService for static contexts
      *
-     * @return static A new MessageService instance
+     * @return self A new MessageService instance
      */
-    public static function create(): static
+    public static function create(): self
     {
-        return new static();
+        return new self();
     }
 }
