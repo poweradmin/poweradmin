@@ -38,8 +38,8 @@ jobs:
     - name: Check code
       run: composer check:all
 
-#    - name: Analyse code
-#      run: composer analyse:all
+    - name: Analyse code
+      run: composer analyse:all
 
     - name: Run test suite
       run: composer tests
