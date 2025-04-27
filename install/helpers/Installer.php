@@ -46,10 +46,9 @@ class Installer
     private InstallSecurityService $securityService;
     private string $localConfigFile;
     private string $newConfigFile;
-    private string $defaultConfigFile;
     private string $installConfigFile;
     private const OLD_CONFIG_FILE_PATH = '/inc/config.inc.php'; // Legacy format
-    private const DEFAULT_CONFIG_FILE_PATH = '/inc/config-defaults.inc.php';
+    private const DEFAULT_CONFIG_FILE_PATH = '/config/settings.defaults.php'; // Default settings
     private const NEW_CONFIG_FILE_PATH = '/config/settings.php'; // New format
     private const INSTALL_CONFIG_PATH = '/config.php';
     private array $config;

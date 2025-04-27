@@ -120,7 +120,7 @@ class DatabaseHelper
         }
     }
 
-    public function createAdministratorUser($pa_pass, $default_config_file): void
+    public function createAdministratorUser($pa_pass): void
     {
         // Create an administrator user with the appropriate permissions
         $adminName = 'Administrator';
@@ -141,7 +141,7 @@ class DatabaseHelper
         $permTemplItemsQuery->execute([':perm_templ_id' => $permTemplId, ':uber_admin_user_id' => $uberAdminUserId]);
 
         $config = ConfigurationManager::getInstance();
-        $config->initialize($default_config_file);
+        $config->initialize();
         $userAuthService = new UserAuthenticationService(
             $config->get('security', 'password_encryption'),
             $config->get('security', 'password_cost')

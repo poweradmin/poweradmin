@@ -151,7 +151,7 @@ class InstallStepHandler
         ], $inputData));
     }
 
-    public function step5SetupAccountAndNameServers(array $errors, string $default_config_file): void
+    public function step5SetupAccountAndNameServers(array $errors): void
     {
         $credentials = $this->getCredentials();
 
@@ -170,7 +170,7 @@ class InstallStepHandler
 
             $databaseHelper = new DatabaseHelper($db, $credentials);
             $databaseHelper->updateDatabase();
-            $databaseHelper->createAdministratorUser($pa_pass, $default_config_file);
+            $databaseHelper->createAdministratorUser($pa_pass);
 
             echo _('done!') . "</p>";
         } catch (\Exception $e) {
@@ -260,7 +260,7 @@ class InstallStepHandler
         ));
     }
 
-    public function step7CreateConfigurationFile(array $errors, string $default_config_file): void
+    public function step7CreateConfigurationFile(array $errors): void
     {
         // No need to set database port if it's standard port for that db
         $db_port = ($this->request->get('db_type') == 'mysql' && $this->request->get('db_port') != 3306)
@@ -270,7 +270,7 @@ class InstallStepHandler
         $db_file = $this->request->get('db_type') == 'sqlite' ? $this->request->get('db_name') : '';
 
         $config = ConfigurationManager::getInstance();
-        $config->initialize($default_config_file);
+        $config->initialize();
 
         $dns_hostmaster = $this->request->get('dns_hostmaster');
         $dns_ns1 = $this->request->get('dns_ns1');

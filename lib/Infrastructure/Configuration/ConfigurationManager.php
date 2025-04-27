@@ -89,7 +89,7 @@ class ConfigurationManager implements ConfigurationInterface
             }
         }
 
-        // First try to load new configuration file
+        // Try to load user configuration file
         $newConfigFile = __DIR__ . '/../../../config/settings.php';
         $newConfigExists = false;
 
