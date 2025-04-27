@@ -155,11 +155,42 @@ class SearchController extends BaseController
             $totalRecords = $recordSearch->getTotalRecords($parameters, $permission_view, $iface_search_group_records);
         }
 
-        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $zone_rowamount, $record_rowamount, $iface_zone_comments, $iface_record_comments);
+        $this->showSearchForm(
+            $parameters,
+            $searchResultZones,
+            $searchResultRecords,
+            $zone_sort_by,
+            $zone_sort_direction,
+            $record_sort_by,
+            $record_sort_direction,
+            $totalZones,
+            $totalRecords,
+            $zones_page,
+            $records_page,
+            $zone_rowamount,
+            $record_rowamount,
+            $iface_zone_comments,
+            $iface_record_comments
+        );
     }
 
-    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $zone_rowamount, $record_rowamount, $iface_zone_comments, $iface_record_comments): void
-    {
+    private function showSearchForm(
+        $parameters,
+        $searchResultZones,
+        $searchResultRecords,
+        $zone_sort_by,
+        $zone_sort_direction,
+        $record_sort_by,
+        $record_sort_direction,
+        $totalZones,
+        $totalRecords,
+        $zones_page,
+        $records_page,
+        $zone_rowamount,
+        $record_rowamount,
+        $iface_zone_comments,
+        $iface_record_comments
+    ): void {
         $whois_enabled = $this->config->get('whois', 'enabled', false);
         $rdap_enabled = $this->config->get('rdap', 'enabled', false);
 
