@@ -38,7 +38,7 @@ class PasswordGenerationService
         'special_characters' => '!@#$%^&*()-_=+[]{}|;:,.<>?'
     ];
 
-    public function __construct(ConfigurationManager $configManager = null)
+    public function __construct(?ConfigurationManager $configManager = null)
     {
         $this->configManager = $configManager ?? ConfigurationManager::getInstance();
     }

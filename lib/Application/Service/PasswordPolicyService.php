@@ -28,7 +28,7 @@ class PasswordPolicyService
 {
     private ConfigurationManager $configManager;
 
-    public function __construct(ConfigurationManager $configManager = null)
+    public function __construct(?ConfigurationManager $configManager = null)
     {
         $this->configManager = $configManager ?? ConfigurationManager::getInstance();
     }
