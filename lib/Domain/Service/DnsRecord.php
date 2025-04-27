@@ -596,6 +596,7 @@ class DnsRecord
             );
         } else {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "get_supermaster_info_from_ip", "No or no valid ipv4 or ipv6 address given."));
+            return array();
         }
     }
 
@@ -805,10 +806,12 @@ class DnsRecord
                         return true;
                     } else {
                         $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "add_domain", "could not create zone"));
+                        return false;
                     }
                 }
             } else {
                 $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s'), "add_domain"));
+                return false;
             }
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to add a master zone."));
@@ -841,6 +844,7 @@ class DnsRecord
             return true;
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
+            return false;
         }
     }
 
@@ -892,6 +896,7 @@ class DnsRecord
             } else {
                 $messageService = new MessageService();
                 $messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "add_owner_to_zone", "$zone_id / $user_id"));
+                return false;
             }
         } else {
             return false;
@@ -919,6 +924,7 @@ class DnsRecord
             } else {
                 $messageService = new MessageService();
                 $messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_owner_from_zone", "$zone_id / $user_id"));
+                return false;
             }
         } else {
             return false;
@@ -983,6 +989,7 @@ class DnsRecord
             }
         } else {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "get_zone_id_from_name", "Not a valid domainname: $zname"));
+            return false;
         }
     }
 
@@ -997,6 +1004,7 @@ class DnsRecord
 
         if ($perm_view == "none") {
             $this->messageService->addSystemError(_("You do not have the permission to view this zone."));
+            return [];
         } else {
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
@@ -1120,6 +1128,7 @@ class DnsRecord
             return (bool)$result;
         } else {
             $this->messageService->addSystemError(_('This is an invalid zone name.'));
+            return false;
         }
     }
 
