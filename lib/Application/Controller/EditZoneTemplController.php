@@ -89,18 +89,9 @@ class EditZoneTemplController extends BaseController
             $this->updateZoneTemplateDetails($zone_templ_id);
         }
 
-        // TODO: review this code
-//        if (isset($_POST['save_as'])) {
-//            if (ZoneTemplate::zone_templ_name_exists($_POST['templ_name'])) {
-//                error(ERR_ZONE_TEMPL_EXIST);
-//            } elseif ($_POST['templ_name'] == '') {
-//                error(ERR_ZONE_TEMPL_IS_EMPTY);
-//            } else {
-//                ZoneTemplate::add_zone_templ_save_as($_POST['templ_name'], $_POST['templ_descr'], $_SESSION['userid'], $_POST['record']);
-//                $this->setMessage('list_zone_templ', 'success', SUC_ZONE_TEMPL_ADD);
-//                $this->redirect('index.php', ['page'=> 'list_zone_templ.php']);
-//            }
-//        }
+        if (isset($_POST['save_as'])) {
+            $this->saveTemplateAs($zone_templ_id);
+        }
 
         if (isset($_POST['update_zones'])) {
             $this->updateZoneRecords($zone_templ_id);
@@ -196,5 +187,58 @@ class EditZoneTemplController extends BaseController
             $dnsRecord->update_zone_records($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone_id, $zone_templ_id);
         }
         $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
+    }
+
+    private function saveTemplateAs(string $zone_templ_id): void
+    {
+        $constraints = [
+            'templ_name' => [
+                new Assert\NotBlank()
+            ],
+            'templ_descr' => [
+                new Assert\Length(['max' => 1024])
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_POST)) {
+            $this->showFirstValidationError($_POST);
+            return;
+        }
+
+        $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+        $templateExists = $zoneTemplate->zone_templ_name_exists($_POST['templ_name']);
+        $currentTemplate = ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id);
+
+        if ($templateExists) {
+            $this->showError(_('Zone template with this name already exists, please choose another one.'));
+            return;
+        }
+
+        // Don't allow saving with the same name
+        if ($_POST['templ_name'] === $currentTemplate['name']) {
+            $this->showError(_('Please enter a different name when using Save As.'));
+            return;
+        }
+
+        // Get records from the current template
+        $records = ZoneTemplate::get_zone_templ_records($this->db, $zone_templ_id);
+
+        // For a simple "save as" with no domain substitution
+        $options = [];
+
+        $success = $zoneTemplate->add_zone_templ_save_as(
+            $_POST['templ_name'],
+            $_POST['templ_descr'],
+            $_SESSION['userid'],
+            $records,
+            $options
+        );
+
+        if ($success) {
+            $this->setMessage('list_zone_templ', 'success', _('Zone template has been copied successfully.'));
+            $this->redirect('index.php', ['page' => 'list_zone_templ']);
+        }
     }
 }
