@@ -59,7 +59,7 @@ class DnsIdnService
      */
     public static function isIdn(string $domainName): bool
     {
-        return strpos($domainName, 'xn--') === 0;
+        return str_starts_with($domainName, 'xn--');
     }
 
     /**

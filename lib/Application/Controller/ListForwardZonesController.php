@@ -112,7 +112,7 @@ class ListForwardZonesController extends BaseController
         // Filter out the reverse zones
         $forward_zones = array_filter($zones, function ($zone) {
             $name = $zone['name'] ?? '';
-            return !(strpos($name, 'in-addr.arpa') !== false || strpos($name, 'ip6.arpa') !== false);
+            return !(str_contains($name, 'in-addr.arpa') || str_contains($name, 'ip6.arpa'));
         });
 
         $this->render('list_forward_zones.html', [

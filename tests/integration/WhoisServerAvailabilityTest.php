@@ -127,7 +127,7 @@ class WhoisServerAvailabilityTest extends TestCase
             }
 
             // Skip HTTP/HTTPS servers as they don't use standard WHOIS protocol
-            if (strpos($server, 'www.') === 0 || strpos($server, 'http') === 0) {
+            if (str_starts_with($server, 'www.') || str_starts_with($server, 'http')) {
                 $results[$tld] = [
                     'server' => $server,
                     'available' => true, // Assume available as we can't easily test HTTP

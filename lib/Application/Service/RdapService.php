@@ -86,7 +86,7 @@ class RdapService
             }
         }
         // Check if this is a punycode TLD with xn-- prefix and we have a Unicode version
-        elseif (strpos($tld, 'xn--') === 0) {
+        elseif (str_starts_with($tld, 'xn--')) {
             try {
                 // Try to convert to Unicode and check if we have a server for that
                 $unicodeTld = DnsIdnService::toUtf8($tld);

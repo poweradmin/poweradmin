@@ -719,7 +719,7 @@ class ZoneTemplate
         $val = str_replace('[SOA_MINIMUM]', $soa_minimum, $val);
 
         // Check if this is an SOA record that's missing the SOA parameters
-        if (strpos($val, 'SOA') !== false) {
+        if (str_contains($val, 'SOA')) {
             $parts = explode(' ', $val);
             // If we have an SOA record but it only has 3 parts (ns, hostmaster, serial), add the missing SOA parameters
             if (count($parts) == 3) {

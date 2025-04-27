@@ -120,16 +120,16 @@ class ReverseZoneSorting
             // Use specialized natural sorting for reverse zones
             // First separate IPv4 and IPv6 domains to keep them grouped
             $ipv4Domains = array_filter($domains, function ($domain) {
-                return strpos($domain, '.in-addr.arpa') !== false;
+                return str_contains($domain, '.in-addr.arpa');
             });
 
             $ipv6Domains = array_filter($domains, function ($domain) {
-                return strpos($domain, '.ip6.arpa') !== false;
+                return str_contains($domain, '.ip6.arpa');
             });
 
             // Other domains (though there shouldn't be any in reverse zone list)
             $otherDomains = array_filter($domains, function ($domain) {
-                return strpos($domain, '.in-addr.arpa') === false && strpos($domain, '.ip6.arpa') === false;
+                return !str_contains($domain, '.in-addr.arpa') && !str_contains($domain, '.ip6.arpa');
             });
 
             // Apply PHP's built-in natural sorting to each group
@@ -159,8 +159,8 @@ class ReverseZoneSorting
     {
         usort($domains, function ($a, $b) {
             // First separate IPv4 and IPv6 reverse zones
-            $aIsIpv4 = strpos($a, '.in-addr.arpa') !== false;
-            $bIsIpv4 = strpos($b, '.in-addr.arpa') !== false;
+            $aIsIpv4 = str_contains($a, '.in-addr.arpa');
+            $bIsIpv4 = str_contains($b, '.in-addr.arpa');
 
             // Sort IPv4 zones before IPv6 zones
             if ($aIsIpv4 && !$bIsIpv4) {

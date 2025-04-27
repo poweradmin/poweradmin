@@ -85,7 +85,7 @@ class BatchReverseRecordCreator
         $cidr = 24; // Default to /24
         $network = $networkPrefix;
 
-        if (strpos($networkPrefix, '/') !== false) {
+        if (str_contains($networkPrefix, '/')) {
             list($network, $cidrPart) = explode('/', $networkPrefix);
             $cidr = (int)$cidrPart;
 
@@ -345,7 +345,7 @@ class BatchReverseRecordCreator
             }
 
             // Try with the exact hardcoded zone format
-            if (strpos($networkPrefix, '2001:db8:1:1') === 0) {
+            if (str_starts_with($networkPrefix, '2001:db8:1:1')) {
                 $zone_id_test = $this->dnsRecord->get_domain_id_by_name($hardcodedZone);
                 if ($zone_id_test) {
                     $test_zone_rev_id = $zone_id_test;
@@ -410,7 +410,7 @@ class BatchReverseRecordCreator
                         $reverseDomain = DnsRecord::convert_ipv6addr_to_ptrrec($ip);
 
                         // If needed, use the simplified format for specific known zones
-                        if (strpos($networkPrefix, '2001:db8:1:1') === 0) {
+                        if (str_starts_with($networkPrefix, '2001:db8:1:1')) {
                             $lastHex = dechex($i);
                             $reverseDomain = $lastHex . '.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
                         }
@@ -492,7 +492,7 @@ class BatchReverseRecordCreator
         $zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($content_rev);
 
         // If we can't find the zone, try adding the missing dot before ip6.arpa if needed
-        if ($zone_rev_id === -1 && strpos($content_rev, 'ip6.arpa') !== false && strpos($content_rev, '.ip6.arpa') === false) {
+        if ($zone_rev_id === -1 && str_contains($content_rev, 'ip6.arpa') && !str_contains($content_rev, '.ip6.arpa')) {
             // Fix the missing dot before ip6.arpa
             $fixed_content_rev = str_replace('ip6.arpa', '.ip6.arpa', $content_rev);
             $zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($fixed_content_rev);
@@ -593,7 +593,7 @@ class BatchReverseRecordCreator
     private function convertIPv6ToPTR(string $ip): string
     {
         // Clean and normalize the IPv6 address
-        if (strpos($ip, '::') !== false) {
+        if (str_contains($ip, '::')) {
             // If it's a compressed IPv6 address, expand it
             $binary = inet_pton($ip);
             if ($binary === false) {

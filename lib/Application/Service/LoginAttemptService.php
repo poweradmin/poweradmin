@@ -144,7 +144,7 @@ class LoginAttemptService
             }
 
             // CIDR notation (e.g., 192.168.1.0/24)
-            if (strpos($listItem, '/') !== false) {
+            if (str_contains($listItem, '/')) {
                 list($subnet, $bits) = explode('/', $listItem);
                 $subnet = ip2long($subnet);
                 if ($subnet !== false) {
@@ -156,7 +156,7 @@ class LoginAttemptService
             }
 
             // Wildcard notation (e.g., 192.168.1.*)
-            if (strpos($listItem, '*') !== false) {
+            if (str_contains($listItem, '*')) {
                 $pattern = '/^' . str_replace(['.', '*'], ['\\.', '[0-9]+'], $listItem) . '$/';
                 if (preg_match($pattern, $ipAddress)) {
                     return true;
