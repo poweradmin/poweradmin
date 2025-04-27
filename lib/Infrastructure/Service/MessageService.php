@@ -317,14 +317,4 @@ EOF;
     {
         $this->allowHtml()->displayDirectSystemError($error);
     }
-
-    /**
-     * Get a new instance of MessageService for static contexts
-     *
-     * @return self A new MessageService instance
-     */
-    public static function create(): self
-    {
-        return new self();
-    }
 }

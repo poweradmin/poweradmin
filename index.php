@@ -32,7 +32,7 @@ $configManager->initialize();
 
 if (!function_exists('session_start')) {
     require_once __DIR__ . '/lib/Infrastructure/Service/MessageService.php';
-    MessageService::create()->displayDirectSystemError("You have to install the PHP session extension!");
+    (new MessageService())->displayDirectSystemError("You have to install the PHP session extension!");
 }
 
 $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
