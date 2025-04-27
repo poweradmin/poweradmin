@@ -17,6 +17,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Validate PHP syntax
+      run: find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
+
     - name: Validate composer.json and composer.lock
       run: composer validate --strict --check-lock --with-dependencies
 
