@@ -32,16 +32,19 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\RecordTypeService;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditZoneTemplRecordController extends BaseController
 {
+    private RecordTypeService $recordTypeService;
+
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->recordTypeService = new RecordTypeService($this->getConfig());
     }
 
     public function run(): void
@@ -88,7 +91,7 @@ class EditZoneTemplRecordController extends BaseController
             'zone_templ_id' => $zone_templ_id,
             'record_id' => $record_id,
             'templ_details' => ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id),
-            'record_types' => RecordType::getAllTypes(),
+            'record_types' => $this->recordTypeService->getAllTypes(),
         ]);
     }
 

@@ -38,10 +38,10 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
@@ -51,6 +51,7 @@ class EditRecordController extends BaseController
     private LegacyLogger $logger;
     private RecordCommentService $recordCommentService;
     private RecordCommentSyncService $commentSyncService;
+    private RecordTypeService $recordTypeService;
 
     public function __construct(array $request)
     {
@@ -60,6 +61,7 @@ class EditRecordController extends BaseController
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService);
+        $this->recordTypeService = new RecordTypeService($this->getConfig());
     }
 
     public function run(): void
@@ -97,7 +99,7 @@ class EditRecordController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_name = $dnsRecord->get_domain_name_by_id($zid);
 
-        $recordTypes = RecordType::getAllTypes();
+        $recordTypes = $this->recordTypeService->getAllTypes();
         $record = $dnsRecord->get_record_from_id($record_id);
         $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
 
