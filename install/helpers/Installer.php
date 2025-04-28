@@ -45,6 +45,7 @@ class Installer
     private CsrfTokenService $csrfTokenService;
     private InstallSecurityService $securityService;
     private string $localConfigFile;
+    private string $defaultConfigFile;
     private string $newConfigFile;
     private string $installConfigFile;
     private const OLD_CONFIG_FILE_PATH = '/inc/config.inc.php'; // Legacy format
