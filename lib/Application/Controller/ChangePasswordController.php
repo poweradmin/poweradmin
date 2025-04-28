@@ -84,6 +84,9 @@ class ChangePasswordController extends BaseController
             return;
         }
 
+        // Make sure we have the latest POST data
+        $this->request->refresh();
+
         $this->validateCsrfToken();
 
         if (!$this->validateInput()) {

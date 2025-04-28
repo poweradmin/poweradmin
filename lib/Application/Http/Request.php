@@ -31,6 +31,15 @@ class Request
 
     public function __construct()
     {
+        // Always get fresh request data
+        $this->refresh();
+    }
+
+    /**
+     * Refreshes the request data from the global variables
+     */
+    public function refresh(): void
+    {
         $this->queryParams = $_GET;
         $this->postParams = $_POST;
         $this->serverParams = $_SERVER;
@@ -44,6 +53,8 @@ class Request
 
     public function getPostParams(): array
     {
+        // Ensure we have the latest POST data
+        $this->postParams = $_POST;
         return $this->postParams;
     }
 
@@ -54,6 +65,8 @@ class Request
 
     public function getPostParam(string $key, $default = null)
     {
+        // Ensure we have the latest POST data
+        $this->postParams = $_POST;
         return $this->postParams[$key] ?? $default;
     }
 
