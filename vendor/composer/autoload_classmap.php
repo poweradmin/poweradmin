@@ -486,6 +486,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnssecProvider' => $baseDir . '/lib/Domain/Service/DnssecProvider.php',
     'Poweradmin\\Domain\\Service\\DomainRecordCreator' => $baseDir . '/lib/Domain/Service/DomainRecordCreator.php',
     'Poweradmin\\Domain\\Service\\PasswordEncryptionService' => $baseDir . '/lib/Domain/Service/PasswordEncryptionService.php',
+    'Poweradmin\\Domain\\Service\\RecordTypeService' => $baseDir . '/lib/Domain/Service/RecordTypeService.php',
     'Poweradmin\\Domain\\Service\\ReverseRecordCreator' => $baseDir . '/lib/Domain/Service/ReverseRecordCreator.php',
     'Poweradmin\\Domain\\Service\\SessionService' => $baseDir . '/lib/Domain/Service/SessionService.php',
     'Poweradmin\\Domain\\Service\\UserContextService' => $baseDir . '/lib/Domain/Service/UserContextService.php',

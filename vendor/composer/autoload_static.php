@@ -675,6 +675,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Domain\\Service\\DnssecProvider' => __DIR__ . '/../..' . '/lib/Domain/Service/DnssecProvider.php',
         'Poweradmin\\Domain\\Service\\DomainRecordCreator' => __DIR__ . '/../..' . '/lib/Domain/Service/DomainRecordCreator.php',
         'Poweradmin\\Domain\\Service\\PasswordEncryptionService' => __DIR__ . '/../..' . '/lib/Domain/Service/PasswordEncryptionService.php',
+        'Poweradmin\\Domain\\Service\\RecordTypeService' => __DIR__ . '/../..' . '/lib/Domain/Service/RecordTypeService.php',
         'Poweradmin\\Domain\\Service\\ReverseRecordCreator' => __DIR__ . '/../..' . '/lib/Domain/Service/ReverseRecordCreator.php',
         'Poweradmin\\Domain\\Service\\SessionService' => __DIR__ . '/../..' . '/lib/Domain/Service/SessionService.php',
         'Poweradmin\\Domain\\Service\\UserContextService' => __DIR__ . '/../..' . '/lib/Domain/Service/UserContextService.php',
