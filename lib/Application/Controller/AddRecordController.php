@@ -36,7 +36,7 @@ use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -54,6 +54,7 @@ class AddRecordController extends BaseController
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
     private RecordManagerService $recordManager;
+    private RecordTypeService $recordTypeService;
 
     public function __construct(array $request)
     {
@@ -75,6 +76,8 @@ class AddRecordController extends BaseController
             $this->logger,
             $this->getConfig()
         );
+
+        $this->recordTypeService = new RecordTypeService($this->getConfig());
 
         $this->domainRecordCreator = new DomainRecordCreator(
             $this->getConfig(),
@@ -198,7 +201,7 @@ class AddRecordController extends BaseController
         }
 
         $this->render('add_record.html', [
-            'types' => $isReverseZone ? RecordType::getReverseZoneTypes($isDnsSecEnabled) : RecordType::getDomainZoneTypes($isDnsSecEnabled),
+            'types' => $isReverseZone ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled) : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled),
             'name' => $_POST['name'] ?? '',
             'type' => $_POST['type'] ?? '',
             'content' => $_POST['content'] ?? '',

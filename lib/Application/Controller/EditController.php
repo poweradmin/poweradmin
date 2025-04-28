@@ -40,7 +40,7 @@ use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordLog;
-use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
@@ -56,6 +56,7 @@ class EditController extends BaseController
 {
     private RecordCommentService $recordCommentService;
     private RecordCommentSyncService $commentSyncService;
+    private RecordTypeService $recordTypeService;
 
     public function __construct(array $request)
     {
@@ -63,6 +64,7 @@ class EditController extends BaseController
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService);
+        $this->recordTypeService = new RecordTypeService($this->getConfig());
     }
 
     public function run(): void
@@ -265,7 +267,7 @@ class EditController extends BaseController
             'session_userid' => $_SESSION["userid"],
             'dns_ttl' => $this->config->get('dns', 'ttl', 86400),
             'is_reverse_zone' => $isReverseZone,
-            'record_types' => $isReverseZone ? RecordType::getReverseZoneTypes($isDnsSecEnabled) : RecordType::getDomainZoneTypes($isDnsSecEnabled),
+            'record_types' => $isReverseZone ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled) : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled),
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', true),
             'iface_edit_show_id' => $iface_show_id,

@@ -36,7 +36,7 @@ use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -50,6 +50,7 @@ class BulkRecordAddController extends BaseController
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
     private RecordManagerService $recordManager;
+    private RecordTypeService $recordTypeService;
 
     public function __construct(array $request)
     {
@@ -70,6 +71,8 @@ class BulkRecordAddController extends BaseController
             $this->logger,
             $this->getConfig()
         );
+
+        $this->recordTypeService = new RecordTypeService($this->getConfig());
     }
 
     public function run(): void
@@ -165,7 +168,7 @@ class BulkRecordAddController extends BaseController
             $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
             $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
-            $valid_types = $isReverseZone ? RecordType::getReverseZoneTypes($isDnsSecEnabled) : RecordType::getDomainZoneTypes($isDnsSecEnabled);
+            $valid_types = $isReverseZone ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled) : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled);
 
             if (!in_array($type, $valid_types)) {
                 $failed_records[] = $line . " - " . _('Invalid record type.');
