@@ -418,9 +418,7 @@ class UserManager
      *
      * @param int $id Domain ID
      *
-     * @return string|void array of owners for domain
-     * @todo also fetch the subowners
-     *
+     * @return string List of owners for domain as a comma-separated string
      */
     public static function get_fullnames_owners_from_domainid($db, int $id)
     {
