@@ -4,297 +4,54 @@ namespace unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class RecordTypeTest extends TestCase
 {
-    /**
-     * @var \PHPUnit\Framework\MockObject\MockObject|ConfigurationManager
-     */
-    private $configManagerMock;
-
-    protected function setUp(): void
+    public function testConstantsExist(): void
     {
-        $this->configManagerMock = $this->createMock(ConfigurationManager::class);
-
-        // Create a mock for the singleton
-        $reflectionProperty = new \ReflectionProperty(ConfigurationManager::class, 'instance');
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue(null, $this->configManagerMock);
+        // Verify that the constants exist
+        $this->assertTrue(defined(RecordType::class . '::DOMAIN_ZONE_COMMON_RECORDS'));
+        $this->assertTrue(defined(RecordType::class . '::REVERSE_ZONE_COMMON_RECORDS'));
+        $this->assertTrue(defined(RecordType::class . '::DNSSEC_TYPES'));
+        $this->assertTrue(defined(RecordType::class . '::LESS_COMMON_RECORDS'));
     }
 
-    protected function tearDown(): void
+    public function testDomainZoneCommonRecordsContainExpectedTypes(): void
     {
-        // Reset the singleton
-        $reflectionProperty = new \ReflectionProperty(ConfigurationManager::class, 'instance');
-        $reflectionProperty->setAccessible(true);
-        $reflectionProperty->setValue(null, null);
+        // Verify DOMAIN_ZONE_COMMON_RECORDS contains expected types
+        $this->assertContains('A', RecordType::DOMAIN_ZONE_COMMON_RECORDS);
+        $this->assertContains('AAAA', RecordType::DOMAIN_ZONE_COMMON_RECORDS);
+        $this->assertContains('MX', RecordType::DOMAIN_ZONE_COMMON_RECORDS);
+        $this->assertContains('NS', RecordType::DOMAIN_ZONE_COMMON_RECORDS);
+        $this->assertContains('SOA', RecordType::DOMAIN_ZONE_COMMON_RECORDS);
+        $this->assertContains('TXT', RecordType::DOMAIN_ZONE_COMMON_RECORDS);
     }
 
-    public function testGetAllTypesWithNoConfiguration(): void
+    public function testReverseZoneCommonRecordsContainExpectedTypes(): void
     {
-        // Configure mock to return null for configuration values
-        $this->configManagerMock->method('get')
-            ->willReturn(null);
-
-        $result = RecordType::getAllTypes();
-
-        // Verify we get a non-empty array
-        $this->assertIsArray($result);
-        $this->assertNotEmpty($result);
-
-        // Verify the array contains expected basic record types
-        $this->assertContains('A', $result);
-        $this->assertContains('AAAA', $result);
-        $this->assertContains('MX', $result);
-        $this->assertContains('NS', $result);
-        $this->assertContains('SOA', $result);
-        $this->assertContains('TXT', $result);
-        $this->assertContains('PTR', $result);
-
-        // Verify DNSSEC types are included
-        $this->assertContains('DNSKEY', $result);
-        $this->assertContains('DS', $result);
-        $this->assertContains('RRSIG', $result);
-
-        // Verify less common types are included
-        $this->assertContains('CAA', $result);
-        $this->assertContains('TLSA', $result);
-        $this->assertContains('SSHFP', $result);
-
-        // Verify the array is sorted
-        $sortedResult = $result;
-        sort($sortedResult);
-        $this->assertSame($sortedResult, $result);
+        // Verify REVERSE_ZONE_COMMON_RECORDS contains expected types
+        $this->assertContains('PTR', RecordType::REVERSE_ZONE_COMMON_RECORDS);
+        $this->assertContains('CNAME', RecordType::REVERSE_ZONE_COMMON_RECORDS);
+        $this->assertContains('NS', RecordType::REVERSE_ZONE_COMMON_RECORDS);
+        $this->assertContains('SOA', RecordType::REVERSE_ZONE_COMMON_RECORDS);
     }
 
-    public function testGetAllTypesWithOnlyDomainTypesConfigured(): void
+    public function testDnssecTypesContainExpectedTypes(): void
     {
-        // Configure mock to return configured domain types only
-        $this->configManagerMock->method('get')
-            ->willReturnCallback(function ($section, $key) {
-                if ($section === 'dns' && $key === 'domain_record_types') {
-                    return ['A', 'AAAA', 'CNAME', 'TXT', 'MX'];
-                }
-                return null;
-            });
-
-        $result = RecordType::getAllTypes();
-
-        // Verify we get a non-empty array with domain + default reverse types
-        $this->assertIsArray($result);
-        $this->assertNotEmpty($result);
-
-        // Verify configured domain types
-        $this->assertContains('A', $result);
-        $this->assertContains('AAAA', $result);
-        $this->assertContains('CNAME', $result);
-        $this->assertContains('TXT', $result);
-        $this->assertContains('MX', $result);
-
-        // Verify default reverse types
-        $this->assertContains('PTR', $result);
-        $this->assertContains('LOC', $result);
-
-        // Verify the array is sorted
-        $sortedResult = $result;
-        sort($sortedResult);
-        $this->assertSame($sortedResult, $result);
+        // Verify DNSSEC_TYPES contains expected types
+        $this->assertContains('DNSKEY', RecordType::DNSSEC_TYPES);
+        $this->assertContains('DS', RecordType::DNSSEC_TYPES);
+        $this->assertContains('RRSIG', RecordType::DNSSEC_TYPES);
+        $this->assertContains('NSEC', RecordType::DNSSEC_TYPES);
+        $this->assertContains('NSEC3', RecordType::DNSSEC_TYPES);
     }
 
-    public function testGetAllTypesWithOnlyReverseTypesConfigured(): void
+    public function testLessCommonRecordsContainExpectedTypes(): void
     {
-        // Configure mock to return configured reverse types only
-        $this->configManagerMock->method('get')
-            ->willReturnCallback(function ($section, $key) {
-                if ($section === 'dns' && $key === 'reverse_record_types') {
-                    return ['PTR', 'CNAME', 'TXT'];
-                }
-                return null;
-            });
-
-        $result = RecordType::getAllTypes();
-
-        // Verify we get a non-empty array with default domain + reverse types
-        $this->assertIsArray($result);
-        $this->assertNotEmpty($result);
-
-        // Verify default domain types
-        $this->assertContains('A', $result);
-        $this->assertContains('AAAA', $result);
-        $this->assertContains('MX', $result);
-        $this->assertContains('NS', $result);
-        $this->assertContains('SOA', $result);
-
-        // Verify configured reverse types
-        $this->assertContains('PTR', $result);
-        $this->assertContains('CNAME', $result);
-        $this->assertContains('TXT', $result);
-
-        // Verify array is sorted
-        $sortedResult = $result;
-        sort($sortedResult);
-        $this->assertSame($sortedResult, $result);
-    }
-
-    public function testGetAllTypesWithBothTypesConfigured(): void
-    {
-        // Configure mock to return both domain and reverse types
-        $this->configManagerMock->method('get')
-            ->willReturnCallback(function ($section, $key) {
-                if ($section === 'dns' && $key === 'domain_record_types') {
-                    return ['A', 'AAAA', 'CNAME', 'TXT', 'MX', 'CAA'];
-                }
-                if ($section === 'dns' && $key === 'reverse_record_types') {
-                    return ['PTR', 'CNAME', 'TXT', 'NS'];
-                }
-                return null;
-            });
-
-        $result = RecordType::getAllTypes();
-
-        // Verify we get a non-empty array with both configured types
-        $this->assertIsArray($result);
-        $this->assertNotEmpty($result);
-
-        // Verify configured domain types
-        $this->assertContains('A', $result);
-        $this->assertContains('AAAA', $result);
-        $this->assertContains('CNAME', $result);
-        $this->assertContains('TXT', $result);
-        $this->assertContains('MX', $result);
-        $this->assertContains('CAA', $result);
-
-        // Verify configured reverse types
-        $this->assertContains('PTR', $result);
-        $this->assertContains('NS', $result);
-
-        // Verify duplicates are removed (CNAME and TXT appear in both configs)
-        $this->assertSame(count(array_unique($result)), count($result));
-
-        // Verify the array is sorted
-        $sortedResult = $result;
-        sort($sortedResult);
-        $this->assertSame($sortedResult, $result);
-    }
-
-    public function testGetDomainZoneTypesWithoutConfiguration(): void
-    {
-        // Configure mock to return null for domain types
-        $this->configManagerMock->method('get')
-            ->willReturn(null);
-
-        // Test with DNSSEC disabled
-        $result = RecordType::getDomainZoneTypes(false);
-        $this->assertIsArray($result);
-        $this->assertNotEmpty($result);
-        $this->assertContains('A', $result);
-        $this->assertContains('AAAA', $result);
-        $this->assertContains('MX', $result);
-        $this->assertNotContains('DNSKEY', $result); // DNSSEC type should not be included
-
-        // Test with DNSSEC enabled
-        $result = RecordType::getDomainZoneTypes(true);
-        $this->assertIsArray($result);
-        $this->assertNotEmpty($result);
-        $this->assertContains('A', $result);
-        $this->assertContains('AAAA', $result);
-        $this->assertContains('MX', $result);
-        $this->assertContains('DNSKEY', $result); // DNSSEC type should be included
-        $this->assertContains('DS', $result); // DNSSEC type should be included
-    }
-
-    public function testGetDomainZoneTypesWithConfiguration(): void
-    {
-        // Configure mock to return configured domain types
-        $this->configManagerMock->method('get')
-            ->willReturnCallback(function ($section, $key) {
-                if ($section === 'dns' && $key === 'domain_record_types') {
-                    return ['A', 'AAAA', 'CNAME', 'TXT', 'MX', 'CAA'];
-                }
-                return null;
-            });
-
-        // Test with DNSSEC disabled
-        $result = RecordType::getDomainZoneTypes(false);
-        $this->assertIsArray($result);
-        $this->assertCount(6, $result); // Only the configured types
-        $this->assertContains('A', $result);
-        $this->assertContains('AAAA', $result);
-        $this->assertContains('CNAME', $result);
-        $this->assertContains('TXT', $result);
-        $this->assertContains('MX', $result);
-        $this->assertContains('CAA', $result);
-        $this->assertNotContains('DNSKEY', $result); // DNSSEC type should not be included
-
-        // Test with DNSSEC enabled
-        $result = RecordType::getDomainZoneTypes(true);
-        $this->assertIsArray($result);
-        $this->assertContains('A', $result);
-        $this->assertContains('AAAA', $result);
-        $this->assertContains('CNAME', $result);
-        $this->assertContains('TXT', $result);
-        $this->assertContains('MX', $result);
-        $this->assertContains('CAA', $result);
-        $this->assertContains('DNSKEY', $result); // DNSSEC type should be included
-        $this->assertContains('DS', $result); // DNSSEC type should be included
-    }
-
-    public function testGetReverseZoneTypesWithoutConfiguration(): void
-    {
-        // Configure mock to return null for reverse types
-        $this->configManagerMock->method('get')
-            ->willReturn(null);
-
-        // Test with DNSSEC disabled
-        $result = RecordType::getReverseZoneTypes(false);
-        $this->assertIsArray($result);
-        $this->assertNotEmpty($result);
-        $this->assertContains('PTR', $result);
-        $this->assertContains('CNAME', $result);
-        $this->assertContains('NS', $result);
-        $this->assertNotContains('DNSKEY', $result); // DNSSEC type should not be included
-
-        // Test with DNSSEC enabled
-        $result = RecordType::getReverseZoneTypes(true);
-        $this->assertIsArray($result);
-        $this->assertNotEmpty($result);
-        $this->assertContains('PTR', $result);
-        $this->assertContains('CNAME', $result);
-        $this->assertContains('NS', $result);
-        $this->assertContains('DNSKEY', $result); // DNSSEC type should be included
-        $this->assertContains('DS', $result); // DNSSEC type should be included
-    }
-
-    public function testGetReverseZoneTypesWithConfiguration(): void
-    {
-        // Configure mock to return configured reverse types
-        $this->configManagerMock->method('get')
-            ->willReturnCallback(function ($section, $key) {
-                if ($section === 'dns' && $key === 'reverse_record_types') {
-                    return ['PTR', 'CNAME', 'TXT', 'NS'];
-                }
-                return null;
-            });
-
-        // Test with DNSSEC disabled
-        $result = RecordType::getReverseZoneTypes(false);
-        $this->assertIsArray($result);
-        $this->assertCount(4, $result); // Only the configured types
-        $this->assertContains('PTR', $result);
-        $this->assertContains('CNAME', $result);
-        $this->assertContains('TXT', $result);
-        $this->assertContains('NS', $result);
-        $this->assertNotContains('DNSKEY', $result); // DNSSEC type should not be included
-
-        // Test with DNSSEC enabled
-        $result = RecordType::getReverseZoneTypes(true);
-        $this->assertIsArray($result);
-        $this->assertContains('PTR', $result);
-        $this->assertContains('CNAME', $result);
-        $this->assertContains('TXT', $result);
-        $this->assertContains('NS', $result);
-        $this->assertContains('DNSKEY', $result); // DNSSEC type should be included
-        $this->assertContains('DS', $result); // DNSSEC type should be included
+        // Verify LESS_COMMON_RECORDS contains expected types
+        $this->assertContains('CAA', RecordType::LESS_COMMON_RECORDS);
+        $this->assertContains('TLSA', RecordType::LESS_COMMON_RECORDS);
+        $this->assertContains('SSHFP', RecordType::LESS_COMMON_RECORDS);
+        $this->assertContains('HTTPS', RecordType::LESS_COMMON_RECORDS);
     }
 }

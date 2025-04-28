@@ -22,9 +22,9 @@
 
 namespace Poweradmin\Domain\Model;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Domain\Service\RecordTypeService;
-
+/**
+ * Class containing constants for DNS record types.
+ */
 class RecordType
 {
     // The following is a list of supported record types by PowerDNS
@@ -113,40 +113,5 @@ class RecordType
     // Private constructor to prevent instantiation
     private function __construct()
     {
-    }
-
-    /**
-     * @deprecated Use RecordTypeService::getAllTypes() instead
-     * @return array
-     */
-    public static function getAllTypes(): array
-    {
-        $configManager = ConfigurationManager::getInstance();
-        $service = new RecordTypeService($configManager);
-        return $service->getAllTypes();
-    }
-
-    /**
-     * @deprecated Use RecordTypeService::getDomainZoneTypes() instead
-     * @param bool $isDnsSecEnabled
-     * @return array
-     */
-    public static function getDomainZoneTypes(bool $isDnsSecEnabled): array
-    {
-        $configManager = ConfigurationManager::getInstance();
-        $service = new RecordTypeService($configManager);
-        return $service->getDomainZoneTypes($isDnsSecEnabled);
-    }
-
-    /**
-     * @deprecated Use RecordTypeService::getReverseZoneTypes() instead
-     * @param bool $isDnsSecEnabled
-     * @return array
-     */
-    public static function getReverseZoneTypes(bool $isDnsSecEnabled): array
-    {
-        $configManager = ConfigurationManager::getInstance();
-        $service = new RecordTypeService($configManager);
-        return $service->getReverseZoneTypes($isDnsSecEnabled);
     }
 }
