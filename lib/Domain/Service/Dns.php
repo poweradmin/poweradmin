@@ -79,7 +79,11 @@ class Dns
     public function validate_input(int $rid, int $zid, string $type, mixed &$content, mixed &$name, mixed &$prio, mixed &$ttl, $dns_hostmaster, $dns_ttl): bool
     {
         $dnsRecord = new DnsRecord($this->db, $this->config);
-        $zone = $dnsRecord->get_domain_name_by_id($zid);    // TODO check for return
+        $zone = $dnsRecord->get_domain_name_by_id($zid);
+        if (!$zone) {
+            $this->messageService->addSystemError(_('Unable to find domain with the given ID.'));
+            return false;
+        }
 
         if (!self::endsWith(strtolower($zone), strtolower($name))) {
             if (isset($name) && $name != "") {
