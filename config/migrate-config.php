@@ -23,10 +23,10 @@
 /**
  * This script migrates the old configuration format to the new one.
  * It reads from inc/config.inc.php and creates a new config/settings.php file.
- * 
+ *
  * IMPORTANT NOTES:
  * - This script should only be run from the command line for security reasons.
- * - The old configuration format is deprecated as of version 4.0.0 and will be 
+ * - The old configuration format is deprecated as of version 4.0.0 and will be
  *   completely removed in the next major release.
  * - Run this migration script to preserve your settings in the new format.
  * - After migration, you can still use both configuration formats in version 4.0.0,
@@ -68,14 +68,16 @@ if (file_exists($newConfigFile)) {
 /**
  * Custom class for configuration migration without extending ConfigurationManager
  */
-class MigrationConfigurationManager {
+class MigrationConfigurationManager
+{
     /**
      * Convert legacy configuration to new format
      */
-    public function migrateWithCustomMapping(string $legacyConfigFile): array {
+    public function migrateWithCustomMapping(string $legacyConfigFile): array
+    {
         // Load legacy config
         $legacyConfig = $this->loadLegacyConfigFile($legacyConfigFile);
-        
+
         // Start with an empty configuration structure
         // We'll only fill in values that were actually in the old config file
         $newConfig = [
@@ -89,10 +91,10 @@ class MigrationConfigurationManager {
             'ldap' => [],
             'misc' => [],
         ];
-        
+
         // We intentionally don't include 'mail' as it's new in 4.0.0
         // and we want to use defaults for new features
-        
+
         // Database settings
         foreach (['db_host', 'db_port', 'db_user', 'db_pass', 'db_name', 'db_type', 'db_charset', 'db_file', 'db_debug'] as $key) {
             if (isset($legacyConfig[$key])) {
@@ -103,7 +105,7 @@ class MigrationConfigurationManager {
                 $newConfig['database'][$newKey] = $legacyConfig[$key];
             }
         }
-        
+
         // Specific fix for pdns_db_name
         if (isset($legacyConfig['pdns_db_name'])) {
             $newConfig['database']['pdns_db_name'] = $legacyConfig['pdns_db_name'];
@@ -119,7 +121,7 @@ class MigrationConfigurationManager {
                 $newConfig['security'][$newKey] = $legacyConfig[$key];
             }
         }
-        
+
         // We're not setting password_policy and account_lockout defaults
         // as they are new in 4.0.0 and we want to use the defaults from settings.defaults.php
 
@@ -151,7 +153,7 @@ class MigrationConfigurationManager {
                 $newConfig['interface'][$newKey] = $legacyConfig[$oldKey];
             }
         }
-        
+
         // Handle style mapping - if iface_style is 'ignite' or 'spark', map to 'light' or 'dark'
         if (isset($legacyConfig['iface_style'])) {
             if ($legacyConfig['iface_style'] === 'ignite') {
@@ -173,25 +175,25 @@ class MigrationConfigurationManager {
                 $newConfig['dns'][$newKey] = $legacyConfig[$key];
             }
         }
-        
+
         // Handle zone_type_default (moved from interface to dns section)
         if (isset($legacyConfig['iface_zone_type_default'])) {
             $newConfig['dns']['zone_type_default'] = $legacyConfig['iface_zone_type_default'];
         }
-        
+
         // We don't set domain_record_types and reverse_record_types
         // as they're new in 4.0.0 and we want to use defaults
 
         // Handle SOA values specifically
         if (isset($legacyConfig['dns_soa']) && is_string($legacyConfig['dns_soa'])) {
             $soaValues = explode(' ', $legacyConfig['dns_soa']);
-            
+
             // Default SOA values
             $defaultRefresh = 28800;  // 8 hours
             $defaultRetry = 7200;     // 2 hours
             $defaultExpire = 604800;  // 1 week
             $defaultMinimum = 86400;  // 24 hours
-            
+
             // If we have a valid SOA string, use those values
             if (count($soaValues) === 4) {
                 $newConfig['dns']['soa_refresh'] = (int) $soaValues[0];
@@ -288,7 +290,7 @@ class MigrationConfigurationManager {
         if (isset($legacyConfig['experimental_edit_conflict_resolution'])) {
             $newConfig['misc']['edit_conflict_resolution'] = $legacyConfig['experimental_edit_conflict_resolution'];
         }
-        
+
         // We don't include mail settings
         // as they're new in 4.0.0 and we want to use defaults from settings.defaults.php
 
