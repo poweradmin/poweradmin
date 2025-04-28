@@ -182,7 +182,10 @@ class Dns
             case 'TLSA':
             case 'TSIG':
             case 'WKS':
-            case 'CSYNC': // TODO: implement validation
+            case 'CSYNC':
+                if (!self::is_valid_csync($content)) {
+                    return false;
+                }
                 break;
 
             case 'DS':
@@ -897,5 +900,49 @@ class Dns
         } else {
             return false;
         }
+    }
+
+    /** Check if CSYNC content is valid
+     *
+     * @param string $content CSYNC record content
+     *
+     * @return boolean true if valid, false otherwise
+     */
+    public static function is_valid_csync(string $content): bool
+    {
+        $fields = preg_split("/\s+/", trim($content));
+
+        // Validate SOA Serial (first field)
+        if (!isset($fields[0]) || !is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 4294967295) {
+            (new MessageService())->addSystemError(_('Invalid SOA Serial in CSYNC record.'));
+            return false;
+        }
+
+        // Validate Flags (second field)
+        if (!isset($fields[1]) || !is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 3) {
+            (new MessageService())->addSystemError(_('Invalid Flags in CSYNC record.'));
+            return false;
+        }
+
+        // Validate Type Bit Map (remaining fields)
+        if (count($fields) <= 2) {
+            // At least one type must be specified
+            (new MessageService())->addSystemError(_('CSYNC record must specify at least one record type.'));
+            return false;
+        }
+
+        // Valid record types that can be synchronized
+        // RFC 7477 mentions A, AAAA, and NS as the most common
+        // But other record types can be synchronized as well
+        $validTypes = ['A', 'AAAA', 'CNAME', 'DNAME', 'MX', 'NS', 'PTR', 'SRV', 'TXT'];
+
+        for ($i = 2; $i < count($fields); $i++) {
+            if (!in_array(strtoupper($fields[$i]), $validTypes)) {
+                (new MessageService())->addSystemError(_('Invalid Type in CSYNC record Type Bit Map.'));
+                return false;
+            }
+        }
+
+        return true;
     }
 }

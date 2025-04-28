@@ -204,4 +204,61 @@ class DnsTest extends TestCase
         $this->assertFalse(Dns::is_valid_rr_prio("foo", "A"));
         $this->assertTrue(Dns::is_valid_rr_prio("0", "A"));
     }
+
+    public function testIsValidCsyncWithValidInput()
+    {
+        // Valid CSYNC record with both flags set and multiple record types
+        $this->assertTrue(Dns::is_valid_csync("1234 3 A NS AAAA"));
+
+        // Valid CSYNC record with immediate flag set (1)
+        $this->assertTrue(Dns::is_valid_csync("4294967295 1 NS"));
+
+        // Valid CSYNC record with soaminimum flag set (2)
+        $this->assertTrue(Dns::is_valid_csync("0 2 A"));
+
+        // Valid CSYNC record with no flags set (0)
+        $this->assertTrue(Dns::is_valid_csync("42 0 CNAME"));
+    }
+
+    public function testIsValidCsyncWithInvalidSoaSerial()
+    {
+        // SOA Serial is not a number
+        $this->assertFalse(Dns::is_valid_csync("abc 3 A NS"));
+
+        // SOA Serial is negative
+        $this->assertFalse(Dns::is_valid_csync("-1 3 A NS"));
+
+        // SOA Serial exceeds 32-bit unsigned integer maximum (4294967295)
+        $this->assertFalse(Dns::is_valid_csync("4294967296 3 A NS"));
+
+        // Missing SOA Serial
+        $this->assertFalse(Dns::is_valid_csync("3 A NS"));
+    }
+
+    public function testIsValidCsyncWithInvalidFlags()
+    {
+        // Flag is not a number
+        $this->assertFalse(Dns::is_valid_csync("1234 abc A NS"));
+
+        // Flag is negative
+        $this->assertFalse(Dns::is_valid_csync("1234 -1 A NS"));
+
+        // Flag exceeds maximum allowed value (3)
+        $this->assertFalse(Dns::is_valid_csync("1234 4 A NS"));
+
+        // Missing flag
+        $this->assertFalse(Dns::is_valid_csync("1234"));
+    }
+
+    public function testIsValidCsyncWithInvalidTypes()
+    {
+        // Invalid record type
+        $this->assertFalse(Dns::is_valid_csync("1234 3 INVALID_TYPE"));
+
+        // No record types specified
+        $this->assertFalse(Dns::is_valid_csync("1234 3"));
+
+        // Mixed valid and invalid record types
+        $this->assertFalse(Dns::is_valid_csync("1234 3 A INVALID_TYPE NS"));
+    }
 }
