@@ -507,6 +507,7 @@ return array(
     'Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager' => $baseDir . '/lib/Infrastructure/Configuration/ConfigurationManager.php',
     'Poweradmin\\Infrastructure\\Configuration\\ConfigurationRegistry' => $baseDir . '/lib/Infrastructure/Configuration/ConfigurationRegistry.php',
     'Poweradmin\\Infrastructure\\Configuration\\FakeConfiguration' => $baseDir . '/lib/Infrastructure/Configuration/FakeConfiguration.php',
+    'Poweradmin\\Infrastructure\\Configuration\\MigrationConfigurationManager' => $baseDir . '/lib/Infrastructure/Configuration/MigrationConfigurationManager.php',
     'Poweradmin\\Infrastructure\\Database\\DbCompat' => $baseDir . '/lib/Infrastructure/Database/DbCompat.php',
     'Poweradmin\\Infrastructure\\Database\\PDOCommon' => $baseDir . '/lib/Infrastructure/Database/PDOCommon.php',
     'Poweradmin\\Infrastructure\\Database\\PDODatabaseConnection' => $baseDir . '/lib/Infrastructure/Database/PDODatabaseConnection.php',
