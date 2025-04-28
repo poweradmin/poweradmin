@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\TopLevelDomain;
@@ -93,14 +94,14 @@ class Dns
             }
         }
 
-        if ($type != "CNAME") {
+        if ($type != RecordType::CNAME) {
             if (!$this->is_valid_rr_cname_exists($name, $rid)) {
                 return false;
             }
         }
 
         switch ($type) {
-            case "A":
+            case RecordType::A:
                 if (!self::is_valid_ipv4($content)) {
                     return false;
                 }
@@ -109,29 +110,26 @@ class Dns
                 }
                 break;
 
-            case "AFSDB":
-            case "ALIAS":
-            case "APL":
-            case "CAA":
-            case "CDNSKEY":
-            case "CDS":
-            case "CERT":
-            case "DNAME":
-            case "L32":
-            case "L64":
-            case "LUA":
-            case "LP":
-            case "MAILA":
-            case "MAILB":
-            case "OPENPGPKEY":
-            case "SIG":
-            case "SMIMEA":
-            case "TKEY":
-            case "URI":
-            case "A6": // TODO: implement validation.
+            // TODO: implement validation.
+            case RecordType::AFSDB:
+            case RecordType::ALIAS:
+            case RecordType::APL:
+            case RecordType::CAA:
+            case RecordType::CDNSKEY:
+            case RecordType::CDS:
+            case RecordType::CERT:
+            case RecordType::DNAME:
+            case RecordType::L32:
+            case RecordType::L64:
+            case RecordType::LUA:
+            case RecordType::LP:
+            case RecordType::OPENPGPKEY:
+            case RecordType::SMIMEA:
+            case RecordType::TKEY:
+            case RecordType::URI:
                 break;
 
-            case "AAAA":
+            case RecordType::AAAA:
                 if (!self::is_valid_ipv6($content)) {
                     return false;
                 }
@@ -140,7 +138,7 @@ class Dns
                 }
                 break;
 
-            case "CNAME":
+            case RecordType::CNAME:
                 if (!$this->is_valid_rr_cname_name($name)) {
                     return false;
                 }
@@ -158,43 +156,42 @@ class Dns
                 }
                 break;
 
-            case 'DHCID':
-            case 'DLV':
-            case 'DNSKEY':
-            case 'EUI48':
-            case 'EUI64':
-            case 'HTTPS':
-            case 'IPSECKEY':
-            case 'KEY':
-            case 'KX':
-            case 'MINFO':
-            case 'MR':
-            case 'NAPTR':
-            case 'NID':
-            case 'NSEC':
-            case 'NSEC3':
-            case 'NSEC3PARAM':
-            case 'RKEY':
-            case 'RP':
-            case 'RRSIG':
-            case 'SSHFP':
-            case 'SVCB':
-            case 'TLSA':
-            case 'TSIG':
-            case 'WKS':
-            case 'CSYNC':
+            case RecordType::DHCID:
+            case RecordType::DLV:
+            case RecordType::DNSKEY:
+            case RecordType::EUI48:
+            case RecordType::EUI64:
+            case RecordType::HTTPS:
+            case RecordType::IPSECKEY:
+            case RecordType::KEY:
+            case RecordType::KX:
+            case RecordType::MINFO:
+            case RecordType::MR:
+            case RecordType::NAPTR:
+            case RecordType::NID:
+            case RecordType::NSEC:
+            case RecordType::NSEC3:
+            case RecordType::NSEC3PARAM:
+            case RecordType::RKEY:
+            case RecordType::RP:
+            case RecordType::RRSIG:
+            case RecordType::SSHFP:
+            case RecordType::SVCB:
+            case RecordType::TLSA:
+            case RecordType::TSIG:
+            case RecordType::CSYNC:
                 if (!self::is_valid_csync($content)) {
                     return false;
                 }
                 break;
 
-            case 'DS':
+            case RecordType::DS:
                 if (!self::is_valid_ds($content)) {
                     return false;
                 }
                 break;
 
-            case "HINFO":
+            case RecordType::HINFO:
                 if (!self::is_valid_rr_hinfo_content($content)) {
                     return false;
                 }
@@ -203,7 +200,7 @@ class Dns
                 }
                 break;
 
-            case "LOC":
+            case RecordType::LOC:
                 if (!self::is_valid_loc($content)) {
                     return false;
                 }
@@ -212,8 +209,8 @@ class Dns
                 }
                 break;
 
-            case "NS":
-            case "MX":
+            case RecordType::NS:
+            case RecordType::MX:
                 if (!$this->is_valid_hostname_fqdn($content, 0)) {
                     return false;
                 }
@@ -225,7 +222,7 @@ class Dns
                 }
                 break;
 
-            case "PTR":
+            case RecordType::PTR:
                 if (!$this->is_valid_hostname_fqdn($content, 0)) {
                     return false;
                 }
@@ -234,7 +231,7 @@ class Dns
                 }
                 break;
 
-            case "SOA":
+            case RecordType::SOA:
                 if (!self::is_valid_rr_soa_name($name, $zone)) {
                     return false;
                 }
@@ -248,7 +245,7 @@ class Dns
                 }
                 break;
 
-            case "SPF":
+            case RecordType::SPF:
                 if (!self::is_valid_spf($content)) {
                     $this->messageService->addSystemError(_('The content of the SPF record is invalid'));
 
@@ -259,7 +256,7 @@ class Dns
                 }
                 break;
 
-            case "SRV":
+            case RecordType::SRV:
                 if (!$this->is_valid_rr_srv_name($name)) {
                     return false;
                 }
@@ -268,7 +265,7 @@ class Dns
                 }
                 break;
 
-            case "TXT":
+            case RecordType::TXT:
                 if (!self::is_valid_printable($name)) {
                     return false;
                 }
@@ -934,7 +931,10 @@ class Dns
         // Valid record types that can be synchronized
         // RFC 7477 mentions A, AAAA, and NS as the most common
         // But other record types can be synchronized as well
-        $validTypes = ['A', 'AAAA', 'CNAME', 'DNAME', 'MX', 'NS', 'PTR', 'SRV', 'TXT'];
+        $validTypes = [
+            RecordType::A, RecordType::AAAA, RecordType::CNAME, RecordType::DNAME, RecordType::MX, RecordType::NS,
+            RecordType::PTR, RecordType::SRV, RecordType::TXT
+        ];
 
         for ($i = 2; $i < count($fields); $i++) {
             if (!in_array(strtoupper($fields[$i]), $validTypes)) {

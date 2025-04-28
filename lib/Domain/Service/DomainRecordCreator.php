@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -94,7 +95,7 @@ class DomainRecordCreator
     private function addRecord(int $domainId, string $content, string $proposedIP, string $comment, string $account): array
     {
         $domainName = DnsHelper::getSubDomainName($content);
-        $result = $this->dnsRecord->add_record($domainId, $domainName, 'A', $proposedIP, $this->config->get('dns', 'ttl'), 0);
+        $result = $this->dnsRecord->add_record($domainId, $domainName, RecordType::A, $proposedIP, $this->config->get('dns', 'ttl'), 0);
 
         if ($result) {
             return [

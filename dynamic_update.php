@@ -32,6 +32,7 @@
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
@@ -122,9 +123,9 @@ function status_exit(string $status): bool
 function valid_ip_address(string $ip): int|string
 {
     if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-        $value = 'A';
+        $value = RecordType::A;
     } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-        $value = 'AAAA';
+        $value = RecordType::AAAA;
     } else {
         $value = 0;
     }
@@ -219,15 +220,15 @@ $given_ip6 = $_REQUEST['myip6'] ?? $_REQUEST['ip6'] ?? '';
 
 // Handle special case: "whatismyip"
 if ($given_ip === 'whatismyip') {
-    if (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'A') {
+    if (valid_ip_address($_SERVER['REMOTE_ADDR']) === RecordType::A) {
         $given_ip = $_SERVER['REMOTE_ADDR'];
-    } elseif (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA' && !$given_ip6) {
+    } elseif (valid_ip_address($_SERVER['REMOTE_ADDR']) === RecordType::AAAA && !$given_ip6) {
         $given_ip6 = $_SERVER['REMOTE_ADDR'];
         $given_ip = '';
     }
 }
 if ($given_ip6 === 'whatismyip') {
-    if (valid_ip_address($_SERVER['REMOTE_ADDR']) === 'AAAA') {
+    if (valid_ip_address($_SERVER['REMOTE_ADDR']) === RecordType::AAAA) {
         $given_ip6 = $_SERVER['REMOTE_ADDR'];
     }
 }
@@ -242,8 +243,8 @@ $dualstack_update = isset($_REQUEST['dualstack_update']) && $_REQUEST['dualstack
 $ip_v4_input = safe($db, $db_type, $given_ip);
 $ip_v6_input = safe($db, $db_type, $given_ip6);
 
-$ip_v4_list = extract_valid_ips($ip_v4_input, 'A');
-$ip_v6_list = extract_valid_ips($ip_v6_input, 'AAAA');
+$ip_v4_list = extract_valid_ips($ip_v4_input, RecordType::A);
+$ip_v6_list = extract_valid_ips($ip_v6_input, RecordType::AAAA);
 
 sort($ip_v4_list);
 sort($ip_v6_list);
@@ -284,14 +285,14 @@ while ($zone = $zones_query->fetch()) {
     $zone_updated = false;
 
     if ($dualstack_update || !empty($ip_v4_list)) {
-        if (sync_dns_records($db, $records_table, $zone['domain_id'], $hostname, 'A', $ip_v4_list)) {
+        if (sync_dns_records($db, $records_table, $zone['domain_id'], $hostname, RecordType::A, $ip_v4_list)) {
             $zone_updated = true;
             $was_updated = true;
         }
     }
 
     if ($dualstack_update || !empty($ip_v6_list)) {
-        if (sync_dns_records($db, $records_table, $zone['domain_id'], $hostname, 'AAAA', $ip_v6_list)) {
+        if (sync_dns_records($db, $records_table, $zone['domain_id'], $hostname, RecordType::AAAA, $ip_v6_list)) {
             $zone_updated = true;
             $was_updated = true;
         }

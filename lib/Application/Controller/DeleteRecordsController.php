@@ -35,6 +35,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
@@ -96,7 +97,7 @@ class DeleteRecordsController extends BaseController
                 // Check if this is an A or AAAA record that might have a corresponding PTR record
                 $hasPtrRecord = false;
                 if (
-                    ($record_info['type'] === 'A' || $record_info['type'] === 'AAAA') &&
+                    ($record_info['type'] === RecordType::A || $record_info['type'] === RecordType::AAAA) &&
                     $this->config->get('interface', 'add_reverse_record', false)
                 ) {
                     $hasPtrRecord = true;

@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -80,10 +81,10 @@ class ReverseRecordCreator
 
     public function getContentRev($type, $content): ?string
     {
-        if ($type === 'A') {
+        if ($type === RecordType::A) {
             $content_array = preg_split("/\./", $content);
             return sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
-        } elseif ($type === 'AAAA') {
+        } elseif ($type === RecordType::AAAA) {
             return DnsRecord::convert_ipv6addr_to_ptrrec($content);
         }
         return null;
@@ -99,7 +100,7 @@ class ReverseRecordCreator
      */
     public function deleteReverseRecord($type, $content, $name): bool
     {
-        if ($type !== 'A' && $type !== 'AAAA') {
+        if ($type !== RecordType::A && $type !== RecordType::AAAA) {
             return false;
         }
 

@@ -22,14 +22,12 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
 
 class RecordCommentSyncService
 {
-    const RECORD_TYPE_A = 'A';
-    const RECORD_TYPE_AAAA = 'AAAA';
-    const RECORD_TYPE_PTR = 'PTR';
     private RecordCommentService $commentService;
 
     public function __construct(RecordCommentService $commentService)
@@ -45,8 +43,8 @@ class RecordCommentSyncService
         string $comment,
         string $account
     ): void {
-        $this->commentService->createComment($domainId, $domainFullName, self::RECORD_TYPE_A, $comment, $account);
-        $this->commentService->createComment($ptrZoneId, $ptrName, self::RECORD_TYPE_PTR, $comment, $account);
+        $this->commentService->createComment($domainId, $domainFullName, RecordType::A, $comment, $account);
+        $this->commentService->createComment($ptrZoneId, $ptrName, RecordType::PTR, $comment, $account);
     }
 
     public function syncCommentsForDomainRecord(
@@ -57,8 +55,8 @@ class RecordCommentSyncService
         string $comment,
         string $account
     ): void {
-        $this->commentService->createComment($ptrZoneId, $ptrName, self::RECORD_TYPE_PTR, $comment, $account);
-        $this->commentService->createComment($domainId, $recordContent, self::RECORD_TYPE_A, $comment, $account);
+        $this->commentService->createComment($ptrZoneId, $ptrName, RecordType::PTR, $comment, $account);
+        $this->commentService->createComment($domainId, $recordContent, RecordType::A, $comment, $account);
     }
 
     public function updatePtrRecordComment(
@@ -68,7 +66,7 @@ class RecordCommentSyncService
         string $comment,
         string $account
     ): void {
-        $this->commentService->updateComment($ptrZoneId, $oldPtrName, self::RECORD_TYPE_PTR, $newPtrName, self::RECORD_TYPE_PTR, $comment, $account);
+        $this->commentService->updateComment($ptrZoneId, $oldPtrName, RecordType::PTR, $newPtrName, RecordType::PTR, $comment, $account);
     }
 
     public function updateARecordComment(
@@ -78,7 +76,7 @@ class RecordCommentSyncService
         string $comment,
         string $account
     ): void {
-        $this->commentService->updateComment($ptrZoneId, $oldPtrName, self::RECORD_TYPE_A, $newPtrName, self::RECORD_TYPE_A, $comment, $account);
+        $this->commentService->updateComment($ptrZoneId, $oldPtrName, RecordType::A, $newPtrName, RecordType::A, $comment, $account);
     }
 
     public function updateRelatedRecordComments(
@@ -87,15 +85,15 @@ class RecordCommentSyncService
         string $comment,
         string $userLogin
     ): void {
-        if (in_array($newRecordInfo['type'], [self::RECORD_TYPE_A, self::RECORD_TYPE_AAAA])) {
-            $ptrName = $newRecordInfo['type'] === self::RECORD_TYPE_A
+        if (in_array($newRecordInfo['type'], [RecordType::A, RecordType::AAAA])) {
+            $ptrName = $newRecordInfo['type'] === RecordType::A
                 ? DnsRecord::convert_ipv4addr_to_ptrrec($newRecordInfo['content'])
                 : DnsRecord::convert_ipv6addr_to_ptrrec($newRecordInfo['content']);
             $ptrZoneId = $dnsRecord->get_best_matching_zone_id_from_name($ptrName);
             if ($ptrZoneId !== -1) {
                 $this->updatePtrRecordComment($ptrZoneId, $ptrName, $ptrName, $comment, $userLogin);
             }
-        } elseif ($newRecordInfo['type'] === self::RECORD_TYPE_PTR) {
+        } elseif ($newRecordInfo['type'] === RecordType::PTR) {
             $domainName = DnsHelper::getRegisteredDomain($newRecordInfo['content']);
             $contentDomainId = $dnsRecord->get_domain_id_by_name($domainName);
             if ($contentDomainId !== false) {

@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -209,10 +210,10 @@ class BatchReverseRecordCreator
                             $hostname = !empty($hostPrefix) ? $hostPrefix . $i . '.' . $domain : $domain;
 
                             // Check if the record already exists
-                            if (!$this->dnsRecord->record_exists($forward_domain_id, $hostname, 'A', $ip)) {
+                            if (!$this->dnsRecord->record_exists($forward_domain_id, $hostname, RecordType::A, $ip)) {
                                 try {
                                     // Add the A record
-                                    $this->dnsRecord->add_record($forward_domain_id, $hostname, 'A', $ip, $ttl, $prio);
+                                    $this->dnsRecord->add_record($forward_domain_id, $hostname, RecordType::A, $ip, $ttl, $prio);
                                 } catch (\Exception $e) {
                                     // Don't stop execution for forward record failures
                                     $errors[] = "Failed to create forward A record for $ip: " . $e->getMessage();
@@ -440,10 +441,10 @@ class BatchReverseRecordCreator
                             $hostname = !empty($hostPrefix) ? $hostPrefix . $hex . '.' . $domain : $domain;
 
                             // Check if the record already exists
-                            if (!$this->dnsRecord->record_exists($forward_domain_id, $hostname, 'AAAA', $ip)) {
+                            if (!$this->dnsRecord->record_exists($forward_domain_id, $hostname, RecordType::AAAA, $ip)) {
                                 try {
                                     // Add the AAAA record
-                                    $this->dnsRecord->add_record($forward_domain_id, $hostname, 'AAAA', $ip, $ttl, $prio);
+                                    $this->dnsRecord->add_record($forward_domain_id, $hostname, RecordType::AAAA, $ip, $ttl, $prio);
                                 } catch (\Exception $e) {
                                     // Don't stop execution for forward record failures
                                     $errors[] = "Failed to create forward AAAA record for $ip: " . $e->getMessage();

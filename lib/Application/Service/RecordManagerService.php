@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -109,7 +110,7 @@ class RecordManagerService
 
     private function handleSyncedComments(int $zone_id, string $name, string $type, string $content, string $comment, string $userlogin, string $full_name): void
     {
-        if ($type === 'A' || $type === 'AAAA') {
+        if ($type === RecordType::A || $type === RecordType::AAAA) {
             $this->handleForwardRecordComments($zone_id, $name, $type, $content, $comment, $userlogin, $full_name);
         } elseif ($type === 'PTR') {
             $this->handlePtrRecordComments($zone_id, $content, $comment, $userlogin, $full_name);
@@ -126,7 +127,7 @@ class RecordManagerService
 
     private function handleForwardRecordComments(int $zone_id, string $name, string $type, string $content, string $comment, string $userlogin, string $full_name): void
     {
-        $ptrName = $type === 'A'
+        $ptrName = $type === RecordType::A
             ? DnsRecord::convert_ipv4addr_to_ptrrec($content)
             : DnsRecord::convert_ipv6addr_to_ptrrec($content);
 
