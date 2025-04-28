@@ -1628,8 +1628,8 @@ class DnsRecord
                 $templ_records = ZoneTemplate::get_zone_templ_records($this->db, $zone_template_id);
 
                 foreach ($templ_records as $r) {
-                    //fixme: appears to be a bug and regex match should occur against $domain
-                    if ((preg_match('/in-addr.arpa/i', $zone_id) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $zone_id))) {
+                    // Check if this is a reverse zone and handle NS or SOA records appropriately
+                    if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
                         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
                         $name = $zoneTemplate->parse_template_value($r["name"], $domain);
                         $type = $r["type"];
