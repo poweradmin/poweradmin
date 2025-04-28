@@ -38,7 +38,7 @@ class LegacyLogger
         $this->config->initialize();
     }
 
-    private function do_log(string $message, int $priority, ?int $zone_id = null, ?LogType $type = null): void
+    private function do_log(string $message, int $priority, ?int $zone_id = null): void
     {
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
@@ -52,8 +52,7 @@ class LegacyLogger
         }
 
         if ($dblog_use) {
-            // Determine log type if not explicitly provided
-            $logType = $type ?? ($zone_id ? LogType::ZONE : LogType::USER);
+            $logType = $zone_id !== null ? LogType::ZONE : LogType::USER;
 
             if ($logType === LogType::ZONE) {
                 $dbZoneLogger = new DbZoneLogger($this->db);
@@ -65,23 +64,23 @@ class LegacyLogger
         }
     }
 
-    public function log_error(string $message, ?int $zone_id = null, ?LogType $type = null): void
+    public function log_error(string $message, ?int $zone_id = null): void
     {
-        $this->do_log($message, LOG_ERR, $zone_id, $type);
+        $this->do_log($message, LOG_ERR, $zone_id);
     }
 
-    public function log_warn(string $message, ?int $zone_id = null, ?LogType $type = null): void
+    public function log_warn(string $message, ?int $zone_id = null): void
     {
-        $this->do_log($message, LOG_WARNING, $zone_id, $type);
+        $this->do_log($message, LOG_WARNING, $zone_id);
     }
 
-    public function log_notice(string $message, ?LogType $type = null): void
+    public function log_notice(string $message): void
     {
-        $this->do_log($message, LOG_NOTICE, null, $type ?? LogType::USER);
+        $this->do_log($message, LOG_NOTICE);
     }
 
-    public function log_info(string $message, ?int $zone_id = null, ?LogType $type = null): void
+    public function log_info(string $message, ?int $zone_id = null): void
     {
-        $this->do_log($message, LOG_INFO, $zone_id, $type);
+        $this->do_log($message, LOG_INFO, $zone_id);
     }
 }
