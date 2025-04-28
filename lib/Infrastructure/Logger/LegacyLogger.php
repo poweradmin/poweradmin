@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Logger;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Logger\LogType;
 
 class LegacyLogger
 {
@@ -37,7 +38,7 @@ class LegacyLogger
         $this->config->initialize();
     }
 
-    private function do_log($message, $priority, $zone_id = null): void
+    private function do_log(string $message, int $priority, ?int $zone_id = null, ?LogType $type = null): void
     {
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
@@ -51,8 +52,10 @@ class LegacyLogger
         }
 
         if ($dblog_use) {
-            // TODO: This distinction would be better handled with special type enum
-            if ($zone_id) {
+            // Determine log type if not explicitly provided
+            $logType = $type ?? ($zone_id ? LogType::ZONE : LogType::USER);
+
+            if ($logType === LogType::ZONE) {
                 $dbZoneLogger = new DbZoneLogger($this->db);
                 $dbZoneLogger->do_log($message, $zone_id, $priority);
             } else {
@@ -62,23 +65,23 @@ class LegacyLogger
         }
     }
 
-    public function log_error($message, $zone_id = null): void
+    public function log_error(string $message, ?int $zone_id = null, ?LogType $type = null): void
     {
-        $this->do_log($message, LOG_ERR, $zone_id);
+        $this->do_log($message, LOG_ERR, $zone_id, $type);
     }
 
-    public function log_warn($message, $zone_id = null): void
+    public function log_warn(string $message, ?int $zone_id = null, ?LogType $type = null): void
     {
-        $this->do_log($message, LOG_WARNING, $zone_id);
+        $this->do_log($message, LOG_WARNING, $zone_id, $type);
     }
 
-    public function log_notice($message): void
+    public function log_notice(string $message, ?LogType $type = null): void
     {
-        $this->do_log($message, LOG_NOTICE);
+        $this->do_log($message, LOG_NOTICE, null, $type ?? LogType::USER);
     }
 
-    public function log_info($message, $zone_id = null): void
+    public function log_info(string $message, ?int $zone_id = null, ?LogType $type = null): void
     {
-        $this->do_log($message, LOG_INFO, $zone_id);
+        $this->do_log($message, LOG_INFO, $zone_id, $type);
     }
 }

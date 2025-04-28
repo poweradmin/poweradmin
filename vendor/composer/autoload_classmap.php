@@ -520,6 +520,7 @@ return array(
     'Poweradmin\\Infrastructure\\Logger\\LegacyLogger' => $baseDir . '/lib/Infrastructure/Logger/LegacyLogger.php',
     'Poweradmin\\Infrastructure\\Logger\\LegacyLoggerInterface' => $baseDir . '/lib/Infrastructure/Logger/LegacyLoggerInterface.php',
     'Poweradmin\\Infrastructure\\Logger\\LogHandlerInterface' => $baseDir . '/lib/Infrastructure/Logger/LogHandlerInterface.php',
+    'Poweradmin\\Infrastructure\\Logger\\LogType' => $baseDir . '/lib/Infrastructure/Logger/LogType.php',
     'Poweradmin\\Infrastructure\\Logger\\Logger' => $baseDir . '/lib/Infrastructure/Logger/Logger.php',
     'Poweradmin\\Infrastructure\\Logger\\LoggerHandlerFactory' => $baseDir . '/lib/Infrastructure/Logger/LoggerHandlerFactory.php',
     'Poweradmin\\Infrastructure\\Logger\\NativeLogHandler' => $baseDir . '/lib/Infrastructure/Logger/NativeLogHandler.php',

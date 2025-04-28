@@ -709,6 +709,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Infrastructure\\Logger\\LegacyLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/LegacyLogger.php',
         'Poweradmin\\Infrastructure\\Logger\\LegacyLoggerInterface' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/LegacyLoggerInterface.php',
         'Poweradmin\\Infrastructure\\Logger\\LogHandlerInterface' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/LogHandlerInterface.php',
+        'Poweradmin\\Infrastructure\\Logger\\LogType' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/LogType.php',
         'Poweradmin\\Infrastructure\\Logger\\Logger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/Logger.php',
         'Poweradmin\\Infrastructure\\Logger\\LoggerHandlerFactory' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/LoggerHandlerFactory.php',
         'Poweradmin\\Infrastructure\\Logger\\NativeLogHandler' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/NativeLogHandler.php',
