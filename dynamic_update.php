@@ -255,9 +255,9 @@ if (empty($ip_v4_list) && empty($ip_v6_list)) {
 }
 
 // Authenticate user and check permissions
-$user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items 
-                        WHERE users.username='$username'
-                        AND users.active=1 
+$auth_query = $db->prepare("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items 
+                        WHERE users.username = :username
+                        AND users.active = 1 
                         AND perm_templ.id = users.perm_templ 
                         AND perm_templ_items.templ_id = perm_templ.id 
                         AND perm_items.id = perm_templ_items.perm_id 
@@ -266,6 +266,8 @@ $user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, p
                             OR perm_items.name = 'zone_content_edit_own_as_client'
                             OR perm_items.name = 'zone_content_edit_others'
                         )");
+$auth_query->execute([':username' => $username]);
+$user = $auth_query->fetch(PDO::FETCH_ASSOC);
 
 $userAuthService = new UserAuthenticationService(
     $config->get('security', 'password_encryption'),
