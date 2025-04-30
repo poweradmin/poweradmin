@@ -10,7 +10,9 @@ class DnsHelperTest extends TestCase
     public function testIsReverseZonePositiveCases(): void
     {
         $this->assertTrue(DnsHelper::isReverseZone('1.0.0.127.in-addr.arpa'), 'Should return true for IPv4 reverse zone.');
+        $this->assertTrue(DnsHelper::isReverseZone('160/27.236.20.172.in-addr.arpa'), 'Should return true for IPv4 reverse zone with CIDR notation.');
         $this->assertTrue(DnsHelper::isReverseZone('0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa'), 'Should return true for IPv6 reverse zone.');
+        $this->assertTrue(DnsHelper::isReverseZone('1/48.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa'), 'Should return true for IPv6 reverse zone with CIDR notation.');
     }
 
     public function testIsReverseZoneNegativeCases(): void

@@ -29,8 +29,8 @@ use Pdp\Domain;
 
 class DnsHelper
 {
-    private const IPV4_REVERSE_ZONE_PATTERN = '/^(?:\d+\.){1,4}in-addr\.arpa$/i';
-    private const IPV6_REVERSE_ZONE_PATTERN = '/^(?:[0-9a-fA-F]+\.){1,32}ip6\.arpa$/i';
+    private const IPV4_REVERSE_ZONE_PATTERN = '/^(?:[\d\/]+\.){1,4}in-addr\.arpa$/i';
+    private const IPV6_REVERSE_ZONE_PATTERN = '/^[0-9a-fA-F\/]+(?:\.[0-9a-fA-F\/]+)*\.ip6\.arpa$/i';
 
     public static function isReverseZone(string $zoneName): bool
     {
