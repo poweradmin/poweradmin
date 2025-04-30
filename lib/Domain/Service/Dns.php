@@ -77,7 +77,7 @@ class Dns
      *
      * @return boolean true on success, false otherwise
      */
-    public function validate_input(int $rid, int $zid, string $type, mixed &$content, mixed &$name, mixed &$prio, mixed &$ttl, $dns_hostmaster, $dns_ttl): bool
+    public function validate_input(int $rid, int $zid, string $type, mixed &$content, mixed &$name, mixed $prio, mixed &$ttl, $dns_hostmaster, $dns_ttl): bool
     {
         $dnsRecord = new DnsRecord($this->db, $this->config);
         $zone = $dnsRecord->get_domain_name_by_id($zid);
