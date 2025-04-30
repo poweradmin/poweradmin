@@ -4,11 +4,8 @@ namespace unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns;
-use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
-use ReflectionMethod;
-use ReflectionClass;
 
 class DnsTest extends TestCase
 {
@@ -260,5 +257,103 @@ class DnsTest extends TestCase
 
         // Mixed valid and invalid record types
         $this->assertFalse(Dns::is_valid_csync("1234 3 A INVALID_TYPE NS"));
+    }
+
+    /**
+    * Test the endsWith method with basic success cases
+    */
+    public function testEndsWithBasicSuccess()
+    {
+        $this->assertTrue(Dns::endsWith("com", "example.com"));
+        $this->assertTrue(Dns::endsWith("example.com", "example.com"));
+        $this->assertTrue(Dns::endsWith(".com", "example.com"));
+    }
+
+    /**
+    * Test the endsWith method with basic failure cases
+     */
+    public function testEndsWithBasicFailure()
+    {
+        $this->assertFalse(Dns::endsWith("org", "example.com"));
+        $this->assertFalse(Dns::endsWith("ample", "example.com"));
+        $this->assertFalse(Dns::endsWith("exam", "example.com"));
+    }
+
+    /**
+    * Test the endsWith method with empty strings
+     */
+    public function testEndsWithEmptyStrings()
+    {
+        $this->assertTrue(Dns::endsWith("", "example.com")); // Empty needle should always match
+        $this->assertTrue(Dns::endsWith("", "")); // Empty needle matches empty haystack
+        $this->assertFalse(Dns::endsWith("com", "")); // Non-empty needle doesn't match empty haystack
+    }
+
+    /**
+    * Test case sensitivity in endsWith method
+    */
+    public function testEndsWithCaseSensitivity()
+    {
+        $this->assertFalse(Dns::endsWith("COM", "example.com")); // Case sensitive comparison
+        $this->assertFalse(Dns::endsWith("Com", "example.com")); // Case sensitive comparison
+    }
+
+    /**
+     * Test endsWith with special characters
+     */
+    public function testEndsWithSpecialCharacters()
+    {
+        $this->assertTrue(Dns::endsWith("@#$", "test@#$"));
+        $this->assertTrue(Dns::endsWith("123", "domain123"));
+        $this->assertTrue(Dns::endsWith(".", "example."));
+    }
+
+    /**
+     * Test endsWith with multi-byte characters
+     */
+    public function testEndsWithMultiByteCharacters()
+    {
+        $this->assertTrue(Dns::endsWith("ñ", "espa\u{00F1}ol.españ")); // Unicode representation of tilde n
+        $this->assertTrue(Dns::endsWith("中国", "example.中国")); // Chinese characters
+        $this->assertTrue(Dns::endsWith("россия", "пример.россия")); // Russian characters
+    }
+
+    /**
+     * Test endsWith with common DNS domain scenarios
+     */
+    public function testEndsWithDomainScenarios()
+    {
+        // Domain ends with parent domain
+        $this->assertTrue(Dns::endsWith("example.com", "subdomain.example.com"));
+
+        // TLD checks
+        $this->assertTrue(Dns::endsWith("com", "example.com"));
+        $this->assertTrue(Dns::endsWith("co.uk", "example.co.uk"));
+
+        // FQDN with trailing dot
+        $this->assertTrue(Dns::endsWith("example.com.", "subdomain.example.com."));
+
+        // Mismatched domains
+        $this->assertFalse(Dns::endsWith("example.org", "example.com"));
+        $this->assertFalse(Dns::endsWith("other.com", "example.com"));
+    }
+
+    /**
+     * Test endsWith with strings that have similar endings but don't match exactly
+     */
+    public function testEndsWithPartialMatches()
+    {
+        $this->assertFalse(Dns::endsWith("comx", "example.com")); // "com" with extra character
+        $this->assertFalse(Dns::endsWith("xcom", "example.com")); // "com" with character prefix
+        $this->assertFalse(Dns::endsWith("co", "example.com")); // Partial match of ending
+    }
+
+    /**
+     * Test endsWith with needle longer than haystack
+     */
+    public function testEndsWithNeedleLongerThanHaystack()
+    {
+        $this->assertFalse(Dns::endsWith("longer.example.com", "example.com"));
+        $this->assertFalse(Dns::endsWith("abcdefghijklmnopqrstuvwxyz", "xyz"));
     }
 }
