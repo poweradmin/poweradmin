@@ -252,27 +252,35 @@ class DnsTest extends TestCase
     {
         // Valid TTL values
         $ttl = 3600;
-        $this->assertTrue(Dns::is_valid_rr_ttl($ttl, 86400));
+        $result = Dns::is_valid_rr_ttl($ttl, 86400);
+        $this->assertSame(3600, $result, "Should return the valid TTL value");
 
         $ttl = 86400;
-        $this->assertTrue(Dns::is_valid_rr_ttl($ttl, 3600));
+        $result = Dns::is_valid_rr_ttl($ttl, 3600);
+        $this->assertSame(86400, $result, "Should return the valid TTL value");
 
         $ttl = 0;
-        $this->assertTrue(Dns::is_valid_rr_ttl($ttl, 3600));
+        $result = Dns::is_valid_rr_ttl($ttl, 3600);
+        $this->assertSame(0, $result, "Should return 0 for a zero TTL");
 
         $ttl = 2147483647; // Max 32-bit signed integer
-        $this->assertTrue(Dns::is_valid_rr_ttl($ttl, 3600));
+        $result = Dns::is_valid_rr_ttl($ttl, 3600);
+        $this->assertSame(2147483647, $result, "Should return the max TTL value");
 
-        // Empty TTL test - since the param type is int, we need to test differently
-        // We'll test the logic in the validate_input method instead where the parameter type is mixed
+        // Empty TTL test - should return the default value
+        $ttl = "";
+        $result = Dns::is_valid_rr_ttl($ttl, 3600);
+        $this->assertSame(3600, $result, "Should return the default TTL for empty value");
 
         // Invalid TTL values
         $ttl = -1;
-        $this->assertFalse(Dns::is_valid_rr_ttl($ttl, 3600));
+        $result = Dns::is_valid_rr_ttl($ttl, 3600);
+        $this->assertFalse($result, "Should return false for negative TTL");
 
         $ttl = PHP_INT_MAX; // Test with maximum integer value
         if (PHP_INT_MAX > 2147483647) { // Only run this test if PHP_INT_MAX is larger than max 32-bit int
-            $this->assertFalse(Dns::is_valid_rr_ttl($ttl, 3600));
+            $result = Dns::is_valid_rr_ttl($ttl, 3600);
+            $this->assertFalse($result, "Should return false for TTL too large");
         }
     }
 
@@ -755,7 +763,7 @@ class DnsTest extends TestCase
     }
 
     /**
-     * Test TTL handling in validate_input method
+     * Test TTL handling in the updated is_valid_rr_ttl method
      */
     public function testValidateInputHandlesTtl()
     {
@@ -770,22 +778,20 @@ class DnsTest extends TestCase
         $ttl = "";
         $defaultTtl = 3600;
 
-        // Use static method directly, passing ttl by reference
+        // Use static method directly
         $result = Dns::is_valid_rr_ttl($ttl, $defaultTtl);
 
-        // Check that the method returns true and modifies the ttl parameter
-        $this->assertTrue($result, "Static is_valid_rr_ttl should return true for empty TTL");
-        $this->assertSame(3600, $ttl, "TTL should be set to default value");
+        // Check that the method returns the default TTL value
+        $this->assertSame(3600, $result, "is_valid_rr_ttl should return default TTL for empty value");
 
         // Test with invalid TTL
         $ttl = -1;
         $result = Dns::is_valid_rr_ttl($ttl, $defaultTtl);
-        $this->assertFalse($result, "Static is_valid_rr_ttl should return false for negative TTL");
+        $this->assertFalse($result, "is_valid_rr_ttl should return false for negative TTL");
 
         // Test with valid TTL
         $ttl = 86400;
         $result = Dns::is_valid_rr_ttl($ttl, $defaultTtl);
-        $this->assertTrue($result, "Static is_valid_rr_ttl should return true for valid TTL");
-        $this->assertSame(86400, $ttl, "TTL should remain unchanged when valid");
+        $this->assertSame(86400, $result, "is_valid_rr_ttl should return the input TTL value when valid");
     }
 }

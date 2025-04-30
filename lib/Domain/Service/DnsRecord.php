@@ -392,8 +392,11 @@ class DnsRecord
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
-        } elseif ($dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl)) {
+        } elseif ($validationResult = $dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl)) {
             $name = strtolower($record['name']); // powerdns only searches for lower case records
+
+            // Get the validated TTL value
+            $validatedTtl = $dns->is_valid_rr_ttl($record['ttl'], $dns_ttl);
 
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
@@ -402,7 +405,7 @@ class DnsRecord
 				SET name=" . $this->db->quote($name, 'text') . ",
 				type=" . $this->db->quote($record['type'], 'text') . ",
 				content=" . $this->db->quote($record['content'], 'text') . ",
-				ttl=" . $this->db->quote($record['ttl'], 'integer') . ",
+				ttl=" . $this->db->quote($validatedTtl, 'integer') . ",
 				prio=" . $this->db->quote($record['prio'], 'integer') . ",
 				disabled=" . $this->db->quote($record['disabled'], 'integer') . "
 				WHERE id=" . $this->db->quote($record['rid'], 'integer');
@@ -451,7 +454,14 @@ class DnsRecord
         $content = $this->dnsFormatter->formatContent($type, $content);
 
         $dns = new Dns($this->db, $this->config);
-        if (!$dns->validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl, $dns_hostmaster, $dns_ttl)) {
+        $validationResult = $dns->validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl, $dns_hostmaster, $dns_ttl);
+        if (!$validationResult) {
+            return false;
+        }
+
+        // Get the validated TTL value
+        $validatedTtl = $dns->is_valid_rr_ttl($ttl, $dns_ttl);
+        if ($validatedTtl === false) {
             return false;
         }
 
@@ -474,7 +484,7 @@ class DnsRecord
         $stmt->bindValue(':name', $name, PDO::PARAM_STR);
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
         $stmt->bindValue(':content', $content, PDO::PARAM_STR);
-        $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
+        $stmt->bindValue(':ttl', $validatedTtl, PDO::PARAM_INT);
         $stmt->bindValue(':prio', $prio, PDO::PARAM_INT);
         $stmt->execute();
         $this->db->commit();

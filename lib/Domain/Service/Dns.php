@@ -77,7 +77,7 @@ class Dns
      *
      * @return boolean true on success, false otherwise
      */
-    public function validate_input(int $rid, int $zid, string $type, mixed &$content, mixed &$name, mixed $prio, mixed &$ttl, $dns_hostmaster, $dns_ttl): bool
+    public function validate_input(int $rid, int $zid, string $type, mixed &$content, mixed &$name, mixed $prio, mixed $ttl, $dns_hostmaster, $dns_ttl): bool
     {
         $dnsRecord = new DnsRecord($this->db, $this->config);
         $zone = $dnsRecord->get_domain_name_by_id($zid);
@@ -290,7 +290,8 @@ class Dns
             return false;
         }
 
-        if (!self::is_valid_rr_ttl($ttl, $dns_ttl)) {
+        $validatedTtl = self::is_valid_rr_ttl($ttl, $dns_ttl);
+        if ($validatedTtl === false) {
             return false;
         }
 
@@ -868,13 +869,12 @@ class Dns
      * @param mixed $ttl TTL
      * @param mixed $dns_ttl Default TTL
      *
-     * @return boolean true if valid,false otherwise
+     * @return int|bool Validated TTL value if valid, false otherwise
      */
-    public static function is_valid_rr_ttl(mixed &$ttl, mixed $dns_ttl): bool
+    public static function is_valid_rr_ttl(mixed $ttl, mixed $dns_ttl): int|bool
     {
         if (!isset($ttl) || $ttl === "") {
-            $ttl = $dns_ttl;
-            return true;
+            return $dns_ttl;
         }
 
         if (!is_numeric($ttl) || $ttl < 0 || $ttl > 2147483647) {
@@ -882,7 +882,7 @@ class Dns
             return false;
         }
 
-        return true;
+        return (int)$ttl;
     }
 
     /** Check if SPF content is valid
