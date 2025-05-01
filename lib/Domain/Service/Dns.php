@@ -284,7 +284,7 @@ class Dns
 
                     return false;
                 }
-                if (!self::has_quotes_around($content)) {
+                if (!StringValidator::hasQuotesAround($content)) {
                     return false;
                 }
                 break;
@@ -358,18 +358,6 @@ class Dns
     public function is_valid_hostname_fqdn(mixed $hostname, string $wildcard): array|bool
     {
         return $this->hostnameValidator->isValidHostnameFqdn($hostname, $wildcard);
-    }
-
-
-    /** Verify that the string is enclosed in quotes
-     *
-     * @param string $string Input string
-     * @return bool true if valid, false otherwise
-     * @deprecated Use StringValidator::hasQuotesAround() instead
-     */
-    public static function has_quotes_around(string $string): bool
-    {
-        return StringValidator::hasQuotesAround($string);
     }
 
     /** Test if CNAME is valid

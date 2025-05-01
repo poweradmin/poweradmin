@@ -39,16 +39,16 @@ class StringValidationTest extends BaseDnsTest
     public function testHasQuotesAround()
     {
         // Valid strings with quotes around
-        $this->assertTrue(Dns::has_quotes_around('"This is quoted text"'));
-        $this->assertTrue(Dns::has_quotes_around('"v=spf1 include:example.com ~all"'));
+        $this->assertTrue(StringValidator::hasQuotesAround('"This is quoted text"'));
+        $this->assertTrue(StringValidator::hasQuotesAround('"v=spf1 include:example.com ~all"'));
 
         // Empty string should pass
-        $this->assertTrue(Dns::has_quotes_around(''));
+        $this->assertTrue(StringValidator::hasQuotesAround(''));
 
         // Invalid strings without quotes or with incomplete quotes
-        $this->assertFalse(Dns::has_quotes_around('This is not quoted text'));
-        $this->assertFalse(Dns::has_quotes_around('"This is only start quoted'));
-        $this->assertFalse(Dns::has_quotes_around('This is only end quoted"'));
+        $this->assertFalse(StringValidator::hasQuotesAround('This is not quoted text'));
+        $this->assertFalse(StringValidator::hasQuotesAround('"This is only start quoted'));
+        $this->assertFalse(StringValidator::hasQuotesAround('This is only end quoted"'));
     }
 
     public function testIsProperlyQuoted()
