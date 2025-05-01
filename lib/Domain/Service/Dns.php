@@ -65,33 +65,49 @@ class Dns
         return $nLength <= $length && strncmp(substr($haystack, -$nLength), $needle, $nLength) === 0;
     }
 
+    /**
+     * Normalize a DNS record name by ensuring it is fully qualified with the zone name
+     *
+     * @param string $name Name to normalize
+     * @param string $zone Zone name
+     *
+     * @return string Normalized name
+     */
+    public function normalize_record_name(string $name, string $zone): string
+    {
+        // Check if name already ends with the zone name
+        if (!self::endsWith(strtolower($zone), strtolower($name))) {
+            // Append zone name if not already there
+            if (isset($name) && $name != "") {
+                return $name . "." . $zone;
+            } else {
+                return $zone;
+            }
+        }
+
+        // Name already includes zone, return unchanged
+        return $name;
+    }
+
     /** Validate DNS record input
      *
      * @param int $rid Record ID
      * @param int $zid Zone ID
      * @param string $type Record Type
      * @param mixed $content content part of record
-     * @param mixed $name Name part of record
+     * @param string $name Name part of record
      * @param mixed $prio Priority
      * @param mixed $ttl TTL
      *
      * @return boolean true on success, false otherwise
      */
-    public function validate_input(int $rid, int $zid, string $type, mixed &$content, mixed &$name, mixed $prio, mixed $ttl, $dns_hostmaster, $dns_ttl): bool
+    public function validate_input(int $rid, int $zid, string $type, mixed &$content, string $name, mixed $prio, mixed $ttl, $dns_hostmaster, $dns_ttl): bool
     {
         $dnsRecord = new DnsRecord($this->db, $this->config);
         $zone = $dnsRecord->get_domain_name_by_id($zid);
         if (!$zone) {
             $this->messageService->addSystemError(_('Unable to find domain with the given ID.'));
             return false;
-        }
-
-        if (!self::endsWith(strtolower($zone), strtolower($name))) {
-            if (isset($name) && $name != "") {
-                $name = $name . "." . $zone;
-            } else {
-                $name = $zone;
-            }
         }
 
         if ($type != RecordType::CNAME) {
@@ -613,13 +629,6 @@ class Dns
                         WHERE name = " . $this->db->quote($name, 'text') .
                         " AND TYPE != 'CNAME'" .
                         $where;
-
-        // For the failing test with 'existing.cname.example.com', we need a special case
-        // In production code, you would check if any non-CNAME records exist with the same name
-        if ($name === 'existing.cname.example.com') {
-            $this->messageService->addSystemError(_('This is not a valid CNAME. There already exists a record with this name.'));
-            return false;
-        }
 
         $response = $this->db->queryOne($query);
         if ($response) {

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Exception;
 use PDO;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -392,17 +393,23 @@ class DnsRecord
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
-        } elseif ($validationResult = $dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl)) {
-            $name = strtolower($record['name']); // powerdns only searches for lower case records
+        } else {
+            // Normalize the name BEFORE calling validate_input
+            $zone = $this->get_domain_name_by_id($record['zid']);
+            $record['name'] = $dns->normalize_record_name($record['name'], $zone);
+
+            // Now validate the input with normalized name
+            if ($validationResult = $dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl)) {
+                $name = strtolower($record['name']); // powerdns only searches for lower case records
 
             // Get the validated TTL and PRIO values
-            $validatedTtl = $dns->is_valid_rr_ttl($record['ttl'], $dns_ttl);
-            $validatedPrio = $dns->is_valid_rr_prio($record['prio'], $record['type']);
+                $validatedTtl = $dns->is_valid_rr_ttl($record['ttl'], $dns_ttl);
+                $validatedPrio = $dns->is_valid_rr_prio($record['prio'], $record['type']);
 
-            $pdns_db_name = $this->config->get('database', 'pdns_name');
-            $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+                $pdns_db_name = $this->config->get('database', 'pdns_name');
+                $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-            $query = "UPDATE $records_table
+                $query = "UPDATE $records_table
 				SET name=" . $this->db->quote($name, 'text') . ",
 				type=" . $this->db->quote($record['type'], 'text') . ",
 				content=" . $this->db->quote($record['content'], 'text') . ",
@@ -410,8 +417,9 @@ class DnsRecord
 				prio=" . $this->db->quote($validatedPrio, 'integer') . ",
 				disabled=" . $this->db->quote($record['disabled'], 'integer') . "
 				WHERE id=" . $this->db->quote($record['rid'], 'integer');
-            $this->db->query($query);
-            return true;
+                $this->db->query($query);
+                return true;
+            }
         }
         return false;
     }
@@ -428,6 +436,7 @@ class DnsRecord
      * @param mixed $prio Priority of record
      *
      * @return boolean true if successful
+     * @throws Exception
      */
     public function add_record(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool
     {
@@ -437,15 +446,15 @@ class DnsRecord
         $zone_type = $this->get_domain_type($zone_id);
 
         if ($type == 'SOA' && $perm_edit == "own_as_client") {
-            throw new \Exception(_("You do not have the permission to add SOA record."));
+            throw new Exception(_("You do not have the permission to add SOA record."));
         }
 
         if ($type == 'NS' && $perm_edit == "own_as_client") {
-            throw new \Exception(_("You do not have the permission to add NS record."));
+            throw new Exception(_("You do not have the permission to add NS record."));
         }
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
-            throw new \Exception(_("You do not have the permission to add a record to this zone."));
+            throw new Exception(_("You do not have the permission to add a record to this zone."));
         }
 
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
@@ -455,6 +464,12 @@ class DnsRecord
         $content = $this->dnsFormatter->formatContent($type, $content);
 
         $dns = new Dns($this->db, $this->config);
+
+        // Normalize the name BEFORE calling validate_input
+        $zone = $this->get_domain_name_by_id($zone_id);
+        $name = $dns->normalize_record_name($name, $zone);
+
+        // Now validate the input with normalized name
         $validationResult = $dns->validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl, $dns_hostmaster, $dns_ttl);
         if (!$validationResult) {
             return false;
