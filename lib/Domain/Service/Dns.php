@@ -25,9 +25,9 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Domain\Model\TopLevelDomain;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
 /**
@@ -45,6 +45,7 @@ class Dns
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
+    private TTLValidator $ttlValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -53,6 +54,7 @@ class Dns
         $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ipAddressValidator = new IPAddressValidator();
+        $this->ttlValidator = new TTLValidator();
     }
 
     /** Matches end of string
@@ -332,7 +334,7 @@ class Dns
             return false;
         }
 
-        $validatedTtl = self::is_valid_rr_ttl($ttl, $dns_ttl);
+        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $dns_ttl);
         if ($validatedTtl === false) {
             return false;
         }
@@ -811,19 +813,12 @@ class Dns
      * @param mixed $dns_ttl Default TTL
      *
      * @return int|bool Validated TTL value if valid, false otherwise
+     * @deprecated Use TTLValidator::isValidTTL() instead
      */
     public static function is_valid_rr_ttl(mixed $ttl, mixed $dns_ttl): int|bool
     {
-        if (!isset($ttl) || $ttl === "") {
-            return $dns_ttl;
-        }
-
-        if (!is_numeric($ttl) || $ttl < 0 || $ttl > 2147483647) {
-            (new MessageService())->addSystemError(_('Invalid value for TTL field. It should be numeric.'));
-            return false;
-        }
-
-        return (int)$ttl;
+        $validator = new TTLValidator();
+        return $validator->isValidTTL($ttl, $dns_ttl);
     }
 
     /** Check if SPF content is valid

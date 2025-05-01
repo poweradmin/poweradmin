@@ -4,6 +4,7 @@ namespace unit\Dns;
 
 use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
@@ -96,6 +97,7 @@ class ValidateInputTest extends BaseDnsTest
 
     /**
      * Test TTL handling in the updated is_valid_rr_ttl method
+     * @deprecated This test uses the deprecated Dns::is_valid_rr_ttl method
      */
     public function testIsValidRrTtlHandling()
     {
@@ -118,6 +120,30 @@ class ValidateInputTest extends BaseDnsTest
         $ttl = 86400;
         $result = Dns::is_valid_rr_ttl($ttl, $defaultTtl);
         $this->assertSame(86400, $result, "is_valid_rr_ttl should return the input TTL value when valid");
+    }
+
+    /**
+     * Test TTLValidator's isValidTTL method
+     */
+    public function testTTLValidatorIsValidTTL()
+    {
+        $ttlValidator = new TTLValidator();
+
+        // Test with an empty TTL
+        $ttl = "";
+        $defaultTtl = 3600;
+        $result = $ttlValidator->isValidTTL($ttl, $defaultTtl);
+        $this->assertSame(3600, $result, "TTLValidator::isValidTTL should return default TTL for empty value");
+
+        // Test with invalid TTL
+        $ttl = -1;
+        $result = $ttlValidator->isValidTTL($ttl, $defaultTtl);
+        $this->assertFalse($result, "TTLValidator::isValidTTL should return false for negative TTL");
+
+        // Test with valid TTL
+        $ttl = 86400;
+        $result = $ttlValidator->isValidTTL($ttl, $defaultTtl);
+        $this->assertSame(86400, $result, "TTLValidator::isValidTTL should return the input TTL value when valid");
     }
 
     public function testIsValidRRPrio()
@@ -154,6 +180,9 @@ class ValidateInputTest extends BaseDnsTest
         $this->assertSame(0, $result, "Should allow zero priority for any record type");
     }
 
+    /**
+     * @deprecated This test uses the deprecated Dns::is_valid_rr_ttl method
+     */
     public function testIsValidRrTtl()
     {
         // Valid TTL values
@@ -186,6 +215,47 @@ class ValidateInputTest extends BaseDnsTest
         $ttl = PHP_INT_MAX; // Test with maximum integer value
         if (PHP_INT_MAX > 2147483647) { // Only run this test if PHP_INT_MAX is larger than max 32-bit int
             $result = Dns::is_valid_rr_ttl($ttl, 3600);
+            $this->assertFalse($result, "Should return false for TTL too large");
+        }
+    }
+
+    /**
+     * Test TTLValidator thoroughly
+     */
+    public function testTTLValidatorThorough()
+    {
+        $ttlValidator = new TTLValidator();
+
+        // Valid TTL values
+        $ttl = 3600;
+        $result = $ttlValidator->isValidTTL($ttl, 86400);
+        $this->assertSame(3600, $result, "Should return the valid TTL value");
+
+        $ttl = 86400;
+        $result = $ttlValidator->isValidTTL($ttl, 3600);
+        $this->assertSame(86400, $result, "Should return the valid TTL value");
+
+        $ttl = 0;
+        $result = $ttlValidator->isValidTTL($ttl, 3600);
+        $this->assertSame(0, $result, "Should return 0 for a zero TTL");
+
+        $ttl = 2147483647; // Max 32-bit signed integer
+        $result = $ttlValidator->isValidTTL($ttl, 3600);
+        $this->assertSame(2147483647, $result, "Should return the max TTL value");
+
+        // Empty TTL test - should return the default value
+        $ttl = "";
+        $result = $ttlValidator->isValidTTL($ttl, 3600);
+        $this->assertSame(3600, $result, "Should return the default TTL for empty value");
+
+        // Invalid TTL values
+        $ttl = -1;
+        $result = $ttlValidator->isValidTTL($ttl, 3600);
+        $this->assertFalse($result, "Should return false for negative TTL");
+
+        $ttl = PHP_INT_MAX; // Test with maximum integer value
+        if (PHP_INT_MAX > 2147483647) { // Only run this test if PHP_INT_MAX is larger than max 32-bit int
+            $result = $ttlValidator->isValidTTL($ttl, 3600);
             $this->assertFalse($result, "Should return false for TTL too large");
         }
     }
