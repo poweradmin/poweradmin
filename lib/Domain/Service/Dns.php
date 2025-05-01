@@ -105,8 +105,9 @@ class Dns
             return false;
         }
 
+        $cnameValidator = new CNAMERecordValidator($this->config, $this->db);
         if ($type != RecordType::CNAME) {
-            if (!$this->is_valid_rr_cname_exists($name, $rid)) {
+            if (!$cnameValidator->isValidCnameExistence($name, $rid)) {
                 return false;
             }
         }
@@ -377,60 +378,6 @@ class Dns
     public function is_valid_hostname_fqdn(mixed $hostname, string $wildcard): array|bool
     {
         return $this->hostnameValidator->isValidHostnameFqdn($hostname, $wildcard);
-    }
-
-    /** Test if CNAME is valid
-     *
-     * Check if any MX or NS entries exist which invalidated CNAME
-     *
-     * @param string $name CNAME to lookup
-     *
-     * @return boolean true if valid, false otherwise
-     * @deprecated Use CNAMERecordValidator::isValidCnameName() instead
-     */
-    public function is_valid_rr_cname_name(string $name): bool
-    {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-
-        $query = "SELECT id FROM $records_table
-			WHERE content = " . $this->db->quote($name, 'text') . "
-			AND (type = " . $this->db->quote('MX', 'text') . " OR type = " . $this->db->quote('NS', 'text') . ")";
-
-        $response = $this->db->queryOne($query);
-
-        if (!empty($response)) {
-            $this->messageService->addSystemError(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
-            return false;
-        }
-
-        return true;
-    }
-
-    /** Check if CNAME already exists
-     *
-     * @param string $name CNAME
-     * @param int $rid Record ID
-     *
-     * @return boolean true if non-existant, false if exists
-     * @deprecated Use CNAMERecordValidator::isValidCnameExistence() instead
-     */
-    public function is_valid_rr_cname_exists(string $name, int $rid): bool
-    {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-
-        $where = ($rid > 0 ? " AND id != " . $this->db->quote($rid, 'integer') : '');
-        $query = "SELECT id FROM $records_table
-                        WHERE name = " . $this->db->quote($name, 'text') . $where . "
-                        AND TYPE = 'CNAME'";
-
-        $response = $this->db->queryOne($query);
-        if ($response) {
-            $this->messageService->addSystemError(_('This is not a valid record. There is already exists a CNAME with this name.'));
-            return false;
-        }
-        return true;
     }
 
     /** Check if CNAME is unique (doesn't overlap A/AAAA)

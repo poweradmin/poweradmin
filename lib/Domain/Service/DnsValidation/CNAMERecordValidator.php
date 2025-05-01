@@ -216,4 +216,30 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         }
         return true;
     }
+
+    /**
+     * Check if CNAME already exists
+     *
+     * @param string $name CNAME
+     * @param int $rid Record ID
+     *
+     * @return boolean true if non-existent, false if exists
+     */
+    public function isValidCnameExistence(string $name, int $rid): bool
+    {
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $where = ($rid > 0 ? " AND id != " . $this->db->quote($rid, 'integer') : '');
+        $query = "SELECT id FROM $records_table
+                        WHERE name = " . $this->db->quote($name, 'text') . $where . "
+                        AND TYPE = 'CNAME'";
+
+        $response = $this->db->queryOne($query);
+        if ($response) {
+            $this->messageService->addSystemError(_('This is not a valid record. There already exists a CNAME with this name.'));
+            return false;
+        }
+        return true;
+    }
 }
