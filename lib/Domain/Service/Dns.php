@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\AAAARecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
@@ -51,6 +52,7 @@ class Dns
     private TTLValidator $ttlValidator;
     private ARecordValidator $aRecordValidator;
     private AAAARecordValidator $aaaaRecordValidator;
+    private CNAMERecordValidator $cnameRecordValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -62,6 +64,7 @@ class Dns
         $this->ttlValidator = new TTLValidator();
         $this->aRecordValidator = new ARecordValidator($config);
         $this->aaaaRecordValidator = new AAAARecordValidator($config);
+        $this->cnameRecordValidator = new CNAMERecordValidator($config, $db);
     }
 
     /** Matches end of string
@@ -165,26 +168,16 @@ class Dns
                 break;
 
             case RecordType::CNAME:
-                if (!$this->is_valid_rr_cname_name($name)) {
+                $validationResult = $this->cnameRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl, $rid, $zone);
+                if ($validationResult === false) {
                     return false;
                 }
-                if (!$this->is_valid_rr_cname_unique($name, $rid)) {
-                    return false;
-                }
-                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
-                if ($hostnameResult === false) {
-                    return false;
-                }
-                $name = $hostnameResult['hostname'];
 
-                $contentHostnameResult = $this->is_valid_hostname_fqdn($content, 0);
-                if ($contentHostnameResult === false) {
-                    return false;
-                }
-                $content = $contentHostnameResult['hostname'];
-                if (!self::is_not_empty_cname_rr($name, $zone)) {
-                    return false;
-                }
+                // Update variables with validated data
+                $content = $validationResult['content'];
+                $name = $validationResult['name'];
+                $prio = $validationResult['prio'];
+                $ttl = $validationResult['ttl'];
                 break;
 
             case RecordType::DHCID:
@@ -339,8 +332,8 @@ class Dns
                 return false;
         }
 
-        // Skip validation if it was already handled by a specific validator (like ARecordValidator or AAAARecordValidator)
-        if ($type !== RecordType::A && $type !== RecordType::AAAA) {
+        // Skip validation if it was already handled by a specific validator
+        if ($type !== RecordType::A && $type !== RecordType::AAAA && $type !== RecordType::CNAME) {
             $validatedPrio = self::is_valid_rr_prio($prio, $type);
             if ($validatedPrio === false) {
                 $this->messageService->addSystemError(_('Invalid value for prio field.'));
@@ -352,7 +345,7 @@ class Dns
                 return false;
             }
         } else {
-            // We've already validated these in the A or AAAA record validator
+            // We've already validated these in the A, AAAA, or CNAME record validator
             $validatedPrio = $prio;
             $validatedTtl = $ttl;
         }
@@ -502,6 +495,7 @@ class Dns
      * @param string $name CNAME to lookup
      *
      * @return boolean true if valid, false otherwise
+     * @deprecated Use CNAMERecordValidator::isValidCnameName() instead
      */
     public function is_valid_rr_cname_name(string $name): bool
     {
@@ -528,6 +522,7 @@ class Dns
      * @param int $rid Record ID
      *
      * @return boolean true if non-existant, false if exists
+     * @deprecated Use CNAMERecordValidator::isValidCnameExistence() instead
      */
     public function is_valid_rr_cname_exists(string $name, int $rid): bool
     {
@@ -553,6 +548,7 @@ class Dns
      * @param string $rid Record ID
      *
      * @return boolean true if unique, false if duplicate
+     * @deprecated Use CNAMERecordValidator::isValidCnameUnique() instead
      */
     public function is_valid_rr_cname_unique(string $name, string $rid): bool
     {
@@ -580,6 +576,7 @@ class Dns
      * @param string $name
      * @param string $zone
      * @return bool
+     * @deprecated Use CNAMERecordValidator::isNotEmptyCnameRR() instead
      */
     public static function is_not_empty_cname_rr(string $name, string $zone): bool
     {
