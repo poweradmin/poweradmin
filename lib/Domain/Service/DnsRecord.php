@@ -395,8 +395,9 @@ class DnsRecord
         } elseif ($validationResult = $dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl)) {
             $name = strtolower($record['name']); // powerdns only searches for lower case records
 
-            // Get the validated TTL value
+            // Get the validated TTL and PRIO values
             $validatedTtl = $dns->is_valid_rr_ttl($record['ttl'], $dns_ttl);
+            $validatedPrio = $dns->is_valid_rr_prio($record['prio'], $record['type']);
 
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
@@ -406,7 +407,7 @@ class DnsRecord
 				type=" . $this->db->quote($record['type'], 'text') . ",
 				content=" . $this->db->quote($record['content'], 'text') . ",
 				ttl=" . $this->db->quote($validatedTtl, 'integer') . ",
-				prio=" . $this->db->quote($record['prio'], 'integer') . ",
+				prio=" . $this->db->quote($validatedPrio, 'integer') . ",
 				disabled=" . $this->db->quote($record['disabled'], 'integer') . "
 				WHERE id=" . $this->db->quote($record['rid'], 'integer');
             $this->db->query($query);
@@ -424,11 +425,11 @@ class DnsRecord
      * @param string $type Type of record
      * @param string $content Content of record
      * @param int $ttl Time-To-Live of record
-     * @param int $prio Priority of record
+     * @param mixed $prio Priority of record
      *
      * @return boolean true if successful
      */
-    public function add_record(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio): bool
+    public function add_record(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
@@ -459,9 +460,14 @@ class DnsRecord
             return false;
         }
 
-        // Get the validated TTL value
+        // Get the validated TTL and PRIO values
         $validatedTtl = $dns->is_valid_rr_ttl($ttl, $dns_ttl);
         if ($validatedTtl === false) {
+            return false;
+        }
+
+        $validatedPrio = $dns->is_valid_rr_prio($prio, $type);
+        if ($validatedPrio === false) {
             return false;
         }
 
@@ -485,7 +491,7 @@ class DnsRecord
         $stmt->bindValue(':type', $type, PDO::PARAM_STR);
         $stmt->bindValue(':content', $content, PDO::PARAM_STR);
         $stmt->bindValue(':ttl', $validatedTtl, PDO::PARAM_INT);
-        $stmt->bindValue(':prio', $prio, PDO::PARAM_INT);
+        $stmt->bindValue(':prio', $validatedPrio, PDO::PARAM_INT);
         $stmt->execute();
         $this->db->commit();
 

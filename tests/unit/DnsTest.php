@@ -239,13 +239,36 @@ class DnsTest extends TestCase
 
     public function testIsValidRRPrio()
     {
-        $this->assertTrue(Dns::is_valid_rr_prio(10, "MX"));
-        $this->assertTrue(Dns::is_valid_rr_prio(65535, "SRV"));
-        $this->assertFalse(Dns::is_valid_rr_prio(-1, "MX"));
-        $this->assertFalse(Dns::is_valid_rr_prio("foo", "SRV"));
-        $this->assertFalse(Dns::is_valid_rr_prio(10, "A"));
-        $this->assertFalse(Dns::is_valid_rr_prio("foo", "A"));
-        $this->assertTrue(Dns::is_valid_rr_prio("0", "A"));
+        // Test with valid values
+        $result = Dns::is_valid_rr_prio(10, "MX");
+        $this->assertSame(10, $result, "Should return the input value for valid MX priority");
+
+        $result = Dns::is_valid_rr_prio(65535, "SRV");
+        $this->assertSame(65535, $result, "Should return the input value for valid SRV priority");
+
+        // Test with empty values (default values)
+        $result = Dns::is_valid_rr_prio("", "MX");
+        $this->assertSame(10, $result, "Should return default value 10 for empty MX priority");
+
+        $result = Dns::is_valid_rr_prio("", "SRV");
+        $this->assertSame(10, $result, "Should return default value 10 for empty SRV priority");
+
+        $result = Dns::is_valid_rr_prio("", "A");
+        $this->assertSame(0, $result, "Should return default value 0 for empty priority on non-MX/SRV records");
+
+        // Test with invalid values
+        $result = Dns::is_valid_rr_prio(-1, "MX");
+        $this->assertFalse($result, "Should return false for negative priority");
+
+        $result = Dns::is_valid_rr_prio("foo", "SRV");
+        $this->assertFalse($result, "Should return false for non-numeric priority");
+
+        $result = Dns::is_valid_rr_prio(10, "A");
+        $this->assertFalse($result, "Should return false for A record with non-zero priority");
+
+        // Specific case: zero priority is valid for all records
+        $result = Dns::is_valid_rr_prio("0", "A");
+        $this->assertSame(0, $result, "Should allow zero priority for any record type");
     }
 
     public function testIsValidRrTtl()

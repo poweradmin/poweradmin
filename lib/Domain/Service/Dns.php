@@ -284,9 +284,9 @@ class Dns
                 return false;
         }
 
-        if (!self::is_valid_rr_prio($prio, $type)) {
+        $validatedPrio = self::is_valid_rr_prio($prio, $type);
+        if ($validatedPrio === false) {
             $this->messageService->addSystemError(_('Invalid value for prio field.'));
-
             return false;
         }
 
@@ -783,11 +783,28 @@ class Dns
      * @param mixed $prio Priority
      * @param string $type Record type
      *
-     * @return boolean true if valid, false otherwise
+     * @return int|bool Valid priority value or false if invalid
      */
-    public static function is_valid_rr_prio(mixed $prio, string $type): bool
+    public static function is_valid_rr_prio(mixed $prio, string $type): int|bool
     {
-        return ($type == "MX" || $type == "SRV") && (is_numeric($prio) && $prio >= 0 && $prio <= 65535) || is_numeric($prio) && $prio == 0;
+        // If priority is not provided or empty, set a default value based on record type
+        if (!isset($prio) || $prio === "") {
+            // Use 10 as default priority for MX and SRV records (common practice)
+            if ($type == "MX" || $type == "SRV") {
+                return 10;
+            }
+            // For all other record types, use 0
+            return 0;
+        }
+
+        // Validate priority
+        if (($type == "MX" || $type == "SRV") && (is_numeric($prio) && $prio >= 0 && $prio <= 65535)) {
+            return (int)$prio;
+        } elseif (is_numeric($prio) && $prio == 0) {
+            return 0;
+        } else {
+            return false;
+        }
     }
 
     /** Check if SRV name is valid
