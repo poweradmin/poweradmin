@@ -360,17 +360,6 @@ class Dns
         return $this->hostnameValidator->isValidHostnameFqdn($hostname, $wildcard);
     }
 
-    /** Test if string is printable
-     *
-     * @param string $string string
-     *
-     * @return boolean true if valid, false otherwise
-     * @deprecated Use StringValidator::isValidPrintable() instead
-     */
-    public static function is_valid_printable(string $string): bool
-    {
-        return StringValidator::isValidPrintable($string);
-    }
 
     /** Test if string has html opening and closing tags
      *

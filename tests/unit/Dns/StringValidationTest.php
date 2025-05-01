@@ -4,6 +4,7 @@ namespace unit\Dns;
 
 use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsValidation\StringValidator;
 
 /**
  * Tests for string formatting and validation
@@ -13,10 +14,10 @@ class StringValidationTest extends BaseDnsTest
     public function testIsValidPrintable()
     {
         // Valid printable strings
-        $this->assertTrue(Dns::is_valid_printable("Simple text"));
-        $this->assertTrue(Dns::is_valid_printable("Text with numbers 123"));
-        $this->assertTrue(Dns::is_valid_printable("Text with symbols !@#$%^&*()_+=-[]{};:'\",./<>?"));
-        $this->assertTrue(Dns::is_valid_printable(" Text with spaces "));
+        $this->assertTrue(StringValidator::isValidPrintable("Simple text"));
+        $this->assertTrue(StringValidator::isValidPrintable("Text with numbers 123"));
+        $this->assertTrue(StringValidator::isValidPrintable("Text with symbols !@#$%^&*()_+=-[]{};:'\",./<>?"));
+        $this->assertTrue(StringValidator::isValidPrintable(" Text with spaces "));
 
         // Test would fail with non-printable characters, but we can't easily represent those in code
         // So we'll just skip that kind of test
