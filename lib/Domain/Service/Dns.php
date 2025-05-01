@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\AAAARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
@@ -49,6 +50,7 @@ class Dns
     private IPAddressValidator $ipAddressValidator;
     private TTLValidator $ttlValidator;
     private ARecordValidator $aRecordValidator;
+    private AAAARecordValidator $aaaaRecordValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -59,6 +61,7 @@ class Dns
         $this->ipAddressValidator = new IPAddressValidator();
         $this->ttlValidator = new TTLValidator();
         $this->aRecordValidator = new ARecordValidator($config);
+        $this->aaaaRecordValidator = new AAAARecordValidator($config);
     }
 
     /** Matches end of string
@@ -149,14 +152,16 @@ class Dns
                 break;
 
             case RecordType::AAAA:
-                if (!self::is_valid_ipv6($content)) {
+                $validationResult = $this->aaaaRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
+                if ($validationResult === false) {
                     return false;
                 }
-                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
-                if ($hostnameResult === false) {
-                    return false;
-                }
-                $name = $hostnameResult['hostname'];
+
+                // Update variables with validated data
+                $content = $validationResult['content'];
+                $name = $validationResult['name'];
+                $prio = $validationResult['prio'];
+                $ttl = $validationResult['ttl'];
                 break;
 
             case RecordType::CNAME:
@@ -334,8 +339,8 @@ class Dns
                 return false;
         }
 
-        // Skip validation if it was already handled by a specific validator (like ARecordValidator)
-        if ($type !== RecordType::A) {
+        // Skip validation if it was already handled by a specific validator (like ARecordValidator or AAAARecordValidator)
+        if ($type !== RecordType::A && $type !== RecordType::AAAA) {
             $validatedPrio = self::is_valid_rr_prio($prio, $type);
             if ($validatedPrio === false) {
                 $this->messageService->addSystemError(_('Invalid value for prio field.'));
@@ -347,7 +352,7 @@ class Dns
                 return false;
             }
         } else {
-            // We've already validated these in the A record validator
+            // We've already validated these in the A or AAAA record validator
             $validatedPrio = $prio;
             $validatedTtl = $ttl;
         }

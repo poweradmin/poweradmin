@@ -483,6 +483,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsFormatter' => $baseDir . '/lib/Domain/Service/DnsFormatter.php',
     'Poweradmin\\Domain\\Service\\DnsIdnService' => $baseDir . '/lib/Domain/Service/DnsIdnService.php',
     'Poweradmin\\Domain\\Service\\DnsRecord' => $baseDir . '/lib/Domain/Service/DnsRecord.php',
+    'Poweradmin\\Domain\\Service\\DnsValidation\\AAAARecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/AAAARecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\ARecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/ARecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DnsRecordValidatorInterface' => $baseDir . '/lib/Domain/Service/DnsValidation/DnsRecordValidatorInterface.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\HostnameValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/HostnameValidator.php',
