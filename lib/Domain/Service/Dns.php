@@ -588,18 +588,4 @@ class Dns
         }
         return ['content' => join(' ', $fields)];
     }
-
-    /** Check if TTL is valid and within range
-     *
-     * @param mixed $ttl TTL
-     * @param mixed $dns_ttl Default TTL
-     *
-     * @return int|bool Validated TTL value if valid, false otherwise
-     * @deprecated Use TTLValidator::isValidTTL() instead
-     */
-    public static function is_valid_rr_ttl(mixed $ttl, mixed $dns_ttl): int|bool
-    {
-        $validator = new TTLValidator();
-        return $validator->isValidTTL($ttl, $dns_ttl);
-    }
 }
