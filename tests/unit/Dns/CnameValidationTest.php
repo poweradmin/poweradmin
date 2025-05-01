@@ -97,18 +97,40 @@ class CnameValidationTest extends BaseDnsTest
         $this->assertFalse($result);
     }
 
-    public function testIsValidRrCnameUnique()
+    public function testIsValidCnameUnique()
     {
+        // Create CNAMERecordValidator instance
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $dbMock = $this->createMock(PDOLayer::class);
+
+        // Setup mock database responses
+        $dbMock->expects($this->atLeastOnce())
+            ->method('queryOne')
+            ->willReturnCallback(function ($query) {
+                return false;  // No conflicting records found for valid cases
+            });
+
+        // Setup quote method mock
+        $dbMock->method('quote')
+            ->willReturnCallback(function ($value, $type = null) {
+                if ($type === 'integer') {
+                    return (string)$value;
+                }
+                return "'$value'";
+            });
+
+        $validator = new CNAMERecordValidator($configMock, $dbMock);
+
         // Valid case - no existing record with this name
         $name = 'new.example.com';
         $rid = 0;
-        $result = $this->dnsInstance->is_valid_rr_cname_unique($name, $rid);
+        $result = $validator->isValidCnameUnique($name, $rid);
         $this->assertTrue($result);
 
         // Valid case - checking against a specific record ID
         $name = 'new.example.com';
         $rid = 123;
-        $result = $this->dnsInstance->is_valid_rr_cname_unique($name, $rid);
+        $result = $validator->isValidCnameUnique($name, $rid);
         $this->assertTrue($result);
     }
 
@@ -127,11 +149,17 @@ class CnameValidationTest extends BaseDnsTest
 
     public function testIsNotEmptyCnameRR()
     {
+        // Create CNAMERecordValidator instance
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $dbMock = $this->createMock(PDOLayer::class);
+
+        $validator = new CNAMERecordValidator($configMock, $dbMock);
+
         // Valid non-empty CNAME
-        $this->assertTrue($this->dnsInstance->is_not_empty_cname_rr('subdomain.example.com', 'example.com'));
-        $this->assertTrue($this->dnsInstance->is_not_empty_cname_rr('www.example.com', 'example.com'));
+        $this->assertTrue($validator->isNotEmptyCnameRR('subdomain.example.com', 'example.com'));
+        $this->assertTrue($validator->isNotEmptyCnameRR('www.example.com', 'example.com'));
 
         // Invalid empty CNAME (name equals zone)
-        $this->assertFalse($this->dnsInstance->is_not_empty_cname_rr('example.com', 'example.com'));
+        $this->assertFalse($validator->isNotEmptyCnameRR('example.com', 'example.com'));
     }
 }

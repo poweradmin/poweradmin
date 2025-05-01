@@ -380,52 +380,6 @@ class Dns
         return $this->hostnameValidator->isValidHostnameFqdn($hostname, $wildcard);
     }
 
-    /** Check if CNAME is unique (doesn't overlap A/AAAA)
-     *
-     * @param string $name CNAME
-     * @param string $rid Record ID
-     *
-     * @return boolean true if unique, false if duplicate
-     * @deprecated Use CNAMERecordValidator::isValidCnameUnique() instead
-     */
-    public function is_valid_rr_cname_unique(string $name, string $rid): bool
-    {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-
-        $where = ($rid > 0 ? " AND id != " . $this->db->quote($rid, 'integer') : '');
-        // Check if there are any records with this name
-        $query = "SELECT id FROM $records_table
-                        WHERE name = " . $this->db->quote($name, 'text') .
-                    " AND TYPE != 'CNAME'" .
-                    $where;
-
-        $response = $this->db->queryOne($query);
-        if ($response) {
-            $this->messageService->addSystemError(_('This is not a valid CNAME. There already exists a record with this name.'));
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Check that the zone does not have an empty CNAME RR
-     *
-     * @param string $name
-     * @param string $zone
-     * @return bool
-     * @deprecated Use CNAMERecordValidator::isNotEmptyCnameRR() instead
-     */
-    public static function is_not_empty_cname_rr(string $name, string $zone): bool
-    {
-
-        if ($name == $zone) {
-            (new MessageService())->addSystemError(_('Empty CNAME records are not allowed.'));
-            return false;
-        }
-        return true;
-    }
-
     /** Check if target is not a CNAME
      *
      * @param string $target target to check
