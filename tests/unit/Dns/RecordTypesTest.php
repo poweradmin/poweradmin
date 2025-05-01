@@ -7,6 +7,7 @@ use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
@@ -27,18 +28,21 @@ class RecordTypesTest extends BaseDnsTest
 
     public function testIsValidSPF()
     {
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $validator = new SPFRecordValidator($configMock);
+
         // Valid SPF records
-        $this->assertTrue(Dns::is_valid_spf('v=spf1 include:example.com ~all'));
-        $this->assertTrue(Dns::is_valid_spf('v=spf1 ip4:192.168.0.1/24 -all'));
-        $this->assertTrue(Dns::is_valid_spf('v=spf1 a mx -all'));
-        $this->assertTrue(Dns::is_valid_spf('v=spf1 a:example.com mx:mail.example.com -all'));
-        $this->assertTrue(Dns::is_valid_spf('v=spf1 ip6:2001:db8::/32 ~all'));
+        $this->assertTrue($validator->validate('v=spf1 include:example.com ~all', 'example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('v=spf1 ip4:192.168.0.1/24 -all', 'example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('v=spf1 a mx -all', 'example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('v=spf1 a:example.com mx:mail.example.com -all', 'example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('v=spf1 ip6:2001:db8::/32 ~all', 'example.com', 0, 3600, 3600) !== false);
 
         // Invalid SPF records
-        $this->assertFalse(Dns::is_valid_spf('v=spf2 include:example.com ~all')); // Wrong version
-        $this->assertFalse(Dns::is_valid_spf('include:example.com ~all')); // Missing version
-        $this->assertFalse(Dns::is_valid_spf('v=spf1 invalid:example.com ~all')); // Invalid mechanism
-        $this->assertFalse(Dns::is_valid_spf('v=spf1 ip4:999.168.0.1/24 -all')); // Invalid IP
+        $this->assertFalse($validator->validate('v=spf2 include:example.com ~all', 'example.com', 0, 3600, 3600)); // Wrong version
+        $this->assertFalse($validator->validate('include:example.com ~all', 'example.com', 0, 3600, 3600)); // Missing version
+        $this->assertFalse($validator->validate('v=spf1 invalid:example.com ~all', 'example.com', 0, 3600, 3600)); // Invalid mechanism
+        $this->assertFalse($validator->validate('v=spf1 ip4:999.168.0.1/24 -all', 'example.com', 0, 3600, 3600)); // Invalid IP
     }
 
     public function testIsValidDS()
