@@ -4,6 +4,7 @@ namespace TestHelpers;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 

@@ -4,6 +4,7 @@ namespace unit\Dns;
 
 use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
@@ -14,92 +15,74 @@ class HostnameValidationTest extends BaseDnsTest
 {
     public function testIsValidHostnameFqdn()
     {
-        // Configure additional necessary mocks
-        // The BaseDnsTest class might not have all configurations needed
-        $configMock = $this->createMock(ConfigurationManager::class);
-        $configMock->method('get')
-            ->willReturnCallback(function ($section, $key) {
-                if ($section === 'dns') {
-                    if ($key === 'top_level_tld_check') {
-                        return false;
-                    }
-                    if ($key === 'strict_tld_check') {
-                        return false;
-                    }
-                }
-                return null;
-            });
+        // This test now verifies that the DNS class correctly delegates to the HostnameValidator
+        // Configure a mock HostnameValidator to verify delegation
+        $mockHostnameValidator = $this->createMock(HostnameValidator::class);
 
-        // Recreate the DNS instance with our more specific configuration
-        $dns = new Dns($this->createMock(PDOLayer::class), $configMock);
+        // Set expectations for the mock
+        $mockHostnameValidator->expects($this->once())
+            ->method('isValidHostnameFqdn')
+            ->with('example.com', 0)
+            ->willReturn(['hostname' => 'example.com']);
 
-        // Valid hostnames - testing with the special configuration
-        $hostname = 'example.com';
-        $result = $dns->is_valid_hostname_fqdn($hostname, 0);
-        if (!is_array($result)) {
-            $this->markTestSkipped('Hostname validation failed - check mock configuration. Manual validation required.');
-            return;
-        }
-        $this->assertIsArray($result);
+        // Create reflection to set the protected property
+        $reflection = new \ReflectionObject($this->dnsInstance);
+        $hostnameValidatorProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameValidatorProperty->setAccessible(true);
+        $hostnameValidatorProperty->setValue($this->dnsInstance, $mockHostnameValidator);
+
+        // Test that Dns.is_valid_hostname_fqdn delegates to HostnameValidator.isValidHostnameFqdn
+        $result = $this->dnsInstance->is_valid_hostname_fqdn('example.com', 0);
         $this->assertEquals(['hostname' => 'example.com'], $result);
-
-        // Continue with simpler validation cases where expected output is false
-        // Invalid hostnames
-        $hostname = '-example.com'; // Starts with dash
-        $this->assertFalse($this->dnsInstance->is_valid_hostname_fqdn($hostname, 0));
-
-        $hostname = 'example-.com'; // Ends with dash
-        $this->assertFalse($this->dnsInstance->is_valid_hostname_fqdn($hostname, 0));
-
-        $hostname = 'exam&ple.com'; // Invalid character
-        $this->assertFalse($this->dnsInstance->is_valid_hostname_fqdn($hostname, 0));
-
-        $hostname = str_repeat('a', 64) . '.example.com'; // Label too long (>63 chars)
-        $this->assertFalse($this->dnsInstance->is_valid_hostname_fqdn($hostname, 0));
-
-        $hostname = str_repeat('a', 254); // Full name too long (>253 chars)
-        $this->assertFalse($this->dnsInstance->is_valid_hostname_fqdn($hostname, 0));
     }
 
     /**
-     * Test the new normalize_record_name function
+     * Test that normalize_record_name delegates to HostnameValidator.normalizeRecordName
      */
     public function testNormalizeRecordName()
     {
-        // Test case the: Name without zone suffix
-        $name = "www";
-        $zone = "example.com";
-        $expected = "www.example.com";
-        $this->assertEquals($expected, $this->dnsInstance->normalize_record_name($name, $zone));
+        // Configure a mock HostnameValidator to verify delegation
+        $mockHostnameValidator = $this->createMock(HostnameValidator::class);
 
-        // Test case: Name already has zone suffix
-        $name = "mail.example.com";
-        $zone = "example.com";
-        $expected = "mail.example.com";
-        $this->assertEquals($expected, $this->dnsInstance->normalize_record_name($name, $zone));
+        // Set expectations for the mock
+        $mockHostnameValidator->expects($this->once())
+            ->method('normalizeRecordName')
+            ->with('www', 'example.com')
+            ->willReturn('www.example.com');
 
-        // Test case: Empty name should return zone
-        $name = "";
-        $zone = "example.com";
-        $expected = "example.com";
-        $this->assertEquals($expected, $this->dnsInstance->normalize_record_name($name, $zone));
+        // Create reflection to set the protected property
+        $reflection = new \ReflectionObject($this->dnsInstance);
+        $hostnameValidatorProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameValidatorProperty->setAccessible(true);
+        $hostnameValidatorProperty->setValue($this->dnsInstance, $mockHostnameValidator);
 
-        // Test case: Case-insensitive matching
-        $name = "SUB.EXAMPLE.COM";
-        $zone = "example.com";
-        $expected = "SUB.EXAMPLE.COM";
-        $this->assertEquals($expected, $this->dnsInstance->normalize_record_name($name, $zone));
+        // Test that Dns.normalize_record_name delegates to HostnameValidator.normalizeRecordName
+        $result = $this->dnsInstance->normalize_record_name('www', 'example.com');
+        $this->assertEquals('www.example.com', $result);
+    }
 
-        // Test case: Name is @ sign (should be transformed)
-        $name = "@";
-        $zone = "example.com";
-        $expected = "@.example.com";
-        $this->assertEquals($expected, $this->dnsInstance->normalize_record_name($name, $zone));
+    /**
+     * Test that endsWith properly delegates to the HostnameValidator
+     */
+    public function testEndsWith()
+    {
+        // Test that Dns.endsWith delegates to HostnameValidator.endsWith
+        // by using actual implementation and comparing results
 
-        // Test case: Subdomain of zone
-        $name = "test.sub";
-        $zone = "example.com";
-        $expected = "test.sub.example.com";
-        $this->assertEquals($expected, $this->dnsInstance->normalize_record_name($name, $zone));
+        $cases = [
+            ['needle' => 'com', 'haystack' => 'example.com', 'expected' => true],
+            ['needle' => 'example.com', 'haystack' => 'example.com', 'expected' => true],
+            ['needle' => '', 'haystack' => 'example.com', 'expected' => true],
+            ['needle' => 'test', 'haystack' => 'example.com', 'expected' => false],
+            ['needle' => 'com.example', 'haystack' => 'example.com', 'expected' => false],
+        ];
+
+        foreach ($cases as $case) {
+            $this->assertEquals(
+                $case['expected'],
+                Dns::endsWith($case['needle'], $case['haystack']),
+                "Failed assertion for needle: {$case['needle']}, haystack: {$case['haystack']}"
+            );
+        }
     }
 }

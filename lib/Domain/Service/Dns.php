@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\TopLevelDomain;
@@ -41,12 +42,14 @@ class Dns
     private ConfigurationManager $config;
     private PDOLayer $db;
     private MessageService $messageService;
+    private HostnameValidator $hostnameValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
+        $this->hostnameValidator = new HostnameValidator($config);
     }
 
     /** Matches end of string
@@ -60,9 +63,7 @@ class Dns
      */
     public static function endsWith(string $needle, string $haystack): bool
     {
-        $length = strlen($haystack);
-        $nLength = strlen($needle);
-        return $nLength <= $length && strncmp(substr($haystack, -$nLength), $needle, $nLength) === 0;
+        return HostnameValidator::endsWith($needle, $haystack);
     }
 
     /**
@@ -75,18 +76,7 @@ class Dns
      */
     public function normalize_record_name(string $name, string $zone): string
     {
-        // Check if name already ends with the zone name
-        if (!self::endsWith(strtolower($zone), strtolower($name))) {
-            // Append zone name if not already there
-            if (isset($name) && $name != "") {
-                return $name . "." . $zone;
-            } else {
-                return $zone;
-            }
-        }
-
-        // Name already includes zone, return unchanged
-        return $name;
+        return $this->hostnameValidator->normalizeRecordName($name, $zone);
     }
 
     /** Validate DNS record input
@@ -361,89 +351,7 @@ class Dns
      */
     public function is_valid_hostname_fqdn(mixed $hostname, string $wildcard): array|bool
     {
-        $dns_top_level_tld_check = $this->config->get('dns', 'top_level_tld_check');
-        $dns_strict_tld_check = $this->config->get('dns', 'strict_tld_check');
-
-        $normalizedHostname = $hostname;
-
-        // Special case for root zone (@) or @.domain format
-        if ($normalizedHostname == "." || $normalizedHostname == "@" || str_starts_with($normalizedHostname, "@.")) {
-            return ['hostname' => $normalizedHostname];
-        }
-
-        $normalizedHostname = preg_replace("/\.$/", "", $normalizedHostname);
-
-        # The full domain name may not exceed a total length of 253 characters.
-        if (strlen($normalizedHostname) > 253) {
-            $this->messageService->addSystemError(_('The hostname is too long.'));
-            return false;
-        }
-
-        $hostname_labels = explode('.', $normalizedHostname);
-        $label_count = count($hostname_labels);
-
-        if ($dns_top_level_tld_check && $label_count == 1) {
-            return false;
-        }
-
-        foreach ($hostname_labels as $hostname_label) {
-            if ($wildcard == 1 && !isset($first)) {
-                if (!preg_match('/^(\*|[\w\-\/]+)$/', $hostname_label)) {
-                    $this->messageService->addSystemError(_('You have invalid characters in your zone name.'));
-                    return false;
-                }
-                $first = 1;
-            } else {
-                if (!preg_match('/^[\w\-\/]+$/', $hostname_label)) {
-                    $this->messageService->addSystemError(_('You have invalid characters in your zone name.'));
-                    return false;
-                }
-            }
-            if (str_starts_with($hostname_label, "-")) {
-                $this->messageService->addSystemError(_('A hostname can not start or end with a dash.'));
-                return false;
-            }
-            if (str_ends_with($hostname_label, "-")) {
-                $this->messageService->addSystemError(_('A hostname can not start or end with a dash.'));
-                return false;
-            }
-            if (strlen($hostname_label) < 1 || strlen($hostname_label) > 63) {
-                $this->messageService->addSystemError(_('Given hostname or one of the labels is too short or too long.'));
-                return false;
-            }
-        }
-
-        if ($hostname_labels[$label_count - 1] == "arpa" && (substr_count($hostname_labels[0], "/") == 1 xor substr_count($hostname_labels[1], "/") == 1)) {
-            if (substr_count($hostname_labels[0], "/") == 1) {
-                $array = explode("/", $hostname_labels[0]);
-            } else {
-                $array = explode("/", $hostname_labels[1]);
-            }
-            if (count($array) != 2) {
-                $this->messageService->addSystemError(_('Invalid hostname.'));
-                return false;
-            }
-            if (!is_numeric($array[0]) || $array[0] < 0 || $array[0] > 255) {
-                $this->messageService->addSystemError(_('Invalid hostname.'));
-                return false;
-            }
-            if (!is_numeric($array[1]) || $array[1] < 25 || $array[1] > 31) {
-                $this->messageService->addSystemError(_('Invalid hostname.'));
-                return false;
-            }
-        } else {
-            if (substr_count($hostname, "/") > 0) {
-                $this->messageService->addSystemError(_('Given hostname has too many slashes.'));
-                return false;
-            }
-        }
-
-        if ($dns_strict_tld_check && !TopLevelDomain::isValidTopLevelDomain($hostname)) {
-            $this->messageService->addSystemError(_('You are using an invalid top level domain.'));
-            return false;
-        }
-
-        return ['hostname' => $normalizedHostname];
+        return $this->hostnameValidator->isValidHostnameFqdn($hostname, $wildcard);
     }
 
     /** Test if IPv4 address is valid
