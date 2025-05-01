@@ -52,6 +52,7 @@ class DnsRecord
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
+    private DnsFormatter $dnsFormatter;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -60,6 +61,7 @@ class DnsRecord
         $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ipAddressValidator = new IPAddressValidator();
+        $this->dnsFormatter = new DnsFormatter($config);
     }
 
     /** Check if Zone ID exists
