@@ -27,6 +27,7 @@ use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\AAAARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
@@ -53,6 +54,7 @@ class Dns
     private AAAARecordValidator $aaaaRecordValidator;
     private CNAMERecordValidator $cnameRecordValidator;
     private CSYNCRecordValidator $csyncRecordValidator;
+    private DSRecordValidator $dsRecordValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -65,6 +67,7 @@ class Dns
         $this->aaaaRecordValidator = new AAAARecordValidator($config);
         $this->cnameRecordValidator = new CNAMERecordValidator($config, $db);
         $this->csyncRecordValidator = new CSYNCRecordValidator($config);
+        $this->dsRecordValidator = new DSRecordValidator($config);
     }
 
     /** Validate DNS record input
@@ -190,9 +193,16 @@ class Dns
                 break;
 
             case RecordType::DS:
-                if (!self::is_valid_ds($content)) {
+                $validationResult = $this->dsRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
+                if ($validationResult === false) {
                     return false;
                 }
+
+                // Update variables with validated data
+                $content = $validationResult['content'];
+                $name = $validationResult['name'];
+                $prio = $validationResult['prio'];
+                $ttl = $validationResult['ttl'];
                 break;
 
             case RecordType::HINFO:
@@ -849,15 +859,6 @@ class Dns
             return false;
         } else {
             return true;
-        }
-    }
-
-    public static function is_valid_ds($content): bool
-    {
-        if (preg_match("/^([0-9]+) ([0-9]+) ([0-9]+) ([a-f0-9]+)$/i", $content)) {
-            return true;
-        } else {
-            return false;
         }
     }
 }

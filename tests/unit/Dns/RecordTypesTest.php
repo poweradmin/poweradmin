@@ -5,6 +5,7 @@ namespace unit\Dns;
 use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
@@ -13,12 +14,14 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 class RecordTypesTest extends BaseDnsTest
 {
     private CSYNCRecordValidator $csyncValidator;
+    private DSRecordValidator $dsValidator;
 
     protected function setUp(): void
     {
         parent::setUp();
         $configMock = $this->createMock(ConfigurationManager::class);
         $this->csyncValidator = new CSYNCRecordValidator($configMock);
+        $this->dsValidator = new DSRecordValidator($configMock);
     }
 
     public function testIsValidSPF()
@@ -39,13 +42,15 @@ class RecordTypesTest extends BaseDnsTest
 
     public function testIsValidDS()
     {
-        $this->assertTrue(Dns::is_valid_ds("45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0"));
-        $this->assertTrue(Dns::is_valid_ds("2371 13 2 1F987CC6583E92DF0890718C42"));
-        $this->assertTrue(Dns::is_valid_ds("15288 5 2 CE0EB9E59EE1DE2C681A330E3A7C08376F28602CDF990EE4EC88D2A8BDB51539"));
+        // Valid DS records
+        $this->assertTrue($this->dsValidator->isValidDSContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0'));
+        $this->assertTrue($this->dsValidator->isValidDSContent('2371 13 2 1F987CC6583E92DF0890718C42'));
+        $this->assertTrue($this->dsValidator->isValidDSContent('15288 5 2 CE0EB9E59EE1DE2C681A330E3A7C08376F28602CDF990EE4EC88D2A8BDB51539'));
 
-        $this->assertFalse(Dns::is_valid_ds("45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0;"));
-        $this->assertFalse(Dns::is_valid_ds("2371 13 2 1F987CC6583E92DF0890718C42 ; ( SHA1 digest )"));
-        $this->assertFalse(Dns::is_valid_ds("invalid"));
+        // Invalid DS records
+        $this->assertFalse($this->dsValidator->isValidDSContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0;'));
+        $this->assertFalse($this->dsValidator->isValidDSContent('2371 13 2 1F987CC6583E92DF0890718C42 ; ( SHA1 digest )'));
+        $this->assertFalse($this->dsValidator->isValidDSContent('invalid'));
     }
 
     public function testIsValidLocation()
