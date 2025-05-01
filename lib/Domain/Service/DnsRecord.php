@@ -399,12 +399,13 @@ class DnsRecord
             $record['name'] = $dns->normalize_record_name($record['name'], $zone);
 
             // Now validate the input with normalized name
-            if ($validationResult = $dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl)) {
-                $name = strtolower($record['name']); // powerdns only searches for lower case records
-
-            // Get the validated TTL and PRIO values
-                $validatedTtl = $dns->is_valid_rr_ttl($record['ttl'], $dns_ttl);
-                $validatedPrio = $dns->is_valid_rr_prio($record['prio'], $record['type']);
+            $validationResult = $dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl);
+            if ($validationResult !== false) {
+                // Extract validated values
+                $content = $validationResult['content'];
+                $name = strtolower($validationResult['name']); // powerdns only searches for lower case records
+                $validatedTtl = $validationResult['ttl'];
+                $validatedPrio = $validationResult['prio'];
 
                 $pdns_db_name = $this->config->get('database', 'pdns_name');
                 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
@@ -412,7 +413,7 @@ class DnsRecord
                 $query = "UPDATE $records_table
 				SET name=" . $this->db->quote($name, 'text') . ",
 				type=" . $this->db->quote($record['type'], 'text') . ",
-				content=" . $this->db->quote($record['content'], 'text') . ",
+				content=" . $this->db->quote($content, 'text') . ",
 				ttl=" . $this->db->quote($validatedTtl, 'integer') . ",
 				prio=" . $this->db->quote($validatedPrio, 'integer') . ",
 				disabled=" . $this->db->quote($record['disabled'], 'integer') . "
@@ -471,22 +472,15 @@ class DnsRecord
 
         // Now validate the input with normalized name
         $validationResult = $dns->validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl, $dns_hostmaster, $dns_ttl);
-        if (!$validationResult) {
+        if ($validationResult === false) {
             return false;
         }
 
-        // Get the validated TTL and PRIO values
-        $validatedTtl = $dns->is_valid_rr_ttl($ttl, $dns_ttl);
-        if ($validatedTtl === false) {
-            return false;
-        }
-
-        $validatedPrio = $dns->is_valid_rr_prio($prio, $type);
-        if ($validatedPrio === false) {
-            return false;
-        }
-
-        $name = strtolower($name); // powerdns only searches for lower case records
+        // Extract validated values
+        $content = $validationResult['content'];
+        $name = strtolower($validationResult['name']); // powerdns only searches for lower case records
+        $validatedTtl = $validationResult['ttl'];
+        $validatedPrio = $validationResult['prio'];
 
         // Check if a record with the same name, type, and content already exists
         if ($this->record_exists($zone_id, $name, $type, $content)) {

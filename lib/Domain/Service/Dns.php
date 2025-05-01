@@ -99,9 +99,9 @@ class Dns
      * @param mixed $prio Priority
      * @param mixed $ttl TTL
      *
-     * @return boolean true on success, false otherwise
+     * @return array|bool Returns array with validated data on success, false otherwise
      */
-    public function validate_input(int $rid, int $zid, string $type, mixed &$content, string $name, mixed $prio, mixed $ttl, $dns_hostmaster, $dns_ttl): bool
+    public function validate_input(int $rid, int $zid, string $type, mixed $content, string $name, mixed $prio, mixed $ttl, $dns_hostmaster, $dns_ttl): array|bool
     {
         $dnsRecord = new DnsRecord($this->db, $this->config);
         $zone = $dnsRecord->get_domain_name_by_id($zid);
@@ -121,9 +121,11 @@ class Dns
                 if (!self::is_valid_ipv4($content)) {
                     return false;
                 }
-                if (!$this->is_valid_hostname_fqdn($name, 1)) {
+                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
+                if ($hostnameResult === false) {
                     return false;
                 }
+                $name = $hostnameResult['hostname'];
                 break;
 
             // TODO: implement validation.
@@ -149,9 +151,11 @@ class Dns
                 if (!self::is_valid_ipv6($content)) {
                     return false;
                 }
-                if (!$this->is_valid_hostname_fqdn($name, 1)) {
+                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
+                if ($hostnameResult === false) {
                     return false;
                 }
+                $name = $hostnameResult['hostname'];
                 break;
 
             case RecordType::CNAME:
@@ -161,12 +165,17 @@ class Dns
                 if (!$this->is_valid_rr_cname_unique($name, $rid)) {
                     return false;
                 }
-                if (!$this->is_valid_hostname_fqdn($name, 1)) {
+                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
+                if ($hostnameResult === false) {
                     return false;
                 }
-                if (!$this->is_valid_hostname_fqdn($content, 0)) {
+                $name = $hostnameResult['hostname'];
+
+                $contentHostnameResult = $this->is_valid_hostname_fqdn($content, 0);
+                if ($contentHostnameResult === false) {
                     return false;
                 }
+                $content = $contentHostnameResult['hostname'];
                 if (!self::is_not_empty_cname_rr($name, $zone)) {
                     return false;
                 }
@@ -211,54 +220,73 @@ class Dns
                 if (!self::is_valid_rr_hinfo_content($content)) {
                     return false;
                 }
-                if (!$this->is_valid_hostname_fqdn($name, 1)) {
+                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
+                if ($hostnameResult === false) {
                     return false;
                 }
+                $name = $hostnameResult['hostname'];
                 break;
 
             case RecordType::LOC:
                 if (!self::is_valid_loc($content)) {
                     return false;
                 }
-                if (!$this->is_valid_hostname_fqdn($name, 1)) {
+                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
+                if ($hostnameResult === false) {
                     return false;
                 }
+                $name = $hostnameResult['hostname'];
                 break;
 
             case RecordType::NS:
             case RecordType::MX:
-                if (!$this->is_valid_hostname_fqdn($content, 0)) {
+                $contentHostnameResult = $this->is_valid_hostname_fqdn($content, 0);
+                if ($contentHostnameResult === false) {
                     return false;
                 }
-                if (!$this->is_valid_hostname_fqdn($name, 1)) {
+                $content = $contentHostnameResult['hostname'];
+
+                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
+                if ($hostnameResult === false) {
                     return false;
                 }
+                $name = $hostnameResult['hostname'];
+
                 if (!$this->is_valid_non_alias_target($content)) {
                     return false;
                 }
                 break;
 
             case RecordType::PTR:
-                if (!$this->is_valid_hostname_fqdn($content, 0)) {
+                $contentHostnameResult = $this->is_valid_hostname_fqdn($content, 0);
+                if ($contentHostnameResult === false) {
                     return false;
                 }
-                if (!$this->is_valid_hostname_fqdn($name, 1)) {
+                $content = $contentHostnameResult['hostname'];
+
+                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
+                if ($hostnameResult === false) {
                     return false;
                 }
+                $name = $hostnameResult['hostname'];
                 break;
 
             case RecordType::SOA:
                 if (!self::is_valid_rr_soa_name($name, $zone)) {
                     return false;
                 }
-                if (!$this->is_valid_hostname_fqdn($name, 1)) {
+                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
+                if ($hostnameResult === false) {
                     return false;
                 }
-                if (!$this->is_valid_rr_soa_content($content, $dns_hostmaster)) {
-                    $this->messageService->addSystemError(_('Your content field doesnt have a legit value.'));
+                $name = $hostnameResult['hostname'];
 
+                $soaResult = $this->is_valid_rr_soa_content($content, $dns_hostmaster);
+                if ($soaResult === false) {
+                    $this->messageService->addSystemError(_('Your content field doesnt have a legit value.'));
                     return false;
                 }
+                $content = $soaResult['content'];
                 break;
 
             case RecordType::SPF:
@@ -273,12 +301,17 @@ class Dns
                 break;
 
             case RecordType::SRV:
-                if (!$this->is_valid_rr_srv_name($name)) {
+                $srvNameResult = $this->is_valid_rr_srv_name($name);
+                if ($srvNameResult === false) {
                     return false;
                 }
-                if (!$this->is_valid_rr_srv_content($content, $name)) {
+                $name = $srvNameResult['name'];
+
+                $srvContentResult = $this->is_valid_rr_srv_content($content, $name);
+                if ($srvContentResult === false) {
                     return false;
                 }
+                $content = $srvContentResult['content'];
                 break;
 
             case RecordType::TXT:
@@ -311,7 +344,12 @@ class Dns
             return false;
         }
 
-        return true;
+        return [
+            'content' => $content,
+            'name' => $name,
+            'prio' => $validatedPrio,
+            'ttl' => $validatedTtl
+        ];
     }
 
     /** Test if hostname is valid FQDN
@@ -319,27 +357,29 @@ class Dns
      * @param mixed $hostname Hostname string
      * @param string $wildcard Hostname includes wildcard '*'
      *
-     * @return boolean true if valid, false otherwise
+     * @return array|bool Returns array with normalized hostname if valid, false otherwise
      */
-    public function is_valid_hostname_fqdn(mixed &$hostname, string $wildcard): bool
+    public function is_valid_hostname_fqdn(mixed $hostname, string $wildcard): array|bool
     {
         $dns_top_level_tld_check = $this->config->get('dns', 'top_level_tld_check');
         $dns_strict_tld_check = $this->config->get('dns', 'strict_tld_check');
 
+        $normalizedHostname = $hostname;
+
         // Special case for root zone (@) or @.domain format
-        if ($hostname == "." || $hostname == "@" || str_starts_with($hostname, "@.")) {
-            return true;
+        if ($normalizedHostname == "." || $normalizedHostname == "@" || str_starts_with($normalizedHostname, "@.")) {
+            return ['hostname' => $normalizedHostname];
         }
 
-        $hostname = preg_replace("/\.$/", "", $hostname);
+        $normalizedHostname = preg_replace("/\.$/", "", $normalizedHostname);
 
         # The full domain name may not exceed a total length of 253 characters.
-        if (strlen($hostname) > 253) {
+        if (strlen($normalizedHostname) > 253) {
             $this->messageService->addSystemError(_('The hostname is too long.'));
             return false;
         }
 
-        $hostname_labels = explode('.', $hostname);
+        $hostname_labels = explode('.', $normalizedHostname);
         $label_count = count($hostname_labels);
 
         if ($dns_top_level_tld_check && $label_count == 1) {
@@ -403,7 +443,7 @@ class Dns
             return false;
         }
 
-        return true;
+        return ['hostname' => $normalizedHostname];
     }
 
     /** Test if IPv4 address is valid
@@ -706,10 +746,11 @@ class Dns
     /** Check if SOA content is valid
      *
      * @param mixed $content SOA record content
+     * @param string $dns_hostmaster Hostmaster email address
      *
-     * @return boolean true if valid, false otherwise
+     * @return array|bool Returns array with formatted content if valid, false otherwise
      */
-    public function is_valid_rr_soa_content(mixed &$content, $dns_hostmaster): bool
+    public function is_valid_rr_soa_content(mixed $content, $dns_hostmaster): array|bool
     {
         $fields = preg_split("/\s+/", trim($content));
         $field_count = count($fields);
@@ -763,8 +804,7 @@ class Dns
                 }
             }
         }
-        $content = $final_soa;
-        return true;
+        return ['content' => $final_soa];
     }
 
     /** Check if SOA name is valid
@@ -820,9 +860,9 @@ class Dns
      *
      * @param mixed $name SRV name
      *
-     * @return boolean true if valid, false otherwise
+     * @return array|bool Returns array with formatted name if valid, false otherwise
      */
-    public function is_valid_rr_srv_name(mixed &$name): bool
+    public function is_valid_rr_srv_name(mixed $name): array|bool
     {
         if (strlen($name) > 255) {
             $this->messageService->addSystemError(_('The hostname is too long.'));
@@ -849,17 +889,17 @@ class Dns
             $this->messageService->addSystemError(_('Invalid FQDN value in name field of SRV record.'));
             return false;
         }
-        $name = join('.', $fields);
-        return true;
+        return ['name' => join('.', $fields)];
     }
 
     /** Check if SRV content is valid
      *
      * @param mixed $content SRV content
+     * @param string $name SRV name
      *
-     * @return boolean true if valid, false otherwise
+     * @return array|bool Returns array with formatted content if valid, false otherwise
      */
-    public function is_valid_rr_srv_content(mixed &$content, $name): bool
+    public function is_valid_rr_srv_content(mixed $content, $name): array|bool
     {
         $fields = preg_split("/\s+/", trim($content));
 
@@ -886,8 +926,7 @@ class Dns
             $this->messageService->addSystemError(_('Invalid SRV target.'));
             return false;
         }
-        $content = join(' ', $fields);
-        return true;
+        return ['content' => join(' ', $fields)];
     }
 
     /** Check if TTL is valid and within range
