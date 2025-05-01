@@ -66,21 +66,53 @@ class HostnameValidationTest extends BaseDnsTest
      */
     public function testEndsWith()
     {
-        // Test that Dns.endsWith delegates to HostnameValidator.endsWith
-        // by using actual implementation and comparing results
-
+        // Test cases for endsWith method
         $cases = [
+            // Basic matching
             ['needle' => 'com', 'haystack' => 'example.com', 'expected' => true],
             ['needle' => 'example.com', 'haystack' => 'example.com', 'expected' => true],
             ['needle' => '', 'haystack' => 'example.com', 'expected' => true],
             ['needle' => 'test', 'haystack' => 'example.com', 'expected' => false],
             ['needle' => 'com.example', 'haystack' => 'example.com', 'expected' => false],
+
+            // Case sensitivity
+            ['needle' => 'COM', 'haystack' => 'example.com', 'expected' => false],
+            ['needle' => 'Com', 'haystack' => 'example.com', 'expected' => false],
+
+            // Empty strings
+            ['needle' => '', 'haystack' => '', 'expected' => true],
+            ['needle' => 'com', 'haystack' => '', 'expected' => false],
+
+            // Special characters
+            ['needle' => '@#$', 'haystack' => 'test@#$', 'expected' => true],
+            ['needle' => '123', 'haystack' => 'domain123', 'expected' => true],
+            ['needle' => '.', 'haystack' => 'example.', 'expected' => true],
+
+            // Multi-byte characters
+            ['needle' => 'ñ', 'haystack' => 'español.españ', 'expected' => true],
+            ['needle' => '中国', 'haystack' => 'example.中国', 'expected' => true],
+            ['needle' => 'россия', 'haystack' => 'пример.россия', 'expected' => true],
+
+            // DNS domain scenarios
+            ['needle' => 'example.com', 'haystack' => 'subdomain.example.com', 'expected' => true],
+            ['needle' => 'co.uk', 'haystack' => 'example.co.uk', 'expected' => true],
+            ['needle' => 'example.com.', 'haystack' => 'subdomain.example.com.', 'expected' => true],
+            ['needle' => 'example.org', 'haystack' => 'example.com', 'expected' => false],
+
+            // Similar endings
+            ['needle' => 'comx', 'haystack' => 'example.com', 'expected' => false],
+            ['needle' => 'xcom', 'haystack' => 'example.com', 'expected' => false],
+            ['needle' => 'co', 'haystack' => 'example.com', 'expected' => false],
+
+            // Length edge cases
+            ['needle' => 'longer.example.com', 'haystack' => 'example.com', 'expected' => false],
+            ['needle' => 'abcdefghijklmnopqrstuvwxyz', 'haystack' => 'xyz', 'expected' => false]
         ];
 
         foreach ($cases as $case) {
             $this->assertEquals(
                 $case['expected'],
-                Dns::endsWith($case['needle'], $case['haystack']),
+                HostnameValidator::endsWith($case['needle'], $case['haystack']),
                 "Failed assertion for needle: {$case['needle']}, haystack: {$case['haystack']}"
             );
         }

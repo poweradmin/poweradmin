@@ -69,20 +69,6 @@ class Dns
         $this->csyncRecordValidator = new CSYNCRecordValidator($config);
     }
 
-    /** Matches end of string
-     *
-     * Matches end of string (haystack) against another string (needle)
-     *
-     * @param string $needle
-     * @param string $haystack
-     *
-     * @return true if ends with specified string, otherwise false
-     */
-    public static function endsWith(string $needle, string $haystack): bool
-    {
-        return HostnameValidator::endsWith($needle, $haystack);
-    }
-
     /**
      * Normalize a DNS record name by ensuring it is fully qualified with the zone name
      *
