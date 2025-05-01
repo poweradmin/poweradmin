@@ -23,6 +23,8 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
+use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
@@ -46,6 +48,7 @@ class Dns
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
     private TTLValidator $ttlValidator;
+    private ARecordValidator $aRecordValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -55,6 +58,7 @@ class Dns
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ipAddressValidator = new IPAddressValidator();
         $this->ttlValidator = new TTLValidator();
+        $this->aRecordValidator = new ARecordValidator($config);
     }
 
     /** Matches end of string
@@ -113,14 +117,16 @@ class Dns
 
         switch ($type) {
             case RecordType::A:
-                if (!self::is_valid_ipv4($content)) {
+                $validationResult = $this->aRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
+                if ($validationResult === false) {
                     return false;
                 }
-                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
-                if ($hostnameResult === false) {
-                    return false;
-                }
-                $name = $hostnameResult['hostname'];
+
+                // Update variables with validated data
+                $content = $validationResult['content'];
+                $name = $validationResult['name'];
+                $prio = $validationResult['prio'];
+                $ttl = $validationResult['ttl'];
                 break;
 
             // TODO: implement validation.
@@ -328,15 +334,22 @@ class Dns
                 return false;
         }
 
-        $validatedPrio = self::is_valid_rr_prio($prio, $type);
-        if ($validatedPrio === false) {
-            $this->messageService->addSystemError(_('Invalid value for prio field.'));
-            return false;
-        }
+        // Skip validation if it was already handled by a specific validator (like ARecordValidator)
+        if ($type !== RecordType::A) {
+            $validatedPrio = self::is_valid_rr_prio($prio, $type);
+            if ($validatedPrio === false) {
+                $this->messageService->addSystemError(_('Invalid value for prio field.'));
+                return false;
+            }
 
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $dns_ttl);
-        if ($validatedTtl === false) {
-            return false;
+            $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $dns_ttl);
+            if ($validatedTtl === false) {
+                return false;
+            }
+        } else {
+            // We've already validated these in the A record validator
+            $validatedPrio = $prio;
+            $validatedTtl = $ttl;
         }
 
         return [
