@@ -36,20 +36,21 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneSlaveController extends BaseController
 {
-
     private LegacyLogger $logger;
+    private IPAddressValidator $ipAddressValidator;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
-
         $this->logger = new LegacyLogger($this->db);
+        $this->ipAddressValidator = new IPAddressValidator();
     }
 
     public function run(): void
@@ -103,7 +104,7 @@ class AddZoneSlaveController extends BaseController
         } elseif ($dnsRecord->domain_exists($zone) || $dnsRecord->record_name_exists($zone)) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif (!Dns::are_multiple_valid_ips($master)) {
+        } elseif (!$this->ipAddressValidator->areMultipleValidIPs($master)) {
             $this->setMessage('add_zone_slave', 'error', _('This is not a valid IPv4 or IPv6 address.'));
             $this->showForm();
         } else {

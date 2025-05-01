@@ -26,6 +26,7 @@ use Exception;
 use PDO;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
@@ -50,6 +51,7 @@ class DnsRecord
     private ConfigurationManager $config;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
+    private IPAddressValidator $ipAddressValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -57,6 +59,7 @@ class DnsRecord
         $this->config = $config;
         $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
+        $this->ipAddressValidator = new IPAddressValidator();
     }
 
     /** Check if Zone ID exists
@@ -536,7 +539,7 @@ class DnsRecord
      */
     public function add_supermaster(string $master_ip, string $ns_name, string $account): bool
     {
-        if (!Dns::is_valid_ipv4($master_ip) && !Dns::is_valid_ipv6($master_ip)) {
+        if (!$this->ipAddressValidator->isValidIPv4($master_ip) && !$this->ipAddressValidator->isValidIPv6($master_ip)) {
             $this->messageService->addSystemError(_('This is not a valid IPv4 or IPv6 address.'));
 
             return false;
@@ -582,7 +585,7 @@ class DnsRecord
      */
     public function delete_supermaster(string $master_ip, string $ns_name): bool
     {
-        if (Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip) || $this->hostnameValidator->isValid($ns_name)) {
+        if ($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip) || $this->hostnameValidator->isValid($ns_name)) {
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
 
@@ -605,7 +608,7 @@ class DnsRecord
      */
     public function get_supermaster_info_from_ip(string $master_ip): array
     {
-        if (Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip)) {
+        if ($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip)) {
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
 
@@ -1187,7 +1190,7 @@ class DnsRecord
      */
     public function supermaster_exists(string $master_ip): bool
     {
-        if (Dns::is_valid_ipv4($master_ip, false) || Dns::is_valid_ipv6($master_ip)) {
+        if ($this->ipAddressValidator->isValidIPv4($master_ip, false) || $this->ipAddressValidator->isValidIPv6($master_ip)) {
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
 
@@ -1208,7 +1211,7 @@ class DnsRecord
      */
     public function supermaster_ip_name_exists(string $master_ip, string $ns_name): bool
     {
-        if ((Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip)) && $this->hostnameValidator->isValid($ns_name)) {
+        if (($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip)) && $this->hostnameValidator->isValid($ns_name)) {
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
 
@@ -1547,7 +1550,7 @@ class DnsRecord
      */
     public function change_zone_slave_master(int $zone_id, string $ip_slave_master)
     {
-        if (Dns::are_multiple_valid_ips($ip_slave_master)) {
+        if ($this->ipAddressValidator->areMultipleValidIPs($ip_slave_master)) {
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 

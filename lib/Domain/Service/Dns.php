@@ -360,44 +360,12 @@ class Dns
         return $this->hostnameValidator->isValidHostnameFqdn($hostname, $wildcard);
     }
 
-    /** Test if IPv4 address is valid
-     *
-     * @param string $ipv4 IPv4 address string
-     * @param boolean $answer print error if true
-     * [default=true]
-     *
-     * @return boolean true if valid, false otherwise
-     */
-    public static function is_valid_ipv4(string $ipv4, bool $answer = true): bool
-    {
-        $validator = new IPAddressValidator();
-        return $validator->isValidIPv4($ipv4, $answer);
-    }
-
-    /** Test if IPv6 address is valid
-     *
-     * @param string $ipv6 IPv6 address string
-     * @param boolean $answer print error if true
-     * [default=false]
-     *
-     * @return boolean true if valid, false otherwise
-     */
-    public static function is_valid_ipv6(string $ipv6, bool $answer = false): bool
-    {
-        $validator = new IPAddressValidator();
-        return $validator->isValidIPv6($ipv6, $answer);
-    }
-
-    /** Test if multiple IP addresses are valid
-     *
-     *  Takes a string of comma separated IP addresses and tests validity
-     *
-     * @param string $ips Comma separated IP addresses
-     *
-     * @return boolean true if valid, false otherwise
+    /**
+     * @deprecated Use IPAddressValidator instead
      */
     public static function are_multiple_valid_ips(string $ips): bool
     {
+        trigger_error('Use IPAddressValidator::areMultipleValidIPs() instead', E_USER_DEPRECATED);
         $validator = new IPAddressValidator();
         return $validator->areMultipleValidIPs($ips);
     }

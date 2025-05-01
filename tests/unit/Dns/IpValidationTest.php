@@ -11,35 +11,39 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
  */
 class IpValidationTest extends BaseDnsTest
 {
-    /**
-     * Test that Dns.is_valid_ipv4 works as expected
-     */
-    public function testDnsIsValidIPv4()
+    private IPAddressValidator $validator;
+
+    protected function setUp(): void
     {
-        // Since we can't easily mock the static methods,
-        // we'll test that the public API still functions as expected
-        $this->assertTrue(Dns::is_valid_ipv4("192.168.1.1", false));
-        $this->assertFalse(Dns::is_valid_ipv4("not_an_ip", false));
+        parent::setUp();
+        $this->validator = new IPAddressValidator();
     }
 
     /**
-     * Test that Dns.is_valid_ipv6 works as expected
+     * Test IPv4 validation
      */
-    public function testDnsIsValidIPv6()
+    public function testValidateIPv4()
     {
-        // Test public API
-        $this->assertTrue(Dns::is_valid_ipv6("2001:db8::1"));
-        $this->assertFalse(Dns::is_valid_ipv6("not_an_ipv6"));
+        $this->assertTrue($this->validator->isValidIPv4("192.168.1.1", false));
+        $this->assertFalse($this->validator->isValidIPv4("not_an_ip", false));
     }
 
     /**
-     * Test that Dns.are_multiple_valid_ips works as expected
+     * Test IPv6 validation
      */
-    public function testDnsAreMultipleValidIps()
+    public function testValidateIPv6()
     {
-        // Test public API
-        $this->assertTrue(Dns::are_multiple_valid_ips("192.168.1.1, 10.0.0.1"));
-        $this->assertFalse(Dns::are_multiple_valid_ips("192.168.1.1, invalid_ip"));
+        $this->assertTrue($this->validator->isValidIPv6("2001:db8::1"));
+        $this->assertFalse($this->validator->isValidIPv6("not_an_ipv6"));
+    }
+
+    /**
+     * Test multiple IP validation
+     */
+    public function testValidateMultipleIPs()
+    {
+        $this->assertTrue($this->validator->areMultipleValidIPs("192.168.1.1, 10.0.0.1"));
+        $this->assertFalse($this->validator->areMultipleValidIPs("192.168.1.1, invalid_ip"));
     }
 
     /**
