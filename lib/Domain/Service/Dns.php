@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\StringValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\PDOLayer;
@@ -61,6 +62,7 @@ class Dns
     private LOCRecordValidator $locRecordValidator;
     private SPFRecordValidator $spfRecordValidator;
     private SRVRecordValidator $srvRecordValidator;
+    private TXTRecordValidator $txtRecordValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -77,6 +79,7 @@ class Dns
         $this->locRecordValidator = new LOCRecordValidator($config);
         $this->spfRecordValidator = new SPFRecordValidator($config);
         $this->srvRecordValidator = new SRVRecordValidator($config);
+        $this->txtRecordValidator = new TXTRecordValidator($config);
     }
 
     /** Validate DNS record input
@@ -316,16 +319,16 @@ class Dns
                 break;
 
             case RecordType::TXT:
-                if (!StringValidator::isValidPrintable($name)) {
-                    return false;
-                }
-                if (!StringValidator::isValidPrintable($content) || StringValidator::hasHtmlTags($content)) {
-                    return false;
-                }
-                if (!StringValidator::isProperlyQuoted($content)) {
+                $validationResult = $this->txtRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
+                if ($validationResult === false) {
                     return false;
                 }
 
+                // Update variables with validated data
+                $content = $validationResult['content'];
+                $name = $validationResult['name'];
+                $prio = $validationResult['prio'];
+                $ttl = $validationResult['ttl'];
                 break;
 
             default:
