@@ -37,10 +37,16 @@ class HostnameValidationTest extends BaseDnsTest
     }
 
     /**
-     * Test that normalize_record_name delegates to HostnameValidator.normalizeRecordName
+     * Test that normalize_record_name is marked as deprecated and delegates to HostnameValidator.normalizeRecordName
      */
     public function testNormalizeRecordName()
     {
+        // Verify the method is marked as deprecated
+        $reflection = new \ReflectionMethod(Dns::class, 'normalize_record_name');
+        $docComment = $reflection->getDocComment();
+        $this->assertStringContainsString('@deprecated', $docComment);
+        $this->assertStringContainsString('Use HostnameValidator::normalizeRecordName() instead', $docComment);
+
         // Configure a mock HostnameValidator to verify delegation
         $mockHostnameValidator = $this->createMock(HostnameValidator::class);
 

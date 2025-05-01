@@ -74,6 +74,7 @@ class Dns
      * @param string $zone Zone name
      *
      * @return string Normalized name
+     * @deprecated Use HostnameValidator::normalizeRecordName() instead
      */
     public function normalize_record_name(string $name, string $zone): string
     {

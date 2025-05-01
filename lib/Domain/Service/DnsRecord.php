@@ -25,11 +25,10 @@ namespace Poweradmin\Domain\Service;
 use Exception;
 use PDO;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
@@ -47,17 +46,17 @@ use Poweradmin\Infrastructure\Utility\SortHelper;
  */
 class DnsRecord
 {
-    private ConfigurationManager $config;
     private PDOLayer $db;
-    private DnsFormatter $dnsFormatter;
+    private ConfigurationManager $config;
     private MessageService $messageService;
+    private HostnameValidator $hostnameValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;
-        $this->dnsFormatter = new DnsFormatter($config);
         $this->messageService = new MessageService();
+        $this->hostnameValidator = new HostnameValidator($config);
     }
 
     /** Check if Zone ID exists
@@ -396,7 +395,7 @@ class DnsRecord
         } else {
             // Normalize the name BEFORE calling validate_input
             $zone = $this->get_domain_name_by_id($record['zid']);
-            $record['name'] = $dns->normalize_record_name($record['name'], $zone);
+            $record['name'] = $this->hostnameValidator->normalizeRecordName($record['name'], $zone);
 
             // Now validate the input with normalized name
             $validationResult = $dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl);
@@ -468,7 +467,7 @@ class DnsRecord
 
         // Normalize the name BEFORE calling validate_input
         $zone = $this->get_domain_name_by_id($zone_id);
-        $name = $dns->normalize_record_name($name, $zone);
+        $name = $this->hostnameValidator->normalizeRecordName($name, $zone);
 
         // Now validate the input with normalized name
         $validationResult = $dns->validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl, $dns_hostmaster, $dns_ttl);
@@ -543,8 +542,7 @@ class DnsRecord
             return false;
         }
 
-        $dns = new Dns($this->db, $this->config);
-        if (!$dns->is_valid_hostname_fqdn($ns_name, 0)) {
+        if (!$this->hostnameValidator->isValid($ns_name)) {
             $this->messageService->addSystemError(_('Invalid hostname.'));
 
             return false;
@@ -584,8 +582,7 @@ class DnsRecord
      */
     public function delete_supermaster(string $master_ip, string $ns_name): bool
     {
-        $dns = new Dns($this->db, $this->config);
-        if (Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip) || $dns->is_valid_hostname_fqdn($ns_name, 0)) {
+        if (Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip) || $this->hostnameValidator->isValid($ns_name)) {
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
 
@@ -1211,9 +1208,7 @@ class DnsRecord
      */
     public function supermaster_ip_name_exists(string $master_ip, string $ns_name): bool
     {
-        $dns = new Dns($this->db, $this->config);
-
-        if ((Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip)) && $dns->is_valid_hostname_fqdn($ns_name, 0)) {
+        if ((Dns::is_valid_ipv4($master_ip) || Dns::is_valid_ipv6($master_ip)) && $this->hostnameValidator->isValid($ns_name)) {
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
 
