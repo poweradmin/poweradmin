@@ -3,9 +3,9 @@
 namespace unit\Dns;
 
 use TestHelpers\BaseDnsTest;
-use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HINFORecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
@@ -156,11 +156,23 @@ class RecordTypesTest extends BaseDnsTest
 
     public function testIsValidRrHinfoContent()
     {
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $validator = new HINFORecordValidator($configMock);
+
         // Valid HINFO content formats
-        $this->assertTrue(Dns::is_valid_rr_hinfo_content('PC Intel'));
-        $this->assertTrue(Dns::is_valid_rr_hinfo_content('"PC with spaces" Linux'));
-        $this->assertTrue(Dns::is_valid_rr_hinfo_content('"Windows Server" "Ubuntu Linux"'));
-        $this->assertTrue(Dns::is_valid_rr_hinfo_content('Intel-PC FreeBSD'));
+        $this->assertTrue($validator->validate('PC Intel', 'host.example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('"PC with spaces" Linux', 'host.example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('"Windows Server" "Ubuntu Linux"', 'host.example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('Intel-PC FreeBSD', 'host.example.com', 0, 3600, 3600) !== false);
+
+        // Invalid HINFO content formats
+        $this->assertFalse($validator->validate('PC', 'host.example.com', 0, 3600, 3600)); // Missing second field
+        $this->assertFalse($validator->validate('PC Linux Server', 'host.example.com', 0, 3600, 3600)); // Too many fields
+        $this->assertFalse($validator->validate('"PC" "Linux" "Extra"', 'host.example.com', 0, 3600, 3600)); // Too many fields
+        $this->assertFalse($validator->validate('', 'host.example.com', 0, 3600, 3600)); // Empty content
+
+        // Invalid hostname test
+        $this->assertFalse($validator->validate('PC Intel', 'invalid..hostname', 0, 3600, 3600));
     }
 
     public function testIsValidSRV()
@@ -193,5 +205,37 @@ class RecordTypesTest extends BaseDnsTest
         // Wrong number of fields
         $this->assertFalse($validator->validate('0 5 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Missing port
         $this->assertFalse($validator->validate('0 5 80 web.example.com extra', '_http._tcp.example.com', 0, 3600, 3600)); // Extra field
+    }
+
+    public function testIsValidHINFO()
+    {
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $validator = new HINFORecordValidator($configMock);
+
+        // Valid HINFO records
+        $this->assertTrue($validator->validate('PC Intel', 'host.example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('"PC with spaces" Linux', 'host.example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('"Windows Server" "Ubuntu Linux"', 'host.example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('Intel-PC FreeBSD', 'host.example.com', 0, 3600, 3600) !== false);
+
+        // Invalid HINFO records
+        // Missing second field
+        $this->assertFalse($validator->validate('PC', 'host.example.com', 0, 3600, 3600));
+
+        // Empty fields
+        $this->assertFalse($validator->validate('" " Linux', 'host.example.com', 0, 3600, 3600));
+        $this->assertFalse($validator->validate('PC " "', 'host.example.com', 0, 3600, 3600));
+
+        // Invalid quotes
+        $this->assertFalse($validator->validate('"PC Linux', 'host.example.com', 0, 3600, 3600));
+        $this->assertFalse($validator->validate('PC" Linux', 'host.example.com', 0, 3600, 3600));
+
+        // Too long fields
+        $longField = str_repeat('a', 1001);
+        $this->assertFalse($validator->validate("$longField Linux", 'host.example.com', 0, 3600, 3600));
+        $this->assertFalse($validator->validate("PC $longField", 'host.example.com', 0, 3600, 3600));
+
+        // Invalid hostname
+        $this->assertFalse($validator->validate('PC Linux', 'invalid..hostname', 0, 3600, 3600));
     }
 }

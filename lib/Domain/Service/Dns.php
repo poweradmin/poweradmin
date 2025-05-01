@@ -28,11 +28,11 @@ use Poweradmin\Domain\Service\DnsValidation\AAAARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HINFORecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\StringValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -59,6 +59,7 @@ class Dns
     private CNAMERecordValidator $cnameRecordValidator;
     private CSYNCRecordValidator $csyncRecordValidator;
     private DSRecordValidator $dsRecordValidator;
+    private HINFORecordValidator $hinfoRecordValidator;
     private LOCRecordValidator $locRecordValidator;
     private SPFRecordValidator $spfRecordValidator;
     private SRVRecordValidator $srvRecordValidator;
@@ -76,6 +77,7 @@ class Dns
         $this->cnameRecordValidator = new CNAMERecordValidator($config, $db);
         $this->csyncRecordValidator = new CSYNCRecordValidator($config);
         $this->dsRecordValidator = new DSRecordValidator($config);
+        $this->hinfoRecordValidator = new HINFORecordValidator($config);
         $this->locRecordValidator = new LOCRecordValidator($config);
         $this->spfRecordValidator = new SPFRecordValidator($config);
         $this->srvRecordValidator = new SRVRecordValidator($config);
@@ -218,14 +220,16 @@ class Dns
                 break;
 
             case RecordType::HINFO:
-                if (!self::is_valid_rr_hinfo_content($content)) {
+                $validationResult = $this->hinfoRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
+                if ($validationResult === false) {
                     return false;
                 }
-                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
-                if ($hostnameResult === false) {
-                    return false;
-                }
-                $name = $hostnameResult['hostname'];
+
+                // Update variables with validated data
+                $content = $validationResult['content'];
+                $name = $validationResult['name'];
+                $prio = $validationResult['prio'];
+                $ttl = $validationResult['ttl'];
                 break;
 
             case RecordType::LOC:
@@ -495,31 +499,6 @@ class Dns
             $this->messageService->addSystemError(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
             return false;
         }
-        return true;
-    }
-
-    /** Check if HINFO content is valid
-     *
-     * @param string $content HINFO record content
-     *
-     * @return boolean true if valid, false otherwise
-     */
-    public static function is_valid_rr_hinfo_content(string $content): bool
-    {
-
-        if ($content[0] == "\"") {
-            $fields = preg_split('/(?<=") /', $content, 2);
-        } else {
-            $fields = explode(' ', $content, 2);
-        }
-
-        for ($i = 0; ($i < 2); $i++) {
-            if (!preg_match("/^([^\s]{1,1000})|\"([^\"]{1,998}\")$/i", $fields[$i])) {
-                (new MessageService())->addSystemError(_('Invalid value for content field of HINFO record.'));
-                return false;
-            }
-        }
-
         return true;
     }
 
