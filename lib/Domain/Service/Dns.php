@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\DnsValidation\StringValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -304,13 +304,13 @@ class Dns
                 break;
 
             case RecordType::TXT:
-                if (!self::is_valid_printable($name)) {
+                if (!StringValidator::isValidPrintable($name)) {
                     return false;
                 }
-                if (!self::is_valid_printable($content) || self::has_html_tags($content)) {
+                if (!StringValidator::isValidPrintable($content) || StringValidator::hasHtmlTags($content)) {
                     return false;
                 }
-                if (!self::is_properly_quoted($content)) {
+                if (!StringValidator::isProperlyQuoted($content)) {
                     return false;
                 }
 
@@ -365,75 +365,44 @@ class Dns
      * @param string $string string
      *
      * @return boolean true if valid, false otherwise
+     * @deprecated Use StringValidator::isValidPrintable() instead
      */
     public static function is_valid_printable(string $string): bool
     {
-        if (!preg_match('/^[[:print:]]+$/', trim($string))) {
-            (new MessageService())->addSystemError(_('Invalid characters have been used in this record.'));
-            return false;
-        }
-        return true;
+        return StringValidator::isValidPrintable($string);
     }
 
     /** Test if string has html opening and closing tags
      *
      * @param string $string Input string
      * @return bool true if HTML tags are found, false otherwise
+     * @deprecated Use StringValidator::hasHtmlTags() instead
      */
     public static function has_html_tags(string $string): bool
     {
-        // Method should return true if the string contains HTML tags, false otherwise
-        $contains_tags = preg_match('/[<>]/', trim($string));
-        if ($contains_tags) {
-            (new MessageService())->addSystemError(_('You cannot use html tags for this type of record.'));
-        }
-        return $contains_tags;
+        return StringValidator::hasHtmlTags($string);
     }
 
     /** Verify that the content is properly quoted
      *
      * @param string $content
      * @return bool
+     * @deprecated Use StringValidator::isProperlyQuoted() instead
      */
     public static function is_properly_quoted(string $content): bool
     {
-        $startsWithQuote = isset($content[0]) && $content[0] === '"';
-        $endsWithQuote = isset($content[strlen($content) - 1]) && $content[strlen($content) - 1] === '"';
-
-        if ($startsWithQuote && $endsWithQuote) {
-            $subContent = substr($content, 1, -1);
-        } else {
-            $subContent = $content;
-        }
-
-        $pattern = '/(?<!\\\\)"/';
-
-        if (preg_match($pattern, $subContent)) {
-            (new MessageService())->addSystemError(_('Backslashes must precede all quotes (") in TXT content'));
-            return false;
-        }
-
-        return true;
+        return StringValidator::isProperlyQuoted($content);
     }
 
     /** Verify that the string is enclosed in quotes
      *
      * @param string $string Input string
      * @return bool true if valid, false otherwise
+     * @deprecated Use StringValidator::hasQuotesAround() instead
      */
     public static function has_quotes_around(string $string): bool
     {
-        // Ignore empty line
-        if (strlen($string) === 0) {
-            return true;
-        }
-
-        if (!str_starts_with($string, '"') || !str_ends_with($string, '"')) {
-            (new MessageService())->addSystemError(_('Add quotes around TXT record content.'));
-            return false;
-        }
-
-        return true;
+        return StringValidator::hasQuotesAround($string);
     }
 
     /** Test if CNAME is valid
@@ -507,8 +476,8 @@ class Dns
         // Check if there are any records with this name
         $query = "SELECT id FROM $records_table
                         WHERE name = " . $this->db->quote($name, 'text') .
-                        " AND TYPE != 'CNAME'" .
-                        $where;
+                    " AND TYPE != 'CNAME'" .
+                    $where;
 
         $response = $this->db->queryOne($query);
         if ($response) {
