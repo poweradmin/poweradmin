@@ -361,17 +361,6 @@ class Dns
     }
 
 
-    /** Test if string has html opening and closing tags
-     *
-     * @param string $string Input string
-     * @return bool true if HTML tags are found, false otherwise
-     * @deprecated Use StringValidator::hasHtmlTags() instead
-     */
-    public static function has_html_tags(string $string): bool
-    {
-        return StringValidator::hasHtmlTags($string);
-    }
-
     /** Verify that the content is properly quoted
      *
      * @param string $content

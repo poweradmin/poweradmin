@@ -26,14 +26,14 @@ class StringValidationTest extends BaseDnsTest
     public function testHasHtmlTags()
     {
         // Strings with HTML tags (should return true, indicating invalid for DNS records)
-        $this->assertTrue(Dns::has_html_tags("<script>alert('XSS');</script>"));
-        $this->assertTrue(Dns::has_html_tags("<b>Bold text</b>"));
-        $this->assertTrue(Dns::has_html_tags("Text with <br> tag"));
-        $this->assertTrue(Dns::has_html_tags("Text with <> brackets"));
+        $this->assertTrue(StringValidator::hasHtmlTags("<script>alert('XSS');</script>"));
+        $this->assertTrue(StringValidator::hasHtmlTags("<b>Bold text</b>"));
+        $this->assertTrue(StringValidator::hasHtmlTags("Text with <br> tag"));
+        $this->assertTrue(StringValidator::hasHtmlTags("Text with <> brackets"));
 
         // Strings without HTML tags (should return false, indicating valid for DNS records)
-        $this->assertFalse(Dns::has_html_tags("Plain text"));
-        $this->assertFalse(Dns::has_html_tags("Text with symbols !@#$%^&*()_+=-[]{};:'\",./?|`~"));
+        $this->assertFalse(StringValidator::hasHtmlTags("Plain text"));
+        $this->assertFalse(StringValidator::hasHtmlTags("Text with symbols !@#$%^&*()_+=-[]{};:'\",./?|`~"));
     }
 
     public function testHasQuotesAround()
