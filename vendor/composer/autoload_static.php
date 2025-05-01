@@ -27,6 +27,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'T' => 
         array (
             'Twig\\' => 5,
+            'TestHelpers\\' => 12,
         ),
         'S' => 
         array (
@@ -75,6 +76,10 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Twig\\' => 
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
+        ),
+        'TestHelpers\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/tests/helpers',
         ),
         'Symfony\\Polyfill\\Php83\\' => 
         array (
@@ -1478,6 +1483,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Symfony\\Polyfill\\Intl\\Normalizer\\Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Normalizer.php',
         'Symfony\\Polyfill\\Mbstring\\Mbstring' => __DIR__ . '/..' . '/symfony/polyfill-mbstring/Mbstring.php',
         'Symfony\\Polyfill\\Php83\\Php83' => __DIR__ . '/..' . '/symfony/polyfill-php83/Php83.php',
+        'TestHelpers\\BaseDnsTest' => __DIR__ . '/../..' . '/tests/helpers/BaseDnsTest.php',
         'Twig\\AbstractTwigCallable' => __DIR__ . '/..' . '/twig/twig/src/AbstractTwigCallable.php',
         'Twig\\Attribute\\FirstClassTwigCallableReady' => __DIR__ . '/..' . '/twig/twig/src/Attribute/FirstClassTwigCallableReady.php',
         'Twig\\Attribute\\YieldReady' => __DIR__ . '/..' . '/twig/twig/src/Attribute/YieldReady.php',

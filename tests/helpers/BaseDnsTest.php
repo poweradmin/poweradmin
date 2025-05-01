@@ -1,6 +1,6 @@
 <?php
 
-namespace unit\Dns;
+namespace TestHelpers;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns;

@@ -2,6 +2,8 @@
 
 namespace unit\Dns;
 
+use TestHelpers\BaseDnsTest;
+
 /**
  * Tests for CNAME record validation
  */

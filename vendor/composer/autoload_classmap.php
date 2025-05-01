@@ -1289,6 +1289,7 @@ return array(
     'Symfony\\Polyfill\\Intl\\Normalizer\\Normalizer' => $vendorDir . '/symfony/polyfill-intl-normalizer/Normalizer.php',
     'Symfony\\Polyfill\\Mbstring\\Mbstring' => $vendorDir . '/symfony/polyfill-mbstring/Mbstring.php',
     'Symfony\\Polyfill\\Php83\\Php83' => $vendorDir . '/symfony/polyfill-php83/Php83.php',
+    'TestHelpers\\BaseDnsTest' => $baseDir . '/tests/helpers/BaseDnsTest.php',
     'Twig\\AbstractTwigCallable' => $vendorDir . '/twig/twig/src/AbstractTwigCallable.php',
     'Twig\\Attribute\\FirstClassTwigCallableReady' => $vendorDir . '/twig/twig/src/Attribute/FirstClassTwigCallableReady.php',
     'Twig\\Attribute\\YieldReady' => $vendorDir . '/twig/twig/src/Attribute/YieldReady.php',

@@ -2,6 +2,7 @@
 
 namespace unit\Dns;
 
+use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
