@@ -37,37 +37,6 @@ class HostnameValidationTest extends BaseDnsTest
     }
 
     /**
-     * Test that normalize_record_name is marked as deprecated and delegates to HostnameValidator.normalizeRecordName
-     */
-    public function testNormalizeRecordName()
-    {
-        // Verify the method is marked as deprecated
-        $reflection = new \ReflectionMethod(Dns::class, 'normalize_record_name');
-        $docComment = $reflection->getDocComment();
-        $this->assertStringContainsString('@deprecated', $docComment);
-        $this->assertStringContainsString('Use HostnameValidator::normalizeRecordName() instead', $docComment);
-
-        // Configure a mock HostnameValidator to verify delegation
-        $mockHostnameValidator = $this->createMock(HostnameValidator::class);
-
-        // Set expectations for the mock
-        $mockHostnameValidator->expects($this->once())
-            ->method('normalizeRecordName')
-            ->with('www', 'example.com')
-            ->willReturn('www.example.com');
-
-        // Create reflection to set the protected property
-        $reflection = new \ReflectionObject($this->dnsInstance);
-        $hostnameValidatorProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameValidatorProperty->setAccessible(true);
-        $hostnameValidatorProperty->setValue($this->dnsInstance, $mockHostnameValidator);
-
-        // Test that Dns.normalize_record_name delegates to HostnameValidator.normalizeRecordName
-        $result = $this->dnsInstance->normalize_record_name('www', 'example.com');
-        $this->assertEquals('www.example.com', $result);
-    }
-
-    /**
      * Test that endsWith properly delegates to the HostnameValidator
      */
     public function testEndsWith()

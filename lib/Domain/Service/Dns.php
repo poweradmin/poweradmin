@@ -67,20 +67,6 @@ class Dns
         $this->csyncRecordValidator = new CSYNCRecordValidator($config);
     }
 
-    /**
-     * Normalize a DNS record name by ensuring it is fully qualified with the zone name
-     *
-     * @param string $name Name to normalize
-     * @param string $zone Zone name
-     *
-     * @return string Normalized name
-     * @deprecated Use HostnameValidator::normalizeRecordName() instead
-     */
-    public function normalize_record_name(string $name, string $zone): string
-    {
-        return $this->hostnameValidator->normalizeRecordName($name, $zone);
-    }
-
     /** Validate DNS record input
      *
      * @param int $rid Record ID
