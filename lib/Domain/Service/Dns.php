@@ -23,10 +23,10 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\AAAARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
@@ -53,6 +53,7 @@ class Dns
     private ARecordValidator $aRecordValidator;
     private AAAARecordValidator $aaaaRecordValidator;
     private CNAMERecordValidator $cnameRecordValidator;
+    private CSYNCRecordValidator $csyncRecordValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -65,6 +66,7 @@ class Dns
         $this->aRecordValidator = new ARecordValidator($config);
         $this->aaaaRecordValidator = new AAAARecordValidator($config);
         $this->cnameRecordValidator = new CNAMERecordValidator($config, $db);
+        $this->csyncRecordValidator = new CSYNCRecordValidator($config);
     }
 
     /** Matches end of string
@@ -204,9 +206,16 @@ class Dns
             case RecordType::TLSA:
             case RecordType::TSIG:
             case RecordType::CSYNC:
-                if (!self::is_valid_csync($content)) {
+                $validationResult = $this->csyncRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
+                if ($validationResult === false) {
                     return false;
                 }
+
+                // Update variables with validated data
+                $content = $validationResult['content'];
+                $name = $validationResult['name'];
+                $prio = $validationResult['prio'];
+                $ttl = $validationResult['ttl'];
                 break;
 
             case RecordType::DS:
@@ -333,7 +342,7 @@ class Dns
         }
 
         // Skip validation if it was already handled by a specific validator
-        if ($type !== RecordType::A && $type !== RecordType::AAAA && $type !== RecordType::CNAME) {
+        if ($type !== RecordType::A && $type !== RecordType::AAAA && $type !== RecordType::CNAME && $type !== RecordType::CSYNC) {
             $validatedPrio = self::is_valid_rr_prio($prio, $type);
             if ($validatedPrio === false) {
                 $this->messageService->addSystemError(_('Invalid value for prio field.'));
@@ -345,7 +354,7 @@ class Dns
                 return false;
             }
         } else {
-            // We've already validated these in the A, AAAA, or CNAME record validator
+            // We've already validated these in the specific record validator
             $validatedPrio = $prio;
             $validatedTtl = $ttl;
         }
@@ -879,52 +888,5 @@ class Dns
         } else {
             return false;
         }
-    }
-
-    /** Check if CSYNC content is valid
-     *
-     * @param string $content CSYNC record content
-     *
-     * @return boolean true if valid, false otherwise
-     */
-    public static function is_valid_csync(string $content): bool
-    {
-        $fields = preg_split("/\s+/", trim($content));
-
-        // Validate SOA Serial (first field)
-        if (!isset($fields[0]) || !is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 4294967295) {
-            (new MessageService())->addSystemError(_('Invalid SOA Serial in CSYNC record.'));
-            return false;
-        }
-
-        // Validate Flags (second field)
-        if (!isset($fields[1]) || !is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 3) {
-            (new MessageService())->addSystemError(_('Invalid Flags in CSYNC record.'));
-            return false;
-        }
-
-        // Validate Type Bit Map (remaining fields)
-        if (count($fields) <= 2) {
-            // At least one type must be specified
-            (new MessageService())->addSystemError(_('CSYNC record must specify at least one record type.'));
-            return false;
-        }
-
-        // Valid record types that can be synchronized
-        // RFC 7477 mentions A, AAAA, and NS as the most common
-        // But other record types can be synchronized as well
-        $validTypes = [
-            RecordType::A, RecordType::AAAA, RecordType::CNAME, RecordType::DNAME, RecordType::MX, RecordType::NS,
-            RecordType::PTR, RecordType::SRV, RecordType::TXT
-        ];
-
-        for ($i = 2; $i < count($fields); $i++) {
-            if (!in_array(strtoupper($fields[$i]), $validTypes)) {
-                (new MessageService())->addSystemError(_('Invalid Type in CSYNC record Type Bit Map.'));
-                return false;
-            }
-        }
-
-        return true;
     }
 }
