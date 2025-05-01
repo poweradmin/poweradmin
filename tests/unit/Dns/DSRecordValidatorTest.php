@@ -151,14 +151,14 @@ class DSRecordValidatorTest extends TestCase
 
     public function testIsValidDSContent()
     {
-        // Test valid DS records
+        // Test valid DS records with exact digest lengths
         $this->assertTrue($this->validator->isValidDSContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0'));
-        $this->assertTrue($this->validator->isValidDSContent('2371 13 2 1F987CC6583E92DF0890718C42'));
         $this->assertTrue($this->validator->isValidDSContent('15288 5 2 CE0EB9E59EE1DE2C681A330E3A7C08376F28602CDF990EE4EC88D2A8BDB51539'));
 
         // Test invalid formats
         $this->assertFalse($this->validator->isValidDSContent('45342 13 2'));  // Missing digest
         $this->assertFalse($this->validator->isValidDSContent('invalid')); // Invalid format
+        $this->assertFalse($this->validator->isValidDSContent('2371 13 2 1F987CC6583E92DF0890718C42')); // Too short digest
         $this->assertFalse($this->validator->isValidDSContent('2371 13 2 1F987CC6583E92DF0890718C42 ; ( SHA1 digest )')); // Extra content
     }
 }
