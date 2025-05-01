@@ -48,7 +48,6 @@ class Dns
     private PDOLayer $db;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
-    private IPAddressValidator $ipAddressValidator;
     private TTLValidator $ttlValidator;
     private ARecordValidator $aRecordValidator;
     private AAAARecordValidator $aaaaRecordValidator;
@@ -61,7 +60,6 @@ class Dns
         $this->config = $config;
         $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
-        $this->ipAddressValidator = new IPAddressValidator();
         $this->ttlValidator = new TTLValidator();
         $this->aRecordValidator = new ARecordValidator($config);
         $this->aaaaRecordValidator = new AAAARecordValidator($config);
