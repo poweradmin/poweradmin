@@ -360,16 +360,6 @@ class Dns
         return $this->hostnameValidator->isValidHostnameFqdn($hostname, $wildcard);
     }
 
-    /**
-     * @deprecated Use IPAddressValidator instead
-     */
-    public static function are_multiple_valid_ips(string $ips): bool
-    {
-        trigger_error('Use IPAddressValidator::areMultipleValidIPs() instead', E_USER_DEPRECATED);
-        $validator = new IPAddressValidator();
-        return $validator->areMultipleValidIPs($ips);
-    }
-
     /** Test if string is printable
      *
      * @param string $string string
