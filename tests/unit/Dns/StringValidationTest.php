@@ -53,16 +53,16 @@ class StringValidationTest extends BaseDnsTest
 
     public function testIsProperlyQuoted()
     {
-        $this->assertTrue(Dns::is_properly_quoted('"This is a \"properly\" quoted string."'));
-        $this->assertTrue(Dns::is_properly_quoted('This string has no quotes'));
-        $this->assertTrue(Dns::is_properly_quoted(''));
-        $this->assertTrue(Dns::is_properly_quoted('"This is \"properly\" quoted"'));
+        $this->assertTrue(StringValidator::isProperlyQuoted('"This is a \"properly\" quoted string."'));
+        $this->assertTrue(StringValidator::isProperlyQuoted('This string has no quotes'));
+        $this->assertTrue(StringValidator::isProperlyQuoted(''));
+        $this->assertTrue(StringValidator::isProperlyQuoted('"This is \"properly\" quoted"'));
 
         // Already covered by existing tests, but adding a few more cases
-        $this->assertTrue(Dns::is_properly_quoted('"This is a properly quoted string with escaped \"quotes\" inside."'));
-        $this->assertTrue(Dns::is_properly_quoted('Simple string without quotes'));
+        $this->assertTrue(StringValidator::isProperlyQuoted('"This is a properly quoted string with escaped \"quotes\" inside."'));
+        $this->assertTrue(StringValidator::isProperlyQuoted('Simple string without quotes'));
 
         // Invalid quotes - unescaped quotes inside quoted text
-        $this->assertFalse(Dns::is_properly_quoted('"This has unescaped "quotes" inside."'));
+        $this->assertFalse(StringValidator::isProperlyQuoted('"This has unescaped "quotes" inside."'));
     }
 }

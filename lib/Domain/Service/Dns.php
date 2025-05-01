@@ -361,17 +361,6 @@ class Dns
     }
 
 
-    /** Verify that the content is properly quoted
-     *
-     * @param string $content
-     * @return bool
-     * @deprecated Use StringValidator::isProperlyQuoted() instead
-     */
-    public static function is_properly_quoted(string $content): bool
-    {
-        return StringValidator::isProperlyQuoted($content);
-    }
-
     /** Verify that the string is enclosed in quotes
      *
      * @param string $string Input string
