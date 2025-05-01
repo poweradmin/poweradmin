@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\TopLevelDomain;
@@ -43,6 +44,7 @@ class Dns
     private PDOLayer $db;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
+    private IPAddressValidator $ipAddressValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -50,6 +52,7 @@ class Dns
         $this->config = $config;
         $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
+        $this->ipAddressValidator = new IPAddressValidator();
     }
 
     /** Matches end of string
@@ -364,36 +367,22 @@ class Dns
      */
     public static function is_valid_ipv4(string $ipv4, bool $answer = true): bool
     {
-
-        if (filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
-            if ($answer) {
-                (new MessageService())->addSystemError(_('This is not a valid IPv4 address.'));
-            }
-            return false;
-        }
-
-        return true;
+        $validator = new IPAddressValidator();
+        return $validator->isValidIPv4($ipv4, $answer);
     }
 
     /** Test if IPv6 address is valid
      *
      * @param string $ipv6 IPv6 address string
      * @param boolean $answer print error if true
-     * [default=true]
+     * [default=false]
      *
      * @return boolean true if valid, false otherwise
      */
     public static function is_valid_ipv6(string $ipv6, bool $answer = false): bool
     {
-
-        if (filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
-            if ($answer) {
-                (new MessageService())->addSystemError(_('This is not a valid IPv6 address.'));
-            }
-            return false;
-        }
-
-        return true;
+        $validator = new IPAddressValidator();
+        return $validator->isValidIPv6($ipv6, $answer);
     }
 
     /** Test if multiple IP addresses are valid
@@ -406,29 +395,8 @@ class Dns
      */
     public static function are_multiple_valid_ips(string $ips): bool
     {
-
-// multiple master NS-records are permitted and must be separated by ,
-// e.g. "192.0.0.1, 192.0.0.2, 2001:1::1"
-
-        $are_valid = false;
-        $multiple_ips = explode(",", $ips);
-        if (is_array($multiple_ips)) {
-            foreach ($multiple_ips as $m_ip) {
-                $trimmed_ip = trim($m_ip);
-                if (self::is_valid_ipv4($trimmed_ip, false) || self::is_valid_ipv6($trimmed_ip)) {
-                    $are_valid = true;
-                } else {
-                    return false;
-                }
-            }
-        } elseif (self::is_valid_ipv4($ips) || self::is_valid_ipv6($ips)) {
-            $are_valid = true;
-        }
-        if ($are_valid) {
-            return true;
-        } else {
-            return false;
-        }
+        $validator = new IPAddressValidator();
+        return $validator->areMultipleValidIPs($ips);
     }
 
     /** Test if string is printable
