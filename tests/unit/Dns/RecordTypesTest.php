@@ -8,6 +8,7 @@ use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
@@ -160,5 +161,37 @@ class RecordTypesTest extends BaseDnsTest
         $this->assertTrue(Dns::is_valid_rr_hinfo_content('"PC with spaces" Linux'));
         $this->assertTrue(Dns::is_valid_rr_hinfo_content('"Windows Server" "Ubuntu Linux"'));
         $this->assertTrue(Dns::is_valid_rr_hinfo_content('Intel-PC FreeBSD'));
+    }
+
+    public function testIsValidSRV()
+    {
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $validator = new SRVRecordValidator($configMock);
+
+        // Valid SRV records
+        $this->assertTrue($validator->validate('10 20 5060 sip.example.com', '_sip._tcp.example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('0 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('30 0 443 secure.example.com', '_https._tcp.example.com', 0, 3600, 3600) !== false);
+        $this->assertTrue($validator->validate('1 10 9 server.example.com', '_submission._tcp.example.com', 0, 3600, 3600) !== false);
+
+        // Invalid SRV records
+        // Invalid name format
+        $this->assertFalse($validator->validate('0 5 80 web.example.com', 'invalid.example.com', 0, 3600, 3600));
+        $this->assertFalse($validator->validate('0 5 80 web.example.com', '_invalid_tcp.example.com', 0, 3600, 3600));
+
+        // Invalid content format
+        $this->assertFalse($validator->validate('invalid 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Invalid priority
+        $this->assertFalse($validator->validate('0 invalid 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Invalid weight
+        $this->assertFalse($validator->validate('0 5 invalid web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Invalid port
+        $this->assertFalse($validator->validate('0 5 80 @invalid@', '_http._tcp.example.com', 0, 3600, 3600)); // Invalid target
+
+        // Out of range values
+        $this->assertFalse($validator->validate('65536 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Priority too high
+        $this->assertFalse($validator->validate('0 65536 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Weight too high
+        $this->assertFalse($validator->validate('0 5 65536 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Port too high
+
+        // Wrong number of fields
+        $this->assertFalse($validator->validate('0 5 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Missing port
+        $this->assertFalse($validator->validate('0 5 80 web.example.com extra', '_http._tcp.example.com', 0, 3600, 3600)); // Extra field
     }
 }

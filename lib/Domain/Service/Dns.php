@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\StringValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -59,6 +60,7 @@ class Dns
     private DSRecordValidator $dsRecordValidator;
     private LOCRecordValidator $locRecordValidator;
     private SPFRecordValidator $spfRecordValidator;
+    private SRVRecordValidator $srvRecordValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -74,6 +76,7 @@ class Dns
         $this->dsRecordValidator = new DSRecordValidator($config);
         $this->locRecordValidator = new LOCRecordValidator($config);
         $this->spfRecordValidator = new SPFRecordValidator($config);
+        $this->srvRecordValidator = new SRVRecordValidator($config);
     }
 
     /** Validate DNS record input
@@ -300,17 +303,16 @@ class Dns
                 break;
 
             case RecordType::SRV:
-                $srvNameResult = $this->is_valid_rr_srv_name($name);
-                if ($srvNameResult === false) {
+                $validationResult = $this->srvRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
+                if ($validationResult === false) {
                     return false;
                 }
-                $name = $srvNameResult['name'];
 
-                $srvContentResult = $this->is_valid_rr_srv_content($content, $name);
-                if ($srvContentResult === false) {
-                    return false;
-                }
-                $content = $srvContentResult['content'];
+                // Update variables with validated data
+                $content = $validationResult['content'];
+                $name = $validationResult['name'];
+                $prio = $validationResult['prio'];
+                $ttl = $validationResult['ttl'];
                 break;
 
             case RecordType::TXT:
