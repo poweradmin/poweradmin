@@ -1,0 +1,388 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2025 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Domain\Service\Dns;
+
+use Exception;
+use PDO;
+use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
+use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Service\MessageService;
+
+/**
+ * Service class for managing DNS records
+ */
+class RecordManager implements RecordManagerInterface
+{
+    private PDOLayer $db;
+    private ConfigurationManager $config;
+    private MessageService $messageService;
+    private HostnameValidator $hostnameValidator;
+    private DnsFormatter $dnsFormatter;
+    private DnsRecordValidationServiceInterface $validationService;
+    private SOARecordManagerInterface $soaRecordManager;
+    private DomainRepositoryInterface $domainRepository;
+
+    /**
+     * Constructor
+     *
+     * @param PDOLayer $db Database connection
+     * @param ConfigurationManager $config Configuration manager
+     * @param DnsRecordValidationServiceInterface $validationService DNS record validation service
+     * @param SOARecordManagerInterface $soaRecordManager SOA record manager
+     * @param DomainRepositoryInterface $domainRepository Domain repository
+     */
+    public function __construct(
+        PDOLayer $db,
+        ConfigurationManager $config,
+        DnsRecordValidationServiceInterface $validationService,
+        SOARecordManagerInterface $soaRecordManager,
+        DomainRepositoryInterface $domainRepository
+    ) {
+        $this->db = $db;
+        $this->config = $config;
+        $this->messageService = new MessageService();
+        $this->hostnameValidator = new HostnameValidator($config);
+        $this->dnsFormatter = new DnsFormatter($config);
+        $this->validationService = $validationService;
+        $this->soaRecordManager = $soaRecordManager;
+        $this->domainRepository = $domainRepository;
+    }
+
+    /**
+     * Add a record
+     *
+     * This function validates it if correct it inserts it into the database.
+     *
+     * @param int $zone_id Zone ID
+     * @param string $name Name part of record
+     * @param string $type Type of record
+     * @param string $content Content of record
+     * @param int $ttl Time-To-Live of record
+     * @param mixed $prio Priority of record
+     *
+     * @return boolean true if successful
+     * @throws Exception
+     */
+    public function addRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool
+    {
+        $perm_edit = Permission::getEditPermission($this->db);
+
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $zone_type = $this->domainRepository->getDomainType($zone_id);
+
+        if ($type == 'SOA' && $perm_edit == "own_as_client") {
+            throw new Exception(_("You do not have the permission to add SOA record."));
+        }
+
+        if ($type == 'NS' && $perm_edit == "own_as_client") {
+            throw new Exception(_("You do not have the permission to add NS record."));
+        }
+
+        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+            throw new Exception(_("You do not have the permission to add a record to this zone."));
+        }
+
+        $dns_hostmaster = $this->config->get('dns', 'hostmaster');
+        $dns_ttl = $this->config->get('dns', 'ttl');
+
+        // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
+        $content = $this->dnsFormatter->formatContent($type, $content);
+
+        // Normalize the name BEFORE validation
+        $zone = $this->domainRepository->getDomainNameById($zone_id);
+        $hostnameValidator = new HostnameValidator($this->config);
+        $name = $hostnameValidator->normalizeRecordName($name, $zone);
+
+        // Now validate the input with normalized name using the validation service
+        $validationResult = $this->validationService->validateRecord(
+            -1,
+            $zone_id,
+            $type,
+            $content,
+            $name,
+            $prio,
+            $ttl,
+            $dns_hostmaster,
+            (int)$dns_ttl
+        );
+        if ($validationResult === null) {
+            return false;
+        }
+
+        // Extract validated values
+        $content = $validationResult['content'];
+        $name = strtolower($validationResult['name']); // powerdns only searches for lower case records
+        $validatedTtl = $validationResult['ttl'];
+        $validatedPrio = $validationResult['prio'];
+
+        // Create RecordRepository to check if record exists
+        $recordRepository = new \Poweradmin\Domain\Repository\RecordRepository($this->db, $this->config);
+        if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
+            $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
+            return false;
+        }
+
+        $this->db->beginTransaction();
+
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+        $stmt->bindValue(':content', $content, PDO::PARAM_STR);
+        $stmt->bindValue(':ttl', $validatedTtl, PDO::PARAM_INT);
+        $stmt->bindValue(':prio', $validatedPrio, PDO::PARAM_INT);
+        $stmt->execute();
+        $this->db->commit();
+
+        if ($type != 'SOA') {
+            $this->soaRecordManager->updateSOASerial($zone_id);
+        }
+
+        $pdnssec_use = $this->config->get('dnssec', 'enabled');
+        if ($pdnssec_use) {
+            $pdns_api_url = $this->config->get('pdns_api', 'url');
+            $pdns_api_key = $this->config->get('pdns_api', 'key');
+
+            $dnssecProvider = DnssecProviderFactory::create(
+                $this->db,
+                new FakeConfiguration($pdns_api_url, $pdns_api_key)
+            );
+            $zone_name = $this->domainRepository->getDomainNameById($zone_id);
+            $dnssecProvider->rectifyZone($zone_name);
+        }
+
+        return true;
+    }
+
+    /**
+     * Edit a record
+     *
+     * This function validates it if correct it inserts it into the database.
+     *
+     * @param array $record Record structure to update
+     *
+     * @return boolean true if successful
+     */
+    public function editRecord(array $record): bool
+    {
+        $dns_hostmaster = $this->config->get('dns', 'hostmaster');
+        $perm_edit = Permission::getEditPermission($this->db);
+
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $record['zid']);
+        $zone_type = $this->domainRepository->getDomainType($record['zid']);
+
+        if ($record['type'] == 'SOA' && $perm_edit == "own_as_client") {
+            $this->messageService->addSystemError(_("You do not have the permission to edit this SOA record."));
+
+            return false;
+        }
+        if ($record['type'] == 'NS' && $perm_edit == "own_as_client") {
+            $this->messageService->addSystemError(_("You do not have the permission to edit this NS record."));
+
+            return false;
+        }
+
+        // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
+        $record['content'] = $this->dnsFormatter->formatContent($record['type'], $record['content']);
+
+        $dns_ttl = $this->config->get('dns', 'ttl');
+
+        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+            $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
+        } else {
+            // Normalize the name BEFORE validation
+            $zone = $this->domainRepository->getDomainNameById($record['zid']);
+            $hostnameValidator = new HostnameValidator($this->config);
+            $record['name'] = $hostnameValidator->normalizeRecordName($record['name'], $zone);
+
+            // Now validate the input with normalized name using the validation service
+            $validationResult = $this->validationService->validateRecord(
+                $record['rid'],
+                $record['zid'],
+                $record['type'],
+                $record['content'],
+                $record['name'],
+                (int)$record['prio'],
+                (int)$record['ttl'],
+                $dns_hostmaster,
+                (int)$dns_ttl
+            );
+            if ($validationResult !== null) {
+                // Extract validated values
+                $content = $validationResult['content'];
+                $name = strtolower($validationResult['name']); // powerdns only searches for lower case records
+                $validatedTtl = $validationResult['ttl'];
+                $validatedPrio = $validationResult['prio'];
+
+                $pdns_db_name = $this->config->get('database', 'pdns_name');
+                $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+                $query = "UPDATE $records_table
+                SET name=" . $this->db->quote($name, 'text') . ",
+                type=" . $this->db->quote($record['type'], 'text') . ",
+                content=" . $this->db->quote($content, 'text') . ",
+                ttl=" . $this->db->quote($validatedTtl, 'integer') . ",
+                prio=" . $this->db->quote($validatedPrio, 'integer') . ",
+                disabled=" . $this->db->quote($record['disabled'], 'integer') . "
+                WHERE id=" . $this->db->quote($record['rid'], 'integer');
+                $this->db->query($query);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Delete a record by a given record id
+     *
+     * @param int $rid Record ID
+     *
+     * @return boolean true on success
+     */
+    public function deleteRecord(int $rid): bool
+    {
+        $perm_edit = Permission::getEditPermission($this->db);
+
+        // Create RecordRepository to get record details
+        $recordRepository = new \Poweradmin\Domain\Repository\RecordRepository($this->db, $this->config);
+        $record = $recordRepository->getRecordDetailsFromRecordId($rid);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $record['zid']);
+
+        if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
+            if ($record['type'] == "SOA") {
+                // SOA record deletion is based on permissions
+                // Own_as_client users cannot delete SOA records
+                if ($perm_edit == "own_as_client") {
+                    $this->messageService->addSystemError(_('You do not have the permission to delete SOA records.'));
+                    return false;
+                }
+
+                // Admins and regular zone owners can delete SOA records
+                $pdns_db_name = $this->config->get('database', 'pdns_name');
+                $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+                $query = "DELETE FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
+                $this->db->query($query);
+                return true;
+            } elseif ($record['type'] == "NS" && $perm_edit == "own_as_client") {
+                // Users with own_as_client permission cannot delete NS records
+                $this->messageService->addSystemError(_('You do not have the permission to delete NS records.'));
+                return false;
+            } else {
+                $pdns_db_name = $this->config->get('database', 'pdns_name');
+                $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+                $query = "DELETE FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
+                $this->db->query($query);
+                return true;
+            }
+        } else {
+            $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
+            return false;
+        }
+    }
+
+    /**
+     * Delete record reference to zone template
+     *
+     * @param int $rid Record ID
+     *
+     * @return boolean true on success
+     */
+    public static function deleteRecordZoneTempl($db, int $rid): bool
+    {
+        $query = "DELETE FROM records_zone_templ WHERE record_id = " . $db->quote($rid, 'integer');
+        $db->query($query);
+
+        return true;
+    }
+
+    /**
+     * Get Zone comment
+     *
+     * @param int $zone_id Zone ID
+     *
+     * @return string Zone Comment
+     */
+    public static function getZoneComment($db, int $zone_id): string
+    {
+        $query = "SELECT comment FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
+        $comment = $db->queryOne($query);
+
+        return $comment ?: '';
+    }
+
+    /**
+     * Edit the zone comment
+     *
+     * This function validates it if correct it inserts it into the database.
+     *
+     * @param int $zone_id Zone ID
+     * @param string $comment Comment to set
+     *
+     * @return boolean true on success
+     */
+    public function editZoneComment(int $zone_id, string $comment): bool
+    {
+        $perm_edit = Permission::getEditPermission($this->db);
+
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $zone_type = $this->domainRepository->getDomainType($zone_id);
+
+        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
+            $this->messageService->addSystemError(_("You do not have the permission to edit this comment."));
+
+            return false;
+        } else {
+            $query = "SELECT COUNT(*) FROM zones WHERE domain_id = :zone_id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $count = $stmt->fetchColumn();
+
+            if ($count > 0) {
+                $query = "UPDATE zones SET comment = :comment WHERE domain_id = :zone_id";
+            } else {
+                $query = "INSERT INTO zones (domain_id, owner, comment, zone_templ_id) VALUES (:zone_id, 1, :comment, 0)";
+            }
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+            $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
+            $stmt->execute();
+        }
+        return true;
+    }
+}
