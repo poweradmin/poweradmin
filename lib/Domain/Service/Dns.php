@@ -65,6 +65,7 @@ class Dns
     private SPFRecordValidator $spfRecordValidator;
     private SRVRecordValidator $srvRecordValidator;
     private TXTRecordValidator $txtRecordValidator;
+    private HostnameValidator $hostnameValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -83,6 +84,7 @@ class Dns
         $this->spfRecordValidator = new SPFRecordValidator($config);
         $this->srvRecordValidator = new SRVRecordValidator($config);
         $this->txtRecordValidator = new TXTRecordValidator($config);
+        $this->hostnameValidator = new HostnameValidator($config);
     }
 
     /** Validate DNS record input
@@ -249,13 +251,13 @@ class Dns
 
             case RecordType::NS:
             case RecordType::MX:
-                $contentHostnameResult = $this->is_valid_hostname_fqdn($content, 0);
+                $contentHostnameResult = $this->hostnameValidator->isValidHostnameFqdn($content, 0);
                 if ($contentHostnameResult === false) {
                     return false;
                 }
                 $content = $contentHostnameResult['hostname'];
 
-                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
+                $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
                 if ($hostnameResult === false) {
                     return false;
                 }
@@ -267,13 +269,13 @@ class Dns
                 break;
 
             case RecordType::PTR:
-                $contentHostnameResult = $this->is_valid_hostname_fqdn($content, 0);
+                $contentHostnameResult = $this->hostnameValidator->isValidHostnameFqdn($content, 0);
                 if ($contentHostnameResult === false) {
                     return false;
                 }
                 $content = $contentHostnameResult['hostname'];
 
-                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
+                $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
                 if ($hostnameResult === false) {
                     return false;
                 }
