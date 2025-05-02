@@ -27,22 +27,23 @@ class DnsValidatorRegistry
      */
     private function registerValidators(): void
     {
-        // Register all validators
+        // Register all validators (sorted alphabetically by record type)
         $this->validators = [
             RecordType::A => new ARecordValidator($this->config),
             RecordType::AAAA => new AAAARecordValidator($this->config),
+            RecordType::AFSDB => new AFSDBRecordValidator($this->config),
             RecordType::CNAME => new CNAMERecordValidator($this->config, $this->db),
             RecordType::CSYNC => new CSYNCRecordValidator($this->config),
             RecordType::DS => new DSRecordValidator($this->config),
             RecordType::HINFO => new HINFORecordValidator($this->config),
             RecordType::LOC => new LOCRecordValidator($this->config),
+            RecordType::MX => new MXRecordValidator($this->config),
+            RecordType::NS => new NSRecordValidator($this->config),
+            RecordType::PTR => new PTRRecordValidator($this->config),
             RecordType::SOA => new SOARecordValidator($this->config, $this->db),
             RecordType::SPF => new SPFRecordValidator($this->config),
             RecordType::SRV => new SRVRecordValidator($this->config),
             RecordType::TXT => new TXTRecordValidator($this->config),
-            RecordType::MX => new MXRecordValidator($this->config),
-            RecordType::NS => new NSRecordValidator($this->config),
-            RecordType::PTR => new PTRRecordValidator($this->config),
             // Add other validators for remaining record types as needed
         ];
 

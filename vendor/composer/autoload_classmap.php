@@ -484,6 +484,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsIdnService' => $baseDir . '/lib/Domain/Service/DnsIdnService.php',
     'Poweradmin\\Domain\\Service\\DnsRecord' => $baseDir . '/lib/Domain/Service/DnsRecord.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\AAAARecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/AAAARecordValidator.php',
+    'Poweradmin\\Domain\\Service\\DnsValidation\\AFSDBRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\ARecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/ARecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\CNAMERecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/CNAMERecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\CSYNCRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php',
