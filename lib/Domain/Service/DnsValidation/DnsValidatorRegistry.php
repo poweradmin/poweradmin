@@ -56,6 +56,7 @@ class DnsValidatorRegistry
             RecordType::APL => new APLRecordValidator($this->config),
             RecordType::CNAME => new CNAMERecordValidator($this->config, $this->db),
             RecordType::CSYNC => new CSYNCRecordValidator($this->config),
+            RecordType::DLV => new DLVRecordValidator($this->config),
             RecordType::DS => new DSRecordValidator($this->config),
             RecordType::HINFO => new HINFORecordValidator($this->config),
             RecordType::KX => new KXRecordValidator($this->config),

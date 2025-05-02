@@ -490,6 +490,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsValidation\\ARecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/ARecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\CNAMERecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/CNAMERecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\CSYNCRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php',
+    'Poweradmin\\Domain\\Service\\DnsValidation\\DLVRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DLVRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DSRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DSRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DefaultRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DefaultRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DnsCommonValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DnsCommonValidator.php',
