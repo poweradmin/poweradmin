@@ -15,6 +15,7 @@ use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HINFORecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\MINFORecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\MXRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\NSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\PTRRecordValidator;
@@ -156,6 +157,9 @@ class BaseDnsTest extends TestCase
                         break;
                     case RecordType::LOC:
                         $validator = new LOCRecordValidator($configMock);
+                        break;
+                    case RecordType::MINFO:
+                        $validator = new MINFORecordValidator($configMock);
                         break;
                     case RecordType::DS:
                         $validator = new DSRecordValidator($configMock);

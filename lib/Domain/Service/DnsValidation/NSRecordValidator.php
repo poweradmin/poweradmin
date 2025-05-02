@@ -28,7 +28,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
 /**
  * NS Record Validator
  */
-class NSRecordValidator
+class NSRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
     private MessageService $messageService;
@@ -54,7 +54,7 @@ class NSRecordValidator
      *
      * @return array|bool Array with validated data or false if validation fails
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
     {
         // Validate content (nameserver hostname)
         $contentResult = $this->hostnameValidator->isValidHostnameFqdn($content, 0);

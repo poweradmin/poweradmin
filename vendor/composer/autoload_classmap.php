@@ -501,6 +501,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsValidation\\IPAddressValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/IPAddressValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\KXRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/KXRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\LOCRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/LOCRecordValidator.php',
+    'Poweradmin\\Domain\\Service\\DnsValidation\\MINFORecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/MINFORecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\MXRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/MXRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\NSRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/NSRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\PTRRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/PTRRecordValidator.php',
