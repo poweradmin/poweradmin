@@ -28,6 +28,7 @@ use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DefaultRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
+use Poweradmin\Domain\Service\DnsValidation\KXRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
@@ -90,5 +91,15 @@ class DnsValidatorRegistryTest extends TestCase
 
         $validatorCustom = $this->registry->getValidator('CUSTOM_TYPE');
         $this->assertInstanceOf(DnsRecordValidatorInterface::class, $validatorCustom);
+    }
+
+    /**
+     * Test getting KX record validator
+     */
+    public function testGetKXValidator(): void
+    {
+        $validator = $this->registry->getValidator(RecordType::KX);
+        $this->assertInstanceOf(DnsRecordValidatorInterface::class, $validator);
+        $this->assertInstanceOf(KXRecordValidator::class, $validator);
     }
 }

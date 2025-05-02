@@ -498,6 +498,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsValidation\\HINFORecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/HINFORecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\HostnameValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/HostnameValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\IPAddressValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/IPAddressValidator.php',
+    'Poweradmin\\Domain\\Service\\DnsValidation\\KXRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/KXRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\LOCRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/LOCRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\MXRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/MXRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\NSRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/NSRecordValidator.php',

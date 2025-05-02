@@ -58,6 +58,7 @@ class DnsValidatorRegistry
             RecordType::CSYNC => new CSYNCRecordValidator($this->config),
             RecordType::DS => new DSRecordValidator($this->config),
             RecordType::HINFO => new HINFORecordValidator($this->config),
+            RecordType::KX => new KXRecordValidator($this->config),
             RecordType::LOC => new LOCRecordValidator($this->config),
             RecordType::MX => new MXRecordValidator($this->config),
             RecordType::NS => new NSRecordValidator($this->config),
