@@ -159,7 +159,7 @@ function extract_valid_ips(string $raw_ip_input, string $type): array
  *
  * @return bool True if any changes were made, false otherwise
  */
-function sync_dns_records($db, $records_table, int $domain_id, string $hostname, string $type, array $new_ips): bool 
+function sync_dns_records($db, $records_table, int $domain_id, string $hostname, string $type, array $new_ips): bool
 {
     $zone_updated = false;
 

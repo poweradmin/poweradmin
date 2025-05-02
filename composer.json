@@ -70,7 +70,7 @@
     "tests:integration": "phpunit --testsuite integration",
 
     "check:lib": "phpcs --standard=phpcs.xml lib",
-    "check:all": "phpcs --standard=phpcs.xml addons config index.php install lib tests dynamic_update.php",
+    "check:all": "phpcs --standard=phpcs.xml addons config index.php install tests dynamic_update.php",
 
     "format:config": "phpcbf --standard=phpcs.xml config",
     "format:index": "phpcbf --standard=phpcs.xml index.php",
