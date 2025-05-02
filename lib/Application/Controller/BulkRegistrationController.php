@@ -36,6 +36,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DomainHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -97,7 +98,8 @@ class BulkRegistrationController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $dns = new Dns($this->db, $this->getConfig());
         foreach ($domains as $domain) {
-            if (!$dns->is_valid_hostname_fqdn($domain, 0)) {
+            $hostnameValidator = new HostnameValidator($this->config);
+            if (!$hostnameValidator->isValidHostnameFqdn($domain, 0)) {
                 $failed_domains[] = $domain . " - " . _('Invalid hostname.');
             } elseif ($dnsRecord->domain_exists($domain)) {
                 $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');

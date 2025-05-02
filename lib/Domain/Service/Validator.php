@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
@@ -47,7 +48,8 @@ class Validator
         $dns = new Dns($this->db, $this->config);
 
         $fields = explode("@", $address, 2);
-        if ((!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) || (!isset($fields[1]) || $fields[1] == '' || !$dns->is_valid_hostname_fqdn($fields[1], 0))) {
+        $hostnameValidator = new HostnameValidator($this->config);
+        if ((!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) || (!isset($fields[1]) || $fields[1] == '' || !$hostnameValidator->isValidHostnameFqdn($fields[1], 0))) {
             return false;
         }
         return true;

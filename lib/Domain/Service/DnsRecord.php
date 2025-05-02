@@ -400,7 +400,8 @@ class DnsRecord
         } else {
             // Normalize the name BEFORE calling validate_input
             $zone = $this->get_domain_name_by_id($record['zid']);
-            $record['name'] = $this->hostnameValidator->normalizeRecordName($record['name'], $zone);
+            $hostnameValidator = new HostnameValidator($this->config);
+            $record['name'] = $hostnameValidator->normalizeRecordName($record['name'], $zone);
 
             // Now validate the input with normalized name
             $validationResult = $dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl);
@@ -472,7 +473,8 @@ class DnsRecord
 
         // Normalize the name BEFORE calling validate_input
         $zone = $this->get_domain_name_by_id($zone_id);
-        $name = $this->hostnameValidator->normalizeRecordName($name, $zone);
+        $hostnameValidator = new HostnameValidator($this->config);
+        $name = $hostnameValidator->normalizeRecordName($name, $zone);
 
         // Now validate the input with normalized name
         $validationResult = $dns->validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl, $dns_hostmaster, $dns_ttl);
@@ -545,9 +547,8 @@ class DnsRecord
             $this->messageService->addSystemError(_('This is not a valid IPv4 or IPv6 address.'));
 
             return false;
-        }
-
-        if (!$this->hostnameValidator->isValid($ns_name)) {
+        }            $hostnameValidator = new HostnameValidator($this->config);
+        if (!$hostnameValidator->isValid($ns_name)) {
             $this->messageService->addSystemError(_('Invalid hostname.'));
 
             return false;
@@ -1150,7 +1151,8 @@ class DnsRecord
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
-        if ($dns->is_valid_hostname_fqdn($domain, 0)) {
+        $hostnameValidator = new HostnameValidator($this->config);
+        if ($hostnameValidator->isValidHostnameFqdn($domain, 0)) {
             $result = $this->db->queryRow("SELECT id FROM $domains_table WHERE name=" . $this->db->quote($domain, 'text'));
             return (bool)$result;
         } else {
@@ -1213,7 +1215,8 @@ class DnsRecord
      */
     public function supermaster_ip_name_exists(string $master_ip, string $ns_name): bool
     {
-        if (($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip)) && $this->hostnameValidator->isValid($ns_name)) {
+        $hostnameValidator = new HostnameValidator($this->config);
+        if (($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip)) && $hostnameValidator->isValid($ns_name)) {
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
 

@@ -13,31 +13,42 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
  */
 class HostnameValidationTest extends BaseDnsTest
 {
-    public function testIsValidHostnameFqdn()
+    public function testHostnameValidation()
     {
-        // This test now verifies that the DNS class correctly delegates to the HostnameValidator
-        // Configure a mock HostnameValidator to verify delegation
-        $mockHostnameValidator = $this->createMock(HostnameValidator::class);
+        // Configure config mock
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock->method('get')
+            ->willReturnCallback(function ($section, $key) {
+                if ($section === 'dns') {
+                    if ($key === 'top_level_tld_check') {
+                        return false;
+                    }
+                    if ($key === 'strict_tld_check') {
+                        return false;
+                    }
+                }
+                return null;
+            });
 
-        // Set expectations for the mock
-        $mockHostnameValidator->expects($this->once())
-            ->method('isValidHostnameFqdn')
-            ->with('example.com', 0)
-            ->willReturn(['hostname' => 'example.com']);
+        // Create validator instance
+        $validator = new HostnameValidator($configMock);
 
-        // Create reflection to set the protected property
-        $reflection = new \ReflectionObject($this->dnsInstance);
-        $hostnameValidatorProperty = $reflection->getProperty('hostnameValidator');
-        $hostnameValidatorProperty->setAccessible(true);
-        $hostnameValidatorProperty->setValue($this->dnsInstance, $mockHostnameValidator);
-
-        // Test that Dns.is_valid_hostname_fqdn delegates to HostnameValidator.isValidHostnameFqdn
-        $result = $this->dnsInstance->is_valid_hostname_fqdn('example.com', 0);
+        // Test valid hostname without wildcard
+        $result = $validator->isValidHostnameFqdn('example.com', 0);
+        $this->assertIsArray($result);
         $this->assertEquals(['hostname' => 'example.com'], $result);
+
+        // Test valid hostname with wildcard
+        $result = $validator->isValidHostnameFqdn('*.example.com', 1);
+        $this->assertIsArray($result);
+        $this->assertEquals(['hostname' => '*.example.com'], $result);
+
+        // Test invalid hostname
+        $this->assertFalse($validator->isValidHostnameFqdn('-invalid.com', 0));
     }
 
     /**
-     * Test that endsWith properly delegates to the HostnameValidator
+     * Test endsWith static method
      */
     public function testEndsWith()
     {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Unit\Dns;
+namespace unit\Dns;
 
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;

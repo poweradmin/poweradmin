@@ -53,7 +53,6 @@ class Dns
     private ConfigurationManager $config;
     private PDOLayer $db;
     private MessageService $messageService;
-    private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private ARecordValidator $aRecordValidator;
     private AAAARecordValidator $aaaaRecordValidator;
@@ -72,7 +71,6 @@ class Dns
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
-        $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
         $this->aRecordValidator = new ARecordValidator($config);
         $this->aaaaRecordValidator = new AAAARecordValidator($config);
@@ -365,18 +363,6 @@ class Dns
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
         ];
-    }
-
-    /** Test if hostname is valid FQDN
-     *
-     * @param mixed $hostname Hostname string
-     * @param string $wildcard Hostname includes wildcard '*'
-     *
-     * @return array|bool Returns array with normalized hostname if valid, false otherwise
-     */
-    public function is_valid_hostname_fqdn(mixed $hostname, string $wildcard): array|bool
-    {
-        return $this->hostnameValidator->isValidHostnameFqdn($hostname, $wildcard);
     }
 
     /** Check if target is not a CNAME
