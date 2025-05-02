@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HINFORecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
@@ -61,6 +62,7 @@ class Dns
     private DSRecordValidator $dsRecordValidator;
     private HINFORecordValidator $hinfoRecordValidator;
     private LOCRecordValidator $locRecordValidator;
+    private SOARecordValidator $soaRecordValidator;
     private SPFRecordValidator $spfRecordValidator;
     private SRVRecordValidator $srvRecordValidator;
     private TXTRecordValidator $txtRecordValidator;
@@ -79,6 +81,7 @@ class Dns
         $this->dsRecordValidator = new DSRecordValidator($config);
         $this->hinfoRecordValidator = new HINFORecordValidator($config);
         $this->locRecordValidator = new LOCRecordValidator($config);
+        $this->soaRecordValidator = new SOARecordValidator($config, $db);
         $this->spfRecordValidator = new SPFRecordValidator($config);
         $this->srvRecordValidator = new SRVRecordValidator($config);
         $this->txtRecordValidator = new TXTRecordValidator($config);
@@ -280,21 +283,17 @@ class Dns
                 break;
 
             case RecordType::SOA:
-                if (!self::is_valid_rr_soa_name($name, $zone)) {
+                $this->soaRecordValidator->setSOAParams($dns_hostmaster, $zone);
+                $validationResult = $this->soaRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
+                if ($validationResult === false) {
                     return false;
                 }
-                $hostnameResult = $this->is_valid_hostname_fqdn($name, 1);
-                if ($hostnameResult === false) {
-                    return false;
-                }
-                $name = $hostnameResult['hostname'];
 
-                $soaResult = $this->is_valid_rr_soa_content($content, $dns_hostmaster);
-                if ($soaResult === false) {
-                    $this->messageService->addSystemError(_('Your content field doesnt have a legit value.'));
-                    return false;
-                }
-                $content = $soaResult['content'];
+                // Update variables with validated data
+                $content = $validationResult['content'];
+                $name = $validationResult['name'];
+                $prio = $validationResult['prio'];
+                $ttl = $validationResult['ttl'];
                 break;
 
             case RecordType::SPF:
@@ -398,88 +397,6 @@ class Dns
         $response = $this->db->queryOne($query);
         if ($response) {
             $this->messageService->addSystemError(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
-            return false;
-        }
-        return true;
-    }
-
-    /** Check if SOA content is valid
-     *
-     * @param mixed $content SOA record content
-     * @param string $dns_hostmaster Hostmaster email address
-     *
-     * @return array|bool Returns array with formatted content if valid, false otherwise
-     */
-    public function is_valid_rr_soa_content(mixed $content, $dns_hostmaster): array|bool
-    {
-        $fields = preg_split("/\s+/", trim($content));
-        $field_count = count($fields);
-
-        if ($field_count == 0 || $field_count > 7) {
-            return false;
-        } else {
-            if (!$this->is_valid_hostname_fqdn($fields[0], 0) || preg_match('/\.arpa\.?$/', $fields[0])) {
-                return false;
-            }
-            $final_soa = $fields[0];
-
-            $addr_input = $fields[1] ?? $dns_hostmaster;
-            if (!str_contains($addr_input, "@")) {
-                $addr_input = preg_split('/(?<!\\\)\./', $addr_input, 2);
-                if (count($addr_input) == 2) {
-                    $addr_to_check = str_replace("\\", "", $addr_input[0]) . "@" . $addr_input[1];
-                } else {
-                    $addr_to_check = str_replace("\\", "", $addr_input[0]);
-                }
-            } else {
-                $addr_to_check = $addr_input;
-            }
-
-            $validation = new Validator($this->db, $this->config);
-            if (!$validation->is_valid_email($addr_to_check)) {
-                return false;
-            } else {
-                $addr_final = explode('@', $addr_to_check, 2);
-                $final_soa .= " " . str_replace(".", "\\.", $addr_final[0]) . "." . $addr_final[1];
-            }
-
-            if (isset($fields[2])) {
-                if (!is_numeric($fields[2])) {
-                    return false;
-                }
-                $final_soa .= " " . $fields[2];
-            } else {
-                $final_soa .= " 0";
-            }
-
-            if ($field_count != 7) {
-                return false;
-            } else {
-                for ($i = 3; ($i < 7); $i++) {
-                    if (!is_numeric($fields[$i])) {
-                        return false;
-                    } else {
-                        $final_soa .= " " . $fields[$i];
-                    }
-                }
-            }
-        }
-        return ['content' => $final_soa];
-    }
-
-    /** Check if SOA name is valid
-     *
-     * Checks if SOA name = zone name
-     *
-     * @param string $name SOA name
-     * @param string $zone Zone name
-     *
-     * @return boolean true if valid, false otherwise
-     */
-    public static function is_valid_rr_soa_name(string $name, string $zone): bool
-    {
-        if ($name != $zone) {
-            (new MessageService())->addSystemError(_('Invalid value for name field of SOA record. It should be the name of the zone.'));
             return false;
         }
         return true;

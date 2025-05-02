@@ -1,0 +1,162 @@
+<?php
+
+namespace Tests\Unit\Dns;
+
+use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\PDOLayer;
+use PHPUnit\Framework\TestCase;
+
+class SOARecordValidatorTest extends TestCase
+{
+    private SOARecordValidator $validator;
+    private $dbMock;
+    private $configMock;
+
+    protected function setUp(): void
+    {
+        $this->dbMock = $this->createMock(PDOLayer::class);
+        $this->configMock = $this->createMock(ConfigurationManager::class);
+
+        // Configure the database mock for Validator class queries
+        $this->dbMock->method('queryOne')
+            ->willReturn(null); // For simplicity, assume validation passes
+
+        // Configure the quote method to handle SQL queries
+        $this->dbMock->method('quote')
+            ->willReturnCallback(function ($value, $type = null) {
+                if ($type === 'text' || $type === 'integer') {
+                    return "'$value'";
+                }
+                return "'$value'";
+            });
+
+        $this->validator = new SOARecordValidator($this->configMock, $this->dbMock);
+    }
+
+    public function testValidateWithValidData()
+    {
+        $content = "ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 86400";
+        $name = "example.com";
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+        $dns_hostmaster = "hostmaster@example.com";
+        $zone = "example.com";
+
+        $this->validator->setSOAParams($dns_hostmaster, $zone);
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('content', $result);
+        $this->assertArrayHasKey('name', $result);
+        $this->assertArrayHasKey('prio', $result);
+        $this->assertArrayHasKey('ttl', $result);
+        $this->assertEquals(0, $result['prio']);
+        $this->assertEquals(3600, $result['ttl']);
+    }
+
+    public function testValidateWithInvalidZoneName()
+    {
+        $content = "ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 86400";
+        $name = "www.example.com";
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+        $dns_hostmaster = "hostmaster@example.com";
+        $zone = "example.com";
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
+
+        $this->assertFalse($result);
+    }
+
+    public function testValidateWithInvalidContent()
+    {
+        $content = "ns1.example.com hostmaster.example.com"; // Missing required fields
+        $name = "example.com";
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+        $dns_hostmaster = "hostmaster@example.com";
+        $zone = "example.com";
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
+
+        $this->assertFalse($result);
+    }
+
+    public function testValidateWithInvalidHostmaster()
+    {
+        $content = "ns1.example.com invalid-email 2023122801 7200 1800 1209600 86400";
+        $name = "example.com";
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+        $dns_hostmaster = "hostmaster@example.com";
+        $zone = "example.com";
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
+
+        $this->assertFalse($result);
+    }
+
+    public function testValidateWithNonNumericSerial()
+    {
+        $content = "ns1.example.com hostmaster.example.com abc 7200 1800 1209600 86400";
+        $name = "example.com";
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+        $dns_hostmaster = "hostmaster@example.com";
+        $zone = "example.com";
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
+
+        $this->assertFalse($result);
+    }
+
+    public function testValidateWithInvalidTTL()
+    {
+        $content = "ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 86400";
+        $name = "example.com";
+        $prio = 0;
+        $ttl = -1;
+        $defaultTTL = 86400;
+        $dns_hostmaster = "hostmaster@example.com";
+        $zone = "example.com";
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
+
+        $this->assertFalse($result);
+    }
+
+    public function testValidateWithArpaDomain()
+    {
+        $content = "example.arpa hostmaster.example.com 2023122505 7200 1209600 3600 86400";
+        $name = "example.arpa";
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+        $dns_hostmaster = "hostmaster@example.com";
+        $zone = "example.arpa";
+
+        $this->validator->setSOAParams($dns_hostmaster, $zone);
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result);
+    }
+
+    public function testValidateWithoutSOAParams()
+    {
+        $content = "ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 86400";
+        $name = "example.com";
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result);
+    }
+}

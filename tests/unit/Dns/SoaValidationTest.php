@@ -3,7 +3,7 @@
 namespace unit\Dns;
 
 use TestHelpers\BaseDnsTest;
-use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
@@ -12,20 +12,18 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
  */
 class SoaValidationTest extends BaseDnsTest
 {
-    /**
-     * Test the updated is_valid_rr_soa_content method that now returns content instead of modifying by reference
-     */
-    public function testIsValidRrSoaContent()
+    private SOARecordValidator $validator;
+    private $dbMock;
+    private $configMock;
+
+    protected function setUp(): void
     {
-        // We need to prepare a test instance with necessary mocks
-        $dbMock = $this->createMock(PDOLayer::class);
-        $configMock = $this->createMock(ConfigurationManager::class);
+        $this->dbMock = $this->createMock(PDOLayer::class);
+        $this->configMock = $this->createMock(ConfigurationManager::class);
 
-        // Configure the database mock for the Validator class called inside is_valid_rr_soa_content
-        $dbMock->method('queryOne')->willReturn(null); // For simplicity, we'll assume validation passes
-
-        // Configure the quote method to handle SQL queries
-        $dbMock->method('quote')
+        // Configure the database mock
+        $this->dbMock->method('queryOne')->willReturn(null);
+        $this->dbMock->method('quote')
             ->willReturnCallback(function ($value, $type = null) {
                 if ($type === 'text') {
                     return "'$value'";
@@ -36,44 +34,59 @@ class SoaValidationTest extends BaseDnsTest
                 return "'$value'";
             });
 
-        $dns = new Dns($dbMock, $configMock);
+        $this->validator = new SOARecordValidator($this->configMock, $this->dbMock);
+    }
 
+    /**
+     * Test the SOA content validation
+     */
+    public function testIsValidRrSoaContent()
+    {
         // Valid SOA record content
         $content = "ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 86400";
+        $zone = "example.com";
         $dns_hostmaster = "hostmaster@example.com";
 
-        $result = $dns->is_valid_rr_soa_content($content, $dns_hostmaster);
+        $this->validator->setSOAParams($dns_hostmaster, $zone);
+        $result = $this->validator->validate($content, "example.com", 0, 3600, 86400);
 
-        // SOA validation is complex and involves email validation
-        // If it fails, we'll skip rather than fail the test
-        if (!is_array($result)) {
-            $this->markTestSkipped('SOA validation failed - likely due to missing validator class dependency. Manually verify the logic.');
-            return;
-        }
-
-        // Check that we get an array with the content key
+        // Check that we get an array with expected data
         $this->assertIsArray($result);
         $this->assertArrayHasKey('content', $result);
+        $this->assertStringContainsString('ns1.example.com', $result['content']);
+        $this->assertStringContainsString('2023122801', $result['content']);
 
-        // For invalid content, we should get false
+        // Test invalid content format
         $content = "ns1.example.com hostmaster.example.com"; // Missing required fields
-        $result = $dns->is_valid_rr_soa_content($content, $dns_hostmaster);
+        $result = $this->validator->validate($content, $zone, 0, 3600, 86400);
         $this->assertFalse($result);
 
-        $content = ""; // Empty content
-        $result = $dns->is_valid_rr_soa_content($content, $dns_hostmaster);
+        // Test empty content
+        $content = "";
+        $result = $this->validator->validate($content, $zone, 0, 3600, 86400);
         $this->assertFalse($result);
     }
 
     public function testIsValidRrSoaName()
     {
+        $content = 'ns1.example.com hostmaster.example.com 2023122801 7200 1800 1209600 86400';
+
         // Valid SOA name (matches zone)
-        $this->assertTrue(Dns::is_valid_rr_soa_name('example.com', 'example.com'));
-        $this->assertTrue(Dns::is_valid_rr_soa_name('sub.domain.com', 'sub.domain.com'));
+        $this->validator->setSOAParams('hostmaster@example.com', 'example.com');
+        $result = $this->validator->validate($content, 'example.com', 0, 3600, 86400);
+        $this->assertIsArray($result);
+
+        $this->validator->setSOAParams('hostmaster@sub.domain.com', 'sub.domain.com');
+        $result = $this->validator->validate($content, 'sub.domain.com', 0, 3600, 86400);
+        $this->assertIsArray($result);
 
         // Invalid SOA name (doesn't match zone)
-        $this->assertFalse(Dns::is_valid_rr_soa_name('www.example.com', 'example.com'));
-        $this->assertFalse(Dns::is_valid_rr_soa_name('example.org', 'example.com'));
+        $this->validator->setSOAParams('hostmaster@example.com', 'example.com');
+        $result = $this->validator->validate($content, 'www.example.com', 0, 3600, 86400);
+        $this->assertFalse($result);
+
+        $result = $this->validator->validate($content, 'example.org', 0, 3600, 86400);
+        $this->assertFalse($result);
     }
 
     public function testCustomValidationWithNonNumericSerialNumbers()
