@@ -49,4 +49,12 @@ interface ZoneRepositoryInterface
         string $sortDirection = 'ASC',
         bool $countOnly = false
     );
+
+    /**
+     * Get domain name by ID
+     *
+     * @param int $zoneId The zone ID
+     * @return string|null The domain name or null if not found
+     */
+    public function getDomainNameById(int $zoneId): ?string;
 }

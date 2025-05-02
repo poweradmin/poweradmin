@@ -99,7 +99,6 @@ class AddZoneMasterController extends BaseController
         $zone_template = $_POST['zone_template'] ?? "none";
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $dns = new Dns($this->db, $this->getConfig());
         $hostnameValidator = new HostnameValidator($this->config);
         if (!$hostnameValidator->isValidHostnameFqdn($zone_name, 0)) {
             // Don't add a generic error as the validation method already sets a specific one

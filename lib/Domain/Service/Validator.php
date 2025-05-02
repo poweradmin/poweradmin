@@ -48,11 +48,12 @@ class Validator
      */
     public function is_valid_email(string $address): bool
     {
-        $dns = new Dns($this->db, $this->config, $this->validatorRegistry);
-
         $fields = explode("@", $address, 2);
         $hostnameValidator = new HostnameValidator($this->config);
-        if ((!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) || (!isset($fields[1]) || $fields[1] == '' || !$hostnameValidator->isValidHostnameFqdn($fields[1], 0))) {
+        if (
+            (!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) ||
+            (!isset($fields[1]) || $fields[1] == '' || !$hostnameValidator->isValidHostnameFqdn($fields[1], 0))
+        ) {
             return false;
         }
         return true;

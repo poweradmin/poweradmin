@@ -22,14 +22,9 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
-use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
-use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
-use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 
 /**
  * DNS functions
@@ -38,27 +33,17 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
+ * @deprecated Use DnsRecordValidationService instead
  */
 class Dns
 {
-    private ConfigurationManager $config;
-    private PDOLayer $db;
-    private MessageService $messageService;
-    private TTLValidator $ttlValidator;
-    private DnsCommonValidator $dnsCommonValidator;
-    private DnsValidatorRegistry $validatorRegistry;
+    private DnsRecordValidationServiceInterface $validationService;
 
     public function __construct(
         PDOLayer $db,
-        ConfigurationManager $config,
-        ?DnsValidatorRegistry $validatorRegistry = null
+        ConfigurationManager $config
     ) {
-        $this->db = $db;
-        $this->config = $config;
-        $this->messageService = new MessageService();
-        $this->ttlValidator = new TTLValidator();
-        $this->dnsCommonValidator = new DnsCommonValidator($db, $config);
-        $this->validatorRegistry = $validatorRegistry ?? new DnsValidatorRegistry($config, $db);
+        $this->validationService = DnsServiceFactory::createDnsRecordValidationService($db, $config);
     }
 
     /**
@@ -67,89 +52,32 @@ class Dns
      * @param int $rid Record ID
      * @param int $zid Zone ID
      * @param string $type Record Type
-     * @param mixed $content content part of record
+     * @param string $content content part of record
      * @param string $name Name part of record
-     * @param mixed $prio Priority
-     * @param mixed $ttl TTL
+     * @param int|null $prio Priority
+     * @param int|null $ttl TTL
      * @param string $dns_hostmaster DNS hostmaster email
      * @param int $dns_ttl Default TTL value
      *
      * @return array|bool Returns array with validated data on success, false otherwise
+     * @deprecated Use DnsRecordValidationService::validateRecord() instead
      */
     public function validate_input(int $rid, int $zid, string $type, mixed $content, string $name, mixed $prio, mixed $ttl, $dns_hostmaster, $dns_ttl): array|bool
     {
-        $dnsRecord = new DnsRecord($this->db, $this->config);
-        $zone = $dnsRecord->get_domain_name_by_id($zid);
-        if (!$zone) {
-            $this->messageService->addSystemError(_('Unable to find domain with the given ID.'));
-            return false;
-        }
+        // Convert to proper types for the new service
+        $result = $this->validationService->validateRecord(
+            $rid,
+            $zid,
+            $type,
+            (string)$content,
+            $name,
+            $prio === null ? null : (int)$prio,
+            $ttl === null ? null : (int)$ttl,
+            (string)$dns_hostmaster,
+            (int)$dns_ttl
+        );
 
-        // Perform common validation for all record types
-        $cnameValidator = $this->validatorRegistry->getValidator(RecordType::CNAME);
-        if ($type != RecordType::CNAME) {
-            if (!$cnameValidator->isValidCnameExistence($name, $rid)) {
-                return false;
-            }
-        }
-
-        // Get the appropriate validator for this record type
-        $validator = $this->validatorRegistry->getValidator($type);
-
-        if ($validator === null) {
-            $this->messageService->addSystemError(_('Unknown record type.'));
-            return false;
-        }
-
-        // Special case for SOA records
-        if ($type === RecordType::SOA) {
-            $validator->setSOAParams($dns_hostmaster, $zone);
-        }
-
-        // Perform validation using the appropriate validator
-        $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl);
-        if ($validationResult === false) {
-            return false;
-        }
-
-        // Extract validated data
-        $content = $validationResult['content'];
-        $name = $validationResult['name'];
-        $prio = $validationResult['prio'];
-        $ttl = $validationResult['ttl'];
-
-        // Perform additional validation for specific record types
-        if ($type === RecordType::NS || $type === RecordType::MX) {
-            if (!$this->dnsCommonValidator->isValidNonAliasTarget($content)) {
-                return false;
-            }
-        }
-
-        // Skip validation if it was already handled by a specific validator
-        if (
-            $type !== RecordType::A && $type !== RecordType::AAAA && $type !== RecordType::CNAME &&
-            $type !== RecordType::CSYNC && $type !== RecordType::MX && $type !== RecordType::NS
-        ) {
-            $validatedPrio = $this->dnsCommonValidator->isValidPriority($prio, $type);
-            if ($validatedPrio === false) {
-                return false;
-            }
-
-            $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $dns_ttl);
-            if ($validatedTtl === false) {
-                return false;
-            }
-        } else {
-            // We've already validated these in the specific record validator
-            $validatedPrio = $prio;
-            $validatedTtl = $ttl;
-        }
-
-        return [
-            'content' => $content,
-            'name' => $name,
-            'prio' => $validatedPrio,
-            'ttl' => $validatedTtl
-        ];
+        // Maintain backward compatibility: return false instead of null
+        return $result ?? false;
     }
 }

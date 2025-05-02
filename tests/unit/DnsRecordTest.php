@@ -23,6 +23,12 @@ class DnsRecordTest extends TestCase
                 if ($group === 'misc' && $key === 'timezone') {
                     return 'UTC';
                 }
+                if ($group === 'database' && $key === 'type') {
+                    return 'mysql'; // Mock database type for tests
+                }
+                if ($group === 'database' && $key === 'pdns_name') {
+                    return 'pdns'; // Mock PowerDNS database name
+                }
                 return null;
             });
 

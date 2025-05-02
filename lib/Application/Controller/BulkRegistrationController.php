@@ -96,7 +96,6 @@ class BulkRegistrationController extends BaseController
 
         $failed_domains = [];
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $dns = new Dns($this->db, $this->getConfig());
         foreach ($domains as $domain) {
             $hostnameValidator = new HostnameValidator($this->config);
             if (!$hostnameValidator->isValidHostnameFqdn($domain, 0)) {

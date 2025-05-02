@@ -94,7 +94,6 @@ class AddZoneSlaveController extends BaseController
         $master = $_POST['slave_master'];
         $zone = DnsIdnService::toPunycode(trim($_POST['domain']));
 
-        $dns = new Dns($this->db, $this->getConfig());
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $hostnameValidator = new HostnameValidator($this->config);
         if (!$hostnameValidator->isValidHostnameFqdn($zone, 0)) {

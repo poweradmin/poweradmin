@@ -27,6 +27,7 @@ use PDO;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
@@ -53,6 +54,7 @@ class DnsRecord
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
     private DnsFormatter $dnsFormatter;
+    private DnsRecordValidationServiceInterface $validationService;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -62,6 +64,7 @@ class DnsRecord
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ipAddressValidator = new IPAddressValidator();
         $this->dnsFormatter = new DnsFormatter($config);
+        $this->validationService = DnsServiceFactory::createDnsRecordValidationService($db, $config);
     }
 
     /** Check if Zone ID exists
@@ -398,14 +401,24 @@ class DnsRecord
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
         } else {
-            // Normalize the name BEFORE calling validate_input
+            // Normalize the name BEFORE validation
             $zone = $this->get_domain_name_by_id($record['zid']);
             $hostnameValidator = new HostnameValidator($this->config);
             $record['name'] = $hostnameValidator->normalizeRecordName($record['name'], $zone);
 
-            // Now validate the input with normalized name
-            $validationResult = $dns->validate_input($record['rid'], $record['zid'], $record['type'], $record['content'], $record['name'], $record['prio'], $record['ttl'], $dns_hostmaster, $dns_ttl);
-            if ($validationResult !== false) {
+            // Now validate the input with normalized name using the validation service
+            $validationResult = $this->validationService->validateRecord(
+                $record['rid'],
+                $record['zid'],
+                $record['type'],
+                $record['content'],
+                $record['name'],
+                (int)$record['prio'],
+                (int)$record['ttl'],
+                $dns_hostmaster,
+                (int)$dns_ttl
+            );
+            if ($validationResult !== null) {
                 // Extract validated values
                 $content = $validationResult['content'];
                 $name = strtolower($validationResult['name']); // powerdns only searches for lower case records
@@ -469,16 +482,24 @@ class DnsRecord
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $content = $this->dnsFormatter->formatContent($type, $content);
 
-        $dns = new Dns($this->db, $this->config);
-
-        // Normalize the name BEFORE calling validate_input
+        // Normalize the name BEFORE validation
         $zone = $this->get_domain_name_by_id($zone_id);
         $hostnameValidator = new HostnameValidator($this->config);
         $name = $hostnameValidator->normalizeRecordName($name, $zone);
 
-        // Now validate the input with normalized name
-        $validationResult = $dns->validate_input(-1, $zone_id, $type, $content, $name, $prio, $ttl, $dns_hostmaster, $dns_ttl);
-        if ($validationResult === false) {
+        // Now validate the input with normalized name using the validation service
+        $validationResult = $this->validationService->validateRecord(
+            -1,
+            $zone_id,
+            $type,
+            $content,
+            $name,
+            $prio,
+            $ttl,
+            $dns_hostmaster,
+            $dns_ttl
+        );
+        if ($validationResult === null) {
             return false;
         }
 
@@ -967,6 +988,8 @@ class DnsRecord
      */
     public function get_domain_name_by_id(int $id): bool|string
     {
+        // Note: This method is kept for backward compatibility
+        // New code should use the ZoneRepository::getDomainNameById() method
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 

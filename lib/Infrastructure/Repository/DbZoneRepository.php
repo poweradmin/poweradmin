@@ -260,4 +260,23 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         return $zones;
     }
+
+    /**
+     * Get domain name by ID
+     *
+     * @param int $zoneId The zone ID
+     * @return string|null The domain name or null if not found
+     */
+    public function getDomainNameById(int $zoneId): ?string
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT name FROM $domains_table WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_COLUMN);
+        return $result ?: null;
+    }
 }

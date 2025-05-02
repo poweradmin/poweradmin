@@ -4,11 +4,14 @@ namespace TestHelpers;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\DnsRecordValidationService;
+use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\AAAARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
@@ -22,21 +25,25 @@ use Poweradmin\Domain\Service\DnsValidation\PTRRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Base DNS test class with common setup for all DNS-related tests
  */
 class BaseDnsTest extends TestCase
 {
-    protected Dns $dnsInstance;
+    protected DnsRecordValidationServiceInterface $validationService;
 
     protected function setUp(): void
     {
         $dbMock = $this->createMock(PDOLayer::class);
         $configMock = $this->createMock(ConfigurationManager::class);
+        $messageServiceMock = $this->createMock(MessageService::class);
+        $zoneRepositoryMock = $this->createMock(ZoneRepositoryInterface::class);
 
         // Configure the mock to return expected values
         $configMock->method('get')
@@ -94,6 +101,17 @@ class BaseDnsTest extends TestCase
                 }
 
                 return null; // No record found by default
+            });
+
+        // Mock ZoneRepository to return domain names
+        $zoneRepositoryMock->method('getDomainNameById')
+            ->willReturnCallback(function ($zoneId) {
+                if ($zoneId === 1) {
+                    return 'example.com';
+                } elseif ($zoneId === 2) {
+                    return 'test.com';
+                }
+                return null;
             });
 
         // Create a mock for DnsValidatorRegistry
@@ -172,7 +190,16 @@ class BaseDnsTest extends TestCase
                 return $validator;
             });
 
-        // Create a Dns instance with mocked dependencies for tests
-        $this->dnsInstance = new Dns($dbMock, $configMock, $registryMock);
+        $ttlValidator = new TTLValidator();
+        $dnsCommonValidator = new DnsCommonValidator($dbMock, $configMock);
+
+        // Create validation service with mocked dependencies for tests
+        $this->validationService = new DnsRecordValidationService(
+            $registryMock,
+            $dnsCommonValidator,
+            $ttlValidator,
+            $messageServiceMock,
+            $zoneRepositoryMock
+        );
     }
 }
