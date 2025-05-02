@@ -506,6 +506,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsValidation\\TXTRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/TXTRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnssecProvider' => $baseDir . '/lib/Domain/Service/DnssecProvider.php',
     'Poweradmin\\Domain\\Service\\DomainRecordCreator' => $baseDir . '/lib/Domain/Service/DomainRecordCreator.php',
+    'Poweradmin\\Domain\\Service\\DynamicDnsHelper' => $baseDir . '/lib/Domain/Service/DynamicDnsHelper.php',
     'Poweradmin\\Domain\\Service\\PasswordEncryptionService' => $baseDir . '/lib/Domain/Service/PasswordEncryptionService.php',
     'Poweradmin\\Domain\\Service\\RecordTypeService' => $baseDir . '/lib/Domain/Service/RecordTypeService.php',
     'Poweradmin\\Domain\\Service\\ReverseRecordCreator' => $baseDir . '/lib/Domain/Service/ReverseRecordCreator.php',
