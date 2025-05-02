@@ -4,8 +4,10 @@ namespace unit\Dns;
 
 use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsValidation;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
+use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
@@ -15,38 +17,12 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 class ValidateInputTest extends BaseDnsTest
 {
     /**
-     * Test the updated validate_input method that returns an array instead of modifying by reference
+     * Test ARecordValidator class
      */
-    public function testValidateInputReturnsArray()
+    public function testARecordValidator()
     {
-        // Create mocks with detailed configuration to pass validation
-        $dbMock = $this->createMock(PDOLayer::class);
+        // Create mock for config
         $configMock = $this->createMock(ConfigurationManager::class);
-
-        // Configure the queryOne method to return necessary data for validation
-        $dbMock->method('queryOne')
-            ->willReturnCallback(function ($query) {
-                // Return domain name for get_domain_name_by_id
-                if (strpos($query, 'domains') !== false && strpos($query, 'name') !== false) {
-                    return 'example.com';
-                }
-                // For any CNAME, MX or NS checks, return null to pass validation
-                return null;
-            });
-
-        // Setup quote method for SQL queries
-        $dbMock->method('quote')
-            ->willReturnCallback(function ($value, $type = null) {
-                if ($type === 'text') {
-                    return "'$value'";
-                }
-                if ($type === 'integer') {
-                    return $value;
-                }
-                return "'$value'";
-            });
-
-        // Configure config values needed for validation
         $configMock->method('get')
             ->willReturnCallback(function ($section, $key) {
                 if ($section === 'dns') {
@@ -60,40 +36,29 @@ class ValidateInputTest extends BaseDnsTest
                 return null;
             });
 
-        $dns = new Dns($dbMock, $configMock);
+        $validator = new ARecordValidator($configMock);
 
-        // Use a simple A record which should be easier to validate
-        $validationResult = $dns->validate_input(
-            0,                  // rid
-            1,                  // zid
-            'A',                // type
-            '192.168.1.1',      // content - valid IPv4 for A record
+        // Test with valid data
+        $result = $validator->validate(
+            '192.168.1.1',      // content
             'test.example.com', // name
-            0,                  // prio - 0 for A record
+            0,                  // prio
             3600,               // ttl
-            'hostmaster@example.com', // dns_hostmaster
-            86400               // dns_ttl
+            86400               // default TTL
         );
 
-        // If validation fails, let's output what we know to help debug
-        if (!is_array($validationResult)) {
-            $this->markTestSkipped('Validation failed - this is expected as complex mock setup needed. Manually verify the code logic is correct.');
-            return;
-        }
-
-        // If it passes, check the correct structure
-        $this->assertIsArray($validationResult);
-        $this->assertArrayHasKey('content', $validationResult);
-        $this->assertArrayHasKey('name', $validationResult);
-        $this->assertArrayHasKey('prio', $validationResult);
-        $this->assertArrayHasKey('ttl', $validationResult);
+        // Check the correct structure
+        $this->assertIsArray($result, "A record validation result should be an array");
+        $this->assertArrayHasKey('content', $result);
+        $this->assertArrayHasKey('name', $result);
+        $this->assertArrayHasKey('prio', $result);
+        $this->assertArrayHasKey('ttl', $result);
 
         // Check the values
-        $this->assertEquals('192.168.1.1', $validationResult['content']);
-        // Name should be normalized
-        $this->assertIsString($validationResult['name']);
-        $this->assertEquals(0, $validationResult['prio']); // 0 for A record
-        $this->assertEquals(3600, $validationResult['ttl']);
+        $this->assertEquals('192.168.1.1', $result['content']);
+        $this->assertIsString($result['name']);
+        $this->assertEquals(0, $result['prio']);
+        $this->assertEquals(3600, $result['ttl']);
     }
 
     /**
