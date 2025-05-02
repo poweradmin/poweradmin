@@ -91,12 +91,10 @@ class LOCRecordValidatorTest extends TestCase
         $ttl = 3600;
         $defaultTTL = 86400;
 
-        // Note: The current LOC validator regex appears to allow values over 90 for latitude
-        // This test is adapted to match the current implementation, but ideally the validator
-        // should be fixed to reject values over 90 degrees for latitude
+        // The validator now properly rejects values over 90 degrees for latitude
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
+        $this->assertFalse($result);
     }
 
     public function testValidateWithInvalidLongitude()
