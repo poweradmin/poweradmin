@@ -70,14 +70,14 @@
     "tests:integration": "phpunit --testsuite integration",
 
     "check:lib": "phpcs --standard=phpcs.xml lib",
-    "check:all": "phpcs --standard=phpcs.xml config index.php install tests",
+    "check:all": "phpcs --standard=phpcs.xml addons config index.php install lib tests dynamic_update.php",
 
     "format:config": "phpcbf --standard=phpcs.xml config",
     "format:index": "phpcbf --standard=phpcs.xml index.php",
     "format:install": "phpcbf --standard=phpcs.xml install",
     "format:lib": "phpcbf --standard=phpcs.xml lib",
     "format:tests": "phpcbf --standard=phpcs.xml tests",
-    "format:all": "phpcbf --standard=phpcs.xml config index.php install lib tests",
+    "format:all": "phpcbf --standard=phpcs.xml addons config index.php install lib tests dynamic_update.php",
 
     "style:config": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- config",
     "style:index": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- index.php",
@@ -85,7 +85,7 @@
     "style:lib": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- lib",
     "style:tests": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- tests",
 
-    "analyse:all": "phpstan analyse config index.php install lib tests",
+    "analyse:all": "phpstan analyse addons config index.php install lib tests dynamic_update.php",
     "check:psalm": "psalm",
 
     "check:phpmd:config": "phpmd config ansi cleancode,codesize,controversial,design,naming,unusedcode",
