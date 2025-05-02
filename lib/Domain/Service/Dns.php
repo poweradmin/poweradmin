@@ -155,6 +155,29 @@ class Dns
             case RecordType::SMIMEA:
             case RecordType::TKEY:
             case RecordType::URI:
+            case RecordType::DHCID:
+            case RecordType::DLV:
+            case RecordType::DNSKEY:
+            case RecordType::EUI48:
+            case RecordType::EUI64:
+            case RecordType::HTTPS:
+            case RecordType::IPSECKEY:
+            case RecordType::KEY:
+            case RecordType::KX:
+            case RecordType::MINFO:
+            case RecordType::MR:
+            case RecordType::NAPTR:
+            case RecordType::NID:
+            case RecordType::NSEC:
+            case RecordType::NSEC3:
+            case RecordType::NSEC3PARAM:
+            case RecordType::RKEY:
+            case RecordType::RP:
+            case RecordType::RRSIG:
+            case RecordType::SSHFP:
+            case RecordType::SVCB:
+            case RecordType::TLSA:
+            case RecordType::TSIG:
                 break;
 
             case RecordType::AAAA:
@@ -183,29 +206,6 @@ class Dns
                 $ttl = $validationResult['ttl'];
                 break;
 
-            case RecordType::DHCID:
-            case RecordType::DLV:
-            case RecordType::DNSKEY:
-            case RecordType::EUI48:
-            case RecordType::EUI64:
-            case RecordType::HTTPS:
-            case RecordType::IPSECKEY:
-            case RecordType::KEY:
-            case RecordType::KX:
-            case RecordType::MINFO:
-            case RecordType::MR:
-            case RecordType::NAPTR:
-            case RecordType::NID:
-            case RecordType::NSEC:
-            case RecordType::NSEC3:
-            case RecordType::NSEC3PARAM:
-            case RecordType::RKEY:
-            case RecordType::RP:
-            case RecordType::RRSIG:
-            case RecordType::SSHFP:
-            case RecordType::SVCB:
-            case RecordType::TLSA:
-            case RecordType::TSIG:
             case RecordType::CSYNC:
                 $validationResult = $this->csyncRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
                 if ($validationResult === false) {
