@@ -682,6 +682,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Domain\\Service\\DnsValidation\\CNAMERecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/CNAMERecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\CSYNCRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\DSRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/DSRecordValidator.php',
+        'Poweradmin\\Domain\\Service\\DnsValidation\\DnsCommonValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/DnsCommonValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\DnsRecordValidatorInterface' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/DnsRecordValidatorInterface.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\HINFORecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/HINFORecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\HostnameValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/HostnameValidator.php',

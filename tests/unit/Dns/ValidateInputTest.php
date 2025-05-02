@@ -5,6 +5,7 @@ namespace unit\Dns;
 use TestHelpers\BaseDnsTest;
 use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
@@ -148,35 +149,40 @@ class ValidateInputTest extends BaseDnsTest
 
     public function testIsValidRRPrio()
     {
+        // Create validator with mocks
+        $dbMock = $this->createMock(PDOLayer::class);
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $validator = new DnsCommonValidator($dbMock, $configMock);
+
         // Test with valid values
-        $result = Dns::is_valid_rr_prio(10, "MX");
+        $result = $validator->isValidPriority(10, "MX");
         $this->assertSame(10, $result, "Should return the input value for valid MX priority");
 
-        $result = Dns::is_valid_rr_prio(65535, "SRV");
+        $result = $validator->isValidPriority(65535, "SRV");
         $this->assertSame(65535, $result, "Should return the input value for valid SRV priority");
 
         // Test with empty values (default values)
-        $result = Dns::is_valid_rr_prio("", "MX");
+        $result = $validator->isValidPriority("", "MX");
         $this->assertSame(10, $result, "Should return default value 10 for empty MX priority");
 
-        $result = Dns::is_valid_rr_prio("", "SRV");
+        $result = $validator->isValidPriority("", "SRV");
         $this->assertSame(10, $result, "Should return default value 10 for empty SRV priority");
 
-        $result = Dns::is_valid_rr_prio("", "A");
+        $result = $validator->isValidPriority("", "A");
         $this->assertSame(0, $result, "Should return default value 0 for empty priority on non-MX/SRV records");
 
         // Test with invalid values
-        $result = Dns::is_valid_rr_prio(-1, "MX");
+        $result = $validator->isValidPriority(-1, "MX");
         $this->assertFalse($result, "Should return false for negative priority");
 
-        $result = Dns::is_valid_rr_prio("foo", "SRV");
+        $result = $validator->isValidPriority("foo", "SRV");
         $this->assertFalse($result, "Should return false for non-numeric priority");
 
-        $result = Dns::is_valid_rr_prio(10, "A");
+        $result = $validator->isValidPriority(10, "A");
         $this->assertFalse($result, "Should return false for A record with non-zero priority");
 
         // Specific case: zero priority is valid for all records
-        $result = Dns::is_valid_rr_prio("0", "A");
+        $result = $validator->isValidPriority("0", "A");
         $this->assertSame(0, $result, "Should allow zero priority for any record type");
     }
 

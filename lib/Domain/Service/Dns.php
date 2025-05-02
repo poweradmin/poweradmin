@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\PDOLayer;
@@ -70,6 +71,7 @@ class Dns
     private HostnameValidator $hostnameValidator;
     private MXRecordValidator $mxRecordValidator;
     private NSRecordValidator $nsRecordValidator;
+    private DnsCommonValidator $dnsCommonValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -91,6 +93,7 @@ class Dns
         $this->hostnameValidator = new HostnameValidator($config);
         $this->mxRecordValidator = new MXRecordValidator($config);
         $this->nsRecordValidator = new NSRecordValidator($config);
+        $this->dnsCommonValidator = new DnsCommonValidator($db, $config);
     }
 
     /** Validate DNS record input
@@ -267,7 +270,7 @@ class Dns
                 $prio = $validationResult['prio'];
                 $ttl = $validationResult['ttl'];
 
-                if (!$this->is_valid_non_alias_target($content)) {
+                if (!$this->dnsCommonValidator->isValidNonAliasTarget($content)) {
                     return false;
                 }
                 break;
@@ -284,7 +287,7 @@ class Dns
                 $prio = $validationResult['prio'];
                 $ttl = $validationResult['ttl'];
 
-                if (!$this->is_valid_non_alias_target($content)) {
+                if (!$this->dnsCommonValidator->isValidNonAliasTarget($content)) {
                     return false;
                 }
                 break;
@@ -367,9 +370,8 @@ class Dns
             $type !== RecordType::A && $type !== RecordType::AAAA && $type !== RecordType::CNAME &&
             $type !== RecordType::CSYNC && $type !== RecordType::MX && $type !== RecordType::NS
         ) {
-            $validatedPrio = self::is_valid_rr_prio($prio, $type);
+            $validatedPrio = $this->dnsCommonValidator->isValidPriority($prio, $type);
             if ($validatedPrio === false) {
-                $this->messageService->addSystemError(_('Invalid value for prio field.'));
                 return false;
             }
 
@@ -389,58 +391,5 @@ class Dns
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
         ];
-    }
-
-    /** Check if target is not a CNAME
-     *
-     * @param string $target target to check
-     *
-     * @return boolean true if not alias, false if CNAME exists
-     */
-    public function is_valid_non_alias_target(string $target): bool
-    {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-
-        $query = "SELECT id FROM $records_table
-			WHERE name = " . $this->db->quote($target, 'text') . "
-			AND TYPE = " . $this->db->quote('CNAME', 'text');
-
-        $response = $this->db->queryOne($query);
-        if ($response) {
-            $this->messageService->addSystemError(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
-            return false;
-        }
-        return true;
-    }
-
-    /** Check if Priority is valid
-     *
-     * @deprecated This method is deprecated and will be removed in a future version.
-     * Use the appropriate record validator instead.
-     *
-     * Check if MX or SRV priority is within range
-     *
-     * @param mixed $prio Priority
-     * @param string $type Record type
-     *
-     * @return int|bool Valid priority value or false if invalid
-     */
-    public static function is_valid_rr_prio(mixed $prio, string $type): int|bool
-    {
-        // For backward compatibility, use the same logic
-        if (!isset($prio) || $prio === "") {
-            if ($type == "MX" || $type == "SRV") {
-                return 10;
-            }
-            return 0;
-        }
-
-        if (($type == "MX" || $type == "SRV") && (is_numeric($prio) && $prio >= 0 && $prio <= 65535)) {
-            return (int)$prio;
-        } elseif (is_numeric($prio) && $prio == 0) {
-            return 0;
-        }
-        return false;
     }
 }

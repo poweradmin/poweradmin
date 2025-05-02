@@ -3,6 +3,7 @@
 namespace unit\Dns;
 
 use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use TestHelpers\BaseDnsTest;
@@ -136,15 +137,42 @@ class CnameValidationTest extends BaseDnsTest
 
     public function testIsValidNonAliasTarget()
     {
-        // Valid case - target is not a CNAME
-        $target = 'valid.example.com';
-        $result = $this->dnsInstance->is_valid_non_alias_target($target);
-        $this->assertTrue($result);
+        // Create mocks that will be used for both test cases
+        $configMock = $this->createMock(ConfigurationManager::class);
+        $configMock->method('get')
+            ->willReturn('pdns');
 
-        // Invalid case - target is a CNAME
-        $target = 'alias.example.com';
-        $result = $this->dnsInstance->is_valid_non_alias_target($target);
-        $this->assertFalse($result);
+        // Test valid case - target is not a CNAME
+        $dbMock1 = $this->createMock(PDOLayer::class);
+        $dbMock1->method('quote')
+            ->willReturnCallback(function ($value, $type) {
+                if ($type === 'text') {
+                    return "'$value'";
+                }
+                return $value;
+            });
+        $dbMock1->expects($this->once())
+            ->method('queryOne')
+            ->willReturn(false);
+
+        $validator1 = new DnsCommonValidator($dbMock1, $configMock);
+        $this->assertTrue($validator1->isValidNonAliasTarget('valid.example.com'));
+
+        // Test invalid case - target is a CNAME
+        $dbMock2 = $this->createMock(PDOLayer::class);
+        $dbMock2->method('quote')
+            ->willReturnCallback(function ($value, $type) {
+                if ($type === 'text') {
+                    return "'$value'";
+                }
+                return $value;
+            });
+        $dbMock2->expects($this->once())
+            ->method('queryOne')
+            ->willReturn(['id' => 1]);
+
+        $validator2 = new DnsCommonValidator($dbMock2, $configMock);
+        $this->assertFalse($validator2->isValidNonAliasTarget('alias.example.com'));
     }
 
     public function testIsNotEmptyCnameRR()
