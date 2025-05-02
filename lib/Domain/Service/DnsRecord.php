@@ -23,27 +23,16 @@
 namespace Poweradmin\Domain\Service;
 
 use Exception;
-use PDO;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\Dns\SupermasterManager;
-use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
-use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Domain\Model\Permission;
-use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
-use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOLayer;
-use Poweradmin\Infrastructure\Utility\SortHelper;
 
 /**
  * DNS record functions
@@ -58,10 +47,6 @@ class DnsRecord
 {
     private PDOLayer $db;
     private ConfigurationManager $config;
-    private MessageService $messageService;
-    private HostnameValidator $hostnameValidator;
-    private IPAddressValidator $ipAddressValidator;
-    private DnsFormatter $dnsFormatter;
     private DnsRecordValidationServiceInterface $validationService;
 
     // New service instances
@@ -76,10 +61,6 @@ class DnsRecord
     {
         $this->db = $db;
         $this->config = $config;
-        $this->messageService = new MessageService();
-        $this->hostnameValidator = new HostnameValidator($config);
-        $this->ipAddressValidator = new IPAddressValidator();
-        $this->dnsFormatter = new DnsFormatter($config);
         $this->validationService = DnsServiceFactory::createDnsRecordValidationService($db, $config);
 
         // Initialize the new service instances
