@@ -32,6 +32,8 @@ class DnsValidatorRegistry
             RecordType::A => new ARecordValidator($this->config),
             RecordType::AAAA => new AAAARecordValidator($this->config),
             RecordType::AFSDB => new AFSDBRecordValidator($this->config),
+            RecordType::ALIAS => new ALIASRecordValidator($this->config),
+            RecordType::APL => new APLRecordValidator($this->config),
             RecordType::CNAME => new CNAMERecordValidator($this->config, $this->db),
             RecordType::CSYNC => new CSYNCRecordValidator($this->config),
             RecordType::DS => new DSRecordValidator($this->config),
