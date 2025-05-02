@@ -2,13 +2,24 @@
 
 namespace unit\Dns;
 
-use TestHelpers\BaseDnsTest;
+use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Tests for SRV record validation
  */
-class SrvValidationTest extends BaseDnsTest
+class SrvValidationTest extends TestCase
 {
+    private SRVRecordValidator $validator;
+    private ConfigurationManager $configMock;
+
+    protected function setUp(): void
+    {
+        $this->configMock = $this->createMock(ConfigurationManager::class);
+        $this->validator = new SRVRecordValidator($this->configMock);
+    }
+
     /**
      * Data provider for SRV name tests
      */
@@ -33,22 +44,13 @@ class SrvValidationTest extends BaseDnsTest
      */
     public function testIsValidSrvName(string $name, bool $expected)
     {
-        // Some tests might fail due to complex dependencies and mock setup
-        // We'll make this test more resilient by handling both outcomes
-
-        $result = $this->dnsInstance->is_valid_rr_srv_name($name);
+        $result = $this->validator->validate('10 20 5060 sip.example.com', $name, 0, 3600, 86400);
 
         if ($expected) {
-            if (!is_array($result)) {
-                // Expected to pass but failed - mark as skipped
-                $this->markTestSkipped('SRV name validation failed - likely due to incomplete mock setup. Manual validation required.');
-                return;
-            }
             $this->assertIsArray($result);
             $this->assertArrayHasKey('name', $result);
-            // We don't check the exact value as it may be normalized
+            $this->assertEquals($name, $result['name']);
         } else {
-            // For expected failures, we still want to assert they fail
             $this->assertFalse($result);
         }
     }
@@ -80,20 +82,72 @@ class SrvValidationTest extends BaseDnsTest
      */
     public function testIsValidSrvContent(string $content, string $name, bool $expected)
     {
-        $result = $this->dnsInstance->is_valid_rr_srv_content($content, $name);
+        $result = $this->validator->validate($content, $name, 0, 3600, 86400);
 
         if ($expected) {
-            if (!is_array($result)) {
-                // Expected to pass but failed - mark as skipped
-                $this->markTestSkipped('SRV content validation failed - likely due to incomplete mock setup. Manual validation required.');
-                return;
-            }
             $this->assertIsArray($result);
             $this->assertArrayHasKey('content', $result);
-            // We don't check the exact content as it may be normalized
+            $this->assertEquals($content, $result['content']);
         } else {
-            // For expected failures, we still want to assert they fail
             $this->assertFalse($result);
         }
+    }
+
+    public function testValidateWithCustomPriority()
+    {
+        $content = "20 10 5060 sip.example.com";
+        $name = "_sip._tcp.example.com";
+        $prio = 20;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertIsArray($result);
+        $this->assertEquals($content, $result['content']);
+        $this->assertEquals($name, $result['name']);
+        $this->assertEquals(20, $result['prio']);
+        $this->assertEquals(3600, $result['ttl']);
+    }
+
+    public function testValidateWithDefaultPriority()
+    {
+        $content = "10 10 5060 sip.example.com";
+        $name = "_sip._tcp.example.com";
+        $prio = "";  // Empty priority should default to 10
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertIsArray($result);
+        $this->assertEquals(10, $result['prio']);
+    }
+
+    public function testValidateWithInvalidPriority()
+    {
+        $content = "10 10 5060 sip.example.com";
+        $name = "_sip._tcp.example.com";
+        $prio = 70000;  // Priority too high
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result);
+    }
+
+    public function testValidateWithDefaultTTL()
+    {
+        $content = "10 10 5060 sip.example.com";
+        $name = "_sip._tcp.example.com";
+        $prio = 10;
+        $ttl = "";  // Empty TTL should use default
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertIsArray($result);
+        $this->assertEquals(86400, $result['ttl']);
     }
 }
