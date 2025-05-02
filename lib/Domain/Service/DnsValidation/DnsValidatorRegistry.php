@@ -46,6 +46,7 @@ class DnsValidatorRegistry
             RecordType::SPF => new SPFRecordValidator($this->config),
             RecordType::SRV => new SRVRecordValidator($this->config),
             RecordType::TXT => new TXTRecordValidator($this->config),
+            RecordType::URI => new URIRecordValidator($this->config),
             // Add other validators for remaining record types as needed
         ];
 

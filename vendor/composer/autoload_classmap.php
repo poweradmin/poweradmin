@@ -508,6 +508,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsValidation\\StringValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/StringValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\TTLValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/TTLValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\TXTRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/TXTRecordValidator.php',
+    'Poweradmin\\Domain\\Service\\DnsValidation\\URIRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/URIRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnssecProvider' => $baseDir . '/lib/Domain/Service/DnssecProvider.php',
     'Poweradmin\\Domain\\Service\\DomainRecordCreator' => $baseDir . '/lib/Domain/Service/DomainRecordCreator.php',
     'Poweradmin\\Domain\\Service\\DynamicDnsHelper' => $baseDir . '/lib/Domain/Service/DynamicDnsHelper.php',
