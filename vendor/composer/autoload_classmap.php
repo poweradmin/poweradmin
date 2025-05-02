@@ -494,6 +494,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsValidation\\IPAddressValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/IPAddressValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\LOCRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/LOCRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\MXRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/MXRecordValidator.php',
+    'Poweradmin\\Domain\\Service\\DnsValidation\\NSRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/NSRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\SOARecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/SOARecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\SPFRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/SPFRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\SRVRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/SRVRecordValidator.php',

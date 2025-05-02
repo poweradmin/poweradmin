@@ -32,6 +32,7 @@ use Poweradmin\Domain\Service\DnsValidation\HINFORecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\MXRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\NSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
@@ -68,6 +69,7 @@ class Dns
     private TXTRecordValidator $txtRecordValidator;
     private HostnameValidator $hostnameValidator;
     private MXRecordValidator $mxRecordValidator;
+    private NSRecordValidator $nsRecordValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -88,6 +90,7 @@ class Dns
         $this->txtRecordValidator = new TXTRecordValidator($config);
         $this->hostnameValidator = new HostnameValidator($config);
         $this->mxRecordValidator = new MXRecordValidator($config);
+        $this->nsRecordValidator = new NSRecordValidator($config);
     }
 
     /** Validate DNS record input
@@ -253,17 +256,16 @@ class Dns
                 break;
 
             case RecordType::NS:
-                $contentHostnameResult = $this->hostnameValidator->isValidHostnameFqdn($content, 0);
-                if ($contentHostnameResult === false) {
+                $validationResult = $this->nsRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
+                if ($validationResult === false) {
                     return false;
                 }
-                $content = $contentHostnameResult['hostname'];
 
-                $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-                if ($hostnameResult === false) {
-                    return false;
-                }
-                $name = $hostnameResult['hostname'];
+                // Update variables with validated data
+                $content = $validationResult['content'];
+                $name = $validationResult['name'];
+                $prio = $validationResult['prio'];
+                $ttl = $validationResult['ttl'];
 
                 if (!$this->is_valid_non_alias_target($content)) {
                     return false;
@@ -361,7 +363,10 @@ class Dns
         }
 
         // Skip validation if it was already handled by a specific validator
-        if ($type !== RecordType::A && $type !== RecordType::AAAA && $type !== RecordType::CNAME && $type !== RecordType::CSYNC) {
+        if (
+            $type !== RecordType::A && $type !== RecordType::AAAA && $type !== RecordType::CNAME &&
+            $type !== RecordType::CSYNC && $type !== RecordType::MX && $type !== RecordType::NS
+        ) {
             $validatedPrio = self::is_valid_rr_prio($prio, $type);
             if ($validatedPrio === false) {
                 $this->messageService->addSystemError(_('Invalid value for prio field.'));
