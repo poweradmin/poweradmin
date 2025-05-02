@@ -68,6 +68,7 @@ class DnsValidatorRegistry
             RecordType::SOA => new SOARecordValidator($this->config, $this->db),
             RecordType::SPF => new SPFRecordValidator($this->config),
             RecordType::SRV => new SRVRecordValidator($this->config),
+            RecordType::SVCB => new SVCBRecordValidator($this->config),
             RecordType::TXT => new TXTRecordValidator($this->config),
             RecordType::URI => new URIRecordValidator($this->config),
             // Add other validators for remaining record types as needed
