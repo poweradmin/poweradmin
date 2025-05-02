@@ -39,9 +39,7 @@ class SrvValidationTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider srvNameProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('srvNameProvider')]
     public function testIsValidSrvName(string $name, bool $expected)
     {
         $result = $this->validator->validate('10 20 5060 sip.example.com', $name, 0, 3600, 86400);
@@ -77,9 +75,7 @@ class SrvValidationTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider srvContentProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('srvContentProvider')]
     public function testIsValidSrvContent(string $content, string $name, bool $expected)
     {
         $result = $this->validator->validate($content, $name, 0, 3600, 86400);
