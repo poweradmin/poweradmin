@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
-use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -42,6 +42,7 @@ class ZoneTemplate
     private PDOLayer $db;
     private DnsFormatter $dnsFormatter;
     private MessageService $messageService;
+    private DnsCommonValidator $dnsCommonValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -49,6 +50,7 @@ class ZoneTemplate
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
         $this->messageService = new MessageService();
+        $this->dnsCommonValidator = new DnsCommonValidator($db, $config);
     }
 
     /**
@@ -341,9 +343,8 @@ class ZoneTemplate
             return false;
         }
 
-        if (!Dns::is_valid_rr_prio($prio, $type)) {
-            $this->messageService->addSystemError(_('Invalid value for prio field.'));
-            return false;
+        if (!$this->dnsCommonValidator->isValidPriority($prio, $type)) {
+            return false; // Error message is already set by the validator
         }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
@@ -385,9 +386,8 @@ class ZoneTemplate
             return false;
         }
 
-        if (!Dns::is_valid_rr_prio($record['prio'], $record['type'])) {
-            $this->messageService->addSystemError(_('Invalid value for prio field.'));
-            return false;
+        if (!$this->dnsCommonValidator->isValidPriority($record['prio'], $record['type'])) {
+            return false; // Error message is already set by the validator
         }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
