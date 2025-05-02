@@ -3,7 +3,7 @@
         'name' => 'poweradmin/poweradmin',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '268e05e6500ab3b52080b885a75497cde5b38e41',
+        'reference' => '0ea0d8be987f860887b5cd14ad1d008c6c0c3f38',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -82,7 +82,7 @@
         'poweradmin/poweradmin' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '268e05e6500ab3b52080b885a75497cde5b38e41',
+            'reference' => '0ea0d8be987f860887b5cd14ad1d008c6c0c3f38',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

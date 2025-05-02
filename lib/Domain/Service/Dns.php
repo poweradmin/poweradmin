@@ -31,6 +31,7 @@ use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HINFORecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\MXRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
@@ -66,6 +67,7 @@ class Dns
     private SRVRecordValidator $srvRecordValidator;
     private TXTRecordValidator $txtRecordValidator;
     private HostnameValidator $hostnameValidator;
+    private MXRecordValidator $mxRecordValidator;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -85,6 +87,7 @@ class Dns
         $this->srvRecordValidator = new SRVRecordValidator($config);
         $this->txtRecordValidator = new TXTRecordValidator($config);
         $this->hostnameValidator = new HostnameValidator($config);
+        $this->mxRecordValidator = new MXRecordValidator($config);
     }
 
     /** Validate DNS record input
@@ -250,7 +253,6 @@ class Dns
                 break;
 
             case RecordType::NS:
-            case RecordType::MX:
                 $contentHostnameResult = $this->hostnameValidator->isValidHostnameFqdn($content, 0);
                 if ($contentHostnameResult === false) {
                     return false;
@@ -262,6 +264,23 @@ class Dns
                     return false;
                 }
                 $name = $hostnameResult['hostname'];
+
+                if (!$this->is_valid_non_alias_target($content)) {
+                    return false;
+                }
+                break;
+
+            case RecordType::MX:
+                $validationResult = $this->mxRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
+                if ($validationResult === false) {
+                    return false;
+                }
+
+                // Update variables with validated data
+                $content = $validationResult['content'];
+                $name = $validationResult['name'];
+                $prio = $validationResult['prio'];
+                $ttl = $validationResult['ttl'];
 
                 if (!$this->is_valid_non_alias_target($content)) {
                     return false;
@@ -392,6 +411,9 @@ class Dns
 
     /** Check if Priority is valid
      *
+     * @deprecated This method is deprecated and will be removed in a future version.
+     * Use the appropriate record validator instead.
+     *
      * Check if MX or SRV priority is within range
      *
      * @param mixed $prio Priority
@@ -401,23 +423,19 @@ class Dns
      */
     public static function is_valid_rr_prio(mixed $prio, string $type): int|bool
     {
-        // If priority is not provided or empty, set a default value based on record type
+        // For backward compatibility, use the same logic
         if (!isset($prio) || $prio === "") {
-            // Use 10 as default priority for MX and SRV records (common practice)
             if ($type == "MX" || $type == "SRV") {
                 return 10;
             }
-            // For all other record types, use 0
             return 0;
         }
 
-        // Validate priority
         if (($type == "MX" || $type == "SRV") && (is_numeric($prio) && $prio >= 0 && $prio <= 65535)) {
             return (int)$prio;
         } elseif (is_numeric($prio) && $prio == 0) {
             return 0;
-        } else {
-            return false;
         }
+        return false;
     }
 }
