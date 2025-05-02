@@ -45,42 +45,4 @@ class IpValidationTest extends BaseDnsTest
         $this->assertTrue($this->validator->areMultipleValidIPs("192.168.1.1, 10.0.0.1"));
         $this->assertFalse($this->validator->areMultipleValidIPs("192.168.1.1, invalid_ip"));
     }
-
-    /**
-     * Test validation with the instance methods (non-static)
-     */
-    public function testInstanceMethods()
-    {
-        // For non-static validation methods that might be used in the Dns class
-        // We need to create a new non-static method in Dns that we can test
-        // Alternatively, we can skip this test if we're only using static methods
-
-        // This test was failing because we were trying to test static methods with mocks
-        // which doesn't work because static methods create their own instances internally
-
-        // Let's test that the instance property is used correctly for any
-        // non-static methods that might use the IPAddressValidator
-        $this->markTestSkipped('This test needs to be adjusted after proper non-static IP validation methods are added to Dns class');
-
-        // Example of how to test an instance method when we add one:
-        /*
-        // Create a mock validator
-        $mockIpValidator = $this->createMock(IPAddressValidator::class);
-
-        // Set expectations
-        $mockIpValidator->expects($this->once())
-                      ->method('areMultipleValidIPs')
-                      ->with('192.168.1.1, 10.0.0.1')
-                      ->willReturn(true);
-
-        // Inject the mock using reflection
-        $reflection = new \ReflectionObject($this->dnsInstance);
-        $property = $reflection->getProperty('ipAddressValidator');
-        $property->setAccessible(true);
-        $property->setValue($this->dnsInstance, $mockIpValidator);
-
-        // Call the instance method (not static)
-        $this->assertTrue($this->dnsInstance->validateMultipleIps('192.168.1.1, 10.0.0.1'));
-        */
-    }
 }
