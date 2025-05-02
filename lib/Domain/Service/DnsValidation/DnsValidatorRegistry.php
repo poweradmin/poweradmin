@@ -46,29 +46,29 @@ class DnsValidatorRegistry
             // Add other validators for remaining record types as needed
         ];
 
-        // For record types not yet implemented, use a generic validator
-        // We could create a DefaultRecordValidator for types that don't have specific validation yet
+        // For record types not yet implemented, we'll use DefaultRecordValidator
+        // which is created on-demand in the getValidator method
     }
 
     /**
      * Get validator for a specific record type
      *
      * @param string $recordType The record type (A, AAAA, CNAME, etc.)
-     * @return DnsRecordValidatorInterface|null The validator instance or null if not found
+     * @return DnsRecordValidatorInterface The validator instance (default validator if specific one not found)
      */
-    public function getValidator(string $recordType): ?DnsRecordValidatorInterface
+    public function getValidator(string $recordType): DnsRecordValidatorInterface
     {
-        return $this->validators[$recordType] ?? null;
+        return $this->validators[$recordType] ?? new DefaultRecordValidator($this->config);
     }
 
     /**
      * Check if a validator exists for a record type
      *
      * @param string $recordType The record type
-     * @return bool True if validator exists
+     * @return bool True if validator exists (always true now since we use DefaultRecordValidator for unknown types)
      */
     public function hasValidator(string $recordType): bool
     {
-        return isset($this->validators[$recordType]);
+        return true;
     }
 }
