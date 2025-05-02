@@ -395,7 +395,6 @@ class DnsRecord
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $record['content'] = $this->dnsFormatter->formatContent($record['type'], $record['content']);
 
-        $dns = new Dns($this->db, $this->config);
         $dns_ttl = $this->config->get('dns', 'ttl');
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {
@@ -1169,8 +1168,6 @@ class DnsRecord
      */
     public function domain_exists(string $domain): bool
     {
-        $dns = new Dns($this->db, $this->config);
-
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
