@@ -3,8 +3,25 @@
 namespace TestHelpers;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Dns;
+use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\AAAARecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
+use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HINFORecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\MXRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\NSRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\PTRRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
@@ -78,7 +95,80 @@ class BaseDnsTest extends TestCase
                 return null; // No record found by default
             });
 
+        // Create a mock for DnsValidatorRegistry
+        $registryMock = $this->createMock(DnsValidatorRegistry::class);
+
+        // Configure getValidator to return appropriate validator mocks
+        $registryMock->method('getValidator')
+            ->willReturnCallback(function ($type) use ($configMock, $dbMock) {
+                // Create validator mock for each record type
+                $validator = null;
+
+                switch ($type) {
+                    case RecordType::A:
+                        $validator = new ARecordValidator($configMock);
+                        break;
+                    case RecordType::AAAA:
+                        $validator = new AAAARecordValidator($configMock);
+                        break;
+                    case RecordType::CNAME:
+                        $validator = $this->getMockBuilder(CNAMERecordValidator::class)
+                            ->setConstructorArgs([$configMock, $dbMock])
+                            ->onlyMethods(['isValidCnameExistence'])
+                            ->getMock();
+
+                        $validator->method('isValidCnameExistence')
+                            ->willReturnCallback(function ($hostname, $rid) {
+                                // Return false for known problematic hostnames
+                                if ($hostname === 'existing.cname.example.com') {
+                                    return false;
+                                }
+                                return true;
+                            });
+
+                        break;
+                    case RecordType::MX:
+                        $validator = new MXRecordValidator($configMock);
+                        break;
+                    case RecordType::NS:
+                        $validator = new NSRecordValidator($configMock);
+                        break;
+                    case RecordType::PTR:
+                        $validator = new PTRRecordValidator($configMock);
+                        break;
+                    case RecordType::SOA:
+                        $validator = $this->getMockBuilder(SOARecordValidator::class)
+                            ->setConstructorArgs([$configMock, $dbMock])
+                            ->onlyMethods(['setSOAParams'])
+                            ->getMock();
+                        break;
+                    case RecordType::TXT:
+                        $validator = new TXTRecordValidator($configMock);
+                        break;
+                    case RecordType::SRV:
+                        $validator = new SRVRecordValidator($configMock);
+                        break;
+                    case RecordType::SPF:
+                        $validator = new SPFRecordValidator($configMock);
+                        break;
+                    case RecordType::HINFO:
+                        $validator = new HINFORecordValidator($configMock);
+                        break;
+                    case RecordType::LOC:
+                        $validator = new LOCRecordValidator($configMock);
+                        break;
+                    case RecordType::DS:
+                        $validator = new DSRecordValidator($configMock);
+                        break;
+                    case RecordType::CSYNC:
+                        $validator = new CSYNCRecordValidator($configMock);
+                        break;
+                }
+
+                return $validator;
+            });
+
         // Create a Dns instance with mocked dependencies for tests
-        $this->dnsInstance = new Dns($dbMock, $configMock);
+        $this->dnsInstance = new Dns($dbMock, $configMock, $registryMock);
     }
 }

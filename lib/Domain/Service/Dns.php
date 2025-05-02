@@ -23,21 +23,9 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
-use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\AAAARecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\DSRecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\HINFORecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\MXRecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\NSRecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
-use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -57,46 +45,24 @@ class Dns
     private PDOLayer $db;
     private MessageService $messageService;
     private TTLValidator $ttlValidator;
-    private ARecordValidator $aRecordValidator;
-    private AAAARecordValidator $aaaaRecordValidator;
-    private CNAMERecordValidator $cnameRecordValidator;
-    private CSYNCRecordValidator $csyncRecordValidator;
-    private DSRecordValidator $dsRecordValidator;
-    private HINFORecordValidator $hinfoRecordValidator;
-    private LOCRecordValidator $locRecordValidator;
-    private SOARecordValidator $soaRecordValidator;
-    private SPFRecordValidator $spfRecordValidator;
-    private SRVRecordValidator $srvRecordValidator;
-    private TXTRecordValidator $txtRecordValidator;
-    private HostnameValidator $hostnameValidator;
-    private MXRecordValidator $mxRecordValidator;
-    private NSRecordValidator $nsRecordValidator;
     private DnsCommonValidator $dnsCommonValidator;
+    private DnsValidatorRegistry $validatorRegistry;
 
-    public function __construct(PDOLayer $db, ConfigurationManager $config)
-    {
+    public function __construct(
+        PDOLayer $db,
+        ConfigurationManager $config,
+        ?DnsValidatorRegistry $validatorRegistry = null
+    ) {
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
         $this->ttlValidator = new TTLValidator();
-        $this->aRecordValidator = new ARecordValidator($config);
-        $this->aaaaRecordValidator = new AAAARecordValidator($config);
-        $this->cnameRecordValidator = new CNAMERecordValidator($config, $db);
-        $this->csyncRecordValidator = new CSYNCRecordValidator($config);
-        $this->dsRecordValidator = new DSRecordValidator($config);
-        $this->hinfoRecordValidator = new HINFORecordValidator($config);
-        $this->locRecordValidator = new LOCRecordValidator($config);
-        $this->soaRecordValidator = new SOARecordValidator($config, $db);
-        $this->spfRecordValidator = new SPFRecordValidator($config);
-        $this->srvRecordValidator = new SRVRecordValidator($config);
-        $this->txtRecordValidator = new TXTRecordValidator($config);
-        $this->hostnameValidator = new HostnameValidator($config);
-        $this->mxRecordValidator = new MXRecordValidator($config);
-        $this->nsRecordValidator = new NSRecordValidator($config);
         $this->dnsCommonValidator = new DnsCommonValidator($db, $config);
+        $this->validatorRegistry = $validatorRegistry ?? new DnsValidatorRegistry($config, $db);
     }
 
-    /** Validate DNS record input
+    /**
+     * Validate DNS record input
      *
      * @param int $rid Record ID
      * @param int $zid Zone ID
@@ -105,6 +71,8 @@ class Dns
      * @param string $name Name part of record
      * @param mixed $prio Priority
      * @param mixed $ttl TTL
+     * @param string $dns_hostmaster DNS hostmaster email
+     * @param int $dns_ttl Default TTL value
      *
      * @return array|bool Returns array with validated data on success, false otherwise
      */
@@ -117,252 +85,44 @@ class Dns
             return false;
         }
 
-        $cnameValidator = new CNAMERecordValidator($this->config, $this->db);
+        // Perform common validation for all record types
+        $cnameValidator = $this->validatorRegistry->getValidator(RecordType::CNAME);
         if ($type != RecordType::CNAME) {
             if (!$cnameValidator->isValidCnameExistence($name, $rid)) {
                 return false;
             }
         }
 
-        switch ($type) {
-            case RecordType::A:
-                $validationResult = $this->aRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
+        // Get the appropriate validator for this record type
+        $validator = $this->validatorRegistry->getValidator($type);
 
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-                break;
+        if ($validator === null) {
+            $this->messageService->addSystemError(_('Unknown record type.'));
+            return false;
+        }
 
-            // TODO: implement validation.
-            case RecordType::AFSDB:
-            case RecordType::ALIAS:
-            case RecordType::APL:
-            case RecordType::CAA:
-            case RecordType::CDNSKEY:
-            case RecordType::CDS:
-            case RecordType::CERT:
-            case RecordType::DNAME:
-            case RecordType::L32:
-            case RecordType::L64:
-            case RecordType::LUA:
-            case RecordType::LP:
-            case RecordType::OPENPGPKEY:
-            case RecordType::SMIMEA:
-            case RecordType::TKEY:
-            case RecordType::URI:
-            case RecordType::DHCID:
-            case RecordType::DLV:
-            case RecordType::DNSKEY:
-            case RecordType::EUI48:
-            case RecordType::EUI64:
-            case RecordType::HTTPS:
-            case RecordType::IPSECKEY:
-            case RecordType::KEY:
-            case RecordType::KX:
-            case RecordType::MINFO:
-            case RecordType::MR:
-            case RecordType::NAPTR:
-            case RecordType::NID:
-            case RecordType::NSEC:
-            case RecordType::NSEC3:
-            case RecordType::NSEC3PARAM:
-            case RecordType::RKEY:
-            case RecordType::RP:
-            case RecordType::RRSIG:
-            case RecordType::SSHFP:
-            case RecordType::SVCB:
-            case RecordType::TLSA:
-            case RecordType::TSIG:
-                break;
+        // Special case for SOA records
+        if ($type === RecordType::SOA) {
+            $validator->setSOAParams($dns_hostmaster, $zone);
+        }
 
-            case RecordType::AAAA:
-                $validationResult = $this->aaaaRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
+        // Perform validation using the appropriate validator
+        $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl);
+        if ($validationResult === false) {
+            return false;
+        }
 
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-                break;
+        // Extract validated data
+        $content = $validationResult['content'];
+        $name = $validationResult['name'];
+        $prio = $validationResult['prio'];
+        $ttl = $validationResult['ttl'];
 
-            case RecordType::CNAME:
-                $validationResult = $this->cnameRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl, $rid, $zone);
-                if ($validationResult === false) {
-                    return false;
-                }
-
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-                break;
-
-            case RecordType::CSYNC:
-                $validationResult = $this->csyncRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
-
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-                break;
-
-            case RecordType::DS:
-                $validationResult = $this->dsRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
-
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-                break;
-
-            case RecordType::HINFO:
-                $validationResult = $this->hinfoRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
-
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-                break;
-
-            case RecordType::LOC:
-                $validationResult = $this->locRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
-
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-                break;
-
-            case RecordType::NS:
-                $validationResult = $this->nsRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
-
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-
-                if (!$this->dnsCommonValidator->isValidNonAliasTarget($content)) {
-                    return false;
-                }
-                break;
-
-            case RecordType::MX:
-                $validationResult = $this->mxRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
-
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-
-                if (!$this->dnsCommonValidator->isValidNonAliasTarget($content)) {
-                    return false;
-                }
-                break;
-
-            case RecordType::PTR:
-                $contentHostnameResult = $this->hostnameValidator->isValidHostnameFqdn($content, 0);
-                if ($contentHostnameResult === false) {
-                    return false;
-                }
-                $content = $contentHostnameResult['hostname'];
-
-                $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-                if ($hostnameResult === false) {
-                    return false;
-                }
-                $name = $hostnameResult['hostname'];
-                break;
-
-            case RecordType::SOA:
-                $this->soaRecordValidator->setSOAParams($dns_hostmaster, $zone);
-                $validationResult = $this->soaRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
-
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-                break;
-
-            case RecordType::SPF:
-                $validationResult = $this->spfRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
-
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-                break;
-
-            case RecordType::SRV:
-                $validationResult = $this->srvRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
-
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-                break;
-
-            case RecordType::TXT:
-                $validationResult = $this->txtRecordValidator->validate($content, $name, $prio, $ttl, $dns_ttl);
-                if ($validationResult === false) {
-                    return false;
-                }
-
-                // Update variables with validated data
-                $content = $validationResult['content'];
-                $name = $validationResult['name'];
-                $prio = $validationResult['prio'];
-                $ttl = $validationResult['ttl'];
-                break;
-
-            default:
-                $this->messageService->addSystemError(_('Unknown record type.'));
-
+        // Perform additional validation for specific record types
+        if ($type === RecordType::NS || $type === RecordType::MX) {
+            if (!$this->dnsCommonValidator->isValidNonAliasTarget($content)) {
                 return false;
+            }
         }
 
         // Skip validation if it was already handled by a specific validator

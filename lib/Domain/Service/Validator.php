@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
@@ -30,11 +31,13 @@ class Validator
 {
     private PDOLayer $db;
     private ConfigurationManager $config;
+    private DnsValidatorRegistry $validatorRegistry;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->validatorRegistry = new DnsValidatorRegistry($config, $db);
     }
 
     /** Validate email address string
@@ -45,7 +48,7 @@ class Validator
      */
     public function is_valid_email(string $address): bool
     {
-        $dns = new Dns($this->db, $this->config);
+        $dns = new Dns($this->db, $this->config, $this->validatorRegistry);
 
         $fields = explode("@", $address, 2);
         $hostnameValidator = new HostnameValidator($this->config);
