@@ -60,8 +60,8 @@ class DnsValidatorRegistryTest extends TestCase
      */
     public function testGetValidatorForNonImplementedType(): void
     {
-        // Using a non-standard record type like CAA or SSHFP that isn't explicitly implemented
-        $validator = $this->registry->getValidator('CAA');
+        // Using a non-standard record type that isn't explicitly implemented
+        $validator = $this->registry->getValidator('NONEXISTENT');
         $this->assertInstanceOf(DnsRecordValidatorInterface::class, $validator);
         $this->assertInstanceOf(DefaultRecordValidator::class, $validator);
     }

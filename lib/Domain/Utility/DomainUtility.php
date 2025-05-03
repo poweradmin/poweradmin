@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Utility;
 
+use Poweradmin\Domain\Utility\NetworkUtility;
+
 /**
  * Utility class for domain operations
  */
@@ -48,7 +50,7 @@ class DomainUtility
     public static function convertIPv6AddrToPtrRec(string $ip): string
     {
         // Taken from: http://stackoverflow.com/questions/6619682/convert-ipv6-to-nibble-format-for-ptr-records
-        $addr = inet_pton($ip);
+        $addr = NetworkUtility::inetPton($ip);
         $unpack = unpack('H*hex', $addr);
         $hex = $unpack['hex'];
         return implode('.', array_reverse(str_split($hex))) . '.ip6.arpa';

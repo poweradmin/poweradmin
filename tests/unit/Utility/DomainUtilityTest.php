@@ -4,6 +4,7 @@ namespace Tests\Unit\Utility;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Utility\DomainUtility;
+use Poweradmin\Domain\Utility\NetworkUtility;
 
 class DomainUtilityTest extends TestCase
 {
@@ -61,21 +62,49 @@ class DomainUtilityTest extends TestCase
     }
 
     /**
-     * Note: We can't easily test IPv6 conversion in PHPUnit without mocking inet_pton
-     * but we can add a basic test case
+     * Test conversion of IPv6 address to PTR format using a mock
+     * We'll test the functionality with a known binary value
      */
     public function testConvertIPv6AddrToPtrRecFormat(): void
     {
-        // Given we can't control inet_pton results directly in tests,
-        // we'll just test that it returns a string ending with .ip6.arpa
-
+        // Skip if the function doesn't exist, just to be safe
         if (!function_exists('inet_pton')) {
             $this->markTestSkipped('inet_pton function not available');
+            return;
         }
 
+        // Create a temporary TestNetworkUtility class that overrides the inetPton method
+        // for the duration of this test
+        $tempNetworkUtilityClass = new class extends NetworkUtility {
+            public static function inetPton(string $ip)
+            {
+                // Return a fixed binary representation for '2001:db8::1'
+                if ($ip === '2001:db8::1') {
+                    return hex2bin('20010db8000000000000000000000001');
+                }
+                return parent::inetPton($ip);
+            }
+        };
+
+        // Backup the original class
+        $originalClass = NetworkUtility::class;
+
+        // Use reflection to set our test class
+        $refProperty = new \ReflectionProperty(NetworkUtility::class, 'instance');
+        $refProperty->setAccessible(true);
+        $refProperty->setValue(null, $tempNetworkUtilityClass);
+
+        // Run the test
         $result = DomainUtility::convertIPv6AddrToPtrRec('2001:db8::1');
 
-        $this->assertIsString($result);
+        // Reset to original
+        $refProperty->setValue(null, null);
+
+        // Verify the result
         $this->assertStringEndsWith('.ip6.arpa', $result);
+        $this->assertEquals('1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa', $result);
     }
+
+    // Provider is no longer needed - we're using a different approach
+    // for testing the IPv6 conversion
 }
