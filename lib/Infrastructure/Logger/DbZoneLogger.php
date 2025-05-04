@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
@@ -123,8 +123,8 @@ class DbZoneLogger
             return false;
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->config);
-        $zones = $dnsRecord->get_zones('all');
+        $domainRepository = new DomainRepository($this->db, $this->config);
+        $zones = $domainRepository->getZones('all');
         foreach ($zones as $zone) {
             if (str_contains($zone['name'], $domain_searched)) {
                 return true;

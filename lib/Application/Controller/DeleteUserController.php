@@ -34,7 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\Validator;
 
 class DeleteUserController extends BaseController
@@ -87,8 +87,8 @@ class DeleteUserController extends BaseController
         if (!$name) {
             $name = UserEntity::get_username_by_id($this->db, $uid);
         }
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zones = $dnsRecord->get_zones("own", $uid);
+        $domainRepository = new DomainRepository($this->db, $this->getConfig());
+        $zones = $domainRepository->getZones("own", $uid);
 
         $users = [];
         if (count($zones) > 0) {

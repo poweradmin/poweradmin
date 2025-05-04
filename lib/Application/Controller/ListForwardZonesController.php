@@ -39,7 +39,7 @@ use Poweradmin\Application\Service\ZoneService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -98,11 +98,11 @@ class ListForwardZonesController extends BaseController
 
         list($zone_sort_by, $zone_sort_direction) = $this->getZoneSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'owner']);
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $domainRepository = new DomainRepository($this->db, $this->getConfig());
         if ($count_zones_view <= $iface_rowamount || $letter_start == 'all') {
-            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], 'all', $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction);
+            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], 'all', $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction);
         } else {
-            $zones = $dnsRecord->get_zones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction);
+            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction);
         }
 
         if ($perm_view == 'none') {
