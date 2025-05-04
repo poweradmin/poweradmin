@@ -42,11 +42,15 @@ class DnsCommonValidatorTest extends TestCase
         $this->assertEquals(10, $this->validator->isValidPriority(10, "SRV"));
         $this->assertEquals(65535, $this->validator->isValidPriority(65535, "SRV"));
 
-        // Test invalid priorities
+        // Test invalid priorities for MX/SRV records
         $this->assertFalse($this->validator->isValidPriority(-1, "MX"));
         $this->assertFalse($this->validator->isValidPriority(65536, "MX"));
         $this->assertFalse($this->validator->isValidPriority("invalid", "MX"));
-        $this->assertFalse($this->validator->isValidPriority(10, "A")); // A records should only have prio 0
+
+        // Test non-MX/SRV records - should always return 0 regardless of input
+        $this->assertEquals(0, $this->validator->isValidPriority(10, "A"));
+        $this->assertEquals(0, $this->validator->isValidPriority(100, "AAAA"));
+        $this->assertEquals(0, $this->validator->isValidPriority("invalid", "TXT"));
     }
 
     /**

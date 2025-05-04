@@ -142,12 +142,15 @@ class ValidateInputTest extends BaseDnsTest
         $result = $validator->isValidPriority("foo", "SRV");
         $this->assertFalse($result, "Should return false for non-numeric priority");
 
+        // For non-MX/SRV records, any priority value should be converted to 0
         $result = $validator->isValidPriority(10, "A");
-        $this->assertFalse($result, "Should return false for A record with non-zero priority");
+        $this->assertSame(0, $result, "Should return 0 for A record regardless of priority value");
 
-        // Specific case: zero priority is valid for all records
+        $result = $validator->isValidPriority("invalid", "TXT");
+        $this->assertSame(0, $result, "Should return 0 for TXT record regardless of priority value");
+
         $result = $validator->isValidPriority("0", "A");
-        $this->assertSame(0, $result, "Should allow zero priority for any record type");
+        $this->assertSame(0, $result, "Should return 0 for A record with zero priority");
     }
 
     /**

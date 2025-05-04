@@ -58,21 +58,25 @@ class DnsCommonValidator
      */
     public function isValidPriority(mixed $prio, string $type): int|bool
     {
-        // For backward compatibility, use the same logic
-        if (!isset($prio) || $prio === "") {
-            if ($type == "MX" || $type == "SRV") {
+        // For records that require priority: MX or SRV
+        if ($type == "MX" || $type == "SRV") {
+            // If not set or empty string, use default value of 10
+            if (!isset($prio) || $prio === "") {
                 return 10;
             }
-            return 0;
+
+            // For MX/SRV, priority must be 0-65535
+            if (is_numeric($prio) && $prio >= 0 && $prio <= 65535) {
+                return (int)$prio;
+            } else {
+                $this->messageService->addSystemError(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
+                return false;
+            }
         }
 
-        if (($type == "MX" || $type == "SRV") && (is_numeric($prio) && $prio >= 0 && $prio <= 65535)) {
-            return (int)$prio;
-        } elseif (is_numeric($prio) && $prio == 0) {
-            return 0;
-        }
-        $this->messageService->addSystemError(_('Invalid value for prio field.'));
-        return false;
+        // All other record types don't use priority, so return 0
+        // We accept any input (including empty string) and convert to 0
+        return 0;
     }
 
     /** Check if target is not a CNAME
