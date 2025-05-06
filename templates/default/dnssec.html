@@ -50,11 +50,11 @@
         <td>{{ item[2] }}</td>
         <td>{{ algorithms[item[3]] }}</td>
         <td>{{ item[4] }}</td>
-        <td>{% trans %}{{ active }}{% endtrans %}</td>
+        <td>{{ active|trans }}</td>
         <td>
             <a class="btn btn-outline-primary btn-sm"
                href="index.php?page=dnssec_edit_key&id={{ zone_id }}&key_id={{ item[0] }}"><i class="bi bi-pencil-square"></i>
-                {% trans %}{{ button_title }}{% endtrans %}</a>
+                {{ button_title|trans }}</a>
             <a class="btn btn-outline-danger btn-sm" href="index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ item[0] }}"><i
                     class="bi bi-trash"></i> {% trans %}Delete zone key{% endtrans %}</a>
         </td>

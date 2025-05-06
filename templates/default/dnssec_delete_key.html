@@ -43,7 +43,7 @@
 {% trans %}Tag{% endtrans %}: {{ key_info[2] }}<br>
 {% trans %}Algorithm{% endtrans %}: {{ algorithms[key_info[3]] }}<br>
 {% trans %}Bits{% endtrans %}: {{ key_info[4] }}<br>
-{% trans %}Active{% endtrans %}: {% trans %}{{ active }}{% endtrans %}
+{% trans %}Active{% endtrans %}: {{ active|trans }}
 
 <p class="pt-3"><strong>{% trans %}Are you sure?{% endtrans %}</strong></p>
 <input class="btn btn-primary btn-sm" type="button"
