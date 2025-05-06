@@ -3,7 +3,6 @@
 namespace unit\Dns;
 
 use TestHelpers\BaseDnsTest;
-use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsValidation\StringValidator;
 
 /**

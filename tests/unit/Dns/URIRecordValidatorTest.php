@@ -5,7 +5,6 @@ namespace unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\URIRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the URIRecordValidator

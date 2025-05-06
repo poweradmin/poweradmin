@@ -5,8 +5,6 @@ namespace unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\TSIGRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the TSIGRecordValidator
