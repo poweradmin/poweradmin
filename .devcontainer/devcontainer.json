@@ -9,7 +9,8 @@
     "pgsql:5432",
     "adminer:8090",
     "dns:1053",
-    "dns:8081"
+    "dns:8081",
+    "ldapadmin:8443"
   ],
   "portsAttributes": {
     "app:9000": {
@@ -29,6 +30,9 @@
     },
     "dns:8081": {
       "label": "PowerDNS API"
+    },
+    "ldapadmin:8443": {
+      "label": "LDAP Admin"
     }
   }
 }
