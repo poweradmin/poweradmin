@@ -46,6 +46,7 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -57,6 +58,7 @@ class EditController extends BaseController
     private RecordCommentService $recordCommentService;
     private RecordCommentSyncService $commentSyncService;
     private RecordTypeService $recordTypeService;
+    private FormStateService $formStateService;
 
     public function __construct(array $request)
     {
@@ -65,6 +67,7 @@ class EditController extends BaseController
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
+        $this->formStateService = new FormStateService();
     }
 
     public function run(): void
@@ -81,6 +84,15 @@ class EditController extends BaseController
         $iface_edit_save_changes_top = $configManager->get('interface', 'position_save_button_top', false);
         $iface_record_comments = $configManager->get('interface', 'show_record_comments', false);
         $iface_zone_comments = $configManager->get('interface', 'show_zone_comments', true);
+
+        // Generate a form token for the add record form
+        $formToken = $this->formStateService->generateFormId('add_record');
+
+        // Check if we have any form data from a failed submission
+        $formData = null;
+        if (isset($_REQUEST['form_id']) && !empty($_REQUEST['form_id'])) {
+            $formData = $this->formStateService->getFormData($_REQUEST['form_id']);
+        }
 
         $row_start = 0;
         if (isset($_GET["start"])) {
@@ -277,7 +289,9 @@ class EditController extends BaseController
             'iface_zone_comments' => $iface_zone_comments,
             'serial' => DnsRecord::get_soa_serial($soa_record),
             'file_version' => time(),
-            'whois_enabled' => $this->config->get('whois', 'enabled', false)
+            'whois_enabled' => $this->config->get('whois', 'enabled', false),
+            'form_token' => $formToken,
+            'form_data' => $formData
         ]);
     }
 

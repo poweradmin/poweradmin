@@ -24,6 +24,7 @@ namespace unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
@@ -67,12 +68,12 @@ class TXTRecordValidatorTest extends TestCase
             ->willReturnCallback(function (string $content, string $name, mixed $prio, $ttl, $defaultTTL) {
                 // Check for unquoted content
                 if (!(str_starts_with($content, '"') && str_ends_with($content, '"'))) {
-                    return \Poweradmin\Domain\Service\Validation\ValidationResult::failure(_('TXT record content must be enclosed in quotes.'));
+                    return ValidationResult::failure(_('TXT record content must be enclosed in quotes.'));
                 }
 
                 // Check for invalid hostname characters
                 if (preg_match('/[<>]/', $name)) {
-                    return \Poweradmin\Domain\Service\Validation\ValidationResult::failure(_('Invalid characters in hostname.'));
+                    return ValidationResult::failure(_('Invalid characters in hostname.'));
                 }
 
                 // Delegate to the real validator for other cases

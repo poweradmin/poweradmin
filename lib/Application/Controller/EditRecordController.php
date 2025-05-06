@@ -86,12 +86,13 @@ class EditRecordController extends BaseController
             $this->showError(_("You do not have the permission to edit this record."));
         }
 
+        $validationFailed = false;
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $this->saveRecord($zid);
+            $validationFailed = !$this->saveRecord($zid);
         }
 
-        $this->showRecordEditForm($record_id, $zone_type, $zid, $perm_edit, $user_is_zone_owner);
+        $this->showRecordEditForm($record_id, $zone_type, $zid, $perm_edit, $user_is_zone_owner, $validationFailed);
     }
 
     public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner): void

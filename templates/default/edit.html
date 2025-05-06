@@ -36,6 +36,7 @@
         <form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
+            <input type="hidden" name="form_token" value="{{ form_token }}">
             <table class="table table-striped table-hover table-sm add-record-form">
                 <tr>
                     <th>{% trans %}Name{% endtrans %}</th>
@@ -58,10 +59,10 @@
                 </tr>
                 <tr>
                     <td class="col-sm-2">
-                        <input class="form-control form-control-sm" type="text" name="name" value="">
+                        <input class="form-control form-control-sm" type="text" name="name" value="{{ form_data.name|default('') }}">
                     </td>
                     <td class="col-sm-2">
-                        <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop')">
+                        <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop')" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
                             {% set rev = false %}
                             {% for record_type in record_types %}
                             {% set add = "" %}
@@ -79,18 +80,18 @@
                     </td>
                     <td>
                         <div id="contentInputContainerTop">
-                            <input id="recordContentTop" class="form-control form-control-sm" type="text" name="content" value="" required>
+                            <input id="recordContentTop" class="form-control form-control-sm" type="text" name="content" value="{{ form_data.content|default('') }}" required>
                         </div>
                         <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
                     </td>
-                    <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="prio" value="0"
+                    <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="prio" value="{{ form_data.prio|default('0') }}"
                                                 min="0" max="65535" pattern="[0-9]*"></td>
                     <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="ttl"
-                                                min="0" max="2147483647" pattern="[0-9]*" value="{{ dns_ttl }}" required>
+                                                min="0" max="2147483647" pattern="[0-9]*" value="{{ form_data.ttl|default(dns_ttl) }}" required>
                         <div class="invalid-feedback">{% trans %}Provide TTL{% endtrans %}</div>
                     </td>
                     {% if iface_record_comments %}
-                    <td><input class="form-control form-control-sm" type="text" name="comment" value=""></td>
+                    <td><input class="form-control form-control-sm" type="text" name="comment" value="{{ form_data.comment|default('') }}"></td>
                     {% endif %}
                     <td class="col-sm-1 text-center">
                         {% if not is_reverse_zone and iface_add_reverse_record %}
@@ -425,6 +426,7 @@
         <form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
+            <input type="hidden" name="form_token" value="{{ form_token }}">
 
             <table class="table table-striped table-hover table-sm add-record-form">
                 <tr>
@@ -448,10 +450,10 @@
                 </tr>
                 <tr>
                     <td class="col-sm-2">
-                        <input class="form-control form-control-sm" type="text" name="name" value="" data-testid="record-name-input">
+                        <input class="form-control form-control-sm" type="text" name="name" value="{{ form_data.name|default('') }}" data-testid="record-name-input">
                     </td>
                     <td class="col-sm-2">
-                        <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom')">
+                        <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom')" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
                             {% set rev = false %}
                             {% for record_type in record_types %}
                             {% set add = "" %}
@@ -469,19 +471,19 @@
                     </td>
                     <td>
                         <div id="contentInputContainerBottom">
-                            <input id="recordContentBottom" class="form-control form-control-sm" type="text" name="content" value="" data-testid="record-content-input" required>
+                            <input id="recordContentBottom" class="form-control form-control-sm" type="text" name="content" value="{{ form_data.content|default('') }}" data-testid="record-content-input" required>
                         </div>
                         <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
                     </td>
                     <td class="col-sm-1">
-                        <input class="form-control form-control-sm" type="number" name="prio" value="0" min="0" max="65535" pattern="[0-9]*">
+                        <input class="form-control form-control-sm" type="number" name="prio" value="{{ form_data.prio|default('0') }}" min="0" max="65535" pattern="[0-9]*">
                     </td>
                     <td class="col-sm-1">
-                        <input class="form-control form-control-sm" type="number" name="ttl" min="0" max="2147483647" pattern="[0-9]*" value="{{ dns_ttl }}" required>
+                        <input class="form-control form-control-sm" type="number" name="ttl" min="0" max="2147483647" pattern="[0-9]*" value="{{ form_data.ttl|default(dns_ttl) }}" required>
                         <div class="invalid-feedback">{% trans %}Provide TTL{% endtrans %}</div>
                     </td>
                     {% if iface_record_comments %}
-                        <td><input class="form-control form-control-sm" type="text" name="comment" value=""></td>
+                        <td><input class="form-control form-control-sm" type="text" name="comment" value="{{ form_data.comment|default('') }}"></td>
                     {% endif %}
                     <td class="col-sm-1 text-center">
                         {% if not is_reverse_zone and iface_add_reverse_record %}
@@ -697,6 +699,27 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', () => {
+        // Handle pre-selected record types for form data restoration
+        function setPreselectedType(selectId) {
+            const typeSelect = document.getElementById(selectId);
+            if (typeSelect && typeSelect.hasAttribute('data-preselect')) {
+                const preselectedType = typeSelect.getAttribute('data-preselect');
+                for (let i = 0; i < typeSelect.options.length; i++) {
+                    if (typeSelect.options[i].value === preselectedType) {
+                        typeSelect.selectedIndex = i;
+                        // Trigger the change event to update the content input
+                        const event = new Event('change');
+                        typeSelect.dispatchEvent(event);
+                        break;
+                    }
+                }
+            }
+        }
+        
+        // Apply to both top and bottom forms
+        setPreselectedType('recordTypeSelectTop');
+        setPreselectedType('recordTypeSelectBottom');
+        
         // Handle disabled checkboxes
         document.querySelectorAll('input[type="checkbox"][name$="[disabled]"]').forEach(checkbox => {
             const row = checkbox.closest('tr');

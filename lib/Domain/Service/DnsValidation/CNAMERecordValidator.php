@@ -236,7 +236,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      *
      * @return ValidationResult<bool> ValidationResult containing success or error message
      */
-    private function validateCnameExistence(string $name, int $rid): ValidationResult
+    public function validateCnameExistence(string $name, int $rid): ValidationResult
     {
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';

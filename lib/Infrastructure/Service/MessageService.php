@@ -317,4 +317,72 @@ EOF;
     {
         $this->allowHtml()->displayDirectSystemError($error);
     }
+
+    /**
+     * Generate a unique form token
+     *
+     * @return string The generated token
+     */
+    public function generateFormToken(): string
+    {
+        return bin2hex(random_bytes(16));
+    }
+
+    /**
+     * Store form data with a specific token
+     *
+     * @param string $token The form token
+     * @param array $data The form data to store
+     */
+    public function storeFormData(string $token, array $data): void
+    {
+        if (!isset($_SESSION['form_data'])) {
+            $_SESSION['form_data'] = [];
+        }
+        $_SESSION['form_data'][$token] = [
+            'data' => $data,
+            'expires' => time() + 300 // Expire after 5 minutes
+        ];
+    }
+
+    /**
+     * Get stored form data for a token and remove it from the session
+     *
+     * @param string $token The form token
+     * @return array|null The stored form data or null if none exists
+     */
+    public function getFormData(string $token): ?array
+    {
+        if (isset($_SESSION['form_data'][$token])) {
+            $formData = $_SESSION['form_data'][$token];
+
+            // Check if the data has expired
+            if (time() > $formData['expires']) {
+                unset($_SESSION['form_data'][$token]);
+                return null;
+            }
+
+            $data = $formData['data'];
+            unset($_SESSION['form_data'][$token]);
+            return $data;
+        }
+        return null;
+    }
+
+    /**
+     * Clean up expired form data
+     */
+    public function cleanupFormData(): void
+    {
+        if (!isset($_SESSION['form_data'])) {
+            return;
+        }
+
+        $now = time();
+        foreach ($_SESSION['form_data'] as $token => $formData) {
+            if ($now > $formData['expires']) {
+                unset($_SESSION['form_data'][$token]);
+            }
+        }
+    }
 }

@@ -41,6 +41,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DomainRecordCreator;
+use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -55,6 +56,7 @@ class AddRecordController extends BaseController
     private ReverseRecordCreator $reverseRecordCreator;
     private RecordManagerService $recordManager;
     private RecordTypeService $recordTypeService;
+    private FormStateService $formStateService;
 
     public function __construct(array $request)
     {
@@ -63,6 +65,7 @@ class AddRecordController extends BaseController
         // ConfigurationManager is now handled by the BaseController
         $this->logger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $this->formStateService = new FormStateService();
 
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $recordCommentService = new RecordCommentService($recordCommentRepository);
@@ -148,6 +151,18 @@ class AddRecordController extends BaseController
         $zone_id = (int)$_GET['id'];
 
         if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
+            // Generate a form ID and store the invalid form data
+            $formId = $this->formStateService->generateFormId('add_record');
+            $formData = [
+                'name' => $name,
+                'content' => $content,
+                'type' => $type,
+                'prio' => $prio,
+                'ttl' => $ttl,
+                'comment' => $comment
+            ];
+            $this->formStateService->saveFormData($formId, $formData);
+
             // Check if there are system errors to display
             $systemErrors = $this->getSystemErrors();
             if (!empty($systemErrors)) {
@@ -155,7 +170,7 @@ class AddRecordController extends BaseController
             } else {
                 $this->setMessage('edit', 'error', _('This record was not valid and could not be added. It may already exist or contain invalid data.'));
             }
-            $this->redirect('index.php?page=edit&id=' . $zone_id);
+            $this->redirect('index.php?page=edit&id=' . $zone_id . '&form_id=' . $formId);
             return;
         }
 

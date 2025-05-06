@@ -46,7 +46,7 @@ abstract class BaseController
     private ValidatorInterface $validator;
     private array $validationConstraints = [];
     private CsrfTokenService $csrfTokenService;
-    private MessageService $messageService;
+    protected MessageService $messageService;
     protected ConfigurationManager $config;
 
     /**

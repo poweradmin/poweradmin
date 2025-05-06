@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -133,18 +134,22 @@ class RecordManager implements RecordManagerInterface
             $dns_hostmaster,
             (int)$dns_ttl
         );
-        if ($validationResult === null) {
+        if ($validationResult === null || !$validationResult->isValid()) {
+            if ($validationResult !== null) {
+                $this->messageService->addSystemError($validationResult->getFirstError());
+            }
             return false;
         }
 
         // Extract validated values
-        $content = $validationResult['content'];
-        $name = strtolower($validationResult['name']); // powerdns only searches for lower case records
-        $validatedTtl = $validationResult['ttl'];
-        $validatedPrio = $validationResult['prio'];
+        $validatedData = $validationResult->getData();
+        $content = $validatedData['content'];
+        $name = strtolower($validatedData['name']); // powerdns only searches for lower case records
+        $validatedTtl = $validatedData['ttl'];
+        $validatedPrio = $validatedData['prio'];
 
         // Create RecordRepository to check if record exists
-        $recordRepository = new \Poweradmin\Domain\Repository\RecordRepository($this->db, $this->config);
+        $recordRepository = new RecordRepository($this->db, $this->config);
         if ($recordRepository->recordExists($zone_id, $name, $type, $content)) {
             $this->messageService->addSystemError(_('A record with this hostname, type, and content already exists.'));
             return false;
@@ -239,12 +244,13 @@ class RecordManager implements RecordManagerInterface
                 $dns_hostmaster,
                 (int)$dns_ttl
             );
-            if ($validationResult !== null) {
+            if ($validationResult !== null && $validationResult->isValid()) {
                 // Extract validated values
-                $content = $validationResult['content'];
-                $name = strtolower($validationResult['name']); // powerdns only searches for lower case records
-                $validatedTtl = $validationResult['ttl'];
-                $validatedPrio = $validationResult['prio'];
+                $validatedData = $validationResult->getData();
+                $content = $validatedData['content'];
+                $name = strtolower($validatedData['name']); // powerdns only searches for lower case records
+                $validatedTtl = $validatedData['ttl'];
+                $validatedPrio = $validatedData['prio'];
 
                 $pdns_db_name = $this->config->get('database', 'pdns_name');
                 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
@@ -276,7 +282,7 @@ class RecordManager implements RecordManagerInterface
         $perm_edit = Permission::getEditPermission($this->db);
 
         // Create RecordRepository to get record details
-        $recordRepository = new \Poweradmin\Domain\Repository\RecordRepository($this->db, $this->config);
+        $recordRepository = new RecordRepository($this->db, $this->config);
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $record['zid']);
 
