@@ -20,8 +20,11 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace Poweradmin\Test\Unit;
+
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
+use RuntimeException;
 
 /**
  * Tests for ValidationResult value object
