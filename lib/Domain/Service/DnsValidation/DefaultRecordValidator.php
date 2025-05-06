@@ -39,7 +39,7 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->ttlValidator = new TTLValidator($config);
+        $this->ttlValidator = new TTLValidator();
     }
 
     /**

@@ -45,7 +45,7 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->ttlValidator = new TTLValidator($config);
+        $this->ttlValidator = new TTLValidator();
         $this->hostnameValidator = new HostnameValidator($config);
     }
 

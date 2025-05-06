@@ -129,7 +129,7 @@ class EditRecordController extends BaseController
         ]);
     }
 
-    public function saveRecord($zid): void
+    public function saveRecord($zid): bool
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $old_record_info = $dnsRecord->get_record_from_id($_POST["rid"]);
@@ -143,7 +143,7 @@ class EditRecordController extends BaseController
 
         $ret_val = $dnsRecord->edit_record($postData);
         if (!$ret_val) {
-            return;
+            return false;
         }
 
         $dnsRecord->update_soa_serial($zid);
@@ -195,5 +195,7 @@ class EditRecordController extends BaseController
 
         $this->setMessage('edit', 'success', _('The record has been updated successfully.'));
         $this->redirect('index.php', ['page' => 'edit', 'id' => $zid]);
+
+        return true;
     }
 }
