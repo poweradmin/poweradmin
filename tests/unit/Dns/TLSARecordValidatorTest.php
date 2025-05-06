@@ -35,7 +35,6 @@ class TLSARecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
@@ -69,7 +68,6 @@ class TLSARecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
     }
 
@@ -101,7 +99,6 @@ class TLSARecordValidatorTest extends TestCase
 
         // Should still validate but with a warning
         $this->assertTrue($result->isValid());
-        $data = $result->getData();
         $data = $result->getData();
         $this->assertEquals($name, $data['name']);
     }

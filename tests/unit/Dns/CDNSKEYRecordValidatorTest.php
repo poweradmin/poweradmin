@@ -58,7 +58,6 @@ class CDNSKEYRecordValidatorTest extends TestCase
 
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
-        $data = $result->getData();
 
         $this->assertEquals($content, $data['content']);
 
@@ -84,7 +83,6 @@ class CDNSKEYRecordValidatorTest extends TestCase
 
 
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
         $data = $result->getData();
 
         $this->assertEquals($content, $data['content']);

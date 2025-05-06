@@ -61,7 +61,6 @@ class PTRRecordValidatorTest extends TestCase
 
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
-        $data = $result->getData();
 
         $this->assertEquals($content, $data['content']);
 
@@ -136,7 +135,6 @@ class PTRRecordValidatorTest extends TestCase
 
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
-        $data = $result->getData();
 
         $this->assertEquals(86400, $data['ttl']);
     }
@@ -175,7 +173,6 @@ class PTRRecordValidatorTest extends TestCase
 
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
-        $data = $result->getData();
 
         $this->assertEquals($content, $data['content']);
 
@@ -197,7 +194,6 @@ class PTRRecordValidatorTest extends TestCase
 
         $this->assertEmpty($result->getErrors());
         // The hostname validator should normalize by removing the trailing dot
-        $data = $result->getData();
         $data = $result->getData();
 
         $this->assertEquals('host.example.com', $data['content']);

@@ -35,7 +35,6 @@ class SRVRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(10, $data['prio']);
@@ -208,7 +207,6 @@ class SRVRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-        $data = $result->getData();
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
     }

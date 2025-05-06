@@ -62,7 +62,6 @@ class KXRecordValidatorTest extends BaseDnsTest
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
         $this->assertEquals($name, $data['name']);
         $this->assertEquals($prio, $data['prio']);
@@ -151,7 +150,6 @@ class KXRecordValidatorTest extends BaseDnsTest
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-        $data = $result->getData();
         $data = $result->getData();
         $this->assertEquals($defaultTTL, $data['ttl']);
     }

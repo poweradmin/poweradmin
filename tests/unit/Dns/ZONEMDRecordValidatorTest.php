@@ -39,7 +39,6 @@ class ZONEMDRecordValidatorTest extends TestCase
 
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
-        $data = $result->getData();
 
         $this->assertEquals($content, $data['content']);
 
@@ -66,7 +65,6 @@ class ZONEMDRecordValidatorTest extends TestCase
 
 
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
         $data = $result->getData();
 
         $this->assertEquals($content, $data['content']);

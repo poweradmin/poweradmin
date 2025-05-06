@@ -64,7 +64,6 @@ class NSRecordValidatorTest extends BaseDnsTest
 
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
-        $data = $result->getData();
 
         $this->assertEquals($content, $data['content']);
 
@@ -138,7 +137,6 @@ class NSRecordValidatorTest extends BaseDnsTest
 
 
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
         $data = $result->getData();
 
         $this->assertEquals(0, $data['prio']);

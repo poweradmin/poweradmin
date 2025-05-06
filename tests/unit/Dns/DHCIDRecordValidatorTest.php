@@ -58,7 +58,6 @@ class DHCIDRecordValidatorTest extends TestCase
 
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
-        $data = $result->getData();
 
         $this->assertEquals($content, $data['content']);
 
@@ -132,7 +131,6 @@ class DHCIDRecordValidatorTest extends TestCase
 
 
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
         $data = $result->getData();
 
         $this->assertEquals(86400, $data['ttl']);

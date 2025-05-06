@@ -52,7 +52,6 @@ class NIDRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $data = $result->getData();
         $this->assertEquals('1234567890ABCDEF', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
         $this->assertEquals(20, $data['priority']);
@@ -177,7 +176,6 @@ class NIDRecordValidatorTest extends TestCase
         );
 
         $this->assertTrue($result->isValid());
-        $data = $result->getData();
         $data = $result->getData();
         $this->assertEquals('1234567890ABCDEF', $data['content']);
         $this->assertEquals(86400, $data['ttl']);

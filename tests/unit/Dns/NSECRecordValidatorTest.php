@@ -113,7 +113,6 @@ class NSECRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $data = $result->getData();
         $this->assertEquals('example.com. A NS SOA MX TXT AAAA', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
         $this->assertEquals(0, $data['priority']);
@@ -296,7 +295,6 @@ class NSECRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $data = $result->getData();
         $this->assertEquals('example.com. 1 2 6 15 16 28', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
         $this->assertEquals(0, $data['priority']);
@@ -428,7 +426,6 @@ class NSECRecordValidatorTest extends TestCase
         );
 
         $this->assertTrue($result->isValid());
-        $data = $result->getData();
         $data = $result->getData();
         $this->assertEquals('example.com. A NS SOA', $data['content']);
         $this->assertEquals(86400, $data['ttl']);

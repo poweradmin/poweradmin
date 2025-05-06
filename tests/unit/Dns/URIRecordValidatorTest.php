@@ -38,7 +38,6 @@ class URIRecordValidatorTest extends TestCase
 
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
-        $data = $result->getData();
 
         $this->assertEquals($content, $data['content']);
 
@@ -64,7 +63,6 @@ class URIRecordValidatorTest extends TestCase
 
 
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
         $data = $result->getData();
 
         $this->assertEquals(20, $data['prio']); // Should use explicit priority
@@ -183,7 +181,6 @@ class URIRecordValidatorTest extends TestCase
 
 
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
         $data = $result->getData();
 
         $this->assertEquals($content, $data['content']);

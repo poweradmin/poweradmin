@@ -52,7 +52,6 @@ class MRRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $data = $result->getData();
         $this->assertEquals('new-mailbox.example.com', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
         $this->assertEquals(0, $data['priority']);

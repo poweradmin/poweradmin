@@ -80,7 +80,6 @@ class LPRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
         $this->assertEquals($name, $data['name']);
         $this->assertEquals($ttl, $data['ttl']);
@@ -138,7 +137,6 @@ class LPRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-        $data = $result->getData();
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
         $this->assertEquals($name, $data['name']);
@@ -414,7 +412,6 @@ class LPRecordValidatorTest extends TestCase
         // In the new validation model, this should always return a validation result
         $this->assertTrue($result->isValid());
 
-        $data = $result->getData();
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
         $this->assertEquals($name, $data['name']);

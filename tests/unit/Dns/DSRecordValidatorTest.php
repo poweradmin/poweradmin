@@ -55,7 +55,6 @@ class DSRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);

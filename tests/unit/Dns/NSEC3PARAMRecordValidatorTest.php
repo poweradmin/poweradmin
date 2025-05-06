@@ -82,7 +82,6 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $data = $result->getData();
         $this->assertEquals('1 0 10 AB12CD', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
         $this->assertEquals(0, $data['priority']);
@@ -285,7 +284,6 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
         );
 
         $this->assertTrue($result->isValid());
-        $data = $result->getData();
         $data = $result->getData();
         $this->assertEquals('1 0 5 -', $data['content']);
         $this->assertEquals(86400, $data['ttl']);

@@ -64,7 +64,6 @@ class MINFORecordValidatorTest extends BaseDnsTest
 
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
-        $data = $result->getData();
 
         $this->assertEquals($content, $data['content']);
 
@@ -186,7 +185,6 @@ class MINFORecordValidatorTest extends BaseDnsTest
 
 
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
         $data = $result->getData();
 
         $this->assertEquals($defaultTTL, $data['ttl']);
