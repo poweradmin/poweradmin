@@ -4,8 +4,11 @@ namespace unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\RRSIGRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
+use ReflectionProperty;
 
 /**
  * Tests for the RRSIGRecordValidator
@@ -14,6 +17,8 @@ class RRSIGRecordValidatorTest extends TestCase
 {
     private RRSIGRecordValidator $validator;
     private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidatorMock;
+    private TTLValidator $ttlValidatorMock;
 
     protected function setUp(): void
     {
@@ -21,7 +26,40 @@ class RRSIGRecordValidatorTest extends TestCase
         $this->configMock->method('get')
             ->willReturn('example.com');
 
+        // Create mock validators
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->method('validate')
+            ->willReturnCallback(function ($hostname, $wildcard) {
+                if (strpos($hostname, 'invalid hostname') !== false) {
+                    return ValidationResult::failure('Invalid hostname');
+                }
+                return ValidationResult::success(['hostname' => $hostname]);
+            });
+
+        $this->ttlValidatorMock = $this->createMock(TTLValidator::class);
+        $this->ttlValidatorMock->method('validate')
+            ->willReturnCallback(function ($ttl, $defaultTTL) {
+                if ($ttl === -1) {
+                    return ValidationResult::failure('Invalid TTL value');
+                }
+                if (empty($ttl)) {
+                    return ValidationResult::success($defaultTTL);
+                }
+                return ValidationResult::success($ttl);
+            });
+
+        // Create the validator and inject mocks
         $this->validator = new RRSIGRecordValidator($this->configMock);
+
+        // Inject the mock hostname validator
+        $reflectionProperty = new ReflectionProperty(RRSIGRecordValidator::class, 'hostnameValidator');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
+        // Inject the mock TTL validator
+        $reflectionProperty = new ReflectionProperty(RRSIGRecordValidator::class, 'ttlValidator');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($this->validator, $this->ttlValidatorMock);
     }
 
     public function testValidateWithValidData()
@@ -34,11 +72,13 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithDifferentRecordType()
@@ -51,8 +91,9 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithDifferentAlgorithm()
@@ -65,8 +106,10 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithEmptyContent()
@@ -79,7 +122,8 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('cannot be empty', $result->getFirstError());
     }
 
     public function testValidateWithInvalidCoveredType()
@@ -92,7 +136,8 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('covered type', $result->getFirstError());
     }
 
     public function testValidateWithInvalidAlgorithm()
@@ -105,7 +150,8 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('algorithm', $result->getFirstError());
     }
 
     public function testValidateWithInvalidLabels()
@@ -118,7 +164,8 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('labels', $result->getFirstError());
     }
 
     public function testValidateWithInvalidOrigTTL()
@@ -131,7 +178,8 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     public function testValidateWithInvalidExpiration()
@@ -144,7 +192,8 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('expiration', $result->getFirstError());
     }
 
     public function testValidateWithInvalidInception()
@@ -157,7 +206,8 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('inception', $result->getFirstError());
     }
 
     public function testValidateWithInvalidKeyTag()
@@ -170,7 +220,8 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('key tag', $result->getFirstError());
     }
 
     public function testValidateWithInvalidSignerName()
@@ -183,7 +234,8 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('signer name', $result->getFirstError());
     }
 
     public function testValidateWithMissingSignature()
@@ -196,7 +248,8 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTTL()
@@ -209,7 +262,8 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid TTL', $result->getFirstError());
     }
 
     public function testValidateWithDefaultTTL()
@@ -222,8 +276,9 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 
     public function testValidateWithInvalidHostname()
@@ -236,6 +291,21 @@ class RRSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid hostname', $result->getFirstError());
+    }
+
+    public function testValidateWithInvalidPriority()
+    {
+        $content = 'A 8 2 86400 20230515130000 20230415130000 12345 example.com. AQPeAHjkasdjfhsdkjfhskjdhfksdjhfkASDJASDHoiwehjroiwejhroiwejhroiwejroijewr+OIAJDOIAJSdoiajds9oia3j==';
+        $name = 'example.com';
+        $prio = 10;  // Non-zero priority
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Priority field', $result->getFirstError());
     }
 }

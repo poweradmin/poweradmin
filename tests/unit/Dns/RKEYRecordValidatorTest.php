@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\RKEYRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the RKEYRecordValidator
@@ -34,11 +35,21 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
+
+        $this->assertEquals($name, $data['name']);
+        $data = $result->getData();
+
+        $this->assertEquals(0, $data['prio']);
+
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithDifferentFlagsValue()
@@ -51,8 +62,14 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithDifferentProtocolValue()
@@ -65,8 +82,13 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithDifferentAlgorithmValue()
@@ -79,8 +101,14 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithEmptyContent()
@@ -93,7 +121,10 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidFlags()
@@ -106,7 +137,10 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidProtocol()
@@ -119,7 +153,10 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidAlgorithm()
@@ -132,7 +169,10 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithMissingPublicKeyData()
@@ -145,7 +185,10 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidTTL()
@@ -158,7 +201,10 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithDefaultTTL()
@@ -171,8 +217,13 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+
+        $this->assertEquals(86400, $data['ttl']);
     }
 
     public function testValidateWithInvalidHostname()
@@ -185,6 +236,9 @@ class RKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 }

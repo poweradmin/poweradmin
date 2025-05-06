@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * MX Record Validator
@@ -31,14 +31,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class MXRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private TTLValidator $ttlValidator;
     private HostnameValidator $hostnameValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->ttlValidator = new TTLValidator();
         $this->hostnameValidator = new HostnameValidator($config);
     }
@@ -49,47 +47,57 @@ class MXRecordValidator implements DnsRecordValidatorInterface
      * @param string $content Mail server hostname
      * @param string $name Domain name for the MX record
      * @param mixed $prio Priority value
-     * @param int|string $ttl TTL value
+     * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult ValidationResult containing validated data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $errors = [];
+
         // Validate content (mail server hostname)
-        $contentResult = $this->hostnameValidator->isValidHostnameFqdn($content, 0);
-        if ($contentResult === false) {
-            $this->messageService->addSystemError(_('Invalid mail server hostname.'));
-            return false;
+        $contentResult = $this->hostnameValidator->validate($content, false);
+        if (!$contentResult->isValid()) {
+            return ValidationResult::errors(
+                array_merge([_('Invalid mail server hostname.')], $contentResult->getErrors())
+            );
         }
-        $content = $contentResult['hostname'];
+        $hostnameData = $contentResult->getData();
+        $content = $hostnameData['hostname'];
 
         // Validate name (domain name)
-        $nameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($nameResult === false) {
-            return false;
+        $nameResult = $this->hostnameValidator->validate($name, true);
+        if (!$nameResult->isValid()) {
+            return $nameResult;
         }
-        $name = $nameResult['hostname'];
+        $nameData = $nameResult->getData();
+        $name = $nameData['hostname'];
 
         // Validate priority
-        $validatedPrio = $this->validatePriority($prio);
-        if ($validatedPrio === false) {
-            $this->messageService->addSystemError(_('Invalid value for MX priority field.'));
-            return false;
+        $prioResult = $this->validatePriority($prio);
+        if (!$prioResult->isValid()) {
+            $errors[] = $prioResult->getFirstError();
         }
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return ValidationResult::errors(array_merge($errors, $ttlResult->getErrors()));
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        if (!empty($errors)) {
+            return ValidationResult::errors($errors);
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
-            'prio' => $validatedPrio,
+            'prio' => $prioResult->getData(),
             'ttl' => $validatedTtl
-        ];
+        ]);
     }
 
     /**
@@ -98,20 +106,20 @@ class MXRecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $prio Priority value
      *
-     * @return int|bool The validated priority value or false if invalid
+     * @return ValidationResult ValidationResult containing validated priority or error message
      */
-    private function validatePriority(mixed $prio): int|bool
+    private function validatePriority(mixed $prio): ValidationResult
     {
         // If priority is not provided or empty, use default of 10
         if (!isset($prio) || $prio === "") {
-            return 10;
+            return ValidationResult::success(10);
         }
 
         // Priority must be a number between 0 and 65535
         if (is_numeric($prio) && $prio >= 0 && $prio <= 65535) {
-            return (int)$prio;
+            return ValidationResult::success((int)$prio);
         }
 
-        return false;
+        return ValidationResult::failure(_('Invalid value for MX priority field. Must be between 0 and 65535.'));
     }
 }

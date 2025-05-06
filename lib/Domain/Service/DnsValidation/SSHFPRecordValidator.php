@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * SSHFP (SSH Fingerprint) record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class SSHFPRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,37 +52,48 @@ class SSHFPRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the SSHFP record (algorithm fingerprint-type fingerprint)
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for SSHFP records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
-        // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        // Validate hostname
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidSSHFPContent($content)) {
-            return false;
+        $contentResult = $this->validateSSHFPContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
 
-        return [
+        // Handle both array format and direct value format
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for SSHFP records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for SSHFP records must be 0 or empty'));
+        }
+
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // SSHFP records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -102,47 +111,41 @@ class SSHFPRecordValidator implements DnsRecordValidatorInterface
      * 2 = SHA-256
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult with success or errors
      */
-    private function isValidSSHFPContent(string $content): bool
+    private function validateSSHFPContent(string $content): ValidationResult
     {
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content), 3);
         if (count($parts) !== 3) {
-            $this->messageService->addSystemError(_('SSHFP record must contain algorithm, fingerprint-type and fingerprint separated by spaces.'));
-            return false;
+            return ValidationResult::failure(_('SSHFP record must contain algorithm, fingerprint-type and fingerprint separated by spaces.'));
         }
 
         [$algorithm, $fpType, $fingerprint] = $parts;
 
         // Validate algorithm (must be 1-4)
         if (!is_numeric($algorithm) || !in_array((int)$algorithm, [1, 2, 3, 4])) {
-            $this->messageService->addSystemError(_('SSHFP algorithm must be 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 (Ed25519).'));
-            return false;
+            return ValidationResult::failure(_('SSHFP algorithm must be 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 (Ed25519).'));
         }
 
         // Validate fingerprint type (must be 1 or 2)
         if (!is_numeric($fpType) || !in_array((int)$fpType, [1, 2])) {
-            $this->messageService->addSystemError(_('SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256).'));
-            return false;
+            return ValidationResult::failure(_('SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256).'));
         }
 
         // Validate fingerprint (must be hexadecimal)
         if (!preg_match('/^[0-9a-fA-F]+$/', $fingerprint)) {
-            $this->messageService->addSystemError(_('SSHFP fingerprint must be a hexadecimal string.'));
-            return false;
+            return ValidationResult::failure(_('SSHFP fingerprint must be a hexadecimal string.'));
         }
 
         // Validate fingerprint length based on type
         $fpLength = strlen($fingerprint);
         if ((int)$fpType === 1 && $fpLength !== 40) { // SHA-1 is 40 hex chars
-            $this->messageService->addSystemError(_('SSHFP SHA-1 fingerprint must be 40 characters long.'));
-            return false;
+            return ValidationResult::failure(_('SSHFP SHA-1 fingerprint must be 40 characters long.'));
         } elseif ((int)$fpType === 2 && $fpLength !== 64) { // SHA-256 is 64 hex chars
-            $this->messageService->addSystemError(_('SSHFP SHA-256 fingerprint must be 64 characters long.'));
-            return false;
+            return ValidationResult::failure(_('SSHFP SHA-256 fingerprint must be 64 characters long.'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

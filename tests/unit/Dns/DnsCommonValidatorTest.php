@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for common DNS validation functions
@@ -24,39 +25,88 @@ class DnsCommonValidatorTest extends TestCase
     }
 
     /**
-     * Test priority validation
+     * Test priority validation with ValidationResult pattern
      */
-    public function testValidPriority()
+    public function testValidatePriorityWithMxRecords()
     {
-        // Test default values
-        $this->assertEquals(10, $this->validator->isValidPriority(null, "MX"));
-        $this->assertEquals(10, $this->validator->isValidPriority("", "MX"));
-        $this->assertEquals(0, $this->validator->isValidPriority(null, "A"));
-        $this->assertEquals(0, $this->validator->isValidPriority("", "A"));
+        // Test default values for MX records
+        $result1 = $this->validator->validatePriority(null, "MX");
+        $this->assertTrue($result1->isValid());
+        $this->assertEquals(10, $result1->getData());
 
-        // Test valid MX/SRV priorities
-        $this->assertEquals(0, $this->validator->isValidPriority(0, "MX"));
-        $this->assertEquals(10, $this->validator->isValidPriority(10, "MX"));
-        $this->assertEquals(65535, $this->validator->isValidPriority(65535, "MX"));
-        $this->assertEquals(0, $this->validator->isValidPriority(0, "SRV"));
-        $this->assertEquals(10, $this->validator->isValidPriority(10, "SRV"));
-        $this->assertEquals(65535, $this->validator->isValidPriority(65535, "SRV"));
+        $result2 = $this->validator->validatePriority("", "MX");
+        $this->assertTrue($result2->isValid());
+        $this->assertEquals(10, $result2->getData());
 
-        // Test invalid priorities for MX/SRV records
-        $this->assertFalse($this->validator->isValidPriority(-1, "MX"));
-        $this->assertFalse($this->validator->isValidPriority(65536, "MX"));
-        $this->assertFalse($this->validator->isValidPriority("invalid", "MX"));
+        // Test valid MX priorities
+        $result3 = $this->validator->validatePriority(0, "MX");
+        $this->assertTrue($result3->isValid());
+        $this->assertEquals(0, $result3->getData());
 
+        $result4 = $this->validator->validatePriority(10, "MX");
+        $this->assertTrue($result4->isValid());
+        $this->assertEquals(10, $result4->getData());
+
+        $result5 = $this->validator->validatePriority(65535, "MX");
+        $this->assertTrue($result5->isValid());
+        $this->assertEquals(65535, $result5->getData());
+
+        // Test invalid priorities for MX records
+        $result6 = $this->validator->validatePriority(-1, "MX");
+        $this->assertFalse($result6->isValid());
+        $this->assertNotEmpty($result6->getErrors());
+
+        $result7 = $this->validator->validatePriority(65536, "MX");
+        $this->assertFalse($result7->isValid());
+
+        $result8 = $this->validator->validatePriority("invalid", "MX");
+        $this->assertFalse($result8->isValid());
+    }
+
+    public function testValidatePriorityWithSrvRecords()
+    {
+        // Test default values and valid priorities for SRV records
+        $result1 = $this->validator->validatePriority(null, "SRV");
+        $this->assertTrue($result1->isValid());
+        $this->assertEquals(10, $result1->getData());
+
+        $result2 = $this->validator->validatePriority(0, "SRV");
+        $this->assertTrue($result2->isValid());
+        $this->assertEquals(0, $result2->getData());
+
+        $result3 = $this->validator->validatePriority(65535, "SRV");
+        $this->assertTrue($result3->isValid());
+        $this->assertEquals(65535, $result3->getData());
+    }
+
+    public function testValidatePriorityWithNonPriorityRecords()
+    {
         // Test non-MX/SRV records - should always return 0 regardless of input
-        $this->assertEquals(0, $this->validator->isValidPriority(10, "A"));
-        $this->assertEquals(0, $this->validator->isValidPriority(100, "AAAA"));
-        $this->assertEquals(0, $this->validator->isValidPriority("invalid", "TXT"));
+        $result1 = $this->validator->validatePriority(null, "A");
+        $this->assertTrue($result1->isValid());
+        $this->assertEquals(0, $result1->getData());
+
+        $result2 = $this->validator->validatePriority("", "A");
+        $this->assertTrue($result2->isValid());
+        $this->assertEquals(0, $result2->getData());
+
+        $result3 = $this->validator->validatePriority(10, "A");
+        $this->assertTrue($result3->isValid());
+        $this->assertEquals(0, $result3->getData());
+
+        $result4 = $this->validator->validatePriority(100, "AAAA");
+        $this->assertTrue($result4->isValid());
+        $this->assertEquals(0, $result4->getData());
+
+        $result5 = $this->validator->validatePriority("invalid", "TXT");
+        $this->assertTrue($result5->isValid());
+        $this->assertEquals(0, $result5->getData());
     }
 
     /**
-     * Test non-alias target validation
+     * Test non-alias target validation with ValidationResult pattern
      */
-    public function testValidNonAliasTargetNoCname()
+    public function testValidateNonAliasTargetWithNoCname()
     {
         // Configure mock for database name
         $this->configMock->method('get')
@@ -75,10 +125,12 @@ class DnsCommonValidatorTest extends TestCase
             ->method('queryOne')
             ->willReturn(false);
 
-        $this->assertTrue($this->validator->isValidNonAliasTarget("example.com"));
+        $result = $this->validator->validateNonAliasTarget("example.com");
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->getData());
     }
 
-    public function testValidNonAliasTargetWithCname()
+    public function testValidateNonAliasTargetWithCname()
     {
         // Configure mock for database name
         $this->configMock->method('get')
@@ -97,6 +149,9 @@ class DnsCommonValidatorTest extends TestCase
             ->method('queryOne')
             ->willReturn(['id' => 1]);
 
-        $this->assertFalse($this->validator->isValidNonAliasTarget("has.cname.example.com"));
+        $result = $this->validator->validateNonAliasTarget("has.cname.example.com");
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
+        $this->assertStringContainsString('You can not point a NS or MX record to a CNAME record', $result->getFirstError());
     }
 }

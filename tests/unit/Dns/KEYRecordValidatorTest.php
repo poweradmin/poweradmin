@@ -4,16 +4,21 @@ namespace unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\KEYRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
+use ReflectionProperty;
 
 /**
- * Tests for the KEYRecordValidator
+ * Tests for the KEYRecordValidator using ValidationResult
  */
 class KEYRecordValidatorTest extends TestCase
 {
     private KEYRecordValidator $validator;
     private ConfigurationManager $configMock;
+    private HostnameValidator $hostnameValidatorMock;
+    private TTLValidator $ttlValidatorMock;
 
     protected function setUp(): void
     {
@@ -21,7 +26,40 @@ class KEYRecordValidatorTest extends TestCase
         $this->configMock->method('get')
             ->willReturn('example.com');
 
+        // Mock the validators we need
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->method('validate')
+            ->willReturnCallback(function ($hostname, $wildcard) {
+                if (strpos($hostname, '-invalid') !== false) {
+                    return ValidationResult::failure('Invalid hostname');
+                }
+                return ValidationResult::success(['hostname' => $hostname]);
+            });
+
+        $this->ttlValidatorMock = $this->createMock(TTLValidator::class);
+        $this->ttlValidatorMock->method('validate')
+            ->willReturnCallback(function ($ttl, $defaultTTL) {
+                if ($ttl === -1) {
+                    return ValidationResult::failure('Invalid TTL value');
+                }
+                if (empty($ttl)) {
+                    return ValidationResult::success($defaultTTL);
+                }
+                return ValidationResult::success($ttl);
+            });
+
+        // Create the validator instance
         $this->validator = new KEYRecordValidator($this->configMock);
+
+        // Inject the mock hostname validator
+        $reflectionProperty = new ReflectionProperty(KEYRecordValidator::class, 'hostnameValidator');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
+        // Inject the mock TTL validator
+        $reflectionProperty = new ReflectionProperty(KEYRecordValidator::class, 'ttlValidator');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($this->validator, $this->ttlValidatorMock);
     }
 
     public function testValidateWithValidData()
@@ -34,11 +72,13 @@ class KEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithAnotherValidData()
@@ -51,11 +91,12 @@ class KEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidFlags()
@@ -68,7 +109,8 @@ class KEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('flags must be', $result->getFirstError());
     }
 
     public function testValidateWithInvalidProtocol()
@@ -81,7 +123,8 @@ class KEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('protocol must be', $result->getFirstError());
     }
 
     public function testValidateWithInvalidAlgorithm()
@@ -94,7 +137,8 @@ class KEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('algorithm must be', $result->getFirstError());
     }
 
     public function testValidateWithInvalidPublicKeyFormat()
@@ -109,7 +153,8 @@ class KEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain', $result->getFirstError());
     }
 
     public function testValidateWithMissingPublicKey()
@@ -122,7 +167,8 @@ class KEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain', $result->getFirstError());
     }
 
     public function testValidateWithInvalidFormat()
@@ -135,7 +181,8 @@ class KEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain', $result->getFirstError());
     }
 
     public function testValidateWithInvalidHostname()
@@ -148,7 +195,8 @@ class KEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        // We don't check the exact error message as it comes from the hostname validator
     }
 
     public function testValidateWithInvalidTTL()
@@ -161,7 +209,8 @@ class KEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        // We don't check the exact error message as it comes from the TTL validator
     }
 
     public function testValidateWithDefaultTTL()
@@ -174,7 +223,23 @@ class KEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
+    }
+
+    public function testValidateWithInvalidPriority()
+    {
+        $content = '256 3 5 AQPSKmynfzW4kyBv015MUG2DeIQ3Cbl+BBZH4b/0PY1kxkmvHjcZc8nocffttoalYz93wXFSYqO0mx8LoMQ3XDHLcuq5K2bNiLFuhz5ty9d/GSDUDtl74bQBrUu/zW5tOQ==';
+        $name = 'host.example.com';
+        $prio = 10;  // Non-zero priority
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Priority field', $result->getFirstError());
     }
 }

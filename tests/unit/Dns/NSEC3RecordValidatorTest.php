@@ -23,18 +23,48 @@
 namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\NSEC3RecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use ReflectionClass;
 
 class NSEC3RecordValidatorTest extends TestCase
 {
     private NSEC3RecordValidator $validator;
     private ConfigurationManager $configMock;
+    private TTLValidator $ttlValidatorMock;
+    private HostnameValidator $hostnameValidatorMock;
 
     protected function setUp(): void
     {
         $this->configMock = $this->createMock(ConfigurationManager::class);
+
+        // Create mocks for TTLValidator and HostnameValidator
+        $this->ttlValidatorMock = $this->createMock(TTLValidator::class);
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+
+        // Set up default successful validation for hostname and TTL
+        $this->hostnameValidatorMock->method('validate')
+            ->willReturn(ValidationResult::success(['hostname' => 'hash.example.com']));
+
+        $this->ttlValidatorMock->method('validate')
+            ->willReturn(ValidationResult::success(3600));
+
+        // Create validator with config
         $this->validator = new NSEC3RecordValidator($this->configMock);
+
+        // Inject mock dependencies using reflection
+        $reflection = new ReflectionClass($this->validator);
+
+        $ttlProperty = $reflection->getProperty('ttlValidator');
+        $ttlProperty->setAccessible(true);
+        $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
+
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
     }
 
     /**
@@ -50,10 +80,13 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                               // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('1 0 10 AB12CD 01234ABCDEF A NS SOA MX TXT AAAA', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals('1 0 10 AB12CD 01234ABCDEF A NS SOA MX TXT AAAA', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals('hash.example.com', $data['name']);
     }
 
     /**
@@ -69,10 +102,11 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('1 0 5 - AB12CD34EF56GH', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('1 0 5 - AB12CD34EF56GH', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(0, $data['priority']);
     }
 
     /**
@@ -88,7 +122,8 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('cannot be empty', $result->getFirstError());
     }
 
     /**
@@ -104,7 +139,8 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain at least', $result->getFirstError());
     }
 
     /**
@@ -120,7 +156,8 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('hash algorithm must be 1', $result->getFirstError());
     }
 
     /**
@@ -136,7 +173,8 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('flags must be 0 or 1', $result->getFirstError());
     }
 
     /**
@@ -152,7 +190,8 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('iterations must be between', $result->getFirstError());
     }
 
     /**
@@ -168,7 +207,8 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('salt must be -', $result->getFirstError());
     }
 
     /**
@@ -184,7 +224,8 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('next hashed owner name', $result->getFirstError());
     }
 
     /**
@@ -200,7 +241,9 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('invalid record type', $result->getFirstError());
+        $this->assertStringContainsString('INVALID-TYPE', $result->getFirstError());
     }
 
     /**
@@ -216,10 +259,12 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('1 0 5 - AB12CD34EF56GH 1 2 6 15 16 28', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals('1 0 5 - AB12CD34EF56GH 1 2 6 15 16 28', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(0, $data['priority']);
     }
 
     /**
@@ -227,6 +272,19 @@ class NSEC3RecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidTtl(): void
     {
+        // Set up TTL validator to fail
+        $this->ttlValidatorMock = $this->createMock(TTLValidator::class);
+        $this->ttlValidatorMock->expects($this->once())
+            ->method('validate')
+            ->with(-1, 86400)
+            ->willReturn(ValidationResult::failure('TTL must be a positive number'));
+
+        // Inject mock validator
+        $reflection = new ReflectionClass($this->validator);
+        $ttlProperty = $reflection->getProperty('ttlValidator');
+        $ttlProperty->setAccessible(true);
+        $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
+
         $result = $this->validator->validate(
             '1 0 5 - AB12CD34EF56GH A NS SOA',               // content
             'hash.example.com',                               // name
@@ -235,7 +293,8 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     /**
@@ -243,6 +302,19 @@ class NSEC3RecordValidatorTest extends TestCase
      */
     public function testValidateWithDefaultTtl(): void
     {
+        // Set up TTL validator to return default TTL
+        $this->ttlValidatorMock = $this->createMock(TTLValidator::class);
+        $this->ttlValidatorMock->expects($this->once())
+            ->method('validate')
+            ->with('', 86400)
+            ->willReturn(ValidationResult::success(86400));
+
+        // Inject mock validator
+        $reflection = new ReflectionClass($this->validator);
+        $ttlProperty = $reflection->getProperty('ttlValidator');
+        $ttlProperty->setAccessible(true);
+        $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
+
         $result = $this->validator->validate(
             '1 0 5 - AB12CD34EF56GH A NS SOA',               // content
             'hash.example.com',                               // name
@@ -251,9 +323,40 @@ class NSEC3RecordValidatorTest extends TestCase
             86400                                             // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('1 0 5 - AB12CD34EF56GH A NS SOA', $result['content']);
-        $this->assertEquals(86400, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('1 0 5 - AB12CD34EF56GH A NS SOA', $data['content']);
+        $this->assertEquals(86400, $data['ttl']);
+        $this->assertEquals(0, $data['priority']);
+    }
+
+    /**
+     * Test validation with invalid hostname
+     */
+    public function testValidateWithInvalidHostname(): void
+    {
+        // Set up hostname validator to fail
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->expects($this->once())
+            ->method('validate')
+            ->with('invalid..hostname', true)
+            ->willReturn(ValidationResult::failure('Invalid hostname format'));
+
+        // Inject mock validator
+        $reflection = new ReflectionClass($this->validator);
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
+        $result = $this->validator->validate(
+            '1 0 5 - AB12CD34EF56GH',                        // content
+            'invalid..hostname',                              // invalid name
+            '',                                               // prio
+            3600,                                             // ttl
+            86400                                             // defaultTTL
+        );
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid hostname', $result->getFirstError());
     }
 }

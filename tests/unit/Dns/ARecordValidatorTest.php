@@ -9,9 +9,10 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
- * Tests for the ARecordValidator
+ * Tests for the ARecordValidator using ValidationResult pattern
  */
 class ARecordValidatorTest extends TestCase
 {
@@ -37,11 +38,14 @@ class ARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid(), "A record validation should succeed for valid data");
+        $data = $result->getData();
+
+        $this->assertIsArray($data, "ValidationResult data should be an array");
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidIPv4()
@@ -54,7 +58,8 @@ class ARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid(), "A record validation should fail for invalid IPv4");
+        $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid IPv4");
     }
 
     public function testValidateWithInvalidHostname()
@@ -67,7 +72,8 @@ class ARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid(), "A record validation should fail for invalid hostname");
+        $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid hostname");
     }
 
     public function testValidateWithInvalidTTL()
@@ -80,7 +86,8 @@ class ARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid(), "A record validation should fail for invalid TTL");
+        $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid TTL");
     }
 
     public function testValidateWithInvalidPriority()
@@ -93,7 +100,8 @@ class ARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid(), "A record validation should fail for invalid priority");
+        $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid priority");
     }
 
     public function testValidateWithEmptyPriority()
@@ -106,8 +114,9 @@ class ARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(0, $result['prio']);
+        $this->assertTrue($result->isValid(), "A record validation should succeed with empty priority");
+        $data = $result->getData();
+        $this->assertEquals(0, $data['prio'], "Empty priority should default to 0");
     }
 
     public function testValidateWithDefaultTTL()
@@ -120,7 +129,9 @@ class ARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid(), "A record validation should succeed with empty TTL");
+        $data = $result->getData();
+        $this->assertIsArray($data);
+        $this->assertEquals(86400, $data['ttl'], "Empty TTL should use default value");
     }
 }

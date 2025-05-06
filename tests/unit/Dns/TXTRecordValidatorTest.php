@@ -5,6 +5,7 @@ namespace unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the TXTRecordValidator
@@ -47,12 +48,12 @@ class TXTRecordValidatorTest extends TestCase
             ->willReturnCallback(function (string $content, string $name, mixed $prio, $ttl, $defaultTTL) {
                 // Check for unquoted content
                 if (!(str_starts_with($content, '"') && str_ends_with($content, '"'))) {
-                    return false;
+                    return \Poweradmin\Domain\Service\Validation\ValidationResult::failure(_('TXT record content must be enclosed in quotes.'));
                 }
 
                 // Check for invalid hostname characters
                 if (preg_match('/[<>]/', $name)) {
-                    return false;
+                    return \Poweradmin\Domain\Service\Validation\ValidationResult::failure(_('Invalid characters in hostname.'));
                 }
 
                 // Delegate to the real validator for other cases
@@ -72,11 +73,13 @@ class TXTRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']); // TXT always uses 0
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']); // TXT always uses 0
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidNoProperQuoting()
@@ -90,11 +93,11 @@ class TXTRecordValidatorTest extends TestCase
         // Testing with strict validator that enforces quoting
         $strictValidator = $this->createStrictValidator();
         $result = $strictValidator->validate($content, $name, $prio, $ttl, $defaultTTL);
-        $this->assertFalse($result, 'Strict validator should reject unquoted content');
+        $this->assertFalse($result->isValid(), 'Strict validator should reject unquoted content');
 
-        // Note: The current implementation only checks for unescaped quotes, not missing quotes
+        // Note: The current implementation checks for quotes
         $actualResult = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
-        $this->assertIsArray($actualResult, 'Current implementation accepts unquoted content');
+        $this->assertFalse($actualResult->isValid(), 'Current implementation rejects unquoted content');
     }
 
     public function testValidateWithInvalidName()
@@ -108,11 +111,11 @@ class TXTRecordValidatorTest extends TestCase
         // Testing with strict validator that enforces hostname validation
         $strictValidator = $this->createStrictValidator();
         $result = $strictValidator->validate($content, $name, $prio, $ttl, $defaultTTL);
-        $this->assertFalse($result, 'Strict validator should reject invalid hostname');
+        $this->assertFalse($result->isValid(), 'Strict validator should reject invalid hostname');
 
-        // Note: The current implementation considers angle brackets as valid printable characters
+        // Note: The current implementation now rejects angle brackets
         $actualResult = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
-        $this->assertIsArray($actualResult, 'Current implementation accepts angle brackets in hostnames');
+        $this->assertFalse($actualResult->isValid(), 'Current implementation rejects angle brackets in hostnames');
     }
 
     public function testValidateWithHTMLTags()
@@ -126,7 +129,8 @@ class TXTRecordValidatorTest extends TestCase
         // The validator should reject HTML tags
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result); // Should fail validation
+        $this->assertFalse($result->isValid()); // Should fail validation
+        $this->assertStringContainsString('HTML', $result->getFirstError());
     }
 
     public function testValidateWithUnescapedQuotes()
@@ -140,7 +144,8 @@ class TXTRecordValidatorTest extends TestCase
         // The validator should reject unescaped quotes
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result); // Should fail validation
+        $this->assertFalse($result->isValid()); // Should fail validation
+        $this->assertStringContainsString('quotes', $result->getFirstError());
     }
 
     public function testValidateWithEscapedQuotes()
@@ -153,8 +158,9 @@ class TXTRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithInvalidTTL()
@@ -167,7 +173,8 @@ class TXTRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     public function testValidateWithDefaultTTL()
@@ -180,22 +187,24 @@ class TXTRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 
     public function testValidateWithNonZeroPriority()
     {
         $content = '"This is a valid TXT record"';
         $name = 'txt.example.com';
-        $prio = 10; // Non-zero priority (should be ignored for TXT records)
+        $prio = 10; // Non-zero priority (should be invalid for TXT records)
         $ttl = 3600;
         $defaultTTL = 86400;
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(0, $result['prio']); // Priority should always be 0 for TXT
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('priority', $result->getFirstError());
     }
 
     public function testValidateWithNonPrintableCharacters()
@@ -210,7 +219,8 @@ class TXTRecordValidatorTest extends TestCase
         // with string handling in PHP tests
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 }

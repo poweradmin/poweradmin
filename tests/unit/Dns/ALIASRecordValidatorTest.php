@@ -5,9 +5,10 @@ namespace unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\ALIASRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
- * Tests for the ALIASRecordValidator
+ * Tests for the ALIASRecordValidator using ValidationResult pattern
  */
 class ALIASRecordValidatorTest extends TestCase
 {
@@ -33,11 +34,17 @@ class ALIASRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid(), "ALIAS record validation should succeed for valid data");
+        $data = $result->getData();
+
+        $this->assertIsArray($data, "ValidationResult data should be an array");
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+
+        // For TTL, check its value in the nested array
+        $this->assertArrayHasKey('ttl', $data);
+        $this->assertEquals(3600, $data['ttl'], "TTL should be properly validated");
     }
 
     public function testValidateWithInvalidSourceHostname()
@@ -50,7 +57,8 @@ class ALIASRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid(), "ALIAS record validation should fail for invalid source hostname");
+        $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid hostname");
     }
 
     public function testValidateWithInvalidTargetHostname()
@@ -63,7 +71,8 @@ class ALIASRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid(), "ALIAS record validation should fail for invalid target hostname");
+        $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid target hostname");
     }
 
     public function testValidateWithInvalidTTL()
@@ -76,7 +85,8 @@ class ALIASRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid(), "ALIAS record validation should fail for invalid TTL");
+        $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid TTL");
     }
 
     public function testValidateWithInvalidPriority()
@@ -89,7 +99,8 @@ class ALIASRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid(), "ALIAS record validation should fail for invalid priority");
+        $this->assertNotEmpty($result->getErrors(), "Should have error messages for invalid priority");
     }
 
     public function testValidateWithEmptyPriority()
@@ -102,8 +113,9 @@ class ALIASRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(0, $result['prio']);
+        $this->assertTrue($result->isValid(), "ALIAS record validation should succeed with empty priority");
+        $data = $result->getData();
+        $this->assertEquals(0, $data['prio'], "Empty priority should default to 0");
     }
 
     public function testValidateWithDefaultTTL()
@@ -116,7 +128,9 @@ class ALIASRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid(), "ALIAS record validation should succeed with empty TTL");
+        $data = $result->getData();
+        $this->assertIsArray($data);
+        $this->assertEquals(86400, $data['ttl'], "Empty TTL should use default value");
     }
 }

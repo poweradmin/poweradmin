@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 
@@ -74,7 +75,7 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
      * @param string $dns_hostmaster DNS hostmaster email
      * @param int $dns_ttl Default TTL value
      *
-     * @return array|null Returns array with validated data on success, null on failure
+     * @return ValidationResult<array> Returns ValidationResult with validated data or error messages
      */
     public function validateRecord(
         int $rid,
@@ -86,78 +87,61 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         ?int $ttl,
         string $dns_hostmaster,
         int $dns_ttl
-    ): ?array {
+    ): ValidationResult {
         $zone = $this->zoneRepository->getDomainNameById($zid);
         if (!$zone) {
-            $this->messageService->addSystemError(_('Unable to find domain with the given ID.'));
-            return null;
-        }
-
-        // Perform common validation for all record types
-        $cnameValidator = $this->validatorRegistry->getValidator(RecordType::CNAME);
-        if ($type != RecordType::CNAME) {
-            if (!$cnameValidator->isValidCnameExistence($name, $rid)) {
-                return null;
-            }
+            return ValidationResult::failure(_('Unable to find domain with the given ID.'));
         }
 
         // Get the appropriate validator for this record type
         $validator = $this->validatorRegistry->getValidator($type);
-
         if ($validator === null) {
-            $this->messageService->addSystemError(_('Unknown record type.'));
-            return null;
+            return ValidationResult::failure(_('Unknown record type.'));
+        }
+
+        // Perform common validation for all record types
+        $cnameValidator = $this->validatorRegistry->getValidator(RecordType::CNAME);
+        if ($type != RecordType::CNAME && method_exists($cnameValidator, 'validateCnameExistence')) {
+            $cnameResult = $cnameValidator->validateCnameExistence($name, $rid);
+            if (!$cnameResult->isValid()) {
+                return $cnameResult;
+            }
         }
 
         // Special case for SOA records
-        if ($type === RecordType::SOA) {
+        if ($type === RecordType::SOA && method_exists($validator, 'setSOAParams')) {
             $validator->setSOAParams($dns_hostmaster, $zone);
         }
 
         // Perform validation using the appropriate validator
         $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl);
-        if ($validationResult === null) {
-            return null;
+
+        // If validation failed, return the errors
+        if (!$validationResult->isValid()) {
+            return $validationResult;
         }
 
         // Extract validated data
-        $content = $validationResult['content'];
-        $name = $validationResult['name'];
-        $prio = $validationResult['prio'];
-        $ttl = $validationResult['ttl'];
+        $validatedData = $validationResult->getData();
+        $content = $validatedData['content'];
+        $name = $validatedData['name'];
+        $prio = $validatedData['prio'];
+        $ttl = $validatedData['ttl'];
 
         // Perform additional validation for specific record types
         if ($type === RecordType::NS || $type === RecordType::MX) {
-            if (!$this->dnsCommonValidator->isValidNonAliasTarget($content)) {
-                return null;
+            // For NS/MX, check that target is not a CNAME
+            $aliasResult = $this->dnsCommonValidator->validateNonAliasTarget($content);
+            if (!$aliasResult->isValid()) {
+                return $aliasResult;
             }
         }
 
-        // Skip validation if it was already handled by a specific validator
-        if (
-            $type !== RecordType::A && $type !== RecordType::AAAA && $type !== RecordType::CNAME &&
-            $type !== RecordType::CSYNC && $type !== RecordType::MX && $type !== RecordType::NS
-        ) {
-            $validatedPrio = $this->dnsCommonValidator->isValidPriority($prio, $type);
-            if ($validatedPrio === false) {
-                return null;
-            }
-
-            $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $dns_ttl);
-            if ($validatedTtl === false) {
-                return null;
-            }
-        } else {
-            // We've already validated these in the specific record validator
-            $validatedPrio = $prio;
-            $validatedTtl = $ttl;
-        }
-
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
-            'prio' => $validatedPrio,
-            'ttl' => $validatedTtl
-        ];
+            'prio' => $prio,
+            'ttl' => $ttl
+        ]);
     }
 }

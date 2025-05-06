@@ -4,13 +4,11 @@ namespace unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\EUI48RecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
- * Tests for the EUI48RecordValidator
+ * Tests for the EUI48RecordValidator with ValidationResult pattern
  */
 class EUI48RecordValidatorTest extends TestCase
 {
@@ -36,11 +34,13 @@ class EUI48RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithValidUppercaseHexData()
@@ -53,8 +53,9 @@ class EUI48RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithInvalidEUI48Format()
@@ -67,7 +68,8 @@ class EUI48RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('MAC address', $result->getFirstError());
     }
 
     public function testValidateWithInvalidEUI48Values()
@@ -80,7 +82,8 @@ class EUI48RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('MAC address', $result->getFirstError());
     }
 
     public function testValidateWithInvalidEUI48Length()
@@ -93,7 +96,8 @@ class EUI48RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('MAC address', $result->getFirstError());
     }
 
     public function testValidateWithInvalidHostname()
@@ -106,7 +110,7 @@ class EUI48RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
     }
 
     public function testValidateWithInvalidTTL()
@@ -119,7 +123,8 @@ class EUI48RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     public function testValidateWithDefaultTTL()
@@ -132,7 +137,9 @@ class EUI48RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 }

@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * SVCB record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class SVCBRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -61,56 +59,56 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
         if (!StringValidator::isValidPrintable($name)) {
-            $this->messageService->addSystemError(_('Invalid characters in name field.'));
-            return false;
+            return ValidationResult::failure(_('Invalid characters in name field.'));
         }
 
         // Validate content
         if (!StringValidator::isValidPrintable($content)) {
-            $this->messageService->addSystemError(_('Invalid characters in content field.'));
-            return false;
+            return ValidationResult::failure(_('Invalid characters in content field.'));
         }
 
         // Parse SVCB record parts: <priority> <target> [<params>...]
-        if (!$this->isValidSVCBRecordFormat($content)) {
-            return false;
+        $formatResult = $this->validateSVCBRecordFormat($content);
+        if (!$formatResult->isValid()) {
+            return $formatResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // Use the provided priority if available, otherwise extract from the content
         $priority = ($prio !== '' && $prio !== null) ? (int)$prio : $this->extractPriorityFromContent($content);
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $priority,
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
      * Check if content follows SVCB record format: <priority> <target> [<params>...]
      *
      * @param string $content The content to validate
-     * @return bool True if valid format, false otherwise
+     * @return ValidationResult ValidationResult containing validation result
      */
-    private function isValidSVCBRecordFormat(string $content): bool
+    private function validateSVCBRecordFormat(string $content): ValidationResult
     {
         // Basic regex to match SVCB record format with at least priority and target
         if (!preg_match('/^(\d+)\s+([^\s]+)(\s+.*)?$/', $content, $matches)) {
-            $this->messageService->addSystemError(_('SVCB record must start with a priority and target: <priority> <target> [<params>...]'));
-            return false;
+            return ValidationResult::failure(_('SVCB record must start with a priority and target: <priority> <target> [<params>...]'));
         }
 
         $priority = (int)$matches[1];
@@ -119,36 +117,35 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
 
         // Validate priority (0-65535)
         if ($priority < 0 || $priority > 65535) {
-            $this->messageService->addSystemError(_('SVCB priority must be between 0 and 65535.'));
-            return false;
+            return ValidationResult::failure(_('SVCB priority must be between 0 and 65535.'));
         }
 
         // Validate target (either "." for AliasMode or a valid hostname)
         if ($target !== '.') {
-            $result = $this->hostnameValidator->isValidHostnameFqdn($target, '0');
-            if (!$result) {
-                $this->messageService->addSystemError(_('SVCB target must be either "." (for AliasMode) or a valid hostname.'));
-                return false;
+            $hostnameResult = $this->hostnameValidator->validate($target, false);
+            if (!$hostnameResult->isValid()) {
+                return ValidationResult::failure(_('SVCB target must be either "." (for AliasMode) or a valid hostname.'));
             }
         }
 
         // If parameters are present, validate them
         if (trim($params) !== '') {
-            if (!$this->validateSVCBParameters(trim($params))) {
-                return false;
+            $paramResult = $this->validateSVCBParameters(trim($params));
+            if (!$paramResult->isValid()) {
+                return $paramResult;
             }
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
      * Validate SVCB parameters
      *
      * @param string $params The parameters to validate
-     * @return bool True if parameters are valid, false otherwise
+     * @return ValidationResult ValidationResult containing validation result
      */
-    private function validateSVCBParameters(string $params): bool
+    private function validateSVCBParameters(string $params): ValidationResult
     {
         // Split parameters by space
         $paramsList = preg_split('/\s+/', $params);
@@ -157,8 +154,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
         foreach ($paramsList as $param) {
             // Check if parameter follows "key=value" format
             if (!preg_match('/^([a-z0-9]+)=(.+)$/', $param, $paramMatches)) {
-                $this->messageService->addSystemError(_('SVCB parameters must be in "key=value" format.'));
-                return false;
+                return ValidationResult::failure(_('SVCB parameters must be in "key=value" format.'));
             }
 
             $key = $paramMatches[1];
@@ -168,16 +164,14 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
             if ($key === 'alpn') {
                 // Check alpn format: comma-separated values
                 if (!preg_match('/^[a-z0-9,\-]+$/', $value)) {
-                    $this->messageService->addSystemError(_('SVCB alpn parameter must be a comma-separated list of protocol names.'));
-                    return false;
+                    return ValidationResult::failure(_('SVCB alpn parameter must be a comma-separated list of protocol names.'));
                 }
             } elseif ($key === 'ipv4hint') {
                 // Check IPv4 hint (comma-separated IPv4 addresses)
                 $ipv4s = explode(',', $value);
                 foreach ($ipv4s as $ip) {
                     if (!filter_var(trim($ip), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
-                        $this->messageService->addSystemError(_('SVCB ipv4hint must contain valid IPv4 addresses.'));
-                        return false;
+                        return ValidationResult::failure(_('SVCB ipv4hint must contain valid IPv4 addresses.'));
                     }
                 }
             } elseif ($key === 'ipv6hint') {
@@ -185,21 +179,19 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
                 $ipv6s = explode(',', $value);
                 foreach ($ipv6s as $ip) {
                     if (!filter_var(trim($ip), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
-                        $this->messageService->addSystemError(_('SVCB ipv6hint must contain valid IPv6 addresses.'));
-                        return false;
+                        return ValidationResult::failure(_('SVCB ipv6hint must contain valid IPv6 addresses.'));
                     }
                 }
             } elseif ($key === 'port') {
                 // Check port (1-65535)
                 if (!is_numeric($value) || (int)$value < 1 || (int)$value > 65535) {
-                    $this->messageService->addSystemError(_('SVCB port must be between 1 and 65535.'));
-                    return false;
+                    return ValidationResult::failure(_('SVCB port must be between 1 and 65535.'));
                 }
             }
             // Other parameters are allowed and passed through without specific validation
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**

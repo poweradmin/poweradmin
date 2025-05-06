@@ -5,6 +5,7 @@ namespace unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\APLRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the APLRecordValidator
@@ -33,11 +34,13 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithValidIPv6Data()
@@ -50,11 +53,12 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithMultipleValidEntries()
@@ -67,8 +71,10 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithNegationOperator()
@@ -81,8 +87,9 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithInvalidHostname()
@@ -95,7 +102,8 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getFirstError());
     }
 
     public function testValidateWithInvalidAFI()
@@ -108,7 +116,8 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('AFI', $result->getFirstError());
     }
 
     public function testValidateWithInvalidIPv4Address()
@@ -121,7 +130,8 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('IPv4', $result->getFirstError());
     }
 
     public function testValidateWithInvalidIPv6Address()
@@ -134,7 +144,8 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('IPv6', $result->getFirstError());
     }
 
     public function testValidateWithInvalidIPv4Prefix()
@@ -147,7 +158,8 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('prefix', $result->getFirstError());
     }
 
     public function testValidateWithInvalidIPv6Prefix()
@@ -160,7 +172,8 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('prefix', $result->getFirstError());
     }
 
     public function testValidateWithInvalidFormat()
@@ -173,7 +186,8 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('format', $result->getFirstError());
     }
 
     public function testValidateWithEmptyContent()
@@ -186,7 +200,8 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('empty', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTTL()
@@ -199,7 +214,8 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     public function testValidateWithInvalidPriority()
@@ -212,7 +228,8 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('priority', $result->getFirstError());
     }
 
     public function testValidateWithEmptyPriority()
@@ -225,8 +242,10 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(0, $result['prio']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals(0, $data['prio']);
     }
 
     public function testValidateWithDefaultTTL()
@@ -239,7 +258,8 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 }

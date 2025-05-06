@@ -22,17 +22,21 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Validator for PTR DNS records
+ *
+ * @package Poweradmin
+ * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
+ * @copyright   2010-2025 Poweradmin Development Team
+ * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 class PTRRecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private MessageService $messageService;
 
     /**
      * Constructor
@@ -43,7 +47,6 @@ class PTRRecordValidator implements DnsRecordValidatorInterface
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
-        $this->messageService = new MessageService();
     }
 
     /**
@@ -52,41 +55,45 @@ class PTRRecordValidator implements DnsRecordValidatorInterface
      * @param string $content Hostname
      * @param string $name Hostname
      * @param mixed $prio Priority (not used for PTR records)
-     * @param int|string $ttl TTL value
+     * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate content as hostname
-        $contentHostnameResult = $this->hostnameValidator->isValidHostnameFqdn($content, 0);
-        if ($contentHostnameResult === false) {
-            return false;
+        $contentHostnameResult = $this->hostnameValidator->validate($content, false);
+        if (!$contentHostnameResult->isValid()) {
+            return $contentHostnameResult;
         }
-        $content = $contentHostnameResult['hostname'];
+        $contentData = $contentHostnameResult->getData();
+        $content = $contentData['hostname'];
 
         // Validate name as hostname
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $nameResult = $this->hostnameValidator->validate($name, true);
+        if (!$nameResult->isValid()) {
+            return $nameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $nameData = $nameResult->getData();
+        $name = $nameData['hostname'];
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
-        // PTR records don't use priority
+        // PTR records don't use priority (always 0)
         $validatedPrio = 0;
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
-        ];
+        ]);
     }
 }

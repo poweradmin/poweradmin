@@ -75,7 +75,7 @@ class WhoisServiceIntegrationTest extends TestCase
         $testCases = [
             'example.com' => 'whois.verisign-grs.com',
             'example.net' => 'whois.verisign-grs.com',
-            'example.org' => 'whois.pir.org',
+            'example.org' => 'whois.publicinterestregistry.org',
             'example.co.uk' => 'whois.nic.uk',
             'example.io' => 'whois.nic.io',
         ];

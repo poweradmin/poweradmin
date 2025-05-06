@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
-use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * DNS TTL validation service
@@ -33,32 +33,24 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class TTLValidator
 {
-    private MessageService $messageService;
-
-    public function __construct()
-    {
-        $this->messageService = new MessageService();
-    }
-
     /**
-     * Check if TTL is valid and within range
+     * Validate TTL value
      *
      * @param mixed $ttl TTL value to validate
      * @param mixed $defaultTtl Default TTL to use if ttl is not provided
      *
-     * @return int|bool Validated TTL value if valid, false otherwise
+     * @return ValidationResult<array> Validation result with TTL value or error
      */
-    public function isValidTTL(mixed $ttl, mixed $defaultTtl): int|bool
+    public function validate(mixed $ttl, mixed $defaultTtl): ValidationResult
     {
         if (!isset($ttl) || $ttl === "") {
-            return $defaultTtl;
+            return ValidationResult::success(['ttl' => (int)$defaultTtl]);
         }
 
         if (!is_numeric($ttl) || $ttl < 0 || $ttl > 2147483647) {
-            $this->messageService->addSystemError(_('Invalid value for TTL field. It should be numeric.'));
-            return false;
+            return ValidationResult::failure(_('Invalid value for TTL field. It should be numeric.'));
         }
 
-        return (int)$ttl;
+        return ValidationResult::success(['ttl' => (int)$ttl]);
     }
 }

@@ -4,6 +4,7 @@ namespace unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
@@ -33,11 +34,13 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(10, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(10, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidSrvName()
@@ -50,7 +53,8 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid service value in name field of SRV record', $result->getFirstError());
     }
 
     public function testValidateWithInvalidSrvNameService()
@@ -63,7 +67,8 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('service value', $result->getFirstError());
     }
 
     public function testValidateWithInvalidSrvNameProtocol()
@@ -76,7 +81,8 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('protocol value', $result->getFirstError());
     }
 
     public function testValidateWithInvalidContent()
@@ -89,7 +95,8 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('priority, weight, port and target', $result->getFirstError());
     }
 
     public function testValidateWithInvalidContentPriority()
@@ -102,7 +109,8 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('priority field', $result->getFirstError());
     }
 
     public function testValidateWithInvalidContentWeight()
@@ -115,7 +123,8 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('weight field', $result->getFirstError());
     }
 
     public function testValidateWithInvalidContentPort()
@@ -128,7 +137,8 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('port field', $result->getFirstError());
     }
 
     public function testValidateWithInvalidContentTarget()
@@ -141,7 +151,8 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('target', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTTL()
@@ -154,7 +165,22 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL field', $result->getFirstError());
+    }
+
+    public function testValidateWithInvalidPriority()
+    {
+        $content = '10 20 5060 sip.example.com';
+        $name = '_sip._tcp.example.com';
+        $prio = 'invalid'; // Invalid priority
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('priority field', $result->getFirstError());
     }
 
     public function testValidateWithEmptyPriority()
@@ -167,8 +193,9 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(10, $result['prio']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals(10, $data['prio']);
     }
 
     public function testValidateWithDefaultTTL()
@@ -181,7 +208,41 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
+    }
+
+    public function testValidateSrvName()
+    {
+        // Using reflection to access private method
+        $method = new \ReflectionMethod(SRVRecordValidator::class, 'validateSrvName');
+        $method->setAccessible(true);
+
+        // Test valid name
+        $validResult = $method->invoke($this->validator, '_sip._tcp.example.com');
+        $this->assertTrue($validResult->isValid());
+        $this->assertEquals(['name' => '_sip._tcp.example.com'], $validResult->getData());
+
+        // Test invalid name
+        $invalidResult = $method->invoke($this->validator, 'invalid.example.com');
+        $this->assertFalse($invalidResult->isValid());
+    }
+
+    public function testValidateSrvContent()
+    {
+        // Using reflection to access private method
+        $method = new \ReflectionMethod(SRVRecordValidator::class, 'validateSrvContent');
+        $method->setAccessible(true);
+
+        // Test valid content
+        $validResult = $method->invoke($this->validator, '10 20 5060 sip.example.com', '_sip._tcp.example.com');
+        $this->assertTrue($validResult->isValid());
+        $this->assertEquals(['content' => '10 20 5060 sip.example.com'], $validResult->getData());
+
+        // Test invalid content
+        $invalidResult = $method->invoke($this->validator, '10 20 invalid', '_sip._tcp.example.com');
+        $this->assertFalse($invalidResult->isValid());
     }
 }

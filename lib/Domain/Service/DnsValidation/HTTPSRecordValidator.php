@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * HTTPS record validator
@@ -35,15 +35,11 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class HTTPSRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -57,34 +53,43 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult Validation result with data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidHTTPSContent($content)) {
-            return false;
+        $contentResult = $this->validateHTTPSContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Check if priority was provided separately (it shouldn't be for HTTPS records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field should not be used for HTTPS records as priority is part of the content.'));
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // Priority is included in the content for HTTPS records
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -92,33 +97,30 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
      * Format: <priority> <target> [key=value...]
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult Validation result with success or error message
      */
-    private function isValidHTTPSContent(string $content): bool
+    private function validateHTTPSContent(string $content): ValidationResult
     {
         // Split the content into parts
         $parts = preg_split('/\s+/', trim($content), 3);
 
         // Must have at least priority and target
         if (count($parts) < 2) {
-            $this->messageService->addSystemError(_('HTTPS record must contain at least priority and target values.'));
-            return false;
+            return ValidationResult::failure(_('HTTPS record must contain at least priority and target values.'));
         }
 
         [$priority, $target] = $parts;
 
         // Validate priority (must be a number between 0 and 65535)
         if (!is_numeric($priority) || (int)$priority < 0 || (int)$priority > 65535) {
-            $this->messageService->addSystemError(_('HTTPS record priority must be a number between 0 and 65535.'));
-            return false;
+            return ValidationResult::failure(_('HTTPS record priority must be a number between 0 and 65535.'));
         }
 
         // Validate target (must be either "." or a valid hostname)
         if ($target !== ".") {
-            $targetResult = $this->hostnameValidator->isValidHostnameFqdn($target, 1);
-            if ($targetResult === false) {
-                $this->messageService->addSystemError(_('HTTPS record target must be either "." or a valid fully-qualified domain name.'));
-                return false;
+            $targetResult = $this->hostnameValidator->validate($target, true);
+            if (!$targetResult->isValid()) {
+                return ValidationResult::failure(_('HTTPS record target must be either "." or a valid fully-qualified domain name.'));
             }
         }
 
@@ -127,22 +129,22 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
             $params = $parts[2];
 
             // Basic check for parameter format
-            if (!$this->isValidHTTPSParams($params)) {
-                $this->messageService->addSystemError(_('HTTPS record parameters must be in key=value format separated by spaces.'));
-                return false;
+            $paramsResult = $this->validateHTTPSParams($params);
+            if (!$paramsResult->isValid()) {
+                return $paramsResult;
             }
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
      * Validate HTTPS parameters
      *
      * @param string $params The parameter string to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult Validation result with success or error message
      */
-    private function isValidHTTPSParams(string $params): bool
+    private function validateHTTPSParams(string $params): ValidationResult
     {
         // Split the params string by space
         $paramsList = preg_split('/\s+/', trim($params));
@@ -150,10 +152,10 @@ class HTTPSRecordValidator implements DnsRecordValidatorInterface
         foreach ($paramsList as $param) {
             // Each parameter should be in key=value format
             if (!preg_match('/^[a-z0-9]+=[^=\s]+$/i', $param)) {
-                return false;
+                return ValidationResult::failure(_('HTTPS record parameters must be in key=value format separated by spaces.'));
             }
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

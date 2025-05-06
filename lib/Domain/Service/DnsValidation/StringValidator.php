@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
-use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * String validation for DNS records
@@ -38,37 +38,104 @@ class StringValidator
      * Test if string is printable
      *
      * @param string $string string to validate
-     *
-     * @return boolean true if valid, false otherwise
+     * @return ValidationResult Validation result with error message if invalid
      */
-    public static function isValidPrintable(string $string): bool
+    public static function validatePrintable(string $string): ValidationResult
     {
         if (!preg_match('/^[[:print:]]+$/', trim($string))) {
-            (new MessageService())->addSystemError(_('Invalid characters have been used in this record.'));
-            return false;
+            return ValidationResult::failure(_('Invalid characters have been used in this record.'));
         }
-        return true;
+        return ValidationResult::success($string);
     }
 
     /**
      * Test if string has html opening and closing tags
      *
      * @param string $string Input string
-     * @return bool true if HTML tags are found, false otherwise
+     * @return ValidationResult Validation result with error message if HTML tags found
      */
-    public static function hasHtmlTags(string $string): bool
+    public static function validateNoHtmlTags(string $string): ValidationResult
     {
-        // Method should return true if the string contains HTML tags, false otherwise
-        $contains_tags = preg_match('/[<>]/', trim($string));
-        if ($contains_tags) {
-            (new MessageService())->addSystemError(_('You cannot use html tags for this type of record.'));
+        if (preg_match('/[<>]/', trim($string))) {
+            return ValidationResult::failure(_('You cannot use html tags for this type of record.'));
         }
-        return $contains_tags;
+        return ValidationResult::success($string);
     }
 
     /**
      * Verify that the content is properly quoted
      *
+     * @param string $content
+     * @return ValidationResult Validation result with error message if quotes not escaped
+     */
+    public static function validateProperQuoting(string $content): ValidationResult
+    {
+        $startsWithQuote = isset($content[0]) && $content[0] === '"';
+        $endsWithQuote = isset($content[strlen($content) - 1]) && $content[strlen($content) - 1] === '"';
+
+        if ($startsWithQuote && $endsWithQuote) {
+            $subContent = substr($content, 1, -1);
+        } else {
+            $subContent = $content;
+        }
+
+        $pattern = '/(?<!\\\\)"/';
+
+        if (preg_match($pattern, $subContent)) {
+            return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
+        }
+
+        return ValidationResult::success($content);
+    }
+
+    /**
+     * Verify that the string is enclosed in quotes
+     *
+     * @param string $string Input string
+     * @return ValidationResult Validation result with error message if not enclosed in quotes
+     */
+    public static function validateQuotesAround(string $string): ValidationResult
+    {
+        // Ignore empty line
+        if (strlen($string) === 0) {
+            return ValidationResult::success($string);
+        }
+
+        if (!str_starts_with($string, '"') || !str_ends_with($string, '"')) {
+            return ValidationResult::failure(_('Add quotes around TXT record content.'));
+        }
+
+        return ValidationResult::success($string);
+    }
+
+    /**
+     * Test if string is printable (legacy method for backward compatibility)
+     *
+     * @deprecated Use validatePrintable() instead which returns a ValidationResult
+     * @param string $string string to validate
+     * @return boolean true if valid, false otherwise
+     */
+    public static function isValidPrintable(string $string): bool
+    {
+        return preg_match('/^[[:print:]]+$/', trim($string)) === 1;
+    }
+
+    /**
+     * Test if string has html opening and closing tags (legacy method for backward compatibility)
+     *
+     * @deprecated Use validateNoHtmlTags() instead which returns a ValidationResult
+     * @param string $string Input string
+     * @return bool true if HTML tags are found, false otherwise
+     */
+    public static function hasHtmlTags(string $string): bool
+    {
+        return preg_match('/[<>]/', trim($string)) === 1;
+    }
+
+    /**
+     * Verify that the content is properly quoted (legacy method for backward compatibility)
+     *
+     * @deprecated Use validateProperQuoting() instead which returns a ValidationResult
      * @param string $content
      * @return bool
      */
@@ -85,17 +152,13 @@ class StringValidator
 
         $pattern = '/(?<!\\\\)"/';
 
-        if (preg_match($pattern, $subContent)) {
-            (new MessageService())->addSystemError(_('Backslashes must precede all quotes (") in TXT content'));
-            return false;
-        }
-
-        return true;
+        return !preg_match($pattern, $subContent);
     }
 
     /**
-     * Verify that the string is enclosed in quotes
+     * Verify that the string is enclosed in quotes (legacy method for backward compatibility)
      *
+     * @deprecated Use validateQuotesAround() instead which returns a ValidationResult
      * @param string $string Input string
      * @return bool true if valid, false otherwise
      */
@@ -106,11 +169,6 @@ class StringValidator
             return true;
         }
 
-        if (!str_starts_with($string, '"') || !str_ends_with($string, '"')) {
-            (new MessageService())->addSystemError(_('Add quotes around TXT record content.'));
-            return false;
-        }
-
-        return true;
+        return str_starts_with($string, '"') && str_ends_with($string, '"');
     }
 }

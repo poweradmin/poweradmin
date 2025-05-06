@@ -47,13 +47,19 @@ class SOARecordValidatorTest extends TestCase
         $this->validator->setSOAParams($dns_hostmaster, $zone);
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertArrayHasKey('content', $result);
-        $this->assertArrayHasKey('name', $result);
-        $this->assertArrayHasKey('prio', $result);
-        $this->assertArrayHasKey('ttl', $result);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $this->assertArrayHasKey('content', $data);
+        $this->assertArrayHasKey('name', $data);
+        $this->assertArrayHasKey('prio', $data);
+        $this->assertArrayHasKey('ttl', $data);
+
+        $this->assertEquals(0, $data['prio']);
+
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidZoneName()
@@ -68,7 +74,10 @@ class SOARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidContent()
@@ -83,7 +92,10 @@ class SOARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidHostmaster()
@@ -98,7 +110,10 @@ class SOARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithNonNumericSerial()
@@ -113,7 +128,10 @@ class SOARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidTTL()
@@ -128,7 +146,10 @@ class SOARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $dns_hostmaster, $zone);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithArpaDomain()
@@ -144,7 +165,10 @@ class SOARecordValidatorTest extends TestCase
         $this->validator->setSOAParams($dns_hostmaster, $zone);
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithoutSOAParams()
@@ -157,6 +181,9 @@ class SOARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 }

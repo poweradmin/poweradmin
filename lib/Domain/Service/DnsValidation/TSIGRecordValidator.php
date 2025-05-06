@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * TSIG (Transaction SIGnature) record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class TSIGRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,37 +52,46 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the TSIG record
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for TSIG records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidTSIGContent($content)) {
-            return false;
+        $contentResult = StringValidator::validatePrintable($content);
+        if (!$contentResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in content field.'));
+        }
+
+        $errors = [];
+        if (!$this->isValidTSIGContent($content, $errors)) {
+            return ValidationResult::errors($errors);
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // TSIG records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -92,19 +99,15 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
      * Format: <algorithm-name> <timestamp> <fudge> <mac> <original-id> <error> <other-len> [<other-data>]
      *
      * @param string $content The content to validate
+     * @param array &$errors Collection of validation errors
      * @return bool True if valid, false otherwise
      */
-    private function isValidTSIGContent(string $content): bool
+    private function isValidTSIGContent(string $content, array &$errors): bool
     {
-        // Basic validation of printable characters
-        if (!StringValidator::isValidPrintable($content)) {
-            return false;
-        }
-
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content), 8);
         if (count($parts) < 7) {
-            $this->messageService->addSystemError(_('TSIG record must contain at least algorithm-name, timestamp, fudge, mac, original-id, error, and other-len separated by spaces.'));
+            $errors[] = _('TSIG record must contain at least algorithm-name, timestamp, fudge, mac, original-id, error, and other-len separated by spaces.');
             return false;
         }
 
@@ -112,49 +115,49 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
 
         // Validate algorithm name (must be a valid domain name ending with a dot)
         if (!$this->isValidAlgorithmName($algorithmName)) {
-            $this->messageService->addSystemError(_('TSIG algorithm name must be a valid domain name ending with a dot (e.g., hmac-sha256.).'));
+            $errors[] = _('TSIG algorithm name must be a valid domain name ending with a dot (e.g., hmac-sha256.).');
             return false;
         }
 
         // Validate timestamp (must be a positive integer)
         if (!is_numeric($timestamp) || (int)$timestamp < 0) {
-            $this->messageService->addSystemError(_('TSIG timestamp must be a non-negative integer.'));
+            $errors[] = _('TSIG timestamp must be a non-negative integer.');
             return false;
         }
 
         // Validate fudge (must be a positive integer, usually small like 300)
         if (!is_numeric($fudge) || (int)$fudge < 0) {
-            $this->messageService->addSystemError(_('TSIG fudge must be a non-negative integer.'));
+            $errors[] = _('TSIG fudge must be a non-negative integer.');
             return false;
         }
 
         // Validate MAC (must be a base64 string or hexadecimal)
         if (!$this->isValidMac($mac)) {
-            $this->messageService->addSystemError(_('TSIG MAC must be a valid base64-encoded string or hexadecimal string.'));
+            $errors[] = _('TSIG MAC must be a valid base64-encoded string or hexadecimal string.');
             return false;
         }
 
         // Validate original ID (must be a positive integer between 0 and 65535)
         if (!is_numeric($originalId) || (int)$originalId < 0 || (int)$originalId > 65535) {
-            $this->messageService->addSystemError(_('TSIG original ID must be a number between 0 and 65535.'));
+            $errors[] = _('TSIG original ID must be a number between 0 and 65535.');
             return false;
         }
 
         // Validate error (must be a valid DNS RCODE number between 0 and 23)
         if (!is_numeric($error) || (int)$error < 0 || (int)$error > 23) {
-            $this->messageService->addSystemError(_('TSIG error must be a valid DNS RCODE number between 0 and 23.'));
+            $errors[] = _('TSIG error must be a valid DNS RCODE number between 0 and 23.');
             return false;
         }
 
         // Validate other-len (must be a positive integer)
         if (!is_numeric($otherLen) || (int)$otherLen < 0) {
-            $this->messageService->addSystemError(_('TSIG other-len must be a non-negative integer.'));
+            $errors[] = _('TSIG other-len must be a non-negative integer.');
             return false;
         }
 
         // Validate other-data if present (must be a base64 string or hexadecimal)
         if ((int)$otherLen > 0 && $otherData !== '' && !$this->isValidOtherData($otherData)) {
-            $this->messageService->addSystemError(_('TSIG other-data must be a valid base64-encoded string or hexadecimal string.'));
+            $errors[] = _('TSIG other-data must be a valid base64-encoded string or hexadecimal string.');
             return false;
         }
 
@@ -192,8 +195,8 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
 
         // Remove trailing dot and check if it's a valid hostname
         $domainName = substr($algorithmName, 0, -1);
-        $result = $this->hostnameValidator->isValidHostname($domainName);
-        return $result !== false;
+        $result = $this->hostnameValidator->validate($domainName, false);
+        return $result->isValid();
     }
 
     /**

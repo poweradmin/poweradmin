@@ -50,21 +50,24 @@ class SoaValidationTest extends BaseDnsTest
         $this->validator->setSOAParams($dns_hostmaster, $zone);
         $result = $this->validator->validate($content, "example.com", 0, 3600, 86400);
 
-        // Check that we get an array with expected data
-        $this->assertIsArray($result);
-        $this->assertArrayHasKey('content', $result);
-        $this->assertStringContainsString('ns1.example.com', $result['content']);
-        $this->assertStringContainsString('2023122801', $result['content']);
+        // Check that we get a valid result
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertArrayHasKey('content', $data);
+        $this->assertStringContainsString('ns1.example.com', $data['content']);
+        $this->assertStringContainsString('2023122801', $data['content']);
 
         // Test invalid content format
         $content = "ns1.example.com hostmaster.example.com"; // Missing required fields
         $result = $this->validator->validate($content, $zone, 0, 3600, 86400);
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
 
         // Test empty content
         $content = "";
         $result = $this->validator->validate($content, $zone, 0, 3600, 86400);
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testIsValidRrSoaName()
@@ -74,19 +77,23 @@ class SoaValidationTest extends BaseDnsTest
         // Valid SOA name (matches zone)
         $this->validator->setSOAParams('hostmaster@example.com', 'example.com');
         $result = $this->validator->validate($content, 'example.com', 0, 3600, 86400);
-        $this->assertIsArray($result);
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
 
         $this->validator->setSOAParams('hostmaster@sub.domain.com', 'sub.domain.com');
         $result = $this->validator->validate($content, 'sub.domain.com', 0, 3600, 86400);
-        $this->assertIsArray($result);
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
 
         // Invalid SOA name (doesn't match zone)
         $this->validator->setSOAParams('hostmaster@example.com', 'example.com');
         $result = $this->validator->validate($content, 'www.example.com', 0, 3600, 86400);
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
 
         $result = $this->validator->validate($content, 'example.org', 0, 3600, 86400);
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testCustomValidationWithNonNumericSerialNumbers()

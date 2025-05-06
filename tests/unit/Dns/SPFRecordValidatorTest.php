@@ -4,7 +4,9 @@ namespace unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use ReflectionClass;
 
 /**
  * Tests for the SPFRecordValidator
@@ -33,12 +35,14 @@ class SPFRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
         // Content should be automatically quoted for SPF records
-        $this->assertEquals('"v=spf1 ip4:192.168.0.0/24 include:example.net -all"', $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']); // SPF always uses 0
-        $this->assertEquals(3600, $result['ttl']);
+        $data = $result->getData();
+        $this->assertEquals('"v=spf1 ip4:192.168.0.0/24 include:example.net -all"', $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']); // SPF always uses 0
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithQuotedData()
@@ -51,11 +55,12 @@ class SPFRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']); // Already has quotes, should remain the same
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']); // Already has quotes, should remain the same
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidHostname()
@@ -68,7 +73,8 @@ class SPFRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidSPFVersion()
@@ -81,7 +87,8 @@ class SPFRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('SPF record must start with', $result->getFirstError());
     }
 
     public function testValidateWithInvalidMechanism()
@@ -94,7 +101,8 @@ class SPFRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('SPF record format is invalid', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTTL()
@@ -107,7 +115,8 @@ class SPFRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithDefaultTTL()
@@ -120,22 +129,24 @@ class SPFRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 
     public function testValidateWithNonZeroPriority()
     {
         $content = 'v=spf1 ip4:192.168.0.0/24 include:example.net -all';
         $name = 'example.com';
-        $prio = 10; // Non-zero priority (should be ignored for SPF records)
+        $prio = 10; // Non-zero priority (invalid for SPF records)
         $ttl = 3600;
         $defaultTTL = 86400;
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(0, $result['prio']); // Priority should always be 0 for SPF
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Priority field for SPF records must be 0 or empty', $result->getFirstError());
     }
 
     public function testValidateWithComplexSPF()
@@ -148,7 +159,62 @@ class SPFRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals('"' . $content . '"', $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('"' . $content . '"', $data['content']);
+    }
+
+    /**
+     * Test validatePriority method
+     */
+    public function testValidatePriority()
+    {
+        $reflection = new ReflectionClass(SPFRecordValidator::class);
+        $method = $reflection->getMethod('validatePriority');
+        $method->setAccessible(true);
+
+        // Test with empty priority (should return 0)
+        $result = $method->invoke($this->validator, '');
+        $this->assertTrue($result->isValid());
+        $this->assertEquals(0, $result->getData());
+
+        // Test with null priority (should return 0)
+        $result = $method->invoke($this->validator, null);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals(0, $result->getData());
+
+        // Test with 0 priority (should be valid)
+        $result = $method->invoke($this->validator, 0);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals(0, $result->getData());
+
+        // Test with non-zero priority (should be invalid)
+        $result = $method->invoke($this->validator, 10);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Priority field for SPF records must be 0 or empty', $result->getFirstError());
+    }
+
+    /**
+     * Test validateSPFContent method
+     */
+    public function testValidateSPFContent()
+    {
+        $reflection = new ReflectionClass(SPFRecordValidator::class);
+        $method = $reflection->getMethod('validateSPFContent');
+        $method->setAccessible(true);
+
+        // Test with valid SPF content
+        $result = $method->invoke($this->validator, 'v=spf1 ip4:192.168.0.0/24 include:example.net -all');
+        $this->assertTrue($result->isValid());
+
+        // Test with invalid SPF version
+        $result = $method->invoke($this->validator, 'v=spf2 ip4:192.168.0.0/24 include:example.net -all');
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('SPF record must start with', $result->getFirstError());
+
+        // Test with invalid mechanism
+        $result = $method->invoke($this->validator, 'v=spf1 badmechanism:example.net -all');
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('SPF record format is invalid', $result->getFirstError());
     }
 }

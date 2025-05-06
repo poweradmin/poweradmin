@@ -5,7 +5,7 @@ namespace unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\TLSARecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the TLSARecordValidator
@@ -34,11 +34,13 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithDifferentUsageValue()
@@ -51,8 +53,9 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithDifferentSelectorValue()
@@ -65,8 +68,10 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithSHA512MatchingType()
@@ -80,8 +85,9 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithNonStandardHostname()
@@ -95,8 +101,10 @@ class TLSARecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         // Should still validate but with a warning
-        $this->assertIsArray($result);
-        $this->assertEquals($name, $result['name']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($name, $data['name']);
     }
 
     public function testValidateWithInvalidUsage()
@@ -109,7 +117,8 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('usage field', $result->getFirstError());
     }
 
     public function testValidateWithInvalidSelector()
@@ -122,7 +131,8 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('selector field', $result->getFirstError());
     }
 
     public function testValidateWithInvalidMatchingType()
@@ -135,7 +145,8 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('matching type field', $result->getFirstError());
     }
 
     public function testValidateWithInvalidCertificateData()
@@ -148,7 +159,8 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('certificate data', $result->getFirstError());
     }
 
     public function testValidateWithInvalidSHA256Length()
@@ -161,7 +173,8 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('SHA-256', $result->getFirstError());
     }
 
     public function testValidateWithInvalidSHA512Length()
@@ -174,7 +187,8 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('SHA-512', $result->getFirstError());
     }
 
     public function testValidateWithInvalidFormat()
@@ -187,7 +201,8 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTTL()
@@ -200,7 +215,22 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL field', $result->getFirstError());
+    }
+
+    public function testValidateWithInvalidPriority()
+    {
+        $content = '3 1 1 a0b9b16969687adf0323d15048fb4fa4c354c4e01594e8956522cfe3566cae74';
+        $name = '_443._tcp.www.example.com';
+        $prio = 10;  // TLSA records should have priority 0
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('priority', $result->getFirstError());
     }
 
     public function testValidateWithDefaultTTL()
@@ -213,7 +243,8 @@ class TLSARecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 }

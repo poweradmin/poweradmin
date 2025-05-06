@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * SRV record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class SRVRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,46 +52,50 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the SRV record
      * @param string $name The name of the record
      * @param mixed $prio The priority (used for SRV records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate SRV name
-        $nameResult = $this->isValidSrvName($name);
-        if ($nameResult === false) {
-            return false;
+        $nameResult = $this->validateSrvName($name);
+        if (!$nameResult->isValid()) {
+            return $nameResult;
         }
-        $name = $nameResult['name'];
+        $nameData = $nameResult->getData();
+        $name = $nameData['name'];
 
         // Validate SRV content
-        $contentResult = $this->isValidSrvContent($content, $name);
-        if ($contentResult === false) {
-            return false;
+        $contentResult = $this->validateSrvContent($content, $name);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
-        $content = $contentResult['content'];
+        $contentData = $contentResult->getData();
+        $content = $contentData['content'];
 
         // Validate priority (SRV records use priority)
-        $validatedPrio = $this->isValidPriority($prio);
-        if ($validatedPrio === false) {
-            $this->messageService->addSystemError(_('Invalid value for the priority field of the SRV record.'));
-            return false;
+        $prioResult = $this->validatePriority($prio);
+        if (!$prioResult->isValid()) {
+            return $prioResult;
         }
+        $validatedPrio = $prioResult->getData();
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $validatedPrio,
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -101,37 +103,34 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $name SRV record name
      *
-     * @return array|bool Returns array with formatted name if valid, false otherwise
+     * @return ValidationResult<array> ValidationResult containing name data or error message
      */
-    private function isValidSrvName(string $name): array|bool
+    private function validateSrvName(string $name): ValidationResult
     {
         if (strlen($name) > 255) {
-            $this->messageService->addSystemError(_('The hostname is too long.'));
-            return false;
+            return ValidationResult::failure(_('The hostname is too long.'));
         }
 
         $fields = explode('.', $name, 3);
 
         // Check if we have all three parts required for an SRV record
         if (count($fields) < 3) {
-            $this->messageService->addSystemError(_('SRV record name must be in format _service._protocol.domain'));
-            return false;
+            return ValidationResult::failure(_('SRV record name must be in format _service._protocol.domain'));
         }
 
         if (!preg_match('/^_[\w\-]+$/i', $fields[0])) {
-            $this->messageService->addSystemError(_('Invalid service value in name field of SRV record.'));
-            return false;
+            return ValidationResult::failure(_('Invalid service value in name field of SRV record.'));
         }
         if (!preg_match('/^_[\w]+$/i', $fields[1])) {
-            $this->messageService->addSystemError(_('Invalid protocol value in name field of SRV record.'));
-            return false;
-        }
-        if (!$this->hostnameValidator->isValidHostnameFqdn($fields[2], 0)) {
-            $this->messageService->addSystemError(_('Invalid FQDN value in name field of SRV record.'));
-            return false;
+            return ValidationResult::failure(_('Invalid protocol value in name field of SRV record.'));
         }
 
-        return ['name' => join('.', $fields)];
+        $domainResult = $this->hostnameValidator->validate($fields[2], false);
+        if (!$domainResult->isValid()) {
+            return ValidationResult::failure(_('Invalid FQDN value in name field of SRV record.'));
+        }
+
+        return ValidationResult::success(['name' => join('.', $fields)]);
     }
 
     /**
@@ -140,57 +139,76 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
      * @param string $content SRV record content
      * @param string $name SRV record name
      *
-     * @return array|bool Returns array with formatted content if valid, false otherwise
+     * @return ValidationResult<array> ValidationResult containing content data or error message
      */
-    private function isValidSrvContent(string $content, string $name): array|bool
+    private function validateSrvContent(string $content, string $name): ValidationResult
     {
         $fields = preg_split("/\s+/", trim($content));
 
         // Check if we have exactly 4 fields for an SRV record content
         // Format should be: <priority> <weight> <port> <target>
         if (count($fields) != 4) {
-            $this->messageService->addSystemError(_('SRV record content must have priority, weight, port and target'));
-            return false;
+            return ValidationResult::failure(_('SRV record content must have priority, weight, port and target'));
         }
 
         if (!is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 65535) {
-            $this->messageService->addSystemError(_('Invalid value for the priority field of the SRV record.'));
-            return false;
+            return ValidationResult::failure(_('Invalid value for the priority field of the SRV record.'));
         }
         if (!is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 65535) {
-            $this->messageService->addSystemError(_('Invalid value for the weight field of the SRV record.'));
-            return false;
+            return ValidationResult::failure(_('Invalid value for the weight field of the SRV record.'));
         }
         if (!is_numeric($fields[2]) || $fields[2] < 0 || $fields[2] > 65535) {
-            $this->messageService->addSystemError(_('Invalid value for the port field of the SRV record.'));
-            return false;
-        }
-        if ($fields[3] == "" || ($fields[3] != "." && !$this->hostnameValidator->isValidHostnameFqdn($fields[3], 0))) {
-            $this->messageService->addSystemError(_('Invalid SRV target.'));
-            return false;
+            return ValidationResult::failure(_('Invalid value for the port field of the SRV record.'));
         }
 
-        return ['content' => join(' ', $fields)];
+        if ($fields[3] == "") {
+            return ValidationResult::failure(_('SRV target cannot be empty.'));
+        }
+
+        if ($fields[3] != ".") {
+            $targetResult = $this->validateTarget($fields[3]);
+            if (!$targetResult->isValid()) {
+                return $targetResult;
+            }
+        }
+
+        return ValidationResult::success(['content' => join(' ', $fields)]);
+    }
+
+    /**
+     * Validate the SRV target hostname
+     *
+     * @param string $target The target hostname
+     *
+     * @return ValidationResult<bool> ValidationResult containing validation result
+     */
+    private function validateTarget(string $target): ValidationResult
+    {
+        $targetResult = $this->hostnameValidator->validate($target, false);
+        if (!$targetResult->isValid()) {
+            return ValidationResult::failure(_('Invalid SRV target.'));
+        }
+        return ValidationResult::success(true);
     }
 
     /**
      * Validate the priority field for SRV records
      *
      * @param mixed $prio The priority value to validate
-     * @return int|bool The validated priority value or false if invalid
+     * @return ValidationResult<int> ValidationResult containing the validated priority value or error
      */
-    private function isValidPriority(mixed $prio): int|bool
+    private function validatePriority(mixed $prio): ValidationResult
     {
         // If priority is not provided or empty, use default of 10
         if (!isset($prio) || $prio === "") {
-            return 10;
+            return ValidationResult::success(10);
         }
 
         // Priority must be a number between 0 and 65535
         if (is_numeric($prio) && $prio >= 0 && $prio <= 65535) {
-            return (int)$prio;
+            return ValidationResult::success((int)$prio);
         }
 
-        return false;
+        return ValidationResult::failure(_('Invalid value for the priority field of the SRV record.'));
     }
 }

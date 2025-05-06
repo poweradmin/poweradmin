@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
 /**
@@ -38,7 +38,6 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private MessageService $messageService;
     private ConfigurationManager $config;
     private PDOLayer $db;
 
@@ -52,7 +51,6 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
-        $this->messageService = new MessageService();
         $this->config = $config;
         $this->db = $db;
     }
@@ -63,63 +61,78 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * @param string $content Target hostname
      * @param string $name CNAME hostname
      * @param mixed $prio Priority (not used for CNAME records)
-     * @param int|string $ttl TTL value
+     * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
      * @param int $rid Record ID (for checking uniqueness)
      * @param string $zone Zone name (for checking empty CNAME)
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL, int $rid = 0, string $zone = ''): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, int $rid = 0, string $zone = ''): ValidationResult
     {
-        // 1. Validate CNAME uniqueness (no other records should exist with same name)
-        if (!$this->isValidCnameUnique($name, $rid)) {
-            return false;
+        // 1. Check if CNAME unique (already exists as another record type)
+        $uniqueResult = $this->validateCnameUnique($name, $rid);
+        if (!$uniqueResult->isValid()) {
+            return $uniqueResult;
         }
 
-        // 2. Check for MX or NS records pointing to this CNAME
-        if (!$this->isValidCnameName($name)) {
-            return false;
+        // 2. Check if CNAME already exists
+        $existenceResult = $this->validateCnameExistence($name, $rid);
+        if (!$existenceResult->isValid()) {
+            return $existenceResult;
         }
 
-        // 3. Validate CNAME hostname
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
-        }
-        $name = $hostnameResult['hostname'];
-
-        // 4. Validate target hostname
-        $contentHostnameResult = $this->hostnameValidator->isValidHostnameFqdn($content, 0);
-        if ($contentHostnameResult === false) {
-            return false;
-        }
-        $content = $contentHostnameResult['hostname'];
-
-        // 5. Check that zone does not have an empty CNAME RR
-        if (!empty($zone) && !$this->isNotEmptyCnameRR($name, $zone)) {
-            return false;
+        // 3. Check for MX or NS records pointing to this CNAME
+        $nameResult = $this->validateCnameName($name);
+        if (!$nameResult->isValid()) {
+            return $nameResult;
         }
 
-        // 6. Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        // 4. Validate CNAME hostname
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
+        }
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
+
+        // 5. Validate target hostname
+        $contentHostnameResult = $this->hostnameValidator->validate($content, false);
+        if (!$contentHostnameResult->isValid()) {
+            return $contentHostnameResult;
+        }
+        $contentData = $contentHostnameResult->getData();
+        $content = $contentData['hostname'];
+
+        // 6. Check that zone does not have an empty CNAME RR
+        if (!empty($zone)) {
+            $emptyResult = $this->validateNotEmptyCnameRR($name, $zone);
+            if (!$emptyResult->isValid()) {
+                return $emptyResult;
+            }
         }
 
-        // 7. Validate priority (should be 0 for CNAME records)
-        $validatedPrio = $this->validatePriority($prio);
-        if ($validatedPrio === false) {
-            $this->messageService->addSystemError(_('Invalid value for prio field.'));
-            return false;
+        // 7. Validate TTL
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
-        return [
+        // 8. Validate priority (should be 0 for CNAME records)
+        $prioResult = $this->validatePriority($prio);
+        if (!$prioResult->isValid()) {
+            return $prioResult;
+        }
+        $validatedPrio = $prioResult->getData();
+
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
-        ];
+        ]);
     }
 
     /**
@@ -128,21 +141,21 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $prio Priority value
      *
-     * @return int|bool 0 if valid, false otherwise
+     * @return ValidationResult<int> ValidationResult containing validated priority or error message
      */
-    private function validatePriority(mixed $prio): int|bool
+    private function validatePriority(mixed $prio): ValidationResult
     {
         // If priority is not provided or empty, set it to 0
         if (!isset($prio) || $prio === "") {
-            return 0;
+            return ValidationResult::success(0);
         }
 
         // If provided, ensure it's 0 for CNAME records
         if (is_numeric($prio) && intval($prio) === 0) {
-            return 0;
+            return ValidationResult::success(0);
         }
 
-        return false;
+        return ValidationResult::failure(_('Invalid value for priority field. CNAME records must have priority value of 0.'));
     }
 
     /**
@@ -151,9 +164,9 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * @param string $name CNAME
      * @param int $rid Record ID
      *
-     * @return boolean true if unique, false if duplicate
+     * @return ValidationResult<bool> ValidationResult containing success or error message
      */
-    public function isValidCnameUnique(string $name, int $rid): bool
+    private function validateCnameUnique(string $name, int $rid): ValidationResult
     {
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
@@ -167,10 +180,9 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         $response = $this->db->queryOne($query);
         if ($response) {
-            $this->messageService->addSystemError(_('This is not a valid CNAME. There already exists a record with this name.'));
-            return false;
+            return ValidationResult::failure(_('This is not a valid CNAME. There already exists a record with this name.'));
         }
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
@@ -180,9 +192,9 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $name CNAME to lookup
      *
-     * @return boolean true if valid, false otherwise
+     * @return ValidationResult<bool> ValidationResult containing success or error message
      */
-    public function isValidCnameName(string $name): bool
+    private function validateCnameName(string $name): ValidationResult
     {
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
@@ -194,27 +206,26 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $response = $this->db->queryOne($query);
 
         if (!empty($response)) {
-            $this->messageService->addSystemError(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
-            return false;
+            return ValidationResult::failure(_('This is not a valid CNAME. Did you assign an MX or NS record to the record?'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
      * Check that the zone does not have an empty CNAME RR
      *
-     * @param string $name
-     * @param string $zone
-     * @return bool
+     * @param string $name Hostname
+     * @param string $zone Zone name
+     *
+     * @return ValidationResult<bool> ValidationResult containing success or error message
      */
-    public function isNotEmptyCnameRR(string $name, string $zone): bool
+    private function validateNotEmptyCnameRR(string $name, string $zone): ValidationResult
     {
         if ($name == $zone) {
-            $this->messageService->addSystemError(_('Empty CNAME records are not allowed.'));
-            return false;
+            return ValidationResult::failure(_('Empty CNAME records are not allowed.'));
         }
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
@@ -223,9 +234,9 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * @param string $name CNAME
      * @param int $rid Record ID
      *
-     * @return boolean true if non-existent, false if exists
+     * @return ValidationResult<bool> ValidationResult containing success or error message
      */
-    public function isValidCnameExistence(string $name, int $rid): bool
+    private function validateCnameExistence(string $name, int $rid): ValidationResult
     {
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
@@ -237,9 +248,8 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
 
         $response = $this->db->queryOne($query);
         if ($response) {
-            $this->messageService->addSystemError(_('This is not a valid record. There already exists a CNAME with this name.'));
-            return false;
+            return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
         }
-        return true;
+        return ValidationResult::success(true);
     }
 }

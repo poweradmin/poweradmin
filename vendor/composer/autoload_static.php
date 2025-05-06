@@ -760,6 +760,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Domain\\Service\\ReverseRecordCreator' => __DIR__ . '/../..' . '/lib/Domain/Service/ReverseRecordCreator.php',
         'Poweradmin\\Domain\\Service\\SessionService' => __DIR__ . '/../..' . '/lib/Domain/Service/SessionService.php',
         'Poweradmin\\Domain\\Service\\UserContextService' => __DIR__ . '/../..' . '/lib/Domain/Service/UserContextService.php',
+        'Poweradmin\\Domain\\Service\\Validation\\ValidationResult' => __DIR__ . '/../..' . '/lib/Domain/Service/Validation/ValidationResult.php',
         'Poweradmin\\Domain\\Service\\Validator' => __DIR__ . '/../..' . '/lib/Domain/Service/Validator.php',
         'Poweradmin\\Domain\\Service\\ZoneCountService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneCountService.php',
         'Poweradmin\\Domain\\Utility\\DnsHelper' => __DIR__ . '/../..' . '/lib/Domain/Utility/DnsHelper.php',

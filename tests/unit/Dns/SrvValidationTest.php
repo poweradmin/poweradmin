@@ -45,11 +45,14 @@ class SrvValidationTest extends TestCase
         $result = $this->validator->validate('10 20 5060 sip.example.com', $name, 0, 3600, 86400);
 
         if ($expected) {
-            $this->assertIsArray($result);
-            $this->assertArrayHasKey('name', $result);
-            $this->assertEquals($name, $result['name']);
+            $this->assertTrue($result->isValid());
+            $this->assertEmpty($result->getErrors());
+            $data = $result->getData();
+            $this->assertArrayHasKey('name', $data);
+            $this->assertEquals($name, $data['name']);
         } else {
-            $this->assertFalse($result);
+            $this->assertFalse($result->isValid());
+            $this->assertNotEmpty($result->getErrors());
         }
     }
 
@@ -81,11 +84,14 @@ class SrvValidationTest extends TestCase
         $result = $this->validator->validate($content, $name, 0, 3600, 86400);
 
         if ($expected) {
-            $this->assertIsArray($result);
-            $this->assertArrayHasKey('content', $result);
-            $this->assertEquals($content, $result['content']);
+            $this->assertTrue($result->isValid());
+            $this->assertEmpty($result->getErrors());
+            $data = $result->getData();
+            $this->assertArrayHasKey('content', $data);
+            $this->assertEquals($content, $data['content']);
         } else {
-            $this->assertFalse($result);
+            $this->assertFalse($result->isValid());
+            $this->assertNotEmpty($result->getErrors());
         }
     }
 
@@ -99,11 +105,13 @@ class SrvValidationTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(20, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(20, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithDefaultPriority()
@@ -116,8 +124,10 @@ class SrvValidationTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(10, $result['prio']);
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $this->assertEquals(10, $data['prio']);
     }
 
     public function testValidateWithInvalidPriority()
@@ -130,7 +140,8 @@ class SrvValidationTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithDefaultTTL()
@@ -143,7 +154,9 @@ class SrvValidationTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 }

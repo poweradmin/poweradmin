@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * SMIMEA (S/MIME Certificate Association) record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class SMIMEARecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -57,14 +55,14 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // For SMIMEA records with special format
         // Validate printable characters at minimum
         if (!StringValidator::isValidPrintable($name)) {
-            return false;
+            return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
         // SMIMEA records are typically of the form: <hash-of-localpart>._smimecert.<domain>
@@ -73,30 +71,39 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
             // Accept the SMIMEA format directly
         } else {
             // For non-SMIMEA format names, use regular hostname validation
-            $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-            if ($hostnameResult === false) {
-                return false;
+            $hostnameResult = $this->hostnameValidator->validate($name, true);
+            if (!$hostnameResult->isValid()) {
+                return $hostnameResult;
             }
-            $name = $hostnameResult['hostname'];
+            $hostnameData = $hostnameResult->getData();
+            $name = $hostnameData['hostname'];
         }
 
         // Validate content
-        if (!$this->isValidSMIMEAContent($content)) {
-            return false;
+        $contentResult = $this->validateSMIMEAContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // SMIMEA records don't use priority, so it should be 0
+        if (isset($prio) && $prio !== "" && (!is_numeric($prio) || intval($prio) !== 0)) {
+            return ValidationResult::failure(_('Invalid value for priority field. SMIMEA records must have priority value of 0.'));
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // SMIMEA records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -105,26 +112,24 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
      * Very similar to TLSA records
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult containing validation result
      */
-    private function isValidSMIMEAContent(string $content): bool
+    private function validateSMIMEAContent(string $content): ValidationResult
     {
         // Check if empty
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('SMIMEA record content cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('SMIMEA record content cannot be empty.'));
         }
 
         // Check for valid printable characters
         if (!StringValidator::isValidPrintable($content)) {
-            return false;
+            return ValidationResult::failure(_('SMIMEA record contains invalid characters.'));
         }
 
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content), 4);
         if (count($parts) !== 4) {
-            $this->messageService->addSystemError(_('SMIMEA record must contain usage, selector, matching-type, and certificate-data separated by spaces.'));
-            return false;
+            return ValidationResult::failure(_('SMIMEA record must contain usage, selector, matching-type, and certificate-data separated by spaces.'));
         }
 
         [$usage, $selector, $matchingType, $certificateData] = $parts;
@@ -135,16 +140,14 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
         // 2 = DANE-TA: Trust anchor assertion
         // 3 = DANE-EE: Domain-issued certificate
         if (!is_numeric($usage) || !in_array((int)$usage, range(0, 3))) {
-            $this->messageService->addSystemError(_('SMIMEA usage field must be a number between 0 and 3.'));
-            return false;
+            return ValidationResult::failure(_('SMIMEA usage field must be a number between 0 and 3.'));
         }
 
         // Validate selector field (0-1)
         // 0 = Full certificate
         // 1 = SubjectPublicKeyInfo
         if (!is_numeric($selector) || !in_array((int)$selector, range(0, 1))) {
-            $this->messageService->addSystemError(_('SMIMEA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo).'));
-            return false;
+            return ValidationResult::failure(_('SMIMEA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo).'));
         }
 
         // Validate matching type field (0-2)
@@ -152,26 +155,22 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
         // 1 = SHA-256 hash
         // 2 = SHA-512 hash
         if (!is_numeric($matchingType) || !in_array((int)$matchingType, range(0, 2))) {
-            $this->messageService->addSystemError(_('SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 (SHA-512).'));
-            return false;
+            return ValidationResult::failure(_('SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 (SHA-512).'));
         }
 
         // Validate certificate data (must be a hexadecimal string)
         if (!preg_match('/^[0-9a-fA-F]+$/', $certificateData)) {
-            $this->messageService->addSystemError(_('SMIMEA certificate data must be a hexadecimal string.'));
-            return false;
+            return ValidationResult::failure(_('SMIMEA certificate data must be a hexadecimal string.'));
         }
 
         // Additional validation based on the matching type
         $length = strlen($certificateData);
         if ((int)$matchingType === 1 && $length !== 64) { // SHA-256 is 32 bytes (64 hex chars)
-            $this->messageService->addSystemError(_('SMIMEA SHA-256 certificate data must be 64 characters long.'));
-            return false;
+            return ValidationResult::failure(_('SMIMEA SHA-256 certificate data must be 64 characters long.'));
         } elseif ((int)$matchingType === 2 && $length !== 128) { // SHA-512 is 64 bytes (128 hex chars)
-            $this->messageService->addSystemError(_('SMIMEA SHA-512 certificate data must be 128 characters long.'));
-            return false;
+            return ValidationResult::failure(_('SMIMEA SHA-512 certificate data must be 128 characters long.'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

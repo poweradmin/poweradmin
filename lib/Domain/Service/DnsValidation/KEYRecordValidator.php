@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * KEY record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class KEYRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -57,37 +55,46 @@ class KEYRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the KEY record
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for KEY records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidKEYContent($content)) {
-            return false;
+        $contentResult = $this->validateKEYContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for KEY records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for KEY records must be 0 or empty'));
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // KEY records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -95,15 +102,20 @@ class KEYRecordValidator implements DnsRecordValidatorInterface
      * Format: <flags> <protocol> <algorithm> <public key>
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult with errors or success
      */
-    private function isValidKEYContent(string $content): bool
+    private function validateKEYContent(string $content): ValidationResult
     {
+        // Basic validation of printable characters
+        $printableResult = StringValidator::validatePrintable($content);
+        if (!$printableResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in KEY record content.'));
+        }
+
         // Split the content into parts
         $parts = preg_split('/\s+/', trim($content));
         if (count($parts) < 4) {
-            $this->messageService->addSystemError(_('KEY record must contain flags, protocol, algorithm, and public key.'));
-            return false;
+            return ValidationResult::failure(_('KEY record must contain flags, protocol, algorithm, and public key.'));
         }
 
         [$flags, $protocol, $algorithm] = array_slice($parts, 0, 3);
@@ -111,33 +123,26 @@ class KEYRecordValidator implements DnsRecordValidatorInterface
 
         // Validate flags (0-65535)
         if (!is_numeric($flags) || (int)$flags < 0 || (int)$flags > 65535) {
-            $this->messageService->addSystemError(_('KEY flags must be a number between 0 and 65535.'));
-            return false;
+            return ValidationResult::failure(_('KEY flags must be a number between 0 and 65535.'));
         }
 
         // Validate protocol (0-255)
         // 3 is most common (DNSSEC), others are mostly historical
         if (!is_numeric($protocol) || (int)$protocol < 0 || (int)$protocol > 255) {
-            $this->messageService->addSystemError(_('KEY protocol must be a number between 0 and 255.'));
-            return false;
+            return ValidationResult::failure(_('KEY protocol must be a number between 0 and 255.'));
         }
 
         // Validate algorithm (0-255)
         // Common values: 1 (RSA/MD5), 2 (Diffie-Hellman), 3 (DSA/SHA1), 5 (RSA/SHA-1), etc.
         if (!is_numeric($algorithm) || (int)$algorithm < 0 || (int)$algorithm > 255) {
-            $this->messageService->addSystemError(_('KEY algorithm must be a number between 0 and 255.'));
-            return false;
+            return ValidationResult::failure(_('KEY algorithm must be a number between 0 and 255.'));
         }
 
         // Validate public key (base64 format)
         if (empty($publicKey)) {
-            $this->messageService->addSystemError(_('KEY public key is required.'));
-            return false;
+            return ValidationResult::failure(_('KEY public key is required.'));
         }
 
-        // For testing purposes, accept more flexible base64 formats
-        // Including spaces that might be in the test data
-
-        return true;
+        return ValidationResult::success(true);
     }
 }

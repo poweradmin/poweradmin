@@ -4,13 +4,11 @@ namespace unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\EUI64RecordValidator;
-use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
-use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
- * Tests for the EUI64RecordValidator
+ * Tests for the EUI64RecordValidator with ValidationResult pattern
  */
 class EUI64RecordValidatorTest extends TestCase
 {
@@ -36,11 +34,13 @@ class EUI64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithValidUppercaseHexData()
@@ -53,8 +53,9 @@ class EUI64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithInvalidEUI64Format()
@@ -67,7 +68,8 @@ class EUI64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('EUI-64 address', $result->getFirstError());
     }
 
     public function testValidateWithInvalidEUI64Values()
@@ -80,7 +82,8 @@ class EUI64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('EUI-64 address', $result->getFirstError());
     }
 
     public function testValidateWithInvalidEUI64Length()
@@ -93,7 +96,8 @@ class EUI64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('EUI-64 address', $result->getFirstError());
     }
 
     public function testValidateWithInvalidHostname()
@@ -106,7 +110,7 @@ class EUI64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
     }
 
     public function testValidateWithInvalidTTL()
@@ -119,7 +123,22 @@ class EUI64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
+    }
+
+    public function testValidateWithInvalidPriority()
+    {
+        $content = '00-11-22-33-44-55-66-77';
+        $name = 'host.example.com';
+        $prio = 10;  // Invalid priority for EUI64 records
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Priority field for EUI64 records', $result->getFirstError());
     }
 
     public function testValidateWithDefaultTTL()
@@ -132,7 +151,9 @@ class EUI64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 }

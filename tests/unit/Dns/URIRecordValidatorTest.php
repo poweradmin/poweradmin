@@ -5,6 +5,7 @@ namespace unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\URIRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the URIRecordValidator
@@ -33,11 +34,21 @@ class URIRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(10, $result['prio']); // Priority from content
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
+
+        $this->assertEquals($name, $data['name']);
+        $data = $result->getData();
+
+        $this->assertEquals(10, $data['prio']); // Priority from content
+
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithExplicitPriority()
@@ -50,8 +61,14 @@ class URIRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(20, $result['prio']); // Should use explicit priority
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals(20, $data['prio']); // Should use explicit priority
     }
 
     public function testValidateWithInvalidFormat()
@@ -64,7 +81,10 @@ class URIRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidPriority()
@@ -77,7 +97,10 @@ class URIRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidWeight()
@@ -90,7 +113,10 @@ class URIRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidURI()
@@ -103,7 +129,10 @@ class URIRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidTTL()
@@ -116,7 +145,10 @@ class URIRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithDefaultTTL()
@@ -129,8 +161,13 @@ class URIRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+
+        $this->assertEquals(86400, $data['ttl']);
     }
 
     public function testValidateWithNonPrintableCharacters()
@@ -143,8 +180,14 @@ class URIRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithValidURIVariations()
@@ -165,8 +208,10 @@ class URIRecordValidatorTest extends TestCase
 
             $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-            $this->assertIsArray($result, "URI format should be valid: $content");
-            $this->assertEquals($content, $result['content']);
+            $this->assertTrue($result->isValid(), "URI format should be valid: $content");
+
+            $data = $result->getData();
+            $this->assertEquals($content, $data['content']);
         }
     }
 }

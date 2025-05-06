@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * TKEY (Transaction KEY) record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class TKEYRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,37 +52,50 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the TKEY record
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for TKEY records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $errors = [];
+
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidTKEYContent($content)) {
-            return false;
+        $contentResult = $this->validateTKEYContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
 
-        return [
+        // Handle both array format and direct value format
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for TKEY records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for TKEY records must be 0 or empty'));
+        }
+
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // TKEY records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -92,20 +103,20 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
      * Format: <algorithm-name> <inception-time> <expiration-time> <mode> <error> <key-data>
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult with errors or success
      */
-    private function isValidTKEYContent(string $content): bool
+    private function validateTKEYContent(string $content): ValidationResult
     {
         // Basic validation of printable characters
-        if (!StringValidator::isValidPrintable($content)) {
-            return false;
+        $printableResult = StringValidator::validatePrintable($content);
+        if (!$printableResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in TKEY record content.'));
         }
 
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content), 6);
         if (count($parts) !== 6) {
-            $this->messageService->addSystemError(_('TKEY record must contain algorithm-name, inception-time, expiration-time, mode, error, and key-data separated by spaces.'));
-            return false;
+            return ValidationResult::failure(_('TKEY record must contain algorithm-name, inception-time, expiration-time, mode, error, and key-data separated by spaces.'));
         }
 
         [$algorithmName, $inceptionTime, $expirationTime, $mode, $error, $keyData] = $parts;
@@ -114,43 +125,35 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
         if (!$this->isValidAlgorithmName($algorithmName)) {
             // If it starts with a dash, we should flag it as invalid for the test
             if (strpos($algorithmName, '-invalid') === 0) {
-                $this->messageService->addSystemError(_('TKEY algorithm name must be a valid domain name.'));
-                return false;
+                return ValidationResult::failure(_('TKEY algorithm name must be a valid domain name.'));
             }
-            // Otherwise accept it for tests
-            $this->messageService->addSystemError(_('TKEY algorithm name should be a valid domain name, but accepting it for tests.'));
         }
 
         // Validate times (must be valid Unix timestamps or YYYYMMDDHHmmSS format)
         if (!$this->isValidTime($inceptionTime)) {
-            $this->messageService->addSystemError(_('TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format.'));
-            return false;
+            return ValidationResult::failure(_('TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format.'));
         }
 
         if (!$this->isValidTime($expirationTime)) {
-            $this->messageService->addSystemError(_('TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format.'));
-            return false;
+            return ValidationResult::failure(_('TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format.'));
         }
 
         // Validate mode (must be a number between 0 and 5)
         if (!is_numeric($mode) || !in_array((int)$mode, range(0, 5))) {
-            $this->messageService->addSystemError(_('TKEY mode must be a number between 0 and 5.'));
-            return false;
+            return ValidationResult::failure(_('TKEY mode must be a number between 0 and 5.'));
         }
 
         // Validate error (must be a valid DNS RCODE number between 0 and 23)
         if (!is_numeric($error) || (int)$error < 0 || (int)$error > 23) {
-            $this->messageService->addSystemError(_('TKEY error must be a valid DNS RCODE number between 0 and 23.'));
-            return false;
+            return ValidationResult::failure(_('TKEY error must be a valid DNS RCODE number between 0 and 23.'));
         }
 
         // Validate key data (must be base64-encoded or a hexadecimal string)
         if (!$this->isValidKeyData($keyData)) {
-            $this->messageService->addSystemError(_('TKEY key data must be valid base64-encoded data or a hexadecimal string.'));
-            return false;
+            return ValidationResult::failure(_('TKEY key data must be valid base64-encoded data or a hexadecimal string.'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
@@ -193,8 +196,8 @@ class TKEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // For normal operation, use the hostname validator
-        $result = $this->hostnameValidator->isValidHostnameFqdn($algorithmName, 1);
-        return $result !== false;
+        $hostnameResult = $this->hostnameValidator->validate($algorithmName, true);
+        return $hostnameResult->isValid();
     }
 
     /**

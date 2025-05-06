@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * ZONEMD (Message Digest for DNS Zones) record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class ZONEMDRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,37 +52,40 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the ZONEMD record
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for ZONEMD records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // ZONEMD records should be at the apex of the zone
         // Just check if the name is printable and valid for tests
-        // ZONEMD records are only valid at zone apex
-        if (!StringValidator::isValidPrintable($name)) {
-            return false;
+        $nameResult = StringValidator::validatePrintable($name);
+        if (!$nameResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in name field.'));
         }
 
         // Validate content
-        if (!$this->isValidZONEMDContent($content)) {
-            return false;
+        $errors = [];
+        if (!$this->isValidZONEMDContent($content, $errors)) {
+            return ValidationResult::errors($errors);
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // ZONEMD records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -92,14 +93,15 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
      * Format: <serial> <scheme> <hash-algorithm> <digest>
      *
      * @param string $content The content to validate
+     * @param array &$errors Collection of validation errors
      * @return bool True if valid, false otherwise
      */
-    private function isValidZONEMDContent(string $content): bool
+    private function isValidZONEMDContent(string $content, array &$errors): bool
     {
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content), 4);
         if (count($parts) !== 4) {
-            $this->messageService->addSystemError(_('ZONEMD record must contain serial, scheme, hash-algorithm, and digest separated by spaces.'));
+            $errors[] = _('ZONEMD record must contain serial, scheme, hash-algorithm, and digest separated by spaces.');
             return false;
         }
 
@@ -107,7 +109,7 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
 
         // Validate serial (must be a valid zone serial number between 0 and 4294967295)
         if (!is_numeric($serial) || (int)$serial < 0 || (int)$serial > 4294967295) {
-            $this->messageService->addSystemError(_('ZONEMD serial must be a number between 0 and 4294967295.'));
+            $errors[] = _('ZONEMD serial must be a number between 0 and 4294967295.');
             return false;
         }
 
@@ -117,13 +119,13 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         // 2-239 = Unassigned
         // 240-255 = Reserved for Private Use
         if (!is_numeric($scheme) || (int)$scheme < 0 || (int)$scheme > 255) {
-            $this->messageService->addSystemError(_('ZONEMD scheme must be a number between 0 and 255.'));
+            $errors[] = _('ZONEMD scheme must be a number between 0 and 255.');
             return false;
         }
 
         // The only standardized scheme is 1
         if ((int)$scheme !== 1) {
-            $this->messageService->addSystemError(_('ZONEMD scheme should be 1 (Simple ZONEMD scheme) for standard use.'));
+            $errors[] = _('ZONEMD scheme should be 1 (Simple ZONEMD scheme) for standard use.');
             // This is just a warning, but we still allow it
         }
 
@@ -134,20 +136,20 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         // 3-239 = Unassigned
         // 240-255 = Reserved for Private Use
         if (!is_numeric($hashAlgorithm) || (int)$hashAlgorithm < 0 || (int)$hashAlgorithm > 255) {
-            $this->messageService->addSystemError(_('ZONEMD hash algorithm must be a number between 0 and 255.'));
+            $errors[] = _('ZONEMD hash algorithm must be a number between 0 and 255.');
             return false;
         }
 
         // Check if the hash algorithm is a known algorithm
         $validAlgorithms = [1, 2]; // SHA-384 and SHA-512
         if (!in_array((int)$hashAlgorithm, $validAlgorithms)) {
-            $this->messageService->addSystemError(_('ZONEMD hash algorithm should be 1 (SHA-384) or 2 (SHA-512) for standard use.'));
+            $errors[] = _('ZONEMD hash algorithm should be 1 (SHA-384) or 2 (SHA-512) for standard use.');
             // This is just a warning, but we still allow it
         }
 
         // Validate digest (must be a hexadecimal string)
         if (!preg_match('/^[0-9a-fA-F]+$/', $digest)) {
-            $this->messageService->addSystemError(_('ZONEMD digest must be a hexadecimal string.'));
+            $errors[] = _('ZONEMD digest must be a hexadecimal string.');
             return false;
         }
 

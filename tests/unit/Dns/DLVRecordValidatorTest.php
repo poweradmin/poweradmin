@@ -4,10 +4,11 @@ namespace unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\DLVRecordValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
- * Tests for the DLVRecordValidator
+ * Tests for the DLVRecordValidator with ValidationResult pattern
  */
 class DLVRecordValidatorTest extends TestCase
 {
@@ -33,11 +34,13 @@ class DLVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidKeyTag()
@@ -50,7 +53,8 @@ class DLVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid key tag', $result->getFirstError());
     }
 
     public function testValidateWithInvalidAlgorithm()
@@ -63,7 +67,8 @@ class DLVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid algorithm', $result->getFirstError());
     }
 
     public function testValidateWithInvalidDigestType()
@@ -76,7 +81,8 @@ class DLVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid digest type', $result->getFirstError());
     }
 
     public function testValidateWithInvalidDigestLength()
@@ -90,7 +96,8 @@ class DLVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid digest length', $result->getFirstError());
     }
 
     public function testValidateWithInvalidHostname()
@@ -103,7 +110,7 @@ class DLVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
     }
 
     public function testValidateWithInvalidTTL()
@@ -116,7 +123,7 @@ class DLVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
     }
 
     public function testValidateWithInvalidPriority()
@@ -129,7 +136,8 @@ class DLVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Priority field for DLV records', $result->getFirstError());
     }
 
     public function testValidateWithDefaultTTL()
@@ -142,27 +150,40 @@ class DLVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 
-    public function testIsValidDLVContent()
+    public function testValidateDLVContent()
     {
         // Test valid DLV records with exact digest lengths
-        $this->assertTrue($this->validator->isValidDLVContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0'));
-        $this->assertTrue($this->validator->isValidDLVContent('15288 5 2 CE0EB9E59EE1DE2C681A330E3A7C08376F28602CDF990EE4EC88D2A8BDB51539'));
+        $result1 = $this->validator->validateDLVContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0');
+        $this->assertTrue($result1->isValid());
+
+        $result2 = $this->validator->validateDLVContent('15288 5 2 CE0EB9E59EE1DE2C681A330E3A7C08376F28602CDF990EE4EC88D2A8BDB51539');
+        $this->assertTrue($result2->isValid());
 
         // Test with SHA-1 digest (type 1)
-        $this->assertTrue($this->validator->isValidDLVContent('12345 8 1 1a2b3c4d5e6f7890abcdef1234567890abcdef12'));
+        $result3 = $this->validator->validateDLVContent('12345 8 1 1a2b3c4d5e6f7890abcdef1234567890abcdef12');
+        $this->assertTrue($result3->isValid());
 
         // Test with SHA-384 digest (type 4)
         $sha384Digest = str_repeat('a1b2c3d4', 12); // 96 characters
-        $this->assertTrue($this->validator->isValidDLVContent("12345 8 4 $sha384Digest"));
+        $result4 = $this->validator->validateDLVContent("12345 8 4 $sha384Digest");
+        $this->assertTrue($result4->isValid());
 
         // Test invalid formats
-        $this->assertFalse($this->validator->isValidDLVContent('45342 13 2'));  // Missing digest
-        $this->assertFalse($this->validator->isValidDLVContent('invalid')); // Invalid format
-        $this->assertFalse($this->validator->isValidDLVContent('2371 13 2 1F987CC6583E92DF0890718C42')); // Too short digest
-        $this->assertFalse($this->validator->isValidDLVContent('2371 13 2 1F987CC6583E92DF0890718C42 ; ( SHA1 digest )')); // Extra content
+        $result5 = $this->validator->validateDLVContent('45342 13 2');  // Missing digest
+        $this->assertFalse($result5->isValid());
+
+        $result6 = $this->validator->validateDLVContent('invalid'); // Invalid format
+        $this->assertFalse($result6->isValid());
+
+        $result7 = $this->validator->validateDLVContent('2371 13 2 1F987CC6583E92DF0890718C42'); // Too short digest
+        $this->assertFalse($result7->isValid());
+
+        $result8 = $this->validator->validateDLVContent('2371 13 2 1F987CC6583E92DF0890718C42 ; ( SHA1 digest )'); // Extra content
+        $this->assertFalse($result8->isValid());
     }
 }

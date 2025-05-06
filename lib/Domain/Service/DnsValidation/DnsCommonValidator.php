@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -47,58 +48,58 @@ class DnsCommonValidator
         $this->messageService = new MessageService();
     }
 
-    /** Check if Priority is valid
+    /**
+     * Validate priority for DNS records
      *
      * Check if MX or SRV priority is within range
      *
      * @param mixed $prio Priority
      * @param string $type Record type
      *
-     * @return int|bool Valid priority value or false if invalid
+     * @return ValidationResult<int> ValidationResult with validated priority or error message
      */
-    public function isValidPriority(mixed $prio, string $type): int|bool
+    public function validatePriority(mixed $prio, string $type): ValidationResult
     {
         // For records that require priority: MX or SRV
         if ($type == "MX" || $type == "SRV") {
             // If not set or empty string, use default value of 10
             if (!isset($prio) || $prio === "") {
-                return 10;
+                return ValidationResult::success(10);
             }
 
             // For MX/SRV, priority must be 0-65535
             if (is_numeric($prio) && $prio >= 0 && $prio <= 65535) {
-                return (int)$prio;
+                return ValidationResult::success((int)$prio);
             } else {
-                $this->messageService->addSystemError(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
-                return false;
+                return ValidationResult::failure(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
             }
         }
 
         // All other record types don't use priority, so return 0
         // We accept any input (including empty string) and convert to 0
-        return 0;
+        return ValidationResult::success(0);
     }
 
-    /** Check if target is not a CNAME
+    /**
+     * Check if target is not a CNAME
      *
      * @param string $target target to check
      *
-     * @return boolean true if not alias, false if CNAME exists
+     * @return ValidationResult<bool> ValidationResult indicating if target is valid
      */
-    public function isValidNonAliasTarget(string $target): bool
+    public function validateNonAliasTarget(string $target): ValidationResult
     {
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "SELECT id FROM $records_table
-			WHERE name = " . $this->db->quote($target, 'text') . "
-			AND TYPE = " . $this->db->quote('CNAME', 'text');
+				WHERE name = " . $this->db->quote($target, 'text') . "
+				AND TYPE = " . $this->db->quote('CNAME', 'text');
 
         $response = $this->db->queryOne($query);
         if ($response) {
-            $this->messageService->addSystemError(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
-            return false;
+            return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
         }
-        return true;
+        return ValidationResult::success(true);
     }
 }

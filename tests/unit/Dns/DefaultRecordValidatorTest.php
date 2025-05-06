@@ -24,8 +24,8 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\DefaultRecordValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 class DefaultRecordValidatorTest extends TestCase
 {
@@ -51,10 +51,12 @@ class DefaultRecordValidatorTest extends TestCase
             86400                       // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('valid.content.example.com', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals('valid.content.example.com', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
@@ -70,7 +72,8 @@ class DefaultRecordValidatorTest extends TestCase
             86400                       // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Content field cannot be empty', $result->getFirstError());
     }
 
     /**
@@ -86,7 +89,8 @@ class DefaultRecordValidatorTest extends TestCase
             86400                       // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     /**
@@ -102,10 +106,11 @@ class DefaultRecordValidatorTest extends TestCase
             86400                       // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('valid.content.example.com', $result['content']);
-        $this->assertEquals(86400, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('valid.content.example.com', $data['content']);
+        $this->assertEquals(86400, $data['ttl']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
@@ -121,10 +126,12 @@ class DefaultRecordValidatorTest extends TestCase
             86400                       // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('valid.content.example.com', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(10, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals('valid.content.example.com', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(10, $data['prio']);
     }
 
     /**
@@ -140,9 +147,10 @@ class DefaultRecordValidatorTest extends TestCase
             86400                       // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('valid.content.example.com', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('valid.content.example.com', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(0, $data['prio']);
     }
 }

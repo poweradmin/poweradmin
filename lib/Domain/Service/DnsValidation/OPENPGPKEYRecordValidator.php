@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * OPENPGPKEY record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class OPENPGPKEYRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,44 +52,56 @@ class OPENPGPKEYRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the OPENPGPKEY record (base64 encoded PGP public key)
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for OPENPGPKEY records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate the hostname format
-        if (!StringValidator::isValidPrintable($name)) {
-            return false;
+        $printableResult = StringValidator::validatePrintable($name);
+        if (!$printableResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
         // Hostname validation for OPENPGPKEY records
         // OPENPGPKEY records are typically of the form: <hash-of-localpart>._openpgpkey.<domain>
         // But we'll allow regular FQDNs too
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidOpenPGPKeyContent($content)) {
-            return false;
+        $contentResult = $this->validateOpenPGPKeyContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
 
-        return [
+        // Handle both array format and direct value format
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for OPENPGPKEY records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for OPENPGPKEY records must be 0 or empty'));
+        }
+
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // OPENPGPKEY records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -99,35 +109,33 @@ class OPENPGPKEYRecordValidator implements DnsRecordValidatorInterface
      * Content should be base64 encoded data
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult with errors or success
      */
-    private function isValidOpenPGPKeyContent(string $content): bool
+    private function validateOpenPGPKeyContent(string $content): ValidationResult
     {
         // Check if empty
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('OPENPGPKEY record content cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('OPENPGPKEY record content cannot be empty.'));
         }
 
         // Check for valid printable characters
-        if (!StringValidator::isValidPrintable($content)) {
-            return false;
+        $printableResult = StringValidator::validatePrintable($content);
+        if (!$printableResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in OPENPGPKEY record content.'));
         }
 
         // OPENPGPKEY records store data in base64 format
         // We'll do a basic validation that it consists of valid base64 characters
         if (!preg_match('/^[A-Za-z0-9+\/=]+$/', $content)) {
-            $this->messageService->addSystemError(_('OPENPGPKEY records must contain valid base64-encoded data.'));
-            return false;
+            return ValidationResult::failure(_('OPENPGPKEY records must contain valid base64-encoded data.'));
         }
 
         // Optionally verify that it's valid base64
         $decoded = base64_decode($content, true);
         if ($decoded === false) {
-            $this->messageService->addSystemError(_('OPENPGPKEY record contains invalid base64 data.'));
-            return false;
+            return ValidationResult::failure(_('OPENPGPKEY record contains invalid base64 data.'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

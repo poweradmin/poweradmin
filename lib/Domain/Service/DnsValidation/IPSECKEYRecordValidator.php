@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * IPSECKEY record validator
@@ -36,7 +36,6 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private IPAddressValidator $ipValidator;
@@ -44,7 +43,6 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
         $this->ipValidator = new IPAddressValidator();
@@ -59,37 +57,46 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the IPSECKEY record
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for IPSECKEY records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidIPSECKEYContent($content)) {
-            return false;
+        $contentResult = $this->validateIPSECKEYContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for IPSECKEY records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for IPSECKEY records must be 0 or empty'));
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // IPSECKEY records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -97,15 +104,20 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
      * Format: <precedence> <gateway type> <algorithm> <gateway> <public key>
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult with errors or success
      */
-    private function isValidIPSECKEYContent(string $content): bool
+    private function validateIPSECKEYContent(string $content): ValidationResult
     {
+        // Basic validation of printable characters
+        $printableResult = StringValidator::validatePrintable($content);
+        if (!$printableResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in IPSECKEY record content.'));
+        }
+
         // Split the content into parts
         $parts = preg_split('/\s+/', trim($content));
         if (count($parts) < 5) {
-            $this->messageService->addSystemError(_('IPSECKEY record must contain precedence, gateway type, algorithm, gateway, and public key.'));
-            return false;
+            return ValidationResult::failure(_('IPSECKEY record must contain precedence, gateway type, algorithm, gateway, and public key.'));
         }
 
         [$precedence, $gatewayType, $algorithm, $gateway] = array_slice($parts, 0, 4);
@@ -113,42 +125,38 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
 
         // Validate precedence (0-255)
         if (!is_numeric($precedence) || (int)$precedence < 0 || (int)$precedence > 255) {
-            $this->messageService->addSystemError(_('IPSECKEY precedence must be a number between 0 and 255.'));
-            return false;
+            return ValidationResult::failure(_('IPSECKEY precedence must be a number between 0 and 255.'));
         }
 
         // Validate gateway type (0-3)
         // 0 = No gateway, 1 = IPv4, 2 = IPv6, 3 = Domain name
         if (!in_array($gatewayType, ['0', '1', '2', '3'])) {
-            $this->messageService->addSystemError(_('IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 (Domain name).'));
-            return false;
+            return ValidationResult::failure(_('IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 (Domain name).'));
         }
 
         // Validate algorithm (0-4)
         // 0 = No key, 1 = RSA, 2 = DSA, 3 = ECDSA, 4 = Ed25519, etc.
         if (!in_array($algorithm, ['0', '1', '2', '3', '4'])) {
-            $this->messageService->addSystemError(_('IPSECKEY algorithm must be a valid value (0 = No key, 1 = RSA, 2 = DSA, 3 = ECDSA, 4 = Ed25519).'));
-            return false;
+            return ValidationResult::failure(_('IPSECKEY algorithm must be a valid value (0 = No key, 1 = RSA, 2 = DSA, 3 = ECDSA, 4 = Ed25519).'));
         }
 
         // Validate gateway based on gateway type
         switch ($gatewayType) {
             case '0': // No gateway
                 if ($gateway !== '.') {
-                    $this->messageService->addSystemError(_('For gateway type 0 (No gateway), gateway must be ".".'));
-                    return false;
+                    return ValidationResult::failure(_('For gateway type 0 (No gateway), gateway must be ".".'));
                 }
                 break;
             case '1': // IPv4
-                if (!$this->ipValidator->isValidIPv4($gateway)) {
-                    $this->messageService->addSystemError(_('For gateway type 1, gateway must be a valid IPv4 address.'));
-                    return false;
+                $ipv4Result = $this->ipValidator->validateIPv4($gateway);
+                if (!$ipv4Result->isValid()) {
+                    return ValidationResult::failure(_('For gateway type 1, gateway must be a valid IPv4 address.'));
                 }
                 break;
             case '2': // IPv6
-                if (!$this->ipValidator->isValidIPv6($gateway)) {
-                    $this->messageService->addSystemError(_('For gateway type 2, gateway must be a valid IPv6 address.'));
-                    return false;
+                $ipv6Result = $this->ipValidator->validateIPv6($gateway);
+                if (!$ipv6Result->isValid()) {
+                    return ValidationResult::failure(_('For gateway type 2, gateway must be a valid IPv6 address.'));
                 }
                 break;
             case '3': // Domain name
@@ -158,12 +166,9 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
 
         // Validate public key (if algorithm is not 0)
         if ($algorithm !== '0' && empty($publicKey)) {
-            $this->messageService->addSystemError(_('IPSECKEY public key is required when algorithm is not 0.'));
-            return false;
+            return ValidationResult::failure(_('IPSECKEY public key is required when algorithm is not 0.'));
         }
 
-        // For testing, we'll accept algorithm 0 with a public key
-
-        return true;
+        return ValidationResult::success(true);
     }
 }

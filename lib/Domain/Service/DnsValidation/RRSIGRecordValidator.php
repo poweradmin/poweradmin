@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * RRSIG (Resource Record Signature) record validator for DNSSEC
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class RRSIGRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,41 +52,52 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the RRSIG record
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for RRSIG records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate the hostname format
         if (!StringValidator::isValidPrintable($name)) {
-            return false;
+            return ValidationResult::failure(_('Hostname contains invalid characters.'));
         }
 
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidRRSIGContent($content)) {
-            return false;
+        $contentResult = $this->validateRRSIGContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
 
-        return [
+        // Handle both array format and direct value format
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for RRSIG records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for RRSIG records must be 0 or empty'));
+        }
+
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // RRSIG records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -96,26 +105,24 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
      * Format: <covered-type> <algorithm> <labels> <orig-ttl> <sig-expiration> <sig-inception> <key-tag> <signer's-name> <signature>
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult with success or errors
      */
-    private function isValidRRSIGContent(string $content): bool
+    private function validateRRSIGContent(string $content): ValidationResult
     {
         // Check if empty
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('RRSIG record content cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('RRSIG record content cannot be empty.'));
         }
 
         // Check for valid printable characters
         if (!StringValidator::isValidPrintable($content)) {
-            return false;
+            return ValidationResult::failure(_('RRSIG record contains invalid characters.'));
         }
 
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content));
         if (count($parts) < 9) {
-            $this->messageService->addSystemError(_('RRSIG record must contain covered-type, algorithm, labels, original TTL, expiration, inception, key tag, signer name and signature.'));
-            return false;
+            return ValidationResult::failure(_('RRSIG record must contain covered-type, algorithm, labels, original TTL, expiration, inception, key tag, signer name and signature.'));
         }
 
         [$coveredType, $algorithm, $labels, $origTtl, $expiration, $inception, $keyTag, $signerName] = array_slice($parts, 0, 8);
@@ -123,59 +130,50 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
 
         // Validate covered type (should be a valid DNS record type)
         if (!$this->isValidDnsRecordType($coveredType)) {
-            $this->messageService->addSystemError(_('RRSIG covered type must be a valid DNS record type.'));
-            return false;
+            return ValidationResult::failure(_('RRSIG covered type must be a valid DNS record type.'));
         }
 
         // Validate algorithm (must be numeric)
         if (!is_numeric($algorithm)) {
-            $this->messageService->addSystemError(_('RRSIG algorithm field must be a numeric value.'));
-            return false;
+            return ValidationResult::failure(_('RRSIG algorithm field must be a numeric value.'));
         }
 
         // Validate labels (must be numeric)
         if (!is_numeric($labels)) {
-            $this->messageService->addSystemError(_('RRSIG labels field must be a numeric value.'));
-            return false;
+            return ValidationResult::failure(_('RRSIG labels field must be a numeric value.'));
         }
 
         // Validate original TTL (must be numeric)
         if (!is_numeric($origTtl)) {
-            $this->messageService->addSystemError(_('RRSIG original TTL field must be a numeric value.'));
-            return false;
+            return ValidationResult::failure(_('RRSIG original TTL field must be a numeric value.'));
         }
 
         // Validate expiration time (must be a timestamp in YYYYMMDDHHmmSS format)
         if (!preg_match('/^\d{14}$/', $expiration)) {
-            $this->messageService->addSystemError(_('RRSIG expiration must be in YYYYMMDDHHmmSS format.'));
-            return false;
+            return ValidationResult::failure(_('RRSIG expiration must be in YYYYMMDDHHmmSS format.'));
         }
 
         // Validate inception time (must be a timestamp in YYYYMMDDHHmmSS format)
         if (!preg_match('/^\d{14}$/', $inception)) {
-            $this->messageService->addSystemError(_('RRSIG inception must be in YYYYMMDDHHmmSS format.'));
-            return false;
+            return ValidationResult::failure(_('RRSIG inception must be in YYYYMMDDHHmmSS format.'));
         }
 
         // Validate key tag (must be numeric)
         if (!is_numeric($keyTag)) {
-            $this->messageService->addSystemError(_('RRSIG key tag field must be a numeric value.'));
-            return false;
+            return ValidationResult::failure(_('RRSIG key tag field must be a numeric value.'));
         }
 
         // Validate signer's name (must be a valid domain name ending with a dot)
         if (!str_ends_with($signerName, '.')) {
-            $this->messageService->addSystemError(_('RRSIG signer name must be a fully qualified domain name (end with a dot).'));
-            return false;
+            return ValidationResult::failure(_('RRSIG signer name must be a fully qualified domain name (end with a dot).'));
         }
 
         // Validate signature (must not be empty)
         if (empty(trim($signature))) {
-            $this->messageService->addSystemError(_('RRSIG signature cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('RRSIG signature cannot be empty.'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**

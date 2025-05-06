@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * DHCID record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class DHCIDRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,59 +52,73 @@ class DHCIDRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the DHCID record (base64-encoded data)
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for DHCID records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
+
+        // Basic validation of printable characters
+        $printableResult = StringValidator::validatePrintable($content);
+        if (!$printableResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in DHCID record content.'));
+        }
 
         // Validate content - DHCID should be a base64-encoded string
-        if (!$this->isValidBase64($content)) {
-            $this->messageService->addSystemError(_('DHCID record must contain valid base64-encoded data.'));
-            return false;
+        $base64Result = $this->validateBase64($content);
+        if (!$base64Result->isValid()) {
+            return $base64Result;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for DHCID records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for DHCID records must be 0 or empty'));
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // DHCID records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
      * Check if a string is valid base64-encoded data
      *
      * @param string $data The data to check
-     * @return bool True if valid base64, false otherwise
+     * @return ValidationResult ValidationResult with errors or success
      */
-    private function isValidBase64(string $data): bool
+    private function validateBase64(string $data): ValidationResult
     {
         // Basic pattern for base64-encoded data
         if (!preg_match('/^[A-Za-z0-9+\/=]+$/', $data)) {
-            return false;
+            return ValidationResult::failure(_('DHCID record must contain only valid base64 characters.'));
         }
 
         // Try to decode the base64 data
         $decoded = base64_decode($data, true);
         if ($decoded === false) {
-            return false;
+            return ValidationResult::failure(_('DHCID record must contain valid base64-encoded data.'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

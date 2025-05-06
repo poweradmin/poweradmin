@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * TLSA (TLS Authentication) record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class TLSARecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -57,74 +55,89 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // For TLSA records with special format _port._protocol.hostname
         // Validate printable characters at minimum
         if (!StringValidator::isValidPrintable($name)) {
-            return false;
+            return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
         // Special handling for _443._tcp.www.example.com test format
+        $warnings = [];
+
         if (in_array($name, ['_443._tcp.www.example.com'])) {
             // Accept the test case directly
         } elseif (strpos($name, '_') === 0) {
             // Check TLSA format as a warning only
             if (!preg_match('/^_\d+\._[a-z]+\..+$/i', $name)) {
-                $this->messageService->addSystemError(_('TLSA record name should typically follow the format _port._protocol.hostname (e.g., _443._tcp.www.example.com).'));
+                $warnings[] = _('TLSA record name should typically follow the format _port._protocol.hostname (e.g., _443._tcp.www.example.com).');
                 // This is just a warning, still allow the record
             }
         } else {
             // For non-service names, use regular hostname validation
-            $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-            if ($hostnameResult === false) {
-                return false;
+            $hostnameResult = $this->hostnameValidator->validate($name, true);
+            if (!$hostnameResult->isValid()) {
+                return $hostnameResult;
             }
-            $name = $hostnameResult['hostname'];
+            $hostnameData = $hostnameResult->getData();
+            $name = $hostnameData['hostname'];
         }
 
         // Validate content
-        if (!$this->isValidTLSAContent($content)) {
-            return false;
+        $contentResult = $this->validateTLSAContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // TLSA records don't use priority, so it should be 0
+        if (isset($prio) && $prio !== "" && (!is_numeric($prio) || intval($prio) !== 0)) {
+            return ValidationResult::failure(_('Invalid value for priority field. TLSA records must have priority value of 0.'));
         }
 
-        return [
+        $validationResult = ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // TLSA records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
+
+        // Include any warnings if necessary (we could extend ValidationResult to support warnings)
+
+        return $validationResult;
     }
 
     /**
      * Validates TLSA hostname format (_port._protocol.hostname)
      *
      * @param string $hostname
-     * @return string|bool Validated hostname or false if invalid
+     * @return ValidationResult ValidationResult containing validated hostname or error messages
      */
-    private function validateTLSAHostname(string $hostname): string|bool
+    private function validateTLSAHostname(string $hostname): ValidationResult
     {
         // Check if hostname is valid
         if (!StringValidator::isValidPrintable($hostname)) {
-            return false;
+            return ValidationResult::failure(_('Invalid characters in hostname.'));
         }
 
         // TLSA records often follow pattern _port._protocol.hostname
         // e.g., _443._tcp.www.example.com
         if (!preg_match('/^_\d+\._[a-z]+\..+$/i', $hostname)) {
-            $this->messageService->addSystemError(_('TLSA record name should typically follow the format _port._protocol.hostname (e.g., _443._tcp.www.example.com).'));
+            $warning = _('TLSA record name should typically follow the format _port._protocol.hostname (e.g., _443._tcp.www.example.com).');
             // This is just a warning, still allow the record
         }
 
-        return $hostname;
+        return ValidationResult::success($hostname);
     }
 
     /**
@@ -132,15 +145,14 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
      * Format: <usage> <selector> <matching-type> <certificate-data>
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult containing validation result
      */
-    private function isValidTLSAContent(string $content): bool
+    private function validateTLSAContent(string $content): ValidationResult
     {
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content), 4);
         if (count($parts) !== 4) {
-            $this->messageService->addSystemError(_('TLSA record must contain usage, selector, matching-type, and certificate-data separated by spaces.'));
-            return false;
+            return ValidationResult::failure(_('TLSA record must contain usage, selector, matching-type, and certificate-data separated by spaces.'));
         }
 
         [$usage, $selector, $matchingType, $certificateData] = $parts;
@@ -151,16 +163,14 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
         // 2 = DANE-TA: Trust anchor assertion
         // 3 = DANE-EE: Domain-issued certificate
         if (!is_numeric($usage) || !in_array((int)$usage, range(0, 3))) {
-            $this->messageService->addSystemError(_('TLSA usage field must be a number between 0 and 3.'));
-            return false;
+            return ValidationResult::failure(_('TLSA usage field must be a number between 0 and 3.'));
         }
 
         // Validate selector field (0-1)
         // 0 = Full certificate
         // 1 = SubjectPublicKeyInfo
         if (!is_numeric($selector) || !in_array((int)$selector, range(0, 1))) {
-            $this->messageService->addSystemError(_('TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo).'));
-            return false;
+            return ValidationResult::failure(_('TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo).'));
         }
 
         // Validate matching type field (0-2)
@@ -168,26 +178,22 @@ class TLSARecordValidator implements DnsRecordValidatorInterface
         // 1 = SHA-256 hash
         // 2 = SHA-512 hash
         if (!is_numeric($matchingType) || !in_array((int)$matchingType, range(0, 2))) {
-            $this->messageService->addSystemError(_('TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 (SHA-512).'));
-            return false;
+            return ValidationResult::failure(_('TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 (SHA-512).'));
         }
 
         // Validate certificate data (must be a hexadecimal string)
         if (!preg_match('/^[0-9a-fA-F]+$/', $certificateData)) {
-            $this->messageService->addSystemError(_('TLSA certificate data must be a hexadecimal string.'));
-            return false;
+            return ValidationResult::failure(_('TLSA certificate data must be a hexadecimal string.'));
         }
 
         // Additional validation based on the matching type
         $length = strlen($certificateData);
         if ((int)$matchingType === 1 && $length !== 64) { // SHA-256 is 32 bytes (64 hex chars)
-            $this->messageService->addSystemError(_('TLSA SHA-256 certificate data must be 64 characters long.'));
-            return false;
+            return ValidationResult::failure(_('TLSA SHA-256 certificate data must be 64 characters long.'));
         } elseif ((int)$matchingType === 2 && $length !== 128) { // SHA-512 is 64 bytes (128 hex chars)
-            $this->messageService->addSystemError(_('TLSA SHA-512 certificate data must be 128 characters long.'));
-            return false;
+            return ValidationResult::failure(_('TLSA SHA-512 certificate data must be 128 characters long.'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

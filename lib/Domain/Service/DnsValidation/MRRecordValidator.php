@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * MR record validator
@@ -38,16 +38,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class MRRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
-    private MessageService $messageService;
     private TTLValidator $ttlValidator;
     private HostnameValidator $hostnameValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
-        $this->messageService = new MessageService();
-        $this->ttlValidator = new TTLValidator($config);
+        $this->ttlValidator = new TTLValidator();
         $this->hostnameValidator = new HostnameValidator($config);
     }
 
@@ -60,35 +56,37 @@ class MRRecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> Validation result with data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate content - ensure it's not empty
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('MR record content cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('MR record content cannot be empty.'));
         }
 
         // Validate that content is a valid hostname
-        if (!$this->hostnameValidator->isValidHostnameFqdn($content, '0')) {
-            $this->messageService->addSystemError(_('MR record content must be a valid domain name.'));
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($content, false);
+        if (!$hostnameResult->isValid()) {
+            return ValidationResult::failure(_('MR record content must be a valid domain name.'));
         }
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // MR records don't use priority, so it's always 0
         $priority = 0;
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'ttl' => $validatedTtl,
-            'priority' => $priority
-        ];
+            'priority' => $priority,
+            'name' => $name
+        ]);
     }
 }

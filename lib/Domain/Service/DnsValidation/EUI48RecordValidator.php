@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * EUI48 record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class EUI48RecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -57,46 +55,87 @@ class EUI48RecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): ValidationResult
     {
+        $errors = [];
+
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return ValidationResult::errors($hostnameResult->getErrors());
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content - should be a valid EUI-48 (MAC-48) address in xx-xx-xx-xx-xx-xx format
-        if (!$this->isValidEUI48($content)) {
-            $this->messageService->addSystemError(_('EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where x is a hexadecimal digit).'));
-            return false;
+        $contentResult = $this->isValidEUI48($content);
+        if (!$contentResult->isValid()) {
+            $errors[] = $contentResult->getFirstError();
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return ValidationResult::errors(array_merge($errors, $ttlResult->getErrors()));
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for EUI48 records)
+        $validatedPrio = $this->validatePriority($prio);
+        if (!$validatedPrio->isValid()) {
+            $errors[] = _('Invalid value for prio field.');
         }
 
-        return [
+        if (!empty($errors)) {
+            return ValidationResult::errors($errors);
+        }
+
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
-            'prio' => 0, // EUI48 records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'prio' => $validatedPrio->getData(),
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
      * Check if a string is a valid EUI-48 (MAC-48) address
      *
      * @param string $data The data to check
-     * @return bool True if valid EUI-48, false otherwise
+     * @return ValidationResult ValidationResult with validation status
      */
-    private function isValidEUI48(string $data): bool
+    private function isValidEUI48(string $data): ValidationResult
     {
         // MAC address format: xx-xx-xx-xx-xx-xx where x is a hexadecimal digit
-        return (bool) preg_match('/^([0-9a-fA-F]{2}-){5}[0-9a-fA-F]{2}$/', $data);
+        if (preg_match('/^([0-9a-fA-F]{2}-){5}[0-9a-fA-F]{2}$/', $data)) {
+            return ValidationResult::success(true);
+        }
+        return ValidationResult::failure(_('EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where x is a hexadecimal digit).'));
+    }
+
+    /**
+     * Validate priority for EUI48 records
+     * EUI48 records don't use priority, so it should be 0
+     *
+     * @param mixed $prio Priority value
+     *
+     * @return ValidationResult<int> ValidationResult with validated priority
+     */
+    private function validatePriority(mixed $prio): ValidationResult
+    {
+        // If priority is not provided or empty, set it to 0
+        if (!isset($prio) || $prio === "") {
+            return ValidationResult::success(0);
+        }
+
+        // If provided, ensure it's 0 for EUI48 records
+        if (is_numeric($prio) && intval($prio) === 0) {
+            return ValidationResult::success(0);
+        }
+
+        return ValidationResult::failure(_('Priority must be 0 for EUI48 records.'));
     }
 }

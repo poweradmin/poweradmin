@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\L32RecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the L32RecordValidator
@@ -34,11 +35,21 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']); // Using provided prio value
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
+
+        $this->assertEquals($name, $data['name']);
+        $data = $result->getData();
+
+        $this->assertEquals(0, $data['prio']); // Using provided prio value
+
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithProvidedPriority()
@@ -51,11 +62,21 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(20, $result['prio']); // Using the provided prio value
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
+
+        $this->assertEquals($name, $data['name']);
+        $data = $result->getData();
+
+        $this->assertEquals(20, $data['prio']); // Using the provided prio value
+
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithAnotherValidIPAddress()
@@ -68,9 +89,16 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals(0, $result['prio']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
+
+        $this->assertEquals(0, $data['prio']);
     }
 
     public function testValidateWithInvalidPreference()
@@ -83,7 +111,10 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidLocator()
@@ -96,7 +127,10 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithIPv6AsLocator()
@@ -109,7 +143,10 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidFormat()
@@ -122,7 +159,10 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithTooManyParts()
@@ -135,7 +175,10 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidHostname()
@@ -148,7 +191,10 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidTTL()
@@ -161,7 +207,10 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithDefaultTTL()
@@ -174,8 +223,14 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals(86400, $data['ttl']);
     }
 
     public function testValidateWithNegativePreference()
@@ -188,6 +243,9 @@ class L32RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 }

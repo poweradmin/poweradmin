@@ -5,7 +5,7 @@ namespace unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\L64RecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the L64RecordValidator
@@ -34,11 +34,13 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']); // Using provided prio value
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']); // Using provided prio value
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithProvidedPriority()
@@ -51,11 +53,12 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(20, $result['prio']); // Should use provided prio
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(20, $data['prio']); // Should use provided prio
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithAnotherValidLocator()
@@ -68,9 +71,11 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals(0, $result['prio']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     public function testValidateWithInvalidPreference()
@@ -83,7 +88,8 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('preference must be a number between 0 and 65535', $result->getFirstError());
     }
 
     public function testValidateWithInvalidLocator()
@@ -96,7 +102,8 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('locator must be a valid 64-bit hexadecimal', $result->getFirstError());
     }
 
     public function testValidateWithIPv4AsLocator()
@@ -109,7 +116,8 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('locator must be a valid 64-bit hexadecimal', $result->getFirstError());
     }
 
     public function testValidateWithWrongNumberOfSegments()
@@ -122,7 +130,8 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('locator must be a valid 64-bit hexadecimal', $result->getFirstError());
     }
 
     public function testValidateWithTooManySegments()
@@ -135,7 +144,8 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('locator must be a valid 64-bit hexadecimal', $result->getFirstError());
     }
 
     public function testValidateWithInvalidFormat()
@@ -148,7 +158,8 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain preference and locator64 separated by space', $result->getFirstError());
     }
 
     public function testValidateWithTooManyParts()
@@ -161,7 +172,8 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain preference and locator64 separated by space', $result->getFirstError());
     }
 
     public function testValidateWithInvalidHostname()
@@ -174,7 +186,8 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('hostname', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTTL()
@@ -187,7 +200,8 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     public function testValidateWithDefaultTTL()
@@ -200,8 +214,9 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 
     public function testValidateWithNegativePreference()
@@ -214,6 +229,7 @@ class L64RecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('preference must be a number between 0 and 65535', $result->getFirstError());
     }
 }

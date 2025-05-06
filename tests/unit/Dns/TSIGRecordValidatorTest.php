@@ -6,6 +6,7 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\TSIGRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the TSIGRecordValidator
@@ -34,11 +35,21 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
+
+        $this->assertEquals($name, $data['name']);
+        $data = $result->getData();
+
+        $this->assertEquals(0, $data['prio']);
+
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithOtherData()
@@ -51,8 +62,14 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithDifferentAlgorithm()
@@ -65,8 +82,13 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithHexMac()
@@ -79,8 +101,14 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithInvalidAlgorithm()
@@ -93,7 +121,10 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidTimestamp()
@@ -106,7 +137,10 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidFudge()
@@ -119,7 +153,10 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidMac()
@@ -132,7 +169,10 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidOriginalId()
@@ -145,7 +185,10 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidError()
@@ -158,7 +201,10 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidOtherLen()
@@ -171,7 +217,10 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidOtherData()
@@ -184,7 +233,10 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithIncompleteParts()
@@ -197,7 +249,10 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidHostname()
@@ -210,7 +265,10 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidTTL()
@@ -223,7 +281,10 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithDefaultTTL()
@@ -236,7 +297,12 @@ class TSIGRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+
+        $this->assertEquals(86400, $data['ttl']);
     }
 }

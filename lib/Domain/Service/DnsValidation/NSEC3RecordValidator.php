@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * NSEC3 record validator
@@ -39,14 +39,14 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class NSEC3RecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private TTLValidator $ttlValidator;
+    private HostnameValidator $hostnameValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->ttlValidator = new TTLValidator($config);
+        $this->hostnameValidator = new HostnameValidator($config);
     }
 
     /**
@@ -58,40 +58,52 @@ class NSEC3RecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        // Validate hostname/name
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
+        }
+
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
+
         // Validate content - ensure it's not empty
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('NSEC3 record content cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('NSEC3 record content cannot be empty.'));
         }
 
         // Validate that content has valid characters
         if (!StringValidator::isValidPrintable($content)) {
-            return false;
+            return ValidationResult::failure(_('NSEC3 record contains invalid characters.'));
         }
 
         // Check NSEC3 record format
-        if (!$this->isValidNsec3Content($content)) {
-            return false;
+        $contentResult = $this->validateNsec3Content($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // NSEC3 records don't use priority, so it's always 0
         $priority = 0;
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
+            'name' => $name,
             'ttl' => $validatedTtl,
             'priority' => $priority
-        ];
+        ]);
     }
 
     /**
@@ -100,9 +112,9 @@ class NSEC3RecordValidator implements DnsRecordValidatorInterface
      * NSEC3 content should have proper format with required fields
      *
      * @param string $content The NSEC3 record content
-     * @return bool True if format is valid, false otherwise
+     * @return ValidationResult ValidationResult object
      */
-    private function isValidNsec3Content(string $content): bool
+    private function validateNsec3Content(string $content): ValidationResult
     {
         $parts = preg_split('/\s+/', trim($content));
 
@@ -115,63 +127,64 @@ class NSEC3RecordValidator implements DnsRecordValidatorInterface
         // 6+ Optional type bit maps
 
         if (count($parts) < 5) {
-            $this->messageService->addSystemError(_('NSEC3 record must contain at least hash algorithm, flags, iterations, salt, and next hashed owner name.'));
-            return false;
+            return ValidationResult::failure(_('NSEC3 record must contain at least hash algorithm, flags, iterations, salt, and next hashed owner name.'));
         }
 
         // Validate hash algorithm (should be 1 for SHA-1)
         $algorithm = (int)$parts[0];
         if ($algorithm !== 1) {
-            $this->messageService->addSystemError(_('NSEC3 hash algorithm must be 1 (SHA-1).'));
-            return false;
+            return ValidationResult::failure(_('NSEC3 hash algorithm must be 1 (SHA-1).'));
         }
 
         // Validate flags (0 or 1)
         $flags = (int)$parts[1];
         if ($flags !== 0 && $flags !== 1) {
-            $this->messageService->addSystemError(_('NSEC3 flags must be 0 or 1.'));
-            return false;
+            return ValidationResult::failure(_('NSEC3 flags must be 0 or 1.'));
         }
 
         // Validate iterations (0-2500, RFC recommends max of 150)
         $iterations = (int)$parts[2];
         if ($iterations < 0 || $iterations > 2500) {
-            $this->messageService->addSystemError(_('NSEC3 iterations must be between 0 and 2500.'));
-            return false;
+            return ValidationResult::failure(_('NSEC3 iterations must be between 0 and 2500.'));
         }
 
         // Validate salt (- for empty or hex value)
         $salt = $parts[3];
         if ($salt !== '-' && !preg_match('/^[0-9A-Fa-f]+$/', $salt)) {
-            $this->messageService->addSystemError(_('NSEC3 salt must be - (for empty) or a hexadecimal value.'));
-            return false;
+            return ValidationResult::failure(_('NSEC3 salt must be - (for empty) or a hexadecimal value.'));
         }
 
         // Validate next hashed owner name (Base32hex encoding)
         $nextHashedOwner = $parts[4];
         if (!preg_match('/^[A-Za-z0-9+\/=]+$/', $nextHashedOwner)) {
-            $this->messageService->addSystemError(_('NSEC3 next hashed owner name must be a valid Base32hex encoded value.'));
-            return false;
+            return ValidationResult::failure(_('NSEC3 next hashed owner name must be a valid Base32hex encoded value.'));
         }
 
         // If type bit maps are present, validate them
         if (count($parts) > 5) {
             $typeBitMaps = implode(' ', array_slice($parts, 5));
-            if (!$this->validateTypeBitMaps($typeBitMaps)) {
-                return false;
+            $typeBitMapsResult = $this->validateTypeBitMaps($typeBitMaps);
+            if (!$typeBitMapsResult->isValid()) {
+                return $typeBitMapsResult;
             }
         }
 
-        return true;
+        return ValidationResult::success([
+            'algorithm' => $algorithm,
+            'flags' => $flags,
+            'iterations' => $iterations,
+            'salt' => $salt,
+            'next_hashed_owner' => $nextHashedOwner
+        ]);
     }
 
     /**
      * Validate the type bit maps part of an NSEC3 record
      *
      * @param string $typeBitMaps The type bit maps part of the NSEC3 record
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult object
      */
-    private function validateTypeBitMaps(string $typeBitMaps): bool
+    private function validateTypeBitMaps(string $typeBitMaps): ValidationResult
     {
         // Type bit maps should contain valid record types
         $validRecordTypes = [
@@ -195,11 +208,12 @@ class NSEC3RecordValidator implements DnsRecordValidatorInterface
             }
 
             if (!in_array(strtoupper($type), $validRecordTypes)) {
-                $this->messageService->addSystemError(sprintf(_('NSEC3 record contains an invalid record type: %s'), $type));
-                return false;
+                return ValidationResult::failure(sprintf(_('NSEC3 record contains an invalid record type: %s'), $type));
             }
         }
 
-        return true;
+        return ValidationResult::success([
+            'types' => $types
+        ]);
     }
 }

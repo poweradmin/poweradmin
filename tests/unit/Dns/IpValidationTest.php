@@ -20,29 +20,44 @@ class IpValidationTest extends BaseDnsTest
     }
 
     /**
-     * Test IPv4 validation
+     * Test IPv4 validation with ValidationResult pattern
      */
-    public function testValidateIPv4()
+    public function testValidateIPv4WithValidationResult()
     {
-        $this->assertTrue($this->validator->isValidIPv4("192.168.1.1", false));
-        $this->assertFalse($this->validator->isValidIPv4("not_an_ip", false));
+        $result1 = $this->validator->validateIPv4("192.168.1.1");
+        $this->assertTrue($result1->isValid());
+        $this->assertEquals("192.168.1.1", $result1->getData());
+
+        $result2 = $this->validator->validateIPv4("not_an_ip");
+        $this->assertFalse($result2->isValid());
+        $this->assertNotEmpty($result2->getErrors());
     }
 
     /**
-     * Test IPv6 validation
+     * Test IPv6 validation with ValidationResult pattern
      */
-    public function testValidateIPv6()
+    public function testValidateIPv6WithValidationResult()
     {
-        $this->assertTrue($this->validator->isValidIPv6("2001:db8::1"));
-        $this->assertFalse($this->validator->isValidIPv6("not_an_ipv6"));
+        $result1 = $this->validator->validateIPv6("2001:db8::1");
+        $this->assertTrue($result1->isValid());
+        $this->assertEquals("2001:db8::1", $result1->getData());
+
+        $result2 = $this->validator->validateIPv6("not_an_ipv6");
+        $this->assertFalse($result2->isValid());
+        $this->assertNotEmpty($result2->getErrors());
     }
 
     /**
-     * Test multiple IP validation
+     * Test multiple IP validation with ValidationResult pattern
      */
-    public function testValidateMultipleIPs()
+    public function testValidateMultipleIPsWithValidationResult()
     {
-        $this->assertTrue($this->validator->areMultipleValidIPs("192.168.1.1, 10.0.0.1"));
-        $this->assertFalse($this->validator->areMultipleValidIPs("192.168.1.1, invalid_ip"));
+        $result1 = $this->validator->validateMultipleIPs("192.168.1.1, 10.0.0.1");
+        $this->assertTrue($result1->isValid());
+        $this->assertCount(2, $result1->getData());
+
+        $result2 = $this->validator->validateMultipleIPs("192.168.1.1, invalid_ip");
+        $this->assertFalse($result2->isValid());
+        $this->assertNotEmpty($result2->getErrors());
     }
 }

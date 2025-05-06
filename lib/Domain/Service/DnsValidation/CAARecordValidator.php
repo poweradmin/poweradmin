@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * CAA record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class CAARecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,37 +52,49 @@ class CAARecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the CAA record (flags tag value)
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for CAA records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $errors = [];
+
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidCAAContent($content)) {
-            return false;
+        $contentResult = $this->validateCAAContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // CAA records don't use priority
+        if (!empty($prio) && $prio != 0) {
+            $errors[] = _('Priority field for CAA records must be 0 or empty.');
+            return ValidationResult::errors($errors);
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // CAA records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -92,62 +102,75 @@ class CAARecordValidator implements DnsRecordValidatorInterface
      * Format: <flags> <tag> <value>
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult containing validation status or error message
      */
-    private function isValidCAAContent(string $content): bool
+    private function validateCAAContent(string $content): ValidationResult
     {
         // Split the content into flags, tag, and value
         $parts = preg_split('/\s+/', trim($content), 3);
         if (count($parts) !== 3) {
-            $this->messageService->addSystemError(_('CAA record must contain flags, tag, and value separated by spaces.'));
-            return false;
+            return ValidationResult::failure(_('CAA record must contain flags, tag, and value separated by spaces.'));
         }
 
         [$flags, $tag, $value] = $parts;
 
         // Validate flags (must be 0-255)
         if (!is_numeric($flags) || (int)$flags < 0 || (int)$flags > 255) {
-            $this->messageService->addSystemError(_('CAA flags must be a number between 0 and 255.'));
-            return false;
+            return ValidationResult::failure(_('CAA flags must be a number between 0 and 255.'));
         }
 
         // Validate tag (must be one of: issue, issuewild, iodef)
         $validTags = ['issue', 'issuewild', 'iodef'];
         if (!in_array($tag, $validTags)) {
-            $this->messageService->addSystemError(_('CAA tag must be one of: issue, issuewild, iodef.'));
-            return false;
+            return ValidationResult::failure(_('CAA tag must be one of: issue, issuewild, iodef.'));
         }
 
         // Validate value (should be properly quoted for issue/issuewild with CA domain or URL for iodef)
         if ($tag === 'issue' || $tag === 'issuewild') {
             // Value for issue/issuewild should be a properly quoted domain
-            if (!StringValidator::hasQuotesAround($value)) {
-                $this->messageService->addSystemError(_('CAA value must be enclosed in quotes.'));
-                return false;
-            }
-            if (!StringValidator::isProperlyQuoted($value)) {
-                $this->messageService->addSystemError(_('CAA value must be properly quoted.'));
-                return false;
+            $quotedResult = $this->validateQuotedValue($value);
+            if (!$quotedResult->isValid()) {
+                return $quotedResult;
             }
         } elseif ($tag === 'iodef') {
             // Value for iodef should be a properly quoted URL
-            if (!StringValidator::hasQuotesAround($value)) {
-                $this->messageService->addSystemError(_('CAA iodef value must be enclosed in quotes.'));
-                return false;
-            }
-            if (!StringValidator::isProperlyQuoted($value)) {
-                $this->messageService->addSystemError(_('CAA iodef value must be properly quoted.'));
-                return false;
+            $quotedResult = $this->validateQuotedValue($value);
+            if (!$quotedResult->isValid()) {
+                return $quotedResult;
             }
 
             // If it's a URL, it should start with http://, https://, or mailto:
             $unquoted = trim($value, '"');
             if (!preg_match('/^(https?:|mailto:)/', $unquoted)) {
-                $this->messageService->addSystemError(_('CAA iodef value must be a URL starting with http://, https://, or mailto:.'));
-                return false;
+                return ValidationResult::failure(_('CAA iodef value must be a URL starting with http://, https://, or mailto:.'));
             }
         }
 
-        return true;
+        return ValidationResult::success(true);
+    }
+
+    /**
+     * Validate a quoted value
+     *
+     * @param string $value The value to validate
+     * @return ValidationResult ValidationResult containing validation status or error message
+     */
+    private function validateQuotedValue(string $value): ValidationResult
+    {
+        if (
+            !isset($value[0]) || $value[0] !== '"' ||
+            !isset($value[strlen($value) - 1]) || $value[strlen($value) - 1] !== '"'
+        ) {
+            return ValidationResult::failure(_('Value must be enclosed in quotes.'));
+        }
+
+        $subContent = substr($value, 1, -1);
+        $pattern = '/(?<!\\\\)"/';
+
+        if (preg_match($pattern, $subContent)) {
+            return ValidationResult::failure(_('Backslashes must precede all quotes (") in value content.'));
+        }
+
+        return ValidationResult::success(true);
     }
 }

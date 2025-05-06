@@ -5,6 +5,7 @@ namespace unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\LOCRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the LOCRecordValidator
@@ -33,11 +34,21 @@ class LOCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']); // LOC always uses 0
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
+
+        $this->assertEquals($name, $data['name']);
+        $data = $result->getData();
+
+        $this->assertEquals(0, $data['prio']); // LOC always uses 0
+
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithSimpleCoordinates()
@@ -50,11 +61,21 @@ class LOCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
+
+        $this->assertEquals($name, $data['name']);
+        $data = $result->getData();
+
+        $this->assertEquals(0, $data['prio']);
+
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidHostname()
@@ -67,7 +88,10 @@ class LOCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidLOCFormat()
@@ -80,7 +104,10 @@ class LOCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidLatitude()
@@ -94,7 +121,10 @@ class LOCRecordValidatorTest extends TestCase
         // The validator now properly rejects values over 90 degrees for latitude
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidLongitude()
@@ -107,7 +137,10 @@ class LOCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithInvalidTTL()
@@ -120,7 +153,10 @@ class LOCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testValidateWithDefaultTTL()
@@ -133,21 +169,28 @@ class LOCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals(86400, $data['ttl']);
     }
 
     public function testValidateWithNonZeroPriority()
     {
         $content = '37 46 30.000 N 122 23 30.000 W 0.00m 1m 10000m 10m';
         $name = 'geo.example.com';
-        $prio = 10; // Non-zero priority (should be ignored for LOC records)
+        $prio = 10; // Non-zero priority (should be rejected for LOC records)
         $ttl = 3600;
         $defaultTTL = 86400;
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(0, $result['prio']); // Priority should always be 0 for LOC
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
+        $this->assertStringContainsString('Priority field for LOC records must be 0 or empty', $result->getFirstError());
     }
 }

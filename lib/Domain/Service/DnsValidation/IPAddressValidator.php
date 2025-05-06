@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
-use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * IP address validation service
@@ -34,82 +34,75 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class IPAddressValidator
 {
-    private MessageService $messageService;
-
-    public function __construct()
-    {
-        $this->messageService = new MessageService();
-    }
-
-    /** Test if IPv4 address is valid
+    /**
+     * Validate an IPv4 address
      *
      * @param string $ipv4 IPv4 address string
-     * @param boolean $answer print error if true
-     * [default=true]
      *
-     * @return boolean true if valid, false otherwise
+     * @return ValidationResult<string> ValidationResult with validated IP or error
      */
-    public function isValidIPv4(string $ipv4, bool $answer = true): bool
+    public function validateIPv4(string $ipv4): ValidationResult
     {
         if (filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) === false) {
-            if ($answer) {
-                $this->messageService->addSystemError(_('This is not a valid IPv4 address.'));
-            }
-            return false;
+            return ValidationResult::failure(_('This is not a valid IPv4 address.'));
         }
 
-        return true;
+        return ValidationResult::success($ipv4);
     }
 
-    /** Test if IPv6 address is valid
+    /**
+     * Validate an IPv6 address
      *
      * @param string $ipv6 IPv6 address string
-     * @param boolean $answer print error if true
-     * [default=false]
      *
-     * @return boolean true if valid, false otherwise
+     * @return ValidationResult<string> ValidationResult with validated IP or error
      */
-    public function isValidIPv6(string $ipv6, bool $answer = false): bool
+    public function validateIPv6(string $ipv6): ValidationResult
     {
         if (filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
-            if ($answer) {
-                $this->messageService->addSystemError(_('This is not a valid IPv6 address.'));
-            }
-            return false;
+            return ValidationResult::failure(_('This is not a valid IPv6 address.'));
         }
 
-        return true;
+        return ValidationResult::success($ipv6);
     }
 
-    /** Test if multiple IP addresses are valid
-     *
-     *  Takes a string of comma separated IP addresses and tests validity
+    /**
+     * Validate multiple IP addresses separated by commas
      *
      * @param string $ips Comma separated IP addresses
      *
-     * @return boolean true if valid, false otherwise
+     * @return ValidationResult<array> ValidationResult with array of validated IPs or error
      */
-    public function areMultipleValidIPs(string $ips): bool
+    public function validateMultipleIPs(string $ips): ValidationResult
     {
-        // Multiple master NS-records are permitted and must be separated by ,
+        // Multiple IP records are permitted and must be separated by commas
         // e.g. "192.0.0.1, 192.0.0.2, 2001:1::1"
-
-        $areValid = false;
         $multipleIps = explode(",", $ips);
+        $validatedIps = [];
+        $errors = [];
 
-        if (is_array($multipleIps)) {
-            foreach ($multipleIps as $ip) {
-                $trimmedIp = trim($ip);
-                if ($this->isValidIPv4($trimmedIp, false) || $this->isValidIPv6($trimmedIp)) {
-                    $areValid = true;
-                } else {
-                    return false;
-                }
+        foreach ($multipleIps as $ip) {
+            $trimmedIp = trim($ip);
+
+            $ipv4Result = $this->validateIPv4($trimmedIp);
+            if ($ipv4Result->isValid()) {
+                $validatedIps[] = $ipv4Result->getData();
+                continue;
             }
-        } elseif ($this->isValidIPv4($ips, false) || $this->isValidIPv6($ips)) {
-            $areValid = true;
+
+            $ipv6Result = $this->validateIPv6($trimmedIp);
+            if ($ipv6Result->isValid()) {
+                $validatedIps[] = $ipv6Result->getData();
+                continue;
+            }
+
+            $errors[] = sprintf(_('IP address "%s" is not valid. Must be a valid IPv4 or IPv6 address.'), $trimmedIp);
         }
 
-        return $areValid;
+        if (!empty($errors)) {
+            return ValidationResult::errors($errors);
+        }
+
+        return ValidationResult::success($validatedIps);
     }
 }

@@ -23,18 +23,53 @@
 namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\NSECRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use ReflectionClass;
 
 class NSECRecordValidatorTest extends TestCase
 {
     private NSECRecordValidator $validator;
     private ConfigurationManager $configMock;
+    private TTLValidator $ttlValidatorMock;
+    private HostnameValidator $hostnameValidatorMock;
 
     protected function setUp(): void
     {
         $this->configMock = $this->createMock(ConfigurationManager::class);
+
+        // Create mocks for TTLValidator and HostnameValidator
+        $this->ttlValidatorMock = $this->getMockBuilder(TTLValidator::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->hostnameValidatorMock = $this->getMockBuilder(HostnameValidator::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        // Set up default behavior for hostname validator
+        $this->hostnameValidatorMock->method('validate')
+            ->willReturn(ValidationResult::success(['hostname' => 'host.example.com']));
+
+        // Set up default behavior for TTL validator
+        $this->ttlValidatorMock->method('validate')
+            ->willReturn(ValidationResult::success(3600));
+
+        // Create validator with mocked dependencies
         $this->validator = new NSECRecordValidator($this->configMock);
+
+        // Use reflection to inject mock dependencies
+        $reflection = new ReflectionClass($this->validator);
+
+        $ttlProperty = $reflection->getProperty('ttlValidator');
+        $ttlProperty->setAccessible(true);
+        $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
+
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
     }
 
     /**
@@ -42,6 +77,32 @@ class NSECRecordValidatorTest extends TestCase
      */
     public function testValidateWithValidNSECContent(): void
     {
+        // Reset and set up mocks with specific expectations
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+
+        // First call for the record hostname
+        $this->hostnameValidatorMock->expects($this->exactly(2))
+            ->method('validate')
+            ->willReturnCallback(function ($name, $allowUnderscores) {
+                if ($name === 'host.example.com') {
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
+                } elseif ($name === 'example.com.') {
+                    return ValidationResult::success(['hostname' => 'example.com.']);
+                }
+                return ValidationResult::failure('Unexpected hostname: ' . $name);
+            });
+
+        $this->ttlValidatorMock->expects($this->once())
+            ->method('validate')
+            ->with(3600, 86400)
+            ->willReturn(ValidationResult::success(3600));
+
+        // Set hostname validator in the validator instance
+        $reflection = new ReflectionClass($this->validator);
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
         $result = $this->validator->validate(
             'example.com. A NS SOA MX TXT AAAA',  // content
             'host.example.com',                   // name
@@ -50,10 +111,13 @@ class NSECRecordValidatorTest extends TestCase
             86400                                 // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('example.com. A NS SOA MX TXT AAAA', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals('example.com. A NS SOA MX TXT AAAA', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals('host.example.com', $data['name']);
     }
 
     /**
@@ -61,6 +125,27 @@ class NSECRecordValidatorTest extends TestCase
      */
     public function testValidateWithOnlyNextDomainName(): void
     {
+        // Reset and set up mocks with specific expectations
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+
+        // Set up hostname validator to handle both hostnames
+        $this->hostnameValidatorMock->expects($this->exactly(2))
+            ->method('validate')
+            ->willReturnCallback(function ($name, $allowUnderscores) {
+                if ($name === 'host.example.com') {
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
+                } elseif ($name === 'example.com.') {
+                    return ValidationResult::success(['hostname' => 'example.com.']);
+                }
+                return ValidationResult::failure('Unexpected hostname: ' . $name);
+            });
+
+        // Set hostname validator in the validator instance
+        $reflection = new ReflectionClass($this->validator);
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
         $result = $this->validator->validate(
             'example.com.',                       // content (just the next domain)
             'host.example.com',                   // name
@@ -69,10 +154,11 @@ class NSECRecordValidatorTest extends TestCase
             86400                                 // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('example.com.', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('example.com.', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(0, $data['priority']);
     }
 
     /**
@@ -80,6 +166,19 @@ class NSECRecordValidatorTest extends TestCase
      */
     public function testValidateWithEmptyContent(): void
     {
+        // Set up hostname validator to succeed for the record name
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->expects($this->once())
+            ->method('validate')
+            ->with('host.example.com', true)
+            ->willReturn(ValidationResult::success(['hostname' => 'host.example.com']));
+
+        // Set hostname validator in the validator instance
+        $reflection = new ReflectionClass($this->validator);
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
         $result = $this->validator->validate(
             '',                                   // empty content
             'host.example.com',                   // name
@@ -88,7 +187,8 @@ class NSECRecordValidatorTest extends TestCase
             86400                                 // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('cannot be empty', $result->getFirstError());
     }
 
     /**
@@ -96,6 +196,27 @@ class NSECRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidNextDomainName(): void
     {
+        // Reset and set up mocks with specific expectations
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+
+        // Set up hostname validator to handle specific hostnames
+        $this->hostnameValidatorMock->expects($this->exactly(2))
+            ->method('validate')
+            ->willReturnCallback(function ($name, $allowUnderscores) {
+                if ($name === 'host.example.com') {
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
+                } elseif ($name === 'invalid..domain.') {
+                    return ValidationResult::failure('Invalid hostname format');
+                }
+                return ValidationResult::failure('Unexpected hostname: ' . $name);
+            });
+
+        // Set hostname validator in the validator instance
+        $reflection = new ReflectionClass($this->validator);
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
         $result = $this->validator->validate(
             'invalid..domain. A NS SOA',          // invalid content (bad domain)
             'host.example.com',                   // name
@@ -104,7 +225,8 @@ class NSECRecordValidatorTest extends TestCase
             86400                                 // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('domain name', $result->getFirstError());
     }
 
     /**
@@ -112,6 +234,23 @@ class NSECRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidRecordType(): void
     {
+        // Set up hostname validator for both name validations
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->expects($this->exactly(2))
+            ->method('validate')
+            ->willReturnCallback(function ($name, $allowUnderscores) {
+                if ($name === 'host.example.com' || $name === 'example.com.') {
+                    return ValidationResult::success(['hostname' => $name]);
+                }
+                return ValidationResult::failure('Unexpected hostname: ' . $name);
+            });
+
+        // Set hostname validator in the validator instance
+        $reflection = new ReflectionClass($this->validator);
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
         $result = $this->validator->validate(
             'example.com. A NS INVALID-TYPE SOA',  // content with invalid type
             'host.example.com',                    // name
@@ -120,7 +259,9 @@ class NSECRecordValidatorTest extends TestCase
             86400                                  // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('invalid record type', $result->getFirstError());
+        $this->assertStringContainsString('INVALID-TYPE', $result->getFirstError());
     }
 
     /**
@@ -128,6 +269,23 @@ class NSECRecordValidatorTest extends TestCase
      */
     public function testValidateWithNumericTypeCodes(): void
     {
+        // Set up hostname validator for both name validations
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->expects($this->exactly(2))
+            ->method('validate')
+            ->willReturnCallback(function ($name, $allowUnderscores) {
+                if ($name === 'host.example.com' || $name === 'example.com.') {
+                    return ValidationResult::success(['hostname' => $name]);
+                }
+                return ValidationResult::failure('Unexpected hostname: ' . $name);
+            });
+
+        // Set hostname validator in the validator instance
+        $reflection = new ReflectionClass($this->validator);
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
         $result = $this->validator->validate(
             'example.com. 1 2 6 15 16 28',        // content with numeric type codes
             'host.example.com',                   // name
@@ -136,10 +294,12 @@ class NSECRecordValidatorTest extends TestCase
             86400                                 // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('example.com. 1 2 6 15 16 28', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals('example.com. 1 2 6 15 16 28', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(0, $data['priority']);
     }
 
     /**
@@ -147,6 +307,23 @@ class NSECRecordValidatorTest extends TestCase
      */
     public function testValidateWithTypeParameters(): void
     {
+        // Set up hostname validator for both name validations
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->expects($this->exactly(2))
+            ->method('validate')
+            ->willReturnCallback(function ($name, $allowUnderscores) {
+                if ($name === 'host.example.com' || $name === 'example.com.') {
+                    return ValidationResult::success(['hostname' => $name]);
+                }
+                return ValidationResult::failure('Unexpected hostname: ' . $name);
+            });
+
+        // Set hostname validator in the validator instance
+        $reflection = new ReflectionClass($this->validator);
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
         $result = $this->validator->validate(
             'example.com. A(1) NS(2) SOA(6)',     // content with type parameters
             'host.example.com',                   // name
@@ -155,10 +332,11 @@ class NSECRecordValidatorTest extends TestCase
             86400                                 // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('example.com. A(1) NS(2) SOA(6)', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('example.com. A(1) NS(2) SOA(6)', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(0, $data['priority']);
     }
 
     /**
@@ -166,6 +344,35 @@ class NSECRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidTtl(): void
     {
+        // Set up hostname validator to succeed for both record and content
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->expects($this->exactly(2))
+            ->method('validate')
+            ->willReturnCallback(function ($name, $allowUnderscores) {
+                if ($name === 'host.example.com' || $name === 'example.com.') {
+                    return ValidationResult::success(['hostname' => $name]);
+                }
+                return ValidationResult::failure('Unexpected hostname: ' . $name);
+            });
+
+        // Set up TTL validator to fail
+        $this->ttlValidatorMock = $this->createMock(TTLValidator::class);
+        $this->ttlValidatorMock->expects($this->once())
+            ->method('validate')
+            ->with(-1, 86400)
+            ->willReturn(ValidationResult::failure('TTL must be a positive number'));
+
+        // Set validators in the validator instance
+        $reflection = new ReflectionClass($this->validator);
+
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
+        $ttlProperty = $reflection->getProperty('ttlValidator');
+        $ttlProperty->setAccessible(true);
+        $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
+
         $result = $this->validator->validate(
             'example.com. A NS SOA',              // content
             'host.example.com',                   // name
@@ -174,7 +381,8 @@ class NSECRecordValidatorTest extends TestCase
             86400                                 // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     /**
@@ -182,6 +390,35 @@ class NSECRecordValidatorTest extends TestCase
      */
     public function testValidateWithDefaultTtl(): void
     {
+        // Set up hostname validator to succeed for both record and content
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->expects($this->exactly(2))
+            ->method('validate')
+            ->willReturnCallback(function ($name, $allowUnderscores) {
+                if ($name === 'host.example.com' || $name === 'example.com.') {
+                    return ValidationResult::success(['hostname' => $name]);
+                }
+                return ValidationResult::failure('Unexpected hostname: ' . $name);
+            });
+
+        // Mock TTL validator to return default TTL
+        $this->ttlValidatorMock = $this->createMock(TTLValidator::class);
+        $this->ttlValidatorMock->expects($this->once())
+            ->method('validate')
+            ->with('', 86400)
+            ->willReturn(ValidationResult::success(86400));
+
+        // Set validators in the validator instance
+        $reflection = new ReflectionClass($this->validator);
+
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
+        $ttlProperty = $reflection->getProperty('ttlValidator');
+        $ttlProperty->setAccessible(true);
+        $ttlProperty->setValue($this->validator, $this->ttlValidatorMock);
+
         $result = $this->validator->validate(
             'example.com. A NS SOA',              // content
             'host.example.com',                   // name
@@ -190,9 +427,41 @@ class NSECRecordValidatorTest extends TestCase
             86400                                 // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('example.com. A NS SOA', $result['content']);
-        $this->assertEquals(86400, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals('example.com. A NS SOA', $data['content']);
+        $this->assertEquals(86400, $data['ttl']);
+        $this->assertEquals(0, $data['priority']);
+    }
+
+    /**
+     * Test validation with invalid hostname
+     */
+    public function testValidateWithInvalidHostname(): void
+    {
+        // Mock hostname validator to fail for the record name
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->expects($this->once())
+            ->method('validate')
+            ->with('invalid..hostname', true)
+            ->willReturn(ValidationResult::failure('Invalid hostname format'));
+
+        // Set hostname validator in the validator instance
+        $reflection = new ReflectionClass($this->validator);
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
+        $result = $this->validator->validate(
+            'example.com. A NS SOA',              // content
+            'invalid..hostname',                  // name (invalid)
+            '',                                   // prio
+            3600,                                 // ttl
+            86400                                 // defaultTTL
+        );
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid hostname', $result->getFirstError());
     }
 }

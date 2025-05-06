@@ -5,11 +5,11 @@ namespace unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPSECKEYRecordValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
- * Tests for the IPSECKEYRecordValidator
+ * Tests for the IPSECKEYRecordValidator using ValidationResult
  */
 class IPSECKEYRecordValidatorTest extends TestCase
 {
@@ -35,11 +35,13 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithValidDataIPv4Gateway()
@@ -52,8 +54,9 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithValidDataIPv6Gateway()
@@ -66,20 +69,19 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     public function testValidateWithValidDataDomainNameGateway()
     {
         // Create a mock HostnameValidator that returns success for the domain gateway
         $hostnameValidatorMock = $this->createMock(HostnameValidator::class);
-        $hostnameValidatorMock->method('isValidHostnameFqdn')
+        $hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
-                if ($hostname === 'host.example.com' || $hostname === 'gateway.example.com') {
-                    return ['hostname' => $hostname];
-                }
-                return false;
+                return ValidationResult::success(['hostname' => $hostname]);
             });
 
         // Inject the mock into the validator instance
@@ -95,11 +97,12 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidPrecedence()
@@ -112,7 +115,8 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('precedence must be', $result->getFirstError());
     }
 
     public function testValidateWithInvalidGatewayType()
@@ -125,7 +129,8 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('gateway type must be', $result->getFirstError());
     }
 
     public function testValidateWithInvalidAlgorithm()
@@ -138,7 +143,8 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('algorithm must be', $result->getFirstError());
     }
 
     public function testValidateWithMismatchedGatewayForType()
@@ -151,7 +157,8 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('gateway must be a valid IPv4', $result->getFirstError());
     }
 
     public function testValidateWithInvalidFormat()
@@ -164,11 +171,22 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain', $result->getFirstError());
     }
 
     public function testValidateWithInvalidHostname()
     {
+        // Mock the hostname validator to fail validation
+        $hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $hostnameValidatorMock->method('validate')
+            ->willReturn(ValidationResult::failure('Invalid hostname'));
+
+        // Inject the mock into the validator instance
+        $reflectionProperty = new \ReflectionProperty(IPSECKEYRecordValidator::class, 'hostnameValidator');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($this->validator, $hostnameValidatorMock);
+
         $content = '10 1 2 192.0.2.1 AQNRU3mG7TVTO2BkR47usntb102uFJtugbo6BSGvgqt4AQ==';
         $name = '-invalid-hostname.example.com'; // Invalid hostname
         $prio = 0;
@@ -177,7 +195,8 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid hostname', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTTL()
@@ -190,7 +209,8 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        // We don't check the exact error message as it comes from the TTL validator
     }
 
     public function testValidateWithDefaultTTL()
@@ -203,21 +223,18 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 
     public function testValidateWithNoKeyForAlgorithm0()
     {
         // Mock the hostname validator for basic validation
         $hostnameValidatorMock = $this->createMock(HostnameValidator::class);
-        $hostnameValidatorMock->method('isValidHostnameFqdn')
-            ->willReturnCallback(function ($hostname, $wildcard) {
-                if ($hostname === 'host.example.com') {
-                    return ['hostname' => $hostname];
-                }
-                return false;
-            });
+        $hostnameValidatorMock->method('validate')
+            ->willReturn(ValidationResult::success(['hostname' => 'host.example.com']));
 
         // Inject the mock into the validator instance
         $reflectionProperty = new \ReflectionProperty(IPSECKEYRecordValidator::class, 'hostnameValidator');
@@ -234,11 +251,12 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidNoGatewayValue()
@@ -251,6 +269,21 @@ class IPSECKEYRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('gateway must be "."', $result->getFirstError());
+    }
+
+    public function testValidateWithInvalidPriority()
+    {
+        $content = '10 1 2 192.0.2.1 AQNRU3mG7TVTO2BkR47usntb102uFJtugbo6BSGvgqt4AQ==';
+        $name = 'host.example.com';
+        $prio = 10;  // Non-zero priority
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Priority field', $result->getFirstError());
     }
 }

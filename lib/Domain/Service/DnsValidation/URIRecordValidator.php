@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * URI record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class URIRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -57,58 +55,62 @@ class URIRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the URI record
      * @param string $name The name of the record
      * @param mixed $prio The priority value
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        if (!StringValidator::isValidPrintable($name)) {
-            $this->messageService->addSystemError(_('Invalid characters in name field.'));
-            return false;
+        $nameResult = StringValidator::validatePrintable($name);
+        if (!$nameResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in name field.'));
         }
 
         // Validate content
-        if (!StringValidator::isValidPrintable($content)) {
-            $this->messageService->addSystemError(_('Invalid characters in content field.'));
-            return false;
+        $contentResult = StringValidator::validatePrintable($content);
+        if (!$contentResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in content field.'));
         }
 
         // Parse URI record parts: <priority> <weight> "<target URI>"
-        if (!$this->isValidURIRecordFormat($content)) {
-            return false;
+        $errors = [];
+        if (!$this->isValidURIRecordFormat($content, $errors)) {
+            return ValidationResult::errors($errors);
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // Use the provided priority if available, otherwise the priority from the content
         $priority = ($prio !== '' && $prio !== null) ? (int)$prio : $this->extractPriorityFromContent($content);
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $priority,
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
      * Check if content follows URI record format: <priority> <weight> "<target URI>"
      *
      * @param string $content The content to validate
+     * @param array &$errors Collection of validation errors
      * @return bool True if valid format, false otherwise
      */
-    private function isValidURIRecordFormat(string $content): bool
+    private function isValidURIRecordFormat(string $content, array &$errors): bool
     {
         // Simple regex to match URI record format
         if (!preg_match('/^(\d+)\s+(\d+)\s+"(.*)"$/', $content, $matches)) {
-            $this->messageService->addSystemError(_('URI record must be in the format: <priority> <weight> "<target URI>"'));
+            $errors[] = _('URI record must be in the format: <priority> <weight> "<target URI>"');
             return false;
         }
 
@@ -118,26 +120,26 @@ class URIRecordValidator implements DnsRecordValidatorInterface
 
         // Validate priority (0-65535)
         if ($priority < 0 || $priority > 65535) {
-            $this->messageService->addSystemError(_('URI priority must be between 0 and 65535.'));
+            $errors[] = _('URI priority must be between 0 and 65535.');
             return false;
         }
 
         // Validate weight (0-65535)
         if ($weight < 0 || $weight > 65535) {
-            $this->messageService->addSystemError(_('URI weight must be between 0 and 65535.'));
+            $errors[] = _('URI weight must be between 0 and 65535.');
             return false;
         }
 
         // Validate URI format (must start with a protocol)
         if (!preg_match('/^[a-zA-Z][a-zA-Z0-9+.-]*:/', $uri)) {
-            $this->messageService->addSystemError(_('URI must start with a valid protocol (like http:, https:, mailto:, etc).'));
+            $errors[] = _('URI must start with a valid protocol (like http:, https:, mailto:, etc).');
             return false;
         }
 
         // If protocol requires //, verify it's present (except for special protocols like mailto:)
         $requiresSlashes = !preg_match('/^(mailto|tel|sms|bitcoin):/i', $uri);
         if ($requiresSlashes && !preg_match('/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//', $uri)) {
-            $this->messageService->addSystemError(_('URI with this protocol must include "://" after the protocol name.'));
+            $errors[] = _('URI with this protocol must include "://" after the protocol name.');
             return false;
         }
 

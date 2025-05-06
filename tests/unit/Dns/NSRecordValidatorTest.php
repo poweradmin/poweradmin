@@ -39,11 +39,21 @@ class NSRecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals($prio, $result['prio']);
-        $this->assertEquals($ttl, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
+
+        $this->assertEquals($name, $data['name']);
+        $data = $result->getData();
+
+        $this->assertEquals($prio, $data['prio']);
+
+        $this->assertEquals($ttl, $data['ttl']);
     }
 
     public function testInvalidNameserver()
@@ -56,7 +66,10 @@ class NSRecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testInvalidDomainName()
@@ -69,7 +82,10 @@ class NSRecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testInvalidPriority()
@@ -82,7 +98,10 @@ class NSRecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testEmptyPriority()
@@ -95,8 +114,14 @@ class NSRecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(0, $result['prio']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals(0, $data['prio']);
     }
 
     public function testInvalidTTL()
@@ -109,7 +134,10 @@ class NSRecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testDefaultTTL()
@@ -122,7 +150,12 @@ class NSRecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($defaultTTL, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+
+        $this->assertEquals($defaultTTL, $data['ttl']);
     }
 }

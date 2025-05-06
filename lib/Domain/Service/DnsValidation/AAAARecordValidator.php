@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Validator for AAAA DNS records
@@ -38,7 +38,6 @@ class AAAARecordValidator implements DnsRecordValidatorInterface
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
     private TTLValidator $ttlValidator;
-    private MessageService $messageService;
 
     /**
      * Constructor
@@ -50,7 +49,6 @@ class AAAARecordValidator implements DnsRecordValidatorInterface
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ipAddressValidator = new IPAddressValidator();
         $this->ttlValidator = new TTLValidator();
-        $this->messageService = new MessageService();
     }
 
     /**
@@ -59,44 +57,50 @@ class AAAARecordValidator implements DnsRecordValidatorInterface
      * @param string $content IPv6 address
      * @param string $name Hostname
      * @param mixed $prio Priority (not used for AAAA records)
-     * @param int|string $ttl TTL value
+     * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $errors = [];
+
         // Validate IPv6 address
-        if (!$this->ipAddressValidator->isValidIPv6($content, true)) {
-            return false;
+        $ipv6Result = $this->ipAddressValidator->validateIPv6($content);
+        if (!$ipv6Result->isValid()) {
+            return ValidationResult::failure(_('Invalid IPv6 address format.'));
         }
 
         // Validate hostname
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // Validate priority (should be 0 for AAAA records)
-        $validatedPrio = $this->validatePriority($prio);
-        if ($validatedPrio === false) {
-            $this->messageService->addSystemError(_('Invalid value for prio field.'));
-            return false;
+        $prioResult = $this->validatePriority($prio);
+        if (!$prioResult->isValid()) {
+            return $prioResult;
         }
+        $validatedPrio = $prioResult->getData();
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
-        ];
+        ]);
     }
 
     /**
@@ -105,20 +109,20 @@ class AAAARecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $prio Priority value
      *
-     * @return int|bool 0 if valid, false otherwise
+     * @return ValidationResult<int> ValidationResult with validated priority or error
      */
-    private function validatePriority(mixed $prio): int|bool
+    private function validatePriority(mixed $prio): ValidationResult
     {
         // If priority is not provided or empty, set it to 0
         if (!isset($prio) || $prio === "") {
-            return 0;
+            return ValidationResult::success(0);
         }
 
         // If provided, ensure it's 0 for AAAA records
         if (is_numeric($prio) && intval($prio) === 0) {
-            return 0;
+            return ValidationResult::success(0);
         }
 
-        return false;
+        return ValidationResult::failure(_('Invalid value for priority field. AAAA records must have priority value of 0.'));
     }
 }

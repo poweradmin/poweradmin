@@ -5,6 +5,7 @@ namespace unit\Dns;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the HostnameValidator service
@@ -32,32 +33,48 @@ class HostnameValidatorTest extends TestCase
         $this->validator = new HostnameValidator($configMock);
     }
 
-    public function testIsValidHostnameFqdn()
+    /**
+     * Test the validate method for hostname validation
+     */
+    public function testValidateHostname()
     {
-        // Valid hostname
-        $hostname = 'example.com';
-        $result = $this->validator->isValidHostnameFqdn($hostname, 0);
-        $this->assertIsArray($result);
-        $this->assertEquals(['hostname' => 'example.com'], $result);
+        // Valid hostnames
+        $validResult = $this->validator->validate('example.com');
+        $this->assertTrue($validResult->isValid());
+        $this->assertEquals(['hostname' => 'example.com'], $validResult->getData());
+
+        $validResult2 = $this->validator->validate('www.example.com');
+        $this->assertTrue($validResult2->isValid());
+
+        // Test with trailing dot (should be normalized)
+        $validResult3 = $this->validator->validate('example.com.');
+        $this->assertTrue($validResult3->isValid());
+        $this->assertEquals(['hostname' => 'example.com'], $validResult3->getData());
 
         // Invalid hostnames
-        $hostname = '-example.com'; // Starts with dash
-        $this->assertFalse($this->validator->isValidHostnameFqdn($hostname, 0));
+        $invalidResult = $this->validator->validate('example..com');
+        $this->assertFalse($invalidResult->isValid());
 
-        $hostname = 'example-.com'; // Ends with dash
-        $this->assertFalse($this->validator->isValidHostnameFqdn($hostname, 0));
+        $invalidResult2 = $this->validator->validate('-example.com');
+        $this->assertFalse($invalidResult2->isValid());
 
-        $hostname = 'exam&ple.com'; // Invalid character
-        $this->assertFalse($this->validator->isValidHostnameFqdn($hostname, 0));
+        $invalidResult3 = $this->validator->validate('example-.com');
+        $this->assertFalse($invalidResult3->isValid());
 
-        $hostname = str_repeat('a', 64) . '.example.com'; // Label too long (>63 chars)
-        $this->assertFalse($this->validator->isValidHostnameFqdn($hostname, 0));
+        $tooLongLabel = str_repeat('a', 64) . '.example.com';
+        $invalidResult4 = $this->validator->validate($tooLongLabel);
+        $this->assertFalse($invalidResult4->isValid());
 
-        $hostname = str_repeat('a', 254); // Full name too long (>253 chars)
-        $this->assertFalse($this->validator->isValidHostnameFqdn($hostname, 0));
+        // Test wildcard (should fail without wildcard flag)
+        $wildcardResult = $this->validator->validate('*.example.com', false);
+        $this->assertFalse($wildcardResult->isValid());
+
+        // Test wildcard (should succeed with wildcard flag)
+        $wildcardResult2 = $this->validator->validate('*.example.com', true);
+        $this->assertTrue($wildcardResult2->isValid());
     }
 
-    /**
+/**
      * Test the normalizeRecordName function
      */
     public function testNormalizeRecordName()

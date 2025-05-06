@@ -27,215 +27,336 @@ class RecordTypesTest extends BaseDnsTest
         $this->dsValidator = new DSRecordValidator($configMock);
     }
 
-    public function testIsValidSPF()
+    public function testValidateSPF()
     {
         $configMock = $this->createMock(ConfigurationManager::class);
         $validator = new SPFRecordValidator($configMock);
 
         // Valid SPF records
-        $this->assertTrue($validator->validate('v=spf1 include:example.com ~all', 'example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('v=spf1 ip4:192.168.0.1/24 -all', 'example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('v=spf1 a mx -all', 'example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('v=spf1 a:example.com mx:mail.example.com -all', 'example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('v=spf1 ip6:2001:db8::/32 ~all', 'example.com', 0, 3600, 3600) !== false);
+        $result1 = $validator->validate('v=spf1 include:example.com ~all', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result1->isValid());
+
+        $result2 = $validator->validate('v=spf1 ip4:192.168.0.1/24 -all', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result2->isValid());
+
+        $result3 = $validator->validate('v=spf1 a mx -all', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result3->isValid());
+
+        $result4 = $validator->validate('v=spf1 a:example.com mx:mail.example.com -all', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result4->isValid());
+
+        $result5 = $validator->validate('v=spf1 ip6:2001:db8::/32 ~all', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result5->isValid());
 
         // Invalid SPF records
-        $this->assertFalse($validator->validate('v=spf2 include:example.com ~all', 'example.com', 0, 3600, 3600)); // Wrong version
-        $this->assertFalse($validator->validate('include:example.com ~all', 'example.com', 0, 3600, 3600)); // Missing version
-        $this->assertFalse($validator->validate('v=spf1 invalid:example.com ~all', 'example.com', 0, 3600, 3600)); // Invalid mechanism
-        $this->assertFalse($validator->validate('v=spf1 ip4:999.168.0.1/24 -all', 'example.com', 0, 3600, 3600)); // Invalid IP
+        $result6 = $validator->validate('v=spf2 include:example.com ~all', 'example.com', 0, 3600, 3600); // Wrong version
+        $this->assertFalse($result6->isValid());
+
+        $result7 = $validator->validate('include:example.com ~all', 'example.com', 0, 3600, 3600); // Missing version
+        $this->assertFalse($result7->isValid());
+
+        $result8 = $validator->validate('v=spf1 invalid:example.com ~all', 'example.com', 0, 3600, 3600); // Invalid mechanism
+        $this->assertFalse($result8->isValid());
+
+        $result9 = $validator->validate('v=spf1 ip4:999.168.0.1/24 -all', 'example.com', 0, 3600, 3600); // Invalid IP
+        $this->assertFalse($result9->isValid());
     }
 
-    public function testIsValidDS()
+    public function testValidateDSRecordContent()
     {
         // Valid DS records
-        $this->assertTrue($this->dsValidator->isValidDSContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0'));
-        $this->assertTrue($this->dsValidator->isValidDSContent('15288 5 2 CE0EB9E59EE1DE2C681A330E3A7C08376F28602CDF990EE4EC88D2A8BDB51539'));
+        $result1 = $this->dsValidator->validateDSRecordContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0');
+        $this->assertTrue($result1->isValid());
+
+        $result2 = $this->dsValidator->validateDSRecordContent('15288 5 2 CE0EB9E59EE1DE2C681A330E3A7C08376F28602CDF990EE4EC88D2A8BDB51539');
+        $this->assertTrue($result2->isValid());
 
         // Invalid DS records
-        $this->assertFalse($this->dsValidator->isValidDSContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0;'));
-        $this->assertFalse($this->dsValidator->isValidDSContent('2371 13 2 1F987CC6583E92DF0890718C42')); // Too short digest
-        $this->assertFalse($this->dsValidator->isValidDSContent('2371 13 2 1F987CC6583E92DF0890718C42 ; ( SHA1 digest )'));
-        $this->assertFalse($this->dsValidator->isValidDSContent('invalid'));
+        $result3 = $this->dsValidator->validateDSRecordContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0;');
+        $this->assertFalse($result3->isValid());
+
+        $result4 = $this->dsValidator->validateDSRecordContent('2371 13 2 1F987CC6583E92DF0890718C42'); // Too short digest
+        $this->assertFalse($result4->isValid());
+
+        $result5 = $this->dsValidator->validateDSRecordContent('2371 13 2 1F987CC6583E92DF0890718C42 ; ( SHA1 digest )');
+        $this->assertFalse($result5->isValid());
+
+        $result6 = $this->dsValidator->validateDSRecordContent('invalid');
+        $this->assertFalse($result6->isValid());
     }
 
-    public function testIsValidLocation()
+    public function testValidateLocation()
     {
         $configMock = $this->createMock(ConfigurationManager::class);
 
         $validator = new LOCRecordValidator($configMock);
         // Valid LOC records
-        $this->assertTrue($validator->validate('37 23 30.900 N 121 59 19.000 W 7.00m 100.00m 100.00m 2.00m', 'example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('42 21 54 N 71 06 18 W -24m 30m', 'example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('42 21 43.952 N 71 5 6.344 W -24m 1m 200m', 'example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('52 14 05 N 00 08 50 E 10m', 'example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('32 7 19 S 116 2 25 E 10m', 'example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('42 21 28.764 N 71 00 51.617 W -44m 2000m', 'example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('90 59 59.9 N 10 18 E 42849671.91m 1m', 'example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('9 10 S 12 22 33.4 E -100000.00m 2m 34 3m', 'example.com', 0, 3600, 3600) !== false);
+        $result1 = $validator->validate('37 23 30.900 N 121 59 19.000 W 7.00m 100.00m 100.00m 2.00m', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result1->isValid());
+
+        $result2 = $validator->validate('42 21 54 N 71 06 18 W -24m 30m', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result2->isValid());
+
+        $result3 = $validator->validate('42 21 43.952 N 71 5 6.344 W -24m 1m 200m', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result3->isValid());
+
+        $result4 = $validator->validate('52 14 05 N 00 08 50 E 10m', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result4->isValid());
+
+        $result5 = $validator->validate('32 7 19 S 116 2 25 E 10m', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result5->isValid());
+
+        $result6 = $validator->validate('42 21 28.764 N 71 00 51.617 W -44m 2000m', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result6->isValid());
+
+        $result7 = $validator->validate('90 59 59.9 N 10 18 E 42849671.91m 1m', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result7->isValid());
+
+        $result8 = $validator->validate('9 10 S 12 22 33.4 E -100000.00m 2m 34 3m', 'example.com', 0, 3600, 3600);
+        $this->assertTrue($result8->isValid());
 
         // Invalid LOC records
         // hp precision too high
-        $this->assertFalse($validator->validate('37 23 30.900 N 121 59 19.000 W 7.00m 100.00m 100.050m 2.00m', 'example.com', 0, 3600, 3600));
+        $result9 = $validator->validate('37 23 30.900 N 121 59 19.000 W 7.00m 100.00m 100.050m 2.00m', 'example.com', 0, 3600, 3600);
+        $this->assertFalse($result9->isValid());
 
         // S is no long.
-        $this->assertFalse($validator->validate('42 21 54 N 71 06 18 S -24m 30m', 'example.com', 0, 3600, 3600));
+        $result10 = $validator->validate('42 21 54 N 71 06 18 S -24m 30m', 'example.com', 0, 3600, 3600);
+        $this->assertFalse($result10->isValid());
 
         // s2 precision too high
-        $this->assertFalse($validator->validate('42 21 43.952 N 71 5 6.4344 W -24m 1m 200m', 'example.com', 0, 3600, 3600));
+        $result11 = $validator->validate('42 21 43.952 N 71 5 6.4344 W -24m 1m 200m', 'example.com', 0, 3600, 3600);
+        $this->assertFalse($result11->isValid());
 
         // s2 maxes to 59.99
-        $this->assertFalse($validator->validate('52 14 05 N 00 08 60 E 10m', 'example.com', 0, 3600, 3600));
+        $result12 = $validator->validate('52 14 05 N 00 08 60 E 10m', 'example.com', 0, 3600, 3600);
+        $this->assertFalse($result12->isValid());
 
         // long. maxes to 180
-        $this->assertFalse($validator->validate('32 7 19 S 186 2 25 E 10m', 'example.com', 0, 3600, 3600));
+        $result13 = $validator->validate('32 7 19 S 186 2 25 E 10m', 'example.com', 0, 3600, 3600);
+        $this->assertFalse($result13->isValid());
 
         // alt maxes to 42849672.95
-        $this->assertFalse($validator->validate('90 59 59.9 N 10 18 E 42849672.96m 1m', 'example.com', 0, 3600, 3600));
+        $result14 = $validator->validate('90 59 59.9 N 10 18 E 42849672.96m 1m', 'example.com', 0, 3600, 3600);
+        $this->assertFalse($result14->isValid());
 
         // alt maxes to -100000.00
-        $this->assertFalse($validator->validate('9 10 S 12 22 33.4 E -110000.00m 2m 34 3m', 'example.com', 0, 3600, 3600));
+        $result15 = $validator->validate('9 10 S 12 22 33.4 E -110000.00m 2m 34 3m', 'example.com', 0, 3600, 3600);
+        $this->assertFalse($result15->isValid());
     }
 
-    public function testIsValidCsyncWithValidInput()
+    public function testValidateCSYNCWithValidInput()
     {
         // Valid CSYNC record with both flags set and multiple record types
-        $this->assertTrue($this->csyncValidator->isValidCSYNCContent("1234 3 A NS AAAA"));
+        $result1 = $this->csyncValidator->validateCSYNCRecordContent("1234 3 A NS AAAA");
+        $this->assertTrue($result1->isValid());
 
         // Valid CSYNC record with immediate flag set (1)
-        $this->assertTrue($this->csyncValidator->isValidCSYNCContent("4294967295 1 NS"));
+        $result2 = $this->csyncValidator->validateCSYNCRecordContent("4294967295 1 NS");
+        $this->assertTrue($result2->isValid());
 
         // Valid CSYNC record with soaminimum flag set (2)
-        $this->assertTrue($this->csyncValidator->isValidCSYNCContent("0 2 A"));
+        $result3 = $this->csyncValidator->validateCSYNCRecordContent("0 2 A");
+        $this->assertTrue($result3->isValid());
 
         // Valid CSYNC record with no flags set (0)
-        $this->assertTrue($this->csyncValidator->isValidCSYNCContent("42 0 CNAME"));
+        $result4 = $this->csyncValidator->validateCSYNCRecordContent("42 0 CNAME");
+        $this->assertTrue($result4->isValid());
     }
 
-    public function testIsValidCsyncWithInvalidSoaSerial()
+    public function testValidateCSYNCWithInvalidSoaSerial()
     {
         // SOA Serial is not a number
-        $this->assertFalse($this->csyncValidator->isValidCSYNCContent("abc 3 A NS"));
+        $result1 = $this->csyncValidator->validateCSYNCRecordContent("abc 3 A NS");
+        $this->assertFalse($result1->isValid());
 
         // SOA Serial is negative
-        $this->assertFalse($this->csyncValidator->isValidCSYNCContent("-1 3 A NS"));
+        $result2 = $this->csyncValidator->validateCSYNCRecordContent("-1 3 A NS");
+        $this->assertFalse($result2->isValid());
 
         // SOA Serial exceeds 32-bit unsigned integer maximum (4294967295)
-        $this->assertFalse($this->csyncValidator->isValidCSYNCContent("4294967296 3 A NS"));
+        $result3 = $this->csyncValidator->validateCSYNCRecordContent("4294967296 3 A NS");
+        $this->assertFalse($result3->isValid());
 
         // Missing SOA Serial
-        $this->assertFalse($this->csyncValidator->isValidCSYNCContent("3 A NS"));
+        $result4 = $this->csyncValidator->validateCSYNCRecordContent("3 A NS");
+        $this->assertFalse($result4->isValid());
     }
 
-    public function testIsValidCsyncWithInvalidFlags()
+    public function testValidateCSYNCWithInvalidFlags()
     {
         // Flag is not a number
-        $this->assertFalse($this->csyncValidator->isValidCSYNCContent("1234 abc A NS"));
+        $result1 = $this->csyncValidator->validateCSYNCRecordContent("1234 abc A NS");
+        $this->assertFalse($result1->isValid());
 
         // Flag is negative
-        $this->assertFalse($this->csyncValidator->isValidCSYNCContent("1234 -1 A NS"));
+        $result2 = $this->csyncValidator->validateCSYNCRecordContent("1234 -1 A NS");
+        $this->assertFalse($result2->isValid());
 
         // Flag exceeds maximum allowed value (3)
-        $this->assertFalse($this->csyncValidator->isValidCSYNCContent("1234 4 A NS"));
+        $result3 = $this->csyncValidator->validateCSYNCRecordContent("1234 4 A NS");
+        $this->assertFalse($result3->isValid());
 
         // Missing flag
-        $this->assertFalse($this->csyncValidator->isValidCSYNCContent("1234"));
+        $result4 = $this->csyncValidator->validateCSYNCRecordContent("1234");
+        $this->assertFalse($result4->isValid());
     }
 
-    public function testIsValidCsyncWithInvalidTypes()
+    public function testValidateCSYNCWithInvalidTypes()
     {
         // Invalid record type
-        $this->assertFalse($this->csyncValidator->isValidCSYNCContent("1234 3 INVALID_TYPE"));
+        $result1 = $this->csyncValidator->validateCSYNCRecordContent("1234 3 INVALID_TYPE");
+        $this->assertFalse($result1->isValid());
 
         // No record types specified
-        $this->assertFalse($this->csyncValidator->isValidCSYNCContent("1234 3"));
+        $result2 = $this->csyncValidator->validateCSYNCRecordContent("1234 3");
+        $this->assertFalse($result2->isValid());
 
         // Mixed valid and invalid record types
-        $this->assertFalse($this->csyncValidator->isValidCSYNCContent("1234 3 A INVALID_TYPE NS"));
+        $result3 = $this->csyncValidator->validateCSYNCRecordContent("1234 3 A INVALID_TYPE NS");
+        $this->assertFalse($result3->isValid());
     }
 
-    public function testIsValidRrHinfoContent()
+    public function testValidateHINFOContent()
     {
         $configMock = $this->createMock(ConfigurationManager::class);
         $validator = new HINFORecordValidator($configMock);
 
         // Valid HINFO content formats
-        $this->assertTrue($validator->validate('PC Intel', 'host.example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('"PC with spaces" Linux', 'host.example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('"Windows Server" "Ubuntu Linux"', 'host.example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('Intel-PC FreeBSD', 'host.example.com', 0, 3600, 3600) !== false);
+        $result1 = $validator->validate('PC Intel', 'host.example.com', 0, 3600, 3600);
+        $this->assertTrue($result1->isValid());
+
+        $result2 = $validator->validate('"PC with spaces" Linux', 'host.example.com', 0, 3600, 3600);
+        $this->assertTrue($result2->isValid());
+
+        $result3 = $validator->validate('"Windows Server" "Ubuntu Linux"', 'host.example.com', 0, 3600, 3600);
+        $this->assertTrue($result3->isValid());
+
+        $result4 = $validator->validate('Intel-PC FreeBSD', 'host.example.com', 0, 3600, 3600);
+        $this->assertTrue($result4->isValid());
 
         // Invalid HINFO content formats
-        $this->assertFalse($validator->validate('PC', 'host.example.com', 0, 3600, 3600)); // Missing second field
-        $this->assertFalse($validator->validate('PC Linux Server', 'host.example.com', 0, 3600, 3600)); // Too many fields
-        $this->assertFalse($validator->validate('"PC" "Linux" "Extra"', 'host.example.com', 0, 3600, 3600)); // Too many fields
-        $this->assertFalse($validator->validate('', 'host.example.com', 0, 3600, 3600)); // Empty content
+        $result5 = $validator->validate('PC', 'host.example.com', 0, 3600, 3600); // Missing second field
+        $this->assertFalse($result5->isValid());
+
+        $result6 = $validator->validate('PC Linux Server', 'host.example.com', 0, 3600, 3600); // Too many fields
+        $this->assertFalse($result6->isValid());
+
+        $result7 = $validator->validate('"PC" "Linux" "Extra"', 'host.example.com', 0, 3600, 3600); // Too many fields
+        $this->assertFalse($result7->isValid());
+
+        $result8 = $validator->validate('', 'host.example.com', 0, 3600, 3600); // Empty content
+        $this->assertFalse($result8->isValid());
 
         // Invalid hostname test
-        $this->assertFalse($validator->validate('PC Intel', 'invalid..hostname', 0, 3600, 3600));
+        $result9 = $validator->validate('PC Intel', 'invalid..hostname', 0, 3600, 3600);
+        $this->assertFalse($result9->isValid());
     }
 
-    public function testIsValidSRV()
+    public function testValidateSRV()
     {
         $configMock = $this->createMock(ConfigurationManager::class);
         $validator = new SRVRecordValidator($configMock);
 
         // Valid SRV records
-        $this->assertTrue($validator->validate('10 20 5060 sip.example.com', '_sip._tcp.example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('0 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('30 0 443 secure.example.com', '_https._tcp.example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('1 10 9 server.example.com', '_submission._tcp.example.com', 0, 3600, 3600) !== false);
+        $result1 = $validator->validate('10 20 5060 sip.example.com', '_sip._tcp.example.com', 0, 3600, 3600);
+        $this->assertTrue($result1->isValid());
+
+        $result2 = $validator->validate('0 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600);
+        $this->assertTrue($result2->isValid());
+
+        $result3 = $validator->validate('30 0 443 secure.example.com', '_https._tcp.example.com', 0, 3600, 3600);
+        $this->assertTrue($result3->isValid());
+
+        $result4 = $validator->validate('1 10 9 server.example.com', '_submission._tcp.example.com', 0, 3600, 3600);
+        $this->assertTrue($result4->isValid());
 
         // Invalid SRV records
         // Invalid name format
-        $this->assertFalse($validator->validate('0 5 80 web.example.com', 'invalid.example.com', 0, 3600, 3600));
-        $this->assertFalse($validator->validate('0 5 80 web.example.com', '_invalid_tcp.example.com', 0, 3600, 3600));
+        $result5 = $validator->validate('0 5 80 web.example.com', 'invalid.example.com', 0, 3600, 3600);
+        $this->assertFalse($result5->isValid());
+
+        $result6 = $validator->validate('0 5 80 web.example.com', '_invalid_tcp.example.com', 0, 3600, 3600);
+        $this->assertFalse($result6->isValid());
 
         // Invalid content format
-        $this->assertFalse($validator->validate('invalid 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Invalid priority
-        $this->assertFalse($validator->validate('0 invalid 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Invalid weight
-        $this->assertFalse($validator->validate('0 5 invalid web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Invalid port
-        $this->assertFalse($validator->validate('0 5 80 @invalid@', '_http._tcp.example.com', 0, 3600, 3600)); // Invalid target
+        $result7 = $validator->validate('invalid 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Invalid priority
+        $this->assertFalse($result7->isValid());
+
+        $result8 = $validator->validate('0 invalid 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Invalid weight
+        $this->assertFalse($result8->isValid());
+
+        $result9 = $validator->validate('0 5 invalid web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Invalid port
+        $this->assertFalse($result9->isValid());
+
+        $result10 = $validator->validate('0 5 80 @invalid@', '_http._tcp.example.com', 0, 3600, 3600); // Invalid target
+        $this->assertFalse($result10->isValid());
 
         // Out of range values
-        $this->assertFalse($validator->validate('65536 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Priority too high
-        $this->assertFalse($validator->validate('0 65536 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Weight too high
-        $this->assertFalse($validator->validate('0 5 65536 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Port too high
+        $result11 = $validator->validate('65536 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Priority too high
+        $this->assertFalse($result11->isValid());
+
+        $result12 = $validator->validate('0 65536 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Weight too high
+        $this->assertFalse($result12->isValid());
+
+        $result13 = $validator->validate('0 5 65536 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Port too high
+        $this->assertFalse($result13->isValid());
 
         // Wrong number of fields
-        $this->assertFalse($validator->validate('0 5 web.example.com', '_http._tcp.example.com', 0, 3600, 3600)); // Missing port
-        $this->assertFalse($validator->validate('0 5 80 web.example.com extra', '_http._tcp.example.com', 0, 3600, 3600)); // Extra field
+        $result14 = $validator->validate('0 5 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Missing port
+        $this->assertFalse($result14->isValid());
+
+        $result15 = $validator->validate('0 5 80 web.example.com extra', '_http._tcp.example.com', 0, 3600, 3600); // Extra field
+        $this->assertFalse($result15->isValid());
     }
 
-    public function testIsValidHINFO()
+    public function testValidateHINFO()
     {
         $configMock = $this->createMock(ConfigurationManager::class);
         $validator = new HINFORecordValidator($configMock);
 
         // Valid HINFO records
-        $this->assertTrue($validator->validate('PC Intel', 'host.example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('"PC with spaces" Linux', 'host.example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('"Windows Server" "Ubuntu Linux"', 'host.example.com', 0, 3600, 3600) !== false);
-        $this->assertTrue($validator->validate('Intel-PC FreeBSD', 'host.example.com', 0, 3600, 3600) !== false);
+        $result1 = $validator->validate('PC Intel', 'host.example.com', 0, 3600, 3600);
+        $this->assertTrue($result1->isValid());
+
+        $result2 = $validator->validate('"PC with spaces" Linux', 'host.example.com', 0, 3600, 3600);
+        $this->assertTrue($result2->isValid());
+
+        $result3 = $validator->validate('"Windows Server" "Ubuntu Linux"', 'host.example.com', 0, 3600, 3600);
+        $this->assertTrue($result3->isValid());
+
+        $result4 = $validator->validate('Intel-PC FreeBSD', 'host.example.com', 0, 3600, 3600);
+        $this->assertTrue($result4->isValid());
 
         // Invalid HINFO records
         // Missing second field
-        $this->assertFalse($validator->validate('PC', 'host.example.com', 0, 3600, 3600));
+        $result5 = $validator->validate('PC', 'host.example.com', 0, 3600, 3600);
+        $this->assertFalse($result5->isValid());
 
         // Empty fields
-        $this->assertFalse($validator->validate('" " Linux', 'host.example.com', 0, 3600, 3600));
-        $this->assertFalse($validator->validate('PC " "', 'host.example.com', 0, 3600, 3600));
+        $result6 = $validator->validate('" " Linux', 'host.example.com', 0, 3600, 3600);
+        $this->assertFalse($result6->isValid());
+
+        $result7 = $validator->validate('PC " "', 'host.example.com', 0, 3600, 3600);
+        $this->assertFalse($result7->isValid());
 
         // Invalid quotes
-        $this->assertFalse($validator->validate('"PC Linux', 'host.example.com', 0, 3600, 3600));
-        $this->assertFalse($validator->validate('PC" Linux', 'host.example.com', 0, 3600, 3600));
+        $result8 = $validator->validate('"PC Linux', 'host.example.com', 0, 3600, 3600);
+        $this->assertFalse($result8->isValid());
+
+        $result9 = $validator->validate('PC" Linux', 'host.example.com', 0, 3600, 3600);
+        $this->assertFalse($result9->isValid());
 
         // Too long fields
         $longField = str_repeat('a', 1001);
-        $this->assertFalse($validator->validate("$longField Linux", 'host.example.com', 0, 3600, 3600));
-        $this->assertFalse($validator->validate("PC $longField", 'host.example.com', 0, 3600, 3600));
+        $result10 = $validator->validate("$longField Linux", 'host.example.com', 0, 3600, 3600);
+        $this->assertFalse($result10->isValid());
+
+        $result11 = $validator->validate("PC $longField", 'host.example.com', 0, 3600, 3600);
+        $this->assertFalse($result11->isValid());
 
         // Invalid hostname
-        $this->assertFalse($validator->validate('PC Linux', 'invalid..hostname', 0, 3600, 3600));
+        $result12 = $validator->validate('PC Linux', 'invalid..hostname', 0, 3600, 3600);
+        $this->assertFalse($result12->isValid());
     }
 }

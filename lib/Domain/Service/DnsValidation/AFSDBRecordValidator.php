@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * AFSDB record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class AFSDBRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,47 +52,58 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the AFSDB record
      * @param string $name The name of the record
      * @param mixed $prio The subtype value for AFSDB record
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $errors = [];
+
         // Validate name (domain name)
-        $nameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($nameResult === false) {
-            return false;
+        $nameResult = $this->hostnameValidator->validate($name, true);
+        if (!$nameResult->isValid()) {
+            return $nameResult;
         }
-        $name = $nameResult['hostname'];
+        $nameData = $nameResult->getData();
+        $name = $nameData['hostname'];
 
         // Validate AFSDB content (hostname)
-        $contentResult = $this->hostnameValidator->isValidHostnameFqdn($content, 0);
-        if ($contentResult === false) {
-            $this->messageService->addSystemError(_('Invalid AFSDB hostname.'));
-            return false;
+        $contentResult = $this->hostnameValidator->validate($content, false);
+        if (!$contentResult->isValid()) {
+            return ValidationResult::errors(
+                array_merge([_('Invalid AFSDB hostname.')], $contentResult->getErrors())
+            );
         }
-        $content = $contentResult['hostname'];
+        $contentData = $contentResult->getData();
+        $content = $contentData['hostname'];
 
         // Validate subtype (stored in priority field)
-        $validatedSubtype = $this->validateSubtype($prio);
-        if ($validatedSubtype === false) {
-            $this->messageService->addSystemError(_('Invalid AFSDB subtype. Must be 1 (AFS cell database server) or 2 (DCE authenticated name server).'));
-            return false;
+        $subtypeResult = $this->validateSubtype($prio);
+        if (!$subtypeResult->isValid()) {
+            return $subtypeResult;
         }
+        $validatedSubtype = $subtypeResult->getData();
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return ValidationResult::errors(array_merge($errors, $ttlResult->getErrors()));
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        if (!empty($errors)) {
+            return ValidationResult::errors($errors);
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $validatedSubtype,
             'ttl' => $validatedTtl
-        ];
+        ]);
     }
 
     /**
@@ -103,20 +112,20 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $subtype Subtype value
      *
-     * @return int|bool The validated subtype value or false if invalid
+     * @return ValidationResult<int> ValidationResult with validated subtype or error message
      */
-    private function validateSubtype(mixed $subtype): int|bool
+    private function validateSubtype(mixed $subtype): ValidationResult
     {
         // If subtype is not provided or empty, use default of 1
         if (!isset($subtype) || $subtype === "") {
-            return 1;
+            return ValidationResult::success(1);
         }
 
         // Subtype should be either 1 or 2 for AFSDB
         if (is_numeric($subtype) && ($subtype == 1 || $subtype == 2)) {
-            return (int)$subtype;
+            return ValidationResult::success((int)$subtype);
         }
 
-        return false;
+        return ValidationResult::failure(_('Invalid AFSDB subtype. Must be 1 (AFS cell database server) or 2 (DCE authenticated name server).'));
     }
 }

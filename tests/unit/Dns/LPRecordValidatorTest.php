@@ -6,8 +6,8 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\LPRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 use ReflectionClass;
 use ReflectionProperty;
 
@@ -47,23 +47,25 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Configure mock hostname validator to return success for both validations
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 } elseif ($hostname === 'example.com.') {
-                    return ['hostname' => 'example.com.'];
+                    return ValidationResult::success(['hostname' => 'example.com.']);
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals($ttl, $result['ttl']);
-        $this->assertEquals($result['prio'], $result['prio']); // Just confirm equality to itself instead of specific value
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals($ttl, $data['ttl']);
+        $this->assertEquals($data['prio'], $data['prio']); // Just confirm equality to itself instead of specific value
     }
 
     public function testValidateWithProvidedPriority()
@@ -75,23 +77,24 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Configure mock hostname validator to return success for both validations
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 } elseif ($hostname === 'example.com.') {
-                    return ['hostname' => 'example.com.'];
+                    return ValidationResult::success(['hostname' => 'example.com.']);
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals($ttl, $result['ttl']);
-        $this->assertEquals($prio, $result['prio']); // Should use provided priority
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals($ttl, $data['ttl']);
+        $this->assertEquals($prio, $data['prio']); // Should use provided priority
     }
 
     public function testValidateWithAnotherValidDomain()
@@ -103,23 +106,25 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Configure mock hostname validator to return success for both validations
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 } elseif ($hostname === 'another-example.org.') {
-                    return ['hostname' => 'another-example.org.'];
+                    return ValidationResult::success(['hostname' => 'another-example.org.']);
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals($ttl, $result['ttl']);
-        $this->assertEquals($result['prio'], $result['prio']); // Just confirm equality to itself instead of specific value
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals($ttl, $data['ttl']);
+        $this->assertEquals($data['prio'], $data['prio']); // Just confirm equality to itself instead of specific value
     }
 
     public function testValidateWithInvalidPreference()
@@ -131,17 +136,18 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Set up the hostname validator to return success for the hostname
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('preference must be a number between 0 and 65535', $result->getFirstError());
     }
 
     public function testValidateWithInvalidFQDN()
@@ -153,19 +159,20 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Set up hostname validator to return success for the record name but fail for the content FQDN
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 } elseif ($hostname === '-invalid-.example.com.') {
-                    return false;
+                    return ValidationResult::failure('Invalid hostname');
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('FQDN must be a valid', $result->getFirstError());
     }
 
     public function testValidateWithIPAddressAsFQDN()
@@ -177,19 +184,20 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Set up hostname validator to return success for the record name but fail for the IP address
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 } elseif ($hostname === '192.0.2.1') {
-                    return false;
+                    return ValidationResult::failure('Invalid hostname');
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('FQDN must be a valid', $result->getFirstError());
     }
 
     public function testValidateWithInvalidFormat()
@@ -201,17 +209,18 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Configure hostname validator to pass the hostname check
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain preference and FQDN separated by space', $result->getFirstError());
     }
 
     public function testValidateWithTooManyParts()
@@ -223,17 +232,18 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Configure hostname validator to pass the hostname check
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must contain preference and FQDN separated by space', $result->getFirstError());
     }
 
     public function testValidateWithInvalidHostname()
@@ -245,17 +255,18 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Configure hostname validator to fail the hostname check
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === '-invalid-hostname.example.com') {
-                    return false;
+                    return ValidationResult::failure('Invalid hostname');
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('hostname', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTTL()
@@ -267,19 +278,32 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Configure hostname validator to pass the hostname check
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 } elseif ($hostname === 'example.com.') {
-                    return ['hostname' => 'example.com.'];
+                    return ValidationResult::success(['hostname' => 'example.com.']);
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
+
+        // Mock TTLValidator to fail with TTL validation
+        $ttlValidatorMock = $this->createMock(TTLValidator::class);
+        $ttlValidatorMock->method('validate')
+            ->with($ttl, $defaultTTL)
+            ->willReturn(ValidationResult::failure('Invalid TTL value'));
+
+        // Use reflection to replace TTLValidator with mock
+        $reflector = new ReflectionClass(LPRecordValidator::class);
+        $property = $reflector->getProperty('ttlValidator');
+        $property->setAccessible(true);
+        $property->setValue($this->validator, $ttlValidatorMock);
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     public function testValidateWithDefaultTTL()
@@ -291,21 +315,21 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Configure mock hostname validator to return success for both validations
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 } elseif ($hostname === 'example.com.') {
-                    return ['hostname' => 'example.com.'];
+                    return ValidationResult::success(['hostname' => 'example.com.']);
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         // Mock TTLValidator to ensure it returns the default TTL
         $ttlValidatorMock = $this->createMock(TTLValidator::class);
-        $ttlValidatorMock->method('isValidTTL')
+        $ttlValidatorMock->method('validate')
             ->with($ttl, $defaultTTL)
-            ->willReturn($defaultTTL);
+            ->willReturn(ValidationResult::success($defaultTTL));
 
         // Use reflection to replace TTLValidator with mock
         $reflector = new ReflectionClass(LPRecordValidator::class);
@@ -315,11 +339,12 @@ class LPRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals($defaultTTL, $result['ttl']); // Should use default TTL
-        $this->assertEquals($result['prio'], $result['prio']); // Just confirm equality to itself instead of specific value
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals($defaultTTL, $data['ttl']); // Should use default TTL
+        $this->assertEquals($data['prio'], $data['prio']); // Just confirm equality to itself instead of specific value
     }
 
     public function testValidateWithNegativePreference()
@@ -331,17 +356,18 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Set up the hostname validator to return success for the hostname
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('preference must be a number between 0 and 65535', $result->getFirstError());
     }
 
     public function testValidateWithNonDotTerminatedFQDN()
@@ -353,27 +379,26 @@ class LPRecordValidatorTest extends TestCase
         $defaultTTL = 86400;
 
         // Configure mock hostname validator to handle the non-dot-terminated domain
-        $this->hostnameValidatorMock->method('isValidHostnameFqdn')
+        $this->hostnameValidatorMock->method('validate')
             ->willReturnCallback(function ($hostname, $wildcard) {
                 if ($hostname === 'host.example.com') {
-                    return ['hostname' => 'host.example.com'];
+                    return ValidationResult::success(['hostname' => 'host.example.com']);
                 } elseif ($hostname === 'example.com') {
                     // Mock allows non-dot-terminated domains
-                    return ['hostname' => 'example.com'];
+                    return ValidationResult::success(['hostname' => 'example.com']);
                 }
-                return false;
+                return ValidationResult::failure('Invalid hostname');
             });
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        // We'll assert that the result is either an array (if accepted) or false (if rejected)
-        $this->assertTrue(is_array($result) || $result === false);
+        // In the new validation model, this should always return a validation result
+        $this->assertTrue($result->isValid());
 
-        if (is_array($result)) {
-            $this->assertEquals($content, $result['content']);
-            $this->assertEquals($name, $result['name']);
-            $this->assertEquals($ttl, $result['ttl']);
-            $this->assertEquals($result['prio'], $result['prio']); // Just confirm equality to itself instead of specific value
-        }
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals($ttl, $data['ttl']);
     }
 }

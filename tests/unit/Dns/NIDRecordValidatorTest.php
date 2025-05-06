@@ -50,10 +50,12 @@ class NIDRecordValidatorTest extends TestCase
             86400                // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('1234567890ABCDEF', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(20, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals('1234567890ABCDEF', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(20, $data['priority']);
     }
 
     /**
@@ -69,7 +71,8 @@ class NIDRecordValidatorTest extends TestCase
             86400                // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('empty', $result->getFirstError());
     }
 
     /**
@@ -85,7 +88,8 @@ class NIDRecordValidatorTest extends TestCase
             86400                // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('64-bit hexadecimal value', $result->getFirstError());
     }
 
     /**
@@ -101,7 +105,8 @@ class NIDRecordValidatorTest extends TestCase
             86400                // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('64-bit hexadecimal value', $result->getFirstError());
     }
 
     /**
@@ -117,7 +122,8 @@ class NIDRecordValidatorTest extends TestCase
             86400                // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('between 0 and 65535', $result->getFirstError());
     }
 
     /**
@@ -133,10 +139,11 @@ class NIDRecordValidatorTest extends TestCase
             86400                // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('1234567890ABCDEF', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(10, $result['priority']); // Default preference
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('1234567890ABCDEF', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(10, $data['priority']); // Default preference
     }
 
     /**
@@ -152,7 +159,8 @@ class NIDRecordValidatorTest extends TestCase
             86400                // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     /**
@@ -168,9 +176,11 @@ class NIDRecordValidatorTest extends TestCase
             86400                // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('1234567890ABCDEF', $result['content']);
-        $this->assertEquals(86400, $result['ttl']);
-        $this->assertEquals(20, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals('1234567890ABCDEF', $data['content']);
+        $this->assertEquals(86400, $data['ttl']);
+        $this->assertEquals(20, $data['priority']);
     }
 }

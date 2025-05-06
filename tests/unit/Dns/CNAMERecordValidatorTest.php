@@ -8,7 +8,7 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
-use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the CNAMERecordValidator
@@ -32,7 +32,7 @@ class CNAMERecordValidatorTest extends TestCase
 
     public function testValidateWithValidData()
     {
-        // Mock DB response for isValidCnameUnique
+        // Mock DB response for validateCnameUnique
         $this->dbMock->method('queryOne')
             ->willReturn(false); // No conflicts found
 
@@ -46,11 +46,13 @@ class CNAMERecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $rid, $zone);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithConflictingRecord()
@@ -67,12 +69,13 @@ class CNAMERecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('already exists a record', $result->getFirstError());
     }
 
     public function testValidateWithInvalidSourceHostname()
     {
-        // Mock DB response for isValidCnameUnique
+        // Mock DB response for validateCnameUnique
         $this->dbMock->method('queryOne')
             ->willReturn(false); // No conflicts found
 
@@ -84,12 +87,13 @@ class CNAMERecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('A hostname can not start or end with a dash', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTargetHostname()
     {
-        // Mock DB response for isValidCnameUnique
+        // Mock DB response for validateCnameUnique
         $this->dbMock->method('queryOne')
             ->willReturn(false); // No conflicts found
 
@@ -101,12 +105,13 @@ class CNAMERecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('A hostname can not start or end with a dash', $result->getFirstError());
     }
 
     public function testValidateWithEmptyCname()
     {
-        // Mock DB response for isValidCnameUnique
+        // Mock DB response for validateCnameUnique
         $this->dbMock->method('queryOne')
             ->willReturn(false); // No conflicts found
 
@@ -120,12 +125,13 @@ class CNAMERecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL, $rid, $zone);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Empty CNAME records', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTTL()
     {
-        // Mock DB response for isValidCnameUnique
+        // Mock DB response for validateCnameUnique
         $this->dbMock->method('queryOne')
             ->willReturn(false); // No conflicts found
 
@@ -137,12 +143,13 @@ class CNAMERecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     public function testValidateWithInvalidPriority()
     {
-        // Mock DB response for isValidCnameUnique
+        // Mock DB response for validateCnameUnique
         $this->dbMock->method('queryOne')
             ->willReturn(false); // No conflicts found
 
@@ -154,12 +161,13 @@ class CNAMERecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid value for priority field', $result->getFirstError());
     }
 
     public function testValidateWithEmptyPriority()
     {
-        // Mock DB response for isValidCnameUnique
+        // Mock DB response for validateCnameUnique
         $this->dbMock->method('queryOne')
             ->willReturn(false); // No conflicts found
 
@@ -171,13 +179,14 @@ class CNAMERecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(0, $result['prio']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals(0, $data['prio']);
     }
 
     public function testValidateWithDefaultTTL()
     {
-        // Mock DB response for isValidCnameUnique
+        // Mock DB response for validateCnameUnique
         $this->dbMock->method('queryOne')
             ->willReturn(false); // No conflicts found
 
@@ -189,53 +198,109 @@ class CNAMERecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 
-    public function testIsValidCnameUnique()
+    public function testValidatePriority()
     {
-        // Mock DB response for a unique CNAME
+        $reflection = new \ReflectionClass(CNAMERecordValidator::class);
+        $method = $reflection->getMethod('validatePriority');
+        $method->setAccessible(true);
+
+        // With empty priority
+        $result = $method->invoke($this->validator, '');
+        $this->assertTrue($result->isValid());
+        $this->assertEquals(0, $result->getData());
+
+        // With zero priority
+        $result = $method->invoke($this->validator, 0);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals(0, $result->getData());
+
+        // With invalid priority
+        $result = $method->invoke($this->validator, 10);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid value for priority field', $result->getFirstError());
+    }
+
+    public function testValidateCnameUnique()
+    {
+        $reflection = new \ReflectionClass(CNAMERecordValidator::class);
+        $method = $reflection->getMethod('validateCnameUnique');
+        $method->setAccessible(true);
+
+        // Mock DB for unique CNAME
         $this->dbMock->method('queryOne')
             ->willReturn(false);
 
-        $this->assertTrue($this->validator->isValidCnameUnique('unique.example.com', 0));
-    }
+        $result = $method->invoke($this->validator, 'unique.example.com', 0);
+        $this->assertTrue($result->isValid());
 
-    public function testIsValidCnameUniqueWithConflict()
-    {
-        // Mock DB response for a conflicting record
+        // Mock DB for non-unique CNAME
+        $this->dbMock = $this->createMock(PDOLayer::class);
         $this->dbMock->method('queryOne')
             ->willReturn(['id' => 1]);
+        $this->validator = new CNAMERecordValidator($this->configMock, $this->dbMock);
 
-        $this->assertFalse($this->validator->isValidCnameUnique('conflict.example.com', 0));
+        $reflection = new \ReflectionClass(CNAMERecordValidator::class);
+        $method = $reflection->getMethod('validateCnameUnique');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($this->validator, 'conflict.example.com', 0);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('already exists a record', $result->getFirstError());
     }
 
-    public function testIsValidCnameName()
+    public function testValidateCnameName()
     {
-        // Mock DB response for a valid CNAME name
+        $reflection = new \ReflectionClass(CNAMERecordValidator::class);
+        $method = $reflection->getMethod('validateCnameName');
+        $method->setAccessible(true);
+
+        // Mock DB for valid CNAME name
+        $this->dbMock = $this->createMock(PDOLayer::class);
         $this->dbMock->method('queryOne')
             ->willReturn(false);
+        $this->validator = new CNAMERecordValidator($this->configMock, $this->dbMock);
 
-        $this->assertTrue($this->validator->isValidCnameName('valid.example.com'));
-    }
+        $reflection = new \ReflectionClass(CNAMERecordValidator::class);
+        $method = $reflection->getMethod('validateCnameName');
+        $method->setAccessible(true);
 
-    public function testIsValidCnameNameWithConflict()
-    {
-        // Mock DB response for a name with MX or NS records pointing to it
+        $result = $method->invoke($this->validator, 'valid.example.com');
+        $this->assertTrue($result->isValid());
+
+        // Mock DB for invalid CNAME name
+        $this->dbMock = $this->createMock(PDOLayer::class);
         $this->dbMock->method('queryOne')
             ->willReturn(['id' => 1]);
+        $this->validator = new CNAMERecordValidator($this->configMock, $this->dbMock);
 
-        $this->assertFalse($this->validator->isValidCnameName('invalid.example.com'));
+        $reflection = new \ReflectionClass(CNAMERecordValidator::class);
+        $method = $reflection->getMethod('validateCnameName');
+        $method->setAccessible(true);
+
+        $result = $method->invoke($this->validator, 'invalid.example.com');
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Did you assign an MX or NS record', $result->getFirstError());
     }
 
-    public function testIsNotEmptyCnameRR()
+    public function testValidateNotEmptyCnameRR()
     {
-        $this->assertTrue($this->validator->isNotEmptyCnameRR('alias.example.com', 'example.com'));
-    }
+        $reflection = new \ReflectionClass(CNAMERecordValidator::class);
+        $method = $reflection->getMethod('validateNotEmptyCnameRR');
+        $method->setAccessible(true);
 
-    public function testIsNotEmptyCnameRRWithEmptyCname()
-    {
-        $this->assertFalse($this->validator->isNotEmptyCnameRR('example.com', 'example.com'));
+        // Valid case (name different from zone)
+        $result = $method->invoke($this->validator, 'alias.example.com', 'example.com');
+        $this->assertTrue($result->isValid());
+
+        // Invalid case (empty CNAME - name equals zone)
+        $result = $method->invoke($this->validator, 'example.com', 'example.com');
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Empty CNAME records', $result->getFirstError());
     }
 }

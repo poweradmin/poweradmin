@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Validator for APL (Address Prefix List) DNS records
@@ -39,7 +39,6 @@ class APLRecordValidator implements DnsRecordValidatorInterface
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private IPAddressValidator $ipValidator;
-    private MessageService $messageService;
     private ConfigurationManager $config;
 
     /**
@@ -52,7 +51,6 @@ class APLRecordValidator implements DnsRecordValidatorInterface
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
         $this->ipValidator = new IPAddressValidator();
-        $this->messageService = new MessageService();
         $this->config = $config;
     }
 
@@ -62,44 +60,48 @@ class APLRecordValidator implements DnsRecordValidatorInterface
      * @param string $content APL content in format "1:192.0.2.0/24 2:2001:db8::/32"
      * @param string $name Record hostname
      * @param mixed $prio Priority (not used for APL records)
-     * @param int|string $ttl TTL value
+     * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // 1. Validate hostname
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // 2. Validate APL content
-        if (!$this->isValidAPLContent($content)) {
-            return false;
+        $contentResult = $this->validateAPLContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // 3. Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // 4. Validate priority (should be 0 for APL records)
-        $validatedPrio = $this->validatePriority($prio);
-        if ($validatedPrio === false) {
-            $this->messageService->addSystemError(_('Invalid value for prio field.'));
-            return false;
+        $prioResult = $this->validatePriority($prio);
+        if (!$prioResult->isValid()) {
+            return $prioResult;
         }
+        $validatedPrio = $prioResult->getData();
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
-        ];
+        ]);
     }
 
     /**
@@ -108,21 +110,21 @@ class APLRecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $prio Priority value
      *
-     * @return int|bool 0 if valid, false otherwise
+     * @return ValidationResult ValidationResult containing validated priority or error message
      */
-    private function validatePriority(mixed $prio): int|bool
+    private function validatePriority(mixed $prio): ValidationResult
     {
         // If priority is not provided or empty, set it to 0
         if (!isset($prio) || $prio === "") {
-            return 0;
+            return ValidationResult::success(0);
         }
 
         // If provided, ensure it's 0 for APL records
         if (is_numeric($prio) && intval($prio) === 0) {
-            return 0;
+            return ValidationResult::success(0);
         }
 
-        return false;
+        return ValidationResult::failure(_('Invalid value for priority field. APL records must have priority value of 0.'));
     }
 
     /**
@@ -130,26 +132,26 @@ class APLRecordValidator implements DnsRecordValidatorInterface
      * Examples: "1:192.0.2.0/24" or "2:2001:db8::/32" or "1:192.0.2.0/24 !2:2001:db8::/32"
      *
      * @param string $content The APL content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult containing validation status or error message
      */
-    private function isValidAPLContent(string $content): bool
+    private function validateAPLContent(string $content): ValidationResult
     {
         // Handle empty content
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('APL record content cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('APL record content cannot be empty.'));
         }
 
         // Split content by whitespace to handle multiple address prefix elements
         $prefixElements = preg_split('/\s+/', trim($content));
 
         foreach ($prefixElements as $element) {
-            if (!$this->isValidAPLElement($element)) {
-                return false;
+            $elementResult = $this->validateAPLElement($element);
+            if (!$elementResult->isValid()) {
+                return $elementResult;
             }
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
@@ -157,9 +159,9 @@ class APLRecordValidator implements DnsRecordValidatorInterface
      * Format: [!]afi:address/prefix
      *
      * @param string $element The APL element to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult containing validation status or error message
      */
-    private function isValidAPLElement(string $element): bool
+    private function validateAPLElement(string $element): ValidationResult
     {
         // Check if element starts with negation
         $negation = false;
@@ -170,8 +172,7 @@ class APLRecordValidator implements DnsRecordValidatorInterface
 
         // Check for afi:address/prefix format
         if (!preg_match('/^(\d+):([^\/]+)\/(\d+)$/', $element, $matches)) {
-            $this->messageService->addSystemError(_('Invalid APL element format. Expected [!]afi:address/prefix.'));
-            return false;
+            return ValidationResult::failure(_('Invalid APL element format. Expected [!]afi:address/prefix.'));
         }
 
         $afi = (int)$matches[1];
@@ -181,35 +182,34 @@ class APLRecordValidator implements DnsRecordValidatorInterface
         // Validate Address Family Identifier (AFI)
         // 1 = IPv4, 2 = IPv6 (as per RFC 3123)
         if ($afi !== 1 && $afi !== 2) {
-            $this->messageService->addSystemError(_('Invalid Address Family Identifier (AFI). Must be 1 for IPv4 or 2 for IPv6.'));
-            return false;
+            return ValidationResult::failure(_('Invalid Address Family Identifier (AFI). Must be 1 for IPv4 or 2 for IPv6.'));
         }
 
         // Validate address and prefix based on AFI
         if ($afi === 1) {
             // IPv4
-            if (!$this->ipValidator->isValidIPv4($address)) {
-                return false;
+            $ipv4Result = $this->ipValidator->validateIPv4($address);
+            if (!$ipv4Result->isValid()) {
+                return ValidationResult::failure(_('Invalid IPv4 address in APL record.'));
             }
 
             // IPv4 prefix must be between 0 and 32
             if ($prefix < 0 || $prefix > 32) {
-                $this->messageService->addSystemError(_('IPv4 prefix must be between 0 and 32.'));
-                return false;
+                return ValidationResult::failure(_('IPv4 prefix must be between 0 and 32.'));
             }
         } else {
             // IPv6
-            if (!$this->ipValidator->isValidIPv6($address)) {
-                return false;
+            $ipv6Result = $this->ipValidator->validateIPv6($address);
+            if (!$ipv6Result->isValid()) {
+                return ValidationResult::failure(_('Invalid IPv6 address in APL record.'));
             }
 
             // IPv6 prefix must be between 0 and 128
             if ($prefix < 0 || $prefix > 128) {
-                $this->messageService->addSystemError(_('IPv6 prefix must be between 0 and 128.'));
-                return false;
+                return ValidationResult::failure(_('IPv6 prefix must be between 0 and 128.'));
             }
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

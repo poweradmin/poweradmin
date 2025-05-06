@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Validator for DLV (DNSSEC Lookaside Validation) DNS records
@@ -38,7 +38,6 @@ class DLVRecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private MessageService $messageService;
 
     /**
      * Constructor
@@ -49,7 +48,6 @@ class DLVRecordValidator implements DnsRecordValidatorInterface
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
-        $this->messageService = new MessageService();
     }
 
     /**
@@ -61,40 +59,43 @@ class DLVRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $ttl TTL value
      * @param int $defaultTTL Default TTL to use if TTL is empty
      *
-     * @return array|bool Returns array with validated data or false if validation fails
+     * @return ValidationResult Validation result with data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate the hostname
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate DLV record content (same format as DS)
-        if (!$this->isValidDLVContent($content)) {
-            $this->messageService->addSystemError(_('Invalid DLV record content.'));
-            return false;
+        $contentResult = $this->validateDLVContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // Priority for DLV records should be 0
         if (!empty($prio) && $prio != 0) {
-            $this->messageService->addSystemError(_('Priority field for DLV records must be 0 or empty.'));
-            return false;
+            return ValidationResult::failure(_('Priority field for DLV records must be 0 or empty.'));
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
-            'name' => $hostnameResult['hostname'],
+            'name' => $name,
             'prio' => 0,
             'ttl' => $validatedTtl
-        ];
+        ]);
     }
 
     /**
@@ -102,38 +103,38 @@ class DLVRecordValidator implements DnsRecordValidatorInterface
      * DLV has the same format as DS records: <key-tag> <algorithm> <digest-type> <digest>
      *
      * @param string $content DLV record content
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult Validation result with success or error message
      */
-    public function isValidDLVContent(string $content): bool
+    public function validateDLVContent(string $content): ValidationResult
     {
         // DLV record format: <key-tag> <algorithm> <digest-type> <digest>
         if (!preg_match('/^([0-9]+) ([0-9]+) ([0-9]+) ([a-f0-9]+)$/i', $content)) {
-            return false;
+            return ValidationResult::failure(_('Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> <digest>'));
         }
 
         // Split content into components
         $parts = explode(' ', $content);
         if (count($parts) !== 4) {
-            return false;
+            return ValidationResult::failure(_('Invalid DLV record format. Should contain exactly 4 parts.'));
         }
 
         list($keyTag, $algorithm, $digestType, $digest) = $parts;
 
         // Validate key tag (1-65535)
         if (!is_numeric($keyTag) || $keyTag < 1 || $keyTag > 65535) {
-            return false;
+            return ValidationResult::failure(_('Invalid key tag. Must be a number between 1 and 65535.'));
         }
 
         // Validate algorithm (known DNSSEC algorithms 1-16)
         $validAlgorithms = [1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16];
         if (!in_array((int)$algorithm, $validAlgorithms)) {
-            return false;
+            return ValidationResult::failure(_('Invalid algorithm. Must be one of the valid DNSSEC algorithms.'));
         }
 
         // Validate digest type (1 = SHA-1, 2 = SHA-256, 4 = SHA-384)
         $validDigestTypes = [1, 2, 4];
         if (!in_array((int)$digestType, $validDigestTypes)) {
-            return false;
+            return ValidationResult::failure(_('Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384).'));
         }
 
         // Validate digest length based on type
@@ -141,21 +142,21 @@ class DLVRecordValidator implements DnsRecordValidatorInterface
         switch ((int)$digestType) {
             case 1: // SHA-1
                 if ($digestLength !== 40) {
-                    return false;
+                    return ValidationResult::failure(_('Invalid digest length for SHA-1. Should be 40 characters.'));
                 }
                 break;
             case 2: // SHA-256
                 if ($digestLength !== 64) {
-                    return false;
+                    return ValidationResult::failure(_('Invalid digest length for SHA-256. Should be 64 characters.'));
                 }
                 break;
             case 4: // SHA-384
                 if ($digestLength !== 96) {
-                    return false;
+                    return ValidationResult::failure(_('Invalid digest length for SHA-384. Should be 96 characters.'));
                 }
                 break;
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

@@ -566,6 +566,7 @@ return array(
     'Poweradmin\\Domain\\Service\\ReverseRecordCreator' => $baseDir . '/lib/Domain/Service/ReverseRecordCreator.php',
     'Poweradmin\\Domain\\Service\\SessionService' => $baseDir . '/lib/Domain/Service/SessionService.php',
     'Poweradmin\\Domain\\Service\\UserContextService' => $baseDir . '/lib/Domain/Service/UserContextService.php',
+    'Poweradmin\\Domain\\Service\\Validation\\ValidationResult' => $baseDir . '/lib/Domain/Service/Validation/ValidationResult.php',
     'Poweradmin\\Domain\\Service\\Validator' => $baseDir . '/lib/Domain/Service/Validator.php',
     'Poweradmin\\Domain\\Service\\ZoneCountService' => $baseDir . '/lib/Domain/Service/ZoneCountService.php',
     'Poweradmin\\Domain\\Utility\\DnsHelper' => $baseDir . '/lib/Domain/Utility/DnsHelper.php',

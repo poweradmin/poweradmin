@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * LUA record validator
@@ -38,14 +38,14 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class LUARecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private TTLValidator $ttlValidator;
+    private HostnameValidator $hostnameValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
-        $this->ttlValidator = new TTLValidator($config);
+        $this->ttlValidator = new TTLValidator();
+        $this->hostnameValidator = new HostnameValidator($config);
     }
 
     /**
@@ -54,43 +54,57 @@ class LUARecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content part of the record (Lua script code)
      * @param string $name The name part of the record
      * @param mixed $prio The priority value (not used for LUA records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        // Validate hostname/name
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
+        }
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
+
         // Validate content - ensure it's not empty
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('LUA record content cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('LUA record content cannot be empty.'));
         }
 
         // Validate that content has valid characters
-        if (!StringValidator::isValidPrintable($content)) {
-            return false;
+        $printableResult = StringValidator::validatePrintable($content);
+        if (!$printableResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in LUA record content.'));
         }
 
         // Check if the content follows LUA format pattern
-        if (!$this->isValidLuaContent($content)) {
-            return false;
+        $contentResult = $this->validateLuaContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for LUA records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for LUA records must be 0 or empty'));
         }
 
-        // LUA records don't use priority, so it's always 0
-        $priority = 0;
-
-        return [
+        return ValidationResult::success([
             'content' => $content,
-            'ttl' => $validatedTtl,
-            'priority' => $priority
-        ];
+            'name' => $name,
+            'prio' => 0, // LUA records don't use priority
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -99,9 +113,9 @@ class LUARecordValidator implements DnsRecordValidatorInterface
      * LUA record content should typically start with a recognized pattern
      *
      * @param string $content The LUA record content
-     * @return bool True if format is valid, false otherwise
+     * @return ValidationResult ValidationResult with errors or success
      */
-    private function isValidLuaContent(string $content): bool
+    private function validateLuaContent(string $content): ValidationResult
     {
         // Basic check that content appears to be a Lua script
         // PowerDNS typically expects LUA records to have a format like:
@@ -114,10 +128,9 @@ class LUARecordValidator implements DnsRecordValidatorInterface
         $hasEnd = str_contains($trimmedContent, 'end');
 
         if (!$hasFunction || !$hasEnd) {
-            $this->messageService->addSystemError(_('LUA record should contain a valid Lua function with "function" and "end" keywords.'));
-            return false;
+            return ValidationResult::failure(_('LUA record should contain a valid Lua function with "function" and "end" keywords.'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

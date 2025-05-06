@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
+
 /**
  * Interface for DNS Record Validation Service
  *
@@ -47,7 +49,7 @@ interface DnsRecordValidationServiceInterface
      * @param string $dns_hostmaster DNS hostmaster email
      * @param int $dns_ttl Default TTL value
      *
-     * @return array|null Returns array with validated data on success, null on failure
+     * @return ValidationResult<array> Returns ValidationResult with validated data or error messages
      */
     public function validateRecord(
         int $rid,
@@ -59,5 +61,5 @@ interface DnsRecordValidationServiceInterface
         ?int $ttl,
         string $dns_hostmaster,
         int $dns_ttl
-    ): ?array;
+    ): ValidationResult;
 }

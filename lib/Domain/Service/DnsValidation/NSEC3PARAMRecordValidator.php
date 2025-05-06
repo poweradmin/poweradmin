@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * NSEC3PARAM record validator
@@ -39,14 +39,14 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private TTLValidator $ttlValidator;
+    private HostnameValidator $hostnameValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->ttlValidator = new TTLValidator($config);
+        $this->hostnameValidator = new HostnameValidator($config);
     }
 
     /**
@@ -58,40 +58,52 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        // Validate hostname/name
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
+        }
+
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
+
         // Validate content - ensure it's not empty
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('NSEC3PARAM record content cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('NSEC3PARAM record content cannot be empty.'));
         }
 
         // Validate that content has valid characters
         if (!StringValidator::isValidPrintable($content)) {
-            return false;
+            return ValidationResult::failure(_('NSEC3PARAM record contains invalid characters.'));
         }
 
         // Check NSEC3PARAM record format
-        if (!$this->isValidNsec3ParamContent($content)) {
-            return false;
+        $contentResult = $this->validateNsec3ParamContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // NSEC3PARAM records don't use priority, so it's always 0
         $priority = 0;
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
+            'name' => $name,
             'ttl' => $validatedTtl,
             'priority' => $priority
-        ];
+        ]);
     }
 
     /**
@@ -100,9 +112,9 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
      * NSEC3PARAM content should have proper format with required fields
      *
      * @param string $content The NSEC3PARAM record content
-     * @return bool True if format is valid, false otherwise
+     * @return ValidationResult ValidationResult object
      */
-    private function isValidNsec3ParamContent(string $content): bool
+    private function validateNsec3ParamContent(string $content): ValidationResult
     {
         $parts = preg_split('/\s+/', trim($content));
 
@@ -113,38 +125,38 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
         // 4. Salt (- for empty or hex value)
 
         if (count($parts) !== 4) {
-            $this->messageService->addSystemError(_('NSEC3PARAM record must contain exactly hash algorithm, flags, iterations, and salt.'));
-            return false;
+            return ValidationResult::failure(_('NSEC3PARAM record must contain exactly hash algorithm, flags, iterations, and salt.'));
         }
 
         // Validate hash algorithm (should be 1 for SHA-1)
         $algorithm = (int)$parts[0];
         if ($algorithm !== 1) {
-            $this->messageService->addSystemError(_('NSEC3PARAM hash algorithm must be 1 (SHA-1).'));
-            return false;
+            return ValidationResult::failure(_('NSEC3PARAM hash algorithm must be 1 (SHA-1).'));
         }
 
         // Validate flags (0-255, typically 0 or 1)
         $flags = (int)$parts[1];
         if ($flags < 0 || $flags > 255) {
-            $this->messageService->addSystemError(_('NSEC3PARAM flags must be between 0 and 255.'));
-            return false;
+            return ValidationResult::failure(_('NSEC3PARAM flags must be between 0 and 255.'));
         }
 
         // Validate iterations (0-2500, RFC recommends max of 150)
         $iterations = (int)$parts[2];
         if ($iterations < 0 || $iterations > 2500) {
-            $this->messageService->addSystemError(_('NSEC3PARAM iterations must be between 0 and 2500.'));
-            return false;
+            return ValidationResult::failure(_('NSEC3PARAM iterations must be between 0 and 2500.'));
         }
 
         // Validate salt (- for empty or hex value)
         $salt = $parts[3];
         if ($salt !== '-' && !preg_match('/^[0-9A-Fa-f]+$/', $salt)) {
-            $this->messageService->addSystemError(_('NSEC3PARAM salt must be - (for empty) or a hexadecimal value.'));
-            return false;
+            return ValidationResult::failure(_('NSEC3PARAM salt must be - (for empty) or a hexadecimal value.'));
         }
 
-        return true;
+        return ValidationResult::success([
+            'algorithm' => $algorithm,
+            'flags' => $flags,
+            'iterations' => $iterations,
+            'salt' => $salt
+        ]);
     }
 }

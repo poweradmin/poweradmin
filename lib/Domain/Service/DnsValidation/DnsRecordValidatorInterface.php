@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
+
 /**
  * Interface for DNS record validators
  *
@@ -38,10 +40,10 @@ interface DnsRecordValidatorInterface
      * @param string $content The content part of the record
      * @param string $name The name part of the record
      * @param mixed $prio The priority value (if applicable)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool;
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult;
 }

@@ -50,10 +50,12 @@ class MRRecordValidatorTest extends TestCase
             86400                       // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('new-mailbox.example.com', $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals('new-mailbox.example.com', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(0, $data['priority']);
     }
 
     /**
@@ -69,7 +71,8 @@ class MRRecordValidatorTest extends TestCase
             86400                       // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('empty', $result->getFirstError());
     }
 
     /**
@@ -85,7 +88,8 @@ class MRRecordValidatorTest extends TestCase
             86400                       // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('domain name', $result->getFirstError());
     }
 
     /**
@@ -101,7 +105,8 @@ class MRRecordValidatorTest extends TestCase
             86400                       // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     /**
@@ -117,9 +122,10 @@ class MRRecordValidatorTest extends TestCase
             86400                       // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals('new-mailbox.example.com', $result['content']);
-        $this->assertEquals(86400, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('new-mailbox.example.com', $data['content']);
+        $this->assertEquals(86400, $data['ttl']);
+        $this->assertEquals(0, $data['priority']);
     }
 }

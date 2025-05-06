@@ -8,6 +8,7 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the DSRecordValidator
@@ -36,11 +37,13 @@ class DSRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidKeyTag()
@@ -53,7 +56,8 @@ class DSRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Key tag', $result->getFirstError());
     }
 
     public function testValidateWithInvalidAlgorithm()
@@ -66,7 +70,8 @@ class DSRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Algorithm', $result->getFirstError());
     }
 
     public function testValidateWithInvalidDigestType()
@@ -79,7 +84,8 @@ class DSRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Digest type', $result->getFirstError());
     }
 
     public function testValidateWithInvalidDigestLength()
@@ -93,7 +99,8 @@ class DSRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('SHA-256 digest', $result->getFirstError());
     }
 
     public function testValidateWithInvalidHostname()
@@ -106,7 +113,8 @@ class DSRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('hostname', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTTL()
@@ -119,7 +127,8 @@ class DSRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     public function testValidateWithInvalidPriority()
@@ -132,7 +141,8 @@ class DSRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Priority', $result->getFirstError());
     }
 
     public function testValidateWithDefaultTTL()
@@ -145,20 +155,30 @@ class DSRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 
-    public function testIsValidDSContent()
+    public function testValidateDSRecordContent()
     {
         // Test valid DS records with exact digest lengths
-        $this->assertTrue($this->validator->isValidDSContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0'));
-        $this->assertTrue($this->validator->isValidDSContent('15288 5 2 CE0EB9E59EE1DE2C681A330E3A7C08376F28602CDF990EE4EC88D2A8BDB51539'));
+        $result1 = $this->validator->validateDSRecordContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0');
+        $this->assertTrue($result1->isValid());
+
+        $result2 = $this->validator->validateDSRecordContent('15288 5 2 CE0EB9E59EE1DE2C681A330E3A7C08376F28602CDF990EE4EC88D2A8BDB51539');
+        $this->assertTrue($result2->isValid());
 
         // Test invalid formats
-        $this->assertFalse($this->validator->isValidDSContent('45342 13 2'));  // Missing digest
-        $this->assertFalse($this->validator->isValidDSContent('invalid')); // Invalid format
-        $this->assertFalse($this->validator->isValidDSContent('2371 13 2 1F987CC6583E92DF0890718C42')); // Too short digest
-        $this->assertFalse($this->validator->isValidDSContent('2371 13 2 1F987CC6583E92DF0890718C42 ; ( SHA1 digest )')); // Extra content
+        $result3 = $this->validator->validateDSRecordContent('45342 13 2');  // Missing digest
+        $this->assertFalse($result3->isValid());
+        $result4 = $this->validator->validateDSRecordContent('invalid'); // Invalid format
+        $this->assertFalse($result4->isValid());
+
+        $result5 = $this->validator->validateDSRecordContent('2371 13 2 1F987CC6583E92DF0890718C42'); // Too short digest
+        $this->assertFalse($result5->isValid());
+
+        $result6 = $this->validator->validateDSRecordContent('2371 13 2 1F987CC6583E92DF0890718C42 ; ( SHA1 digest )'); // Extra content
+        $this->assertFalse($result6->isValid());
     }
 }

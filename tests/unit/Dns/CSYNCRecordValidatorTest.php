@@ -6,8 +6,8 @@ use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\CSYNCRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Tests for the CSYNCRecordValidator
@@ -36,11 +36,13 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']);
-        $this->assertEquals(3600, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 
     public function testValidateWithInvalidSOASerial()
@@ -53,7 +55,8 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('SOA Serial', $result->getFirstError());
     }
 
     public function testValidateWithOverflowSOASerial()
@@ -66,7 +69,8 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('SOA Serial', $result->getFirstError());
     }
 
     public function testValidateWithInvalidFlags()
@@ -79,7 +83,8 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Flags', $result->getFirstError());
     }
 
     public function testValidateWithNegativeFlags()
@@ -92,7 +97,8 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Flags', $result->getFirstError());
     }
 
     public function testValidateWithNoRecordTypes()
@@ -105,7 +111,8 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must specify at least one record type', $result->getFirstError());
     }
 
     public function testValidateWithInvalidRecordType()
@@ -118,7 +125,8 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid Type', $result->getFirstError());
     }
 
     public function testValidateWithInvalidHostname()
@@ -131,7 +139,7 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
     }
 
     public function testValidateWithInvalidTTL()
@@ -144,7 +152,8 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('TTL field', $result->getFirstError());
     }
 
     public function testValidateWithInvalidPriority()
@@ -157,7 +166,8 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('priority field', $result->getFirstError());
     }
 
     public function testValidateWithEmptyPriority()
@@ -170,8 +180,9 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(0, $result['prio']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals(0, $data['prio']);
     }
 
     public function testValidateWithDefaultTTL()
@@ -184,8 +195,10 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals(86400, $result['ttl']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
     }
 
     public function testValidateWithMultipleValidRecordTypes()
@@ -198,25 +211,50 @@ class CSYNCRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
-    public function testIsValidCSYNCContent()
+    public function testValidateCSYNCContent()
     {
-        $this->assertTrue($this->validator->isValidCSYNCContent('1234567890 1 A NS AAAA'));
-        $this->assertTrue($this->validator->isValidCSYNCContent('1 0 A'));
-        $this->assertTrue($this->validator->isValidCSYNCContent('1234567890 3 A NS AAAA MX TXT'));
-        $this->assertTrue($this->validator->isValidCSYNCContent('42 2 NS'));
+        $validContent = '1234567890 1 A NS AAAA';
+        $result = $this->validator->validateCSYNCContent($validContent);
+        $this->assertTrue($result->isValid());
+
+        $validContent = '1 0 A';
+        $result = $this->validator->validateCSYNCContent($validContent);
+        $this->assertTrue($result->isValid());
+
+        $validContent = '1234567890 3 A NS AAAA MX TXT';
+        $result = $this->validator->validateCSYNCContent($validContent);
+        $this->assertTrue($result->isValid());
+
+        $validContent = '42 2 NS';
+        $result = $this->validator->validateCSYNCContent($validContent);
+        $this->assertTrue($result->isValid());
     }
 
-    public function testIsValidCSYNCContentWithInvalidInputs()
+    public function testValidateCSYNCContentWithInvalidInputs()
     {
-        $this->assertFalse($this->validator->isValidCSYNCContent('-1 1 A')); // Negative SOA Serial
-        $this->assertFalse($this->validator->isValidCSYNCContent('1234567890 4 A')); // Flag > 3
-        $this->assertFalse($this->validator->isValidCSYNCContent('1234567890 1')); // No record types
-        $this->assertFalse($this->validator->isValidCSYNCContent('1234567890 1 INVALID')); // Invalid record type
-        $this->assertFalse($this->validator->isValidCSYNCContent('abc 1 A')); // Non-numeric SOA Serial
-        $this->assertFalse($this->validator->isValidCSYNCContent('1234567890 abc A')); // Non-numeric Flag
+        // Negative SOA Serial
+        $result = $this->validator->validateCSYNCContent('-1 1 A');
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('SOA Serial', $result->getFirstError());
+
+        // Flag > 3
+        $result = $this->validator->validateCSYNCContent('1234567890 4 A');
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Flags', $result->getFirstError());
+
+        // No record types
+        $result = $this->validator->validateCSYNCContent('1234567890 1');
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('must specify at least one record type', $result->getFirstError());
+
+        // Invalid record type
+        $result = $this->validator->validateCSYNCContent('1234567890 1 INVALID');
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid Type', $result->getFirstError());
     }
 }

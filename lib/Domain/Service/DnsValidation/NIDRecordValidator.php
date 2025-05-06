@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * NID record validator
@@ -38,15 +38,11 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class NIDRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
-    private MessageService $messageService;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
-        $this->messageService = new MessageService();
-        $this->ttlValidator = new TTLValidator($config);
+        $this->ttlValidator = new TTLValidator();
     }
 
     /**
@@ -58,43 +54,48 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> Validation result with data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate content - ensure it's not empty
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('NID record content cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('NID record content cannot be empty.'));
         }
 
         // Validate that content has valid characters
-        if (!StringValidator::isValidPrintable($content)) {
-            return false;
+        $printableResult = StringValidator::validatePrintable($content);
+        if (!$printableResult->isValid()) {
+            return $printableResult;
         }
 
         // Validate the content format (64-bit hexadecimal value)
-        if (!$this->isValidNodeIdentifier($content)) {
-            return false;
+        $nodeIdResult = $this->validateNodeIdentifier($content);
+        if (!$nodeIdResult->isValid()) {
+            return $nodeIdResult;
         }
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // Validate priority (preference)
-        $priority = $this->validatePreference($prio);
-        if ($priority === false) {
-            return false;
+        $priorityResult = $this->validatePreference($prio);
+        if (!$priorityResult->isValid()) {
+            return $priorityResult;
         }
+        $priority = $priorityResult->getData();
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'ttl' => $validatedTtl,
-            'priority' => $priority
-        ];
+            'priority' => $priority,
+            'name' => $name
+        ]);
     }
 
     /**
@@ -102,17 +103,16 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
      * It should be a 64-bit hexadecimal value
      *
      * @param string $content The Node Identifier value
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult Validation result indicating success or failure
      */
-    private function isValidNodeIdentifier(string $content): bool
+    private function validateNodeIdentifier(string $content): ValidationResult
     {
         // Check if the content is a valid 64-bit hexadecimal value (16 hex characters)
         if (!preg_match('/^[0-9a-fA-F]{16}$/', trim($content))) {
-            $this->messageService->addSystemError(_('NID record content must be a 64-bit hexadecimal value (16 hex characters).'));
-            return false;
+            return ValidationResult::failure(_('NID record content must be a 64-bit hexadecimal value (16 hex characters).'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
@@ -120,29 +120,27 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
      * It should be an integer between 0 and 65535
      *
      * @param mixed $prio The preference value
-     * @return int|bool The validated preference or false if invalid
+     * @return ValidationResult<int> Validation result with the validated preference or error
      */
-    private function validatePreference(mixed $prio): int|bool
+    private function validatePreference(mixed $prio): ValidationResult
     {
         // If empty, use default of 10
         if ($prio === '' || $prio === null) {
-            return 10;
+            return ValidationResult::success(10);
         }
 
         // Must be numeric
         if (!is_numeric($prio)) {
-            $this->messageService->addSystemError(_('NID record preference must be a number.'));
-            return false;
+            return ValidationResult::failure(_('NID record preference must be a number.'));
         }
 
         $prioInt = (int)$prio;
 
         // Must be between 0 and 65535
         if ($prioInt < 0 || $prioInt > 65535) {
-            $this->messageService->addSystemError(_('NID record preference must be between 0 and 65535.'));
-            return false;
+            return ValidationResult::failure(_('NID record preference must be between 0 and 65535.'));
         }
 
-        return $prioInt;
+        return ValidationResult::success($prioInt);
     }
 }

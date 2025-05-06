@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * NAPTR record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class NAPTRRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,37 +52,70 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the NAPTR record (order pref flags service regexp replacement)
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for NAPTR records, priority is part of content)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidNAPTRContent($content)) {
-            return false;
+        $contentResult = $this->validateNAPTRContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
-        return [
+        // Validate priority (should be 0 for NAPTR records as it's included in content)
+        $prioResult = $this->validatePriority($prio);
+        if (!$prioResult->isValid()) {
+            return $prioResult;
+        }
+        $validatedPrio = $prioResult->getData();
+
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
-            'prio' => 0, // Priority is included in the content for NAPTR records
-            'ttl' => $validatedTTL
-        ];
+            'prio' => $validatedPrio,
+            'ttl' => $validatedTtl
+        ]);
+    }
+
+    /**
+     * Validate priority for NAPTR records
+     * NAPTR records don't use the prio field directly (priority is in content)
+     *
+     * @param mixed $prio Priority value
+     * @return ValidationResult ValidationResult containing validated priority or error message
+     */
+    private function validatePriority(mixed $prio): ValidationResult
+    {
+        // If priority is not provided or empty, set it to 0
+        if (!isset($prio) || $prio === "") {
+            return ValidationResult::success(0);
+        }
+
+        // If provided, ensure it's 0 for NAPTR records
+        if (is_numeric($prio) && intval($prio) === 0) {
+            return ValidationResult::success(0);
+        }
+
+        return ValidationResult::failure(_('Invalid value for priority field. NAPTR records have priority within the content field and must have a priority value of 0.'));
     }
 
     /**
@@ -92,77 +123,105 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
      * Format: <order> <preference> <flags> <service> <regexp> <replacement>
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult containing validation success or error messages
      */
-    private function isValidNAPTRContent(string $content): bool
+    private function validateNAPTRContent(string $content): ValidationResult
     {
         // Split the content into parts
         $parts = preg_split('/\s+/', trim($content), 6);
 
         // Must have all 6 parts
         if (count($parts) !== 6) {
-            $this->messageService->addSystemError(_('NAPTR record must contain order, preference, flags, service, regexp, and replacement values.'));
-            return false;
+            return ValidationResult::failure(_('NAPTR record must contain order, preference, flags, service, regexp, and replacement values.'));
         }
 
         [$order, $preference, $flags, $service, $regexp, $replacement] = $parts;
 
         // Validate order (must be a number between 0 and 65535)
         if (!is_numeric($order) || (int)$order < 0 || (int)$order > 65535) {
-            $this->messageService->addSystemError(_('NAPTR record order must be a number between 0 and 65535.'));
-            return false;
+            return ValidationResult::failure(_('NAPTR record order must be a number between 0 and 65535.'));
         }
 
         // Validate preference (must be a number between 0 and 65535)
         if (!is_numeric($preference) || (int)$preference < 0 || (int)$preference > 65535) {
-            $this->messageService->addSystemError(_('NAPTR record preference must be a number between 0 and 65535.'));
-            return false;
+            return ValidationResult::failure(_('NAPTR record preference must be a number between 0 and 65535.'));
         }
 
         // Validate flags (must be a quoted string with one of "A", "P", "S", "U", "")
-        if (!$this->isValidQuotedString($flags)) {
-            $this->messageService->addSystemError(_('NAPTR record flags must be a quoted string.'));
-            return false;
+        $quotedStringResult = $this->validateQuotedString($flags);
+        if (!$quotedStringResult->isValid()) {
+            return ValidationResult::failure(_('NAPTR record flags must be a quoted string.'));
         }
 
         $flagsValue = trim($flags, '"');
-        if (!empty($flagsValue) && !preg_match('/^[APSU]+$/', $flagsValue)) {
-            $this->messageService->addSystemError(_('NAPTR record flags must contain only A, P, S, or U.'));
-            return false;
+        // Valid flags are "a", "p", "s", "u" (case-insensitive) or empty
+        if (!empty($flagsValue) && !preg_match('/^[APSUapsu]+$/', $flagsValue)) {
+            return ValidationResult::failure(_('NAPTR record flags must contain only A, P, S, or U.'));
         }
 
         // Validate service (must be a quoted string)
-        if (!$this->isValidQuotedString($service)) {
-            $this->messageService->addSystemError(_('NAPTR record service must be a quoted string.'));
-            return false;
+        $quotedStringResult = $this->validateQuotedString($service);
+        if (!$quotedStringResult->isValid()) {
+            return ValidationResult::failure(_('NAPTR record service must be a quoted string.'));
         }
 
         // Validate regexp (must be a quoted string)
-        if (!$this->isValidQuotedString($regexp)) {
-            $this->messageService->addSystemError(_('NAPTR record regexp must be a quoted string.'));
-            return false;
+        $quotedStringResult = $this->validateQuotedString($regexp);
+        if (!$quotedStringResult->isValid()) {
+            return ValidationResult::failure(_('NAPTR record regexp must be a quoted string.'));
         }
 
         // Validate replacement (must be a valid domain name or ".")
         if ($replacement !== ".") {
-            $replacementResult = $this->hostnameValidator->isValidHostnameFqdn($replacement, 1);
-            if ($replacementResult === false) {
-                $this->messageService->addSystemError(_('NAPTR record replacement must be either "." or a valid fully-qualified domain name.'));
-                return false;
+            $replacementResult = $this->hostnameValidator->validate($replacement, true);
+            if (!$replacementResult->isValid()) {
+                return ValidationResult::failure(_('NAPTR record replacement must be either "." or a valid fully-qualified domain name.'));
             }
         }
 
+        return ValidationResult::success(true);
+    }
+
+    /**
+     * Legacy adapter method for backward compatibility
+     *
+     * @param string $content The content to validate
+     * @param array &$errors Collection of validation errors
+     * @return bool True if valid, false otherwise
+     */
+    private function isValidNAPTRContent(string $content, array &$errors): bool
+    {
+        $result = $this->validateNAPTRContent($content);
+        if (!$result->isValid()) {
+            $errors[] = $result->getFirstError();
+            return false;
+        }
         return true;
     }
 
     /**
-     * Check if a string is a valid quoted string
+     * Validate if a string is a valid quoted string
+     *
+     * @param string $value The string to check
+     * @return ValidationResult ValidationResult containing validation success or error message
+     */
+    private function validateQuotedString(string $value): ValidationResult
+    {
+        if (preg_match('/^".*"$/', $value) === 1) {
+            return ValidationResult::success(true);
+        }
+        return ValidationResult::failure(_('Value must be enclosed in double quotes.'));
+    }
+
+    /**
+     * Legacy adapter method for backward compatibility
      *
      * @param string $value The string to check
      * @return bool True if valid, false otherwise
      */
     private function isValidQuotedString(string $value): bool
     {
-        return preg_match('/^".*"$/', $value) === 1;
+        $result = $this->validateQuotedString($value);
+        return $result->isValid();
     }
 }

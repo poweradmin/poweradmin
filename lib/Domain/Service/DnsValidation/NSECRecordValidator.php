@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * NSEC record validator
@@ -39,14 +39,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class NSECRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private TTLValidator $ttlValidator;
     private HostnameValidator $hostnameValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->ttlValidator = new TTLValidator($config);
         $this->hostnameValidator = new HostnameValidator($config);
     }
@@ -60,40 +58,52 @@ class NSECRecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        // Validate hostname/name
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
+        }
+
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
+
         // Validate content - ensure it's not empty
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('NSEC record content cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('NSEC record content cannot be empty.'));
         }
 
         // Validate that content has valid characters
         if (!StringValidator::isValidPrintable($content)) {
-            return false;
+            return ValidationResult::failure(_('NSEC record contains invalid characters.'));
         }
 
         // Check NSEC record format
-        if (!$this->isValidNsecContent($content)) {
-            return false;
+        $contentResult = $this->validateNsecContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // NSEC records don't use priority, so it's always 0
         $priority = 0;
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
+            'name' => $name,
             'ttl' => $validatedTtl,
             'priority' => $priority
-        ];
+        ]);
     }
 
     /**
@@ -104,37 +114,41 @@ class NSECRecordValidator implements DnsRecordValidatorInterface
      * 2. Optionally followed by type bit maps
      *
      * @param string $content The NSEC record content
-     * @return bool True if format is valid, false otherwise
+     * @return ValidationResult ValidationResult object
      */
-    private function isValidNsecContent(string $content): bool
+    private function validateNsecContent(string $content): ValidationResult
     {
         $parts = preg_split('/\s+/', trim($content), 2);
 
         // Check that next domain name is valid
         $nextDomainName = $parts[0];
-        if (!$this->hostnameValidator->isValidHostnameFqdn($nextDomainName, '0')) {
-            $this->messageService->addSystemError(_('NSEC record must contain a valid next domain name.'));
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($nextDomainName, true);
+        if (!$hostnameResult->isValid()) {
+            return ValidationResult::failure(_('NSEC record must contain a valid next domain name.'));
         }
 
         // If type bit maps are present, validate them
         if (isset($parts[1])) {
             $typeBitMaps = $parts[1];
-            if (!$this->validateTypeBitMaps($typeBitMaps)) {
-                return false;
+            $typeBitMapsResult = $this->validateTypeBitMaps($typeBitMaps);
+            if (!$typeBitMapsResult->isValid()) {
+                return $typeBitMapsResult;
             }
         }
 
-        return true;
+        return ValidationResult::success([
+            'next_domain' => $nextDomainName,
+            'type_maps' => $parts[1] ?? ''
+        ]);
     }
 
     /**
      * Validate the type bit maps part of an NSEC record
      *
      * @param string $typeBitMaps The type bit maps part of the NSEC record
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult object
      */
-    private function validateTypeBitMaps(string $typeBitMaps): bool
+    private function validateTypeBitMaps(string $typeBitMaps): ValidationResult
     {
         // Type bit maps should contain valid record types
         $validRecordTypes = [
@@ -158,11 +172,12 @@ class NSECRecordValidator implements DnsRecordValidatorInterface
             }
 
             if (!in_array(strtoupper($type), $validRecordTypes)) {
-                $this->messageService->addSystemError(sprintf(_('NSEC record contains an invalid record type: %s'), $type));
-                return false;
+                return ValidationResult::failure(sprintf(_('NSEC record contains an invalid record type: %s'), $type));
             }
         }
 
-        return true;
+        return ValidationResult::success([
+            'types' => $types
+        ]);
     }
 }

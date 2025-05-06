@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 class TTLValidatorTest extends TestCase
@@ -38,32 +39,59 @@ class TTLValidatorTest extends TestCase
     public function testDefaultTtlIsUsedWhenTtlIsEmpty(): void
     {
         $defaultTtl = 3600;
-        $this->assertEquals($defaultTtl, $this->ttlValidator->isValidTTL("", $defaultTtl));
-        $this->assertEquals($defaultTtl, $this->ttlValidator->isValidTTL(null, $defaultTtl));
+
+        $result1 = $this->ttlValidator->validate("", $defaultTtl);
+        $this->assertTrue($result1->isValid());
+        $this->assertEquals(['ttl' => $defaultTtl], $result1->getData());
+
+        $result2 = $this->ttlValidator->validate(null, $defaultTtl);
+        $this->assertTrue($result2->isValid());
+        $this->assertEquals(['ttl' => $defaultTtl], $result2->getData());
     }
 
     public function testValidTtlValues(): void
     {
         $defaultTtl = 3600;
-        $this->assertEquals(60, $this->ttlValidator->isValidTTL(60, $defaultTtl));
-        $this->assertEquals(86400, $this->ttlValidator->isValidTTL(86400, $defaultTtl));
-        $this->assertEquals(2147483647, $this->ttlValidator->isValidTTL(2147483647, $defaultTtl));
-        $this->assertEquals(0, $this->ttlValidator->isValidTTL(0, $defaultTtl));
+
+        $result1 = $this->ttlValidator->validate(60, $defaultTtl);
+        $this->assertTrue($result1->isValid());
+        $this->assertEquals(['ttl' => 60], $result1->getData());
+
+        $result2 = $this->ttlValidator->validate(86400, $defaultTtl);
+        $this->assertTrue($result2->isValid());
+        $this->assertEquals(['ttl' => 86400], $result2->getData());
+
+        $result3 = $this->ttlValidator->validate(2147483647, $defaultTtl);
+        $this->assertTrue($result3->isValid());
+        $this->assertEquals(['ttl' => 2147483647], $result3->getData());
+
+        $result4 = $this->ttlValidator->validate(0, $defaultTtl);
+        $this->assertTrue($result4->isValid());
+        $this->assertEquals(['ttl' => 0], $result4->getData());
     }
 
     public function testInvalidTtlValues(): void
     {
         $defaultTtl = 3600;
-        $this->assertFalse($this->ttlValidator->isValidTTL(-1, $defaultTtl));
-        $this->assertFalse($this->ttlValidator->isValidTTL(2147483648, $defaultTtl));
-        $this->assertFalse($this->ttlValidator->isValidTTL("invalid", $defaultTtl));
+
+        $result1 = $this->ttlValidator->validate(-1, $defaultTtl);
+        $this->assertFalse($result1->isValid());
+        $this->assertNotEmpty($result1->getErrors());
+
+        $result2 = $this->ttlValidator->validate(2147483648, $defaultTtl);
+        $this->assertFalse($result2->isValid());
+
+        $result3 = $this->ttlValidator->validate("invalid", $defaultTtl);
+        $this->assertFalse($result3->isValid());
     }
 
     public function testTtlIsConvertedToInteger(): void
     {
         $defaultTtl = 3600;
-        $result = $this->ttlValidator->isValidTTL("3600", $defaultTtl);
-        $this->assertIsInt($result);
-        $this->assertEquals(3600, $result);
+        $result = $this->ttlValidator->validate("3600", $defaultTtl);
+        $this->assertTrue($result->isValid());
+        $ttl = $result->getData()['ttl'];
+        $this->assertIsInt($ttl);
+        $this->assertEquals(3600, $ttl);
     }
 }

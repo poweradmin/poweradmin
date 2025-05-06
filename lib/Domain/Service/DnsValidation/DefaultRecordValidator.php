@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Default DNS record validator for record types that don't have specific validation
@@ -35,14 +35,10 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class DefaultRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
-    private MessageService $messageService;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
-        $this->messageService = new MessageService();
         $this->ttlValidator = new TTLValidator($config);
     }
 
@@ -55,34 +51,37 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult Validation result with data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate content - just ensure it's not empty
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('Content field cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('Content field cannot be empty.'));
         }
 
         // Make sure content has valid characters
-        if (!StringValidator::isValidPrintable($content)) {
-            return false;
+        $printableResult = StringValidator::validatePrintable($content);
+        if (!$printableResult->isValid()) {
+            return $printableResult;
         }
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // For generic records, priority is always 0 unless specified
         $priority = ($prio !== '' && $prio !== null) ? (int)$prio : 0;
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
+            'name' => $name,
             'ttl' => $validatedTtl,
-            'priority' => $priority
-        ];
+            'prio' => $priority
+        ]);
     }
 }

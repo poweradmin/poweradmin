@@ -23,8 +23,8 @@
 namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Validator for CSYNC DNS records
@@ -38,7 +38,6 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private MessageService $messageService;
 
     /**
      * Constructor
@@ -49,7 +48,6 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
-        $this->messageService = new MessageService();
     }
 
     /**
@@ -58,44 +56,50 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
      * @param string $content CSYNC record content in format: "SOA_SERIAL FLAGS TYPE1 [TYPE2...]"
      * @param string $name Hostname
      * @param mixed $prio Priority (not used for CSYNC records)
-     * @param int|string $ttl TTL value
+     * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $errors = [];
+
         // Validate hostname
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate CSYNC content format
-        if (!$this->isValidCSYNCContent($content)) {
-            return false;
+        $contentResult = $this->validateCSYNCContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // Validate priority (should be 0 for CSYNC records)
-        $validatedPrio = $this->validatePriority($prio);
-        if ($validatedPrio === false) {
-            $this->messageService->addSystemError(_('Invalid value for prio field.'));
-            return false;
+        $prioResult = $this->validatePriority($prio);
+        if (!$prioResult->isValid()) {
+            return $prioResult;
         }
+        $validatedPrio = $prioResult->getData();
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
-        ];
+        ]);
     }
 
     /**
@@ -104,51 +108,49 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $prio Priority value
      *
-     * @return int|bool 0 if valid, false otherwise
+     * @return ValidationResult<int> ValidationResult containing the validated priority value or error
      */
-    private function validatePriority(mixed $prio): int|bool
+    private function validatePriority(mixed $prio): ValidationResult
     {
         // If priority is not provided or empty, set it to 0
         if (!isset($prio) || $prio === "") {
-            return 0;
+            return ValidationResult::success(0);
         }
 
         // If provided, ensure it's 0 for CSYNC records
         if (is_numeric($prio) && intval($prio) === 0) {
-            return 0;
+            return ValidationResult::success(0);
         }
 
-        return false;
+        return ValidationResult::failure(_('Invalid value for priority field. CSYNC records must have priority value of 0.'));
     }
 
     /**
      * Check if CSYNC content is valid
      *
      * @param string $content CSYNC record content
+     * @param array &$errors Array to collect validation errors
      *
-     * @return boolean true if valid, false otherwise
+     * @return ValidationResult<bool> ValidationResult containing validation result
      */
-    public function isValidCSYNCContent(string $content): bool
+    public function validateCSYNCContent(string $content): ValidationResult
     {
         $fields = preg_split("/\s+/", trim($content));
 
         // Validate SOA Serial (first field)
         if (!isset($fields[0]) || !is_numeric($fields[0]) || $fields[0] < 0 || $fields[0] > 4294967295) {
-            $this->messageService->addSystemError(_('Invalid SOA Serial in CSYNC record.'));
-            return false;
+            return ValidationResult::failure(_('Invalid SOA Serial in CSYNC record.'));
         }
 
         // Validate Flags (second field)
         if (!isset($fields[1]) || !is_numeric($fields[1]) || $fields[1] < 0 || $fields[1] > 3) {
-            $this->messageService->addSystemError(_('Invalid Flags in CSYNC record.'));
-            return false;
+            return ValidationResult::failure(_('Invalid Flags in CSYNC record.'));
         }
 
         // Validate Type Bit Map (remaining fields)
         if (count($fields) <= 2) {
             // At least one type must be specified
-            $this->messageService->addSystemError(_('CSYNC record must specify at least one record type.'));
-            return false;
+            return ValidationResult::failure(_('CSYNC record must specify at least one record type.'));
         }
 
         // Valid record types that can be synchronized
@@ -161,11 +163,22 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
 
         for ($i = 2; $i < count($fields); $i++) {
             if (!in_array(strtoupper($fields[$i]), $validTypes)) {
-                $this->messageService->addSystemError(_('Invalid Type in CSYNC record Type Bit Map.'));
-                return false;
+                return ValidationResult::failure(_('Invalid Type in CSYNC record Type Bit Map.'));
             }
         }
 
-        return true;
+        return ValidationResult::success(true);
+    }
+
+    /**
+     * Validate CSYNC content for public use
+     *
+     * @param string $content CSYNC record content
+     *
+     * @return ValidationResult<bool> ValidationResult containing validation status or error message
+     */
+    public function validateCSYNCRecordContent(string $content): ValidationResult
+    {
+        return $this->validateCSYNCContent($content);
     }
 }

@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Validator for DS (Delegation Signer) DNS records
@@ -37,7 +37,6 @@ class DSRecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private MessageService $messageService;
 
     /**
      * Constructor
@@ -48,7 +47,6 @@ class DSRecordValidator implements DnsRecordValidatorInterface
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
-        $this->messageService = new MessageService();
     }
 
     /**
@@ -60,78 +58,85 @@ class DSRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $ttl TTL value
      * @param int $defaultTTL Default TTL to use if TTL is empty
      *
-     * @return array|bool Returns array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $errors = [];
+
         // Validate the hostname
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate DS record content
-        if (!$this->isValidDSContent($content)) {
-            $this->messageService->addSystemError(_('Invalid DS record content.'));
-            return false;
+        $contentResult = $this->validateDSContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // Priority for DS records should be 0
         if (!empty($prio) && $prio != 0) {
-            $this->messageService->addSystemError(_('Priority field for DS records must be 0 or empty.'));
-            return false;
+            $errors[] = _('Priority field for DS records must be 0 or empty.');
+            return ValidationResult::errors($errors);
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
-            'name' => $hostnameResult['hostname'],
+            'name' => $name,
             'prio' => 0,
             'ttl' => $validatedTtl
-        ];
+        ]);
     }
 
     /**
      * Validate DS record content format
      *
      * @param string $content DS record content
-     * @return bool True if valid, false otherwise
+     *
+     * @return ValidationResult<bool> ValidationResult containing validation status or error message
      */
-    public function isValidDSContent(string $content): bool
+    private function validateDSContent(string $content): ValidationResult
     {
         // DS record format: <key-tag> <algorithm> <digest-type> <digest>
         if (!preg_match('/^([0-9]+) ([0-9]+) ([0-9]+) ([a-f0-9]+)$/i', $content)) {
-            return false;
+            return ValidationResult::failure(_('DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>'));
         }
 
         // Split content into components
         $parts = explode(' ', $content);
         if (count($parts) !== 4) {
-            return false;
+            return ValidationResult::failure(_('DS record must contain exactly 4 fields'));
         }
 
         list($keyTag, $algorithm, $digestType, $digest) = $parts;
 
         // Validate key tag (1-65535)
         if (!is_numeric($keyTag) || $keyTag < 1 || $keyTag > 65535) {
-            return false;
+            return ValidationResult::failure(_('Key tag must be a number between 1 and 65535'));
         }
 
         // Validate algorithm (known DNSSEC algorithms 1-16)
         $validAlgorithms = [1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16];
         if (!in_array((int)$algorithm, $validAlgorithms)) {
-            return false;
+            return ValidationResult::failure(_('Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16'));
         }
 
         // Validate digest type (1 = SHA-1, 2 = SHA-256, 4 = SHA-384)
         $validDigestTypes = [1, 2, 4];
         if (!in_array((int)$digestType, $validDigestTypes)) {
-            return false;
+            return ValidationResult::failure(_('Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)'));
         }
 
         // Validate digest length based on type
@@ -139,21 +144,33 @@ class DSRecordValidator implements DnsRecordValidatorInterface
         switch ((int)$digestType) {
             case 1: // SHA-1
                 if ($digestLength !== 40) {
-                    return false;
+                    return ValidationResult::failure(_('SHA-1 digest must be exactly 40 hexadecimal characters'));
                 }
                 break;
             case 2: // SHA-256
                 if ($digestLength !== 64) {
-                    return false;
+                    return ValidationResult::failure(_('SHA-256 digest must be exactly 64 hexadecimal characters'));
                 }
                 break;
             case 4: // SHA-384
                 if ($digestLength !== 96) {
-                    return false;
+                    return ValidationResult::failure(_('SHA-384 digest must be exactly 96 hexadecimal characters'));
                 }
                 break;
         }
 
-        return true;
+        return ValidationResult::success(true);
+    }
+
+    /**
+     * Validate DS record content format for public use
+     *
+     * @param string $content DS record content
+     *
+     * @return ValidationResult<bool> ValidationResult containing validation status or error message
+     */
+    public function validateDSRecordContent(string $content): ValidationResult
+    {
+        return $this->validateDSContent($content);
     }
 }

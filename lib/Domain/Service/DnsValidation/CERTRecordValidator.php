@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * CERT record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class CERTRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,37 +52,46 @@ class CERTRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the CERT record (type key-tag algorithm cert-data)
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for CERT records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidCERTContent($content)) {
-            return false;
+        $contentResult = $this->validateCERTContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for CERT records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for CERT records must be 0 or empty'));
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // CERT records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -92,15 +99,20 @@ class CERTRecordValidator implements DnsRecordValidatorInterface
      * Format: <type> <key-tag> <algorithm> <certificate-data>
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult with errors or success
      */
-    private function isValidCERTContent(string $content): bool
+    private function validateCERTContent(string $content): ValidationResult
     {
+        // Basic validation of printable characters
+        $printableResult = StringValidator::validatePrintable($content);
+        if (!$printableResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in CERT record content.'));
+        }
+
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content), 4);
         if (count($parts) !== 4) {
-            $this->messageService->addSystemError(_('CERT record must contain type, key-tag, algorithm and certificate-data separated by spaces.'));
-            return false;
+            return ValidationResult::failure(_('CERT record must contain type, key-tag, algorithm and certificate-data separated by spaces.'));
         }
 
         [$type, $keyTag, $algorithm, $certData] = $parts;
@@ -122,21 +134,18 @@ class CERTRecordValidator implements DnsRecordValidatorInterface
         if (is_numeric($type)) {
             $typeValue = (int)$type;
             if ($typeValue < 0 || $typeValue > 65535) {
-                $this->messageService->addSystemError(_('CERT type must be a number between 0 and 65535 or a valid mnemonic.'));
-                return false;
+                return ValidationResult::failure(_('CERT type must be a number between 0 and 65535 or a valid mnemonic.'));
             }
         } elseif (isset($validTypes[strtoupper($type)])) {
             // Type is a valid mnemonic, convert it to a value
             $typeValue = $validTypes[strtoupper($type)];
         } else {
-            $this->messageService->addSystemError(_('CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, SPKI, PGP, etc.).'));
-            return false;
+            return ValidationResult::failure(_('CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, SPKI, PGP, etc.).'));
         }
 
         // Validate key tag (must be a number between 0 and 65535)
         if (!is_numeric($keyTag) || (int)$keyTag < 0 || (int)$keyTag > 65535) {
-            $this->messageService->addSystemError(_('CERT key tag must be a number between 0 and 65535.'));
-            return false;
+            return ValidationResult::failure(_('CERT key tag must be a number between 0 and 65535.'));
         }
 
         // Validate algorithm (must be a number between 0 and 255 or valid algorithm mnemonic)
@@ -158,45 +167,43 @@ class CERTRecordValidator implements DnsRecordValidatorInterface
         if (is_numeric($algorithm)) {
             $algorithmValue = (int)$algorithm;
             if ($algorithmValue < 0 || $algorithmValue > 255) {
-                $this->messageService->addSystemError(_('CERT algorithm must be a number between 0 and 255 or a valid mnemonic.'));
-                return false;
+                return ValidationResult::failure(_('CERT algorithm must be a number between 0 and 255 or a valid mnemonic.'));
             }
         } elseif (isset($validAlgorithms[strtoupper($algorithm)])) {
             // Algorithm is a valid mnemonic, convert it to a value
             $algorithmValue = $validAlgorithms[strtoupper($algorithm)];
         } else {
-            $this->messageService->addSystemError(_('CERT algorithm must be a number between 0 and 255 or a valid mnemonic (RSASHA1, DSA, etc.).'));
-            return false;
+            return ValidationResult::failure(_('CERT algorithm must be a number between 0 and 255 or a valid mnemonic (RSASHA1, DSA, etc.).'));
         }
 
         // Validate certificate data (must be base64-encoded data)
-        if (!$this->isValidBase64($certData)) {
-            $this->messageService->addSystemError(_('CERT certificate data must be valid base64-encoded data.'));
-            return false;
+        $base64Result = $this->validateBase64($certData);
+        if (!$base64Result->isValid()) {
+            return $base64Result;
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
      * Check if a string is valid base64-encoded data
      *
      * @param string $data The data to check
-     * @return bool True if valid base64, false otherwise
+     * @return ValidationResult ValidationResult with errors or success
      */
-    private function isValidBase64(string $data): bool
+    private function validateBase64(string $data): ValidationResult
     {
         // Basic pattern for base64-encoded data (may allow some invalid base64, but is sufficient for basic validation)
         if (!preg_match('/^[A-Za-z0-9+\/=]+$/', $data)) {
-            return false;
+            return ValidationResult::failure(_('CERT certificate data must contain only valid base64 characters.'));
         }
 
         // Try to decode the base64 data
         $decoded = base64_decode($data, true);
         if ($decoded === false) {
-            return false;
+            return ValidationResult::failure(_('CERT certificate data must be valid base64-encoded data.'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

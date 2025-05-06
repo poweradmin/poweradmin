@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * RP (Responsible Person) record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class RPRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -55,41 +53,52 @@ class RPRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the RP record
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for RP records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
-        // Validate the hostname format
+        // Validate hostname
         if (!StringValidator::isValidPrintable($name)) {
-            return false;
+            return ValidationResult::failure(_('Hostname contains invalid characters.'));
         }
 
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidRPContent($content)) {
-            return false;
+        $contentResult = $this->validateRPContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
 
-        return [
+        // Handle both array format and direct value format
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for RP records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for RP records must be 0 or empty'));
+        }
+
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // RP records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -97,41 +106,41 @@ class RPRecordValidator implements DnsRecordValidatorInterface
      * Format: <mailbox-domain> <txt-record-domain>
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult with success or errors
      */
-    private function isValidRPContent(string $content): bool
+    private function validateRPContent(string $content): ValidationResult
     {
         // Check if empty
         if (empty(trim($content))) {
-            $this->messageService->addSystemError(_('RP record content cannot be empty.'));
-            return false;
+            return ValidationResult::failure(_('RP record content cannot be empty.'));
         }
 
         // Check for valid printable characters
         if (!StringValidator::isValidPrintable($content)) {
-            return false;
+            return ValidationResult::failure(_('RP record contains invalid characters.'));
         }
 
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content));
         if (count($parts) !== 2) {
-            $this->messageService->addSystemError(_('RP record must contain mailbox-domain and txt-record-domain.'));
-            return false;
+            return ValidationResult::failure(_('RP record must contain mailbox-domain and txt-record-domain.'));
         }
 
         [$mailboxDomain, $txtDomain] = $parts;
 
         // Validate mailbox domain
-        if (!$this->isValidMailboxDomain($mailboxDomain)) {
-            return false;
+        $mailboxResult = $this->validateMailboxDomain($mailboxDomain);
+        if (!$mailboxResult->isValid()) {
+            return $mailboxResult;
         }
 
         // Validate TXT domain reference
-        if (!$this->isValidTxtDomain($txtDomain)) {
-            return false;
+        $txtResult = $this->validateTxtDomain($txtDomain);
+        if (!$txtResult->isValid()) {
+            return $txtResult;
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
@@ -139,19 +148,18 @@ class RPRecordValidator implements DnsRecordValidatorInterface
      * This should be a valid domain with a mailbox name or a "." for none
      *
      * @param string $mailboxDomain The mailbox domain to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult with success or errors
      */
-    private function isValidMailboxDomain(string $mailboxDomain): bool
+    private function validateMailboxDomain(string $mailboxDomain): ValidationResult
     {
         // The mailbox domain can be a "." to indicate "none"
         if ($mailboxDomain === '.') {
-            return true;
+            return ValidationResult::success(true);
         }
 
         // Check for valid FQDN by seeing if it ends with a dot
         if (!str_ends_with($mailboxDomain, '.')) {
-            $this->messageService->addSystemError(_('RP mailbox domain must be a fully qualified domain name (end with a dot).'));
-            return false;
+            return ValidationResult::failure(_('RP mailbox domain must be a fully qualified domain name (end with a dot).'));
         }
 
         // Check for valid hostname format
@@ -159,12 +167,11 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         $mailboxParts = explode('.', $mailboxDomain);
         foreach ($mailboxParts as $part) {
             if (empty($part) || !preg_match('/^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/', $part)) {
-                $this->messageService->addSystemError(_('RP mailbox domain contains invalid characters.'));
-                return false;
+                return ValidationResult::failure(_('RP mailbox domain contains invalid characters.'));
             }
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
@@ -172,19 +179,18 @@ class RPRecordValidator implements DnsRecordValidatorInterface
      * This should be a valid domain reference or a "." for none
      *
      * @param string $txtDomain The TXT domain reference to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult with success or errors
      */
-    private function isValidTxtDomain(string $txtDomain): bool
+    private function validateTxtDomain(string $txtDomain): ValidationResult
     {
         // The TXT domain can be a "." to indicate "none"
         if ($txtDomain === '.') {
-            return true;
+            return ValidationResult::success(true);
         }
 
         // Check for valid FQDN by seeing if it ends with a dot
         if (!str_ends_with($txtDomain, '.')) {
-            $this->messageService->addSystemError(_('RP TXT domain must be a fully qualified domain name (end with a dot).'));
-            return false;
+            return ValidationResult::failure(_('RP TXT domain must be a fully qualified domain name (end with a dot).'));
         }
 
         // Check for valid hostname format
@@ -192,11 +198,10 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         $txtParts = explode('.', $txtDomain);
         foreach ($txtParts as $part) {
             if (empty($part) || !preg_match('/^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?$/', $part)) {
-                $this->messageService->addSystemError(_('RP TXT domain contains invalid characters.'));
-                return false;
+                return ValidationResult::failure(_('RP TXT domain contains invalid characters.'));
             }
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

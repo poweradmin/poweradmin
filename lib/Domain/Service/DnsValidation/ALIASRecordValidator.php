@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Validator for ALIAS DNS records
@@ -37,7 +37,6 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
 {
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private MessageService $messageService;
     private ConfigurationManager $config;
 
     /**
@@ -49,7 +48,6 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
     {
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
-        $this->messageService = new MessageService();
         $this->config = $config;
     }
 
@@ -59,46 +57,56 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
      * @param string $content Target hostname
      * @param string $name ALIAS hostname
      * @param mixed $prio Priority (not used for ALIAS records)
-     * @param int|string $ttl TTL value
+     * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $errors = [];
+
         // 1. Validate ALIAS hostname
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $nameResult = $this->hostnameValidator->validate($name, true);
+        if (!$nameResult->isValid()) {
+            return $nameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $nameData = $nameResult->getData();
+        $name = $nameData['hostname'];
 
         // 2. Validate target hostname
-        $contentHostnameResult = $this->hostnameValidator->isValidHostnameFqdn($content, 0);
-        if ($contentHostnameResult === false) {
-            return false;
+        $contentResult = $this->hostnameValidator->validate($content, false);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
-        $content = $contentHostnameResult['hostname'];
+        $contentData = $contentResult->getData();
+        $content = $contentData['hostname'];
 
         // 3. Validate TTL
-        $validatedTtl = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTtl === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData; // Extract the ttl value
 
         // 4. Validate priority (should be 0 for ALIAS records)
-        $validatedPrio = $this->validatePriority($prio);
-        if ($validatedPrio === false) {
-            $this->messageService->addSystemError(_('Invalid value for prio field.'));
-            return false;
+        $prioResult = $this->validatePriority($prio);
+        if (!$prioResult->isValid()) {
+            return $prioResult;
+        }
+        $validatedPrio = $prioResult->getData();
+
+        if (!empty($errors)) {
+            return ValidationResult::errors($errors);
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
-        ];
+        ]);
     }
 
     /**
@@ -107,20 +115,20 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $prio Priority value
      *
-     * @return int|bool 0 if valid, false otherwise
+     * @return ValidationResult<int> ValidationResult with validated priority or error message
      */
-    private function validatePriority(mixed $prio): int|bool
+    private function validatePriority(mixed $prio): ValidationResult
     {
         // If priority is not provided or empty, set it to 0
         if (!isset($prio) || $prio === "") {
-            return 0;
+            return ValidationResult::success(0);
         }
 
         // If provided, ensure it's 0 for ALIAS records
         if (is_numeric($prio) && intval($prio) === 0) {
-            return 0;
+            return ValidationResult::success(0);
         }
 
-        return false;
+        return ValidationResult::failure(_('Invalid value for priority field. ALIAS records must have priority value of 0.'));
     }
 }

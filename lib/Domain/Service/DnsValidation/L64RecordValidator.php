@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * L64 record validator
@@ -35,15 +35,11 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class L64RecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -60,37 +56,41 @@ class L64RecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult Validation result with data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidL64Content($content)) {
-            return false;
+        $contentResult = $this->validateL64Content($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
         }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // Use the provided priority if available, otherwise extract from content
         $priority = ($prio !== '' && $prio !== null) ? (int)$prio : $this->extractPreferenceFromContent($content);
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $priority,
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -99,32 +99,29 @@ class L64RecordValidator implements DnsRecordValidatorInterface
      * The locator64 is the lower 64 bits of an IPv6 address.
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult Validation result with success or error message
      */
-    private function isValidL64Content(string $content): bool
+    private function validateL64Content(string $content): ValidationResult
     {
         // Split the content into parts
         $parts = preg_split('/\s+/', trim($content));
         if (count($parts) !== 2) {
-            $this->messageService->addSystemError(_('L64 record must contain preference and locator64 separated by space.'));
-            return false;
+            return ValidationResult::failure(_('L64 record must contain preference and locator64 separated by space.'));
         }
 
         [$preference, $locator64] = $parts;
 
         // Validate preference (0-65535)
         if (!is_numeric($preference) || (int)$preference < 0 || (int)$preference > 65535) {
-            $this->messageService->addSystemError(_('L64 preference must be a number between 0 and 65535.'));
-            return false;
+            return ValidationResult::failure(_('L64 preference must be a number between 0 and 65535.'));
         }
 
         // Validate locator64 (must be a valid 64-bit IPv6 address part)
         if (!$this->isValid64BitHex($locator64)) {
-            $this->messageService->addSystemError(_('L64 locator must be a valid 64-bit hexadecimal IPv6 address segment (e.g., 2001:0db8:1140:1000).'));
-            return false;
+            return ValidationResult::failure(_('L64 locator must be a valid 64-bit hexadecimal IPv6 address segment (e.g., 2001:0db8:1140:1000).'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**

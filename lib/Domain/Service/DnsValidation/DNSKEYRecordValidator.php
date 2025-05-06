@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * DNSKEY record validator
@@ -35,15 +35,11 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class DNSKEYRecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -57,34 +53,43 @@ class DNSKEYRecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult Validation result with data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidDNSKEYContent($content)) {
-            return false;
+        $contentResult = $this->validateDNSKEYContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Priority for DNSKEY records should be 0
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for DNSKEY records must be 0 or empty.'));
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // DNSKEY records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -92,66 +97,62 @@ class DNSKEYRecordValidator implements DnsRecordValidatorInterface
      * Format: <flags> <protocol> <algorithm> <public-key>
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult Validation result with success or error message
      */
-    private function isValidDNSKEYContent(string $content): bool
+    private function validateDNSKEYContent(string $content): ValidationResult
     {
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content), 4);
         if (count($parts) !== 4) {
-            $this->messageService->addSystemError(_('DNSKEY record must contain flags, protocol, algorithm and public-key separated by spaces.'));
-            return false;
+            return ValidationResult::failure(_('DNSKEY record must contain flags, protocol, algorithm and public-key separated by spaces.'));
         }
 
         [$flags, $protocol, $algorithm, $publicKey] = $parts;
 
         // Validate flags (must be 0, 256, or 257)
         if (!is_numeric($flags) || !in_array((int)$flags, [0, 256, 257])) {
-            $this->messageService->addSystemError(_('DNSKEY flags must be 0, 256, or 257.'));
-            return false;
+            return ValidationResult::failure(_('DNSKEY flags must be 0, 256, or 257.'));
         }
 
         // Validate protocol (must be 3)
         if (!is_numeric($protocol) || (int)$protocol !== 3) {
-            $this->messageService->addSystemError(_('DNSKEY protocol must be 3.'));
-            return false;
+            return ValidationResult::failure(_('DNSKEY protocol must be 3.'));
         }
 
         // Validate algorithm (must be a number between 1 and 16)
         $validAlgorithms = range(1, 16);
         if (!is_numeric($algorithm) || !in_array((int)$algorithm, $validAlgorithms)) {
-            $this->messageService->addSystemError(_('DNSKEY algorithm must be a number between 1 and 16.'));
-            return false;
+            return ValidationResult::failure(_('DNSKEY algorithm must be a number between 1 and 16.'));
         }
 
         // Validate public key (must be valid base64-encoded data)
-        if (!$this->isValidBase64($publicKey)) {
-            $this->messageService->addSystemError(_('DNSKEY public key must be valid base64-encoded data.'));
-            return false;
+        $base64Result = $this->validateBase64($publicKey);
+        if (!$base64Result->isValid()) {
+            return ValidationResult::failure(_('DNSKEY public key must be valid base64-encoded data.'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 
     /**
      * Check if a string is valid base64-encoded data
      *
      * @param string $data The data to check
-     * @return bool True if valid base64, false otherwise
+     * @return ValidationResult Validation result with success or error message
      */
-    private function isValidBase64(string $data): bool
+    private function validateBase64(string $data): ValidationResult
     {
         // Basic pattern for base64-encoded data
         if (!preg_match('/^[A-Za-z0-9+\/=]+$/', $data)) {
-            return false;
+            return ValidationResult::failure(_('Invalid base64 characters detected.'));
         }
 
         // Try to decode the base64 data
         $decoded = base64_decode($data, true);
         if ($decoded === false) {
-            return false;
+            return ValidationResult::failure(_('Invalid base64 encoding.'));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

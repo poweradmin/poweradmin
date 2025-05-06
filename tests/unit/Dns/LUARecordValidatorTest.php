@@ -23,18 +23,55 @@
 namespace Poweradmin\Tests\Unit\Dns;
 
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\LUARecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use ReflectionProperty;
 
 class LUARecordValidatorTest extends TestCase
 {
     private LUARecordValidator $validator;
     private ConfigurationManager $configMock;
+    private TTLValidator $ttlValidatorMock;
+    private HostnameValidator $hostnameValidatorMock;
 
     protected function setUp(): void
     {
         $this->configMock = $this->createMock(ConfigurationManager::class);
+        $this->configMock->method('get')
+            ->willReturn('example.com');
+
+        // Create a mock hostname validator that will pass validation
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->method('validate')
+            ->willReturn(ValidationResult::success(['hostname' => 'lua.example.com']));
+
+        // Mock TTL validator
+        $this->ttlValidatorMock = $this->createMock(TTLValidator::class);
+        $this->ttlValidatorMock->method('validate')
+            ->willReturnCallback(function ($ttl, $defaultTTL) {
+                if ($ttl === -1) {
+                    return ValidationResult::failure('Invalid TTL value');
+                }
+                if (empty($ttl)) {
+                    return ValidationResult::success($defaultTTL);
+                }
+                return ValidationResult::success($ttl);
+            });
+
         $this->validator = new LUARecordValidator($this->configMock);
+
+        // Inject the mock hostname validator
+        $reflectionProperty = new ReflectionProperty(LUARecordValidator::class, 'hostnameValidator');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
+        // Inject the mock TTL validator
+        $reflectionProperty = new ReflectionProperty(LUARecordValidator::class, 'ttlValidator');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($this->validator, $this->ttlValidatorMock);
     }
 
     /**
@@ -52,10 +89,12 @@ class LUARecordValidatorTest extends TestCase
             86400                   // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals($validLuaScript, $result['content']);
-        $this->assertEquals(3600, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $data = $result->getData();
+        $this->assertEquals($validLuaScript, $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
@@ -71,7 +110,8 @@ class LUARecordValidatorTest extends TestCase
             86400                    // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('cannot be empty', $result->getFirstError());
     }
 
     /**
@@ -90,7 +130,8 @@ class LUARecordValidatorTest extends TestCase
             86400                    // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('valid Lua function', $result->getFirstError());
     }
 
     /**
@@ -109,7 +150,8 @@ class LUARecordValidatorTest extends TestCase
             86400                    // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('valid Lua function', $result->getFirstError());
     }
 
     /**
@@ -127,7 +169,8 @@ class LUARecordValidatorTest extends TestCase
             86400                    // defaultTTL
         );
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid TTL value', $result->getFirstError());
     }
 
     /**
@@ -145,9 +188,49 @@ class LUARecordValidatorTest extends TestCase
             86400                    // defaultTTL
         );
 
-        $this->assertIsArray($result);
-        $this->assertEquals($validLuaScript, $result['content']);
-        $this->assertEquals(86400, $result['ttl']);
-        $this->assertEquals(0, $result['priority']);
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($validLuaScript, $data['content']);
+        $this->assertEquals(86400, $data['ttl']);
+        $this->assertEquals(0, $data['prio']);
+    }
+
+    /**
+     * Test validation with invalid priority
+     */
+    public function testValidateWithInvalidPriority(): void
+    {
+        $validLuaScript = 'function luaExample(dname, ip) return "192.0.2.1" end';
+
+        $result = $this->validator->validate(
+            $validLuaScript,         // content
+            'lua.example.com',       // name
+            10,                      // non-zero prio
+            3600,                    // ttl
+            86400                    // defaultTTL
+        );
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Priority field', $result->getFirstError());
+    }
+
+    /**
+     * Test with invalid printable characters
+     */
+    public function testValidateWithInvalidPrintableCharacters(): void
+    {
+        // Using a string with non-printable control characters
+        $invalidLuaScript = "function luaExample(dname, ip)\n\x01return \"192.0.2.1\"\nend";
+
+        $result = $this->validator->validate(
+            $invalidLuaScript,       // invalid content with control char
+            'lua.example.com',       // name
+            '',                      // prio
+            3600,                    // ttl
+            86400                    // defaultTTL
+        );
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Invalid characters', $result->getFirstError());
     }
 }

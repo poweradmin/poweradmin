@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * EUI64 record validator
@@ -35,15 +35,11 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class EUI64RecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -57,46 +53,57 @@ class EUI64RecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult Validation result with data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content - should be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx format
-        if (!$this->isValidEUI64($content)) {
-            $this->messageService->addSystemError(_('EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx format (where x is a hexadecimal digit).'));
-            return false;
+        $contentResult = $this->validateEUI64($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for EUI64 records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for EUI64 records must be 0 or empty.'));
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // EUI64 records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
-     * Check if a string is a valid EUI-64 address
+     * Validate an EUI-64 address
      *
      * @param string $data The data to check
-     * @return bool True if valid EUI-64, false otherwise
+     * @return ValidationResult Validation result with success or error message
      */
-    private function isValidEUI64(string $data): bool
+    private function validateEUI64(string $data): ValidationResult
     {
         // EUI-64 format: xx-xx-xx-xx-xx-xx-xx-xx where x is a hexadecimal digit
-        return (bool) preg_match('/^([0-9a-fA-F]{2}-){7}[0-9a-fA-F]{2}$/', $data);
+        if (preg_match('/^([0-9a-fA-F]{2}-){7}[0-9a-fA-F]{2}$/', $data)) {
+            return ValidationResult::success(true);
+        }
+        return ValidationResult::failure(_('EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx format (where x is a hexadecimal digit).'));
     }
 }

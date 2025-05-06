@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * CDS record validator
@@ -36,14 +36,12 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class CDSRecordValidator implements DnsRecordValidatorInterface
 {
     private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -54,37 +52,46 @@ class CDSRecordValidator implements DnsRecordValidatorInterface
      * @param string $content The content of the CDS record (key-tag algorithm digest-type digest)
      * @param string $name The name of the record
      * @param mixed $prio The priority (unused for CDS records)
-     * @param int|string $ttl The TTL value
+     * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content
-        if (!$this->isValidCDSContent($content)) {
-            return false;
+        $contentResult = $this->validateCDSContent($content);
+        if (!$contentResult->isValid()) {
+            return $contentResult;
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Validate priority (should be 0 for CDS records)
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for CDS records must be 0 or empty'));
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // CDS records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 
     /**
@@ -92,42 +99,44 @@ class CDSRecordValidator implements DnsRecordValidatorInterface
      * Format: <key-tag> <algorithm> <digest-type> <digest>
      *
      * @param string $content The content to validate
-     * @return bool True if valid, false otherwise
+     * @return ValidationResult ValidationResult with errors or success
      */
-    private function isValidCDSContent(string $content): bool
+    private function validateCDSContent(string $content): ValidationResult
     {
+        // Basic validation of printable characters
+        $printableResult = StringValidator::validatePrintable($content);
+        if (!$printableResult->isValid()) {
+            return ValidationResult::failure(_('Invalid characters in CDS record content.'));
+        }
+
         // Special case for CDS deletion record
         if (trim($content) === '0 0 0 00') {
-            return true;
+            return ValidationResult::success(true);
         }
 
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content), 4);
         if (count($parts) !== 4) {
-            $this->messageService->addSystemError(_('CDS record must contain key-tag, algorithm, digest-type and digest separated by spaces.'));
-            return false;
+            return ValidationResult::failure(_('CDS record must contain key-tag, algorithm, digest-type and digest separated by spaces.'));
         }
 
         [$keyTag, $algorithm, $digestType, $digest] = $parts;
 
         // Validate key tag (must be a number between 0 and 65535)
         if (!is_numeric($keyTag) || (int)$keyTag < 0 || (int)$keyTag > 65535) {
-            $this->messageService->addSystemError(_('CDS key tag must be a number between 0 and 65535.'));
-            return false;
+            return ValidationResult::failure(_('CDS key tag must be a number between 0 and 65535.'));
         }
 
         // Validate algorithm (must be a number between 1 and 16)
         $validAlgorithms = range(1, 16);
         if (!is_numeric($algorithm) || !in_array((int)$algorithm, $validAlgorithms)) {
-            $this->messageService->addSystemError(_('CDS algorithm must be a number between 1 and 16.'));
-            return false;
+            return ValidationResult::failure(_('CDS algorithm must be a number between 1 and 16.'));
         }
 
         // Validate digest type (must be 1, 2, or 4)
         $validDigestTypes = [1, 2, 4];
         if (!is_numeric($digestType) || !in_array((int)$digestType, $validDigestTypes)) {
-            $this->messageService->addSystemError(_('CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384).'));
-            return false;
+            return ValidationResult::failure(_('CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384).'));
         }
 
         // Validate digest (hex string)
@@ -147,10 +156,9 @@ class CDSRecordValidator implements DnsRecordValidatorInterface
 
         // Check if digest is a valid hex string of the expected length
         if (!ctype_xdigit($digest) || strlen($digest) !== $expectedLength) {
-            $this->messageService->addSystemError(sprintf(_('CDS digest must be a valid hex string of length %d for the selected digest type.'), $expectedLength));
-            return false;
+            return ValidationResult::failure(sprintf(_('CDS digest must be a valid hex string of length %d for the selected digest type.'), $expectedLength));
         }
 
-        return true;
+        return ValidationResult::success(true);
     }
 }

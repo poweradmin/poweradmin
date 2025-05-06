@@ -39,11 +39,21 @@ class MINFORecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($content, $result['content']);
-        $this->assertEquals($name, $result['name']);
-        $this->assertEquals(0, $result['prio']); // MINFO sets priority to 0
-        $this->assertEquals($ttl, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($content, $data['content']);
+
+        $this->assertEquals($name, $data['name']);
+        $data = $result->getData();
+
+        $this->assertEquals(0, $data['prio']); // MINFO sets priority to 0
+
+        $this->assertEquals($ttl, $data['ttl']);
     }
 
     public function testInvalidContent()
@@ -56,7 +66,10 @@ class MINFORecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testInvalidResponsibleMailbox()
@@ -69,7 +82,10 @@ class MINFORecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testInvalidErrorMailbox()
@@ -82,7 +98,10 @@ class MINFORecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testInvalidDomainName()
@@ -95,7 +114,10 @@ class MINFORecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testEmptyContent()
@@ -108,7 +130,10 @@ class MINFORecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testInvalidTTL()
@@ -121,7 +146,10 @@ class MINFORecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result);
+        $this->assertFalse($result->isValid());
+
+
+        $this->assertNotEmpty($result->getErrors());
     }
 
     public function testDefaultTTL()
@@ -134,7 +162,13 @@ class MINFORecordValidatorTest extends BaseDnsTest
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertIsArray($result);
-        $this->assertEquals($defaultTTL, $result['ttl']);
+        $this->assertTrue($result->isValid());
+
+
+        $this->assertEmpty($result->getErrors());
+        $data = $result->getData();
+        $data = $result->getData();
+
+        $this->assertEquals($defaultTTL, $data['ttl']);
     }
 }

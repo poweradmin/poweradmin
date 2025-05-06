@@ -22,8 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * DNAME record validator
@@ -35,15 +35,11 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class DNAMERecordValidator implements DnsRecordValidatorInterface
 {
-    private ConfigurationManager $config;
-    private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
 
     public function __construct(ConfigurationManager $config)
     {
-        $this->config = $config;
-        $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
     }
@@ -57,42 +53,49 @@ class DNAMERecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return array|bool Array with validated data or false if validation fails
+     * @return ValidationResult Validation result with data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): array|bool
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         // Validate hostname/name
-        $hostnameResult = $this->hostnameValidator->isValidHostnameFqdn($name, 1);
-        if ($hostnameResult === false) {
-            return false;
+        $hostnameResult = $this->hostnameValidator->validate($name, true);
+        if (!$hostnameResult->isValid()) {
+            return $hostnameResult;
         }
-        $name = $hostnameResult['hostname'];
+        $hostnameData = $hostnameResult->getData();
+        $name = $hostnameData['hostname'];
 
         // Validate content - DNAME target should be a valid domain name
-        $contentResult = $this->hostnameValidator->isValidHostnameFqdn($content, 1);
-        if ($contentResult === false) {
-            $this->messageService->addSystemError(_('DNAME target must be a valid fully-qualified domain name.'));
-            return false;
+        $contentResult = $this->hostnameValidator->validate($content, true);
+        if (!$contentResult->isValid()) {
+            return ValidationResult::failure(_('DNAME target must be a valid fully-qualified domain name.'));
         }
-        $content = $contentResult['hostname'];
+        $contentData = $contentResult->getData();
+        $content = $contentData['hostname'];
 
         // DNAME can't point to the same name
         if (strtolower($name) === strtolower($content)) {
-            $this->messageService->addSystemError(_('DNAME record cannot point to itself.'));
-            return false;
+            return ValidationResult::failure(_('DNAME record cannot point to itself.'));
         }
 
         // Validate TTL
-        $validatedTTL = $this->ttlValidator->isValidTTL($ttl, $defaultTTL);
-        if ($validatedTTL === false) {
-            return false;
+        $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
+        if (!$ttlResult->isValid()) {
+            return $ttlResult;
+        }
+        $ttlData = $ttlResult->getData();
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
+
+        // Priority for DNAME records should be 0
+        if (!empty($prio) && $prio != 0) {
+            return ValidationResult::failure(_('Priority field for DNAME records must be 0 or empty.'));
         }
 
-        return [
+        return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => 0, // DNAME records don't use priority
-            'ttl' => $validatedTTL
-        ];
+            'ttl' => $validatedTtl
+        ]);
     }
 }
