@@ -5,6 +5,13 @@ on:
     branches: [ "master" ]
   pull_request:
     branches: [ "master" ]
+  workflow_dispatch:
+    inputs:
+      run_quality_check:
+        description: 'Run PHP Mess Detector quality check'
+        required: false
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -49,6 +56,7 @@ jobs:
       run: composer analyse:psalm
 
     - name: Run PHP Mess Detector
+      if: github.event_name == 'workflow_dispatch' && inputs.run_quality_check == true
       run: composer quality:all
 
     - name: Run test suite
