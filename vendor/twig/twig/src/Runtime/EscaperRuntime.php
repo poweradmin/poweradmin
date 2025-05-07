@@ -106,7 +106,7 @@ final class EscaperRuntime implements RuntimeExtensionInterface
         if (!\is_string($string)) {
             if ($string instanceof \Stringable) {
                 if ($autoescape) {
-                    $c = \get_class($string);
+                    $c = $string::class;
                     if (!isset($this->safeClasses[$c])) {
                         $this->safeClasses[$c] = [];
                         foreach (class_parents($string) + class_implements($string) as $class) {
@@ -124,7 +124,7 @@ final class EscaperRuntime implements RuntimeExtensionInterface
                 }
 
                 $string = (string) $string;
-            } elseif (\in_array($strategy, ['html', 'js', 'css', 'html_attr', 'url'])) {
+            } elseif (\in_array($strategy, ['html', 'js', 'css', 'html_attr', 'url'], true)) {
                 // we return the input as is (which can be of any type)
                 return $string;
             }

@@ -26,7 +26,7 @@
     "ext-gettext": "*",
     "ext-openssl": "*",
     "ext-pdo": "*",
-    "twig/twig": "^3.20.0",
+    "twig/twig": "^3.21.1",
     "symfony/twig-bridge": "^6.4.20",
     "symfony/translation": "^6.4.19",
     "twbs/bootstrap": "^5.3.5",
