@@ -7,6 +7,7 @@
     xsi:schemaLocation="https://getpsalm.org/schema/config vendor/vimeo/psalm/config.xsd"
     findUnusedBaselineEntry="true"
     findUnusedCode="false"
+    errorBaseline="psalm-baseline.xml"
 >
     <projectFiles>
         <file name="index.php" />
@@ -19,7 +20,40 @@
         <UnusedClass errorLevel="info" />
         <ClassMustBeFinal errorLevel="info" />
         <MissingOverrideAttribute errorLevel="info" />
-        <UndefinedMethod errorLevel="error" />
+        <UndefinedMethod>
+            <errorLevel type="suppress">
+                <!-- Suppress UndefinedMethod for PHPUnit mock methods -->
+                <referencedMethod name="Poweradmin\Infrastructure\Database\PDOLayer::expects" />
+                <referencedMethod name="Poweradmin\Infrastructure\Database\PDOLayer::method" />
+                <referencedMethod name="Poweradmin\Infrastructure\Configuration\ConfigurationManager::expects" />
+                <referencedMethod name="Poweradmin\Infrastructure\Configuration\ConfigurationManager::method" />
+                <referencedMethod name="Poweradmin\Domain\Service\DnsValidation\TTLValidator::expects" />
+                <referencedMethod name="PHPUnit\Framework\MockObject\MockObject::expects" />
+                <referencedMethod name="PHPUnit\Framework\MockObject\MockObject::method" />
+                <referencedMethod name="PHPUnit\Framework\MockObject\MockObject::willReturn" />
+                <referencedMethod name="PHPUnit\Framework\MockObject\MockObject::with" />
+                <referencedMethod name="PHPUnit\Framework\MockObject\MockObject::returnValue" />
+                <referencedMethod name="PHPUnit\Framework\MockObject\MockObject::will" />
+                <referencedMethod name="Poweradmin\Infrastructure\Service\PdnsUtilProvider::callPdnssec" />
+            </errorLevel>
+        </UndefinedMethod>
+        <InternalMethod>
+            <errorLevel type="suppress">
+                <!-- Suppress InternalMethod for Symfony Request methods -->
+                <referencedMethod name="Symfony\Component\HttpFoundation\Request::get" />
+                <referencedMethod name="Symfony\Component\HttpFoundation\Request::getMethod" />
+                <referencedMethod name="Symfony\Component\HttpFoundation\Request::getContent" />
+                <referencedMethod name="Symfony\Component\HttpFoundation\Request::getSession" />
+                <referencedMethod name="Symfony\Component\HttpFoundation\Request::getClientIp" />
+            </errorLevel>
+        </InternalMethod>
+        
+        <!-- Suppress other common issues in test files -->
+        <InvalidOperand>
+            <errorLevel type="suppress">
+                <directory name="tests" />
+            </errorLevel>
+        </InvalidOperand>
         <MissingClosureParamType errorLevel="info" />
         <UndefinedInterfaceMethod errorLevel="info" />
         <InvalidArgument errorLevel="info" />

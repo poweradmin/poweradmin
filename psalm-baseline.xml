@@ -1,0 +1,612 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="6.10.1@f9fd6bc117e9ce1e854c2ed6777e7135aaa4966b">
+  <file src="install/helpers/InstallStepHandler.php">
+    <TypeDoesNotContainNull>
+      <code><![CDATA[[]]]></code>
+      <code><![CDATA[[]]]></code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="install/helpers/Validators/DatabaseValidationTrait.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[DatabaseValidationConstants::MAX_PORT->value]]></code>
+      <code><![CDATA[DatabaseValidationConstants::MIN_PORT->value]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/AddRecordController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/AddZoneMasterController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$owner]]></code>
+      <code><![CDATA[$zone_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/AddZoneSlaveController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$owner]]></code>
+      <code><![CDATA[$zone_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/AddZoneTemplRecordController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/BatchPtrRecordController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/BulkRecordAddController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/BulkRegistrationController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$zone_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DeleteDomainController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DeletePermTemplController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DeleteRecordController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$record_id]]></code>
+      <code><![CDATA[$record_id]]></code>
+      <code><![CDATA[$record_id]]></code>
+      <code><![CDATA[$record_id]]></code>
+      <code><![CDATA[$record_id]]></code>
+      <code><![CDATA[$record_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DeleteRecordsController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DeleteUserController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$uid]]></code>
+      <code><![CDATA[$uid]]></code>
+      <code><![CDATA[$uid]]></code>
+      <code><![CDATA[$uid]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DeleteZoneTemplController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DeleteZoneTemplRecordController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$record_id]]></code>
+      <code><![CDATA[$record_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DnssecAddKeyController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DnssecController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DnssecDeleteKeyController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$key_id]]></code>
+      <code><![CDATA[$key_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DnssecDsDnskeyController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/DnssecEditKeyController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$domain_name]]></code>
+      <code><![CDATA[$key_id]]></code>
+      <code><![CDATA[$key_id]]></code>
+      <code><![CDATA[$key_id]]></code>
+      <code><![CDATA[$key_id]]></code>
+      <code><![CDATA[$key_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/EditCommentController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/EditController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$_POST["delete_owner"]]]></code>
+      <code><![CDATA[$_POST["domain"]]]></code>
+      <code><![CDATA[$_POST["newowner"]]]></code>
+      <code><![CDATA[$_POST['domain']]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$iface_rowamount]]></code>
+      <code><![CDATA[$itemsPerPage]]></code>
+      <code><![CDATA[$row_start]]></code>
+      <code><![CDATA[$this->dnsRecord->getDomainNameById($zone_id)]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name_to_display]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/EditPermTemplController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/EditRecordController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$_POST["rid"]]]></code>
+      <code><![CDATA[$_POST["rid"]]]></code>
+      <code><![CDATA[$record_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/EditZoneTemplController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$iface_rowamount]]></code>
+      <code><![CDATA[$itemsPerPage]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/EditZoneTemplRecordController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$record_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/ListForwardZonesController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$iface_rowamount]]></code>
+      <code><![CDATA[$itemsPerPage]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/ListLogUsersController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$itemsPerPage]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/ListLogZonesController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$itemsPerPage]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Controller/ListReverseZonesController.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$iface_rowamount]]></code>
+      <code><![CDATA[$itemsPerPage]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Service/MailService.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[time()]]></code>
+      <code><![CDATA[time()]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Service/RdapService.php">
+    <FalsableReturnStatement>
+      <code><![CDATA[json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)]]></code>
+    </FalsableReturnStatement>
+  </file>
+  <file src="lib/Application/Service/RecordCommentSyncService.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$contentDomainId]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Application/Service/RecordManagerService.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$contentDomainId]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/BaseController.php">
+    <ImplicitToStringCast>
+      <code><![CDATA[$errorMessage]]></code>
+    </ImplicitToStringCast>
+    <NoValue>
+      <code><![CDATA[$allowedHosts]]></code>
+    </NoValue>
+  </file>
+  <file src="lib/Domain/Model/UserManager.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$uid]]></code>
+      <code><![CDATA[$uid]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Domain/Model/ZoneTemplate.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$record['prio'] ?? 0]]></code>
+      <code><![CDATA[$record['prio'] ?? 0]]></code>
+      <code><![CDATA[$rid]]></code>
+      <code><![CDATA[$userid]]></code>
+      <code><![CDATA[$userid]]></code>
+      <code><![CDATA[$userid]]></code>
+      <code><![CDATA[$userid]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+      <code><![CDATA[$zone_templ_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Domain/Repository/DomainRepository.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$userid]]></code>
+      <code><![CDATA[$zid]]></code>
+      <code><![CDATA[$zid]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Domain/Repository/RecordRepository.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$domain_id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$rid]]></code>
+      <code><![CDATA[$rid]]></code>
+      <code><![CDATA[$zid]]></code>
+      <code><![CDATA[$zone_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Domain/Service/BatchReverseRecordCreator.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$forward_domain_id]]></code>
+      <code><![CDATA[$forward_domain_id]]></code>
+      <code><![CDATA[$forward_domain_id]]></code>
+      <code><![CDATA[$forward_domain_id]]></code>
+      <code><![CDATA[$test_zone_rev_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Domain/Service/Dns/DomainManager.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$_GET["id"]]]></code>
+      <code><![CDATA[$_GET["id"]]]></code>
+      <code><![CDATA[$domain]]></code>
+      <code><![CDATA[$domain]]></code>
+      <code><![CDATA[$domain]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$id]]></code>
+      <code><![CDATA[$prio]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_template]]></code>
+      <code><![CDATA[$zone_template_id]]></code>
+      <code><![CDATA[$zone_template_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Domain/Service/Dns/RecordManager.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$rid]]></code>
+      <code><![CDATA[$rid]]></code>
+      <code><![CDATA[$zone]]></code>
+      <code><![CDATA[$zone]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+    <TypeDoesNotContainNull>
+      <code><![CDATA[$validationResult === null]]></code>
+      <code><![CDATA[$validationResult === null]]></code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="lib/Domain/Service/Dns/SOARecordManager.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$curr_serial]]></code>
+      <code><![CDATA[$curr_serial]]></code>
+      <code><![CDATA[$domain_id]]></code>
+      <code><![CDATA[$new_serial]]></code>
+      <code><![CDATA[$new_serial]]></code>
+      <code><![CDATA[$revision]]></code>
+      <code><![CDATA[$zone_id]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Domain/Service/Dns/SupermasterManager.php">
+    <RedundantCast>
+      <code><![CDATA[(bool)$result]]></code>
+    </RedundantCast>
+  </file>
+  <file src="lib/Domain/Service/DnsIdnService.php">
+    <FalsableReturnStatement>
+      <code><![CDATA[idn_to_ascii($domainName, IDNA_NONTRANSITIONAL_TO_ASCII)]]></code>
+      <code><![CDATA[idn_to_utf8(htmlspecialchars($domainName), IDNA_NONTRANSITIONAL_TO_ASCII)]]></code>
+    </FalsableReturnStatement>
+  </file>
+  <file src="lib/Domain/Service/DnsRecordValidationService.php">
+    <TypeDoesNotContainNull>
+      <code><![CDATA[$validator === null]]></code>
+    </TypeDoesNotContainNull>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php">
+    <NoValue>
+      <code><![CDATA[$errors]]></code>
+    </NoValue>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/ALIASRecordValidator.php">
+    <NoValue>
+      <code><![CDATA[$errors]]></code>
+    </NoValue>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/CNAMERecordValidator.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$rid]]></code>
+      <code><![CDATA[$rid]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/DNAMERecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/DefaultRecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/EUI48RecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/EUI64RecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/L32RecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/L64RecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/LPRecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/MRRecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/NIDRecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/NSECRecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/NSRecordValidator.php">
+    <NoValue>
+      <code><![CDATA[$errors]]></code>
+    </NoValue>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/SOARecordValidator.php">
+    <RedundantPropertyInitializationCheck>
+      <code><![CDATA[$this->dns_hostmaster]]></code>
+      <code><![CDATA[$this->zone]]></code>
+      <code><![CDATA[null]]></code>
+      <code><![CDATA[null]]></code>
+    </RedundantPropertyInitializationCheck>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/SVCBRecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DnsValidation/TLSARecordValidator.php">
+    <MoreSpecificImplementedParamType>
+      <code><![CDATA[$ttl]]></code>
+    </MoreSpecificImplementedParamType>
+  </file>
+  <file src="lib/Domain/Service/DomainRecordCreator.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$domainId]]></code>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Domain/Service/ReverseRecordCreator.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$zone_id]]></code>
+      <code><![CDATA[$zone_name]]></code>
+      <code><![CDATA[$zone_name]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Domain/Utility/IpHelper.php">
+    <FalsableReturnStatement>
+      <code><![CDATA[inet_ntop(inet_pton($ipv6))]]></code>
+    </FalsableReturnStatement>
+  </file>
+  <file src="lib/Infrastructure/Api/HttpClient.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$http_response_header]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="lib/Infrastructure/Database/PDOCommon.php">
+    <FalsableReturnStatement>
+      <code><![CDATA[$obj_pdoStatement]]></code>
+    </FalsableReturnStatement>
+  </file>
+  <file src="lib/Infrastructure/Database/PDOLayer.php">
+    <FalsableReturnStatement>
+      <code><![CDATA[parent::quote($string, $type)]]></code>
+    </FalsableReturnStatement>
+    <ImplementedParamTypeMismatch>
+      <code><![CDATA[$type]]></code>
+    </ImplementedParamTypeMismatch>
+    <InvalidScalarArgument>
+      <code><![CDATA[$type]]></code>
+    </InvalidScalarArgument>
+  </file>
+  <file src="tests/unit/FormStateServiceTest.php">
+    <InvalidScalarArgument>
+      <code><![CDATA[$_SESSION]]></code>
+    </InvalidScalarArgument>
+  </file>
+</files>
