@@ -2,6 +2,8 @@
 
 namespace Poweradmin\Tests\Integration;
 
+use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\RequiresPhpExtension;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\WhoisService;
 
@@ -10,9 +12,8 @@ use Poweradmin\Application\Service\WhoisService;
  *
  * This test verifies that the WhoisService correctly handles
  * internationalized domain names in various scripts.
- *
- * @requires extension intl
  */
+#[RequiresPhpExtension('intl')]
 class WhoisServiceIdnIntegrationTest extends TestCase
 {
     private WhoisService $whoisService;
@@ -68,9 +69,8 @@ class WhoisServiceIdnIntegrationTest extends TestCase
     /**
      * Test that both Unicode and Punycode versions of the same TLD
      * resolve to the same WHOIS server
-     *
-     * @dataProvider idnDomainsProvider
      */
+    #[DataProvider('idnDomainsProvider')]
     public function testIdnTldWhoisServerLookup(
         string $domainUnicode,
         string $domainPunycode,
@@ -106,9 +106,8 @@ class WhoisServiceIdnIntegrationTest extends TestCase
      *
      * This test verifies the internal convertToIdnaPunycode method works by
      * checking that the same WHOIS responses are returned for both forms
-     *
-     * @dataProvider idnDomainsProvider
      */
+    #[DataProvider('idnDomainsProvider')]
     public function testIdnDomainConversionForQueries(
         string $domainUnicode,
         string $domainPunycode,
@@ -149,9 +148,8 @@ class WhoisServiceIdnIntegrationTest extends TestCase
 
     /**
      * Test full WHOIS info retrieval for IDN domains
-     *
-     * @dataProvider idnDomainsProvider
      */
+    #[DataProvider('idnDomainsProvider')]
     public function testGetWhoisInfoForIdnDomains(
         string $domainUnicode,
         string $domainPunycode,
@@ -196,9 +194,8 @@ class WhoisServiceIdnIntegrationTest extends TestCase
 
     /**
      * Test that getWhoisServerForDomain works with IDN domains
-     *
-     * @dataProvider idnDomainsProvider
      */
+    #[DataProvider('idnDomainsProvider')]
     public function testGetWhoisServerForIdnDomain(
         string $domainUnicode,
         string $domainPunycode,

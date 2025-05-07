@@ -2,15 +2,14 @@
 
 namespace Tests\Unit\Utility;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Domain\Utility\NetworkUtility;
 
 class DomainUtilityTest extends TestCase
 {
-    /**
-     * @dataProvider ipv4PtrProvider
-     */
+    #[DataProvider('ipv4PtrProvider')]
     public function testConvertIPv4AddrToPtrRec(string $ip, string $expected): void
     {
         $this->assertEquals($expected, DomainUtility::convertIPv4AddrToPtrRec($ip));
@@ -25,9 +24,7 @@ class DomainUtilityTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider domainLevelProvider
-     */
+    #[DataProvider('domainLevelProvider')]
     public function testGetDomainLevel(string $domain, int $expected): void
     {
         $this->assertEquals($expected, DomainUtility::getDomainLevel($domain));
@@ -43,9 +40,7 @@ class DomainUtilityTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider secondLevelDomainProvider
-     */
+    #[DataProvider('secondLevelDomainProvider')]
     public function testGetSecondLevelDomain(string $domain, string $expected): void
     {
         $this->assertEquals($expected, DomainUtility::getSecondLevelDomain($domain));

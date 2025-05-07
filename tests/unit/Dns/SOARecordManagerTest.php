@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Dns;
 
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -20,9 +21,7 @@ class SOARecordManagerTest extends TestCase
         $this->soaRecordManager = new SOARecordManager($this->dbMock, $this->configMock);
     }
 
-    /**
-     * @dataProvider soaSerialProvider
-     */
+    #[DataProvider('soaSerialProvider')]
     public function testGetSOASerial(string $soaRec, ?string $expected): void
     {
         $this->assertEquals($expected, SOARecordManager::getSOASerial($soaRec));
@@ -37,9 +36,7 @@ class SOARecordManagerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider setSOASerialProvider
-     */
+    #[DataProvider('setSOASerialProvider')]
     public function testSetSOASerial(string $soaRec, string $serial, string $expected): void
     {
         $this->assertEquals($expected, SOARecordManager::setSOASerial($soaRec, $serial));
@@ -61,9 +58,7 @@ class SOARecordManagerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider nextDateProvider
-     */
+    #[DataProvider('nextDateProvider')]
     public function testGetNextDate(string $currentDate, string $expected): void
     {
         $this->assertEquals($expected, SOARecordManager::getNextDate($currentDate));
@@ -78,9 +73,7 @@ class SOARecordManagerTest extends TestCase
         ];
     }
 
-    /**
-     * @dataProvider nextSerialProvider
-     */
+    #[DataProvider('nextSerialProvider')]
     public function testGetNextSerial($currentSerial, $expected): void
     {
         $this->assertEquals($expected, $this->soaRecordManager->getNextSerial($currentSerial));

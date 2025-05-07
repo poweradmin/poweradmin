@@ -2,14 +2,12 @@
 
 namespace Poweradmin\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\FormStateService;
 
-/**
- * Unit tests for FormStateService
- *
- * @covers \Poweradmin\Domain\Service\FormStateService
- */
+#[CoversClass(FormStateService::class)]
 class FormStateServiceTest extends TestCase
 {
     /**
@@ -43,10 +41,7 @@ class FormStateServiceTest extends TestCase
         parent::tearDown();
     }
 
-    /**
-     * @test
-     * Test that form IDs are generated with the correct format and prefix
-     */
+    #[Test]
     public function testGenerateFormId(): void
     {
         // Test with default parameter (empty prefix)
@@ -63,10 +58,7 @@ class FormStateServiceTest extends TestCase
         $this->assertNotEquals($formId, $anotherFormId, 'Generated form IDs should be unique');
     }
 
-    /**
-     * @test
-     * Test saving and retrieving form data
-     */
+    #[Test]
     public function testSaveAndGetFormData(): void
     {
         $formId = 'test_form_123';
@@ -89,10 +81,7 @@ class FormStateServiceTest extends TestCase
         $this->assertArrayHasKey($formId, $_SESSION['form_state'], 'Form data should remain in session after retrieval');
     }
 
-    /**
-     * @test
-     * Test that form data can be explicitly cleared
-     */
+    #[Test]
     public function testClearFormData(): void
     {
         $formId = 'test_form_456';
@@ -115,10 +104,7 @@ class FormStateServiceTest extends TestCase
         $this->assertNull($retrievedData, 'getFormData should return null after data is cleared');
     }
 
-    /**
-     * @test
-     * Test that expired form data is automatically cleaned up
-     */
+    #[Test]
     public function testAutoCleanupExpiredData(): void
     {
         $expiredFormId = 'expired_form';
@@ -146,10 +132,7 @@ class FormStateServiceTest extends TestCase
         $this->assertEquals($testData, $retrievedValidData, 'Valid data should still be retrievable');
     }
 
-    /**
-     * @test
-     * Test expiry time refreshes on data retrieval
-     */
+    #[Test]
     public function testExpiryTimeRefreshOnRetrieval(): void
     {
         $formId = 'refresh_test_form';
@@ -175,10 +158,7 @@ class FormStateServiceTest extends TestCase
         );
     }
 
-    /**
-     * @test
-     * Test handling non-existent form IDs
-     */
+    #[Test]
     public function testGetNonExistentFormData(): void
     {
         $nonExistentFormId = 'non_existent_form';
@@ -190,10 +170,7 @@ class FormStateServiceTest extends TestCase
         $this->assertNull($result, 'Getting non-existent form data should return null');
     }
 
-    /**
-     * @test
-     * Test handling empty session
-     */
+    #[Test]
     public function testEmptySession(): void
     {
         // Ensure SESSION is empty
@@ -206,10 +183,7 @@ class FormStateServiceTest extends TestCase
         $this->assertNull($result, 'Getting form data with empty session should return null');
     }
 
-    /**
-     * @test
-     * Test saving multiple form data items
-     */
+    #[Test]
     public function testSaveMultipleFormData(): void
     {
         $formId1 = 'form_1';
@@ -226,10 +200,7 @@ class FormStateServiceTest extends TestCase
         $this->assertEquals($data2, $this->service->getFormData($formId2));
     }
 
-    /**
-     * @test
-     * Test clearing non-existent form ID
-     */
+    #[Test]
     public function testClearNonExistentFormData(): void
     {
         // Try to clear a form that doesn't exist (should not cause errors)
