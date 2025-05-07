@@ -978,7 +978,7 @@ abstract class Driver implements LoggerAwareInterface
         $className = App::className($className, 'Cake/Log', 'Log');
         if ($className === null) {
             throw new CakeException(
-                'For logging you must either set the `log` config to a FQCN which implemnts Psr\Log\LoggerInterface' .
+                'For logging you must either set the `log` config to a FQCN which implements Psr\Log\LoggerInterface' .
                 ' or require the cakephp/log package in your composer config.',
             );
         }

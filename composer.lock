@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cce7b31c292907d322404e31609e45d3",
+    "content-hash": "14eef2661381eab80744eb50ef8c1aa9",
     "packages": [
         {
             "name": "cakephp/chronos",
@@ -67,16 +67,16 @@
         },
         {
             "name": "cakephp/core",
-            "version": "5.2.2",
+            "version": "5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/core.git",
-                "reference": "fcb8dc5bb17c379e43fa233a7a510bdffa7e7b8f"
+                "reference": "a0a92ee7fbb7b7555dbf4ea7ff3fd4e779693da6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/core/zipball/fcb8dc5bb17c379e43fa233a7a510bdffa7e7b8f",
-                "reference": "fcb8dc5bb17c379e43fa233a7a510bdffa7e7b8f",
+                "url": "https://api.github.com/repos/cakephp/core/zipball/a0a92ee7fbb7b7555dbf4ea7ff3fd4e779693da6",
+                "reference": "a0a92ee7fbb7b7555dbf4ea7ff3fd4e779693da6",
                 "shasum": ""
             },
             "require": {
@@ -130,20 +130,20 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/core"
             },
-            "time": "2025-04-15T17:52:03+00:00"
+            "time": "2025-04-19T12:34:03+00:00"
         },
         {
             "name": "cakephp/database",
-            "version": "5.2.2",
+            "version": "5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/database.git",
-                "reference": "c52a8209ea125abd396bd6b434b5ff5430eb8c25"
+                "reference": "8aa2df292e8b0e0c27e50bd6ed808fbf32f9c25a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/database/zipball/c52a8209ea125abd396bd6b434b5ff5430eb8c25",
-                "reference": "c52a8209ea125abd396bd6b434b5ff5430eb8c25",
+                "url": "https://api.github.com/repos/cakephp/database/zipball/8aa2df292e8b0e0c27e50bd6ed808fbf32f9c25a",
+                "reference": "8aa2df292e8b0e0c27e50bd6ed808fbf32f9c25a",
                 "shasum": ""
             },
             "require": {
@@ -197,11 +197,11 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/database"
             },
-            "time": "2025-04-15T17:52:03+00:00"
+            "time": "2025-04-22T19:16:58+00:00"
         },
         {
             "name": "cakephp/datasource",
-            "version": "5.2.2",
+            "version": "5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/datasource.git",
@@ -268,16 +268,16 @@
         },
         {
             "name": "cakephp/utility",
-            "version": "5.2.2",
+            "version": "5.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/cakephp/utility.git",
-                "reference": "97842fe780372d2f72f733e72e9a900ad11b239e"
+                "reference": "76dcd5c20e46aaf5bfdf9ad51e9f5313abffe104"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/cakephp/utility/zipball/97842fe780372d2f72f733e72e9a900ad11b239e",
-                "reference": "97842fe780372d2f72f733e72e9a900ad11b239e",
+                "url": "https://api.github.com/repos/cakephp/utility/zipball/76dcd5c20e46aaf5bfdf9ad51e9f5313abffe104",
+                "reference": "76dcd5c20e46aaf5bfdf9ad51e9f5313abffe104",
                 "shasum": ""
             },
             "require": {
@@ -328,7 +328,7 @@
                 "issues": "https://github.com/cakephp/cakephp/issues",
                 "source": "https://github.com/cakephp/utility"
             },
-            "time": "2025-04-15T17:52:03+00:00"
+            "time": "2025-04-19T12:34:03+00:00"
         },
         {
             "name": "jeremykendall/php-domain-parser",

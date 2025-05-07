@@ -54,7 +54,7 @@ trait ContainerStubTrait
     /**
      * The collection of container services.
      *
-     * @var array
+     * @var array<string, mixed>
      */
     private array $containerServices = [];
 

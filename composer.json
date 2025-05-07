@@ -40,10 +40,10 @@
     "symfony/filesystem": "^v6.4.13",
     "robmorgan/phinx": "^0.16.7",
     "symfony/string": "^6.4.15",
-    "cakephp/core": "^5.2.2",
-    "cakephp/database": "^5.2.2",
-    "cakephp/datasource": "^5.2.2",
-    "cakephp/utility": "^5.2.2"
+    "cakephp/core": "^5.2.3",
+    "cakephp/database": "^5.2.3",
+    "cakephp/datasource": "^5.2.3",
+    "cakephp/utility": "^5.2.3"
   },
   "suggest": {
     "ext-ldap": "For LDAP support"

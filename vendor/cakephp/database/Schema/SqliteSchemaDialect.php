@@ -494,10 +494,8 @@ class SqliteSchemaDialect extends SchemaDialect
         $indexes = [];
         $createTableSql = $this->getCreateTableSql($tableName);
 
+        $foundPrimary = false;
         foreach ($statement->fetchAll('assoc') as $row) {
-            if ($row['origin'] == 'pk') {
-                continue;
-            }
             $indexName = $row['name'];
             $indexSql = sprintf(
                 'PRAGMA index_info(%s)',
@@ -513,6 +511,10 @@ class SqliteSchemaDialect extends SchemaDialect
             if ($row['unique']) {
                 $indexType = TableSchema::CONSTRAINT_UNIQUE;
             }
+            if ($row['origin'] === 'pk') {
+                $indexType = TableSchema::CONSTRAINT_PRIMARY;
+                $foundPrimary = true;
+            }
             if ($indexType == TableSchema::CONSTRAINT_UNIQUE) {
                 $name = $this->extractIndexName($createTableSql, 'UNIQUE', $columns);
                 if ($name !== null) {
@@ -527,23 +529,25 @@ class SqliteSchemaDialect extends SchemaDialect
                 'length' => [],
             ];
         }
-        // Primary keys aren't available from the index_info pragma
+        // Primary keys aren't always available from the index_info pragma
         // instead we have to read the columns again.
-        $sql = $this->describeColumnQuery($tableName);
-        $statement = $this->_driver->execute($sql);
-        foreach ($statement->fetchAll('assoc') as $row) {
-            if (!$row['pk']) {
-                continue;
+        if (!$foundPrimary) {
+            $sql = $this->describeColumnQuery($tableName);
+            $statement = $this->_driver->execute($sql);
+            foreach ($statement->fetchAll('assoc') as $row) {
+                if (!$row['pk']) {
+                    continue;
+                }
+                if (!isset($indexes['primary'])) {
+                    $indexes['primary'] = [
+                        'name' => 'primary',
+                        'type' => TableSchema::CONSTRAINT_PRIMARY,
+                        'columns' => [],
+                        'length' => [],
+                    ];
+                }
+                $indexes['primary']['columns'][] = $row['name'];
             }
-            if (!isset($indexes['primary'])) {
-                $indexes['primary'] = [
-                    'name' => 'primary',
-                    'type' => TableSchema::CONSTRAINT_PRIMARY,
-                    'columns' => [],
-                    'length' => [],
-                ];
-            }
-            $indexes['primary']['columns'][] = $row['name'];
         }
 
         return array_values($indexes);
