@@ -42,11 +42,14 @@ jobs:
     - name: Check code style
       run: composer check:all
 
-    - name: Run static analysis
-      run: composer analyse:all
+    - name: Run PHPStan analysis
+      run: composer analyse:phpstan
 
     - name: Run Psalm analysis
-      run: composer check:psalm
+      run: composer analyse:psalm
+
+    - name: Run PHP Mess Detector
+      run: composer quality:all
 
     - name: Run test suite
       run: composer tests

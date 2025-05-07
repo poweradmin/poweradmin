@@ -69,35 +69,12 @@
     "tests": "phpunit --testsuite unit",
     "tests:integration": "phpunit --testsuite integration",
 
-    "check:lib": "phpcs --standard=phpcs.xml lib",
-    "check:all": "phpcs --standard=phpcs.xml addons config index.php install tests dynamic_update.php",
-
-    "format:config": "phpcbf --standard=phpcs.xml config",
-    "format:index": "phpcbf --standard=phpcs.xml index.php",
-    "format:install": "phpcbf --standard=phpcs.xml install",
-    "format:lib": "phpcbf --standard=phpcs.xml lib",
-    "format:tests": "phpcbf --standard=phpcs.xml tests",
-    "format:all": "phpcbf --standard=phpcs.xml addons config index.php install lib tests dynamic_update.php",
-
-    "style:config": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- config",
-    "style:index": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- index.php",
-    "style:install": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- install",
-    "style:lib": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- lib",
-    "style:tests": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- tests",
-
-    "analyse:all": "phpstan analyse --level=2 addons config index.php install lib tests dynamic_update.php",
-    "check:psalm": "psalm",
-    "check:quality": [
-      "@check:lib",
-      "@analyse:all",
-      "@check:psalm"
-    ],
-
-    "check:phpmd:config": "phpmd config ansi cleancode,codesize,controversial,design,naming,unusedcode",
-    "check:phpmd:index": "phpmd index.php ansi cleancode,codesize,controversial,design,naming,unusedcode",
-    "check:phpmd:install": "phpmd install ansi cleancode,codesize,controversial,design,naming,unusedcode",
-    "check:phpmd:lib": "phpmd lib ansi cleancode,codesize,controversial,design,naming,unusedcode",
-    "check:phpmd:tests": "phpmd tests ansi cleancode,codesize,controversial,design,naming,unusedcode",
+    "check:all": "phpcs --standard=phpcs.xml addons config db index.php install lib tests dynamic_update.php",
+    "format:all": "phpcbf --standard=phpcs.xml addons config db index.php install lib tests dynamic_update.php",
+    "style:all": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- addons config db index.php install lib tests dynamic_update.php",
+    "analyse:phpstan": "phpstan analyse --level=2 addons config db index.php install lib tests dynamic_update.php",
+    "analyse:psalm": "psalm",
+    "quality:all": "phpmd addons,config,db,index.php,install,lib,tests,dynamic_update.php ansi cleancode,codesize,controversial,design,naming,unusedcode",
 
     "post-create-project-cmd": [
       "rm -rf install/",
