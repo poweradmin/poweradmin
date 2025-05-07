@@ -55,7 +55,7 @@ class FormStateService
     }
 
     /**
-     * Get form data from the session and remove it if it exists
+     * Get form data from the session without removing it
      *
      * @param string $formId Unique identifier for the form
      * @return array|null The form data or null if it doesn't exist or has expired
@@ -76,11 +76,24 @@ class FormStateService
             return null;
         }
 
-        // Get the data and remove it from the session
-        $data = $formState['data'];
-        unset($_SESSION[self::SESSION_KEY][$formId]);
+        // Refresh the expiry time
+        $_SESSION[self::SESSION_KEY][$formId]['expires'] = time() + self::EXPIRY_TIME;
 
-        return $data;
+        // Return the data without removing it
+        return $formState['data'];
+    }
+
+    /**
+     * Explicitly clear form data when it's no longer needed
+     *
+     * @param string $formId Unique identifier for the form
+     * @return void
+     */
+    public function clearFormData(string $formId): void
+    {
+        if (isset($_SESSION[self::SESSION_KEY][$formId])) {
+            unset($_SESSION[self::SESSION_KEY][$formId]);
+        }
     }
 
     /**

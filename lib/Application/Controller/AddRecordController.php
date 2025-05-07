@@ -150,8 +150,39 @@ class AddRecordController extends BaseController
         $comment = $_POST['comment'] ?? '';
         $zone_id = (int)$_GET['id'];
 
-        if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
-            // Generate a form ID and store the invalid form data
+        try {
+            if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
+                // Get system errors that were generated during validation
+                $systemErrors = $this->getSystemErrors();
+                $errorMessage = !empty($systemErrors) ? end($systemErrors) :
+                    _('This record was not valid and could not be added. It may already exist or contain invalid data.');
+
+                // Determine which field has an error
+                $fieldWithError = $this->determineFieldWithError($errorMessage);
+
+                // Generate a form ID and store the invalid form data with validation error
+                $formId = $this->formStateService->generateFormId('add_record');
+                $formData = [
+                    'name' => $name,
+                    'content' => $content,
+                    'type' => $type,
+                    'prio' => $prio,
+                    'ttl' => $ttl,
+                    'comment' => $comment,
+                    'error' => true,
+                    'errorMessage' => $errorMessage,
+                    'fieldError' => $fieldWithError
+                ];
+                $this->formStateService->saveFormData($formId, $formData);
+
+                $this->redirect('index.php?page=edit&id=' . $zone_id . '&form_id=' . $formId);
+                return;
+            }
+        } catch (\Exception $e) {
+            // Handle exceptions from the validation process
+            $errorMessage = $e->getMessage();
+            $fieldWithError = $this->determineFieldWithError($errorMessage);
+
             $formId = $this->formStateService->generateFormId('add_record');
             $formData = [
                 'name' => $name,
@@ -159,19 +190,20 @@ class AddRecordController extends BaseController
                 'type' => $type,
                 'prio' => $prio,
                 'ttl' => $ttl,
-                'comment' => $comment
+                'comment' => $comment,
+                'error' => true,
+                'errorMessage' => $errorMessage,
+                'fieldError' => $fieldWithError
             ];
             $this->formStateService->saveFormData($formId, $formData);
 
-            // Check if there are system errors to display
-            $systemErrors = $this->getSystemErrors();
-            if (!empty($systemErrors)) {
-                $this->setMessage('edit', 'error', end($systemErrors));
-            } else {
-                $this->setMessage('edit', 'error', _('This record was not valid and could not be added. It may already exist or contain invalid data.'));
-            }
             $this->redirect('index.php?page=edit&id=' . $zone_id . '&form_id=' . $formId);
             return;
+        }
+
+        // Clear form data if it exists in the session
+        if (isset($_POST['form_token'])) {
+            $this->formStateService->clearFormData($_POST['form_token']);
         }
 
         if (isset($_POST['reverse'])) {
@@ -301,6 +333,38 @@ class AddRecordController extends BaseController
         }
     }
 
+    /**
+     * Determine which field has an error based on the error message
+     *
+     * @param string $errorMessage The error message
+     * @return string The name of the field with an error
+     */
+    private function determineFieldWithError(string $errorMessage): string
+    {
+        $lowerError = strtolower($errorMessage);
+
+        // Check for specific field mentions in the error message
+        if (strpos($lowerError, 'name') !== false && strpos($lowerError, 'invalid') !== false) {
+            return 'name';
+        } elseif (
+            strpos($lowerError, 'content') !== false ||
+                 strpos($lowerError, 'value') !== false ||
+                 strpos($lowerError, 'address') !== false ||
+                 strpos($lowerError, 'hostname') !== false
+        ) {
+            return 'content';
+        } elseif (strpos($lowerError, 'ttl') !== false) {
+            return 'ttl';
+        } elseif (strpos($lowerError, 'prio') !== false || strpos($lowerError, 'priority') !== false) {
+            return 'prio';
+        } elseif (strpos($lowerError, 'already exists') !== false) {
+            return 'name-content-duplicate';
+        }
+
+        // Default to content field as that's the most common error source
+        return 'content';
+    }
+
     private function addMultipleRecords(): void
     {
         $zone_id = (int)$_GET['id'];
@@ -341,16 +405,56 @@ class AddRecordController extends BaseController
             }
         }
 
+        // Clear form data if it exists in the session
+        if (isset($_POST['form_token'])) {
+            $this->formStateService->clearFormData($_POST['form_token']);
+        }
+
         if ($successCount > 0) {
             $message = sprintf(_('%d record(s) were successfully added.'), $successCount);
             if ($failureCount > 0) {
                 $message .= ' ' . sprintf(_('%d record(s) failed to be added.'), $failureCount);
-                $this->setMessage('edit', 'warning', $message);
+
+                // Get system errors that were generated during validation
+                $systemErrors = $this->getSystemErrors();
+                $errorMessage = !empty($systemErrors) ? end($systemErrors) :
+                    _('Some records could not be added. They may already exist or contain invalid data.');
+
+                // Store form data with error flag for failed records
+                $formId = $this->formStateService->generateFormId('add_record');
+                $formData = [
+                    'error' => true,
+                    'multi_record_error' => true,
+                    'failure_count' => $failureCount,
+                    'errorMessage' => $errorMessage
+                ];
+                $this->formStateService->saveFormData($formId, $formData);
+
+                // Redirect with form_id to show errors
+                $this->redirect('index.php?page=edit&id=' . $zone_id . '&form_id=' . $formId);
+                return;
             } else {
                 $this->setMessage('edit', 'success', $message);
             }
         } else {
-            $this->setMessage('edit', 'error', _('Failed to add any records.'));
+            // Get system errors that were generated during validation
+            $systemErrors = $this->getSystemErrors();
+            $errorMessage = !empty($systemErrors) ? end($systemErrors) :
+                _('Failed to add any records. They may contain invalid data.');
+
+            // Store form data with error flag for all failed records
+            $formId = $this->formStateService->generateFormId('add_record');
+            $formData = [
+                'error' => true,
+                'multi_record_error' => true,
+                'failure_count' => $failureCount,
+                'errorMessage' => $errorMessage
+            ];
+            $this->formStateService->saveFormData($formId, $formData);
+
+            // Redirect with form_id to show errors
+            $this->redirect('index.php?page=edit&id=' . $zone_id . '&form_id=' . $formId);
+            return;
         }
 
         // Redirect back to zone edit page

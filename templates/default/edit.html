@@ -33,7 +33,25 @@
         </div>
     </div>
     <div class="card-body">
-        <form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
+        {% if form_data and form_data.error %}
+        <div class="alert alert-danger py-2 small">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            {% if form_data.errorMessage is defined %}
+                {{ form_data.errorMessage }}
+            {% elseif form_data.multi_record_error %}
+                {% if form_data.failure_count > 0 %}
+                    {% trans %}Failed to add {% endtrans %}{{ form_data.failure_count }} {% trans %}record(s). Please check the record format.{% endtrans %}
+                {% else %}
+                    {% trans %}Failed to add records. Please check the record format.{% endtrans %}
+                {% endif %}
+            {% elseif form_data.content %}
+                {% trans %}Content validation failed:{% endtrans %} {% trans %}Invalid value for record type{% endtrans %} {{ form_data.type }}.
+            {% else %}
+                {% trans %}Please provide all required information.{% endtrans %}
+            {% endif %}
+        </div>
+        {% endif %}
+        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
@@ -59,7 +77,11 @@
                 </tr>
                 <tr>
                     <td class="col-sm-2">
-                        <input class="form-control form-control-sm" type="text" name="name" value="{{ form_data.name|default('') }}">
+                        <input class="form-control form-control-sm {% if form_data.fieldError is defined and (form_data.fieldError == 'name' or form_data.fieldError == 'name-content-duplicate') %}is-invalid{% endif %}" 
+                               type="text" name="name" value="{{ form_data.name|default('') }}">
+                        {% if form_data.fieldError is defined and form_data.fieldError == 'name' %}
+                        <div class="invalid-feedback">{% trans %}Invalid hostname format{% endtrans %}</div>
+                        {% endif %}
                     </td>
                     <td class="col-sm-2">
                         <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop')" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
@@ -80,15 +102,32 @@
                     </td>
                     <td>
                         <div id="contentInputContainerTop">
-                            <input id="recordContentTop" class="form-control form-control-sm" type="text" name="content" value="{{ form_data.content|default('') }}" required>
+                            <input id="recordContentTop" class="form-control form-control-sm {% if form_data.fieldError is defined and (form_data.fieldError == 'content' or form_data.fieldError == 'name-content-duplicate') %}is-invalid{% endif %}" 
+                                   type="text" name="content" value="{{ form_data.content|default('') }}" required>
                         </div>
+                        {% if form_data.fieldError is defined and form_data.fieldError == 'content' %}
+                        <div class="invalid-feedback">{{ form_data.errorMessage }}</div>
+                        {% elseif form_data.fieldError is defined and form_data.fieldError == 'name-content-duplicate' %}
+                        <div class="invalid-feedback">{% trans %}This record already exists{% endtrans %}</div>
+                        {% else %}
                         <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
+                        {% endif %}
                     </td>
-                    <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="prio" value="{{ form_data.prio|default('0') }}"
-                                                min="0" max="65535" pattern="[0-9]*"></td>
-                    <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="ttl"
-                                                min="0" max="2147483647" pattern="[0-9]*" value="{{ form_data.ttl|default(dns_ttl) }}" required>
+                    <td class="col-sm-1">
+                        <input class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}is-invalid{% endif %}" 
+                               type="number" name="prio" value="{{ form_data.prio|default('0') }}" min="0" max="65535" pattern="[0-9]*">
+                        {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}
+                        <div class="invalid-feedback">{% trans %}Invalid priority{% endtrans %}</div>
+                        {% endif %}
+                    </td>
+                    <td class="col-sm-1">
+                        <input class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'ttl' %}is-invalid{% endif %}" 
+                               type="number" name="ttl" min="0" max="2147483647" pattern="[0-9]*" value="{{ form_data.ttl|default(dns_ttl) }}" required>
+                        {% if form_data.fieldError is defined and form_data.fieldError == 'ttl' %}
+                        <div class="invalid-feedback">{% trans %}Invalid TTL value{% endtrans %}</div>
+                        {% else %}
                         <div class="invalid-feedback">{% trans %}Provide TTL{% endtrans %}</div>
+                        {% endif %}
                     </td>
                     {% if iface_record_comments %}
                     <td><input class="form-control form-control-sm" type="text" name="comment" value="{{ form_data.comment|default('') }}"></td>
@@ -423,7 +462,25 @@
         </div>
     </div>
     <div class="card-body">
-        <form class="needs-validation" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
+        {% if form_data and form_data.error %}
+        <div class="alert alert-danger py-2 small">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            {% if form_data.errorMessage is defined %}
+                {{ form_data.errorMessage }}
+            {% elseif form_data.multi_record_error %}
+                {% if form_data.failure_count > 0 %}
+                    {% trans %}Failed to add {% endtrans %}{{ form_data.failure_count }} {% trans %}record(s). Please check the record format.{% endtrans %}
+                {% else %}
+                    {% trans %}Failed to add records. Please check the record format.{% endtrans %}
+                {% endif %}
+            {% elseif form_data.content %}
+                {% trans %}Content validation failed:{% endtrans %} {% trans %}Invalid value for record type{% endtrans %} {{ form_data.type }}.
+            {% else %}
+                {% trans %}Please provide all required information.{% endtrans %}
+            {% endif %}
+        </div>
+        {% endif %}
+        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="index.php?page=add_record&id={{ zone_id }}" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
@@ -450,7 +507,11 @@
                 </tr>
                 <tr>
                     <td class="col-sm-2">
-                        <input class="form-control form-control-sm" type="text" name="name" value="{{ form_data.name|default('') }}" data-testid="record-name-input">
+                        <input class="form-control form-control-sm {% if form_data.fieldError is defined and (form_data.fieldError == 'name' or form_data.fieldError == 'name-content-duplicate') %}is-invalid{% endif %}" 
+                               type="text" name="name" value="{{ form_data.name|default('') }}" data-testid="record-name-input">
+                        {% if form_data.fieldError is defined and form_data.fieldError == 'name' %}
+                        <div class="invalid-feedback">{% trans %}Invalid hostname format{% endtrans %}</div>
+                        {% endif %}
                     </td>
                     <td class="col-sm-2">
                         <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom')" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
@@ -471,16 +532,32 @@
                     </td>
                     <td>
                         <div id="contentInputContainerBottom">
-                            <input id="recordContentBottom" class="form-control form-control-sm" type="text" name="content" value="{{ form_data.content|default('') }}" data-testid="record-content-input" required>
+                            <input id="recordContentBottom" class="form-control form-control-sm {% if form_data.fieldError is defined and (form_data.fieldError == 'content' or form_data.fieldError == 'name-content-duplicate') %}is-invalid{% endif %}" 
+                                   type="text" name="content" value="{{ form_data.content|default('') }}" data-testid="record-content-input" required>
                         </div>
+                        {% if form_data.fieldError is defined and form_data.fieldError == 'content' %}
+                        <div class="invalid-feedback">{{ form_data.errorMessage }}</div>
+                        {% elseif form_data.fieldError is defined and form_data.fieldError == 'name-content-duplicate' %}
+                        <div class="invalid-feedback">{% trans %}This record already exists{% endtrans %}</div>
+                        {% else %}
                         <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
+                        {% endif %}
                     </td>
                     <td class="col-sm-1">
-                        <input class="form-control form-control-sm" type="number" name="prio" value="{{ form_data.prio|default('0') }}" min="0" max="65535" pattern="[0-9]*">
+                        <input class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}is-invalid{% endif %}" 
+                               type="number" name="prio" value="{{ form_data.prio|default('0') }}" min="0" max="65535" pattern="[0-9]*">
+                        {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}
+                        <div class="invalid-feedback">{% trans %}Invalid priority{% endtrans %}</div>
+                        {% endif %}
                     </td>
                     <td class="col-sm-1">
-                        <input class="form-control form-control-sm" type="number" name="ttl" min="0" max="2147483647" pattern="[0-9]*" value="{{ form_data.ttl|default(dns_ttl) }}" required>
+                        <input class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'ttl' %}is-invalid{% endif %}" 
+                               type="number" name="ttl" min="0" max="2147483647" pattern="[0-9]*" value="{{ form_data.ttl|default(dns_ttl) }}" required>
+                        {% if form_data.fieldError is defined and form_data.fieldError == 'ttl' %}
+                        <div class="invalid-feedback">{% trans %}Invalid TTL value{% endtrans %}</div>
+                        {% else %}
                         <div class="invalid-feedback">{% trans %}Provide TTL{% endtrans %}</div>
+                        {% endif %}
                     </td>
                     {% if iface_record_comments %}
                         <td><input class="form-control form-control-sm" type="text" name="comment" value="{{ form_data.comment|default('') }}"></td>
