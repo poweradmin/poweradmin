@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOLayer;
@@ -38,11 +39,13 @@ class ZoneCountService
 {
     private PDOLayer $db;
     private ConfigurationManager $config;
+    private ?UserContextService $userContext;
 
-    public function __construct(PDOLayer $db, ConfigurationManager $config)
+    public function __construct(PDOLayer $db, ConfigurationManager $config, ?UserContextService $userContext = null)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->userContext = $userContext;
     }
 
     /**
@@ -67,9 +70,16 @@ class ZoneCountService
         }
 
         if ($perm == "own") {
-            $query_addon = " AND zones.domain_id = $domains_table.id
-                AND zones.owner = " . $this->db->quote($_SESSION['userid'], 'integer');
-            $tables .= ', zones';
+            // Use UserContextService if provided, otherwise fall back to $_SESSION
+            $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION['userid'] ?? null);
+
+            if ($userId) {
+                $query_addon = " AND zones.domain_id = $domains_table.id
+                    AND zones.owner = " . $this->db->quote($userId, 'integer');
+                $tables .= ', zones';
+            } else {
+                return 0; // No user ID available
+            }
         }
 
         // Single letter filter (a through z) or numeric filter (1)

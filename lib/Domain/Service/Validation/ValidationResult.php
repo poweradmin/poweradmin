@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service\Validation;
 
+use RuntimeException;
+
 /**
  * Simple validation result class following the Result pattern
  *
@@ -98,12 +100,12 @@ final class ValidationResult
     /**
      * Get data from successful validation
      *
-     * @throws \RuntimeException if validation failed
+     * @throws RuntimeException if validation failed
      */
     public function getData()
     {
         if (!$this->isValid) {
-            throw new \RuntimeException('Cannot get data from failed validation result');
+            throw new RuntimeException('Cannot get data from failed validation result');
         }
         return $this->data;
     }

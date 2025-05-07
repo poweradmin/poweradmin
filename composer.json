@@ -74,7 +74,7 @@
     "style:all": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- addons config db index.php install lib tests dynamic_update.php",
     "analyse:phpstan": "phpstan analyse --level=2 addons config db index.php install lib tests dynamic_update.php",
     "analyse:psalm": "psalm",
-    "quality:all": "phpmd addons,config,db,index.php,install,lib,tests,dynamic_update.php ansi cleancode,codesize,controversial,design,naming,unusedcode",
+    "quality:all": "phpmd addons,config,db,index.php,install,lib,dynamic_update.php ansi phpmd.xml",
 
     "post-create-project-cmd": [
       "rm -rf install/",

@@ -41,9 +41,9 @@ class IpHelper
         return self::$ipValidator;
     }
 
-    public static function getProposedIPv4(string $name, string $zone_name, string $suffix): ?string
+    public static function getProposedIPv4(string $name, string $zoneName, string $suffix): ?string
     {
-        $cleanZoneName = str_replace($suffix, '', $zone_name);
+        $cleanZoneName = str_replace($suffix, '', $zoneName);
         $proposedReverseIP = $name . '.' . $cleanZoneName;
         $ipParts = explode('.', $proposedReverseIP);
 
@@ -54,9 +54,9 @@ class IpHelper
         return implode('.', array_reverse($ipParts));
     }
 
-    public static function getProposedIPv6(string $name, string $zone_name, string $suffix): ?string
+    public static function getProposedIPv6(string $name, string $zoneName, string $suffix): ?string
     {
-        $cleanZoneName = str_replace($suffix, '', $zone_name);
+        $cleanZoneName = str_replace($suffix, '', $zoneName);
         $proposedReverseIP = $name . '.' . $cleanZoneName;
         $ipParts = explode('.', $proposedReverseIP);
 
