@@ -77,7 +77,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
      * @param string|null $dns_hostmaster Hostmaster email (optional)
      * @param string|null $zone Zone name (optional)
      *
-     * @return ValidationResult<array> ValidationResult containing validated data or error messages
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ?string $dns_hostmaster = null, ?string $zone = null): ValidationResult
     {

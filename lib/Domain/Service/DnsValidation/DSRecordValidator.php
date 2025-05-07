@@ -58,7 +58,7 @@ class DSRecordValidator implements DnsRecordValidatorInterface
      * @param mixed $ttl TTL value
      * @param int $defaultTTL Default TTL to use if TTL is empty
      *
-     * @return ValidationResult<array> ValidationResult containing validated data or error messages
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
@@ -105,7 +105,7 @@ class DSRecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $content DS record content
      *
-     * @return ValidationResult<bool> ValidationResult containing validation status or error message
+     * @return ValidationResult ValidationResult containing validation status or error message
      */
     private function validateDSContent(string $content): ValidationResult
     {
@@ -167,7 +167,7 @@ class DSRecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $content DS record content
      *
-     * @return ValidationResult<bool> ValidationResult containing validation status or error message
+     * @return ValidationResult ValidationResult containing validation status or error message
      */
     public function validateDSRecordContent(string $content): ValidationResult
     {

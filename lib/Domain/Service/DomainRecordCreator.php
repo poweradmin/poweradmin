@@ -43,7 +43,7 @@ class DomainRecordCreator
         ConfigurationManager $config,
         LegacyLogger $logger,
         DnsRecord $dnsRecord,
-        IPAddressValidator $ipValidator = null,
+        ?IPAddressValidator $ipValidator = null,
     ) {
         $this->config = $config;
         $this->logger = $logger;

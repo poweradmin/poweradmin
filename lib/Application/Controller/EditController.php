@@ -465,7 +465,7 @@ class EditController extends BaseController
                                 );
 
                                 $this->commentSyncService->updateRelatedRecordComments(
-                                    $dnsRecord,
+                                    $this->dnsRecord,
                                     $record,
                                     $record['comment'] ?? '',
                                     $_SESSION['userlogin']

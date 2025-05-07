@@ -78,7 +78,8 @@ class ListReverseZonesController extends BaseController
 
         $row_start = 0;
         if (isset($_GET['start'])) {
-            $row_start = (htmlspecialchars($_GET['start']) - 1) * $iface_rowamount;
+            $start = (int)htmlspecialchars($_GET['start']);
+            $row_start = ($start - 1) * $iface_rowamount;
         }
 
         $perm_view = Permission::getViewPermission($this->db);

@@ -95,7 +95,7 @@ class EditRecordController extends BaseController
         $this->showRecordEditForm($record_id, $zone_type, $zid, $perm_edit, $user_is_zone_owner, $validationFailed);
     }
 
-    public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner): void
+    public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner, bool $validationFailed = false): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_name = $dnsRecord->getDomainNameById($zid);

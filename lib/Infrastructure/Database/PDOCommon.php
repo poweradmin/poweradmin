@@ -127,6 +127,8 @@ class PDOCommon extends PDO
             $messageService->displayDirectSystemError("An error occurred while executing the SQL statement. Please check the error logs for details.");
         }
 
+        // Initialize PDOStatement variable if not set
+        $obj_pdoStatement = $obj_pdoStatement ?? null;
         return $obj_pdoStatement;
     }
 

@@ -99,7 +99,7 @@ class Installer
         }
 
         // If there are errors, go back to the previous step
-        if (!empty($errors)) {
+        if (count($errors) > 0) {
             $currentStep--;
         }
 

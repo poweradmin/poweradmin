@@ -44,7 +44,7 @@ class BatchReverseRecordCreator
         LegacyLogger $logger,
         DnsRecord $dnsRecord,
         ReverseRecordCreator $reverseRecordCreator,
-        IPAddressValidator $ipValidator = null
+        ?IPAddressValidator $ipValidator = null
     ) {
         $this->db = $db;
         $this->config = $config;

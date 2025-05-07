@@ -343,8 +343,12 @@ class ZoneTemplate
             return false;
         }
 
-        if (!$this->dnsCommonValidator->isValidPriority($prio, $type)) {
-            return false; // Error message is already set by the validator
+        // Check if priority is valid for this record type
+        if (!is_numeric($prio) || $prio < 0 || $prio > 65535) {
+            if ($type == 'MX' || $type == 'SRV') {
+                $this->messageService->addSystemError(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
+                return false;
+            }
         }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
@@ -386,8 +390,12 @@ class ZoneTemplate
             return false;
         }
 
-        if (!$this->dnsCommonValidator->isValidPriority($record['prio'], $record['type'])) {
-            return false; // Error message is already set by the validator
+        // Check if priority is valid for this record type
+        if (!is_numeric($record['prio']) || $record['prio'] < 0 || $record['prio'] > 65535) {
+            if ($record['type'] == 'MX' || $record['type'] == 'SRV') {
+                $this->messageService->addSystemError(_('Priority for MX/SRV records must be a number between 0 and 65535.'));
+                return false;
+            }
         }
 
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled

@@ -56,7 +56,7 @@ class LPRecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return ValidationResult<array> Validation result with data or errors
+     * @return ValidationResult Validation result with data or errors
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {

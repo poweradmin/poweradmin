@@ -56,7 +56,7 @@ class DnsCommonValidator
      * @param mixed $prio Priority
      * @param string $type Record type
      *
-     * @return ValidationResult<int> ValidationResult with validated priority or error message
+     * @return ValidationResult ValidationResult with validated priority or error message
      */
     public function validatePriority(mixed $prio, string $type): ValidationResult
     {
@@ -85,7 +85,7 @@ class DnsCommonValidator
      *
      * @param string $target target to check
      *
-     * @return ValidationResult<bool> ValidationResult indicating if target is valid
+     * @return ValidationResult ValidationResult indicating if target is valid
      */
     public function validateNonAliasTarget(string $target): ValidationResult
     {
@@ -101,5 +101,17 @@ class DnsCommonValidator
             return ValidationResult::failure(_('You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name.'));
         }
         return ValidationResult::success(true);
+    }
+
+    /**
+     * Check if the priority value is valid
+     *
+     * @param mixed $prio The priority value to check
+     * @return bool True if the priority is valid, false otherwise
+     */
+    public function isValidPriority(mixed $prio): bool
+    {
+        // Simple version that checks if priority is a valid number within range
+        return is_numeric($prio) && $prio >= 0 && $prio <= 65535;
     }
 }

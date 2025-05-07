@@ -39,7 +39,7 @@ class TTLValidator
      * @param mixed $ttl TTL value to validate
      * @param mixed $defaultTtl Default TTL to use if ttl is not provided
      *
-     * @return ValidationResult<array> Validation result with TTL value or error
+     * @return ValidationResult Validation result with TTL value or error
      */
     public function validate(mixed $ttl, mixed $defaultTtl): ValidationResult
     {

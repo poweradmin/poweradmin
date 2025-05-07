@@ -58,7 +58,7 @@ class PTRRecordValidator implements DnsRecordValidatorInterface
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
      *
-     * @return ValidationResult<array> ValidationResult containing validated data or error messages
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {

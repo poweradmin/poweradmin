@@ -66,7 +66,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * @param int $rid Record ID (for checking uniqueness)
      * @param string $zone Zone name (for checking empty CNAME)
      *
-     * @return ValidationResult<array> ValidationResult containing validated data or error messages
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, int $rid = 0, string $zone = ''): ValidationResult
     {
@@ -141,7 +141,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $prio Priority value
      *
-     * @return ValidationResult<int> ValidationResult containing validated priority or error message
+     * @return ValidationResult ValidationResult containing validated priority or error message
      */
     private function validatePriority(mixed $prio): ValidationResult
     {
@@ -164,7 +164,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * @param string $name CNAME
      * @param int $rid Record ID
      *
-     * @return ValidationResult<bool> ValidationResult containing success or error message
+     * @return ValidationResult ValidationResult containing success or error message
      */
     private function validateCnameUnique(string $name, int $rid): ValidationResult
     {
@@ -192,7 +192,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $name CNAME to lookup
      *
-     * @return ValidationResult<bool> ValidationResult containing success or error message
+     * @return ValidationResult ValidationResult containing success or error message
      */
     private function validateCnameName(string $name): ValidationResult
     {
@@ -218,7 +218,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * @param string $name Hostname
      * @param string $zone Zone name
      *
-     * @return ValidationResult<bool> ValidationResult containing success or error message
+     * @return ValidationResult ValidationResult containing success or error message
      */
     private function validateNotEmptyCnameRR(string $name, string $zone): ValidationResult
     {
@@ -234,7 +234,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * @param string $name CNAME
      * @param int $rid Record ID
      *
-     * @return ValidationResult<bool> ValidationResult containing success or error message
+     * @return ValidationResult ValidationResult containing success or error message
      */
     public function validateCnameExistence(string $name, int $rid): ValidationResult
     {

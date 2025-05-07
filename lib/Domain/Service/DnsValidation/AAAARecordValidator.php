@@ -60,7 +60,7 @@ class AAAARecordValidator implements DnsRecordValidatorInterface
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
      *
-     * @return ValidationResult<array> ValidationResult containing validated data or error messages
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
@@ -109,7 +109,7 @@ class AAAARecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $prio Priority value
      *
-     * @return ValidationResult<int> ValidationResult with validated priority or error
+     * @return ValidationResult ValidationResult with validated priority or error
      */
     private function validatePriority(mixed $prio): ValidationResult
     {

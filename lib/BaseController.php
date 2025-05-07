@@ -541,7 +541,7 @@ abstract class BaseController
         $allowedHosts = [];
 
         $parsedUrl = parse_url($url);
-        if (isset($parsedUrl['host']) && !empty($allowedHosts) && !in_array($parsedUrl['host'], $allowedHosts)) {
+        if (isset($parsedUrl['host']) && is_array($allowedHosts) && count($allowedHosts) > 0 && !in_array($parsedUrl['host'], $allowedHosts)) {
             $url = '/';
         }
 

@@ -61,7 +61,7 @@ class PdnsUtilProvider implements DnssecProvider
         return true;
     }
 
-    private function cwallPdnssec($command, $domain, $args = array()): array
+    private function callPdnssec($command, $domain, $args = array()): array
     {
         $pdnssec_command = $this->config->get('dnssec', 'command');
         $pdnssec_debug = $this->config->get('dnssec', 'debug');

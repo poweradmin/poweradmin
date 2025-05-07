@@ -60,7 +60,7 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
      *
-     * @return ValidationResult<array> ValidationResult containing validated data or error messages
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
@@ -97,7 +97,7 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
         }
         $validatedPrio = $prioResult->getData();
 
-        if (!empty($errors)) {
+        if (count($errors) > 0) {
             return ValidationResult::errors($errors);
         }
 
@@ -115,7 +115,7 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $prio Priority value
      *
-     * @return ValidationResult<int> ValidationResult with validated priority or error message
+     * @return ValidationResult ValidationResult with validated priority or error message
      */
     private function validatePriority(mixed $prio): ValidationResult
     {

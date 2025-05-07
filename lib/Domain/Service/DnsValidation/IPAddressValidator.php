@@ -39,7 +39,7 @@ class IPAddressValidator
      *
      * @param string $ipv4 IPv4 address string
      *
-     * @return ValidationResult<string> ValidationResult with validated IP or error
+     * @return ValidationResult ValidationResult with validated IP or error
      */
     public function validateIPv4(string $ipv4): ValidationResult
     {
@@ -67,7 +67,7 @@ class IPAddressValidator
      *
      * @param string $ipv6 IPv6 address string
      *
-     * @return ValidationResult<string> ValidationResult with validated IP or error
+     * @return ValidationResult ValidationResult with validated IP or error
      */
     public function validateIPv6(string $ipv6): ValidationResult
     {
@@ -95,7 +95,7 @@ class IPAddressValidator
      *
      * @param string $ips Comma separated IP addresses
      *
-     * @return ValidationResult<array> ValidationResult with array of validated IPs or error
+     * @return ValidationResult ValidationResult with array of validated IPs or error
      */
     public function validateMultipleIPs(string $ips): ValidationResult
     {
@@ -123,10 +123,23 @@ class IPAddressValidator
             $errors[] = sprintf(_('IP address "%s" is not valid. Must be a valid IPv4 or IPv6 address.'), $trimmedIp);
         }
 
-        if (!empty($errors)) {
+        if (count($errors) > 0) {
             return ValidationResult::errors($errors);
         }
 
         return ValidationResult::success($validatedIps);
+    }
+
+    /**
+     * Check if a string contains valid IP addresses separated by commas
+     *
+     * @param string $ips Comma separated IP addresses
+     *
+     * @return bool True if all IPs are valid
+     */
+    public function areMultipleValidIPs(string $ips): bool
+    {
+        $result = $this->validateMultipleIPs($ips);
+        return $result->isValid();
     }
 }

@@ -55,7 +55,7 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return ValidationResult<array> ValidationResult containing validated data or error messages
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
@@ -103,7 +103,7 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $name SRV record name
      *
-     * @return ValidationResult<array> ValidationResult containing name data or error message
+     * @return ValidationResult ValidationResult containing name data or error message
      */
     private function validateSrvName(string $name): ValidationResult
     {
@@ -139,7 +139,7 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
      * @param string $content SRV record content
      * @param string $name SRV record name
      *
-     * @return ValidationResult<array> ValidationResult containing content data or error message
+     * @return ValidationResult ValidationResult containing content data or error message
      */
     private function validateSrvContent(string $content, string $name): ValidationResult
     {
@@ -180,7 +180,7 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $target The target hostname
      *
-     * @return ValidationResult<bool> ValidationResult containing validation result
+     * @return ValidationResult ValidationResult containing validation result
      */
     private function validateTarget(string $target): ValidationResult
     {
@@ -195,7 +195,7 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
      * Validate the priority field for SRV records
      *
      * @param mixed $prio The priority value to validate
-     * @return ValidationResult<int> ValidationResult containing the validated priority value or error
+     * @return ValidationResult ValidationResult containing the validated priority value or error
      */
     private function validatePriority(mixed $prio): ValidationResult
     {

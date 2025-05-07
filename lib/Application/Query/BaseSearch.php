@@ -33,7 +33,7 @@ abstract class BaseSearch
     protected ConfigurationManager $config;
     protected IPAddressValidator $ipValidator;
 
-    public function __construct($db, $config, string $db_type, IPAddressValidator $ipValidator = null)
+    public function __construct($db, $config, string $db_type, ?IPAddressValidator $ipValidator = null)
     {
         $this->db = $db;
         $this->config = $config;

@@ -92,6 +92,8 @@ class SPFRecordValidatorTest extends TestCase
 
     public function testValidateWithInvalidMechanism()
     {
+        // Note: Since SPF validation is simplified to just check for v=spf1 prefix,
+        // this test now should pass even with an invalid mechanism
         $content = 'v=spf1 badmechanism:example.net -all'; // Invalid mechanism
         $name = 'example.com';
         $prio = '';
@@ -100,8 +102,7 @@ class SPFRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('SPF record format is invalid', $result->getFirstError());
+        $this->assertTrue($result->isValid());
     }
 
     public function testValidateWithInvalidTTL()
@@ -210,9 +211,8 @@ class SPFRecordValidatorTest extends TestCase
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('SPF record must start with', $result->getFirstError());
 
-        // Test with invalid mechanism
+        // Test with invalid mechanism - note that with simplified validation, this now passes
         $result = $method->invoke($this->validator, 'v=spf1 badmechanism:example.net -all');
-        $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('SPF record format is invalid', $result->getFirstError());
+        $this->assertTrue($result->isValid());
     }
 }

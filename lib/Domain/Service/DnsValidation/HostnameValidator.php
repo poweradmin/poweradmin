@@ -49,7 +49,7 @@ class HostnameValidator
      * @param mixed $hostname Hostname string
      * @param bool $allowWildcard Allow wildcard (*) in hostname
      *
-     * @return ValidationResult<array> Validation result with normalized hostname or error
+     * @return ValidationResult Validation result with normalized hostname or error
      */
     public function validate(mixed $hostname, bool $allowWildcard = false): ValidationResult
     {
@@ -104,7 +104,7 @@ class HostnameValidator
             }
         }
 
-        if (!empty($errors)) {
+        if (count($errors) > 0) {
             return ValidationResult::errors(array_unique($errors));
         }
 
@@ -188,7 +188,7 @@ class HostnameValidator
         // Check if name already ends with the zone name
         if (!$this->endsWith(strtolower($zone), strtolower($name))) {
             // Append zone name if not already there
-            if (isset($name) && $name != "") {
+            if ($name !== "") {
                 return $name . "." . $zone;
             } else {
                 return $zone;

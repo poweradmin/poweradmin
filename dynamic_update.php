@@ -34,7 +34,7 @@ $databaseConnection = new PDODatabaseConnection();
 $databaseService = new DatabaseService($databaseConnection);
 $db = $databaseService->connect($credentials);
 
-if (!(isset($_SERVER)) && !$_SERVER['HTTP_USER_AGENT']) {
+if (!isset($_SERVER['HTTP_USER_AGENT']) || empty($_SERVER['HTTP_USER_AGENT'])) {
     return DynamicDnsHelper::statusExit('badagent');
 }
 

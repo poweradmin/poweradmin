@@ -157,10 +157,11 @@ class LdapAuthenticator extends LoggingService
         }
 
         $entries = ldap_get_entries($ldapconn, $ldapsearch);
-        if ($entries["count"] != 1) {
-            $this->logWarning('LDAP search did not return exactly one user. Count: {count}', ['count' => $entries["count"]]);
+        $count = (int)$entries["count"];
+        if ($count !== 1) {
+            $this->logWarning('LDAP search did not return exactly one user. Count: {count}', ['count' => $count]);
             if (isset($_POST["authenticate"])) {
-                if ($entries["count"] == 0) {
+                if ($count === 0) {
                     $this->ldapUserEventLogger->logFailedAuth();
                 } else {
                     $this->ldapUserEventLogger->logFailedDuplicateAuth();

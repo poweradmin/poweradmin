@@ -59,7 +59,7 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
      *
-     * @return ValidationResult<array> ValidationResult containing validated data or error messages
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
@@ -108,7 +108,7 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $prio Priority value
      *
-     * @return ValidationResult<int> ValidationResult containing the validated priority value or error
+     * @return ValidationResult ValidationResult containing the validated priority value or error
      */
     private function validatePriority(mixed $prio): ValidationResult
     {
@@ -129,7 +129,7 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
      * Check if CSYNC content is valid
      *
      * @param string $content CSYNC record content
-     * @return ValidationResult<bool> ValidationResult containing validation result
+     * @return ValidationResult ValidationResult containing validation result
      */
     public function validateCSYNCContent(string $content): ValidationResult
     {
@@ -173,7 +173,7 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $content CSYNC record content
      *
-     * @return ValidationResult<bool> ValidationResult containing validation status or error message
+     * @return ValidationResult ValidationResult containing validation status or error message
      */
     public function validateCSYNCRecordContent(string $content): ValidationResult
     {

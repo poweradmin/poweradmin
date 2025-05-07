@@ -23,6 +23,7 @@
 namespace Poweradmin\Migrations;
 
 use Phinx\Migration\AbstractMigration;
+use RuntimeException;
 
 final class UpdateContentColumnInZoneTemplRecords extends AbstractMigration
 {

@@ -150,7 +150,7 @@ class DomainManager implements DomainManagerInterface
                         $dns_ttl = $this->config->get('dns', 'ttl');
 
                         $templ_records = ZoneTemplate::getZoneTemplRecords($db, $zone_template);
-                        if ($templ_records != -1) {
+                        if (!empty($templ_records) && $templ_records !== -1) {
                             foreach ($templ_records as $r) {
                                 if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
                                     $zoneTemplate = new ZoneTemplate($this->db, $this->config);
@@ -452,6 +452,8 @@ class DomainManager implements DomainManagerInterface
             } else {
                 $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
             }
+            $zone_master_add = $this->config->get('zone_master_add', false) ? "1" : "0";
+            $zone_slave_add = $this->config->get('zone_slave_add', false) ? "1" : "0";
             if ($zone_master_add == "1" || $zone_slave_add == "1") {
                 $domain = $this->domainRepository->getDomainNameById($zone_id);
                 $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);

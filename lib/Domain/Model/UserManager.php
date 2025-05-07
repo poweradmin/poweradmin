@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Model;
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
@@ -366,6 +367,8 @@ class UserManager
             }
 
             if ($user_password != "" && ($edit_own_perm || $passwd_edit_others_perm)) {
+                // Use password_hash directly as the PasswordEncryptionService is for session keys
+                $passwordHash = password_hash($user_password, PASSWORD_DEFAULT);
                 $stmt->bindValue(':password', $passwordHash, PDO::PARAM_STR);
             }
 
@@ -670,6 +673,8 @@ class UserManager
                 $stmt->bindValue(':use_ldap', $use_ldap, PDO::PARAM_INT);
             }
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
+                // Use password_hash directly as the PasswordEncryptionService is for session keys
+                $hashedPassword = password_hash($details['password'], PASSWORD_DEFAULT);
                 $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
             }
 

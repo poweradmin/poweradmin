@@ -55,7 +55,7 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return ValidationResult<array> ValidationResult containing validated data or error messages
+     * @return ValidationResult ValidationResult containing validated data or error messages
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
@@ -94,7 +94,7 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
-        if (!empty($errors)) {
+        if (count($errors) > 0) {
             return ValidationResult::errors($errors);
         }
 
@@ -112,7 +112,7 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $subtype Subtype value
      *
-     * @return ValidationResult<int> ValidationResult with validated subtype or error message
+     * @return ValidationResult ValidationResult with validated subtype or error message
      */
     private function validateSubtype(mixed $subtype): ValidationResult
     {

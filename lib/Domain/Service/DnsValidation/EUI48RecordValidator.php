@@ -55,7 +55,7 @@ class EUI48RecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return ValidationResult<array> ValidationResult containing validated data or errors
+     * @return ValidationResult ValidationResult containing validated data or errors
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, $defaultTTL): ValidationResult
     {
@@ -89,7 +89,7 @@ class EUI48RecordValidator implements DnsRecordValidatorInterface
             $errors[] = _('Invalid value for prio field.');
         }
 
-        if (!empty($errors)) {
+        if (count($errors) > 0) {
             return ValidationResult::errors($errors);
         }
 
@@ -122,7 +122,7 @@ class EUI48RecordValidator implements DnsRecordValidatorInterface
      *
      * @param mixed $prio Priority value
      *
-     * @return ValidationResult<int> ValidationResult with validated priority
+     * @return ValidationResult ValidationResult with validated priority
      */
     private function validatePriority(mixed $prio): ValidationResult
     {

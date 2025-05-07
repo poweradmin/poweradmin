@@ -88,7 +88,7 @@ class MXRecordValidator implements DnsRecordValidatorInterface
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
-        if (!empty($errors)) {
+        if (count($errors) > 0) {
             return ValidationResult::errors($errors);
         }
 

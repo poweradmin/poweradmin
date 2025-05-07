@@ -49,7 +49,7 @@ interface DnsRecordValidationServiceInterface
      * @param string $dns_hostmaster DNS hostmaster email
      * @param int $dns_ttl Default TTL value
      *
-     * @return ValidationResult<array> Returns ValidationResult with validated data or error messages
+     * @return ValidationResult Returns ValidationResult with validated data or error messages
      */
     public function validateRecord(
         int $rid,

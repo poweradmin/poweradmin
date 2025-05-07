@@ -227,7 +227,7 @@ class TopLevelDomain
     // http://tools.ietf.org/html/rfc2606#section-2
     private const SPECIAL_TOP_LEVEL_DOMAINS = array('test', 'example', 'invalid', 'localhost');
 
-    private static array $VALID_TOP_LEVEL_DOMAINS;
+    private static array $VALID_TOP_LEVEL_DOMAINS = [];
 
     private function __construct()
     {
@@ -240,6 +240,11 @@ class TopLevelDomain
 
     public static function isValidTopLevelDomain($hostname): bool
     {
+        // Initialize if not already initialized
+        if (empty(self::$VALID_TOP_LEVEL_DOMAINS)) {
+            self::init();
+        }
+
         $hostname_labels = explode('.', $hostname);
         $label_count = count($hostname_labels);
         $domain = strtolower($hostname_labels[$label_count - 1]);

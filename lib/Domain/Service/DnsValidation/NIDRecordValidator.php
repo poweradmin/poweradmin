@@ -40,8 +40,9 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
 {
     private TTLValidator $ttlValidator;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationManager $_config)
     {
+        // ConfigurationManager parameter is kept for interface consistency
         $this->ttlValidator = new TTLValidator();
     }
 
@@ -54,7 +55,7 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
      * @param int|string $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
-     * @return ValidationResult<array> Validation result with data or errors
+     * @return ValidationResult Validation result with data or errors
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
@@ -120,7 +121,7 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
      * It should be an integer between 0 and 65535
      *
      * @param mixed $prio The preference value
-     * @return ValidationResult<int> Validation result with the validated preference or error
+     * @return ValidationResult Validation result with the validated preference or error
      */
     private function validatePreference(mixed $prio): ValidationResult
     {
