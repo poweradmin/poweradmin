@@ -186,17 +186,21 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
      * Legacy adapter method for backward compatibility
      *
      * @param string $content The content to validate
-     * @param array &$errors Collection of validation errors
-     * @return bool True if valid, false otherwise
+     * @return array Array with 'isValid' (bool) and 'errors' (array) keys
      */
-    private function isValidNAPTRContent(string $content, array &$errors): bool
+    private function isValidNAPTRContent(string $content): array
     {
         $result = $this->validateNAPTRContent($content);
         if (!$result->isValid()) {
-            $errors[] = $result->getFirstError();
-            return false;
+            return [
+                'isValid' => false,
+                'errors' => [$result->getFirstError()]
+            ];
         }
-        return true;
+        return [
+            'isValid' => true,
+            'errors' => []
+        ];
     }
 
     /**

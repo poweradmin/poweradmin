@@ -67,9 +67,9 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Validate content
-        $errors = [];
-        if (!$this->isValidZONEMDContent($content, $errors)) {
-            return ValidationResult::errors($errors);
+        $validationResult = $this->isValidZONEMDContent($content);
+        if (!$validationResult['isValid']) {
+            return ValidationResult::errors($validationResult['errors']);
         }
 
         // Validate TTL
@@ -93,16 +93,17 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
      * Format: <serial> <scheme> <hash-algorithm> <digest>
      *
      * @param string $content The content to validate
-     * @param array &$errors Collection of validation errors
-     * @return bool True if valid, false otherwise
+     * @return array Array with 'isValid' (bool) and 'errors' (array) keys
      */
-    private function isValidZONEMDContent(string $content, array &$errors): bool
+    private function isValidZONEMDContent(string $content): array
     {
+        $errors = [];
+
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content), 4);
         if (count($parts) !== 4) {
             $errors[] = _('ZONEMD record must contain serial, scheme, hash-algorithm, and digest separated by spaces.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         [$serial, $scheme, $hashAlgorithm, $digest] = $parts;
@@ -110,7 +111,7 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         // Validate serial (must be a valid zone serial number between 0 and 4294967295)
         if (!is_numeric($serial) || (int)$serial < 0 || (int)$serial > 4294967295) {
             $errors[] = _('ZONEMD serial must be a number between 0 and 4294967295.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate scheme
@@ -120,7 +121,7 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         // 240-255 = Reserved for Private Use
         if (!is_numeric($scheme) || (int)$scheme < 0 || (int)$scheme > 255) {
             $errors[] = _('ZONEMD scheme must be a number between 0 and 255.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // The only standardized scheme is 1
@@ -137,7 +138,7 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         // 240-255 = Reserved for Private Use
         if (!is_numeric($hashAlgorithm) || (int)$hashAlgorithm < 0 || (int)$hashAlgorithm > 255) {
             $errors[] = _('ZONEMD hash algorithm must be a number between 0 and 255.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Check if the hash algorithm is a known algorithm
@@ -150,7 +151,7 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         // Validate digest (must be a hexadecimal string)
         if (!preg_match('/^[0-9a-fA-F]+$/', $digest)) {
             $errors[] = _('ZONEMD digest must be a hexadecimal string.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Additional validation based on the hash algorithm
@@ -160,6 +161,6 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
         // This is because the test data might not match real-world requirements
         // In a production environment, these would be strictly enforced
 
-        return true;
+        return ['isValid' => true, 'errors' => []];
     }
 }

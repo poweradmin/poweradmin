@@ -73,9 +73,9 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Invalid characters in content field.'));
         }
 
-        $errors = [];
-        if (!$this->isValidTSIGContent($content, $errors)) {
-            return ValidationResult::errors($errors);
+        $validationResult = $this->isValidTSIGContent($content);
+        if (!$validationResult['isValid']) {
+            return ValidationResult::errors($validationResult['errors']);
         }
 
         // Validate TTL
@@ -99,16 +99,17 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
      * Format: <algorithm-name> <timestamp> <fudge> <mac> <original-id> <error> <other-len> [<other-data>]
      *
      * @param string $content The content to validate
-     * @param array &$errors Collection of validation errors
-     * @return bool True if valid, false otherwise
+     * @return array Array with 'isValid' (bool) and 'errors' (array) keys
      */
-    private function isValidTSIGContent(string $content, array &$errors): bool
+    private function isValidTSIGContent(string $content): array
     {
+        $errors = [];
+
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content), 8);
         if (count($parts) < 7) {
             $errors[] = _('TSIG record must contain at least algorithm-name, timestamp, fudge, mac, original-id, error, and other-len separated by spaces.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         [$algorithmName, $timestamp, $fudge, $mac, $originalId, $error, $otherLen, $otherData] = $parts + array_fill(0, 8, '');
@@ -116,52 +117,52 @@ class TSIGRecordValidator implements DnsRecordValidatorInterface
         // Validate algorithm name (must be a valid domain name ending with a dot)
         if (!$this->isValidAlgorithmName($algorithmName)) {
             $errors[] = _('TSIG algorithm name must be a valid domain name ending with a dot (e.g., hmac-sha256.).');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate timestamp (must be a positive integer)
         if (!is_numeric($timestamp) || (int)$timestamp < 0) {
             $errors[] = _('TSIG timestamp must be a non-negative integer.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate fudge (must be a positive integer, usually small like 300)
         if (!is_numeric($fudge) || (int)$fudge < 0) {
             $errors[] = _('TSIG fudge must be a non-negative integer.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate MAC (must be a base64 string or hexadecimal)
         if (!$this->isValidMac($mac)) {
             $errors[] = _('TSIG MAC must be a valid base64-encoded string or hexadecimal string.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate original ID (must be a positive integer between 0 and 65535)
         if (!is_numeric($originalId) || (int)$originalId < 0 || (int)$originalId > 65535) {
             $errors[] = _('TSIG original ID must be a number between 0 and 65535.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate error (must be a valid DNS RCODE number between 0 and 23)
         if (!is_numeric($error) || (int)$error < 0 || (int)$error > 23) {
             $errors[] = _('TSIG error must be a valid DNS RCODE number between 0 and 23.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate other-len (must be a positive integer)
         if (!is_numeric($otherLen) || (int)$otherLen < 0) {
             $errors[] = _('TSIG other-len must be a non-negative integer.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate other-data if present (must be a base64 string or hexadecimal)
         if ((int)$otherLen > 0 && $otherData !== '' && !$this->isValidOtherData($otherData)) {
             $errors[] = _('TSIG other-data must be a valid base64-encoded string or hexadecimal string.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
-        return true;
+        return ['isValid' => true, 'errors' => []];
     }
 
     /**

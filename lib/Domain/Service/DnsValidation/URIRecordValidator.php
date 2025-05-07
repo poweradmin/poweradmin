@@ -75,9 +75,9 @@ class URIRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Parse URI record parts: <priority> <weight> "<target URI>"
-        $errors = [];
-        if (!$this->isValidURIRecordFormat($content, $errors)) {
-            return ValidationResult::errors($errors);
+        $validationResult = $this->isValidURIRecordFormat($content);
+        if (!$validationResult['isValid']) {
+            return ValidationResult::errors($validationResult['errors']);
         }
 
         // Validate TTL
@@ -103,15 +103,16 @@ class URIRecordValidator implements DnsRecordValidatorInterface
      * Check if content follows URI record format: <priority> <weight> "<target URI>"
      *
      * @param string $content The content to validate
-     * @param array &$errors Collection of validation errors
-     * @return bool True if valid format, false otherwise
+     * @return array Array with 'isValid' (bool) and 'errors' (array) keys
      */
-    private function isValidURIRecordFormat(string $content, array &$errors): bool
+    private function isValidURIRecordFormat(string $content): array
     {
+        $errors = [];
+
         // Simple regex to match URI record format
         if (!preg_match('/^(\d+)\s+(\d+)\s+"(.*)"$/', $content, $matches)) {
             $errors[] = _('URI record must be in the format: <priority> <weight> "<target URI>"');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         $priority = (int)$matches[1];
@@ -121,29 +122,29 @@ class URIRecordValidator implements DnsRecordValidatorInterface
         // Validate priority (0-65535)
         if ($priority < 0 || $priority > 65535) {
             $errors[] = _('URI priority must be between 0 and 65535.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate weight (0-65535)
         if ($weight < 0 || $weight > 65535) {
             $errors[] = _('URI weight must be between 0 and 65535.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate URI format (must start with a protocol)
         if (!preg_match('/^[a-zA-Z][a-zA-Z0-9+.-]*:/', $uri)) {
             $errors[] = _('URI must start with a valid protocol (like http:, https:, mailto:, etc).');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // If protocol requires //, verify it's present (except for special protocols like mailto:)
         $requiresSlashes = !preg_match('/^(mailto|tel|sms|bitcoin):/i', $uri);
         if ($requiresSlashes && !preg_match('/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//', $uri)) {
             $errors[] = _('URI with this protocol must include "://" after the protocol name.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
-        return true;
+        return ['isValid' => true, 'errors' => []];
     }
 
     /**

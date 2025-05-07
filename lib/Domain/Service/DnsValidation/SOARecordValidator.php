@@ -100,12 +100,12 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         $name = $hostnameData['hostname'];
 
         // Validate SOA content
-        $soaResult = $this->validateSoaContent($content, $this->dns_hostmaster, $errors);
+        $soaResult = $this->validateSoaContent($content, $this->dns_hostmaster);
         if (!$soaResult['isValid']) {
-            if (empty($errors)) {
-                $errors[] = _('Your content field doesnt have a legit value.');
+            if (empty($soaResult['errors'])) {
+                return ValidationResult::failure(_('Your content field doesnt have a legit value.'));
             }
-            return ValidationResult::errors($errors);
+            return ValidationResult::errors($soaResult['errors']);
         }
         $content = $soaResult['content'];
 
@@ -130,25 +130,25 @@ class SOARecordValidator implements DnsRecordValidatorInterface
      *
      * @param string $content SOA record content
      * @param string $dns_hostmaster Hostmaster email address
-     * @param array &$errors Array to collect validation errors
      *
-     * @return array Result with 'isValid' and 'content' keys
+     * @return array Result with 'isValid', 'content', and 'errors' keys
      */
-    private function validateSoaContent(string $content, string $dns_hostmaster, array &$errors): array
+    private function validateSoaContent(string $content, string $dns_hostmaster): array
     {
+        $errors = [];
         $fields = preg_split("/\s+/", trim($content));
         $field_count = count($fields);
 
         if ($field_count == 0 || $field_count > 7) {
             $errors[] = _('SOA record must have between 1 and 7 fields.');
-            return ['isValid' => false];
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate primary nameserver
         $primaryNsResult = $this->hostnameValidator->validate($fields[0], false);
         if (!$primaryNsResult->isValid() || preg_match('/\.arpa\.?$/', $fields[0])) {
             $errors[] = _('Invalid primary nameserver in SOA record.');
-            return ['isValid' => false];
+            return ['isValid' => false, 'errors' => $errors];
         }
         $final_soa = $primaryNsResult->getData()['hostname'];
 
@@ -168,7 +168,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         $validation = new Validator($this->db, $this->config);
         if (!$validation->is_valid_email($addr_to_check)) {
             $errors[] = _('Invalid email address in SOA record.');
-            return ['isValid' => false];
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         $addr_final = explode('@', $addr_to_check, 2);
@@ -178,7 +178,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         if (isset($fields[2])) {
             if (!is_numeric($fields[2])) {
                 $errors[] = _('Serial number must be numeric.');
-                return ['isValid' => false];
+                return ['isValid' => false, 'errors' => $errors];
             }
             $final_soa .= " " . $fields[2];
         } else {
@@ -188,17 +188,17 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         // Process remaining numeric fields
         if ($field_count != 7) {
             $errors[] = _('SOA record must have exactly 7 fields (primary NS, email, serial, refresh, retry, expire, minimum).');
-            return ['isValid' => false];
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         for ($i = 3; ($i < 7); $i++) {
             if (!is_numeric($fields[$i])) {
                 $errors[] = _('SOA timing fields (refresh, retry, expire, minimum) must be numeric.');
-                return ['isValid' => false];
+                return ['isValid' => false, 'errors' => $errors];
             }
             $final_soa .= " " . $fields[$i];
         }
 
-        return ['isValid' => true, 'content' => $final_soa];
+        return ['isValid' => true, 'content' => $final_soa, 'errors' => []];
     }
 }

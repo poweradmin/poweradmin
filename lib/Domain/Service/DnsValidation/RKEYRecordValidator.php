@@ -81,8 +81,9 @@ class RKEYRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Invalid characters in content field.'));
         }
 
-        if (!$this->isValidRKEYContent($content, $errors)) {
-            return ValidationResult::errors($errors);
+        $validationResult = $this->isValidRKEYContent($content);
+        if (!$validationResult['isValid']) {
+            return ValidationResult::errors($validationResult['errors']);
         }
 
         // Validate TTL
@@ -106,22 +107,23 @@ class RKEYRecordValidator implements DnsRecordValidatorInterface
      * Format: <flags> <protocol> <algorithm> <public key>
      *
      * @param string $content The content to validate
-     * @param array &$errors Collection of validation errors
-     * @return bool True if valid, false otherwise
+     * @return array Array with 'isValid' (bool) and 'errors' (array) keys
      */
-    private function isValidRKEYContent(string $content, array &$errors): bool
+    private function isValidRKEYContent(string $content): array
     {
+        $errors = [];
+
         // Check if empty
         if (empty(trim($content))) {
             $errors[] = _('RKEY record content cannot be empty.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Split the content into components
         $parts = preg_split('/\s+/', trim($content));
         if (count($parts) < 4) {
             $errors[] = _('RKEY record must contain flags, protocol, algorithm, and public key data.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         [$flags, $protocol, $algorithm, $publicKey] = [$parts[0], $parts[1], $parts[2], implode(' ', array_slice($parts, 3))];
@@ -129,27 +131,27 @@ class RKEYRecordValidator implements DnsRecordValidatorInterface
         // Validate flags field (must be a number)
         if (!is_numeric($flags)) {
             $errors[] = _('RKEY flags field must be a numeric value.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate protocol field (must be a number)
         if (!is_numeric($protocol)) {
             $errors[] = _('RKEY protocol field must be a numeric value.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Validate algorithm field (must be a number)
         if (!is_numeric($algorithm)) {
             $errors[] = _('RKEY algorithm field must be a numeric value.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
         // Minimal validation for the public key part
         if (empty(trim($publicKey))) {
             $errors[] = _('RKEY public key data cannot be empty.');
-            return false;
+            return ['isValid' => false, 'errors' => $errors];
         }
 
-        return true;
+        return ['isValid' => true, 'errors' => []];
     }
 }

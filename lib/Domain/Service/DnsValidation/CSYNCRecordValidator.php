@@ -129,8 +129,6 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
      * Check if CSYNC content is valid
      *
      * @param string $content CSYNC record content
-     * @param array &$errors Array to collect validation errors
-     *
      * @return ValidationResult<bool> ValidationResult containing validation result
      */
     public function validateCSYNCContent(string $content): ValidationResult
