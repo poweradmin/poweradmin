@@ -309,6 +309,23 @@ class DnsRecord
         return $this->supermasterManager->deleteSupermaster($master_ip, $ns_name);
     }
 
+    /** Update Supermaster
+     *
+     * Update a trusted supermaster in the global supermasters table
+     *
+     * @param string $old_master_ip Original supermaster IP address
+     * @param string $old_ns_name Original hostname of supermaster
+     * @param string $new_master_ip New supermaster IP address
+     * @param string $new_ns_name New hostname of supermaster
+     * @param string $account Account name used for tracking
+     *
+     * @return boolean true on success
+     */
+    public function edit_supermaster(string $old_master_ip, string $old_ns_name, string $new_master_ip, string $new_ns_name, string $account): bool
+    {
+        return $this->supermasterManager->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account);
+    }
+
     /** Get Supermaster Info from IP
      *
      * Retrieve supermaster details from supermaster IP address

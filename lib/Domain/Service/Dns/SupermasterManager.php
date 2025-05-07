@@ -223,6 +223,71 @@ class SupermasterManager implements SupermasterManagerInterface
     }
 
     /**
+     * Update Supermaster
+     *
+     * Update a trusted supermaster in the global supermasters table
+     *
+     * @param string $old_master_ip Original supermaster IP address
+     * @param string $old_ns_name Original hostname of supermaster
+     * @param string $new_master_ip New supermaster IP address
+     * @param string $new_ns_name New hostname of supermaster
+     * @param string $account Account name used for tracking
+     *
+     * @return boolean true on success
+     */
+    public function updateSupermaster(string $old_master_ip, string $old_ns_name, string $new_master_ip, string $new_ns_name, string $account): bool
+    {
+        // Validate IP addresses
+        if (!$this->ipAddressValidator->isValidIPv4($new_master_ip) && !$this->ipAddressValidator->isValidIPv6($new_master_ip)) {
+            $this->messageService->addSystemError(_('This is not a valid IPv4 or IPv6 address.'));
+            return false;
+        }
+
+        // Validate hostnames
+        if (!$this->hostnameValidator->isValid($new_ns_name)) {
+            $this->messageService->addSystemError(_('Invalid hostname.'));
+            return false;
+        }
+
+        // Validate account
+        if (!self::validateAccount($account)) {
+            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "updateSupermaster", "given account name is invalid (alpha chars only)"));
+            return false;
+        }
+
+        // Check if source supermaster exists
+        if (!$this->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
+            $this->messageService->addSystemError(_('The supermaster you are trying to edit does not exist.'));
+            return false;
+        }
+
+        // Check for duplicate if IP or hostname changed
+        if (
+            ($old_master_ip !== $new_master_ip || $old_ns_name !== $new_ns_name)
+            && $this->supermasterIpNameExists($new_master_ip, $new_ns_name)
+        ) {
+            $this->messageService->addSystemError(_('There is already a supermaster with this IP address and hostname.'));
+            return false;
+        }
+
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+
+        $stmt = $this->db->prepare("UPDATE $supermasters_table SET ip = :new_master_ip, nameserver = :new_ns_name, account = :account 
+                                    WHERE ip = :old_master_ip AND nameserver = :old_ns_name");
+
+        $result = $stmt->execute([
+            ':new_master_ip' => $new_master_ip,
+            ':new_ns_name' => $new_ns_name,
+            ':account' => $account,
+            ':old_master_ip' => $old_master_ip,
+            ':old_ns_name' => $old_ns_name
+        ]);
+
+        return (bool)$result;
+    }
+
+    /**
      * Validate Account is valid string
      *
      * @param string $account Account name alphanumeric and ._-

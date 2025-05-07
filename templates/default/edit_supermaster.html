@@ -1,0 +1,106 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_supermasters">{% trans %}Supermasters{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit supermaster{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-server me-2"></i>{% trans %}Edit Supermaster{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=edit_supermaster&master_ip={{ old_master_ip }}&ns_name={{ old_ns_name }}" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+                    <div class="mb-3">
+                        <label for="master_ip" class="form-label">{% trans %}IP address of supermaster{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="text" id="master_ip" name="master_ip" value="{{ master_ip }}" required>
+                        <small class="form-text text-muted">{% trans %}Enter the IP address of the master nameserver{% endtrans %}</small>
+                        <div class="invalid-feedback">{% trans %}Provide ip address{% endtrans %}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="ns_name" class="form-label">{% trans %}Hostname in NS record{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="text" id="ns_name" name="ns_name" value="{{ ns_name }}" required>
+                        <small class="form-text text-muted">{% trans %}Enter the hostname as it appears in the NS record{% endtrans %}</small>
+                        <div class="invalid-feedback">{% trans %}Provide host name{% endtrans %}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="account" class="form-label">{% trans %}Account{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="account" name="account">
+                            {% for user in users %}
+                            {% if account == user['username'] %}
+                            <option value="{{ user['username'] }}" selected>
+                                {% if user['fullname'] %}
+                                {{ user['fullname'] }}
+                                {% else %}
+                                {{ user['username'] }}
+                                {% endif %}
+                            </option>
+                            {% elseif user['id'] == session_uid %}
+                            <option value="{{ user['username'] }}">
+                                {% if user['fullname'] %}
+                                {{ user['fullname'] }}
+                                {% else %}
+                                {{ user['username'] }}
+                                {% endif %}
+                            </option>
+                            {% elseif perm_view_others %}
+                            <option value="{{ user['username'] }}">
+                                {% if user['fullname'] %}
+                                {{ user['fullname'] }}
+                                {% else %}
+                                {{ user['username'] }}
+                                {% endif %}
+                            </option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        <small class="form-text text-muted">{% trans %}Select the account that will own this supermaster{% endtrans %}</small>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" name="submit" class="btn btn-sm btn-primary">
+                                <i class="bi bi-save me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
+                            </button>
+                            <a href="index.php?page=list_supermasters" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}All fields are required{% endtrans %}</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About Editing Supermasters{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-pencil-square text-primary me-2"></i>{% trans %}Update Credentials{% endtrans %}</h6>
+                        <p class="mb-1 small">{% trans %}You can modify the IP address, hostname, or account for this supermaster.{% endtrans %}</p>
+                    </div>
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-exclamation-circle text-warning me-2"></i>{% trans %}Important{% endtrans %}</h6>
+                        <p class="mb-1 small">{% trans %}Ensure that the hostname matches exactly what appears in NS records, or slave zone creation may fail.{% endtrans %}</p>
+                    </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-shield-check text-success me-2"></i>{% trans %}Validation{% endtrans %}</h6>
+                        <p class="mb-1 small">{% trans %}All fields will be validated to ensure they contain proper values.{% endtrans %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

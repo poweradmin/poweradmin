@@ -401,6 +401,7 @@ return array(
     'Poweradmin\\Application\\Controller\\EditController' => $baseDir . '/lib/Application/Controller/EditController.php',
     'Poweradmin\\Application\\Controller\\EditPermTemplController' => $baseDir . '/lib/Application/Controller/EditPermTemplController.php',
     'Poweradmin\\Application\\Controller\\EditRecordController' => $baseDir . '/lib/Application/Controller/EditRecordController.php',
+    'Poweradmin\\Application\\Controller\\EditSupermasterController' => $baseDir . '/lib/Application/Controller/EditSupermasterController.php',
     'Poweradmin\\Application\\Controller\\EditUserController' => $baseDir . '/lib/Application/Controller/EditUserController.php',
     'Poweradmin\\Application\\Controller\\EditZoneTemplController' => $baseDir . '/lib/Application/Controller/EditZoneTemplController.php',
     'Poweradmin\\Application\\Controller\\EditZoneTemplRecordController' => $baseDir . '/lib/Application/Controller/EditZoneTemplRecordController.php',

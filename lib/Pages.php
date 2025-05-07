@@ -63,6 +63,7 @@ class Pages
             'delete_user',
             'delete_zone_templ',
             'delete_zone_templ_record',
+            'edit_supermaster',
             'dnssec_add_key',
             'dnssec',
             'dnssec_delete_key',

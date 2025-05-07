@@ -595,6 +595,7 @@ class ComposerStaticInit48865768fa00b8a6465601b68206f9f4
         'Poweradmin\\Application\\Controller\\EditController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditController.php',
         'Poweradmin\\Application\\Controller\\EditPermTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditPermTemplController.php',
         'Poweradmin\\Application\\Controller\\EditRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditRecordController.php',
+        'Poweradmin\\Application\\Controller\\EditSupermasterController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditSupermasterController.php',
         'Poweradmin\\Application\\Controller\\EditUserController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditUserController.php',
         'Poweradmin\\Application\\Controller\\EditZoneTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditZoneTemplController.php',
         'Poweradmin\\Application\\Controller\\EditZoneTemplRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditZoneTemplRecordController.php',

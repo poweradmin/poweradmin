@@ -92,6 +92,21 @@ interface SupermasterManagerInterface
     public function supermasterIpNameExists(string $master_ip, string $ns_name): bool;
 
     /**
+     * Update Supermaster
+     *
+     * Update a trusted supermaster in the global supermasters table
+     *
+     * @param string $old_master_ip Original supermaster IP address
+     * @param string $old_ns_name Original hostname of supermaster
+     * @param string $new_master_ip New supermaster IP address
+     * @param string $new_ns_name New hostname of supermaster
+     * @param string $account Account name used for tracking
+     *
+     * @return boolean true on success
+     */
+    public function updateSupermaster(string $old_master_ip, string $old_ns_name, string $new_master_ip, string $new_ns_name, string $account): bool;
+
+    /**
      * Validate Account is valid string
      *
      * @param string $account Account name alphanumeric and ._-
