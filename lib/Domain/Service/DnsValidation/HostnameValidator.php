@@ -162,6 +162,20 @@ class HostnameValidator
     }
 
     /**
+     * Simple validator for hostname validity
+     *
+     * @param string $hostname Hostname to validate
+     * @param bool $allowWildcard Allow wildcard (*) in hostname
+     *
+     * @return bool True if hostname is valid
+     */
+    public function isValid(string $hostname, bool $allowWildcard = false): bool
+    {
+        $result = $this->validate($hostname, $allowWildcard);
+        return $result->isValid();
+    }
+
+    /**
      * Normalize a DNS record name by ensuring it is fully qualified with the zone name
      *
      * @param string $name Name to normalize

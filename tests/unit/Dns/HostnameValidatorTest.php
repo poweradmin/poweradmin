@@ -148,4 +148,26 @@ class HostnameValidatorTest extends TestCase
         $this->assertFalse(HostnameValidator::endsWith('com.example', 'example.com'));
         $this->assertFalse(HostnameValidator::endsWith('example.com.org', 'example.com'));
     }
+
+    /**
+     * Test the isValid method for hostname validation
+     */
+    public function testIsValid()
+    {
+        // Valid hostnames
+        $this->assertTrue($this->validator->isValid('example.com'));
+        $this->assertTrue($this->validator->isValid('www.example.com'));
+        $this->assertTrue($this->validator->isValid('example.com.'));  // With trailing dot
+        $this->assertTrue($this->validator->isValid('sub-domain.example.com'));  // With dash
+        $this->assertTrue($this->validator->isValid('*.example.com', true));  // With wildcard enabled
+
+        // Invalid hostnames
+        $this->assertFalse($this->validator->isValid('example..com'));  // Double dot
+        $this->assertFalse($this->validator->isValid('-example.com'));  // Starting with dash
+        $this->assertFalse($this->validator->isValid('example-.com'));  // Ending with dash
+        $this->assertFalse($this->validator->isValid('*.example.com'));  // Wildcard without flag
+        $this->assertFalse($this->validator->isValid(str_repeat('a', 64) . '.example.com'));  // Label too long
+        $this->assertFalse($this->validator->isValid('example.com/with/slash'));  // Invalid characters
+        $this->assertFalse($this->validator->isValid('example.com!'));  // Invalid characters
+    }
 }

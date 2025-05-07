@@ -188,7 +188,7 @@ class DomainRepository implements DomainRepositoryInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
-        if ($this->hostnameValidator->isValidHostnameFqdn($domain, 0)) {
+        if ($this->hostnameValidator->isValid($domain)) {
             $result = $this->db->queryRow("SELECT id FROM $domains_table WHERE name=" . $this->db->quote($domain, 'text'));
             return (bool)$result;
         } else {

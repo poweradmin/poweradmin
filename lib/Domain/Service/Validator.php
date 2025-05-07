@@ -52,7 +52,7 @@ class Validator
         $hostnameValidator = new HostnameValidator($this->config);
         if (
             (!preg_match("/^[0-9a-z]([-_.]?[0-9a-z])*$/i", $fields[0])) ||
-            (!isset($fields[1]) || $fields[1] == '' || !$hostnameValidator->isValidHostnameFqdn($fields[1], 0))
+            (!isset($fields[1]) || $fields[1] == '' || !$hostnameValidator->isValid($fields[1]))
         ) {
             return false;
         }
