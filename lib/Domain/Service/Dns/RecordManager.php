@@ -96,7 +96,7 @@ class RecordManager implements RecordManagerInterface
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
         if ($type == 'SOA' && $perm_edit == "own_as_client") {
@@ -205,7 +205,7 @@ class RecordManager implements RecordManagerInterface
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $record['zid']);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
         $zone_type = $this->domainRepository->getDomainType($record['zid']);
 
         if ($record['type'] == 'SOA' && $perm_edit == "own_as_client") {
@@ -284,7 +284,7 @@ class RecordManager implements RecordManagerInterface
         // Create RecordRepository to get record details
         $recordRepository = new RecordRepository($this->db, $this->config);
         $record = $recordRepository->getRecordDetailsFromRecordId($rid);
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $record['zid']);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $record['zid']);
 
         if ($perm_edit == "all" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "1")) {
             if ($record['type'] == "SOA") {
@@ -364,7 +364,7 @@ class RecordManager implements RecordManagerInterface
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $zone_type = $this->domainRepository->getDomainType($zone_id);
 
         if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")) {

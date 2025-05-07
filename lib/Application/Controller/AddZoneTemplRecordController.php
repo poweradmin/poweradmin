@@ -62,9 +62,9 @@ class AddZoneTemplRecordController extends BaseController
         }
 
         $zone_templ_id = htmlspecialchars($_GET['id']);
-        $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
-        $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
+        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $_SESSION['userid']);
+        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $perm_master_add = UserManager::verifyPermission($this->db, 'zone_master_add');
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 
@@ -113,7 +113,7 @@ class AddZoneTemplRecordController extends BaseController
 
         $template = new ZoneTemplate($this->db, $this->getConfig());
 
-        if ($template->add_zone_templ_record($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
+        if ($template->addZoneTemplRecord($zone_templ_id, $name, $type, $content, $ttl, $prio)) {
             $this->setMessage('edit_zone_templ', 'success', 'The record was successfully added.');
             $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
         } else {
@@ -124,7 +124,7 @@ class AddZoneTemplRecordController extends BaseController
     private function showAddZoneTemplRecord(): void
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
-        $templ_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id);
+        $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
         $name = $_POST['name'] ?? "[ZONE]";
         $type = $_POST['type'] ?? "";
         $content = $_POST['content'] ?? "";

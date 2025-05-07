@@ -71,7 +71,7 @@ class Logger extends AbstractLogger
         ]);
     }
 
-    function interpolateMessage(string $message, array $context = []): string
+    private function interpolateMessage(string $message, array $context = []): string
     {
         $replace = array();
         foreach ($context as $key => $val) {

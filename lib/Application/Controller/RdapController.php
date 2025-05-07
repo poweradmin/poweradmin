@@ -96,11 +96,9 @@ class RdapController extends BaseController
                     $domain = $punycode;
                 }
             }
-        }
-        // Check if a zone_id was provided
-        elseif (isset($this->getRequest()['zone_id'])) {
+        } elseif (isset($this->getRequest()['zone_id'])) {
             $zone_id = (int)$this->getRequest()['zone_id'];
-            $domain = $this->dnsRecord->get_domain_name_by_id($zone_id);
+            $domain = $this->dnsRecord->getDomainNameById($zone_id);
         }
 
         return $domain;

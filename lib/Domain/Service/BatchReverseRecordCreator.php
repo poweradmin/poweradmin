@@ -149,7 +149,7 @@ class BatchReverseRecordCreator
             $testFqdn = $hostPrefix . '0.' . $domain;
 
             // Get the reverse zone ID
-            $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($testReverseDomain);
+            $test_zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($testReverseDomain);
             if ($test_zone_rev_id === -1) {
                 throw new \Exception("No matching reverse zone found for $testReverseDomain");
             }
@@ -183,11 +183,11 @@ class BatchReverseRecordCreator
                 }
 
                 // Convert IP to reverse notation
-                $reverseDomain = DnsRecord::convert_ipv4addr_to_ptrrec($ip);
+                $reverseDomain = DnsRecord::convertIPv4AddrToPtrRec($ip);
 
                 // For larger networks, we need to make sure we're using the right reverse zone ID
                 // because subnet boundaries can cross zone boundaries
-                $zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($reverseDomain);
+                $zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($reverseDomain);
                 if ($zone_rev_id === -1) {
                     $failCount++;
                     $errors[] = "No matching reverse zone found for $reverseDomain";
@@ -195,7 +195,7 @@ class BatchReverseRecordCreator
                 }
 
                 // Check if record already exists before trying to add it
-                $record_exists = $this->dnsRecord->record_exists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
+                $record_exists = $this->dnsRecord->recordExists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
 
                 if ($record_exists) {
                     $skipCount++;
@@ -208,16 +208,16 @@ class BatchReverseRecordCreator
                     // Create forward A record if requested
                     if ($result && $createForwardRecords) {
                         // Find or get domain ID for the forward zone
-                        $forward_domain_id = $this->dnsRecord->get_domain_id_by_name($domain);
+                        $forward_domain_id = $this->dnsRecord->getDomainIdByName($domain);
                         if ($forward_domain_id) {
                             // Create the hostname for the A record
                             $hostname = !empty($hostPrefix) ? $hostPrefix . $i . '.' . $domain : $domain;
 
                             // Check if the record already exists
-                            if (!$this->dnsRecord->record_exists($forward_domain_id, $hostname, RecordType::A, $ip)) {
+                            if (!$this->dnsRecord->recordExists($forward_domain_id, $hostname, RecordType::A, $ip)) {
                                 try {
                                     // Add the A record
-                                    $this->dnsRecord->add_record($forward_domain_id, $hostname, RecordType::A, $ip, $ttl, $prio);
+                                    $this->dnsRecord->addRecord($forward_domain_id, $hostname, RecordType::A, $ip, $ttl, $prio);
                                 } catch (\Exception $e) {
                                     // Don't stop execution for forward record failures
                                     $errors[] = "Failed to create forward A record for $ip: " . $e->getMessage();
@@ -320,7 +320,7 @@ class BatchReverseRecordCreator
             $testIp = $networkPrefix . '::1';
 
             // Try multiple methods to find the right format for the reverse zone
-            $testReverseDomain = DnsRecord::convert_ipv6addr_to_ptrrec($testIp);
+            $testReverseDomain = DnsRecord::convertIPv6AddrToPtrRec($testIp);
             $testReverseDomainFixed = $this->convertIPv6ToPTR($testIp);
             $networkReverseZone = $this->getIPv6ReverseZone($networkPrefix);
 
@@ -330,12 +330,12 @@ class BatchReverseRecordCreator
             $testFqdn = $hostPrefix . '0.' . $domain;
 
             // Try all methods to get the reverse zone ID
-            $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($testReverseDomain);
+            $test_zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($testReverseDomain);
             $useMethod = 'standard';
 
             // If standard method fails, try our fixed method
             if ($test_zone_rev_id === -1) {
-                $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($testReverseDomainFixed);
+                $test_zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($testReverseDomainFixed);
                 if ($test_zone_rev_id !== -1) {
                     $useMethod = 'fixed';
                 }
@@ -343,7 +343,7 @@ class BatchReverseRecordCreator
 
             // If both methods fail, try the network zone method
             if ($test_zone_rev_id === -1) {
-                $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($networkReverseZone);
+                $test_zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($networkReverseZone);
                 if ($test_zone_rev_id !== -1) {
                     $useMethod = 'network';
                 }
@@ -351,12 +351,12 @@ class BatchReverseRecordCreator
 
             // Try with the exact hardcoded zone format
             if (str_starts_with($networkPrefix, '2001:db8:1:1')) {
-                $zone_id_test = $this->dnsRecord->get_domain_id_by_name($hardcodedZone);
+                $zone_id_test = $this->dnsRecord->getDomainIdByName($hardcodedZone);
                 if ($zone_id_test) {
                     $test_zone_rev_id = $zone_id_test;
                     $useMethod = 'hardcoded';
                 } else {
-                    $test_zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($hardcodedZone);
+                    $test_zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($hardcodedZone);
                     if ($test_zone_rev_id !== -1) {
                         $useMethod = 'hardcoded';
                     }
@@ -412,7 +412,7 @@ class BatchReverseRecordCreator
                         // For 2001:db8:1:1::X, a format like X.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa
 
                         // First try to directly use the standard conversion
-                        $reverseDomain = DnsRecord::convert_ipv6addr_to_ptrrec($ip);
+                        $reverseDomain = DnsRecord::convertIPv6AddrToPtrRec($ip);
 
                         // If needed, use the simplified format for specific known zones
                         if (str_starts_with($networkPrefix, '2001:db8:1:1')) {
@@ -422,11 +422,11 @@ class BatchReverseRecordCreator
                         break;
                     default:
                         // Use standard method
-                        $reverseDomain = DnsRecord::convert_ipv6addr_to_ptrrec($ip);
+                        $reverseDomain = DnsRecord::convertIPv6AddrToPtrRec($ip);
                 }
 
                 // Check if record already exists before trying to add it
-                $record_exists = $this->dnsRecord->record_exists($test_zone_rev_id, $reverseDomain, 'PTR', $fqdn);
+                $record_exists = $this->dnsRecord->recordExists($test_zone_rev_id, $reverseDomain, 'PTR', $fqdn);
 
                 if ($record_exists) {
                     $skipCount++;
@@ -439,16 +439,16 @@ class BatchReverseRecordCreator
                     // Create forward AAAA record if requested
                     if ($result && $createForwardRecords) {
                         // Find or get domain ID for the forward zone
-                        $forward_domain_id = $this->dnsRecord->get_domain_id_by_name($domain);
+                        $forward_domain_id = $this->dnsRecord->getDomainIdByName($domain);
                         if ($forward_domain_id) {
                             // Create the hostname for the AAAA record
                             $hostname = !empty($hostPrefix) ? $hostPrefix . $hex . '.' . $domain : $domain;
 
                             // Check if the record already exists
-                            if (!$this->dnsRecord->record_exists($forward_domain_id, $hostname, RecordType::AAAA, $ip)) {
+                            if (!$this->dnsRecord->recordExists($forward_domain_id, $hostname, RecordType::AAAA, $ip)) {
                                 try {
                                     // Add the AAAA record
-                                    $this->dnsRecord->add_record($forward_domain_id, $hostname, RecordType::AAAA, $ip, $ttl, $prio);
+                                    $this->dnsRecord->addRecord($forward_domain_id, $hostname, RecordType::AAAA, $ip, $ttl, $prio);
                                 } catch (\Exception $e) {
                                     // Don't stop execution for forward record failures
                                     $errors[] = "Failed to create forward AAAA record for $ip: " . $e->getMessage();
@@ -494,13 +494,13 @@ class BatchReverseRecordCreator
 
     private function addReverseRecord($zone_id, $content_rev, $fqdn_name, $ttl, $prio, string $comment, string $account): bool
     {
-        $zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($content_rev);
+        $zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($content_rev);
 
         // If we can't find the zone, try adding the missing dot before ip6.arpa if needed
         if ($zone_rev_id === -1 && str_contains($content_rev, 'ip6.arpa') && !str_contains($content_rev, '.ip6.arpa')) {
             // Fix the missing dot before ip6.arpa
             $fixed_content_rev = str_replace('ip6.arpa', '.ip6.arpa', $content_rev);
-            $zone_rev_id = $this->dnsRecord->get_best_matching_zone_id_from_name($fixed_content_rev);
+            $zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($fixed_content_rev);
 
             if ($zone_rev_id !== -1) {
                 // Update the content_rev to use the fixed version
@@ -513,16 +513,16 @@ class BatchReverseRecordCreator
         }
 
         // Check if the record already exists to prevent duplicates
-        if ($this->dnsRecord->record_exists($zone_rev_id, $content_rev, 'PTR', $fqdn_name)) {
+        if ($this->dnsRecord->recordExists($zone_rev_id, $content_rev, 'PTR', $fqdn_name)) {
             // Record already exists, consider it a success but don't log it
             return true;
         }
 
         try {
-            $result = $this->dnsRecord->add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio);
+            $result = $this->dnsRecord->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio);
 
             if ($result) {
-                $this->logger->log_info(sprintf(
+                $this->logger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_batch_ptr_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                     $_SERVER['REMOTE_ADDR'] ?? 'unknown',
                     $_SESSION["userlogin"] ?? 'unknown',
@@ -536,7 +536,7 @@ class BatchReverseRecordCreator
 
                 if ($isDnssecEnabled) {
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
-                    $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_rev_id);
+                    $zone_name = $this->dnsRecord->getDomainNameById($zone_rev_id);
                     $dnssecProvider->rectifyZone($zone_name);
                 }
 

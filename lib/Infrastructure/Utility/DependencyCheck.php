@@ -30,7 +30,7 @@ class DependencyCheck
     /**
      * Associative array of required PHP extensions and their representative functions.
      */
-    const DEPENDENCIES = array(
+    private const DEPENDENCIES = array(
         'intl' => 'idn_to_utf8',
         'gettext' => 'gettext',
         'openssl' => 'openssl_encrypt',

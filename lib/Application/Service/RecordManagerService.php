@@ -56,8 +56,8 @@ class RecordManagerService
 
     public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp): bool
     {
-        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
-        if (!$this->dnsRecord->add_record($zone_id, $name, $type, $content, $ttl, $prio)) {
+        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        if (!$this->dnsRecord->addRecord($zone_id, $name, $type, $content, $ttl, $prio)) {
             return false;
         }
 
@@ -70,7 +70,7 @@ class RecordManagerService
 
     private function logRecordCreation(string $clientIp, string $userlogin, string $type, string $name, string $zone_name, string $content, int $ttl, int $prio, string $zone_id): void
     {
-        $this->logger->log_info(sprintf(
+        $this->logger->logInfo(sprintf(
             'client_ip:%s user:%s operation:add_record record_type:%s record:%s.%s content:%s ttl:%s priority:%s',
             $clientIp,
             $userlogin,
@@ -128,10 +128,10 @@ class RecordManagerService
     private function handleForwardRecordComments(int $zone_id, string $name, string $type, string $content, string $comment, string $userlogin, string $full_name): void
     {
         $ptrName = $type === RecordType::A
-            ? DnsRecord::convert_ipv4addr_to_ptrrec($content)
-            : DnsRecord::convert_ipv6addr_to_ptrrec($content);
+            ? DnsRecord::convertIPv4AddrToPtrRec($content)
+            : DnsRecord::convertIPv6AddrToPtrRec($content);
 
-        $ptrZoneId = $this->dnsRecord->get_best_matching_zone_id_from_name($ptrName);
+        $ptrZoneId = $this->dnsRecord->getBestMatchingZoneIdFromName($ptrName);
         if ($ptrZoneId !== -1) {
             $this->commentSyncService->syncCommentsForPtrRecord(
                 $zone_id,
@@ -155,7 +155,7 @@ class RecordManagerService
     private function handlePtrRecordComments(int $ptrZoneId, string $content, string $comment, string $userlogin, string $full_name): void
     {
         $domainName = DnsHelper::getRegisteredDomain($content);
-        $contentDomainId = $this->dnsRecord->get_domain_id_by_name($domainName);
+        $contentDomainId = $this->dnsRecord->getDomainIdByName($domainName);
         if ($contentDomainId !== false) {
             $this->commentSyncService->syncCommentsForDomainRecord(
                 $contentDomainId,

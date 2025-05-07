@@ -34,13 +34,13 @@ class UserEventLogger
         $this->logger = new LegacyLogger($db);
     }
 
-    public function log_successful_auth(): void
+    public function logSuccessfulAuth(): void
     {
-        $this->logger->log_notice(sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin']));
+        $this->logger->logNotice(sprintf('Successful authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION['userlogin']));
     }
 
-    public function log_failed_auth(): void
+    public function logFailedAuth(): void
     {
-        $this->logger->log_warn(sprintf('Failed authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
+        $this->logger->logWarn(sprintf('Failed authentication attempt from [%s] for user \'%s\'', $_SERVER['REMOTE_ADDR'], $_SESSION["userlogin"]));
     }
 }

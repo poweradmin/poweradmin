@@ -97,7 +97,7 @@ class AddUserController extends BaseController
             $userParams['password'] = $generatedPassword;
         }
 
-        if ($legacyUsers->add_new_user($userParams)) {
+        if ($legacyUsers->addNewUser($userParams)) {
             $successMessage = _('The user has been created successfully.');
 
             // Handle generated password and email sending
@@ -144,8 +144,8 @@ class AddUserController extends BaseController
 
     private function renderAddUserForm(array $policyConfig): void
     {
-        $user_edit_templ_perm = UserManager::verify_permission($this->db, 'user_edit_templ_perm');
-        $user_templates = UserManager::list_permission_templates($this->db);
+        $user_edit_templ_perm = UserManager::verifyPermission($this->db, 'user_edit_templ_perm');
+        $user_templates = UserManager::listPermissionTemplates($this->db);
 
         $username = $this->request->getPostParam('username', '');
         $fullname = $this->request->getPostParam('fullname', '');

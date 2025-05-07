@@ -35,7 +35,7 @@ $databaseService = new DatabaseService($databaseConnection);
 $db = $databaseService->connect($credentials);
 
 if (!(isset($_SERVER)) && !$_SERVER['HTTP_USER_AGENT']) {
-    return DynamicDnsHelper::status_exit('badagent');
+    return DynamicDnsHelper::statusExit('badagent');
 }
 
 // Grab username & password based on HTTP auth, alternatively the query string
@@ -46,7 +46,7 @@ $auth_password = $_SERVER['PHP_AUTH_PW'] ?? $_REQUEST['password'] ?? null;
 if (!isset($auth_username)) {
     header('WWW-Authenticate: Basic realm="DNS Update"');
     header('HTTP/1.0 401 Unauthorized');
-    return DynamicDnsHelper::status_exit('badauth');
+    return DynamicDnsHelper::statusExit('badauth');
 }
 
 $username = DynamicDnsHelper::safe($db, $db_type, $auth_username);
@@ -59,22 +59,22 @@ $given_ip6 = $_REQUEST['myip6'] ?? $_REQUEST['ip6'] ?? '';
 
 // Handle special case: "whatismyip"
 if ($given_ip === 'whatismyip') {
-    if (DynamicDnsHelper::valid_ip_address($_SERVER['REMOTE_ADDR']) === RecordType::A) {
+    if (DynamicDnsHelper::validIpAddress($_SERVER['REMOTE_ADDR']) === RecordType::A) {
         $given_ip = $_SERVER['REMOTE_ADDR'];
-    } elseif (DynamicDnsHelper::valid_ip_address($_SERVER['REMOTE_ADDR']) === RecordType::AAAA && !$given_ip6) {
+    } elseif (DynamicDnsHelper::validIpAddress($_SERVER['REMOTE_ADDR']) === RecordType::AAAA && !$given_ip6) {
         $given_ip6 = $_SERVER['REMOTE_ADDR'];
         $given_ip = '';
     }
 }
 if ($given_ip6 === 'whatismyip') {
-    if (DynamicDnsHelper::valid_ip_address($_SERVER['REMOTE_ADDR']) === RecordType::AAAA) {
+    if (DynamicDnsHelper::validIpAddress($_SERVER['REMOTE_ADDR']) === RecordType::AAAA) {
         $given_ip6 = $_SERVER['REMOTE_ADDR'];
     }
 }
 
 // Validate hostname
 if (!strlen($hostname)) {
-    return DynamicDnsHelper::status_exit('notfqdn');
+    return DynamicDnsHelper::statusExit('notfqdn');
 }
 
 // Parse and validate comma-separated IP lists
@@ -82,15 +82,15 @@ $dualstack_update = isset($_REQUEST['dualstack_update']) && $_REQUEST['dualstack
 $ip_v4_input = DynamicDnsHelper::safe($db, $db_type, $given_ip);
 $ip_v6_input = DynamicDnsHelper::safe($db, $db_type, $given_ip6);
 
-$ip_v4_list = DynamicDnsHelper::extract_valid_ips($ip_v4_input, RecordType::A);
-$ip_v6_list = DynamicDnsHelper::extract_valid_ips($ip_v6_input, RecordType::AAAA);
+$ip_v4_list = DynamicDnsHelper::extractValidIps($ip_v4_input, RecordType::A);
+$ip_v6_list = DynamicDnsHelper::extractValidIps($ip_v6_input, RecordType::AAAA);
 
 sort($ip_v4_list);
 sort($ip_v6_list);
 
 // Validate IP input: at least one valid IPv4 or IPv6 address must be present
 if (empty($ip_v4_list) && empty($ip_v6_list)) {
-    return DynamicDnsHelper::status_exit('dnserr');
+    return DynamicDnsHelper::statusExit('dnserr');
 }
 
 // Authenticate user and check permissions
@@ -114,7 +114,7 @@ $userAuthService = new UserAuthenticationService(
 );
 
 if (!$user || !$userAuthService->verifyPassword($auth_password, $user['password'])) {
-    return DynamicDnsHelper::status_exit('badauth2');
+    return DynamicDnsHelper::statusExit('badauth2');
 }
 
 $zones_query = $db->prepare('SELECT domain_id FROM zones WHERE owner=:user_id');
@@ -126,14 +126,14 @@ while ($zone = $zones_query->fetch()) {
     $zone_updated = false;
 
     if ($dualstack_update || !empty($ip_v4_list)) {
-        if (DynamicDnsHelper::sync_dns_records($db, $records_table, $zone['domain_id'], $hostname, RecordType::A, $ip_v4_list)) {
+        if (DynamicDnsHelper::syncDnsRecords($db, $records_table, $zone['domain_id'], $hostname, RecordType::A, $ip_v4_list)) {
             $zone_updated = true;
             $was_updated = true;
         }
     }
 
     if ($dualstack_update || !empty($ip_v6_list)) {
-        if (DynamicDnsHelper::sync_dns_records($db, $records_table, $zone['domain_id'], $hostname, RecordType::AAAA, $ip_v6_list)) {
+        if (DynamicDnsHelper::syncDnsRecords($db, $records_table, $zone['domain_id'], $hostname, RecordType::AAAA, $ip_v6_list)) {
             $zone_updated = true;
             $was_updated = true;
         }
@@ -141,8 +141,8 @@ while ($zone = $zones_query->fetch()) {
 
     if ($zone_updated) {
         $dnsRecord = new DnsRecord($db, $config);
-        $dnsRecord->update_soa_serial($zone['domain_id']);
+        $dnsRecord->updateSOASerial($zone['domain_id']);
     }
 }
 
-return (($was_updated || $no_update_necessary) ? DynamicDnsHelper::status_exit('good') : DynamicDnsHelper::status_exit('!yours'));
+return (($was_updated || $no_update_necessary) ? DynamicDnsHelper::statusExit('good') : DynamicDnsHelper::statusExit('!yours'));

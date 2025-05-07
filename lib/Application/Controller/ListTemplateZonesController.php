@@ -41,7 +41,7 @@ class ListTemplateZonesController extends BaseController
             return;
         }
 
-        if (!ZoneTemplate::zone_templ_id_exists($this->db, $zone_templ_id)) {
+        if (!ZoneTemplate::zoneTemplIdExists($this->db, $zone_templ_id)) {
             $this->showError(_('Template does not exist.'));
             return;
         }
@@ -64,10 +64,10 @@ class ListTemplateZonesController extends BaseController
         $offset = ($currentPage - 1) * $itemsPerPage;
 
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
-        $template_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id);
+        $template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
         // Get zones using this template with pagination
-        $zones = $zoneTemplate->get_zones_using_template($zone_templ_id, $_SESSION['userid']);
+        $zones = $zoneTemplate->getZonesUsingTemplate($zone_templ_id, $_SESSION['userid']);
 
         // Get total count of zones for pagination
         $totalZones = count($zones);
@@ -90,7 +90,7 @@ class ListTemplateZonesController extends BaseController
         $this->render('list_template_zones.html', [
             'template' => $template_details,
             'zones' => $paginatedZones,
-            'user_name' => UserManager::get_fullname_from_userid($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
+            'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
             'pagination' => $paginationHtml,
             'total_zones' => $totalZones,
             'iface_rowamount' => $itemsPerPage

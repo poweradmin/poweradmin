@@ -65,7 +65,7 @@ class DeletePermTemplController extends BaseController
         }
 
         $id = $this->getSafeRequestValue('id');
-        if (UserManager::delete_perm_templ($this->db, $id)) {
+        if (UserManager::deletePermTempl($this->db, $id)) {
             $this->setMessage('list_perm_templ', 'success', _('The permission template has been deleted successfully.'));
             $this->redirect('index.php', ['page' => 'list_perm_templ']);
         }

@@ -40,7 +40,7 @@ class IpAddressRetriever
      *
      * @return string
      */
-    function getClientIp(): string
+    public function getClientIp(): string
     {
         $clientIpHeaders = [
             'HTTP_CLIENT_IP',

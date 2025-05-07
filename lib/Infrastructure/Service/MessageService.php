@@ -24,10 +24,10 @@ namespace Poweradmin\Infrastructure\Service;
 
 class MessageService
 {
-    const TYPE_ERROR = 'error';
-    const TYPE_WARNING = 'warn';
-    const TYPE_SUCCESS = 'success';
-    const TYPE_INFO = 'info';
+    private const TYPE_ERROR = 'error';
+    private const TYPE_WARNING = 'warn';
+    private const TYPE_SUCCESS = 'success';
+    private const TYPE_INFO = 'info';
 
     /**
      * Add a message to be displayed for a specific script

@@ -100,11 +100,11 @@ class BulkRegistrationController extends BaseController
             $hostnameValidator = new HostnameValidator($this->config);
             if (!$hostnameValidator->isValidHostnameFqdn($domain, 0)) {
                 $failed_domains[] = $domain . " - " . _('Invalid hostname.');
-            } elseif ($dnsRecord->domain_exists($domain)) {
+            } elseif ($dnsRecord->domainExists($domain)) {
                 $failed_domains[] = $domain . " - " . _('There is already a zone with this name.');
-            } elseif ($dnsRecord->add_domain($this->db, $domain, $owner, $dom_type, '', $zone_template)) {
-                $zone_id = $dnsRecord->get_zone_id_from_name($domain);
-                $this->logger->log_info(sprintf(
+            } elseif ($dnsRecord->addDomain($this->db, $domain, $owner, $dom_type, '', $zone_template)) {
+                $zone_id = $dnsRecord->getZoneIdFromName($domain);
+                $this->logger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:%s zone_template:%s',
                     $_SERVER['REMOTE_ADDR'],
                     $_SESSION["userlogin"],
@@ -130,11 +130,11 @@ class BulkRegistrationController extends BaseController
 
         $this->render('bulk_registration.html', [
             'userid' => $_SESSION['userid'],
-            'perm_view_others' => UserManager::verify_permission($this->db, 'user_view_others'),
+            'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'MASTER'),
             'available_zone_types' => array("MASTER", "NATIVE"),
-            'users' => UserManager::show_users($this->db),
-            'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
+            'users' => UserManager::showUsers($this->db),
+            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
             'failed_domains' => $failed_domains,
         ]);
     }

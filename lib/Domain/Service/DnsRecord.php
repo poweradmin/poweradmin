@@ -102,7 +102,7 @@ class DnsRecord
      *
      * @return int Domain count or false on failure
      */
-    public function zone_id_exists(int $zid): int
+    public function zoneIdExists(int $zid): int
     {
         return $this->domainRepository->zoneIdExists($zid);
     }
@@ -113,7 +113,7 @@ class DnsRecord
      *
      * @return int Zone ID
      */
-    public function get_zone_id_from_record_id(int $rid): int
+    public function getZoneIdFromRecordId(int $rid): int
     {
         return $this->recordRepository->getZoneIdFromRecordId($rid);
     }
@@ -124,7 +124,7 @@ class DnsRecord
      *
      * @return int Record count
      */
-    public function count_zone_records(int $zone_id): int
+    public function countZoneRecords(int $zone_id): int
     {
         return $this->recordRepository->countZoneRecords($zone_id);
     }
@@ -135,7 +135,7 @@ class DnsRecord
      *
      * @return string SOA content
      */
-    public function get_soa_record(int $zone_id): string
+    public function getSOARecord(int $zone_id): string
     {
         return $this->soaRecordManager->getSOARecord($zone_id);
     }
@@ -146,7 +146,7 @@ class DnsRecord
      *
      * @return string|null SOA serial
      */
-    public static function get_soa_serial(string $soa_rec): ?string
+    public static function getSOASerial(string $soa_rec): ?string
     {
         return SOARecordManager::getSOASerial($soa_rec);
     }
@@ -157,7 +157,7 @@ class DnsRecord
      *
      * @return string Date +1 day
      */
-    public static function get_next_date(string $curr_date): string
+    public static function getNextDate(string $curr_date): string
     {
         return SOARecordManager::getNextDate($curr_date);
     }
@@ -168,33 +168,9 @@ class DnsRecord
      *
      * @return string|int Next serial number
      */
-    public function get_next_serial(int|string $curr_serial): int|string
+    public function getNextSerial(int|string $curr_serial): int|string
     {
         return $this->soaRecordManager->getNextSerial($curr_serial);
-    }
-
-    /** Update SOA record
-     *
-     * @param int $domain_id Domain ID
-     * @param string $content SOA content to set
-     *
-     * @return boolean true if success
-     */
-    public function update_soa_record(int $domain_id, string $content): bool
-    {
-        return $this->soaRecordManager->updateSOARecord($domain_id, $content);
-    }
-
-    /** Set SOA serial in SOA content
-     *
-     * @param string $soa_rec SOA record content
-     * @param string $serial New serial number
-     *
-     * @return string Updated SOA record
-     */
-    public static function set_soa_serial(string $soa_rec, string $serial): string
-    {
-        return SOARecordManager::setSOASerial($soa_rec, $serial);
     }
 
     /** Return SOA record
@@ -205,7 +181,7 @@ class DnsRecord
      *
      * @return string true if success
      */
-    public function get_updated_soa_record(string $soa_rec): string
+    public function getUpdatedSOARecord(string $soa_rec): string
     {
         return $this->soaRecordManager->getUpdatedSOARecord($soa_rec);
     }
@@ -218,7 +194,7 @@ class DnsRecord
      *
      * @return boolean true if success
      */
-    public function update_soa_serial(int $domain_id): bool
+    public function updateSOASerial(int $domain_id): bool
     {
         return $this->soaRecordManager->updateSOASerial($domain_id);
     }
@@ -229,7 +205,7 @@ class DnsRecord
      *
      * @return string Zone Comment
      */
-    public static function get_zone_comment($db, int $zone_id): string
+    public static function getZoneComment($db, int $zone_id): string
     {
         return RecordManager::getZoneComment($db, $zone_id);
     }
@@ -243,7 +219,7 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public function edit_zone_comment(int $zone_id, string $comment): bool
+    public function editZoneComment(int $zone_id, string $comment): bool
     {
         return $this->recordManager->editZoneComment($zone_id, $comment);
     }
@@ -256,7 +232,7 @@ class DnsRecord
      *
      * @return boolean true if successful
      */
-    public function edit_record(array $record): bool
+    public function editRecord(array $record): bool
     {
         return $this->recordManager->editRecord($record);
     }
@@ -275,7 +251,7 @@ class DnsRecord
      * @return boolean true if successful
      * @throws Exception
      */
-    public function add_record(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool
+    public function addRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool
     {
         return $this->recordManager->addRecord($zone_id, $name, $type, $content, $ttl, $prio);
     }
@@ -290,7 +266,7 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public function add_supermaster(string $master_ip, string $ns_name, string $account): bool
+    public function addSupermaster(string $master_ip, string $ns_name, string $account): bool
     {
         return $this->supermasterManager->addSupermaster($master_ip, $ns_name, $account);
     }
@@ -304,7 +280,7 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public function delete_supermaster(string $master_ip, string $ns_name): bool
+    public function deleteSupermaster(string $master_ip, string $ns_name): bool
     {
         return $this->supermasterManager->deleteSupermaster($master_ip, $ns_name);
     }
@@ -321,7 +297,7 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public function edit_supermaster(string $old_master_ip, string $old_ns_name, string $new_master_ip, string $new_ns_name, string $account): bool
+    public function updateSupermaster(string $old_master_ip, string $old_ns_name, string $new_master_ip, string $new_ns_name, string $account): bool
     {
         return $this->supermasterManager->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account);
     }
@@ -334,20 +310,9 @@ class DnsRecord
      *
      * @return array array of supermaster details
      */
-    public function get_supermaster_info_from_ip(string $master_ip): array
+    public function getSupermasterInfoFromIp(string $master_ip): array
     {
         return $this->supermasterManager->getSupermasterInfoFromIp($master_ip);
-    }
-
-    /** Get record details from Record ID
-     *
-     * @param int $rid Record ID
-     *
-     * @return array array of record details [rid,zid,name,type,content,ttl,prio]
-     */
-    public function get_record_details_from_record_id(int $rid): array
-    {
-        return $this->recordRepository->getRecordDetailsFromRecordId($rid);
     }
 
     /** Delete a record by a given record id
@@ -356,7 +321,7 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public function delete_record(int $rid): bool
+    public function deleteRecord(int $rid): bool
     {
         return $this->recordManager->deleteRecord($rid);
     }
@@ -367,7 +332,7 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public static function delete_record_zone_templ($db, int $rid): bool
+    public static function deleteRecordZoneTempl($db, int $rid): bool
     {
         return RecordManager::deleteRecordZoneTempl($db, $rid);
     }
@@ -383,7 +348,7 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public function add_domain($db, string $domain, int $owner, string $type, string $slave_master, int|string $zone_template): bool
+    public function addDomain($db, string $domain, int $owner, string $type, string $slave_master, int|string $zone_template): bool
     {
         return $this->domainManager->addDomain($db, $domain, $owner, $type, $slave_master, $zone_template);
     }
@@ -396,7 +361,7 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public function delete_domain(int $id): bool
+    public function deleteDomain(int $id): bool
     {
         return $this->domainManager->deleteDomain($id);
     }
@@ -408,7 +373,7 @@ class DnsRecord
      * @param int $id Record ID
      * @return int Domain ID of record
      */
-    public function recid_to_domid(int $id): int
+    public function recidToDomid(int $id): int
     {
         return $this->recordRepository->recidToDomid($id);
     }
@@ -418,9 +383,9 @@ class DnsRecord
      * @param int $zone_id Zone ID
      * @param int $user_id User ID
      *
-     * @return boolean true when succesful
+     * @return boolean true when successful
      */
-    public static function add_owner_to_zone($db, int $zone_id, int $user_id): bool
+    public static function addOwnerToZone($db, int $zone_id, int $user_id): bool
     {
         return DomainManager::addOwnerToZone($db, $zone_id, $user_id);
     }
@@ -432,7 +397,7 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public static function delete_owner_from_zone($db, int $zone_id, int $user_id): bool
+    public static function deleteOwnerFromZone($db, int $zone_id, int $user_id): bool
     {
         return DomainManager::deleteOwnerFromZone($db, $zone_id, $user_id);
     }
@@ -443,12 +408,12 @@ class DnsRecord
      *
      * @return bool|string Domain name
      */
-    public function get_domain_name_by_id(int $id): bool|string
+    public function getDomainNameById(int $id): bool|string
     {
         return $this->domainRepository->getDomainNameById($id);
     }
 
-    public function get_domain_id_by_name(string $name): bool|int
+    public function getDomainIdByName(string $name): bool|int
     {
         return $this->domainRepository->getDomainIdByName($name);
     }
@@ -458,7 +423,7 @@ class DnsRecord
      * @param string $zname Zone name
      * @return bool|int Zone ID
      */
-    public function get_zone_id_from_name(string $zname): bool|int
+    public function getZoneIdFromName(string $zname): bool|int
     {
         return $this->domainRepository->getZoneIdFromName($zname);
     }
@@ -468,7 +433,7 @@ class DnsRecord
      * @param int $zid Zone ID
      * @return array array of zone details [type,name,master_ip,record_count]
      */
-    public function get_zone_info_from_id(int $zid): array
+    public function getZoneInfoFromId(int $zid): array
     {
         return $this->domainRepository->getZoneInfoFromId($zid);
     }
@@ -478,7 +443,7 @@ class DnsRecord
      * @param array $zones Zone IDs
      * @return array
      */
-    public function get_zone_info_from_ids(array $zones): array
+    public function getZoneInfoFromIds(array $zones): array
     {
         return $this->domainRepository->getZoneInfoFromIds($zones);
     }
@@ -488,7 +453,7 @@ class DnsRecord
      * @param string $ip IPv4 Address
      * @return string PTR form of address
      */
-    public static function convert_ipv4addr_to_ptrrec(string $ip): string
+    public static function convertIPv4AddrToPtrRec(string $ip): string
     {
         return DomainUtility::convertIPv4AddrToPtrRec($ip);
     }
@@ -498,7 +463,7 @@ class DnsRecord
      * @param string $ip IPv6 Address
      * @return string PTR form of address
      */
-    public static function convert_ipv6addr_to_ptrrec(string $ip): string
+    public static function convertIPv6AddrToPtrRec(string $ip): string
     {
         return DomainUtility::convertIPv6AddrToPtrRec($ip);
     }
@@ -509,7 +474,7 @@ class DnsRecord
      *
      * @return int Zone ID
      */
-    public function get_best_matching_zone_id_from_name(string $domain): int
+    public function getBestMatchingZoneIdFromName(string $domain): int
     {
         return $this->domainRepository->getBestMatchingZoneIdFromName($domain);
     }
@@ -521,7 +486,7 @@ class DnsRecord
      * @param string $domain Domain name
      * @return boolean true if existing, false if it doesn't exist.
      */
-    public function domain_exists(string $domain): bool
+    public function domainExists(string $domain): bool
     {
         return $this->domainRepository->domainExists($domain);
     }
@@ -532,7 +497,7 @@ class DnsRecord
      *
      * @return array[] supermasters detail [master_ip,ns_name,account]s
      */
-    public function get_supermasters(): array
+    public function getSupermasters(): array
     {
         return $this->supermasterManager->getSupermasters();
     }
@@ -543,7 +508,7 @@ class DnsRecord
      *
      * @return boolean true if exists, otherwise false
      */
-    public function supermaster_exists(string $master_ip): bool
+    public function supermasterExists(string $master_ip): bool
     {
         return $this->supermasterManager->supermasterExists($master_ip);
     }
@@ -555,7 +520,7 @@ class DnsRecord
      *
      * @return boolean true if exists, false otherwise
      */
-    public function supermaster_ip_name_exists(string $master_ip, string $ns_name): bool
+    public function supermasterIpNameExists(string $master_ip, string $ns_name): bool
     {
         return $this->supermasterManager->supermasterIpNameExists($master_ip, $ns_name);
     }
@@ -567,7 +532,7 @@ class DnsRecord
      * @param int $id Record ID
      * @return int|array array of record detail, or -1 if nothing found
      */
-    public function get_record_from_id(int $id): int|array
+    public function getRecordFromId(int $id): int|array
     {
         return $this->recordRepository->getRecordFromId($id);
     }
@@ -585,7 +550,7 @@ class DnsRecord
      *
      * @return int|array array of record detail, or -1 if nothing found
      */
-    public function get_records_from_domain_id($db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int
+    public function getRecordsFromDomainId($db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int
     {
         return $this->recordRepository->getRecordsFromDomainId($db_type, $id, $rowstart, $rowamount, $sortby, $sortDirection, $fetchComments);
     }
@@ -596,7 +561,7 @@ class DnsRecord
      *
      * @return array array of owners [id,fullname]
      */
-    public static function get_users_from_domain_id($db, int $id): array
+    public static function getUsersFromDomainId($db, int $id): array
     {
         $owners = array();
 
@@ -623,7 +588,7 @@ class DnsRecord
      *
      * @return string Domain Type [NATIVE,MASTER,SLAVE]
      */
-    public function get_domain_type(int $id): string
+    public function getDomainType(int $id): string
     {
         return $this->domainRepository->getDomainType($id);
     }
@@ -634,7 +599,7 @@ class DnsRecord
      *
      * @return array|bool|void Master server
      */
-    public function get_domain_slave_master(int $id)
+    public function getDomainSlaveMaster(int $id)
     {
         return $this->domainRepository->getDomainSlaveMaster($id);
     }
@@ -647,7 +612,7 @@ class DnsRecord
      *
      * @return void
      */
-    public function change_zone_type(string $type, int $id): void
+    public function changeZoneType(string $type, int $id): void
     {
         $this->domainManager->changeZoneType($type, $id);
     }
@@ -659,31 +624,9 @@ class DnsRecord
      *
      * @return null
      */
-    public function change_zone_slave_master(int $zone_id, string $ip_slave_master)
+    public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master)
     {
         return $this->domainManager->changeZoneSlaveMaster($zone_id, $ip_slave_master);
-    }
-
-    /** Get Serial for Zone ID
-     *
-     * @param int $zid Zone ID
-     *
-     * @return string Serial Number or false if not found
-     */
-    public function get_serial_by_zid(int $zid): string
-    {
-        return $this->recordRepository->getSerialByZid($zid);
-    }
-
-    /** Validate Account is valid string
-     *
-     * @param string $account Account name alphanumeric and ._-
-     *
-     * @return boolean true is valid, false otherwise
-     */
-    public static function validate_account(string $account): bool
-    {
-        return SupermasterManager::validateAccount($account);
     }
 
     /** Get Zone Template ID for Zone ID
@@ -693,7 +636,7 @@ class DnsRecord
      *
      * @return int Zone Template ID
      */
-    public static function get_zone_template($db, int $zone_id): int
+    public static function getZoneTemplate($db, int $zone_id): int
     {
         return DomainManager::getZoneTemplate($db, $zone_id);
     }
@@ -705,7 +648,7 @@ class DnsRecord
      *
      * @return null
      */
-    public function update_zone_records($db_type, $dns_ttl, int $zone_id, int $zone_template_id)
+    public function updateZoneRecords($db_type, $dns_ttl, int $zone_id, int $zone_template_id)
     {
         return $this->domainManager->updateZoneRecords($db_type, $dns_ttl, $zone_id, $zone_template_id);
     }
@@ -719,7 +662,7 @@ class DnsRecord
      *
      * @return boolean true on success, false otherwise
      */
-    public function delete_domains(array $domains): bool
+    public function deleteDomains(array $domains): bool
     {
         return $this->domainManager->deleteDomains($domains);
     }
@@ -730,7 +673,7 @@ class DnsRecord
      *
      * @return boolean true on success, false on failure
      */
-    public function record_name_exists(string $name): bool
+    public function recordNameExists(string $name): bool
     {
         return $this->recordRepository->recordNameExists($name);
     }
@@ -741,7 +684,7 @@ class DnsRecord
      *
      * @return int domain level
      */
-    public static function get_domain_level(string $name): int
+    public static function getDomainLevel(string $name): int
     {
         return DomainUtility::getDomainLevel($name);
     }
@@ -752,23 +695,12 @@ class DnsRecord
      *
      * @return string 2nd level domain name
      */
-    public static function get_second_level_domain(string $name): string
+    public static function getSecondLevelDomain(string $name): string
     {
         return DomainUtility::getSecondLevelDomain($name);
     }
 
-    /** Set timezone
-     *
-     * Set timezone to configured tz or UTC it not set
-     *
-     * @return void
-     */
-    public function set_timezone(): void
-    {
-        $this->soaRecordManager->setTimezone();
-    }
-
-    public function has_similar_records($domain_id, $name, $type, $record_id): bool
+    public function hasSimilarRecords($domain_id, $name, $type, $record_id): bool
     {
         return $this->recordRepository->hasSimilarRecords($domain_id, $name, $type, $record_id);
     }
@@ -782,7 +714,7 @@ class DnsRecord
      * @param string $content Record content
      * @return bool True if record exists, false otherwise
      */
-    public function record_exists(int $domain_id, string $name, string $type, string $content): bool
+    public function recordExists(int $domain_id, string $name, string $type, string $content): bool
     {
         return $this->recordRepository->recordExists($domain_id, $name, $type, $content);
     }

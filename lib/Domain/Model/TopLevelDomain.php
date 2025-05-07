@@ -28,7 +28,7 @@ class TopLevelDomain
     // Updated on 2025-01-01 - 1445 TLDs
     // http://data.iana.org/TLD/tlds-alpha-by-domain.txt
     // for w in `cat tlds-alpha-by-domain.txt`; do echo -n "\"$w\", " | tr '[:upper:]' '[:lower:]'; done | fold -s -w 79 | sed -e 's/^/  /g'
-    const TOP_LEVEL_DOMAINS = array(
+    private const TOP_LEVEL_DOMAINS = array(
         "aaa", "aarp", "abb", "abbott", "abbvie", "abc", "able", "abogado",
         "abudhabi", "ac", "academy", "accenture", "accountant", "accountants", "aco",
         "actor", "ad", "ads", "adult", "ae", "aeg", "aero", "aetna", "af", "afl",
@@ -220,7 +220,7 @@ class TopLevelDomain
 
     // Special TLDs for testing and documentation purposes
     // http://tools.ietf.org/html/rfc2606#section-2
-    const SPECIAL_TOP_LEVEL_DOMAINS = array('test', 'example', 'invalid', 'localhost');
+    private const SPECIAL_TOP_LEVEL_DOMAINS = array('test', 'example', 'invalid', 'localhost');
 
     private static array $VALID_TOP_LEVEL_DOMAINS;
 

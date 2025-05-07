@@ -36,7 +36,7 @@ class UserEntity
         return (bool)$stmt->fetch();
     }
 
-    public static function get_username_by_id($db, $user_id): string
+    public static function getUserNameById($db, $user_id): string
     {
         if ($user_id == "") {
             return "";

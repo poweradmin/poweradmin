@@ -134,7 +134,7 @@ class SqlAuthenticator extends LoggingService
 
         if ($userAuthService->requiresRehash($rowObj['password'])) {
             $this->logInfo('Password requires rehashing for user {username}', ['username' => $_SESSION["userlogin"]]);
-            UserManager::update_user_password($this->connection, $rowObj["id"], $sessionPassword);
+            UserManager::updateUserPassword($this->connection, $rowObj["id"], $sessionPassword);
         }
 
         session_regenerate_id(true);
@@ -151,7 +151,7 @@ class SqlAuthenticator extends LoggingService
 
         if (isset($_POST['authenticate'])) {
             $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
-            $this->userEventLogger->log_successful_auth();
+            $this->userEventLogger->logSuccessfulAuth();
             session_write_close();
             $this->authService->redirectToIndex();
         }
@@ -164,7 +164,7 @@ class SqlAuthenticator extends LoggingService
         $this->logInfo('Handling failed authentication.');
 
         if (isset($_POST['authenticate'])) {
-            $this->userEventLogger->log_failed_auth();
+            $this->userEventLogger->logFailedAuth();
             $sessionEntity = new SessionEntity(_('Authentication failed!'), 'danger');
         } else {
             unset($_SESSION["userpwd"]);

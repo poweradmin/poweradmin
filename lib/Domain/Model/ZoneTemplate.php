@@ -99,7 +99,7 @@ class ZoneTemplate
      *
      * @return array array of zone templates [id,name,descr]
      */
-    public function get_list_zone_templ(int $userid): array
+    public function getListZoneTempl(int $userid): array
     {
         $query = "SELECT zt.id, zt.name, zt.descr, u.username, u.fullname, COUNT(z.zone_templ_id) as zones_linked
             FROM zone_templ zt
@@ -107,7 +107,7 @@ class ZoneTemplate
             LEFT JOIN zones z ON zt.id = z.zone_templ_id";
         $params = [];
 
-        if (!UserManager::verify_permission($this->db, 'user_is_ueberuser')) {
+        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
             $query .= " WHERE zt.owner = :userid OR zt.owner = 0";
             $params[':userid'] = $userid;
         }
@@ -129,11 +129,11 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public function add_zone_templ(array $details, int $userid): bool
+    public function addZoneTempl(array $details, int $userid): bool
     {
-        $zone_name_exists = $this->zone_templ_name_exists($details['templ_name']);
+        $zone_name_exists = $this->zoneTemplNameExists($details['templ_name']);
 
-        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
@@ -150,7 +150,7 @@ class ZoneTemplate
         return false;
     }
 
-    public static function get_zone_templ_name($db, $zone_id)
+    public static function getZoneTemplName($db, $zone_id)
     {
         $stmt = $db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE z.domain_id = :zone_id");
         $stmt->execute([':zone_id' => $zone_id]);
@@ -166,7 +166,7 @@ class ZoneTemplate
      *
      * @return array zone template details
      */
-    public static function get_zone_templ_details($db, int $zone_templ_id): array
+    public static function getZoneTemplDetails($db, int $zone_templ_id): array
     {
         $query = "SELECT *"
             . " FROM zone_templ"
@@ -182,9 +182,9 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public function delete_zone_templ(int $zone_templ_id): bool
+    public function deleteZoneTempl(int $zone_templ_id): bool
     {
-        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
@@ -213,9 +213,9 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public function delete_zone_templ_userid(int $userid): bool
+    public function deleteZoneTemplUserId(int $userid): bool
     {
-        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
@@ -234,7 +234,7 @@ class ZoneTemplate
      *
      * @return int number of records
      */
-    public static function count_zone_templ_records($db, int $zone_templ_id): int
+    public static function countZoneTemplRecords($db, int $zone_templ_id): int
     {
         $query = "SELECT COUNT(id) FROM zone_templ_records WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
         return $db->queryOne($query);
@@ -247,7 +247,7 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function zone_templ_id_exists($db, int $zone_templ_id): bool
+    public static function zoneTemplIdExists($db, int $zone_templ_id): bool
     {
         $query = "SELECT COUNT(id) FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
         return $db->queryOne($query);
@@ -263,7 +263,7 @@ class ZoneTemplate
      * @return array zone template record
      * [id,zone_templ_id,name,type,content,ttl,prio] or -1 if nothing is found
      */
-    public static function get_zone_templ_record_from_id($db, int $id): array
+    public static function getZoneTemplRecordFromId($db, int $id): array
     {
         $result = $db->queryRow("SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id=" . $db->quote($id, 'integer'));
         return $result ? array(
@@ -290,7 +290,7 @@ class ZoneTemplate
      * @return array zone template records numerically indexed
      * [id,zone_templd_id,name,type,content,ttl,pro] or empty array if nothing is found
      */
-    public static function get_zone_templ_records($db, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name'): array
+    public static function getZoneTemplRecords($db, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name'): array
     {
         $db->setLimit($rowamount, $rowstart);
 
@@ -305,7 +305,7 @@ class ZoneTemplate
         $retCount = 0;
         while ($r = $stmt->fetch()) {
             // Call get_record_from_id for each row.
-            $ret[$retCount] = ZoneTemplate::get_zone_templ_record_from_id($db, $r["id"]);
+            $ret[$retCount] = ZoneTemplate::getZoneTemplRecordFromId($db, $r["id"]);
             $retCount++;
         }
         return ($retCount > 0 ? $ret : []);
@@ -326,9 +326,9 @@ class ZoneTemplate
      *
      * @return boolean true if successful, false otherwise
      */
-    public function add_zone_templ_record(int $zone_templ_id, string $name, string $type, string $content, int $ttl, int $prio): bool
+    public function addZoneTemplRecord(int $zone_templ_id, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
-        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a record to this zone."));
             return false;
         }
@@ -374,9 +374,9 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public function edit_zone_templ_record(array $record): bool
+    public function editZoneTemplRecord(array $record): bool
     {
-        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
             return false;
         }
@@ -412,9 +412,9 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public function delete_zone_templ_record(int $rid): bool
+    public function deleteZoneTemplRecord(int $rid): bool
     {
-        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;
         } else {
@@ -432,7 +432,7 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function get_zone_templ_is_owner($db, int $zone_templ_id, int $userid): bool
+    public static function getZoneTemplIsOwner($db, int $zone_templ_id, int $userid): bool
     {
         $query = "SELECT owner FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
         $result = $db->queryOne($query);
@@ -457,9 +457,9 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public function add_zone_templ_save_as(string $template_name, string $description, int $userid, array $records, array $options, string $domain = ''): bool
+    public function addZoneTemplSaveAs(string $template_name, string $description, int $userid, array $records, array $options, string $domain = ''): bool
     {
-        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } else {
@@ -501,7 +501,7 @@ class ZoneTemplate
      *
      * @return array array of zones ids
      */
-    public function get_list_zone_use_templ(int $zone_templ_id, int $userid): array
+    public function getListZoneUseTempl(int $zone_templ_id, int $userid): array
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
@@ -546,7 +546,7 @@ class ZoneTemplate
      *
      * @return array array of zone details
      */
-    public function get_zones_using_template(int $zone_templ_id, int $userid): array
+    public function getZonesUsingTemplate(int $zone_templ_id, int $userid): array
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
@@ -599,10 +599,10 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public function edit_zone_templ(array $details, int $zone_templ_id, $user_id): bool
+    public function editZoneTempl(array $details, int $zone_templ_id, $user_id): bool
     {
-        $zone_name_exists = $this->zone_templ_name_and_id_exists($details['templ_name'], $zone_templ_id);
-        if (!(UserManager::verify_permission($this->db, 'zone_master_add'))) {
+        $zone_name_exists = $this->zoneTemplNameAndIdExists($details['templ_name'], $zone_templ_id);
+        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
@@ -639,7 +639,7 @@ class ZoneTemplate
      *
      * @return bool number of matching templates
      */
-    public function zone_templ_name_exists(string $zone_templ_name): bool
+    public function zoneTemplNameExists(string $zone_templ_name): bool
     {
         $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $this->db->quote($zone_templ_name, 'text');
         return $this->db->queryOne($query);
@@ -653,7 +653,7 @@ class ZoneTemplate
      *
      * @return bool number of matching templates
      */
-    public function zone_templ_name_and_id_exists(string $zone_templ_name, int $zone_templ_id): bool
+    public function zoneTemplNameAndIdExists(string $zone_templ_name, int $zone_templ_id): bool
     {
         $query = "SELECT COUNT(id) FROM zone_templ WHERE name = {$this->db->quote($zone_templ_name, 'text')} AND id != {$this->db->quote($zone_templ_id, 'integer')}";
         return $this->db->queryOne($query);
@@ -667,7 +667,7 @@ class ZoneTemplate
      *
      * @return string interpolated/parsed string
      */
-    public function parse_template_value(string $val, string $domain): string
+    public function parseTemplateValue(string $val, string $domain): string
     {
         $dns_ns1 = $this->config->get('dns', 'ns1');
         $dns_ns2 = $this->config->get('dns', 'ns2');

@@ -82,13 +82,13 @@ class EditSupermasterController extends BaseController
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
-        if (!$dnsRecord->supermaster_ip_name_exists($old_master_ip, $old_ns_name)) {
+        if (!$dnsRecord->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('The supermaster you are trying to edit does not exist.'));
             $this->redirect('index.php', ['page' => 'list_supermasters']);
             return;
         }
 
-        if ($dnsRecord->edit_supermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account)) {
+        if ($dnsRecord->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account)) {
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been updated successfully.'));
             $this->redirect('index.php', ['page' => 'list_supermasters']);
         } else {
@@ -100,13 +100,13 @@ class EditSupermasterController extends BaseController
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
-        if (!$dnsRecord->supermaster_ip_name_exists($old_master_ip, $old_ns_name)) {
+        if (!$dnsRecord->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('The supermaster you are trying to edit does not exist.'));
             $this->redirect('index.php', ['page' => 'list_supermasters']);
             return;
         }
 
-        $info = $dnsRecord->get_supermaster_info_from_ip($old_master_ip);
+        $info = $dnsRecord->getSupermasterInfoFromIp($old_master_ip);
 
         // If POST didn't provide values, use the existing ones
         if ($new_master_ip === null) {
@@ -122,13 +122,13 @@ class EditSupermasterController extends BaseController
         }
 
         $this->render('edit_supermaster.html', [
-            'users' => UserManager::show_users($this->db),
+            'users' => UserManager::showUsers($this->db),
             'master_ip' => htmlspecialchars($new_master_ip),
             'ns_name' => htmlspecialchars($new_ns_name),
             'account' => htmlspecialchars($account),
             'old_master_ip' => htmlspecialchars($old_master_ip),
             'old_ns_name' => htmlspecialchars($old_ns_name),
-            'perm_view_others' => UserManager::verify_permission($this->db, 'user_view_others'),
+            'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
             'session_uid' => $_SESSION['userid']
         ]);
     }

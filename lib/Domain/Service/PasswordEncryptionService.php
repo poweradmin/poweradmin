@@ -24,8 +24,8 @@ namespace Poweradmin\Domain\Service;
 
 class PasswordEncryptionService
 {
-    const ALGORITHM = 'aes-256-cbc';
-    const IV_LENGTH = 16;
+    private const ALGORITHM = 'aes-256-cbc';
+    private const IV_LENGTH = 16;
     private string $session_key;
 
     public function __construct(string $session_key)

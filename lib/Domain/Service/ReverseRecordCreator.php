@@ -56,13 +56,13 @@ class ReverseRecordCreator
         }
 
         $contentRev = $this->getContentRev($type, $content);
-        $zoneRevId = $this->dnsRecord->get_best_matching_zone_id_from_name($contentRev);
+        $zoneRevId = $this->dnsRecord->getBestMatchingZoneIdFromName($contentRev);
 
         if ($zoneRevId === -1) {
             return $this->createErrorResponse(sprintf(_('There is no matching reverse-zone for: %s.'), $contentRev));
         }
 
-        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
+        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
         $fqdn_name = sprintf("%s.%s", $name, $zone_name);
 
         // Check for duplicate PTR record before attempting to add
@@ -85,7 +85,7 @@ class ReverseRecordCreator
             $content_array = preg_split("/\./", $content);
             return sprintf("%d.%d.%d.%d.in-addr.arpa", $content_array[3], $content_array[2], $content_array[1], $content_array[0]);
         } elseif ($type === RecordType::AAAA) {
-            return DnsRecord::convert_ipv6addr_to_ptrrec($content);
+            return DnsRecord::convertIPv6AddrToPtrRec($content);
         }
         return null;
     }
@@ -126,11 +126,11 @@ class ReverseRecordCreator
             $domainId = $result['domain_id'];
 
             $dnsRecord = new DnsRecord($this->db, $this->config);
-            if ($dnsRecord->delete_record($recordId)) {
-                $dnsRecord->update_soa_serial($domainId);
+            if ($dnsRecord->deleteRecord($recordId)) {
+                $dnsRecord->updateSOASerial($domainId);
 
                 if ($this->config->get('dnssec', 'enabled')) {
-                    $zone_name = $dnsRecord->get_domain_name_by_id($domainId);
+                    $zone_name = $dnsRecord->getDomainNameById($domainId);
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
                     $dnssecProvider->rectifyZone($zone_name);
                 }
@@ -144,13 +144,13 @@ class ReverseRecordCreator
 
     private function addReverseRecord($zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool
     {
-        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
+        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
         $fqdn_name = sprintf("%s.%s", $name, $zone_name);
 
         // Duplicate check moved to the main createReverseRecord method
 
-        if ($this->dnsRecord->add_record($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
-            $this->logger->log_info(sprintf(
+        if ($this->dnsRecord->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+            $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'],
                 $_SESSION["userlogin"],

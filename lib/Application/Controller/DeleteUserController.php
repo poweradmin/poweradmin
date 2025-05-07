@@ -42,10 +42,10 @@ class DeleteUserController extends BaseController
 
     public function run(): void
     {
-        $perm_edit_others = UserManager::verify_permission($this->db, 'user_edit_others');
-        $perm_is_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
+        $perm_edit_others = UserManager::verifyPermission($this->db, 'user_edit_others');
+        $perm_is_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
-        if (!(isset($_GET['id']) && Validator::is_number($_GET['id']))) {
+        if (!(isset($_GET['id']) && Validator::isNumber($_GET['id']))) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
@@ -65,7 +65,7 @@ class DeleteUserController extends BaseController
 
     public function deleteUser(string $uid): void
     {
-        if (!UserManager::is_valid_user($this->db, $uid)) {
+        if (!UserManager::isValidUser($this->db, $uid)) {
             $this->showError(_('User does not exist.'));
         }
 
@@ -75,7 +75,7 @@ class DeleteUserController extends BaseController
         }
 
         $legacyUsers = new UserManager($this->db, $this->getConfig());
-        if ($legacyUsers->delete_user($uid, $zones)) {
+        if ($legacyUsers->deleteUser($uid, $zones)) {
             $this->setMessage('users', 'success', _('The user has been deleted successfully.'));
             $this->redirect('index.php', ['page' => 'users']);
         }
@@ -83,16 +83,16 @@ class DeleteUserController extends BaseController
 
     public function showQuestion(string $uid): void
     {
-        $name = UserManager::get_fullname_from_userid($this->db, $uid);
+        $name = UserManager::getFullnameFromUserId($this->db, $uid);
         if (!$name) {
-            $name = UserEntity::get_username_by_id($this->db, $uid);
+            $name = UserEntity::getUserNameById($this->db, $uid);
         }
         $domainRepository = new DomainRepository($this->db, $this->getConfig());
         $zones = $domainRepository->getZones("own", $uid);
 
         $users = [];
         if (count($zones) > 0) {
-            $users = UserManager::show_users($this->db);
+            $users = UserManager::showUsers($this->db);
         }
 
         $this->render('delete_user.html', [

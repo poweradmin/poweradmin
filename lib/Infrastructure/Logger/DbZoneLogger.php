@@ -38,7 +38,7 @@ class DbZoneLogger
         $this->config->initialize();
     }
 
-    public function do_log($msg, $zone_id, $priority): void
+    public function doLog($msg, $zone_id, $priority): void
     {
         $stmt = $this->db->prepare('INSERT INTO log_zones (zone_id, event, priority) VALUES (:zone_id, :msg, :priority)');
         $stmt->execute([
@@ -48,13 +48,13 @@ class DbZoneLogger
         ]);
     }
 
-    public function count_all_logs()
+    public function countAllLogs()
     {
         $stmt = $this->db->query("SELECT count(*) AS number_of_logs FROM log_zones");
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public function count_logs_by_domain($domain)
+    public function countLogsByDomain($domain)
     {
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
@@ -71,7 +71,7 @@ class DbZoneLogger
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public function get_all_logs($limit, $offset): array
+    public function getAllLogs($limit, $offset): array
     {
         $stmt = $this->db->prepare("
                     SELECT * FROM log_zones
@@ -89,9 +89,9 @@ class DbZoneLogger
         return $this->processFetchedLogs($records);
     }
 
-    public function get_logs_for_domain($domain, $limit, $offset): array
+    public function getLogsForDomain($domain, $limit, $offset): array
     {
-        if (!($this->check_if_domain_exist($domain))) {
+        if (!($this->checkIfDomainExist($domain))) {
             return array();
         }
 
@@ -117,7 +117,7 @@ class DbZoneLogger
         return $this->processFetchedLogs($records);
     }
 
-    public function check_if_domain_exist($domain_searched): bool
+    public function checkIfDomainExist($domain_searched): bool
     {
         if ($domain_searched == "") {
             return false;

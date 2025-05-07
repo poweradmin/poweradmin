@@ -55,7 +55,7 @@ class UserManager
      *
      * @return boolean true if user has permission, false otherwise
      */
-    public static function verify_permission(object $db, string $arg): bool
+    public static function verifyPermission(object $db, string $arg): bool
     {
         $permission = $arg;
 
@@ -87,7 +87,7 @@ class UserManager
      *
      * @return array array of templates [id, name, descr]
      */
-    public static function list_permission_templates($db): array
+    public static function listPermissionTemplates($db): array
     {
         $query = "SELECT * FROM perm_templ ORDER BY name";
         $response = $db->query($query);
@@ -114,7 +114,7 @@ class UserManager
      *
      * @return array array with all users [id,username,fullname,email,description,active,numdomains]
      */
-    public static function show_users($db, int|string $id = '', int $rowstart = 0, int $rowamount = 9999999): array
+    public static function showUsers($db, int|string $id = '', int $rowstart = 0, int $rowamount = 9999999): array
     {
         $add = '';
         if (is_numeric($id)) {
@@ -172,7 +172,7 @@ class UserManager
      *
      * @return boolean true if user exists, false if users doesnt exist
      */
-    public static function is_valid_user($db, int $id): bool
+    public static function isValidUser($db, int $id): bool
     {
         $response = $db->queryOne("SELECT id FROM users WHERE id=" . $db->quote($id, 'integer'));
         return (bool)$response;
@@ -187,7 +187,7 @@ class UserManager
      *
      * @return boolean true if exists, false if not
      */
-    public static function user_exists($db, string $user): bool
+    public static function userExists($db, string $user): bool
     {
         $response = $db->queryOne("SELECT id FROM users WHERE username=" . $db->quote($user, 'text'));
         return (bool)$response;
@@ -206,9 +206,9 @@ class UserManager
      *
      * @return boolean true on success, false otherwise
      */
-    public function delete_user(int $uid, array $zones): bool
+    public function deleteUser(int $uid, array $zones): bool
     {
-        if (($uid != $_SESSION['userid'] && !self::verify_permission($this->db, 'user_edit_others')) || ($uid == $_SESSION['userid'] && !self::verify_permission($this->db, 'user_edit_own'))) {
+        if (($uid != $_SESSION['userid'] && !self::verifyPermission($this->db, 'user_edit_others')) || ($uid == $_SESSION['userid'] && !self::verifyPermission($this->db, 'user_edit_own'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete this user."));
 
             return false;
@@ -216,9 +216,9 @@ class UserManager
             $dnsRecord = new DnsRecord($this->db, $this->config);
             foreach ($zones as $zone) {
                 if ($zone ['target'] == "delete") {
-                    $dnsRecord->delete_domain($zone ['zid']);
+                    $dnsRecord->deleteDomain($zone ['zid']);
                 } elseif ($zone ['target'] == "new_owner") {
-                    DnsRecord::add_owner_to_zone($this->db, $zone ['zid'], $zone ['newowner']);
+                    DnsRecord::addOwnerToZone($this->db, $zone ['zid'], $zone ['newowner']);
                 }
             }
 
@@ -229,7 +229,7 @@ class UserManager
             $this->db->query($query);
 
             $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-            $zoneTemplate->delete_zone_templ_userid($uid);
+            $zoneTemplate->deleteZoneTemplUserId($uid);
         }
         return true;
     }
@@ -241,7 +241,7 @@ class UserManager
      *
      * @return boolean true on success, false otherwise
      */
-    public static function delete_perm_templ($db, int $id): bool
+    public static function deletePermTempl($db, int $id): bool
     {
         $query = "SELECT id FROM users WHERE perm_templ = " . $id;
         $response = $db->queryOne($query);
@@ -278,14 +278,14 @@ class UserManager
      *
      * @return boolean true if succesful, false otherwise
      */
-    public function edit_user(int $id, string $user, string $fullname, string $email, string $perm_templ, string $description, int $active, string $user_password, $i_use_ldap): bool
+    public function editUser(int $id, string $user, string $fullname, string $email, string $perm_templ, string $description, int $active, string $user_password, $i_use_ldap): bool
     {
-        $perm_edit_own = self::verify_permission($this->db, 'user_edit_own');
-        $perm_edit_others = self::verify_permission($this->db, 'user_edit_others');
+        $perm_edit_own = self::verifyPermission($this->db, 'user_edit_own');
+        $perm_edit_others = self::verifyPermission($this->db, 'user_edit_others');
 
         if (($id == $_SESSION["userid"] && $perm_edit_own) || ($id != $_SESSION["userid"] && $perm_edit_others)) {
             $validation = new Validator($this->db, $this->config);
-            if (!$validation->is_valid_email($email)) {
+            if (!$validation->isValidEmail($email)) {
                 $this->messageService->addSystemError(_('Enter a valid email address.'));
 
                 return false;
@@ -328,14 +328,14 @@ class UserManager
 
             $query = "UPDATE users SET username = :username, fullname = :fullname, email = :email";
 
-            if (self::verify_permission($this->db, 'user_edit_templ_perm')) {
+            if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
                 $query .= ", perm_templ = :perm_templ";
             }
 
             $query .= ", description = :description, active = :active, use_ldap = :use_ldap";
 
-            $edit_own_perm = self::verify_permission($this->db, 'user_edit_own');
-            $passwd_edit_others_perm = self::verify_permission($this->db, 'user_passwd_edit_others');
+            $edit_own_perm = self::verifyPermission($this->db, 'user_edit_own');
+            $passwd_edit_others_perm = self::verifyPermission($this->db, 'user_passwd_edit_others');
 
             if ($user_password != "" && ($edit_own_perm || $passwd_edit_others_perm)) {
                 $config = ConfigurationManager::getInstance();
@@ -361,7 +361,7 @@ class UserManager
             $stmt->bindValue(':use_ldap', $i_use_ldap ?: 0, PDO::PARAM_INT);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
-            if (self::verify_permission($this->db, 'user_edit_templ_perm')) {
+            if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
                 $stmt->bindValue(':perm_templ', $perm_templ, PDO::PARAM_INT);
             }
 
@@ -385,7 +385,7 @@ class UserManager
      * @param $user_pass
      * @return void
      */
-    public static function update_user_password($db, int $id, $user_pass): void
+    public static function updateUserPassword($db, int $id, $user_pass): void
     {
         $config = ConfigurationManager::getInstance();
         $config->initialize();
@@ -406,7 +406,7 @@ class UserManager
      *
      * @return string Full Name
      */
-    public static function get_fullname_from_userid($db, int $id): string
+    public static function getFullnameFromUserId($db, int $id): string
     {
         $response = $db->query("SELECT fullname FROM users WHERE id=" . $db->quote($id, 'integer'));
         $r = $response->fetch();
@@ -420,7 +420,7 @@ class UserManager
      *
      * @return string List of owners for domain as a comma-separated string
      */
-    public static function get_fullnames_owners_from_domainid($db, int $id)
+    public static function getFullnamesOwnersFromFomainId($db, int $id)
     {
         $response = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=" . $db->quote($id, 'integer') . " AND zones.owner=users.id ORDER by fullname");
         if ($response) {
@@ -440,7 +440,7 @@ class UserManager
      *
      * @return bool 1 if owner, 0 if not owner
      */
-    public static function verify_user_is_owner_zoneid($db, int $zoneid): bool
+    public static function verifyUserIsOwnerZoneId($db, int $zoneid): bool
     {
         $userid = $_SESSION["userid"];
         $response = $db->queryOne("SELECT zones.id FROM zones
@@ -460,13 +460,13 @@ class UserManager
      *
      * @return array array of user details
      */
-    public static function get_user_detail_list($db, $ldap_use, ?int $specific = null): array
+    public static function getUserDetailList($db, $ldap_use, ?int $specific = null): array
     {
         $userid = $_SESSION['userid'];
 
         if ($specific) {
             $sql_add = "AND users.id = :specific";
-        } elseif (self::verify_permission($db, 'user_view_others')) {
+        } elseif (self::verifyPermission($db, 'user_view_others')) {
             $sql_add = "";
         } else {
             $sql_add = "AND users.id = :userid";
@@ -494,7 +494,7 @@ class UserManager
 
         if ($specific) {
             $stmt->bindValue(':specific', $specific, PDO::PARAM_INT);
-        } elseif (!self::verify_permission($db, 'user_view_others')) {
+        } elseif (!self::verifyPermission($db, 'user_view_others')) {
             $stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
         }
 
@@ -532,7 +532,7 @@ class UserManager
      *
      * @return array array of permissions [id,name,descr] or permission names [name]
      */
-    public static function get_permissions_by_template_id($db, int $templ_id = 0, bool $return_name_only = false): array
+    public static function getPermissionsByTemplateId($db, int $templ_id = 0, bool $return_name_only = false): array
     {
         $limit = '';
         if ($templ_id > 0) {
@@ -570,16 +570,16 @@ class UserManager
      *
      * @return boolean true on success, false otherwise
      */
-    public function update_user_details(array $details): bool
+    public function updateUserDetails(array $details): bool
     {
-        $perm_edit_own = self::verify_permission($this->db, 'user_edit_own');
-        $perm_edit_others = self::verify_permission($this->db, 'user_edit_others');
-        $perm_templ_perm_edit = self::verify_permission($this->db, 'templ_perm_edit');
-        $perm_is_godlike = self::verify_permission($this->db, 'user_is_ueberuser');
+        $perm_edit_own = self::verifyPermission($this->db, 'user_edit_own');
+        $perm_edit_others = self::verifyPermission($this->db, 'user_edit_others');
+        $perm_templ_perm_edit = self::verifyPermission($this->db, 'templ_perm_edit');
+        $perm_is_godlike = self::verifyPermission($this->db, 'user_is_ueberuser');
 
         if (($details['uid'] == $_SESSION["userid"] && $perm_edit_own) || ($details['uid'] != $_SESSION["userid"] && $perm_edit_others)) {
             $validation = new Validator($this->db, $this->config);
-            if (!$validation->is_valid_email($details['email'])) {
+            if (!$validation->isValidEmail($details['email'])) {
                 $this->messageService->addSystemError(_('Enter a valid email address.'));
 
                 return false;
@@ -642,7 +642,7 @@ class UserManager
                 $query .= ", use_ldap = :use_ldap";
             }
 
-            $passwd_edit_others_perm = self::verify_permission($this->db, 'user_passwd_edit_others');
+            $passwd_edit_others_perm = self::verifyPermission($this->db, 'user_passwd_edit_others');
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
                 $config = ConfigurationManager::getInstance();
                 $config->initialize();
@@ -691,16 +691,16 @@ class UserManager
      *
      * @return boolean true on success, false otherwise
      */
-    public function add_new_user(array $details): bool
+    public function addNewUser(array $details): bool
     {
         $ldap_use = $this->config->get('ldap', 'enabled');
         $validation = new Validator($this->db, $this->config);
 
-        if (!self::verify_permission($this->db, 'user_add_new')) {
+        if (!self::verifyPermission($this->db, 'user_add_new')) {
             $this->messageService->addSystemError(_("You do not have the permission to add a new user."));
 
             return false;
-        } elseif (self::user_exists($this->db, $details['username'])) {
+        } elseif (self::userExists($this->db, $details['username'])) {
             $this->messageService->addSystemError(_('Username exist already, please choose another one.'));
 
             return false;
@@ -708,7 +708,7 @@ class UserManager
             $this->messageService->addSystemError(_('Enter a valid user name.'));
 
             return false;
-        } elseif (!$validation->is_valid_email($details['email'])) {
+        } elseif (!$validation->isValidEmail($details['email'])) {
             $this->messageService->addSystemError(_('Enter a valid email address.'));
 
             return false;
@@ -740,10 +740,10 @@ class UserManager
         $stmt->bindValue(':email', $details['email']);
         $stmt->bindValue(':description', $details['descr'] ?? '');
 
-        if (self::verify_permission($this->db, 'user_edit_templ_perm')) {
+        if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
             $stmt->bindValue(':perm_templ', $details['perm_templ'], PDO::PARAM_INT);
         } else {
-            $current_user = self::get_user_detail_list($this->db, $ldap_use, $_SESSION['userid']);
+            $current_user = self::getUserDetailList($this->db, $ldap_use, $_SESSION['userid']);
             $stmt->bindValue(':perm_templ', $current_user[0]['tpl_id'], PDO::PARAM_INT);
         }
 

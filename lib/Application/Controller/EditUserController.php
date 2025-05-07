@@ -90,7 +90,7 @@ class EditUserController extends BaseController
         $legacyUsers = new UserManager($this->db, $this->getConfig());
 
         if (
-            $legacyUsers->edit_user(
+            $legacyUsers->editUser(
                 $editId,
                 $params['username'],
                 $params['fullname'],
@@ -152,8 +152,8 @@ class EditUserController extends BaseController
     private function checkEditPermissions(int $editId): void
     {
         $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
-        $canEditOwn = UserManager::verify_permission($this->db, 'user_edit_own');
-        $canEditOthers = UserManager::verify_permission($this->db, 'user_edit_others');
+        $canEditOwn = UserManager::verifyPermission($this->db, 'user_edit_own');
+        $canEditOthers = UserManager::verifyPermission($this->db, 'user_edit_others');
 
         if ((!$isOwnProfile || !$canEditOwn) && ($isOwnProfile || !$canEditOthers)) {
             $this->showError(_('You do not have the permission to edit this user.'));
@@ -188,8 +188,8 @@ class EditUserController extends BaseController
             'edit_templ_perm' => $permissions['edit_templ_perm'],
             'edit_own_perm' => $permissions['edit_own'],
             'perm_passwd_edit_others' => $permissions['passwd_edit_others'],
-            'permission_templates' => UserManager::list_permission_templates($this->db),
-            'user_permissions' => UserManager::get_permissions_by_template_id($this->db, $user['tpl_id']),
+            'permission_templates' => UserManager::listPermissionTemplates($this->db),
+            'user_permissions' => UserManager::getPermissionsByTemplateId($this->db, $user['tpl_id']),
             'ldap_use' => $this->config->get('ldap', 'enabled', false) && !$permissions['is_admin'],
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
             'password_policy' => $policyConfig,
@@ -201,9 +201,9 @@ class EditUserController extends BaseController
         $isCurrentUser = $this->userContextService->getLoggedInUserId() == $editId;
 
         return [
-            'edit_templ_perm' => UserManager::verify_permission($this->db, 'user_edit_templ_perm'),
-            'passwd_edit_others' => UserManager::verify_permission($this->db, 'user_passwd_edit_others'),
-            'edit_own' => UserManager::verify_permission($this->db, 'user_edit_own'),
+            'edit_templ_perm' => UserManager::verifyPermission($this->db, 'user_edit_templ_perm'),
+            'passwd_edit_others' => UserManager::verifyPermission($this->db, 'user_passwd_edit_others'),
+            'edit_own' => UserManager::verifyPermission($this->db, 'user_edit_own'),
             'is_admin' => Permission::getPermissions($this->db, ['user_is_ueberuser'])['user_is_ueberuser']
                 && $isCurrentUser
         ];
@@ -211,7 +211,7 @@ class EditUserController extends BaseController
 
     private function getUserDetails(int $editId): array
     {
-        $users = UserManager::get_user_detail_list($this->db, $this->config->get('ldap', 'enabled', false), $editId);
+        $users = UserManager::getUserDetailList($this->db, $this->config->get('ldap', 'enabled', false), $editId);
 
         if (empty($users)) {
             $this->showError(_('User does not exist.'));

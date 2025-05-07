@@ -82,12 +82,12 @@ class DeleteDomainsController extends BaseController
     public function deleteDomains($zone_ids): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $deleted_zones = $dnsRecord->get_zone_info_from_ids($zone_ids);
-        $delete_domains = $dnsRecord->delete_domains($zone_ids);
+        $deleted_zones = $dnsRecord->getZoneInfoFromIds($zone_ids);
+        $delete_domains = $dnsRecord->deleteDomains($zone_ids);
 
         if ($delete_domains) {
             foreach ($deleted_zones as $deleted_zone) {
-                $this->logger->log_info(sprintf(
+                $this->logger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                     $_SERVER['REMOTE_ADDR'],
                     $_SESSION["userlogin"],
@@ -152,17 +152,17 @@ class DeleteDomainsController extends BaseController
 
         foreach ($zone_ids as $zone_id) {
             $zones[$zone_id]['id'] = $zone_id;
-            $zones[$zone_id] = $dnsRecord->get_zone_info_from_id($zone_id);
-            $zones[$zone_id]['owner'] = UserManager::get_fullnames_owners_from_domainid($this->db, $zone_id);
-            $zones[$zone_id]['is_owner'] = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+            $zones[$zone_id] = $dnsRecord->getZoneInfoFromId($zone_id);
+            $zones[$zone_id]['owner'] = UserManager::getFullnamesOwnersFromFomainId($this->db, $zone_id);
+            $zones[$zone_id]['is_owner'] = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;
             if ($zones[$zone_id]['type'] == "SLAVE") {
-                $slave_master = $dnsRecord->get_domain_slave_master($zone_id);
+                $slave_master = $dnsRecord->getDomainSlaveMaster($zone_id);
                 $zones[$zone_id]['slave_master'] = $slave_master;
 
-                if ($dnsRecord->supermaster_exists($slave_master)) {
+                if ($dnsRecord->supermasterExists($slave_master)) {
                     $zones[$zone_id]['has_supermaster'] = true;
                 }
             }

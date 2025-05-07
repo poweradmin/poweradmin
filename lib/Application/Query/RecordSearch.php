@@ -49,7 +49,19 @@ class RecordSearch extends BaseSearch
         $originalSqlMode = $this->handleSqlMode();
 
         if ($parameters['records']) {
-            $foundRecords = $this->fetchRecords($parameters, $search_string, $parameters['reverse'], $reverse_search_string, $permission_view, $iface_search_group_records, $sort_records_by, $record_sort_direction, $iface_rowamount, $iface_record_comments, $page);
+            $foundRecords = $this->fetchRecords(
+                $parameters,
+                $search_string,
+                $parameters['reverse'],
+                $reverse_search_string,
+                $permission_view,
+                $iface_search_group_records,
+                $sort_records_by,
+                $record_sort_direction,
+                $iface_rowamount,
+                $iface_record_comments,
+                $page
+            );
         }
 
         $this->restoreSqlMode($originalSqlMode);

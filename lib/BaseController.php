@@ -210,7 +210,7 @@ abstract class BaseController
      */
     public function checkPermission(string $permission, string $errorMessage): void
     {
-        if (!UserManager::verify_permission($this->db, $permission)) {
+        if (!UserManager::verifyPermission($this->db, $permission)) {
             // Add as system message
             $this->addSystemMessage('error', $errorMessage);
 
@@ -295,20 +295,20 @@ abstract class BaseController
         $session_key = $this->config->get('security', 'session_key');
 
         if (isset($_SESSION["userid"])) {
-            $perm_is_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
+            $perm_is_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
             $vars = array_merge($vars, [
                 'user_logged_in' => isset($_SESSION["userid"]),
-                'perm_search' => UserManager::verify_permission($this->db, 'search'),
-                'perm_view_zone_own' => UserManager::verify_permission($this->db, 'zone_content_view_own'),
-                'perm_view_zone_other' => UserManager::verify_permission($this->db, 'zone_content_view_others'),
-                'perm_supermaster_view' => UserManager::verify_permission($this->db, 'supermaster_view'),
-                'perm_zone_master_add' => UserManager::verify_permission($this->db, 'zone_master_add'),
-                'perm_zone_slave_add' => UserManager::verify_permission($this->db, 'zone_slave_add'),
-                'perm_supermaster_add' => UserManager::verify_permission($this->db, 'supermaster_add'),
+                'perm_search' => UserManager::verifyPermission($this->db, 'search'),
+                'perm_view_zone_own' => UserManager::verifyPermission($this->db, 'zone_content_view_own'),
+                'perm_view_zone_other' => UserManager::verifyPermission($this->db, 'zone_content_view_others'),
+                'perm_supermaster_view' => UserManager::verifyPermission($this->db, 'supermaster_view'),
+                'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
+                'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
+                'perm_supermaster_add' => UserManager::verifyPermission($this->db, 'supermaster_add'),
                 'perm_is_godlike' => $perm_is_godlike,
-                'perm_templ_perm_edit' => UserManager::verify_permission($this->db, 'templ_perm_edit'),
-                'perm_add_new' => UserManager::verify_permission($this->db, 'user_add_new'),
+                'perm_templ_perm_edit' => UserManager::verifyPermission($this->db, 'templ_perm_edit'),
+                'perm_add_new' => UserManager::verifyPermission($this->db, 'user_add_new'),
                 'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? _('Default session encryption key is used, please set it in your configuration file.') : false,
                 'auth_used' => $_SESSION["auth_used"] != "ldap",
                 'dblog_use' => $dblog_use,

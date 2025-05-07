@@ -34,7 +34,7 @@ class DbUserLogger
         $this->db = $db;
     }
 
-    public function do_log($msg, $priority): void
+    public function doLog($msg, $priority): void
     {
         $stmt = $this->db->prepare('INSERT INTO log_users (event, priority) VALUES (:msg, :priority)');
         $stmt->execute([
@@ -43,13 +43,13 @@ class DbUserLogger
         ]);
     }
 
-    public function count_all_logs()
+    public function countAllLogs()
     {
         $stmt = $this->db->query("SELECT count(*) AS number_of_logs FROM log_users");
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public function count_logs_by_user($user)
+    public function countLogsByUser($user)
     {
         $stmt = $this->db->prepare("
                     SELECT count(log_users.id) as number_of_logs
@@ -61,7 +61,7 @@ class DbUserLogger
         return $stmt->fetch()['number_of_logs'];
     }
 
-    public function get_all_logs($limit, $offset): array
+    public function getAllLogs($limit, $offset): array
     {
         $stmt = $this->db->prepare("
                     SELECT * FROM log_users
@@ -78,7 +78,7 @@ class DbUserLogger
         return $stmt->fetchAll();
     }
 
-    public function get_logs_for_user($user, $limit, $offset): array
+    public function getLogsForUser($user, $limit, $offset): array
     {
         if (!(UserEntity::exists($this->db, $user))) {
             return array();

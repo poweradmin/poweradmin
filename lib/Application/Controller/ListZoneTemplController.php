@@ -47,16 +47,16 @@ class ListZoneTemplController extends BaseController
 
     private function showListZoneTempl(): void
     {
-        $perm_zone_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
+        $perm_zone_master_add = UserManager::verifyPermission($this->db, 'zone_master_add');
 
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
-        $zone_templates->get_list_zone_templ($_SESSION['userid']);
+        $zone_templates->getListZoneTempl($_SESSION['userid']);
 
         $this->render('list_zone_templ.html', [
             'perm_zone_master_add' => $perm_zone_master_add,
-            'user_name' => UserManager::get_fullname_from_userid($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
-            'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
-            'perm_is_godlike' => UserManager::verify_permission($this->db, 'user_is_ueberuser'),
+            'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
+            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
+            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
         ]);
     }
 }

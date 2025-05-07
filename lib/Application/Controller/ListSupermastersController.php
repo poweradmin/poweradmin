@@ -49,9 +49,9 @@ class ListSupermastersController extends BaseController
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $this->render('list_supermasters.html', [
-            'perm_sm_add' => UserManager::verify_permission($this->db, 'supermaster_add'),
-            'perm_sm_edit' => UserManager::verify_permission($this->db, 'supermaster_edit'),
-            'supermasters' => $dnsRecord->get_supermasters()
+            'perm_sm_add' => UserManager::verifyPermission($this->db, 'supermaster_add'),
+            'perm_sm_edit' => UserManager::verifyPermission($this->db, 'supermaster_edit'),
+            'supermasters' => $dnsRecord->getSupermasters()
         ]);
     }
 }

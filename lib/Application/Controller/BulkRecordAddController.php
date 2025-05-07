@@ -81,8 +81,8 @@ class BulkRecordAddController extends BaseController
 
         $perm_edit = Permission::getEditPermission($this->db);
         $zone_id = htmlspecialchars($_GET['id']);
-        $zone_type = $this->dnsRecord->get_domain_type($zone_id);
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $zone_type = $this->dnsRecord->getDomainType($zone_id);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
         $this->checkCondition($zone_type == "SLAVE"
             || $perm_edit == "none"
@@ -165,7 +165,7 @@ class BulkRecordAddController extends BaseController
             }
 
             // Validate record type
-            $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
+            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
             $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
             $valid_types = $isReverseZone ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled) : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled);
@@ -206,7 +206,7 @@ class BulkRecordAddController extends BaseController
                     $success_count++;
 
                     // Log the record creation
-                    $this->logger->log_info(sprintf(
+                    $this->logger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:add_record name:%s type:%s content:%s ttl:%s prio:%s',
                         $_SERVER['REMOTE_ADDR'],
                         $_SESSION["userlogin"],
@@ -236,7 +236,7 @@ class BulkRecordAddController extends BaseController
     private function showBulkRecordAdditionForm(array $failed_records = []): void
     {
         $zone_id = htmlspecialchars($_GET['id']);
-        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
+        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
 
         // For internationalized domain names
         if (str_starts_with($zone_name, "xn--")) {

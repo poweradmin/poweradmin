@@ -46,14 +46,14 @@ class RecordLog
         $this->logger = new LegacyLogger($db);
     }
 
-    public function log_prior($rid, $zid, $comment): void
+    public function logPrior($rid, $zid, $comment): void
     {
         $this->record_prior = $this->getRecord($rid);
         $this->record_prior['zid'] = $zid;
         $this->record_prior['comment'] = $comment;
     }
 
-    public function log_after($rid): void
+    public function logAfter($rid): void
     {
         $this->record_after = $this->getRecord($rid);
     }
@@ -61,7 +61,7 @@ class RecordLog
     private function getRecord($rid): array|int
     {
         $dnsRecord = new DnsRecord($this->db, $this->config);
-        return $dnsRecord->get_record_from_id($rid);
+        return $dnsRecord->getRecordFromId($rid);
     }
 
     public function getRecordCopy(): array
@@ -92,7 +92,7 @@ class RecordLog
 
     public function write(): void
     {
-        $this->logger->log_info(sprintf(
+        $this->logger->logInfo(sprintf(
             'client_ip:%s user:%s operation:edit_record'
             . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
             . ' record_type:%s record:%s content:%s ttl:%s priority:%s',

@@ -108,7 +108,7 @@ class LdapAuthenticator extends LoggingService
         if (!$ldapconn) {
             $this->logError('Failed to connect to LDAP server.');
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->log_failed_reason('ldap_connect');
+                $this->ldapUserEventLogger->logFailedReason('ldap_connect');
             }
             $sessionEntity = new SessionEntity(_('Failed to connect to LDAP server!'), 'danger');
             $this->authenticationService->logout($sessionEntity);
@@ -123,7 +123,7 @@ class LdapAuthenticator extends LoggingService
             $this->logError('Failed to bind to LDAP server.');
 
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->log_failed_reason('ldap_bind');
+                $this->ldapUserEventLogger->logFailedReason('ldap_bind');
             }
 
             $sessionEntity = new SessionEntity(_('Failed to bind to LDAP server!'), 'danger');
@@ -148,7 +148,7 @@ class LdapAuthenticator extends LoggingService
         if (!$ldapsearch) {
             $this->logError('Failed to search LDAP.');
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->log_failed_reason('ldap_search');
+                $this->ldapUserEventLogger->logFailedReason('ldap_search');
             }
             $sessionEntity = new SessionEntity(_('Failed to search LDAP.'), 'danger');
             $this->authenticationService->logout($sessionEntity);
@@ -161,9 +161,9 @@ class LdapAuthenticator extends LoggingService
             $this->logWarning('LDAP search did not return exactly one user. Count: {count}', ['count' => $entries["count"]]);
             if (isset($_POST["authenticate"])) {
                 if ($entries["count"] == 0) {
-                    $this->ldapUserEventLogger->log_failed_auth();
+                    $this->ldapUserEventLogger->logFailedAuth();
                 } else {
-                    $this->ldapUserEventLogger->log_failed_duplicate_auth();
+                    $this->ldapUserEventLogger->logFailedDuplicateAuth();
                 }
             }
             $sessionEntity = new SessionEntity(_('Failed to authenticate against LDAP.'), 'danger');
@@ -178,7 +178,7 @@ class LdapAuthenticator extends LoggingService
         if (!@ldap_bind($ldapconn, $user_dn, $session_pass)) {
             $this->logWarning('LDAP authentication failed for user {username}', ['username' => $_SESSION['userlogin']]);
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->log_failed_incorrect_pass();
+                $this->ldapUserEventLogger->logFailedIncorrectPass();
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
@@ -198,7 +198,7 @@ class LdapAuthenticator extends LoggingService
         if (!$rowObj) {
             $this->logWarning('No active LDAP user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
             if (isset($_POST["authenticate"])) {
-                $this->ldapUserEventLogger->log_failed_user_inactive();
+                $this->ldapUserEventLogger->logFailedUserInactive();
             }
             $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
             $this->authenticationService->auth($sessionEntity);
@@ -219,7 +219,7 @@ class LdapAuthenticator extends LoggingService
         }
 
         if (isset($_POST['authenticate'])) {
-            $this->ldapUserEventLogger->log_success_auth();
+            $this->ldapUserEventLogger->logSuccessAuth();
             session_write_close();
             $this->authenticationService->redirectToIndex();
         }

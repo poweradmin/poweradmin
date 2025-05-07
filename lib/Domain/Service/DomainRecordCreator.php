@@ -56,13 +56,13 @@ class DomainRecordCreator
         $iface_add_domain_record = $this->config->get('interface', 'add_domain_record');
 
         $registeredDomain = DnsHelper::getRegisteredDomain($content);
-        $domainId = $this->dnsRecord->get_domain_id_by_name($registeredDomain);
+        $domainId = $this->dnsRecord->getDomainIdByName($registeredDomain);
         if ($domainId === false) {
             return $this->errorResponse(sprintf(_('There is no managed zone for domain: %s.'), $content));
         }
 
         if ($name && $iface_add_domain_record && $type === 'PTR') {
-            $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
+            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
 
             if (str_ends_with($zone_name, self::IPV4_SUFFIX)) {
                 return $this->processIPv4($name, $zone_name, $content, $domainId, $comment, $account);
@@ -99,7 +99,7 @@ class DomainRecordCreator
     private function addRecord(int $domainId, string $content, string $proposedIP, string $comment, string $account): array
     {
         $domainName = DnsHelper::getSubDomainName($content);
-        $result = $this->dnsRecord->add_record($domainId, $domainName, RecordType::A, $proposedIP, $this->config->get('dns', 'ttl'), 0);
+        $result = $this->dnsRecord->addRecord($domainId, $domainName, RecordType::A, $proposedIP, $this->config->get('dns', 'ttl'), 0);
 
         if ($result) {
             return [

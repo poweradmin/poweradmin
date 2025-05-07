@@ -311,7 +311,7 @@ class DomainRepository implements DomainRepositoryInterface
             }
 
             if ($iface_zonelist_template) {
-                $ret[$domainName]["template"] = ZoneTemplate::get_zone_templ_name($this->db, $r["id"]);
+                $ret[$domainName]["template"] = ZoneTemplate::getZoneTemplName($this->db, $r["id"]);
             }
         }
 

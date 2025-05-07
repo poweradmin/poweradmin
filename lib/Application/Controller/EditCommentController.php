@@ -53,21 +53,21 @@ class EditCommentController extends BaseController
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
 
-        if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
+        if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_id = htmlspecialchars($_GET['id']);
 
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this comment."));
         }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_type = $dnsRecord->get_domain_type($zone_id);
+        $zone_type = $dnsRecord->getDomainType($zone_id);
 
         // Check permission to edit comment - directly reuse the logic from edit_zone_comment method
-        $is_admin = UserManager::verify_permission($this->db, 'user_is_ueberuser');
+        $is_admin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
         // Permission check logic matches what's in DnsRecord->edit_zone_comment
         // Users can edit if:
@@ -90,7 +90,7 @@ class EditCommentController extends BaseController
                 $messageService->addSystemError(_("You do not have the permission to edit this comment."));
             } else {
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                $dnsRecord->edit_zone_comment($zone_id, $_POST['comment']);
+                $dnsRecord->editZoneComment($zone_id, $_POST['comment']);
                 $this->setMessage('edit', 'success', _('The comment has been updated successfully.'));
                 $this->redirect('index.php', ['page' => 'edit', 'id' => $zone_id]);
             }
@@ -102,7 +102,7 @@ class EditCommentController extends BaseController
     public function showCommentForm(string $zone_id, bool $perm_edit_comment): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
+        $zone_name = $dnsRecord->getDomainNameById($zone_id);
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name);
@@ -112,7 +112,7 @@ class EditCommentController extends BaseController
 
         $this->render('edit_comment.html', [
             'zone_id' => $zone_id,
-            'comment' => DnsRecord::get_zone_comment($this->db, $zone_id),
+            'comment' => DnsRecord::getZoneComment($this->db, $zone_id),
             'disabled' => $perm_edit_comment,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,

@@ -46,18 +46,18 @@ class DnssecAddKeyController extends BaseController
     public function run(): void
     {
         $zone_id = "-1";
-        if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {
+        if (isset($_GET['id']) && Validator::isNumber($_GET['id'])) {
             $zone_id = htmlspecialchars($_GET['id']);
         }
 
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
         if ($user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));
         }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($dnsRecord->zone_id_exists($zone_id) == "0") {
+        if ($dnsRecord->zoneIdExists($zone_id) == "0") {
             $this->showError(_('There is no zone with this ID.'));
         }
 
@@ -92,7 +92,7 @@ class DnssecAddKeyController extends BaseController
         }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);
+        $domain_name = $dnsRecord->getDomainNameById($zone_id);
         if (isset($_POST["submit"])) {
             $this->validateCsrfToken();
 

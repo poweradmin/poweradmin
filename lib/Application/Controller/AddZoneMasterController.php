@@ -103,15 +103,15 @@ class AddZoneMasterController extends BaseController
         if (!$hostnameValidator->isValid($zone_name)) {
             // Don't add a generic error as the validation method already sets a specific one
             $this->showForm();
-        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone_name) > 2 && $dnsRecord->domain_exists(DnsRecord::get_second_level_domain($zone_name))) {
+        } elseif ($dns_third_level_check && DnsRecord::getDomainLevel($zone_name) > 2 && $dnsRecord->domainExists(DnsRecord::getSecondLevelDomain($zone_name))) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($dnsRecord->domain_exists($zone_name) || $dnsRecord->record_name_exists($zone_name)) {
+        } elseif ($dnsRecord->domainExists($zone_name) || $dnsRecord->recordNameExists($zone_name)) {
             $this->setMessage('add_zone_master', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($dnsRecord->add_domain($this->db, $zone_name, $owner, $dom_type, '', $zone_template)) {
-            $zone_id = $dnsRecord->get_zone_id_from_name($zone_name);
-            $this->logger->log_info(sprintf(
+        } elseif ($dnsRecord->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template)) {
+            $zone_id = $dnsRecord->getZoneIdFromName($zone_name);
+            $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'],
                 $_SESSION["userlogin"],
@@ -143,7 +143,7 @@ class AddZoneMasterController extends BaseController
 
     private function showForm(): void
     {
-        $perm_view_others = UserManager::verify_permission($this->db, 'user_view_others');
+        $perm_view_others = UserManager::verifyPermission($this->db, 'user_view_others');
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
 
         // Keep the submitted zone name if there was an error
@@ -158,7 +158,7 @@ class AddZoneMasterController extends BaseController
                 // Otherwise, ensure it's a valid integer
                 $template_id = filter_var($_POST['zone_template'], FILTER_VALIDATE_INT);
                 // Get the list of valid template IDs
-                $templates = $zone_templates->get_list_zone_templ($_SESSION['userid']);
+                $templates = $zone_templates->getListZoneTempl($_SESSION['userid']);
                 $valid_template_ids = array_column($templates, 'id');
                 $zone_template_value = ($template_id !== false && in_array($template_id, $valid_template_ids)) ?
                     $template_id : 'none';
@@ -171,7 +171,7 @@ class AddZoneMasterController extends BaseController
         if (isset($_POST['owner'])) {
             $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
             // Verify that the owner ID exists among valid users
-            $valid_users = UserManager::show_users($this->db);
+            $valid_users = UserManager::showUsers($this->db);
             $valid_owner_ids = array_column($valid_users, 'id');
             $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
         } else {
@@ -192,8 +192,8 @@ class AddZoneMasterController extends BaseController
             'perm_view_others' => $perm_view_others,
             'session_user_id' => $_SESSION['userid'],
             'available_zone_types' => $valid_domain_types,
-            'users' => UserManager::show_users($this->db),
-            'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
+            'users' => UserManager::showUsers($this->db),
+            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
             'iface_zone_type_default' => $this->config->get('interface', 'zone_type_default', 'NATIVE'),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
             'pdnssec_use' => $this->config->get('dnssec', 'enabled', false),

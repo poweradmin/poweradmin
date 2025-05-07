@@ -99,10 +99,10 @@ class AddZoneSlaveController extends BaseController
         if (!$hostnameValidator->isValid($zone)) {
             $this->setMessage('add_zone_slave', 'error', _('Invalid hostname.'));
             $this->showForm();
-        } elseif ($dns_third_level_check && DnsRecord::get_domain_level($zone) > 2 && $dnsRecord->domain_exists(DnsRecord::get_second_level_domain($zone))) {
+        } elseif ($dns_third_level_check && DnsRecord::getDomainLevel($zone) > 2 && $dnsRecord->domainExists(DnsRecord::getSecondLevelDomain($zone))) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
-        } elseif ($dnsRecord->domain_exists($zone) || $dnsRecord->record_name_exists($zone)) {
+        } elseif ($dnsRecord->domainExists($zone) || $dnsRecord->recordNameExists($zone)) {
             $this->setMessage('add_zone_slave', 'error', _('There is already a zone with this name.'));
             $this->showForm();
         } elseif (!$this->ipAddressValidator->areMultipleValidIPs($master)) {
@@ -110,9 +110,9 @@ class AddZoneSlaveController extends BaseController
             $this->showForm();
         } else {
             $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-            if ($dnsRecord->add_domain($this->db, $zone, $owner, $type, $master, 'none')) {
-                $zone_id = $dnsRecord->get_zone_id_from_name($zone);
-                $this->logger->log_info(sprintf(
+            if ($dnsRecord->addDomain($this->db, $zone, $owner, $type, $master, 'none')) {
+                $zone_id = $dnsRecord->getZoneIdFromName($zone);
+                $this->logger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $_SERVER['REMOTE_ADDR'],
                     $_SESSION["userlogin"],
@@ -142,7 +142,7 @@ class AddZoneSlaveController extends BaseController
         if (isset($_POST['owner'])) {
             $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
             // Verify that the owner ID exists among valid users
-            $valid_users = UserManager::show_users($this->db);
+            $valid_users = UserManager::showUsers($this->db);
             $valid_owner_ids = array_column($valid_users, 'id');
             $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
         } else {
@@ -152,9 +152,9 @@ class AddZoneSlaveController extends BaseController
         $is_post_request = !empty($_POST);
 
         $this->render('add_zone_slave.html', [
-            'users' => UserManager::show_users($this->db),
+            'users' => UserManager::showUsers($this->db),
             'session_user_id' => $_SESSION['userid'],
-            'perm_view_others' => UserManager::verify_permission($this->db, 'user_view_others'),
+            'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
             'domain_value' => $domain_value,
             'slave_master_value' => $slave_master_value,
             'owner_value' => $owner_value,

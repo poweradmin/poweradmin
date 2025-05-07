@@ -71,12 +71,12 @@ class EditRecordController extends BaseController
 
         $record_id = $_GET['id'];
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zid = $dnsRecord->get_zone_id_from_record_id($record_id);
+        $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
 
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zid);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zid);
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_type = $dnsRecord->get_domain_type($zid);
+        $zone_type = $dnsRecord->getDomainType($zid);
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this record."));
@@ -98,10 +98,10 @@ class EditRecordController extends BaseController
     public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->get_domain_name_by_id($zid);
+        $zone_name = $dnsRecord->getDomainNameById($zid);
 
         $recordTypes = $this->recordTypeService->getAllTypes();
-        $record = $dnsRecord->get_record_from_id($record_id);
+        $record = $dnsRecord->getRecordFromId($record_id);
         $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
 
         if (str_starts_with($zone_name, "xn--")) {
@@ -132,7 +132,7 @@ class EditRecordController extends BaseController
     public function saveRecord($zid): bool
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $old_record_info = $dnsRecord->get_record_from_id($_POST["rid"]);
+        $old_record_info = $dnsRecord->getRecordFromId($_POST["rid"]);
 
         $postData = $_POST;
         if (isset($postData['disabled']) && $postData['disabled'] == "on") {
@@ -141,15 +141,15 @@ class EditRecordController extends BaseController
             $postData['disabled'] = 0;
         }
 
-        $ret_val = $dnsRecord->edit_record($postData);
+        $ret_val = $dnsRecord->editRecord($postData);
         if (!$ret_val) {
             return false;
         }
 
-        $dnsRecord->update_soa_serial($zid);
+        $dnsRecord->updateSOASerial($zid);
 
-        $new_record_info = $dnsRecord->get_record_from_id($_POST["rid"]);
-        $this->logger->log_info(
+        $new_record_info = $dnsRecord->getRecordFromId($_POST["rid"]);
+        $this->logger->logInfo(
             sprintf(
                 'client_ip:%s user:%s operation:edit_record'
                 . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
@@ -188,7 +188,7 @@ class EditRecordController extends BaseController
         );
 
         if ($this->config->get('dnssec', 'enabled', false)) {
-            $zone_name = $dnsRecord->get_domain_name_by_id($zid);
+            $zone_name = $dnsRecord->getDomainNameById($zid);
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             $dnssecProvider->rectifyZone($zone_name);
         }

@@ -69,8 +69,8 @@ class BatchPtrRecordController extends BaseController
         $this->checkCondition(!$isReverseRecordAllowed, _("Batch PTR record creation is not enabled."));
 
         // Check if user has permission to use this feature
-        $perm_edit_own = UserManager::verify_permission($this->db, 'zone_content_edit_own');
-        $perm_edit_others = UserManager::verify_permission($this->db, 'zone_content_edit_others');
+        $perm_edit_own = UserManager::verifyPermission($this->db, 'zone_content_edit_own');
+        $perm_edit_others = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
         $this->checkCondition(
             !$perm_edit_own && !$perm_edit_others,
             _("You do not have permission to edit DNS records.")
@@ -82,10 +82,10 @@ class BatchPtrRecordController extends BaseController
         if ($hasZoneId) {
             $this->checkId();
             $zone_id = htmlspecialchars($_GET['id']);
-            $zone_type = $this->dnsRecord->get_domain_type($zone_id);
-            $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
+            $zone_type = $this->dnsRecord->getDomainType($zone_id);
+            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
             $perm_edit = Permission::getEditPermission($this->db);
-            $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+            $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
             // Check if this is a reverse zone
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
@@ -202,7 +202,7 @@ class BatchPtrRecordController extends BaseController
 
         if ($hasZoneId) {
             $zone_id = htmlspecialchars($_GET['id']);
-            $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
+            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
             $preFillDomain = $zone_name;
 

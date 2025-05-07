@@ -50,7 +50,7 @@ class DynamicDnsHelper
             $value = $db->quote($value, 'text');
             $value = substr($value, 1, -1); // remove quotes
         } else {
-            return self::status_exit('baddbtype');
+            return self::statusExit('baddbtype');
         }
 
         return $value;
@@ -65,7 +65,7 @@ class DynamicDnsHelper
      *
      * @return boolean false
      */
-    public static function status_exit(string $status): bool
+    public static function statusExit(string $status): bool
     {
         $verbose_codes = array(
             'badagent' => 'Your user agent is not valid.',
@@ -96,7 +96,7 @@ class DynamicDnsHelper
      *
      * @return int|string A if IPv4, AAAA if IPv6 or 0 if invalid
      */
-    public static function valid_ip_address(string $ip): int|string
+    public static function validIpAddress(string $ip): int|string
     {
         static $ipValidator = null;
         if ($ipValidator === null) {
@@ -121,11 +121,11 @@ class DynamicDnsHelper
      *
      * @return array Filtered list of valid IPs
      */
-    public static function extract_valid_ips(string $raw_ip_input, string $type): array
+    public static function extractValidIps(string $raw_ip_input, string $type): array
     {
         $ip_array = array_map('trim', explode(',', $raw_ip_input));
         return array_filter($ip_array, function ($ip) use ($type) {
-            return self::valid_ip_address($ip) === $type;
+            return self::validIpAddress($ip) === $type;
         });
     }
 
@@ -141,7 +141,7 @@ class DynamicDnsHelper
      *
      * @return bool True if any changes were made, false otherwise
      */
-    public static function sync_dns_records($db, $records_table, int $domain_id, string $hostname, string $type, array $new_ips): bool
+    public static function syncDnsRecords($db, $records_table, int $domain_id, string $hostname, string $type, array $new_ips): bool
     {
         $zone_updated = false;
 

@@ -46,7 +46,7 @@ class Validator
      *
      * @return boolean true if valid, false otherwise
      */
-    public function is_valid_email(string $address): bool
+    public function isValidEmail(string $address): bool
     {
         $fields = explode("@", $address, 2);
         $hostnameValidator = new HostnameValidator($this->config);
@@ -65,7 +65,7 @@ class Validator
      *
      * @return boolean true if number, false otherwise
      */
-    public static function is_number(string $string): bool
+    public static function isNumber(string $string): bool
     {
         if (!preg_match("/^[0-9]+$/i", $string)) {
             return false;

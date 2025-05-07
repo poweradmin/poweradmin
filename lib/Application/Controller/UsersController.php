@@ -52,7 +52,7 @@ class UsersController extends BaseController
         $success = false;
         foreach ($_POST['user'] as $user) {
             $legacyUsers = new UserManager($this->db, $this->getConfig());
-            $result = $legacyUsers->update_user_details($user);
+            $result = $legacyUsers->updateUserDetails($user);
             if ($result) {
                 $success = true;
             }
@@ -77,11 +77,11 @@ class UsersController extends BaseController
 
         $this->render('users.html', [
             'permissions' => $permissions,
-            'perm_templates' => UserManager::list_permission_templates($this->db),
-            'users' => UserManager::get_user_detail_list($this->db, $this->config->get('ldap', 'enabled', false)),
+            'perm_templates' => UserManager::listPermissionTemplates($this->db),
+            'users' => UserManager::getUserDetailList($this->db, $this->config->get('ldap', 'enabled', false)),
             'ldap_use' => $this->config->get('ldap', 'enabled', false),
             'session_userid' => $_SESSION["userid"],
-            'perm_add_new' => UserManager::verify_permission($this->db, 'user_add_new'),
+            'perm_add_new' => UserManager::verifyPermission($this->db, 'user_add_new'),
         ]);
     }
 }

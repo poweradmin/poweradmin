@@ -149,9 +149,7 @@ class AppManager
             if (count($errors) === 1) {
                 $firstKey = array_key_first($errors);
                 $messageService->displayDirectSystemError("Invalid configuration: " . $errors[$firstKey]);
-            }
-            // If there are multiple errors, format them as a list
-            elseif (count($errors) > 1) {
+            } elseif (count($errors) > 1) {
                 $errorMessage = "Invalid configuration:<ul>";
                 foreach ($errors as $error) {
                     $errorMessage .= "<li>" . htmlspecialchars($error, ENT_QUOTES) . "</li>";

@@ -45,28 +45,28 @@ class DnssecDeleteKeyController extends BaseController
     public function run(): void
     {
         $zone_id = "-1";
-        if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {
+        if (isset($_GET['id']) && Validator::isNumber($_GET['id'])) {
             $zone_id = htmlspecialchars($_GET['id']);
         }
 
         $key_id = "-1";
-        if (isset($_GET['key_id']) && Validator::is_number($_GET['key_id'])) {
+        if (isset($_GET['key_id']) && Validator::isNumber($_GET['key_id'])) {
             $key_id = (int)$_GET['key_id'];
         }
 
         $confirm = "-1";
-        if (isset($_GET['confirm']) && Validator::is_number($_GET['confirm'])) {
+        if (isset($_GET['confirm']) && Validator::isNumber($_GET['confirm'])) {
             $confirm = $_GET['confirm'];
         }
 
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
         if ($zone_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);
+        $domain_name = $dnsRecord->getDomainNameById($zone_id);
 
         if ($key_id == "-1") {
             $this->showError(_('Invalid or unexpected input given.'));

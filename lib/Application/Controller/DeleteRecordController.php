@@ -71,22 +71,22 @@ class DeleteRecordController extends BaseController
 
     public function run(): void
     {
-        if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
+        if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
         $record_id = htmlspecialchars($_GET['id']);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
-        $zid = $dnsRecord->get_zone_id_from_record_id($record_id);
+        $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
         if ($zid == null) {
             $this->showError(_('There is no zone with this ID.'));
         }
 
-        $domain_id = $dnsRecord->recid_to_domid($record_id);
+        $domain_id = $dnsRecord->recidToDomid($record_id);
 
         if (isset($_GET['confirm'])) {
-            $record_info = $dnsRecord->get_record_from_id($record_id);
+            $record_info = $dnsRecord->getRecordFromId($record_id);
 
             // Check if this is an A or AAAA record that might have a corresponding PTR record
             $hasPtrRecord = false;
@@ -98,9 +98,9 @@ class DeleteRecordController extends BaseController
                 $hasPtrRecord = true;
             }
 
-            if ($dnsRecord->delete_record($record_id)) {
+            if ($dnsRecord->deleteRecord($record_id)) {
                 if (isset($record_info['prio'])) {
-                    $this->logger->log_info(sprintf(
+                    $this->logger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s priority:%s',
                         $_SERVER['REMOTE_ADDR'],
                         $_SESSION["userlogin"],
@@ -111,7 +111,7 @@ class DeleteRecordController extends BaseController
                         $record_info['prio']
                     ), $zid);
                 } else {
-                    $this->logger->log_info(sprintf(
+                    $this->logger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:delete_record record_type:%s record:%s content:%s ttl:%s',
                         $_SERVER['REMOTE_ADDR'],
                         $_SESSION["userlogin"],
@@ -122,9 +122,9 @@ class DeleteRecordController extends BaseController
                     ), $zid);
                 }
 
-                DnsRecord::delete_record_zone_templ($this->db, $record_id);
+                DnsRecord::deleteRecordZoneTempl($this->db, $record_id);
                 $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-                $dnsRecord->update_soa_serial($zid);
+                $dnsRecord->updateSOASerial($zid);
 
                 // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
                 $delete_ptr = isset($_GET['delete_ptr']) && $_GET['delete_ptr'] === '1';
@@ -137,12 +137,12 @@ class DeleteRecordController extends BaseController
                 }
 
                 if ($this->config->get('dnssec', 'enabled', false)) {
-                    $zone_name = $dnsRecord->get_domain_name_by_id($zid);
+                    $zone_name = $dnsRecord->getDomainNameById($zid);
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                     $dnssecProvider->rectifyZone($zone_name);
                 }
 
-                if (!$dnsRecord->has_similar_records($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
+                if (!$dnsRecord->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
                     $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
 
                     if ($deletedPtrRecord) {
@@ -167,8 +167,8 @@ class DeleteRecordController extends BaseController
         $perm_edit = Permission::getEditPermission($this->db);
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_info = $dnsRecord->get_zone_info_from_id($zid);
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $domain_id);
+        $zone_info = $dnsRecord->getZoneInfoFromId($zid);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $domain_id);
         if ($zone_info['type'] == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to edit this record."));
         }
@@ -179,7 +179,7 @@ class DeleteRecordController extends BaseController
     public function showQuestion(string $record_id, $zid, int $zone_id): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
+        $zone_name = $dnsRecord->getDomainNameById($zone_id);
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name);
@@ -192,7 +192,7 @@ class DeleteRecordController extends BaseController
             'zone_id' => $zid,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
-            'record_info' => $dnsRecord->get_record_from_id($record_id),
+            'record_info' => $dnsRecord->getRecordFromId($record_id),
             'is_reverse_zone' => DnsHelper::isReverseZone($zone_name),
         ]);
     }

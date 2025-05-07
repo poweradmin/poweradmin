@@ -37,42 +37,42 @@ class DnsRecordTest extends TestCase
 
     public function testGetUpdatedSoaRecordShouldReturnEmpty()
     {
-        $result = $this->dnsRecord->get_updated_soa_record('');
+        $result = $this->dnsRecord->getUpdatedSOARecord('');
         $this->assertSame('', $result);
     }
 
     public function testGetUpdatedSoaRecordShouldReturnIncrementedDate()
     {
-        $result = $this->dnsRecord->get_updated_soa_record(self::SOA_REC);
+        $result = $this->dnsRecord->getUpdatedSOARecord(self::SOA_REC);
         $expected = sprintf("ns1.poweradmin.org hostmaster.poweradmin.org %s00 28800 7200 604800 86400", date('Ymd'));
         $this->assertSame($expected, $result);
     }
 
     public function testGetSoaSerialShouldReturnEmpty()
     {
-        $this->assertSame(null, DnsRecord::get_soa_serial(""));
+        $this->assertSame(null, DnsRecord::getSOASerial(""));
     }
 
     public function testGetSoaSerialShouldReturnSerialDate()
     {
-        $this->assertSame("2022082600", DnsRecord::get_soa_serial(self::SOA_REC));
+        $this->assertSame("2022082600", DnsRecord::getSOASerial(self::SOA_REC));
     }
 
     public function testGetNextSerialShouldReturnZeroIfAutoSerial()
     {
-        $result = $this->dnsRecord->get_next_serial(0);
+        $result = $this->dnsRecord->getNextSerial(0);
         $this->assertSame(0, $result);
     }
 
     public function testGetNextSerialShouldReturnNextIfNotDateBased()
     {
-        $result = $this->dnsRecord->get_next_serial(69);
+        $result = $this->dnsRecord->getNextSerial(69);
         $this->assertSame(70, $result);
     }
 
     public function testGetNextSerialShouldReturnOneIfBindReleaseDate()
     {
-        $result = $this->dnsRecord->get_next_serial(1979999999);
+        $result = $this->dnsRecord->getNextSerial(1979999999);
         $this->assertSame(1, $result);
     }
 
@@ -80,7 +80,7 @@ class DnsRecordTest extends TestCase
     {
         $given = sprintf("%s99", date('Ymd'));
         $expected = sprintf("%s00", date('Ymd', strtotime("+1 day")));
-        $result = $this->dnsRecord->get_next_serial($given);
+        $result = $this->dnsRecord->getNextSerial($given);
         $this->assertSame($expected, $result);
     }
 
@@ -88,7 +88,7 @@ class DnsRecordTest extends TestCase
     {
         $given = sprintf("%s01", date('Ymd'));
         $expected = sprintf("%s02", date('Ymd'));
-        $result = $this->dnsRecord->get_next_serial($given);
+        $result = $this->dnsRecord->getNextSerial($given);
         $this->assertSame($expected, $result);
     }
 
@@ -96,7 +96,7 @@ class DnsRecordTest extends TestCase
     {
         $given = sprintf("%s01", date('Ymd', strtotime("+3 day")));
         $expected = sprintf("%s02", date('Ymd', strtotime("+3 day")));
-        $result = $this->dnsRecord->get_next_serial($given);
+        $result = $this->dnsRecord->getNextSerial($given);
         $this->assertSame($expected, $result);
     }
 
@@ -104,7 +104,7 @@ class DnsRecordTest extends TestCase
     {
         $given = sprintf("%s99", date('Ymd', strtotime("+3 day")));
         $expected = sprintf("%s00", date('Ymd', strtotime("+4 day")));
-        $result = $this->dnsRecord->get_next_serial($given);
+        $result = $this->dnsRecord->getNextSerial($given);
         $this->assertSame($expected, $result);
     }
 
@@ -112,7 +112,7 @@ class DnsRecordTest extends TestCase
     {
         $given = sprintf("%s01", date('Ymd', strtotime("-4 day")));
         $expected = sprintf("%s00", date('Ymd'));
-        $result = $this->dnsRecord->get_next_serial($given);
+        $result = $this->dnsRecord->getNextSerial($given);
         $this->assertSame($expected, $result);
     }
 
@@ -120,7 +120,7 @@ class DnsRecordTest extends TestCase
     {
         $given = sprintf("%s01", date('Ymd', strtotime("+1 day")));
         $expected = sprintf("%s02", date('Ymd', strtotime("+1 day")));
-        $result = $this->dnsRecord->get_next_serial($given);
+        $result = $this->dnsRecord->getNextSerial($given);
         $this->assertSame($expected, $result);
     }
 
@@ -128,27 +128,27 @@ class DnsRecordTest extends TestCase
     {
         $given = sprintf("%s99", date('Ymd', strtotime("+1 day")));
         $expected = sprintf("%s00", date('Ymd', strtotime("+2 day")));
-        $result = $this->dnsRecord->get_next_serial($given);
+        $result = $this->dnsRecord->getNextSerial($given);
         $this->assertSame($expected, $result);
     }
 
     public function testGetDomainLevel()
     {
-        $this->assertSame(DnsRecord::get_domain_level('com'), 1);
-        $this->assertSame(DnsRecord::get_domain_level('example.com'), 2);
-        $this->assertSame(DnsRecord::get_domain_level('www.example.com'), 3);
+        $this->assertSame(DnsRecord::getDomainLevel('com'), 1);
+        $this->assertSame(DnsRecord::getDomainLevel('example.com'), 2);
+        $this->assertSame(DnsRecord::getDomainLevel('www.example.com'), 3);
     }
 
     public function testGetSecondLevelDomain()
     {
-        $this->assertSame(DnsRecord::get_second_level_domain('www.example.com'), 'example.com');
-        $this->assertSame(DnsRecord::get_second_level_domain('ftp.ru.example.com'), 'example.com');
+        $this->assertSame(DnsRecord::getSecondLevelDomain('www.example.com'), 'example.com');
+        $this->assertSame(DnsRecord::getSecondLevelDomain('ftp.ru.example.com'), 'example.com');
     }
 
     public function testGetNextDate()
     {
-        $this->assertSame(DnsRecord::get_next_date('20110526'), '20110527');
-        $this->assertSame(DnsRecord::get_next_date('20101231'), '20110101');
-        $this->assertSame(DnsRecord::get_next_date('20110228'), '20110301');
+        $this->assertSame(DnsRecord::getNextDate('20110526'), '20110527');
+        $this->assertSame(DnsRecord::getNextDate('20101231'), '20110101');
+        $this->assertSame(DnsRecord::getNextDate('20110228'), '20110301');
     }
 }

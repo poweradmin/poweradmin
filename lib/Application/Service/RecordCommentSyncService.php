@@ -87,15 +87,15 @@ class RecordCommentSyncService
     ): void {
         if (in_array($newRecordInfo['type'], [RecordType::A, RecordType::AAAA])) {
             $ptrName = $newRecordInfo['type'] === RecordType::A
-                ? DnsRecord::convert_ipv4addr_to_ptrrec($newRecordInfo['content'])
-                : DnsRecord::convert_ipv6addr_to_ptrrec($newRecordInfo['content']);
-            $ptrZoneId = $dnsRecord->get_best_matching_zone_id_from_name($ptrName);
+                ? DnsRecord::convertIPv4AddrToPtrRec($newRecordInfo['content'])
+                : DnsRecord::convertIPv6AddrToPtrRec($newRecordInfo['content']);
+            $ptrZoneId = $dnsRecord->getBestMatchingZoneIdFromName($ptrName);
             if ($ptrZoneId !== -1) {
                 $this->updatePtrRecordComment($ptrZoneId, $ptrName, $ptrName, $comment, $userLogin);
             }
         } elseif ($newRecordInfo['type'] === RecordType::PTR) {
             $domainName = DnsHelper::getRegisteredDomain($newRecordInfo['content']);
-            $contentDomainId = $dnsRecord->get_domain_id_by_name($domainName);
+            $contentDomainId = $dnsRecord->getDomainIdByName($domainName);
             if ($contentDomainId !== false) {
                 $this->updateARecordComment($contentDomainId, $newRecordInfo['content'], $newRecordInfo['content'], $comment, $userLogin);
             }

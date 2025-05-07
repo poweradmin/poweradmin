@@ -81,8 +81,8 @@ class DomainManager implements DomainManagerInterface
      */
     public function addDomain($db, string $domain, int $owner, string $type, string $slave_master, int|string $zone_template): bool
     {
-        $zone_master_add = UserManager::verify_permission($db, 'zone_master_add');
-        $zone_slave_add = UserManager::verify_permission($db, 'zone_slave_add');
+        $zone_master_add = UserManager::verifyPermission($db, 'zone_master_add');
+        $zone_slave_add = UserManager::verifyPermission($db, 'zone_slave_add');
 
         // TODO: make sure only one is possible if only one is enabled
         if ($zone_master_add || $zone_slave_add) {
@@ -149,14 +149,14 @@ class DomainManager implements DomainManagerInterface
                     } elseif ($domain_id && is_numeric($zone_template)) {
                         $dns_ttl = $this->config->get('dns', 'ttl');
 
-                        $templ_records = ZoneTemplate::get_zone_templ_records($db, $zone_template);
+                        $templ_records = ZoneTemplate::getZoneTemplRecords($db, $zone_template);
                         if ($templ_records != -1) {
                             foreach ($templ_records as $r) {
                                 if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
                                     $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-                                    $name = $zoneTemplate->parse_template_value($r["name"], $domain);
+                                    $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
                                     $type = $r["type"];
-                                    $content = $zoneTemplate->parse_template_value($r["content"], $domain);
+                                    $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
                                     $ttl = $r["ttl"];
                                     $prio = intval($r["prio"]);
 
@@ -209,7 +209,7 @@ class DomainManager implements DomainManagerInterface
     public function deleteDomain(int $id): bool
     {
         $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $id);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
 
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
@@ -245,7 +245,7 @@ class DomainManager implements DomainManagerInterface
 
         foreach ($domains as $id) {
             $perm_edit = Permission::getEditPermission($this->db);
-            $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $id);
+            $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
 
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
                 if (is_numeric($id)) {
@@ -339,8 +339,8 @@ class DomainManager implements DomainManagerInterface
      */
     public static function addOwnerToZone($db, int $zone_id, int $user_id): bool
     {
-        if ((UserManager::verify_permission($db, 'zone_meta_edit_others')) || (UserManager::verify_permission($db, 'zone_meta_edit_own')) && UserManager::verify_user_is_owner_zoneid($db, $_GET["id"])) {
-            if (UserManager::is_valid_user($db, $user_id)) {
+        if ((UserManager::verifyPermission($db, 'zone_meta_edit_others')) || (UserManager::verifyPermission($db, 'zone_meta_edit_own')) && UserManager::verifyUserIsOwnerZoneId($db, $_GET["id"])) {
+            if (UserManager::isValidUser($db, $user_id)) {
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer')) == 0) {
                     $zone_templ_id = self::getZoneTemplate($db, $zone_id);
                     if ($zone_templ_id == null) {
@@ -378,8 +378,8 @@ class DomainManager implements DomainManagerInterface
      */
     public static function deleteOwnerFromZone($db, int $zone_id, int $user_id): bool
     {
-        if ((UserManager::verify_permission($db, 'zone_meta_edit_others')) || (UserManager::verify_permission($db, 'zone_meta_edit_own')) && UserManager::verify_user_is_owner_zoneid($db, $_GET["id"])) {
-            if (UserManager::is_valid_user($db, $user_id)) {
+        if ((UserManager::verifyPermission($db, 'zone_meta_edit_others')) || (UserManager::verifyPermission($db, 'zone_meta_edit_own')) && UserManager::verifyUserIsOwnerZoneId($db, $_GET["id"])) {
+            if (UserManager::isValidUser($db, $user_id)) {
                 if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE domain_id=" . $db->quote($zone_id, 'integer')) > 1) {
                     $db->query("DELETE FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer'));
                 } else {
@@ -422,13 +422,13 @@ class DomainManager implements DomainManagerInterface
     public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id)
     {
         $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        if (UserManager::verify_permission($this->db, 'zone_master_add')) {
+        if (UserManager::verifyPermission($this->db, 'zone_master_add')) {
             $zone_master_add = "1";
         }
 
-        if (UserManager::verify_permission($this->db, 'zone_slave_add')) {
+        if (UserManager::verifyPermission($this->db, 'zone_slave_add')) {
             $zone_slave_add = "1";
         }
 
@@ -454,22 +454,22 @@ class DomainManager implements DomainManagerInterface
             }
             if ($zone_master_add == "1" || $zone_slave_add == "1") {
                 $domain = $this->domainRepository->getDomainNameById($zone_id);
-                $templ_records = ZoneTemplate::get_zone_templ_records($this->db, $zone_template_id);
+                $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
 
                 foreach ($templ_records as $r) {
                     // Check if this is a reverse zone and handle NS or SOA records appropriately
                     if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
                         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-                        $name = $zoneTemplate->parse_template_value($r["name"], $domain);
+                        $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
                         $type = $r["type"];
                         if ($type == "SOA") {
                             $this->db->exec("DELETE FROM $records_table WHERE domain_id = " . $this->db->quote($zone_id, 'integer') . " AND type = 'SOA'");
                             $content = $this->soaRecordManager->getUpdatedSOARecord($soa_rec);
                             if ($content == "") {
-                                $content = $zoneTemplate->parse_template_value($r["content"], $domain);
+                                $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
                             }
                         } else {
-                            $content = $zoneTemplate->parse_template_value($r["content"], $domain);
+                            $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
                         }
 
                         $ttl = $r["ttl"];

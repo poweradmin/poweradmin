@@ -84,9 +84,7 @@ class WhoisService
             if ($punycodeTld !== false && isset($this->whoisServers[$punycodeTld])) {
                 return $this->whoisServers[$punycodeTld];
             }
-        }
-        // Check if this is a punycode TLD with xn-- prefix and we have a Unicode version
-        elseif (str_starts_with($tld, 'xn--')) {
+        } elseif (str_starts_with($tld, 'xn--')) {
             try {
                 // Try to convert to Unicode and check if we have a server for that
                 $unicodeTld = DnsIdnService::toUtf8($tld);

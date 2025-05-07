@@ -38,7 +38,7 @@ class LegacyLogger
         $this->config->initialize();
     }
 
-    private function do_log(string $message, int $priority, ?int $zone_id = null): void
+    private function doLog(string $message, int $priority, ?int $zone_id = null): void
     {
         $syslog_use = $this->config->get('logging', 'syslog_enabled');
         $syslog_ident = $this->config->get('logging', 'syslog_identity');
@@ -56,31 +56,31 @@ class LegacyLogger
 
             if ($logType === LogType::ZONE) {
                 $dbZoneLogger = new DbZoneLogger($this->db);
-                $dbZoneLogger->do_log($message, $zone_id, $priority);
+                $dbZoneLogger->doLog($message, $zone_id, $priority);
             } else {
                 $dbUserLogger = new DbUserLogger($this->db);
-                $dbUserLogger->do_log($message, $priority);
+                $dbUserLogger->doLog($message, $priority);
             }
         }
     }
 
-    public function log_error(string $message, ?int $zone_id = null): void
+    public function logError(string $message, ?int $zone_id = null): void
     {
-        $this->do_log($message, LOG_ERR, $zone_id);
+        $this->doLog($message, LOG_ERR, $zone_id);
     }
 
-    public function log_warn(string $message, ?int $zone_id = null): void
+    public function logWarn(string $message, ?int $zone_id = null): void
     {
-        $this->do_log($message, LOG_WARNING, $zone_id);
+        $this->doLog($message, LOG_WARNING, $zone_id);
     }
 
-    public function log_notice(string $message): void
+    public function logNotice(string $message): void
     {
-        $this->do_log($message, LOG_NOTICE);
+        $this->doLog($message, LOG_NOTICE);
     }
 
-    public function log_info(string $message, ?int $zone_id = null): void
+    public function logInfo(string $message, ?int $zone_id = null): void
     {
-        $this->do_log($message, LOG_INFO, $zone_id);
+        $this->doLog($message, LOG_INFO, $zone_id);
     }
 }

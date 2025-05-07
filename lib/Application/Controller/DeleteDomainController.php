@@ -76,7 +76,7 @@ class DeleteDomainController extends BaseController
         $zone_id = htmlspecialchars($_GET['id']);
 
         $perm_edit = Permission::getEditPermission($this->db);
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         $this->checkCondition($perm_edit != "all" && ($perm_edit != "own" || !$user_is_zone_owner), _("You do not have the permission to delete a zone."));
 
         if (isset($_GET['confirm'])) {
@@ -89,11 +89,11 @@ class DeleteDomainController extends BaseController
     private function deleteDomain(string $zone_id): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_info = $dnsRecord->get_zone_info_from_id($zone_id);
+        $zone_info = $dnsRecord->getZoneInfoFromId($zone_id);
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
 
         if ($pdnssec_use && $zone_info['type'] == 'MASTER') {
-            $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
+            $zone_name = $dnsRecord->getDomainNameById($zone_id);
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             if ($dnssecProvider->isZoneSecured($zone_name, $this->config)) {
@@ -101,8 +101,8 @@ class DeleteDomainController extends BaseController
             }
         }
 
-        if ($dnsRecord->delete_domain($zone_id)) {
-            $this->logger->log_info(sprintf(
+        if ($dnsRecord->deleteDomain($zone_id)) {
+            $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                 $_SERVER['REMOTE_ADDR'],
                 $_SESSION["userlogin"],
@@ -126,14 +126,14 @@ class DeleteDomainController extends BaseController
     private function showDeleteDomain(string $zone_id): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_info = $dnsRecord->get_zone_info_from_id($zone_id);
-        $zone_owners = UserManager::get_fullnames_owners_from_domainid($this->db, $zone_id);
+        $zone_info = $dnsRecord->getZoneInfoFromId($zone_id);
+        $zone_owners = UserManager::getFullnamesOwnersFromFomainId($this->db, $zone_id);
 
         $slave_master_exists = false;
         if ($zone_info['type'] == 'SLAVE') {
             $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-            $slave_master = $dnsRecord->get_domain_slave_master($zone_id);
-            if ($dnsRecord->supermaster_exists($slave_master)) {
+            $slave_master = $dnsRecord->getDomainSlaveMaster($zone_id);
+            if ($dnsRecord->supermasterExists($slave_master)) {
                 $slave_master_exists = true;
             }
         }

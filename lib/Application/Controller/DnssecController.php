@@ -47,22 +47,22 @@ class DnssecController extends BaseController
 
     public function run(): void
     {
-        if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
+        if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
         $zone_id = htmlspecialchars($_GET['id']);
         $perm_view = Permission::getViewPermission($this->db);
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        (UserManager::verify_permission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
+        (UserManager::verifyPermission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));
         }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($dnsRecord->zone_id_exists($zone_id) == "0") {
+        if ($dnsRecord->zoneIdExists($zone_id) == "0") {
             $this->showError(_('There is no zone with this ID.'));
         }
 
@@ -72,7 +72,7 @@ class DnssecController extends BaseController
     public function showDnsSecKeys(string $zone_id): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);
+        $domain_name = $dnsRecord->getDomainNameById($zone_id);
         if (str_starts_with($domain_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($domain_name);
         } else {
@@ -86,13 +86,13 @@ class DnssecController extends BaseController
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,
             'idn_zone_name' => $idn_zone_name,
-            'domain_type' => $dnsRecord->get_domain_type($zone_id),
+            'domain_type' => $dnsRecord->getDomainType($zone_id),
             'keys' => $dnssecProvider->getKeys($domain_name),
             'pdnssec_use' => $this->config->get('dnssec', 'enabled', false),
-            'record_count' => $dnsRecord->count_zone_records($zone_id),
+            'record_count' => $dnsRecord->countZoneRecords($zone_id),
             'zone_id' => $zone_id,
-            'zone_template_id' => DnsRecord::get_zone_template($this->db, $zone_id),
-            'zone_templates' => $zone_templates->get_list_zone_templ($_SESSION['userid']),
+            'zone_template_id' => DnsRecord::getZoneTemplate($this->db, $zone_id),
+            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
         ]);
     }

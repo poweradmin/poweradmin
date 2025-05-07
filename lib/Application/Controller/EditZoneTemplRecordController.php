@@ -69,9 +69,9 @@ class EditZoneTemplRecordController extends BaseController
         $record_id = htmlspecialchars($_GET['id']);
         $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
 
-        $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
-        $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
+        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $_SESSION['userid']);
+        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $perm_master_add = UserManager::verifyPermission($this->db, 'zone_master_add');
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 
         if ($this->isPost()) {
@@ -84,13 +84,13 @@ class EditZoneTemplRecordController extends BaseController
 
     public function showZoneTemplateRecordForm(string $record_id, string $zone_templ_id): void
     {
-        $record = ZoneTemplate::get_zone_templ_record_from_id($this->db, $record_id);
+        $record = ZoneTemplate::getZoneTemplRecordFromId($this->db, $record_id);
 
         $this->render('edit_zone_templ_record.html', [
             'record' => $record,
             'zone_templ_id' => $zone_templ_id,
             'record_id' => $record_id,
-            'templ_details' => ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id),
+            'templ_details' => ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id),
             'record_types' => $this->recordTypeService->getAllTypes(),
         ]);
     }
@@ -125,7 +125,7 @@ class EditZoneTemplRecordController extends BaseController
 
         $template = new ZoneTemplate($this->db, $this->getConfig());
 
-        if ($template->edit_zone_templ_record($_POST)) {
+        if ($template->editZoneTemplRecord($_POST)) {
             $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
             $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
         }

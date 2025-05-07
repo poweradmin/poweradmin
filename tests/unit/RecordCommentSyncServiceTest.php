@@ -77,7 +77,7 @@ class RecordCommentSyncServiceTest extends TestCase
     public function testUpdateRelatedRecordCommentsUpdatesPtrRecordCommentForARecord()
     {
         $dnsRecordMock = $this->createMock(DnsRecord::class);
-        $dnsRecordMock->method('get_best_matching_zone_id_from_name')->willReturn(2);
+        $dnsRecordMock->method('getBestMatchingZoneIdFromName')->willReturn(2);
 
         $commentServiceMock = $this->createMock(RecordCommentService::class);
         $commentServiceMock->expects($this->once())
@@ -91,7 +91,7 @@ class RecordCommentSyncServiceTest extends TestCase
     public function testUpdateRelatedRecordCommentsUpdatesARecordCommentForPtrRecord()
     {
         $dnsRecordMock = $this->createMock(DnsRecord::class);
-        $dnsRecordMock->method('get_domain_id_by_name')->willReturn(1);
+        $dnsRecordMock->method('getDomainIdByName')->willReturn(1);
 
         $commentServiceMock = $this->createMock(RecordCommentService::class);
         $commentServiceMock->expects($this->once())

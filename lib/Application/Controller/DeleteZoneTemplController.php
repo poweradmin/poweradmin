@@ -58,9 +58,9 @@ class DeleteZoneTemplController extends BaseController
         }
 
         $zone_templ_id = htmlspecialchars($_GET['id']);
-        $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
-        $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
+        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $_SESSION['userid']);
+        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        $perm_master_add = UserManager::verifyPermission($this->db, 'zone_master_add');
 
         $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
 
@@ -85,7 +85,7 @@ class DeleteZoneTemplController extends BaseController
         if ($this->doValidateRequest($_GET)) {
             $zone_templ_id = htmlspecialchars($_GET['id']);
             $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-            $zoneTemplate->delete_zone_templ($zone_templ_id);
+            $zoneTemplate->deleteZoneTempl($zone_templ_id);
 
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been deleted successfully.'));
             $this->redirect('index.php', ['page' => 'list_zone_templ']);
@@ -97,7 +97,7 @@ class DeleteZoneTemplController extends BaseController
     private function showDeleteZoneTempl(): void
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
-        $templ_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id);
+        $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
         $this->render('delete_zone_templ.html', [
             'templ_name' => $templ_details['name'],

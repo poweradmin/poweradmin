@@ -40,9 +40,9 @@ class Permission
      */
     public static function getViewPermission($db): string
     {
-        if (UserManager::verify_permission($db, 'zone_content_view_others')) {
+        if (UserManager::verifyPermission($db, 'zone_content_view_others')) {
             return "all";
-        } elseif (UserManager::verify_permission($db, 'zone_content_view_own')) {
+        } elseif (UserManager::verifyPermission($db, 'zone_content_view_own')) {
             return "own";
         } else {
             return "none";
@@ -58,11 +58,11 @@ class Permission
      */
     public static function getEditPermission($db): string
     {
-        if (UserManager::verify_permission($db, 'zone_content_edit_others')) {
+        if (UserManager::verifyPermission($db, 'zone_content_edit_others')) {
             return "all";
-        } elseif (UserManager::verify_permission($db, 'zone_content_edit_own')) {
+        } elseif (UserManager::verifyPermission($db, 'zone_content_edit_own')) {
             return "own";
-        } elseif (UserManager::verify_permission($db, 'zone_content_edit_own_as_client')) {
+        } elseif (UserManager::verifyPermission($db, 'zone_content_edit_own_as_client')) {
             return "own_as_client";
         } else {
             return "none";
@@ -83,7 +83,7 @@ class Permission
         $result = [];
 
         foreach ($permissions as $permissionName) {
-            $result[$permissionName] = UserManager::verify_permission($db, $permissionName);
+            $result[$permissionName] = UserManager::verifyPermission($db, $permissionName);
         }
 
         return $result;
