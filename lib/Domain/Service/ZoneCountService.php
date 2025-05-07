@@ -75,7 +75,7 @@ class ZoneCountService
 
             if ($userId) {
                 $query_addon = " AND zones.domain_id = $domains_table.id
-                    AND zones.owner = " . $this->db->quote($userId, 'integer');
+                    AND zones.owner = " . $this->db->quote((string)$userId, 'integer');
                 $tables .= ', zones';
             } else {
                 return 0; // No user ID available
