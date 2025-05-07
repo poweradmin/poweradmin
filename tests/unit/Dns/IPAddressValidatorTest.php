@@ -24,6 +24,7 @@ namespace unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
  * Tests for the IPAddressValidator service
@@ -158,5 +159,45 @@ class IPAddressValidatorTest extends TestCase
 
         $result5 = $this->validator->validateMultipleIPs("");
         $this->assertFalse($result5->isValid());
+    }
+
+    public function testIsValidIPv4WithValidAddresses()
+    {
+        // Valid IPv4 addresses
+        $this->assertTrue($this->validator->isValidIPv4("192.168.1.1"));
+        $this->assertTrue($this->validator->isValidIPv4("127.0.0.1"));
+        $this->assertTrue($this->validator->isValidIPv4("0.0.0.0"));
+        $this->assertTrue($this->validator->isValidIPv4("255.255.255.255"));
+    }
+
+    public function testIsValidIPv4WithInvalidAddresses()
+    {
+        // Invalid IPv4 addresses
+        $this->assertFalse($this->validator->isValidIPv4("256.0.0.1"));
+        $this->assertFalse($this->validator->isValidIPv4("192.168.1"));
+        $this->assertFalse($this->validator->isValidIPv4("192.168.1.1.5"));
+        $this->assertFalse($this->validator->isValidIPv4("192.168.1.a"));
+        $this->assertFalse($this->validator->isValidIPv4("not_an_ip"));
+        $this->assertFalse($this->validator->isValidIPv4(""));
+    }
+
+    public function testIsValidIPv6WithValidAddresses()
+    {
+        // Valid IPv6 addresses
+        $this->assertTrue($this->validator->isValidIPv6("2001:db8::1"));
+        $this->assertTrue($this->validator->isValidIPv6("::1"));
+        $this->assertTrue($this->validator->isValidIPv6("2001:db8:0:0:0:0:0:1"));
+        $this->assertTrue($this->validator->isValidIPv6("2001:db8::"));
+        $this->assertTrue($this->validator->isValidIPv6("fe80::1ff:fe23:4567:890a"));
+    }
+
+    public function testIsValidIPv6WithInvalidAddresses()
+    {
+        // Invalid IPv6 addresses
+        $this->assertFalse($this->validator->isValidIPv6("2001:db8:::1"));
+        $this->assertFalse($this->validator->isValidIPv6("2001:db8:g::1"));
+        $this->assertFalse($this->validator->isValidIPv6("not_an_ipv6"));
+        $this->assertFalse($this->validator->isValidIPv6("192.168.1.1"));
+        $this->assertFalse($this->validator->isValidIPv6(""));
     }
 }

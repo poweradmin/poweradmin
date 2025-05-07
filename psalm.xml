@@ -10,7 +10,6 @@
 >
     <projectFiles>
         <file name="index.php" />
-        <directory name="inc" />
         <directory name="install" />
         <directory name="lib" />
         <directory name="tests" />
@@ -20,7 +19,7 @@
         <UnusedClass errorLevel="info" />
         <ClassMustBeFinal errorLevel="info" />
         <MissingOverrideAttribute errorLevel="info" />
-        <UndefinedMethod errorLevel="info" />
+        <UndefinedMethod errorLevel="error" />
         <MissingClosureParamType errorLevel="info" />
         <UndefinedInterfaceMethod errorLevel="info" />
         <InvalidArgument errorLevel="info" />

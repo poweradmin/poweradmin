@@ -51,6 +51,18 @@ class IPAddressValidator
     }
 
     /**
+     * Check if a string is a valid IPv4 address
+     *
+     * @param string $ipv4 IPv4 address string
+     *
+     * @return bool True if valid IPv4 address
+     */
+    public function isValidIPv4(string $ipv4): bool
+    {
+        return filter_var($ipv4, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) !== false;
+    }
+
+    /**
      * Validate an IPv6 address
      *
      * @param string $ipv6 IPv6 address string
@@ -64,6 +76,18 @@ class IPAddressValidator
         }
 
         return ValidationResult::success($ipv6);
+    }
+
+    /**
+     * Check if a string is a valid IPv6 address
+     *
+     * @param string $ipv6 IPv6 address string
+     *
+     * @return bool True if valid IPv6 address
+     */
+    public function isValidIPv6(string $ipv6): bool
+    {
+        return filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) !== false;
     }
 
     /**

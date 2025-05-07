@@ -85,8 +85,13 @@
     "style:lib": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- lib",
     "style:tests": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- tests",
 
-    "analyse:all": "phpstan analyse addons config index.php install lib tests dynamic_update.php",
+    "analyse:all": "phpstan analyse --level=2 addons config index.php install lib tests dynamic_update.php",
     "check:psalm": "psalm",
+    "check:quality": [
+      "@check:lib",
+      "@analyse:all",
+      "@check:psalm"
+    ],
 
     "check:phpmd:config": "phpmd config ansi cleancode,codesize,controversial,design,naming,unusedcode",
     "check:phpmd:index": "phpmd index.php ansi cleancode,codesize,controversial,design,naming,unusedcode",

@@ -187,7 +187,7 @@ class SupermasterManager implements SupermasterManagerInterface
      */
     public function supermasterExists(string $master_ip): bool
     {
-        if ($this->ipAddressValidator->isValidIPv4($master_ip, false) || $this->ipAddressValidator->isValidIPv6($master_ip)) {
+        if ($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip)) {
             $pdns_db_name = $this->config->get('database', 'pdns_name');
             $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
 
