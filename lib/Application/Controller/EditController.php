@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
+use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordLog;
@@ -46,12 +47,16 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Model\ZoneType;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
+use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Symfony\Component\Validator\Constraints as Assert;
 
 class EditController extends BaseController
 {
@@ -59,6 +64,11 @@ class EditController extends BaseController
     private RecordCommentSyncService $commentSyncService;
     private RecordTypeService $recordTypeService;
     private FormStateService $formStateService;
+    private LegacyLogger $logger;
+    private DnsRecord $dnsRecord;
+    private DomainRecordCreator $domainRecordCreator;
+    private ReverseRecordCreator $reverseRecordCreator;
+    private RecordManagerService $recordManager;
 
     public function __construct(array $request)
     {
@@ -68,6 +78,32 @@ class EditController extends BaseController
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->formStateService = new FormStateService();
+
+        // Initialize services for record addition
+        $this->logger = new LegacyLogger($this->db);
+        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
+
+        $this->recordManager = new RecordManagerService(
+            $this->db,
+            $this->dnsRecord,
+            $this->recordCommentService,
+            $this->commentSyncService,
+            $this->logger,
+            $this->getConfig()
+        );
+
+        $this->domainRecordCreator = new DomainRecordCreator(
+            $this->getConfig(),
+            $this->logger,
+            $this->dnsRecord,
+        );
+
+        $this->reverseRecordCreator = new ReverseRecordCreator(
+            $this->db,
+            $this->getConfig(),
+            $this->logger,
+            $this->dnsRecord
+        );
     }
 
     public function run(): void
@@ -106,17 +142,50 @@ class EditController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_id = intval(htmlspecialchars($_GET['id']));
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
+        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
 
         if (isset($_GET['export_csv'])) {
             $this->exportCsv($zone_id);
             return;
         }
 
-        if (isset($_POST['commit'])) {
+        // Process record addition form directly in the edit page
+        if ($this->isPost() && isset($_POST['commit']) && isset($_POST['name']) && isset($_POST['content']) && isset($_POST['type'])) {
             $this->validateCsrfToken();
-            $this->saveRecords($zone_id, $zone_name);
+
+            // Store the original form data before processing (in case validation fails)
+            $_SESSION['add_record_last_data'] = [
+                'name' => $_POST['name'] ?? '',
+                'content' => $_POST['content'] ?? '',
+                'type' => $_POST['type'] ?? '',
+                'prio' => isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0,
+                'ttl' => isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config->get('dns', 'ttl', 3600),
+                'comment' => $_POST['comment'] ?? ''
+            ];
+
+            // Handle record addition directly in edit controller (no redirect)
+            if (!isset($_POST['record'])) { // Check if it's an add record operation (not a zone update)
+                $result = $this->addRecord($zone_id);
+
+                // If the record was added successfully, clear the stored data
+                if ($result) {
+                    unset($_SESSION['add_record_last_data']);
+                    unset($_SESSION['add_record_error']);
+                }
+                // If there was an error, the error info should be in $_SESSION['add_record_error']
+                elseif (!$formData && isset($_SESSION['add_record_error'])) {
+                    // Create form data from the session error data
+                    $formData = array_merge($_SESSION['add_record_last_data'], $_SESSION['add_record_error']);
+                }
+            } else {
+                // This is a zone update operation, handle as before
+                $this->saveRecords($zone_id, $zone_name);
+            }
+        }
+
+        // If we have stored validation error data from a previous request, use it
+        if (!$formData && isset($_SESSION['add_record_last_data']) && isset($_SESSION['add_record_error'])) {
+            $formData = array_merge($_SESSION['add_record_last_data'], $_SESSION['add_record_error']);
         }
 
         if (isset($_POST['save_as'])) {
@@ -141,7 +210,7 @@ class EditController extends BaseController
 
         if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
             $this->validateCsrfToken();
-            $dnsRecord->change_zone_slave_master($_POST['domain'], $_POST['new_master']);
+            $this->dnsRecord->change_zone_slave_master($_POST['domain'], $_POST['new_master']);
         }
 
         $types = ZoneType::getTypes();
@@ -149,7 +218,7 @@ class EditController extends BaseController
         $new_type = htmlspecialchars($_POST['newtype'] ?? '');
         if (isset($_POST['type_change']) && in_array($new_type, $types)) {
             $this->validateCsrfToken();
-            $dnsRecord->change_zone_type($new_type, $zone_id);
+            $this->dnsRecord->change_zone_type($new_type, $zone_id);
         }
 
         if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
@@ -170,7 +239,7 @@ class EditController extends BaseController
                 $new_zone_template = $_POST['zone_template'];
             }
             if ($_POST['current_zone_template'] != $new_zone_template) {
-                $dnsRecord->update_zone_records($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone_id, $new_zone_template);
+                $this->dnsRecord->update_zone_records($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone_id, $new_zone_template);
             }
         }
 
@@ -178,13 +247,13 @@ class EditController extends BaseController
             $this->showError(_("You do not have the permission to view this zone."));
         }
 
-        if ($dnsRecord->zone_id_exists($zone_id) == "0") {
+        if ($this->dnsRecord->zone_id_exists($zone_id) == "0") {
             $this->showError(_('There is no zone with this ID.'));
         }
 
         if (isset($_POST['sign_zone'])) {
             $this->validateCsrfToken();
-            $dnsRecord->update_soa_serial($zone_id);
+            $this->dnsRecord->update_soa_serial($zone_id);
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
@@ -207,19 +276,19 @@ class EditController extends BaseController
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
             $dnssecProvider->unsecureZone($zone_name);
 
-            $dnsRecord->update_soa_serial($zone_id);
+            $this->dnsRecord->update_soa_serial($zone_id);
             $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
         }
 
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
 
-        $domain_type = $dnsRecord->get_domain_type($zone_id);
-        $record_count = $dnsRecord->count_zone_records($zone_id);
+        $domain_type = $this->dnsRecord->get_domain_type($zone_id);
+        $record_count = $this->dnsRecord->count_zone_records($zone_id);
         $zone_templates = $zone_templates->get_list_zone_templ($_SESSION['userid']);
         $zone_template_id = DnsRecord::get_zone_template($this->db, $zone_id);
         $zone_template_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_template_id);
 
-        $slave_master = $dnsRecord->get_domain_slave_master($zone_id);
+        $slave_master = $this->dnsRecord->get_domain_slave_master($zone_id);
 
         $users = UserManager::show_users($this->db);
 
@@ -229,16 +298,16 @@ class EditController extends BaseController
             $zone_comment = htmlspecialchars($raw_zone_comment);
         }
 
-        $zone_name_to_display = $dnsRecord->get_domain_name_by_id($zone_id);
+        $zone_name_to_display = $this->dnsRecord->get_domain_name_by_id($zone_id);
         if (str_starts_with($zone_name_to_display, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name_to_display);
         } else {
             $idn_zone_name = "";
         }
-        $records = $dnsRecord->get_records_from_domain_id($this->config->get('database', 'type', 'mysql'), $zone_id, $row_start, $iface_rowamount, $record_sort_by, $sort_direction, $iface_record_comments);
+        $records = $this->dnsRecord->get_records_from_domain_id($this->config->get('database', 'type', 'mysql'), $zone_id, $row_start, $iface_rowamount, $record_sort_by, $sort_direction, $iface_record_comments);
         $owners = DnsRecord::get_users_from_domain_id($this->db, $zone_id);
 
-        $soa_record = $dnsRecord->get_soa_record($zone_id);
+        $soa_record = $this->dnsRecord->get_soa_record($zone_id);
 
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
@@ -345,10 +414,8 @@ class EditController extends BaseController
         $serial_mismatch = false;
         $updatedRecordComments = [];
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-
         if (isset($_POST['record'])) {
-            $soa_record = $dnsRecord->get_soa_record($zone_id);
+            $soa_record = $this->dnsRecord->get_soa_record($zone_id);
             $current_serial = DnsRecord::get_soa_serial($soa_record);
 
             if ($this->isSerialMismatch($current_serial)) {
@@ -377,7 +444,7 @@ class EditController extends BaseController
                         $one_record_changed = true;
                     }
 
-                    $edit_record = $dnsRecord->edit_record($record);
+                    $edit_record = $this->dnsRecord->edit_record($record);
                     if (false === $edit_record) {
                         $error = true;
                     } else {
@@ -415,10 +482,10 @@ class EditController extends BaseController
         }
 
         if ($this->config->get('interface', 'show_zone_comments', true)) {
-            $one_record_changed = $this->processZoneComment($zone_id, $dnsRecord, $one_record_changed);
+            $one_record_changed = $this->processZoneComment($zone_id, $this->dnsRecord, $one_record_changed);
         }
 
-        $this->finalizeSave($error, $serial_mismatch, $dnsRecord, $zone_id, $one_record_changed, $zone_name);
+        $this->finalizeSave($error, $serial_mismatch, $this->dnsRecord, $zone_id, $one_record_changed, $zone_name);
     }
 
     public function saveAsTemplate(string $zone_id): void
@@ -430,8 +497,7 @@ class EditController extends BaseController
         } elseif ($template_name == '') {
             $this->showError(_("Template name can't be an empty string."));
         } else {
-            $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-            $records = $dnsRecord->get_records_from_domain_id($this->config->get('database', 'type', 'mysql'), $zone_id);
+            $records = $this->dnsRecord->get_records_from_domain_id($this->config->get('database', 'type', 'mysql'), $zone_id);
 
             $description = htmlspecialchars($_POST['templ_descr']) ?? '';
 
@@ -440,7 +506,7 @@ class EditController extends BaseController
                 'HOSTMASTER' => $this->config->get('dns', 'hostmaster', '') ?? '',
             ];
 
-            $zoneTemplate->add_zone_templ_save_as($template_name, $description, $_SESSION['userid'], $records, $options, $dnsRecord->get_domain_name_by_id($zone_id));
+            $zoneTemplate->add_zone_templ_save_as($template_name, $description, $_SESSION['userid'], $records, $options, $this->dnsRecord->get_domain_name_by_id($zone_id));
             $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
         }
     }
@@ -467,20 +533,19 @@ class EditController extends BaseController
             $this->validateCsrfToken();
         }
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
+        $zone_name = $this->dnsRecord->get_domain_name_by_id($zone_id);
 
         if (!$zone_name) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        if ($dnsRecord->zone_id_exists($zone_id) == "0") {
+        if ($this->dnsRecord->zone_id_exists($zone_id) == "0") {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        $records = $dnsRecord->get_records_from_domain_id($this->config->get('database', 'type', 'mysql'), $zone_id);
+        $records = $this->dnsRecord->get_records_from_domain_id($this->config->get('database', 'type', 'mysql'), $zone_id);
 
         if (empty($records)) {
             $this->showError(_('This zone does not have any records to export.'));
@@ -561,7 +626,7 @@ class EditController extends BaseController
         $raw_zone_comment = DnsRecord::get_zone_comment($this->db, $zone_id);
         $zone_comment = $_POST['comment'] ?? '';
         if ($raw_zone_comment != $zone_comment) {
-            $dnsRecord->edit_zone_comment($zone_id, $zone_comment);
+            $this->dnsRecord->edit_zone_comment($zone_id, $zone_comment);
             $one_record_changed = true;
         }
         return $one_record_changed;
@@ -601,5 +666,234 @@ class EditController extends BaseController
         } else {
             $this->setMessage('edit', 'error', _('Zone has not been updated successfully.'));
         }
+    }
+
+    /**
+     * Handle adding a new record directly from the edit page
+     *
+     * @param int $zone_id The ID of the zone
+     * @return bool True if record was added successfully, false otherwise
+     */
+    private function addRecord(int $zone_id): bool
+    {
+        // These are required fields
+        $constraints = [
+            'content' => [
+                new Assert\NotBlank()
+            ],
+            'type' => [
+                new Assert\NotBlank()
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
+
+        if (!$this->doValidateRequest($_POST)) {
+            // Store validation error directly in session
+            $_SESSION['add_record_error'] = [
+                'error' => true,
+                'errorMessage' => _('Please provide all required fields.'),
+                'fieldError' => isset($_POST['content']) && !empty($_POST['content']) ? 'type' : 'content'
+            ];
+
+            // Don't call showFirstValidationError as it would redirect
+            // We've already stored the form data for displaying error later
+            return false;
+        }
+
+        $name = $_POST['name'] ?? '';
+        $content = $_POST['content'];
+        $type = $_POST['type'];
+        $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
+        $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config->get('dns', 'ttl', 3600);
+        $comment = $_POST['comment'] ?? '';
+
+        try {
+            if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
+                // Get system errors that were generated during validation
+                $systemErrors = $this->getSystemErrors();
+                $errorMessage = !empty($systemErrors) ? end($systemErrors) :
+                    _('This record was not valid and could not be added. It may already exist or contain invalid data.');
+
+                // Determine which field has an error
+                $fieldWithError = $this->determineFieldWithError($errorMessage);
+
+                // Store validation error directly in session
+                $_SESSION['add_record_error'] = [
+                    'error' => true,
+                    'errorMessage' => $errorMessage,
+                    'fieldError' => $fieldWithError
+                ];
+                return false;
+            }
+        } catch (\Exception $e) {
+            // Handle exceptions from the validation process
+            $errorMessage = $e->getMessage();
+            $fieldWithError = $this->determineFieldWithError($errorMessage);
+
+            // Store validation error directly in session
+            $_SESSION['add_record_error'] = [
+                'error' => true,
+                'errorMessage' => $errorMessage,
+                'fieldError' => $fieldWithError
+            ];
+            return false;
+        }
+
+        // Clear session data when record is successfully created
+        unset($_SESSION['add_record_last_data']);
+        unset($_SESSION['add_record_error']);
+
+        // Clear form data if it exists in the session
+        if (isset($_POST['form_token'])) {
+            $this->formStateService->clearFormData($_POST['form_token']);
+        }
+
+        if (isset($_POST['reverse'])) {
+            $reverseResult = $this->createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, $comment);
+
+            if ($reverseResult && isset($reverseResult['success']) && $reverseResult['success']) {
+                $message = _('Record successfully added. A matching PTR record was also created.');
+                $this->setMessage('edit', 'success', $message);
+            } elseif ($reverseResult && isset($reverseResult['success']) && !$reverseResult['success'] && isset($reverseResult['message'])) {
+                // Reverse record creation failed with a specific message
+                $message = _('Record successfully added, but PTR record creation failed: ') . $reverseResult['message'];
+                $this->setMessage('edit', 'warning', $message);
+            } else {
+                // Reverse record creation failed without a specific message
+                $this->setMessage('edit', 'success', _('The record was successfully added, but PTR record creation failed.'));
+            }
+        } elseif (isset($_POST['create_domain_record'])) {
+            $domainRecord = $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
+            $message = $domainRecord ? _('Record successfully added. A matching A record was also created.') : _('The record was successfully added.');
+            $this->setMessage('edit', 'success', $message);
+        } else {
+            $this->setMessage('edit', 'success', _('The record was successfully added.'));
+        }
+
+        // Update the zone's SOA serial
+        $this->dnsRecord->update_soa_serial($zone_id);
+
+        return true;
+    }
+
+    /**
+     * Create a new record
+     *
+     * @param int $zone_id Zone ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @param string $content Record content
+     * @param int $ttl TTL value
+     * @param int $prio Priority value
+     * @param string $comment Record comment
+     * @return bool True if record was created successfully
+     */
+    private function createRecord(int $zone_id, $name, $type, $content, $ttl, $prio, $comment): bool
+    {
+        return $this->recordManager->createRecord(
+            $zone_id,
+            $name,
+            $type,
+            $content,
+            $ttl,
+            $prio,
+            $comment,
+            $_SESSION['userlogin'],
+            $_SERVER['REMOTE_ADDR']
+        );
+    }
+
+    /**
+     * Create a reverse record
+     *
+     * @param string $name Record name
+     * @param string $type Record type
+     * @param string $content Record content
+     * @param string|int $zone_id Zone ID
+     * @param int $ttl TTL value
+     * @param int $prio Priority value
+     * @param string $comment Record comment
+     * @return array Result array with success status and message
+     */
+    private function createReverseRecord($name, $type, $content, $zone_id, $ttl, $prio, string $comment): array
+    {
+        $result = $this->reverseRecordCreator->createReverseRecord(
+            $name,
+            $type,
+            $content,
+            $zone_id,
+            $ttl,
+            $prio,
+            $comment,
+            $_SESSION['userlogin']
+        );
+
+        if (isset($result['success']) && !$result['success']) {
+            $this->setMessage('edit', 'error', $result['message']);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Create a domain record
+     *
+     * @param string $name Record name
+     * @param string $type Record type
+     * @param string $content Record content
+     * @param string|int $zone_id Zone ID
+     * @param string $comment Record comment
+     * @return bool True if domain record was created successfully
+     */
+    private function createDomainRecord(string $name, string $type, string $content, $zone_id, string $comment): bool
+    {
+        $result = $this->domainRecordCreator->addDomainRecord(
+            $name,
+            $type,
+            $content,
+            $zone_id,
+            $comment,
+            $_SESSION['userlogin']
+        );
+
+        if ($result['success']) {
+            return true;
+        } else {
+            $this->setMessage('edit', 'error', $result['message']);
+            return false;
+        }
+    }
+
+    /**
+     * Determine which field has an error based on the error message
+     *
+     * @param string $errorMessage The error message
+     * @return string The name of the field with an error
+     */
+    private function determineFieldWithError(string $errorMessage): string
+    {
+        $lowerError = strtolower($errorMessage);
+
+        // Check for specific field mentions in the error message
+        if (strpos($lowerError, 'name') !== false && strpos($lowerError, 'invalid') !== false) {
+            return 'name';
+        } elseif (
+            strpos($lowerError, 'content') !== false ||
+                 strpos($lowerError, 'value') !== false ||
+                 strpos($lowerError, 'address') !== false ||
+                 strpos($lowerError, 'hostname') !== false
+        ) {
+            return 'content';
+        } elseif (strpos($lowerError, 'ttl') !== false) {
+            return 'ttl';
+        } elseif (strpos($lowerError, 'prio') !== false || strpos($lowerError, 'priority') !== false) {
+            return 'prio';
+        } elseif (strpos($lowerError, 'already exists') !== false) {
+            return 'name-content-duplicate';
+        }
+
+        // Default to content field as that's the most common error source
+        return 'content';
     }
 }

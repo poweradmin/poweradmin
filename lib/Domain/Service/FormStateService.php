@@ -125,4 +125,33 @@ class FormStateService
     {
         return $prefix . '_' . bin2hex(random_bytes(8));
     }
+
+    /**
+     * Get the latest form ID with a specified prefix
+     *
+     * @param string $prefix The prefix to search for
+     * @return string|null The latest form ID or null if none found
+     */
+    public function getLatestFormId(string $prefix): ?string
+    {
+        if (!isset($_SESSION[self::SESSION_KEY])) {
+            return null;
+        }
+
+        $latestTime = 0;
+        $latestId = null;
+
+        foreach ($_SESSION[self::SESSION_KEY] as $formId => $formState) {
+            // Check if the form ID starts with the given prefix
+            if (strpos($formId, $prefix . '_') === 0) {
+                // If this form is newer than the latest we've found so far
+                if ($formState['expires'] > $latestTime) {
+                    $latestTime = $formState['expires'];
+                    $latestId = $formId;
+                }
+            }
+        }
+
+        return $latestId;
+    }
 }
