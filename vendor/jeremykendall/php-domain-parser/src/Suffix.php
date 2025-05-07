@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Pdp;
 
 use Stringable;
+
 use function count;
 use function in_array;
 
@@ -89,7 +90,7 @@ final class Suffix implements EffectiveTopLevelDomain
             $domain = RegisteredName::fromIDNA2008($domain);
         }
 
-        if ('' === $domain->label(0)) {
+        if ($domain->isAbsolute()) {
             throw SyntaxError::dueToInvalidSuffix($domain);
         }
 
