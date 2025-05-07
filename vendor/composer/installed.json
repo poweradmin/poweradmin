@@ -2248,20 +2248,20 @@
         },
         {
             "name": "twbs/bootstrap-icons",
-            "version": "v1.11.3",
-            "version_normalized": "1.11.3.0",
+            "version": "v1.12.1",
+            "version_normalized": "1.12.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twbs/icons.git",
-                "reference": "8d88686c03c3768a2d82ba4f20c3c4e1b100fa29"
+                "reference": "805db3aa03e9a6e07d658ebe360e38b0a70c1b1c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twbs/icons/zipball/8d88686c03c3768a2d82ba4f20c3c4e1b100fa29",
-                "reference": "8d88686c03c3768a2d82ba4f20c3c4e1b100fa29",
+                "url": "https://api.github.com/repos/twbs/icons/zipball/805db3aa03e9a6e07d658ebe360e38b0a70c1b1c",
+                "reference": "805db3aa03e9a6e07d658ebe360e38b0a70c1b1c",
                 "shasum": ""
             },
-            "time": "2024-01-03T15:44:45+00:00",
+            "time": "2025-05-04T06:28:47+00:00",
             "type": "library",
             "installation-source": "dist",
             "notification-url": "https://packagist.org/downloads/",
@@ -2284,7 +2284,7 @@
             ],
             "support": {
                 "issues": "https://github.com/twbs/icons/issues",
-                "source": "https://github.com/twbs/icons/tree/v1.11.3"
+                "source": "https://github.com/twbs/icons/tree/v1.12.1"
             },
             "install-path": "../twbs/bootstrap-icons"
         },
