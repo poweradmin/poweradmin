@@ -2,6 +2,8 @@
 
 namespace Poweradmin\Infrastructure\Utility;
 
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
  *  See <https://www.poweradmin.org> for more details.
  *
@@ -25,10 +27,12 @@ namespace Poweradmin\Infrastructure\Utility;
 class IpAddressRetriever
 {
     private array $server;
+    private IPAddressValidator $ipValidator;
 
-    public function __construct(array $server)
+    public function __construct(array $server, ?IPAddressValidator $ipValidator = null)
     {
         $this->server = $server;
+        $this->ipValidator = $ipValidator ?? new IPAddressValidator();
     }
 
     /**
@@ -47,7 +51,7 @@ class IpAddressRetriever
         foreach ($clientIpHeaders as $header) {
             if (!empty($this->server[$header])) {
                 $ips = array_filter(explode(',', $this->server[$header]), function ($ip) {
-                    return filter_var($ip, FILTER_VALIDATE_IP);
+                    return $this->ipValidator->isValidIPv4($ip) || $this->ipValidator->isValidIPv6($ip);
                 });
 
                 return $ips[0] ?? '';

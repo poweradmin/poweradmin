@@ -23,18 +23,21 @@
 namespace PoweradminInstall;
 
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Symfony\Component\HttpFoundation\Request;
 
 class InstallSecurityService
 {
     private array $config;
     private CsrfTokenService $csrfTokenService;
+    private IPAddressValidator $ipValidator;
     private const DEFAULT_IP = '0.0.0.0';
 
-    public function __construct(array $config, CsrfTokenService $csrfTokenService)
+    public function __construct(array $config, CsrfTokenService $csrfTokenService, IPAddressValidator $ipValidator = null)
     {
         $this->config = $config;
         $this->csrfTokenService = $csrfTokenService;
+        $this->ipValidator = $ipValidator ?? new IPAddressValidator();
     }
 
     public function validateRequest(Request $request): array
@@ -99,14 +102,15 @@ class InstallSecurityService
             $forwardedIps = explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']);
             $clientIp = trim(end($forwardedIps));
 
-            if (filter_var($clientIp, FILTER_VALIDATE_IP)) {
+            if ($this->ipValidator->isValidIPv4($clientIp) || $this->ipValidator->isValidIPv6($clientIp)) {
                 return $clientIp;
             }
         }
 
         if ($hasRemoteAddress) {
-            return filter_var($_SERVER['REMOTE_ADDR'], FILTER_VALIDATE_IP)
-                ? $_SERVER['REMOTE_ADDR']
+            $remoteAddr = $_SERVER['REMOTE_ADDR'];
+            return ($this->ipValidator->isValidIPv4($remoteAddr) || $this->ipValidator->isValidIPv6($remoteAddr))
+                ? $remoteAddr
                 : self::DEFAULT_IP;
         }
 

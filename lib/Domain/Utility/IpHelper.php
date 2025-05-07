@@ -22,8 +22,25 @@
 
 namespace Poweradmin\Domain\Utility;
 
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+
 class IpHelper
 {
+    private static ?IPAddressValidator $ipValidator = null;
+
+    /**
+     * Get the IP validator instance
+     *
+     * @return IPAddressValidator
+     */
+    private static function getIPValidator(): IPAddressValidator
+    {
+        if (self::$ipValidator === null) {
+            self::$ipValidator = new IPAddressValidator();
+        }
+        return self::$ipValidator;
+    }
+
     public static function getProposedIPv4(string $name, string $zone_name, string $suffix): ?string
     {
         $cleanZoneName = str_replace($suffix, '', $zone_name);
@@ -52,7 +69,8 @@ class IpHelper
         $ipv6 = preg_replace('/([0-9a-f]{4})/', '$1:', $ipv6);
         $ipv6 = rtrim($ipv6, ':');
 
-        if (filter_var($ipv6, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6) === false) {
+        $ipValidator = self::getIPValidator();
+        if (!$ipValidator->isValidIPv6($ipv6)) {
             return null;
         }
 

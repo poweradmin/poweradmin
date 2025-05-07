@@ -38,12 +38,14 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
     private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
+    private IPAddressValidator $ipValidator;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationManager $config, ?IPAddressValidator $ipValidator = null)
     {
         $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
+        $this->ipValidator = $ipValidator ?? new IPAddressValidator();
     }
 
     /**
@@ -170,7 +172,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
                 // Check IPv4 hint (comma-separated IPv4 addresses)
                 $ipv4s = explode(',', $value);
                 foreach ($ipv4s as $ip) {
-                    if (!filter_var(trim($ip), FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+                    if (!$this->ipValidator->isValidIPv4(trim($ip))) {
                         return ValidationResult::failure(_('SVCB ipv4hint must contain valid IPv4 addresses.'));
                     }
                 }
@@ -178,7 +180,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
                 // Check IPv6 hint (comma-separated IPv6 addresses)
                 $ipv6s = explode(',', $value);
                 foreach ($ipv6s as $ip) {
-                    if (!filter_var(trim($ip), FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                    if (!$this->ipValidator->isValidIPv6(trim($ip))) {
                         return ValidationResult::failure(_('SVCB ipv6hint must contain valid IPv6 addresses.'));
                     }
                 }

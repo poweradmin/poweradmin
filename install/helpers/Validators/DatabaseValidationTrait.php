@@ -25,6 +25,7 @@ namespace PoweradminInstall\Validators;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 
@@ -121,15 +122,15 @@ trait DatabaseValidationTrait
                 ->addViolation();
         }
 
-        if (
-            $input['db_type'] != 'sqlite' &&
-            !filter_var($dbHost, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) &&
-            !filter_var($dbHost, FILTER_VALIDATE_IP) &&
-            $dbHost !== 'localhost'
-        ) {
-            $context->buildViolation('Invalid hostname or IP address.')
-                ->atPath('db_host')
-                ->addViolation();
+        if ($input['db_type'] != 'sqlite' && $dbHost !== 'localhost') {
+            $ipValidator = new IPAddressValidator();
+            $isValidIp = $ipValidator->isValidIPv4($dbHost) || $ipValidator->isValidIPv6($dbHost);
+
+            if (!filter_var($dbHost, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME) && !$isValidIp) {
+                $context->buildViolation('Invalid hostname or IP address.')
+                    ->atPath('db_host')
+                    ->addViolation();
+            }
         }
     }
 

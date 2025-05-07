@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -35,19 +36,22 @@ class BatchReverseRecordCreator
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
     private ReverseRecordCreator $reverseRecordCreator;
+    private IPAddressValidator $ipValidator;
 
     public function __construct(
         PDOLayer $db,
         ConfigurationManager $config,
         LegacyLogger $logger,
         DnsRecord $dnsRecord,
-        ReverseRecordCreator $reverseRecordCreator
+        ReverseRecordCreator $reverseRecordCreator,
+        IPAddressValidator $ipValidator = null
     ) {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger;
         $this->dnsRecord = $dnsRecord;
         $this->reverseRecordCreator = $reverseRecordCreator;
+        $this->ipValidator = $ipValidator ?? new IPAddressValidator();
     }
 
     /**
@@ -105,7 +109,7 @@ class BatchReverseRecordCreator
         }
 
         // Validate IP format
-        if (!filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        if (!$this->ipValidator->isValidIPv4($ip)) {
             return $this->createErrorResponse('Invalid IPv4 address format. Expected format: 192.168.1.0/24 or 10.0.0.0/20.');
         }
 
@@ -298,7 +302,7 @@ class BatchReverseRecordCreator
 
         // Test if it's a valid IPv6 address when combined with zeroes
         $testAddress = $networkPrefix . '::';
-        if (!filter_var($testAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        if (!$this->ipValidator->isValidIPv6($testAddress)) {
             return $this->createErrorResponse('Invalid IPv6 prefix.');
         }
 

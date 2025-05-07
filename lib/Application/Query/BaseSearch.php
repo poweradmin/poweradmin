@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Query;
 
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 abstract class BaseSearch
@@ -30,12 +31,14 @@ abstract class BaseSearch
     protected object $db;
     protected string $db_type;
     protected ConfigurationManager $config;
+    protected IPAddressValidator $ipValidator;
 
-    public function __construct($db, $config, string $db_type)
+    public function __construct($db, $config, string $db_type, IPAddressValidator $ipValidator = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->db_type = $db_type;
+        $this->ipValidator = $ipValidator ?? new IPAddressValidator();
     }
 
     /**
@@ -52,9 +55,9 @@ abstract class BaseSearch
         $reverse_search_string = '';
 
         if ($parameters['reverse']) {
-            if (filter_var($parameters['query'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+            if ($this->ipValidator->isValidIPv4($parameters['query'])) {
                 $reverse_search_string = implode('.', array_reverse(explode('.', $parameters['query'])));
-            } elseif (filter_var($parameters['query'], FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+            } elseif ($this->ipValidator->isValidIPv6($parameters['query'])) {
                 $reverse_search_string = unpack('H*hex', inet_pton($parameters['query']));
                 $reverse_search_string = implode('.', array_reverse(str_split($reverse_search_string['hex'])));
             } else {

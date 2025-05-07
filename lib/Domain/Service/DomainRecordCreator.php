@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -33,6 +34,7 @@ class DomainRecordCreator
     private ConfigurationManager $config;
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
+    private IPAddressValidator $ipValidator;
 
     private const IPV4_SUFFIX = '.in-addr.arpa';
     private const IPV6_SUFFIX = '.ip6.arpa';
@@ -41,10 +43,12 @@ class DomainRecordCreator
         ConfigurationManager $config,
         LegacyLogger $logger,
         DnsRecord $dnsRecord,
+        IPAddressValidator $ipValidator = null,
     ) {
         $this->config = $config;
         $this->logger = $logger;
         $this->dnsRecord = $dnsRecord;
+        $this->ipValidator = $ipValidator ?? new IPAddressValidator();
     }
 
     public function addDomainRecord(string $name, string $type, string $content, string $zone_id, string $comment = '', string $account = ''): array
@@ -77,7 +81,7 @@ class DomainRecordCreator
     private function processIPv4(string $name, string $zone_name, string $content, int $domainId, string $comment, string $account): array
     {
         $proposedIP = IpHelper::getProposedIPv4($name, $zone_name, self::IPV4_SUFFIX);
-        if (filter_var($proposedIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        if ($proposedIP && $this->ipValidator->isValidIPv4($proposedIP)) {
             return $this->addRecord($domainId, $content, $proposedIP, $comment, $account);
         }
         return $this->errorResponse(_('This domain record was not valid and could not be added.'));
@@ -86,7 +90,7 @@ class DomainRecordCreator
     private function processIPv6(string $name, string $zone_name, string $content, int $domainId, string $comment, string $account): array
     {
         $proposedIP = IpHelper::getProposedIPv6($name, $zone_name, self::IPV6_SUFFIX);
-        if (filter_var($proposedIP, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        if ($proposedIP && $this->ipValidator->isValidIPv6($proposedIP)) {
             return $this->addRecord($domainId, $content, $proposedIP, $comment, $account);
         }
         return $this->errorResponse(_('This domain record was not valid and could not be added.'));

@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 
 /**
  * Helper functions for dynamic DNS updates
@@ -97,9 +98,14 @@ class DynamicDnsHelper
      */
     public static function valid_ip_address(string $ip): int|string
     {
-        if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)) {
+        static $ipValidator = null;
+        if ($ipValidator === null) {
+            $ipValidator = new IPAddressValidator();
+        }
+
+        if ($ipValidator->isValidIPv4($ip)) {
             $value = RecordType::A;
-        } elseif (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+        } elseif ($ipValidator->isValidIPv6($ip)) {
             $value = RecordType::AAAA;
         } else {
             $value = 0;
