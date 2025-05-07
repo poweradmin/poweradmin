@@ -3,7 +3,7 @@
         'name' => 'poweradmin/poweradmin',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '29cf038b62d8214a18104e5e76555693a874227f',
+        'reference' => '129f267e5a293ffb3ac0f1b14ae381b5f1f25426',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -82,7 +82,7 @@
         'poweradmin/poweradmin' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '29cf038b62d8214a18104e5e76555693a874227f',
+            'reference' => '129f267e5a293ffb3ac0f1b14ae381b5f1f25426',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -303,9 +303,9 @@
             'dev_requirement' => false,
         ),
         'twbs/bootstrap' => array(
-            'pretty_version' => 'v5.3.5',
-            'version' => '5.3.5.0',
-            'reference' => '85f23534bd2de8041354b297516cf21959091b31',
+            'pretty_version' => 'v5.3.6',
+            'version' => '5.3.6.0',
+            'reference' => 'f849680d16a9695c9a6c9c062d6cff55ddcf071e',
             'type' => 'library',
             'install_path' => __DIR__ . '/../twbs/bootstrap',
             'aliases' => array(),
@@ -332,7 +332,7 @@
         'twitter/bootstrap' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => 'v5.3.5',
+                0 => 'v5.3.6',
             ),
         ),
     ),

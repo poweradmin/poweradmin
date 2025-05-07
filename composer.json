@@ -29,7 +29,7 @@
     "twig/twig": "^3.21.1",
     "symfony/twig-bridge": "^6.4.20",
     "symfony/translation": "^6.4.19",
-    "twbs/bootstrap": "^5.3.5",
+    "twbs/bootstrap": "^5.3.6",
     "twbs/bootstrap-icons": "^v1.11.3",
     "symfony/http-foundation": "^6.4.16",
     "symfony/validator": "^6.4.20",
