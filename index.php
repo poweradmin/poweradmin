@@ -27,6 +27,9 @@ use Poweradmin\Pages;
 
 require __DIR__ . '/vendor/autoload.php';
 
+// Initialize the TopLevelDomain class
+require_once __DIR__ . '/lib/Domain/Model/TopLevelDomainInit.php';
+
 $configManager = ConfigurationManager::getInstance();
 $configManager->initialize();
 

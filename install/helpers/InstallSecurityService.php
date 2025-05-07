@@ -33,7 +33,7 @@ class InstallSecurityService
     private IPAddressValidator $ipValidator;
     private const DEFAULT_IP = '0.0.0.0';
 
-    public function __construct(array $config, CsrfTokenService $csrfTokenService, IPAddressValidator $ipValidator = null)
+    public function __construct(array $config, CsrfTokenService $csrfTokenService, ?IPAddressValidator $ipValidator = null)
     {
         $this->config = $config;
         $this->csrfTokenService = $csrfTokenService;
@@ -86,7 +86,7 @@ class InstallSecurityService
         list($range, $netmask) = explode('/', $range, 2);
         $rangeDecimal = ip2long($range);
         $ipDecimal = ip2long($ip);
-        $wildcardDecimal = pow(2, (32 - $netmask)) - 1;
+        $wildcardDecimal = pow(2, (32 - (int)$netmask)) - 1;
         $netmaskDecimal = ~$wildcardDecimal;
 
         return ($ipDecimal & $netmaskDecimal) == ($rangeDecimal & $netmaskDecimal);

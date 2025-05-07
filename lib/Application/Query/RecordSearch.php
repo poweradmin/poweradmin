@@ -72,21 +72,32 @@ class RecordSearch extends BaseSearch
     /**
      * Fetch records based on the given search criteria.
      *
-     * @param array $parameters An array of search parameters.
-     * @param mixed $search_string The search string to use for matching records.
-     * @param bool $reverse Whether to perform a reverse search or not.
-     * @param mixed $reverse_search_string The reverse search string to use for matching records.
-     * @param string $permission_view The permission view for the search.
-     * @param bool $iface_search_group_records Whether to search group records or not.
-     * @param string $sort_records_by The column to sort the records by.
-     * @param string $record_sort_direction The direction to sort the records in.
-     * @param int $iface_rowamount The number of rows to display per page.
-     * @param bool $iface_record_comments Whether to display record comments or not.
-     * @param int $page The current page number.
-     * @return array An array of found records.
+     * @param array $parameters Search parameters
+     * @param mixed $search_string Search string for matching records
+     * @param bool $reverse Whether to perform a reverse search
+     * @param mixed $reverse_search_string Reverse search string for matching records
+     * @param string $permission_view Permission view for the search
+     * @param bool $iface_search_group_records Whether to search group records
+     * @param string $sort_records_by Column to sort records by
+     * @param string $record_sort_direction Sort direction
+     * @param int $iface_rowamount Rows per page
+     * @param bool $iface_record_comments Whether to display record comments
+     * @param int $page Current page number
+     * @return array Found records
      */
-    public function fetchRecords(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records, string $sort_records_by, string $record_sort_direction, int $iface_rowamount, bool $iface_record_comments, int $page): array
-    {
+    public function fetchRecords(
+        array $parameters,
+        mixed $search_string,
+        bool $reverse,
+        mixed $reverse_search_string,
+        string $permission_view,
+        bool $iface_search_group_records,
+        string $sort_records_by,
+        string $record_sort_direction,
+        int $iface_rowamount,
+        bool $iface_record_comments,
+        int $page
+    ): array {
         $offset = ($page - 1) * $iface_rowamount;
 
         $pdns_db_name = $this->config->get('database', 'pdns_name');

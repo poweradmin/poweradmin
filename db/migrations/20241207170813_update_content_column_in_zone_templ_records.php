@@ -20,6 +20,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+namespace Poweradmin\Migrations;
+
 use Phinx\Migration\AbstractMigration;
 
 final class UpdateContentColumnInZoneTemplRecords extends AbstractMigration

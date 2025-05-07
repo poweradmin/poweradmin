@@ -22,6 +22,11 @@
 
 namespace Poweradmin\Domain\Model;
 
+/**
+ * Class for validating and working with Top Level Domains
+ *
+ * @package Poweradmin\Domain\Model
+ */
 class TopLevelDomain
 {
 
@@ -241,5 +246,3 @@ class TopLevelDomain
         return in_array($domain, self::$VALID_TOP_LEVEL_DOMAINS);
     }
 }
-
-TopLevelDomain::init();

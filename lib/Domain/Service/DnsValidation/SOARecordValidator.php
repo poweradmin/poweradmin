@@ -74,16 +74,28 @@ class SOARecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority (not used for SOA records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
+     * @param string|null $dns_hostmaster Hostmaster email (optional)
+     * @param string|null $zone Zone name (optional)
      *
      * @return ValidationResult<array> ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ?string $dns_hostmaster = null, ?string $zone = null): ValidationResult
     {
         $errors = [];
 
+        // If params are passed directly, use them; otherwise use the ones set via setSOAParams
+        $dns_hostmaster_to_use = $dns_hostmaster ?? $this->dns_hostmaster ?? null;
+        $zone_to_use = $zone ?? $this->zone ?? null;
+
         // Check if SOA params have been set
-        if (!isset($this->dns_hostmaster) || !isset($this->zone)) {
-            return ValidationResult::failure(_('SOA validation parameters not set. Call setSOAParams() first.'));
+        if (!isset($dns_hostmaster_to_use) || !isset($zone_to_use)) {
+            return ValidationResult::failure(_('SOA validation parameters not set. Call setSOAParams() first or provide them as arguments.'));
+        }
+
+        // Set the params for this validation run if passed directly
+        if ($dns_hostmaster !== null && $zone !== null) {
+            $this->dns_hostmaster = $dns_hostmaster;
+            $this->zone = $zone;
         }
 
         // Validate zone name

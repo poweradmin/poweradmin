@@ -436,7 +436,7 @@ class EditController extends BaseController
 
                     $log->logPrior($record['rid'], $record['zid'], $comment);
 
-                    if (!$log->has_changed($record)) {
+                    if (!$log->hasChanged($record)) {
                         continue;
                     } else {
                         $one_record_changed = true;

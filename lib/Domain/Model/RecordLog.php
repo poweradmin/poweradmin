@@ -69,7 +69,7 @@ class RecordLog
         return $this->record_prior;
     }
 
-    public function has_changed(array $record): bool
+    public function hasChanged(array $record): bool
     {
         // Arrays are assigned by copy.
         // Copy arrays to avoid side effects caused by unset().

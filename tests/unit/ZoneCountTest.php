@@ -23,7 +23,8 @@ class ZoneCountTest extends TestCase
     public function testCountZonesWithAllZonesAndAllPermissions(): void
     {
         // Configure mocks
-        $this->configMock->method('get')
+        $this->configMock->expects($this->atLeastOnce())
+            ->method('get')
             ->willReturnCallback(function ($group, $key) {
                 if ($group === 'database' && $key === 'pdns_name') {
                     return null; // No prefix for tables
@@ -45,7 +46,8 @@ class ZoneCountTest extends TestCase
     public function testCountZonesWithForwardZonesOnly(): void
     {
         // Configure mocks
-        $this->configMock->method('get')
+        $this->configMock->expects($this->atLeastOnce())
+            ->method('get')
             ->willReturnCallback(function ($group, $key) {
                 if ($group === 'database' && $key === 'pdns_name') {
                     return null; // No prefix for tables
@@ -67,7 +69,8 @@ class ZoneCountTest extends TestCase
     public function testCountZonesWithReverseZonesOnly(): void
     {
         // Configure mocks
-        $this->configMock->method('get')
+        $this->configMock->expects($this->atLeastOnce())
+            ->method('get')
             ->willReturnCallback(function ($group, $key) {
                 if ($group === 'database' && $key === 'pdns_name') {
                     return null; // No prefix for tables
@@ -92,7 +95,8 @@ class ZoneCountTest extends TestCase
         $_SESSION['userid'] = 5;
 
         // Configure mocks
-        $this->configMock->method('get')
+        $this->configMock->expects($this->atLeastOnce())
+            ->method('get')
             ->willReturnCallback(function ($group, $key) {
                 if ($group === 'database' && $key === 'pdns_name') {
                     return null; // No prefix for tables
@@ -117,7 +121,8 @@ class ZoneCountTest extends TestCase
     public function testCountZonesWithLetterFilter(): void
     {
         // Configure mocks
-        $this->configMock->method('get')
+        $this->configMock->expects($this->atLeastOnce())
+            ->method('get')
             ->willReturnCallback(function ($group, $key) {
                 if ($group === 'database' && $key === 'pdns_name') {
                     return null; // No prefix for tables
@@ -139,7 +144,8 @@ class ZoneCountTest extends TestCase
     public function testCountZonesWithNumericFilter(): void
     {
         // Configure mocks
-        $this->configMock->method('get')
+        $this->configMock->expects($this->atLeastOnce())
+            ->method('get')
             ->willReturnCallback(function ($group, $key) {
                 if ($group === 'database' && $key === 'pdns_name') {
                     return null; // No prefix for tables
@@ -161,7 +167,8 @@ class ZoneCountTest extends TestCase
     public function testCountZonesWithDatabasePrefix(): void
     {
         // Configure mocks
-        $this->configMock->method('get')
+        $this->configMock->expects($this->atLeastOnce())
+            ->method('get')
             ->willReturnCallback(function ($group, $key) {
                 if ($group === 'database' && $key === 'pdns_name') {
                     return 'pdns'; // Add prefix for tables

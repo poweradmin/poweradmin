@@ -151,7 +151,7 @@ class InstallStepHandler
         ], $inputData));
     }
 
-    public function step5SetupAccountAndNameServers(array $errors): void
+    public function step5SetupAccountAndNameServers(array $errors, ?string $defaultConfigFile = null): void
     {
         $credentials = $this->getCredentials();
 
@@ -260,7 +260,7 @@ class InstallStepHandler
         ));
     }
 
-    public function step7CreateConfigurationFile(array $errors): void
+    public function step7CreateConfigurationFile(array $errors, ?string $defaultConfigFile = null): void
     {
         // No need to set database port if it's standard port for that db
         $db_port = ($this->request->get('db_type') == 'mysql' && $this->request->get('db_port') != 3306)

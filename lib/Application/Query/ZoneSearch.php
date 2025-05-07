@@ -83,20 +83,30 @@ class ZoneSearch extends BaseSearch
     /**
      * Fetch zones based on specified search criteria and pagination.
      *
-     * @param array $parameters An array of search parameters.
-     * @param mixed $search_string The search string to use for matching zones.
-     * @param bool $reverse Whether to perform a reverse search or not.
-     * @param string $reverse_search_string The reverse search string to use for matching zones.
-     * @param string $permission_view The permission view for the search (e.g. 'all' or 'own' zones).
-     * @param string $sort_zones_by The column to sort the zone results by.
-     * @param string $zone_sort_direction The direction to sort the zones in.
-     * @param int $iface_rowamount The number of rows to display per page.
-     * @param bool $iface_zone_comments Whether to display zone comments or not.
-     * @param int $page The current page number.
-     * @return array An array of found zones.
+     * @param array $parameters Search parameters
+     * @param mixed $search_string Search string for matching zones
+     * @param bool $reverse Whether to perform a reverse search
+     * @param mixed $reverse_search_string Reverse search string for matching zones
+     * @param string $permission_view Permission view for the search
+     * @param string $sort_zones_by Column to sort zones by
+     * @param string $zone_sort_direction Sort direction
+     * @param int $iface_rowamount Rows per page
+     * @param bool $iface_zone_comments Whether to display zone comments
+     * @param int $page Current page number
+     * @return array Found zones
      */
-    public function fetchZones(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, string $sort_zones_by, string $zone_sort_direction, int $iface_rowamount, bool $iface_zone_comments, int $page): array
-    {
+    public function fetchZones(
+        array $parameters,
+        mixed $search_string,
+        bool $reverse,
+        mixed $reverse_search_string,
+        string $permission_view,
+        string $sort_zones_by,
+        string $zone_sort_direction,
+        int $iface_rowamount,
+        bool $iface_zone_comments,
+        int $page
+    ): array {
         $offset = ($page - 1) * $iface_rowamount;
 
         $pdns_db_name = $this->config->get('database', 'pdns_name');

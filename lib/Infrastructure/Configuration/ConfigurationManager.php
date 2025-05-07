@@ -351,9 +351,10 @@ class ConfigurationManager implements ConfigurationInterface
      *
      * @param string $group Configuration group
      * @param string $key Configuration key, can use dot notation for nested values (e.g. 'account_lockout.enable_lockout')
+     * @param mixed $default Default value to return if the key doesn't exist (default: null)
      * @return mixed Configuration value
      */
-    public function get(string $group, string $key): mixed
+    public function get(string $group, string $key, mixed $default = null): mixed
     {
         if (!$this->initialized) {
             $this->initialize();
@@ -366,7 +367,7 @@ class ConfigurationManager implements ConfigurationInterface
 
             foreach ($path as $pathPart) {
                 if (!isset($value[$pathPart])) {
-                    return null;
+                    return $default;
                 }
                 $value = $value[$pathPart];
             }
@@ -379,7 +380,7 @@ class ConfigurationManager implements ConfigurationInterface
             return $this->settings[$group][$key];
         }
 
-        return null;
+        return $default;
     }
 
     /**
