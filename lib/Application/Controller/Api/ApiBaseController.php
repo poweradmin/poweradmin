@@ -94,10 +94,9 @@ abstract class ApiBaseController extends BaseController
                 // For public API routes (v1), try in this order:
                 // 1. API Key auth
                 // 2. HTTP Basic auth
-                if ($config->get('api', 'keys_enabled', false)) {
-                    $apiKeyMiddleware = new ApiKeyAuthenticationMiddleware($db, $config);
-                    $authenticated = $apiKeyMiddleware->process($request);
-                }
+                // Always try API key authentication when API is enabled
+                $apiKeyMiddleware = new ApiKeyAuthenticationMiddleware($db, $config);
+                $authenticated = $apiKeyMiddleware->process($request);
 
                 if (!$authenticated && $config->get('api', 'basic_auth_enabled', true)) {
                     $basicAuthMiddleware = new BasicAuthenticationMiddleware($db, $config);

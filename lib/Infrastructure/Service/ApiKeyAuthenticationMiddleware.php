@@ -65,8 +65,8 @@ class ApiKeyAuthenticationMiddleware
      */
     public function process(Request $request): bool
     {
-        // Check if API key authentication is enabled
-        if (!$this->config->get('api', 'keys_enabled', false)) {
+        // Check if API functionality is enabled (which includes API keys)
+        if (!$this->config->get('api', 'enabled', false)) {
             return false;
         }
 

@@ -36,8 +36,8 @@ class KeyValidationController extends ApiBaseController
      */
     public function run(): void
     {
-        if (!$this->config->get('api', 'api_keys_enabled', false)) {
-            $this->returnErrorResponse('API keys are disabled in system settings.', 403, 'api_keys_disabled');
+        if (!$this->config->get('api', 'enabled', false)) {
+            $this->returnErrorResponse('API functionality is disabled in system settings.', 403, 'api_disabled');
             return;
         }
 

@@ -249,11 +249,6 @@ return [
         'enabled' => false,                            // Enable API functionality (including API keys)
         'basic_auth_enabled' => false,                 // Enable HTTP Basic Authentication for public API endpoints
         'basic_auth_realm' => 'Poweradmin API',        // Realm name for HTTP Basic Authentication
-        'rate_limit' => [
-            'enabled' => true,                         // Enable rate limiting for API requests
-            'window' => 60,                            // Time window in seconds
-            'max_requests' => 100,                     // Maximum number of requests per window
-        ],
         'log_requests' => false,                       // Log all API requests
     ],
 ];

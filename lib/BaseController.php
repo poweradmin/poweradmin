@@ -134,8 +134,8 @@ abstract class BaseController
      */
     protected function tryApiKeyAuthentication(): void
     {
-        // Check if API key authentication is enabled
-        if (!$this->config->get('api', 'api_keys_enabled', false)) {
+        // Check if API functionality is enabled (which includes API keys)
+        if (!$this->config->get('api', 'enabled', false)) {
             return;
         }
 
