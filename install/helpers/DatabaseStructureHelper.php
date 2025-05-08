@@ -465,21 +465,47 @@ class DatabaseStructureHelper
                     'version' => array
                     (
                         'notnull' => 1,
-                        'length' => 255,
-                        'fixed' => 0,
-                        'default' => 0,
-                        'type' => 'text',
+                        'type' => 'biginteger',
                         'name' => 'version',
                         'table' => 'migrations',
-                        'flags' => 'not_null'
+                        'flags' => 'primary_keynot_null'
                     ),
-                    'apply_time' => array
+                    'migration_name' => array
+                    (
+                        'notnull' => 0,
+                        'length' => 100,
+                        'fixed' => 0,
+                        'default' => null,
+                        'type' => 'text',
+                        'name' => 'migration_name',
+                        'table' => 'migrations',
+                        'flags' => ''
+                    ),
+                    'start_time' => array
+                    (
+                        'notnull' => 0,
+                        'default' => null,
+                        'type' => 'timestamp',
+                        'name' => 'start_time',
+                        'table' => 'migrations',
+                        'flags' => ''
+                    ),
+                    'end_time' => array
+                    (
+                        'notnull' => 0,
+                        'default' => null,
+                        'type' => 'timestamp',
+                        'name' => 'end_time',
+                        'table' => 'migrations',
+                        'flags' => ''
+                    ),
+                    'breakpoint' => array
                     (
                         'notnull' => 1,
-                        'fixed' => 0,
+                        'length' => 1,
                         'default' => 0,
-                        'type' => 'integer',
-                        'name' => 'apply_time',
+                        'type' => 'boolean',
+                        'name' => 'breakpoint',
                         'table' => 'migrations',
                         'flags' => 'not_null'
                     )
@@ -639,6 +665,92 @@ class DatabaseStructureHelper
                     'fk_login_attempts_users' => array(
                         'table' => 'users',
                         'fields' => array('user_id' => 'id'),
+                        'ondelete' => 'SET NULL'
+                    )
+                )
+            ),
+            array(
+                'table_name' => 'api_keys',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'api_keys',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'name' => array(
+                        'notnull' => 1,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'type' => 'text',
+                        'name' => 'name',
+                        'table' => 'api_keys',
+                        'flags' => 'not_null'
+                    ),
+                    'secret_key' => array(
+                        'notnull' => 1,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'type' => 'text',
+                        'name' => 'secret_key',
+                        'table' => 'api_keys',
+                        'flags' => 'not_null'
+                    ),
+                    'created_by' => array(
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'type' => 'integer',
+                        'name' => 'created_by',
+                        'table' => 'api_keys',
+                        'flags' => 'not_null'
+                    ),
+                    'created_at' => array(
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'type' => 'timestamp',
+                        'name' => 'created_at',
+                        'table' => 'api_keys',
+                        'flags' => 'not_null'
+                    ),
+                    'last_used_at' => array(
+                        'notnull' => 0,
+                        'type' => 'timestamp',
+                        'name' => 'last_used_at',
+                        'table' => 'api_keys',
+                        'flags' => ''
+                    ),
+                    'disabled' => array(
+                        'notnull' => 1,
+                        'length' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'type' => 'integer',
+                        'name' => 'disabled',
+                        'table' => 'api_keys',
+                        'flags' => 'not_null'
+                    ),
+                    'expires_at' => array(
+                        'notnull' => 0,
+                        'type' => 'timestamp',
+                        'name' => 'expires_at',
+                        'table' => 'api_keys',
+                        'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'idx_api_keys_secret_key' => array('secret_key'),
+                    'idx_api_keys_created_by' => array('created_by'),
+                    'idx_api_keys_disabled' => array('disabled')
+                ),
+                'foreign_keys' => array(
+                    'fk_api_keys_users' => array(
+                        'table' => 'users',
+                        'fields' => array('created_by' => 'id'),
                         'ondelete' => 'SET NULL'
                     )
                 )

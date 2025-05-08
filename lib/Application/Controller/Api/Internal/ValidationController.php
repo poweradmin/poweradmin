@@ -65,14 +65,18 @@ class ValidationController extends InternalApiBaseController
 
     public function run(): void
     {
-        $action = $_GET['action'] ?? '';
+        $action = $this->request->query->get('action', '');
 
         switch ($action) {
             case 'validate_record':
-                $this->validateRecord();
+                $response = $this->validateRecord();
+                $response->send();
+                exit;
                 break;
             default:
-                $this->returnErrorResponse('Unknown action', 400);
+                $response = $this->returnErrorResponse('Unknown action', 400);
+                $response->send();
+                exit;
         }
     }
 
@@ -88,23 +92,24 @@ class ValidationController extends InternalApiBaseController
      *   "ttl": 3600,
      *   "prio": 0
      * }
+     *
+     * @return JsonResponse The JSON response
      */
-    private function validateRecord(): void
+    private function validateRecord(): JsonResponse
     {
         // Get input data - either from JSON or form post
         $jsonData = $this->getJsonInput();
         if ($jsonData === null) {
-            $this->returnErrorResponse('Invalid request data', 400);
-            return;
+            return $this->returnErrorResponse('Invalid request data', 400);
         }
 
         // Extract record data with fallbacks for different input formats
-        $zoneId = $jsonData['zone_id'] ?? $jsonData['zone_id'] ?? 0;
-        $name = $jsonData['name'] ?? $jsonData['records'][0]['name'] ?? '';
-        $type = $jsonData['type'] ?? $jsonData['records'][0]['type'] ?? '';
-        $content = $jsonData['content'] ?? $jsonData['records'][0]['content'] ?? '';
-        $ttl = $jsonData['ttl'] ?? $jsonData['records'][0]['ttl'] ?? $this->getConfig()->get('dns', 'ttl', 3600);
-        $prio = $jsonData['prio'] ?? $jsonData['records'][0]['prio'] ?? 0;
+        $zoneId = $jsonData['zone_id'] ?? 0;
+        $name = $jsonData['name'] ?? ($jsonData['records'][0]['name'] ?? '');
+        $type = $jsonData['type'] ?? ($jsonData['records'][0]['type'] ?? '');
+        $content = $jsonData['content'] ?? ($jsonData['records'][0]['content'] ?? '');
+        $ttl = $jsonData['ttl'] ?? ($jsonData['records'][0]['ttl'] ?? $this->getConfig()->get('dns', 'ttl', 3600));
+        $prio = $jsonData['prio'] ?? ($jsonData['records'][0]['prio'] ?? 0);
 
         // Validate the record
         $result = $this->validationService->validateRecord(
@@ -120,12 +125,12 @@ class ValidationController extends InternalApiBaseController
         );
 
         if ($result->isValid()) {
-            $this->returnJsonResponse([
+            return $this->returnJsonResponse([
                 'valid' => true,
                 'data' => $result->getData()
             ]);
         } else {
-            $this->returnJsonResponse([
+            return $this->returnJsonResponse([
                 'valid' => false,
                 'errors' => $result->getErrors(),
                 'field' => $this->determineFieldWithError($result->getFirstError())

@@ -1,0 +1,65 @@
+<h2>{% trans %}Regenerate API Key{% endtrans %}</h2>
+
+<div class="alert alert-warning">
+    <p><strong>{% trans %}Warning:{% endtrans %}</strong> {% trans %}This action will invalidate the existing key!{% endtrans %}</p>
+</div>
+
+<p>{% trans %}Are you sure you want to regenerate the following API key?{% endtrans %}</p>
+
+<div class="api-key-details">
+    <div class="form-row">
+        <label>{% trans %}Name:{% endtrans %}</label>
+        <span>{{ api_key.name }}</span>
+    </div>
+    
+    {% if api_key.description %}
+    <div class="form-row">
+        <label>{% trans %}Description:{% endtrans %}</label>
+        <span>{{ api_key.description }}</span>
+    </div>
+    {% endif %}
+    
+    <div class="form-row">
+        <label>{% trans %}Created at:{% endtrans %}</label>
+        <span>{{ api_key.createdAt|date('Y-m-d H:i:s') }}</span>
+    </div>
+    
+    <div class="form-row">
+        <label>{% trans %}Last used:{% endtrans %}</label>
+        <span>{% if api_key.lastUsedAt %}{{ api_key.lastUsedAt|date('Y-m-d H:i:s') }}{% else %}{% trans %}Never{% endtrans %}{% endif %}</span>
+    </div>
+    
+    {% if api_key.expiresAt %}
+    <div class="form-row">
+        <label>{% trans %}Expires at:{% endtrans %}</label>
+        <span>{{ api_key.expiresAt|date('Y-m-d H:i:s') }}</span>
+    </div>
+    {% endif %}
+    
+    <div class="form-row">
+        <label>{% trans %}Status:{% endtrans %}</label>
+        <span>
+            {% if api_key.isDisabled %}
+                <span class="text-error">{% trans %}Disabled{% endtrans %}</span>
+            {% elseif api_key.hasExpired %}
+                <span class="text-error">{% trans %}Expired{% endtrans %}</span>
+            {% else %}
+                <span class="text-success">{% trans %}Active{% endtrans %}</span>
+            {% endif %}
+        </span>
+    </div>
+</div>
+
+<form method="post" action="index.php?page=api_keys&amp;action=regenerate&amp;id={{ api_key.id }}">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    
+    <div class="form-buttons">
+        <a href="index.php?page=api_keys" class="button cancel">{% trans %}Cancel{% endtrans %}</a>
+        <input type="submit" class="button warning" value="{% trans %}Regenerate API Key{% endtrans %}">
+    </div>
+</form>
+
+<div class="info-box warning">
+    <p>{% trans %}If you regenerate this API key, any applications using it will no longer be able to authenticate until updated with the new key.{% endtrans %}</p>
+    <p>{% trans %}The new key will be displayed only once after regeneration, so be prepared to save it.{% endtrans %}</p>
+</div>

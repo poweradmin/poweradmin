@@ -1,0 +1,75 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=api_keys">{% trans %}API Keys{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Add API Key{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add API Key{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=api_keys&amp;action=add" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label">{% trans %}Name{% endtrans %}</label>
+                        <input type="text" class="form-control" id="name" name="name" required maxlength="255" placeholder="{% trans %}My application{% endtrans %}">
+                        <div class="invalid-feedback">{% trans %}Provide a name for this API key{% endtrans %}</div>
+                        <div class="form-text">{% trans %}A descriptive name to help you identify this key{% endtrans %}</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label for="expires_at" class="form-label">{% trans %}Expires at{% endtrans %}</label>
+                        <input type="date" class="form-control" id="expires_at" name="expires_at">
+                        <div class="form-text">{% trans %}Leave empty for a key that never expires{% endtrans %}</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="bi bi-key me-1 text-white"></i>{% trans %}Create API Key{% endtrans %}
+                            </button>
+                            <a href="index.php?page=api_keys" class="btn btn-outline-secondary btn-sm">{% trans %}Cancel{% endtrans %}</a>
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-4">
+        <div class="card shadow-sm mb-4 border-warning">
+            <div class="card-header bg-warning bg-opacity-10 py-3">
+                <strong><i class="bi bi-exclamation-triangle me-2"></i>{% trans %}Important Information{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <p>{% trans %}When you create a new API key, you will be shown the key only ONCE. Make sure to save it in a secure place, as you won't be able to retrieve it later.{% endtrans %}</p>
+                <p class="mb-0">{% trans %}If you lose the key, you'll need to regenerate it.{% endtrans %}</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Enable Bootstrap form validation
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            form.classList.add('was-validated');
+        }, false);
+    });
+});
+</script>

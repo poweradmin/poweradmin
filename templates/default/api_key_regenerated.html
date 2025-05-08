@@ -1,0 +1,94 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=api_keys">{% trans %}API Keys{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}API Key Regenerated{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4 border-success">
+    <div class="card-header bg-success bg-opacity-10 py-3 d-flex justify-content-between align-items-center">
+        <strong><i class="bi bi-check-circle me-2"></i>{% trans %}API Key Regenerated Successfully{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <strong>{% trans %}IMPORTANT: Save your new API key now!{% endtrans %}</strong>
+            <p class="mb-0 mt-2">{% trans %}This is the only time your new API key will be displayed. Please save it now as you won't be able to see it again.{% endtrans %}</p>
+        </div>
+
+        <div class="mb-4">
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">{% trans %}Name:{% endtrans %}</div>
+                <div class="col-md-9">{{ api_key.name }}</div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">{% trans %}New API Key:{% endtrans %}</div>
+                <div class="col-md-9">
+                    <div class="input-group">
+                        <input type="text" class="form-control font-monospace" id="api-key-value" value="{{ api_key.secretKey }}" readonly>
+                        <button class="btn btn-outline-secondary" type="button" id="copy-button" onclick="copyApiKey()">
+                            <i class="bi bi-clipboard me-1 text-dark"></i> {% trans %}Copy{% endtrans %}
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">{% trans %}Created at:{% endtrans %}</div>
+                <div class="col-md-9">{{ api_key.createdAt|date('Y-m-d H:i:s') }}</div>
+            </div>
+            
+            {% if api_key.expiresAt %}
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">{% trans %}Expires at:{% endtrans %}</div>
+                <div class="col-md-9">{{ api_key.expiresAt|date('Y-m-d H:i:s') }}</div>
+            </div>
+            {% else %}
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">{% trans %}Expires at:{% endtrans %}</div>
+                <div class="col-md-9"><span class="text-muted">{% trans %}Never{% endtrans %}</span></div>
+            </div>
+            {% endif %}
+            
+            <div class="row mb-3">
+                <div class="col-md-3 fw-bold">{% trans %}Status:{% endtrans %}</div>
+                <div class="col-md-9">
+                    {% if api_key.isDisabled %}
+                        <span class="badge bg-danger">{% trans %}Disabled{% endtrans %}</span>
+                    {% elseif api_key.hasExpired %}
+                        <span class="badge bg-danger">{% trans %}Expired{% endtrans %}</span>
+                    {% else %}
+                        <span class="badge bg-success">{% trans %}Active{% endtrans %}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-footer py-3">
+        <a href="index.php?page=api_keys" class="btn btn-primary btn-sm">
+            <i class="bi bi-arrow-left me-1 text-white"></i> {% trans %}Return to API Keys{% endtrans %}
+        </a>
+    </div>
+</div>
+
+<script>
+function copyApiKey() {
+    const keyElement = document.getElementById('api-key-value');
+    keyElement.select();
+    document.execCommand('copy');
+    
+    const button = document.getElementById('copy-button');
+    const originalHTML = button.innerHTML;
+    button.innerHTML = '<i class="bi bi-check2 me-1 text-white"></i> {% trans %}Copied!{% endtrans %}';
+    button.classList.remove('btn-outline-secondary');
+    button.classList.add('btn-success');
+    
+    setTimeout(() => {
+        button.innerHTML = originalHTML;
+        button.classList.remove('btn-success');
+        button.classList.add('btn-outline-secondary');
+    }, 2000);
+}
+</script>

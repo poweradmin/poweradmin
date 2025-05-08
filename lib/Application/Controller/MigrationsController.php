@@ -105,19 +105,37 @@ class MigrationsController extends BaseController
             return true;
         }
 
-        switch ($db_type) {
-            case 'mysql':
-                $query = $this->db->query("SHOW GRANTS FOR CURRENT_USER");
-                $result = $query->fetchAll();
-                break;
-            case 'pgsql':
-                $query = $this->db->query("SELECT has_schema_privilege(current_user, 'public', 'CREATE') AS can_create");
-                $result = $query->fetch();
-                break;
-            default:
-                return false;
-        }
+        try {
+            switch ($db_type) {
+                case 'mysql':
+                    $query = $this->db->query("SHOW GRANTS FOR CURRENT_USER");
+                    $grants = $query->fetchAll();
 
-        return false;
+                    // Check for necessary permissions in MySQL grants
+                    foreach ($grants as $grant) {
+                        $grantStr = implode('', $grant);
+                        // Look for ALL PRIVILEGES or specific CREATE/ALTER privileges
+                        if (
+                            strpos($grantStr, 'ALL PRIVILEGES') !== false ||
+                            (strpos($grantStr, 'CREATE') !== false && strpos($grantStr, 'ALTER') !== false)
+                        ) {
+                            return true;
+                        }
+                    }
+                    return false;
+
+                case 'pgsql':
+                    $query = $this->db->query("SELECT has_schema_privilege(current_user, 'public', 'CREATE') AS can_create");
+                    $result = $query->fetch();
+                    return isset($result['can_create']) && $result['can_create'] === 't';
+
+                default:
+                    return false;
+            }
+        } catch (\Exception $e) {
+            // If we can't check permissions, assume we have them for now
+            // This avoids problems with restricted MySQL users that can't execute SHOW GRANTS
+            return true;
+        }
     }
 }

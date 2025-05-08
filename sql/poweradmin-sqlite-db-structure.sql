@@ -6,7 +6,13 @@ CREATE TABLE log_users (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, cr
 CREATE TABLE log_zones (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL, zone_id integer);
 
 
-CREATE TABLE migrations (version VARCHAR(255) NOT NULL, apply_time integer NOT NULL);
+CREATE TABLE migrations (
+    version INTEGER PRIMARY KEY,
+    migration_name VARCHAR(100) NULL,
+    start_time TIMESTAMP NULL,
+    end_time TIMESTAMP NULL,
+    breakpoint BOOLEAN NOT NULL DEFAULT 0
+);
 
 
 CREATE TABLE perm_items (id integer PRIMARY KEY, name VARCHAR(64) NOT NULL, descr VARCHAR(1024) NOT NULL);
@@ -57,5 +63,20 @@ CREATE TABLE zone_templ_records (id integer PRIMARY KEY, zone_templ_id integer N
 
 CREATE TABLE zones (id integer PRIMARY KEY, domain_id integer NOT NULL, owner integer NOT NULL, comment VARCHAR(1024), zone_templ_id integer NOT NULL);
 
+CREATE TABLE api_keys (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL,
+    secret_key VARCHAR(255) NOT NULL,
+    created_by INTEGER NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    last_used_at TIMESTAMP NULL,
+    disabled BOOLEAN NOT NULL DEFAULT 0,
+    expires_at TIMESTAMP NULL,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE UNIQUE INDEX idx_api_keys_secret_key ON api_keys(secret_key);
+CREATE INDEX idx_api_keys_created_by ON api_keys(created_by);
+CREATE INDEX idx_api_keys_disabled ON api_keys(disabled);
 
 --

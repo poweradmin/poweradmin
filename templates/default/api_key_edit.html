@@ -1,0 +1,40 @@
+<h2>{% trans %}Edit API Key{% endtrans %}</h2>
+
+<form method="post" action="index.php?page=api_keys&amp;action=edit&amp;id={{ api_key.id }}">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    
+    <div class="form-row">
+        <label for="name">{% trans %}Name{% endtrans %} *</label>
+        <input type="text" id="name" name="name" required maxlength="255" value="{{ api_key.name }}">
+        <span class="form-hint">{% trans %}A descriptive name to help you identify this key{% endtrans %}</span>
+    </div>
+    
+    <div class="form-row">
+        <label for="expires_at">{% trans %}Expires at{% endtrans %}</label>
+        <input type="date" id="expires_at" name="expires_at" value="{% if api_key.expiresAt %}{{ api_key.expiresAt|date('Y-m-d') }}{% endif %}">
+        <span class="form-hint">{% trans %}Leave empty for a key that never expires{% endtrans %}</span>
+    </div>
+    
+    <div class="form-row checkbox">
+        <input type="checkbox" id="disabled" name="disabled" {% if api_key.isDisabled %}checked{% endif %}>
+        <label for="disabled">{% trans %}Disable this API key{% endtrans %}</label>
+        <span class="form-hint">{% trans %}Disabled keys cannot be used for authentication{% endtrans %}</span>
+    </div>
+    
+    <div class="form-buttons">
+        <a href="index.php?page=api_keys" class="button cancel">{% trans %}Cancel{% endtrans %}</a>
+        <input type="submit" class="button submit" value="{% trans %}Update API Key{% endtrans %}">
+    </div>
+</form>
+
+<div class="info-box">
+    <h3>{% trans %}API Key Information{% endtrans %}</h3>
+    <p><strong>{% trans %}Created at:{% endtrans %}</strong> {{ api_key.createdAt|date('Y-m-d H:i:s') }}</p>
+    <p><strong>{% trans %}Last used:{% endtrans %}</strong> {% if api_key.lastUsedAt %}{{ api_key.lastUsedAt|date('Y-m-d H:i:s') }}{% else %}{% trans %}Never{% endtrans %}{% endif %}</p>
+    
+    <h4>{% trans %}Actions{% endtrans %}</h4>
+    <ul>
+        <li><a href="index.php?page=api_keys&amp;action=regenerate&amp;id={{ api_key.id }}" class="warning">{% trans %}Regenerate API Key{% endtrans %}</a> - {% trans %}Creates a new key, invalidating the old one{% endtrans %}</li>
+        <li><a href="index.php?page=api_keys&amp;action=delete&amp;id={{ api_key.id }}" class="error">{% trans %}Delete API Key{% endtrans %}</a> - {% trans %}Permanently removes this key{% endtrans %}</li>
+    </ul>
+</div>

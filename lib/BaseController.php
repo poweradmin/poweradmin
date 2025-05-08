@@ -73,6 +73,80 @@ abstract class BaseController
         $this->config = ConfigurationManager::getInstance();
         $this->csrfTokenService = new CsrfTokenService();
         $this->messageService = new MessageService();
+
+        // If we're in an API context and the user is not authenticated,
+        // check for API key authentication (but only for internal API routes)
+        if ($authenticate && !isset($_SESSION['userid']) && $this->isInternalApiRoute()) {
+            $this->tryApiKeyAuthentication();
+        }
+    }
+
+    /**
+     * Checks if the current request is any API route
+     *
+     * @return bool True if this is an API request, false otherwise
+     */
+    protected function isApiRequest(): bool
+    {
+        $page = $this->request['page'] ?? '';
+        return strpos($page, 'api/') === 0;
+    }
+
+    /**
+     * Checks if the current request is an internal API route (api/internal/*)
+     *
+     * @return bool True if this is an internal API route, false otherwise
+     */
+    protected function isInternalApiRoute(): bool
+    {
+        $page = $this->request['page'] ?? '';
+        return strpos($page, 'api/internal/') === 0;
+    }
+
+    /**
+     * Checks if the current request is a public API route (api/v1/*, api/v2/*, etc.)
+     *
+     * @return bool True if this is a public API route, false otherwise
+     */
+    protected function isPublicApiRoute(): bool
+    {
+        $page = $this->request['page'] ?? '';
+
+        // Check if this is an API route
+        if (strpos($page, 'api/') !== 0) {
+            return false;
+        }
+
+        // Extract the API version from the route
+        $parts = explode('/', $page);
+        if (count($parts) < 2) {
+            return false;
+        }
+
+        // Check if the second part is a version indicator (v1, v2, etc.)
+        $versionPart = $parts[1] ?? '';
+        return preg_match('/^v\d+$/i', $versionPart) === 1;
+    }
+
+    /**
+     * Tries to authenticate using API key
+     * Only used for internal API routes by default
+     */
+    protected function tryApiKeyAuthentication(): void
+    {
+        // Check if API key authentication is enabled
+        if (!$this->config->get('api', 'api_keys_enabled', false)) {
+            return;
+        }
+
+        // Create API key middleware
+        $middleware = new \Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware($this->db, $this->config);
+
+        // Create request object from globals
+        $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+
+        // Try to authenticate
+        $middleware->process($request);
     }
 
     /**
@@ -315,6 +389,7 @@ abstract class BaseController
                 'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
                 'whois_enabled' => $this->config->get('whois', 'enabled', false),
                 'rdap_enabled' => $this->config->get('rdap', 'enabled', false),
+                'api_enabled' => $this->config->get('api', 'enabled', false),
                 'whois_restrict_to_admin' => $this->config->get('whois', 'restrict_to_admin', true),
                 'rdap_restrict_to_admin' => $this->config->get('rdap', 'restrict_to_admin', true)
             ]);

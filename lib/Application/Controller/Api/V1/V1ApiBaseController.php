@@ -29,7 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-namespace Poweradmin\Application\Controller\Api\V1;
+namespace Poweradmin\Application\Controller\Api\v1;
 
 use Poweradmin\Application\Controller\Api\ApiBaseController;
 
@@ -51,16 +51,22 @@ abstract class V1ApiBaseController extends ApiBaseController
     /**
      * Authenticate the API request using API key
      * Override this method in specific implementations if needed
+     *
+     * @return JsonResponse|null Returns error response if authentication fails, null otherwise
      */
-    protected function authenticateApiRequest(): void
+    protected function authenticateApiRequest(): ?JsonResponse
     {
         // Get API key from headers
         $apiKey = $this->getApiKeyFromRequest();
 
         // If API key is required but not provided or invalid
         if ($this->requiresAuthentication() && !$this->validateApiKey($apiKey)) {
-            $this->returnErrorResponse('Invalid or missing API key', 401);
+            $response = $this->returnErrorResponse('Invalid or missing API key', 401);
+            $response->send();
+            exit;
         }
+
+        return null;
     }
 
     /**
@@ -71,13 +77,13 @@ abstract class V1ApiBaseController extends ApiBaseController
     protected function getApiKeyFromRequest(): ?string
     {
         // Try to get API key from Authorization header (Bearer token)
-        $authHeader = $_SERVER['HTTP_AUTHORIZATION'] ?? '';
-        if (strpos($authHeader, 'Bearer ') === 0) {
+        $authHeader = $this->request->headers->get('Authorization');
+        if ($authHeader && strpos($authHeader, 'Bearer ') === 0) {
             return substr($authHeader, 7);
         }
 
         // Try to get API key from X-API-Key header
-        return $_SERVER['HTTP_X_API_KEY'] ?? null;
+        return $this->request->headers->get('X-API-Key');
     }
 
     /**
@@ -116,8 +122,10 @@ abstract class V1ApiBaseController extends ApiBaseController
      * @param bool $success Whether the request was successful
      * @param string|null $message Optional message
      * @param int $status HTTP status code
+     * @param array $headers Additional headers
+     * @return JsonResponse The JSON response object
      */
-    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200): void
+    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200, array $headers = []): JsonResponse
     {
         $response = [
             'success' => $success,
@@ -128,7 +136,7 @@ abstract class V1ApiBaseController extends ApiBaseController
             $response['message'] = $message;
         }
 
-        $this->returnJsonResponse($response, $status);
+        return $this->returnJsonResponse($response, $status, $headers);
     }
 
     /**
@@ -137,9 +145,11 @@ abstract class V1ApiBaseController extends ApiBaseController
      * @param string $message Error message
      * @param int $status HTTP status code
      * @param mixed $data Additional error data
+     * @param array $headers Additional headers
+     * @return JsonResponse The JSON response object
      */
-    protected function returnApiError(string $message, int $status = 400, $data = null): void
+    protected function returnApiError(string $message, int $status = 400, $data = null, array $headers = []): JsonResponse
     {
-        $this->returnApiResponse($data, false, $message, $status);
+        return $this->returnApiResponse($data, false, $message, $status, $headers);
     }
 }

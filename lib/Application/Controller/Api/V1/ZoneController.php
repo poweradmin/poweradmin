@@ -29,7 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-namespace Poweradmin\Application\Controller\Api\V1;
+namespace Poweradmin\Application\Controller\Api\v1;
 
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 
@@ -54,102 +54,88 @@ class ZoneController extends V1ApiBaseController
      */
     public function run(): void
     {
-        $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
-        $action = $_GET['action'] ?? '';
+        $method = $this->request->getMethod();
+        $action = $this->request->query->get('action', '');
 
-        switch ($method) {
-            case 'GET':
-                $this->handleGetRequest($action);
-                break;
-            case 'POST':
-                $this->handlePostRequest($action);
-                break;
-            case 'PUT':
-                $this->handlePutRequest($action);
-                break;
-            case 'DELETE':
-                $this->handleDeleteRequest($action);
-                break;
-            default:
-                $this->returnApiError('Method not allowed', 405);
-        }
+        $response = match ($method) {
+            'GET' => $this->handleGetRequest($action),
+            'POST' => $this->handlePostRequest($action),
+            'PUT' => $this->handlePutRequest($action),
+            'DELETE' => $this->handleDeleteRequest($action),
+            default => $this->returnApiError('Method not allowed', 405),
+        };
+
+        $response->send();
+        exit;
     }
 
     /**
      * Handle GET requests
      *
      * @param string $action The action to perform
+     * @return JsonResponse The JSON response
      */
-    private function handleGetRequest(string $action): void
+    private function handleGetRequest(string $action): JsonResponse
     {
-        switch ($action) {
-            case 'list':
-                $this->listZones();
-                break;
-            case 'get':
-                $this->getZone();
-                break;
-            default:
-                $this->returnApiError('Unknown action', 400);
-        }
+        return match ($action) {
+            'list' => $this->listZones(),
+            'get' => $this->getZone(),
+            default => $this->returnApiError('Unknown action', 400),
+        };
     }
 
     /**
      * Handle POST requests
      *
      * @param string $action The action to perform
+     * @return JsonResponse The JSON response
      */
-    private function handlePostRequest(string $action): void
+    private function handlePostRequest(string $action): JsonResponse
     {
-        switch ($action) {
-            case 'create':
-                $this->createZone();
-                break;
-            default:
-                $this->returnApiError('Unknown action', 400);
-        }
+        return match ($action) {
+            'create' => $this->createZone(),
+            default => $this->returnApiError('Unknown action', 400),
+        };
     }
 
     /**
      * Handle PUT requests
      *
      * @param string $action The action to perform
+     * @return JsonResponse The JSON response
      */
-    private function handlePutRequest(string $action): void
+    private function handlePutRequest(string $action): JsonResponse
     {
-        switch ($action) {
-            case 'update':
-                $this->updateZone();
-                break;
-            default:
-                $this->returnApiError('Unknown action', 400);
-        }
+        return match ($action) {
+            'update' => $this->updateZone(),
+            default => $this->returnApiError('Unknown action', 400),
+        };
     }
 
     /**
      * Handle DELETE requests
      *
      * @param string $action The action to perform
+     * @return JsonResponse The JSON response
      */
-    private function handleDeleteRequest(string $action): void
+    private function handleDeleteRequest(string $action): JsonResponse
     {
-        switch ($action) {
-            case 'delete':
-                $this->deleteZone();
-                break;
-            default:
-                $this->returnApiError('Unknown action', 400);
-        }
+        return match ($action) {
+            'delete' => $this->deleteZone(),
+            default => $this->returnApiError('Unknown action', 400),
+        };
     }
 
     /**
      * List all accessible zones
+     *
+     * @return JsonResponse The JSON response
      */
-    private function listZones(): void
+    private function listZones(): JsonResponse
     {
-        // Get pagination parameters
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 20;
+        // Get pagination parameters from request
+        $page = $this->request->query->getInt('page', 1);
+        $limit = $this->request->query->getInt('limit', 20);
 
         // Ensure valid pagination
         $page = max(1, $page);
@@ -160,10 +146,13 @@ class ZoneController extends V1ApiBaseController
         // Apply pagination (in a real implementation, this would be done in the repository)
         $totalZones = count($zones);
         $offset = ($page - 1) * $limit;
-        $zones = array_slice($zones, $offset, $limit);
+        $paginatedZones = array_slice($zones, $offset, $limit);
 
-        $this->returnApiResponse([
-            'zones' => $zones,
+        // Use serializer for consistent output format
+        $serializedZones = json_decode($this->serialize($paginatedZones), true);
+
+        return $this->returnApiResponse([
+            'zones' => $serializedZones,
             'pagination' => [
                 'total' => $totalZones,
                 'page' => $page,
@@ -175,15 +164,16 @@ class ZoneController extends V1ApiBaseController
 
     /**
      * Get a specific zone by ID or name
+     *
+     * @return JsonResponse The JSON response
      */
-    private function getZone(): void
+    private function getZone(): JsonResponse
     {
-        $zoneId = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-        $zoneName = $_GET['name'] ?? '';
+        $zoneId = $this->request->query->getInt('id', 0);
+        $zoneName = $this->request->query->get('name', '');
 
         if ($zoneId <= 0 && empty($zoneName)) {
-            $this->returnApiError('Missing zone ID or name', 400);
-            return;
+            return $this->returnApiError('Missing zone ID or name', 400);
         }
 
         $zone = null;
@@ -195,12 +185,14 @@ class ZoneController extends V1ApiBaseController
         }
 
         if (!$zone) {
-            $this->returnApiError('Zone not found', 404);
-            return;
+            return $this->returnApiError('Zone not found', 404);
         }
 
-        $this->returnApiResponse([
-            'zone' => $zone
+        // Use serializer for consistent output format
+        $serializedZone = json_decode($this->serialize($zone), true);
+
+        return $this->returnApiResponse([
+            'zone' => $serializedZone
         ]);
     }
 

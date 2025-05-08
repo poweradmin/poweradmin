@@ -241,4 +241,19 @@ return [
         'request_timeout' => 10,                       // HTTP request timeout in seconds for RDAP queries
         'restrict_to_admin' => true,                   // Only allow administrators (user_is_ueberuser) to use RDAP functionality
     ],
+
+    /**
+     * API Settings
+     */
+    'api' => [
+        'enabled' => false,                            // Enable API functionality (including API keys)
+        'basic_auth_enabled' => false,                 // Enable HTTP Basic Authentication for public API endpoints
+        'basic_auth_realm' => 'Poweradmin API',        // Realm name for HTTP Basic Authentication
+        'rate_limit' => [
+            'enabled' => true,                         // Enable rate limiting for API requests
+            'window' => 60,                            // Time window in seconds
+            'max_requests' => 100,                     // Maximum number of requests per window
+        ],
+        'log_requests' => false,                       // Log all API requests
+    ],
 ];

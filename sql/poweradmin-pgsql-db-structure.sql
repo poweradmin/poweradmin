@@ -24,8 +24,12 @@ CREATE TABLE "public"."log_zones" (
 
 
 CREATE TABLE "public"."migrations" (
-                                       "version" character varying(255),
-                                       "apply_time" integer
+                                       "version" bigint NOT NULL,
+                                       "migration_name" character varying(100),
+                                       "start_time" timestamp,
+                                       "end_time" timestamp,
+                                       "breakpoint" boolean NOT NULL DEFAULT false,
+                                       CONSTRAINT "migrations_pkey" PRIMARY KEY ("version")
 ) WITH (oids = false);
 
 
@@ -147,5 +151,23 @@ CREATE TABLE "public"."zones" (
                                   CONSTRAINT "zones_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
+CREATE SEQUENCE api_keys_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."api_keys" (
+    "id" integer DEFAULT nextval('api_keys_id_seq') NOT NULL,
+    "name" character varying(255) NOT NULL,
+    "secret_key" character varying(255) NOT NULL,
+    "created_by" integer,
+    "created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "last_used_at" timestamp,
+    "disabled" boolean DEFAULT false NOT NULL,
+    "expires_at" timestamp,
+    CONSTRAINT "api_keys_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "fk_api_keys_users" FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+) WITH (oids = false);
+
+CREATE UNIQUE INDEX "idx_api_keys_secret_key" ON "public"."api_keys" USING btree ("secret_key");
+CREATE INDEX "idx_api_keys_created_by" ON "public"."api_keys" USING btree ("created_by");
+CREATE INDEX "idx_api_keys_disabled" ON "public"."api_keys" USING btree ("disabled");
 
 -- 2022-09-29 19:10:39.890321+00

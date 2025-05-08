@@ -32,9 +32,98 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
+use Poweradmin\Infrastructure\Service\BasicAuthenticationMiddleware;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
 
 abstract class ApiBaseController extends BaseController
 {
+    /**
+     * @var Request The current HTTP request
+     */
+    protected Request $request;
+
+    /**
+     * @var Serializer The Symfony serializer
+     */
+    protected Serializer $serializer;
+
+    /**
+     * ApiBaseController constructor
+     *
+     * @param array $requestParams The request parameters
+     * @param bool $authenticate Whether to authenticate the user (default: true)
+     */
+    public function __construct(array $requestParams, bool $authenticate = true)
+    {
+        // Create Request object before anything else for route determination
+        $request = Request::createFromGlobals();
+
+        // Initialize config early for authentication
+        $config = \Poweradmin\Infrastructure\Configuration\ConfigurationManager::getInstance();
+        $config->initialize();
+
+        // Check if API is enabled in the system
+        if (!$config->get('api', 'enabled', false)) {
+            // Return API disabled error
+            $response = new JsonResponse([
+                'error' => true,
+                'message' => 'The API feature is disabled in the system configuration.'
+            ], 403);
+            $response->send();
+            exit;
+        }
+
+        // Determine if this is a public API route (v1+) or internal API route
+        $isPublicApiRoute = $this->isPublicApiRoute($requestParams);
+
+        // Only attempt API authentication if authentication is required
+        if ($authenticate) {
+            $db = new PDOLayer($config);
+
+            // Try different authentication methods based on the route
+            $authenticated = false;
+
+            if ($isPublicApiRoute) {
+                // For public API routes (v1), try in this order:
+                // 1. API Key auth
+                // 2. HTTP Basic auth
+                if ($config->get('api', 'keys_enabled', false)) {
+                    $apiKeyMiddleware = new ApiKeyAuthenticationMiddleware($db, $config);
+                    $authenticated = $apiKeyMiddleware->process($request);
+                }
+
+                if (!$authenticated && $config->get('api', 'basic_auth_enabled', true)) {
+                    $basicAuthMiddleware = new BasicAuthenticationMiddleware($db, $config);
+                    $authenticated = $basicAuthMiddleware->process($request);
+                }
+            } else {
+                // For internal API routes, only try session-based authentication
+                // which will happen automatically in the parent constructor
+            }
+
+            // Skip further authentication if we're already authenticated
+            $authenticate = !$authenticated;
+        }
+
+        // Call parent constructor to perform session validation if needed
+        parent::__construct($requestParams, $authenticate);
+
+        // Create Symfony Request object from globals
+        $this->request = Request::createFromGlobals();
+
+        // Initialize the serializer
+        $encoders = [new JsonEncoder()];
+        $normalizers = [new ObjectNormalizer()];
+        $this->serializer = new Serializer($normalizers, $encoders);
+    }
+
     /**
      * Checks if the current request is a JSON request
      *
@@ -42,14 +131,14 @@ abstract class ApiBaseController extends BaseController
      */
     protected function isJsonRequest(): bool
     {
-        $contentType = $_SERVER['CONTENT_TYPE'] ?? '';
-        if (strpos($contentType, 'application/json') !== false) {
+        $contentType = $this->request->headers->get('Content-Type');
+        if ($contentType && strpos($contentType, 'application/json') !== false) {
             return true;
         }
 
         // Support both JSON and form data for flexibility
-        $input = file_get_contents('php://input');
-        return !empty($input) && $this->isValidJson($input);
+        $content = $this->request->getContent();
+        return !empty($content) && $this->isValidJson($content);
     }
 
     /**
@@ -68,22 +157,13 @@ abstract class ApiBaseController extends BaseController
      */
     protected function getJsonInput(): ?array
     {
-        // Try to get JSON from request body
-        $jsonInput = file_get_contents('php://input');
-
-        if (!empty($jsonInput)) {
-            $data = json_decode($jsonInput, true);
-            if (json_last_error() === JSON_ERROR_NONE) {
-                return $data;
-            }
+        if ($this->isJsonRequest()) {
+            $content = $this->request->getContent();
+            return json_decode($content, true);
         }
 
         // Fall back to POST data if no valid JSON in the body
-        if (!empty($_POST)) {
-            return $_POST;
-        }
-
-        return null;
+        return $this->request->request->all() ?: null;
     }
 
     /**
@@ -91,13 +171,12 @@ abstract class ApiBaseController extends BaseController
      *
      * @param mixed $data The data to return
      * @param int $status HTTP status code
+     * @param array $headers Additional headers to include
+     * @return JsonResponse
      */
-    protected function returnJsonResponse($data, int $status = 200): void
+    protected function returnJsonResponse($data, int $status = 200, array $headers = []): JsonResponse
     {
-        http_response_code($status);
-        header('Content-Type: application/json');
-        echo json_encode($data);
-        exit;
+        return new JsonResponse($data, $status, $headers);
     }
 
     /**
@@ -105,12 +184,71 @@ abstract class ApiBaseController extends BaseController
      *
      * @param string $message Error message
      * @param int $status HTTP status code
+     * @param string|null $code Optional error code
+     * @return JsonResponse
      */
-    protected function returnErrorResponse(string $message, int $status = 400): void
+    protected function returnErrorResponse(string $message, int $status = 400, ?string $code = null): JsonResponse
     {
-        $this->returnJsonResponse([
+        $response = [
             'error' => true,
             'message' => $message
-        ], $status);
+        ];
+
+        if ($code !== null) {
+            $response['code'] = $code;
+        }
+
+        return $this->returnJsonResponse($response, $status);
+    }
+
+    /**
+     * Helper method to serialize objects to JSON
+     *
+     * @param mixed $data The data to serialize
+     * @param array $context Serialization context
+     * @return string The serialized JSON
+     */
+    protected function serialize($data, array $context = []): string
+    {
+        return $this->serializer->serialize($data, 'json', $context);
+    }
+
+    /**
+     * Helper method to deserialize JSON to objects
+     *
+     * @param string $data The JSON string to deserialize
+     * @param string $type The target class name
+     * @param array $context Deserialization context
+     * @return object The deserialized object
+     */
+    protected function deserialize(string $data, string $type, array $context = [])
+    {
+        return $this->serializer->deserialize($data, $type, 'json', $context);
+    }
+
+    /**
+     * Determines if this is a public API route (v1, v2, etc.) or internal API route
+     *
+     * @param array $requestParams The request parameters
+     * @return bool True if this is a public API route, false otherwise
+     */
+    private function isPublicApiRoute(array $requestParams): bool
+    {
+        $page = $requestParams['page'] ?? '';
+
+        // Check if this is an API route
+        if (strpos($page, 'api/') !== 0) {
+            return false;
+        }
+
+        // Extract the API version from the route
+        $parts = explode('/', $page);
+        if (count($parts) < 2) {
+            return false;
+        }
+
+        // Check if the second part is a version indicator (v1, v2, etc.)
+        $versionPart = $parts[1] ?? '';
+        return preg_match('/^v\d+$/i', $versionPart) === 1;
     }
 }

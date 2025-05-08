@@ -1,0 +1,78 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=api_keys">{% trans %}API Keys{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Delete API Key{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete API Key{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-danger bg-danger bg-opacity-10">
+            <h5 class="alert-heading text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
+            <p>{% trans %}You are about to delete the API key{% endtrans %}: <strong>"{{ api_key.name }}"</strong></p>
+            <p>{% trans %}This action cannot be undone. Are you sure you want to proceed?{% endtrans %}</p>
+            <p class="mb-0 fw-bold">{% trans %}If you delete this API key, any applications using it will no longer be able to authenticate.{% endtrans %}</p>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header py-2 bg-light">
+                <strong>{% trans %}API Key Details{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <tbody>
+                            <tr>
+                                <th style="width: 30%">{% trans %}Name{% endtrans %}</th>
+                                <td>{{ api_key.name }}</td>
+                            </tr>
+                            <tr>
+                                <th>{% trans %}Created at{% endtrans %}</th>
+                                <td>{{ api_key.createdAt|date('Y-m-d H:i:s') }}</td>
+                            </tr>
+                            <tr>
+                                <th>{% trans %}Last used{% endtrans %}</th>
+                                <td>{% if api_key.lastUsedAt %}{{ api_key.lastUsedAt|date('Y-m-d H:i:s') }}{% else %}<span class="text-muted">{% trans %}Never{% endtrans %}</span>{% endif %}</td>
+                            </tr>
+                            {% if api_key.expiresAt %}
+                            <tr>
+                                <th>{% trans %}Expires at{% endtrans %}</th>
+                                <td>{{ api_key.expiresAt|date('Y-m-d H:i:s') }}</td>
+                            </tr>
+                            {% endif %}
+                            <tr>
+                                <th>{% trans %}Status{% endtrans %}</th>
+                                <td>
+                                    {% if api_key.isDisabled %}
+                                        <span class="badge bg-danger">{% trans %}Disabled{% endtrans %}</span>
+                                    {% elseif api_key.hasExpired %}
+                                        <span class="badge bg-danger">{% trans %}Expired{% endtrans %}</span>
+                                    {% else %}
+                                        <span class="badge bg-success">{% trans %}Active{% endtrans %}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <form method="post" action="index.php?page=api_keys&amp;action=delete&amp;id={{ api_key.id }}">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this API key{% endtrans %}
+                </button>
+                <a href="index.php?page=api_keys" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this API key{% endtrans %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
