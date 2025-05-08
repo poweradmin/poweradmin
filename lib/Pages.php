@@ -98,6 +98,7 @@ class Pages
             'users',
             'whois',
             'rdap',
+            'pdns_status',
         ];
     }
 }

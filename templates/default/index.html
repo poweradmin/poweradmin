@@ -2,6 +2,40 @@
     <h5>{% trans %}Welcome{% endtrans %} {{ user_name }}</h5>
 </div>
 <div class="row row-cols-3 row-cols-sm-4 row-cols-md-5 row-cols-lg-5 g-2">
+    {% if permissions['user_is_ueberuser'] and pdns_api_enabled and show_pdns_status %}
+    <div class="col mb-1 card-item">
+        <div class="card h-100 shadow-sm {% if pdns_server_status is defined %}{% if pdns_server_status.running %}border-success{% else %}border-danger{% endif %}{% endif %}">
+            <div class="card-header text-center bg-transparent border-0 pt-2">
+                <i class="bi bi-server display-4"></i>
+                {% if pdns_server_status is defined %}
+                    {% if pdns_server_status.running %}
+                    <div class="position-absolute top-0 end-0 mt-2 me-2">
+                        <span class="badge bg-success">{% trans %}Online{% endtrans %}</span>
+                    </div>
+                    {% else %}
+                    <div class="position-absolute top-0 end-0 mt-2 me-2">
+                        <span class="badge bg-danger">{% trans %}Offline{% endtrans %}</span>
+                    </div>
+                    {% endif %}
+                {% endif %}
+            </div>
+            <div class="card-body d-flex flex-column justify-content-between">
+                <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}PowerDNS Status{% endtrans %}</h6>
+                <p class="card-text small text-muted text-center d-none d-lg-block">
+                    {% if pdns_server_status is defined and pdns_server_status.running %}
+                        {% trans %}Server running{% endtrans %} v{{ pdns_server_status.version }}
+                    {% else %}
+                        {% trans %}Check PowerDNS server status{% endtrans %}
+                    {% endif %}
+                </p>
+                <a href="index.php?page=pdns_status" class="btn btn-light btn-sm mt-2" data-testid="pdns-status-link">
+                    <span class="d-none d-lg-inline">{% trans %}View Server Status{% endtrans %}</span>
+                    <span class="d-lg-none">{% trans %}Server Status{% endtrans %}</span>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
     {% if permissions['search'] %}
     <div class="col mb-1 card-item">
         <div class="card h-100 shadow-sm">

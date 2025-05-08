@@ -59,6 +59,20 @@ class IndexController extends BaseController
             'templ_perm_edit',
         ]);
 
+        // Check PowerDNS server status if API is enabled and user is admin
+        $pdnsServerStatus = null;
+        $pdnsApiEnabled = !empty($this->config->get('pdns_api', 'url', '')) && !empty($this->config->get('pdns_api', 'key', ''));
+        $showPdnsStatus = $this->config->get('interface', 'show_pdns_status', false);
+
+        if ($pdnsApiEnabled && $showPdnsStatus && $permissions['user_is_ueberuser']) {
+            $statusService = new \Poweradmin\Application\Service\PowerdnsStatusService();
+            $serverStatus = $statusService->getServerStatus();
+            $pdnsServerStatus = [
+                'running' => $serverStatus['running'] ?? false,
+                'version' => $serverStatus['version'] ?? 'unknown'
+            ];
+        }
+
         $this->render("index.html", [
             'user_name' => empty($_SESSION["name"]) ? $userlogin : $_SESSION["name"],
             'auth_used' => $_SESSION["auth_used"] ?? '',
@@ -71,6 +85,9 @@ class IndexController extends BaseController
             'api_enabled' => $this->config->get('api', 'enabled', false),
             'whois_restrict_to_admin' => $this->config->get('whois', 'restrict_to_admin', true),
             'rdap_restrict_to_admin' => $this->config->get('rdap', 'restrict_to_admin', true),
+            'pdns_api_enabled' => $pdnsApiEnabled,
+            'show_pdns_status' => $showPdnsStatus,
+            'pdns_server_status' => $pdnsServerStatus,
         ]);
     }
 }

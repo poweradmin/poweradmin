@@ -83,6 +83,7 @@ return [
         'display_template_in_zone_list' => false,
         'search_group_records' => false,      // Group records by name and content in search results (added in 3.8.0)
         'reverse_zone_sort' => 'natural',     // Reverse zone sorting algorithm: 'natural' (default) or 'hierarchical' (experimental) (added in 4.0.0)
+        'show_pdns_status' => false,          // Show PowerDNS server status page and dashboard card (added in 4.0.0)
 
         // Zone Editing Features
         'add_reverse_record' => true,         // Enable checkbox to add PTR record from regular zone view (added in 2.1.7)
@@ -174,6 +175,7 @@ return [
     'pdns_api' => [
         'url' => '',                               // PowerDNS API URL, e.g., 'http://127.0.0.1:8081' (added in 3.7.0)
         'key' => '',                               // PowerDNS API key (added in 3.7.0)
+        'server_name' => 'localhost',              // PowerDNS server name used in API calls (added in 4.0.0)
     ],
 
     /**

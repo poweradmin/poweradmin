@@ -198,4 +198,20 @@ class PowerdnsApiClient
 
         return $response['data'];
     }
+
+    public function getServerInfo(): array
+    {
+        $endpoint = $this->buildEndpoint("");
+        $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+        return $response['data'];
+    }
+
+    public function getMetrics(): array
+    {
+        $endpoint = $this->buildEndpoint("/statistics");
+        $response = $this->httpClient->makeRequest('GET', $endpoint);
+
+        return $response['data'];
+    }
 }

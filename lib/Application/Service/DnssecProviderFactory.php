@@ -42,7 +42,8 @@ class DnssecProviderFactory
         }
 
         $httpClient = new HttpClient($config->get('pdns_api', 'url'), $config->get('pdns_api', 'key'));
-        $apiClient = new PowerdnsApiClient($httpClient, 'localhost');
+        $serverName = $config->get('pdns_api', 'server_name', 'localhost');
+        $apiClient = new PowerdnsApiClient($httpClient, $serverName);
 
         $logger = new CompositeLegacyLogger();
 

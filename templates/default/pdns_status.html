@@ -1,0 +1,282 @@
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}PowerDNS Server Status{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <strong><i class="bi bi-server me-2"></i>{% trans %}PowerDNS Server Status{% endtrans %}</strong>
+        {% if server_status.running %}
+        <form method="POST" action="index.php?page=pdns_status&action=refresh">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="bi bi-arrow-clockwise me-1 text-white"></i>{% trans %}Refresh Status{% endtrans %}
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% if not pdns_api_enabled %}
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {% trans %}PowerDNS API is not configured. Please configure the PowerDNS API URL and key in your settings.{% endtrans %}
+        </div>
+        {% else %}
+
+        {% if server_status.running %}
+        <div class="d-flex align-items-center mb-3">
+            <div class="bg-success rounded-circle" style="width: 16px; height: 16px;"></div>
+            <span class="ms-2 fw-bold">{% trans %}Server Running{% endtrans %}</span>
+        </div>
+        {% else %}
+        <div class="d-flex align-items-center mb-3">
+            <div class="bg-danger rounded-circle" style="width: 16px; height: 16px;"></div>
+            <span class="ms-2 fw-bold">{% trans %}Server Not Running{% endtrans %}</span>
+        </div>
+        {% if server_status.error %}
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {{ server_status.error }}
+        </div>
+        {% endif %}
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card h-100 mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">{% trans %}Server Information{% endtrans %}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if server_status.running %}
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">{% trans %}Server Name{% endtrans %}</th>
+                                    <td>{{ server_status.server_name }}</td>
+                                </tr>
+                                {% if server_status.id is defined and server_status.id != server_status.server_name %}
+                                <tr>
+                                    <th scope="row">{% trans %}Server ID{% endtrans %}</th>
+                                    <td>{{ server_status.id }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <th scope="row">{% trans %}PowerDNS Version{% endtrans %}</th>
+                                    <td>{{ server_status.version }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{% trans %}Daemon Type{% endtrans %}</th>
+                                    <td>{{ server_status.daemon_type }}</td>
+                                </tr>
+                                {% if server_status.uptime is defined %}
+                                <tr>
+                                    <th scope="row">{% trans %}Uptime{% endtrans %}</th>
+                                    <td>{{ server_status.uptime }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-server text-muted mb-3" style="font-size: 2rem;"></i>
+                            <p class="mb-0">{% trans %}Server information is not available.{% endtrans %}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if slave_status|length > 0 %}
+            <div class="col-md-6">
+                <div class="card h-100 mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">{% trans %}Slave Servers{% endtrans %} (Supermasters)</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted mb-3">{% trans %}Showing connectivity status for DNS servers listed in the supermasters table.{% endtrans %}</p>
+                        {% if slave_status.error is defined %}
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            {{ slave_status.error }}
+                        </div>
+                        {% else %}
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{% trans %}Server IP{% endtrans %}</th>
+                                    <th scope="col">{% trans %}Status{% endtrans %}</th>
+                                    <th scope="col">{% trans %}Last Checked{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ip, info in slave_status %}
+                                <tr>
+                                    <td>{{ ip }}</td>
+                                    <td>
+                                        {% if info.status == 'ok' %}
+                                        <span class="badge bg-success">{% trans %}OK{% endtrans %}</span>
+                                        {% elseif info.status == 'unreachable' %}
+                                        <span class="badge bg-danger">{% trans %}Unreachable{% endtrans %}</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">{% trans %}Error{% endtrans %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ info.lastChecked }}</td>
+                                </tr>
+                                {% if info.error is defined %}
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="small text-danger">
+                                            <i class="bi bi-info-circle me-1"></i>{{ info.error }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if server_status.running and server_status.metrics is defined %}
+        <div class="my-4"></div>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">{% trans %}Server Statistics{% endtrans %}</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row row-cols-1 row-cols-md-4 g-3">
+                            <!-- Latency -->
+                            <div class="col">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="mb-0">{{ server_status.metrics['latency'] ?? '0' }}ms</h3>
+                                        <div class="small text-white-50">{% trans %}latency{% endtrans %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- UDP Queries -->
+                            <div class="col">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="mb-0">{{ server_status.metrics['udp-queries'] ?? '0' }}</h3>
+                                        <div class="small text-white-50">{% trans %}udp-queries{% endtrans %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- UDP Answers -->
+                            <div class="col">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="mb-0">{{ server_status.metrics['udp-answers'] ?? '0' }}</h3>
+                                        <div class="small text-white-50">{% trans %}udp-answers{% endtrans %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- UDP Answers Bytes -->
+                            <div class="col">
+                                <div class="card bg-primary text-white">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="mb-0">{{ server_status.metrics['udp-answers-bytes'] ?? '0' }} {% trans %}Bytes{% endtrans %}</h3>
+                                        <div class="small text-white-50">{% trans %}udp-answers-bytes{% endtrans %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Uptime -->
+                            <div class="col">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center p-3">
+                                        {% if server_status.formatted_uptime is defined %}
+                                        <h3 class="mb-0">{{ server_status.formatted_uptime }}</h3>
+                                        {% elseif server_status.uptime is defined %}
+                                        <h3 class="mb-0">{{ server_status.uptime }}</h3>
+                                        {% else %}
+                                        <h3 class="mb-0">{% trans %}Unknown{% endtrans %}</h3>
+                                        {% endif %}
+                                        <div class="small text-white-50">{% trans %}uptime{% endtrans %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- User CPU -->
+                            <div class="col">
+                                <div class="card bg-secondary text-white">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="mb-0">{{ server_status.metrics['pdns_auth_user_msec'] ?? server_status.metrics['user-msec'] ?? '0' }}</h3>
+                                        <div class="small text-white-50">{% trans %}user-msec{% endtrans %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- System CPU -->
+                            <div class="col">
+                                <div class="card bg-secondary text-white">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="mb-0">{{ server_status.metrics['pdns_auth_sys_msec'] ?? server_status.metrics['sys-msec'] ?? '0' }}</h3>
+                                        <div class="small text-white-50">{% trans %}sys-msec{% endtrans %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Corrupt Packets -->
+                            <div class="col">
+                                <div class="card bg-warning text-dark">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="mb-0">{{ server_status.metrics['corrupt-packets'] ?? '0' }}</h3>
+                                        <div class="small text-dark-50">{% trans %}corrupt-packets{% endtrans %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Cache Metrics -->
+                            <div class="col">
+                                <div class="card bg-success text-white">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="mb-0">{{ server_status.metrics['packetcache-hit'] ?? '0' }}</h3>
+                                        <div class="small text-white-50">{% trans %}packetcache-hit{% endtrans %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="col">
+                                <div class="card bg-warning text-dark">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="mb-0">{{ server_status.metrics['packetcache-miss'] ?? '0' }}</h3>
+                                        <div class="small text-dark-50">{% trans %}packetcache-miss{% endtrans %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Servfail Packets -->
+                            <div class="col">
+                                <div class="card bg-warning text-dark">
+                                    <div class="card-body text-center p-3">
+                                        <h3 class="mb-0">{{ server_status.metrics['servfail-packets'] ?? '0' }}</h3>
+                                        <div class="small text-dark-50">{% trans %}servfail-packets{% endtrans %}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>
