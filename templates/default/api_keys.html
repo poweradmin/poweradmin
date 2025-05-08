@@ -58,23 +58,23 @@
                         <td>{% if key.expiresAt %}{{ key.expiresAt|date('Y-m-d H:i') }}{% else %}<span class="text-muted">{% trans %}Never{% endtrans %}</span>{% endif %}</td>
                         <td class="text-end">
                             <div class="gap-2">
-                                <a class="btn btn-sm btn-outline-primary" href="index.php?page=api_keys&amp;action=edit&amp;id={{ key.id }}" title="{% trans %}Edit{% endtrans %}">
-                                    <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
-                                </a>
                                 <a class="btn btn-sm btn-outline-secondary" href="index.php?page=api_keys&amp;action=regenerate&amp;id={{ key.id }}" title="{% trans %}Regenerate{% endtrans %}">
-                                    <i class="bi bi-arrow-repeat text-secondary"></i> <span class="d-none d-md-inline text-secondary">{% trans %}Regenerate{% endtrans %}</span>
+                                    <i class="bi bi-arrow-repeat text-secondary"></i> <span class="d-none d-md-inline">{% trans %}Regenerate{% endtrans %}</span>
                                 </a>
                                 {% if key.isDisabled %}
-                                    <a class="btn btn-sm btn-outline-success" href="index.php?page=api_keys&amp;action=toggle&amp;id={{ key.id }}&amp;disable=0" title="{% trans %}Enable{% endtrans %}">
-                                        <i class="bi bi-check-circle text-success"></i> <span class="d-none d-md-inline text-success">{% trans %}Enable{% endtrans %}</span>
+                                    <a class="btn btn-sm btn-outline-secondary" href="index.php?page=api_keys&amp;action=toggle&amp;id={{ key.id }}&amp;disable=0" title="{% trans %}Enable{% endtrans %}">
+                                        <i class="bi bi-check-circle text-secondary"></i> <span class="d-none d-md-inline">{% trans %}Enable{% endtrans %}</span>
                                     </a>
                                 {% else %}
                                     <a class="btn btn-sm btn-outline-secondary" href="index.php?page=api_keys&amp;action=toggle&amp;id={{ key.id }}&amp;disable=1" title="{% trans %}Disable{% endtrans %}">
-                                        <i class="bi bi-slash-circle text-secondary"></i> <span class="d-none d-md-inline text-secondary">{% trans %}Disable{% endtrans %}</span>
+                                        <i class="bi bi-slash-circle text-secondary"></i> <span class="d-none d-md-inline">{% trans %}Disable{% endtrans %}</span>
                                     </a>
                                 {% endif %}
+                                <a class="btn btn-sm btn-outline-primary" href="index.php?page=api_keys&amp;action=edit&amp;id={{ key.id }}" title="{% trans %}Edit{% endtrans %}">
+                                    <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline">{% trans %}Edit{% endtrans %}</span>
+                                </a>
                                 <a class="btn btn-sm btn-outline-danger" href="index.php?page=api_keys&amp;action=delete&amp;id={{ key.id }}" title="{% trans %}Delete{% endtrans %}">
-                                    <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
+                                    <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline">{% trans %}Delete{% endtrans %}</span>
                                 </a>
                             </div>
                         </td>
