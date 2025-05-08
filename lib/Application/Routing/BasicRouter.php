@@ -85,6 +85,31 @@ class BasicRouter
     public function getControllerClassName(string $page): string
     {
         $baseNamespace = '\Poweradmin\Application\Controller\\';
+
+        // Support for nested controllers (e.g., 'api/validation', 'api/v1/zone', 'api/internal/zone')
+        if (strpos($page, '/') !== false) {
+            $parts = explode('/', $page);
+            $namespace = '';
+            $className = '';
+
+            // Process all parts except the last one as namespace components
+            for ($i = 0; $i < count($parts) - 1; $i++) {
+                // Use proper capitalization for API version segments (v1, v2, etc.)
+                if (strtolower($parts[$i]) === 'api' && isset($parts[$i + 1]) && preg_match('/^v\d+$/i', $parts[$i + 1])) {
+                    $namespace .= '\\' . ucfirst($parts[$i]) . '\\' . strtoupper($parts[$i + 1]);
+                    $i++; // Skip the next part as we've already processed it
+                } else {
+                    $namespace .= '\\' . ucfirst($parts[$i]);
+                }
+            }
+
+            // Last part is the class name
+            $className = str_replace(' ', '', ucwords(str_replace('_', ' ', $parts[count($parts) - 1])));
+
+            return $baseNamespace . ltrim($namespace, '\\') . '\\' . $className . 'Controller';
+        }
+
+        // Standard controller path
         $className = str_replace(' ', '', ucwords(str_replace('_', ' ', $page)));
         return $baseNamespace . $className . 'Controller';
     }
