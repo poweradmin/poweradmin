@@ -25,17 +25,18 @@ namespace Poweradmin\Infrastructure\Utility;
 /**
  * Class ReverseDomainHierarchySorting
  *
- * Provides sorting functionality for reverse DNS zones based on hierarchy.
- * This sorting prioritizes by the base network first (10.in-addr.arpa, 172.in-addr.arpa, 192.168.in-addr.arpa)
- * and then by the specific subnets within each network.
+ * Provides hierarchical sorting for reverse DNS zones based on network structure.
+ * This class creates a sorting order that organizes reverse zones by their network hierarchy,
+ * grouping all zones related to the same network together and sorting them logically.
  */
 class ReverseDomainHierarchySorting
 {
     /**
      * Get hierarchy-based sort order SQL clause for reverse DNS zones.
      *
-     * Sorts domains by extracting and comparing their components in hierarchical order.
-     * For example, all 10.in-addr.arpa zones will be grouped together, followed by 172.in-addr.arpa, etc.
+     * Sorts domains by extracting and comparing their components in hierarchical order,
+     * grouping zones by primary networks (e.g., 10.in-addr.arpa, 172.in-addr.arpa, 192.168.in-addr.arpa)
+     * and then sorting by subnet specificity within each network.
      *
      * @param string $field The full field name to sort (e.g., "table.name")
      * @param string $dbType The database type ('mysql', 'mysqli', 'pgsql', 'sqlite')
@@ -52,23 +53,44 @@ class ReverseDomainHierarchySorting
 
         // Generate database-specific hierarchical sort
         return match ($dbType) {
-            // MySQL version with SUBSTRING_INDEX to split the domain parts
+            // MySQL version
             'mysql', 'mysqli' => "
-                SUBSTRING_INDEX($field, '.in-addr.arpa', 1) $direction,  
-                SUBSTRING_INDEX($field, '.', 1) + 0 $direction,
+                /* First separate IPv4 from IPv6 */
+                CASE WHEN $field LIKE '%.in-addr.arpa' THEN 0 ELSE 1 END $direction,
+                
+                /* For IPv4 zones, extract the main network component */
+                SUBSTRING_INDEX(SUBSTRING_INDEX($field, '.in-addr.arpa', 1), '.', -1) + 0 $direction,
+                
+                /* Sort by specificity (number of parts) */
+                (LENGTH($field) - LENGTH(REPLACE($field, '.', ''))) $direction,
+                
+                /* Natural order for remaining parts */
                 $field $direction
             ",
 
-            // PostgreSQL version using SPLIT_PART
+            // PostgreSQL version
             'pgsql' => "
-                SPLIT_PART($field, '.in-addr.arpa', 1) $direction,
-                (SPLIT_PART($field, '.', 1))::integer $direction,
+                /* First separate IPv4 from IPv6 */
+                CASE WHEN $field LIKE '%.in-addr.arpa' THEN 0 ELSE 1 END $direction,
+                
+                /* For IPv4 zones, extract the main network component */
+                (SPLIT_PART(SPLIT_PART($field, '.in-addr.arpa', 1), '.', 
+                    array_length(string_to_array(SPLIT_PART($field, '.in-addr.arpa', 1), '.'), 1)
+                ))::integer $direction,
+                
+                /* Sort by specificity (number of parts) */
+                array_length(string_to_array($field, '.'), 1) $direction,
+                
+                /* Natural order for remaining parts */
                 $field $direction
             ",
 
-            // SQLite doesn't have built-in string splitting functions
-            // Fallback to basic comparison, which won't achieve the exact ordering
-            'sqlite' => "$field $direction",
+            // SQLite (limited functionality)
+            'sqlite' => "
+                /* SQLite has limited string manipulation, use simpler approach */
+                LENGTH($field) $direction,
+                $field $direction
+            ",
 
             // Fallback for unknown database types
             default => "$field $direction",
@@ -85,133 +107,56 @@ class ReverseDomainHierarchySorting
     public function sortDomainsHierarchically(array $domains): array
     {
         usort($domains, function ($a, $b) {
-            // Extract base network portions by removing '.in-addr.arpa'
-            $aBase = str_replace('.in-addr.arpa', '', $a);
-            $bBase = str_replace('.in-addr.arpa', '', $b);
+            // First separate IPv4 and IPv6 zones
+            $aIsIpv4 = str_contains($a, '.in-addr.arpa');
+            $bIsIpv4 = str_contains($b, '.in-addr.arpa');
+            $aIsIpv6 = str_contains($a, '.ip6.arpa');
+            $bIsIpv6 = str_contains($b, '.ip6.arpa');
 
-            // Split into parts (reversed order for IP addressing)
-            $aParts = array_reverse(explode('.', $aBase));
-            $bParts = array_reverse(explode('.', $bBase));
-
-            // Compare by first component (main network)
-            $aFirstComponent = isset($aParts[0]) ? intval($aParts[0]) : 0;
-            $bFirstComponent = isset($bParts[0]) ? intval($bParts[0]) : 0;
-
-            if ($aFirstComponent != $bFirstComponent) {
-                return $aFirstComponent - $bFirstComponent;
+            // Sort IPv4 before IPv6
+            if ($aIsIpv4 && $bIsIpv6) {
+                return -1;
+            }
+            if ($aIsIpv6 && $bIsIpv4) {
+                return 1;
             }
 
-            // If first components are equal, sort by number of parts (least specific first)
-            $aCount = count($aParts);
-            $bCount = count($bParts);
+            // For IPv4 reverse zones
+            if ($aIsIpv4 && $bIsIpv4) {
+                // Extract the parts (removing .in-addr.arpa)
+                $aParts = array_reverse(explode('.', str_replace('.in-addr.arpa', '', $a)));
+                $bParts = array_reverse(explode('.', str_replace('.in-addr.arpa', '', $b)));
 
-            if ($aCount != $bCount) {
-                return $aCount - $bCount;
-            }
+                // Compare by top network component (the most significant octet)
+                // Example: For "1.2.10.in-addr.arpa", the top network is "10"
+                $aNetwork = isset($aParts[0]) ? (int)$aParts[0] : 0;
+                $bNetwork = isset($bParts[0]) ? (int)$bParts[0] : 0;
 
-            // If parts count is equal, sort by second octet (if available)
-            if ($aCount > 1 && $bCount > 1) {
-                $aSecond = intval($aParts[1]);
-                $bSecond = intval($bParts[1]);
-
-                if ($aSecond != $bSecond) {
-                    return $aSecond - $bSecond;
-                }
-            }
-
-            // If all else is equal, use the original string order
-            return strcmp($a, $b);
-        });
-
-        return $domains;
-    }
-
-    /**
-     * Custom sorting implementation specifically designed to match the required order.
-     * This matches the exact specified output ordering.
-     *
-     * @param array $domains Array of domain names to sort
-     * @return array Sorted array of domain names
-     */
-    public function customSortForReverseZones(array $domains): array
-    {
-        usort($domains, function ($a, $b) {
-            // Helper function to extract the top-level network part
-            $getNetworkPart = function ($domain) {
-                $parts = explode('.', str_replace('.in-addr.arpa', '', $domain));
-                return end($parts);
-            };
-
-            // Get top-level network parts (e.g. "10" from "10.in-addr.arpa" or "1.10.in-addr.arpa")
-            $aNetwork = $getNetworkPart($a);
-            $bNetwork = $getNetworkPart($b);
-
-            // Compare networks numerically
-            if ($aNetwork != $bNetwork) {
-                return intval($aNetwork) - intval($bNetwork);
-            }
-
-            // Extract all parts for further comparison
-            $aParts = explode('.', str_replace('.in-addr.arpa', '', $a));
-            $bParts = explode('.', str_replace('.in-addr.arpa', '', $b));
-
-            // Same network, now sort by specificity (number of parts)
-            $aCount = count($aParts);
-            $bCount = count($bParts);
-
-            if ($aCount != $bCount) {
-                return $aCount - $bCount;
-            }
-
-            // Check the exact ordering for special cases
-            // For the 10.in-addr.arpa network family
-            if ($aNetwork == '10' && $aCount > 1 && $bCount > 1) {
-                // For second-level domains in 10.in-addr.arpa
-                if ($aCount == 2 && $bCount == 2) {
-                    return intval($aParts[0]) - intval($bParts[0]);
+                if ($aNetwork !== $bNetwork) {
+                    return $aNetwork - $bNetwork;
                 }
 
-                // For third-level domains in 10.in-addr.arpa (match the specific ordering requested)
-                if ($aCount == 3 && $bCount == 3) {
-                    // Custom ordering to match the requested output
-                    $thirdLevelOrder = [
-                        '252.1.10.in-addr.arpa' => 1,
-                        '100.100.10.in-addr.arpa' => 2
-                    ];
+                // Same network, compare by specificity (number of parts)
+                // Less specific zones (fewer parts) come first
+                $aCount = count($aParts);
+                $bCount = count($bParts);
 
-                    if (isset($thirdLevelOrder[$a]) && isset($thirdLevelOrder[$b])) {
-                        return $thirdLevelOrder[$a] - $thirdLevelOrder[$b];
+                if ($aCount !== $bCount) {
+                    return $aCount - $bCount;
+                }
+
+                // Same specificity, compare by parts from most significant to least
+                for ($i = 0; $i < $aCount; $i++) {
+                    $aValue = isset($aParts[$i]) ? (int)$aParts[$i] : 0;
+                    $bValue = isset($bParts[$i]) ? (int)$bParts[$i] : 0;
+
+                    if ($aValue !== $bValue) {
+                        return $aValue - $bValue;
                     }
                 }
             }
 
-            // For the 192.168.in-addr.arpa network family
-            if ($aNetwork == '192' && $aCount > 2 && $bCount > 2) {
-                // Custom ordering to match the requested output for 192.168.x.y domains
-                $customOrder = [
-                    '200.1.168.192.in-addr.arpa' => 1,
-                    '1.2.168.192.in-addr.arpa' => 2,
-                    '2.255.168.192.in-addr.arpa' => 3
-                ];
-
-                if (isset($customOrder[$a]) && isset($customOrder[$b])) {
-                    return $customOrder[$a] - $customOrder[$b];
-                }
-            }
-
-            // Default comparison by parts from most to least significant
-            for ($i = count($aParts) - 1; $i >= 0; $i--) {
-                if (!isset($aParts[$i]) || !isset($bParts[$i])) {
-                    // Different length arrays, shorter one comes first
-                    return isset($aParts[$i]) ? 1 : -1;
-                }
-
-                if ($aParts[$i] != $bParts[$i]) {
-                    return intval($aParts[$i]) - intval($bParts[$i]);
-                }
-            }
-
-            // If everything else is equal, use lexicographical comparison
+            // For IPv6 reverse zones or default comparison
             return strcmp($a, $b);
         });
 

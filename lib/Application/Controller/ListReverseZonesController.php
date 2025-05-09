@@ -127,7 +127,7 @@ class ListReverseZonesController extends BaseController
             $zone_sort_direction
         );
 
-        // Apply custom sorting when sorting by name
+        // Apply client-side sorting when sorting by name for additional flexibility
         if ($zone_sort_by === 'name' && !empty($reverse_zones)) {
             // Get the sorting type from configuration (natural is default)
             $sort_type = $this->config->get('interface', 'reverse_zone_sort', 'natural');
