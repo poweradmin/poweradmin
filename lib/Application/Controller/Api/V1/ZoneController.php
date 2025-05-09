@@ -31,8 +31,12 @@
 
 namespace Poweradmin\Application\Controller\Api\v1;
 
-use OpenApi\Annotations as OA;
+use Poweradmin\Domain\Service\Dns\RecordManager;
+use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
+use Poweradmin\Domain\Service\Dns\SOARecordManager;
+use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Infrastructure\Repository\RecordRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -44,6 +48,8 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 class ZoneController extends V1ApiBaseController
 {
     private DbZoneRepository $zoneRepository;
+    private RecordRepository $recordRepository;
+    private RecordManagerInterface $recordManager;
 
     /**
      * Constructor for ZoneController
@@ -55,6 +61,18 @@ class ZoneController extends V1ApiBaseController
         parent::__construct($request);
 
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
+
+        // Initialize record manager
+        $validationService = new DnsRecordValidationService($this->db, $this->getConfig());
+        $soaRecordManager = new SOARecordManager($this->db, $this->getConfig(), $this->zoneRepository);
+        $this->recordManager = new RecordManager(
+            $this->db,
+            $this->getConfig(),
+            $validationService,
+            $soaRecordManager,
+            $this->zoneRepository
+        );
     }
 
     /**
@@ -102,6 +120,8 @@ class ZoneController extends V1ApiBaseController
     {
         return match ($action) {
             'create' => $this->createZone(),
+            'add_record' => $this->addRecord(),
+            'set_permissions' => $this->setDomainPermissions(),
             default => $this->returnApiError('Unknown action', 400),
         };
     }
@@ -116,6 +136,7 @@ class ZoneController extends V1ApiBaseController
     {
         return match ($action) {
             'update' => $this->updateZone(),
+            'update_record' => $this->updateRecord(),
             default => $this->returnApiError('Unknown action', 400),
         };
     }
@@ -378,33 +399,488 @@ class ZoneController extends V1ApiBaseController
     /**
      * Update an existing zone
      */
-    private function updateZone(): void
+    private function updateZone(): JsonResponse
     {
         $input = $this->getJsonInput();
 
         if (!$input) {
-            $this->returnApiError('Invalid input data', 400);
-            return;
+            return $this->returnApiError('Invalid input data', 400);
         }
 
         // Ensure zone ID is provided
         if (!isset($input['id']) || (int)$input['id'] <= 0) {
-            $this->returnApiError('Missing or invalid zone ID', 400);
-            return;
+            return $this->returnApiError('Missing or invalid zone ID', 400);
         }
 
         // Implementation would continue here with actual zone update logic
         // For this example, we'll just return a success response
 
-        $this->returnApiResponse([
+        return $this->returnApiResponse([
             'message' => 'Zone updated successfully'
+        ]);
+    }
+
+    /**
+     * Update a DNS record
+     *
+     * @OA\Put(
+     *     path="/v1/zone",
+     *     operationId="updateRecord",
+     *     summary="Update a DNS record",
+     *     tags={"zones"},
+     *     security={{"bearerAuth":{}, "apiKeyHeader":{}}},
+     *     @OA\Parameter(
+     *         name="action",
+     *         in="query",
+     *         required=true,
+     *         description="Action parameter (must be 'update_record')",
+     *         @OA\Schema(type="string", default="update_record", enum={"update_record"})
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Record update information",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="record_id", type="integer", example=123, description="ID of the record to update"),
+     *             @OA\Property(property="name", type="string", example="www.example.com", description="New record name"),
+     *             @OA\Property(property="type", type="string", example="A", description="Record type"),
+     *             @OA\Property(property="content", type="string", example="192.168.1.1", description="New record content"),
+     *             @OA\Property(property="ttl", type="integer", example=3600, description="New TTL value"),
+     *             @OA\Property(property="prio", type="integer", example=0, description="New priority (for MX/SRV records)"),
+     *             @OA\Property(property="disabled", type="integer", example=0, description="Disabled flag (0=enabled, 1=disabled)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Record updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Record updated successfully"),
+     *                 @OA\Property(
+     *                     property="record",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=123),
+     *                     @OA\Property(property="name", type="string", example="www.example.com"),
+     *                     @OA\Property(property="type", type="string", example="A"),
+     *                     @OA\Property(property="content", type="string", example="192.168.1.1"),
+     *                     @OA\Property(property="ttl", type="integer", example=3600),
+     *                     @OA\Property(property="prio", type="integer", example=0),
+     *                     @OA\Property(property="disabled", type="integer", example=0)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid input data"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid or missing API key"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="You do not have permission to update this record"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Record not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Record not found"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     )
+     * )
+     *
+     * @return JsonResponse The JSON response
+     */
+    private function updateRecord(): JsonResponse
+    {
+        $input = $this->getJsonInput();
+
+        if (!$input) {
+            return $this->returnApiError('Invalid input data', 400);
+        }
+
+        // Ensure record ID is provided
+        if (!isset($input['record_id']) || (int)$input['record_id'] <= 0) {
+            return $this->returnApiError('Missing or invalid record ID', 400);
+        }
+
+        $recordId = (int)$input['record_id'];
+
+        // Get the current record details
+        $record = $this->recordRepository->getRecordFromId($recordId);
+
+        if (!is_array($record) || empty($record)) {
+            return $this->returnApiError('Record not found', 404);
+        }
+
+        // Prepare the record update data
+        $updateData = [
+            'rid' => $recordId,
+            'zid' => $record['domain_id'],
+            'name' => $input['name'] ?? $record['name'],
+            'type' => $input['type'] ?? $record['type'],
+            'content' => $input['content'] ?? $record['content'],
+            'ttl' => isset($input['ttl']) ? (int)$input['ttl'] : (int)$record['ttl'],
+            'prio' => isset($input['prio']) ? (int)$input['prio'] : (int)$record['prio'],
+            'disabled' => isset($input['disabled']) ? (int)$input['disabled'] : (int)$record['disabled']
+        ];
+
+        // Check if the API key has permission to modify this zone
+        // This will be implemented in a later task for domain permissions
+
+        // Attempt to update the record
+        $success = $this->recordManager->editRecord($updateData);
+
+        if (!$success) {
+            // If there was an error, return the error message
+            return $this->returnApiError('Failed to update record', 400);
+        }
+
+        // Get the updated record to return in the response
+        $updatedRecord = $this->recordRepository->getRecordFromId($recordId);
+
+        return $this->returnApiResponse([
+            'message' => 'Record updated successfully',
+            'record' => $updatedRecord
+        ]);
+    }
+
+    /**
+     * Add a new DNS record
+     *
+     * @OA\Post(
+     *     path="/v1/zone",
+     *     operationId="addRecord",
+     *     summary="Add a new DNS record to a zone",
+     *     tags={"zones"},
+     *     security={{"bearerAuth":{}, "apiKeyHeader":{}}},
+     *     @OA\Parameter(
+     *         name="action",
+     *         in="query",
+     *         required=true,
+     *         description="Action parameter (must be 'add_record')",
+     *         @OA\Schema(type="string", default="add_record", enum={"add_record"})
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Record information",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="zone_id", type="integer", example=1, description="Zone ID"),
+     *             @OA\Property(property="name", type="string", example="www.example.com", description="Record name"),
+     *             @OA\Property(property="type", type="string", example="A", description="Record type"),
+     *             @OA\Property(property="content", type="string", example="192.168.1.1", description="Record content"),
+     *             @OA\Property(property="ttl", type="integer", example=3600, description="TTL value"),
+     *             @OA\Property(property="prio", type="integer", example=0, description="Priority (for MX/SRV records)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Record created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Record added successfully"),
+     *                 @OA\Property(property="record_id", type="integer", example=123)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid input data"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid or missing API key"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="You do not have permission to add records to this zone"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Zone not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Zone not found"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     )
+     * )
+     *
+     * @return JsonResponse The JSON response
+     */
+    private function addRecord(): JsonResponse
+    {
+        $input = $this->getJsonInput();
+
+        if (!$input) {
+            return $this->returnApiError('Invalid input data', 400);
+        }
+
+        // Validate required fields
+        $requiredFields = ['zone_id', 'name', 'type', 'content'];
+        foreach ($requiredFields as $field) {
+            if (!isset($input[$field]) || (is_string($input[$field]) && trim($input[$field]) === '')) {
+                return $this->returnApiError("Missing required field: {$field}", 400);
+            }
+        }
+
+        $zoneId = (int)$input['zone_id'];
+        $name = $input['name'];
+        $type = $input['type'];
+        $content = $input['content'];
+        $ttl = isset($input['ttl']) ? (int)$input['ttl'] : (int)$this->getConfig()->get('dns', 'ttl', 86400);
+        $prio = isset($input['prio']) ? (int)$input['prio'] : 0;
+
+        // Verify that the zone exists
+        $zone = $this->zoneRepository->getZone($zoneId);
+        if (!$zone) {
+            return $this->returnApiError('Zone not found', 404);
+        }
+
+        // Check if the API key has permission to modify this zone
+        // This will be implemented in a later task for domain permissions
+
+        try {
+            // Attempt to add the record
+            $success = $this->recordManager->addRecord(
+                $zoneId,
+                $name,
+                $type,
+                $content,
+                $ttl,
+                $prio
+            );
+
+            if (!$success) {
+                return $this->returnApiError('Failed to add record', 400);
+            }
+
+            // Get the ID of the newly created record
+            // This is a simplified approach and might need adjustment based on how your system works
+            $pdns_db_name = $this->getConfig()->get('database', 'pdns_name');
+            $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+            $query = "SELECT id FROM $records_table
+                     WHERE domain_id = :domain_id
+                     AND name = :name
+                     AND type = :type
+                     AND content = :content
+                     ORDER BY id DESC LIMIT 1";
+
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':domain_id', $zoneId, \PDO::PARAM_INT);
+            $stmt->bindValue(':name', strtolower($name), \PDO::PARAM_STR);
+            $stmt->bindValue(':type', $type, \PDO::PARAM_STR);
+            $stmt->bindValue(':content', $content, \PDO::PARAM_STR);
+            $stmt->execute();
+
+            $recordId = $stmt->fetchColumn();
+
+            return $this->returnApiResponse([
+                'message' => 'Record added successfully',
+                'record_id' => (int)$recordId
+            ], true, null, 201);
+        } catch (\Exception $e) {
+            return $this->returnApiError($e->getMessage(), 400);
+        }
+    }
+
+    /**
+     * Set domain permissions for API key
+     *
+     * @OA\Post(
+     *     path="/v1/zone",
+     *     operationId="setDomainPermissions",
+     *     summary="Set domain permissions for API key",
+     *     tags={"zones"},
+     *     security={{"bearerAuth":{}, "apiKeyHeader":{}}},
+     *     @OA\Parameter(
+     *         name="action",
+     *         in="query",
+     *         required=true,
+     *         description="Action parameter (must be 'set_permissions')",
+     *         @OA\Schema(type="string", default="set_permissions", enum={"set_permissions"})
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Domain permission information",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="domain_id", type="integer", example=1, description="Domain ID to assign permissions for"),
+     *             @OA\Property(property="user_id", type="integer", example=2, description="User ID to assign as domain owner")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Domain permissions set successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Domain permissions set successfully"),
+     *                 @OA\Property(property="domain_id", type="integer", example=1),
+     *                 @OA\Property(property="user_id", type="integer", example=2)
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid input data"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid or missing API key"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=403,
+     *         description="Forbidden",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="You do not have permission to set domain permissions"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Domain not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Domain not found"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     )
+     * )
+     *
+     * @return JsonResponse The JSON response
+     */
+    private function setDomainPermissions(): JsonResponse
+    {
+        $input = $this->getJsonInput();
+
+        if (!$input) {
+            return $this->returnApiError('Invalid input data', 400);
+        }
+
+        // Validate required fields
+        $requiredFields = ['domain_id', 'user_id'];
+        foreach ($requiredFields as $field) {
+            if (!isset($input[$field]) || (int)$input[$field] <= 0) {
+                return $this->returnApiError("Missing or invalid required field: {$field}", 400);
+            }
+        }
+
+        $domainId = (int)$input['domain_id'];
+        $userId = (int)$input['user_id'];
+
+        // Check if domain exists
+        $domain = $this->zoneRepository->getZone($domainId);
+        if (!$domain) {
+            return $this->returnApiError('Domain not found', 404);
+        }
+
+        // Check if user exists
+        if (!\Poweradmin\Domain\Model\UserManager::isValidUser($this->db, $userId)) {
+            return $this->returnApiError('User not found', 404);
+        }
+
+        // Check if the current user has permission to modify domain ownership
+        if (
+            !\Poweradmin\Domain\Model\UserManager::verifyPermission($this->db, 'zone_meta_edit_others') &&
+            !\Poweradmin\Domain\Model\UserManager::verifyPermission($this->db, 'zone_meta_edit_own')
+        ) {
+            return $this->returnApiError('You do not have permission to set domain permissions', 403);
+        }
+
+        // If current user only has permission to edit own zones, check ownership
+        if (
+            !\Poweradmin\Domain\Model\UserManager::verifyPermission($this->db, 'zone_meta_edit_others') &&
+            !\Poweradmin\Domain\Model\UserManager::verifyUserIsOwnerZoneId($this->db, $domainId)
+        ) {
+            return $this->returnApiError('You do not have permission to modify this domain', 403);
+        }
+
+        // Add the user as an owner of the zone
+        $success = \Poweradmin\Domain\Service\Dns\DomainManager::addOwnerToZone($this->db, $domainId, $userId);
+
+        if (!$success) {
+            // Check if the user is already an owner
+            $query = "SELECT COUNT(id) FROM zones WHERE owner = :user_id AND domain_id = :domain_id";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
+            $stmt->bindValue(':domain_id', $domainId, \PDO::PARAM_INT);
+            $stmt->execute();
+
+            if ($stmt->fetchColumn() > 0) {
+                return $this->returnApiResponse([
+                    'message' => 'User is already an owner of this domain',
+                    'domain_id' => $domainId,
+                    'user_id' => $userId
+                ]);
+            }
+
+            return $this->returnApiError('Failed to set domain permissions', 500);
+        }
+
+        return $this->returnApiResponse([
+            'message' => 'Domain permissions set successfully',
+            'domain_id' => $domainId,
+            'user_id' => $userId
         ]);
     }
 
     /**
      * Delete a zone
      */
-    private function deleteZone(): void
+    private function deleteZone(): JsonResponse
     {
         $input = $this->getJsonInput();
 
@@ -418,14 +894,13 @@ class ZoneController extends V1ApiBaseController
         }
 
         if ($zoneId <= 0) {
-            $this->returnApiError('Missing or invalid zone ID', 400);
-            return;
+            return $this->returnApiError('Missing or invalid zone ID', 400);
         }
 
         // Implementation would continue here with actual zone deletion logic
         // For this example, we'll just return a success response
 
-        $this->returnApiResponse([
+        return $this->returnApiResponse([
             'message' => 'Zone deleted successfully'
         ]);
     }

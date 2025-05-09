@@ -31,9 +31,7 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
-use OpenApi\Annotations as OA;
 use Poweradmin\BaseController;
-use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
