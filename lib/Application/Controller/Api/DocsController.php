@@ -37,36 +37,7 @@ use Poweradmin\BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[OA\OpenApi(openapi: '3.0.0')]
-#[OA\Info(
-    title: "Poweradmin API",
-    version: "1.0.0",
-    description: "API for Poweradmin DNS Management",
-    contact: new OA\Contact(
-        email: "edmondas@poweradmin.org",
-        name: "Poweradmin Development Team"
-    ),
-    license: new OA\License(
-        name: "GPL-3.0",
-        url: "https://opensource.org/licenses/GPL-3.0"
-    )
-)]
-#[OA\Server(
-    url: "/",
-    description: "API Server"
-)]
-#[OA\SecurityScheme(
-    securityScheme: "bearerAuth",
-    type: "http",
-    scheme: "bearer",
-    bearerFormat: "API Key"
-)]
-#[OA\SecurityScheme(
-    securityScheme: "apiKeyHeader",
-    type: "apiKey",
-    name: "X-API-Key",
-    in: "header"
-)]
+// OpenAPI definitions are centralized in OpenApiConfig class
 class DocsController extends BaseController
 {
     // Inherits config from parent
@@ -96,15 +67,8 @@ class DocsController extends BaseController
         $request = Request::createFromGlobals();
         $action = $request->query->get('action', 'ui');
 
-        switch ($action) {
-            case 'json':
-                $this->showOpenApiJson();
-                break;
-            case 'ui':
-            default:
-                $this->showSwaggerUi();
-                break;
-        }
+        // Always show the UI in this controller
+        $this->showSwaggerUi();
     }
 
     /**
@@ -121,8 +85,9 @@ class DocsController extends BaseController
         $response->headers->set('Content-Security-Policy', "default-src 'self'; script-src 'self' https://unpkg.com 'unsafe-inline'; style-src 'self' https://unpkg.com 'unsafe-inline'; img-src 'self' data: https://unpkg.com; connect-src 'self'");
 
         // Get the base URL for API docs JSON
-        $baseUrl = $this->getBaseUrl();
-        $jsonUrl = $baseUrl . '?action=json';
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $jsonUrl = $protocol . $host . '/index.php?page=api/docs/json';
 
         // Get API details from configuration
         $apiTitle = "Poweradmin API";
@@ -350,8 +315,12 @@ HTML;
 
     /**
      * Generate and show OpenAPI JSON
+     *
+     * This method is not used directly anymore.
+     * The JsonController now handles the JSON generation directly.
+     * This method is kept for backward compatibility.
      */
-    private function showOpenApiJson(): void
+    protected function showOpenApiJson(): void
     {
         // Only load Swagger classes in development environment
         if (!class_exists('\OpenApi\Generator')) {
@@ -361,49 +330,12 @@ HTML;
         }
 
         try {
-            // Define the OpenAPI tags first to ensure proper organization
-            $tags = [
-                new OA\Tag(name: 'zones', description: 'Zone and DNS record management'),
-                new OA\Tag(name: 'users', description: 'User authentication and verification')
-            ];
-
-            // Configure OpenAPI generator with advanced options
-            $options = [
-                'validate' => true,
-                'security' => [],  // Global security applied to all operations
-                'tags' => $tags
-            ];
-
-            // Generate OpenAPI spec with verbose error handling
-            $openapi = Generator::scan([
-                __DIR__ . '/v1',  // API controllers
-                __DIR__,          // Base API docs
-            ], $options);
-
-            // Add CORS headers to allow external tools to access the documentation
-            $json = $openapi->toJson();
-
-            // Validate JSON to catch syntax errors
-            json_decode($json);
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new \Exception('JSON error: ' . json_last_error_msg());
-            }
-
-            $response = new Response();
-            $response->headers->set('Content-Type', 'application/json');
-
-            // Add CORS headers to allow external tools to access the documentation
-            $response->headers->set('Access-Control-Allow-Origin', '*');
-            $response->headers->set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-API-Key');
-            $response->headers->set('Access-Control-Max-Age', '3600');
-
-            $response->setContent($json);
-            $response->send();
+            // Redirect to the JSON controller endpoint
+            header('Location: ' . $_SERVER['SCRIPT_NAME'] . '?page=api/docs/json');
+            exit;
         } catch (\Exception $e) {
             $response = new Response(
-                'Error generating OpenAPI documentation: ' . $e->getMessage() .
-                "\nTrace: " . $e->getTraceAsString(),
+                'Error generating OpenAPI documentation: ' . $e->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
             $response->headers->set('Content-Type', 'text/plain');
@@ -417,7 +349,7 @@ HTML;
      *
      * @return bool True if API docs should be enabled
      */
-    private function isApiDocsEnabled(): bool
+    protected function isApiDocsEnabled(): bool
     {
         // Check if API is enabled first
         $apiEnabled = (bool) $this->config->get('api', 'enabled', false);
@@ -438,7 +370,7 @@ HTML;
     /**
      * Show 404 page
      */
-    private function show404Page(): void
+    protected function show404Page(): void
     {
         $response = new Response('API documentation not available', Response::HTTP_NOT_FOUND);
         $response->send();

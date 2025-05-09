@@ -51,6 +51,7 @@ class Pages
             'add_zone_templ_record',
             'add_zone_templ',
             'api/docs',
+            'api/docs/json',
             'api/internal/validation',
             'api/internal/zone',
             'api/v1/zone',

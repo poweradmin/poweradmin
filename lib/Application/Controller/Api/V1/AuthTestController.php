@@ -22,20 +22,60 @@
 
 namespace Poweradmin\Application\Controller\Api\v1;
 
+use OpenApi\Attributes as OA;
 use Poweradmin\Application\Controller\Api\ApiBaseController;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Model\UserManager;
 
 /**
  * API controller for testing authentication methods
- *
- * @package Poweradmin\Application\Controller\Api\v1
  */
+// Tag defined in OpenApiConfig class
 class AuthTestController extends ApiBaseController
 {
     /**
-     * Run the controller
+     * Test API authentication
+     *
+     * @return void
      */
+    #[OA\Get(
+        path: '/api/v1/auth/test',
+        operationId: 'v1AuthTest',
+        description: 'Verifies the current authentication credentials and returns user information',
+        summary: 'Test API authentication credentials',
+        security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
+        tags: ['users']
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Authentication successful',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'authenticated', type: 'boolean', example: true),
+                new OA\Property(property: 'user_id', type: 'integer', example: 1),
+                new OA\Property(property: 'username', type: 'string', example: 'admin'),
+                new OA\Property(property: 'auth_method', type: 'string', example: 'api_key'),
+                new OA\Property(property: 'is_admin', type: 'boolean', example: true),
+                new OA\Property(
+                    property: 'permissions',
+                    type: 'array',
+                    items: new OA\Items(type: 'string')
+                ),
+                new OA\Property(property: 'server_time', type: 'string', example: '2025-05-09 08:30:00')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Authentication failed',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'error', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', example: 'Authentication required'),
+                new OA\Property(property: 'code', type: 'string', example: 'auth_required')
+            ]
+        )
+    )]
     public function run(): void
     {
         // Check if user is authenticated

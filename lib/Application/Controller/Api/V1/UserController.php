@@ -36,13 +36,9 @@ use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use OpenApi\Attributes as OA;
 
-/**
- * @OA\Tag(
- *     name="users",
- *     description="API Endpoints for User management"
- * )
- */
+// Tag defined in OpenApiConfig class
 class UserController extends V1ApiBaseController
 {
     private DbUserRepository $userRepository;
@@ -109,51 +105,60 @@ class UserController extends V1ApiBaseController
     /**
      * Verify a user and API key combination
      *
-     * @OA\Get(
-     *     path="/v1/user",
-     *     operationId="verifyUser",
-     *     summary="Verify a user and API key",
-     *     tags={"users"},
-     *     security={{"bearerAuth":{}, "apiKeyHeader":{}}},
-     *     @OA\Parameter(
-     *         name="action",
-     *         in="query",
-     *         required=true,
-     *         description="Action parameter (must be 'verify')",
-     *         @OA\Schema(type="string", default="verify", enum={"verify"})
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="User and API key verification result",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(
-     *                 property="data",
-     *                 type="object",
-     *                 @OA\Property(property="valid", type="boolean", example=true),
-     *                 @OA\Property(property="user_id", type="integer", example=1),
-     *                 @OA\Property(property="username", type="string", example="admin"),
-     *                 @OA\Property(property="permissions", type="object",
-     *                     @OA\Property(property="is_admin", type="boolean", example=true),
-     *                     @OA\Property(property="zone_creation_allowed", type="boolean", example=true),
-     *                     @OA\Property(property="zone_management_allowed", type="boolean", example=true)
-     *                 )
-     *             )
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=401,
-     *         description="Unauthorized",
-     *         @OA\JsonContent(
-     *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Invalid or missing API key"),
-     *             @OA\Property(property="data", type="null")
-     *         )
-     *     )
-     * )
-     *
      * @return JsonResponse The JSON response
      */
+    #[OA\Get(
+        path: '/api/v1/user/verify',
+        operationId: 'v1UserVerify',
+        summary: 'Verify a user and API key',
+        tags: ['users'],
+        security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
+    )]
+    #[OA\Parameter(
+        name: 'action',
+        in: 'query',
+        required: true,
+        description: 'Action parameter (must be \'verify\')',
+        schema: new OA\Schema(type: 'string', default: 'verify', enum: ['verify'])
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'User and API key verification result',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
+                new OA\Property(
+                    property: 'data',
+                    type: 'object',
+                    properties: [
+                        new OA\Property(property: 'valid', type: 'boolean', example: true),
+                        new OA\Property(property: 'user_id', type: 'integer', example: 1),
+                        new OA\Property(property: 'username', type: 'string', example: 'admin'),
+                        new OA\Property(
+                            property: 'permissions',
+                            type: 'object',
+                            properties: [
+                                new OA\Property(property: 'is_admin', type: 'boolean', example: true),
+                                new OA\Property(property: 'zone_creation_allowed', type: 'boolean', example: true),
+                                new OA\Property(property: 'zone_management_allowed', type: 'boolean', example: true)
+                            ]
+                        )
+                    ]
+                )
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 401,
+        description: 'Unauthorized',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'Invalid or missing API key'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
+    )]
     private function verifyUser(): JsonResponse
     {
         // Get API key used for the request
