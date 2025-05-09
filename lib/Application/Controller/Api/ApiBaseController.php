@@ -65,8 +65,8 @@ abstract class ApiBaseController extends BaseController
         // Create Request object before anything else for route determination
         $request = Request::createFromGlobals();
 
-        // Store the request parameters
-        $this->request = $requestParams;
+        // Request parameters will be used later in parent constructor
+        // We'll create a proper Request object below
 
         // Initialize config early for authentication
         $config = \Poweradmin\Infrastructure\Configuration\ConfigurationManager::getInstance();
@@ -235,7 +235,7 @@ abstract class ApiBaseController extends BaseController
      */
     protected function isPublicApiRoute(): bool
     {
-        $page = $this->request['page'] ?? '';
+        $page = $this->request->query->get('page', '');
 
         // Check if this is an API route
         if (strpos($page, 'api/') !== 0) {

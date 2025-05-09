@@ -358,7 +358,7 @@ class PowerdnsStatusService
             }
 
             // Skip empty or invalid values
-            if (empty($name) || $name === null) {
+            if (empty($name)) {
                 continue;
             }
 

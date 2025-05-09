@@ -99,7 +99,7 @@ class ValidationController extends ApiBaseController
         }
 
         // Extract record data with fallbacks for different input formats
-        $zoneId = $jsonData['zone_id'] ?? $jsonData['zone_id'] ?? 0;
+        $zoneId = $jsonData['zone_id'] ?? 0;
         $name = $jsonData['name'] ?? $jsonData['records'][0]['name'] ?? '';
         $type = $jsonData['type'] ?? $jsonData['records'][0]['type'] ?? '';
         $content = $jsonData['content'] ?? $jsonData['records'][0]['content'] ?? '';
