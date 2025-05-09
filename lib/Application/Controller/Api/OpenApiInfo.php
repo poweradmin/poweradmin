@@ -8,7 +8,7 @@ namespace Poweradmin\Application\Controller\Api;
  *     title="Poweradmin API",
  *     description="API for managing PowerDNS through Poweradmin",
  *     @OA\Contact(
- *         email="info@poweradmin.org",
+ *         email="edmondas@poweradmin.org",
  *         name="Poweradmin Development Team"
  *     ),
  *     @OA\License(
