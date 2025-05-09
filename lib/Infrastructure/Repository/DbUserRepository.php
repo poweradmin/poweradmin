@@ -69,4 +69,19 @@ class DbUserRepository implements UserRepository
         $stmt = $this->db->prepare('UPDATE users SET password = ? WHERE id = ?');
         return $stmt->execute([$hashedPassword, $userId]);
     }
+
+    /**
+     * Get user by ID
+     *
+     * @param int $userId The user ID to fetch
+     * @return array|null User data or null if not found
+     */
+    public function getUserById(int $userId): ?array
+    {
+        $stmt = $this->db->prepare('SELECT id, username, fullname, email, description, active FROM users WHERE id = ?');
+        $stmt->execute([$userId]);
+
+        $userData = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $userData ?: null;
+    }
 }

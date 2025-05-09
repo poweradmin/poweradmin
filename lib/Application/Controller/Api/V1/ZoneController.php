@@ -31,12 +31,16 @@
 
 namespace Poweradmin\Application\Controller\Api\v1;
 
+use Exception;
+use PDO;
+use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
-use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -69,7 +73,7 @@ class ZoneController extends V1ApiBaseController
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
-        $soaRecordManager = new SOARecordManager($this->db, $this->getConfig(), $this->zoneRepository);
+        $soaRecordManager = new SOARecordManager($this->db, $this->getConfig());
         $domainRepository = new DomainRepository($this->db, $this->getConfig());
         $this->recordManager = new RecordManager(
             $this->db,
@@ -492,13 +496,18 @@ class ZoneController extends V1ApiBaseController
         $zoneId = $dnsRecord->getZoneIdFromName($domain);
 
         // Enable DNSSEC if requested and supported
-        if (isset($input['dnssec']) && $input['dnssec'] && $this->getConfig()->get('dnssec', 'enabled', false)) {
-            try {
-                $dnssecProvider = \Poweradmin\Infrastructure\Service\DnsSecApiProvider::create($this->db, $this->getConfig());
-                $dnssecProvider->secureZone($domain);
-            } catch (\Exception $e) {
-                error_log('[ZoneController] Failed to secure zone with DNSSEC: ' . $e->getMessage());
-                // We don't return an error since the zone was created successfully
+        if (isset($input['dnssec']) && $input['dnssec']) {
+            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+
+            if ($dnssecProvider->isDnssecEnabled()) {
+                try {
+                    $dnssecProvider->secureZone($domain);
+                } catch (Exception $e) {
+                    error_log('[ZoneController] Failed to secure zone with DNSSEC: ' . $e->getMessage());
+                    // We don't return an error since the zone was created successfully
+                }
+
+                $dnssecProvider->rectifyZone($domain);
             }
         }
 
@@ -888,10 +897,10 @@ class ZoneController extends V1ApiBaseController
                      ORDER BY id DESC LIMIT 1";
 
             $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':domain_id', $zoneId, \PDO::PARAM_INT);
-            $stmt->bindValue(':name', strtolower($name), \PDO::PARAM_STR);
-            $stmt->bindValue(':type', $type, \PDO::PARAM_STR);
-            $stmt->bindValue(':content', $content, \PDO::PARAM_STR);
+            $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+            $stmt->bindValue(':name', strtolower($name), PDO::PARAM_STR);
+            $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+            $stmt->bindValue(':content', $content, PDO::PARAM_STR);
             $stmt->execute();
 
             $recordId = $stmt->fetchColumn();
@@ -900,7 +909,7 @@ class ZoneController extends V1ApiBaseController
                 'message' => 'Record added successfully',
                 'record_id' => (int)$recordId
             ], true, null, 201);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
     }
@@ -1009,35 +1018,35 @@ class ZoneController extends V1ApiBaseController
         }
 
         // Check if user exists
-        if (!\Poweradmin\Domain\Model\UserManager::isValidUser($this->db, $userId)) {
+        if (!UserManager::isValidUser($this->db, $userId)) {
             return $this->returnApiError('User not found', 404);
         }
 
         // Check if the current user has permission to modify domain ownership
         if (
-            !\Poweradmin\Domain\Model\UserManager::verifyPermission($this->db, 'zone_meta_edit_others') &&
-            !\Poweradmin\Domain\Model\UserManager::verifyPermission($this->db, 'zone_meta_edit_own')
+            !UserManager::verifyPermission($this->db, 'zone_meta_edit_others') &&
+            !UserManager::verifyPermission($this->db, 'zone_meta_edit_own')
         ) {
             return $this->returnApiError('You do not have permission to set domain permissions', 403);
         }
 
         // If current user only has permission to edit own zones, check ownership
         if (
-            !\Poweradmin\Domain\Model\UserManager::verifyPermission($this->db, 'zone_meta_edit_others') &&
-            !\Poweradmin\Domain\Model\UserManager::verifyUserIsOwnerZoneId($this->db, $domainId)
+            !UserManager::verifyPermission($this->db, 'zone_meta_edit_others') &&
+            !UserManager::verifyUserIsOwnerZoneId($this->db, $domainId)
         ) {
             return $this->returnApiError('You do not have permission to modify this domain', 403);
         }
 
         // Add the user as an owner of the zone
-        $success = \Poweradmin\Domain\Service\Dns\DomainManager::addOwnerToZone($this->db, $domainId, $userId);
+        $success = DomainManager::addOwnerToZone($this->db, $domainId, $userId);
 
         if (!$success) {
             // Check if the user is already an owner
             $query = "SELECT COUNT(id) FROM zones WHERE owner = :user_id AND domain_id = :domain_id";
             $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':user_id', $userId, \PDO::PARAM_INT);
-            $stmt->bindValue(':domain_id', $domainId, \PDO::PARAM_INT);
+            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+            $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
             $stmt->execute();
 
             if ($stmt->fetchColumn() > 0) {

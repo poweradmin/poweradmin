@@ -33,10 +33,8 @@ namespace Poweradmin\Application\Controller\Api\v1;
 
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
-use Poweradmin\Domain\Service\ApiKeyService;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -49,7 +47,6 @@ class UserController extends V1ApiBaseController
 {
     private DbUserRepository $userRepository;
     private ApiKeyRepositoryInterface $apiKeyRepository;
-    private ApiKeyService $apiKeyService;
 
     /**
      * Constructor for UserController
@@ -60,15 +57,8 @@ class UserController extends V1ApiBaseController
     {
         parent::__construct($request);
 
-        $this->userRepository = new DbUserRepository($this->db, $this->getConfig());
+        $this->userRepository = new DbUserRepository($this->db);
         $this->apiKeyRepository = new DbApiKeyRepository($this->db, $this->getConfig());
-        $messageService = new MessageService();
-        $this->apiKeyService = new ApiKeyService(
-            $this->apiKeyRepository,
-            $this->db,
-            $this->getConfig(),
-            $messageService
-        );
     }
 
     /**
@@ -200,12 +190,12 @@ class UserController extends V1ApiBaseController
 
         return $this->returnApiResponse([
             'valid' => true,
-            'user_id' => (int)$userId,
+            'user_id' => $userId,
             'username' => $user['username'],
             'permissions' => [
-                'is_admin' => (bool)$isAdmin,
-                'zone_creation_allowed' => (bool)$canCreateZones,
-                'zone_management_allowed' => (bool)$canManageZones
+                'is_admin' => $isAdmin,
+                'zone_creation_allowed' => $canCreateZones,
+                'zone_management_allowed' => $canManageZones
             ]
         ]);
     }

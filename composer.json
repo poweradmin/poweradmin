@@ -78,6 +78,11 @@
     "analyse:phpstan": "phpstan analyse --level=2 addons config db index.php install lib tests dynamic_update.php",
     "analyse:psalm": "psalm",
     "quality:all": "phpmd addons,config,db,index.php,install,lib,dynamic_update.php ansi phpmd.xml",
+    "analyse:all": [
+        "@check:all",
+        "@analyse:psalm",
+        "@analyse:phpstan"
+    ],
 
     "post-create-project-cmd": [
       "rm -rf install/",
