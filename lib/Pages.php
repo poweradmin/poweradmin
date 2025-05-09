@@ -50,6 +50,7 @@ class Pages
             'add_zone_slave',
             'add_zone_templ_record',
             'add_zone_templ',
+            'api/docs',
             'api/internal/validation',
             'api/internal/zone',
             'api/v1/zone',

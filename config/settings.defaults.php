@@ -252,5 +252,6 @@ return [
         'basic_auth_enabled' => false,                 // Enable HTTP Basic Authentication for public API endpoints
         'basic_auth_realm' => 'Poweradmin API',        // Realm name for HTTP Basic Authentication
         'log_requests' => false,                       // Log all API requests
+        'docs_enabled' => false,                       // Enable API documentation at /api/docs endpoint
     ],
 ];

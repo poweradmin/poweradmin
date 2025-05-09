@@ -580,6 +580,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Application\\Controller\\AddZoneTemplRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/AddZoneTemplRecordController.php',
         'Poweradmin\\Application\\Controller\\ApiKeysController' => __DIR__ . '/../..' . '/lib/Application/Controller/ApiKeysController.php',
         'Poweradmin\\Application\\Controller\\Api\\ApiBaseController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/ApiBaseController.php',
+        'Poweradmin\\Application\\Controller\\Api\\ApiDocsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/ApiDocsController.php',
         'Poweradmin\\Application\\Controller\\Api\\Internal\\InternalApiBaseController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/Internal/InternalApiBaseController.php',
         'Poweradmin\\Application\\Controller\\Api\\Internal\\ValidationController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/Internal/ValidationController.php',
         'Poweradmin\\Application\\Controller\\Api\\Internal\\ZoneController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/Internal/ZoneController.php',

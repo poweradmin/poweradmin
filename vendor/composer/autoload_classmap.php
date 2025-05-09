@@ -381,6 +381,7 @@ return array(
     'Poweradmin\\Application\\Controller\\AddZoneTemplRecordController' => $baseDir . '/lib/Application/Controller/AddZoneTemplRecordController.php',
     'Poweradmin\\Application\\Controller\\ApiKeysController' => $baseDir . '/lib/Application/Controller/ApiKeysController.php',
     'Poweradmin\\Application\\Controller\\Api\\ApiBaseController' => $baseDir . '/lib/Application/Controller/Api/ApiBaseController.php',
+    'Poweradmin\\Application\\Controller\\Api\\ApiDocsController' => $baseDir . '/lib/Application/Controller/Api/ApiDocsController.php',
     'Poweradmin\\Application\\Controller\\Api\\Internal\\InternalApiBaseController' => $baseDir . '/lib/Application/Controller/Api/Internal/InternalApiBaseController.php',
     'Poweradmin\\Application\\Controller\\Api\\Internal\\ValidationController' => $baseDir . '/lib/Application/Controller/Api/Internal/ValidationController.php',
     'Poweradmin\\Application\\Controller\\Api\\Internal\\ZoneController' => $baseDir . '/lib/Application/Controller/Api/Internal/ZoneController.php',

@@ -31,9 +31,16 @@
 
 namespace Poweradmin\Application\Controller\Api\v1;
 
+use OpenApi\Annotations as OA;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
+/**
+ * @OA\Tag(
+ *     name="zones",
+ *     description="API Endpoints for Zone management"
+ * )
+ */
 class ZoneController extends V1ApiBaseController
 {
     private DbZoneRepository $zoneRepository;
@@ -130,6 +137,72 @@ class ZoneController extends V1ApiBaseController
     /**
      * List all accessible zones
      *
+     * @OA\Get(
+     *     path="/v1/zone",
+     *     operationId="listZones",
+     *     summary="List all accessible zones",
+     *     tags={"zones"},
+     *     security={{"bearerAuth":{}, "apiKeyHeader":{}}},
+     *     @OA\Parameter(
+     *         name="action",
+     *         in="query",
+     *         required=true,
+     *         description="Action parameter (must be 'list')",
+     *         @OA\Schema(type="string", default="list", enum={"list"})
+     *     ),
+     *     @OA\Parameter(
+     *         name="page",
+     *         in="query",
+     *         description="Page number",
+     *         @OA\Schema(type="integer", default=1, minimum=1)
+     *     ),
+     *     @OA\Parameter(
+     *         name="limit",
+     *         in="query",
+     *         description="Number of results per page",
+     *         @OA\Schema(type="integer", default=20, minimum=1, maximum=100)
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="List of zones",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="zones",
+     *                     type="array",
+     *                     @OA\Items(
+     *                         type="object",
+     *                         @OA\Property(property="id", type="integer", example=1),
+     *                         @OA\Property(property="name", type="string", example="example.com"),
+     *                         @OA\Property(property="type", type="string", example="MASTER"),
+     *                         @OA\Property(property="records_count", type="integer", example=5)
+     *                     )
+     *                 ),
+     *                 @OA\Property(
+     *                     property="pagination",
+     *                     type="object",
+     *                     @OA\Property(property="total", type="integer", example=150),
+     *                     @OA\Property(property="page", type="integer", example=1),
+     *                     @OA\Property(property="limit", type="integer", example=20),
+     *                     @OA\Property(property="pages", type="integer", example=8)
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid or missing API key"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     )
+     * )
+     *
      * @return JsonResponse The JSON response
      */
     private function listZones(): JsonResponse
@@ -165,6 +238,81 @@ class ZoneController extends V1ApiBaseController
 
     /**
      * Get a specific zone by ID or name
+     *
+     * @OA\Get(
+     *     path="/v1/zone",
+     *     operationId="getZone",
+     *     summary="Get a specific zone by ID or name",
+     *     tags={"zones"},
+     *     security={{"bearerAuth":{}, "apiKeyHeader":{}}},
+     *     @OA\Parameter(
+     *         name="action",
+     *         in="query",
+     *         required=true,
+     *         description="Action parameter (must be 'get')",
+     *         @OA\Schema(type="string", default="get", enum={"get"})
+     *     ),
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="query",
+     *         description="Zone ID (either ID or name must be provided)",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\Parameter(
+     *         name="name",
+     *         in="query",
+     *         description="Zone name (either ID or name must be provided)",
+     *         @OA\Schema(type="string")
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Zone details",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(
+     *                     property="zone",
+     *                     type="object",
+     *                     @OA\Property(property="id", type="integer", example=1),
+     *                     @OA\Property(property="name", type="string", example="example.com"),
+     *                     @OA\Property(property="type", type="string", example="MASTER"),
+     *                     @OA\Property(property="owner", type="integer", example=1),
+     *                     @OA\Property(property="created", type="string", format="date-time", example="2025-05-01T12:00:00Z"),
+     *                     @OA\Property(property="updated", type="string", format="date-time", example="2025-05-09T08:30:00Z")
+     *                 )
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Missing required parameters",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Missing zone ID or name"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid or missing API key"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Zone not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Zone not found"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     )
+     * )
      *
      * @return JsonResponse The JSON response
      */
