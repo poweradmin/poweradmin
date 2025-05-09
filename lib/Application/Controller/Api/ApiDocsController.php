@@ -69,7 +69,7 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class ApiDocsController extends BaseController
 {
-    private ConfigurationInterface $config;
+    // Inherits config from parent
 
     /**
      * Constructor for ApiDocsController
@@ -79,7 +79,6 @@ class ApiDocsController extends BaseController
     public function __construct(array $request)
     {
         parent::__construct($request);
-        $this->config = $this->getConfig();
     }
 
     /**
@@ -93,7 +92,9 @@ class ApiDocsController extends BaseController
             return;
         }
 
-        $action = $this->request->query->get('action', 'ui');
+        // Create Symfony request from globals
+        $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+        $action = $request->query->get('action', 'ui');
 
         switch ($action) {
             case 'json':
@@ -208,7 +209,7 @@ HTML;
     private function isApiDocsEnabled(): bool
     {
         // Check if API docs are explicitly enabled in config
-        return $this->config->get('api', 'docs_enabled', false);
+        return (bool) $this->config->get('api', 'docs_enabled');
     }
 
     /**

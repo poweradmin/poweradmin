@@ -9,5 +9,4 @@ parameters:
     - '#Constructor of class .+ has an unused parameter \$_config.#'
     # Ignore other specific warnings
     - '#Method .+::validateIfaceIndex\(\) returns void but does not have any side effects.#'
-    - '#Variable \$aNetwork might not be defined.#'
     - '#PHPDoc tag @param for parameter \$dbType with type mixed is not subtype of native type string.#'
