@@ -54,7 +54,7 @@ use OpenApi\Attributes as OA;
     )
 )]
 #[OA\Server(
-    url: "/api",
+    url: "/index.php",
     description: "API Server"
 )]
 #[OA\SecurityScheme(

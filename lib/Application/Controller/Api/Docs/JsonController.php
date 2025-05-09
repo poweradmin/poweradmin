@@ -263,12 +263,12 @@ class JsonController extends DocsController
             ],
             'servers' => [
                 [
-                    'url' => '/api',
+                    'url' => '/index.php?page=api/',
                     'description' => 'API Server'
                 ]
             ],
             'paths' => [
-                '/v1/auth/test' => [
+                '?page=api/v1/auth/test&action=test' => [
                     'get' => [
                         'summary' => 'Test API authentication credentials',
                         'description' => 'Verifies the current authentication credentials and returns user information',
@@ -288,7 +288,7 @@ class JsonController extends DocsController
                         ]
                     ]
                 ],
-                '/v1/zone/list' => [
+                '?page=api/v1/zone&action=list' => [
                     'get' => [
                         'summary' => 'List all accessible zones',
                         'operationId' => 'v1ZoneList',
@@ -299,20 +299,9 @@ class JsonController extends DocsController
                         ],
                         'parameters' => [
                             [
-                                'name' => 'action',
+                                'name' => 'pagenum',
                                 'in' => 'query',
-                                'description' => 'Action parameter (must be \'list\')',
-                                'required' => true,
-                                'schema' => [
-                                    'type' => 'string',
-                                    'default' => 'list',
-                                    'enum' => ['list']
-                                ]
-                            ],
-                            [
-                                'name' => 'page',
-                                'in' => 'query',
-                                'description' => 'Page number',
+                                'description' => 'Page number for pagination',
                                 'schema' => [
                                     'type' => 'integer',
                                     'default' => 1,
@@ -341,7 +330,7 @@ class JsonController extends DocsController
                         ]
                     ]
                 ],
-                '/v1/zone/get/{id}' => [
+                '?page=api/v1/zone&action=get&id={id}' => [
                     'get' => [
                         'summary' => 'Get a specific zone by ID or name',
                         'operationId' => 'v1ZoneGet',
@@ -351,17 +340,6 @@ class JsonController extends DocsController
                             ['apiKeyHeader' => []]
                         ],
                         'parameters' => [
-                            [
-                                'name' => 'action',
-                                'in' => 'query',
-                                'description' => 'Action parameter (must be \'get\')',
-                                'required' => true,
-                                'schema' => [
-                                    'type' => 'string',
-                                    'default' => 'get',
-                                    'enum' => ['get']
-                                ]
-                            ],
                             [
                                 'name' => 'id',
                                 'in' => 'path',
@@ -398,7 +376,7 @@ class JsonController extends DocsController
                         ]
                     ]
                 ],
-                '/v1/zone/create' => [
+                '?page=api/v1/zone&action=create' => [
                     'post' => [
                         'summary' => 'Create a new zone',
                         'operationId' => 'v1ZoneCreate',
@@ -407,19 +385,7 @@ class JsonController extends DocsController
                             ['bearerAuth' => []],
                             ['apiKeyHeader' => []]
                         ],
-                        'parameters' => [
-                            [
-                                'name' => 'action',
-                                'in' => 'query',
-                                'required' => true,
-                                'description' => 'Action parameter (must be \'create\')',
-                                'schema' => [
-                                    'type' => 'string',
-                                    'default' => 'create',
-                                    'enum' => ['create']
-                                ]
-                            ]
-                        ],
+                        'parameters' => [],
                         'requestBody' => [
                             'required' => true,
                             'description' => 'Zone creation information',

@@ -166,7 +166,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Get(
-        path: '/api/v1/zone/list',
+        path: '/index.php?page=api/v1/zone&action=list',
         operationId: 'v1ZoneList',
         summary: 'List all accessible zones',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
@@ -180,8 +180,8 @@ class ZoneController extends V1ApiBaseController
         schema: new OA\Schema(type: 'string', default: 'list', enum: ['list'])
     )]
     #[OA\Parameter(
-        name: 'page',
-        description: 'Page number',
+        name: 'pagenum',
+        description: 'Page number for pagination',
         in: 'query',
         schema: new OA\Schema(type: 'integer', default: 1, minimum: 1)
     )]
@@ -217,7 +217,7 @@ class ZoneController extends V1ApiBaseController
                             property: 'pagination',
                             properties: [
                                 new OA\Property(property: 'total', type: 'integer', example: 150),
-                                new OA\Property(property: 'page', type: 'integer', example: 1),
+                                new OA\Property(property: 'pagenum', type: 'integer', example: 1),
                                 new OA\Property(property: 'limit', type: 'integer', example: 20),
                                 new OA\Property(property: 'pages', type: 'integer', example: 8)
                             ],
@@ -243,18 +243,18 @@ class ZoneController extends V1ApiBaseController
     public function listZones(): JsonResponse
     {
         // Get pagination parameters from request
-        $page = $this->request->query->getInt('page', 1);
+        $pagenum = $this->request->query->getInt('pagenum', 1);
         $limit = $this->request->query->getInt('limit', 20);
 
         // Ensure valid pagination
-        $page = max(1, $page);
+        $pagenum = max(1, $pagenum);
         $limit = min(100, max(1, $limit));
 
         $zones = $this->zoneRepository->listZones();
 
         // Apply pagination (in a real implementation, this would be done in the repository)
         $totalZones = count($zones);
-        $offset = ($page - 1) * $limit;
+        $offset = ($pagenum - 1) * $limit;
         $paginatedZones = array_slice($zones, $offset, $limit);
 
         // Use serializer for consistent output format
@@ -264,7 +264,7 @@ class ZoneController extends V1ApiBaseController
             'zones' => $serializedZones,
             'pagination' => [
                 'total' => $totalZones,
-                'page' => $page,
+                'pagenum' => $pagenum,
                 'limit' => $limit,
                 'pages' => ceil($totalZones / $limit)
             ]
@@ -277,7 +277,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Get(
-        path: '/api/v1/zone/get/{id}',
+        path: '/index.php?page=api/v1/zone&action=get&id={id}',
         operationId: 'v1ZoneGet',
         summary: 'Get a specific zone by ID or name',
         tags: ['zones'],
@@ -401,7 +401,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Post(
-        path: '/api/v1/zone/create',
+        path: '/index.php?page=api/v1/zone&action=create',
         operationId: 'v1ZoneCreate',
         summary: 'Create a new zone',
         tags: ['zones'],
@@ -558,7 +558,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Put(
-        path: '/api/v1/zone/update',
+        path: '/index.php?page=api/v1/zone&action=update',
         operationId: 'v1ZoneUpdate',
         summary: 'Update an existing zone',
         tags: ['zones'],
@@ -659,7 +659,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Put(
-        path: '/api/v1/zone/record/update',
+        path: '/index.php?page=api/v1/zone&action=update_record',
         operationId: 'v1ZoneRecordUpdate',
         summary: 'Update a DNS record',
         tags: ['zones'],
@@ -820,7 +820,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Post(
-        path: '/api/v1/zone/record/add',
+        path: '/index.php?page=api/v1/zone&action=add_record',
         operationId: 'v1ZoneRecordAdd',
         summary: 'Add a new DNS record to a zone',
         tags: ['zones'],
@@ -991,7 +991,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Post(
-        path: '/api/v1/zone/permissions',
+        path: '/index.php?page=api/v1/zone&action=set_permissions',
         operationId: 'v1ZoneSetPermissions',
         summary: 'Set domain permissions for API key',
         tags: ['zones'],
@@ -1157,7 +1157,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Delete(
-        path: '/api/v1/zone/delete',
+        path: '/index.php?page=api/v1/zone&action=delete',
         operationId: 'v1ZoneDelete',
         summary: 'Delete a zone',
         tags: ['zones'],
