@@ -65,6 +65,18 @@ class JsonController extends DocsController
         }
 
         try {
+            // Quick check for OpenAPI classes before proceeding
+            if (!class_exists('OpenApi\\Generator')) {
+                error_log('OpenApi\\Generator class not found - no need to log a full stack trace for this expected condition');
+
+                // Send a valid JSON response using the fallback schema
+                $response = new Response();
+                $response->headers->set('Content-Type', 'application/json');
+                $response->setContent($this->createFallbackOpenApiJson());
+                $response->send();
+                exit;
+            }
+
             // Set error handling
             $errorLevel = error_reporting();
             error_reporting(E_ERROR); // Suppress warnings
@@ -84,23 +96,28 @@ class JsonController extends DocsController
             $response->headers->set('Access-Control-Max-Age', '3600');
             $response->setContent($json);
             $response->send();
+        } catch (\Error $e) {
+            // Handle PHP Errors (like class not found)
+            error_log('PHP Error generating OpenAPI documentation: ' . $e->getMessage());
+
+            // Return fallback schema rather than an error
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($this->createFallbackOpenApiJson());
+            $response->send();
         } catch (\Exception $e) {
             // Log the error
-            $errorMessage = 'Error generating OpenAPI documentation: ' . $e->getMessage();
+            $errorMessage = 'Exception generating OpenAPI documentation: ' . $e->getMessage();
             error_log($errorMessage);
 
             // Write detailed error information to a log file
             $logFile = __DIR__ . '/../../../../openapi-error.log';
             file_put_contents($logFile, $errorMessage . "\n\n" . $e->getTraceAsString());
 
-            // Return error response
+            // Return API docs with fallback schema instead of error message
             $response = new Response();
-            $response->setContent(json_encode([
-                'error' => true,
-                'message' => 'Error generating API documentation. See server logs for details.'
-            ]));
             $response->headers->set('Content-Type', 'application/json');
-            $response->setStatusCode(500);
+            $response->setContent($this->createFallbackOpenApiJson());
             $response->send();
         }
 
@@ -114,6 +131,12 @@ class JsonController extends DocsController
      */
     private function generateOpenApiJson(): string
     {
+        // Quick check if OpenAPI Generator class exists
+        if (!class_exists('OpenApi\\Generator')) {
+            error_log('OpenApi\\Generator class not found - using fallback schema');
+            return $this->createFallbackOpenApiJson();
+        }
+
         try {
             // Define OpenAPI tags for organization
             $tags = [
@@ -175,6 +198,12 @@ class JsonController extends DocsController
             error_log('Starting OpenAPI scanning of files...');
 
             try {
+                // Additional check for required classes before scanning
+                if (!class_exists('OpenApi\\Annotations\\OpenApi')) {
+                    error_log('OpenApi\\Annotations\\OpenApi class not found - using fallback schema');
+                    throw new \Exception('Required OpenAPI annotation classes not found');
+                }
+
                 // Try to scan the codebase
                 $openapi = Generator::scan([
                     $scanDirectory,  // All API controllers directory
