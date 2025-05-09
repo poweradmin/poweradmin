@@ -20,6 +20,26 @@ if (PHP_SAPI !== 'cli') {
 // Include autoloader
 require __DIR__ . '/vendor/autoload.php';
 
+// Check if OpenApi\Generator class is available
+if (!class_exists('OpenApi\\Generator')) {
+    die(
+        "Error: OpenApi\\Generator class not found.\n" .
+        "Please run 'composer install' to install the required dependencies.\n"
+    );
+}
+
+// Check if the installed version is compatible
+try {
+    if (method_exists('OpenApi\\Generator', 'getVersion')) {
+        $version = OpenApi\Generator::getVersion();
+        if (version_compare($version, '3.0.0', '<')) {
+            echo "Warning: You are using swagger-php version $version. Version 3.0.0 or above is recommended.\n";
+        }
+    }
+} catch (\Exception $e) {
+    echo "Warning: Could not determine swagger-php version: {$e->getMessage()}\n";
+}
+
 use OpenApi\Generator;
 use OpenApi\Annotations as OA;
 

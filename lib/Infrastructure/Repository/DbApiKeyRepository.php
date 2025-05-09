@@ -104,17 +104,92 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
      */
     public function findBySecretKey(string $secretKey): ?ApiKey
     {
-        $stmt = $this->db->prepare("SELECT * FROM api_keys WHERE secret_key = :secretKey");
-        $stmt->bindValue(':secretKey', $secretKey);
-        $stmt->execute();
+        // Log the query details for debugging
+        error_log("[DbApiKeyRepository] Looking up API key in database");
+        error_log(sprintf(
+            "[DbApiKeyRepository] Key length: %d, First chars: %s, Last chars: %s",
+            strlen($secretKey),
+            substr($secretKey, 0, 4),
+            substr($secretKey, -4)
+        ));
 
-        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Try a different approach first - direct comparison to work around database encoding issues
+        try {
+            $allKeys = $this->db->query("SELECT id, name, secret_key FROM api_keys");
+            $found = false;
+            $foundId = null;
 
-        if (!$result) {
+            while ($row = $allKeys->fetch(PDO::FETCH_ASSOC)) {
+                // Debug each key
+                error_log(sprintf(
+                    "[DbApiKeyRepository] Found key ID %d in DB, length: %d, prefix: %s, suffix: %s",
+                    $row['id'],
+                    strlen($row['secret_key']),
+                    substr($row['secret_key'], 0, 4),
+                    substr($row['secret_key'], -4)
+                ));
+
+                // Check for exact match
+                if ($row['secret_key'] === $secretKey) {
+                    error_log("[DbApiKeyRepository] EXACT MATCH FOUND with ID: " . $row['id']);
+                    $found = true;
+                    $foundId = $row['id'];
+                    break;
+                }
+            }
+
+            // If we found a match, get the full record
+            if ($found && $foundId) {
+                $exactStmt = $this->db->prepare("SELECT * FROM api_keys WHERE id = :id");
+                $exactStmt->bindValue(':id', $foundId, PDO::PARAM_INT);
+                $exactStmt->execute();
+                $exactResult = $exactStmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($exactResult) {
+                    error_log(sprintf(
+                        "[DbApiKeyRepository] Successfully found key by ID: %d, Name: %s",
+                        $exactResult['id'],
+                        $exactResult['name']
+                    ));
+                    return $this->createFromArray($exactResult);
+                }
+            }
+
+            // Fall back to original query
+            error_log("[DbApiKeyRepository] No exact match found, trying normal query");
+            $stmt = $this->db->prepare("SELECT * FROM api_keys WHERE secret_key = :secretKey");
+            $stmt->bindValue(':secretKey', $secretKey);
+            $stmt->execute();
+
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$result) {
+                // Log that no matching key was found
+                error_log("[DbApiKeyRepository] No API key found matching the provided secret key");
+
+                // For debugging only, check if keys exist at all
+                $countStmt = $this->db->prepare("SELECT COUNT(*) FROM api_keys");
+                $countStmt->execute();
+                $count = $countStmt->fetchColumn();
+                error_log("[DbApiKeyRepository] Total API keys in database: " . $count);
+
+                return null;
+            }
+
+            // Log basic info about the found key (don't log the actual key)
+            error_log(sprintf(
+                "[DbApiKeyRepository] Found API key ID: %d, Name: %s, Created by: %d",
+                $result['id'],
+                $result['name'],
+                $result['created_by']
+            ));
+
+            return $this->createFromArray($result);
+        } catch (\Exception $e) {
+            // Log any database errors
+            error_log("[DbApiKeyRepository] Database error while finding API key: " . $e->getMessage());
             return null;
         }
-
-        return $this->createFromArray($result);
     }
 
     /**

@@ -55,6 +55,11 @@ abstract class ApiBaseController extends BaseController
     protected Serializer $serializer;
 
     /**
+     * @var Request|null Temporary request for initialization
+     */
+    private static ?Request $tempRequest = null;
+
+    /**
      * ApiBaseController constructor
      *
      * @param array $requestParams The request parameters
@@ -63,7 +68,8 @@ abstract class ApiBaseController extends BaseController
     public function __construct(array $requestParams, bool $authenticate = true)
     {
         // Create Request object before anything else for route determination
-        $request = Request::createFromGlobals();
+        // Store it in a static property for use before $this->request is initialized
+        self::$tempRequest = Request::createFromGlobals();
 
         // Request parameters will be used later in parent constructor
         // We'll create a proper Request object below
@@ -99,11 +105,11 @@ abstract class ApiBaseController extends BaseController
                 // 2. HTTP Basic auth
                 // Always try API key authentication when API is enabled
                 $apiKeyMiddleware = new ApiKeyAuthenticationMiddleware($db, $config);
-                $authenticated = $apiKeyMiddleware->process($request);
+                $authenticated = $apiKeyMiddleware->process(self::$tempRequest);
 
                 if (!$authenticated && $config->get('api', 'basic_auth_enabled', true)) {
                     $basicAuthMiddleware = new BasicAuthenticationMiddleware($db, $config);
-                    $authenticated = $basicAuthMiddleware->process($request);
+                    $authenticated = $basicAuthMiddleware->process(self::$tempRequest);
                 }
             } else {
                 // For internal API routes, only try session-based authentication
@@ -117,8 +123,8 @@ abstract class ApiBaseController extends BaseController
         // Call parent constructor to perform session validation if needed
         parent::__construct($requestParams, $authenticate);
 
-        // Create Symfony Request object from globals
-        $this->request = Request::createFromGlobals();
+        // Assign the already created Symfony Request object to the instance property
+        $this->request = self::$tempRequest;
 
         // Initialize the serializer
         $encoders = [new JsonEncoder()];
@@ -235,10 +241,11 @@ abstract class ApiBaseController extends BaseController
      */
     protected function isPublicApiRoute(): bool
     {
-        $page = $this->request->query->get('page', '');
+        // Use the temporary request object which is initialized before this method is called
+        $page = self::$tempRequest?->query->get('page', '');
 
         // Check if this is an API route
-        if (strpos($page, 'api/') !== 0) {
+        if (!$page || strpos($page, 'api/') !== 0) {
             return false;
         }
 

@@ -37,6 +37,7 @@
     "symfony/console": "^6.4.20",
     "symfony/filesystem": "^v6.4.13",
     "symfony/http-foundation": "^6.4.16",
+    "symfony/property-access": "^6.4.18",
     "symfony/serializer": "^6.4.21",
     "symfony/string": "^6.4.15",
     "symfony/translation": "^6.4.19",

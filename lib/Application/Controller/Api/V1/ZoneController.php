@@ -36,7 +36,11 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
-use Poweradmin\Infrastructure\Repository\RecordRepository;
+use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Infrastructure\Service\DnsServiceFactory;
+use Poweradmin\Domain\Repository\DomainRepository;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -63,15 +67,16 @@ class ZoneController extends V1ApiBaseController
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
 
-        // Initialize record manager
-        $validationService = new DnsRecordValidationService($this->db, $this->getConfig());
+        // Initialize services using factory
+        $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
         $soaRecordManager = new SOARecordManager($this->db, $this->getConfig(), $this->zoneRepository);
+        $domainRepository = new DomainRepository($this->db, $this->getConfig());
         $this->recordManager = new RecordManager(
             $this->db,
             $this->getConfig(),
             $validationService,
             $soaRecordManager,
-            $this->zoneRepository
+            $domainRepository
         );
     }
 
@@ -368,36 +373,212 @@ class ZoneController extends V1ApiBaseController
 
     /**
      * Create a new zone
+     *
+     * @OA\Post(
+     *     path="/v1/zone",
+     *     operationId="createZone",
+     *     summary="Create a new zone",
+     *     tags={"zones"},
+     *     security={{"bearerAuth":{}, "apiKeyHeader":{}}},
+     *     @OA\Parameter(
+     *         name="action",
+     *         in="query",
+     *         required=true,
+     *         description="Action parameter (must be 'create')",
+     *         @OA\Schema(type="string", default="create", enum={"create"})
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Zone creation information",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="name", type="string", example="example.com", description="Zone name"),
+     *             @OA\Property(property="type", type="string", example="MASTER", description="Zone type"),
+     *             @OA\Property(property="owner", type="integer", example=1, description="Zone owner (optional)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Zone created successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="id", type="integer", example=123),
+     *                 @OA\Property(property="message", type="string", example="Zone created successfully")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid input data"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid or missing API key"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     )
+     * )
+     *
+     * @return JsonResponse The JSON response
      */
-    private function createZone(): void
+    private function createZone(): JsonResponse
     {
         $input = $this->getJsonInput();
 
         if (!$input) {
-            $this->returnApiError('Invalid input data', 400);
-            return;
+            return $this->returnApiError('Invalid input data', 400);
         }
 
         // Validate required fields
         $requiredFields = ['name', 'type'];
         foreach ($requiredFields as $field) {
             if (!isset($input[$field]) || empty($input[$field])) {
-                $this->returnApiError("Missing required field: {$field}", 400);
-                return;
+                return $this->returnApiError("Missing required field: {$field}", 400);
             }
         }
 
-        // Implementation would continue here with actual zone creation logic
-        // For this example, we'll just return a success response
+        // Set defaults and get values
+        $domain = trim($input['name']);
+        $type = strtoupper($input['type']); // Ensure uppercase
+        $owner = isset($input['owner']) ? (int)$input['owner'] : (int)$_SESSION['userid']; // Default to current API user, cast to int
+        $zone_template = $input['zone_template'] ?? 'none';
+        $slave_master = $input['master'] ?? ''; // For SLAVE zones
 
-        $this->returnApiResponse([
-            'id' => 123, // This would be the actual new zone ID
+        // Create DNS record service
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+
+        // Validate domain name
+        $hostnameValidator = new HostnameValidator($this->getConfig());
+        if (!$hostnameValidator->isValid($domain)) {
+            return $this->returnApiError('Invalid domain name', 400);
+        }
+
+        // Check if domain already exists
+        if ($dnsRecord->domainExists($domain)) {
+            return $this->returnApiError('Domain already exists', 400);
+        }
+
+        // Validate zone type
+        $validTypes = ['MASTER', 'SLAVE', 'NATIVE'];
+        if (!in_array($type, $validTypes)) {
+            return $this->returnApiError('Invalid zone type. Must be one of: ' . implode(', ', $validTypes), 400);
+        }
+
+        // For SLAVE zones, ensure master IP is provided
+        if ($type === 'SLAVE' && empty($slave_master)) {
+            return $this->returnApiError('Master IP address is required for SLAVE zones', 400);
+        }
+
+        error_log(sprintf('[ZoneController] Creating zone: %s, Type: %s, Owner: %s', $domain, $type, $owner));
+
+        // Create the domain
+        $success = $dnsRecord->addDomain($this->db, $domain, $owner, $type, $slave_master, $zone_template);
+
+        if (!$success) {
+            return $this->returnApiError('Failed to create zone', 500);
+        }
+
+        // Get the ID of the newly created zone
+        $zoneId = $dnsRecord->getZoneIdFromName($domain);
+
+        // Enable DNSSEC if requested and supported
+        if (isset($input['dnssec']) && $input['dnssec'] && $this->getConfig()->get('dnssec', 'enabled', false)) {
+            try {
+                $dnssecProvider = \Poweradmin\Infrastructure\Service\DnsSecApiProvider::create($this->db, $this->getConfig());
+                $dnssecProvider->secureZone($domain);
+            } catch (\Exception $e) {
+                error_log('[ZoneController] Failed to secure zone with DNSSEC: ' . $e->getMessage());
+                // We don't return an error since the zone was created successfully
+            }
+        }
+
+        // Return success response with zone ID
+        return $this->returnApiResponse([
+            'id' => $zoneId,
+            'name' => $domain,
+            'type' => $type,
             'message' => 'Zone created successfully'
-        ]);
+        ], true, null, 201);
     }
 
     /**
      * Update an existing zone
+     *
+     * @OA\Put(
+     *     path="/v1/zone",
+     *     operationId="updateZone",
+     *     summary="Update an existing zone",
+     *     tags={"zones"},
+     *     security={{"bearerAuth":{}, "apiKeyHeader":{}}},
+     *     @OA\Parameter(
+     *         name="action",
+     *         in="query",
+     *         required=true,
+     *         description="Action parameter (must be 'update')",
+     *         @OA\Schema(type="string", default="update", enum={"update"})
+     *     ),
+     *     @OA\RequestBody(
+     *         required=true,
+     *         description="Zone update information",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=1, description="ID of the zone to update"),
+     *             @OA\Property(property="name", type="string", example="example.com", description="New zone name (optional)"),
+     *             @OA\Property(property="type", type="string", example="MASTER", description="New zone type (optional)"),
+     *             @OA\Property(property="owner", type="integer", example=1, description="New zone owner (optional)")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Zone updated successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Zone updated successfully")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid input data"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid or missing API key"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Zone not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Zone not found"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     )
+     * )
+     *
+     * @return JsonResponse The JSON response
      */
     private function updateZone(): JsonResponse
     {
@@ -879,6 +1060,74 @@ class ZoneController extends V1ApiBaseController
 
     /**
      * Delete a zone
+     *
+     * @OA\Delete(
+     *     path="/v1/zone",
+     *     operationId="deleteZone",
+     *     summary="Delete a zone",
+     *     tags={"zones"},
+     *     security={{"bearerAuth":{}, "apiKeyHeader":{}}},
+     *     @OA\Parameter(
+     *         name="action",
+     *         in="query",
+     *         required=true,
+     *         description="Action parameter (must be 'delete')",
+     *         @OA\Schema(type="string", default="delete", enum={"delete"})
+     *     ),
+     *     @OA\Parameter(
+     *         name="id",
+     *         in="query",
+     *         description="ID of the zone to delete (alternative to providing in request body)",
+     *         @OA\Schema(type="integer")
+     *     ),
+     *     @OA\RequestBody(
+     *         description="Zone deletion information (alternative to providing id in query parameter)",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", example=1, description="ID of the zone to delete")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Zone deleted successfully",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(
+     *                 property="data",
+     *                 type="object",
+     *                 @OA\Property(property="message", type="string", example="Zone deleted successfully")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=400,
+     *         description="Bad request",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Missing or invalid zone ID"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=401,
+     *         description="Unauthorized",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Invalid or missing API key"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=404,
+     *         description="Zone not found",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Zone not found"),
+     *             @OA\Property(property="data", type="null")
+     *         )
+     *     )
+     * )
+     *
+     * @return JsonResponse The JSON response
      */
     private function deleteZone(): JsonResponse
     {

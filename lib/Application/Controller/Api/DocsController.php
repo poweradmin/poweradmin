@@ -31,7 +31,9 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
+use OpenApi\Generator;
 use Poweradmin\BaseController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -65,12 +67,12 @@ use Symfony\Component\HttpFoundation\Response;
  *     in="header"
  * )
  */
-class ApiDocsController extends BaseController
+class DocsController extends BaseController
 {
     // Inherits config from parent
 
     /**
-     * Constructor for ApiDocsController
+     * Constructor for DocsController
      *
      * @param array $request The request data
      */
@@ -91,7 +93,7 @@ class ApiDocsController extends BaseController
         }
 
         // Create Symfony request from globals
-        $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+        $request = Request::createFromGlobals();
         $action = $request->query->get('action', 'ui');
 
         switch ($action) {
@@ -186,16 +188,34 @@ HTML;
             exit;
         }
 
-        // Generate OpenAPI spec
-        $openapi = \OpenApi\Generator::scan([
-            __DIR__ . '/v1',
-            __DIR__,
-        ]);
+        try {
+            // Generate OpenAPI spec with verbose error handling
+            $openapi = Generator::scan([
+                __DIR__ . '/v1',
+                __DIR__,
+            ]);
 
-        $response = new Response();
-        $response->headers->set('Content-Type', 'application/json');
-        $response->setContent($openapi->toJson());
-        $response->send();
+            $json = $openapi->toJson();
+
+            // Validate JSON to catch syntax errors
+            json_decode($json);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                throw new \Exception('JSON error: ' . json_last_error_msg());
+            }
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent($json);
+            $response->send();
+        } catch (\Exception $e) {
+            $response = new Response(
+                'Error generating OpenAPI documentation: ' . $e->getMessage() .
+                "\nTrace: " . $e->getTraceAsString(),
+                Response::HTTP_INTERNAL_SERVER_ERROR
+            );
+            $response->headers->set('Content-Type', 'text/plain');
+            $response->send();
+        }
         exit;
     }
 

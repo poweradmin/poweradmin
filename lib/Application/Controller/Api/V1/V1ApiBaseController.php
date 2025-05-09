@@ -32,6 +32,8 @@
 namespace Poweradmin\Application\Controller\Api\v1;
 
 use Poweradmin\Application\Controller\Api\ApiBaseController;
+use Poweradmin\Domain\Service\ApiKeyService;
+use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class V1ApiBaseController extends ApiBaseController
@@ -99,10 +101,29 @@ abstract class V1ApiBaseController extends ApiBaseController
             return false;
         }
 
-        // Get allowed API keys from configuration
-        $allowedKeys = $this->getConfig()->get('api', 'keys', []);
+        // Log validation attempt
+        error_log(sprintf(
+            '[V1ApiBaseController] Validating API key: %s...%s (length: %d)',
+            substr($apiKey, 0, 4),
+            substr($apiKey, -4),
+            strlen($apiKey)
+        ));
 
-        return in_array($apiKey, $allowedKeys);
+        // Create API key service to validate the key against the database
+        $config = $this->getConfig();
+        $apiKeyRepository = new DbApiKeyRepository($this->db, $config);
+        $messageService = new \Poweradmin\Infrastructure\Service\MessageService();
+        $apiKeyService = new ApiKeyService($apiKeyRepository, $this->db, $config, $messageService);
+
+        // Authenticate using the API key service
+        $authenticated = $apiKeyService->authenticate($apiKey);
+
+        error_log(sprintf(
+            '[V1ApiBaseController] API key validation %s',
+            $authenticated ? 'successful' : 'failed'
+        ));
+
+        return $authenticated;
     }
 
     /**
