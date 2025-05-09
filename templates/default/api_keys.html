@@ -6,13 +6,8 @@
 </nav>
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <div class="card-header py-3">
         <strong><i class="bi bi-key-fill me-2"></i>{% trans %}API Keys Management{% endtrans %}</strong>
-        {% if can_add_more %}
-        <a class="btn btn-primary btn-sm" href="index.php?page=api_keys&amp;action=add">
-            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add new API key{% endtrans %}
-        </a>
-        {% endif %}
     </div>
     <div class="card-body">
         <p>{% trans %}API keys allow external applications to access the Poweradmin API. Each key is linked to your user account and inherits your permissions.{% endtrans %}</p>
@@ -90,7 +85,7 @@
             {% endif %}
         </div>
     </div>
-    {% if api_keys|length > 0 and can_add_more %}
+    {% if can_add_more %}
     <div class="card-footer py-3">
         <a class="btn btn-primary btn-sm" href="index.php?page=api_keys&amp;action=add">
             <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add new API key{% endtrans %}
