@@ -7,13 +7,8 @@
 </nav>
 
 <div class="card shadow-sm mb-4">
-    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+    <div class="card-header py-3">
         <strong><i class="bi bi-shield-lock me-2"></i>{% trans %}Permission Templates{% endtrans %}</strong>
-        {% if templ_perm_add %}
-        <a class="btn btn-primary btn-sm" href="index.php?page=add_perm_templ">
-            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add permission template{% endtrans %}
-        </a>
-        {% endif %}
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -52,4 +47,11 @@
             </table>
         </div>
     </div>
+    {% if templ_perm_add %}
+    <div class="card-footer py-3">
+        <a class="btn btn-primary btn-sm" href="index.php?page=add_perm_templ">
+            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add permission template{% endtrans %}
+        </a>
+    </div>
+    {% endif %}
 </div>
