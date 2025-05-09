@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller\Api\v1;
 
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ZoneController extends V1ApiBaseController
 {

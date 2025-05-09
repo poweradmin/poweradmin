@@ -65,6 +65,9 @@ abstract class ApiBaseController extends BaseController
         // Create Request object before anything else for route determination
         $request = Request::createFromGlobals();
 
+        // Store the request parameters
+        $this->request = $requestParams;
+
         // Initialize config early for authentication
         $config = \Poweradmin\Infrastructure\Configuration\ConfigurationManager::getInstance();
         $config->initialize();
@@ -81,7 +84,7 @@ abstract class ApiBaseController extends BaseController
         }
 
         // Determine if this is a public API route (v1+) or internal API route
-        $isPublicApiRoute = $this->isPublicApiRoute($requestParams);
+        $isPublicApiRoute = $this->isPublicApiRoute();
 
         // Only attempt API authentication if authentication is required
         if ($authenticate) {
@@ -228,12 +231,11 @@ abstract class ApiBaseController extends BaseController
     /**
      * Determines if this is a public API route (v1, v2, etc.) or internal API route
      *
-     * @param array $requestParams The request parameters
      * @return bool True if this is a public API route, false otherwise
      */
-    private function isPublicApiRoute(array $requestParams): bool
+    protected function isPublicApiRoute(): bool
     {
-        $page = $requestParams['page'] ?? '';
+        $page = $this->request['page'] ?? '';
 
         // Check if this is an API route
         if (strpos($page, 'api/') !== 0) {

@@ -38,6 +38,7 @@ use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class ValidationController extends InternalApiBaseController
 {

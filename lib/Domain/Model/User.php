@@ -41,6 +41,17 @@ class User
         return $this->password;
     }
 
+    /**
+     * Get the hashed password for authentication purposes
+     * This is an alias for getPassword() to match the method name used in authentication
+     *
+     * @return string The hashed password
+     */
+    public function getHashedPassword(): string
+    {
+        return $this->password;
+    }
+
     public function isLdapUser(): bool
     {
         return $this->useLdap;

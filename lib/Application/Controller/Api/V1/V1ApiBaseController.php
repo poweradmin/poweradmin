@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller\Api\v1;
 
 use Poweradmin\Application\Controller\Api\ApiBaseController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 abstract class V1ApiBaseController extends ApiBaseController
 {

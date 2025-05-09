@@ -25,6 +25,7 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Utility\NaturalSorting;
 use Poweradmin\Infrastructure\Utility\ReverseDomainNaturalSorting;
@@ -278,5 +279,213 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         $result = $stmt->fetch(PDO::FETCH_COLUMN);
         return $result ?: null;
+    }
+
+    /**
+     * Get a complete list of zones accessible by the current user
+     *
+     * @param int|null $userId Optional user ID to filter zones
+     * @param bool $viewOthers Whether to view zones owned by other users
+     * @param array $filters Optional filters for zones
+     * @param int $offset Pagination offset
+     * @param int $limit Maximum number of records to return
+     * @return array List of zones
+     */
+    public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $records_table = $this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records';
+        $cryptokeys_table = $this->pdns_db_name ? $this->pdns_db_name . '.cryptokeys' : 'cryptokeys';
+        $domainmetadata_table = $this->pdns_db_name ? $this->pdns_db_name . '.domainmetadata' : 'domainmetadata';
+
+        $query = "SELECT
+                $domains_table.id,
+                $domains_table.name,
+                $domains_table.type,
+                COUNT($records_table.id) AS count_records,
+                users.username,
+                users.fullname,
+                COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
+                zones.comment
+            FROM $domains_table
+            LEFT JOIN zones ON $domains_table.id = zones.domain_id
+            LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL
+            LEFT JOIN users ON users.id = zones.owner
+            LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
+            LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'
+            WHERE 1=1";
+
+        $params = [];
+
+        // Filter by owner if requested
+        if ($userId !== null && !$viewOthers) {
+            $query .= " AND zones.owner = :userId";
+            $params[':userId'] = $userId;
+        }
+
+        // Apply additional filters
+        if (isset($filters['type']) && in_array($filters['type'], ['MASTER', 'SLAVE', 'NATIVE'])) {
+            $query .= " AND $domains_table.type = :type";
+            $params[':type'] = $filters['type'];
+        }
+
+        if (isset($filters['search']) && !empty($filters['search'])) {
+            $query .= " AND $domains_table.name LIKE :search";
+            $params[':search'] = '%' . $filters['search'] . '%';
+        }
+
+        // Group by required fields
+        $query .= " GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, users.username, users.fullname, zones.comment";
+
+        // Add ordering
+        $query .= " ORDER BY $domains_table.name ASC";
+
+        // Add pagination
+        $query .= " LIMIT :limit OFFSET :offset";
+        $params[':limit'] = $limit;
+        $params[':offset'] = $offset;
+
+        $stmt = $this->db->prepare($query);
+        foreach ($params as $param => $value) {
+            $stmt->bindValue($param, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+        $stmt->execute();
+
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $zones = [];
+
+        foreach ($results as $row) {
+            $name = $row['name'];
+            if (!isset($zones[$name])) {
+                $zones[$name] = [
+                    'id' => $row['id'],
+                    'name' => $name,
+                    'utf8_name' => DnsIdnService::toUtf8($name),
+                    'type' => $row['type'],
+                    'count_records' => $row['count_records'],
+                    'comment' => $row['comment'] ?? '',
+                    'secured' => $row['secured'],
+                    'owners' => [],
+                    'full_names' => [],
+                    'users' => []
+                ];
+            }
+
+            $zones[$name]['owners'][] = $row['username'];
+            $zones[$name]['full_names'][] = $row['fullname'] ?: '';
+            $zones[$name]['users'][] = $row['username'];
+        }
+
+        // Convert associative array to indexed array for consistent API response
+        return array_values($zones);
+    }
+
+    /**
+     * Check if a zone exists and is accessible by a user
+     *
+     * @param int $zoneId The zone ID
+     * @param int|null $userId Optional user ID to check ownership
+     * @return bool True if the zone exists and is accessible by the user
+     */
+    public function zoneExists(int $zoneId, ?int $userId = null): bool
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT 1 FROM $domains_table";
+
+        if ($userId !== null) {
+            $query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
+            $query .= " WHERE $domains_table.id = :id AND zones.owner = :userId";
+        } else {
+            $query .= " WHERE $domains_table.id = :id";
+        }
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+
+        if ($userId !== null) {
+            $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+
+        return $stmt->fetchColumn() !== false;
+    }
+
+    /**
+     * Get a zone by ID with full details
+     *
+     * @param int $zoneId The zone ID
+     * @return array|null The zone data or null if not found
+     */
+    public function getZone(int $zoneId): ?array
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $records_table = $this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records';
+        $cryptokeys_table = $this->pdns_db_name ? $this->pdns_db_name . '.cryptokeys' : 'cryptokeys';
+        $domainmetadata_table = $this->pdns_db_name ? $this->pdns_db_name . '.domainmetadata' : 'domainmetadata';
+
+        // First get the zone details
+        $query = "SELECT
+                $domains_table.id,
+                $domains_table.name,
+                $domains_table.type,
+                COUNT($records_table.id) AS count_records,
+                users.username,
+                users.fullname,
+                COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured,
+                zones.comment
+            FROM $domains_table
+            LEFT JOIN zones ON $domains_table.id = zones.domain_id
+            LEFT JOIN $records_table ON $records_table.domain_id = $domains_table.id AND $records_table.type IS NOT NULL
+            LEFT JOIN users ON users.id = zones.owner
+            LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
+            LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'
+            WHERE $domains_table.id = :id
+            GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, users.username, users.fullname, zones.comment";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $zone = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$zone) {
+            return null;
+        }
+
+        // Add additional properties
+        $zone['utf8_name'] = DnsIdnService::toUtf8($zone['name']);
+        $zone['owners'] = [$zone['username']];
+        $zone['full_names'] = [$zone['fullname'] ?: ''];
+        $zone['users'] = [$zone['username']];
+
+        return $zone;
+    }
+
+    /**
+     * Get a zone by name with full details
+     *
+     * @param string $zoneName The zone name
+     * @return array|null The zone data or null if not found
+     */
+    public function getZoneByName(string $zoneName): ?array
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        // First find the zone ID
+        $query = "SELECT id FROM $domains_table WHERE name = :name";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $zoneId = $stmt->fetchColumn();
+
+        if (!$zoneId) {
+            return null;
+        }
+
+        // Then get the full zone details
+        return $this->getZone($zoneId);
     }
 }

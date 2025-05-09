@@ -63,21 +63,42 @@ class BasicAuthenticationMiddleware
 
         // Initialize authenticators
         $authService = new UserAuthenticationService(
-            $this->config->get('security', 'password_encryption'),
-            $this->config->get('security', 'password_cost')
+            $this->config->get('security', 'password_encryption', 'bcrypt'),
+            $this->config->get('security', 'password_cost', 10)
         );
 
-        $this->sqlAuthenticator = new SqlAuthenticator($db, $authService);
+        // Create minimal dependencies required for authenticators
+        $userEventLogger = new \Poweradmin\Application\Service\UserEventLogger($db);
+        $csrfTokenService = new \Poweradmin\Application\Service\CsrfTokenService();
+
+        // Create a simple NullLogHandler and Logger
+        $logHandler = new \Poweradmin\Infrastructure\Logger\NullLogHandler();
+        $logger = new \Poweradmin\Infrastructure\Logger\Logger($logHandler, 'info');
+
+        $loginAttemptService = new \Poweradmin\Application\Service\LoginAttemptService($db, $this->config);
+
+        // Initialize SQL authenticator with all required dependencies
+        $this->sqlAuthenticator = new SqlAuthenticator(
+            $db,
+            $this->config,
+            $userEventLogger,
+            $authService,
+            $csrfTokenService,
+            $logger,
+            $loginAttemptService
+        );
 
         // Create LDAP authenticator only if LDAP is enabled
         if ($this->config->get('ldap', 'enabled', false)) {
+            $ldapUserEventLogger = new \Poweradmin\Infrastructure\Logger\LdapUserEventLogger($db);
             $this->ldapAuthenticator = new LdapAuthenticator(
-                $this->config->get('ldap', 'uri'),
-                $this->config->get('ldap', 'base_dn'),
-                $this->config->get('ldap', 'bind_dn'),
-                $this->config->get('ldap', 'bind_pass'),
-                $this->config->get('ldap', 'search_filter'),
-                $this->messageService
+                $db,
+                $this->config,
+                $ldapUserEventLogger,
+                $authService,
+                $csrfTokenService,
+                $logger,
+                $loginAttemptService
             );
         } else {
             $this->ldapAuthenticator = null;
@@ -186,20 +207,100 @@ class BasicAuthenticationMiddleware
 
         // Try LDAP authentication first if user is configured for LDAP
         if ($userModel->isLdapUser() && $this->ldapAuthenticator !== null) {
-            $ldapAuth = $this->ldapAuthenticator->authenticate($username, $password);
-            if ($ldapAuth) {
+            // Create specialized authentication method for API authentication
+            if ($this->ldapAuthenticatorApiAuth($userModel->getId(), $username, $password)) {
                 $this->setSessionData($userModel->getId(), 'ldap');
                 return true;
             }
         }
 
         // Fall back to SQL authentication
-        if ($this->sqlAuthenticator->authenticate($userModel, $password)) {
+        if ($this->sqlAuthenticatorApiAuth($userModel, $password)) {
             $this->setSessionData($userModel->getId(), 'sql');
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * Authenticate a user with the SQL authenticator for API access
+     *
+     * @param User $userModel The user model
+     * @param string $password The password
+     * @return bool True if authentication succeeded, false otherwise
+     */
+    private function sqlAuthenticatorApiAuth(User $userModel, string $password): bool
+    {
+        $passwordEncryption = $this->config->get('security', 'password_encryption', 'bcrypt');
+        $passwordCost = $this->config->get('security', 'password_cost', 10);
+
+        $authService = new UserAuthenticationService($passwordEncryption, $passwordCost);
+
+        // Verify the password directly without going through the full authentication flow
+        return $authService->verifyPassword($password, $userModel->getHashedPassword());
+    }
+
+    /**
+     * Authenticate a user with the LDAP authenticator for API access
+     *
+     * @param int $userId The user ID
+     * @param string $username The username
+     * @param string $password The password
+     * @return bool True if authentication succeeded, false otherwise
+     */
+    private function ldapAuthenticatorApiAuth(int $userId, string $username, string $password): bool
+    {
+        // Get LDAP connection settings from config
+        $ldapUri = $this->config->get('ldap', 'uri', '');
+        $ldapBaseDn = $this->config->get('ldap', 'base_dn', '');
+        $ldapBindDn = $this->config->get('ldap', 'bind_dn', '');
+        $ldapBindPassword = $this->config->get('ldap', 'bind_password', '');
+        $ldapSearchFilter = $this->config->get('ldap', 'search_filter', '');
+        $ldapUserAttribute = $this->config->get('ldap', 'user_attribute', 'uid');
+        $ldapProto = $this->config->get('ldap', 'protocol_version', 3);
+
+        if (empty($ldapUri) || empty($ldapBaseDn)) {
+            return false;
+        }
+
+        // Connect to LDAP server
+        $ldapConn = @ldap_connect($ldapUri);
+        if (!$ldapConn) {
+            return false;
+        }
+
+        // Set LDAP options
+        ldap_set_option($ldapConn, LDAP_OPT_PROTOCOL_VERSION, $ldapProto);
+        ldap_set_option($ldapConn, LDAP_OPT_REFERRALS, 0);
+
+        // Bind with admin credentials
+        if (!@ldap_bind($ldapConn, $ldapBindDn, $ldapBindPassword)) {
+            return false;
+        }
+
+        // Search for the user
+        $filter = $ldapSearchFilter
+            ? "(&($ldapUserAttribute=$username)$ldapSearchFilter)"
+            : "($ldapUserAttribute=$username)";
+
+        $attributes = array($ldapUserAttribute, 'dn');
+        $search = @ldap_search($ldapConn, $ldapBaseDn, $filter, $attributes);
+        if (!$search) {
+            return false;
+        }
+
+        // Check if we found exactly one user
+        $entries = ldap_get_entries($ldapConn, $search);
+        if ((int)$entries["count"] !== 1) {
+            return false;
+        }
+
+        // Try to bind with the user's DN and password
+        $userDn = $entries[0]["dn"];
+        $authenticated = @ldap_bind($ldapConn, $userDn, $password);
+
+        return $authenticated;
     }
 
     /**

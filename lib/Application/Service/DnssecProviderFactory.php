@@ -37,21 +37,36 @@ class DnssecProviderFactory
 {
     public static function create(PDOLayer $db, ConfigurationInterface $config): DnssecProvider
     {
-        if (!$config->get('pdns_api', 'url') || !$config->get('pdns_api', 'key')) {
+        // For ConfigurationInterface, we have to be more careful since it doesn't support default values
+        // We need to check if the values exist first and provide defaults ourselves
+        $pdnsApiUrl = $config->get('pdns_api', 'url');
+        $pdnsApiKey = $config->get('pdns_api', 'key');
+
+        if (!$pdnsApiUrl || !$pdnsApiKey) {
             return new PdnsUtilProvider($db, $config);
         }
 
-        $httpClient = new HttpClient($config->get('pdns_api', 'url'), $config->get('pdns_api', 'key'));
-        $serverName = $config->get('pdns_api', 'server_name', 'localhost');
+        $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey);
+
+        // Get the server name, with a default if not found
+        $serverNameFromConfig = $config->get('pdns_api', 'server_name');
+        $serverName = $serverNameFromConfig ?: 'localhost';
+
         $apiClient = new PowerdnsApiClient($httpClient, $serverName);
 
         $logger = new CompositeLegacyLogger();
 
-        if ($config->get('logging', 'syslog_enabled')) {
-            $syslogLogger = new SyslogLegacyLogger(
-                $config->get('logging', 'syslog_identity'),
-                $config->get('logging', 'syslog_facility')
-            );
+        // Check for syslog being enabled
+        $syslogEnabled = $config->get('logging', 'syslog_enabled');
+        if ($syslogEnabled) {
+            // Get syslog identity and facility with defaults
+            $syslogIdentity = $config->get('logging', 'syslog_identity');
+            $syslogIdentity = $syslogIdentity ?: 'poweradmin';
+
+            $syslogFacility = $config->get('logging', 'syslog_facility');
+            $syslogFacility = $syslogFacility ?: LOG_USER;
+
+            $syslogLogger = new SyslogLegacyLogger($syslogIdentity, $syslogFacility);
             $logger->addLogger($syslogLogger);
         }
 
