@@ -344,6 +344,9 @@ class JsonController extends DocsController
         ];
 
         // Convert to JSON with pretty formatting
-        return json_encode($spec, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+        $json = json_encode($spec, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+
+        // Ensure we always return a string
+        return $json !== false ? $json : '{}';
     }
 }

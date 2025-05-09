@@ -21,10 +21,9 @@
  */
 
 /**
- * OpenAPI Configuration Class for Poweradmin API
+ * OpenAPI Tags for Poweradmin API
  *
- * This class centralizes the OpenAPI documentation configuration
- * to ensure consistent documentation across the API.
+ * This class defines the tags used in the OpenAPI documentation.
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -37,43 +36,17 @@ namespace Poweradmin\Application\Controller\Api;
 use OpenApi\Attributes as OA;
 
 /**
- * OpenAPI configuration for the Poweradmin API
+ * API tags for OpenAPI documentation
  */
-#[OA\OpenApi(openapi: '3.0.0')]
-#[OA\Info(
-    title: "Poweradmin API",
-    version: "1.0.0",
-    description: "API for Poweradmin DNS Management",
-    contact: new OA\Contact(
-        email: "edmondas@poweradmin.org",
-        name: "Poweradmin Development Team"
-    ),
-    license: new OA\License(
-        name: "GPL-3.0",
-        url: "https://opensource.org/licenses/GPL-3.0"
-    )
-)]
-#[OA\Server(
-    url: "/api",
-    description: "API Server"
-)]
-#[OA\SecurityScheme(
-    securityScheme: "bearerAuth",
-    type: "http",
-    scheme: "bearer",
-    bearerFormat: "API Key"
-)]
-#[OA\SecurityScheme(
-    securityScheme: "apiKeyHeader",
-    type: "apiKey",
-    name: "X-API-Key",
-    in: "header"
-)]
-/**
- * This class serves as a container for OpenAPI annotations
- * and doesn't contain any actual functionality.
- */
-class OpenApiConfig
+class ApiTags
 {
-    // This class is intentionally empty as it only serves as a container for OpenAPI annotations
+    #[OA\Tag(name: 'users', description: 'User management and authentication')]
+    public function usersTag()
+    {
+    }
+
+    #[OA\Tag(name: 'zones', description: 'Zone and DNS record management')]
+    public function zonesTag()
+    {
+    }
 }
