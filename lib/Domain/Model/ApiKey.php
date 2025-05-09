@@ -42,6 +42,7 @@ class ApiKey implements JsonSerializable
     private ?DateTime $lastUsedAt = null;
     private bool $disabled = false;
     private ?DateTime $expiresAt = null;
+    private string $creatorUsername = '';
 
     /**
      * ApiKey constructor.
@@ -290,6 +291,26 @@ class ApiKey implements JsonSerializable
     }
 
     /**
+     * Gets the creator username
+     *
+     * @return string The creator username
+     */
+    public function getCreatorUsername(): string
+    {
+        return $this->creatorUsername;
+    }
+
+    /**
+     * Sets the creator username
+     *
+     * @param string $creatorUsername The creator username to set
+     */
+    public function setCreatorUsername(string $creatorUsername): void
+    {
+        $this->creatorUsername = $creatorUsername;
+    }
+
+    /**
      * Specifies data which should be serialized to JSON
      *
      * @return array
@@ -307,6 +328,7 @@ class ApiKey implements JsonSerializable
             'expiresAt' => $this->expiresAt ? $this->expiresAt->format('Y-m-d H:i:s') : null,
             'isExpired' => $this->hasExpired(),
             'isValid' => $this->isValid(),
+            'creatorUsername' => $this->creatorUsername,
         ];
     }
 }

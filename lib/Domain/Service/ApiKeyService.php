@@ -73,9 +73,9 @@ class ApiKeyService
     }
 
     /**
-     * Get all API keys the current user has access to
+     * Get all API keys the current user has access to with creator usernames
      *
-     * @return ApiKey[] Array of API keys
+     * @return array Array of API keys with creator usernames
      */
     public function getAllApiKeys(): array
     {
@@ -83,10 +83,23 @@ class ApiKeyService
 
         // Admin users can see all API keys, regular users only see their own
         if (UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
-            return $this->apiKeyRepository->getAll();
+            $apiKeys = $this->apiKeyRepository->getAll();
         } else {
-            return $this->apiKeyRepository->getAll($userId);
+            $apiKeys = $this->apiKeyRepository->getAll($userId);
         }
+
+        // Add creator username for each API key
+        foreach ($apiKeys as $key) {
+            if ($key->getCreatedBy() !== null) {
+                // Get creator username using UserEntity
+                $creatorUsername = \Poweradmin\Domain\Model\UserEntity::getUserNameById($this->db, $key->getCreatedBy());
+                $key->setCreatorUsername($creatorUsername);
+            } else {
+                $key->setCreatorUsername('');
+            }
+        }
+
+        return $apiKeys;
     }
 
     /**
@@ -106,6 +119,14 @@ class ApiKeyService
         // Check if the current user has access to this API key
         $userId = $_SESSION['userid'] ?? 0;
         if (UserManager::verifyPermission($this->db, 'user_is_ueberuser') || $apiKey->getCreatedBy() === $userId) {
+            // Add creator username
+            if ($apiKey->getCreatedBy() !== null) {
+                $creatorUsername = \Poweradmin\Domain\Model\UserEntity::getUserNameById($this->db, $apiKey->getCreatedBy());
+                $apiKey->setCreatorUsername($creatorUsername);
+            } else {
+                $apiKey->setCreatorUsername('');
+            }
+
             return $apiKey;
         }
 

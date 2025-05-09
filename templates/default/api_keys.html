@@ -26,6 +26,7 @@
                 <thead class="table-light">
                     <tr>
                         <th>{% trans %}Name{% endtrans %}</th>
+                        <th>{% trans %}Created by{% endtrans %}</th>
                         <th>{% trans %}Status{% endtrans %}</th>
                         <th>{% trans %}Created at{% endtrans %}</th>
                         <th>{% trans %}Last used{% endtrans %}</th>
@@ -38,6 +39,9 @@
                     <tr class="{% if key.isDisabled or key.hasExpired %}table-secondary{% endif %}">
                         <td>
                             <strong>{{ key.name }}</strong>
+                        </td>
+                        <td>
+                            {% if key.getCreatorUsername() %}{{ key.getCreatorUsername() }}{% else %}<span class="text-muted">{% trans %}Unknown{% endtrans %}</span>{% endif %}
                         </td>
                         <td>
                             {% if key.isDisabled %}
@@ -94,73 +98,3 @@
     {% endif %}
 </div>
 
-<div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-book me-2"></i>{% trans %}API Documentation{% endtrans %}</strong>
-    </div>
-    <div class="card-body">
-        <h5>{% trans %}API Authentication{% endtrans %}</h5>
-        <p>{% trans %}Poweradmin API supports multiple authentication methods for different API routes:{% endtrans %}</p>
-
-        <div class="mb-4">
-            <div class="list-group mb-3">
-                <div class="list-group-item">
-                    <strong>{% trans %}Public API routes (api/v1/*){% endtrans %}</strong>
-                    <div class="small text-muted">{% trans %}Support both API key and HTTP Basic Authentication{% endtrans %}</div>
-                </div>
-                <div class="list-group-item">
-                    <strong>{% trans %}Internal API routes (api/internal/*){% endtrans %}</strong>
-                    <div class="small text-muted">{% trans %}Support only session-based authentication{% endtrans %}</div>
-                </div>
-            </div>
-        </div>
-
-        <h5>{% trans %}API Key Authentication{% endtrans %}</h5>
-        <p>{% trans %}To use an API key, include it in one of these HTTP request headers:{% endtrans %}</p>
-        <div class="bg-light p-2 border rounded mb-2 font-monospace small">X-API-Key: your-api-key-here</div>
-        <p class="text-center my-1">{% trans %}OR{% endtrans %}</p>
-        <div class="bg-light p-2 border rounded mb-4 font-monospace small">Authorization: Bearer your-api-key-here</div>
-
-        <h5>{% trans %}HTTP Basic Authentication{% endtrans %}</h5>
-        <p>{% trans %}For basic authentication, provide your Poweradmin username and password:{% endtrans %}</p>
-        <div class="bg-light p-2 border rounded mb-2 font-monospace small">Authorization: Basic base64(username:password)</div>
-        <p>{% trans %}Example curl command:{% endtrans %}</p>
-        <div class="bg-light p-2 border rounded mb-4 font-monospace small">curl -u username:password https://your-server.com/index.php?page=api/v1/auth_test</div>
-
-        <h5>{% trans %}Testing Authentication{% endtrans %}</h5>
-        <p>{% trans %}To test your authentication credentials, make a request to the auth test endpoint:{% endtrans %}</p>
-        <div class="bg-light p-2 border rounded mb-2 font-monospace small">GET /index.php?page=api/v1/auth_test</div>
-        <p>{% trans %}Example curl commands:{% endtrans %}</p>
-        <div class="bg-light p-2 border rounded mb-3 font-monospace small"># API Key Authentication
-curl -H "X-API-Key: your-api-key-here" https://your-server.com/index.php?page=api/v1/auth_test
-
-# HTTP Basic Authentication
-curl -u username:password https://your-server.com/index.php?page=api/v1/auth_test</div>
-        <p>{% trans %}A successful response will show your authentication details:{% endtrans %}</p>
-        <div class="bg-light p-2 border rounded mb-4 font-monospace small">{
-  "authenticated": true,
-  "user_id": 123,
-  "username": "admin",
-  "auth_method": "api_key", // or "sql" or "ldap"
-  "is_admin": true,
-  "permissions": ["user_is_ueberuser", "zone_content_view_own", ...],
-  "server_time": "2025-05-08 08:45:23"
-}</div>
-
-        <h5>{% trans %}Key Validation Endpoint{% endtrans %}</h5>
-        <p>{% trans %}You can also use the dedicated key validation endpoint:{% endtrans %}</p>
-        <div class="bg-light p-2 border rounded mb-4 font-monospace small">GET /index.php?page=api/v1/key_validation</div>
-
-        <h5>{% trans %}Security Notes:{% endtrans %}</h5>
-        <div class="alert alert-info">
-            <ul class="mb-0">
-                <li>{% trans %}Keep your API keys secure and never share them publicly.{% endtrans %}</li>
-                <li>{% trans %}Always use HTTPS for API requests to protect credentials in transit.{% endtrans %}</li>
-                <li>{% trans %}Regenerate your key if you suspect it has been compromised.{% endtrans %}</li>
-                <li>{% trans %}Set an expiration date for keys that have temporary access.{% endtrans %}</li>
-                <li>{% trans %}Disable keys that are not currently in use.{% endtrans %}</li>
-                <li>{% trans %}HTTP Basic Authentication is more suitable for trusted client applications.{% endtrans %}</li>
-            </ul>
-        </div>
-    </div>
-</div>
