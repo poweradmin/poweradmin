@@ -75,8 +75,10 @@ class PowerdnsStatusService
             // Get statistics metrics
             $metrics = [];
             try {
+                // Try to get metrics from the PowerDNS API
                 $metricsData = $this->apiClient->getMetrics();
-                // Process metrics data
+
+                // Process metrics data from the API
                 if (!empty($metricsData)) {
                     foreach ($metricsData as $metric) {
                         if (isset($metric['name'], $metric['value'])) {
@@ -84,9 +86,33 @@ class PowerdnsStatusService
                         }
                     }
                 }
+
+                // Try to fetch and parse raw Prometheus metrics if available
+                // Only do this if we have API URL configured (extract base URL)
+                if (!empty($this->apiUrl)) {
+                    $parsedUrl = parse_url($this->apiUrl);
+                    if (isset($parsedUrl['scheme'], $parsedUrl['host'])) {
+                        $port = isset($parsedUrl['port']) ? $parsedUrl['port'] : '8081';
+                        $metricsUrl = "{$parsedUrl['scheme']}://{$parsedUrl['host']}:{$port}/metrics";
+
+                        // Fetch metrics in Prometheus format
+                        $rawMetrics = @file_get_contents($metricsUrl);
+                        if ($rawMetrics !== false) {
+                            // Parse Prometheus-style metrics
+                            $prometheusMetrics = $this->parsePrometheusMetrics($rawMetrics);
+                            // Merge with existing metrics, with Prometheus metrics taking precedence
+                            $metrics = array_merge($metrics, $prometheusMetrics);
+                            // Store metric metadata for UI display
+                            $status['metric_info'] = $this->getMetricInfo($rawMetrics);
+                        }
+                    }
+                }
             } catch (Exception $e) {
                 // Metrics endpoint might not be available, continue without metrics
             }
+
+            // Prepare metric categories for UI display
+            $metricCategories = $this->categorizeMetrics($metrics);
 
             // Extract essential information
             $status = [
@@ -96,7 +122,8 @@ class PowerdnsStatusService
                 'configured' => true,
                 'server_name' => $this->serverName,
                 'id' => $serverInfo['id'] ?? $this->serverName,
-                'metrics' => $metrics
+                'metrics' => $metrics,
+                'metric_categories' => $metricCategories
             ];
 
             // Add server metrics if available
@@ -210,5 +237,178 @@ class PowerdnsStatusService
         } else {
             return sprintf('%dm', $minutes);
         }
+    }
+
+    /**
+     * Parse Prometheus-format metrics into a associative array
+     *
+     * @param string $rawMetricsText Raw Prometheus metrics text
+     * @return array Parsed metrics as name => value
+     */
+    private function parsePrometheusMetrics(string $rawMetricsText): array
+    {
+        $metrics = [];
+        $lines = explode("\n", $rawMetricsText);
+
+        foreach ($lines as $line) {
+            // Skip empty lines, comments, and HELP/TYPE lines
+            if (empty($line) || str_starts_with($line, '#')) {
+                continue;
+            }
+
+            // Extract metric name and value
+            if (preg_match('/^([a-zA-Z0-9_]+)(?:\{.*?\})?\s+([0-9e\.\+\-]+)$/', $line, $matches)) {
+                $metricName = $matches[1];
+                $metricValue = $matches[2];
+                $metrics[$metricName] = $metricValue;
+            }
+        }
+
+        return $metrics;
+    }
+
+    /**
+     * Extract metric metadata (description and type) from Prometheus metrics
+     *
+     * @param string $rawMetricsText Raw Prometheus metrics text
+     * @return array Metric info as name => [description, type]
+     */
+    private function getMetricInfo(string $rawMetricsText): array
+    {
+        $metricInfo = [];
+        $lines = explode("\n", $rawMetricsText);
+
+        foreach ($lines as $line) {
+            // Extract HELP lines
+            if (preg_match('/^# HELP ([a-zA-Z0-9_]+) (.+)$/', $line, $matches)) {
+                $metricName = $matches[1];
+                $description = $matches[2];
+                if (!isset($metricInfo[$metricName])) {
+                    $metricInfo[$metricName] = ['description' => '', 'type' => ''];
+                }
+                $metricInfo[$metricName]['description'] = $description;
+            }
+
+            // Extract TYPE lines
+            if (preg_match('/^# TYPE ([a-zA-Z0-9_]+) (.+)$/', $line, $matches)) {
+                $metricName = $matches[1];
+                $type = $matches[2];
+                if (!isset($metricInfo[$metricName])) {
+                    $metricInfo[$metricName] = ['description' => '', 'type' => ''];
+                }
+                $metricInfo[$metricName]['type'] = $type;
+            }
+        }
+
+        return $metricInfo;
+    }
+
+    /**
+     * Categorize metrics for UI display
+     *
+     * @param array $metrics Metrics data
+     * @return array Categorized metrics
+     */
+    private function categorizeMetrics(array $metrics): array
+    {
+        $categories = [
+            'performance' => [
+                'title' => 'Performance',
+                'metrics' => [],
+                'color' => 'success'
+            ],
+            'queries' => [
+                'title' => 'Query Statistics',
+                'metrics' => [],
+                'color' => 'primary'
+            ],
+            'cache' => [
+                'title' => 'Cache',
+                'metrics' => [],
+                'color' => 'info'
+            ],
+            'dnssec' => [
+                'title' => 'DNSSEC',
+                'metrics' => [],
+                'color' => 'secondary'
+            ],
+            'errors' => [
+                'title' => 'Errors',
+                'metrics' => [],
+                'color' => 'warning'
+            ],
+            'other' => [
+                'title' => 'Other Metrics',
+                'metrics' => [],
+                'color' => 'light'
+            ]
+        ];
+
+        // Categorization rules based on metric name prefixes
+        foreach ($metrics as $name => $value) {
+            // Skip array values or convert them to string representation
+            if (is_array($value)) {
+                // For now, skip array values as they're causing issues
+                continue;
+            }
+
+            // Cast numeric strings to actual numbers
+            if (is_string($value) && is_numeric($value)) {
+                $value = $value + 0; // Convert to int or float
+            }
+
+            // Skip empty or invalid values
+            if (empty($name) || $name === null) {
+                continue;
+            }
+
+            if (
+                stripos($name, 'latency') !== false ||
+                stripos($name, 'uptime') !== false ||
+                stripos($name, 'msec') !== false
+            ) {
+                $categories['performance']['metrics'][$name] = $value;
+            } elseif (
+                stripos($name, 'cache') !== false ||
+                      stripos($name, 'hit') !== false ||
+                      stripos($name, 'miss') !== false
+            ) {
+                $categories['cache']['metrics'][$name] = $value;
+            } elseif (
+                stripos($name, 'dnssec') !== false ||
+                      stripos($name, 'security') !== false ||
+                      stripos($name, 'crypto') !== false
+            ) {
+                $categories['dnssec']['metrics'][$name] = $value;
+            } elseif (
+                stripos($name, 'query') !== false ||
+                      stripos($name, 'answer') !== false ||
+                      stripos($name, 'request') !== false ||
+                      stripos($name, 'response') !== false ||
+                      stripos($name, 'udp') !== false ||
+                      stripos($name, 'tcp') !== false
+            ) {
+                $categories['queries']['metrics'][$name] = $value;
+            } elseif (
+                stripos($name, 'error') !== false ||
+                      stripos($name, 'fail') !== false ||
+                      stripos($name, 'corrupt') !== false ||
+                      stripos($name, 'timeout') !== false ||
+                      stripos($name, 'servfail') !== false
+            ) {
+                $categories['errors']['metrics'][$name] = $value;
+            } else {
+                $categories['other']['metrics'][$name] = $value;
+            }
+        }
+
+        // Remove empty categories
+        foreach ($categories as $key => $category) {
+            if (empty($category['metrics'])) {
+                unset($categories[$key]);
+            }
+        }
+
+        return $categories;
     }
 }
