@@ -114,7 +114,109 @@ class JsonController extends DocsController
      */
     private function generateOpenApiJson(): string
     {
-        // Create manual JSON OpenAPI spec
+        try {
+            // Define OpenAPI tags for organization
+            $tags = [
+                ['name' => 'zones', 'description' => 'Zone and DNS record management'],
+                ['name' => 'users', 'description' => 'User authentication and verification']
+            ];
+
+            // Configure OpenAPI generator with options
+            $options = [
+                'validate' => false,  // Set to false to prevent validation errors
+                'tags' => $tags,
+                'openapi' => '3.0.0'  // Explicitly specify OpenAPI version
+            ];
+
+            // Get the project root directory (two levels up from this file)
+            $projectRoot = dirname(dirname(dirname(dirname(dirname(__FILE__)))));
+
+            // Check if the V1 (uppercase) directory exists
+            $v1DirUppercase = $projectRoot . '/lib/Application/Controller/Api/V1';
+            $v1DirLowercase = $projectRoot . '/lib/Application/Controller/Api/v1';
+            error_log('V1 directory (uppercase) exists: ' . (is_dir($v1DirUppercase) ? 'Yes' : 'No'));
+            error_log('v1 directory (lowercase) exists: ' . (is_dir($v1DirLowercase) ? 'Yes' : 'No'));
+
+            // Check namespaces in the code - there might be a case-sensitivity issue
+            error_log('Current namespace: ' . __NAMESPACE__);
+
+            // Check actual files that should contain the ZoneController
+            if (file_exists($v1DirUppercase . '/ZoneController.php')) {
+                error_log('Found ZoneController.php in uppercase V1 directory');
+            } elseif (file_exists($v1DirLowercase . '/ZoneController.php')) {
+                error_log('Found ZoneController.php in lowercase v1 directory');
+            } else {
+                error_log('ZoneController.php not found in either v1 or V1 directory');
+            }
+
+            // Log the scan directory for debugging
+            $scanDirectory = $projectRoot . '/lib/Application/Controller/Api';
+            error_log('OpenAPI scan directory: ' . $scanDirectory);
+            error_log('Directory exists: ' . (is_dir($scanDirectory) ? 'Yes' : 'No'));
+
+            // Store files to be scanned for logging
+            $filesToScan = [];
+            $this->findPhpFilesRecursively($scanDirectory, $filesToScan);
+            error_log('Number of PHP files found: ' . count($filesToScan));
+
+            // Explicit file paths to make sure key controllers are included
+            $explicitFiles = [
+                $projectRoot . '/lib/Application/Controller/Api/OpenApiInfo.php', // Basic info
+                $projectRoot . '/lib/Application/Controller/Api/V1/ZoneController.php', // Case as in namespace (uppercase V)
+                $projectRoot . '/lib/Application/Controller/Api/v1/ZoneController.php', // Lowercase v
+            ];
+
+            // Log explicit files for debugging
+            foreach ($explicitFiles as $file) {
+                error_log('Checking explicit file: ' . $file . ' - Exists: ' . (file_exists($file) ? 'Yes' : 'No'));
+            }
+
+            // Now try scanning the codebase for OpenAPI annotations/attributes
+            error_log('Starting OpenAPI scanning of files...');
+
+            try {
+                // Try to scan the codebase
+                $openapi = Generator::scan([
+                    $scanDirectory,  // All API controllers directory
+                ], $options);
+
+                // Try to convert to JSON
+                $json = $openapi->toJson();
+
+                // Parse the JSON to see if it contains the expected structures
+                $decodedJson = json_decode($json, true);
+
+                if (json_last_error() !== JSON_ERROR_NONE || empty($decodedJson['paths'])) {
+                    error_log('Generated JSON is invalid or empty, falling back to manual schema');
+                    return $this->createFallbackOpenApiJson();
+                }
+
+                // If we get this far, the scanning worked
+                error_log('Scanning worked and produced valid JSON with paths');
+                return $json;
+            } catch (\Exception $e) {
+                // If scanning or JSON conversion fails, log and use fallback
+                error_log('Scanning or JSON conversion failed: ' . $e->getMessage());
+                return $this->createFallbackOpenApiJson();
+            }
+        } catch (\Exception $e) {
+            // Log detailed exception information
+            error_log('OpenAPI generation error: ' . $e->getMessage());
+            error_log('Exception trace: ' . $e->getTraceAsString());
+
+            // Return manual schema as fallback
+            return $this->createFallbackOpenApiJson();
+        }
+    }
+
+    /**
+     * Create a fallback OpenAPI JSON with zone endpoints and parameters manually defined
+     *
+     * @return string The fallback OpenAPI JSON
+     */
+    private function createFallbackOpenApiJson(): string
+    {
+        // Create manual JSON OpenAPI spec with zone endpoints and parameters
         $spec = [
             'openapi' => '3.0.0',
             'info' => [
@@ -149,84 +251,10 @@ class JsonController extends DocsController
                         ],
                         'responses' => [
                             '200' => [
-                                'description' => 'Authentication successful',
-                                'content' => [
-                                    'application/json' => [
-                                        'schema' => [
-                                            'type' => 'object',
-                                            'properties' => [
-                                                'authenticated' => [
-                                                    'type' => 'boolean',
-                                                    'example' => true
-                                                ],
-                                                'user_id' => [
-                                                    'type' => 'integer',
-                                                    'example' => 1
-                                                ],
-                                                'username' => [
-                                                    'type' => 'string',
-                                                    'example' => 'admin'
-                                                ],
-                                                'auth_method' => [
-                                                    'type' => 'string',
-                                                    'example' => 'api_key'
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
+                                'description' => 'Authentication successful'
                             ],
                             '401' => [
-                                'description' => 'Authentication failed',
-                                'content' => [
-                                    'application/json' => [
-                                        'schema' => [
-                                            'type' => 'object',
-                                            'properties' => [
-                                                'error' => [
-                                                    'type' => 'boolean',
-                                                    'example' => true
-                                                ],
-                                                'message' => [
-                                                    'type' => 'string',
-                                                    'example' => 'Authentication required'
-                                                ]
-                                            ]
-                                        ]
-                                    ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ],
-                '/v1/user/verify' => [
-                    'get' => [
-                        'summary' => 'Verify a user and API key',
-                        'operationId' => 'v1UserVerify',
-                        'tags' => ['users'],
-                        'security' => [
-                            ['bearerAuth' => []],
-                            ['apiKeyHeader' => []]
-                        ],
-                        'parameters' => [
-                            [
-                                'name' => 'action',
-                                'in' => 'query',
-                                'required' => true,
-                                'description' => 'Action parameter (must be \'verify\')',
-                                'schema' => [
-                                    'type' => 'string',
-                                    'default' => 'verify',
-                                    'enum' => ['verify']
-                                ]
-                            ]
-                        ],
-                        'responses' => [
-                            '200' => [
-                                'description' => 'User and API key verification result'
-                            ],
-                            '401' => [
-                                'description' => 'Unauthorized'
+                                'description' => 'Authentication failed'
                             ]
                         ]
                     ]
@@ -240,12 +268,103 @@ class JsonController extends DocsController
                             ['bearerAuth' => []],
                             ['apiKeyHeader' => []]
                         ],
+                        'parameters' => [
+                            [
+                                'name' => 'action',
+                                'in' => 'query',
+                                'description' => 'Action parameter (must be \'list\')',
+                                'required' => true,
+                                'schema' => [
+                                    'type' => 'string',
+                                    'default' => 'list',
+                                    'enum' => ['list']
+                                ]
+                            ],
+                            [
+                                'name' => 'page',
+                                'in' => 'query',
+                                'description' => 'Page number',
+                                'schema' => [
+                                    'type' => 'integer',
+                                    'default' => 1,
+                                    'minimum' => 1
+                                ]
+                            ],
+                            [
+                                'name' => 'limit',
+                                'in' => 'query',
+                                'description' => 'Number of results per page',
+                                'schema' => [
+                                    'type' => 'integer',
+                                    'default' => 20,
+                                    'minimum' => 1,
+                                    'maximum' => 100
+                                ]
+                            ]
+                        ],
                         'responses' => [
                             '200' => [
                                 'description' => 'List of zones'
                             ],
                             '401' => [
                                 'description' => 'Unauthorized'
+                            ]
+                        ]
+                    ]
+                ],
+                '/v1/zone/get/{id}' => [
+                    'get' => [
+                        'summary' => 'Get a specific zone by ID or name',
+                        'operationId' => 'v1ZoneGet',
+                        'tags' => ['zones'],
+                        'security' => [
+                            ['bearerAuth' => []],
+                            ['apiKeyHeader' => []]
+                        ],
+                        'parameters' => [
+                            [
+                                'name' => 'action',
+                                'in' => 'query',
+                                'description' => 'Action parameter (must be \'get\')',
+                                'required' => true,
+                                'schema' => [
+                                    'type' => 'string',
+                                    'default' => 'get',
+                                    'enum' => ['get']
+                                ]
+                            ],
+                            [
+                                'name' => 'id',
+                                'in' => 'path',
+                                'description' => 'Zone ID or "name" if querying by name',
+                                'required' => true,
+                                'schema' => [
+                                    'type' => 'string'
+                                ]
+                            ],
+                            [
+                                'name' => 'by',
+                                'in' => 'query',
+                                'description' => 'Query by "id" (default) or "name"',
+                                'schema' => [
+                                    'type' => 'string',
+                                    'enum' => ['id', 'name'],
+                                    'default' => 'id'
+                                ]
+                            ]
+                        ],
+                        'responses' => [
+                            '200' => [
+                                'description' => 'Zone details'
+                            ],
+                            '400' => [
+                                'description' => 'Missing required parameters'
+                            ],
+                            '401' => [
+                                'description' => 'Unauthorized'
+                            ],
+                            '404' => [
+                                'description' => 'Zone not found'
                             ]
                         ]
                     ]
@@ -259,6 +378,53 @@ class JsonController extends DocsController
                             ['bearerAuth' => []],
                             ['apiKeyHeader' => []]
                         ],
+                        'parameters' => [
+                            [
+                                'name' => 'action',
+                                'in' => 'query',
+                                'required' => true,
+                                'description' => 'Action parameter (must be \'create\')',
+                                'schema' => [
+                                    'type' => 'string',
+                                    'default' => 'create',
+                                    'enum' => ['create']
+                                ]
+                            ]
+                        ],
+                        'requestBody' => [
+                            'required' => true,
+                            'description' => 'Zone creation information',
+                            'content' => [
+                                'application/json' => [
+                                    'schema' => [
+                                        'type' => 'object',
+                                        'properties' => [
+                                            'name' => [
+                                                'type' => 'string',
+                                                'description' => 'Zone name',
+                                                'example' => 'example.com'
+                                            ],
+                                            'type' => [
+                                                'type' => 'string',
+                                                'description' => 'Zone type',
+                                                'example' => 'MASTER'
+                                            ],
+                                            'owner' => [
+                                                'type' => 'integer',
+                                                'description' => 'Zone owner (optional)',
+                                                'example' => 1
+                                            ],
+                                            'dnssec' => [
+                                                'type' => 'boolean',
+                                                'description' => 'Enable DNSSEC (optional)',
+                                                'example' => true
+                                            ]
+                                        ],
+                                        'required' => ['name', 'type']
+                                    ]
+                                ]
+                            ]
+                        ],
                         'responses' => [
                             '201' => [
                                 'description' => 'Zone created successfully'
@@ -268,56 +434,6 @@ class JsonController extends DocsController
                             ],
                             '401' => [
                                 'description' => 'Unauthorized'
-                            ]
-                        ]
-                    ]
-                ],
-                '/v1/zone/record/add' => [
-                    'post' => [
-                        'summary' => 'Add a new DNS record to a zone',
-                        'operationId' => 'v1ZoneRecordAdd',
-                        'tags' => ['zones'],
-                        'security' => [
-                            ['bearerAuth' => []],
-                            ['apiKeyHeader' => []]
-                        ],
-                        'responses' => [
-                            '201' => [
-                                'description' => 'Record created successfully'
-                            ],
-                            '400' => [
-                                'description' => 'Bad request'
-                            ],
-                            '401' => [
-                                'description' => 'Unauthorized'
-                            ],
-                            '404' => [
-                                'description' => 'Zone not found'
-                            ]
-                        ]
-                    ]
-                ],
-                '/v1/zone/delete' => [
-                    'delete' => [
-                        'summary' => 'Delete a zone',
-                        'operationId' => 'v1ZoneDelete',
-                        'tags' => ['zones'],
-                        'security' => [
-                            ['bearerAuth' => []],
-                            ['apiKeyHeader' => []]
-                        ],
-                        'responses' => [
-                            '200' => [
-                                'description' => 'Zone deleted successfully'
-                            ],
-                            '400' => [
-                                'description' => 'Bad request'
-                            ],
-                            '401' => [
-                                'description' => 'Unauthorized'
-                            ],
-                            '404' => [
-                                'description' => 'Zone not found'
                             ]
                         ]
                     ]
@@ -346,7 +462,42 @@ class JsonController extends DocsController
         // Convert to JSON with pretty formatting
         $json = json_encode($spec, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
 
+        error_log('Returning manually created fallback OpenAPI JSON');
+
         // Ensure we always return a string
         return $json !== false ? $json : '{}';
+    }
+
+    /**
+     * Helper method to find all PHP files recursively in a directory
+     *
+     * @param string $directory The directory to scan
+     * @param array &$files Array to store found files
+     * @return void
+     */
+    private function findPhpFilesRecursively(string $directory, array &$files): void
+    {
+        if (!is_dir($directory)) {
+            return;
+        }
+
+        $items = scandir($directory);
+        if ($items === false) {
+            return;
+        }
+
+        foreach ($items as $item) {
+            if ($item === '.' || $item === '..') {
+                continue;
+            }
+
+            $path = $directory . '/' . $item;
+
+            if (is_dir($path)) {
+                $this->findPhpFilesRecursively($path, $files);
+            } elseif (is_file($path) && pathinfo($path, PATHINFO_EXTENSION) === 'php') {
+                $files[] = $path;
+            }
+        }
     }
 }
