@@ -334,7 +334,8 @@ HTML;
      */
     protected function show404Page(): void
     {
-        $response = new Response('API documentation not available', Response::HTTP_NOT_FOUND);
+        $message = 'API documentation is not available. To enable it, set both "api.enabled" and "api.docs_enabled" to true in your configuration file.';
+        $response = new Response($message, Response::HTTP_NOT_FOUND);
         $response->send();
         exit;
     }
