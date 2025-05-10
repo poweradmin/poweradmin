@@ -68,16 +68,18 @@
   },
   "scripts": {
     "docs": "tools/phpDocumentor",
+    "docs:api": "php tools/openapi.php",
+    "db:migrate": "vendor/bin/phinx migrate -c tools/phinx.php",
 
     "tests": "phpunit --testsuite unit",
     "tests:integration": "phpunit --testsuite integration",
 
-    "check:all": "phpcs --standard=phpcs.xml addons config db index.php install lib tests dynamic_update.php",
-    "format:all": "phpcbf --standard=phpcs.xml addons config db index.php install lib tests dynamic_update.php",
-    "style:all": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- addons config db index.php install lib tests dynamic_update.php",
-    "analyse:phpstan": "phpstan analyse --level=2 addons config db index.php install lib tests dynamic_update.php",
+    "check:all": "phpcs --standard=phpcs.xml addons config db index.php install lib tests tools dynamic_update.php",
+    "format:all": "phpcbf --standard=phpcs.xml addons config db index.php install lib tests tools dynamic_update.php",
+    "style:all": "PHP_CS_FIXER_IGNORE_ENV=1 php-cs-fixer fix -- addons config db index.php install lib tests tools dynamic_update.php",
+    "analyse:phpstan": "phpstan analyse --level=2 addons config db index.php install lib tests tools dynamic_update.php",
     "analyse:psalm": "psalm",
-    "quality:all": "phpmd addons,config,db,index.php,install,lib,dynamic_update.php ansi phpmd.xml",
+    "quality:all": "phpmd addons,config,db,index.php,install,lib,tools,dynamic_update.php ansi phpmd.xml",
     "analyse:all": [
         "@check:all",
         "@analyse:psalm",
