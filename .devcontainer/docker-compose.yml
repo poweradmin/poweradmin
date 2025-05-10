@@ -105,7 +105,9 @@ services:
       - ./adminer/login-password-less.php:/var/www/html/plugins-enabled/login-password-less.php
 
   apache:
-    image: php:8.2-apache
+    build:
+      context: .
+      dockerfile: apache.Dockerfile
     container_name: apache
     networks:
       - internal
@@ -113,15 +115,8 @@ services:
       - "8888:80"
     volumes:
       - ../.:/app
-      - ./conf/apache-vhost.conf:/etc/apache2/sites-available/000-default.conf
-      - ./conf/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
-      - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
     depends_on:
       - app
-    command: >
-      bash -c "a2enmod rewrite &&
-               docker-php-ext-install mysqli pdo pdo_mysql intl ldap &&
-               apache2-foreground"
 
 #  ldap:
 #    image: dinkel/openldap
