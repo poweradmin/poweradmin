@@ -129,8 +129,23 @@ class BasicRouter
             throw new Exception("Class $controllerClassName not found");
         }
 
-        $controller = new $controllerClassName($this->request);
-        $controller->run();
+        // API paths should always use controller authentication mechanisms
+        // instead of relying on session-based authentication
+        if (strpos($pageName, 'api/') === 0) {
+            // Force any existing login session to be ignored for API routes
+            $originalSession = $_SESSION;
+            $_SESSION = [];
+
+            $controller = new $controllerClassName($this->request);
+            $controller->run();
+
+            // Restore the session after API controller is done
+            $_SESSION = $originalSession;
+        } else {
+            // Standard controller instantiation for non-API routes
+            $controller = new $controllerClassName($this->request);
+            $controller->run();
+        }
     }
 
     /**

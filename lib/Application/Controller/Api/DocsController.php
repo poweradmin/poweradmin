@@ -31,17 +31,12 @@
 
 namespace Poweradmin\Application\Controller\Api;
 
-use OpenApi\Generator;
-use OpenApi\Attributes as OA;
 use Poweradmin\BaseController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-// OpenAPI definitions are centralized in OpenApiConfig class
 class DocsController extends BaseController
 {
-    // Inherits config from parent
-
     /**
      * Constructor for DocsController
      *
@@ -49,7 +44,8 @@ class DocsController extends BaseController
      */
     public function __construct(array $request)
     {
-        parent::__construct($request);
+        // Pass false to disable authentication for API docs
+        parent::__construct($request, false);
     }
 
     /**
@@ -314,37 +310,6 @@ HTML;
     }
 
     /**
-     * Generate and show OpenAPI JSON
-     *
-     * This method is not used directly anymore.
-     * The JsonController now handles the JSON generation directly.
-     * This method is kept for backward compatibility.
-     */
-    protected function showOpenApiJson(): void
-    {
-        // Only load Swagger classes in development environment
-        if (!class_exists('\OpenApi\Generator')) {
-            $response = new Response('OpenAPI Generator not available', Response::HTTP_SERVICE_UNAVAILABLE);
-            $response->send();
-            exit;
-        }
-
-        try {
-            // Redirect to the JSON controller endpoint
-            header('Location: ' . $_SERVER['SCRIPT_NAME'] . '?page=api/docs/json');
-            exit;
-        } catch (\Exception $e) {
-            $response = new Response(
-                'Error generating OpenAPI documentation: ' . $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
-            $response->headers->set('Content-Type', 'text/plain');
-            $response->send();
-        }
-        exit;
-    }
-
-    /**
      * Check if API docs should be enabled
      *
      * @return bool True if API docs should be enabled
@@ -360,11 +325,8 @@ HTML;
         // Check if API docs are explicitly enabled in config
         $docsEnabled = (bool) $this->config->get('api', 'docs_enabled', false);
 
-        // Check if we're in development mode
-        $devMode = (bool) $this->config->get('general', 'development_mode', false);
-
-        // Allow docs in development mode or when explicitly enabled
-        return $docsEnabled || $devMode;
+        // Only allow docs when explicitly enabled
+        return $docsEnabled;
     }
 
     /**
@@ -375,24 +337,5 @@ HTML;
         $response = new Response('API documentation not available', Response::HTTP_NOT_FOUND);
         $response->send();
         exit;
-    }
-
-    /**
-     * Get the base URL for the API docs
-     *
-     * @return string The base URL
-     */
-    private function getBaseUrl(): string
-    {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $uri = $_SERVER['REQUEST_URI'] ?? '';
-
-        // Remove query string from URI
-        if (($pos = strpos($uri, '?')) !== false) {
-            $uri = substr($uri, 0, $pos);
-        }
-
-        return $protocol . $host . $uri;
     }
 }

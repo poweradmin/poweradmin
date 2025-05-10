@@ -50,6 +50,8 @@ class JsonController extends DocsController
      */
     public function __construct(array $request)
     {
+        // The authentication logic is inherited from the parent DocsController
+        // which is now disabled (passing false to BaseController)
         parent::__construct($request);
     }
 
