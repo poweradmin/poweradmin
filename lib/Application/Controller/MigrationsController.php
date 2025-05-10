@@ -30,7 +30,7 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 class MigrationsController extends BaseController
 {
-    private const PHINX_CONFIG_PATH = __DIR__ . '/../../../phinx.php';
+    private const PHINX_CONFIG_PATH = __DIR__ . '/../../../tools/phinx.php';
 
     public function run(): void
     {

@@ -25,7 +25,7 @@ Thumbs.db
 # phpDocumentor
 /docs
 /.phive
-/tools
+/tools/phpDocumentor
 
 # PHPUnit
 /.phpunit.cache

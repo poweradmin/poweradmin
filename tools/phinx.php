@@ -20,17 +20,29 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+/**
+ * Phinx configuration script for Poweradmin database migrations
+ *
+ * Usage: vendor/bin/phinx migrate -c tools/phinx.php
+ */
+
+// Ensure script is only run from command line
+if (PHP_SAPI !== 'cli') {
+    header('HTTP/1.0 403 Forbidden');
+    exit('This script can only be executed from the command line.');
+}
+
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
-require_once __DIR__ . '/vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
 $config = ConfigurationManager::getInstance();
 $config->initialize();
 
 return [
     'paths' => [
-        'migrations' => '%%PHINX_CONFIG_DIR%%/db/migrations',
-        'seeds' => '%%PHINX_CONFIG_DIR%%/db/seeds'
+        'migrations' => '%%PHINX_CONFIG_DIR%%/../db/migrations',
+        'seeds' => '%%PHINX_CONFIG_DIR%%/../db/seeds'
     ],
     'environments' => [
         'default_migration_table' => 'migrations',

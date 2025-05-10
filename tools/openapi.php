@@ -2,12 +2,12 @@
 
 /**
  * OpenAPI configuration for Poweradmin API
- * 
+ *
  * This script generates OpenAPI/Swagger documentation for the Poweradmin API.
  * It should only be run in development mode or when API documentation is explicitly enabled.
- * 
- * Usage: php openapi.php
- * 
+ *
+ * Usage: php tools/openapi.php
+ *
  * The generated documentation will be saved to ./docs/openapi.json and ./docs/openapi.yaml
  */
 
@@ -21,7 +21,7 @@ use OpenApi\Attributes as OA;
 use OpenApi\Generator;
 
 // Include autoloader
-require __DIR__ . '/vendor/autoload.php';
+require __DIR__ . '/../vendor/autoload.php';
 
 // Check if OpenApi\Generator class is available
 if (!class_exists('OpenApi\\Generator')) {
@@ -54,24 +54,24 @@ try {
 
     // Scan the codebase for OpenAPI annotations/attributes
     $openapi = Generator::scan([
-        __DIR__ . '/lib/Application/Controller/Api',  // All API controllers
+        __DIR__ . '/../lib/Application/Controller/Api',  // All API controllers
     ], $options);
 
     // Ensure docs directory exists
-    if (!is_dir(__DIR__ . '/docs')) {
-        mkdir(__DIR__ . '/docs', 0755, true);
+    if (!is_dir(__DIR__ . '/../docs')) {
+        mkdir(__DIR__ . '/../docs', 0755, true);
     }
 
     // Save OpenAPI spec to JSON file with pretty print
     $jsonOutput = $openapi->toJson();
-    file_put_contents(__DIR__ . '/docs/openapi.json', $jsonOutput);
+    file_put_contents(__DIR__ . '/../docs/openapi.json', $jsonOutput);
     echo "OpenAPI JSON documentation generated successfully.\n";
-    echo "JSON: " . __DIR__ . "/docs/openapi.json\n";
+    echo "JSON: " . __DIR__ . "/../docs/openapi.json\n";
 
     // Save OpenAPI spec to YAML file
     $yamlOutput = $openapi->toYaml();
-    file_put_contents(__DIR__ . '/docs/openapi.yaml', $yamlOutput);
-    echo "YAML: " . __DIR__ . "/docs/openapi.yaml\n";
+    file_put_contents(__DIR__ . '/../docs/openapi.yaml', $yamlOutput);
+    echo "YAML: " . __DIR__ . "/../docs/openapi.yaml\n";
 
     echo "OpenAPI documentation completed.\n";
 
