@@ -166,7 +166,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Get(
-        path: '/index.php?page=api/v1/zone&action=list',
+        path: '/api/v1/zone/list',
         operationId: 'v1ZoneList',
         summary: 'List all accessible zones',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
@@ -277,7 +277,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Get(
-        path: '/index.php?page=api/v1/zone&action=get&id={id}',
+        path: '/api/v1/zone/get/{id}',
         operationId: 'v1ZoneGet',
         summary: 'Get a specific zone by ID or name',
         tags: ['zones'],
@@ -401,7 +401,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Post(
-        path: '/index.php?page=api/v1/zone&action=create',
+        path: '/api/v1/zone/create',
         operationId: 'v1ZoneCreate',
         summary: 'Create a new zone',
         tags: ['zones'],
@@ -558,7 +558,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Put(
-        path: '/index.php?page=api/v1/zone&action=update',
+        path: '/api/v1/zone/update',
         operationId: 'v1ZoneUpdate',
         summary: 'Update an existing zone',
         tags: ['zones'],
@@ -659,7 +659,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Put(
-        path: '/index.php?page=api/v1/zone&action=update_record',
+        path: '/api/v1/zone/record/update',
         operationId: 'v1ZoneRecordUpdate',
         summary: 'Update a DNS record',
         tags: ['zones'],
@@ -820,7 +820,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Post(
-        path: '/index.php?page=api/v1/zone&action=add_record',
+        path: '/api/v1/zone/record/add',
         operationId: 'v1ZoneRecordAdd',
         summary: 'Add a new DNS record to a zone',
         tags: ['zones'],
@@ -991,7 +991,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Post(
-        path: '/index.php?page=api/v1/zone&action=set_permissions',
+        path: '/api/v1/zone/permissions',
         operationId: 'v1ZoneSetPermissions',
         summary: 'Set domain permissions for API key',
         tags: ['zones'],
@@ -1157,7 +1157,7 @@ class ZoneController extends V1ApiBaseController
      * @return JsonResponse The JSON response
      */
     #[OA\Delete(
-        path: '/index.php?page=api/v1/zone&action=delete',
+        path: '/api/v1/zone/delete',
         operationId: 'v1ZoneDelete',
         summary: 'Delete a zone',
         tags: ['zones'],

@@ -1,0 +1,54 @@
+# Poweradmin URL Rewriting Rules
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Ensure HTTP Authorization header is forwarded
+    RewriteCond %{HTTP:Authorization} .
+    RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
+
+    # Disable rewriting for existing files and directories
+    RewriteCond %{REQUEST_FILENAME} -f [OR]
+    RewriteCond %{REQUEST_FILENAME} -d
+    RewriteRule ^ - [L]
+
+    # API Documentation specific rewrite rules
+    RewriteRule ^api/docs/json$ index.php?page=api/docs/json [QSA,L]
+    RewriteRule ^api/docs$ index.php?page=api/docs [QSA,L]
+
+    # Rewrite API base paths
+    RewriteRule ^api(/(.*))?$ index.php?page=api/$2 [QSA,L]
+
+    # Handle standard API actions
+    RewriteRule ^api/v1/([^/]+)/([^/]+)$ index.php?page=api/v1/$1&action=$2 [QSA,L]
+
+    # Handle actions with ID parameters
+    RewriteRule ^api/v1/([^/]+)/([^/]+)/([^/]+)$ index.php?page=api/v1/$1&action=$2&id=$3 [QSA,L]
+
+    # Handle general page routing if not caught by API rules
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^(.*)$ index.php?page=$1 [QSA,L]
+</IfModule>
+
+# Protect the .htaccess file
+<Files .htaccess>
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Prevent directory listing
+Options -Indexes
+
+# Set default character set
+AddDefaultCharset UTF-8
+
+# Enable CORS for API endpoints
+<IfModule mod_headers.c>
+    <FilesMatch "^index\.php$">
+        SetEnvIf Request_URI "/api/" CORS=true
+        Header set Access-Control-Allow-Origin "*" env=CORS
+        Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS" env=CORS
+        Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key" env=CORS
+        Header set Access-Control-Max-Age "3600" env=CORS
+    </FilesMatch>
+</IfModule>

@@ -263,12 +263,12 @@ class JsonController extends DocsController
             ],
             'servers' => [
                 [
-                    'url' => '/index.php?page=api/',
+                    'url' => '/api',
                     'description' => 'API Server'
                 ]
             ],
             'paths' => [
-                '?page=api/v1/auth/test&action=test' => [
+                '/v1/auth/test' => [
                     'get' => [
                         'summary' => 'Test API authentication credentials',
                         'description' => 'Verifies the current authentication credentials and returns user information',
@@ -288,7 +288,7 @@ class JsonController extends DocsController
                         ]
                     ]
                 ],
-                '?page=api/v1/zone&action=list' => [
+                '/v1/zone/list' => [
                     'get' => [
                         'summary' => 'List all accessible zones',
                         'operationId' => 'v1ZoneList',
@@ -330,7 +330,7 @@ class JsonController extends DocsController
                         ]
                     ]
                 ],
-                '?page=api/v1/zone&action=get&id={id}' => [
+                '/v1/zone/get/{id}' => [
                     'get' => [
                         'summary' => 'Get a specific zone by ID or name',
                         'operationId' => 'v1ZoneGet',
@@ -376,7 +376,7 @@ class JsonController extends DocsController
                         ]
                     ]
                 ],
-                '?page=api/v1/zone&action=create' => [
+                '/v1/zone/create' => [
                     'post' => [
                         'summary' => 'Create a new zone',
                         'operationId' => 'v1ZoneCreate',
