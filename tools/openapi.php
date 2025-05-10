@@ -74,7 +74,6 @@ try {
     echo "YAML: " . __DIR__ . "/../docs/openapi.yaml\n";
 
     echo "OpenAPI documentation completed.\n";
-
 } catch (\Exception $e) {
     echo "Error generating OpenAPI documentation: " . $e->getMessage() . "\n";
     echo "Stack trace:\n";
