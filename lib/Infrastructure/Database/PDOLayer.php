@@ -164,6 +164,12 @@ class PDOLayer extends PDOCommon
                 $arr['type'] = 'VARCHAR';
             }
 
+            // Convert boolean type to TINYINT(1) for MySQL/MariaDB
+            if (($db_type == 'mysql') && $arr['type'] == 'boolean') {
+                $arr['type'] = 'TINYINT';
+                $arr['length'] = 1;
+            }
+
             if ($db_type == 'pgsql' && isset($arr['autoincrement'])) {
                 $line = $key . ' SERIAL';
             } elseif ($db_type == 'pgsql' && $arr['type'] == 'integer') {

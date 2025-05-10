@@ -465,7 +465,7 @@ class DatabaseStructureHelper
                     'version' => array
                     (
                         'notnull' => 1,
-                        'type' => 'biginteger',
+                        'type' => 'bigint',
                         'name' => 'version',
                         'table' => 'migrations',
                         'flags' => 'primary_keynot_null'
