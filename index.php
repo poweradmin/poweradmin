@@ -52,9 +52,14 @@ $router->setDefaultPage('index');
 $router->setPages(Pages::getPages());
 
 try {
-    // Enable detailed errors for troubleshooting API issues
-    if (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false) {
-        ini_set('display_errors', 1);
+    // Check if this is an API request
+    $isApiRequest = str_contains($_SERVER['REQUEST_URI'] ?? '', '/api/');
+
+    // For API requests, suppress display errors but still log them
+    if ($isApiRequest) {
+        // Disable displaying errors in output for API responses
+        ini_set('display_errors', 0);
+        // But still log them for debugging
         error_reporting(E_ALL);
     }
 
