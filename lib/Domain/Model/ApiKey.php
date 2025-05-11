@@ -77,13 +77,13 @@ class ApiKey implements JsonSerializable
     }
 
     /**
-     * Generate a new random API key
+     * Generate a new random API key with 'pwa_' prefix
      *
-     * @return string A random API key string
+     * @return string A random API key string with 'pwa_' prefix
      */
     public static function generateSecretKey(): string
     {
-        return bin2hex(random_bytes(32));
+        return 'pwa_' . bin2hex(random_bytes(32));
     }
 
     /**

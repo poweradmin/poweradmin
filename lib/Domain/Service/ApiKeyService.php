@@ -310,6 +310,26 @@ class ApiKeyService
             substr($secretKey, -4)
         ));
 
+        // If the key doesn't start with 'pwa_', try to authenticate with it as is
+        // This provides backward compatibility with existing keys
+        if (strpos($secretKey, 'pwa_') !== 0) {
+            error_log('[ApiKeyService] Legacy key format detected (no pwa_ prefix)');
+            return $this->authenticateWithKey($secretKey);
+        }
+
+        // If it does start with 'pwa_', authenticate with the prefixed key
+        error_log('[ApiKeyService] Prefixed key format detected (with pwa_ prefix)');
+        return $this->authenticateWithKey($secretKey);
+    }
+
+    /**
+     * Internal method to authenticate with a specific key
+     *
+     * @param string $secretKey The secret key to authenticate with
+     * @return bool True if authentication succeeded, false otherwise
+     */
+    private function authenticateWithKey(string $secretKey): bool
+    {
         // Try direct DB lookup first for debugging
         try {
             $stmt = $this->db->prepare("SELECT id, name, disabled FROM api_keys WHERE secret_key = ?");
