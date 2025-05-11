@@ -160,7 +160,7 @@ class SessionAuthenticator extends LoggingService
         }
 
         // Check if the session hasn't expired yet.
-        if ((isset($_SESSION["userid"])) && ($_SESSION["lastmod"] != "") && ((time() - $_SESSION["lastmod"]) > $iface_expire)) {
+        if (isset($_SESSION["userid"]) && isset($_SESSION["lastmod"]) && $_SESSION["lastmod"] !== "" && ((time() - $_SESSION["lastmod"]) > $iface_expire)) {
             $this->logInfo('Session expired for user {userid}', ['userid' => $_SESSION["userid"]]);
 
             $sessionEntity = new SessionEntity(_('Session expired, please login again.'), 'danger');
