@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api\v1;
 
 use Exception;
 use PDO;
+use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\Dns\DomainManager;
 use Poweradmin\Domain\Service\Dns\RecordManager;
@@ -48,8 +49,7 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
-// Tag defined in OpenApiConfig class
-class ZoneController extends V1ApiBaseController
+class ZoneController extends PublicApiController
 {
     private DbZoneRepository $zoneRepository;
     private RecordRepository $recordRepository;

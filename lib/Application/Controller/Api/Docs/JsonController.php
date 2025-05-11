@@ -275,7 +275,7 @@ class JsonController extends DocsController
                         'summary' => 'Test API authentication credentials',
                         'description' => 'Verifies the current authentication credentials and returns user information',
                         'operationId' => 'v1AuthTest',
-                        'tags' => ['users'],
+                        'tags' => ['auth'],
                         'security' => [
                             ['bearerAuth' => []],
                             ['apiKeyHeader' => []]
@@ -452,7 +452,8 @@ class JsonController extends DocsController
             ],
             'tags' => [
                 ['name' => 'users', 'description' => 'User management and authentication'],
-                ['name' => 'zones', 'description' => 'Zone and DNS record management']
+                ['name' => 'zones', 'description' => 'Zone and DNS record management'],
+                ['name' => 'auth', 'description' => 'Authentication and authorization']
             ]
         ];
 

@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller\Api\Internal;
 
+use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
@@ -40,7 +41,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
-class ValidationController extends InternalApiBaseController
+class ValidationController extends InternalApiController
 {
     private DnsRecordValidationService $validationService;
     private ZoneRepositoryInterface $zoneRepository;

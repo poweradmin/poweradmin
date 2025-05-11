@@ -39,7 +39,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 
-class ValidationController extends ApiBaseController
+class ValidationController extends InternalApiController
 {
     private DnsRecordValidationService $validationService;
     private ZoneRepositoryInterface $zoneRepository;

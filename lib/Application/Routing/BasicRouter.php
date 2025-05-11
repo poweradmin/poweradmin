@@ -86,11 +86,10 @@ class BasicRouter
     {
         $baseNamespace = '\Poweradmin\Application\Controller\\';
 
-        // Support for nested controllers (e.g., 'api/validation', 'api/v1/zone', 'api/internal/zone')
+        // Support for nested controllers (e.g., 'api/v1/zone', 'api/internal/zone')
         if (strpos($page, '/') !== false) {
             $parts = explode('/', $page);
             $namespace = '';
-            $className = '';
 
             // Process all parts except the last one as namespace components
             for ($i = 0; $i < count($parts) - 1; $i++) {
@@ -131,7 +130,7 @@ class BasicRouter
 
         // API paths should always use controller authentication mechanisms
         // instead of relying on session-based authentication
-        if (strpos($pageName, 'api/') === 0) {
+        if (str_starts_with($pageName, 'api/')) {
             // Force any existing login session to be ignored for API routes
             $originalSession = $_SESSION;
             $_SESSION = [];

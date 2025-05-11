@@ -31,9 +31,10 @@
 
 namespace Poweradmin\Application\Controller\Api\Internal;
 
+use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 
-class ZoneController extends InternalApiBaseController
+class ZoneController extends InternalApiController
 {
     private DbZoneRepository $zoneRepository;
 

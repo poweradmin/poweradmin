@@ -38,7 +38,7 @@ class SqlAuthenticator extends LoggingService
     private PDOLayer $connection;
     private ConfigurationManager $configManager;
     private UserEventLogger $userEventLogger;
-    private AuthenticationService $authService;
+    private $authService; // Can be either AuthenticationService or UserAuthenticationService
     private CsrfTokenService $csrfTokenService;
     private LoginAttemptService $loginAttemptService;
     private array $serverParams;
@@ -47,7 +47,7 @@ class SqlAuthenticator extends LoggingService
         PDOLayer $connection,
         ConfigurationManager $configManager,
         UserEventLogger $userEventLogger,
-        AuthenticationService $authService,
+        $authService, // Changed type to allow UserAuthenticationService
         CsrfTokenService $csrfTokenService,
         Logger $logger,
         LoginAttemptService $loginAttemptService,

@@ -49,4 +49,9 @@ class ApiTags
     public function zonesTag()
     {
     }
+
+    #[OA\Tag(name: 'auth', description: 'Authentication and authorization')]
+    public function authTag()
+    {
+    }
 }

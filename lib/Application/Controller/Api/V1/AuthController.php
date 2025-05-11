@@ -21,7 +21,7 @@
  */
 
 /**
- * V1 API controller for user operations
+ * V1 API controller for authentication operations
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -32,29 +32,21 @@
 namespace Poweradmin\Application\Controller\Api\v1;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
-use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
-use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
-class UserController extends PublicApiController
+class AuthController extends PublicApiController
 {
-    private DbUserRepository $userRepository;
-    private ApiKeyRepositoryInterface $apiKeyRepository;
-
     /**
-     * Constructor for UserController
+     * Constructor for AuthController
      *
      * @param array $request The request data
      */
     public function __construct(array $request)
     {
         parent::__construct($request);
-
-        $this->userRepository = new DbUserRepository($this->db);
-        $this->apiKeyRepository = new DbApiKeyRepository($this->db, $this->getConfig());
     }
 
     /**
@@ -67,7 +59,6 @@ class UserController extends PublicApiController
 
         $response = match ($method) {
             'GET' => $this->handleGetRequest($action),
-            'POST' => $this->handlePostRequest($action),
             default => $this->returnApiError('Method not allowed', 405),
         };
 
@@ -84,66 +75,57 @@ class UserController extends PublicApiController
     private function handleGetRequest(string $action): JsonResponse
     {
         return match ($action) {
-            'verify' => $this->verifyUser(),
+            'test' => $this->testAuth(),
             default => $this->returnApiError('Unknown action', 400),
         };
     }
 
     /**
-     * Handle POST requests
-     *
-     * @param string $action The action to perform
-     * @return JsonResponse The JSON response
-     */
-    private function handlePostRequest(string $action): JsonResponse
-    {
-        return match ($action) {
-            default => $this->returnApiError('Unknown action', 400),
-        };
-    }
-
-    /**
-     * Verify a user and API key combination
+     * Test API authentication and return user information
      *
      * @return JsonResponse The JSON response
      */
     #[OA\Get(
-        path: '/api/v1/user/verify',
-        operationId: 'v1UserVerify',
-        summary: 'Verify a user and API key',
-        tags: ['users'],
-        security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
+        path: '/api/v1/auth/test',
+        operationId: 'v1AuthTest',
+        description: 'Verifies the current authentication credentials and returns user information',
+        summary: 'Test API authentication',
+        security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
+        tags: ['auth']
     )]
     #[OA\Parameter(
         name: 'action',
+        description: 'Action parameter (must be \'test\')',
         in: 'query',
         required: true,
-        description: 'Action parameter (must be \'verify\')',
-        schema: new OA\Schema(type: 'string', default: 'verify', enum: ['verify'])
+        schema: new OA\Schema(type: 'string', default: 'test', enum: ['test'])
     )]
     #[OA\Response(
         response: 200,
-        description: 'User and API key verification result',
+        description: 'Authentication successful',
         content: new OA\JsonContent(
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(
                     property: 'data',
-                    type: 'object',
                     properties: [
-                        new OA\Property(property: 'valid', type: 'boolean', example: true),
+                        new OA\Property(property: 'authenticated', type: 'boolean', example: true),
                         new OA\Property(property: 'user_id', type: 'integer', example: 1),
                         new OA\Property(property: 'username', type: 'string', example: 'admin'),
+                        new OA\Property(property: 'auth_method', type: 'string', example: 'api_key'),
+                        new OA\Property(property: 'is_admin', type: 'boolean', example: true),
                         new OA\Property(
                             property: 'permissions',
-                            type: 'object',
                             properties: [
                                 new OA\Property(property: 'is_admin', type: 'boolean', example: true),
                                 new OA\Property(property: 'zone_creation_allowed', type: 'boolean', example: true),
                                 new OA\Property(property: 'zone_management_allowed', type: 'boolean', example: true)
-                            ]
-                        )
-                    ]
+                            ],
+                            type: 'object'
+                        ),
+                        new OA\Property(property: 'server_time', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
                 )
             ]
         )
@@ -159,33 +141,20 @@ class UserController extends PublicApiController
             ]
         )
     )]
-    private function verifyUser(): JsonResponse
+    private function testAuth(): JsonResponse
     {
-        // Get API key used for the request
-        $apiKey = $this->getApiKeyFromRequest();
+        // Check if user is authenticated
+        $authenticated = isset($_SESSION['userid']);
+        $userId = $_SESSION['userid'] ?? 0;
+        $authMethod = $_SESSION['auth_used'] ?? 'unknown';
 
-        if (!$apiKey) {
-            return $this->returnApiError('Invalid or missing API key', 401);
-        }
-
-        // Find the API key in the database
-        $apiKeyEntity = $this->apiKeyRepository->findBySecretKey($apiKey);
-
-        if (!$apiKeyEntity || !$apiKeyEntity->isValid()) {
-            return $this->returnApiError('API key is invalid, disabled, or expired', 401);
-        }
-
-        // Get user associated with the API key
-        $userId = $apiKeyEntity->getCreatedBy();
-        if (!$userId) {
-            return $this->returnApiError('No user associated with this API key', 401);
+        // If not authenticated, return error
+        if (!$authenticated) {
+            return $this->returnApiError('Authentication failed', 401);
         }
 
         // Get user details
-        $user = $this->userRepository->getUserById($userId);
-        if (!$user) {
-            return $this->returnApiError('User not found', 404);
-        }
+        $username = UserEntity::getUserNameById($this->db, $userId);
 
         // Check user permissions
         $isAdmin = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
@@ -194,14 +163,36 @@ class UserController extends PublicApiController
                           UserManager::verifyPermission($this->db, 'zone_content_edit_others');
 
         return $this->returnApiResponse([
-            'valid' => true,
+            'authenticated' => $authenticated,
             'user_id' => $userId,
-            'username' => $user['username'],
+            'username' => $username,
+            'auth_method' => $authMethod,
+            'is_admin' => $isAdmin,
             'permissions' => [
                 'is_admin' => $isAdmin,
                 'zone_creation_allowed' => $canCreateZones,
                 'zone_management_allowed' => $canManageZones
-            ]
+            ],
+            'server_time' => date('Y-m-d H:i:s')
         ]);
+    }
+
+    /**
+     * Get a list of permissions for the current user
+     *
+     * @return array Array of permission names
+     */
+    private function getUserPermissions(): array
+    {
+        $permissions = UserManager::getPermissionsByTemplateId($this->db, 0, true);
+        $userPermissions = [];
+
+        foreach ($permissions as $permission) {
+            if (UserManager::verifyPermission($this->db, $permission)) {
+                $userPermissions[] = $permission;
+            }
+        }
+
+        return $userPermissions;
     }
 }

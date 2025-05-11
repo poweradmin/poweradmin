@@ -52,12 +52,30 @@ $router->setDefaultPage('index');
 $router->setPages(Pages::getPages());
 
 try {
+    // Enable detailed errors for troubleshooting API issues
+    if (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false) {
+        ini_set('display_errors', 1);
+        error_reporting(E_ALL);
+    }
+
     $router->process();
 } catch (Exception $e) {
     error_log($e->getMessage());
+    error_log($e->getTraceAsString());
 
-    if ($configManager->get('misc', 'display_errors', false)) {
-        echo 'An error occurred while processing the request: ' . htmlspecialchars($e->getMessage(), ENT_QUOTES, 'UTF-8');
+    if (
+        $configManager->get('misc', 'display_errors', false) ||
+        (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false)
+    ) {
+        // Show detailed error if it's an API request or display_errors is enabled
+        header('Content-Type: application/json');
+        echo json_encode([
+            'error' => true,
+            'message' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => explode("\n", $e->getTraceAsString())
+        ]);
     } else {
         echo 'An error occurred while processing the request.';
     }

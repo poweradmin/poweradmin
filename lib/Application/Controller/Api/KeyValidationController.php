@@ -29,7 +29,7 @@ use Poweradmin\Domain\Model\UserManager;
  *
  * @package Poweradmin\Application\Controller\Api
  */
-class KeyValidationController extends ApiBaseController
+class KeyValidationController extends InternalApiController
 {
     /**
      * Run the controller
