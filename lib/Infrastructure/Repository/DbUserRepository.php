@@ -78,10 +78,69 @@ class DbUserRepository implements UserRepository
      */
     public function getUserById(int $userId): ?array
     {
-        $stmt = $this->db->prepare('SELECT id, username, fullname, email, description, active FROM users WHERE id = ?');
+        $stmt = $this->db->prepare('SELECT id, username, fullname, email, description, active, perm_templ FROM users WHERE id = ?');
         $stmt->execute([$userId]);
 
         $userData = $stmt->fetch(PDO::FETCH_ASSOC);
         return $userData ?: null;
+    }
+
+    /**
+     * Get all permissions for a specific user
+     *
+     * @param int $userId User ID to get permissions for
+     * @return array Array of permission names
+     */
+    public function getUserPermissions(int $userId): array
+    {
+        // First get the user to check if they exist
+        $user = $this->getUserById($userId);
+        if (!$user) {
+            return [];
+        }
+
+        // Query to get all permissions for the user
+        $query = "SELECT
+            perm_items.name AS permission
+            FROM perm_templ_items
+            LEFT JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
+            LEFT JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
+            LEFT JOIN users ON perm_templ.id = users.perm_templ
+            WHERE users.id = :userId
+            ORDER BY perm_items.name";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $userPermissions = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $userPermissions[] = $row['permission'];
+        }
+
+        return $userPermissions;
+    }
+
+    /**
+     * Check if a user has admin permissions
+     *
+     * @param int $userId User ID to check
+     * @return bool True if the user is an admin
+     */
+    public function hasAdminPermission(int $userId): bool
+    {
+        $query = "SELECT
+            COUNT(*)
+            FROM perm_templ_items
+            LEFT JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
+            LEFT JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
+            LEFT JOIN users ON perm_templ.id = users.perm_templ
+            WHERE users.id = :userId AND perm_items.name = 'user_is_ueberuser'";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return (bool)$stmt->fetchColumn();
     }
 }

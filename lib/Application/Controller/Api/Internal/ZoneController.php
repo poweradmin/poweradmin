@@ -81,7 +81,13 @@ class ZoneController extends InternalApiController
 
         $this->returnJsonResponse([
             'success' => true,
-            'zones' => $zones
+            'message' => 'Zones retrieved successfully',
+            'data' => [
+                'zones' => $zones
+            ],
+            'meta' => [
+                'timestamp' => date('Y-m-d H:i:s')
+            ]
         ]);
     }
 
@@ -116,7 +122,13 @@ class ZoneController extends InternalApiController
 
         $this->returnJsonResponse([
             'success' => true,
-            'zone' => $zone
+            'message' => 'Zone retrieved successfully',
+            'data' => [
+                'zone' => $zone
+            ],
+            'meta' => [
+                'timestamp' => date('Y-m-d H:i:s')
+            ]
         ]);
     }
 }

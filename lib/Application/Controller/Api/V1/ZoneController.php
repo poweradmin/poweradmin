@@ -93,7 +93,11 @@ class ZoneController extends PublicApiController
             'POST' => $this->handlePostRequest($action),
             'PUT' => $this->handlePutRequest($action),
             'DELETE' => $this->handleDeleteRequest($action),
-            default => $this->returnApiError('Method not allowed', 405),
+            default => $this->returnApiError('Method not allowed', 405, null, [
+                'meta' => [
+                    'timestamp' => date('Y-m-d H:i:s')
+                ]
+            ]),
         };
 
         $response->send();
@@ -236,7 +240,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid or missing API key'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -348,7 +359,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid or missing API key'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -452,7 +470,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid input data'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -463,7 +488,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid or missing API key'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -606,7 +638,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid input data'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -617,7 +656,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid or missing API key'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -723,7 +769,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid input data'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -734,7 +787,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid or missing API key'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -745,7 +805,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'You do not have permission to update this record'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -871,7 +938,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid input data'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -882,7 +956,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid or missing API key'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -893,7 +974,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'You do not have permission to add records to this zone'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -976,10 +1064,19 @@ class ZoneController extends PublicApiController
 
             $recordId = $stmt->fetchColumn();
 
-            return $this->returnApiResponse([
-                'message' => 'Record added successfully',
-                'record_id' => (int)$recordId
-            ], true, null, 201);
+            return $this->returnApiResponse(
+                [
+                    'record_id' => (int)$recordId
+                ],
+                true,
+                'Record added successfully',
+                201,
+                [
+                    'meta' => [
+                        'timestamp' => date('Y-m-d H:i:s')
+                    ]
+                ]
+            );
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -1039,7 +1136,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid input data'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -1050,7 +1154,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid or missing API key'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -1061,7 +1172,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'You do not have permission to set domain permissions'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -1218,7 +1336,14 @@ class ZoneController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: false),
                 new OA\Property(property: 'message', type: 'string', example: 'Invalid or missing API key'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(property: 'data', type: 'null'),
+                new OA\Property(
+                    property: 'meta',
+                    properties: [
+                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -1253,8 +1378,39 @@ class ZoneController extends PublicApiController
         // Implementation would continue here with actual zone deletion logic
         // For this example, we'll just return a success response
 
-        return $this->returnApiResponse([
-            'message' => 'Zone deleted successfully'
-        ]);
+        return $this->returnApiResponse(
+            [
+                'id' => $zoneId
+            ],
+            true,
+            'Zone deleted successfully',
+            200,
+            [
+                'meta' => [
+                    'timestamp' => date('Y-m-d H:i:s')
+                ]
+            ]
+        );
+    }
+
+    /**
+     * Override parent method to ensure all error responses include meta timestamp
+     *
+     * @param string $message Error message
+     * @param int $status HTTP status code
+     * @param mixed $data Additional error data
+     * @param array $headers Additional headers
+     * @return JsonResponse The JSON response object
+     */
+    protected function returnApiError(string $message, int $status = 400, $data = null, array $headers = []): JsonResponse
+    {
+        // Add meta timestamp to the headers if not provided
+        if (!isset($headers['meta'])) {
+            $headers['meta'] = [
+                'timestamp' => date('Y-m-d H:i:s')
+            ];
+        }
+
+        return parent::returnApiError($message, $status, $data, $headers);
     }
 }

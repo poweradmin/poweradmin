@@ -55,7 +55,7 @@ class Pages
             'api/internal/validation',
             'api/internal/zone',
             'api/v1/zone',
-            'api/v1/auth',
+            'api/v1/user',
             'api_keys',
             'batch_ptr_record',
             'bulk_record_add',

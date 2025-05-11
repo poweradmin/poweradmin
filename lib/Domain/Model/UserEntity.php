@@ -47,6 +47,11 @@ class UserEntity
 
         $user = $stmt->fetch();
 
+        // Handle case when user is not found (fetch returns false)
+        if ($user === false) {
+            return "";
+        }
+
         return $user['username'] ?: "";
     }
 }
