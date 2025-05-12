@@ -214,4 +214,84 @@ class OPENPGPKEYRecordValidatorTest extends TestCase
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Invalid characters in hostname', $result->getFirstError());
     }
+
+    public function testValidateWithExactFormat56CharHash()
+    {
+        // This is a sample base64 encoded data - not an actual PGP key
+        $content = 'mDMEXEcE6RYJKwYBBAHaRw8BAQdArjWwk3FAqyiFbFBKT4TzXcVBqPTB3gmzlC/Ub7O1u120F2pvaG5AZXhhbXBsZS5jb20';
+        // Valid 56-character hex hash followed by ._openpgpkey.example.com
+        $name = 'c93f1e400f26708f98cb19d936620da35eec8f72e57f9eec01c1afd6._openpgpkey.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        // Shouldn't have a warning about non-standard format
+        $formatWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'does not follow the standard OPENPGPKEY format') !== false) {
+                $formatWarningFound = true;
+                break;
+            }
+        }
+        $this->assertFalse($formatWarningFound);
+    }
+
+    public function testValidateWithInvalidHashFormat()
+    {
+        // This is a sample base64 encoded data - not an actual PGP key
+        $content = 'mDMEXEcE6RYJKwYBBAHaRw8BAQdArjWwk3FAqyiFbFBKT4TzXcVBqPTB3gmzlC/Ub7O1u120F2pvaG5AZXhhbXBsZS5jb20';
+        // Invalid hash (wrong length and non-hex characters) before ._openpgpkey.example.com
+        $name = 'abc-xyz._openpgpkey.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        // Should have a warning about non-standard format
+        $formatWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'does not follow the standard OPENPGPKEY format') !== false) {
+                $formatWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($formatWarningFound);
+    }
+
+    public function testValidateAndCheckForDnssecWarning()
+    {
+        $content = 'mDMEXEcE6RYJKwYBBAHaRw8BAQdArjWwk3FAqyiFbFBKT4TzXcVBqPTB3gmzlC/Ub7O1u120F2pvaG5AZXhhbXBsZS5jb20';
+        $name = 'c93f1e400f26708f98cb19d936620da35eec8f72e57f9eec01c1afd6._openpgpkey.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+
+        // Should have a warning about DNSSEC requirement
+        $dnssecWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'REQUIRE DNSSEC for any security benefit') !== false) {
+                $dnssecWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($dnssecWarningFound);
+    }
 }

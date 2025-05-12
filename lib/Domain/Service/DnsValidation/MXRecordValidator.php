@@ -27,6 +27,24 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * MX Record Validator
+ *
+ * Validates MX (Mail Exchange) records according to:
+ * - RFC 1035: Domain Names - Implementation and Specification (Section 3.3.9)
+ * - RFC 2181: Clarifications to the DNS Specification (Section 10.3)
+ * - RFC 7505: A Method for Indicating Mail Box Unavailability ("null MX")
+ *
+ * MX records specify the mail servers responsible for accepting email for a domain.
+ * RFC 1035 establishes the basic format of MX records with a 16-bit priority value
+ * and a domain name. RFC 2181 clarifies that MX targets cannot point to a CNAME.
+ * RFC 7505 defines the "null MX" record (priority 0, target ".") to indicate
+ * that a domain does not accept email.
+ *
+ * Implementation notes:
+ * - Priority values are from 0 to 65535, with lower values indicating higher priority
+ * - Standard MX records should point to a valid hostname with A/AAAA records
+ * - "Null MX" records use "." as the target with priority 0 to indicate no mail service
+ * - Domains with a null MX record should not have any other MX records
+ * - MX targets should never point to CNAME records (RFC 2181)
  */
 class MXRecordValidator implements DnsRecordValidatorInterface
 {
@@ -44,7 +62,7 @@ class MXRecordValidator implements DnsRecordValidatorInterface
     /**
      * Validate MX record
      *
-     * @param string $content Mail server hostname
+     * @param string $content Mail server hostname or "." for null MX
      * @param string $name Domain name for the MX record
      * @param mixed $prio Priority value
      * @param int|string|null $ttl TTL value
@@ -55,16 +73,49 @@ class MXRecordValidator implements DnsRecordValidatorInterface
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         $errors = [];
+        $warnings = [];
+        $isNullMx = false;
 
-        // Validate content (mail server hostname)
-        $contentResult = $this->hostnameValidator->validate($content, false);
-        if (!$contentResult->isValid()) {
-            return ValidationResult::errors(
-                array_merge([_('Invalid mail server hostname.')], $contentResult->getErrors())
-            );
+        // Process priority early so we can validate null MX correctly
+        $prioResult = $this->validatePriority($prio);
+        if (!$prioResult->isValid()) {
+            $errors[] = $prioResult->getFirstError();
         }
-        $hostnameData = $contentResult->getData();
-        $content = $hostnameData['hostname'];
+        $priority = $prioResult->isValid() ? $prioResult->getData() : 10;
+
+        // Handle RFC 7505 null MX case
+        if (trim($content) === '.') {
+            $isNullMx = true;
+
+            // RFC 7505 requires null MX to have priority 0
+            if ($priority !== 0) {
+                $errors[] = _('Null MX record (.) must have priority 0 according to RFC 7505.');
+            }
+
+            // Set content as '.' - no need for hostname validation
+            $content = '.';
+
+            $warnings[] = _('This is a null MX record (RFC 7505) indicating this domain does not accept email.');
+            $warnings[] = _('A domain with null MX record must not have any other MX records.');
+        } else {
+            // Validate content (mail server hostname) for standard MX records
+            $contentResult = $this->hostnameValidator->validate($content, false);
+            if (!$contentResult->isValid()) {
+                return ValidationResult::errors(
+                    array_merge([_('Invalid mail server hostname.')], $contentResult->getErrors())
+                );
+            }
+            $hostnameData = $contentResult->getData();
+            $content = $hostnameData['hostname'];
+
+            // Add warning for potential CNAME targets (RFC 2181 violation)
+            $warnings[] = _('MX records should not point to CNAME records (RFC 2181).');
+
+            // Add warning for high priority values
+            if ($priority > 100) {
+                $warnings[] = _('Priority values above 100 are unusual and may be unnecessary.');
+            }
+        }
 
         // Validate name (domain name)
         $nameResult = $this->hostnameValidator->validate($name, true);
@@ -73,12 +124,6 @@ class MXRecordValidator implements DnsRecordValidatorInterface
         }
         $nameData = $nameResult->getData();
         $name = $nameData['hostname'];
-
-        // Validate priority
-        $prioResult = $this->validatePriority($prio);
-        if (!$prioResult->isValid()) {
-            $errors[] = $prioResult->getFirstError();
-        }
 
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
@@ -95,9 +140,10 @@ class MXRecordValidator implements DnsRecordValidatorInterface
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
-            'prio' => $prioResult->getData(),
-            'ttl' => $validatedTtl
-        ]);
+            'prio' => $priority,
+            'ttl' => $validatedTtl,
+            'is_null_mx' => $isNullMx
+        ], $warnings);
     }
 
     /**

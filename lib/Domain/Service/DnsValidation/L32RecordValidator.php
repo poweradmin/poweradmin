@@ -28,6 +28,26 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * L32 record validator
  *
+ * The L32 record is a DNS resource record type used with the Identifier-Locator
+ * Network Protocol (ILNP). It maps a domain name to a 32-bit IPv4 locator value
+ * that can be used for ILNP communications with the node. L32 records are typically
+ * used for naming subnetworks, especially those that are, were, or might become mobile.
+ *
+ * Format: <preference> <locator>
+ *
+ * Where:
+ * - preference: A 16-bit unsigned integer (0-65535) indicating relative preference
+ *   Lower values are preferred over higher values.
+ * - locator: A 32-bit IPv4 address representing the locator value.
+ *
+ * Example: 10 192.0.2.1
+ *
+ * NOTE: The L32 record type is defined in RFC 6742 as an experimental protocol.
+ * It is not a formal IETF standard but is published for examination, experimental
+ * implementation, and evaluation.
+ *
+ * @see https://www.rfc-editor.org/rfc/rfc6742 RFC 6742: DNS Resource Records for the Identifier-Locator Network Protocol (ILNP)
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team
@@ -87,12 +107,36 @@ class L32RecordValidator implements DnsRecordValidatorInterface
         // Use the provided priority if available, otherwise extract from content
         $priority = ($prio !== '' && $prio !== null) ? (int)$prio : $this->extractPreferenceFromContent($content);
 
+        // Add warnings according to RFC 6742
+        $warnings = [
+            _('NOTE: The L32 record type is defined in RFC 6742 as an experimental protocol, not a formal IETF standard.'),
+            _('L32 records should only be used with the Identifier-Locator Network Protocol (ILNP).')
+        ];
+
+        // Check for reserved or private IP addresses which may not be suitable for ILNP
+        $parts = preg_split('/\s+/', trim($content));
+        $locator = $parts[1] ?? '';
+
+        // Check if using private IP addresses in L32 records
+        if (
+            strpos($locator, '10.') === 0 ||
+            strpos($locator, '172.16.') === 0 ||
+            strpos($locator, '192.168.') === 0
+        ) {
+            $warnings[] = _('Using private IP addresses (RFC 1918) as L32 locators may limit reachability in ILNP deployments.');
+        }
+
+        // Add recommendation for TTL values for mobile nodes
+        if ($validatedTtl > 7200) { // 2 hours
+            $warnings[] = _('RFC 6742 recommends very low TTL values for L32 records of mobile or multihomed nodes, as locator values might change frequently.');
+        }
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $priority,
             'ttl' => $validatedTtl
-        ]);
+        ], $warnings);
     }
 
     /**
@@ -122,6 +166,18 @@ class L32RecordValidator implements DnsRecordValidatorInterface
         $ipResult = $this->ipValidator->validateIPv4($locator);
         if (!$ipResult->isValid()) {
             return ValidationResult::failure(_('L32 locator must be a valid IPv4 address.'));
+        }
+
+        // Per RFC 6742, ensure the L32 locator is fully specified
+        $octets = explode('.', $locator);
+        if (count($octets) !== 4) {
+            return ValidationResult::failure(_('L32 locator must be a fully specified IPv4 address.'));
+        }
+
+        // RFC 6742 doesn't explicitly forbid 0.0.0.0 or 255.255.255.255,
+        // but these values are special in IPv4 and not suitable for ILNP locators
+        if ($locator === '0.0.0.0' || $locator === '255.255.255.255') {
+            return ValidationResult::failure(_('L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or 255.255.255.255).'));
         }
 
         return ValidationResult::success(true);

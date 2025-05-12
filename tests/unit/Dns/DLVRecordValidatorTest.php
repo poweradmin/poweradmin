@@ -59,6 +59,91 @@ class DLVRecordValidatorTest extends TestCase
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check for obsolescence warning
+        $this->assertTrue($result->hasWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        // Check for specific obsolescence warning
+        $obsoleteWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'obsoleted') !== false) {
+                $obsoleteWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($obsoleteWarningFound, 'Should warn about DLV being obsoleted by RFC 8749');
+    }
+
+    public function testValidateWithRecommendedAlgorithm()
+    {
+        // Using algorithm 15 (ED25519) which is recommended per RFC 8624
+        $content = '45342 15 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0';
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        // Check for good algorithm choice warning
+        $this->assertTrue($result->hasWarnings());
+        $recommendedWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'RECOMMENDED') !== false && strpos($warning, 'Good choice') !== false) {
+                $recommendedWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($recommendedWarningFound, 'Should acknowledge recommended algorithm choice');
+    }
+
+    public function testValidateWithDeprecatedAlgorithm()
+    {
+        // Using algorithm 1 (RSAMD5) which MUST NOT be used per RFC 8624
+        $content = '45342 1 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0';
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        // Check for deprecated algorithm warning
+        $this->assertTrue($result->hasWarnings());
+        $deprecatedWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'MUST NOT be used') !== false) {
+                $deprecatedWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($deprecatedWarningFound, 'Should warn about deprecated algorithm');
+    }
+
+    public function testValidateWithDLVLookupDomain()
+    {
+        $content = '45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0';
+        $name = 'example.com.dlv.example.org'; // Name in DLV lookup domain
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        // Check for DLV lookup domain warning
+        $this->assertTrue($result->hasWarnings());
+        $dlvDomainWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'DLV lookup domain') !== false) {
+                $dlvDomainWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($dlvDomainWarningFound, 'Should warn about DLV lookup domain');
     }
 
     public function testValidateWithInvalidKeyTag()
@@ -179,12 +264,38 @@ class DLVRecordValidatorTest extends TestCase
         $result1 = $this->validator->validateDLVContent('45342 13 2 348dedbedc0cddcc4f2605ba42d428223672e5e913762c68f29d8547baa680c0');
         $this->assertTrue($result1->isValid());
 
+        // Should have warnings
+        $this->assertTrue($result1->hasWarnings());
+        $this->assertNotEmpty($result1->getWarnings());
+
         $result2 = $this->validator->validateDLVContent('15288 5 2 CE0EB9E59EE1DE2C681A330E3A7C08376F28602CDF990EE4EC88D2A8BDB51539');
         $this->assertTrue($result2->isValid());
+
+        // Check for NOT RECOMMENDED warning for algorithm 5
+        $this->assertTrue($result2->hasWarnings());
+        $notRecommendedFound = false;
+        foreach ($result2->getWarnings() as $warning) {
+            if (strpos($warning, 'NOT RECOMMENDED') !== false && strpos($warning, '5') !== false) {
+                $notRecommendedFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($notRecommendedFound, 'Should warn about not recommended algorithm 5');
 
         // Test with SHA-1 digest (type 1)
         $result3 = $this->validator->validateDLVContent('12345 8 1 1a2b3c4d5e6f7890abcdef1234567890abcdef12');
         $this->assertTrue($result3->isValid());
+
+        // Check for SHA-1 weakness warning
+        $this->assertTrue($result3->hasWarnings());
+        $sha1WeaknessFound = false;
+        foreach ($result3->getWarnings() as $warning) {
+            if (strpos($warning, 'SHA-1') !== false && strpos($warning, 'weak') !== false) {
+                $sha1WeaknessFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($sha1WeaknessFound, 'Should warn about SHA-1 weakness');
 
         // Test with SHA-384 digest (type 4)
         $sha384Digest = str_repeat('a1b2c3d4', 12); // 96 characters
@@ -203,5 +314,9 @@ class DLVRecordValidatorTest extends TestCase
 
         $result8 = $this->validator->validateDLVContent('2371 13 2 1F987CC6583E92DF0890718C42 ; ( SHA1 digest )'); // Extra content
         $this->assertFalse($result8->isValid());
+
+        // Test with non-hex characters in digest
+        $result9 = $this->validator->validateDLVContent('2371 13 2 1F987CC6583E92DF0890718C42ZZZZZZ'); // Non-hex characters
+        $this->assertFalse($result9->isValid());
     }
 }

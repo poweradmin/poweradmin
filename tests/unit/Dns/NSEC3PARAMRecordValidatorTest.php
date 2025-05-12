@@ -86,6 +86,37 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
         $this->assertEquals(3600, $data['ttl']);
         $this->assertEquals(0, $data['priority']);
         $this->assertEquals('example.com', $data['name']);
+
+        // Check for extracted field values
+        $this->assertEquals(1, $data['algorithm']);
+        $this->assertEquals(0, $data['flags']);
+        $this->assertEquals(10, $data['iterations']);
+        $this->assertEquals('AB12CD', $data['salt']);
+
+        // Check for warnings array
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        // Check for RFC 9276 iteration warning (iterations > 0)
+        $iterationWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'RFC 9276 recommends using 0 iterations') !== false) {
+                $iterationWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($iterationWarningFound, 'Warning about iterations > 0 not found');
+
+        // Check for salt warning (salt is not empty)
+        $saltWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'RFC 9276 recommends NOT using a salt') !== false) {
+                $saltWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($saltWarningFound, 'Warning about non-empty salt not found');
     }
 
     /**
@@ -318,5 +349,89 @@ class NSEC3PARAMRecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Invalid hostname', $result->getFirstError());
+    }
+
+    /**
+     * Test validation with RFC 9276 best practices (0 iterations, no salt)
+     */
+    public function testValidateWithRfc9276BestPractices(): void
+    {
+        $result = $this->validator->validate(
+            '1 0 0 -',                                      // RFC 9276 best practices
+            'example.com',                                  // zone apex
+            '',                                             // prio
+            3600,                                           // ttl
+            86400                                           // defaultTTL
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check field values
+        $this->assertEquals(1, $data['algorithm']);
+        $this->assertEquals(0, $data['flags']);
+        $this->assertEquals(0, $data['iterations']);
+        $this->assertEquals('-', $data['salt']);
+
+        // Check warnings
+        $this->assertTrue($result->hasWarnings());
+
+        // Iteration and salt warnings should NOT be present for RFC 9276 compliant records
+        $iterationWarningFound = false;
+        $saltWarningFound = false;
+
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'RFC 9276 recommends using 0 iterations') !== false) {
+                $iterationWarningFound = true;
+            }
+            if (strpos($warning, 'RFC 9276 recommends NOT using a salt') !== false) {
+                $saltWarningFound = true;
+            }
+        }
+
+        $this->assertFalse($iterationWarningFound, 'Warning about iterations should not be present for 0 iterations');
+        $this->assertFalse($saltWarningFound, 'Warning about salt should not be present for empty salt (-)');
+    }
+
+    /**
+     * Test validation with subdomain (should generate apex warning)
+     */
+    public function testValidateWithSubdomain(): void
+    {
+        // Set up hostname validator to return the exact hostname for subdomain
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $this->hostnameValidatorMock->method('validate')
+            ->willReturn(ValidationResult::success(['hostname' => 'sub.example.com']));
+
+        // Inject the mock validator
+        $reflection = new ReflectionClass($this->validator);
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
+        $result = $this->validator->validate(
+            '1 0 0 -',                                      // content
+            'sub.example.com',                              // subdomain (not zone apex)
+            '',                                             // prio
+            3600,                                           // ttl
+            86400                                           // defaultTTL
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Verify that the domain name was passed correctly
+        $this->assertEquals('sub.example.com', $data['name']);
+
+        // Check for zone apex warning
+        $apexWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'NSEC3PARAM records MUST only be present at the zone apex') !== false) {
+                $apexWarningFound = true;
+                break;
+            }
+        }
+
+        $this->assertTrue($apexWarningFound, 'Warning about zone apex not found for subdomain');
     }
 }

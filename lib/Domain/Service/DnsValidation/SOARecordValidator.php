@@ -30,6 +30,14 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 /**
  * SOA record validator
  *
+ * Validates SOA (Start of Authority) records according to:
+ * - RFC 1035: Domain Names - Implementation and Specification
+ * - RFC 1982: Serial Number Arithmetic
+ * - RFC 2308: Negative Caching of DNS Queries (DNS NCACHE)
+ *
+ * SOA record format:
+ * [primary_ns] [admin_email] [serial] [refresh] [retry] [expire] [minimum]
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team
@@ -121,6 +129,9 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         }
         $content = $soaResult['content'];
 
+        // If there are warnings, add them to the result but still continue
+        $warnings = $soaResult['warnings'] ?? [];
+
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
         if (!$ttlResult->isValid()) {
@@ -129,12 +140,15 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
-        return ValidationResult::success([
+        $resultData = [
             'content' => $content,
             'name' => $name,
             'prio' => 0, // SOA records don't use priority
             'ttl' => $validatedTtl
-        ]);
+        ];
+
+        // Return with explicit warnings parameter
+        return ValidationResult::success($resultData, $warnings);
     }
 
     /**
@@ -148,6 +162,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
     private function validateSoaContent(string $content, string $dns_hostmaster): array
     {
         $errors = [];
+        $warnings = [];
         $fields = preg_split("/\s+/", trim($content));
         $field_count = count($fields);
 
@@ -186,15 +201,39 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         $addr_final = explode('@', $addr_to_check, 2);
         $final_soa .= " " . str_replace(".", "\\.", $addr_final[0]) . "." . $addr_final[1];
 
-        // Process serial number
+        // Process serial number according to RFC 1035 and RFC 1982
         if (isset($fields[2])) {
+            // Serial must be numeric
             if (!is_numeric($fields[2])) {
                 $errors[] = _('Serial number must be numeric.');
                 return ['isValid' => false, 'errors' => $errors];
             }
+
+            // Serial should be a 32-bit unsigned integer (0 to 4294967295)
+            if ($fields[2] < 0 || $fields[2] > 4294967295) {
+                $errors[] = _('Serial number must be a 32-bit unsigned integer (0 to 4294967295).');
+                return ['isValid' => false, 'errors' => $errors];
+            }
+
+            // Recommended: Check if serial follows the YYYYMMDDnn format pattern
+            // This is a common convention but not a strict requirement
+            if (strlen($fields[2]) == 10) {
+                $year = substr($fields[2], 0, 4);
+                $month = substr($fields[2], 4, 2);
+                $day = substr($fields[2], 6, 2);
+
+                // Very basic validation - not enforced but will produce a warning
+                if (!checkdate((int)$month, (int)$day, (int)$year)) {
+                    $warnings[] = _('Serial number appears to use YYYYMMDDnn format but contains an invalid date. This is allowed but not recommended.');
+                }
+            }
+
             $final_soa .= " " . $fields[2];
         } else {
-            $final_soa .= " 0";
+            // Default to current date in YYYYMMDDnn format if no serial provided
+            $today = new \DateTime();
+            $default_serial = $today->format('Ymd') . '01';
+            $final_soa .= " " . $default_serial;
         }
 
         // Process remaining numeric fields
@@ -203,14 +242,56 @@ class SOARecordValidator implements DnsRecordValidatorInterface
             return ['isValid' => false, 'errors' => $errors];
         }
 
+        // Define field names and RFC 2308 recommended minimum values
+        $soa_field_names = ['refresh', 'retry', 'expire', 'minimum'];
+        $soa_field_mins = [
+            'refresh' => 1800,   // 30 minutes (RFC 2308 recommends refresh >= 2 hours)
+            'retry' => 600,      // 10 minutes (RFC 2308 recommends retry < refresh)
+            'expire' => 604800,  // 1 week (RFC 2308 recommends expire >= 2 weeks)
+            'minimum' => 300     // 5 minutes (RFC 2308 recommendations for negative caching)
+        ];
+
+        // Process the SOA timing fields (refresh, retry, expire, minimum)
         for ($i = 3; ($i < 7); $i++) {
+            $field_idx = $i - 3;
+            $field_name = $soa_field_names[$field_idx];
+
+            // Basic validation - fields must be numeric
             if (!is_numeric($fields[$i])) {
-                $errors[] = _('SOA timing fields (refresh, retry, expire, minimum) must be numeric.');
+                $errors[] = sprintf(_('SOA %s field must be numeric.'), $field_name);
                 return ['isValid' => false, 'errors' => $errors];
             }
+
+            // Ensure values are positive integers
+            if ((int)$fields[$i] < 0) {
+                $errors[] = sprintf(_('SOA %s field must be a positive integer.'), $field_name);
+                return ['isValid' => false, 'errors' => $errors];
+            }
+
+            // Check against RFC 2308 recommended minimum values - warnings only
+            $recommended_min = $soa_field_mins[$field_name];
+            if ((int)$fields[$i] < $recommended_min) {
+                $warnings[] = sprintf(
+                    _('SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is allowed but not recommended.'),
+                    $field_name,
+                    (int)$fields[$i],
+                    $recommended_min
+                );
+            }
+
+            // Specific validation for retry < refresh (RFC 2308 recommendation)
+            if ($field_name === 'retry' && isset($fields[3]) && (int)$fields[$i] >= (int)$fields[3]) {
+                $warnings[] = _('SOA retry value should be less than refresh value according to RFC 2308. This is allowed but not recommended.');
+            }
+
             $final_soa .= " " . $fields[$i];
         }
 
-        return ['isValid' => true, 'content' => $final_soa, 'errors' => []];
+        // Per RFC 2308, minimum field is now used as the negative caching TTL
+        if (isset($fields[6]) && (int)$fields[6] > 86400) {
+            $warnings[] = _('SOA minimum (negative caching) value exceeds 24 hours (86400), which may be excessive according to RFC 2308.');
+        }
+
+        return ['isValid' => true, 'content' => $final_soa, 'errors' => $errors, 'warnings' => $warnings];
     }
 }

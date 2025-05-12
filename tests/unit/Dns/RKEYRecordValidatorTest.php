@@ -241,6 +241,39 @@ class RKEYRecordValidatorTest extends TestCase
         $this->assertEquals(86400, $data['ttl']);
     }
 
+    public function testValidateWithWarnings()
+    {
+        $content = '256 3 7 AwEAAcFPJsUwFgdRmBwNP8XU5Zn/2Vaco9SICUyPxbQzD2WFLpSJ93eSVNRIm/KF6lX7nfR/nIiVY5VZ9xbo55f3F99OnKKTyMbV6FfX/qZu3RQ83An0K1JFJwbQrX7TAXd6FVWjOw==';
+        $name = 'example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check that warnings are present
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        // Verify specific warnings for algorithm 7 (RSASHA1-NSEC3-SHA1)
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('Algorithm 7', $warningText);
+        $this->assertStringContainsString('SHA-1', $warningText);
+
+        // Verify bit 7 flag warning (Zone Key)
+        $this->assertStringContainsString('Bit 7', $warningText);
+        $this->assertStringContainsString('Zone Key', $warningText);
+
+        // Verify general RKEY warning
+        $this->assertStringContainsString('never formally standardized', $warningText);
+    }
+
     public function testValidateWithInvalidHostname()
     {
         $content = '256 3 7 AwEAAcFPJsUwFgdRmBwNP8XU5Zn/2Vaco9SICUyPxbQzD2WFLpSJ93eSVNRIm/KF6lX7nfR/nIiVY5VZ9xbo55f3F99OnKKTyMbV6FfX/qZu3RQ83An0K1JFJwbQrX7TAXd6FVWjOw==';

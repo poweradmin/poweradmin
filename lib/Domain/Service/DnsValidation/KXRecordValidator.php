@@ -28,8 +28,26 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * KX Record Validator
  *
- * KX records (Key Exchanger) map a domain name to a mail server that will act
- * as a key exchanger for that domain.
+ * KX (Key Exchanger) records provide an authenticatable method of delegating authorization
+ * for one node to provide key exchange services on behalf of one or more nodes. They are
+ * similar in structure to MX records but are used for key exchange delegation rather than
+ * mail exchange.
+ *
+ * Format: <preference> <exchanger>
+ *
+ * Where:
+ * - preference: A 16-bit unsigned integer (0-65535) indicating the preference
+ *   Lower values have higher preference, similar to MX record priority.
+ * - exchanger: A domain name that specifies the DNS name of the host willing to
+ *   act as a key exchanger for the owner name.
+ *
+ * Example: 10 kx.example.com
+ *
+ * Important security note: RFC 2230 specifies that KX records MUST be signed using
+ * DNSSEC and that unsigned KX records MUST be ignored to avoid security vulnerabilities.
+ * Systems not implementing Secure DNS should ignore KX records.
+ *
+ * @see https://datatracker.ietf.org/doc/html/rfc2230 RFC 2230: Key Exchange Delegation Record for the DNS
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -50,25 +68,27 @@ class KXRecordValidator implements DnsRecordValidatorInterface
     }
 
     /**
-     * Validate KX record
+     * Validate KX record according to RFC 2230
      *
-     * @param string $content Key exchanger hostname
-     * @param string $name Domain name for the KX record
-     * @param mixed $prio Priority value
+     * @param string $content Key exchanger hostname (exchanger field)
+     * @param string $name Domain name for the KX record (owner name)
+     * @param mixed $prio Preference value (0-65535, lower values have higher preference)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL to use if not specified
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
+     *
+     * @see https://datatracker.ietf.org/doc/html/rfc2230 RFC 2230, Section 3.1
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         $errors = [];
 
-        // Validate content (key exchanger hostname)
+        // Validate content (key exchanger hostname according to RFC 2230)
         $contentResult = $this->hostnameValidator->validate($content, false);
         if (!$contentResult->isValid()) {
             return ValidationResult::errors(
-                array_merge([_('Invalid key exchanger hostname.')], $contentResult->getErrors())
+                array_merge([_('Invalid key exchanger hostname. The exchanger field must be a valid domain name.')], $contentResult->getErrors())
             );
         }
         $contentData = $contentResult->getData();
@@ -98,42 +118,64 @@ class KXRecordValidator implements DnsRecordValidatorInterface
         $ttlData = $ttlResult->getData();
         $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
+        // Add security warnings according to RFC 2230
+        $warnings = [
+            _('IMPORTANT: RFC 2230 requires KX records to be signed using DNSSEC. Unsigned KX records MUST be ignored for security reasons.'),
+            _('Systems not implementing Secure DNS should ignore KX records entirely according to RFC 2230.')
+        ];
+
+        // Add operational warnings for the key exchanger
+        if ($content !== $name) {
+            $warnings[] = _('Ensure that the key exchanger host has appropriate forward and reverse DNS records configured.');
+            $warnings[] = _('The key exchanger host should have appropriate A/AAAA records for type A/AAAA additional section processing.');
+        }
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
-        ]);
+        ], $warnings);
     }
 
     /**
-     * Validate priority for KX records
-     * KX records require a numeric priority between 0 and 65535
+     * Validate preference value for KX records (RFC 2230)
      *
-     * @param mixed $prio Priority value
+     * KX records require a numeric preference value between 0 and 65535.
+     * Lower values indicate higher preference, similar to MX record priorities.
      *
-     * @return ValidationResult ValidationResult containing validated priority or error message
+     * @param mixed $prio Preference value
+     *
+     * @return ValidationResult ValidationResult containing validated preference or error message
+     *
+     * @see https://datatracker.ietf.org/doc/html/rfc2230 RFC 2230, Section 3.1
      */
     private function validatePriority(mixed $prio): ValidationResult
     {
-        // If priority is not provided or empty, use default of 10
+        // If preference value is not provided or empty, use default of 10
+        // This follows the common practice for priority/preference fields in DNS
         if (!isset($prio) || $prio === "") {
             return ValidationResult::success(10);
         }
 
-        // Priority must be a number between 0 and 65535
-        if (is_numeric($prio) && $prio >= 0 && $prio <= 65535) {
-            return ValidationResult::success((int)$prio);
+        // Preference must be a 16-bit unsigned integer (0-65535) per RFC 2230
+        if (is_numeric($prio) && intval($prio) >= 0 && intval($prio) <= 65535) {
+            return ValidationResult::success(intval($prio));
         }
 
-        return ValidationResult::failure(_('Invalid value for KX priority field. Must be between 0 and 65535.'));
+        return ValidationResult::failure(_('Invalid value for KX preference field. Must be between 0 and 65535.'));
     }
 
     /**
      * Legacy adapter method for backward compatibility
      *
-     * @param mixed $prio Priority value
-     * @return int|bool The validated priority value or false if invalid
+     * This method maintains compatibility with code that may still use
+     * the legacy validation approach.
+     *
+     * @param mixed $prio Preference value for the KX record
+     * @return int|bool The validated preference value or false if invalid
+     *
+     * @deprecated Use validatePriority() with ValidationResult pattern instead
      */
     private function validatePriorityLegacy(mixed $prio): int|bool
     {

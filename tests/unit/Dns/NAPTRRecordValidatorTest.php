@@ -129,7 +129,7 @@ class NAPTRRecordValidatorTest extends BaseDnsTest
         $this->assertStringContainsString('flags must contain only A, P, S, or U', $result->getFirstError());
     }
 
-    public function testValidateWithInvalidServiceFormat()
+    public function testValidateWithUnquotedServiceFormat()
     {
         $content = '100 10 "u" sip+E2U "!^.*$!sip:info@example.com!" .'; // Service not quoted
         $name = 'test.example.com';
@@ -144,7 +144,7 @@ class NAPTRRecordValidatorTest extends BaseDnsTest
         $this->assertStringContainsString('service must be a quoted string', $result->getFirstError());
     }
 
-    public function testValidateWithInvalidRegexpFormat()
+    public function testValidateWithUnquotedRegexpFormat()
     {
         $content = '100 10 "u" "sip+E2U" !^.*$!sip:info@example.com! .'; // Regexp not quoted
         $name = 'test.example.com';
@@ -248,7 +248,35 @@ class NAPTRRecordValidatorTest extends BaseDnsTest
 
     public function testValidateWithMultipleFlags()
     {
-        $content = '100 10 "SU" "sip+E2U" "!^.*$!sip:info@example.com!" .'; // Multiple valid flags
+        $content = '100 10 "SU" "sip+E2U" "!^.*$!sip:info@example.com!" .'; // Multiple terminal flags - should fail
+        $name = 'test.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Terminal flags', $result->getFirstError());
+    }
+
+    public function testValidateWithInvalidServiceFormat()
+    {
+        $content = '100 10 "u" "sip-E2U" "!^.*$!sip:info@example.com!" .'; // Invalid service format (hyphen)
+        $name = 'test.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('service must follow the format', $result->getFirstError());
+    }
+
+    public function testValidateWithValidENUMRecord()
+    {
+        $content = '100 10 "u" "E2U+sip" "!^.*$!sip:info@example.com!" .'; // Valid ENUM record format
         $name = 'test.example.com';
         $prio = 0;
         $ttl = 3600;
@@ -257,6 +285,105 @@ class NAPTRRecordValidatorTest extends BaseDnsTest
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-        $this->assertEmpty($result->getErrors());
+        $this->assertTrue($result->hasWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+        // At least one warning should mention ENUM
+        $foundEnumWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'ENUM') !== false) {
+                $foundEnumWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundEnumWarning);
+    }
+
+    public function testValidateWithInvalidRegexpFormat()
+    {
+        $content = '100 10 "u" "sip+E2U" "^.*$!sip:info@example.com!" .'; // Missing first delimiter
+        $name = 'test.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('delimiter+pattern+delimiter+replacement+delimiter', $result->getFirstError());
+    }
+
+    public function testValidateWithExcessivelyLongRegexp()
+    {
+        // Create a very long regexp pattern (over 1000 chars)
+        $longPattern = str_repeat('a', 1001);
+        $content = '100 10 "u" "sip+E2U" "!' . $longPattern . '!replacement!" .';
+        $name = 'test.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('too long', $result->getFirstError());
+    }
+
+    public function testValidateWithConflictingReplacementAndRegexp()
+    {
+        $content = '100 10 "u" "sip+E2U" "!^.*$!sip:info@example.com!" example.com'; // Both regexp and replacement set
+        $name = 'test.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('regexp must have "." as the replacement', $result->getFirstError());
+    }
+
+    public function testValidateWithParsedData()
+    {
+        $content = '100 10 "u" "sip+E2U" "!^.*$!sip:info@example.com!" .';
+        $name = 'test.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertArrayHasKey('parsed', $data);
+        $this->assertTrue($data['parsed']);
+
+        // Check for warnings - this validator always adds RFC warning
+        $this->assertTrue($result->hasWarnings());
+        $warningText = implode(' ', $result->getWarnings());
+        $this->assertStringContainsString('RFC 3403', $warningText);
+    }
+
+    public function testValidateWithENUMDomain()
+    {
+        $content = '100 10 "u" "E2U+sip" "!^.*$!sip:info@example.com!" .';
+        $name = '1.2.3.4.5.e164.arpa'; // ENUM domain
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+        // Should have ENUM domain warning
+        $foundEnumDomainWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'ENUM domain') !== false) {
+                $foundEnumDomainWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundEnumDomainWarning);
     }
 }

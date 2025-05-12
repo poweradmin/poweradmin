@@ -28,6 +28,27 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * LP record validator
  *
+ * The LP (Locator Pointer) record is a DNS resource record type used with the
+ * Identifier-Locator Network Protocol (ILNP). It is used to hold the name of
+ * a subnetwork for ILNP which can then be used to look up L32 or L64 records.
+ * LP is, effectively, a Locator Pointer to L32 and/or L64 records.
+ *
+ * Format: <preference> <FQDN>
+ *
+ * Where:
+ * - preference: A 16-bit unsigned integer (0-65535) indicating relative preference
+ *   Lower values are preferred over higher values.
+ * - FQDN: A fully qualified domain name that points to one or more L32 or L64 records.
+ *   It MUST NOT have the same value as the owner name of the LP record.
+ *
+ * Example: 10 mobile-net1.example.com.
+ *
+ * NOTE: The LP record type is defined in RFC 6742 as an experimental protocol.
+ * It is not a formal IETF standard but is published for examination, experimental
+ * implementation, and evaluation.
+ *
+ * @see https://www.rfc-editor.org/rfc/rfc6742 RFC 6742: DNS Resource Records for the Identifier-Locator Network Protocol (ILNP)
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team
@@ -69,7 +90,7 @@ class LPRecordValidator implements DnsRecordValidatorInterface
         $name = $hostnameData['hostname'];
 
         // Validate content
-        $contentResult = $this->validateLPContent($content);
+        $contentResult = $this->validateLPContent($content, $name);
         if (!$contentResult->isValid()) {
             return $contentResult;
         }
@@ -85,12 +106,38 @@ class LPRecordValidator implements DnsRecordValidatorInterface
         // Use the provided priority if available, otherwise extract from content
         $priority = ($prio !== '' && $prio !== null) ? (int)$prio : $this->extractPreferenceFromContent($content);
 
+        // Add warnings according to RFC 6742
+        $warnings = [
+            _('NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, not a formal IETF standard.'),
+            _('LP records should only be used with the Identifier-Locator Network Protocol (ILNP).'),
+            _('LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 Section 3.4).')
+        ];
+
+        // Extract the FQDN from the content
+        $parts = preg_split('/\s+/', trim($content), 2);
+        $fqdn = isset($parts[1]) ? $parts[1] : '';
+
+        // Add warning for matching owner name and target
+        if (trim($fqdn, '.') === trim($name, '.')) {
+            $warnings[] = _('Warning: The FQDN in an LP record SHOULD NOT have the same value as the owner name (RFC 6742).');
+        }
+
+        // Add warning for missing trailing dot
+        if (substr($fqdn, -1) !== '.' && !empty($fqdn)) {
+            $warnings[] = _('It is recommended to end FQDN values with a trailing dot to ensure they are treated as absolute domain names rather than relative ones.');
+        }
+
+        // Add suggestion for longer TTL values
+        if ($validatedTtl < 3600) { // Less than 1 hour
+            $warnings[] = _('Consider using longer TTL values for LP records. Unlike L32/L64 records, LP records are stable and benefit from longer cache times (RFC 6742).');
+        }
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
             'prio' => $priority,
             'ttl' => $validatedTtl
-        ]);
+        ], $warnings);
     }
 
     /**
@@ -98,9 +145,10 @@ class LPRecordValidator implements DnsRecordValidatorInterface
      * Format: <preference> <FQDN>
      *
      * @param string $content The content to validate
+     * @param string $name The owner name of the record
      * @return ValidationResult Validation result with success or error message
      */
-    private function validateLPContent(string $content): ValidationResult
+    private function validateLPContent(string $content, string $name): ValidationResult
     {
         // Split the content into parts
         $parts = preg_split('/\s+/', trim($content));
@@ -119,6 +167,16 @@ class LPRecordValidator implements DnsRecordValidatorInterface
         $hostnameResult = $this->hostnameValidator->validate($fqdn, true);
         if (!$hostnameResult->isValid()) {
             return ValidationResult::failure(_('LP FQDN must be a valid fully qualified domain name.'));
+        }
+
+        // Check if the FQDN has the same value as the owner name (not recommended per RFC 6742)
+        if (trim($fqdn, '.') === trim($name, '.')) {
+            // We'll just warn about this in the main validation method, not fail validation
+        }
+
+        // Check if the FQDN ends with a dot (as recommended for DNS records)
+        if (substr($fqdn, -1) !== '.') {
+            // This is not an error, but will be mentioned in warnings
         }
 
         return ValidationResult::success(true);

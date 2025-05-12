@@ -67,6 +67,16 @@ class HINFORecordValidatorTest extends BaseDnsTest
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check for warnings
+        $this->assertTrue($result->hasWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        // Security warning should be present
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('security', $warningText);
     }
 
     public function testValidateWithValidQuotedData()
@@ -84,6 +94,16 @@ class HINFORecordValidatorTest extends BaseDnsTest
 
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
+
+        // Check for warnings
+        $this->assertTrue($result->hasWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        // Security warning should be present
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('security', $warningText);
     }
 
     public function testValidateWithMixedQuotedUnquotedData()
@@ -98,6 +118,11 @@ class HINFORecordValidatorTest extends BaseDnsTest
 
         $this->assertTrue($result->isValid());
         $this->assertEmpty($result->getErrors());
+
+        // Check for warnings
+        $data = $result->getData();
+        $this->assertTrue($result->hasWarnings());
+        $this->assertNotEmpty($result->getWarnings());
     }
 
     public function testValidateWithMissingField()
@@ -192,8 +217,8 @@ class HINFORecordValidatorTest extends BaseDnsTest
 
     public function testValidateWithExcessivelyLongField()
     {
-        // Create string over 1000 characters long
-        $longString = str_repeat('A', 1001);
+        // RFC 1035 limits character strings to 255 octets
+        $longString = str_repeat('A', 256);
         $content = "\"$longString\" UNIX";
         $name = 'host.example.com';
         $prio = 0;
@@ -205,6 +230,7 @@ class HINFORecordValidatorTest extends BaseDnsTest
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getErrors());
         $this->assertStringContainsString('exceeds maximum length', $result->getFirstError());
+        $this->assertStringContainsString('255', $result->getFirstError());
     }
 
     public function testValidateWithInvalidHostname()
@@ -264,5 +290,46 @@ class HINFORecordValidatorTest extends BaseDnsTest
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
+    }
+
+    public function testValidateWithNonStandardValues()
+    {
+        $content = '"My Custom CPU" "Custom OS"';
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check for warnings about non-standard values
+        $this->assertTrue($result->hasWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('standard', $warningText);
+        $this->assertStringContainsString('CPU type', $warningText);
+        $this->assertStringContainsString('OS type', $warningText);
+    }
+
+    public function testValidateWithTooLongField()
+    {
+        // RFC 1035 limits character strings to 255 octets
+        $longString = str_repeat('A', 256);
+        $content = "\"$longString\" UNIX";
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('255 characters', $result->getFirstError());
     }
 }

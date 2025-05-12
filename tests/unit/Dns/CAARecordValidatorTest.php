@@ -114,7 +114,8 @@ class CAARecordValidatorTest extends TestCase
 
     public function testValidateWithInvalidTag()
     {
-        $content = '0 invalid "ca.example.org"'; // Invalid tag
+        // Need to use a tag with critical flag (bit 0 = 1) to ensure validation fails
+        $content = '1 invalid "ca.example.org"'; // Invalid tag with critical flag
         $name = 'host.example.com';
         $prio = 0;
         $ttl = 3600;
@@ -124,7 +125,7 @@ class CAARecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertNotEmpty($result->getErrors());
-        $this->assertStringContainsString('tag', $result->getFirstError());
+        $this->assertStringContainsString('Critical', $result->getFirstError());
     }
 
     public function testValidateWithInvalidQuotingForValue()

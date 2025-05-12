@@ -28,6 +28,20 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * Validator for ALIAS DNS records
  *
+ * ALIAS is a PowerDNS-specific record type (65401) that provides CNAME-like functionality
+ * at zone apex (root domain). Unlike CNAME records, ALIAS records can coexist with other
+ * record types for the same name.
+ *
+ * Format: <name> [<ttl>] IN ALIAS <target>
+ *
+ * When a resolver asks for an A or AAAA record for a name with an ALIAS record, PowerDNS
+ * will resolve the target's A/AAAA records and return them as if they belonged to the name.
+ *
+ * Note that for proper functionality in PowerDNS, the expand-alias setting must be enabled
+ * and a resolver must be configured. These settings are beyond the scope of this validator.
+ *
+ * @see https://doc.powerdns.com/authoritative/guides/alias.html
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team
@@ -54,8 +68,8 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
     /**
      * Validate ALIAS record
      *
-     * @param string $content Target hostname
-     * @param string $name ALIAS hostname
+     * @param string $content Target hostname that the ALIAS points to
+     * @param string $name ALIAS hostname (source name being aliased)
      * @param mixed $prio Priority (not used for ALIAS records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
@@ -65,6 +79,7 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         $errors = [];
+        $warnings = [];
 
         // 1. Validate ALIAS hostname
         $nameResult = $this->hostnameValidator->validate($name, true);
@@ -82,13 +97,23 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
         $contentData = $contentResult->getData();
         $content = $contentData['hostname'];
 
+        // PowerDNS requires target hostnames to be fully qualified domain names
+        if (strpos($content, '.') === false) {
+            return ValidationResult::failure(_('ALIAS target must be a fully qualified domain name (FQDN).'));
+        }
+
+        // Self-referential ALIAS records can cause resolution loops
+        if ($content === $name) {
+            return ValidationResult::failure(_('ALIAS target cannot point to itself, as this would create a resolution loop.'));
+        }
+
         // 3. Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
         if (!$ttlResult->isValid()) {
             return $ttlResult;
         }
         $ttlData = $ttlResult->getData();
-        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData; // Extract the ttl value
+        $validatedTtl = is_array($ttlData) && isset($ttlData['ttl']) ? $ttlData['ttl'] : $ttlData;
 
         // 4. Validate priority (should be 0 for ALIAS records)
         $prioResult = $this->validatePriority($prio);
@@ -97,16 +122,19 @@ class ALIASRecordValidator implements DnsRecordValidatorInterface
         }
         $validatedPrio = $prioResult->getData();
 
+
         if (count($errors) > 0) {
             return ValidationResult::errors($errors);
         }
 
-        return ValidationResult::success([
+        $result = [
             'content' => $content,
             'name' => $name,
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
-        ]);
+        ];
+
+        return ValidationResult::success($result, $warnings);
     }
 
     /**

@@ -245,7 +245,7 @@ class SMIMEARecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('TTL field', $result->getFirstError());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     public function testValidateWithInvalidHostname()

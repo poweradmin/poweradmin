@@ -60,19 +60,38 @@ class MINFORecordValidatorTest extends BaseDnsTest
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
 
+        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
-
         $this->assertEquals($name, $data['name']);
-        $data = $result->getData();
-
         $this->assertEquals(0, $data['prio']); // MINFO sets priority to 0
-
         $this->assertEquals($ttl, $data['ttl']);
+
+        // Check that warnings are included
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertGreaterThan(0, count($result->getWarnings()));
+
+        // Check for warning about experimental status
+        $foundExperimentalWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'EXPERIMENTAL') !== false) {
+                $foundExperimentalWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundExperimentalWarning, 'Warning about experimental status not found');
+
+        // Check for warning about -request convention
+        $foundRequestWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'request') !== false) {
+                $foundRequestWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundRequestWarning, 'Warning about -request naming convention not found');
     }
 
     public function testInvalidContent()
@@ -182,11 +201,109 @@ class MINFORecordValidatorTest extends BaseDnsTest
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
+
+        $data = $result->getData();
+        $this->assertEquals($defaultTTL, $data['ttl']);
+    }
+
+    public function testWithRootDomainRMAILBX()
+    {
+        $content = '. errors.example.com'; // Root domain for RMAILBX
+        $name = 'example.com';
+        $prio = null;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+
         $data = $result->getData();
 
-        $this->assertEquals($defaultTTL, $data['ttl']);
+        // Check for warning about root domain in RMAILBX
+        $foundRootWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'owner of the MINFO record is responsible') !== false) {
+                $foundRootWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundRootWarning, 'Warning about root domain in RMAILBX not found');
+    }
+
+    public function testWithRootDomainEMAILBX()
+    {
+        $content = 'responsible.example.com .'; // Root domain for EMAILBX
+        $name = 'example.com';
+        $prio = null;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+
+        $data = $result->getData();
+
+        // Check for warning about root domain in EMAILBX
+        $foundRootWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'errors should be returned to the sender') !== false) {
+                $foundRootWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundRootWarning, 'Warning about root domain in EMAILBX not found');
+    }
+
+    public function testWithRequestNamingConvention()
+    {
+        $content = 'mailing-list-request.example.com errors.example.com'; // Using -request naming
+        $name = 'mailing-list.example.com';
+        $prio = null;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+
+        $data = $result->getData();
+
+        // Should NOT have warning about -request convention
+        $foundRequestWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'mailbox "list-name-request"') !== false) {
+                $foundRequestWarning = true;
+                break;
+            }
+        }
+        $this->assertFalse($foundRequestWarning, 'Warning about -request naming convention should not be present');
+    }
+
+    public function testWithIdenticalMailboxes()
+    {
+        $content = 'admin.example.com admin.example.com'; // Same mailbox for both fields
+        $name = 'example.com';
+        $prio = null;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+
+        $data = $result->getData();
+
+        // Check for warning about identical mailboxes
+        $foundIdenticalWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'identical') !== false) {
+                $foundIdenticalWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundIdenticalWarning, 'Warning about identical mailboxes not found');
     }
 }

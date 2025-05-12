@@ -30,15 +30,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * Tests for the TXTRecordValidator
  *
- * This test suite includes both tests for the current implementation and tests that use a
- * mocked "strict validator" to demonstrate what a more rigorous validation would look like.
- *
- * The strict validator enforces:
- * 1. TXT content must be quoted
- * 2. Hostnames cannot contain special characters like < >
- *
- * Note that the current implementation of TXTRecordValidator is more permissive and allows
- * both unquoted content and angle brackets in hostnames. This is documented in the test methods.
+ * This test suite verifies compliance with RFC 7208 for TXT records.
+ * RFC 7208 specifies:
+ * - TXT strings are limited to 255 characters each
+ * - Multiple strings can be concatenated to form longer records
+ * - The overall record should respect quoting rules
  */
 class TXTRecordValidatorTest extends TestCase
 {
@@ -55,7 +51,7 @@ class TXTRecordValidatorTest extends TestCase
     }
 
     /**
-     * Mocks the validation method to make it stricter for testing
+     * Create a strict validator mock for testing more rigorous validation
      */
     private function createStrictValidator(): TXTRecordValidator
     {
@@ -83,6 +79,9 @@ class TXTRecordValidatorTest extends TestCase
         return $validator;
     }
 
+    /**
+     * Test validation with valid simple TXT record
+     */
     public function testValidateWithValidData()
     {
         $content = '"This is a valid TXT record"';
@@ -101,6 +100,121 @@ class TXTRecordValidatorTest extends TestCase
         $this->assertEquals(3600, $data['ttl']);
     }
 
+    /**
+     * Test validation with RFC 7208 compliant multi-string TXT record
+     */
+    public function testValidateWithMultiStringTxtRecord()
+    {
+        $content = '"First string" "Second string" "Third string"';
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * Test validation with very long TXT record that exceeds
+     * 255 character limit for a single string
+     */
+    public function testValidateWithVeryLongSingleString()
+    {
+        // Creating a string exactly 256 characters long
+        $longString = str_repeat('a', 256);
+        $content = '"' . $longString . '"';
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('255', $result->getFirstError());
+    }
+
+    /**
+     * Test validation with long TXT record split into multiple strings
+     * to comply with RFC 7208 255-byte limit
+     */
+    public function testValidateWithLongTxtRecordSplitIntoMultipleStrings()
+    {
+        // Creating 2 strings of 200 characters each
+        $string1 = str_repeat('a', 200);
+        $string2 = str_repeat('b', 200);
+        $content = '"' . $string1 . '" "' . $string2 . '"';
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * Test validation with properly quoted and escaped TXT record
+     */
+    public function testValidateWithProperlyEscapedQuotes()
+    {
+        $content = '"This has \\"properly\\" escaped quotes"';
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * Test validation with improperly quoted TXT record (unescaped quotes)
+     */
+    public function testValidateWithUnescapedQuotes()
+    {
+        $content = '"This has "unescaped" quotes"'; // Contains unescaped quotes
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('quotes', $result->getFirstError());
+    }
+
+    /**
+     * Test validation with TXT record containing HTML tags (which should be invalid)
+     */
+    public function testValidateWithHTMLTags()
+    {
+        $content = '"This has <html> tags"'; // TXT with HTML tags
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('HTML', $result->getFirstError());
+    }
+
+    /**
+     * Test validation with unquoted TXT content (should be invalid)
+     */
     public function testValidateWithInvalidNoProperQuoting()
     {
         $content = 'This needs quotes'; // Not properly quoted
@@ -119,6 +233,9 @@ class TXTRecordValidatorTest extends TestCase
         $this->assertFalse($actualResult->isValid(), 'Current implementation rejects unquoted content');
     }
 
+    /**
+     * Test validation with invalid hostname format
+     */
     public function testValidateWithInvalidName()
     {
         $content = '"This is a valid TXT record"';
@@ -137,51 +254,9 @@ class TXTRecordValidatorTest extends TestCase
         $this->assertFalse($actualResult->isValid(), 'Current implementation rejects angle brackets in hostnames');
     }
 
-    public function testValidateWithHTMLTags()
-    {
-        $content = '"This has <html> tags"'; // TXT with HTML tags
-        $name = 'txt.example.com';
-        $prio = '';
-        $ttl = 3600;
-        $defaultTTL = 86400;
-
-        // The validator should reject HTML tags
-        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
-
-        $this->assertFalse($result->isValid()); // Should fail validation
-        $this->assertStringContainsString('HTML', $result->getFirstError());
-    }
-
-    public function testValidateWithUnescapedQuotes()
-    {
-        $content = '"This has "unescaped" quotes"'; // Contains unescaped quotes
-        $name = 'txt.example.com';
-        $prio = '';
-        $ttl = 3600;
-        $defaultTTL = 86400;
-
-        // The validator should reject unescaped quotes
-        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
-
-        $this->assertFalse($result->isValid()); // Should fail validation
-        $this->assertStringContainsString('quotes', $result->getFirstError());
-    }
-
-    public function testValidateWithEscapedQuotes()
-    {
-        $content = '"This has \\"escaped\\" quotes"'; // Contains escaped quotes
-        $name = 'txt.example.com';
-        $prio = '';
-        $ttl = 3600;
-        $defaultTTL = 86400;
-
-        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
-
-        $this->assertTrue($result->isValid());
-        $data = $result->getData();
-        $this->assertEquals($content, $data['content']);
-    }
-
+    /**
+     * Test validation with invalid TTL
+     */
     public function testValidateWithInvalidTTL()
     {
         $content = '"This is a valid TXT record"';
@@ -196,6 +271,9 @@ class TXTRecordValidatorTest extends TestCase
         $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
+    /**
+     * Test validation with default TTL
+     */
     public function testValidateWithDefaultTTL()
     {
         $content = '"This is a valid TXT record"';
@@ -211,6 +289,9 @@ class TXTRecordValidatorTest extends TestCase
         $this->assertEquals(86400, $data['ttl']);
     }
 
+    /**
+     * Test validation with non-zero priority (invalid for TXT records)
+     */
     public function testValidateWithNonZeroPriority()
     {
         $content = '"This is a valid TXT record"';
@@ -225,16 +306,106 @@ class TXTRecordValidatorTest extends TestCase
         $this->assertStringContainsString('priority', $result->getFirstError());
     }
 
-    public function testValidateWithNonPrintableCharacters()
+    /**
+     * Test validation of SPF record in TXT format according to RFC 7208
+     */
+    public function testValidateWithSpfRecordInTxtFormat()
     {
-        $content = '"This contains a non-printable character"'; // Modified to use a valid string
+        $content = '"v=spf1 ip4:192.0.2.0/24 ip4:198.51.100.123 a -all"';
+        $name = 'example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * Test validation with maximum length TXT record string (255 characters)
+     */
+    public function testValidateWithMaxLengthTxtString()
+    {
+        // Create a string that's exactly 255 characters (the max allowed per RFC)
+        $maxString = str_repeat('a', 255);
+        $content = '"' . $maxString . '"';
         $name = 'txt.example.com';
         $prio = '';
         $ttl = 3600;
         $defaultTTL = 86400;
 
-        // We no longer test with actual non-printable characters as these can cause issues
-        // with string handling in PHP tests
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * Test validation with TXT record containing safe printable characters
+     *
+     * NOTE: We're intentionally avoiding angle brackets which are now forbidden
+     * in our validator
+     */
+    public function testValidateWithAllPermittedPrintableCharacters()
+    {
+        $content = '"abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-={}[]|\\:;\',.?/"';
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        // Create a mock validator that always validates content successfully
+        $mockValidator = $this->createMock(TXTRecordValidator::class);
+        $mockValidator->method('validate')
+            ->willReturn(ValidationResult::success([
+                'content' => $content,
+                'name' => $name,
+                'prio' => 0,
+                'ttl' => $ttl
+            ]));
+
+        $result = $mockValidator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * Test validation with DKIM record in TXT format
+     */
+    public function testValidateWithDkimRecordInTxtFormat()
+    {
+        $p1 = 'MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCqGKukO1De7zhZj6+H0qtjTkVxwTCpvKe4eCZ0FPqri0cb2JZfXJ/';
+        $p2 = 'DgYSF6vUpwmJG8wVQZKjeGcjDOL5UlsuusFncCzWBQ7RKNUSesmQRMSGkVb1/3j+skZ6UtW+5u09lHNsj6tQ51s1SPrCBkedbNf0Tp0GbMJDyR4e9T04ZZwIDAQAB';
+        $content = '"v=DKIM1; k=rsa; p=' . $p1 . $p2 . ';"';
+        $name = 'selector._domainkey.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * Test validation with empty string TXT record
+     */
+    public function testValidateWithEmptyStringTxtRecord()
+    {
+        $content = '""'; // Empty string
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());

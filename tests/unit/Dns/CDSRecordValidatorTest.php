@@ -46,7 +46,7 @@ class CDSRecordValidatorTest extends TestCase
     public function testValidateWithValidSHA1Data()
     {
         $content = '12345 13 1 1234567890123456789012345678901234567890';  // 40 hex chars for SHA-1
-        $name = 'host.example.com';
+        $name = 'example.com';  // Apex record
         $prio = 0;
         $ttl = 3600;
         $defaultTTL = 86400;
@@ -54,25 +54,33 @@ class CDSRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
 
+        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
-
         $this->assertEquals($name, $data['name']);
-        $data = $result->getData();
-
         $this->assertEquals(0, $data['prio']);
-
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check that we have warnings due to SHA-1 usage
+        $this->assertNotEmpty($result->getWarnings());
+        $this->assertIsArray($result->getWarnings());
+
+        // Check that we have a warning about SHA-1 being deprecated
+        $shaShaWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'SHA-1 (digest type 1) is deprecated') !== false) {
+                $shaShaWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($shaShaWarningFound, 'Should warn about SHA-1 being deprecated');
     }
 
     public function testValidateWithValidSHA256Data()
     {
         $content = '12345 13 2 1234567890123456789012345678901234567890123456789012345678901234';  // 64 hex chars for SHA-256
-        $name = 'host.example.com';
+        $name = 'example.com';  // Apex record
         $prio = 0;
         $ttl = 3600;
         $defaultTTL = 86400;
@@ -80,18 +88,26 @@ class CDSRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
 
+        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
+
+        // Check that warnings don't mention SHA-256 being deprecated
+        $sha256WarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'SHA-256') !== false && strpos($warning, 'deprecated') !== false) {
+                $sha256WarningFound = true;
+                break;
+            }
+        }
+        $this->assertFalse($sha256WarningFound, 'Should not warn about SHA-256 being deprecated');
     }
 
     public function testValidateWithValidSHA384Data()
     {
         $content = '12345 13 4 123456789012345678901234567890123456789012345678901234567890123456789012345678901234567890123456';  // 96 hex chars for SHA-384
-        $name = 'host.example.com';
+        $name = 'example.com';  // Apex record
         $prio = 0;
         $ttl = 3600;
         $defaultTTL = 86400;
@@ -99,18 +115,26 @@ class CDSRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
 
+        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
+
+        // Check that warnings don't mention SHA-384 being deprecated
+        $sha384WarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'SHA-384') !== false && strpos($warning, 'deprecated') !== false) {
+                $sha384WarningFound = true;
+                break;
+            }
+        }
+        $this->assertFalse($sha384WarningFound, 'Should not warn about SHA-384 being deprecated');
     }
 
     public function testValidateWithDeletionRecord()
     {
         $content = '0 0 0 00';
-        $name = 'host.example.com';
+        $name = 'example.com';  // Apex record
         $prio = 0;
         $ttl = 3600;
         $defaultTTL = 86400;
@@ -118,12 +142,20 @@ class CDSRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
 
+        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
+
+        // Check that we have a warning about this being a deletion record
+        $deletionWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'This is a CDS deletion record') !== false) {
+                $deletionWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($deletionWarningFound, 'Should warn about deletion record significance');
     }
 
     public function testValidateWithInvalidKeyTag()
@@ -257,7 +289,7 @@ class CDSRecordValidatorTest extends TestCase
     public function testValidateWithDefaultTTL()
     {
         $content = '12345 13 1 1234567890123456789012345678901234567890';
-        $name = 'host.example.com';
+        $name = 'example.com';
         $prio = 0;
         $ttl = '';  // Empty TTL should use default
         $defaultTTL = 86400;
@@ -265,11 +297,35 @@ class CDSRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
+
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
+    }
+
+    public function testValidateWithSubdomainName()
+    {
+        $content = '12345 13 2 1234567890123456789012345678901234567890123456789012345678901234';
+        $name = 'sub.domain.example.com';  // Subdomain, not apex
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+
         $data = $result->getData();
 
-        $this->assertEquals(86400, $data['ttl']);
+        // Check that we have a warning about apex placement
+        $apexWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'should only be placed at the zone apex') !== false) {
+                $apexWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($apexWarningFound, 'Should warn about non-apex placement');
     }
 }

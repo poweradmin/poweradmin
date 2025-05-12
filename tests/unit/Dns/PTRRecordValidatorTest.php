@@ -62,14 +62,18 @@ class PTRRecordValidatorTest extends TestCase
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
 
-        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($content . '.', $data['content']);
 
         $this->assertEquals($name, $data['name']);
-        $data = $result->getData();
 
         $this->assertEquals(0, $data['prio']); // PTR always uses 0
 
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check that warnings are present
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
     }
 
     public function testValidateWithInvalidContentHostname()
@@ -137,6 +141,11 @@ class PTRRecordValidatorTest extends TestCase
         $data = $result->getData();
 
         $this->assertEquals(86400, $data['ttl']);
+
+        // Check that warnings are present
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
     }
 
     public function testValidateWithNonZeroPriority()
@@ -156,6 +165,14 @@ class PTRRecordValidatorTest extends TestCase
         $data = $result->getData();
 
         $this->assertEquals(0, $data['prio']); // Priority should always be 0 for PTR
+
+        // Check for specific warning about priority
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('Priority', $warningText);
     }
 
     public function testValidateWithIPv6ReverseZone()
@@ -174,7 +191,7 @@ class PTRRecordValidatorTest extends TestCase
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
 
-        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($content . '.', $data['content']);
 
         $this->assertEquals($name, $data['name']);
     }
@@ -193,9 +210,33 @@ class PTRRecordValidatorTest extends TestCase
 
 
         $this->assertEmpty($result->getErrors());
-        // The hostname validator should normalize by removing the trailing dot
         $data = $result->getData();
 
-        $this->assertEquals('host.example.com', $data['content']);
+        // Content already has a trailing dot, so it should remain as is
+        $this->assertEquals($content, $data['content']);
+    }
+
+    public function testValidateWithNonStandardReverseName()
+    {
+        $content = 'host.example.com';
+        $name = 'example.com'; // Not a proper reverse DNS name
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+
+        $data = $result->getData();
+
+        // Check for specific warning about reverse DNS format
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('reverse DNS', $warningText);
+        $this->assertStringContainsString('in-addr.arpa', $warningText);
     }
 }

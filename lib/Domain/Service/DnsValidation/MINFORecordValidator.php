@@ -27,6 +27,28 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * MINFO Record Validator
+ *
+ * The MINFO (Mailbox Information) record type is used to specify mailboxes that are
+ * responsible for a mailing list or mailbox, and to receive error messages related to them.
+ *
+ * Format: <responsible-mailbox> <error-mailbox>
+ *
+ * Where:
+ * - responsible-mailbox: A domain name that specifies a mailbox that is responsible for
+ *   the mailing list or mailbox. If this is the root, the owner of the record is
+ *   responsible for itself. Many existing mailing lists use a mailbox "list-name-request"
+ *   for this field.
+ * - error-mailbox: A domain name that specifies a mailbox that is to receive error messages
+ *   related to the mailing list or mailbox. If this is the root, errors should be
+ *   returned to the sender of the message.
+ *
+ * Example: "admin.example.com errors.example.com"
+ *
+ * NOTE: The MINFO record type is explicitly marked as EXPERIMENTAL in RFC 1035.
+ * Although still supported in many DNS implementations, it is rarely used and
+ * might not be supported universally.
+ *
+ * @see https://www.rfc-editor.org/rfc/rfc1035 RFC 1035, Section 3.3.7
  */
 class MINFORecordValidator implements DnsRecordValidatorInterface
 {
@@ -56,6 +78,10 @@ class MINFORecordValidator implements DnsRecordValidatorInterface
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         $errors = [];
+        $warnings = [];
+
+        // Add warning about experimental status according to RFC 1035
+        $warnings[] = _('NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may not be universally supported.');
 
         // Validate name (domain name)
         $nameResult = $this->hostnameValidator->validate($name, true);
@@ -73,32 +99,52 @@ class MINFORecordValidator implements DnsRecordValidatorInterface
 
         $parts = explode(' ', $content, 2);
         if (count($parts) !== 2) {
-            $errors[] = _('MINFO record must contain both responsible mailbox and error mailbox separated by a space.');
+            $errors[] = _('MINFO record must contain both responsible mailbox and error mailbox separated by a space (RFC 1035 Section 3.3.7).');
             return ValidationResult::errors($errors);
         }
 
         $rmailbx = $parts[0];
         $emailbx = $parts[1];
 
-        // Validate responsible mailbox
+        // Validate responsible mailbox (RMAILBX)
         $rmailbxResult = $this->hostnameValidator->validate($rmailbx, false);
         if (!$rmailbxResult->isValid()) {
             return ValidationResult::errors(
-                array_merge([_('Invalid responsible mailbox hostname.')], $rmailbxResult->getErrors())
+                array_merge([_('Invalid responsible mailbox hostname (RMAILBX).')], $rmailbxResult->getErrors())
             );
         }
         $rmailbxData = $rmailbxResult->getData();
         $rmailbx = $rmailbxData['hostname'];
 
-        // Validate error mailbox
+        // Check for the "request" naming convention mentioned in RFC 1035
+        if (!str_contains($rmailbx, '-request') && !str_contains($rmailbx, 'request')) {
+            $warnings[] = _('RFC 1035 notes that many mailing lists use a mailbox "list-name-request" for the responsible mailbox field.');
+        }
+
+        // Special case for root domain in RMAILBX
+        if ($rmailbx === '.') {
+            $warnings[] = _('Using "." (root) for RMAILBX indicates that the owner of the MINFO record is responsible for itself.');
+        }
+
+        // Validate error mailbox (EMAILBX)
         $emailbxResult = $this->hostnameValidator->validate($emailbx, false);
         if (!$emailbxResult->isValid()) {
             return ValidationResult::errors(
-                array_merge([_('Invalid error mailbox hostname.')], $emailbxResult->getErrors())
+                array_merge([_('Invalid error mailbox hostname (EMAILBX).')], $emailbxResult->getErrors())
             );
         }
         $emailbxData = $emailbxResult->getData();
         $emailbx = $emailbxData['hostname'];
+
+        // Special case for root domain in EMAILBX
+        if ($emailbx === '.') {
+            $warnings[] = _('Using "." (root) for EMAILBX indicates that errors should be returned to the sender of the message.');
+        }
+
+        // Check if both fields are identical
+        if ($rmailbx === $emailbx) {
+            $warnings[] = _('The responsible mailbox and error mailbox are identical. Consider using different mailboxes for these functions.');
+        }
 
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
@@ -110,18 +156,16 @@ class MINFORecordValidator implements DnsRecordValidatorInterface
 
         // Validate priority (should be 0 for MINFO records)
         if (!empty($prio) && $prio != 0) {
-            $errors[] = _('Priority field for MINFO records must be 0 or empty.');
+            $errors[] = _('Priority field for MINFO records must be 0 or empty. MINFO does not use priority values per RFC 1035.');
             return ValidationResult::errors($errors);
         }
 
         // Reconstruct the content with validated parts
         $validatedContent = $rmailbx . ' ' . $emailbx;
 
-        return ValidationResult::success([
-            'content' => $validatedContent,
+        return ValidationResult::success(['content' => $validatedContent,
             'name' => $name,
             'prio' => 0, // MINFO records don't use priority
-            'ttl' => $validatedTtl
-        ]);
+            'ttl' => $validatedTtl], $warnings);
     }
 }

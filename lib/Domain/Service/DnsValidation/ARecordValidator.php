@@ -28,6 +28,12 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * Validator for A DNS records
  *
+ * Validates A records according to:
+ * - RFC 1035: Domain Names - Implementation and Specification
+ * - RFC 791: Internet Protocol
+ *
+ * A records map domain names to IPv4 addresses.
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team

@@ -61,6 +61,18 @@ class IPSECKEYRecordValidatorTest extends TestCase
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check for security warnings per RFC 4025
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        // Check for the DNSSEC security warning
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('DNSSEC', $warningText);
+        $this->assertStringContainsString('RFC 4025', $warningText);
     }
 
     public function testValidateWithValidDataIPv4Gateway()
@@ -121,6 +133,44 @@ class IPSECKEYRecordValidatorTest extends TestCase
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check for domain name gateway specific warnings
+        $this->assertTrue($result->hasWarnings());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('domain name gateways', $warningText);
+        $this->assertStringContainsString('DNSSEC', $warningText);
+    }
+
+    public function testValidateWithInvalidDomainNameGateway()
+    {
+        // Create a mock HostnameValidator that fails for the domain gateway
+        $hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+        $hostnameValidatorMock->method('validate')
+            ->willReturnCallback(function ($hostname, $wildcard) {
+                // Fail for the gateway domain name validation but pass for the record name
+                if ($hostname === 'invalid-gateway!.com') {
+                    return ValidationResult::failure('Invalid domain name');
+                }
+                return ValidationResult::success(['hostname' => $hostname]);
+            });
+
+        // Inject the mock into the validator instance
+        $reflectionProperty = new \ReflectionProperty(IPSECKEYRecordValidator::class, 'hostnameValidator');
+        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setValue($this->validator, $hostnameValidatorMock);
+
+        $content = '10 3 2 invalid-gateway!.com AQNRU3mG7TVTO2BkR47usntb102uFJtugbo6BSGvgqt4AQ==';
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('gateway must be a valid domain name', $result->getFirstError());
     }
 
     public function testValidateWithInvalidPrecedence()
@@ -258,7 +308,7 @@ class IPSECKEYRecordValidatorTest extends TestCase
         $reflectionProperty->setAccessible(true);
         $reflectionProperty->setValue($this->validator, $hostnameValidatorMock);
 
-        // In IPSECKEY records, the validator requires 5 fields minimum according to isValidIPSECKEYContent
+        // In IPSECKEY records, the validator requires 5 fields minimum according to validateIPSECKEYContent
         // So we must include a key field even with algorithm 0
         $content = '10 1 0 192.0.2.1 EMPTY_KEY';
         $name = 'host.example.com';
@@ -274,6 +324,51 @@ class IPSECKEYRecordValidatorTest extends TestCase
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check for algorithm-specific warning about no key
+        $this->assertTrue($result->hasWarnings());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('algorithm is 0', $warningText);
+    }
+
+    public function testValidateWithRSAAlgorithmSpecificWarning()
+    {
+        // Test with RSA key (algorithm 1)
+        $content = '10 1 1 192.0.2.1 AQNRU3mG7TVTO2BkR47usntb102uFJtugbo6BSGvgqt4AQ=='; // Algorithm 1 = RSA
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check for RSA-specific warning per RFC 3110
+        $this->assertTrue($result->hasWarnings());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('RSA keys', $warningText);
+        $this->assertStringContainsString('RFC 3110', $warningText);
+    }
+
+    public function testValidateWithInvalidBase64PublicKey()
+    {
+        // Test with invalid Base64 encoding in public key
+        $content = '10 1 1 192.0.2.1 INVALID_BASE64!@#'; // Invalid Base64 encoding
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Base64', $result->getFirstError());
     }
 
     public function testValidateWithInvalidNoGatewayValue()

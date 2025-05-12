@@ -28,8 +28,32 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * NSEC3PARAM record validator
  *
- * NSEC3PARAM records provide the parameters for authenticated denial of existence using NSEC3.
+ * Validates NSEC3PARAM (NSEC3 Parameters) records according to:
+ * - RFC 5155: DNS Security (DNSSEC) Hashed Authenticated Denial of Existence
+ * - RFC 9276: Guidance for NSEC3 Parameter Settings (Best Current Practice)
+ * - RFC 9077: NSEC and NSEC3: TTLs and Aggressive Use
+ *
+ * NSEC3PARAM records provide the parameters needed by authoritative servers to calculate
+ * hashed owner names for NSEC3 records. The NSEC3PARAM RR is used by servers to select
+ * the appropriate NSEC3 records for negative responses.
+ *
  * Format: [hash-algorithm] [flags] [iterations] [salt]
+ * Example: 1 0 0 -
+ *
+ * Field descriptions:
+ * 1. Hash Algorithm: The algorithm used for hashing (1 = SHA-1, the only defined value)
+ * 2. Flags: The Opt-Out flag (bit 0) indicates whether NSEC3 covers unsigned delegations
+ * 3. Iterations: Number of additional hash iterations (RFC 9276 recommends 0)
+ * 4. Salt: Random value to defend against pre-calculated attacks (RFC 9276 recommends "-")
+ *
+ * Security considerations:
+ * - NSEC3PARAM records MUST only be present at the zone apex
+ * - Unlike NSEC3 records, NSEC3PARAM records do not include the "next hashed owner name" or "type bit maps"
+ * - RFC 9276 recommends using 0 iterations as additional iterations provide minimal security benefit
+ * - RFC 9276 recommends not using a salt (indicated by "-") to simplify operation
+ * - Validating resolvers may reject zones with high iteration values (>100)
+ *
+ * Type code: 51
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -50,7 +74,7 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
     }
 
     /**
-     * Validate an NSEC3PARAM record
+     * Validate an NSEC3PARAM record according to RFC 5155 and RFC 9276
      *
      * @param string $content The content part of the record
      * @param string $name The name part of the record
@@ -62,6 +86,8 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $warnings = [];
+
         // Validate hostname/name
         $hostnameResult = $this->hostnameValidator->validate($name, true);
         if (!$hostnameResult->isValid()) {
@@ -70,6 +96,13 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
 
         $hostnameData = $hostnameResult->getData();
         $name = $hostnameData['hostname'];
+
+        // Check if name is at zone apex (should be root domain, not subdomain)
+        // Simple check: a subdomain will have at least one period before the TLD
+        $parts = explode('.', $name);
+        if (count($parts) > 2) {
+            $warnings[] = _('NSEC3PARAM records MUST only be present at the zone apex (root domain, not subdomain).');
+        }
 
         // Validate content - ensure it's not empty
         if (empty(trim($content))) {
@@ -87,6 +120,14 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
             return $contentResult;
         }
 
+        // Get the parsed content data
+        $contentData = $contentResult->getData();
+
+        // Collect warnings from content validation
+        if ($contentResult->hasWarnings()) {
+            $warnings = array_merge($warnings, $contentResult->getWarnings());
+        }
+
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
         if (!$ttlResult->isValid()) {
@@ -98,16 +139,27 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
         // NSEC3PARAM records don't use priority, so it's always 0
         $priority = 0;
 
-        return ValidationResult::success([
-            'content' => $content,
+        // RFC recommendations for TTL
+        $warnings[] = _('According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same TTL as the SOA minimum TTL field.');
+
+        // General NSEC3PARAM warnings
+        $warnings[] = _('NSEC3PARAM records are part of DNSSEC and should only be managed alongside other DNSSEC records (DNSKEY, RRSIG, etc.).');
+        $warnings[] = _('Manually editing NSEC3PARAM records is not recommended as they are typically generated automatically by DNSSEC-aware nameservers.');
+        $warnings[] = _('NSEC3PARAM records indicate to authoritative servers which parameters to use for NSEC3-based authenticated denial of existence.');
+        $warnings[] = _('When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-generated with the same parameters.');
+
+        return ValidationResult::success(['content' => $content,
             'name' => $name,
             'ttl' => $validatedTtl,
-            'priority' => $priority
-        ]);
+            'priority' => $priority,
+            'algorithm' => $contentData['algorithm'],
+            'flags' => $contentData['flags'],
+            'iterations' => $contentData['iterations'],
+            'salt' => $contentData['salt']], $warnings);
     }
 
     /**
-     * Validate NSEC3PARAM record content format
+     * Validate NSEC3PARAM record content format according to RFC 5155 and RFC 9276
      *
      * NSEC3PARAM content should have proper format with required fields
      *
@@ -116,6 +168,7 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
      */
     private function validateNsec3ParamContent(string $content): ValidationResult
     {
+        $warnings = [];
         $parts = preg_split('/\s+/', trim($content));
 
         // NSEC3PARAM record should have exactly 4 parts:
@@ -140,10 +193,29 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('NSEC3PARAM flags must be between 0 and 255.'));
         }
 
-        // Validate iterations (0-2500, RFC recommends max of 150)
+        // Flag value explanation
+        if ($flags === 1) {
+            $warnings[] = _('Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover unsigned delegations.') . ' ' .
+                _('RFC 9276 recommends using Opt-Out only for very large and sparsely signed zones where the majority of records are insecure delegations.');
+        } elseif ($flags > 1) {
+            $warnings[] = _('Flags values greater than 1 are reserved for future use. Current implementations may not handle these values correctly.');
+        }
+
+        // Validate iterations (0-2500, RFC 9276 recommends 0)
         $iterations = (int)$parts[2];
         if ($iterations < 0 || $iterations > 2500) {
             return ValidationResult::failure(_('NSEC3PARAM iterations must be between 0 and 2500.'));
+        }
+
+        // Iteration value warnings according to RFC 9276
+        if ($iterations > 0) {
+            $warnings[] = _('RFC 9276 recommends using 0 iterations. Additional iterations add computational cost without enhancing security.');
+
+            if ($iterations > 100) {
+                $warnings[] = _('High iteration values (>100) may cause validating resolvers to reject your zones. RFC 9276 STRONGLY recommends using 0 iterations.');
+            } elseif ($iterations > 10) {
+                $warnings[] = _('Iteration values >10 create unnecessary computational load without security benefits. RFC 9276 recommends using 0 iterations.');
+            }
         }
 
         // Validate salt (- for empty or hex value)
@@ -152,11 +224,18 @@ class NSEC3PARAMRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('NSEC3PARAM salt must be - (for empty) or a hexadecimal value.'));
         }
 
-        return ValidationResult::success([
-            'algorithm' => $algorithm,
+        // Salt warnings according to RFC 9276
+        if ($salt !== '-') {
+            $warnings[] = _('RFC 9276 recommends NOT using a salt (indicated by "-") to simplify operation without reducing security.');
+
+            if (strlen($salt) > 16) {
+                $warnings[] = _('Long salts provide no additional security benefit. Consider using a shorter salt or no salt (-).');
+            }
+        }
+
+        return ValidationResult::success(['algorithm' => $algorithm,
             'flags' => $flags,
             'iterations' => $iterations,
-            'salt' => $salt
-        ]);
+            'salt' => $salt], $warnings);
     }
 }

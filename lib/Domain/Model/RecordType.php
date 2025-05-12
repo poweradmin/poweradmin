@@ -47,6 +47,7 @@ class RecordType
     public const DNAME = 'DNAME';
     public const DS = 'DS';
     public const DLV = 'DLV';
+    public const DMARC = 'DMARC';
     public const EUI48 = 'EUI48';
     public const EUI64 = 'EUI64';
     public const HINFO = 'HINFO';
@@ -131,6 +132,7 @@ class RecordType
         self::CSYNC,
         self::DHCID,
         self::DLV,
+        self::DMARC,
         self::DNAME,
         self::EUI48,
         self::EUI64,

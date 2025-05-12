@@ -36,41 +36,64 @@ final class ValidationResult
 {
     private bool $isValid;
     private array $errors = [];
+    private array $warnings = [];
     private $data;
 
     /**
      * Private constructor - use factory methods
      */
-    private function __construct(bool $isValid, array $errors = [], $data = null)
+    private function __construct(bool $isValid, array $errors = [], array $warnings = [], $data = null)
     {
         $this->isValid = $isValid;
         $this->errors = $errors;
+        $this->warnings = $warnings;
         $this->data = $data;
     }
 
     /**
      * Create a successful validation result
+     *
+     * @param mixed $data The validated data
+     * @param array $warnings Optional warning messages for valid data
      */
-    public static function success($data): self
+    public static function success($data, array $warnings = []): self
     {
-        return new self(true, [], $data);
+        // Extract warnings from data if in array format for backward compatibility
+        $extractedWarnings = [];
+        if (is_array($data) && isset($data['warnings']) && is_array($data['warnings'])) {
+            $extractedWarnings = $data['warnings'];
+
+            // For backward compatibility, don't remove warnings from data struct
+            // Many validators expect ['warnings'] to stay in the data
+        }
+
+        // Merge explicitly provided warnings with extracted ones
+        $allWarnings = array_merge($extractedWarnings, $warnings);
+
+        return new self(true, [], $allWarnings, $data);
     }
 
     /**
      * Create a failed validation result
+     *
+     * @param string|array $errors Error message or array of error messages
+     * @param array $warnings Optional warning messages for invalid data
      */
-    public static function failure($errors): self
+    public static function failure($errors, array $warnings = []): self
     {
         $errorArray = is_array($errors) ? $errors : [$errors];
-        return new self(false, $errorArray);
+        return new self(false, $errorArray, $warnings);
     }
 
     /**
      * Create a failed validation result with multiple errors
+     *
+     * @param array $errors Array of error messages
+     * @param array $warnings Optional warning messages for invalid data
      */
-    public static function errors(array $errors): self
+    public static function errors(array $errors, array $warnings = []): self
     {
-        return new self(false, $errors);
+        return new self(false, $errors, $warnings);
     }
 
     /**
@@ -108,5 +131,59 @@ final class ValidationResult
             throw new RuntimeException('Cannot get data from failed validation result');
         }
         return $this->data;
+    }
+
+    /**
+     * Check if the validation result has warnings
+     *
+     * @return bool True if the result has warnings
+     */
+    public function hasWarnings(): bool
+    {
+        return !empty($this->warnings);
+    }
+
+    /**
+     * Get warnings from the validation result
+     *
+     * @return array The warnings array or empty array if none exist
+     */
+    public function getWarnings(): array
+    {
+        return $this->warnings;
+    }
+
+    /**
+     * Get first warning message or empty string if no warnings
+     *
+     * @return string The first warning message
+     */
+    public function getFirstWarning(): string
+    {
+        return count($this->warnings) > 0 ? $this->warnings[0] : '';
+    }
+
+    /**
+     * Add a warning to the validation result
+     *
+     * @param string $warning Warning message to add
+     * @return self This ValidationResult instance for method chaining
+     */
+    public function addWarning(string $warning): self
+    {
+        $this->warnings[] = $warning;
+        return $this;
+    }
+
+    /**
+     * Add multiple warnings to the validation result
+     *
+     * @param array $warnings Array of warning messages to add
+     * @return self This ValidationResult instance for method chaining
+     */
+    public function addWarnings(array $warnings): self
+    {
+        $this->warnings = array_merge($this->warnings, $warnings);
+        return $this;
     }
 }

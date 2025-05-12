@@ -52,9 +52,14 @@ class MRRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $this->assertEquals('new-mailbox.example.com', $data['content']);
+        $this->assertEquals('new-mailbox.example.com.', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
+
+        // Check that warnings are present
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
     }
 
     /**
@@ -123,8 +128,45 @@ class MRRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $this->assertEquals('new-mailbox.example.com', $data['content']);
+        $this->assertEquals('new-mailbox.example.com.', $data['content']);
         $this->assertEquals(86400, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
+
+        // Check that warnings are present
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+    }
+
+    /**
+     * Test validation for specific warnings
+     */
+    public function testValidateWithSpecificWarnings(): void
+    {
+        $result = $this->validator->validate(
+            'old-mailbox.example.com',  // same mailbox as name to trigger warning
+            'old-mailbox.example.com',  // name
+            0,                          // prio
+            3600,                       // ttl
+            86400                       // defaultTTL
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check that warnings are present
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+
+        // Combine all warnings to a single string for easier testing
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+
+        // Verify specific warnings
+        $this->assertStringContainsString('same as the old mailbox', $warningText);
+        $this->assertStringContainsString('EXPERIMENTAL', $warningText);
+        $this->assertStringContainsString('RFC 1035', $warningText);
+        $this->assertStringContainsString('rarely used', $warningText);
     }
 }

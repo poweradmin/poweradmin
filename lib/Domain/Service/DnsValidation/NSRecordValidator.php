@@ -28,6 +28,16 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * NS Record Validator
  *
+ * Validates NS (Name Server) records according to:
+ * - RFC 1034: Domain Names - Concepts and Facilities (Sections 3.6 and 4.2.1)
+ * - RFC 1035: Domain Names - Implementation and Specification (Section 3.3.11)
+ * - RFC 2181: Clarifications to the DNS Specification (Section 10.3)
+ *
+ * NS records delegate a domain or subdomain to a set of name servers.
+ * They identify the authoritative DNS servers for a zone.
+ * According to RFCs, NS record targets must be hostnames, not IP addresses,
+ * and cannot point to a CNAME record.
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team

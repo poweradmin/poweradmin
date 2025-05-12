@@ -27,7 +27,28 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Validator for APL (Address Prefix List) DNS records
- * RFC 3123: https://tools.ietf.org/html/rfc3123
+ *
+ * Validates APL records according to RFC 3123:
+ * https://tools.ietf.org/html/rfc3123
+ *
+ * APL RR type has a value of 42 and is used for lists of address prefixes, primarily
+ * for network access control or description purposes.
+ *
+ * Format: [!]afi:address/prefix [!]afi:address/prefix ...
+ *
+ * Where:
+ * - ! (optional): Negation symbol
+ * - afi: Address Family Identifier (1 for IPv4, 2 for IPv6)
+ * - address: Network address in appropriate format (IPv4 dotted quad or IPv6 notation)
+ * - prefix: Prefix length (0-32 for IPv4, 0-128 for IPv6)
+ *
+ * Multiple address prefix items can be listed, separated by whitespace.
+ * An empty APL RR is valid and represents an empty list.
+ *
+ * Examples:
+ * - "1:192.0.2.0/24" (IPv4 subnet)
+ * - "2:2001:db8::/32" (IPv6 subnet)
+ * - "!1:192.0.2.0/24 2:2001:db8::/32" (Negated IPv4 subnet plus IPv6 subnet)
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -67,6 +88,35 @@ class APLRecordValidator implements DnsRecordValidatorInterface
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $warnings = [];
+
+        // Skip specific warning for empty APL record
+        if (empty(trim($content))) {
+            $warnings[] = _('Empty APL record represents an empty list of address prefixes.');
+        }
+
+        // Check for specific warning for trailing zeros in IPv4 address
+        if (preg_match('/^1:(\d+\.\d+\.\d+\.\d+)\/(\d+)$/', $content, $matches)) {
+            $address = $matches[1];
+            $prefix = (int)$matches[2];
+
+            // Check for trailing zeros in the IP that should be trimmed
+            $parts = explode('.', $address);
+            $significantOctets = ceil($prefix / 8);
+            $trailingZeros = false;
+
+            for ($i = (int)$significantOctets; $i < 4; $i++) {
+                if (isset($parts[$i]) && $parts[$i] !== '0') {
+                    $trailingZeros = true;
+                    break;
+                }
+            }
+
+            if ($trailingZeros) {
+                $warnings[] = _('RFC 3123 recommends that trailing zero octets should not be present in APL address parts.');
+            }
+        }
+
         // 1. Validate hostname
         $hostnameResult = $this->hostnameValidator->validate($name, true);
         if (!$hostnameResult->isValid()) {
@@ -79,6 +129,14 @@ class APLRecordValidator implements DnsRecordValidatorInterface
         $contentResult = $this->validateAPLContent($content);
         if (!$contentResult->isValid()) {
             return $contentResult;
+        }
+
+        // Check for warnings from content validation
+        if ($contentResult->isValid() && is_array($contentResult->getData())) {
+            $contentData = $contentResult->getData();
+            if (isset($contentData['warnings'])) {
+                $warnings = array_merge($warnings, $contentData['warnings']);
+            }
         }
 
         // 3. Validate TTL
@@ -96,12 +154,20 @@ class APLRecordValidator implements DnsRecordValidatorInterface
         }
         $validatedPrio = $prioResult->getData();
 
-        return ValidationResult::success([
+        // Add security warning if this looks like an access control application
+        if (strpos(strtolower($name), '_axfr') !== false || strpos(strtolower($name), 'access') !== false) {
+            $warnings[] = _('RFC 3123 notes security considerations when using APL records for access control lists.');
+        }
+
+        $result = [
             'content' => $content,
             'name' => $name,
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
-        ]);
+        ];
+
+        // Return with explicit warnings parameter
+        return ValidationResult::success($result, $warnings);
     }
 
     /**
@@ -131,38 +197,58 @@ class APLRecordValidator implements DnsRecordValidatorInterface
      * Validate APL content format
      * Examples: "1:192.0.2.0/24" or "2:2001:db8::/32" or "1:192.0.2.0/24 !2:2001:db8::/32"
      *
+     * According to RFC 3123, an empty APL RR is valid and represents an empty list.
+     *
      * @param string $content The APL content to validate
      * @return ValidationResult ValidationResult containing validation status or error message
      */
     private function validateAPLContent(string $content): ValidationResult
     {
-        // Handle empty content
+        // Handle empty content - RFC 3123 permits empty APL RR
         if (empty(trim($content))) {
-            return ValidationResult::failure(_('APL record content cannot be empty.'));
+            // Return success with a warning about empty APL RR
+            return ValidationResult::success(
+                [],
+                [_('Empty APL record represents an empty list of address prefixes.')]
+            );
         }
 
         // Split content by whitespace to handle multiple address prefix elements
         $prefixElements = preg_split('/\s+/', trim($content));
+        $warnings = [];
 
         foreach ($prefixElements as $element) {
             $elementResult = $this->validateAPLElement($element);
             if (!$elementResult->isValid()) {
                 return $elementResult;
             }
+
+            // Check if there are any warnings from element validation
+            if ($elementResult->isValid() && $elementResult->hasWarnings()) {
+                $warnings = array_merge($warnings, $elementResult->getWarnings());
+            }
         }
 
-        return ValidationResult::success(true);
+        $result = ['isValid' => true];
+
+        return ValidationResult::success($result, $warnings);
     }
 
     /**
      * Validate a single APL element
      * Format: [!]afi:address/prefix
      *
+     * According to RFC 3123:
+     * - Trailing zero octets in the address part are ignored and SHOULD NOT be present in an APL RR RDATA element
+     * - The address part MUST end on an octet boundary
+     *
      * @param string $element The APL element to validate
      * @return ValidationResult ValidationResult containing validation status or error message
      */
     private function validateAPLElement(string $element): ValidationResult
     {
+        $warnings = [];
+
         // Check if element starts with negation
         $negation = false;
         if (str_starts_with($element, '!')) {
@@ -197,6 +283,22 @@ class APLRecordValidator implements DnsRecordValidatorInterface
             if ($prefix < 0 || $prefix > 32) {
                 return ValidationResult::failure(_('IPv4 prefix must be between 0 and 32.'));
             }
+
+            // Check for trailing zeros in the IP that should be trimmed
+            $parts = explode('.', $address);
+            $significantOctets = ceil($prefix / 8);
+            $trailingZeros = false;
+
+            for ($i = (int)$significantOctets; $i < 4; $i++) {
+                if (isset($parts[$i]) && $parts[$i] !== '0') {
+                    $trailingZeros = true;
+                    break;
+                }
+            }
+
+            if ($trailingZeros) {
+                $warnings[] = _('RFC 3123 recommends that trailing zero octets should not be present in APL address parts.');
+            }
         } else {
             // IPv6
             $ipv6Result = $this->ipValidator->validateIPv6($address);
@@ -208,8 +310,18 @@ class APLRecordValidator implements DnsRecordValidatorInterface
             if ($prefix < 0 || $prefix > 128) {
                 return ValidationResult::failure(_('IPv6 prefix must be between 0 and 128.'));
             }
+
+            // Note: Checking for trailing zeros in IPv6 is complex and omitted here
+            // But similar logic could be applied for IPv6 addresses
         }
 
-        return ValidationResult::success(true);
+        // For security purposes, warn users about using APL records for access control
+        if (preg_match('/_axfr/i', $this->config->get('dns', 'domain', '')) && $afi === 1) {
+            $warnings[] = _('Using APL records for AXFR access control should be combined with other security measures as noted in RFC 3123.');
+        }
+
+        $result = ['isValid' => true];
+
+        return ValidationResult::success($result, $warnings);
     }
 }

@@ -111,4 +111,220 @@ class ValidationResultTest extends TestCase
         $this->assertFalse($invalidResult->isValid());
         $this->assertEquals(['Invalid IP address format'], $invalidResult->getErrors());
     }
+
+    /**
+     * Test success result with warnings (legacy approach with warnings in data)
+     */
+    public function testSuccessResultWithWarningsLegacy(): void
+    {
+        $data = [
+            'ttl' => 300,
+            'warnings' => ['TTL value is below recommended minimum']
+        ];
+        $result = ValidationResult::success($data);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $this->assertEquals(['TTL value is below recommended minimum'], $result->getWarnings());
+        // Data should keep warnings for backward compatibility
+        $this->assertSame($data, $result->getData());
+    }
+
+    /**
+     * Test success result with explicit warnings parameter
+     */
+    public function testSuccessResultWithExplicitWarnings(): void
+    {
+        $data = ['ttl' => 300];
+        $warnings = ['TTL value is below recommended minimum'];
+        $result = ValidationResult::success($data, $warnings);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $this->assertEquals($warnings, $result->getWarnings());
+        $this->assertEquals($data, $result->getData());
+    }
+
+    /**
+     * Test success result without warnings
+     */
+    public function testSuccessResultWithoutWarnings(): void
+    {
+        $data = ['ttl' => 3600]; // No warnings
+        $result = ValidationResult::success($data);
+
+        $this->assertTrue($result->isValid());
+        $this->assertFalse($result->hasWarnings());
+        $this->assertEmpty($result->getWarnings());
+        $this->assertSame($data, $result->getData());
+    }
+
+    /**
+     * Test getting warnings from a failed validation
+     */
+    public function testGetWarningsFromFailedValidation(): void
+    {
+        $result = ValidationResult::failure('Error');
+
+        $this->assertFalse($result->hasWarnings());
+        $this->assertEmpty($result->getWarnings());
+    }
+
+    /**
+     * Test failure result with warnings
+     */
+    public function testFailureResultWithWarnings(): void
+    {
+        $error = 'Invalid hostname';
+        $warnings = ['Input might be missing domain suffix'];
+        $result = ValidationResult::failure($error, $warnings);
+
+        $this->assertFalse($result->isValid());
+        $this->assertEquals([$error], $result->getErrors());
+        $this->assertTrue($result->hasWarnings());
+        $this->assertEquals($warnings, $result->getWarnings());
+    }
+
+    /**
+     * Test validation result with multiple warnings
+     */
+    public function testValidationResultWithMultipleWarnings(): void
+    {
+        $warnings = [
+            'TTL value is below recommended minimum',
+            'Non-standard port for HTTP service'
+        ];
+        $data = [
+            'content' => '10 20 8080 server.example.com',
+            'warnings' => $warnings
+        ];
+        $result = ValidationResult::success($data);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $this->assertEquals($warnings, $result->getWarnings());
+    }
+
+    /**
+     * Test full integration with warnings between validators and service
+     */
+    public function testValidationIntegrationWithWarnings(): void
+    {
+        // Setup: Create a validator that validates TTL values
+        $ttlValidator = new class {
+            public function validate(mixed $ttl, int $defaultTtl): ValidationResult
+            {
+                // Basic validation
+                if (!is_numeric($ttl)) {
+                    return ValidationResult::failure('TTL must be numeric');
+                }
+
+                $ttlValue = (int)$ttl;
+
+                if ($ttlValue < 0 || $ttlValue > 2147483647) {
+                    return ValidationResult::failure('TTL must be between 0 and 2147483647');
+                }
+
+                $result = ['ttl' => $ttlValue];
+                $warnings = [];
+
+                // Add warnings for values outside recommended ranges
+                if ($ttlValue < 300) {
+                    $warnings[] = 'TTL value is below recommended minimum of 300 seconds';
+                }
+
+                if ($ttlValue > 604800) {
+                    $warnings[] = 'TTL value is above recommended maximum of 604800 seconds (1 week)';
+                }
+
+                if (!empty($warnings)) {
+                    $result['warnings'] = $warnings;
+                }
+
+                return ValidationResult::success($result);
+            }
+        };
+
+        // Test valid TTL but with warning (too low)
+        $lowTtl = 60;
+        $lowTtlResult = $ttlValidator->validate($lowTtl, 3600);
+        $this->assertTrue($lowTtlResult->isValid());
+        $this->assertTrue($lowTtlResult->hasWarnings());
+        $this->assertStringContainsString('below recommended minimum', $lowTtlResult->getWarnings()[0]);
+
+        // Test valid TTL with no warnings (within recommended range)
+        $goodTtl = 3600;
+        $goodTtlResult = $ttlValidator->validate($goodTtl, 3600);
+        $this->assertTrue($goodTtlResult->isValid());
+        $this->assertFalse($goodTtlResult->hasWarnings());
+
+        // Test invalid TTL (should have no warnings)
+        $invalidTtl = 'not-numeric';
+        $invalidTtlResult = $ttlValidator->validate($invalidTtl, 3600);
+        $this->assertFalse($invalidTtlResult->isValid());
+        $this->assertFalse($invalidTtlResult->hasWarnings());
+    }
+
+    /**
+     * Test adding warnings using the addWarning method
+     */
+    public function testAddWarning(): void
+    {
+        $data = ['ttl' => 3600];
+        $result = ValidationResult::success($data);
+        $this->assertFalse($result->hasWarnings());
+
+        // Add a warning
+        $result->addWarning('Example warning message');
+        $this->assertTrue($result->hasWarnings());
+        $this->assertEquals(['Example warning message'], $result->getWarnings());
+        $this->assertEquals('Example warning message', $result->getFirstWarning());
+
+        // Add another warning
+        $result->addWarning('Second warning message');
+        $this->assertEquals([
+            'Example warning message',
+            'Second warning message'
+        ], $result->getWarnings());
+    }
+
+    /**
+     * Test adding multiple warnings using the addWarnings method
+     */
+    public function testAddWarnings(): void
+    {
+        $result = ValidationResult::failure('Error message');
+        $this->assertFalse($result->hasWarnings());
+
+        // Add multiple warnings
+        $warningsToAdd = ['Warning 1', 'Warning 2', 'Warning 3'];
+        $result->addWarnings($warningsToAdd);
+
+        $this->assertTrue($result->hasWarnings());
+        $this->assertEquals($warningsToAdd, $result->getWarnings());
+        $this->assertEquals('Warning 1', $result->getFirstWarning());
+    }
+
+    /**
+     * Test getFirstWarning method when no warnings exist
+     */
+    public function testGetFirstWarningWithNoWarnings(): void
+    {
+        $result = ValidationResult::success(true);
+        $this->assertEquals('', $result->getFirstWarning());
+    }
+
+    /**
+     * Test special case - warnings only data
+     */
+    public function testWarningsOnlyData(): void
+    {
+        $data = ['warnings' => ['Just a warning']];
+        $result = ValidationResult::success($data);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $this->assertEquals(['Just a warning'], $result->getWarnings());
+        $this->assertSame($data, $result->getData());
+    }
 }

@@ -38,12 +38,12 @@ class NIDRecordValidatorTest extends TestCase
     }
 
     /**
-     * Test validation with valid NID value and preference
+     * Test validation with valid NID value and preference in plain hex format
      */
     public function testValidateWithValidNIDValue(): void
     {
         $result = $this->validator->validate(
-            '1234567890ABCDEF',  // content (16 hex chars)
+            '1234567890ABCDEF',  // content (16 hex chars) - using plain hex format
             'nid.example.com',   // name
             20,                  // preference
             3600,                // ttl
@@ -52,9 +52,53 @@ class NIDRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $this->assertEquals('1234567890ABCDEF', $data['content']);
+        // The content should be converted to RFC 6742 presentation format with colons
+        $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
         $this->assertEquals(20, $data['priority']);
+        $this->assertTrue($result->hasWarnings());
+        // Should have warning about plain format vs. RFC presentation format
+        $foundWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'presentation format') !== false) {
+                $foundWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundWarning, 'Warning about presentation format not found');
+
+        // Should have the raw NodeID for reference
+        $this->assertEquals('1234567890ABCDEF', $data['raw_node_id']);
+    }
+
+    /**
+     * Test validation with valid NID value in RFC 6742 presentation format
+     */
+    public function testValidateWithRFC6742PresentationFormat(): void
+    {
+        $result = $this->validator->validate(
+            '1234:5678:90AB:CDEF',  // content in RFC 6742 presentation format
+            'nid.example.com',      // name
+            20,                     // preference
+            3600,                   // ttl
+            86400                   // defaultTTL
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
+        $this->assertEquals(3600, $data['ttl']);
+        $this->assertEquals(20, $data['priority']);
+
+        // No warning about presentation format since it's already in the correct format
+        $foundWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'presentation format') !== false) {
+                $foundWarning = true;
+                break;
+            }
+        }
+        $this->assertFalse($foundWarning, 'Should not have warning about presentation format');
     }
 
     /**
@@ -140,7 +184,7 @@ class NIDRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $this->assertEquals('1234567890ABCDEF', $data['content']);
+        $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
         $this->assertEquals(10, $data['priority']); // Default preference
     }
@@ -177,8 +221,104 @@ class NIDRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $this->assertEquals('1234567890ABCDEF', $data['content']);
+        $this->assertEquals('1234:5678:90AB:CDEF', $data['content']);
         $this->assertEquals(86400, $data['ttl']);
         $this->assertEquals(20, $data['priority']);
+    }
+
+    /**
+     * Test validation of NodeID with invalid Group bit (should be 0)
+     */
+    public function testValidateWithInvalidGroupBit(): void
+    {
+        // 0100007890ABCDEF has the Group bit (LSB of first byte) set to 1,
+        // which is invalid according to RFC 6742
+        $result = $this->validator->validate(
+            '0100007890ABCDEF',  // content with invalid Group bit
+            'nid.example.com',   // name
+            20,                  // preference
+            3600,                // ttl
+            86400                // defaultTTL
+        );
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Group bit', $result->getFirstError());
+    }
+
+    /**
+     * Test validation with zero-padded groups in presentation format
+     */
+    public function testValidateWithZeroPaddedGroups(): void
+    {
+        $result = $this->validator->validate(
+            '1:2:3:4',           // short form that needs zero-padding
+            'nid.example.com',   // name
+            20,                  // preference
+            3600,                // ttl
+            86400                // defaultTTL
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        // Should be formatted with proper zero-padding
+        $this->assertEquals('0001:0002:0003:0004', $data['content']);
+    }
+
+    /**
+     * Test validation with universal/local bit set to universal (0)
+     */
+    public function testValidateWithUniversalBit(): void
+    {
+        // Set the universal/local bit to 0 (universal)
+        // The u/l bit is the second bit of the first byte, so first byte = 00000000
+        $result = $this->validator->validate(
+            '0000567890ABCDEF',  // content with u/l bit = 0
+            'nid.example.com',   // name
+            20,                  // preference
+            3600,                // ttl
+            86400                // defaultTTL
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Should have a warning about the universal bit
+        $foundWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'universal') !== false) {
+                $foundWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundWarning, 'Warning about universal bit not found');
+    }
+
+    /**
+     * Test validation with universal/local bit set to local (1)
+     */
+    public function testValidateWithLocalBit(): void
+    {
+        // Set the universal/local bit to 1 (local)
+        // The u/l bit is the second bit of the first byte, so first byte = 00000010
+        $result = $this->validator->validate(
+            '0200567890ABCDEF',  // content with u/l bit = 1
+            'nid.example.com',   // name
+            20,                  // preference
+            3600,                // ttl
+            86400                // defaultTTL
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Should have a warning about the local bit
+        $foundWarning = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'local') !== false) {
+                $foundWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundWarning, 'Warning about local bit not found');
     }
 }

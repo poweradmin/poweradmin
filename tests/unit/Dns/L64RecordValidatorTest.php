@@ -59,6 +59,22 @@ class L64RecordValidatorTest extends TestCase
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']); // Using provided prio value
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check that warnings are present
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $this->assertNotEmpty($warnings);
+        $this->assertGreaterThan(0, count($warnings));
+
+        // Check for expected warning about experimental status
+        $foundExperimentalWarning = false;
+        foreach ($warnings as $warning) {
+            if (strpos($warning, 'experimental protocol') !== false) {
+                $foundExperimentalWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundExperimentalWarning, 'Warning about experimental status not found');
     }
 
     public function testValidateWithProvidedPriority()
@@ -234,6 +250,18 @@ class L64RecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
+
+        // Check for TTL warning for mobile nodes
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $foundTtlWarning = false;
+        foreach ($warnings as $warning) {
+            if (strpos($warning, 'very low TTL values') !== false) {
+                $foundTtlWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundTtlWarning, 'Warning about TTL values for mobile nodes not found');
     }
 
     public function testValidateWithNegativePreference()
@@ -248,5 +276,71 @@ class L64RecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('preference must be a number between 0 and 65535', $result->getFirstError());
+    }
+
+    public function testValidateWithWildcardName()
+    {
+        $content = '10 2001:0db8:1140:1000';
+        $name = '*.example.com'; // Wildcard DNS entry
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        // Check for wildcard warning
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $foundWildcardWarning = false;
+        foreach ($warnings as $warning) {
+            if (strpos($warning, 'wildcard DNS entries') !== false) {
+                $foundWildcardWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundWildcardWarning, 'Warning about wildcard DNS entries not found');
+    }
+
+    public function testValidateWithAllZerosLocator()
+    {
+        $content = '10 0000:0000:0000:0000'; // All zeros
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('unspecified', $result->getFirstError());
+    }
+
+    public function testValidateWithAllOnesLocator()
+    {
+        $content = '10 ffff:ffff:ffff:ffff'; // All ones
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('all-ones', $result->getFirstError());
+    }
+
+    public function testValidateWithSegmentTooLong()
+    {
+        $content = '10 2001:0db8:11400:1000'; // Third segment has 5 hex digits
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('hexadecimal IPv6 address segment', $result->getFirstError());
     }
 }

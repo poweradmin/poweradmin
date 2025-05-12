@@ -28,6 +28,11 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Tests for the APLRecordValidator
+ *
+ * These tests verify compliance with RFC 3123 which defines the APL (Address Prefix List)
+ * Resource Record type for DNS.
+ *
+ * @see https://tools.ietf.org/html/rfc3123
  */
 class APLRecordValidatorTest extends TestCase
 {
@@ -217,8 +222,12 @@ class APLRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('empty', $result->getFirstError());
+        // According to RFC 3123, empty APL RR is valid and represents an empty list
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $this->assertNotEmpty($warnings);
+        $this->assertStringContainsString('empty list', $warnings[0]);
     }
 
     public function testValidateWithInvalidTTL()
@@ -277,5 +286,65 @@ class APLRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
+    }
+
+    /**
+     * Test validation with trailing zeros in IPv4 address (should warn per RFC 3123)
+     */
+    public function testValidateWithTrailingZerosWarning()
+    {
+        $content = '1:192.168.1.1/16'; // The 1.1 part is unnecessary as prefix is /16
+        $name = 'apl.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $this->assertNotEmpty($warnings);
+        $this->assertStringContainsString('trailing zero', $warnings[0]);
+    }
+
+    /**
+     * Test validation for access control usage warnings
+     */
+    public function testValidateWithAccessControlWarning()
+    {
+        $content = '1:192.168.1.0/24';
+        $name = '_axfr.example.com'; // Typically used for zone transfer restrictions
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $this->assertNotEmpty($warnings);
+        $this->assertStringContainsString('security', $warnings[0]);
+    }
+
+    /**
+     * Test with RFC 3123 example value
+     */
+    public function testValidateWithRfcExample()
+    {
+        // Example from RFC 3123 section 4
+        $content = '1:192.168.42.0/26 1:192.168.42.64/26 1:192.168.42.128/25';
+        $name = '_axfr.sbo.example';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
     }
 }

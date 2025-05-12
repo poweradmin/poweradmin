@@ -28,6 +28,22 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * AFSDB record validator
  *
+ * Validates AFSDB (AFS Database) records according to:
+ * - RFC 1183 Section 1: AFS Data Base location (AFSDB RR)
+ * - RFC 5864: DNS SRV Resource Records for AFS (updates RFC 1183)
+ *
+ * AFSDB RRs map from a domain name to the name of an AFS cell database server
+ * or Authenticated Name Server for DCE/NCA cell.
+ *
+ * Format: <domain-name> [<ttl>] [<class>] AFSDB <subtype> <hostname>
+ *
+ * Where:
+ * - <subtype> 1: AFS cell database server
+ * - <subtype> 2: DCE authenticated name server
+ *
+ * Note: RFC 5864 deprecates the use of AFSDB RR to locate AFS cell database servers
+ * in favor of SRV records.
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team
@@ -49,9 +65,9 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
     /**
      * Validates AFSDB record content
      *
-     * @param string $content The content of the AFSDB record
-     * @param string $name The name of the record
-     * @param mixed $prio The subtype value for AFSDB record
+     * @param string $content The content of the AFSDB record (hostname of the server)
+     * @param string $name The name of the record (domain-name being mapped)
+     * @param mixed $prio The subtype value for AFSDB record (1 or 2)
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
      *
@@ -60,6 +76,10 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
         $errors = [];
+        $warnings = [];
+
+        // Add deprecation warning according to RFC 5864
+        $warnings[] = _('AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS service location.');
 
         // Validate name (domain name)
         $nameResult = $this->hostnameValidator->validate($name, true);
@@ -69,7 +89,7 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
         $nameData = $nameResult->getData();
         $name = $nameData['hostname'];
 
-        // Validate AFSDB content (hostname)
+        // Validate AFSDB content (hostname) - RFC 1183 requires this to be a fully qualified domain name
         $contentResult = $this->hostnameValidator->validate($content, false);
         if (!$contentResult->isValid()) {
             return ValidationResult::errors(
@@ -78,6 +98,18 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
         }
         $contentData = $contentResult->getData();
         $content = $contentData['hostname'];
+
+        // Validate that content is a fully qualified domain name as required by RFC 1183
+        // Check that it has at least one dot to indicate it's a multi-part domain
+        if (strpos($content, '.') === false) {
+            return ValidationResult::failure(_('AFSDB server hostname must be a fully qualified domain name (FQDN).'));
+        }
+
+        // Count the number of hostname labels (parts separated by dots)
+        $parts = explode('.', $content);
+        if (count($parts) < 2) {
+            return ValidationResult::failure(_('AFSDB server hostname must be a fully qualified domain name with at least two parts.'));
+        }
 
         // Validate subtype (stored in priority field)
         $subtypeResult = $this->validateSubtype($prio);
@@ -98,12 +130,15 @@ class AFSDBRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::errors($errors);
         }
 
-        return ValidationResult::success([
+        // Return success with data and any warnings
+        $result = [
             'content' => $content,
             'name' => $name,
             'prio' => $validatedSubtype,
             'ttl' => $validatedTtl
-        ]);
+        ];
+
+        return ValidationResult::success($result, $warnings);
     }
 
     /**

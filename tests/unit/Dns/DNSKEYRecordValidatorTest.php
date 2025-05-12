@@ -59,12 +59,26 @@ class DNSKEYRecordValidatorTest extends TestCase
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check for warnings
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $this->assertIsArray($warnings);
+        $this->assertNotEmpty($warnings);
+
+        // Should warn about non-apex placement
+        $warningsText = implode(' ', $warnings);
+        $this->assertStringContainsString('zone apex', $warningsText);
+
+        // Should give algorithm recommendation
+        $this->assertStringContainsString('ECDSAP256SHA256', $warningsText);
+        $this->assertStringContainsString('algorithm 13', $warningsText);
     }
 
     public function testValidateWithZKFlagValue()
     {
         $content = '256 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==';
-        $name = 'host.example.com';
+        $name = 'example.com'; // Zone apex
         $prio = 0;
         $ttl = 3600;
         $defaultTTL = 86400;
@@ -74,6 +88,59 @@ class DNSKEYRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
+
+        // Check for flag-related warnings
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should indicate this is a ZSK
+        $this->assertStringContainsString('Zone Signing Key', $warningsText);
+        $this->assertStringContainsString('256', $warningsText);
+
+        // Should not warn about zone apex placement
+        $this->assertStringNotContainsString('typically placed at the zone apex', $warningsText);
+    }
+
+    public function testValidateWithKSKFlagValue()
+    {
+        $content = '257 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==';
+        $name = 'example.com'; // Zone apex
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should indicate this is a KSK
+        $this->assertStringContainsString('Key Signing Key', $warningsText);
+        $this->assertStringContainsString('257', $warningsText);
+        $this->assertStringContainsString('SEP', $warningsText);
+    }
+
+    public function testValidateWithZeroFlagValue()
+    {
+        $content = '0 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==';
+        $name = 'example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should warn that this is not for DNSSEC
+        $this->assertStringContainsString('NOT intended for use', $warningsText);
+        $this->assertStringContainsString('Make sure this is intentional', $warningsText);
     }
 
     public function testValidateWithInvalidFlags()
@@ -104,6 +171,70 @@ class DNSKEYRecordValidatorTest extends TestCase
         $this->assertStringContainsString('DNSKEY protocol', $result->getFirstError());
     }
 
+    public function testValidateWithDeprecatedAlgorithm()
+    {
+        $content = '257 3 1 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==';
+        $name = 'example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should warn about deprecated algorithm
+        $this->assertStringContainsString('DEPRECATED', $warningsText);
+        $this->assertStringContainsString('RSAMD5', $warningsText);
+        $this->assertStringContainsString('algorithm 1', $warningsText);
+    }
+
+    public function testValidateWithNotRecommendedAlgorithm()
+    {
+        $content = '257 3 7 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==';
+        $name = 'example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should warn about not recommended algorithm
+        $this->assertStringContainsString('NOT RECOMMENDED', $warningsText);
+        $this->assertStringContainsString('RSASHA1-NSEC3-SHA1', $warningsText);
+        $this->assertStringContainsString('algorithm 7', $warningsText);
+        $this->assertStringContainsString('Consider using ECDSAP256SHA256', $warningsText);
+    }
+
+    public function testValidateWithRecommendedAlgorithm()
+    {
+        $content = '257 3 15 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==';
+        $name = 'example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should have positive message about recommended algorithm
+        $this->assertStringContainsString('RECOMMENDED', $warningsText);
+        $this->assertStringContainsString('ED25519', $warningsText);
+        $this->assertStringContainsString('algorithm 15', $warningsText);
+    }
+
     public function testValidateWithInvalidAlgorithm()
     {
         $content = '257 3 20 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKGQ==';
@@ -121,6 +252,20 @@ class DNSKEYRecordValidatorTest extends TestCase
     public function testValidateWithInvalidPublicKey()
     {
         $content = '257 3 13 @invalid-base64!';
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('DNSKEY public key', $result->getFirstError());
+    }
+
+    public function testValidateWithIncorrectBase64Padding()
+    {
+        $content = '257 3 13 mdsswUyr3DPW132mOi8V9xESWE8jTo0dxCjjnopKl+GqJxpVXckHAeF+KkxLbxILfDLUT0rAK9iUzy1L53eKG';
         $name = 'host.example.com';
         $prio = 0;
         $ttl = 3600;
@@ -199,5 +344,25 @@ class DNSKEYRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
+    }
+
+    public function testValidateWithShortRSAKey()
+    {
+        // Artificially short key
+        $content = '257 3 8 YQ==';
+        $name = 'example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should warn about RSA key length
+        $this->assertStringContainsString('RSA key size is less than 2048 bits', $warningsText);
     }
 }

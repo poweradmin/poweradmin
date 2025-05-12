@@ -46,7 +46,7 @@ class CSYNCRecordValidatorTest extends TestCase
     public function testValidateWithValidData()
     {
         $content = '1234567890 1 A NS AAAA';
-        $name = 'host.example.com';
+        $name = 'example.com'; // Using apex record (no subdomain)
         $prio = 0;
         $ttl = 3600;
         $defaultTTL = 86400;
@@ -59,6 +59,21 @@ class CSYNCRecordValidatorTest extends TestCase
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check that we have warnings according to RFC 7477
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        // Ensure we have a warning about DNSSEC requirement
+        $dnssecWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'DNSSEC') !== false) {
+                $dnssecWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($dnssecWarningFound, 'Should include a warning about DNSSEC requirements');
     }
 
     public function testValidateWithInvalidSOASerial()
@@ -145,6 +160,35 @@ class CSYNCRecordValidatorTest extends TestCase
         $this->assertStringContainsString('Invalid Type', $result->getFirstError());
     }
 
+    public function testValidateWithProhibitedRecordType()
+    {
+        // Test with prohibited DNSSEC-related types according to RFC 7477
+        $content = '1234567890 1 A NS DS'; // DS is prohibited
+        $name = 'example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('prohibited', $result->getFirstError());
+
+        // Test with CDNSKEY (also prohibited)
+        $content = '1234567890 1 A CDNSKEY';
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('prohibited', $result->getFirstError());
+
+        // Test with CSYNC itself (prohibited from self-synchronization)
+        $content = '1234567890 1 A CSYNC';
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('prohibited', $result->getFirstError());
+    }
+
     public function testValidateWithInvalidHostname()
     {
         $content = '1234567890 1 A NS AAAA';
@@ -169,7 +213,7 @@ class CSYNCRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('TTL field', $result->getFirstError());
+        $this->assertStringContainsString('TTL', $result->getFirstError());
     }
 
     public function testValidateWithInvalidPriority()
@@ -219,7 +263,7 @@ class CSYNCRecordValidatorTest extends TestCase
     public function testValidateWithMultipleValidRecordTypes()
     {
         $content = '1234567890 1 A NS AAAA MX CNAME TXT SRV PTR DNAME';
-        $name = 'host.example.com';
+        $name = 'example.com'; // Apex record
         $prio = 0;
         $ttl = 3600;
         $defaultTTL = 86400;
@@ -229,6 +273,30 @@ class CSYNCRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
+    }
+
+    public function testValidateWithSubdomainName()
+    {
+        $content = '1234567890 1 A NS AAAA';
+        $name = 'sub.domain.example.com'; // Subdomain, not apex record
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check for warning about zone apex requirement
+        $apexWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'zone apex') !== false) {
+                $apexWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($apexWarningFound, 'Should warn about CSYNC records being placed at zone apex');
     }
 
     public function testValidateCSYNCContent()

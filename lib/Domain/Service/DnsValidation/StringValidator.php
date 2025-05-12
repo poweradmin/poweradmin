@@ -171,4 +171,54 @@ class StringValidator
 
         return str_starts_with($string, '"') && str_ends_with($string, '"');
     }
+
+    /**
+     * Test if string is a valid domain name
+     *
+     * @param string $domain Domain name to validate
+     * @return bool true if valid, false otherwise
+     */
+    public static function isValidDomain(string $domain): bool
+    {
+        // Check for invalid characters (only a-z, A-Z, 0-9, hyphen and dots allowed)
+        if (!preg_match('/^[a-zA-Z0-9.-]+$/', $domain)) {
+            return false;
+        }
+
+        // Check for valid domain format
+        // Domain parts limited to 63 chars, total length <= 253
+        if (strlen($domain) > 253) {
+            return false;
+        }
+
+        // Check each domain label (part between dots)
+        $labels = explode('.', $domain);
+        foreach ($labels as $label) {
+            // Each label must be 1-63 characters long
+            if (strlen($label) < 1 || strlen($label) > 63) {
+                return false;
+            }
+
+            // Labels cannot begin or end with hyphens
+            if (str_starts_with($label, '-') || str_ends_with($label, '-')) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    /**
+     * Validate a domain name and return validation result
+     *
+     * @param string $domain Domain name to validate
+     * @return ValidationResult ValidationResult with error message if invalid
+     */
+    public static function validateDomain(string $domain): ValidationResult
+    {
+        if (!self::isValidDomain($domain)) {
+            return ValidationResult::failure(_('Invalid domain name format.'));
+        }
+        return ValidationResult::success($domain);
+    }
 }

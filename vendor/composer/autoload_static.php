@@ -736,6 +736,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Domain\\Service\\DnsValidation\\CSYNCRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\DHCIDRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\DLVRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/DLVRecordValidator.php',
+        'Poweradmin\\Domain\\Service\\DnsValidation\\DMARCRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/DMARCRecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\DNAMERecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/DNAMERecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\DNSKEYRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php',
         'Poweradmin\\Domain\\Service\\DnsValidation\\DSRecordValidator' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsValidation/DSRecordValidator.php',

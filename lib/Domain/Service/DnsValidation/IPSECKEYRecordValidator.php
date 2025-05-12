@@ -28,6 +28,29 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * IPSECKEY record validator
  *
+ * The IPSECKEY record type is used to store IPsec keying material in DNS. This allows
+ * devices to set up IPsec tunnels with each other by looking up the required keying material
+ * in the DNS. The record structure provides a flexible format for storing various types of
+ * keying material for different IPsec protocols.
+ *
+ * Format: <precedence> <gateway type> <algorithm> <gateway> <public key>
+ *
+ * Where:
+ * - precedence: An 8-bit unsigned integer priority value (0-255)
+ * - gateway type: Indicates gateway format (0=No gateway, 1=IPv4, 2=IPv6, 3=Domain name)
+ * - algorithm: Indicates public key format (0=No key, 1=RSA, 2=DSA, 3=ECDSA, 4=Ed25519)
+ * - gateway: The gateway element formatted according to gateway type
+ * - public key: Base64 encoded key material (optional if algorithm=0)
+ *
+ * Examples:
+ * - 10 1 2 192.0.2.38 AQNRU3mG7TVTO2BkR47usntb102uFJtugbo6BSGvgqt4AQ==
+ * - 10 0 2 . AQNRU3mG7TVTO2BkR47usntb102uFJtugbo6BSGvgqt4AQ==
+ * - 10 2 2 2001:db8:0:8002::2000:1 AQNRU3mG7TVTO2BkR47usntb102uFJtugbo6BSGvgqt4AQ==
+ * - 10 3 2 mygateway.example.com. AQNRU3mG7TVTO2BkR47usntb102uFJtugbo6BSGvgqt4AQ==
+ *
+ * @see https://www.rfc-editor.org/rfc/rfc4025.html RFC 4025: A Method for Storing IPsec Keying Material in DNS
+ * @see https://www.iana.org/assignments/dns-parameters IANA DNS Parameters
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team
@@ -78,6 +101,13 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
             return $contentResult;
         }
 
+        // Get warnings from content validation
+        $contentData = $contentResult->getData();
+        $contentWarnings = [];
+        if (isset($contentData['warnings']) && is_array($contentData['warnings'])) {
+            $contentWarnings = $contentData['warnings'];
+        }
+
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
         if (!$ttlResult->isValid()) {
@@ -91,20 +121,40 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Priority field for IPSECKEY records must be 0 or empty'));
         }
 
+        // Add warnings about security considerations per RFC 4025
+        $warnings = [
+            _('IPSECKEY records should be used with DNSSEC to ensure secure transmission of keying material (RFC 4025 Section 4).'),
+            _('The public key in IPSECKEY records should be regularly rotated for improved security.')
+        ];
+
+        // Analyze the content for gateway type and add specific warnings if needed
+        $parts = preg_split('/\s+/', trim($content));
+        $gatewayType = $parts[1] ?? '';
+
+        if ($gatewayType === '3') {
+            // Domain name gateway
+            $warnings[] = _('When using domain name gateways, ensure both forward and reverse DNS records exist and are properly secured with DNSSEC.');
+        }
+
+        // Add any warnings from the content validation
+        $warnings = array_merge($warnings, $contentWarnings);
+
         return ValidationResult::success([
             'content' => $content,
             'name' => $name,
-            'prio' => 0, // IPSECKEY records don't use priority
+            'prio' => 0,
             'ttl' => $validatedTtl
-        ]);
+        ], $warnings);
     }
 
     /**
-     * Validates the content of an IPSECKEY record
+     * Validates the content of an IPSECKEY record according to RFC 4025
      * Format: <precedence> <gateway type> <algorithm> <gateway> <public key>
      *
      * @param string $content The content to validate
      * @return ValidationResult ValidationResult with errors or success
+     *
+     * @see https://www.rfc-editor.org/rfc/rfc4025.html RFC 4025 Section 2
      */
     private function validateIPSECKEYContent(string $content): ValidationResult
     {
@@ -122,53 +172,89 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
 
         [$precedence, $gatewayType, $algorithm, $gateway] = array_slice($parts, 0, 4);
         $publicKey = implode(' ', array_slice($parts, 4));
+        $warnings = [];
 
-        // Validate precedence (0-255)
+        // Validate precedence (0-255) - RFC 4025 Section 2.1
         if (!is_numeric($precedence) || (int)$precedence < 0 || (int)$precedence > 255) {
             return ValidationResult::failure(_('IPSECKEY precedence must be a number between 0 and 255.'));
         }
 
-        // Validate gateway type (0-3)
+        // Validate gateway type (0-3) - RFC 4025 Section 2.2
         // 0 = No gateway, 1 = IPv4, 2 = IPv6, 3 = Domain name
         if (!in_array($gatewayType, ['0', '1', '2', '3'])) {
-            return ValidationResult::failure(_('IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 (Domain name).'));
+            return ValidationResult::failure(_('IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 (Domain name)'));
         }
 
-        // Validate algorithm (0-4)
-        // 0 = No key, 1 = RSA, 2 = DSA, 3 = ECDSA, 4 = Ed25519, etc.
+        // Validate algorithm (0-4) - RFC 4025 Section 2.4
+        // 0 = No key, 1 = RSA (RFC 3110), 2 = DSA (RFC 2536), 3 = ECDSA, 4 = Ed25519
         if (!in_array($algorithm, ['0', '1', '2', '3', '4'])) {
-            return ValidationResult::failure(_('IPSECKEY algorithm must be a valid value (0 = No key, 1 = RSA, 2 = DSA, 3 = ECDSA, 4 = Ed25519).'));
+            return ValidationResult::failure(_('IPSECKEY algorithm must be 0 (No key), 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 (Ed25519).'));
         }
 
         // Validate gateway based on gateway type
         switch ($gatewayType) {
-            case '0': // No gateway
+            case '0': // No gateway - RFC 4025 Section 2.5.1
                 if ($gateway !== '.') {
                     return ValidationResult::failure(_('For gateway type 0 (No gateway), gateway must be ".".'));
                 }
                 break;
-            case '1': // IPv4
+
+            case '1': // IPv4 - RFC 4025 Section 2.5.2
                 $ipv4Result = $this->ipValidator->validateIPv4($gateway);
                 if (!$ipv4Result->isValid()) {
                     return ValidationResult::failure(_('For gateway type 1, gateway must be a valid IPv4 address.'));
                 }
                 break;
-            case '2': // IPv6
+
+            case '2': // IPv6 - RFC 4025 Section 2.5.3
                 $ipv6Result = $this->ipValidator->validateIPv6($gateway);
                 if (!$ipv6Result->isValid()) {
                     return ValidationResult::failure(_('For gateway type 2, gateway must be a valid IPv6 address.'));
                 }
                 break;
-            case '3': // Domain name
-                // Accept any domain name for testing purposes
+
+            case '3': // Domain name - RFC 4025 Section 2.5.4
+                // Validate the domain name as per RFC 1035
+                // DNS labels must be 63 octets or less and the whole name must be 255 octets or less
+                $gateway = rtrim($gateway, '.');
+                $gatewayResult = $this->hostnameValidator->validate($gateway, false);
+                if (!$gatewayResult->isValid()) {
+                    return ValidationResult::failure(_('For gateway type 3, gateway must be a valid domain name.'));
+                }
                 break;
         }
 
-        // Validate public key (if algorithm is not 0)
-        if ($algorithm !== '0' && empty($publicKey)) {
-            return ValidationResult::failure(_('IPSECKEY public key is required when algorithm is not 0.'));
+        // Check for public key format validity (Base64 encoding)
+        if ($algorithm !== '0') {
+            // Public key is required when algorithm is not 0
+            if (empty($publicKey)) {
+                return ValidationResult::failure(_('IPSECKEY public key is required when algorithm is not 0.'));
+            }
+
+            // Validate Base64 encoding
+            if (!preg_match('/^[A-Za-z0-9+\/]+={0,2}$/', $publicKey)) {
+                return ValidationResult::failure(_('IPSECKEY public key must be properly Base64 encoded.'));
+            }
+
+            // Algorithm-specific key format validation could be added here
+            switch ($algorithm) {
+                case '1': // RSA
+                    // RSA key format is defined in RFC 3110
+                    $warnings[] = _('RSA keys should follow the format defined in RFC 3110.');
+                    break;
+                case '2': // DSA
+                    // DSA key format is defined in RFC 2536
+                    $warnings[] = _('DSA keys should follow the format defined in RFC 2536.');
+                    break;
+            }
+        } else {
+            // Algorithm is 0 (No key)
+            $warnings[] = _('When algorithm is 0 (No key), the public key field is typically empty or ignored.');
         }
 
-        return ValidationResult::success(true);
+        return ValidationResult::success([
+            'valid' => true,
+            'warnings' => $warnings
+        ]);
     }
 }

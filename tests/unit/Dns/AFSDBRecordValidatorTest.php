@@ -28,6 +28,10 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
  * Tests for the AFSDBRecordValidator
+ *
+ * Validates that AFSDB records are handled according to:
+ * - RFC 1183 Section 1: AFS Data Base location (AFSDB RR)
+ * - RFC 5864: DNS SRV Resource Records for AFS (updates RFC 1183)
  */
 class AFSDBRecordValidatorTest extends TestCase
 {
@@ -168,5 +172,65 @@ class AFSDBRecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
+    }
+
+    /**
+     * Test validation with non-FQDN hostname (should fail)
+     */
+    public function testValidateWithNonFqdnHostname()
+    {
+        $content = 'afsserver'; // Not an FQDN
+        $name = 'example.com';
+        $prio = 1;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('hostname', $result->getFirstError());
+    }
+
+    /**
+     * Test for deprecation warning message
+     */
+    public function testValidateWithDeprecationWarning()
+    {
+        $content = 'afs.example.com';
+        $name = 'example.com';
+        $prio = 1;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        // Check for deprecation warning
+        $this->assertTrue($result->hasWarnings());
+        $this->assertCount(1, $result->getWarnings());
+        $this->assertStringContainsString('deprecated', $result->getFirstWarning());
+        $this->assertStringContainsString('SRV', $result->getFirstWarning());
+    }
+
+    /**
+     * Test validation with complete RFC example
+     */
+    public function testValidateWithRfcExample()
+    {
+        // Based on RFC 1183 example format
+        $content = 'afsdb1.andrew.cmu.edu';
+        $name = 'andrew.cmu.edu';
+        $prio = 1;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(1, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
     }
 }

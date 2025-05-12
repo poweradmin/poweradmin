@@ -98,10 +98,23 @@ class KEYRecordValidatorTest extends TestCase
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check for obsolete status warnings
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        // Check for RFC reference in warnings
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('RFC 4034', $warningText);
+        $this->assertStringContainsString('DNSKEY', $warningText);
     }
 
     public function testValidateWithAnotherValidData()
     {
+        // Use a Base64 key with spaces (which is valid per RFC 2535)
         $content = '256 3 5 AQPSKmynfzW4 kyBv015MUG2DeIQ3 Cbl+BBZH4b/0PY1k xkmvHjcZc8no';
         $name = 'host.example.com';
         $prio = 0;
@@ -116,6 +129,10 @@ class KEYRecordValidatorTest extends TestCase
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check for warnings
+        $this->assertTrue($result->hasWarnings());
+        $this->assertNotEmpty($result->getWarnings());
     }
 
     public function testValidateWithInvalidFlags()
@@ -162,9 +179,8 @@ class KEYRecordValidatorTest extends TestCase
 
     public function testValidateWithInvalidPublicKeyFormat()
     {
-        // Since base64 validation is relaxed in the validator, we'll test with
-        // a content format that will still be rejected (missing parts)
-        $content = '256 3';  // Missing algorithm and key
+        // Test with invalid Base64 public key
+        $content = '256 3 5 !@#$%^';  // Invalid Base64 characters
         $name = 'host.example.com';
         $prio = 0;
         $ttl = 3600;
@@ -173,7 +189,29 @@ class KEYRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('must contain', $result->getFirstError());
+        $this->assertStringContainsString('Base64', $result->getFirstError());
+    }
+
+    public function testValidateWithRSAMD5Algorithm()
+    {
+        // Test with algorithm 1 (RSA/MD5) which should trigger a security warning
+        $content = '256 3 1 AQPSKmynfzW4kyBv015MUG2DeIQ3Cbl+BBZH4b/0PY1kxkmvHjcZc8nocffttoalYz93wXFSYqO0mx8LoMQ3XDHLcuq5K2bNiLFuhz5ty9d/GSDUDtl74bQBrUu/zW5tOQ==';
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check for algorithm-specific security warning
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('RSA/MD5', $warningText);
+        $this->assertStringContainsString('weak', $warningText);
     }
 
     public function testValidateWithMissingPublicKey()
@@ -259,5 +297,48 @@ class KEYRecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Priority field', $result->getFirstError());
+    }
+
+    public function testValidateWithDNSSECZoneKey()
+    {
+        // Test with flags=257 (zone key) and protocol=3 (DNSSEC)
+        $content = '257 3 5 AQPSKmynfzW4kyBv015MUG2DeIQ3Cbl+BBZH4b/0PY1kxkmvHjcZc8nocffttoalYz93wXFSYqO0mx8LoMQ3XDHLcuq5K2bNiLFuhz5ty9d/GSDUDtl74bQBrUu/zW5tOQ==';
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check for DNSSEC zone key specific warning
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('DNSKEY records should be used', $warningText);
+        $this->assertStringContainsString('flags=257', $warningText);
+    }
+
+    public function testValidateWithUnusualProtocolValue()
+    {
+        // Test with unusual protocol value
+        $content = '256 2 5 AQPSKmynfzW4kyBv015MUG2DeIQ3Cbl+BBZH4b/0PY1kxkmvHjcZc8nocffttoalYz93wXFSYqO0mx8LoMQ3XDHLcuq5K2bNiLFuhz5ty9d/GSDUDtl74bQBrUu/zW5tOQ==';
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check for unusual protocol warning
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('Unusual protocol value', $warningText);
     }
 }

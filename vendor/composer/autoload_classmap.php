@@ -522,6 +522,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsValidation\\CSYNCRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DHCIDRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DLVRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DLVRecordValidator.php',
+    'Poweradmin\\Domain\\Service\\DnsValidation\\DMARCRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DMARCRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DNAMERecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DNAMERecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DNSKEYRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DSRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DSRecordValidator.php',

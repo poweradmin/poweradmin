@@ -59,6 +59,18 @@ class DNAMERecordValidatorTest extends TestCase
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check warnings are present
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $this->assertIsArray($warnings);
+        $this->assertNotEmpty($warnings);
+
+        // Check for RFC 6672 specific warnings
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('singleton rule', $warningText);
+        $this->assertStringContainsString('DNAME and CNAME records MUST NOT coexist', $warningText);
+        $this->assertStringContainsString('MUST NOT appear at the same owner name as NS records', $warningText);
     }
 
     public function testValidateWithInvalidHostname()
@@ -142,5 +154,47 @@ class DNAMERecordValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
+    }
+
+    public function testWarningsForZoneApex()
+    {
+        $content = 'target.example.org';
+        $name = 'example.com';  // Zone apex (assuming two-level domain)
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+
+        // Check for zone apex specific warning
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('zone apex', $warningText);
+        $this->assertStringContainsString('special handling for NS', $warningText);
+
+        // Should not contain NS placement warning for non-apex
+        $this->assertStringNotContainsString('MUST NOT appear at the same owner name as NS records', $warningText);
+    }
+
+    public function testWarningsForPotentialCircularReferences()
+    {
+        $content = 'sub.source.example.com';  // Subdomain of the owner name
+        $name = 'source.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+
+        // Check for circular reference warning
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('circular references', $warningText);
     }
 }

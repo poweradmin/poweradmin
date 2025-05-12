@@ -274,4 +274,73 @@ class MXRecordValidatorTest extends BaseDnsTest
         $this->assertEquals(20, $data['prio']);
         $this->assertIsInt($data['prio']);
     }
+
+    // Tests for RFC 7505 null MX support
+
+    public function testValidNullMXRecord()
+    {
+        $content = '.'; // Null MX target
+        $name = 'example.com';
+        $prio = 0; // Required for null MX
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('.', $data['content']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertTrue($data['is_null_mx']);
+        $this->assertNotEmpty($result->getWarnings());
+        $this->assertCount(2, $result->getWarnings());
+    }
+
+    public function testInvalidNullMXPriority()
+    {
+        $content = '.'; // Null MX target
+        $name = 'example.com';
+        $prio = 10; // Invalid for null MX - should be 0
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('priority 0', $result->getFirstError());
+    }
+
+    public function testWarningsForStandardMX()
+    {
+        $content = 'mail.example.com';
+        $name = 'example.com';
+        $prio = 10;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertFalse($data['is_null_mx']);
+        $this->assertNotEmpty($result->getWarnings());
+        $this->assertStringContainsString('CNAME', $result->getWarnings()[0]);
+    }
+
+    public function testHighPriorityWarning()
+    {
+        $content = 'mail.example.com';
+        $name = 'example.com';
+        $prio = 200; // Unusually high priority
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertNotEmpty($result->getWarnings());
+        $this->assertCount(2, $result->getWarnings());
+        $this->assertStringContainsString('Priority values above 100', $result->getWarnings()[1]);
+    }
 }

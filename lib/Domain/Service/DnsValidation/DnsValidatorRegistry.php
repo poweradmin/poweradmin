@@ -62,6 +62,7 @@ class DnsValidatorRegistry
             RecordType::CSYNC => new CSYNCRecordValidator($this->config),
             RecordType::DHCID => new DHCIDRecordValidator($this->config),
             RecordType::DLV => new DLVRecordValidator($this->config),
+            RecordType::DMARC => new DMARCRecordValidator($this->config), // DMARC validator for _dmarc TXT records
             RecordType::DNAME => new DNAMERecordValidator($this->config),
             RecordType::DNSKEY => new DNSKEYRecordValidator($this->config),
             RecordType::DS => new DSRecordValidator($this->config),

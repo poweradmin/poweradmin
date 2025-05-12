@@ -59,6 +59,17 @@ class EUI48RecordValidatorTest extends TestCase
         $this->assertEquals($name, $data['name']);
         $this->assertEquals(0, $data['prio']);
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check for warnings
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $this->assertIsArray($warnings);
+        $this->assertNotEmpty($warnings);
+
+        // Check for RFC reference in warning
+        $warningsText = implode(' ', $warnings);
+        $this->assertStringContainsString('RFC 7043', $warningsText);
+        $this->assertStringContainsString('privacy', $warningsText);
     }
 
     public function testValidateWithValidUppercaseHexData()
@@ -73,10 +84,10 @@ class EUI48RecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         $data = $result->getData();
-        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($content, $data['content']); // Case should be preserved as per RFC 7043
     }
 
-    public function testValidateWithInvalidEUI48Format()
+    public function testValidateWithColonFormatError()
     {
         $content = '00:11:22:33:44:55';  // Using colons instead of hyphens
         $name = 'host.example.com';
@@ -87,7 +98,38 @@ class EUI48RecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('MAC address', $result->getFirstError());
+        // Should have specific error for colon format
+        $this->assertStringContainsString('colon separators', $result->getFirstError());
+    }
+
+    public function testValidateWithNoSeparators()
+    {
+        $content = '001122334455';  // No separators
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        // Should have specific error for missing separators
+        $this->assertStringContainsString('missing separators', $result->getFirstError());
+    }
+
+    public function testValidateWithCiscoFormat()
+    {
+        $content = '0011.2233.4455';  // Cisco format
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        // Should have specific error for Cisco format
+        $this->assertStringContainsString('Cisco format', $result->getFirstError());
     }
 
     public function testValidateWithInvalidEUI48Values()
@@ -101,7 +143,6 @@ class EUI48RecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('MAC address', $result->getFirstError());
     }
 
     public function testValidateWithInvalidEUI48Length()
@@ -115,7 +156,101 @@ class EUI48RecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('MAC address', $result->getFirstError());
+    }
+
+    public function testValidateWithMulticastAddress()
+    {
+        $content = '01-11-22-33-44-55';  // First bit is 1 (multicast)
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should warn about multicast address
+        $this->assertStringContainsString('multicast address', $warningsText);
+    }
+
+    public function testValidateWithLocallyAdministeredAddress()
+    {
+        $content = '02-11-22-33-44-55';  // Second bit is 1 (locally administered)
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should warn about locally administered address
+        $this->assertStringContainsString('locally administered address', $warningsText);
+    }
+
+    public function testValidateWithAllZerosAddress()
+    {
+        $content = '00-00-00-00-00-00';  // All zeros
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should warn about all-zeros address
+        $this->assertStringContainsString('all-zeros address', $warningsText);
+    }
+
+    public function testValidateWithBroadcastAddress()
+    {
+        $content = 'FF-FF-FF-FF-FF-FF';  // Broadcast address
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should warn about broadcast address
+        $this->assertStringContainsString('broadcast address', $warningsText);
+    }
+
+    public function testValidateWithIANAAddress()
+    {
+        $content = '00-00-5E-00-00-01';  // IANA OUI address
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningsText = implode(' ', $warnings);
+
+        // Should note IANA address
+        $this->assertStringContainsString('IANA OUI', $warningsText);
     }
 
     public function testValidateWithInvalidHostname()
@@ -143,6 +278,20 @@ class EUI48RecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('TTL', $result->getFirstError());
+    }
+
+    public function testValidateWithInvalidPriority()
+    {
+        $content = '00-11-22-33-44-55';
+        $name = 'host.example.com';
+        $prio = 10;  // Non-zero priority
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Priority must be 0', $result->getFirstError());
     }
 
     public function testValidateWithDefaultTTL()

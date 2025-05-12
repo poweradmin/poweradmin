@@ -28,6 +28,13 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * TXT record validator
  *
+ * Validates TXT records according to:
+ * - RFC 1035: Domain Names - Implementation and Specification
+ * - RFC 7208: Sender Policy Framework (SPF) for Authorizing Use of Domains in Email
+ *
+ * TXT records are limited to 255 bytes per string as per DNS message format.
+ * Multiple strings can be concatenated for longer TXT records.
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team
@@ -98,6 +105,9 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
     /**
      * Validate TXT record content
      *
+     * According to RFC 7208, TXT record strings are limited to 255 bytes each.
+     * If the content exceeds this limit, it should be split into multiple strings.
+     *
      * @param string $content Content to validate
      * @return ValidationResult ValidationResult containing validation status or error message
      */
@@ -111,21 +121,85 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('HTML tags are not allowed in content field.'));
         }
 
-        // Make sure content is properly quoted
-        $startsWithQuote = isset($content[0]) && $content[0] === '"';
-        $endsWithQuote = isset($content[strlen($content) - 1]) && $content[strlen($content) - 1] === '"';
+        // Check if we have multiple quoted strings (for long TXT records)
+        $multipleTxtStrings = $this->parseMultipleQuotedStrings($content);
 
-        if (!($startsWithQuote && $endsWithQuote)) {
-            return ValidationResult::failure(_('TXT record content must be enclosed in quotes.'));
-        }
+        if ($multipleTxtStrings === false) {
+            // Not properly formatted multiple strings, treat as a single string
 
-        $subContent = substr($content, 1, -1);
-        $pattern = '/(?<!\\\\)"/';
-        if (preg_match($pattern, $subContent)) {
-            return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
+            // Make sure content is properly quoted
+            $startsWithQuote = isset($content[0]) && $content[0] === '"';
+            $endsWithQuote = isset($content[strlen($content) - 1]) && $content[strlen($content) - 1] === '"';
+
+            if (!($startsWithQuote && $endsWithQuote)) {
+                return ValidationResult::failure(_('TXT record content must be enclosed in quotes.'));
+            }
+
+            $subContent = substr($content, 1, -1);
+
+            // Check for unescaped quotes
+            $pattern = '/(?<!\\\\)"/';
+            if (preg_match($pattern, $subContent)) {
+                return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
+            }
+
+            // Check string length - RFC 7208 limits TXT strings to 255 bytes
+            if (strlen($subContent) > 255) {
+                return ValidationResult::failure(
+                    _('TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or less. ' .
+                      'For longer content, split into multiple quoted strings separated by spaces.')
+                );
+            }
+        } else {
+            // We have properly formatted multiple strings, check each one
+            foreach ($multipleTxtStrings as $stringPart) {
+                // Remove the quotes for length calculation
+                $unquoted = substr($stringPart, 1, -1);
+
+                // Check for unescaped quotes
+                $pattern = '/(?<!\\\\)"/';
+                if (preg_match($pattern, $unquoted)) {
+                    return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
+                }
+
+                // Check string length - RFC 7208 limits TXT strings to 255 bytes
+                if (strlen($unquoted) > 255) {
+                    return ValidationResult::failure(
+                        _('Each TXT record string must be 255 bytes or less. Split long content into multiple strings.')
+                    );
+                }
+            }
         }
 
         return ValidationResult::success(true);
+    }
+
+    /**
+     * Parse TXT content into multiple quoted strings if they exist
+     *
+     * TXT records can consist of multiple quoted strings which are concatenated
+     * by the DNS resolver. This is used to bypass the 255 byte limitation.
+     *
+     * @param string $content The TXT record content
+     * @return array|false Array of quoted strings or false if invalid format
+     */
+    private function parseMultipleQuotedStrings(string $content): array|false
+    {
+        $content = trim($content);
+
+        // Check if we have multiple quoted strings
+        if (!preg_match('/^"[^"]*"(\s+"[^"]*")+$/', $content)) {
+            return false;
+        }
+
+        // Split by space but respect quoted content
+        preg_match_all('/"([^"\\\\]|\\\\.)*"/', $content, $matches);
+
+        if (empty($matches[0])) {
+            return false;
+        }
+
+        return $matches[0];
     }
 
 

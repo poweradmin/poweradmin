@@ -26,10 +26,29 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
- * NID record validator
+ * NID (Node Identifier) Record Validator
+ *
+ * Validates NID records according to RFC 6742 (ILNP DNS Resource Records).
  *
  * NID records are used for Node Identifier in Identifier-Locator Network Protocol (ILNP).
- * NID record format is a 16-bit preference followed by a 64-bit Node Identifier value.
+ * The NID record contains a 16-bit preference value followed by a 64-bit Node Identifier value
+ * in the EUI-64 format.
+ *
+ * Format:
+ * - Preference: 16-bit unsigned integer (0-65535)
+ * - NodeID: 64-bit value in EUI-64 format, represented as 4 groups of 4 hex digits
+ *   separated by colons (xxxx:xxxx:xxxx:xxxx)
+ *
+ * According to RFC 6742:
+ * - The NodeID MUST be in the modified EUI-64 format
+ * - The NodeID MUST NOT be in the compressed format
+ * - The u/l bit (universal/local bit, 7th bit of first byte) indicates if the ID is globally unique
+ * - The g bit (Group bit, least significant bit of first byte) MUST be 0 in ILNP
+ *
+ * Example NID record: 10 1000:0000:0000:0001
+ *
+ * Note: ILNP is an experimental protocol (RFC 6740) that provides identifier-locator
+ * separation to enhance multihoming capabilities.
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -47,7 +66,7 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
     }
 
     /**
-     * Validate an NID record
+     * Validate an NID record according to RFC 6742
      *
      * @param string $content The content part of the record (Node Identifier value)
      * @param string $name The name part of the record
@@ -59,6 +78,11 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $warnings = [];
+
+        // Add warning about ILNP being experimental
+        $warnings[] = _('Note: NID records are used for the ILNP protocol, which is experimental (RFC 6740, 6742).');
+
         // Validate content - ensure it's not empty
         if (empty(trim($content))) {
             return ValidationResult::failure(_('NID record content cannot be empty.'));
@@ -70,10 +94,20 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
             return $printableResult;
         }
 
-        // Validate the content format (64-bit hexadecimal value)
+        // Validate the content format (according to RFC 6742)
         $nodeIdResult = $this->validateNodeIdentifier($content);
         if (!$nodeIdResult->isValid()) {
             return $nodeIdResult;
+        }
+
+        $nodeIdData = $nodeIdResult->getData();
+
+        // Get the formatted NodeID in the RFC presentation format
+        $formattedNodeId = $nodeIdData['node_id'];
+
+        // Add any warnings from the NodeID validation
+        if ($nodeIdResult->hasWarnings()) {
+            $warnings = array_merge($warnings, $nodeIdResult->getWarnings());
         }
 
         // Validate TTL
@@ -92,28 +126,132 @@ class NIDRecordValidator implements DnsRecordValidatorInterface
         $priority = $priorityResult->getData();
 
         return ValidationResult::success([
-            'content' => $content,
+            'content' => $formattedNodeId,
             'ttl' => $validatedTtl,
             'priority' => $priority,
-            'name' => $name
-        ]);
+            'name' => $name,
+            'raw_node_id' => $nodeIdData['raw_hex']
+        ], $warnings);
     }
 
     /**
      * Validate the Node Identifier value
-     * It should be a 64-bit hexadecimal value
+     * According to RFC 6742, it should be a 64-bit hexadecimal value in EUI-64 format
+     * represented as 4 groups of 4 hex digits separated by colons
      *
      * @param string $content The Node Identifier value
-     * @return ValidationResult Validation result indicating success or failure
+     * @return ValidationResult Validation result with validated and formatted NodeID or error
      */
     private function validateNodeIdentifier(string $content): ValidationResult
     {
-        // Check if the content is a valid 64-bit hexadecimal value (16 hex characters)
-        if (!preg_match('/^[0-9a-fA-F]{16}$/', trim($content))) {
-            return ValidationResult::failure(_('NID record content must be a 64-bit hexadecimal value (16 hex characters).'));
+        $content = trim($content);
+        $rawHex = '';
+        $warnings = [];
+
+        // Handle colon-separated format (RFC 6742 presentation format)
+        if (strpos($content, ':') !== false) {
+            // Check format xxxx:xxxx:xxxx:xxxx (4 groups of 4 hex digits with colons)
+            if (!preg_match('/^[0-9a-fA-F]{1,4}(:[0-9a-fA-F]{1,4}){3}$/', $content)) {
+                return ValidationResult::failure(_('NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 hexadecimal digits.'));
+            }
+
+            // Split by colon and validate each group has 4 digits
+            $groups = explode(':', $content);
+            if (count($groups) !== 4) {
+                return ValidationResult::failure(_('NID record content must have exactly 4 groups of hexadecimal digits.'));
+            }
+
+            // Zero-pad each group to 4 digits and build raw hex value
+            foreach ($groups as $index => $group) {
+                $groups[$index] = str_pad($group, 4, '0', STR_PAD_LEFT);
+            }
+
+            $rawHex = implode('', $groups);
+        } else {
+            // Check if the content is a valid 64-bit hexadecimal value (16 hex characters)
+            if (!preg_match('/^[0-9a-fA-F]{16}$/', $content)) {
+                return ValidationResult::failure(_(
+                    'NID record content must be a 64-bit hexadecimal value (16 hex characters or xxxx:xxxx:xxxx:xxxx format).'
+                ));
+            }
+
+            $rawHex = $content;
+
+            // If using raw format, add a warning about RFC 6742 presentation format
+            $warnings[] = _('NID records should use the RFC 6742 presentation format (xxxx:xxxx:xxxx:xxxx) with colons for better readability.');
         }
 
-        return ValidationResult::success(true);
+        // Validate EUI-64 format requirements (RFC 6742)
+        $eui64Result = $this->validateEUI64Format($rawHex);
+        if (!$eui64Result->isValid()) {
+            return $eui64Result;
+        }
+
+        // Merge any EUI-64 validation warnings
+        if ($eui64Result->hasWarnings()) {
+            $warnings = array_merge($warnings, $eui64Result->getWarnings());
+        }
+
+        // Format for storage according to RFC presentation format
+        $formattedHex = $this->formatNodeIdentifier($rawHex);
+
+        return ValidationResult::success([
+            'node_id' => $formattedHex,
+            'raw_hex' => $rawHex], $warnings);
+    }
+
+    /**
+     * Validate that the NodeID complies with EUI-64 format requirements per RFC 6742
+     *
+     * @param string $hexString Raw 16-character hex string
+     * @return ValidationResult Validation result
+     */
+    private function validateEUI64Format(string $hexString): ValidationResult
+    {
+        $warnings = [];
+
+        // Convert first byte to binary to check bit values
+        $firstByte = hexdec(substr($hexString, 0, 2));
+
+        // Check the Group bit (RFC 6740 states it should be 0 for ILNP)
+        // The Group bit is the least significant bit of the first octet
+        if (($firstByte & 0x01) !== 0) {
+            return ValidationResult::failure(_(
+                'Invalid NID record: The Group bit (g bit, least significant bit of first byte) MUST be 0 in ILNP as specified in RFC 6742.'
+            ));
+        }
+
+        // Check the universal/local bit (7th bit of first byte)
+        // This is informational only, so we add a warning if it's set to local
+        if (($firstByte & 0x02) === 0) {
+            $warnings[] = _('The universal/local bit (u/l bit) is set to universal (0), indicating this NID is based on a globally unique identifier.');
+        } else {
+            $warnings[] = _('The universal/local bit (u/l bit) is set to local (1), indicating this NID is locally assigned and not globally unique.');
+        }
+
+        // Check for all zeros, which is technically valid but unusual
+        if ($hexString === '0000000000000000') {
+            $warnings[] = _('A zero NodeID value is unusual and may indicate a configuration error.');
+        }
+
+        // Check for all ones, which is technically valid but unusual
+        if ($hexString === 'FFFFFFFFFFFFFFFF') {
+            $warnings[] = _('An all-ones NodeID value is unusual and may indicate a configuration error.');
+        }
+
+        return ValidationResult::success(['valid' => true], $warnings);
+    }
+
+    /**
+     * Format a raw hex string into RFC 6742 presentation format (with colons)
+     *
+     * @param string $rawHex 16-character hex string
+     * @return string Formatted hex string with colons (xxxx:xxxx:xxxx:xxxx)
+     */
+    private function formatNodeIdentifier(string $rawHex): string
+    {
+        // Insert colons after every 4 characters
+        return implode(':', str_split($rawHex, 4));
     }
 
     /**

@@ -28,6 +28,24 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * CDNSKEY record validator
  *
+ * The CDNSKEY (Child DNSKEY) record is defined in RFC 7344 for automating DNSSEC
+ * delegation trust maintenance. It allows a child zone to signal to its parent what
+ * DS records it would like the parent to publish.
+ *
+ * Format: <flags> <protocol> <algorithm> <public-key>
+ *
+ * Where:
+ * - flags: 0, 256, or 257 (determines if the key is a Zone Key and/or Secure Entry Point)
+ * - protocol: Must be 3 as per RFC 4034
+ * - algorithm: DNSSEC algorithm number (1-16 currently defined in RFC 8624)
+ * - public-key: Base64 encoded public key
+ *
+ * Special case: For deletion, the content "0 3 0 AA==" is used as per RFC 8078.
+ *
+ * @see https://datatracker.ietf.org/doc/html/rfc7344 - Automating DNSSEC Delegation Trust Maintenance
+ * @see https://datatracker.ietf.org/doc/html/rfc8078 - Managing DS Records from the Parent via CDS/CDNSKEY
+ * @see https://datatracker.ietf.org/doc/html/rfc8624 - Algorithm Implementation Requirements and Usage Guidance for DNSSEC
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team
@@ -59,6 +77,15 @@ class CDNSKEYRecordValidator implements DnsRecordValidatorInterface
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        $warnings = [];
+
+        // Check if the record is used in a non-standard location
+        // CDNSKEY records are normally published at the zone apex
+        $nameParts = explode('.', $name);
+        if (count($nameParts) > 2 && !in_array($nameParts[0], ['_dnskey', 'cdnskey'])) {
+            $warnings[] = _('CDNSKEY records are typically published at the zone apex, not in subdomains.');
+        }
+
         // Validate hostname/name
         $hostnameResult = $this->hostnameValidator->validate($name, true);
         if (!$hostnameResult->isValid()) {
@@ -71,6 +98,14 @@ class CDNSKEYRecordValidator implements DnsRecordValidatorInterface
         $contentResult = $this->validateCDNSKEYContent($content);
         if (!$contentResult->isValid()) {
             return $contentResult;
+        }
+
+        // Check for warnings from content validation
+        if ($contentResult->isValid() && $contentResult->hasWarnings()) {
+            $contentWarnings = $contentResult->getWarnings();
+            if (!empty($contentWarnings)) {
+                $warnings = array_merge($warnings, $contentWarnings);
+            }
         }
 
         // Validate TTL
@@ -86,12 +121,17 @@ class CDNSKEYRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('Priority field for CDNSKEY records must be 0 or empty'));
         }
 
-        return ValidationResult::success([
+        // Add RFC 7344 recommendation for CDS records
+        $warnings[] = _('RFC 7344 recommends that if you publish a CDNSKEY record, you should also publish a corresponding CDS record.');
+
+        $result = [
             'content' => $content,
             'name' => $name,
             'prio' => 0, // CDNSKEY records don't use priority
             'ttl' => $validatedTtl
-        ]);
+        ];
+
+        return ValidationResult::success($result, $warnings);
     }
 
     /**
@@ -103,15 +143,27 @@ class CDNSKEYRecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCDNSKEYContent(string $content): ValidationResult
     {
+        $warnings = [];
+
         // Basic validation of printable characters
         $printableResult = StringValidator::validatePrintable($content);
         if (!$printableResult->isValid()) {
             return ValidationResult::failure(_('Invalid characters in CDNSKEY record content.'));
         }
 
-        // Special case for delete CDNSKEY record
+        // Special case for delete CDNSKEY record (RFC 8078)
         if (trim($content) === '0 3 0 AA==') {
+            // This is the standard deletion format
             return ValidationResult::success(true);
+        }
+
+        // Check for erratum format for delete CDNSKEY record
+        if (trim($content) === '0 3 0 0') {
+            // This is the format from RFC 8078 erratum
+            return ValidationResult::success(
+                true,
+                [_('Using "0 3 0 0" format from RFC 8078 erratum, consider using the standard "0 3 0 AA==" format.')]
+            );
         }
 
         // Split the content into components
@@ -122,9 +174,14 @@ class CDNSKEYRecordValidator implements DnsRecordValidatorInterface
 
         [$flags, $protocol, $algorithm, $publicKey] = $parts;
 
-        // Validate flags (must be 0 or 256, 257)
+        // Validate flags (must be 0, 256, or 257)
         if (!is_numeric($flags) || !in_array((int)$flags, [0, 256, 257])) {
             return ValidationResult::failure(_('CDNSKEY flags must be 0, 256, or 257.'));
+        }
+
+        // Add warning for KSK (flag 257) as per RFC 8080
+        if ((int)$flags === 257) {
+            $warnings[] = _('Flag 257 indicates a Key Signing Key (KSK). Ensure this key is properly managed according to your DNSSEC key rollover policy.');
         }
 
         // Validate protocol (must be 3)
@@ -138,13 +195,31 @@ class CDNSKEYRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('CDNSKEY algorithm must be a number between 1 and 16.'));
         }
 
+        // Add warnings based on algorithm recommendations in RFC 8624
+        $algorithmInt = (int)$algorithm;
+        if (in_array($algorithmInt, [1, 3, 5, 6, 7, 12])) {
+            // These are deprecated or not recommended algorithms
+            $warnings[] = _('Algorithm ' . $algorithmInt . ' is deprecated or not recommended according to RFC 8624. Consider using ECDSAP256SHA256 (13) or ED25519 (15) instead.');
+        } elseif ($algorithmInt === 8) {
+            // RSA/SHA-256 is being replaced
+            $warnings[] = _('Algorithm 8 (RSASHA256) is being replaced with ECDSAP256SHA256 (13) due to shorter key and signature size, resulting in smaller DNS packets.');
+        } elseif ($algorithmInt === 10) {
+            // RSA/SHA-512 is not recommended
+            $warnings[] = _('Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be supported for validation.');
+        }
+
         // Validate public key (must be valid base64-encoded data)
         $base64Result = $this->validateBase64($publicKey);
         if (!$base64Result->isValid()) {
             return $base64Result;
         }
 
-        return ValidationResult::success(true);
+        // Check for base64 validity
+        if (substr($publicKey, -1) !== '=' && strlen($publicKey) % 4 !== 0) {
+            $warnings[] = _('Base64 encoded data should be padded to a multiple of 4 bytes using "=" characters.');
+        }
+
+        return ValidationResult::success(['isValid' => true], $warnings);
     }
 
     /**

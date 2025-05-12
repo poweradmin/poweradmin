@@ -92,8 +92,8 @@ class SPFRecordValidatorTest extends TestCase
 
     public function testValidateWithInvalidMechanism()
     {
-        // Note: Since SPF validation is simplified to just check for v=spf1 prefix,
-        // this test now should pass even with an invalid mechanism
+        // Since the implementation is strict about RFC compliance,
+        // we should expect validation to fail with an invalid mechanism
         $content = 'v=spf1 badmechanism:example.net -all'; // Invalid mechanism
         $name = 'example.com';
         $prio = '';
@@ -102,7 +102,9 @@ class SPFRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertTrue($result->isValid());
+        // The implementation treats unknown mechanisms as errors
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('Unknown mechanism', $result->getFirstError());
     }
 
     public function testValidateWithInvalidTTL()
@@ -194,25 +196,26 @@ class SPFRecordValidatorTest extends TestCase
     }
 
     /**
-     * Test validateSPFContent method
+     * Test basic SPF validation
      */
     public function testValidateSPFContent()
     {
+        // We'll use a simplified test that only verifies the v=spf1 prefix check
+        // This isolates the test from internal implementation details
+        $content1 = 'v=spf1 ip4:192.168.0.0/24 include:example.net -all';
+        $content2 = 'v=spf2 ip4:192.168.0.0/24 include:example.net -all';
+
         $reflection = new ReflectionClass(SPFRecordValidator::class);
         $method = $reflection->getMethod('validateSPFContent');
         $method->setAccessible(true);
 
-        // Test with valid SPF content
-        $result = $method->invoke($this->validator, 'v=spf1 ip4:192.168.0.0/24 include:example.net -all');
-        $this->assertTrue($result->isValid());
+        // Valid SPF version should pass
+        $result1 = $method->invoke($this->validator, $content1);
+        $this->assertTrue($result1->isValid(), "Valid SPF content should validate");
 
-        // Test with invalid SPF version
-        $result = $method->invoke($this->validator, 'v=spf2 ip4:192.168.0.0/24 include:example.net -all');
-        $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('SPF record must start with', $result->getFirstError());
-
-        // Test with invalid mechanism - note that with simplified validation, this now passes
-        $result = $method->invoke($this->validator, 'v=spf1 badmechanism:example.net -all');
-        $this->assertTrue($result->isValid());
+        // Invalid SPF version should fail
+        $result2 = $method->invoke($this->validator, $content2);
+        $this->assertFalse($result2->isValid(), "Invalid SPF version should fail validation");
+        $this->assertStringContainsString('SPF record must start with', $result2->getFirstError());
     }
 }

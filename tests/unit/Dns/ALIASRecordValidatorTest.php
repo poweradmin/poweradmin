@@ -27,7 +27,12 @@ use Poweradmin\Domain\Service\DnsValidation\ALIASRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
- * Tests for the ALIASRecordValidator using ValidationResult pattern
+ * Tests for the ALIASRecordValidator
+ *
+ * ALIAS is a PowerDNS-specific record type (65401) that provides CNAME-like functionality
+ * at zone apex. These tests validate the implementation according to PowerDNS specifications.
+ *
+ * @see https://doc.powerdns.com/authoritative/guides/alias.html
  */
 class ALIASRecordValidatorTest extends TestCase
 {
@@ -151,5 +156,76 @@ class ALIASRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertIsArray($data);
         $this->assertEquals(86400, $data['ttl'], "Empty TTL should use default value");
+    }
+
+    /**
+     * Test validation with non-FQDN target (should fail)
+     */
+    public function testValidateWithNonFqdnTarget()
+    {
+        $content = 'simple-hostname'; // Not an FQDN
+        $name = 'alias.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid(), "ALIAS record validation should fail for non-FQDN target");
+        $this->assertStringContainsString('hostnames', $result->getFirstError());
+    }
+
+    /**
+     * Test validation with self-referential ALIAS (should fail)
+     */
+    public function testValidateWithSelfReferentialAlias()
+    {
+        $content = 'example.com'; // Same as name
+        $name = 'example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid(), "ALIAS record validation should fail for self-referential aliases");
+        $this->assertStringContainsString('itself', $result->getFirstError());
+    }
+
+    /**
+     * Test that there are no warnings for ALIAS records
+     */
+    public function testValidateHasNoConfigurationWarning()
+    {
+        $content = 'target.example.com';
+        $name = 'alias.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        // Check that there are no configuration warnings
+        $this->assertFalse($result->hasWarnings());
+    }
+
+    /**
+     * Test validation with apex domain ALIAS (primary use case)
+     */
+    public function testValidateWithApexDomainAlias()
+    {
+        $content = 'cdn.example.net';
+        $name = 'example.com'; // Apex domain
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid(), "ALIAS record validation should succeed for apex domain");
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        $this->assertEquals($name, $data['name']);
     }
 }

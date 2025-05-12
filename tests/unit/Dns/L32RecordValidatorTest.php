@@ -54,19 +54,29 @@ class L32RecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
 
+        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
-
         $this->assertEquals($name, $data['name']);
-        $data = $result->getData();
-
         $this->assertEquals(0, $data['prio']); // Using provided prio value
-
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check that warnings are present
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $this->assertNotEmpty($warnings);
+        $this->assertGreaterThan(0, count($warnings));
+
+        // Check for expected warning about experimental status
+        $foundExperimentalWarning = false;
+        foreach ($warnings as $warning) {
+            if (strpos($warning, 'experimental protocol') !== false) {
+                $foundExperimentalWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundExperimentalWarning, 'Warning about experimental status not found');
     }
 
     public function testValidateWithProvidedPriority()
@@ -239,12 +249,22 @@ class L32RecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
 
+        $data = $result->getData();
         $this->assertEquals(86400, $data['ttl']);
+
+        // Check for TTL warning for mobile nodes
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $foundTtlWarning = false;
+        foreach ($warnings as $warning) {
+            if (strpos($warning, 'very low TTL values') !== false) {
+                $foundTtlWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundTtlWarning, 'Warning about TTL values for mobile nodes not found');
     }
 
     public function testValidateWithNegativePreference()
@@ -258,8 +278,47 @@ class L32RecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertFalse($result->isValid());
-
-
         $this->assertNotEmpty($result->getErrors());
+    }
+
+    public function testPrivateIPAddressWarning()
+    {
+        $content = '10 192.168.1.1'; // Private IP address
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+
+        // Check for private IP address warning
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $foundPrivateIPWarning = false;
+        foreach ($warnings as $warning) {
+            if (strpos($warning, 'private IP addresses') !== false) {
+                $foundPrivateIPWarning = true;
+                break;
+            }
+        }
+        $this->assertTrue($foundPrivateIPWarning, 'Warning about private IP addresses not found');
+    }
+
+    public function testValidateWithInvalidSpecialAddresses()
+    {
+        $content = '10 0.0.0.0'; // Invalid special address
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
+        $this->assertStringContainsString('broadcast or unspecified', $result->getErrors()[0]);
     }
 }

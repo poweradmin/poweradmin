@@ -115,8 +115,13 @@ class NSECRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('example.com. A NS SOA MX TXT AAAA', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
         $this->assertEquals('host.example.com', $data['name']);
+
+        // Check for warnings array (our enhanced implementation adds warnings)
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
     }
 
     /**
@@ -157,7 +162,7 @@ class NSECRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('example.com.', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
@@ -297,7 +302,7 @@ class NSECRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('example.com. 1 2 6 15 16 28', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
@@ -334,7 +339,7 @@ class NSECRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('example.com. A(1) NS(2) SOA(6)', $data['content']);
         $this->assertEquals(3600, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
@@ -429,7 +434,7 @@ class NSECRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals('example.com. A NS SOA', $data['content']);
         $this->assertEquals(86400, $data['ttl']);
-        $this->assertEquals(0, $data['priority']);
+        $this->assertEquals(0, $data['prio']);
     }
 
     /**
@@ -460,5 +465,76 @@ class NSECRecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Invalid hostname', $result->getFirstError());
+    }
+
+    /**
+     * Test validation with RFC-specific warnings
+     */
+    public function testValidateWithRfcSpecificWarnings(): void
+    {
+        // Reset and set up mocks with specific expectations
+        $this->hostnameValidatorMock = $this->createMock(HostnameValidator::class);
+
+        // First call for the record hostname and next domain name
+        $this->hostnameValidatorMock->expects($this->exactly(2))
+            ->method('validate')
+            ->willReturnCallback(function ($name, $allowUnderscores) {
+                if ($name === 'host.example.com' || $name === 'other.example.com.') {
+                    return ValidationResult::success(['hostname' => $name]);
+                }
+                return ValidationResult::failure('Unexpected hostname: ' . $name);
+            });
+
+        $this->ttlValidatorMock->expects($this->once())
+            ->method('validate')
+            ->with(3600, 86400)
+            ->willReturn(ValidationResult::success(3600));
+
+        // Set hostname validator in the validator instance
+        $reflection = new ReflectionClass($this->validator);
+        $hostnameProperty = $reflection->getProperty('hostnameValidator');
+        $hostnameProperty->setAccessible(true);
+        $hostnameProperty->setValue($this->validator, $this->hostnameValidatorMock);
+
+        $result = $this->validator->validate(
+            'other.example.com. A',               // content without NSEC and RRSIG
+            'host.example.com',                   // name
+            '',                                   // prio
+            3600,                                 // ttl
+            86400                                 // defaultTTL
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check for specific RFC-related warnings
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+
+        $foundRrsigWarning = false;
+        $foundNsecWarning = false;
+        $foundZoneWalkingWarning = false;
+        $foundTtlWarning = false;
+
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'RRSIG type should typically be present') !== false) {
+                $foundRrsigWarning = true;
+            }
+            if (strpos($warning, 'NSEC type should typically be present') !== false) {
+                $foundNsecWarning = true;
+            }
+            if (strpos($warning, 'zone walking') !== false) {
+                $foundZoneWalkingWarning = true;
+            }
+            if (strpos($warning, 'TTL as the SOA minimum TTL') !== false) {
+                $foundTtlWarning = true;
+            }
+        }
+
+        // Check that our RFC-specific warnings are present
+        $this->assertTrue($foundRrsigWarning, 'RRSIG type warning not found');
+        $this->assertTrue($foundNsecWarning, 'NSEC type warning not found');
+        $this->assertTrue($foundZoneWalkingWarning, 'Zone walking warning not found');
+        $this->assertTrue($foundTtlWarning, 'TTL warning not found');
     }
 }

@@ -86,6 +86,31 @@ class NSEC3RecordValidatorTest extends TestCase
         $this->assertEquals(3600, $data['ttl']);
         $this->assertEquals(0, $data['priority']);
         $this->assertEquals('hash.example.com', $data['name']);
+
+        // Check that warnings are present in the result
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        // Check for RFC 9276 iteration warning (iterations > 0)
+        $iterationWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'RFC 9276 recommends using 0 iterations') !== false) {
+                $iterationWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($iterationWarningFound, 'Warning about iterations > 0 not found');
+
+        // Check for salt warning (salt is not empty)
+        $saltWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'RFC 9276 recommends NOT using a salt') !== false) {
+                $saltWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($saltWarningFound, 'Warning about non-empty salt not found');
     }
 
     /**
@@ -356,5 +381,48 @@ class NSEC3RecordValidatorTest extends TestCase
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Invalid hostname', $result->getFirstError());
+    }
+
+    /**
+     * Test validation with RFC 9276 best practices (0 iterations, no salt)
+     */
+    public function testValidateWithRfc9276BestPractices(): void
+    {
+        $result = $this->validator->validate(
+            '1 0 0 - B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L A NS SOA RRSIG DNSKEY NSEC3PARAM',  // RFC 9276 best practices
+            'B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com',                                // valid NSEC3 owner name
+            '',                                                                            // prio
+            3600,                                                                         // ttl
+            86400                                                                         // defaultTTL
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check extracted field values
+        $this->assertEquals(1, $data['algorithm']);
+        $this->assertEquals(0, $data['flags']);
+        $this->assertEquals(0, $data['iterations']);
+        $this->assertEquals('-', $data['salt']);
+        $this->assertEquals('B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L', $data['next_hashed_owner']);
+
+        // Check warnings
+        $this->assertTrue($result->hasWarnings());
+
+        // Iteration and salt warnings should NOT be present for RFC 9276 compliant records
+        $iterationWarningFound = false;
+        $saltWarningFound = false;
+
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'RFC 9276 recommends using 0 iterations') !== false) {
+                $iterationWarningFound = true;
+            }
+            if (strpos($warning, 'RFC 9276 recommends NOT using a salt') !== false) {
+                $saltWarningFound = true;
+            }
+        }
+
+        $this->assertFalse($iterationWarningFound, 'Warning about iterations should not be present for 0 iterations');
+        $this->assertFalse($saltWarningFound, 'Warning about salt should not be present for empty salt (-)');
     }
 }

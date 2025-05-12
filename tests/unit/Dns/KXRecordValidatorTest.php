@@ -66,6 +66,20 @@ class KXRecordValidatorTest extends BaseDnsTest
         $this->assertEquals($name, $data['name']);
         $this->assertEquals($prio, $data['prio']);
         $this->assertEquals($ttl, $data['ttl']);
+
+        // Check for RFC 2230 security warnings
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $this->assertIsArray($warnings);
+        $this->assertNotEmpty($warnings);
+
+        // Check for DNSSEC requirement warning
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('DNSSEC', $warningText);
+        $this->assertStringContainsString('RFC 2230', $warningText);
+
+        // Check for specific additional section processing warning
+        $this->assertStringContainsString('A/AAAA records', $warningText);
     }
 
     public function testInvalidKeyExchanger()
@@ -107,7 +121,7 @@ class KXRecordValidatorTest extends BaseDnsTest
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('priority', $result->getFirstError());
+        $this->assertStringContainsString('preference field', $result->getFirstError());
     }
 
     public function testDefaultPriority()
@@ -154,6 +168,31 @@ class KXRecordValidatorTest extends BaseDnsTest
         $this->assertEquals($defaultTTL, $data['ttl']);
     }
 
+    public function testKXRecordWithSameExchangerAsOwner()
+    {
+        // Test case where key exchanger is the same as the owner name
+        $content = 'example.com';  // Same as name
+        $name = 'example.com';
+        $prio = 10;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+
+        // Check warnings - should only have the DNSSEC warnings, not the A/AAAA records warning
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $warningText = implode(' ', $warnings);
+        $this->assertStringContainsString('DNSSEC', $warningText);
+        $this->assertStringContainsString('RFC 2230', $warningText);
+
+        // Should not contain the additional records warning since exchanger is same as owner
+        $this->assertStringNotContainsString('forward and reverse DNS records', $warningText);
+    }
+
     public function testValidatePrivateMethods()
     {
         // Test validatePriority with reflection to access private method
@@ -173,11 +212,11 @@ class KXRecordValidatorTest extends BaseDnsTest
         // Invalid priority (too large)
         $result = $reflectionMethod->invoke($this->validator, 65536);
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('priority', $result->getFirstError());
+        $this->assertStringContainsString('preference field', $result->getFirstError());
 
         // Invalid priority (non-numeric)
         $result = $reflectionMethod->invoke($this->validator, 'invalid');
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('priority', $result->getFirstError());
+        $this->assertStringContainsString('preference field', $result->getFirstError());
     }
 }

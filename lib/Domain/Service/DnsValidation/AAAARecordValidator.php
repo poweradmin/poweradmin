@@ -28,6 +28,13 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 /**
  * Validator for AAAA DNS records
  *
+ * Validates AAAA records according to:
+ * - RFC 3596: DNS Extensions to Support IP Version 6
+ * - RFC 4291: IP Version 6 Addressing Architecture
+ * - RFC 5952: A Recommendation for IPv6 Address Text Representation
+ *
+ * AAAA records map domain names to IPv6 addresses.
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team
@@ -66,10 +73,21 @@ class AAAARecordValidator implements DnsRecordValidatorInterface
     {
         $errors = [];
 
-        // Validate IPv6 address
-        $ipv6Result = $this->ipAddressValidator->validateIPv6($content);
+        // Validate IPv6 address according to RFC 3596, RFC 4291, and RFC 5952
+        // Pass true for canonicalForm parameter to enforce RFC 5952 recommendations
+        $ipv6Result = $this->ipAddressValidator->validateIPv6($content, true);
         if (!$ipv6Result->isValid()) {
-            return ValidationResult::failure(_('Invalid IPv6 address format.'));
+            return $ipv6Result; // Return the detailed error messages from the validator
+        }
+
+        // Check for IPv6 addresses that shouldn't be used in DNS
+        if ($content === '::' || $content === '::1') {
+            return ValidationResult::failure(_('Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA records.'));
+        }
+
+        // Check for site-local deprecated addresses (fec0::/10)
+        if (preg_match('/^fe[c-f][0-9a-f]:/i', $content)) {
+            return ValidationResult::failure(_('Site-local IPv6 addresses (fec0::/10) are deprecated and should not be used.'));
         }
 
         // Validate hostname

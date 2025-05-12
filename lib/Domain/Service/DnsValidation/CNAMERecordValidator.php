@@ -29,6 +29,15 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 /**
  * Validator for CNAME DNS records
  *
+ * Validates CNAME records according to:
+ * - RFC 1034: Domain Names - Concepts and Facilities
+ * - RFC 1035: Domain Names - Implementation and Specification
+ * - RFC 2181: Clarifications to the DNS Specification (Section 10.1)
+ *
+ * CNAME records (Canonical Name) create an alias from one domain name to another.
+ * According to RFC 1034 and RFC 2181, CNAME record names must be unique, cannot
+ * coexist with other record types, and MX/NS records cannot point to a CNAME.
+ *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team

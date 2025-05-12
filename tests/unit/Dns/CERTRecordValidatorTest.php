@@ -45,7 +45,8 @@ class CERTRecordValidatorTest extends TestCase
 
     public function testValidateWithValidNumericData()
     {
-        $content = '1 12345 5 MIIC+zCCAeOgAwIBAgIJAJl8';  // Shortened cert data for test
+        // Using now-deprecated algorithm RSAMD5 (1) to check warnings
+        $content = '1 12345 1 MIIC+zCCAeOgAwIBAgIJAJl8';  // Shortened cert data for test
         $name = 'host.example.com';
         $prio = 0;
         $ttl = 3600;
@@ -54,19 +55,28 @@ class CERTRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
 
+        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
-
         $this->assertEquals($name, $data['name']);
-        $data = $result->getData();
-
         $this->assertEquals(0, $data['prio']);
-
         $this->assertEquals(3600, $data['ttl']);
+
+        // Check for warnings
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        // Check for specific warning about the deprecated algorithm
+        $deprecatedAlgorithmFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'MUST NOT be used') !== false) {
+                $deprecatedAlgorithmFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($deprecatedAlgorithmFound, 'Should warn about deprecated algorithm usage (RSAMD5)');
     }
 
     public function testValidateWithValidMnemonicData()
@@ -80,12 +90,25 @@ class CERTRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
-        $data = $result->getData();
 
+        $data = $result->getData();
         $this->assertEquals($content, $data['content']);
+
+        // Check for warnings
+        $this->assertTrue($result->hasWarnings());
+        $this->assertIsArray($result->getWarnings());
+        $this->assertNotEmpty($result->getWarnings());
+
+        // Check for specific warning about the not recommended algorithm
+        $notRecommendedFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'NOT RECOMMENDED') !== false) {
+                $notRecommendedFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($notRecommendedFound, 'Should warn about not recommended algorithm usage (RSASHA1)');
     }
 
     public function testValidateWithInvalidType()
@@ -243,11 +266,49 @@ class CERTRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertTrue($result->isValid());
-
-
         $this->assertEmpty($result->getErrors());
+
+        $data = $result->getData();
+        $this->assertEquals(86400, $data['ttl']);
+    }
+
+    public function testValidateWithURLBasedType()
+    {
+        $content = 'IPKIX 12345 13 https://example.com/cert.pem';  // URL-based type
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+
         $data = $result->getData();
 
-        $this->assertEquals(86400, $data['ttl']);
+        // Check for warnings about URL-based types
+        $urlWarningFound = false;
+        foreach ($result->getWarnings() as $warning) {
+            if (strpos($warning, 'URL-based certificate types') !== false) {
+                $urlWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($urlWarningFound, 'Should warn about security implications of URL-based types');
+    }
+
+    public function testValidateWithInvalidURLInURLBasedType()
+    {
+        $content = 'IPKIX 12345 13 not-a-valid-url';  // Invalid URL for URL-based type
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertNotEmpty($result->getErrors());
     }
 }
