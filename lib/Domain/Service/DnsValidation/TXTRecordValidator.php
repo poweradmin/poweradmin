@@ -31,9 +31,13 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * Validates TXT records according to:
  * - RFC 1035: Domain Names - Implementation and Specification
  * - RFC 7208: Sender Policy Framework (SPF) for Authorizing Use of Domains in Email
+ * - RFC 7489: Domain-based Message Authentication, Reporting, and Conformance (DMARC)
  *
  * TXT records are limited to 255 bytes per string as per DNS message format.
  * Multiple strings can be concatenated for longer TXT records.
+ *
+ * Special handling is provided for specialized TXT record formats:
+ * - DMARC records at _dmarc.<domain> with v=DMARC1 content
  *
  * @package Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -45,12 +49,14 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
     private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
+    private DMARCRecordValidator $dmarcValidator;
 
     public function __construct(ConfigurationManager $config)
     {
         $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
+        $this->dmarcValidator = new DMARCRecordValidator($config);
     }
 
     /**
@@ -66,6 +72,24 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
      */
     public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
     {
+        // Check if this is a DMARC record
+        $isDmarc = str_starts_with(strtolower($name), '_dmarc.') &&
+                  preg_match('/^"?v=DMARC1\b/i', trim($content));
+
+        if ($isDmarc) {
+            // If it's a DMARC record, use the DMARC validator
+            $dmarcResult = $this->dmarcValidator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+            // Process warnings - update them to indicate this is a DMARC record
+            if ($dmarcResult->hasWarnings()) {
+                $warnings = $dmarcResult->getWarnings();
+                $warnings[] = _('This is a DMARC record being processed through TXT record type. DMARC records should use TXT record type with content starting with "v=DMARC1".');
+                return ValidationResult::success($dmarcResult->getData(), $warnings);
+            }
+
+            return $dmarcResult;
+        }
+
         // Validate hostname/name
         $hostnameResult = $this->hostnameValidator->validate($name, true);
         if (!$hostnameResult->isValid()) {

@@ -218,4 +218,35 @@ class SPFRecordValidatorTest extends TestCase
         $this->assertFalse($result2->isValid(), "Invalid SPF version should fail validation");
         $this->assertStringContainsString('SPF record must start with', $result2->getFirstError());
     }
+
+    /**
+     * Test SPF validation with warnings
+     */
+    public function testValidateWithWarnings()
+    {
+        // Use the PTR mechanism which should give a warning but still validate
+        $content = 'v=spf1 ptr:example.org -all';
+        $name = 'example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        // Validate that the record is valid but has warnings
+        $this->assertTrue($result->isValid(), "SPF with PTR should be valid but have warnings");
+        $this->assertTrue($result->hasWarnings(), "Result should have warnings with PTR mechanism");
+
+        // Check that the warnings are provided via getWarnings()
+        $warnings = $result->getWarnings();
+        $this->assertNotEmpty($warnings, "Warnings array should not be empty");
+        $this->assertContains(
+            "The ptr mechanism is not recommended due to performance issues (RFC 7208 Section 5.5).",
+            $warnings
+        );
+
+        // Verify that warnings are not in the data array (old behavior)
+        $data = $result->getData();
+        $this->assertArrayNotHasKey('warnings', $data, "Warnings should not be in data array");
+    }
 }

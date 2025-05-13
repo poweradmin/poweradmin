@@ -412,4 +412,21 @@ class TXTRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertEquals($content, $data['content']);
     }
+
+    /**
+     * Test validation with DMARC record in TXT format
+     */
+    public function testValidateWithDmarcRecordInTxtFormat()
+    {
+        $content = '"v=DMARC1; p=none; rua=mailto:dmarc-reports@example.com; ruf=mailto:forensic@example.com; pct=100"';
+        $name = '_dmarc.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        // No need to check specific fields since the DMARCRecordValidator will be called
+    }
 }

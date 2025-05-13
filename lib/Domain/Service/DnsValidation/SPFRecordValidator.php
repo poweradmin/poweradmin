@@ -96,9 +96,8 @@ class SPFRecordValidator implements DnsRecordValidatorInterface
 
         // Extract warnings from SPF content validation if any
         $warnings = [];
-        $contentData = $contentResult->getData();
-        if (is_array($contentData) && isset($contentData['warnings'])) {
-            $warnings = $contentData['warnings'];
+        if ($contentResult->hasWarnings()) {
+            $warnings = $contentResult->getWarnings();
         }
 
         // Validate TTL
@@ -123,12 +122,7 @@ class SPFRecordValidator implements DnsRecordValidatorInterface
             'ttl' => $validatedTtl
         ];
 
-        // Add warnings if any
-        if (!empty($warnings)) {
-            $resultData['warnings'] = $warnings;
-        }
-
-        return ValidationResult::success($resultData);
+        return ValidationResult::success($resultData, $warnings);
     }
 
     /**
@@ -308,13 +302,8 @@ class SPFRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::errors($errors);
         }
 
-        // If there are only warnings, return success with warnings
-        if (!empty($warnings)) {
-            $result = ['isValid' => true, 'warnings' => $warnings];
-            return ValidationResult::success($result);
-        }
-
-        return ValidationResult::success(true);
+        // Return success with any warnings
+        return ValidationResult::success(true, $warnings);
     }
 
     /**
