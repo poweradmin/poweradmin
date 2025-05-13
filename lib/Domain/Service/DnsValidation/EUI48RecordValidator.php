@@ -90,8 +90,8 @@ class EUI48RecordValidator implements DnsRecordValidatorInterface
         }
 
         // Add any warnings from content validation
-        if ($contentResult->hasWarnings() && is_array($contentResult->getData()) && isset($contentResult->getData()['warnings'])) {
-            $warnings = array_merge($warnings, $contentResult->getData()['warnings']);
+        if ($contentResult->hasWarnings()) {
+            $warnings = array_merge($warnings, $contentResult->getWarnings());
         }
 
         // Normalize content to standard format (preserving case as specified in RFC 7043)
@@ -179,9 +179,8 @@ class EUI48RecordValidator implements DnsRecordValidatorInterface
         }
 
         return ValidationResult::success([
-            'content' => $data, // Preserve case as allowed by RFC 7043
-            'warnings' => $warnings
-        ]);
+            'content' => $data // Preserve case as allowed by RFC 7043
+        ], $warnings);
     }
 
     /**

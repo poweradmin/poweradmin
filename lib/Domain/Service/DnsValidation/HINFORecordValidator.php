@@ -97,8 +97,7 @@ class HINFORecordValidator implements DnsRecordValidatorInterface
         }
 
         // Collect warnings from content validation
-        $contentData = $contentResult->getData();
-        $warnings = $contentData['warnings'] ?? [];
+        $warnings = $contentResult->hasWarnings() ? $contentResult->getWarnings() : [];
 
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
@@ -263,9 +262,6 @@ class HINFORecordValidator implements DnsRecordValidatorInterface
             $warnings[] = _('OS type does not contain any standard values. Consider using a standard OS type for better interoperability.');
         }
 
-        return ValidationResult::success([
-            'valid' => true,
-            'warnings' => $warnings
-        ]);
+        return ValidationResult::success(true, $warnings);
     }
 }

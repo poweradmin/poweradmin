@@ -58,19 +58,7 @@ final class ValidationResult
      */
     public static function success($data, array $warnings = []): self
     {
-        // Extract warnings from data if in array format for backward compatibility
-        $extractedWarnings = [];
-        if (is_array($data) && isset($data['warnings']) && is_array($data['warnings'])) {
-            $extractedWarnings = $data['warnings'];
-
-            // For backward compatibility, don't remove warnings from data struct
-            // Many validators expect ['warnings'] to stay in the data
-        }
-
-        // Merge explicitly provided warnings with extracted ones
-        $allWarnings = array_merge($extractedWarnings, $warnings);
-
-        return new self(true, [], $allWarnings, $data);
+        return new self(true, [], $warnings, $data);
     }
 
     /**

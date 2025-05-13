@@ -124,9 +124,8 @@ class RKEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Collect warnings from content validation
-        $rkeyData = $rkeyResult->getData();
-        if (is_array($rkeyData) && isset($rkeyData['warnings']) && is_array($rkeyData['warnings'])) {
-            $warnings = array_merge($warnings, $rkeyData['warnings']);
+        if ($rkeyResult->hasWarnings()) {
+            $warnings = array_merge($warnings, $rkeyResult->getWarnings());
         }
 
         // Validate TTL
@@ -262,9 +261,6 @@ class RKEYRecordValidator implements DnsRecordValidatorInterface
         $warnings[] = _('RKEY records are rarely used in modern DNS implementations.');
         $warnings[] = _('Consider using standardized record types for cryptographic purposes.');
 
-        return ValidationResult::success([
-            'result' => true,
-            'warnings' => $warnings
-        ]);
+        return ValidationResult::success(true, $warnings);
     }
 }

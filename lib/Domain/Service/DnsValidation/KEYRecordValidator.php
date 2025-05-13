@@ -109,11 +109,7 @@ class KEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Get warnings from content validation
-        $contentData = $contentResult->getData();
-        $contentWarnings = [];
-        if (isset($contentData['warnings']) && is_array($contentData['warnings'])) {
-            $contentWarnings = $contentData['warnings'];
-        }
+        $contentWarnings = $contentResult->hasWarnings() ? $contentResult->getWarnings() : [];
 
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
@@ -235,9 +231,6 @@ class KEYRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('KEY public key must be properly Base64 encoded.'));
         }
 
-        return ValidationResult::success([
-            'valid' => true,
-            'warnings' => $warnings
-        ]);
+        return ValidationResult::success(true, $warnings);
     }
 }

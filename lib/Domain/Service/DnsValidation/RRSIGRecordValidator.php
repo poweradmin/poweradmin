@@ -120,9 +120,8 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Collect warnings from content validation
-        $contentData = $contentResult->getData();
-        if (is_array($contentData) && isset($contentData['warnings']) && is_array($contentData['warnings'])) {
-            $warnings = array_merge($warnings, $contentData['warnings']);
+        if ($contentResult->hasWarnings()) {
+            $warnings = array_merge($warnings, $contentResult->getWarnings());
         }
 
         // Validate TTL
@@ -329,10 +328,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
         $warnings[] = _('RRSIG records are part of DNSSEC and provide cryptographic signatures for DNS records. They should be managed automatically by the DNS server.');
         $warnings[] = _('Remember that RRSIG records must be regenerated before their expiration date to maintain DNSSEC validation.');
 
-        return ValidationResult::success([
-            'result' => true,
-            'warnings' => $warnings
-        ]);
+        return ValidationResult::success(true, $warnings);
     }
 
     /**

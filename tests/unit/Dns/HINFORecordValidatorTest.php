@@ -332,4 +332,42 @@ class HINFORecordValidatorTest extends BaseDnsTest
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('255 characters', $result->getFirstError());
     }
+
+    /**
+     * Test that warnings are correctly handled with the updated ValidationResult pattern
+     */
+    public function testWarningHandling()
+    {
+        // Standard values with spaces that need quotes
+        $content = '"Intel CPU" "Windows OS"';
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        // Verify the result is valid
+        $this->assertTrue($result->isValid());
+
+        // Verify warnings are accessible via hasWarnings() and getWarnings()
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $this->assertIsArray($warnings);
+        $this->assertNotEmpty($warnings);
+
+        // There should be at least one security warning
+        $securityWarningFound = false;
+        foreach ($warnings as $warning) {
+            if (stripos($warning, 'security') !== false) {
+                $securityWarningFound = true;
+                break;
+            }
+        }
+        $this->assertTrue($securityWarningFound, 'Security warning should be present');
+
+        // Verify that warnings are not in the data array (old pattern)
+        $data = $result->getData();
+        $this->assertArrayNotHasKey('warnings', $data);
+    }
 }

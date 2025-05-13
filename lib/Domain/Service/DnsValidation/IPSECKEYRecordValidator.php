@@ -102,11 +102,7 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Get warnings from content validation
-        $contentData = $contentResult->getData();
-        $contentWarnings = [];
-        if (isset($contentData['warnings']) && is_array($contentData['warnings'])) {
-            $contentWarnings = $contentData['warnings'];
-        }
+        $contentWarnings = $contentResult->hasWarnings() ? $contentResult->getWarnings() : [];
 
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
@@ -252,9 +248,6 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
             $warnings[] = _('When algorithm is 0 (No key), the public key field is typically empty or ignored.');
         }
 
-        return ValidationResult::success([
-            'valid' => true,
-            'warnings' => $warnings
-        ]);
+        return ValidationResult::success(true, $warnings);
     }
 }

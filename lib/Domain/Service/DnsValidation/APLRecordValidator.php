@@ -132,11 +132,8 @@ class APLRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Check for warnings from content validation
-        if ($contentResult->isValid() && is_array($contentResult->getData())) {
-            $contentData = $contentResult->getData();
-            if (isset($contentData['warnings'])) {
-                $warnings = array_merge($warnings, $contentData['warnings']);
-            }
+        if ($contentResult->isValid() && $contentResult->hasWarnings()) {
+            $warnings = array_merge($warnings, $contentResult->getWarnings());
         }
 
         // 3. Validate TTL
@@ -229,9 +226,7 @@ class APLRecordValidator implements DnsRecordValidatorInterface
             }
         }
 
-        $result = ['isValid' => true];
-
-        return ValidationResult::success($result, $warnings);
+        return ValidationResult::success(true, $warnings);
     }
 
     /**
@@ -320,8 +315,6 @@ class APLRecordValidator implements DnsRecordValidatorInterface
             $warnings[] = _('Using APL records for AXFR access control should be combined with other security measures as noted in RFC 3123.');
         }
 
-        $result = ['isValid' => true];
-
-        return ValidationResult::success($result, $warnings);
+        return ValidationResult::success(true, $warnings);
     }
 }

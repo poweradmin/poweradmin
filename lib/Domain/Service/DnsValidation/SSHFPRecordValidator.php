@@ -109,7 +109,7 @@ class SSHFPRecordValidator implements DnsRecordValidatorInterface
 
         // Get content data and warnings
         $contentData = $contentResult->getData();
-        $warnings = $contentData['warnings'] ?? [];
+        $warnings = $contentResult->hasWarnings() ? $contentResult->getWarnings() : [];
 
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);

@@ -235,4 +235,45 @@ class SSHFPRecordValidatorTest extends TestCase
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Priority field', $result->getFirstError());
     }
+
+    /**
+     * Test that warnings are correctly returned through the ValidationResult
+     */
+    public function testWarningHandling()
+    {
+        $content = '1 1 123456789abcdef0123456789abcdef012345678'; // SHA-1 will produce warning
+        $name = 'host.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        // Test warnings are accessible via hasWarnings() and getWarnings()
+        $this->assertTrue($result->isValid());
+        $this->assertTrue($result->hasWarnings());
+        $warnings = $result->getWarnings();
+        $this->assertIsArray($warnings);
+        $this->assertNotEmpty($warnings);
+
+        // Look for specific warnings that should be present
+        $dnssecWarningFound = false;
+        $sha1WarningFound = false;
+
+        foreach ($warnings as $warning) {
+            if (stripos($warning, 'DNSSEC') !== false) {
+                $dnssecWarningFound = true;
+            }
+            if (stripos($warning, 'SHA-1') !== false) {
+                $sha1WarningFound = true;
+            }
+        }
+
+        $this->assertTrue($dnssecWarningFound, 'DNSSEC warning should be present');
+        $this->assertTrue($sha1WarningFound, 'SHA-1 warning should be present');
+
+        // Verify that warnings are not in the data array (old pattern)
+        $data = $result->getData();
+        $this->assertArrayNotHasKey('warnings', $data, 'Data should not contain warnings');
+    }
 }

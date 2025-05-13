@@ -139,9 +139,8 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
         }
 
         // Include any warnings from content validation
-        $contentData = $contentResult->getData();
-        if (is_array($contentData) && isset($contentData['warnings']) && is_array($contentData['warnings'])) {
-            $warnings = array_merge($warnings, $contentData['warnings']);
+        if ($contentResult->hasWarnings()) {
+            $warnings = array_merge($warnings, $contentResult->getWarnings());
         }
 
         // Validate TTL
@@ -276,9 +275,6 @@ class SMIMEARecordValidator implements DnsRecordValidatorInterface
         // Add security warning about DNSSEC requirement
         $warnings[] = _('CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, SMIMEA offers NO security benefit.');
 
-        return ValidationResult::success([
-            'result' => true,
-            'warnings' => $warnings
-        ]);
+        return ValidationResult::success(true, $warnings);
     }
 }

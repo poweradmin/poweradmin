@@ -273,9 +273,8 @@ class NSEC3RecordValidator implements DnsRecordValidatorInterface
             }
 
             // Collect warnings from type bit maps validation
-            $typeBitMapsData = $typeBitMapsResult->getData();
-            if (isset($typeBitMapsData['warnings']) && is_array($typeBitMapsData['warnings'])) {
-                $warnings = array_merge($warnings, $typeBitMapsData['warnings']);
+            if ($typeBitMapsResult->hasWarnings()) {
+                $warnings = array_merge($warnings, $typeBitMapsResult->getWarnings());
             }
         } else {
             // Type bit maps should be present

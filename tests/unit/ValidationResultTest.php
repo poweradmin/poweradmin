@@ -112,23 +112,7 @@ class ValidationResultTest extends TestCase
         $this->assertEquals(['Invalid IP address format'], $invalidResult->getErrors());
     }
 
-    /**
-     * Test success result with warnings (legacy approach with warnings in data)
-     */
-    public function testSuccessResultWithWarningsLegacy(): void
-    {
-        $data = [
-            'ttl' => 300,
-            'warnings' => ['TTL value is below recommended minimum']
-        ];
-        $result = ValidationResult::success($data);
-
-        $this->assertTrue($result->isValid());
-        $this->assertTrue($result->hasWarnings());
-        $this->assertEquals(['TTL value is below recommended minimum'], $result->getWarnings());
-        // Data should keep warnings for backward compatibility
-        $this->assertSame($data, $result->getData());
-    }
+    // Legacy warning approach tests have been removed since we no longer support the old format
 
     /**
      * Test success result with explicit warnings parameter
@@ -195,10 +179,9 @@ class ValidationResultTest extends TestCase
             'Non-standard port for HTTP service'
         ];
         $data = [
-            'content' => '10 20 8080 server.example.com',
-            'warnings' => $warnings
+            'content' => '10 20 8080 server.example.com'
         ];
-        $result = ValidationResult::success($data);
+        $result = ValidationResult::success($data, $warnings);
 
         $this->assertTrue($result->isValid());
         $this->assertTrue($result->hasWarnings());
@@ -225,7 +208,6 @@ class ValidationResultTest extends TestCase
                     return ValidationResult::failure('TTL must be between 0 and 2147483647');
                 }
 
-                $result = ['ttl' => $ttlValue];
                 $warnings = [];
 
                 // Add warnings for values outside recommended ranges
@@ -237,11 +219,7 @@ class ValidationResultTest extends TestCase
                     $warnings[] = 'TTL value is above recommended maximum of 604800 seconds (1 week)';
                 }
 
-                if (!empty($warnings)) {
-                    $result['warnings'] = $warnings;
-                }
-
-                return ValidationResult::success($result);
+                return ValidationResult::success(['ttl' => $ttlValue], $warnings);
             }
         };
 
@@ -315,16 +293,16 @@ class ValidationResultTest extends TestCase
     }
 
     /**
-     * Test special case - warnings only data
+     * Test special case - warnings with empty data
      */
     public function testWarningsOnlyData(): void
     {
-        $data = ['warnings' => ['Just a warning']];
-        $result = ValidationResult::success($data);
+        $warnings = ['Just a warning'];
+        $result = ValidationResult::success(null, $warnings);
 
         $this->assertTrue($result->isValid());
         $this->assertTrue($result->hasWarnings());
         $this->assertEquals(['Just a warning'], $result->getWarnings());
-        $this->assertSame($data, $result->getData());
+        $this->assertNull($result->getData());
     }
 }

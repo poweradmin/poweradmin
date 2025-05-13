@@ -106,9 +106,8 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Collect warnings from content validation
-        $contentData = $contentResult->getData();
-        if (is_array($contentData) && isset($contentData['warnings']) && is_array($contentData['warnings'])) {
-            $warnings = array_merge($warnings, $contentData['warnings']);
+        if ($contentResult->hasWarnings()) {
+            $warnings = array_merge($warnings, $contentResult->getWarnings());
         }
 
         // Validate TTL
@@ -175,9 +174,8 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Get mailbox warnings if any
-        $mailboxData = $mailboxResult->getData();
-        if (is_array($mailboxData) && isset($mailboxData['warnings']) && is_array($mailboxData['warnings'])) {
-            $warnings = array_merge($warnings, $mailboxData['warnings']);
+        if ($mailboxResult->hasWarnings()) {
+            $warnings = array_merge($warnings, $mailboxResult->getWarnings());
         }
 
         // Validate TXT domain reference
@@ -187,9 +185,8 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Get TXT domain warnings if any
-        $txtData = $txtResult->getData();
-        if (is_array($txtData) && isset($txtData['warnings']) && is_array($txtData['warnings'])) {
-            $warnings = array_merge($warnings, $txtData['warnings']);
+        if ($txtResult->hasWarnings()) {
+            $warnings = array_merge($warnings, $txtResult->getWarnings());
         }
 
         // Add general warnings about RP records
@@ -197,10 +194,7 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         $warnings[] = _('The RP record is less commonly used today. Consider using WHOIS records or other contact mechanisms instead.');
         $warnings[] = _('Ensure corresponding TXT records exist for the txt-dname field if not using a dot (.).');
 
-        return ValidationResult::success([
-            'result' => true,
-            'warnings' => $warnings
-        ]);
+        return ValidationResult::success(true, $warnings);
     }
 
     /**
@@ -217,10 +211,7 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         // The mailbox domain can be a "." to indicate "none"
         if ($mailboxDomain === '.') {
             $warnings[] = _('Using "." for the mailbox domain indicates no responsible person is specified. This is not recommended for production domains.');
-            return ValidationResult::success([
-                'result' => true,
-                'warnings' => $warnings
-            ]);
+            return ValidationResult::success(true, $warnings);
         }
 
         // Check for valid FQDN by seeing if it ends with a dot
@@ -289,10 +280,7 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         // Add warnings
         $warnings[] = _('The mailbox domain should use the same format as the RNAME field in SOA records, with @ replaced by a dot.');
 
-        return ValidationResult::success([
-            'result' => true,
-            'warnings' => $warnings
-        ]);
+        return ValidationResult::success(true, $warnings);
     }
 
     /**
@@ -309,10 +297,7 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         // The TXT domain can be a "." to indicate "none"
         if ($txtDomain === '.') {
             $warnings[] = _('Using "." for the TXT domain indicates no additional information TXT record is available.');
-            return ValidationResult::success([
-                'result' => true,
-                'warnings' => $warnings
-            ]);
+            return ValidationResult::success(true, $warnings);
         }
 
         // Check for valid FQDN by seeing if it ends with a dot
@@ -355,9 +340,6 @@ class RPRecordValidator implements DnsRecordValidatorInterface
         $warnings[] = _('Ensure a TXT record exists at this domain name containing contact information for the responsible person.');
         $warnings[] = sprintf(_('You should create a TXT record at domain: %s'), $txtDomain . '.');
 
-        return ValidationResult::success([
-            'result' => true,
-            'warnings' => $warnings
-        ]);
+        return ValidationResult::success(true, $warnings);
     }
 }

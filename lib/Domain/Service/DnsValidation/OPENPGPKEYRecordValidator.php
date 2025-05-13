@@ -119,9 +119,8 @@ class OPENPGPKEYRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Collect warnings from content validation
-        $contentData = $contentResult->getData();
-        if (is_array($contentData) && isset($contentData['warnings']) && is_array($contentData['warnings'])) {
-            $warnings = array_merge($warnings, $contentData['warnings']);
+        if ($contentResult->hasWarnings()) {
+            $warnings = array_merge($warnings, $contentResult->getWarnings());
         }
 
         // Validate TTL
@@ -261,9 +260,6 @@ class OPENPGPKEYRecordValidator implements DnsRecordValidatorInterface
         $warnings[] = _('OPENPGPKEY records are not a replacement for the OpenPGP Web of Trust. Additional verification methods are still recommended.');
         $warnings[] = _('To create OPENPGPKEY records, use specialized tools like GnuPG with the --print-dane-records option to ensure correct format and content.');
 
-        return ValidationResult::success([
-            'result' => true,
-            'warnings' => $warnings
-        ]);
+        return ValidationResult::success(true, $warnings);
     }
 }
