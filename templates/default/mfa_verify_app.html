@@ -16,35 +16,31 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-6">
-              <h5>{% trans %}Step 1: Scan QR Code{% endtrans %}</h5>
-              <p>{% trans %}Scan this QR code with your authenticator app{% endtrans %}</p>
+              <h6 class="fs-6">{% trans %}Step 1: Scan QR Code{% endtrans %}</h6>
+              <p class="small">{% trans %}Scan this QR code with your authenticator app{% endtrans %}</p>
               
               <div class="text-center my-4">
                 {{ qr_code|raw }}
               </div>
               
-              <p class="mt-3">{% trans %}Or manually enter this key in your authenticator app{% endtrans %}</p>
+              <p class="mt-3 small">{% trans %}Or manually enter this key in your authenticator app{% endtrans %}</p>
               <div class="input-group mb-3">
                 <input type="text" class="form-control" value="{{ secret }}" readonly id="secret-key">
                 <button class="btn btn-outline-secondary" type="button" onclick="copySecret()">
                   <i class="bi bi-clipboard"></i>
                 </button>
               </div>
-              <div class="alert alert-info bg-info bg-opacity-10 py-2 border border-info small mb-3">
-                <i class="bi bi-info-circle-fill me-2 text-info"></i>
-                <span>{% trans %}When adding manually, select "Enter key" or "Enter setup key" in your authenticator app, then enter the key above. Leave spaces out if your app doesn't accept them.{% endtrans %}</span>
-              </div>
             </div>
             
             <div class="col-md-6">
-              <h5>{% trans %}Step 2: Verify Setup{% endtrans %}</h5>
-              <p>{% trans %}Enter the 6-digit code from your authenticator app{% endtrans %}</p>
+              <h6 class="fs-6">{% trans %}Step 2: Verify Setup{% endtrans %}</h6>
+              <p class="small">{% trans %}Enter the 6-digit code from your authenticator app{% endtrans %}</p>
               
               <form method="post" action="index.php?page=mfa_setup" class="needs-validation" novalidate>
                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                 
                 <div class="mb-3">
-                  <label for="verification_code" class="form-label">{% trans %}Verification Code{% endtrans %}</label>
+                  <label for="verification_code" class="form-label small">{% trans %}Verification Code{% endtrans %}</label>
                   <input type="text" class="form-control" id="verification_code" name="verification_code" 
                          placeholder="000000" maxlength="6" minlength="6" inputmode="numeric" pattern="[0-9]*" required>
                   <div class="valid-feedback">
@@ -68,12 +64,42 @@
           </div>
           
           <div class="mt-4">
-            <h5>{% trans %}Recommended Authenticator Apps{% endtrans %}</h5>
-            <ul>
-              <li><strong>Google Authenticator</strong> - {% trans %}Available for Android and iOS{% endtrans %}</li>
-              <li><strong>Microsoft Authenticator</strong> - {% trans %}Available for Android and iOS{% endtrans %}</li>
-              <li><strong>Authy</strong> - {% trans %}Available for Android, iOS and desktop{% endtrans %}</li>
-            </ul>
+            <h6 class="fs-6 text-muted">{% trans %}Recommended Authenticator Apps{% endtrans %}</h6>
+            <div class="row g-2 mt-1">
+              <div class="col-md-4">
+                <div class="card card-body p-2 bg-light">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-google me-2 text-primary"></i>
+                    <div>
+                      <div class="small fw-bold">Google Authenticator</div>
+                      <div class="text-muted" style="font-size: 0.75rem;">{% trans %}Available for Android and iOS{% endtrans %}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card card-body p-2 bg-light">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-microsoft me-2 text-primary"></i>
+                    <div>
+                      <div class="small fw-bold">Microsoft Authenticator</div>
+                      <div class="text-muted" style="font-size: 0.75rem;">{% trans %}Available for Android and iOS{% endtrans %}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-4">
+                <div class="card card-body p-2 bg-light">
+                  <div class="d-flex align-items-center">
+                    <i class="bi bi-shield-check me-2 text-primary"></i>
+                    <div>
+                      <div class="small fw-bold">Authy</div>
+                      <div class="text-muted" style="font-size: 0.75rem;">{% trans %}Available for Android and iOS{% endtrans %}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
