@@ -7,8 +7,9 @@
         </div>
         <div class="card-body">
           {% if msg %}
-          <div class="alert alert-{{ type }}" role="alert">
-            {{ msg }}
+          <div class="alert alert-{{ type }} bg-{{ type }} bg-opacity-10 py-2 border border-{{ type }} small" role="alert">
+            <i class="bi bi-{% if type == 'danger' %}exclamation-triangle{% elseif type == 'warning' %}exclamation-circle{% elseif type == 'success' %}check-circle{% else %}info-circle{% endif %}-fill me-2 text-{{ type }}"></i>
+            <span class="text-{{ type }}">{{ msg }}</span>
           </div>
           {% endif %}
           
