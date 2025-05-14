@@ -209,51 +209,58 @@ class MfaService
 
         // For email type, verify with direct comparison
         if ($mfaType === UserMfa::TYPE_EMAIL) {
-            $storedSecret = $userMfa->getSecret();
-            $metadataJson = $userMfa->getVerificationData();
-            $metadata = null;
-
-            // Check verification metadata if available
-            if (!empty($metadataJson)) {
-                try {
-                    $metadata = json_decode($metadataJson, true);
-
-                    // Check if code has expired
-                    if (isset($metadata['expires_at']) && $metadata['expires_at'] < time()) {
-                        error_log("[MfaService] Email code expired for user ID: $userId");
-                        return false;
-                    }
-
-                    // Check if code was already used
-                    if (isset($metadata['used']) && $metadata['used'] === true) {
-                        error_log("[MfaService] Email code already used for user ID: $userId");
-                        return false;
-                    }
-                } catch (\Exception $e) {
-                    error_log("[MfaService] Error processing metadata: " . $e->getMessage());
-                }
-            }
-
-            // Verify the code (trim to handle potential whitespace)
-            $isValid = trim($storedSecret) === trim($code);
-
-            if ($isValid) {
-                error_log("[MfaService] Valid email code for user ID: $userId");
-
-                // Mark the code as used
-                if ($metadata) {
-                    $metadata['used'] = true;
-                    $userMfa->setVerificationData($metadata);
-                }
-
-                // Update last used timestamp
-                $userMfa->updateLastUsed();
-                $this->userMfaRepository->save($userMfa);
+            // Check if mail service is enabled before proceeding with email verification
+            if (!$this->configManager->get('mail', 'enabled', false)) {
+                error_log("[MfaService] Email verification attempted but mail service is disabled for user ID: $userId");
+                // Only proceed to recovery code check, which was already done above, or TOTP below
+                // Do not validate the email code if mail service is disabled
             } else {
-                error_log("[MfaService] Invalid email code for user ID: $userId");
-            }
+                $storedSecret = $userMfa->getSecret();
+                $metadataJson = $userMfa->getVerificationData();
+                $metadata = null;
 
-            return $isValid;
+                // Check verification metadata if available
+                if (!empty($metadataJson)) {
+                    try {
+                        $metadata = json_decode($metadataJson, true);
+
+                        // Check if code has expired
+                        if (isset($metadata['expires_at']) && $metadata['expires_at'] < time()) {
+                            error_log("[MfaService] Email code expired for user ID: $userId");
+                            return false;
+                        }
+
+                        // Check if code was already used
+                        if (isset($metadata['used']) && $metadata['used'] === true) {
+                            error_log("[MfaService] Email code already used for user ID: $userId");
+                            return false;
+                        }
+                    } catch (\Exception $e) {
+                        error_log("[MfaService] Error processing metadata: " . $e->getMessage());
+                    }
+                }
+
+                // Verify the code (trim to handle potential whitespace)
+                $isValid = trim($storedSecret) === trim($code);
+
+                if ($isValid) {
+                    error_log("[MfaService] Valid email code for user ID: $userId");
+
+                    // Mark the code as used
+                    if ($metadata) {
+                        $metadata['used'] = true;
+                        $userMfa->setVerificationData($metadata);
+                    }
+
+                    // Update last used timestamp
+                    $userMfa->updateLastUsed();
+                    $this->userMfaRepository->save($userMfa);
+                    return true;
+                } else {
+                    error_log("[MfaService] Invalid email code for user ID: $userId");
+                    return false;
+                }
+            }
         }
 
         // For app-based MFA, verify the TOTP code
@@ -305,6 +312,27 @@ class MfaService
      */
     public function sendEmailVerificationCode(int $userId, string $email): string
     {
+        // Check if mail service is enabled
+        if (!$this->configManager->get('mail', 'enabled', false)) {
+            error_log("[MfaService] Email verification attempted but mail service is disabled for user ID: $userId");
+            throw new \RuntimeException('Email verification is not available because mail service is disabled.');
+        }
+
+        // Check if email is empty
+        if (empty($email)) {
+            error_log("[MfaService] Email verification attempted but email is empty for user ID: $userId");
+            throw new \RuntimeException('Email address is required for email verification.');
+        }
+
+        // Validate mail configuration before proceeding
+        if (
+            method_exists($this->mailService, 'isMailConfigurationValid') &&
+            !$this->mailService->isMailConfigurationValid()
+        ) {
+            error_log("[MfaService] Email verification attempted but mail configuration is invalid for user ID: $userId");
+            throw new \RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
+        }
+
         $userMfa = $this->getUserMfa($userId);
 
         // Generate a simple numeric verification code (6 digits)
@@ -366,6 +394,27 @@ class MfaService
      */
     public function refreshEmailVerificationCodeIfNeeded(int $userId, string $email): ?string
     {
+        // Check if mail service is enabled
+        if (!$this->configManager->get('mail', 'enabled', false)) {
+            error_log("[MfaService] Email verification refresh attempted but mail service is disabled for user ID: $userId");
+            throw new \RuntimeException('Email verification is not available because mail service is disabled.');
+        }
+
+        // Check if email is empty
+        if (empty($email)) {
+            error_log("[MfaService] Email verification refresh attempted but email is empty for user ID: $userId");
+            throw new \RuntimeException('Email address is required for email verification.');
+        }
+
+        // Validate mail configuration before proceeding
+        if (
+            method_exists($this->mailService, 'isMailConfigurationValid') &&
+            !$this->mailService->isMailConfigurationValid()
+        ) {
+            error_log("[MfaService] Email verification refresh attempted but mail configuration is invalid for user ID: $userId");
+            throw new \RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
+        }
+
         $userMfa = $this->getUserMfa($userId);
 
         // Only proceed if this is email-based MFA
@@ -393,14 +442,19 @@ class MfaService
                     $needsRefresh = false;
                 }
             } catch (\Exception $e) {
-                error_log("Error checking verification code status: " . $e->getMessage());
+                error_log("[MfaService] Error checking verification code status: " . $e->getMessage());
                 $needsRefresh = true;
             }
         }
 
         if ($needsRefresh) {
-            error_log("Generating new email verification code for user $userId");
-            return $this->sendEmailVerificationCode($userId, $email);
+            error_log("[MfaService] Generating new email verification code for user $userId");
+            try {
+                return $this->sendEmailVerificationCode($userId, $email);
+            } catch (\Exception $e) {
+                error_log("[MfaService] Failed to send verification code: " . $e->getMessage());
+                return null;
+            }
         }
 
         return null;

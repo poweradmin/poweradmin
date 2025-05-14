@@ -165,8 +165,23 @@ class MfaSetupController extends BaseController
         $userId = $_SESSION['userid'] ?? 0;
         $email = $_SESSION['email'] ?? '';
 
+        // Check if user has an email address set
         if (empty($email)) {
             $this->addSystemMessage('error', _('Email address is not available. Please update your email address in your profile.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Check if mail service is enabled globally
+        if (!$this->config->get('mail', 'enabled', false)) {
+            $this->addSystemMessage('error', _('Email verification method is not available because mail service is not enabled on this system.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Check if email MFA is specifically enabled in security settings
+        if (!$this->config->get('security', 'mfa.email_enabled', true)) {
+            $this->addSystemMessage('error', _('Email verification method is not enabled on this system.'));
             $this->displayMfaSetup();
             return;
         }
@@ -194,11 +209,24 @@ class MfaSetupController extends BaseController
             $this->mfaService->saveUserMfa($userMfa);
         }
 
-        // Send verification code via email
-        $code = $this->mfaService->sendEmailVerificationCode($userId, $email);
+        try {
+            // Send verification code via email
+            $code = $this->mfaService->sendEmailVerificationCode($userId, $email);
 
-        // Display email verification form
-        $this->displayEmailVerification($email);
+            // Display email verification form
+            $this->displayEmailVerification($email);
+        } catch (\RuntimeException $e) {
+            // Handle mail configuration issues
+            $this->addSystemMessage('error', $e->getMessage());
+            $this->displayMfaSetup();
+            return;
+        } catch (\Exception $e) {
+            // Handle other errors
+            error_log("[MfaSetupController] Email verification error: " . $e->getMessage());
+            $this->addSystemMessage('error', _('Failed to send verification code. Please try again later or use app-based authentication.'));
+            $this->displayMfaSetup();
+            return;
+        }
     }
 
     private function displayEmailVerification(string $email): void
@@ -275,10 +303,16 @@ class MfaSetupController extends BaseController
             $mfaType = $userMfa->getType();
         }
 
+        // Check if mail service is enabled for the template
+        $mailEnabled = $this->config->get('mail', 'enabled', false);
+        // Check if email MFA is specifically enabled
+        $emailMfaEnabled = $this->config->get('security', 'mfa.email_enabled', true);
+
         $this->render('mfa_setup.html', [
             'mfa_enabled' => $mfaEnabled,
             'mfa_type' => $mfaType,
-            'email' => $_SESSION['email'] ?? ''
+            'email' => $_SESSION['email'] ?? '',
+            'mail_enabled' => $mailEnabled && $emailMfaEnabled
         ]);
     }
 

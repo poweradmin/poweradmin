@@ -77,15 +77,19 @@
                 <li>{% trans %}Relies on email delivery{% endtrans %}</li>
               </ul>
               
-              {% if email %}
+              {% if not mail_enabled %}
+                <div class="alert alert-danger py-1 px-2">
+                  <small>{% trans %}Email verification is not available because mail service is not enabled on this system.{% endtrans %}</small>
+                </div>
+              {% elseif not email %}
+                <div class="alert alert-danger py-1 px-2">
+                  <small>{% trans %}You need to set your email address in your profile before you can use email verification.{% endtrans %}</small>
+                </div>
+              {% else %}
                 <form method="post" action="index.php?page=mfa_setup">
                   <input type="hidden" name="_token" value="{{ csrf_token }}">
                   <button type="submit" name="setup_email" class="btn btn-sm btn-primary">{% trans %}Set up email verification{% endtrans %}</button>
                 </form>
-              {% else %}
-                <div class="alert alert-danger py-1 px-2">
-                  <small>{% trans %}You need to set your email address in your profile before you can use email verification.{% endtrans %}</small>
-                </div>
               {% endif %}
             </div>
           </div>

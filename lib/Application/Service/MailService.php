@@ -57,9 +57,9 @@ class MailService implements MailServiceInterface
         string $plainBody = '',
         array $headers = []
     ): bool {
-        // Check if mail functionality is enabled
-        if (!$this->config->get('mail', 'enabled', false)) {
-            $this->logWarning('Mail sending failed: mail functionality is disabled in configuration');
+        // First, verify mail configuration is valid
+        if (!$this->isMailConfigurationValid()) {
+            $this->logWarning('Mail sending failed: mail configuration is invalid or mail server is unreachable');
             return false;
         }
 
@@ -264,9 +264,15 @@ class MailService implements MailServiceInterface
             $prefix = 'tls://';
         }
 
+        // First, verify the connection to the mail server
+        if (!$this->canConnectToMailServer($prefix . $host, $port)) {
+            $this->logError("Cannot connect to mail server at {$prefix}{$host}:{$port}. Mail service may be misconfigured.");
+            return false;
+        }
+
         try {
-            // Connect to SMTP server
-            $socket = fsockopen($prefix . $host, $port, $errno, $errstr, 30);
+            // Connect to SMTP server with error suppression to avoid generating warnings
+            $socket = @fsockopen($prefix . $host, $port, $errno, $errstr, 30);
             if (!$socket) {
                 throw new Exception("SMTP connection failed: $errstr ($errno)");
             }
@@ -338,6 +344,84 @@ class MailService implements MailServiceInterface
             }
             return false;
         }
+    }
+
+    /**
+     * Verify that we can connect to the mail server
+     * This tests basic connectivity before attempting to send mail
+     *
+     * @param string $host The mail server host (with protocol prefix if needed)
+     * @param int $port The mail server port
+     * @return bool True if connection was successful, false otherwise
+     */
+    public function canConnectToMailServer(string $host, int $port): bool
+    {
+        // Disable error output temporarily to prevent warnings
+        $oldErrorReporting = error_reporting(0);
+
+        // Try to establish a connection
+        $socket = @fsockopen($host, $port, $errno, $errstr, 5); // 5 second timeout is enough for testing
+
+        // Restore error reporting
+        error_reporting($oldErrorReporting);
+
+        if (!$socket) {
+            $this->logError("Mail server connection test failed: $errstr ($errno)");
+            return false;
+        }
+
+        // If we got here, connection was successful
+        fclose($socket);
+        return true;
+    }
+
+    /**
+     * Verify mail configuration is valid before attempting to send
+     *
+     * @return bool True if mail configuration is valid, false otherwise
+     */
+    public function isMailConfigurationValid(): bool
+    {
+        // Check if mail functionality is enabled
+        if (!$this->config->get('mail', 'enabled', false)) {
+            $this->logWarning('Mail configuration check failed: mail functionality is disabled in configuration');
+            return false;
+        }
+
+        $transportType = $this->config->get('mail', 'transport', 'smtp');
+
+        // For SMTP transport, verify connection to mail server
+        if ($transportType === 'smtp') {
+            $host = $this->config->get('mail', 'host', 'localhost');
+            $port = $this->config->get('mail', 'port', 25);
+            $encryption = $this->config->get('mail', 'encryption', '');
+
+            // Set prefix for encrypted connections
+            $prefix = '';
+            if ($encryption === 'ssl') {
+                $prefix = 'ssl://';
+            } elseif ($encryption === 'tls') {
+                $prefix = 'tls://';
+            }
+
+            return $this->canConnectToMailServer($prefix . $host, $port);
+        }
+
+        // For sendmail, check if the binary exists
+        if ($transportType === 'sendmail') {
+            $sendmailPath = $this->config->get('mail', 'sendmail_path', '/usr/sbin/sendmail -bs');
+            $sendmailBin = explode(' ', $sendmailPath)[0];
+
+            if (!file_exists($sendmailBin) || !is_executable($sendmailBin)) {
+                $this->logError("Sendmail binary not found or not executable: $sendmailBin");
+                return false;
+            }
+
+            return true;
+        }
+
+        // PHP mail() is always available
+        return true;
     }
 
     /**

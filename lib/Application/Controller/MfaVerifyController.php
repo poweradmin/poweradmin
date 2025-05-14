@@ -192,14 +192,34 @@ class MfaVerifyController extends BaseController
 
         // For email-based MFA, check if we need to refresh the code
         if ($mfaType === 'email' && !empty($email)) {
-            // Check if the code needs refreshing (expired or used)
-            $newCode = $this->mfaService->refreshEmailVerificationCodeIfNeeded($userId, $email);
+            // First check if mail service is enabled - only required for email verification
+            if (!$this->config->get('mail', 'enabled', false)) {
+                // Force user to use recovery codes since email is not available
+                $message = _('Email verification is not available because mail service is disabled. Please use a recovery code.');
+                $type = 'warning';
+                error_log("[MfaVerifyController] Email verification unavailable - mail service disabled for user ID: $userId");
+            } else {
+                try {
+                    // Check if the code needs refreshing (expired or used)
+                    $newCode = $this->mfaService->refreshEmailVerificationCodeIfNeeded($userId, $email);
 
-            if ($newCode !== null) {
-                // A new code was generated
-                $message = _('A new verification code has been sent to your email.');
-                $type = 'info';
-                error_log("[MfaVerifyController] New email verification code sent for user ID: $userId");
+                    if ($newCode !== null) {
+                        // A new code was generated
+                        $message = _('A new verification code has been sent to your email.');
+                        $type = 'info';
+                        error_log("[MfaVerifyController] New email verification code sent for user ID: $userId");
+                    }
+                } catch (\RuntimeException $e) {
+                    // Mail configuration error occurred
+                    $message = $e->getMessage() . ' ' . _('Please use a recovery code instead.');
+                    $type = 'warning';
+                    error_log("[MfaVerifyController] Email verification code refresh failed: " . $e->getMessage());
+                } catch (\Exception $e) {
+                    // Other error occurred
+                    $message = _('Could not send verification code to your email. Please use a recovery code instead.');
+                    $type = 'warning';
+                    error_log("[MfaVerifyController] Email verification error: " . $e->getMessage());
+                }
             }
         }
 
