@@ -197,7 +197,14 @@ class MfaService
 
         // Generate recovery codes if they don't exist
         if (empty($userMfa->getRecoveryCodesAsArray())) {
-            $userMfa->generateRecoveryCodes();
+            // Get configuration values for recovery codes
+            $codeCount = (int)$this->configManager->get('security', 'mfa.recovery_codes', 10);
+            $codeLength = (int)$this->configManager->get('security', 'mfa.recovery_code_length', 20);
+
+            // Convert length from character length to byte length (divide by 2 since hex encoding doubles length)
+            $byteLength = (int)ceil($codeLength / 2);
+
+            $userMfa->generateRecoveryCodes($codeCount, $byteLength);
         }
 
         return $this->userMfaRepository->save($userMfa);
@@ -579,7 +586,16 @@ class MfaService
     public function regenerateRecoveryCodes(int $userId): array
     {
         $userMfa = $this->getUserMfa($userId);
-        $codes = $userMfa->generateRecoveryCodes();
+
+        // Get configuration values for recovery codes
+        $codeCount = (int)$this->configManager->get('security', 'mfa.recovery_codes', 8);
+        $codeLength = (int)$this->configManager->get('security', 'mfa.recovery_code_length', 10);
+
+        // Convert length from character length to byte length (divide by 2 since hex encoding doubles length)
+        $byteLength = (int)ceil($codeLength / 2);
+
+        // Generate codes with the configured parameters
+        $codes = $userMfa->generateRecoveryCodes($codeCount, $byteLength);
         $this->userMfaRepository->save($userMfa);
 
         return $codes;

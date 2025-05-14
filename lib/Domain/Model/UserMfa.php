@@ -252,14 +252,15 @@ class UserMfa
      * Generate new recovery codes
      *
      * @param int $count Number of recovery codes to generate
+     * @param int $length Length of each recovery code in bytes (before hex encoding)
      * @return array The generated recovery codes
      */
-    public function generateRecoveryCodes(int $count = 10): array
+    public function generateRecoveryCodes(int $count = 10, int $length = 10): array
     {
         $codes = [];
 
         for ($i = 0; $i < $count; $i++) {
-            $codes[] = $this->generateRecoveryCode();
+            $codes[] = $this->generateRecoveryCode($length);
         }
 
         $this->setRecoveryCodes($codes);
@@ -270,10 +271,11 @@ class UserMfa
     /**
      * Generate a single recovery code
      *
+     * @param int $length Length of the recovery code in bytes (before hex encoding)
      * @return string The generated recovery code
      */
-    private function generateRecoveryCode(): string
+    private function generateRecoveryCode(int $length = 10): string
     {
-        return bin2hex(random_bytes(10));
+        return bin2hex(random_bytes($length));
     }
 }
