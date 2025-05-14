@@ -170,4 +170,24 @@ CREATE UNIQUE INDEX "idx_api_keys_secret_key" ON "public"."api_keys" USING btree
 CREATE INDEX "idx_api_keys_created_by" ON "public"."api_keys" USING btree ("created_by");
 CREATE INDEX "idx_api_keys_disabled" ON "public"."api_keys" USING btree ("disabled");
 
+CREATE SEQUENCE user_mfa_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."user_mfa" (
+    "id" integer DEFAULT nextval('user_mfa_id_seq') NOT NULL,
+    "user_id" integer NOT NULL,
+    "enabled" boolean DEFAULT false NOT NULL,
+    "secret" character varying(255),
+    "recovery_codes" text,
+    "type" character varying(20) DEFAULT 'app' NOT NULL,
+    "last_used_at" timestamp,
+    "created_at" timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    "updated_at" timestamp,
+    "verification_data" text,
+    CONSTRAINT "user_mfa_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "fk_user_mfa_users" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) WITH (oids = false);
+
+CREATE UNIQUE INDEX "idx_user_mfa_user_id" ON "public"."user_mfa" USING btree ("user_id");
+CREATE INDEX "idx_user_mfa_enabled" ON "public"."user_mfa" USING btree ("enabled");
+
 -- 2022-09-29 19:10:39.890321+00

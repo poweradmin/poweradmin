@@ -140,14 +140,18 @@
                 </li>
                 {% endif %}
                 <li class="p-1">
-                    <a href="#" class="nav-link text-{{ current_page in ['change_password', 'logout'] ? 'primary' : 'secondary' }}"><i class="bi bi-person-circle"></i></a>
-                    <a class="text-{{ current_page in ['change_password', 'logout'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a href="#" class="nav-link text-{{ current_page in ['change_password', 'mfa_setup', 'logout'] ? 'primary' : 'secondary' }}"><i class="bi bi-person-circle"></i></a>
+                    <a class="text-{{ current_page in ['change_password', 'mfa_setup', 'logout'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Account{% endtrans %}</a>
                     <ul class="dropdown-menu">
                         {% if auth_used %}
                         <li><a class="dropdown-item {{ current_page == 'change_password' ? 'active' : '' }}"
                                href="index.php?page=change_password">{% trans %}Change password{% endtrans %}</a></li>
+                        {% endif %}
+                        {% if mfa_enabled %}
+                        <li><a class="dropdown-item {{ current_page == 'mfa_setup' ? 'active' : '' }}"
+                               href="index.php?page=mfa_setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
                         {% endif %}
                         <li><a class="dropdown-item {{ current_page == 'logout' ? 'active' : '' }}"
                                href="index.php?page=logout">{% trans %}Logout{% endtrans %}</a></li>

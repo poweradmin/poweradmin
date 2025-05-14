@@ -24,6 +24,7 @@ namespace Poweradmin;
 
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -78,6 +79,20 @@ abstract class BaseController
         // check for API key authentication (but only for internal API routes)
         if ($authenticate && !isset($_SESSION['userid']) && $this->isInternalApiRoute()) {
             $this->tryApiKeyAuthentication();
+        }
+
+        // Check for MFA requirement for regular controllers using our centralized manager
+        if ($authenticate && !$this->isApiRequest() && isset($_SESSION['userid'])) {
+            $currentPage = $request['page'] ?? '';
+
+            // Use our centralized MFA session manager to check if verification is required
+            if (MfaSessionManager::isMfaRequired() && $currentPage !== 'mfa_verify') {
+                // Ensure session is written before redirecting
+                session_write_close();
+
+                header("Location: index.php?page=mfa_verify");
+                exit;
+            }
         }
     }
 
@@ -390,6 +405,7 @@ abstract class BaseController
                 'whois_enabled' => $this->config->get('whois', 'enabled', false),
                 'rdap_enabled' => $this->config->get('rdap', 'enabled', false),
                 'api_enabled' => $this->config->get('api', 'enabled', false),
+                'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
                 'whois_restrict_to_admin' => $this->config->get('whois', 'restrict_to_admin', true),
                 'rdap_restrict_to_admin' => $this->config->get('rdap', 'restrict_to_admin', true)
             ]);

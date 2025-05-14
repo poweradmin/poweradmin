@@ -58,6 +58,19 @@ return [
             'whitelist_ip_addresses' => [],      // IP addresses to never lock out (supports IPs, CIDRs, wildcards) - takes priority over blacklist
             'blacklist_ip_addresses' => [],      // IP addresses to always block (supports IPs, CIDRs, wildcards)
         ],
+        /**
+         * Multi-Factor Authentication Settings
+         */
+        'mfa' => [
+            'enabled' => false,                  // Enable MFA functionality
+            'force_admin' => false,              // Force MFA for admin users
+            'force_all' => false,                // Force MFA for all users
+            'app_enabled' => true,               // Enable authenticator app option
+            'email_enabled' => true,             // Enable email verification option
+            'recovery_codes' => 8,               // Number of recovery codes to generate
+            'recovery_code_length' => 20,        // Length of recovery codes
+            'token_validity' => 30,              // Validity period for tokens in seconds
+        ],
     ],
 
     /**

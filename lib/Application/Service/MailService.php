@@ -23,12 +23,13 @@
 namespace Poweradmin\Application\Service;
 
 use Exception;
+use Poweradmin\Domain\Service\MailService as MailServiceInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 use Psr\Log\LoggerInterface;
 
-class MailService
+class MailService implements MailServiceInterface
 {
     private ConfigurationManager $config;
     private ?LoggerInterface $logger;
@@ -437,5 +438,19 @@ class MailService
         if ($this->logger !== null) {
             $this->logger->warning($message);
         }
+    }
+
+    /**
+     * Implements the MailService interface method
+     *
+     * @param string $to The recipient's email address
+     * @param string $subject The email subject
+     * @param string $body The email body
+     * @return bool True if the email was sent successfully, false otherwise
+     */
+    public function sendEmail(string $to, string $subject, string $body): bool
+    {
+        // Use the existing sendMail method but with defaults for plainBody and headers
+        return $this->sendMail($to, $subject, $body);
     }
 }

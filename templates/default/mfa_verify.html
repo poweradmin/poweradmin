@@ -1,0 +1,81 @@
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header py-3">
+          <strong><i class="bi bi-lock me-2"></i>{% trans %}Two-Factor Authentication{% endtrans %}</strong>
+        </div>
+        <div class="card-body">
+          {% if msg %}
+          <div class="alert alert-{{ type }}" role="alert">
+            {{ msg }}
+          </div>
+          {% endif %}
+          
+          <form method="post" action="index.php?page=mfa_verify">
+            <input type="hidden" name="mfa_token" value="{{ mfa_token }}">
+            <input type="hidden" name="username" value="{{ username }}">
+            
+            <div class="mb-3">
+              <label for="mfa_code" class="form-label">{% trans %}Enter verification code{% endtrans %}</label>
+              <input type="text" class="form-control" id="mfa_code" name="mfa_code" 
+                     autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" 
+                     minlength="6" maxlength="8" autofocus required>
+              <div class="form-text">
+                {% if mfa_type == 'app' %}
+                {% trans %}Enter the code from your authenticator app{% endtrans %}
+                {% else %}
+                {% trans %}Enter the code sent to your email{% endtrans %}
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button type="submit" name="verify_mfa" class="btn btn-sm btn-primary">{% trans %}Verify{% endtrans %}</button>
+              <a href="index.php?page=mfa_verify&logout=1" class="btn btn-sm btn-outline-secondary">{% trans %}Cancel{% endtrans %}</a>
+            </div>
+          </form>
+          
+          <hr class="my-4">
+          
+          <div class="text-center">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#recoveryCodeModal">
+              {% trans %}Use a recovery code{% endtrans %}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recovery Code Modal -->
+<div class="modal fade" id="recoveryCodeModal" tabindex="-1" aria-labelledby="recoveryCodeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="recoveryCodeModalLabel">{% trans %}Use Recovery Code{% endtrans %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="index.php?page=mfa_verify">
+          <input type="hidden" name="mfa_token" value="{{ mfa_token }}">
+          <input type="hidden" name="username" value="{{ username }}">
+          
+          <div class="mb-3">
+            <label for="recovery_code" class="form-label">{% trans %}Recovery Code{% endtrans %}</label>
+            <input type="text" class="form-control" id="recovery_code" name="mfa_code" required>
+            <div class="form-text">
+              {% trans %}Enter one of your recovery codes. Note that each code can only be used once.{% endtrans %}
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2">
+            <button type="submit" name="verify_mfa" class="btn btn-sm btn-primary">{% trans %}Verify{% endtrans %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

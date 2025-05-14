@@ -37,3 +37,20 @@ CREATE TABLE `api_keys` (
     KEY `idx_api_keys_disabled` (`disabled`),
     CONSTRAINT `fk_api_keys_users` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `user_mfa` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL,
+    `enabled` tinyint(1) NOT NULL DEFAULT 0,
+    `secret` varchar(255) DEFAULT NULL,
+    `recovery_codes` text DEFAULT NULL,
+    `type` varchar(20) NOT NULL DEFAULT 'app',
+    `last_used_at` datetime DEFAULT NULL,
+    `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` datetime DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `verification_data` text DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_user_mfa_user_id` (`user_id`),
+    KEY `idx_user_mfa_enabled` (`enabled`),
+    CONSTRAINT `fk_user_mfa_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

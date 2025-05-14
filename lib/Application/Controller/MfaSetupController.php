@@ -1,0 +1,309 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2025 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Controller;
+
+use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\MailService;
+use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Domain\Model\UserMfa;
+use Poweradmin\Domain\Service\AuthenticationService;
+use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
+use Poweradmin\Infrastructure\Service\RedirectService;
+
+class MfaSetupController extends BaseController
+{
+    private MfaService $mfaService;
+    private CsrfTokenService $csrfTokenService;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request, true);
+
+        $userMfaRepository = new DbUserMfaRepository($this->db);
+        $mailService = new MailService($this->config);
+        $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailService);
+
+        $this->csrfTokenService = new CsrfTokenService();
+    }
+
+    public function run(): void
+    {
+        // Check if MFA is globally enabled
+        if (!$this->config->get('security', 'mfa.enabled', false)) {
+            $this->addSystemMessage('error', _('MFA is not enabled on this system.'));
+            header("Location: index.php");
+            exit;
+        }
+
+        // MFA setup forms processing
+        if ($this->isPost()) {
+            $this->validateCsrfToken();
+
+            if (isset($_POST['setup_app'])) {
+                $this->handleAppSetup();
+                return;
+            }
+
+            if (isset($_POST['verify_app'])) {
+                $this->handleAppVerification();
+                return;
+            }
+
+            if (isset($_POST['setup_email'])) {
+                $this->handleEmailSetup();
+                return;
+            }
+
+            if (isset($_POST['verify_email'])) {
+                $this->handleEmailVerification();
+                return;
+            }
+
+            if (isset($_POST['disable_mfa'])) {
+                $this->handleMfaDisable();
+                return;
+            }
+        }
+
+        // Display the MFA setup page
+        $this->displayMfaSetup();
+    }
+
+    private function handleAppSetup(): void
+    {
+        $userId = $_SESSION['userid'] ?? 0;
+
+        // Check if MFA is already enabled - use getOrCreate since we're setting up
+        $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
+
+        if (!$userMfa) {
+            $this->addSystemMessage('error', _('Failed to create MFA record.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        if ($userMfa->isEnabled()) {
+            $this->addSystemMessage('info', _('MFA is already enabled.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Generate a new secret if one doesn't exist
+        if (!$userMfa->getSecret()) {
+            $userMfa->setSecret($this->mfaService->generateSecretKey());
+            $userMfa->setType(UserMfa::TYPE_APP);
+            $this->mfaService->saveUserMfa($userMfa);
+        }
+
+        // Display verification page
+        $this->displayAppVerification($userMfa->getSecret());
+    }
+
+    private function handleAppVerification(): void
+    {
+        $userId = $_SESSION['userid'] ?? 0;
+        $code = $_POST['verification_code'] ?? '';
+
+        if (empty($code)) {
+            $this->addSystemMessage('error', _('Verification code is required.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Use getOrCreate since we're in the verification process
+        $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
+
+        // Verify the code
+        if ($this->mfaService->verifyCode($userId, $code)) {
+            // Enable MFA
+            $this->mfaService->enableMfa($userId, UserMfa::TYPE_APP);
+
+            // Generate recovery codes if they don't exist
+            $recoveryCodes = $userMfa->getRecoveryCodesAsArray();
+            if (empty($recoveryCodes)) {
+                $recoveryCodes = $this->mfaService->regenerateRecoveryCodes($userId);
+            }
+
+            $this->addSystemMessage('success', _('MFA has been enabled successfully.'));
+            $this->displayRecoveryCodes($recoveryCodes);
+            return;
+        } else {
+            $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
+            $userMfa = $this->mfaService->getUserMfa($userId);
+            $this->displayAppVerification($userMfa->getSecret());
+            return;
+        }
+    }
+
+    private function handleEmailSetup(): void
+    {
+        $userId = $_SESSION['userid'] ?? 0;
+        $email = $_SESSION['email'] ?? '';
+
+        if (empty($email)) {
+            $this->addSystemMessage('error', _('Email address is not available. Please update your email address in your profile.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Use getOrCreate since we're setting up MFA
+        $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
+
+        if (!$userMfa) {
+            $this->addSystemMessage('error', _('Failed to create MFA record.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Check if MFA is already enabled
+        if ($userMfa->isEnabled()) {
+            $this->addSystemMessage('info', _('MFA is already enabled.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Generate a secret if needed
+        if (!$userMfa->getSecret()) {
+            $userMfa->setSecret($this->mfaService->generateSecretKey());
+            $userMfa->setType(UserMfa::TYPE_EMAIL);
+            $this->mfaService->saveUserMfa($userMfa);
+        }
+
+        // Send verification code via email
+        $code = $this->mfaService->sendEmailVerificationCode($userId, $email);
+
+        // Display email verification form
+        $this->displayEmailVerification($email);
+    }
+
+    private function displayEmailVerification(string $email): void
+    {
+        $this->render('mfa_verify_email.html', [
+            'email' => $email
+        ]);
+    }
+
+    private function handleEmailVerification(): void
+    {
+        $userId = $_SESSION['userid'] ?? 0;
+        $code = $_POST['verification_code'] ?? '';
+
+        if (empty($code)) {
+            $this->addSystemMessage('error', _('Verification code is required.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Get user MFA record - use getOrCreate since we're in verification
+        $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
+        $storedSecret = $userMfa->getSecret();
+
+        // Direct comparison for email verification
+        $isValid = ($storedSecret === $code);
+
+        if ($isValid) {
+            // Enable MFA
+            $this->mfaService->enableMfa($userId, UserMfa::TYPE_EMAIL);
+
+            // Generate recovery codes
+            $recoveryCodes = $this->mfaService->regenerateRecoveryCodes($userId);
+
+            $this->addSystemMessage('success', _('MFA has been enabled with email verification.'));
+            $this->displayRecoveryCodes($recoveryCodes);
+        } else {
+            $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
+            $this->displayEmailVerification($_SESSION['email'] ?? '');
+        }
+    }
+
+    private function handleMfaDisable(): void
+    {
+        $userId = $_SESSION['userid'] ?? 0;
+
+        // Check if MFA exists before trying to disable it
+        $userMfa = $this->mfaService->getUserMfa($userId);
+
+        if (!$userMfa) {
+            $this->addSystemMessage('info', _('MFA is not enabled.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Disable MFA
+        $this->mfaService->disableMfa($userId);
+
+        $this->addSystemMessage('success', _('MFA has been disabled.'));
+        $this->displayMfaSetup();
+    }
+
+    private function displayMfaSetup(): void
+    {
+        $userId = $_SESSION['userid'] ?? 0;
+        $userMfa = $this->mfaService->getUserMfa($userId);
+
+        // Default values if no MFA record exists yet
+        $mfaEnabled = false;
+        $mfaType = UserMfa::TYPE_APP; // Default type
+
+        if ($userMfa) {
+            $mfaEnabled = $userMfa->isEnabled();
+            $mfaType = $userMfa->getType();
+        }
+
+        $this->render('mfa_setup.html', [
+            'mfa_enabled' => $mfaEnabled,
+            'mfa_type' => $mfaType,
+            'email' => $_SESSION['email'] ?? ''
+        ]);
+    }
+
+    private function displayAppVerification(string $secret): void
+    {
+        $email = $_SESSION['email'] ?? '';
+
+        $qrCode = $this->mfaService->generateQrCodeSvg($email, $secret);
+
+        $this->render('mfa_verify_app.html', [
+            'secret' => $secret,
+            'qr_code' => $qrCode,
+            'email' => $email
+        ]);
+    }
+
+    private function displayRecoveryCodes(array $recoveryCodes): void
+    {
+        $userId = $_SESSION['userid'] ?? 0;
+        $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
+
+        $this->render('mfa_recovery_codes.html', [
+            'recovery_codes' => $recoveryCodes,
+            'mfa_enabled' => $userMfa->isEnabled(),
+            'mfa_type' => $userMfa->getType()
+        ]);
+    }
+}

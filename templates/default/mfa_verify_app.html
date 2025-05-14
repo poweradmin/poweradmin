@@ -1,0 +1,88 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="index.php?page=mfa_setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
+    <li class="breadcrumb-item" aria-current="page">{% trans %}Set Up Authenticator App{% endtrans %}</li>
+  </ol>
+</nav>
+
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="card">
+        <div class="card-header py-3">
+          <strong><i class="bi bi-qr-code me-2"></i>{% trans %}Set Up Authenticator App{% endtrans %}</strong>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <h5>{% trans %}Step 1: Scan QR Code{% endtrans %}</h5>
+              <p>{% trans %}Scan this QR code with your authenticator app{% endtrans %}</p>
+              
+              <div class="text-center my-4">
+                {{ qr_code|raw }}
+              </div>
+              
+              <p class="mt-3">{% trans %}Or manually enter this key{% endtrans %}</p>
+              <div class="input-group mb-3">
+                <input type="text" class="form-control" value="{{ secret }}" readonly id="secret-key">
+                <button class="btn btn-outline-secondary" type="button" onclick="copySecret()">
+                  <i class="bi bi-clipboard"></i>
+                </button>
+              </div>
+            </div>
+            
+            <div class="col-md-6">
+              <h5>{% trans %}Step 2: Verify Setup{% endtrans %}</h5>
+              <p>{% trans %}Enter the 6-digit code from your authenticator app{% endtrans %}</p>
+              
+              <form method="post" action="index.php?page=mfa_setup">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                
+                <div class="mb-3">
+                  <label for="verification_code" class="form-label">{% trans %}Verification Code{% endtrans %}</label>
+                  <input type="text" class="form-control" id="verification_code" name="verification_code" 
+                         placeholder="000000" maxlength="6" minlength="6" inputmode="numeric" pattern="[0-9]*" required>
+                </div>
+                
+                <div class="d-grid gap-2">
+                  <button type="submit" name="verify_app" class="btn btn-sm btn-primary">
+                    {% trans %}Verify and Enable MFA{% endtrans %}
+                  </button>
+                  <a href="index.php?page=mfa_setup" class="btn btn-sm btn-outline-secondary">
+                    {% trans %}Cancel{% endtrans %}
+                  </a>
+                </div>
+              </form>
+            </div>
+          </div>
+          
+          <div class="mt-4">
+            <h5>{% trans %}Recommended Authenticator Apps{% endtrans %}</h5>
+            <ul>
+              <li><strong>Google Authenticator</strong> - {% trans %}Available for Android and iOS{% endtrans %}</li>
+              <li><strong>Microsoft Authenticator</strong> - {% trans %}Available for Android and iOS{% endtrans %}</li>
+              <li><strong>Authy</strong> - {% trans %}Available for Android, iOS and desktop{% endtrans %}</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copySecret() {
+    var secretInput = document.getElementById('secret-key');
+    secretInput.select();
+    document.execCommand('copy');
+    
+    // Show a small notification
+    var btn = event.currentTarget;
+    var originalHTML = btn.innerHTML;
+    btn.innerHTML = '<i class="bi bi-check"></i>';
+    setTimeout(function() {
+      btn.innerHTML = originalHTML;
+    }, 1500);
+  }
+</script>

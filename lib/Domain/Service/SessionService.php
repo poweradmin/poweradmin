@@ -33,6 +33,33 @@ class SessionService
 
     public function endSession(): void
     {
+        // Explicitly clear MFA-related session variables
+        if (isset($_SESSION['mfa_required'])) {
+            unset($_SESSION['mfa_required']);
+        }
+
+        // Clear authentication status
+        if (isset($_SESSION['authenticated'])) {
+            unset($_SESSION['authenticated']);
+        }
+
+        // Handle MFA tokens if present
+        if (isset($_SESSION['mfa_token'])) {
+            unset($_SESSION['mfa_token']);
+        }
+
+        // Clear user data
+        if (isset($_SESSION['userid'])) {
+            unset($_SESSION['userid']);
+        }
+        if (isset($_SESSION['userlogin'])) {
+            unset($_SESSION['userlogin']);
+        }
+        if (isset($_SESSION['userpwd'])) {
+            unset($_SESSION['userpwd']);
+        }
+
+        // Regenerate session ID and unset all variables
         session_regenerate_id(true);
         session_unset();
     }

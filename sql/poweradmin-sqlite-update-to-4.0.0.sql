@@ -35,3 +35,20 @@ CREATE TABLE api_keys (
 CREATE UNIQUE INDEX idx_api_keys_secret_key ON api_keys(secret_key);
 CREATE INDEX idx_api_keys_created_by ON api_keys(created_by);
 CREATE INDEX idx_api_keys_disabled ON api_keys(disabled);
+
+CREATE TABLE user_mfa (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    enabled INTEGER NOT NULL DEFAULT 0,
+    secret VARCHAR(255) NULL,
+    recovery_codes TEXT NULL,
+    type VARCHAR(20) NOT NULL DEFAULT 'app',
+    last_used_at TIMESTAMP NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NULL,
+    verification_data TEXT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX idx_user_mfa_user_id ON user_mfa(user_id);
+CREATE INDEX idx_user_mfa_enabled ON user_mfa(enabled);

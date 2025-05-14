@@ -1,0 +1,97 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+    <li class="breadcrumb-item" aria-current="page">{% trans %}Multi-Factor Authentication{% endtrans %}</li>
+  </ol>
+</nav>
+
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-12">
+      <div class="card mb-4">
+        <div class="card-header py-3">
+          <small><strong><i class="bi bi-shield-lock me-2"></i>{% trans %}Multi-Factor Authentication{% endtrans %}</strong></small>
+        </div>
+        <div class="card-body">
+          <p class="small">{% trans %}Multi-factor authentication adds an extra layer of security to your account.{% endtrans %}</p>
+          
+          {% if mfa_enabled %}
+            <div class="alert alert-success">
+              <small class="alert-heading fw-bold">{% trans %}MFA is currently enabled{% endtrans %}</small>
+              <p class="mb-1 small">{% trans %}Your account is protected with multi-factor authentication.{% endtrans %}</p>
+              
+              {% if mfa_type == 'app' %}
+                <p class="mb-2 small"><strong>{% trans %}Authentication method:{% endtrans %}</strong> {% trans %}Authenticator app{% endtrans %}</p>
+              {% else %}
+                <p class="mb-2 small"><strong>{% trans %}Authentication method:{% endtrans %}</strong> {% trans %}Email verification{% endtrans %}</p>
+              {% endif %}
+              
+              <form method="post" action="index.php?page=mfa_setup">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <button type="submit" name="disable_mfa" class="btn btn-sm btn-danger">
+                  {% trans %}Disable MFA{% endtrans %}
+                </button>
+              </form>
+            </div>
+          {% else %}
+            <div class="alert alert-warning">
+              <small class="alert-heading fw-bold">{% trans %}MFA is currently disabled{% endtrans %}</small>
+              <p class="mb-0 small">{% trans %}Your account is not protected with multi-factor authentication.{% endtrans %}</p>
+            </div>
+          {% endif %}
+        </div>
+      </div>
+      
+      {% if not mfa_enabled %}
+      <div class="row">
+        <div class="col-md-6">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-header py-2">
+              <small><strong><i class="bi bi-phone me-2"></i>{% trans %}Authenticator App{% endtrans %}</strong></small>
+            </div>
+            <div class="card-body py-2">
+              <p class="small">{% trans %}Use an authenticator app like Google Authenticator, Microsoft Authenticator, or Authy.{% endtrans %}</p>
+              <ul class="small mb-3">
+                <li>{% trans %}Works offline{% endtrans %}</li>
+                <li>{% trans %}More secure{% endtrans %}</li>
+                <li>{% trans %}Easy to use{% endtrans %}</li>
+              </ul>
+              <form method="post" action="index.php?page=mfa_setup">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <button type="submit" name="setup_app" class="btn btn-sm btn-primary">{% trans %}Set up app authentication{% endtrans %}</button>
+              </form>
+            </div>
+          </div>
+        </div>
+        
+        <div class="col-md-6">
+          <div class="card mb-4 shadow-sm">
+            <div class="card-header py-2">
+              <small><strong><i class="bi bi-envelope me-2"></i>{% trans %}Email Verification{% endtrans %}</strong></small>
+            </div>
+            <div class="card-body py-2">
+              <p class="small">{% trans %}Receive a verification code via email when you log in.{% endtrans %}</p>
+              <ul class="small mb-3">
+                <li>{% trans %}No additional app required{% endtrans %}</li>
+                <li>{% trans %}Requires internet connection{% endtrans %}</li>
+                <li>{% trans %}Relies on email delivery{% endtrans %}</li>
+              </ul>
+              
+              {% if email %}
+                <form method="post" action="index.php?page=mfa_setup">
+                  <input type="hidden" name="_token" value="{{ csrf_token }}">
+                  <button type="submit" name="setup_email" class="btn btn-sm btn-primary">{% trans %}Set up email verification{% endtrans %}</button>
+                </form>
+              {% else %}
+                <div class="alert alert-danger py-1 px-2">
+                  <small>{% trans %}You need to set your email address in your profile before you can use email verification.{% endtrans %}</small>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>

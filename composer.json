@@ -45,7 +45,9 @@
     "symfony/validator": "^6.4.20",
     "twbs/bootstrap": "^5.3.6",
     "twbs/bootstrap-icons": "^1.12.1",
-    "twig/twig": "^3.21.1"
+    "twig/twig": "^3.21.1",
+    "pragmarx/google2fa": "^8.0",
+    "bacon/bacon-qr-code": "^3.0.1"
   },
   "suggest": {
     "ext-ldap": "For LDAP support"

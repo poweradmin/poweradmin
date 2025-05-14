@@ -94,6 +94,8 @@ class Pages
             'list_template_zones',
             'login',
             'logout',
+            'mfa_verify',
+            'mfa_setup',
             'migrations',
             'search',
             'users',

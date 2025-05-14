@@ -1,0 +1,41 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="index.php?page=mfa_setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
+    <li class="breadcrumb-item" aria-current="page">{% trans %}Email Verification{% endtrans %}</li>
+  </ol>
+</nav>
+
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header py-2">
+          <small><strong><i class="bi bi-envelope-check me-2"></i>{% trans %}Verify Email Code{% endtrans %}</strong></small>
+        </div>
+        <div class="card-body py-2">
+          <p class="small">{% trans %}A verification code has been sent to your email address.{% endtrans %} <strong>{{ email }}</strong></p>
+          <p class="small mb-4">{% trans %}Please enter the 6-digit code to verify and enable Multi-Factor Authentication.{% endtrans %}</p>
+          
+          <form method="post" action="index.php?page=mfa_setup">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            
+            <div class="mb-3">
+              <label for="verification_code" class="form-label small">{% trans %}Verification Code{% endtrans %}</label>
+              <input type="text" class="form-control form-control-sm" id="verification_code" name="verification_code" 
+                     placeholder="000000" maxlength="6" minlength="6" inputmode="numeric" pattern="[0-9]*" required autofocus>
+              <div class="form-text small">
+                {% trans %}Enter the 6-digit code from your email{% endtrans %}
+              </div>
+            </div>
+            
+            <div class="d-flex justify-content-between">
+              <a href="index.php?page=mfa_setup" class="btn btn-sm btn-outline-secondary">{% trans %}Cancel{% endtrans %}</a>
+              <button type="submit" name="verify_email" class="btn btn-sm btn-primary">{% trans %}Verify and Enable MFA{% endtrans %}</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

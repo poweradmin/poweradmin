@@ -25,11 +25,15 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Domain\Service\AuthenticationService;
+use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use ReflectionClass;
 
@@ -42,6 +46,7 @@ class SqlAuthenticator extends LoggingService
     private CsrfTokenService $csrfTokenService;
     private LoginAttemptService $loginAttemptService;
     private array $serverParams;
+    private ?MfaService $mfaService = null;
 
     public function __construct(
         PDOLayer $connection,
@@ -63,6 +68,11 @@ class SqlAuthenticator extends LoggingService
         $this->csrfTokenService = $csrfTokenService;
         $this->loginAttemptService = $loginAttemptService;
         $this->serverParams = $serverParams ?: $_SERVER;
+
+        // Initialize MFA service
+        $userMfaRepository = new DbUserMfaRepository($connection);
+        $mailService = new MailService($configManager);
+        $this->mfaService = new MfaService($userMfaRepository, $configManager, $mailService);
     }
 
     public function authenticate(): void
@@ -96,7 +106,7 @@ class SqlAuthenticator extends LoggingService
         $encryptionService = new PasswordEncryptionService($sessionKey);
         $sessionPassword = $encryptionService->decrypt($_SESSION['userpwd']);
 
-        $stmt = $this->connection->prepare("SELECT id, fullname, password, active FROM users WHERE username=:username AND use_ldap=0");
+        $stmt = $this->connection->prepare("SELECT id, fullname, password, active, email FROM users WHERE username=:username AND use_ldap=0");
         $stmt->bindParam(':username', $_SESSION["userlogin"]);
         $stmt->execute();
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -142,6 +152,7 @@ class SqlAuthenticator extends LoggingService
 
         $_SESSION['userid'] = $rowObj['id'];
         $_SESSION['name'] = $rowObj['fullname'];
+        $_SESSION['email'] = $rowObj['email'];
         $_SESSION['auth_used'] = 'internal';
 
         if (!isset($_SESSION['csrf_token'])) {
@@ -149,11 +160,45 @@ class SqlAuthenticator extends LoggingService
             $this->logInfo('CSRF token generated for user {username}', ['username' => $_SESSION["userlogin"]]);
         }
 
-        if (isset($_POST['authenticate'])) {
-            $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
-            $this->userEventLogger->logSuccessfulAuth();
-            session_write_close();
-            $this->authService->redirectToIndex();
+        // Check if MFA is globally enabled
+        $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
+
+        // Check if MFA is enabled for this user
+        $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($rowObj['id']);
+
+        if ($mfaRequired) {
+            $this->logInfo('MFA is required for user {username}', ['username' => $_SESSION["userlogin"]]);
+
+            // Use our centralized MFA session manager to set MFA required
+            MfaSessionManager::setMfaRequired($rowObj['id']);
+
+            if (isset($_POST['authenticate'])) {
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+                $this->userEventLogger->logSuccessfulAuth();
+
+                // Log before redirect
+                error_log("SqlAuthenticator: Redirecting to MFA verification page");
+
+                // Clear any output buffers
+                if (ob_get_level()) {
+                    ob_end_clean();
+                }
+
+                // Redirect to MFA verification page
+                header("Location: index.php?page=mfa_verify", true, 302);
+                exit;
+            }
+        } else {
+            // No MFA required, proceed with full authentication
+            $_SESSION['authenticated'] = true;
+            $_SESSION['mfa_required'] = false;
+
+            if (isset($_POST['authenticate'])) {
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+                $this->userEventLogger->logSuccessfulAuth();
+                session_write_close();
+                $this->authService->redirectToIndex();
+            }
         }
 
         $this->logInfo('Authentication process completed successfully for user {username}', ['username' => $_SESSION["userlogin"]]);
