@@ -1,6 +1,8 @@
 {% if msg %}
-<div data-testid="session-error" class="alert alert-{{ type }} alert-dismissible fade show" role="alert">{{ msg }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+<div data-testid="session-error" class="alert alert-{{ type }} bg-{{ type }} bg-opacity-10 py-2 border border-{{ type }} small alert-dismissible fade show" role="alert">
+    <i class="bi bi-{% if type == 'danger' %}exclamation-triangle{% elseif type == 'warning' %}exclamation-circle{% elseif type == 'success' %}check-circle{% else %}info-circle{% endif %}-fill me-2 text-{{ type }}"></i>
+    <span class="text-{{ type }}">{{ msg }}</span>
+    <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
 </div>
 {% endif %}
 
