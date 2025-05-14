@@ -148,6 +148,23 @@ class MfaVerifyController extends BaseController
         }
 
         if ($isValid) {
+            // After successful verification, update the MFA secret for both app and email based auth
+            try {
+                // Get the user's email from session if available (for email-based MFA)
+                $email = $_SESSION['email'] ?? null;
+
+                // Call the method to update the MFA secret
+                $secretUpdated = $this->mfaService->updateMfaSecretAfterLogin($userId, $email);
+                if ($secretUpdated) {
+                    error_log("[MfaVerifyController] MFA secret updated after successful login for user ID: $userId");
+                } else {
+                    error_log("[MfaVerifyController] Failed to update MFA secret for user ID: $userId");
+                }
+            } catch (\Exception $e) {
+                error_log("[MfaVerifyController] Error updating MFA secret: " . $e->getMessage());
+                // Continue with authentication even if updating the secret fails
+            }
+
             // Use the centralized session manager to mark MFA as verified
             MfaSessionManager::setMfaVerified();
 

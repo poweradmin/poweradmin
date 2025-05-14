@@ -510,4 +510,41 @@ class MfaService
 
         return $codes;
     }
+
+    /**
+     * Update MFA secret for a user after successful verification
+     *
+     * This improves security by generating a new secret after each successful login
+     * Works for both app-based MFA and email-based MFA
+     *
+     * @param int $userId The user ID
+     * @param string|null $email User's email address (optional, for logging)
+     * @return bool True if secret was updated, false otherwise
+     */
+    public function updateMfaSecretAfterLogin(int $userId, ?string $email = null): bool
+    {
+        try {
+            $userMfa = $this->getUserMfa($userId);
+
+            if (!$userMfa || !$userMfa->isEnabled()) {
+                error_log("[MfaService] Cannot update secret: User $userId has no enabled MFA");
+                return false;
+            }
+
+            // Generate a new secret for any MFA type
+            $newSecret = $this->generateSecretKey();
+            $userMfa->setSecret($newSecret);
+
+            $mfaType = $userMfa->getType();
+            error_log("[MfaService] Generated new MFA secret for user $userId (type: $mfaType) after successful login");
+
+            // Save the updated user MFA data
+            $this->userMfaRepository->save($userMfa);
+
+            return true;
+        } catch (\Exception $e) {
+            error_log("[MfaService] Error updating MFA secret: " . $e->getMessage());
+            return false;
+        }
+    }
 }
