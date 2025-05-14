@@ -249,10 +249,9 @@ class MfaSetupController extends BaseController
 
         // Get user MFA record - use getOrCreate since we're in verification
         $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
-        $storedSecret = $userMfa->getSecret();
 
-        // Direct comparison for email verification
-        $isValid = ($storedSecret === $code);
+        // Use the MfaService to verify the code instead of direct comparison
+        $isValid = $this->mfaService->verifyCode($userId, $code);
 
         if ($isValid) {
             // Enable MFA

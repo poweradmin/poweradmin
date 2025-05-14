@@ -17,13 +17,19 @@
           <p class="small">{% trans %}A verification code has been sent to your email address.{% endtrans %} <strong>{{ email }}</strong></p>
           <p class="small mb-4">{% trans %}Please enter the 6-digit code to verify and enable Multi-Factor Authentication.{% endtrans %}</p>
           
-          <form method="post" action="index.php?page=mfa_setup">
+          <form method="post" action="index.php?page=mfa_setup" class="needs-validation" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             
             <div class="mb-3">
               <label for="verification_code" class="form-label small">{% trans %}Verification Code{% endtrans %}</label>
               <input type="text" class="form-control form-control-sm" id="verification_code" name="verification_code" 
                      placeholder="000000" maxlength="6" minlength="6" inputmode="numeric" pattern="[0-9]*" required autofocus>
+              <div class="valid-feedback small">
+                {% trans %}Looks good!{% endtrans %}
+              </div>
+              <div class="invalid-feedback small">
+                {% trans %}Please enter a valid 6-digit verification code.{% endtrans %}
+              </div>
               <div class="form-text small">
                 {% trans %}Enter the 6-digit code from your email{% endtrans %}
               </div>
@@ -34,6 +40,28 @@
               <button type="submit" name="verify_email" class="btn btn-sm btn-primary">{% trans %}Verify and Enable MFA{% endtrans %}</button>
             </div>
           </form>
+          
+          <script>
+          // Bootstrap validation script
+          (function() {
+            'use strict';
+            
+            // Fetch all forms with the .needs-validation class
+            var forms = document.querySelectorAll('.needs-validation');
+            
+            // Loop over them and prevent submission if validation fails
+            Array.prototype.slice.call(forms).forEach(function(form) {
+              form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+                
+                form.classList.add('was-validated');
+              }, false);
+            });
+          })();
+          </script>
         </div>
       </div>
     </div>

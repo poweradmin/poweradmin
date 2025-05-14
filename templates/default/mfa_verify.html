@@ -12,7 +12,7 @@
           </div>
           {% endif %}
           
-          <form method="post" action="index.php?page=mfa_verify">
+          <form method="post" action="index.php?page=mfa_verify" class="needs-validation" novalidate>
             <input type="hidden" name="mfa_token" value="{{ mfa_token }}">
             <input type="hidden" name="username" value="{{ username }}">
             
@@ -21,11 +21,17 @@
               <input type="text" class="form-control" id="mfa_code" name="mfa_code" 
                      autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" 
                      minlength="6" maxlength="8" autofocus required>
+              <div class="valid-feedback">
+                {% trans %}Looks good!{% endtrans %}
+              </div>
+              <div class="invalid-feedback">
+                {% trans %}Please enter a valid verification code.{% endtrans %}
+              </div>
               <div class="form-text">
                 {% if mfa_type == 'app' %}
                 {% trans %}Enter the code from your authenticator app{% endtrans %}
                 {% else %}
-                {% trans %}Enter the code sent to your email{% endtrans %}
+                {% trans %}Enter the 6-digit code sent to your email{% endtrans %}
                 {% endif %}
               </div>
             </div>
@@ -35,6 +41,28 @@
               <a href="index.php?page=mfa_verify&logout=1" class="btn btn-sm btn-outline-secondary">{% trans %}Cancel{% endtrans %}</a>
             </div>
           </form>
+          
+          <script>
+          // Bootstrap validation script
+          (function() {
+            'use strict';
+            
+            // Fetch all forms to which we want to apply validation
+            var forms = document.querySelectorAll('.needs-validation');
+            
+            // Loop over them and prevent submission if not valid
+            Array.prototype.slice.call(forms).forEach(function(form) {
+              form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+                
+                form.classList.add('was-validated');
+              }, false);
+            });
+          })();
+          </script>
           
           <hr class="my-4">
           
@@ -58,13 +86,20 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="post" action="index.php?page=mfa_verify">
+        <form method="post" action="index.php?page=mfa_verify" class="needs-validation" novalidate>
           <input type="hidden" name="mfa_token" value="{{ mfa_token }}">
           <input type="hidden" name="username" value="{{ username }}">
           
           <div class="mb-3">
             <label for="recovery_code" class="form-label">{% trans %}Recovery Code{% endtrans %}</label>
-            <input type="text" class="form-control" id="recovery_code" name="mfa_code" required>
+            <input type="text" class="form-control" id="recovery_code" name="mfa_code" 
+                   minlength="20" maxlength="20" autocomplete="off" required>
+            <div class="valid-feedback">
+              {% trans %}Looks good!{% endtrans %}
+            </div>
+            <div class="invalid-feedback">
+              {% trans %}Please enter a valid recovery code.{% endtrans %}
+            </div>
             <div class="form-text">
               {% trans %}Enter one of your recovery codes. Note that each code can only be used once.{% endtrans %}
             </div>

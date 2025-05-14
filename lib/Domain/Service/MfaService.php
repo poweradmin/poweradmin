@@ -140,6 +140,19 @@ class MfaService
     }
 
     /**
+     * Generate a simple numeric verification code for email-based MFA
+     *
+     * @return string A 6-digit verification code
+     */
+    private function generateEmailVerificationCode(): string
+    {
+        // Generate a simple numeric verification code (6 digits)
+        $numericCode = mt_rand(100000, 999999);
+        // Convert to string explicitly
+        return (string)$numericCode;
+    }
+
+    /**
      * Enable MFA for a user
      */
     public function enableMfa(int $userId, string $type = UserMfa::TYPE_APP): UserMfa
@@ -335,10 +348,8 @@ class MfaService
 
         $userMfa = $this->getUserMfa($userId);
 
-        // Generate a simple numeric verification code (6 digits)
-        $numericCode = mt_rand(100000, 999999);
-        // Convert to string explicitly
-        $verificationCode = (string)$numericCode;
+        // Generate a verification code
+        $verificationCode = $this->generateEmailVerificationCode();
 
         // Add expiration timestamp (10 minutes from now)
         $expiresAt = time() + 600; // 10 minutes

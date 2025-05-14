@@ -36,13 +36,19 @@
               <h5>{% trans %}Step 2: Verify Setup{% endtrans %}</h5>
               <p>{% trans %}Enter the 6-digit code from your authenticator app{% endtrans %}</p>
               
-              <form method="post" action="index.php?page=mfa_setup">
+              <form method="post" action="index.php?page=mfa_setup" class="needs-validation" novalidate>
                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                 
                 <div class="mb-3">
                   <label for="verification_code" class="form-label">{% trans %}Verification Code{% endtrans %}</label>
                   <input type="text" class="form-control" id="verification_code" name="verification_code" 
                          placeholder="000000" maxlength="6" minlength="6" inputmode="numeric" pattern="[0-9]*" required>
+                  <div class="valid-feedback">
+                    {% trans %}Looks good!{% endtrans %}
+                  </div>
+                  <div class="invalid-feedback">
+                    {% trans %}Please enter a valid 6-digit verification code.{% endtrans %}
+                  </div>
                 </div>
                 
                 <div class="d-grid gap-2">
@@ -85,4 +91,24 @@
       btn.innerHTML = originalHTML;
     }, 1500);
   }
+  
+  // Bootstrap validation script
+  (function() {
+    'use strict';
+    
+    // Fetch all forms with the .needs-validation class
+    var forms = document.querySelectorAll('.needs-validation');
+    
+    // Loop over them and prevent submission if validation fails
+    Array.prototype.slice.call(forms).forEach(function(form) {
+      form.addEventListener('submit', function(event) {
+        if (!form.checkValidity()) {
+          event.preventDefault();
+          event.stopPropagation();
+        }
+        
+        form.classList.add('was-validated');
+      }, false);
+    });
+  })();
 </script>
