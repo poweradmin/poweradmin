@@ -13,6 +13,21 @@
 </head>
 <body>
 
+{% if current_page == 'mfa_verify' %}
+<!-- MFA Verification - Simplified header with no navigation -->
+<header class="mb-4">
+    <div class="container">
+        <div class="d-flex flex-wrap align-items-center justify-content-start">
+            <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none">
+                <img class="me-2" src="assets/logo.png" height="32">
+                <span class="fs-4">{{ iface_title }}</span>
+            </a>
+            <!-- No navigation menu intentionally -->
+        </div>
+    </div>
+</header>
+{% else %}
+<!-- Regular header with navigation -->
 <header class="mb-4">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -25,6 +40,7 @@
                 <span class="fs-4">{{ iface_title }}</span>
                 {% endif %}
             </a>
+            
             <ul class="nav col-12 col-lg-auto my-2 justify-content-center my-md-0 text-small">
                 {% if user_logged_in %}
                 {% if perm_search %}
@@ -162,6 +178,7 @@
         </div>
     </div>
 </header>
+{% endif %}
 
 {% if install_error %}
 <div class="container">

@@ -240,6 +240,7 @@ class MfaVerifyController extends BaseController
             }
         }
 
+        // Use the standard render - the template will hide navigation based on the current_page
         $this->render('mfa_verify.html', [
             'username' => $username,
             'mfa_token' => $mfaToken,

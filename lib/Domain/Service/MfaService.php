@@ -144,7 +144,7 @@ class MfaService
      *
      * @return string A 6-digit verification code
      */
-    private function generateEmailVerificationCode(): string
+    public function generateEmailVerificationCode(): string
     {
         // Generate a simple numeric verification code (6 digits)
         $numericCode = mt_rand(100000, 999999);
@@ -543,7 +543,7 @@ class MfaService
             }
 
             // Generate a new secret for any MFA type
-            $newSecret = $this->generateSecretKey();
+            $newSecret = $this->generateEmailVerificationCode();
             $userMfa->setSecret($newSecret);
 
             $mfaType = $userMfa->getType();
