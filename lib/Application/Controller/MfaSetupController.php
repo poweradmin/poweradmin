@@ -88,6 +88,11 @@ class MfaSetupController extends BaseController
                 $this->handleMfaDisable();
                 return;
             }
+
+            if (isset($_POST['regenerate_codes'])) {
+                $this->handleRegenerateRecoveryCodes();
+                return;
+            }
         }
 
         // Display the MFA setup page
@@ -289,6 +294,29 @@ class MfaSetupController extends BaseController
 
         $this->addSystemMessage('success', _('MFA has been disabled.'));
         $this->displayMfaSetup();
+    }
+
+    /**
+     * Handle regeneration of recovery codes
+     */
+    private function handleRegenerateRecoveryCodes(): void
+    {
+        $userId = $_SESSION['userid'] ?? 0;
+
+        // Check if MFA is enabled for this user
+        $userMfa = $this->mfaService->getUserMfa($userId);
+
+        if (!$userMfa || !$userMfa->isEnabled()) {
+            $this->addSystemMessage('error', _('MFA must be enabled to regenerate recovery codes.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
+        // Generate new recovery codes
+        $recoveryCodes = $this->mfaService->regenerateRecoveryCodes($userId);
+
+        $this->addSystemMessage('success', _('Recovery codes have been regenerated. Please save them in a safe place.'));
+        $this->displayRecoveryCodes($recoveryCodes);
     }
 
     private function displayMfaSetup(): void

@@ -26,12 +26,20 @@
                 <p class="mb-2 small"><strong>{% trans %}Authentication method:{% endtrans %}</strong> {% trans %}Email verification{% endtrans %}</p>
               {% endif %}
               
-              <form method="post" action="index.php?page=mfa_setup">
-                <input type="hidden" name="_token" value="{{ csrf_token }}">
-                <button type="submit" name="disable_mfa" class="btn btn-sm btn-danger">
-                  {% trans %}Disable MFA{% endtrans %}
-                </button>
-              </form>
+              <div class="d-flex gap-2">
+                <form method="post" action="index.php?page=mfa_setup">
+                  <input type="hidden" name="_token" value="{{ csrf_token }}">
+                  <button type="submit" name="regenerate_codes" class="btn btn-sm btn-secondary me-2">
+                    <i class="bi bi-key text-white"></i> {% trans %}Regenerate Recovery Codes{% endtrans %}
+                  </button>
+                </form>
+                <form method="post" action="index.php?page=mfa_setup">
+                  <input type="hidden" name="_token" value="{{ csrf_token }}">
+                  <button type="submit" name="disable_mfa" class="btn btn-sm btn-danger">
+                    {% trans %}Disable MFA{% endtrans %}
+                  </button>
+                </form>
+              </div>
             </div>
           {% else %}
             <div class="alert alert-warning">

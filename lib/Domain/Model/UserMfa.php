@@ -254,7 +254,7 @@ class UserMfa
      * @param int $count Number of recovery codes to generate
      * @return array The generated recovery codes
      */
-    public function generateRecoveryCodes(int $count = 8): array
+    public function generateRecoveryCodes(int $count = 10): array
     {
         $codes = [];
 
