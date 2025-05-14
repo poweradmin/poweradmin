@@ -115,9 +115,12 @@ class MfaSetupController extends BaseController
 
         // Generate a new secret if one doesn't exist
         if (!$userMfa->getSecret()) {
+            // Generate a proper secret for authenticator apps
             $userMfa->setSecret($this->mfaService->generateSecretKey());
             $userMfa->setType(UserMfa::TYPE_APP);
             $this->mfaService->saveUserMfa($userMfa);
+
+            error_log("[MfaSetupController] Generated new secret for app-based MFA for user {$_SESSION['userid']}");
         }
 
         // Display verification page
@@ -317,10 +320,23 @@ class MfaSetupController extends BaseController
 
     private function displayAppVerification(string $secret): void
     {
+        // Get the user's email or username for the authenticator app
         $email = $_SESSION['email'] ?? '';
 
+        // Make sure we have a valid email for the QR code
+        if (empty($email)) {
+            error_log("[MfaSetupController] Warning: Empty email when generating QR code for user {$_SESSION['userid']}");
+            // Use a generic username if email is missing
+            $email = "user{$_SESSION['userid']}";
+        }
+
+        // Generate the QR code with proper email and secret
         $qrCode = $this->mfaService->generateQrCodeSvg($email, $secret);
 
+        // Log QR code generation for debugging
+        error_log("[MfaSetupController] Generated QR code for user ID: {$_SESSION['userid']}");
+
+        // Render the template with all necessary data
         $this->render('mfa_verify_app.html', [
             'secret' => $secret,
             'qr_code' => $qrCode,

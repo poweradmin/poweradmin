@@ -153,12 +153,14 @@ class MfaVerifyController extends BaseController
                 // Get the user's email from session if available (for email-based MFA)
                 $email = $_SESSION['email'] ?? null;
 
-                // Call the method to update the MFA secret
-                $secretUpdated = $this->mfaService->updateMfaSecretAfterLogin($userId, $email);
-                if ($secretUpdated) {
-                    error_log("[MfaVerifyController] MFA secret updated after successful login for user ID: $userId");
+                // Update the MFA secret only for email-based MFA (app-based MFA must keep the same secret)
+                $mfaType = $this->mfaService->getMfaType($userId);
+                $this->mfaService->updateMfaSecretAfterLogin($userId, $email);
+
+                if ($mfaType === 'email') {
+                    error_log("[MfaVerifyController] Email verification code updated after successful login for user ID: $userId");
                 } else {
-                    error_log("[MfaVerifyController] Failed to update MFA secret for user ID: $userId");
+                    error_log("[MfaVerifyController] Successfully verified app-based MFA for user ID: $userId");
                 }
             } catch (\Exception $e) {
                 error_log("[MfaVerifyController] Error updating MFA secret: " . $e->getMessage());

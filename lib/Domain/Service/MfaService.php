@@ -132,11 +132,40 @@ class MfaService
     }
 
     /**
-     * Generate a new secret key for a user
+     * Generate a new secret key for authenticator app-based MFA
+     *
+     * This method generates a proper Base32-encoded secret key
+     * that is compatible with Google Authenticator, Microsoft Authenticator,
+     * and other TOTP apps
+     *
+     * @param int $length Length of the secret key in bytes (16 is standard)
+     * @return string Base32-encoded secret key
      */
-    public function generateSecretKey(): string
+    public function generateSecretKey(int $length = 16): string
     {
-        return $this->google2fa->generateSecretKey();
+        // Use Google2FA's built-in method which generates a Base32-encoded secret
+        $secret = $this->google2fa->generateSecretKey($length);
+
+        return $secret;
+    }
+
+    /**
+     * Check if a secret key is valid for TOTP authentication
+     *
+     * This method checks if a secret key meets the requirements for
+     * use with TOTP authenticator apps (proper Base32 encoding)
+     *
+     * @param string|null $secret The secret key to check
+     * @return bool True if the secret is valid, false otherwise
+     */
+    public function isValidTotpSecret(?string $secret): bool
+    {
+        if ($secret === null || empty($secret)) {
+            return false;
+        }
+
+        // Check if the secret is Base32-encoded (A-Z and 2-7)
+        return (bool)preg_match('/^[A-Z2-7]+$/', $secret);
     }
 
     /**
@@ -210,6 +239,14 @@ class MfaService
         }
 
         $mfaType = $userMfa->getType();
+        $secret = $userMfa->getSecret();
+
+        // For app-based authentication, verify the secret is in the correct format
+        if ($mfaType === UserMfa::TYPE_APP && !$this->isValidTotpSecret($secret)) {
+            error_log("[MfaService] Invalid secret format for app-based authentication - not Base32 encoded");
+            return false;
+        }
+
         error_log("[MfaService] Verifying code for user ID: $userId, type: $mfaType");
 
         // First, check if the code matches a recovery code
@@ -278,7 +315,18 @@ class MfaService
 
         // For app-based MFA, verify the TOTP code
         try {
-            $isValid = $this->google2fa->verifyKey($userMfa->getSecret(), $code);
+            // Gently clean the verification code - just remove spaces
+            $code = str_replace(' ', '', trim($code));
+
+            // Let's use the secret directly as stored - any modification might break compatibility
+            $secret = $userMfa->getSecret();
+
+            // Allow for a window of 1 period before and after - 2 might be too permissive
+            // This helps if device's clock is slightly out of sync (±30 seconds)
+            $window = 1;
+
+            // Use the Google2FA library to verify the TOTP code exactly as intended
+            $isValid = $this->google2fa->verifyKey($secret, $code, $window);
 
             if ($isValid) {
                 error_log("[MfaService] Valid TOTP code for user ID: $userId");
@@ -300,11 +348,26 @@ class MfaService
      */
     public function generateQrCodeSvg(string $email, string $secret): string
     {
+        // Get the application name from configuration to use as the issuer
         $appName = $this->configManager->get('interface', 'title', 'Poweradmin');
+
+        // Let's not modify the secret at all - use it exactly as provided
+        // This ensures compatibility with what the verification expects
+
+        // Generate the otpauth URL using the Google2FA library
         $qrCodeUrl = $this->google2fa->getQRCodeUrl($appName, $email, $secret);
 
+        // Make sure the issuer parameter is included in the URL - this is critical for compatibility
+        if (strpos($qrCodeUrl, 'issuer=') === false) {
+            $qrCodeUrl .= (strpos($qrCodeUrl, '?') !== false ? '&' : '?') . 'issuer=' . urlencode($appName);
+        }
+
+        // Log for audit
+        error_log("[MfaService] Generated QR code for user with email: " . $email);
+
+        // Create a QR code renderer with increased size for better scanability
         $renderer = new ImageRenderer(
-            new RendererStyle(200),
+            new RendererStyle(240), // Increased size from 200 to 240
             new SvgImageBackEnd()
         );
 
@@ -525,37 +588,42 @@ class MfaService
     /**
      * Update MFA secret for a user after successful verification
      *
-     * This improves security by generating a new secret after each successful login
-     * Works for both app-based MFA and email-based MFA
+     * For email-based MFA: Generates a new verification code for security
+     * For app-based MFA: Preserves the existing secret (must not change or app codes won't work)
      *
      * @param int $userId The user ID
      * @param string|null $email User's email address (optional, for logging)
-     * @return bool True if secret was updated, false otherwise
+     * @return void
      */
-    public function updateMfaSecretAfterLogin(int $userId, ?string $email = null): bool
+    public function updateMfaSecretAfterLogin(int $userId, ?string $email = null): void
     {
         try {
             $userMfa = $this->getUserMfa($userId);
 
             if (!$userMfa || !$userMfa->isEnabled()) {
-                error_log("[MfaService] Cannot update secret: User $userId has no enabled MFA");
-                return false;
+                error_log("[MfaService] Cannot update MFA: User $userId has no enabled MFA");
+                return;
             }
 
-            // Generate a new secret for any MFA type
-            $newSecret = $this->generateEmailVerificationCode();
-            $userMfa->setSecret($newSecret);
-
             $mfaType = $userMfa->getType();
-            error_log("[MfaService] Generated new MFA secret for user $userId (type: $mfaType) after successful login");
 
-            // Save the updated user MFA data
+            // We should ONLY update the secret for email-based MFA
+            // For app-based MFA, the secret must remain the same or the authenticator app codes won't work!
+            if ($mfaType === UserMfa::TYPE_EMAIL) {
+                // Only for email-based MFA, generate a new verification code
+                $newSecret = $this->generateEmailVerificationCode();
+                $userMfa->setSecret($newSecret);
+                error_log("[MfaService] Generated new email verification code for user $userId");
+            } else {
+                // For app-based MFA, DO NOT change the secret
+                error_log("[MfaService] App-based MFA secret preserved for user $userId - no changes made");
+            }
+
+            // Save the updated user MFA data (for email-based) or just update last used timestamp
+            $userMfa->updateLastUsed();
             $this->userMfaRepository->save($userMfa);
-
-            return true;
         } catch (\Exception $e) {
-            error_log("[MfaService] Error updating MFA secret: " . $e->getMessage());
-            return false;
+            error_log("[MfaService] Error in MFA update: " . $e->getMessage());
         }
     }
 }

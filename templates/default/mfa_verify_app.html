@@ -23,12 +23,16 @@
                 {{ qr_code|raw }}
               </div>
               
-              <p class="mt-3">{% trans %}Or manually enter this key{% endtrans %}</p>
+              <p class="mt-3">{% trans %}Or manually enter this key in your authenticator app{% endtrans %}</p>
               <div class="input-group mb-3">
                 <input type="text" class="form-control" value="{{ secret }}" readonly id="secret-key">
                 <button class="btn btn-outline-secondary" type="button" onclick="copySecret()">
                   <i class="bi bi-clipboard"></i>
                 </button>
+              </div>
+              <div class="alert alert-info bg-info bg-opacity-10 py-2 border border-info small mb-3">
+                <i class="bi bi-info-circle-fill me-2 text-info"></i>
+                <span>{% trans %}When adding manually, select "Enter key" or "Enter setup key" in your authenticator app, then enter the key above. Leave spaces out if your app doesn't accept them.{% endtrans %}</span>
               </div>
             </div>
             
