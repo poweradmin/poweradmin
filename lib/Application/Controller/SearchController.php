@@ -36,6 +36,7 @@ use Poweradmin\Application\Query\ZoneSearch;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\RecordTypeService;
 
 class SearchController extends BaseController
 {
@@ -50,6 +51,8 @@ class SearchController extends BaseController
             'wildcard' => true,
             'reverse' => true,
             'comments' => false,
+            'type_filter' => '',
+            'content_filter' => '',
         ];
 
         $totalZones = 0;
@@ -110,13 +113,51 @@ class SearchController extends BaseController
         if ($this->isPost()) {
             $this->validateCsrfToken();
 
-            $parameters['query'] = !empty($_POST['query']) ? htmlspecialchars($_POST['query']) : '';
+            $rawQuery = !empty($_POST['query']) ? $_POST['query'] : '';
+
+            // Parse query for embedded filters
+            list($cleanQuery, $extractedFilters) = $this->parseQueryFilters($rawQuery);
+
+            // Keep the original query for display in the search box
+            $displayed_query = $rawQuery;
+
+            // Use the cleaned query (without filters) for actual searching
+            $parameters['query'] = htmlspecialchars($cleanQuery);
+
+            // Store the original query for display purposes
+            $parameters['displayed_query'] = htmlspecialchars($displayed_query);
 
             $parameters['zones'] = isset($_POST['zones']) ? htmlspecialchars($_POST['zones']) : false;
             $parameters['records'] = isset($_POST['records']) ? htmlspecialchars($_POST['records']) : false;
             $parameters['wildcard'] = isset($_POST['wildcard']) ? htmlspecialchars($_POST['wildcard']) : false;
             $parameters['reverse'] = isset($_POST['reverse']) ? htmlspecialchars($_POST['reverse']) : false;
             $parameters['comments'] = isset($_POST['comments']) ? htmlspecialchars($_POST['comments']) : false;
+
+            // Only use extracted type and content filters from the query string
+            // This ensures filters from the search box always take precedence
+            if (!empty($extractedFilters['type'])) {
+                $parameters['type_filter'] = htmlspecialchars($extractedFilters['type']);
+                // Enable records search if type filter is found in query
+                $parameters['records'] = true;
+            } else {
+                // Only use form field if no filter in query string
+                $parameters['type_filter'] = isset($_POST['type_filter']) ? htmlspecialchars($_POST['type_filter']) : '';
+            }
+
+            if (!empty($extractedFilters['content'])) {
+                $parameters['content_filter'] = htmlspecialchars($extractedFilters['content']);
+                // Enable records search if content filter is found in query
+                $parameters['records'] = true;
+            } else {
+                // Only use form field if no filter in query string
+                $parameters['content_filter'] = isset($_POST['content_filter']) ? htmlspecialchars($_POST['content_filter']) : '';
+            }
+
+            // If records search is disabled, clear the filters
+            if (!$parameters['records']) {
+                $parameters['type_filter'] = '';
+                $parameters['content_filter'] = '';
+            }
 
             $zones_page = isset($_POST['zones_page']) ? (int)$_POST['zones_page'] : 1;
 
@@ -194,17 +235,23 @@ class SearchController extends BaseController
         $whois_enabled = $this->config->get('whois', 'enabled', false);
         $rdap_enabled = $this->config->get('rdap', 'enabled', false);
 
+        // Get all record types for the filter dropdown
+        $recordTypeService = new RecordTypeService($this->getConfig());
+        $recordTypes = $recordTypeService->getAllTypes();
+
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
             'zone_sort_direction' => $zone_sort_direction,
             'record_sort_by' => $record_sort_by,
             'record_sort_direction' => $record_sort_direction,
-            'query' => $parameters['query'],
+            'query' => isset($parameters['displayed_query']) ? $parameters['displayed_query'] : $parameters['query'],
             'search_by_zones' => $parameters['zones'],
             'search_by_records' => $parameters['records'],
             'search_by_comments' => $parameters['comments'],
             'search_by_wildcard' => $parameters['wildcard'],
             'search_by_reverse' => $parameters['reverse'],
+            'type_filter' => $parameters['type_filter'],
+            'content_filter' => $parameters['content_filter'],
             'has_zones' => !empty($searchResultZones),
             'has_records' => !empty($searchResultRecords),
             'found_zones' => $searchResultZones,
@@ -221,6 +268,7 @@ class SearchController extends BaseController
             'user_id' => $_SESSION['userid'],
             'whois_enabled' => $whois_enabled,
             'rdap_enabled' => $rdap_enabled,
+            'record_types' => $recordTypes,
         ]);
     }
 
@@ -242,5 +290,36 @@ class SearchController extends BaseController
         }
 
         return [$sortOrder, $sortDirection];
+    }
+
+    /**
+     * Parse query string for embedded filters like "type:txt" or "content:spf"
+     *
+     * @param string $query The search query to parse
+     * @return array Array containing the cleaned query and extracted filters
+     */
+    private function parseQueryFilters(string $query): array
+    {
+        $filters = [
+            'type' => '',
+            'content' => '',
+        ];
+
+        // Match patterns like "type:txt" or "type: txt" or "type:TXT" (case insensitive)
+        if (preg_match('/\btype:\s*([a-z0-9_]+)\b/i', $query, $matches)) {
+            $filters['type'] = strtoupper($matches[1]); // Convert to uppercase for consistency
+            $query = str_replace($matches[0], '', $query); // Remove from query
+        }
+
+        // Match patterns like "content:spf" or "content: value"
+        if (preg_match('/\bcontent:\s*([^\s]+)\b/i', $query, $matches)) {
+            $filters['content'] = $matches[1];
+            $query = str_replace($matches[0], '', $query); // Remove from query
+        }
+
+        // Cleanup query (remove extra spaces)
+        $query = trim(preg_replace('/\s+/', ' ', $query));
+
+        return [$query, $filters];
     }
 }

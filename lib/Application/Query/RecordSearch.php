@@ -107,6 +107,20 @@ class RecordSearch extends BaseSearch
         $db_type = $this->config->get('database', 'type');
         $sort_records_by = $sort_records_by === 'name' ? SortHelper::getRecordSortOrder($records_table, $db_type, $record_sort_direction) : "$sort_records_by $record_sort_direction";
 
+        // Build query with new type and content filters
+        $typeFilter = !empty($parameters['type_filter']) ?
+            " AND $records_table.type = " . $this->db->quote($parameters['type_filter'], 'text') : '';
+
+        $contentFilter = '';
+        if (!empty($parameters['content_filter'])) {
+            // Add wildcards automatically if they're not already present
+            $content = $parameters['content_filter'];
+            if (strpos($content, '%') === false) {
+                $content = '%' . $content . '%';
+            }
+            $contentFilter = " AND $records_table.content LIKE " . $this->db->quote($content, 'text');
+        }
+
         $recordsQuery = "
         SELECT
             $records_table.id,
@@ -131,6 +145,8 @@ class RecordSearch extends BaseSearch
             (($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
             ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
             ($iface_record_comments && $parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ')' .
+            $typeFilter .
+            $contentFilter .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '') .
             ' ORDER BY ' . $sort_records_by .
@@ -186,6 +202,20 @@ class RecordSearch extends BaseSearch
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
         $groupByClause = $iface_search_group_records ? "GROUP BY $records_table.name, $records_table.content" : '';
 
+        // Add type and content filters
+        $typeFilter = !empty($parameters['type_filter']) ?
+            " AND $records_table.type = " . $this->db->quote($parameters['type_filter'], 'text') : '';
+
+        $contentFilter = '';
+        if (!empty($parameters['content_filter'])) {
+            // Add wildcards automatically if they're not already present
+            $content = $parameters['content_filter'];
+            if (strpos($content, '%') === false) {
+                $content = '%' . $content . '%';
+            }
+            $contentFilter = " AND $records_table.content LIKE " . $this->db->quote($content, 'text');
+        }
+
         // Build a query that correctly applies permission filters for accurate counting
         $recordsQuery = "
         SELECT
@@ -202,6 +232,8 @@ class RecordSearch extends BaseSearch
                 (($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
             ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
             ($parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ')' .
+            $typeFilter .
+            $contentFilter .
             ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             " $groupByClause
         ) as grouped_records";
