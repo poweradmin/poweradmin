@@ -46,6 +46,7 @@ class HttpClient implements ApiClient
                     "X-API-Key: $this->apiKey\r\n",
                 'method' => strtoupper($method),
                 'ignore_errors' => true,
+                'timeout' => 10, // Add a reasonable timeout
             ]
         ];
 
@@ -53,37 +54,111 @@ class HttpClient implements ApiClient
             $options['http']['content'] = json_encode($data);
         }
 
-        $context = stream_context_create($options);
-        $response = @file_get_contents($url, false, $context);
+        try {
+            $context = stream_context_create($options);
+            $response = @file_get_contents($url, false, $context);
 
-        if ($response === false) {
-            $error = error_get_last();
-            $displayErrors = $this->shouldDisplayErrors();
+            if ($response === false) {
+                $error = error_get_last();
+                $displayErrors = $this->shouldDisplayErrors();
 
-            $errorMessage = $displayErrors
-                ? ($error['message'] ?? 'Error fetching API response')
-                : 'An unknown API error occurred';
+                $errorDetails = [
+                    'url' => $url,
+                    'method' => $method,
+                    'error' => $error['message'] ?? 'Unknown error',
+                    'code' => $error['type'] ?? 0
+                ];
 
-            throw new ApiErrorException($errorMessage);
+                $errorMessage = $displayErrors
+                    ? sprintf('API request failed: %s', $errorDetails['error'])
+                    : 'An unknown API error occurred';
+
+                $this->logApiError($errorMessage, $errorDetails);
+                throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
+            }
+
+            $responseCode = $this->getResponseCode($http_response_header);
+            $responseData = json_decode($response, true);
+
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                $errorMessage = 'Invalid JSON response from API';
+                $errorDetails = [
+                    'url' => $url,
+                    'method' => $method,
+                    'response' => substr($response, 0, 255), // Limit response size for logging
+                    'json_error' => json_last_error_msg()
+                ];
+
+                $this->logApiError($errorMessage, $errorDetails);
+                throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
+            }
+
+            if ($responseCode >= 400) {
+                $displayErrors = $this->shouldDisplayErrors();
+
+                $errorDetails = [
+                    'url' => $url,
+                    'method' => $method,
+                    'http_code' => $responseCode,
+                    'response' => $responseData
+                ];
+
+                $errorMessage = $displayErrors
+                    ? sprintf(
+                        'HTTP Error %d: %s',
+                        $responseCode,
+                        isset($responseData['error']) ? $responseData['error'] : 'API error'
+                    )
+                    : 'An API request failed';
+
+                $this->logApiError($errorMessage, $errorDetails);
+                throw new ApiErrorException($errorMessage, $responseCode, null, $errorDetails);
+            }
+
+            return [
+                'responseCode' => $responseCode,
+                'data' => $responseData
+            ];
+        } catch (ApiErrorException $e) {
+            // Re-throw API exceptions
+            throw $e;
+        } catch (\Throwable $e) {
+            // Catch any other exceptions and convert to ApiErrorException
+            $errorDetails = [
+                'url' => $url,
+                'method' => $method,
+                'exception' => get_class($e),
+                'message' => $e->getMessage(),
+                'code' => $e->getCode(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine()
+            ];
+
+            $errorMessage = $this->shouldDisplayErrors()
+                ? sprintf('API request error: %s', $e->getMessage())
+                : 'An unexpected error occurred when connecting to the API';
+
+            $this->logApiError($errorMessage, $errorDetails);
+            throw new ApiErrorException($errorMessage, 0, $e, $errorDetails);
         }
+    }
 
-        $responseCode = $this->getResponseCode($http_response_header);
-        $responseData = json_decode($response, true);
+    /**
+     * Log API errors for debugging
+     *
+     * @param string $message Error message
+     * @param array $details Additional error details for logging
+     * @return void
+     */
+    private function logApiError(string $message, array $details = []): void
+    {
+        $logMessage = sprintf(
+            "API Error: %s; Details: %s",
+            $message,
+            json_encode($details, JSON_UNESCAPED_SLASHES)
+        );
 
-        if ($responseCode >= 400) {
-            $displayErrors = $this->shouldDisplayErrors();
-
-            $errorMessage = $responseData['error'] ?? ($displayErrors
-                ? sprintf('HTTP Error %d: %s', $responseCode, $response)
-                : 'An unknown API error occurred');
-
-            throw new ApiErrorException($errorMessage);
-        }
-
-        return [
-            'responseCode' => $responseCode,
-            'data' => $responseData
-        ];
+        error_log($logMessage);
     }
 
     private function getResponseCode(array $headers): ?int

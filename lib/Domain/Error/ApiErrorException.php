@@ -23,7 +23,59 @@
 namespace Poweradmin\Domain\Error;
 
 use RuntimeException;
+use Throwable;
 
 class ApiErrorException extends RuntimeException
 {
+    /**
+     * Additional details about the API error
+     *
+     * @var array
+     */
+    private array $details;
+
+    /**
+     * @param string $message The error message
+     * @param int $code The error code
+     * @param Throwable|null $previous The previous throwable
+     * @param array $details Additional error details
+     */
+    public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null, array $details = [])
+    {
+        parent::__construct($message, $code, $previous);
+        $this->details = $details;
+    }
+
+    /**
+     * Get additional error details
+     *
+     * @return array
+     */
+    public function getDetails(): array
+    {
+        return $this->details;
+    }
+
+    /**
+     * Get a specific detail by key
+     *
+     * @param string $key
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getDetail(string $key, $default = null)
+    {
+        return $this->details[$key] ?? $default;
+    }
+
+    /**
+     * Check if a specific detail exists
+     *
+     * @param string $key
+     * @return bool
+     */
+    public function hasDetail(string $key): bool
+    {
+        return isset($this->details[$key]);
+    }
 }
