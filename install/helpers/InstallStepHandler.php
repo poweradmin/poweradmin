@@ -160,6 +160,8 @@ class InstallStepHandler
         }
 
         $pa_pass = $this->request->get('pa_pass');
+        $messages = [];
+        $dbError = null;
 
         try {
             $databaseConnection = new PDODatabaseConnection();
@@ -171,35 +173,39 @@ class InstallStepHandler
             // Check for PowerDNS tables before proceeding
             $missingTables = $databaseHelper->checkPowerDnsTables();
             if (!empty($missingTables)) {
-                echo '<div class="alert alert-warning">';
-                echo '<strong>' . _('Warning:') . '</strong> ' . _('Missing PowerDNS tables:') . ' <strong>' . implode(', ', $missingTables) . '</strong> - ' . _('Poweradmin requires these PowerDNS tables to function properly.');
-                echo '</div>';
+                $messages['pdns_warning'] = '<strong>' . _('Warning:') . '</strong> ' . _('Missing PowerDNS tables:') . ' <strong>' . implode(', ', $missingTables) . '</strong> - ' . _('Poweradmin requires these PowerDNS tables to function properly.');
             }
-
-            echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
             $databaseHelper->updateDatabase();
             $databaseHelper->createAdministratorUser($pa_pass);
 
-            echo _('done!') . "</p>";
+            $messages['db_success'] = _('Updating database... done!');
         } catch (\Exception $e) {
-            // Display the error in a user-friendly way
-            echo "<div class='alert alert-danger'>";
-            echo "<h5>" . _('Database Error') . "</h5>";
-            echo "<p>" . $e->getMessage() . "</p>";
+            $errorMessage = $e->getMessage();
 
+            $suggestions = '';
             if ($credentials['db_type'] == 'sqlite') {
-                echo "<p><strong>" . _('Suggestions:') . "</strong></p>";
-                echo "<ul>";
-                echo "<li>" . _('Make sure the SQLite database file exists') . "</li>";
-                echo "<li>" . _('Check that the web server has read and write permissions for the database file') . "</li>";
-                echo "<li>" . _('Verify the full path to the database file is correct and accessible') . "</li>";
-                echo "</ul>";
+                $suggestions = "<p><strong>" . _('Suggestions:') . "</strong></p>" .
+                    "<ul>" .
+                    "<li>" . _('Make sure the SQLite database file exists') . "</li>" .
+                    "<li>" . _('Check that the web server has read and write permissions for the database file') . "</li>" .
+                    "<li>" . _('Verify the full path to the database file is correct and accessible') . "</li>" .
+                    "</ul>";
             }
 
-            echo "</div>";
+            $dbError = [
+                'title' => _('Database Error'),
+                'message' => $errorMessage,
+                'suggestions' => $suggestions
+            ];
 
-            // Return so we don't continue with the form rendering
+            // Skip rendering the rest of the template
+            $this->renderTemplate('step5.html.twig', [
+                'current_step' => $this->currentStep,
+                'language' => $this->request->get('language'),
+                'db_error' => $dbError,
+                'errors' => $errors,
+            ]);
             return;
         }
 
@@ -218,6 +224,7 @@ class InstallStepHandler
             'language' => $this->request->get('language'),
             'pa_pass' => $pa_pass,
             'errors' => $errors,
+            'messages' => $messages,
         ], $credentials, $inputData));
     }
 

@@ -11,6 +11,30 @@
             <div class="alert alert-info py-2 mb-3">
                 <strong>{% trans %}Configuration:{% endtrans %}</strong> {% trans %}Now we will gather all details for the configuration itself.{% endtrans %}
             </div>
+            
+            {% if db_error is defined and db_error %}
+                <div class="alert alert-danger py-2 mb-3">
+                    <h5>{{ db_error.title }}</h5>
+                    <p>{{ db_error.message }}</p>
+                    {% if db_error.suggestions %}
+                        {{ db_error.suggestions|raw }}
+                    {% endif %}
+                </div>
+            {% endif %}
+            
+            {% if messages is defined %}
+                {% if messages.pdns_warning is defined %}
+                    <div class="alert alert-warning py-2 mb-3">
+                        {{ messages.pdns_warning|raw }}
+                    </div>
+                {% endif %}
+                
+                {% if messages.db_success is defined %}
+                    <div class="alert alert-secondary py-2 mb-3">
+                        {{ messages.db_success }}
+                    </div>
+                {% endif %}
+            {% endif %}
 
             <form class="needs-validation" method="post" novalidate>
                 <input type="hidden" name="install_token" value="{{ install_token }}">

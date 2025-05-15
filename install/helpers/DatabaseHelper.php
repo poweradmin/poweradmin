@@ -31,7 +31,7 @@ class DatabaseHelper
 {
     private PDOLayer $db;
     private array $databaseCredentials;
-    private const REQUIRED_PDNS_TABLES = ['domains', 'records', 'supermasters', 'domainmetadata', 'cryptokeys', 'comments', 'tsigkeys'];
+    private const REQUIRED_PDNS_TABLES = ['domains', 'records', 'supermasters', 'domainmetadata', 'comments'];
 
     public function __construct(PDOLayer $db, array $databaseCredentials)
     {
@@ -228,7 +228,7 @@ class DatabaseHelper
     private function getGrantTables($def_tables): array
     {
         // Tables from PowerDNS
-        $grantTables = array('supermasters', 'domains', 'domainmetadata', 'cryptokeys', 'records', 'comments');
+        $grantTables = array('supermasters', 'domains', 'domainmetadata', 'cryptokeys', 'records', 'comments', 'tsigkeys');
 
         // Include Poweradmin tables
         foreach ($def_tables as $table) {
