@@ -173,7 +173,10 @@ class InstallStepHandler
             // Check for PowerDNS tables before proceeding
             $missingTables = $databaseHelper->checkPowerDnsTables();
             if (!empty($missingTables)) {
-                $messages['pdns_warning'] = '<strong>' . _('Warning:') . '</strong> ' . _('Missing PowerDNS tables:') . ' <strong>' . implode(', ', $missingTables) . '</strong> - ' . _('Poweradmin requires these PowerDNS tables to function properly.');
+                $warningMsg = '<strong>' . _('Warning:') . '</strong> ';
+                $warningMsg .= _('Missing PowerDNS tables:') . ' <strong>' . implode(', ', $missingTables) . '</strong>';
+                $warningMsg .= ' - ' . _('Poweradmin requires these PowerDNS tables to function properly.');
+                $messages['pdns_warning'] = $warningMsg;
             }
 
             $databaseHelper->updateDatabase();
