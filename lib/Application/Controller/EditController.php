@@ -261,11 +261,8 @@ class EditController extends BaseController
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
             if ($dnssecProvider->isDnssecEnabled()) {
-                $result = $dnssecProvider->secureZone($zone_name);
-
-                if ($result) {
-                    $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
-                }
+                $dnssecProvider->secureZone($zone_name);
+                $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
             } else {
                 $this->setMessage('edit', 'error', _('DNSSEC is not enabled on the server.'));
             }
