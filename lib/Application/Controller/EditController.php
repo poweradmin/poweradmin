@@ -331,7 +331,7 @@ class EditController extends BaseController
             $records = $this->dnsRecord->getRecordsFromDomainId(
                 $this->config->get('database', 'type', 'mysql'),
                 $zone_id,
-                $row_start,
+                (int)$row_start,
                 $iface_rowamount,
                 $record_sort_by,
                 $sort_direction,
