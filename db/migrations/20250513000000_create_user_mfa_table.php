@@ -38,7 +38,7 @@ final class CreateUserMfaTable extends AbstractMigration
             ->addColumn('enabled', 'boolean', ['null' => false, 'default' => false])
             ->addColumn('secret', 'string', ['limit' => 255, 'null' => true])
             ->addColumn('recovery_codes', 'text', ['null' => true])
-            ->addColumn('type', 'string', ['limit' => 20, 'null' => false, 'default' => 'app'])
+            ->addColumn('type', 'string', ['limit' => 20, 'null' => false])
             ->addColumn('last_used_at', 'datetime', ['null' => true])
             ->addColumn('created_at', 'datetime', ['null' => false])
             ->addColumn('updated_at', 'datetime', ['null' => true])
@@ -59,6 +59,8 @@ final class CreateUserMfaTable extends AbstractMigration
                     'default' => null,
                     'update' => 'CURRENT_TIMESTAMP'
                 ]);
+                // Set default value for 'type' column
+                $this->execute("ALTER TABLE `user_mfa` ALTER COLUMN `type` SET DEFAULT 'app'");
                 break;
 
             case 'pgsql':
@@ -67,6 +69,8 @@ final class CreateUserMfaTable extends AbstractMigration
                     'null' => false,
                     'default' => false
                 ]);
+                // Set default value for 'type' column in PostgreSQL
+                $this->execute("ALTER TABLE user_mfa ALTER COLUMN type SET DEFAULT 'app'");
                 break;
 
             case 'sqlite':
@@ -76,6 +80,8 @@ final class CreateUserMfaTable extends AbstractMigration
                     'default' => 0,
                     'limit' => 1
                 ]);
+                // Set default value for 'type' column in SQLite
+                $this->execute("ALTER TABLE user_mfa ALTER COLUMN type SET DEFAULT 'app'");
                 break;
 
             default:

@@ -814,7 +814,7 @@ class DatabaseStructureHelper
                         'notnull' => 1,
                         'length' => 20,
                         'fixed' => 0,
-                        'default' => 'app',
+                        // Removed default to avoid issues with string quoting
                         'type' => 'text',
                         'name' => 'type',
                         'table' => 'user_mfa',

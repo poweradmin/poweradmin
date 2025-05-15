@@ -10,6 +10,8 @@
         <div class="card-body">
             <div class="alert alert-info py-2 mb-3">
                 <strong>{% trans %}Database Preparation:{% endtrans %}</strong> {% trans %}The installer needs to modify the PowerDNS database with tables for Poweradmin. Use an account with sufficient rights (like root) to proceed.{% endtrans %}
+                <hr class="my-2">
+                <strong>{% trans %}Important:{% endtrans %}</strong> {% trans %}Poweradmin requires a properly configured PowerDNS database with tables already created. This installer will NOT create PowerDNS tables - only Poweradmin-specific tables.{% endtrans %}
             </div>
 
             <form class="needs-validation" method="post" novalidate>

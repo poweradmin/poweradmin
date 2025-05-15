@@ -31,11 +31,31 @@ class DatabaseHelper
 {
     private PDOLayer $db;
     private array $databaseCredentials;
+    private const REQUIRED_PDNS_TABLES = ['domains', 'records', 'supermasters', 'domainmetadata', 'cryptokeys', 'comments', 'tsigkeys'];
 
     public function __construct(PDOLayer $db, array $databaseCredentials)
     {
         $this->db = $db;
         $this->databaseCredentials = $databaseCredentials;
+    }
+
+    /**
+     * Check if required PowerDNS tables exist in the database
+     *
+     * @return array Missing PowerDNS tables
+     */
+    public function checkPowerDnsTables(): array
+    {
+        $missingTables = [];
+        $existingTables = $this->db->listTables();
+
+        foreach (self::REQUIRED_PDNS_TABLES as $table) {
+            if (!in_array($table, $existingTables)) {
+                $missingTables[] = $table;
+            }
+        }
+
+        return $missingTables;
     }
 
     public function updateDatabase(): void
@@ -63,6 +83,24 @@ class DatabaseHelper
                 $options['collation'] = $this->databaseCredentials['db_collation'];
             }
             $this->db->createTable($table['table_name'], $table['fields'], $options);
+
+            // Set default value for the 'type' column in user_mfa table
+            if ($table['table_name'] === 'user_mfa') {
+                $dbType = $this->databaseCredentials['db_type'];
+
+                switch ($dbType) {
+                    case 'mysql':
+                        $this->db->exec("ALTER TABLE `user_mfa` ALTER COLUMN `type` SET DEFAULT 'app'");
+                        break;
+                    case 'pgsql':
+                        $this->db->exec("ALTER TABLE user_mfa ALTER COLUMN type SET DEFAULT 'app'");
+                        break;
+                    case 'sqlite':
+                        // SQLite doesn't support ALTER COLUMN with SET DEFAULT
+                        // We'll need to ensure new rows have this value explicitly set
+                        break;
+                }
+            }
         }
 
         $fill_perm_items = $this->db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');

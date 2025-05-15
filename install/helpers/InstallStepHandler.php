@@ -166,9 +166,18 @@ class InstallStepHandler
             $databaseService = new DatabaseService($databaseConnection);
             $db = $databaseService->connect($credentials);
 
+            $databaseHelper = new DatabaseHelper($db, $credentials);
+
+            // Check for PowerDNS tables before proceeding
+            $missingTables = $databaseHelper->checkPowerDnsTables();
+            if (!empty($missingTables)) {
+                echo '<div class="alert alert-warning">';
+                echo '<strong>' . _('Warning:') . '</strong> ' . _('Missing PowerDNS tables:') . ' <strong>' . implode(', ', $missingTables) . '</strong> - ' . _('Poweradmin requires these PowerDNS tables to function properly.');
+                echo '</div>';
+            }
+
             echo "<p class='alert alert-secondary'>" . _('Updating database...') . " ";
 
-            $databaseHelper = new DatabaseHelper($db, $credentials);
             $databaseHelper->updateDatabase();
             $databaseHelper->createAdministratorUser($pa_pass);
 
