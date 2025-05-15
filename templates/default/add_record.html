@@ -84,6 +84,9 @@
                                     <input class="form-control form-control-sm record-content" type="text" name="records[0][content]" value="{{ content }}" required>
                                 </div>
                                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
+                                <div class="cname-root-warning alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
+                                    <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}Warning: CNAME records at the domain root (zone apex) are not recommended and may cause issues. SOA and NS records are required at the domain root and cannot coexist with CNAME.{% endtrans %}
+                                </div>
                             </td>
                             <td>
                                 <input class="form-control form-control-sm" type="number" name="records[0][prio]" value="{{ prio }}" min="0" max="65535" pattern="[0-9]*">
@@ -179,6 +182,18 @@
         if (typeSelect) {
             updatePtrCheckboxVisibility(typeSelect);
         }
+        
+        // Setup CNAME root warning for the new row
+        const nameField = newRow.querySelector('.name-field');
+        if (typeSelect && nameField) {
+            typeSelect.addEventListener('change', function() {
+                checkCnameRootWarning(newRow);
+            });
+            nameField.addEventListener('input', function() {
+                checkCnameRootWarning(newRow);
+            });
+            checkCnameRootWarning(newRow);
+        }
     }
 
     function removeRecord(button) {
@@ -239,11 +254,52 @@
         }
     }
 
-    // Set initial PTR checkbox visibility on page load
+    // Check if a record is at the domain root (name equals zone name)
+    function checkCnameRootWarning(row) {
+        const typeSelect = row.querySelector('.record-type-select');
+        const nameField = row.querySelector('.name-field');
+        const warningDiv = row.querySelector('.cname-root-warning');
+        
+        if (!typeSelect || !nameField || !warningDiv) return;
+        
+        const isType = typeSelect.value === 'CNAME';
+        const zoneName = "{{ zone_name }}";
+        const name = nameField.value.trim();
+        const isAtRoot = (name === "" || name === zoneName || name === "@");
+        
+        warningDiv.style.display = (isType && isAtRoot) ? 'block' : 'none';
+    }
+    
+    // Update CNAME root warning when record type or name changes
+    function setupCnameRootWarningListeners() {
+        document.querySelectorAll('.record-row').forEach(function(row) {
+            const typeSelect = row.querySelector('.record-type-select');
+            const nameField = row.querySelector('.name-field');
+            
+            if (typeSelect) {
+                typeSelect.addEventListener('change', function() {
+                    checkCnameRootWarning(row);
+                });
+            }
+            
+            if (nameField) {
+                nameField.addEventListener('input', function() {
+                    checkCnameRootWarning(row);
+                });
+            }
+            
+            // Initial check
+            checkCnameRootWarning(row);
+        });
+    }
+    
+    // Set initial PTR checkbox visibility and CNAME warnings on page load
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.record-type-select').forEach(function(select) {
             updatePtrCheckboxVisibility(select);
         });
+        
+        setupCnameRootWarningListeners();
     });
 </script>
 

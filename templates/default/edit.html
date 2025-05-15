@@ -112,6 +112,9 @@
                         {% else %}
                         <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
                         {% endif %}
+                        <div id="cnameRootWarningTop" class="alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}Warning: CNAME records at the domain root (zone apex) are not recommended and may cause issues. SOA and NS records are required at the domain root and cannot coexist with CNAME.{% endtrans %}
+                        </div>
                     </td>
                     <td class="col-sm-1">
                         <input class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}is-invalid{% endif %}" 
@@ -614,6 +617,9 @@
                         {% else %}
                         <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
                         {% endif %}
+                        <div id="cnameRootWarningBottom" class="alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}Warning: CNAME records at the domain root (zone apex) are not recommended and may cause issues. SOA and NS records are required at the domain root and cannot coexist with CNAME.{% endtrans %}
+                        </div>
                     </td>
                     <td class="col-sm-1">
                         <input class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}is-invalid{% endif %}" 
@@ -847,6 +853,41 @@
 <script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>
 
 <script>
+    // Check if CNAME is being used at domain root and show warning if it is
+    function checkCnameRootWarning(selectId, nameInputSelector, warningId) {
+        const typeSelect = document.getElementById(selectId);
+        const nameField = document.querySelector(nameInputSelector);
+        const warningDiv = document.getElementById(warningId);
+        
+        if (!typeSelect || !nameField || !warningDiv) return;
+        
+        const isType = typeSelect.value === 'CNAME';
+        const name = nameField.value.trim();
+        const isAtRoot = (name === "" || name === "@");
+        
+        warningDiv.style.display = (isType && isAtRoot) ? 'block' : 'none';
+    }
+    
+    // Set up event listeners for CNAME root warning
+    function setupCnameWarningListeners(selectId, nameInputSelector, warningId) {
+        const typeSelect = document.getElementById(selectId);
+        const nameField = document.querySelector(nameInputSelector);
+        
+        if (typeSelect) {
+            typeSelect.addEventListener('change', function() {
+                checkCnameRootWarning(selectId, nameInputSelector, warningId);
+            });
+        }
+        
+        if (nameField) {
+            nameField.addEventListener('input', function() {
+                checkCnameRootWarning(selectId, nameInputSelector, warningId);
+            });
+        }
+    }
+</script>
+
+<script>
     document.addEventListener('DOMContentLoaded', () => {
         // Handle pre-selected record types for form data restoration
         function setPreselectedType(selectId) {
@@ -980,6 +1021,14 @@
         
         // Initialize selection counter
         updateSelectedCount(recordCheckboxes);
+        
+        // Set up CNAME root warning listeners for top and bottom forms
+        setupCnameWarningListeners('recordTypeSelectTop', 'input[name="name"]', 'cnameRootWarningTop');
+        setupCnameWarningListeners('recordTypeSelectBottom', 'input[name="name"][data-testid="record-name-input"]', 'cnameRootWarningBottom');
+        
+        // Initial check for CNAME warnings
+        checkCnameRootWarning('recordTypeSelectTop', 'input[name="name"]', 'cnameRootWarningTop');
+        checkCnameRootWarning('recordTypeSelectBottom', 'input[name="name"][data-testid="record-name-input"]', 'cnameRootWarningBottom');
     });
     
     // Function to update selected count display

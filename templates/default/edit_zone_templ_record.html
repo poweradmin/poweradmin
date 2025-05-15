@@ -52,9 +52,12 @@
                     {% endif %}
                 </select>
             </td>
-            <td><input class="form-control form-control-sm" type="text" name="content" value="{{ record['content'] }}"
-                       required>
+            <td>
+                <input class="form-control form-control-sm" type="text" name="content" value="{{ record['content'] }}" required>
                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
+                <div id="cnameRootWarning" class="alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
+                    <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}Warning: CNAME records at the domain root (zone apex) are not recommended and may cause issues. SOA and NS records are required at the domain root and cannot coexist with CNAME.{% endtrans %}
+                </div>
             </td>
             <td><input class="form-control form-control-sm" type="number" name="prio" min="0" max="65535" pattern="[0-9]*"
                        value="{{ record['prio'] }}"></td>
@@ -67,3 +70,37 @@
         <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans %}Reset{% endtrans %}">&nbsp;&nbsp;
     </p>
 </form>
+
+<script>
+    // Check if CNAME is being used at domain root in template
+    function checkCnameRootWarning() {
+        const typeSelect = document.querySelector('select[name="type"]');
+        const nameField = document.querySelector('input[name="name"]');
+        const warningDiv = document.getElementById('cnameRootWarning');
+        
+        if (!typeSelect || !nameField || !warningDiv) return;
+        
+        const isType = typeSelect.value === 'CNAME';
+        const name = nameField.value.trim();
+        const isAtRoot = (name === "" || name === "[ZONE]" || name === "@");
+        
+        warningDiv.style.display = (isType && isAtRoot) ? 'block' : 'none';
+    }
+    
+    // Set up event listeners for CNAME root warning
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.querySelector('select[name="type"]');
+        const nameField = document.querySelector('input[name="name"]');
+        
+        if (typeSelect) {
+            typeSelect.addEventListener('change', checkCnameRootWarning);
+        }
+        
+        if (nameField) {
+            nameField.addEventListener('input', checkCnameRootWarning);
+        }
+        
+        // Initial check
+        checkCnameRootWarning();
+    });
+</script>
