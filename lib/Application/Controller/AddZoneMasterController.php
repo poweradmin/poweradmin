@@ -90,7 +90,7 @@ class AddZoneMasterController extends BaseController
             $this->showFirstValidationError($_POST);
         }
 
-        $pdnssec_use = $this->config->get('pdnssec', 'use', false);
+        $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
         $dns_third_level_check = $this->config->get('dns', 'third_level_check', false);
 
         $zone_name = DnsIdnService::toPunycode(trim($_POST['domain']));
@@ -145,6 +145,7 @@ class AddZoneMasterController extends BaseController
     {
         $perm_view_others = UserManager::verifyPermission($this->db, 'user_view_others');
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
+        $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
 
         // Keep the submitted zone name if there was an error
         $domain_value = isset($_POST['domain']) ? htmlspecialchars($_POST['domain']) : '';
@@ -196,7 +197,7 @@ class AddZoneMasterController extends BaseController
             'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
             'iface_zone_type_default' => $this->config->get('interface', 'zone_type_default', 'NATIVE'),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
-            'pdnssec_use' => $this->config->get('dnssec', 'enabled', false),
+            'pdnssec_use' => $pdnssec_use,
             'domain_value' => $domain_value,
             'zone_template_value' => $zone_template_value,
             'owner_value' => $owner_value,
