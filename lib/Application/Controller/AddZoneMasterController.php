@@ -182,7 +182,7 @@ class AddZoneMasterController extends BaseController
         // Safely handle the domain type value
         $valid_domain_types = array("MASTER", "NATIVE");
         $dom_type_value = isset($_POST['dom_type']) && in_array($_POST['dom_type'], $valid_domain_types) ?
-            $_POST['dom_type'] : $this->config->get('interface', 'zone_type_default', 'NATIVE');
+            $_POST['dom_type'] : $this->config->get('dns', 'zone_type_default', 'NATIVE');
 
         $is_post_request = !empty($_POST);
 
@@ -195,7 +195,7 @@ class AddZoneMasterController extends BaseController
             'available_zone_types' => $valid_domain_types,
             'users' => UserManager::showUsers($this->db),
             'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
-            'iface_zone_type_default' => $this->config->get('interface', 'zone_type_default', 'NATIVE'),
+            'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'NATIVE'),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
             'pdnssec_use' => $pdnssec_use,
             'domain_value' => $domain_value,
