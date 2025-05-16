@@ -35,6 +35,54 @@ use Poweradmin\Infrastructure\Service\PdnsUtilProvider;
 
 class DnssecProviderFactory
 {
+    /**
+     * Get the PowerDNS version if available
+     *
+     * @param ConfigurationInterface $config Configuration object
+     * @return string The PowerDNS version or empty string if not available
+     */
+    public static function getPowerDnsVersion(ConfigurationInterface $config): string
+    {
+        $pdnsApiUrl = $config->get('pdns_api', 'url');
+        $pdnsApiKey = $config->get('pdns_api', 'key');
+
+        if (!$pdnsApiUrl || !$pdnsApiKey) {
+            return '';
+        }
+
+        $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey);
+        $serverNameFromConfig = $config->get('pdns_api', 'server_name');
+        $serverName = $serverNameFromConfig ?: 'localhost';
+
+        $apiClient = new PowerdnsApiClient($httpClient, $serverName);
+
+        try {
+            $serverInfo = $apiClient->getServerInfo();
+            return $serverInfo['version'] ?? '';
+        } catch (\Exception $e) {
+            return '';
+        }
+    }
+
+    /**
+     * Check if PowerDNS version supports CSK by default
+     *
+     * @param string $version PowerDNS version string
+     * @return bool True if version is 4.0.0 or higher
+     */
+    public static function supportsDefaultCsk(string $version): bool
+    {
+        if (empty($version)) {
+            return false;
+        }
+
+        // Remove any non-numeric prefixes if present
+        $version = preg_replace('/^[^0-9]*/', '', $version);
+
+        // Compare versions - PowerDNS 4.0.0 and higher use CSK by default
+        return version_compare($version, '4.0.0', '>=');
+    }
+
     public static function create(PDOLayer $db, ConfigurationInterface $config): DnssecProvider
     {
         // For ConfigurationInterface, we have to be more careful since it doesn't support default values

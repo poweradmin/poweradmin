@@ -32,13 +32,13 @@
 namespace Poweradmin\Application\Controller;
 
 use Exception;
-use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Application\Service\DnssecProviderFactory;
 
 class DnssecAddKeyController extends BaseController
 {
@@ -65,7 +65,7 @@ class DnssecAddKeyController extends BaseController
         if (isset($_POST['key_type'])) {
             $key_type = $_POST['key_type'];
 
-            if ($key_type != 'ksk' && $key_type != 'zsk') {
+            if ($key_type != 'ksk' && $key_type != 'zsk' && $key_type != 'csk') {
                 $this->showError(_('Invalid or unexpected input given.'));
             }
         }
@@ -115,6 +115,15 @@ class DnssecAddKeyController extends BaseController
             $idn_zone_name = "";
         }
 
+        // Check PowerDNS version to determine if CSK should be the default
+        $pdnsVersion = DnssecProviderFactory::getPowerDnsVersion($this->getConfig());
+        $supportsCsk = DnssecProviderFactory::supportsDefaultCsk($pdnsVersion);
+
+        // If no key type is selected yet and PowerDNS 4.0+ is detected, default to CSK
+        if (empty($key_type) && $supportsCsk) {
+            $key_type = 'csk';
+        }
+
         $this->render('dnssec_add_key.html', [
             'zone_id' => $zone_id,
             'domain_name' => $domain_name,
@@ -122,7 +131,7 @@ class DnssecAddKeyController extends BaseController
             'key_type' => $key_type,
             'bits' => $bits,
             'algorithm' => $algorithm,
-            'algorithm_names' => DnssecAlgorithmName::ALGORITHM_NAMES
+            'algorithm_names' => DnssecAlgorithmName::ALGORITHM_NAMES,
         ]);
     }
 }

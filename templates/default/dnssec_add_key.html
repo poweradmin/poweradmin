@@ -22,58 +22,88 @@
     </ol>
 </nav>
 
-{% if idn_zone_name %}
-<h5 class="mb-3">{% trans %}Add key for zone{% endtrans %} "{{ idn_zone_name }}" ({{ domain_name }})</h5>
-{% else %}
-<h5 class="mb-3">{% trans %}Add key for zone{% endtrans %} "{{ domain_name }}"</h5>
-{% endif %}
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong>
+                    <i class="bi bi-key me-2"></i>
+                    {% if idn_zone_name %}
+                    {% trans %}Add key for zone{% endtrans %} "{{ idn_zone_name }}" ({{ domain_name }})
+                    {% else %}
+                    {% trans %}Add key for zone{% endtrans %} "{{ domain_name }}"
+                    {% endif %}
+                </strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=dnssec_add_key&id={{ zone_id }}" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    
+                    <div class="mb-3">
+                        <label for="key_type" class="form-label">{% trans %}Key type{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="key_type" name="key_type" required>
+                            <option value=""></option>
+                            <option value="csk" {{ key_type == 'csk' ? 'selected' : '' }}>CSK</option>
+                            <option value="ksk" {{ key_type == 'ksk' ? 'selected' : '' }}>KSK</option>
+                            <option value="zsk" {{ key_type == 'zsk' ? 'selected' : '' }}>ZSK</option>
+                        </select>
+                        <div class="invalid-feedback">{% trans %}Select key type{% endtrans %}</div>
+                    </div>
 
-<form class="needs-validation" method="post" action="index.php?page=dnssec_add_key&id={{ zone_id }}" novalidate>
-    <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table>
-        <tr>
-            <td style="vertical-align: top" class="pt-1">{% trans %}Key type{% endtrans %}</td>
-            <td>
-                <select class="form-select form-select-sm" name="key_type" required>
-                    <option value=""></option>
-                    <option value="ksk" {{ key_type == 'ksk' ? 'selected' : '' }}>KSK</option>
-                    <option value="zsk" {{ key_type == 'zsk' ? 'selected' : '' }}>ZSK</option>
-                </select>
-                <div class="invalid-feedback">{% trans %}Select key type{% endtrans %}</div>
-            </td>
-        </tr>
-        <tr>
-            <td style="vertical-align: top" class="pt-1">{% trans %}Bits in length{% endtrans %}</td>
-            <td>
-                <select class="form-select form-select-sm" name="bits" required>
-                    <option value=""></option>
-                    <option value="2048" {{ bits == '2048' ? 'selected' : '' }}>2048</option>
-                    <option value="1024" {{ bits == '1024' ? 'selected' : '' }}>1024</option>
-                    <option value="768" {{ bits == '768' ? 'selected' : '' }}>768</option>
-                    <option value="384" {{ bits == '384' ? 'selected' : '' }}>384</option>
-                    <option value="256" {{ bits == '256' ? 'selected' : '' }}>256</option>
-                </select>
-                <div class="invalid-feedback">{% trans %}Select bits length{% endtrans %}</div>
-            </td>
-        </tr>
-        <tr>
-            <td style="vertical-align: top" class="pt-1">{% trans %}Algorithm{% endtrans %}</td>
-            <td>
+                    <div class="mb-3">
+                        <label for="bits" class="form-label">{% trans %}Bits in length{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="bits" name="bits" required>
+                            <option value=""></option>
+                            <option value="2048" {{ bits == '2048' ? 'selected' : '' }}>2048</option>
+                            <option value="1024" {{ bits == '1024' ? 'selected' : '' }}>1024</option>
+                            <option value="768" {{ bits == '768' ? 'selected' : '' }}>768</option>
+                            <option value="384" {{ bits == '384' ? 'selected' : '' }}>384</option>
+                            <option value="256" {{ bits == '256' ? 'selected' : '' }}>256</option>
+                        </select>
+                        <div class="invalid-feedback">{% trans %}Select bits length{% endtrans %}</div>
+                    </div>
 
-                <select class="form-select form-select-sm" name="algorithm" required>
-                    <option value=""></option>
-                    {% for alg, name in algorithm_names %}
-                    <option value="{{ alg }}" {{ algorithm == alg ? 'selected' : '' }}>{{ name }}</option>
-                    {% endfor %}
-                </select>
-                <div class="invalid-feedback">{% trans %}Select algorithm{% endtrans %}</div>
-            </td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td>
-                <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans %}Add key{% endtrans %}">
-            </td>
-        </tr>
-    </table>
-</form>
+                    <div class="mb-3">
+                        <label for="algorithm" class="form-label">{% trans %}Algorithm{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="algorithm" name="algorithm" required>
+                            <option value=""></option>
+                            {% for alg, name in algorithm_names %}
+                            <option value="{{ alg }}" {{ algorithm == alg ? 'selected' : '' }}>{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">{% trans %}Select algorithm{% endtrans %}</div>
+                    </div>
+
+                    <div>
+                        <button type="submit" name="submit" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-circle text-white me-1"></i>{% trans %}Add key{% endtrans %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About DNSSEC Key Types{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6>{% trans %}Key Types Explained{% endtrans %}</h6>
+                    <ul class="list-unstyled">
+                        <li><strong>CSK</strong> - {% trans %}Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS 4.0+){% endtrans %}</li>
+                        <li><strong>KSK</strong> - {% trans %}Key Signing Key - signs the DNSKEY records in the zone{% endtrans %}</li>
+                        <li><strong>ZSK</strong> - {% trans %}Zone Signing Key - signs all other records in the zone{% endtrans %}</li>
+                    </ul>
+                </div>
+
+                <div class="mb-3">
+                    <h6>{% trans %}Recommended Settings{% endtrans %}</h6>
+                    <p>{% trans %}For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits provides strong security with better performance.{% endtrans %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

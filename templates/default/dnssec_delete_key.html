@@ -24,31 +24,107 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Delete zone key{% endtrans %}</h5>
-{% if key_info[5] %}
-{% set active = 'Yes' %}
-{% else %}
-{% set active = 'No' %}
-{% endif %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete DNSSEC Key{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-danger bg-danger bg-opacity-10">
+            <h5 class="alert-heading text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
+            
+            {% if key_info[5] %}
+            <p>{% trans %}You are about to delete an active DNSSEC key (ID{% endtrans %}: <strong>{{ key_info[0] }}</strong>)</p>
+            <p>{% trans %}Deleting an active key will affect the security of your zone and may cause validation failures.{% endtrans %}</p>
+            {% else %}
+            <p>{% trans %}You are about to delete a DNSSEC key (ID{% endtrans %}: <strong>{{ key_info[0] }}</strong>)</p>
+            {% endif %}
+            
+            <p class="mb-0">{% trans %}This action cannot be undone. Are you sure you want to proceed?{% endtrans %}</p>
+        </div>
 
-{% trans %}Domain{% endtrans %}:
-{% if idn_zone_name %}
-{{ idn_zone_name }} ({{ domain_name }})
-{% else %}
-{{ domain_name }}
-{% endif %}
-<br>
-{% trans %}Id{% endtrans %}: {{ key_info[0] }}<br>
-{% trans %}Type{% endtrans %}: {{ key_info[1] }}<br>
-{% trans %}Tag{% endtrans %}: {{ key_info[2] }}<br>
-{% trans %}Algorithm{% endtrans %}: {{ algorithms[key_info[3]] }}<br>
-{% trans %}Bits{% endtrans %}: {{ key_info[4] }}<br>
-{% trans %}Active{% endtrans %}: {{ active|trans }}
+        <div class="card mb-4">
+            <div class="card-header py-2">
+                <strong>{% trans %}Key Details{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Domain{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">
+                            {% if idn_zone_name %}
+                            {{ idn_zone_name }} <span class="text-muted">({{ domain_name }})</span>
+                            {% else %}
+                            {{ domain_name }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Key ID{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">{{ key_info[0] }}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Type{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0"><span class="badge bg-secondary">{{ key_info[1] }}</span></p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Tag{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">{{ key_info[2] }}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Algorithm{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">{{ algorithms[key_info[3]] }}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Bits{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">{{ key_info[4] }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Status{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">
+                            {% if key_info[5] %}
+                            <span class="badge bg-success">{% trans %}Active{% endtrans %}</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark">{% trans %}Inactive{% endtrans %}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-<p class="pt-3"><strong>{% trans %}Are you sure?{% endtrans %}</strong></p>
-<input class="btn btn-primary btn-sm" type="button"
-       onClick="location.href='index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ key_id }}&confirm=1'"
-       value="{% trans %}Yes{% endtrans %}">
-<input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=dnssec&id={{ zone_id }}'"
-       value="{% trans %}No{% endtrans %}">
-
+        <div class="d-flex gap-2">
+            <a href="index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ key_id }}&confirm=1" class="btn btn-danger btn-sm">
+                <i class="bi bi-trash text-white me-1"></i>{% trans %}Delete key{% endtrans %}
+            </a>
+            <a href="index.php?page=dnssec&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-x-circle text-white me-1"></i>{% trans %}Cancel{% endtrans %}
+            </a>
+        </div>
+    </div>
+</div>
