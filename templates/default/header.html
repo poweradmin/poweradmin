@@ -59,6 +59,7 @@
                         {% if perm_view_zone_own or perm_view_zone_other %}
                         <li><a class="dropdown-item {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="index.php?page=list_forward_zones">{% trans %}Forward zones{% endtrans %}</a></li>
                         <li><a class="dropdown-item {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="index.php?page=list_reverse_zones">{% trans %}Reverse zones{% endtrans %}</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         {% endif %}
                         {% if perm_zone_master_add %}
                         <li><a class="dropdown-item {{ current_page == 'add_zone_master' ? 'active' : '' }}"
