@@ -51,19 +51,6 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="bits" class="form-label">{% trans %}Bits in length{% endtrans %}</label>
-                        <select class="form-select form-select-sm" id="bits" name="bits" required>
-                            <option value=""></option>
-                            <option value="2048" {{ bits == '2048' ? 'selected' : '' }}>2048</option>
-                            <option value="1024" {{ bits == '1024' ? 'selected' : '' }}>1024</option>
-                            <option value="768" {{ bits == '768' ? 'selected' : '' }}>768</option>
-                            <option value="384" {{ bits == '384' ? 'selected' : '' }}>384</option>
-                            <option value="256" {{ bits == '256' ? 'selected' : '' }}>256</option>
-                        </select>
-                        <div class="invalid-feedback">{% trans %}Select bits length{% endtrans %}</div>
-                    </div>
-
-                    <div class="mb-3">
                         <label for="algorithm" class="form-label">{% trans %}Algorithm{% endtrans %}</label>
                         <select class="form-select form-select-sm" id="algorithm" name="algorithm" required>
                             <option value=""></option>
@@ -72,13 +59,113 @@
                             {% endfor %}
                         </select>
                         <div class="invalid-feedback">{% trans %}Select algorithm{% endtrans %}</div>
+                        <div id="algorithm-help" class="form-text"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="bits" class="form-label">{% trans %}Bits in length{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="bits" name="bits" required>
+                            <option value=""></option>
+                            <option value="2048" {{ bits == '2048' ? 'selected' : '' }} data-algorithms="rsasha1,rsasha1-nsec3-sha1,rsasha256,rsasha512">2048</option>
+                            <option value="1024" {{ bits == '1024' ? 'selected' : '' }} data-algorithms="rsasha1,rsasha1-nsec3-sha1,rsasha256,rsasha512">1024</option>
+                            <option value="768" {{ bits == '768' ? 'selected' : '' }} data-algorithms="rsasha1,rsasha1-nsec3-sha1,rsasha256,rsasha512">768</option>
+                            <option value="384" {{ bits == '384' ? 'selected' : '' }} data-algorithms="ecdsa384">384</option>
+                            <option value="256" {{ bits == '256' ? 'selected' : '' }} data-algorithms="ecdsa256,ed25519">256</option>
+                        </select>
+                        <div class="invalid-feedback">{% trans %}Select bits length{% endtrans %}</div>
+                        <div id="bit-warning" class="form-text text-danger"></div>
                     </div>
 
                     <div>
-                        <button type="submit" name="submit" class="btn btn-primary btn-sm">
+                        <button type="submit" id="submit-button" name="submit" class="btn btn-primary btn-sm">
                             <i class="bi bi-plus-circle text-white me-1"></i>{% trans %}Add key{% endtrans %}
                         </button>
                     </div>
+                    
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const algorithmSelect = document.getElementById('algorithm');
+                        const bitsSelect = document.getElementById('bits');
+                        const bitWarning = document.getElementById('bit-warning');
+                        const algorithmHelp = document.getElementById('algorithm-help');
+                        const submitButton = document.getElementById('submit-button');
+                        
+                        // Mapping of algorithms to recommended bit sizes
+                        const algorithmBitsMap = {
+                            'ecdsa256': ['256'],
+                            'ecdsa384': ['384'],
+                            'ed25519': ['256'],
+                            'ed448': ['456'], // Not in our dropdown
+                            'rsasha1': ['1024', '2048'],
+                            'rsasha1-nsec3-sha1': ['1024', '2048'],
+                            'rsasha256': ['1024', '2048'],
+                            'rsasha512': ['1024', '2048']
+                        };
+                        
+                        // Algorithm friendly names
+                        const algorithmNames = {
+                            'ecdsa256': 'ECDSA P-256',
+                            'ecdsa384': 'ECDSA P-384',
+                            'ed25519': 'ED25519',
+                            'ed448': 'ED448',
+                            'rsasha1': 'RSASHA1',
+                            'rsasha1-nsec3-sha1': 'RSASHA1-NSEC3-SHA1',
+                            'rsasha256': 'RSASHA256',
+                            'rsasha512': 'RSASHA512'
+                        };
+                        
+                        // Function to update bit options and validation
+                        function updateValidation() {
+                            const selectedAlgorithm = algorithmSelect.value;
+                            
+                            // Reset warnings
+                            bitWarning.textContent = '';
+                            submitButton.disabled = false;
+                            
+                            if (!selectedAlgorithm) {
+                                return;
+                            }
+                            
+                            // Show recommendation for the selected algorithm
+                            const validBits = algorithmBitsMap[selectedAlgorithm] || [];
+                            if (validBits.length > 0) {
+                                algorithmHelp.textContent = `{% trans %}Recommended bits for{% endtrans %} ${algorithmNames[selectedAlgorithm]}: ${validBits.join(' or ')}`;
+                            } else {
+                                algorithmHelp.textContent = '';
+                            }
+                            
+                            // Check if current bits are valid for the selected algorithm
+                            const selectedBits = bitsSelect.value;
+                            if (selectedBits && selectedAlgorithm && validBits.indexOf(selectedBits) === -1) {
+                                bitWarning.textContent = `{% trans %}Warning:{% endtrans %} ${selectedBits} {% trans %}bits is not recommended for{% endtrans %} ${algorithmNames[selectedAlgorithm]}`;
+                                
+                                // Disable submit if the combination is completely invalid
+                                if (
+                                    (selectedAlgorithm === 'ecdsa256' && selectedBits !== '256') ||
+                                    (selectedAlgorithm === 'ecdsa384' && selectedBits !== '384') ||
+                                    (selectedAlgorithm === 'ed25519' && selectedBits !== '256')
+                                ) {
+                                    submitButton.disabled = true;
+                                }
+                            }
+                            
+                            // Filter bit options
+                            Array.from(bitsSelect.options).forEach(option => {
+                                if (!option.value) return; // Skip empty option
+                                
+                                const isValid = !validBits.length || validBits.includes(option.value);
+                                option.classList.toggle('text-muted', !isValid);
+                            });
+                        }
+                        
+                        // Initial validation on page load
+                        updateValidation();
+                        
+                        // Add event listeners
+                        algorithmSelect.addEventListener('change', updateValidation);
+                        bitsSelect.addEventListener('change', updateValidation);
+                    });
+                    </script>
                 </form>
             </div>
         </div>

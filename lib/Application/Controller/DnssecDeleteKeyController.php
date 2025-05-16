@@ -56,7 +56,7 @@ class DnssecDeleteKeyController extends BaseController
 
         $confirm = "-1";
         if (isset($_GET['confirm']) && Validator::isNumber($_GET['confirm'])) {
-            $confirm = $_GET['confirm'];
+            $confirm = (string)$_GET['confirm']; // Convert to string for consistent comparison
         }
 
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
@@ -82,9 +82,18 @@ class DnssecDeleteKeyController extends BaseController
             $this->showError(_('Failed to delete DNSSEC key.'));
         }
 
-        if ($confirm == '1' && $dnssecProvider->removeZoneKey($domain_name, $key_id)) {
-            $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));
-            $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
+        // Log the confirmation value type and value for debugging
+        error_log("Confirm value: " . $confirm . " (type: " . gettype($confirm) . ")");
+
+        if ($confirm == '1') {
+            if ($dnssecProvider->removeZoneKey($domain_name, $key_id)) {
+                $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));
+                $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
+            } else {
+                error_log("Failed to remove zone key for domain: $domain_name, key ID: $key_id");
+                $this->setMessage('dnssec', 'error', _('Failed to delete the zone key.'));
+                $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
+            }
         }
 
         $this->showKeyInfo($domain_name, $key_id, $zone_id);
