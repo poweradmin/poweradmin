@@ -296,15 +296,15 @@ class EditController extends BaseController
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
             // Check if zone is secured before attempting to unsecure
-            if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
+            if ($zone_name === false || !$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
                 $this->setMessage('edit', 'info', _('Zone is not currently signed with DNSSEC.'));
             } else {
                 // Try to unsecure the zone
-                $result = $dnssecProvider->unsecureZone($zone_name);
+                $result = $dnssecProvider->unsecureZone((string)$zone_name);
 
                 if ($result) {
                     // Verify the zone is now unsecured
-                    if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
+                    if (!$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
                         // Update SOA serial after unsigning
                         $this->dnsRecord->updateSOASerial($zone_id);
                         $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
@@ -382,7 +382,7 @@ class EditController extends BaseController
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
-        $isReverseZone = DnsHelper::isReverseZone($zone_name);
+        $isReverseZone = $zone_name !== false && DnsHelper::isReverseZone((string)$zone_name);
 
         $this->render('edit.html', [
             'zone_id' => $zone_id,
@@ -415,7 +415,7 @@ class EditController extends BaseController
             'sort_direction' => $sort_direction,
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_id),
             'pdnssec_use' => $isDnsSecEnabled,
-            'is_secured' => $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
+            'is_secured' => $zone_name !== false && $dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig()),
             'session_userid' => $_SESSION["userid"],
             'dns_ttl' => $this->config->get('dns', 'ttl', 86400),
             'is_reverse_zone' => $isReverseZone,

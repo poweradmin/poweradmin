@@ -49,7 +49,7 @@ class DnssecDeleteKeyController extends BaseController
             $zone_id = htmlspecialchars($_GET['id']);
         }
 
-        $key_id = "-1";
+        $key_id = -1;
         if (isset($_GET['key_id']) && Validator::isNumber($_GET['key_id'])) {
             $key_id = (int)$_GET['key_id'];
         }
@@ -68,7 +68,7 @@ class DnssecDeleteKeyController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $domain_name = $dnsRecord->getDomainNameById($zone_id);
 
-        if ($key_id == "-1") {
+        if ($key_id === -1) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
@@ -87,7 +87,7 @@ class DnssecDeleteKeyController extends BaseController
                 $result = $dnssecProvider->removeZoneKey($domain_name, $key_id);
 
                 // Check if key still exists to verify deletion
-                $keyStillExists = $dnssecProvider->keyExists($domain_name, $key_id);
+                $keyStillExists = $domain_name !== false && $dnssecProvider->keyExists((string)$domain_name, $key_id);
 
                 if ($result && !$keyStillExists) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));

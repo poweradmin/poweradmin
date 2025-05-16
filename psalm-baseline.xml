@@ -156,8 +156,6 @@
     <InvalidScalarArgument>
       <code><![CDATA[$domain_name]]></code>
       <code><![CDATA[$domain_name]]></code>
-      <code><![CDATA[$key_id]]></code>
-      <code><![CDATA[$key_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
@@ -217,7 +215,6 @@
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
       <code><![CDATA[$zone_name]]></code>
       <code><![CDATA[$zone_name]]></code>
       <code><![CDATA[$zone_name]]></code>
