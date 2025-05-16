@@ -82,16 +82,25 @@ class DnssecDeleteKeyController extends BaseController
             $this->showError(_('Failed to delete DNSSEC key.'));
         }
 
-        // Log the confirmation value type and value for debugging
-        error_log("Confirm value: " . $confirm . " (type: " . gettype($confirm) . ")");
-
         if ($confirm == '1') {
-            if ($dnssecProvider->removeZoneKey($domain_name, $key_id)) {
-                $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));
+            try {
+                $result = $dnssecProvider->removeZoneKey($domain_name, $key_id);
+
+                // Check if key still exists to verify deletion
+                $keyStillExists = $dnssecProvider->keyExists($domain_name, $key_id);
+
+                if ($result && !$keyStillExists) {
+                    $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));
+                } else {
+                    error_log("DNSSEC key deletion verification failed: domain=$domain_name, key_id=$key_id, api_result=$result, key_exists=$keyStillExists");
+                    $this->setMessage('dnssec', 'error', _('Failed to delete the zone key.'));
+                }
+
+                // Redirect back to DNSSEC page in either case
                 $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
-            } else {
-                error_log("Failed to remove zone key for domain: $domain_name, key ID: $key_id");
-                $this->setMessage('dnssec', 'error', _('Failed to delete the zone key.'));
+            } catch (\Exception $e) {
+                error_log("DNSSEC key deletion exception: " . $e->getMessage());
+                $this->setMessage('dnssec', 'error', _('An error occurred while deleting the DNSSEC key: ') . $e->getMessage());
                 $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
             }
         }

@@ -256,28 +256,67 @@ class EditController extends BaseController
 
         if (isset($_POST['sign_zone'])) {
             $this->validateCsrfToken();
-            $this->dnsRecord->updateSOASerial($zone_id);
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
-            if ($dnssecProvider->isDnssecEnabled()) {
-                $dnssecProvider->secureZone($zone_name);
-                $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
-            } else {
+            // Check if DNSSEC is enabled on the server
+            if (!$dnssecProvider->isDnssecEnabled()) {
                 $this->setMessage('edit', 'error', _('DNSSEC is not enabled on the server.'));
-            }
+            } elseif ($dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
+                // Check if zone is already secured
+                $this->setMessage('edit', 'info', _('Zone is already signed with DNSSEC.'));
+            } else {
+                // Sign the zone
+                // Update SOA serial before signing
+                $this->dnsRecord->updateSOASerial($zone_id);
 
-            $dnssecProvider->rectifyZone($zone_name);
+                // Try to secure the zone
+                $result = $dnssecProvider->secureZone($zone_name);
+
+                if ($result) {
+                    // Verify the zone is now secured
+                    if ($dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
+                        $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
+                        // Rectify zone to ensure consistency
+                        $dnssecProvider->rectifyZone($zone_name);
+                    } else {
+                        $this->setMessage('edit', 'warning', _('Zone signing requested successfully, but verification failed. Check DNSSEC keys.'));
+                        error_log("DNSSEC signing verification failed for zone: $zone_name - API returned success but zone not secured");
+                    }
+                } else {
+                    $this->setMessage('edit', 'error', _('Failed to sign zone. Check PowerDNS logs for details.'));
+                    error_log("DNSSEC signing failed for zone: $zone_name");
+                }
+            }
         }
 
         if (isset($_POST['unsign_zone'])) {
             $this->validateCsrfToken();
 
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-            $dnssecProvider->unsecureZone($zone_name);
 
-            $this->dnsRecord->updateSOASerial($zone_id);
-            $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
+            // Check if zone is secured before attempting to unsecure
+            if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
+                $this->setMessage('edit', 'info', _('Zone is not currently signed with DNSSEC.'));
+            } else {
+                // Try to unsecure the zone
+                $result = $dnssecProvider->unsecureZone($zone_name);
+
+                if ($result) {
+                    // Verify the zone is now unsecured
+                    if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
+                        // Update SOA serial after unsigning
+                        $this->dnsRecord->updateSOASerial($zone_id);
+                        $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
+                    } else {
+                        $this->setMessage('edit', 'warning', _('Zone unsigning requested successfully, but verification failed.'));
+                        error_log("DNSSEC unsigning verification failed for zone: $zone_name - API returned success but zone still secured");
+                    }
+                } else {
+                    $this->setMessage('edit', 'error', _('Failed to unsign zone. Check PowerDNS logs for details.'));
+                    error_log("DNSSEC unsigning failed for zone: $zone_name");
+                }
+            }
         }
 
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());

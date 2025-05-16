@@ -78,19 +78,25 @@ class HttpClient implements ApiClient
             }
 
             $responseCode = $this->getResponseCode($http_response_header);
-            $responseData = json_decode($response, true);
 
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                $errorMessage = 'Invalid JSON response from API';
-                $errorDetails = [
-                    'url' => $url,
-                    'method' => $method,
-                    'response' => substr($response, 0, 255), // Limit response size for logging
-                    'json_error' => json_last_error_msg()
-                ];
+            // For 204 No Content responses, don't try to parse JSON
+            if ($responseCode === 204) {
+                $responseData = []; // Empty array for 204 No Content
+            } else {
+                $responseData = json_decode($response, true);
 
-                $this->logApiError($errorMessage, $errorDetails);
-                throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
+                if (json_last_error() !== JSON_ERROR_NONE && !empty($response)) {
+                    $errorMessage = 'Invalid JSON response from API';
+                    $errorDetails = [
+                        'url' => $url,
+                        'method' => $method,
+                        'response' => substr($response, 0, 255), // Limit response size for logging
+                        'json_error' => json_last_error_msg()
+                    ];
+
+                    $this->logApiError($errorMessage, $errorDetails);
+                    throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
+                }
             }
 
             if ($responseCode >= 400) {
