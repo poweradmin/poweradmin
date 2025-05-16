@@ -124,7 +124,10 @@ class AddZoneMasterController extends BaseController
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
                 if (isset($_POST['dnssec']) && $dnssecProvider->isDnssecEnabled()) {
-                    $dnssecProvider->secureZone($zone_name);
+                    $secureResult = $dnssecProvider->secureZone($zone_name);
+                    if (!$secureResult) {
+                        $this->setMessage('list_forward_zones', 'warning', _('Zone was created, but securing it with DNSSEC failed.'));
+                    }
                 }
 
                 $dnssecProvider->rectifyZone($zone_name);

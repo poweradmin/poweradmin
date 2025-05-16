@@ -25,7 +25,8 @@ namespace Poweradmin\Infrastructure\Service;
 class MessageService
 {
     private const TYPE_ERROR = 'error';
-    private const TYPE_WARNING = 'warn';
+    private const TYPE_WARN = 'warn';
+    private const TYPE_WARNING = 'warning';
     private const TYPE_SUCCESS = 'success';
     private const TYPE_INFO = 'info';
 
@@ -88,7 +89,7 @@ class MessageService
      */
     public function addWarning(string $script, string $content): void
     {
-        $this->addMessage($script, self::TYPE_WARNING, $content);
+        $this->addMessage($script, self::TYPE_WARN, $content);
     }
 
     /**
@@ -145,7 +146,7 @@ class MessageService
             foreach ($messages as $message) {
                 $alertClass = match ($message['type']) {
                     self::TYPE_ERROR => 'alert-danger',
-                    self::TYPE_WARNING => 'alert-warning',
+                    self::TYPE_WARN, self::TYPE_WARNING => 'alert-warning',
                     self::TYPE_SUCCESS => 'alert-success',
                     self::TYPE_INFO => 'alert-info',
                     default => '',
@@ -156,16 +157,15 @@ class MessageService
                 $textClass = str_replace('alert-', 'text-', $alertClass);
 
                 $icon = match ($message['type']) {
-                    self::TYPE_ERROR => 'exclamation-triangle',
-                    self::TYPE_WARNING => 'exclamation-circle',
+                    self::TYPE_ERROR, self::TYPE_WARNING => 'exclamation-triangle',
+                    self::TYPE_WARN => 'exclamation-circle',
                     self::TYPE_SUCCESS => 'check-circle',
-                    self::TYPE_INFO => 'info-circle',
                     default => 'info-circle',
                 };
 
                 $title = match ($message['type']) {
                     self::TYPE_ERROR => 'Error:',
-                    self::TYPE_WARNING => 'Warning:',
+                    self::TYPE_WARN, self::TYPE_WARNING => 'Warning:',
                     self::TYPE_SUCCESS => 'Success:',
                     self::TYPE_INFO => 'Info:',
                     default => '',
