@@ -102,8 +102,19 @@ class EditUserController extends BaseController
                 $params['use_ldap']
             )
         ) {
-            $this->setMessage('users', 'success', _('The user has been updated successfully.'));
-            $this->redirect('index.php', ['page' => 'users']);
+            $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
+            $canViewAllUsers = UserManager::verifyPermission($this->db, 'user_view_others');
+            $canEditAllUsers = UserManager::verifyPermission($this->db, 'user_edit_others');
+
+            if ($isOwnProfile && !$canViewAllUsers && !$canEditAllUsers) {
+                // Limited user edited their own profile - redirect to home
+                $this->setMessage('index', 'success', _('Your profile has been updated successfully.'));
+                $this->redirect('index.php');
+            } else {
+                // User with admin permissions - redirect to users list
+                $this->setMessage('users', 'success', _('The user has been updated successfully.'));
+                $this->redirect('index.php', ['page' => 'users']);
+            }
         } else {
             $this->setMessage('edit_user', 'error', _('The user could not be updated.'));
             $this->showUserEditForm($editId, $policyConfig);
@@ -164,9 +175,19 @@ class EditUserController extends BaseController
     {
         $editId = (int)$this->request->getPostParam('number');
         $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
+        $canEditOthers = UserManager::verifyPermission($this->db, 'user_edit_others');
 
         // Force active state to true if user is editing their own profile
         $active = $isOwnProfile ? true : $this->request->getPostParam('active') === '1';
+
+        // Determine permission template
+        $permTempl = $this->request->getPostParam('perm_templ');
+
+        // If editing own profile and not an admin, maintain existing template
+        if ($isOwnProfile && !$canEditOthers) {
+            $userData = $this->getUserDetails($editId);
+            $permTempl = $userData['tpl_id'];
+        }
 
         return [
             'username' => htmlspecialchars($this->request->getPostParam('username')),
@@ -174,7 +195,7 @@ class EditUserController extends BaseController
             'email' => htmlspecialchars($this->request->getPostParam('email')),
             'description' => htmlspecialchars($this->request->getPostParam('description')),
             'password' => $this->request->getPostParam('password', ''),
-            'perm_templ' => $this->request->getPostParam('perm_templ'),
+            'perm_templ' => $permTempl,
             'active' => $active,
             'use_ldap' => $this->request->getPostParam('use_ldap') === '1'
         ];
