@@ -152,12 +152,16 @@
 
                             <p class="mb-2">{% trans %}Based on this template, this user has the following permissions{% endtrans %}:</p>
 
-                            <ul class="small">
-                                {% for item in user_permissions %}
-                                {% set descr = item['descr'] %}
-                                <li>{{ descr|trans }} <span class="text-muted">({{ item['name'] }})</span></li>
-                                {% endfor %}
-                            </ul>
+                            {% if user_permissions is empty %}
+                                <p class="small text-muted fst-italic">{% trans %}No permissions are assigned to this template{% endtrans %}</p>
+                            {% else %}
+                                <ul class="small">
+                                    {% for item in user_permissions %}
+                                    {% set descr = item['descr'] %}
+                                    <li>{{ descr|trans }} <span class="text-muted">({{ item['name'] }})</span></li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
                         </div>
                     </div>
                 </div>
