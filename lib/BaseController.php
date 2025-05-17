@@ -403,6 +403,8 @@ abstract class BaseController
                 'perm_edit_others' => UserManager::verifyPermission($this->db, 'user_edit_others'),
                 'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? _('Default session encryption key is used, please set it in your configuration file.') : false,
                 'auth_used' => $_SESSION["auth_used"] != "ldap",
+                'session_userid' => $_SESSION["userid"] ?? 0,
+                'request' => $this->request,
                 'dblog_use' => $dblog_use,
                 'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
                 'whois_enabled' => $this->config->get('whois', 'enabled', false),

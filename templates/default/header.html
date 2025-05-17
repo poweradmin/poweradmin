@@ -88,7 +88,7 @@
                     </ul>
                 </li>
                 {% endif %}
-                {% if perm_view_others or perm_edit_own or perm_edit_others or perm_add_new or perm_is_godlike %}
+                {% if perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike %}
                 <li class="p-1">
                     <a href="index.php?page=users" class="nav-link text-{{ current_page in ['users', 'add_user', 'edit_user', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ', 'list_log_users'] ? 'primary' : 'secondary' }}"><i class="bi bi-people"></i></a>
                     <a class="text-{{ current_page in ['users', 'add_user', 'edit_user', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ', 'list_log_users'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
@@ -164,6 +164,10 @@
                        href="#"
                        role="button">{% trans %}Account{% endtrans %}</a>
                     <ul class="dropdown-menu">
+                        {% if perm_edit_own %}
+                        <li><a class="dropdown-item {{ current_page == 'edit_user' and request.id == session_userid ? 'active' : '' }}"
+                               href="index.php?page=edit_user&id={{ session_userid }}">{% trans %}Edit profile{% endtrans %}</a></li>
+                        {% endif %}
                         {% if auth_used %}
                         <li><a class="dropdown-item {{ current_page == 'change_password' ? 'active' : '' }}"
                                href="index.php?page=change_password">{% trans %}Change password{% endtrans %}</a></li>
