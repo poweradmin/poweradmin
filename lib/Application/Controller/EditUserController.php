@@ -162,6 +162,12 @@ class EditUserController extends BaseController
 
     private function prepareUserData(): array
     {
+        $editId = (int)$this->request->getPostParam('number');
+        $isOwnProfile = $editId === $this->userContextService->getLoggedInUserId();
+
+        // Force active state to true if user is editing their own profile
+        $active = $isOwnProfile ? true : $this->request->getPostParam('active') === '1';
+
         return [
             'username' => htmlspecialchars($this->request->getPostParam('username')),
             'fullname' => htmlspecialchars($this->request->getPostParam('fullname')),
@@ -169,7 +175,7 @@ class EditUserController extends BaseController
             'description' => htmlspecialchars($this->request->getPostParam('description')),
             'password' => $this->request->getPostParam('password', ''),
             'perm_templ' => $this->request->getPostParam('perm_templ'),
-            'active' => $this->request->getPostParam('active') === '1',
+            'active' => $active,
             'use_ldap' => $this->request->getPostParam('use_ldap') === '1'
         ];
     }

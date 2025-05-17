@@ -79,12 +79,17 @@
                         <small class="text-muted">{% trans %}Optional information about this user{% endtrans %}</small>
                     </div>
 
+                    {% if user['uid'] != session_user_id %}
                     <div class="mb-3">
                         <div class="form-check">
                             <input class="form-check-input" type="checkbox" id="active" name="active" value="1" {{ check }}>
                             <label class="form-check-label" for="active">{% trans %}Enabled{% endtrans %}</label>
                         </div>
                     </div>
+                    {% else %}
+                    <!-- Hidden input to ensure the user cannot disable their own account -->
+                    <input type="hidden" name="active" value="1">
+                    {% endif %}
 
                     {% if ldap_use %}
                     <div class="mb-3">
