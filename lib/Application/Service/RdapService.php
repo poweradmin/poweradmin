@@ -216,7 +216,7 @@ class RdapService
             'http' => [
                 'method' => 'GET',
                 'header' => [
-                    'User-Agent: PowerAdmin RDAP Client',
+                    'User-Agent: Poweradmin RDAP Client',
                     'Accept: application/rdap+json'
                 ],
                 'timeout' => $this->requestTimeout

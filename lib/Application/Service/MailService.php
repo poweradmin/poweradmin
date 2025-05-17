@@ -462,7 +462,7 @@ class MailService implements MailServiceInterface
     {
         $headers = [
             'From' => empty($fromName) ? $fromEmail : "$fromName <$fromEmail>",
-            'X-Mailer' => 'PowerAdmin Mailer',
+            'X-Mailer' => 'Poweradmin Mailer',
             'MIME-Version' => '1.0',
         ];
 

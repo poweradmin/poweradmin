@@ -263,7 +263,7 @@ class CSYNCRecordValidator implements DnsRecordValidatorInterface
         }
 
         // Warning about RFC 4034 Type Bit Map format
-        $warnings[] = _('Note: The true wire format for CSYNC Type Bit Map follows RFC 4034 Section 4.1.2 format. PowerAdmin uses a simplified representation with space-separated record types.');
+        $warnings[] = _('Note: The true wire format for CSYNC Type Bit Map follows RFC 4034 Section 4.1.2 format. Poweradmin uses a simplified representation with space-separated record types.');
 
         // All or nothing processing warning
         $warnings[] = _('RFC 7477 requires an "all or nothing" approach to CSYNC processing. If any type cannot be synchronized, no changes will be made by the parent.');

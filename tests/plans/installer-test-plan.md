@@ -1,4 +1,4 @@
-# PowerAdmin Installer Testing Plan
+# Poweradmin Installer Testing Plan
 
 ## Regular Testing Flow
 

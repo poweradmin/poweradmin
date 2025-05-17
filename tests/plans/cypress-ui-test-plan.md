@@ -1,4 +1,4 @@
-# PowerAdmin UI Cypress Test Plan
+# Poweradmin UI Cypress Test Plan
 
 ## Main Case Tests
 
