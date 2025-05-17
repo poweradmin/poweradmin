@@ -33,4 +33,20 @@ class UserContextService
     {
         return $_SESSION['userid'] ?? null;
     }
+
+    public function getDisplayName(): ?string
+    {
+        return $_SESSION['name'] ?? $this->getLoggedInUsername();
+    }
+
+    public function getAuthMethod(): ?string
+    {
+        return $_SESSION['auth_used'] ?? null;
+    }
+
+    public function isAuthenticated(): bool
+    {
+        $userId = $this->getLoggedInUserId();
+        return $userId !== null && $userId > 0;
+    }
 }

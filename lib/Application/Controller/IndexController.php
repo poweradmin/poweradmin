@@ -33,17 +33,33 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
+use Poweradmin\Domain\Service\UserContextService;
 
 class IndexController extends BaseController
 {
+    private UserContextService $userContextService;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->userContextService = new UserContextService();
+    }
+
     public function run(): void
     {
+        // Check if user is logged in; if not, redirect to login page
+        if (!$this->userContextService->isAuthenticated()) {
+            $this->redirect('index.php', ['page' => 'login']);
+            return;
+        }
+
         $this->showIndex();
     }
 
     private function showIndex(): void
     {
-        $userlogin = $_SESSION["userlogin"] ?? '';
+        $userlogin = $this->userContextService->getLoggedInUsername();
+        $userId = $this->userContextService->getLoggedInUserId();
 
         $permissions = Permission::getPermissions($this->db, [
             'search',
@@ -77,9 +93,14 @@ class IndexController extends BaseController
             ];
         }
 
+        // Determine if this is a limited user (can edit own profile but not view/edit others)
+        $isLimitedUser = $permissions['user_edit_own'] &&
+                        !$permissions['user_view_others'] &&
+                        !$permissions['user_edit_others'];
+
         $this->render("index.html", [
-            'user_name' => empty($_SESSION["name"]) ? $userlogin : $_SESSION["name"],
-            'auth_used' => $_SESSION["auth_used"] ?? '',
+            'user_name' => $this->userContextService->getDisplayName(),
+            'auth_used' => $this->userContextService->getAuthMethod() ?? '',
             'permissions' => $permissions,
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
             'migrations_show' => $this->config->get('interface', 'show_migrations', false),
@@ -92,6 +113,8 @@ class IndexController extends BaseController
             'pdns_api_enabled' => $pdnsApiEnabled,
             'show_pdns_status' => $showPdnsStatus,
             'pdns_server_status' => $pdnsServerStatus,
+            'is_limited_user' => $isLimitedUser,
+            'user_id' => $userId,
         ]);
     }
 }
