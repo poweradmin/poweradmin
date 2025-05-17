@@ -14,11 +14,43 @@
 </div>
 {% endif %}
 
+<!-- SOA Warning Modal -->
+<div class="modal fade" id="soaWarningModal" tabindex="-1" aria-labelledby="soaWarningModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="soaWarningModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning: Missing SOA Record{% endtrans %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                    <p>{% trans %}This zone template does not have an SOA (Start of Authority) record.{% endtrans %}</p>
+                    <p>{% trans %}DNS zones typically require an SOA record to function properly, and DNSSEC signing may fail without one.{% endtrans %}</p>
+                    <p>{% trans %}Do you want to continue without adding an SOA record?{% endtrans %}</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
+                <button type="button" class="btn btn-warning" id="confirmSubmitWithoutSOA">
+                    {% trans %}Continue Without SOA{% endtrans %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Template Records Card -->
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">
         <strong><i class="bi bi-file-earmark-text me-2"></i>{% trans %}Template Records{% endtrans %}: "{{templ_details['name']}}"</strong>
     </div>
+    <div id="soaWarning" class="alert alert-warning alert-sm mx-3 mt-3 mb-0 py-2 px-3 small" style="display: none;">
+        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+        <strong>{% trans %}Warning{% endtrans %}:</strong> {% trans %}This template does not have an SOA record. DNS zones typically require an SOA record to function properly, and DNSSEC signing may fail without one.{% endtrans %}
+    </div>
+
     <div class="card-body p-0">
         {% if records is empty %}
         <div class="p-4 text-center">
@@ -76,18 +108,95 @@
         {% endif %}
     </div>
     {% if not records is empty %}
-    <div class="card-footer py-3 d-flex justify-content-between">
-        <div>
-            <a class="btn btn-primary btn-sm" href="index.php?page=add_zone_templ_record&id={{zone_templ_id}}">
-                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
-            </a>
-        </div>
-        <div>
-            <button type="submit" class="btn btn-secondary btn-sm" form="template-records-form" name="update_zones">
-                <i class="bi bi-arrow-repeat me-1 text-white"></i>{% trans %}Update zones{% endtrans %}
-            </button>
+    <div class="card-footer py-3">
+        <div class="d-flex justify-content-between mb-2">
+            <div>
+                <a class="btn btn-primary btn-sm" href="index.php?page=add_zone_templ_record&id={{zone_templ_id}}">
+                    <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
+                </a>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-secondary btn-sm" form="template-records-form" name="update_zones" onclick="return checkZoneTemplateSOA('template-records-form', '.table')">
+                    <i class="bi bi-arrow-repeat me-1 text-white"></i>{% trans %}Update zones{% endtrans %}
+                </button>
+            </div>
         </div>
     </div>
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if there's an SOA record in the template
+            const recordRows = document.querySelectorAll('.table tbody tr');
+            let hasSOA = false;
+            
+            recordRows.forEach(row => {
+                const typeCell = row.querySelector('td:nth-child(2)');
+                if (typeCell && typeCell.textContent.trim() === 'SOA') {
+                    hasSOA = true;
+                }
+            });
+            
+            // Show warning if no SOA record is found
+            const warningElement = document.getElementById('soaWarning');
+            if (warningElement && recordRows.length > 0 && !hasSOA) {
+                warningElement.style.display = 'block';
+            }
+            
+            // Set up the Bootstrap modal for SOA warnings
+            const soaWarningModal = document.getElementById('soaWarningModal');
+            if (soaWarningModal) {
+                const modal = new bootstrap.Modal(soaWarningModal);
+                
+                // Override the global checkZoneTemplateSOA function
+                window.checkZoneTemplateSOA = function(formId, recordsTable) {
+                    const form = document.getElementById(formId);
+                    if (!form) return true;
+                    
+                    // If there's no records table, we're creating a new template, so no need to check
+                    if (!recordsTable) return true;
+                    
+                    const recordRows = document.querySelectorAll(recordsTable + ' tbody tr');
+                    let hasSOA = false;
+                    
+                    // Check if any record is SOA type
+                    recordRows.forEach(row => {
+                        const typeCell = row.querySelector('td:nth-child(2)');
+                        if (typeCell && typeCell.textContent.trim() === 'SOA') {
+                            hasSOA = true;
+                        }
+                    });
+                    
+                    // If there are records but no SOA, show Bootstrap modal
+                    if (recordRows.length > 0 && !hasSOA) {
+                        // Get the submit button that was clicked
+                        const submitButtonName = document.activeElement.name;
+                        
+                        // Set up the confirm button to submit the correct form with the correct button
+                        document.getElementById('confirmSubmitWithoutSOA').onclick = function() {
+                            modal.hide();
+                            
+                            // Create and trigger a hidden button with the same name as the clicked button
+                            const hiddenButton = document.createElement('button');
+                            hiddenButton.type = 'submit';
+                            hiddenButton.name = submitButtonName;
+                            hiddenButton.style.display = 'none';
+                            form.appendChild(hiddenButton);
+                            hiddenButton.click();
+                            form.removeChild(hiddenButton);
+                        };
+                        
+                        // Show the modal
+                        modal.show();
+                        
+                        // Prevent form submission for now
+                        return false;
+                    }
+                    
+                    return true;
+                };
+            }
+        });
+    </script>
     {% endif %}
 </div>
 
@@ -210,11 +319,11 @@
             </div>
 
             <div class="mt-3">
-                <button type="submit" class="btn btn-primary btn-sm" name="edit">
+                <button type="submit" class="btn btn-primary btn-sm" name="edit" onclick="return checkZoneTemplateSOA('template-form', '.table')">
                     <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}
                 </button>
                 {% if perm_zone_templ_add or perm_is_godlike %}
-                <button type="submit" class="btn btn-success btn-sm" name="save_as">
+                <button type="submit" class="btn btn-success btn-sm" name="save_as" onclick="return checkZoneTemplateSOA('template-form', '.table')">
                     <i class="bi bi-save me-1 text-white"></i>{% trans %}Save As{% endtrans %}
                 </button>
                 {% endif %}

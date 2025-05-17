@@ -139,15 +139,66 @@ class ZoneTemplate
         } elseif ($zone_name_exists != '0') {
             $this->messageService->addSystemError(_('Zone template with this name already exists, please choose another one.'));
         } else {
-            $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner) VALUES (:name, :descr, :owner)");
-            $stmt->execute([
-                ':name' => $details['templ_name'],
-                ':descr' => $details['templ_descr'],
-                ':owner' => isset($details['templ_global']) ? 0 : $userid
-            ]);
-            return true;
+            $this->db->beginTransaction();
+
+            try {
+                // Insert the zone template
+                $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner) VALUES (:name, :descr, :owner)");
+                $stmt->execute([
+                    ':name' => $details['templ_name'],
+                    ':descr' => $details['templ_descr'],
+                    ':owner' => isset($details['templ_global']) ? 0 : $userid
+                ]);
+
+                // Get the new template ID
+                $zone_templ_id = $this->db->lastInsertId();
+
+                // Add a default SOA record to the template
+                $this->addDefaultSOARecordToTemplate($zone_templ_id);
+
+                $this->db->commit();
+                return true;
+            } catch (\Exception $e) {
+                $this->db->rollBack();
+                $this->messageService->addSystemError(_('Error creating zone template: ') . $e->getMessage());
+                return false;
+            }
         }
         return false;
+    }
+
+    /**
+     * Add a default SOA record to a zone template
+     *
+     * @param int $zone_templ_id Zone template ID
+     * @return bool True on success, false otherwise
+     */
+    private function addDefaultSOARecordToTemplate(int $zone_templ_id): bool
+    {
+        try {
+            // Default values for SOA record
+            $name = '[ZONE]';
+            $type = 'SOA';
+            $content = '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400';
+            $ttl = (int)$this->config->get('dns', 'ttl', 86400);
+            $prio = 0;
+
+            // Insert the SOA record
+            $stmt = $this->db->prepare("INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)");
+            $stmt->execute([
+                ':zone_templ_id' => $zone_templ_id,
+                ':name' => $name,
+                ':type' => $type,
+                ':content' => $content,
+                ':ttl' => $ttl,
+                ':prio' => $prio
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            $this->messageService->addSystemError(_('Error adding default SOA record to template: ') . $e->getMessage());
+            return false;
+        }
     }
 
     public static function getZoneTemplName($db, $zone_id)
@@ -471,34 +522,52 @@ class ZoneTemplate
             $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } else {
-            $this->db->beginTransaction();
+            try {
+                $this->db->beginTransaction();
 
-            $query = "INSERT INTO zone_templ (name, descr, owner)
-			VALUES ("
-                . $this->db->quote($template_name, 'text') . ", "
-                . $this->db->quote($description, 'text') . ", "
-                . $this->db->quote($userid, 'integer') . ")";
+                $query = "INSERT INTO zone_templ (name, descr, owner)
+				VALUES ("
+                    . $this->db->quote($template_name, 'text') . ", "
+                    . $this->db->quote($description, 'text') . ", "
+                    . $this->db->quote($userid, 'integer') . ")";
 
-            $this->db->exec($query);
+                $this->db->exec($query);
 
-            $zone_templ_id = $this->db->lastInsertId();
+                $zone_templ_id = $this->db->lastInsertId();
 
-            foreach ($records as $record) {
-                list($name, $content) = self::replaceWithTemplatePlaceholders($domain, $record, $options);
+                // Check if the records include an SOA record
+                $hasSOA = false;
 
-                $query2 = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
-                    . $this->db->quote($zone_templ_id, 'integer') . ","
-                    . $this->db->quote($name, 'text') . ","
-                    . $this->db->quote($record['type'], 'text') . ","
-                    . $this->db->quote($content, 'text') . ","
-                    . $this->db->quote($record['ttl'], 'integer') . ","
-                    . $this->db->quote($record['prio'] ?? 0, 'integer') . ")";
-                $this->db->exec($query2);
+                foreach ($records as $record) {
+                    if ($record['type'] === 'SOA') {
+                        $hasSOA = true;
+                    }
+
+                    list($name, $content) = self::replaceWithTemplatePlaceholders($domain, $record, $options);
+
+                    $query2 = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
+                        . $this->db->quote($zone_templ_id, 'integer') . ","
+                        . $this->db->quote($name, 'text') . ","
+                        . $this->db->quote($record['type'], 'text') . ","
+                        . $this->db->quote($content, 'text') . ","
+                        . $this->db->quote($record['ttl'], 'integer') . ","
+                        . $this->db->quote($record['prio'] ?? 0, 'integer') . ")";
+                    $this->db->exec($query2);
+                }
+
+                // If there's no SOA record, add one automatically
+                if (!$hasSOA) {
+                    $this->addDefaultSOARecordToTemplate($zone_templ_id);
+                }
+
+                $this->db->commit();
+                return true;
+            } catch (\Exception $e) {
+                $this->db->rollBack();
+                $this->messageService->addSystemError(_('Error creating zone template: ') . $e->getMessage());
+                return false;
             }
-
-            $this->db->commit();
         }
-        return true;
     }
 
     /**
@@ -583,7 +652,7 @@ class ZoneTemplate
                     SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
                 ) Record_Count ON Record_Count.domain_id=$domains_table.id
                 WHERE 1=1" . $sql_add . "
-                AND zone_templ_id = " . $this->db->quote($zone_templ_id, 'integer') . "
+                AND zone_templ_id = " . $this->db->quote((string)$zone_templ_id, 'integer') . "
                 GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, 
                         Record_Count.count_records, zones.owner, zones.comment, 
                         u.username, u.fullname
@@ -639,6 +708,7 @@ class ZoneTemplate
         }
     }
 
+
     /**
      * Check if zone template name exists
      *
@@ -663,7 +733,7 @@ class ZoneTemplate
      */
     public function zoneTemplNameAndIdExists(string $zone_templ_name, int $zone_templ_id): bool
     {
-        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = {$this->db->quote($zone_templ_name, 'text')} AND id != {$this->db->quote($zone_templ_id, 'integer')}";
+        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = {$this->db->quote($zone_templ_name, 'text')} AND id != {$this->db->quote((string)$zone_templ_id, 'integer')}";
         return $this->db->queryOne($query);
     }
 

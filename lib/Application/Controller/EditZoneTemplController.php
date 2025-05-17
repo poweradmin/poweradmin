@@ -245,13 +245,18 @@ class EditZoneTemplController extends BaseController
 
         // For a simple "save as" with no domain substitution
         $options = [];
+        if (isset($_POST['templ_global'])) {
+            $options['global'] = true;
+        }
 
+        // Call the addZoneTemplSaveAs with the correct signature
         $success = $zoneTemplate->addZoneTemplSaveAs(
             $_POST['templ_name'],
             $_POST['templ_descr'],
             $_SESSION['userid'],
             $records,
-            $options
+            $options,
+            '' // Empty domain since we're not doing domain substitution
         );
 
         if ($success) {

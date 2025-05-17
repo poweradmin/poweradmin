@@ -69,6 +69,9 @@
                         <div id="cnameRootWarning" class="alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
                             <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}Warning: CNAME records at the domain root (zone apex) are not recommended and may cause issues. SOA and NS records are required at the domain root and cannot coexist with CNAME.{% endtrans %}
                         </div>
+                        <div id="soaHelper" class="alert alert-info mt-1 py-1 px-2 small" style="display: none;">
+                            <i class="bi bi-info-circle-fill me-1"></i>{% trans %}Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA records are required for proper DNS zone functionality.{% endtrans %}
+                        </div>
                     </div>
 
                     <div class="mb-3">
@@ -160,20 +163,49 @@
         warningDiv.style.display = (isType && isAtRoot) ? 'block' : 'none';
     }
     
-    // Set up event listeners for CNAME root warning
+    // Show helpful information for SOA records
+    function checkSOAHelper() {
+        const typeSelect = document.getElementById('type');
+        const soaHelperDiv = document.getElementById('soaHelper');
+        
+        if (!typeSelect || !soaHelperDiv) return;
+        
+        const isSOA = typeSelect.value === 'SOA';
+        soaHelperDiv.style.display = isSOA ? 'block' : 'none';
+        
+        // Pre-fill SOA record fields with recommended values if type is SOA
+        if (isSOA) {
+            const nameField = document.getElementById('name');
+            const contentField = document.getElementById('content');
+            
+            if (nameField && nameField.value.trim() === "") {
+                nameField.value = "[ZONE]";
+            }
+            
+            if (contentField && contentField.value.trim() === "") {
+                contentField.value = "[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400";
+            }
+        }
+    }
+    
+    // Set up event listeners for warnings and helpers
     document.addEventListener('DOMContentLoaded', function() {
         const typeSelect = document.getElementById('type');
         const nameField = document.getElementById('name');
         
         if (typeSelect) {
-            typeSelect.addEventListener('change', checkCnameRootWarning);
+            typeSelect.addEventListener('change', function() {
+                checkCnameRootWarning();
+                checkSOAHelper();
+            });
         }
         
         if (nameField) {
             nameField.addEventListener('input', checkCnameRootWarning);
         }
         
-        // Initial check
+        // Initial checks
         checkCnameRootWarning();
+        checkSOAHelper();
     });
 </script>
