@@ -57,6 +57,10 @@ class IndexController extends BaseController
             'supermaster_add',
             'user_is_ueberuser',
             'templ_perm_edit',
+            'user_view_others',
+            'user_edit_own',
+            'user_edit_others',
+            'user_add_new',
         ]);
 
         // Check PowerDNS server status if API is enabled and user is admin
