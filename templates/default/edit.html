@@ -665,7 +665,7 @@
 
 <div class="row">
     <div class="col-md-6 mb-4">
-        {% if perm_zone_master_add and domain_type != "SLAVE" %}
+        {% if (perm_zone_templ_add or perm_is_godlike) and domain_type != "SLAVE" %}
         <div class="card shadow-sm">
             <div class="card-header py-3">
                 <strong><i class="bi bi-save me-2"></i>{% trans %}Save as new template{% endtrans %}</strong>

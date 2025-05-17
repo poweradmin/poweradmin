@@ -405,6 +405,7 @@ class EditController extends BaseController
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
             'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
+            'perm_zone_templ_add' => UserManager::verifyPermission($this->db, 'zone_templ_add'),
             'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
             'user_is_zone_owner' => $user_is_zone_owner,

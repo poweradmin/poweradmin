@@ -34,28 +34,44 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Domain\Service\UserContextService;
 
 class ListZoneTemplController extends BaseController
 {
+    private UserContextService $userContext;
+
+    public function __construct(array $request)
+    {
+        parent::__construct($request);
+        $this->userContext = new UserContextService();
+    }
 
     public function run(): void
     {
-        $this->checkPermission('zone_master_add', _("You do not have the permission to edit zone templates."));
+        // Check if user has either add or edit permissions
+        $hasPermission = UserManager::verifyPermission($this->db, 'zone_templ_add') ||
+                        UserManager::verifyPermission($this->db, 'zone_templ_edit') ||
+                        UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+
+        $this->checkCondition(!$hasPermission, _("You do not have the permission to view zone templates."));
 
         $this->showListZoneTempl();
     }
 
     private function showListZoneTempl(): void
     {
-        $perm_zone_master_add = UserManager::verifyPermission($this->db, 'zone_master_add');
+        $perm_zone_templ_add = UserManager::verifyPermission($this->db, 'zone_templ_add');
+        $userId = $this->userContext->getLoggedInUserId();
+        $userName = $this->userContext->getLoggedInUsername();
 
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
-        $zone_templates->getListZoneTempl($_SESSION['userid']);
+        $templatesList = $zone_templates->getListZoneTempl($userId);
 
         $this->render('list_zone_templ.html', [
-            'perm_zone_master_add' => $perm_zone_master_add,
-            'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
-            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
+            'perm_zone_templ_add' => $perm_zone_templ_add,
+            'perm_zone_templ_edit' => UserManager::verifyPermission($this->db, 'zone_templ_edit'),
+            'user_name' => UserManager::getFullnameFromUserId($this->db, $userId) ?: $userName,
+            'zone_templates' => $templatesList,
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
         ]);
     }

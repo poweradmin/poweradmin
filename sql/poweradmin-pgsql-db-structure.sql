@@ -64,7 +64,9 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES
                                                      (59,	'user_edit_templ_perm',	'User is allowed to change the permission template that is assigned to a user.'),
                                                      (60,	'templ_perm_add',	'User is allowed to add new permission templates.'),
                                                      (61,	'templ_perm_edit',	'User is allowed to edit existing permission templates.'),
-                                                     (62,	'zone_content_edit_own_as_client',	'User is allowed to edit record, but not SOA and NS.');
+                                                     (62,	'zone_content_edit_own_as_client',	'User is allowed to edit record, but not SOA and NS.'),
+                                                     (63,	'zone_templ_add',	'User is allowed to add new zone templates.'),
+                                                     (64,	'zone_templ_edit',	'User is allowed to edit existing zone templates.');
 
 CREATE SEQUENCE perm_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 

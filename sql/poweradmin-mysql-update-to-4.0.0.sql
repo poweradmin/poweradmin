@@ -54,3 +54,8 @@ CREATE TABLE `user_mfa` (
     KEY `idx_user_mfa_enabled` (`enabled`),
     CONSTRAINT `fk_user_mfa_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Add zone template permissions
+INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
+(63, 'zone_templ_add', 'User is allowed to add new zone templates.'),
+(64, 'zone_templ_edit', 'User is allowed to edit existing zone templates.');

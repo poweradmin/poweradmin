@@ -52,3 +52,8 @@ CREATE TABLE user_mfa (
 
 CREATE UNIQUE INDEX idx_user_mfa_user_id ON user_mfa(user_id);
 CREATE INDEX idx_user_mfa_enabled ON user_mfa(enabled);
+
+-- Add zone template permissions
+INSERT INTO perm_items (id, name, descr) VALUES
+(63, 'zone_templ_add', 'User is allowed to add new zone templates.'),
+(64, 'zone_templ_edit', 'User is allowed to edit existing zone templates.');

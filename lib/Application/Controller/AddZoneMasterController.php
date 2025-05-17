@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -47,12 +48,14 @@ class AddZoneMasterController extends BaseController
 {
 
     private LegacyLogger $logger;
+    private UserContextService $userContext;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
 
         $this->logger = new LegacyLogger($this->db);
+        $this->userContext = new UserContextService();
     }
 
     public function run(): void
@@ -114,7 +117,7 @@ class AddZoneMasterController extends BaseController
             $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'],
-                $_SESSION["userlogin"],
+                $this->userContext->getLoggedInUsername(),
                 $zone_name,
                 $dom_type,
                 $zone_template
@@ -192,12 +195,17 @@ class AddZoneMasterController extends BaseController
         // Create a sanitized version of the DNSSEC checkbox status
         $dnssec_checked = isset($_POST['dnssec']) && $_POST['dnssec'] == '1';
 
+        // Get available templates for this user
+        $userId = $this->userContext->getLoggedInUserId();
+        $templates = $zone_templates->getListZoneTempl($userId);
+
         $this->render('add_zone_master.html', [
             'perm_view_others' => $perm_view_others,
-            'session_user_id' => $_SESSION['userid'],
+            'session_user_id' => $userId,
             'available_zone_types' => $valid_domain_types,
             'users' => UserManager::showUsers($this->db),
-            'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
+            'zone_templates' => $templates,
+            'can_use_templates' => !empty($templates),
             'iface_zone_type_default' => $this->config->get('dns', 'zone_type_default', 'NATIVE'),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
             'pdnssec_use' => $pdnssec_use,

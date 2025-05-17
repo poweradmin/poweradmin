@@ -33,7 +33,11 @@ class ListTemplateZonesController extends BaseController
 {
     public function run(): void
     {
-        $this->checkPermission('zone_master_add', _('You do not have permission to view zone templates.'));
+        $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
+        $perm_templ_add = UserManager::verifyPermission($this->db, 'zone_templ_add');
+        $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+
+        $this->checkCondition(!($perm_godlike || $perm_templ_edit || $perm_templ_add), _('You do not have permission to view zone templates.'));
 
         $zone_templ_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         if (!$zone_templ_id) {

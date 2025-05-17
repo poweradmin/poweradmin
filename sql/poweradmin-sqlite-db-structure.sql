@@ -39,6 +39,8 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (59,	'user_edit_templ_pe
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (60,	'templ_perm_add',	'User is allowed to add new permission templates.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (61,	'templ_perm_edit',	'User is allowed to edit existing permission templates.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (62,	'zone_content_edit_own_as_client',	'User is allowed to edit record, but not SOA and NS.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (63,	'zone_templ_add',	'User is allowed to add new zone templates.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (64,	'zone_templ_edit',	'User is allowed to edit existing zone templates.');
 
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL);
 

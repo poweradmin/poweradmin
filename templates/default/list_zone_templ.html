@@ -51,15 +51,15 @@
                         -
                         {% endif %}
                     </td>
-                    <td><span class="badge bg-light text-dark">
+                    <td>
                         {% if template['username'] %}
-                        {% trans %}private{% endtrans %}
+                        <span class="badge bg-secondary text-white">{% trans %}private{% endtrans %}</span>
                         {% else %}
-                        {% trans %}global{% endtrans %}
+                        <span class="badge bg-warning text-dark">{% trans %}global{% endtrans %}</span>
                         {% endif %}
-                    </span></td>
+                    </td>
                     <td><span class="badge {% if template['zones_linked'] == '0' %}bg-warning{% else %}bg-secondary{% endif %}">{{ template['zones_linked'] }}</span></td>
-                    {% if (perm_zone_master_add and template['username']) or perm_is_godlike %}
+                    {% if (perm_zone_templ_edit and template['username']) or perm_is_godlike %}
                     <td class="text-end">
                         <div class="gap-2">
                             {% if template['zones_linked'] != '0' %}
@@ -88,8 +88,10 @@
         </div>
     </div>
     <div class="card-footer py-3">
+        {% if perm_zone_templ_add or perm_is_godlike %}
         <a class="btn btn-primary btn-sm" href="index.php?page=add_zone_templ">
             <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone template{% endtrans %}
         </a>
+        {% endif %}
     </div>
 </div>

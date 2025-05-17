@@ -37,24 +37,29 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditZoneTemplController extends BaseController
 {
+    private UserContextService $userContext;
+
     public function __construct(array $request)
     {
         parent::__construct($request);
+        $this->userContext = new UserContextService();
     }
 
     public function run(): void
     {
         $zone_templ_id = htmlspecialchars($_GET['id']);
-        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $_SESSION['userid']);
+        $userId = $this->userContext->getLoggedInUserId();
+        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
-        $perm_master_add = UserManager::verifyPermission($this->db, 'zone_master_add');
+        $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
 
-        $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
+        $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to edit zone templates."));
 
         $constraints = [
             'id' => [
@@ -82,7 +87,8 @@ class EditZoneTemplController extends BaseController
 
     private function updateZoneTemplate(string $zone_templ_id): void
     {
-        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $_SESSION['userid']);
+        $userId = $this->userContext->getLoggedInUserId();
+        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
         if (isset($_POST['edit']) && ($owner || $perm_godlike)) {
@@ -112,6 +118,7 @@ class EditZoneTemplController extends BaseController
             'records' => ZoneTemplate::getZoneTemplRecords($this->db, $zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'perm_zone_templ_add' => UserManager::verifyPermission($this->db, 'zone_templ_add'),
         ]);
     }
 
@@ -173,7 +180,8 @@ class EditZoneTemplController extends BaseController
         }
 
         $zoneTemplate = new ZoneTemplate($this->db, $this->config);
-        $zoneTemplate->editZoneTempl($_POST, $zone_templ_id, $_SESSION['userid']);
+        $userId = $this->userContext->getLoggedInUserId();
+        $zoneTemplate->editZoneTempl($_POST, $zone_templ_id, $userId);
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
         $this->redirect('index.php', ['page' => 'list_zone_templ']);
     }
@@ -181,7 +189,8 @@ class EditZoneTemplController extends BaseController
     public function updateZoneRecords(string $zone_templ_id): void
     {
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
-        $zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $_SESSION['userid']);
+        $userId = $this->userContext->getLoggedInUserId();
+        $zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         foreach ($zones as $zone_id) {
             $dnsRecord->updateZoneRecords($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone_id, $zone_templ_id);
@@ -191,6 +200,15 @@ class EditZoneTemplController extends BaseController
 
     private function saveTemplateAs(string $zone_templ_id): void
     {
+        // Check if user has permission to add templates
+        if (
+            !(UserManager::verifyPermission($this->db, 'zone_templ_add') ||
+              UserManager::verifyPermission($this->db, 'user_is_ueberuser'))
+        ) {
+            $this->showError(_('You do not have permission to create new zone templates.'));
+            return;
+        }
+
         $constraints = [
             'templ_name' => [
                 new Assert\NotBlank()

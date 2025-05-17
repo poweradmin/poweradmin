@@ -133,7 +133,7 @@ class ZoneTemplate
     {
         $zone_name_exists = $this->zoneTemplNameExists($details['templ_name']);
 
-        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_templ_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
@@ -184,7 +184,7 @@ class ZoneTemplate
      */
     public function deleteZoneTempl(int $zone_templ_id): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
@@ -215,7 +215,7 @@ class ZoneTemplate
      */
     public function deleteZoneTemplUserId(int $userid): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
@@ -328,8 +328,8 @@ class ZoneTemplate
      */
     public function addZoneTemplRecord(int $zone_templ_id, string $name, string $type, string $content, int $ttl, int $prio): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
-            $this->messageService->addSystemError(_("You do not have the permission to add a record to this zone."));
+        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
+            $this->messageService->addSystemError(_("You do not have the permission to add a record to this zone template."));
             return false;
         }
 
@@ -380,7 +380,7 @@ class ZoneTemplate
      */
     public function editZoneTemplRecord(array $record): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to edit this record."));
             return false;
         }
@@ -422,7 +422,7 @@ class ZoneTemplate
      */
     public function deleteZoneTemplRecord(int $rid): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
             $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;
         } else {
@@ -467,7 +467,7 @@ class ZoneTemplate
      */
     public function addZoneTemplSaveAs(string $template_name, string $description, int $userid, array $records, array $options, string $domain = ''): bool
     {
-        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
+        if (!(UserManager::verifyPermission($this->db, 'zone_templ_add'))) {
             $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
             return false;
         } else {
@@ -610,8 +610,8 @@ class ZoneTemplate
     public function editZoneTempl(array $details, int $zone_templ_id, $user_id): bool
     {
         $zone_name_exists = $this->zoneTemplNameAndIdExists($details['templ_name'], $zone_templ_id);
-        if (!(UserManager::verifyPermission($this->db, 'zone_master_add'))) {
-            $this->messageService->addSystemError(_("You do not have the permission to add a zone template."));
+        if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
+            $this->messageService->addSystemError(_("You do not have the permission to edit a zone template."));
             return false;
         } elseif ($zone_name_exists != '0') {
             $this->messageService->addSystemError(_('Zone template with this name already exists, please choose another one.'));

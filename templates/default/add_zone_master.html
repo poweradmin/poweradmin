@@ -58,6 +58,7 @@
                         <small class="text-muted">{% trans %}Zone type (usually NATIVE){% endtrans %}</small>
                     </div>
 
+                    {% if can_use_templates %}
                     <div class="mb-3">
                         <label for="zone_template" class="form-label">{% trans %}Template{% endtrans %}</label>
                         <select data-testid="zone-template-select" class="form-select form-select-sm" id="zone_template" name="zone_template">
@@ -68,6 +69,7 @@
                         </select>
                         <small class="text-muted">{% trans %}Optional: Apply predefined records from a template{% endtrans %}</small>
                     </div>
+                    {% endif %}
 
                     {% if pdnssec_use %}
                     <div class="mb-3">
