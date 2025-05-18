@@ -48,10 +48,9 @@ class ListZoneTemplController extends BaseController
 
     public function run(): void
     {
-        // Check if user has either add or edit permissions
-        $hasPermission = UserManager::verifyPermission($this->db, 'zone_templ_add') ||
-                        UserManager::verifyPermission($this->db, 'zone_templ_edit') ||
-                        UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+        // Only users with zone_master_add permission can view zone templates
+        $hasPermission = UserManager::verifyPermission($this->db, 'zone_master_add') ||
+                         UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
         $this->checkCondition(!$hasPermission, _("You do not have the permission to view zone templates."));
 
