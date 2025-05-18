@@ -128,8 +128,10 @@
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item {{ current_page == 'list_zone_templ' ? 'active' : '' }}"
                                href="index.php?page=list_zone_templ">{% trans %}List zone templates{% endtrans %}</a></li>
+                        {% if perm_zone_templ_add %}
                         <li><a class="dropdown-item {{ current_page == 'add_zone_templ' ? 'active' : '' }}"
                                href="index.php?page=add_zone_templ">{% trans %}Add zone template{% endtrans %}</a></li>
+                        {% endif %}
                     </ul>
                 </li>
                 {% endif %}

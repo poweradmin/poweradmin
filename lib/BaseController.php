@@ -394,6 +394,8 @@ abstract class BaseController
                 'perm_supermaster_view' => UserManager::verifyPermission($this->db, 'supermaster_view'),
                 'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
                 'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
+                'perm_zone_templ_add' => UserManager::verifyPermission($this->db, 'zone_templ_add'),
+                'perm_zone_templ_edit' => UserManager::verifyPermission($this->db, 'zone_templ_edit'),
                 'perm_supermaster_add' => UserManager::verifyPermission($this->db, 'supermaster_add'),
                 'perm_is_godlike' => $perm_is_godlike,
                 'perm_templ_perm_edit' => UserManager::verifyPermission($this->db, 'templ_perm_edit'),
