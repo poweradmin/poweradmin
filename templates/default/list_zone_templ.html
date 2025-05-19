@@ -43,23 +43,23 @@
                     <td>{{ template['name'] }}</td>
                     <td>{{ template['descr'] }}</td>
                     <td>
-                        {% if template['fullname'] %}
-                        {{ template['fullname'] }}
-                        {% elseif template['username'] %}
-                        {{ template['username'] }}
+                        {% if template['creator_fullname'] %}
+                            {{ template['creator_fullname'] }}
+                        {% elseif template['creator_username'] %}
+                            {{ template['creator_username'] }}
                         {% else %}
-                        -
+                            -
                         {% endif %}
                     </td>
                     <td>
-                        {% if template['username'] %}
+                        {% if template['owner'] != 0 %}
                         <span class="badge bg-secondary text-white">{% trans %}private{% endtrans %}</span>
                         {% else %}
                         <span class="badge bg-warning text-dark">{% trans %}global{% endtrans %}</span>
                         {% endif %}
                     </td>
                     <td><span class="badge {% if template['zones_linked'] == '0' %}bg-warning{% else %}bg-secondary{% endif %}">{{ template['zones_linked'] }}</span></td>
-                    {% if (perm_zone_templ_edit and template['username']) or perm_is_godlike %}
+                    {% if (perm_zone_templ_edit and template['owner'] != 0) or perm_is_godlike %}
                     <td class="text-end">
                         <div class="gap-2">
                             {% if template['zones_linked'] != '0' %}

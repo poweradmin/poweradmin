@@ -127,7 +127,9 @@ CREATE TABLE `zone_templ` (
                               `name` varchar(128) NOT NULL,
                               `descr` varchar(1024) NOT NULL,
                               `owner` int(11) NOT NULL,
-                              PRIMARY KEY (`id`)
+                              `created_by` int(11) DEFAULT NULL,
+                              PRIMARY KEY (`id`),
+                              CONSTRAINT `fk_zone_templ_users` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 

@@ -101,10 +101,16 @@ class ZoneTemplate
      */
     public function getListZoneTempl(int $userid): array
     {
-        $query = "SELECT zt.id, zt.name, zt.descr, u.username, u.fullname, COUNT(z.zone_templ_id) as zones_linked
-            FROM zone_templ zt
-            LEFT JOIN users u ON zt.owner = u.id
-            LEFT JOIN zones z ON zt.id = z.zone_templ_id";
+        $query = "SELECT zt.id, zt.name, zt.descr, zt.owner, zt.created_by,
+                      owner_user.username as owner_username, 
+                      owner_user.fullname as owner_fullname,
+                      creator_user.username as creator_username, 
+                      creator_user.fullname as creator_fullname,
+                      COUNT(z.zone_templ_id) as zones_linked
+                FROM zone_templ zt
+                LEFT JOIN users owner_user ON zt.owner = owner_user.id
+                LEFT JOIN users creator_user ON zt.created_by = creator_user.id
+                LEFT JOIN zones z ON zt.id = z.zone_templ_id";
         $params = [];
 
         if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
@@ -112,7 +118,10 @@ class ZoneTemplate
             $params[':userid'] = $userid;
         }
 
-        $query .= " GROUP BY zt.id, zt.name, zt.descr, u.username, u.fullname ORDER BY zt.name";
+        $query .= " GROUP BY zt.id, zt.name, zt.descr, zt.owner, zt.created_by, 
+                           owner_user.username, owner_user.fullname, 
+                           creator_user.username, creator_user.fullname 
+                  ORDER BY zt.name";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);
@@ -123,7 +132,6 @@ class ZoneTemplate
     /**
      * Add a zone template
      *
-     * @param $db
      * @param array $details zone template details
      * @param int $userid User ID that owns template
      *
@@ -143,11 +151,12 @@ class ZoneTemplate
 
             try {
                 // Insert the zone template
-                $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner) VALUES (:name, :descr, :owner)");
+                $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by) VALUES (:name, :descr, :owner, :created_by)");
                 $stmt->execute([
                     ':name' => $details['templ_name'],
                     ':descr' => $details['templ_descr'],
-                    ':owner' => isset($details['templ_global']) ? 0 : $userid
+                    ':owner' => isset($details['templ_global']) ? 0 : $userid,
+                    ':created_by' => $userid // Always set created_by to current user
                 ]);
 
                 // Get the new template ID
@@ -525,11 +534,16 @@ class ZoneTemplate
             try {
                 $this->db->beginTransaction();
 
-                $query = "INSERT INTO zone_templ (name, descr, owner)
+                // Determine if the template should be global based on options
+                $isGlobal = isset($options['global']) && $options['global'] === true;
+                $owner = $isGlobal ? 0 : $userid; // 0 for global templates, user ID otherwise
+
+                $query = "INSERT INTO zone_templ (name, descr, owner, created_by)
 				VALUES ("
                     . $this->db->quote($template_name, 'text') . ", "
                     . $this->db->quote($description, 'text') . ", "
-                    . $this->db->quote($userid, 'integer') . ")";
+                    . $this->db->quote((string)$owner, 'integer') . ", "
+                    . $this->db->quote((string)$userid, 'integer') . ")";
 
                 $this->db->exec($query);
 
@@ -673,10 +687,11 @@ class ZoneTemplate
      *
      * @param array $details array of new zone template details
      * @param int $zone_templ_id zone template id
+     * @param int $user_id User ID that is editing the template
      *
      * @return boolean true on success, false otherwise
      */
-    public function editZoneTempl(array $details, int $zone_templ_id, $user_id): bool
+    public function editZoneTempl(array $details, int $zone_templ_id, int $user_id): bool
     {
         $zone_name_exists = $this->zoneTemplNameAndIdExists($details['templ_name'], $zone_templ_id);
         if (!(UserManager::verifyPermission($this->db, 'zone_templ_edit'))) {
@@ -693,12 +708,14 @@ class ZoneTemplate
                 "templ_id" => $zone_templ_id
             ];
 
+            // When making a template global, we set owner=0 but keep created_by intact
             if (isset($details['templ_global'])) {
                 $query .= ', owner=0';
             } else {
                 $query .= ', owner=:templ_owner';
                 $params['templ_owner'] = $user_id;
             }
+
             $query .= ' WHERE id=:templ_id';
             $stmt = $this->db->prepare($query);
 

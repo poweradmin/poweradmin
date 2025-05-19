@@ -58,3 +58,8 @@ CREATE INDEX idx_user_mfa_enabled ON user_mfa(enabled);
 INSERT INTO perm_items (id, name, descr) VALUES
 (63, 'zone_templ_add', 'User is allowed to add new zone templates.'),
 (64, 'zone_templ_edit', 'User is allowed to edit existing zone templates.');
+
+-- Add created_by column to zone_templ table
+ALTER TABLE zone_templ ADD COLUMN created_by INTEGER;
+UPDATE zone_templ SET created_by = owner WHERE owner != 0;
+ALTER TABLE zone_templ ADD CONSTRAINT fk_zone_templ_users FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL;

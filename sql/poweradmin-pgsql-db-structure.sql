@@ -124,7 +124,9 @@ CREATE TABLE "public"."zone_templ" (
                                        "name" character varying(128),
                                        "descr" character varying(1024),
                                        "owner" integer,
-                                       CONSTRAINT "zone_templ_pkey" PRIMARY KEY ("id")
+                                       "created_by" integer,
+                                       CONSTRAINT "zone_templ_pkey" PRIMARY KEY ("id"),
+                                       CONSTRAINT "fk_zone_templ_users" FOREIGN KEY ("created_by") REFERENCES "users" ("id") ON DELETE SET NULL
 ) WITH (oids = false);
 
 

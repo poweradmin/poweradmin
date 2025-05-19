@@ -339,6 +339,16 @@ class DatabaseStructureHelper
                         'name' => 'owner',
                         'table' => 'zone_templ',
                         'flags' => 'not_null'
+                    ),
+                    'created_by' => array
+                    (
+                        'notnull' => 0,
+                        'fixed' => 0,
+                        'default' => null,
+                        'type' => 'integer',
+                        'name' => 'created_by',
+                        'table' => 'zone_templ',
+                        'flags' => ''
                     )
                 )
             ),

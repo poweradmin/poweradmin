@@ -57,7 +57,14 @@ CREATE TABLE users (id integer PRIMARY KEY, username VARCHAR(64) NOT NULL, passw
 
 INSERT INTO "users" ("id", "username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap") VALUES (1,	'admin',	'$2y$12$10ei/WGJPcUY9Ea8/eVage9zBbxr0xxW82qJF/cfSyev/jX84WHQe',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
 
-CREATE TABLE zone_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, owner integer NOT NULL);
+CREATE TABLE zone_templ (
+    id integer PRIMARY KEY, 
+    name VARCHAR(128) NOT NULL, 
+    descr VARCHAR(1024) NOT NULL, 
+    owner integer NOT NULL,
+    created_by integer,
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
 
 
 CREATE TABLE zone_templ_records (id integer PRIMARY KEY, zone_templ_id integer NOT NULL, name VARCHAR(255) NOT NULL, type VARCHAR(6) NOT NULL, content VARCHAR(2048) NOT NULL, ttl integer NOT NULL, prio integer NOT NULL);
