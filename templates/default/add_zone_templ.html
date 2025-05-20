@@ -97,7 +97,8 @@
                             <li>{% trans %}Create different templates for different types of websites (e.g., "Basic Website", "Email Server"){% endtrans %}</li>
                             <li>{% trans %}Use descriptive names and descriptions to make templates easy to identify{% endtrans %}</li>
                             <li>{% trans %}Set up standard records like MX, TXT for SPF, and CNAME for www{% endtrans %}</li>
-                            <li>{% trans %}Remember that @ can be used as a placeholder for the zone name in record templates{% endtrans %}</li>
+                            <li>{% trans %}Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and [SERIAL] in record content{% endtrans %}</li>
+                            <li>{% trans %}[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records (e.g., [DOMAIN]-[TLD].mail.protection.outlook.com){% endtrans %}</li>
                         </ul>
                     </div>
                 </div>

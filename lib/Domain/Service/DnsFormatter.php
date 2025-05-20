@@ -22,13 +22,13 @@
 
 namespace Poweradmin\Domain\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 class DnsFormatter
 {
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationInterface $config)
     {
         $this->config = $config;
     }

@@ -908,6 +908,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Domain\\Service\\Dns\\SupermasterManager' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/SupermasterManager.php',
         'Poweradmin\\Domain\\Service\\Dns\\SupermasterManagerInterface' => __DIR__ . '/../..' . '/lib/Domain/Service/Dns/SupermasterManagerInterface.php',
         'Poweradmin\\Domain\\Service\\DnssecProvider' => __DIR__ . '/../..' . '/lib/Domain/Service/DnssecProvider.php',
+        'Poweradmin\\Domain\\Service\\DomainParsingService' => __DIR__ . '/../..' . '/lib/Domain/Service/DomainParsingService.php',
         'Poweradmin\\Domain\\Service\\DomainRecordCreator' => __DIR__ . '/../..' . '/lib/Domain/Service/DomainRecordCreator.php',
         'Poweradmin\\Domain\\Service\\DynamicDnsHelper' => __DIR__ . '/../..' . '/lib/Domain/Service/DynamicDnsHelper.php',
         'Poweradmin\\Domain\\Service\\FormStateService' => __DIR__ . '/../..' . '/lib/Domain/Service/FormStateService.php',

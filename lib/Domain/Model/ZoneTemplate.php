@@ -24,7 +24,8 @@ namespace Poweradmin\Domain\Model;
 
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Domain\Service\DomainParsingService;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
 
@@ -38,19 +39,21 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class ZoneTemplate
 {
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private PDOLayer $db;
     private DnsFormatter $dnsFormatter;
     private MessageService $messageService;
     private DnsCommonValidator $dnsCommonValidator;
+    private DomainParsingService $domainParsingService;
 
-    public function __construct(PDOLayer $db, ConfigurationManager $config)
+    public function __construct(PDOLayer $db, ConfigurationInterface $config)
     {
         $this->db = $db;
         $this->config = $config;
         $this->dnsFormatter = new DnsFormatter($config);
         $this->messageService = new MessageService();
         $this->dnsCommonValidator = new DnsCommonValidator($db, $config);
+        $this->domainParsingService = new DomainParsingService();
     }
 
     /**
@@ -858,7 +861,14 @@ class ZoneTemplate
         $serial = date("Ymd");
         $serial .= "00";
 
+        // Parse domain components
+        $domainComponents = $this->domainParsingService->parseDomain($domain);
+        $domainName = $domainComponents['domain'];
+        $tld = $domainComponents['tld'];
+
         $val = str_replace('[ZONE]', $domain, $val);
+        $val = str_replace('[DOMAIN]', $domainName, $val);
+        $val = str_replace('[TLD]', $tld, $val);
         $val = str_replace('[SERIAL]', $serial, $val);
         $val = str_replace('[NS1]', $dns_ns1, $val);
         $val = str_replace('[NS2]', $dns_ns2, $val);
@@ -872,11 +882,16 @@ class ZoneTemplate
         $val = str_replace('[SOA_EXPIRE]', $soa_expire, $val);
         $val = str_replace('[SOA_MINIMUM]', $soa_minimum, $val);
 
-        // Check if this is an SOA record that's missing the SOA parameters
+        // Check if this is an SOA record that should have SOA parameters
         if (str_contains($val, 'SOA')) {
+            // Extract all parts of the string
             $parts = explode(' ', $val);
-            // If we have an SOA record but it only has 3 parts (ns, hostmaster, serial), add the missing SOA parameters
-            if (count($parts) == 3) {
+
+            // Check if the SOA parameters are already included
+            // SOA record should have at least 7 parts:
+            // domain IN SOA ns hostmaster serial refresh retry expire minimum
+            if (count($parts) < 7) {
+                // Append the SOA parameters if they're missing
                 $val .= " $soa_refresh $soa_retry $soa_expire $soa_minimum";
             }
         }

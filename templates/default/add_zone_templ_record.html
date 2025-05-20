@@ -105,6 +105,14 @@
                                         <td>{% trans %}Substituted with current zone name{% endtrans %}</td>
                                     </tr>
                                     <tr>
+                                        <td><code>[DOMAIN]</code></td>
+                                        <td>{% trans %}Substituted with domain name without TLD{% endtrans %} (e.g., example from example.net)</td>
+                                    </tr>
+                                    <tr>
+                                        <td><code>[TLD]</code></td>
+                                        <td>{% trans %}Substituted with top-level domain{% endtrans %} (e.g., net from example.net)</td>
+                                    </tr>
+                                    <tr>
                                         <td><code>[SERIAL]</code></td>
                                         <td>{% trans %}Substituted with current date and 2 numbers{% endtrans %} (YYYYMMDD + 00)</td>
                                     </tr>
@@ -138,6 +146,7 @@
                                 <li>{% trans %}For a wildcard record: <code>*.[ZONE]</code>{% endtrans %}</li>
                                 <li>{% trans %}For the domain itself: <code>[ZONE]</code>{% endtrans %}</li>
                                 <li>{% trans %}For SOA record content: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>{% endtrans %}</li>
+                                <li>{% trans %}For Microsoft 365 MX record: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>{% endtrans %}</li>
                             </ul>
                         </div>
                     </div>
