@@ -185,14 +185,49 @@ class InstallStepHandler
             $messages['db_success'] = _('Updating database... done!');
         } catch (\Exception $e) {
             $errorMessage = $e->getMessage();
-
             $suggestions = '';
-            if ($credentials['db_type'] == 'sqlite') {
+
+            // Check for foreign key constraint issues
+            if (
+                stripos($errorMessage, 'foreign key') !== false ||
+                stripos($errorMessage, 'constraint') !== false ||
+                stripos($errorMessage, 'FK') !== false
+            ) {
+                $dbType = $credentials['db_type'];
+                $disableConstraintsCommand = '';
+
+                if ($dbType === 'mysql') {
+                    $disableConstraintsCommand = "SET foreign_key_checks = 0;";
+                } elseif ($dbType === 'pgsql') {
+                    $disableConstraintsCommand = "-- PostgreSQL doesn't have a direct equivalent\n-- You may need to drop the tables manually with CASCADE option:\nDROP TABLE table_name CASCADE;";
+                } elseif ($dbType === 'sqlite') {
+                    $disableConstraintsCommand = "PRAGMA foreign_keys = OFF;";
+                }
+
+                $suggestions = "<p><strong>" . _('Foreign Key Constraint Issues:') . "</strong></p>" .
+                    "<ul>" .
+                    "<li>" . _('The installer could not remove existing tables due to foreign key constraints') . "</li>" .
+                    "<li>" . _('This can happen during reinstallation if you have custom constraints or if tables are referenced by other tables') . "</li>" .
+                    "<li>" . _('You can try manually disabling foreign key checks before running the installer:') . "</li>" .
+                    "</ul>" .
+                    "<pre class='bg-dark text-light p-2 my-2'>{$disableConstraintsCommand}</pre>";
+            }
+            // SQLite-specific suggestions
+            elseif ($credentials['db_type'] == 'sqlite') {
                 $suggestions = "<p><strong>" . _('Suggestions:') . "</strong></p>" .
                     "<ul>" .
                     "<li>" . _('Make sure the SQLite database file exists') . "</li>" .
                     "<li>" . _('Check that the web server has read and write permissions for the database file') . "</li>" .
                     "<li>" . _('Verify the full path to the database file is correct and accessible') . "</li>" .
+                    "</ul>";
+            }
+            // General database error suggestions
+            else {
+                $suggestions = "<p><strong>" . _('Suggestions:') . "</strong></p>" .
+                    "<ul>" .
+                    "<li>" . _('Verify database credentials are correct') . "</li>" .
+                    "<li>" . _('Check that the database user has sufficient privileges') . "</li>" .
+                    "<li>" . _('Ensure the database server is running and accessible') . "</li>" .
                     "</ul>";
             }
 

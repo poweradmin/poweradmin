@@ -15,7 +15,14 @@
             {% if db_error is defined and db_error %}
                 <div class="alert alert-danger py-2 mb-3">
                     <h5>{{ db_error.title }}</h5>
-                    <p>{{ db_error.message }}</p>
+                    {% if db_error.message matches '/foreign key|constraint|referenced/i' %}
+                        <div class="border-start border-danger border-4 ps-2">
+                            <p>{{ db_error.message }}</p>
+                        </div>
+                    {% else %}
+                        <p>{{ db_error.message }}</p>
+                    {% endif %}
+                    
                     {% if db_error.suggestions %}
                         {{ db_error.suggestions|raw }}
                     {% endif %}

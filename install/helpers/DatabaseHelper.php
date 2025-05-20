@@ -68,38 +68,67 @@ class DatabaseHelper
         $current_tables = $this->db->listTables();
         $def_tables = DatabaseStructureHelper::getDefaultTables();
 
-        foreach ($def_tables as $table) {
-            if (in_array($table['table_name'], $current_tables)) {
-                $this->db->dropTable($table['table_name']);
+        // Disable foreign key checks for the duration of this operation
+        $dbType = $this->databaseCredentials['db_type'];
+        try {
+            if ($dbType === 'mysql') {
+                $this->db->exec('SET foreign_key_checks = 0');
+            } elseif ($dbType === 'pgsql') {
+                // PostgreSQL doesn't have a direct equivalent to SET foreign_key_checks
+                // We'll handle this differently if needed
+            } elseif ($dbType === 'sqlite') {
+                $this->db->exec('PRAGMA foreign_keys = OFF');
             }
+        } catch (\Exception $e) {
+            // If we can't disable foreign key checks, we'll continue anyway
+            // and handle any errors that occur
+        }
 
-            $options = $table['options'];
-
-            if (isset($this->databaseCredentials['db_charset']) && $this->databaseCredentials['db_charset']) {
-                $options['charset'] = $this->databaseCredentials['db_charset'];
-            }
-
-            if (isset($this->databaseCredentials['db_collation']) && $this->databaseCredentials['db_collation']) {
-                $options['collation'] = $this->databaseCredentials['db_collation'];
-            }
-            $this->db->createTable($table['table_name'], $table['fields'], $options);
-
-            // Set default value for the 'type' column in user_mfa table
-            if ($table['table_name'] === 'user_mfa') {
-                $dbType = $this->databaseCredentials['db_type'];
-
-                switch ($dbType) {
-                    case 'mysql':
-                        $this->db->exec("ALTER TABLE `user_mfa` ALTER COLUMN `type` SET DEFAULT 'app'");
-                        break;
-                    case 'pgsql':
-                        $this->db->exec("ALTER TABLE user_mfa ALTER COLUMN type SET DEFAULT 'app'");
-                        break;
-                    case 'sqlite':
-                        // SQLite doesn't support ALTER COLUMN with SET DEFAULT
-                        // We'll need to ensure new rows have this value explicitly set
-                        break;
+        try {
+            foreach ($def_tables as $table) {
+                if (in_array($table['table_name'], $current_tables)) {
+                    $this->db->dropTable($table['table_name']);
                 }
+
+                $options = $table['options'];
+
+                if (isset($this->databaseCredentials['db_charset']) && $this->databaseCredentials['db_charset']) {
+                    $options['charset'] = $this->databaseCredentials['db_charset'];
+                }
+
+                if (isset($this->databaseCredentials['db_collation']) && $this->databaseCredentials['db_collation']) {
+                    $options['collation'] = $this->databaseCredentials['db_collation'];
+                }
+                $this->db->createTable($table['table_name'], $table['fields'], $options);
+
+                // Set default value for the 'type' column in user_mfa table
+                if ($table['table_name'] === 'user_mfa') {
+                    $dbType = $this->databaseCredentials['db_type'];
+
+                    switch ($dbType) {
+                        case 'mysql':
+                            $this->db->exec("ALTER TABLE `user_mfa` ALTER COLUMN `type` SET DEFAULT 'app'");
+                            break;
+                        case 'pgsql':
+                            $this->db->exec("ALTER TABLE user_mfa ALTER COLUMN type SET DEFAULT 'app'");
+                            break;
+                        case 'sqlite':
+                            // SQLite doesn't support ALTER COLUMN with SET DEFAULT
+                            // We'll need to ensure new rows have this value explicitly set
+                            break;
+                    }
+                }
+            }
+        } finally {
+            // Re-enable foreign key checks after we're done
+            try {
+                if ($dbType === 'mysql') {
+                    $this->db->exec('SET foreign_key_checks = 1');
+                } elseif ($dbType === 'sqlite') {
+                    $this->db->exec('PRAGMA foreign_keys = ON');
+                }
+            } catch (\Exception $e) {
+                // Ignore any errors when re-enabling foreign key checks
             }
         }
 
