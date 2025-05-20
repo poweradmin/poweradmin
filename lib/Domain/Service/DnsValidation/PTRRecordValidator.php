@@ -104,12 +104,6 @@ class PTRRecordValidator implements DnsRecordValidatorInterface
         $contentData = $contentHostnameResult->getData();
         $content = $contentData['hostname'];
 
-        // Check if content has a trailing dot (should be a fully qualified domain name)
-        if (!str_ends_with($content, '.')) {
-            $warnings[] = _('PTR record content should be a fully qualified domain name (ending with a dot).');
-            $content = $content . '.';
-        }
-
         // Validate name as hostname
         $nameResult = $this->hostnameValidator->validate($name, true);
         if (!$nameResult->isValid()) {

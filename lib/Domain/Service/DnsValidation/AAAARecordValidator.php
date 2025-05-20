@@ -98,6 +98,9 @@ class AAAARecordValidator implements DnsRecordValidatorInterface
         $hostnameData = $hostnameResult->getData();
         $name = $hostnameData['hostname'];
 
+        // The HostnameValidator already removes trailing dots, so no need to handle that here
+        $warnings = [];
+
         // Validate TTL
         $ttlResult = $this->ttlValidator->validate($ttl, $defaultTTL);
         if (!$ttlResult->isValid()) {
@@ -118,7 +121,7 @@ class AAAARecordValidator implements DnsRecordValidatorInterface
             'name' => $name,
             'prio' => $validatedPrio,
             'ttl' => $validatedTtl
-        ]);
+        ], $warnings);
     }
 
     /**

@@ -181,7 +181,7 @@
                         <td>
                             {% if associated_forward_zones[zone.id] is defined and associated_forward_zones[zone.id]|length > 0 %}
                                 {% for forward in associated_forward_zones[zone.id] %}
-                                    <span class="badge bg-info text-dark">
+                                    <span class="badge text-dark">
                                         <a href="index.php?page=edit&id={{ forward.id }}" class="text-decoration-none">
                                             {{ forward.name }} 
                                             <span class="badge bg-primary text-white">{{ forward.ptr_records }}</span>

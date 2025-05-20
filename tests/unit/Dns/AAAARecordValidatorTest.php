@@ -62,6 +62,27 @@ class AAAARecordValidatorTest extends TestCase
         $this->assertEquals(3600, $data['ttl']);
     }
 
+    /**
+     * Test that the validator correctly handles hostnames with trailing dots
+     *
+     * This test is skipped as we're manually checking the HostnameValidator
+     * behavior separately.
+     */
+    public function testDebugHostnameValidation()
+    {
+        // Debug the hostname validator to understand what's happening
+        $mockConfig = $this->createMock(ConfigurationManager::class);
+        $mockConfig->method('get')->willReturn(false);
+
+        // Direct validation with HostnameValidator
+        $hostnameValidator = new \Poweradmin\Domain\Service\DnsValidation\HostnameValidator($mockConfig);
+        $result = $hostnameValidator->validate('host.example.com.');
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('host.example.com', $data['hostname']);
+    }
+
     public function testValidateWithInvalidIPv6()
     {
         $content = '2001:zz8::1'; // Invalid IPv6

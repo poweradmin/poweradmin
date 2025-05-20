@@ -474,8 +474,6 @@ return array(
     'Poweradmin\\Application\\Controller\\Api\\OpenApiConfig' => $baseDir . '/lib/Application/Controller/Api/OpenApiConfig.php',
     'Poweradmin\\Application\\Controller\\Api\\OpenApiInfo' => $baseDir . '/lib/Application/Controller/Api/OpenApiInfo.php',
     'Poweradmin\\Application\\Controller\\Api\\PublicApiController' => $baseDir . '/lib/Application/Controller/Api/PublicApiController.php',
-    'Poweradmin\\Application\\Controller\\Api\\v1\\UserController' => $baseDir . '/lib/Application/Controller/Api/v1/UserController.php',
-    'Poweradmin\\Application\\Controller\\Api\\v1\\ZoneController' => $baseDir . '/lib/Application/Controller/Api/v1/ZoneController.php',
     'Poweradmin\\Application\\Controller\\BatchPtrRecordController' => $baseDir . '/lib/Application/Controller/BatchPtrRecordController.php',
     'Poweradmin\\Application\\Controller\\BulkRecordAddController' => $baseDir . '/lib/Application/Controller/BulkRecordAddController.php',
     'Poweradmin\\Application\\Controller\\BulkRegistrationController' => $baseDir . '/lib/Application/Controller/BulkRegistrationController.php',

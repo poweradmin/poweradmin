@@ -62,7 +62,7 @@ class PTRRecordValidatorTest extends TestCase
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
 
-        $this->assertEquals($content . '.', $data['content']);
+        $this->assertEquals($content, $data['content']);
 
         $this->assertEquals($name, $data['name']);
 
@@ -191,7 +191,7 @@ class PTRRecordValidatorTest extends TestCase
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
 
-        $this->assertEquals($content . '.', $data['content']);
+        $this->assertEquals($content, $data['content']);
 
         $this->assertEquals($name, $data['name']);
     }
@@ -212,8 +212,8 @@ class PTRRecordValidatorTest extends TestCase
         $this->assertEmpty($result->getErrors());
         $data = $result->getData();
 
-        // Content already has a trailing dot, so it should remain as is
-        $this->assertEquals($content, $data['content']);
+        // Content has trailing dot that should be removed per PowerDNS requirements
+        $this->assertEquals(rtrim($content, '.'), $data['content']);
     }
 
     public function testValidateWithNonStandardReverseName()
