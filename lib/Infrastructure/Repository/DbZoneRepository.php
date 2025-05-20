@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Database\DbCompat;
@@ -252,6 +253,13 @@ class DbZoneRepository implements ZoneRepositoryInterface
                     'full_names' => [],
                     'users' => []
                 ];
+
+                // Add serial number if configured
+                if ($this->config->get('interface', 'display_serial_in_zone_list')) {
+                    // Create RecordRepository to get the serial
+                    $recordRepository = new RecordRepository($this->db, $this->config);
+                    $zones[$name]['serial'] = $recordRepository->getSerialByZid($row['id']);
+                }
             }
 
             $zones[$name]['owners'][] = $row['username'];
