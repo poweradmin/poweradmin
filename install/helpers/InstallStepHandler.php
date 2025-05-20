@@ -211,18 +211,16 @@ class InstallStepHandler
                     "<li>" . _('You can try manually disabling foreign key checks before running the installer:') . "</li>" .
                     "</ul>" .
                     "<pre class='bg-dark text-light p-2 my-2'>{$disableConstraintsCommand}</pre>";
-            }
-            // SQLite-specific suggestions
-            elseif ($credentials['db_type'] == 'sqlite') {
+            } elseif ($credentials['db_type'] == 'sqlite') {
+                // SQLite-specific suggestions
                 $suggestions = "<p><strong>" . _('Suggestions:') . "</strong></p>" .
                     "<ul>" .
                     "<li>" . _('Make sure the SQLite database file exists') . "</li>" .
                     "<li>" . _('Check that the web server has read and write permissions for the database file') . "</li>" .
                     "<li>" . _('Verify the full path to the database file is correct and accessible') . "</li>" .
                     "</ul>";
-            }
-            // General database error suggestions
-            else {
+            } else {
+                // General database error suggestions
                 $suggestions = "<p><strong>" . _('Suggestions:') . "</strong></p>" .
                     "<ul>" .
                     "<li>" . _('Verify database credentials are correct') . "</li>" .
