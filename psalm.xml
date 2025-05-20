@@ -16,7 +16,6 @@
         <directory name="tests" />
         <ignoreFiles>
             <directory name="vendor" />
-            <directory name="node_modules" />
         </ignoreFiles>
     </projectFiles>
     <issueHandlers>
