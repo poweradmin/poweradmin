@@ -163,7 +163,7 @@ class ZoneTemplate
                 $zone_templ_id = $this->db->lastInsertId();
 
                 // Add a default SOA record to the template
-                $this->addDefaultSOARecordToTemplate($zone_templ_id);
+                $this->addDefaultSOARecordToTemplate((int)$zone_templ_id);
 
                 $this->db->commit();
                 return true;
@@ -250,17 +250,17 @@ class ZoneTemplate
         } else {
             // Delete the zone template
             $query = "DELETE FROM zone_templ"
-                . " WHERE id = " . $this->db->quote($zone_templ_id, 'integer');
+                . " WHERE id = " . $this->db->quote((string)$zone_templ_id, 'integer');
             $this->db->query($query);
 
             // Delete the zone template records
             $query = "DELETE FROM zone_templ_records"
-                . " WHERE zone_templ_id = " . $this->db->quote($zone_templ_id, 'integer');
+                . " WHERE zone_templ_id = " . $this->db->quote((string)$zone_templ_id, 'integer');
             $this->db->query($query);
 
             // Delete references to zone template
             $query = "DELETE FROM records_zone_templ"
-                . " WHERE zone_templ_id = " . $this->db->quote($zone_templ_id, 'integer');
+                . " WHERE zone_templ_id = " . $this->db->quote((string)$zone_templ_id, 'integer');
             $this->db->query($query);
             return true;
         }
@@ -280,7 +280,7 @@ class ZoneTemplate
             return false;
         } else {
             $query = "DELETE FROM zone_templ"
-                . " WHERE owner = " . $this->db->quote($userid, 'integer');
+                . " WHERE owner = " . $this->db->quote((string)$userid, 'integer');
             $this->db->query($query);
             return true;
         }
@@ -466,7 +466,7 @@ class ZoneTemplate
                                 type=" . $this->db->quote($record['type'], 'text') . ",
                                 content=" . $this->db->quote($record['content'], 'text') . ",
                                 ttl=" . $this->db->quote($record['ttl'], 'integer') . ",
-                                prio=" . $this->db->quote($record['prio'] ?? 0, 'integer') . "
+                                prio=" . $this->db->quote((string)($record['prio'] ?? 0), 'integer') . "
                                 WHERE id=" . $this->db->quote($record['rid'], 'integer');
         $this->db->query($query);
 
@@ -486,7 +486,7 @@ class ZoneTemplate
             $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;
         } else {
-            $query = "DELETE FROM zone_templ_records WHERE id = " . $this->db->quote($rid, 'integer');
+            $query = "DELETE FROM zone_templ_records WHERE id = " . $this->db->quote((string)$rid, 'integer');
             $this->db->query($query);
             return true;
         }
@@ -565,13 +565,13 @@ class ZoneTemplate
                         . $this->db->quote($record['type'], 'text') . ","
                         . $this->db->quote($content, 'text') . ","
                         . $this->db->quote($record['ttl'], 'integer') . ","
-                        . $this->db->quote($record['prio'] ?? 0, 'integer') . ")";
+                        . $this->db->quote((string)($record['prio'] ?? 0), 'integer') . ")";
                     $this->db->exec($query2);
                 }
 
                 // If there's no SOA record, add one automatically
                 if (!$hasSOA) {
-                    $this->addDefaultSOARecordToTemplate($zone_templ_id);
+                    $this->addDefaultSOARecordToTemplate((int)$zone_templ_id);
                 }
 
                 $this->db->commit();
@@ -604,7 +604,7 @@ class ZoneTemplate
 
         if ($perm_edit != "all") {
             $sql_add = " AND zones.domain_id = $domains_table.id
-				AND zones.owner = " . $this->db->quote($userid, 'integer');
+				AND zones.owner = " . $this->db->quote((string)$userid, 'integer');
         }
 
         $query = "SELECT $domains_table.id,
@@ -617,7 +617,7 @@ class ZoneTemplate
 				SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
 			) Record_Count ON Record_Count.domain_id=$domains_table.id
 			WHERE 1=1" . $sql_add . "
-                        AND zone_templ_id = " . $this->db->quote($zone_templ_id, 'integer') . "
+                        AND zone_templ_id = " . $this->db->quote((string)$zone_templ_id, 'integer') . "
 			GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, Record_Count.count_records";
 
         $result = $this->db->query($query);
@@ -648,7 +648,7 @@ class ZoneTemplate
         $sql_add = '';
         if ($perm_edit != "all") {
             $sql_add = " AND zones.domain_id = $domains_table.id 
-                    AND zones.owner = " . $this->db->quote($userid, 'integer');
+                    AND zones.owner = " . $this->db->quote((string)$userid, 'integer');
         }
 
         $query = "SELECT $domains_table.id,

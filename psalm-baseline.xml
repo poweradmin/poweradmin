@@ -329,23 +329,6 @@
       <code><![CDATA[$uid]]></code>
     </InvalidScalarArgument>
   </file>
-  <file src="lib/Domain/Model/ZoneTemplate.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$record['prio'] ?? 0]]></code>
-      <code><![CDATA[$record['prio'] ?? 0]]></code>
-      <code><![CDATA[$rid]]></code>
-      <code><![CDATA[$userid]]></code>
-      <code><![CDATA[$userid]]></code>
-      <code><![CDATA[$userid]]></code>
-      <code><![CDATA[$userid]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Domain/Repository/DomainRepository.php">
     <InvalidScalarArgument>
       <code><![CDATA[$id]]></code>
