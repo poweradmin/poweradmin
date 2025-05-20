@@ -248,21 +248,28 @@ class ZoneTemplate
             $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
-            // Delete the zone template
-            $query = "DELETE FROM zone_templ"
-                . " WHERE id = " . $this->db->quote((string)$zone_templ_id, 'integer');
-            $this->db->query($query);
+            try {
+                $this->db->beginTransaction();
 
-            // Delete the zone template records
-            $query = "DELETE FROM zone_templ_records"
-                . " WHERE zone_templ_id = " . $this->db->quote((string)$zone_templ_id, 'integer');
-            $this->db->query($query);
+                // Delete the zone template
+                $stmt = $this->db->prepare("DELETE FROM zone_templ WHERE id = :zone_templ_id");
+                $stmt->execute([':zone_templ_id' => $zone_templ_id]);
 
-            // Delete references to zone template
-            $query = "DELETE FROM records_zone_templ"
-                . " WHERE zone_templ_id = " . $this->db->quote((string)$zone_templ_id, 'integer');
-            $this->db->query($query);
-            return true;
+                // Delete the zone template records
+                $stmt = $this->db->prepare("DELETE FROM zone_templ_records WHERE zone_templ_id = :zone_templ_id");
+                $stmt->execute([':zone_templ_id' => $zone_templ_id]);
+
+                // Delete references to zone template
+                $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE zone_templ_id = :zone_templ_id");
+                $stmt->execute([':zone_templ_id' => $zone_templ_id]);
+
+                $this->db->commit();
+                return true;
+            } catch (\Exception $e) {
+                $this->db->rollBack();
+                $this->messageService->addSystemError(_('Error deleting zone template: ') . $e->getMessage());
+                return false;
+            }
         }
     }
 
@@ -279,10 +286,14 @@ class ZoneTemplate
             $this->messageService->addSystemError(_("You do not have the permission to delete zone templates."));
             return false;
         } else {
-            $query = "DELETE FROM zone_templ"
-                . " WHERE owner = " . $this->db->quote((string)$userid, 'integer');
-            $this->db->query($query);
-            return true;
+            try {
+                $stmt = $this->db->prepare("DELETE FROM zone_templ WHERE owner = :owner");
+                $stmt->execute([':owner' => $userid]);
+                return true;
+            } catch (\Exception $e) {
+                $this->messageService->addSystemError(_('Error deleting user zone templates: ') . $e->getMessage());
+                return false;
+            }
         }
     }
 
@@ -461,16 +472,29 @@ class ZoneTemplate
         // Add double quotes to content if it is a TXT record and dns_txt_auto_quote is enabled
         $record['content'] = $this->dnsFormatter->formatContent($record['type'], $record['content']);
 
-        $query = "UPDATE zone_templ_records
-                                SET name=" . $this->db->quote($record['name'], 'text') . ",
-                                type=" . $this->db->quote($record['type'], 'text') . ",
-                                content=" . $this->db->quote($record['content'], 'text') . ",
-                                ttl=" . $this->db->quote($record['ttl'], 'integer') . ",
-                                prio=" . $this->db->quote((string)($record['prio'] ?? 0), 'integer') . "
-                                WHERE id=" . $this->db->quote($record['rid'], 'integer');
-        $this->db->query($query);
+        try {
+            $stmt = $this->db->prepare("UPDATE zone_templ_records
+                                SET name = :name,
+                                type = :type,
+                                content = :content,
+                                ttl = :ttl,
+                                prio = :prio
+                                WHERE id = :id");
 
-        return true;
+            $stmt->execute([
+                ':name' => $record['name'],
+                ':type' => $record['type'],
+                ':content' => $record['content'],
+                ':ttl' => $record['ttl'],
+                ':prio' => $record['prio'] ?? 0,
+                ':id' => $record['rid']
+            ]);
+
+            return true;
+        } catch (\Exception $e) {
+            $this->messageService->addSystemError(_('Error updating zone template record: ') . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -486,9 +510,14 @@ class ZoneTemplate
             $this->messageService->addSystemError(_("You do not have the permission to delete this record."));
             return false;
         } else {
-            $query = "DELETE FROM zone_templ_records WHERE id = " . $this->db->quote((string)$rid, 'integer');
-            $this->db->query($query);
-            return true;
+            try {
+                $stmt = $this->db->prepare("DELETE FROM zone_templ_records WHERE id = :id");
+                $stmt->execute([':id' => $rid]);
+                return true;
+            } catch (\Exception $e) {
+                $this->messageService->addSystemError(_('Error deleting zone template record: ') . $e->getMessage());
+                return false;
+            }
         }
     }
 
@@ -500,16 +529,37 @@ class ZoneTemplate
      *
      * @return boolean true on success, false otherwise
      */
-    public static function getZoneTemplIsOwner($db, int $zone_templ_id, int $userid): bool
+    public function isUserOwnerOfTemplate(int $zone_templ_id, int $userid): bool
     {
-        $query = "SELECT owner FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
-        $result = $db->queryOne($query);
+        try {
+            $stmt = $this->db->prepare("SELECT owner FROM zone_templ WHERE id = :id");
+            $stmt->execute([':id' => $zone_templ_id]);
+            $result = $stmt->fetchColumn();
 
-        if ($result == $userid) {
-            return true;
-        } else {
+            return ($result == $userid);
+        } catch (\Exception $e) {
+            $this->messageService->addSystemError(_('Error checking template ownership: ') . $e->getMessage());
             return false;
         }
+    }
+
+    /**
+     * Check if the session user is the owner for the zone template (static version for backward compatibility)
+     *
+     * @deprecated Use instance method isUserOwnerOfTemplate() instead
+     * @param mixed $db Database connection
+     * @param int $zone_templ_id zone template id
+     * @param int $userid user id
+     *
+     * @return boolean true on success, false otherwise
+     */
+    public static function getZoneTemplIsOwner($db, int $zone_templ_id, int $userid): bool
+    {
+        $stmt = $db->prepare("SELECT owner FROM zone_templ WHERE id = :id");
+        $stmt->execute([':id' => $zone_templ_id]);
+        $result = $stmt->fetchColumn();
+
+        return ($result == $userid);
     }
 
     /**
@@ -538,19 +588,25 @@ class ZoneTemplate
                 $isGlobal = isset($options['global']) && $options['global'] === true;
                 $owner = $isGlobal ? 0 : $userid; // 0 for global templates, user ID otherwise
 
-                $query = "INSERT INTO zone_templ (name, descr, owner, created_by)
-				VALUES ("
-                    . $this->db->quote($template_name, 'text') . ", "
-                    . $this->db->quote($description, 'text') . ", "
-                    . $this->db->quote((string)$owner, 'integer') . ", "
-                    . $this->db->quote((string)$userid, 'integer') . ")";
+                $stmt = $this->db->prepare("INSERT INTO zone_templ (name, descr, owner, created_by) 
+                    VALUES (:name, :descr, :owner, :created_by)");
 
-                $this->db->exec($query);
+                $stmt->execute([
+                    ':name' => $template_name,
+                    ':descr' => $description,
+                    ':owner' => $owner,
+                    ':created_by' => $userid
+                ]);
 
                 $zone_templ_id = $this->db->lastInsertId();
 
                 // Check if the records include an SOA record
                 $hasSOA = false;
+
+                // Prepare statement once outside the loop for better performance
+                $recordStmt = $this->db->prepare("INSERT INTO zone_templ_records 
+                    (zone_templ_id, name, type, content, ttl, prio) 
+                    VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)");
 
                 foreach ($records as $record) {
                     if ($record['type'] === 'SOA') {
@@ -559,14 +615,14 @@ class ZoneTemplate
 
                     list($name, $content) = self::replaceWithTemplatePlaceholders($domain, $record, $options);
 
-                    $query2 = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES ("
-                        . $this->db->quote($zone_templ_id, 'integer') . ","
-                        . $this->db->quote($name, 'text') . ","
-                        . $this->db->quote($record['type'], 'text') . ","
-                        . $this->db->quote($content, 'text') . ","
-                        . $this->db->quote($record['ttl'], 'integer') . ","
-                        . $this->db->quote((string)($record['prio'] ?? 0), 'integer') . ")";
-                    $this->db->exec($query2);
+                    $recordStmt->execute([
+                        ':zone_templ_id' => $zone_templ_id,
+                        ':name' => $name,
+                        ':type' => $record['type'],
+                        ':content' => $content,
+                        ':ttl' => $record['ttl'],
+                        ':prio' => $record['prio'] ?? 0
+                    ]);
                 }
 
                 // If there's no SOA record, add one automatically
@@ -596,37 +652,44 @@ class ZoneTemplate
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $sql_add = '';
-
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
+        $params = [':zone_templ_id' => $zone_templ_id];
+        $sql_add = '';
+
         if ($perm_edit != "all") {
-            $sql_add = " AND zones.domain_id = $domains_table.id
-				AND zones.owner = " . $this->db->quote((string)$userid, 'integer');
+            $sql_add = " AND zones.domain_id = $domains_table.id AND zones.owner = :userid";
+            $params[':userid'] = $userid;
         }
 
         $query = "SELECT $domains_table.id,
-			$domains_table.name,
-			$domains_table.type,
-			Record_Count.count_records
-			FROM $domains_table
-			LEFT JOIN zones ON $domains_table.id=zones.domain_id
-			LEFT JOIN (
-				SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
-			) Record_Count ON Record_Count.domain_id=$domains_table.id
-			WHERE 1=1" . $sql_add . "
-                        AND zone_templ_id = " . $this->db->quote((string)$zone_templ_id, 'integer') . "
-			GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, Record_Count.count_records";
+            $domains_table.name,
+            $domains_table.type,
+            Record_Count.count_records
+            FROM $domains_table
+            LEFT JOIN zones ON $domains_table.id=zones.domain_id
+            LEFT JOIN (
+                SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
+            ) Record_Count ON Record_Count.domain_id=$domains_table.id
+            WHERE 1=1" . $sql_add . "
+            AND zone_templ_id = :zone_templ_id
+            GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, Record_Count.count_records";
 
-        $result = $this->db->query($query);
+        try {
+            $stmt = $this->db->prepare($query);
+            $stmt->execute($params);
 
-        $zone_list = array();
-        while ($zone = $result->fetch()) {
-            $zone_list[] = $zone['id'];
+            $zone_list = [];
+            while ($zone = $stmt->fetch()) {
+                $zone_list[] = $zone['id'];
+            }
+            return $zone_list;
+        } catch (\Exception $e) {
+            $this->messageService->addSystemError(_('Error retrieving zones using template: ') . $e->getMessage());
+            return [];
         }
-        return $zone_list;
     }
 
     /**
@@ -645,10 +708,12 @@ class ZoneTemplate
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
+        $params = [':zone_templ_id' => $zone_templ_id];
         $sql_add = '';
+
         if ($perm_edit != "all") {
-            $sql_add = " AND zones.domain_id = $domains_table.id 
-                    AND zones.owner = " . $this->db->quote((string)$userid, 'integer');
+            $sql_add = " AND zones.domain_id = $domains_table.id AND zones.owner = :userid";
+            $params[':userid'] = $userid;
         }
 
         $query = "SELECT $domains_table.id,
@@ -666,7 +731,7 @@ class ZoneTemplate
                     SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
                 ) Record_Count ON Record_Count.domain_id=$domains_table.id
                 WHERE 1=1" . $sql_add . "
-                AND zone_templ_id = " . $this->db->quote((string)$zone_templ_id, 'integer') . "
+                AND zone_templ_id = :zone_templ_id
                 GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, 
                         Record_Count.count_records, zones.owner, zones.comment, 
                         u.username, u.fullname
@@ -674,10 +739,10 @@ class ZoneTemplate
 
         try {
             $stmt = $this->db->prepare($query);
-            $stmt->execute();
+            $stmt->execute($params);
             return $stmt->fetchAll();
-        } catch (\PDOException $e) {
-            error_log('Failed to get list of zones using template: ' . $e->getMessage());
+        } catch (\Exception $e) {
+            $this->messageService->addSystemError(_('Failed to get list of zones using template: ') . $e->getMessage());
             return [];
         }
     }
@@ -729,15 +794,20 @@ class ZoneTemplate
     /**
      * Check if zone template name exists
      *
-     * @param $db
      * @param string $zone_templ_name zone template name
      *
      * @return bool number of matching templates
      */
     public function zoneTemplNameExists(string $zone_templ_name): bool
     {
-        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = " . $this->db->quote($zone_templ_name, 'text');
-        return $this->db->queryOne($query);
+        try {
+            $stmt = $this->db->prepare("SELECT COUNT(id) FROM zone_templ WHERE name = :name");
+            $stmt->execute([':name' => $zone_templ_name]);
+            return (bool) $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            $this->messageService->addSystemError(_('Error checking template name existence: ') . $e->getMessage());
+            return false;
+        }
     }
 
     /**
@@ -750,8 +820,17 @@ class ZoneTemplate
      */
     public function zoneTemplNameAndIdExists(string $zone_templ_name, int $zone_templ_id): bool
     {
-        $query = "SELECT COUNT(id) FROM zone_templ WHERE name = {$this->db->quote($zone_templ_name, 'text')} AND id != {$this->db->quote((string)$zone_templ_id, 'integer')}";
-        return $this->db->queryOne($query);
+        try {
+            $stmt = $this->db->prepare("SELECT COUNT(id) FROM zone_templ WHERE name = :name AND id != :id");
+            $stmt->execute([
+                ':name' => $zone_templ_name,
+                ':id' => $zone_templ_id
+            ]);
+            return (bool) $stmt->fetchColumn();
+        } catch (\Exception $e) {
+            $this->messageService->addSystemError(_('Error checking template existence: ') . $e->getMessage());
+            return false;
+        }
     }
 
     /**
