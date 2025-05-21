@@ -19,11 +19,28 @@ class DNSViolationValidatorTest extends TestCase
     private $configMock;
     private $dbMock;
     private $validator;
+    private $pdoStatementMock;
 
     protected function setUp(): void
     {
         $this->configMock = $this->createMock(ConfigurationManager::class);
         $this->dbMock = $this->createMock(PDOLayer::class);
+
+        // Set up the mock PDO statement that will be returned by prepare()
+        $this->pdoStatementMock = $this->createMock(\PDOStatement::class);
+
+        // Configure the mock to return our mock PDOStatement
+        $this->dbMock->method('prepare')
+            ->willReturn($this->pdoStatementMock);
+
+        // Configure statement mock to handle bindParam calls
+        $this->pdoStatementMock->method('bindParam')
+            ->willReturn(true);
+
+        // Configure execute to succeed
+        $this->pdoStatementMock->method('execute')
+            ->willReturn(true);
+
         $this->validator = new DNSViolationValidator($this->dbMock, $this->configMock);
     }
 
@@ -37,9 +54,8 @@ class DNSViolationValidatorTest extends TestCase
             ->with('database', 'pdns_name')
             ->willReturn('');
 
-        // Mock database query for validateConflictsWithCNAME
-        $this->dbMock->expects($this->once())
-            ->method('queryOne')
+        // Configure statement mock to return no conflicts
+        $this->pdoStatementMock->method('fetchColumn')
             ->willReturn(false);
 
         $result = $this->validator->validate(0, 1, RecordType::A, 'example.com', '192.168.1.1');
@@ -56,9 +72,8 @@ class DNSViolationValidatorTest extends TestCase
             ->with('database', 'pdns_name')
             ->willReturn('');
 
-        // Mock database queries for CNAME validation
-        $this->dbMock->expects($this->exactly(2))
-            ->method('queryOne')
+        // Configure statement mock to return no conflicts for both queries
+        $this->pdoStatementMock->method('fetchColumn')
             ->willReturn(false);
 
         $result = $this->validator->validate(0, 1, RecordType::CNAME, 'alias.example.com', 'target.example.com');
@@ -75,9 +90,8 @@ class DNSViolationValidatorTest extends TestCase
             ->with('database', 'pdns_name')
             ->willReturn('');
 
-        // Mock database query for checkDuplicateCNAME (finds a duplicate)
-        $this->dbMock->expects($this->once())
-            ->method('queryOne')
+        // Configure statement mock to return a duplicate on first call (count of CNAME records)
+        $this->pdoStatementMock->method('fetchColumn')
             ->willReturn(1);
 
         $result = $this->validator->validate(0, 1, RecordType::CNAME, 'alias.example.com', 'target.example.com');
@@ -95,10 +109,10 @@ class DNSViolationValidatorTest extends TestCase
             ->with('database', 'pdns_name')
             ->willReturn('');
 
-        // Mock database query results - first query (duplicate CNAME) returns false, second query (other type) returns 'A'
-        $this->dbMock->expects($this->exactly(2))
-            ->method('queryOne')
-            ->willReturnOnConsecutiveCalls(false, 'A');
+        // First call should return false (no duplicate CNAMEs), second call should return 'A' (conflicting record type)
+        $this->pdoStatementMock->expects($this->exactly(2))
+            ->method('fetchColumn')
+            ->willReturnOnConsecutiveCalls(0, 'A');
 
         $result = $this->validator->validate(0, 1, RecordType::CNAME, 'conflict.example.com', 'target.example.com');
         $this->assertFalse($result->isValid());
@@ -115,10 +129,9 @@ class DNSViolationValidatorTest extends TestCase
             ->with('database', 'pdns_name')
             ->willReturn('');
 
-        // Mock database query (finds a conflicting CNAME)
-        $this->dbMock->expects($this->once())
-            ->method('queryOne')
-            ->willReturn(123); // Existing CNAME record ID
+        // Configure statement mock to return an existing CNAME record ID
+        $this->pdoStatementMock->method('fetchColumn')
+            ->willReturn(123);
 
         $result = $this->validator->validate(0, 1, RecordType::A, 'conflict.example.com', '192.168.1.1');
         $this->assertFalse($result->isValid());

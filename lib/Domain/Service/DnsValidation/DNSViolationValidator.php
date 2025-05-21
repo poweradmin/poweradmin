@@ -126,6 +126,7 @@ class DNSViolationValidator
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
+        // Using native PDO parameter binding for security
         if ($recordId > 0) {
             $query = "SELECT COUNT(*) FROM $records_table
                      WHERE name = :name
@@ -137,7 +138,6 @@ class DNSViolationValidator
             $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
             $stmt->bindParam(':zone_id', $zoneId, \PDO::PARAM_INT);
             $stmt->bindParam(':record_id', $recordId, \PDO::PARAM_INT);
-            $stmt->execute();
         } else {
             $query = "SELECT COUNT(*) FROM $records_table
                      WHERE name = :name
@@ -147,10 +147,11 @@ class DNSViolationValidator
             $stmt = $this->db->prepare($query);
             $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
             $stmt->bindParam(':zone_id', $zoneId, \PDO::PARAM_INT);
-            $stmt->execute();
         }
 
+        $stmt->execute();
         $count = $stmt->fetchColumn();
+
         if ($count && $count > 0) {
             return ValidationResult::failure(_('Multiple CNAME records with the same name are not allowed. This would create a DNS violation.'));
         }
