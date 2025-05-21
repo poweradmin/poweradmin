@@ -64,7 +64,7 @@ class MfaSessionManager
         $_SESSION['lastmod'] = time();
 
         // Add a special token to prevent redirect loops
-        $_SESSION['mfa_verification_token'] = md5(time() . $_SESSION['userid'] . 'verified');
+        $_SESSION['mfa_verification_token'] = hash('sha256', time() . $_SESSION['userid'] . 'verified' . random_bytes(16));
 
         $userId = $_SESSION['userid'] ?? 0;
         error_log("[MfaSessionManager] MFA verified set for user: $userId");
