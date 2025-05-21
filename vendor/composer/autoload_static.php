@@ -714,6 +714,8 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Application\\Controller\\Api\\OpenApiConfig' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/OpenApiConfig.php',
         'Poweradmin\\Application\\Controller\\Api\\OpenApiInfo' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/OpenApiInfo.php',
         'Poweradmin\\Application\\Controller\\Api\\PublicApiController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/PublicApiController.php',
+        'Poweradmin\\Application\\Controller\\Api\\V1\\UserController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V1/UserController.php',
+        'Poweradmin\\Application\\Controller\\Api\\V1\\ZoneController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V1/ZoneController.php',
         'Poweradmin\\Application\\Controller\\BatchPtrRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/BatchPtrRecordController.php',
         'Poweradmin\\Application\\Controller\\BulkRecordAddController' => __DIR__ . '/../..' . '/lib/Application/Controller/BulkRecordAddController.php',
         'Poweradmin\\Application\\Controller\\BulkRegistrationController' => __DIR__ . '/../..' . '/lib/Application/Controller/BulkRegistrationController.php',

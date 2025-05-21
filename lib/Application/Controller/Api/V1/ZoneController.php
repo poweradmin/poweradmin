@@ -29,7 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-namespace Poweradmin\Application\Controller\Api\v1;
+namespace Poweradmin\Application\Controller\Api\V1;
 
 use Exception;
 use PDO;
