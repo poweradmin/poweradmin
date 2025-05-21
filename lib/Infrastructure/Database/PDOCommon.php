@@ -48,7 +48,6 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class PDOCommon extends PDO
 {
-
     /**
      * result limit used in the next query
      * @var int
@@ -133,29 +132,6 @@ class PDOCommon extends PDO
     }
 
     /**
-     * Return an HTML formatted SQL string
-     *
-     * @param string $str
-     * @return string
-     */
-    protected function formatSQLforHTML(string $str): string
-    {
-        $Keyword = array("SELECT ", "WHERE ", " ON ", "AND ", "OR ",
-            "FROM ", "LIMIT ", "UNION ",
-            "INNER ", "LEFT ", "RIGHT ", "JOIN ", ",",
-            "GROUP BY ", "ORDER BY ", "HAVING ");
-        foreach ($Keyword as $key => $value) {
-            if ($value == ",") {
-                $Replace[$key] = "<b>" . $value . "</b>\n";
-            } else {
-                $Replace[$key] = "\n<b>" . $value . "</b>";
-            }
-        }
-
-        return str_replace($Keyword, $Replace, $str);
-    }
-
-    /**
      * Execute the specified query, fetch the value from the first column of
      * the first result row
      *
@@ -170,18 +146,6 @@ class PDOCommon extends PDO
             return $row;
         }
         return $row[0];
-    }
-
-    /**
-     * Execute the specified query, fetch values from first result row
-     *
-     * @param string $str
-     * @return mixed
-     */
-    public function queryRow(string $str): mixed
-    {
-        $obj_pdoStatement = parent::query($str);
-        return $obj_pdoStatement->fetch(PDO::FETCH_ASSOC);
     }
 
     /**
