@@ -221,7 +221,7 @@ class ZoneTemplate
             $name = '[ZONE]';
             $type = 'SOA';
             $content = '[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400';
-            $ttl = (int)$this->config->get('dns', 'ttl', 86400);
+            $ttl = (int)$this->config->get('dns', 'ttl');
             $prio = 0;
 
             // Insert the SOA record
@@ -882,10 +882,10 @@ class ZoneTemplate
         $dns_hostmaster = $this->config->get('dns', 'hostmaster');
 
         // Get SOA parameters for SOA records
-        $soa_refresh = $this->config->get('dns', 'soa_refresh', 28800);
-        $soa_retry = $this->config->get('dns', 'soa_retry', 7200);
-        $soa_expire = $this->config->get('dns', 'soa_expire', 604800);
-        $soa_minimum = $this->config->get('dns', 'soa_minimum', 86400);
+        $soa_refresh = $this->config->get('dns', 'soa_refresh');
+        $soa_retry = $this->config->get('dns', 'soa_retry');
+        $soa_expire = $this->config->get('dns', 'soa_expire');
+        $soa_minimum = $this->config->get('dns', 'soa_minimum');
 
         $serial = date("Ymd");
         $serial .= "00";

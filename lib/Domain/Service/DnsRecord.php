@@ -643,14 +643,16 @@ class DnsRecord
 
     /** Update All Zone Records for Zone ID with Zone Template
      *
+     * @param string $db_type Database type
+     * @param int|string $dns_ttl Default TTL
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      *
-     * @return null
+     * @return void
      */
-    public function updateZoneRecords($db_type, $dns_ttl, int $zone_id, int $zone_template_id)
+    public function updateZoneRecords($db_type, $dns_ttl, int $zone_id, int $zone_template_id): void
     {
-        return $this->domainManager->updateZoneRecords($db_type, $dns_ttl, $zone_id, $zone_template_id);
+        $this->domainManager->updateZoneRecords($db_type, $dns_ttl, $zone_id, $zone_template_id);
     }
 
     /** Delete array of domains
