@@ -6,7 +6,7 @@ use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class SOARecordManagerTest extends TestCase
 {
@@ -16,7 +16,7 @@ class SOARecordManagerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->dbMock = $this->createMock(PDOLayer::class);
+        $this->dbMock = $this->createMock(PDOCommon::class);
         $this->configMock = $this->createMock(ConfigurationManager::class);
         $this->soaRecordManager = new SOARecordManager($this->dbMock, $this->configMock);
     }

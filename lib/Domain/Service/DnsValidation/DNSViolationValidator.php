@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**
  * DNS Violation Validator
@@ -41,16 +41,16 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
  */
 class DNSViolationValidator
 {
-    private PDOLayer $db;
+    private PDOCommon $db;
     private ConfigurationManager $config;
 
     /**
      * Constructor
      *
-     * @param PDOLayer $db
+     * @param PDOCommon $db
      * @param ConfigurationManager $config
      */
-    public function __construct(PDOLayer $db, ConfigurationManager $config)
+    public function __construct(PDOCommon $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;

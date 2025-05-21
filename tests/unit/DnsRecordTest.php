@@ -5,7 +5,7 @@ namespace unit;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class DnsRecordTest extends TestCase
 {
@@ -14,7 +14,7 @@ class DnsRecordTest extends TestCase
 
     protected function setUp(): void
     {
-        $dbMock = $this->createMock(PDOLayer::class);
+        $dbMock = $this->createMock(PDOCommon::class);
         $configMock = $this->createMock(ConfigurationManager::class);
 
         // Configure the mock to return expected values

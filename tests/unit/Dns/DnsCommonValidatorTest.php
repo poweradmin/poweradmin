@@ -22,10 +22,11 @@
 
 namespace unit\Dns;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**
  * Tests for common DNS validation functions
@@ -33,12 +34,12 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
 class DnsCommonValidatorTest extends TestCase
 {
     private DnsCommonValidator $validator;
-    private PDOLayer $dbMock;
-    private ConfigurationManager $configMock;
+    private MockObject&PDOCommon $dbMock;
+    private MockObject&ConfigurationManager $configMock;
 
     protected function setUp(): void
     {
-        $this->dbMock = $this->createMock(PDOLayer::class);
+        $this->dbMock = $this->createMock(PDOCommon::class);
         $this->configMock = $this->createMock(ConfigurationManager::class);
         $this->validator = new DnsCommonValidator($this->dbMock, $this->configMock);
     }

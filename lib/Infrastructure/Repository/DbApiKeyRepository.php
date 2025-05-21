@@ -28,7 +28,7 @@ use PDO;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**
  * Class DbApiKeyRepository
@@ -39,16 +39,16 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
  */
 class DbApiKeyRepository implements ApiKeyRepositoryInterface
 {
-    private PDOLayer $db;
+    private PDOCommon $db;
     private ConfigurationManager $config;
 
     /**
      * DbApiKeyRepository constructor
      *
-     * @param PDOLayer $db The PDO database layer
+     * @param PDOCommon $db The PDO database layer
      * @param ConfigurationManager $config The configuration manager
      */
-    public function __construct(PDOLayer $db, ConfigurationManager $config)
+    public function __construct(PDOCommon $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;

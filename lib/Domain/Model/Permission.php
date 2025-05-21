@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Domain\Model;
 
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**
  * Class Permission
@@ -74,11 +74,11 @@ class Permission
      *
      * This method checks a set of permissions for the user.
      *
-     * @param PDOLayer $db The database connection.
+     * @param PDOCommon $db The database connection.
      * @param array $permissions An array containing the permission keys to check.
      * @return array An associative array containing the permission key and its corresponding boolean value.
      */
-    public static function getPermissions(PDOLayer $db, array $permissions): array
+    public static function getPermissions(PDOCommon $db, array $permissions): array
     {
         $result = [];
 

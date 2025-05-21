@@ -5,7 +5,7 @@ namespace unit;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use ReflectionClass;
 
 class IpListMatchingTest extends TestCase
@@ -15,7 +15,7 @@ class IpListMatchingTest extends TestCase
 
     protected function setUp(): void
     {
-        $pdoLayerMock = $this->createMock(PDOLayer::class);
+        $pdoLayerMock = $this->createMock(PDOCommon::class);
         $configManagerMock = $this->createMock(ConfigurationManager::class);
         $this->loginAttemptService = new LoginAttemptService($pdoLayerMock, $configManagerMock);
 

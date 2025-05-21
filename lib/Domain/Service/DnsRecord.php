@@ -32,7 +32,7 @@ use Poweradmin\Domain\Service\Dns\SupermasterManager;
 use Poweradmin\Domain\Utility\DomainUtility;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**
  * DNS record functions
@@ -45,7 +45,7 @@ use Poweradmin\Infrastructure\Database\PDOLayer;
  */
 class DnsRecord
 {
-    private PDOLayer $db;
+    private PDOCommon $db;
     private ConfigurationManager $config;
     private DnsRecordValidationServiceInterface $validationService;
 
@@ -63,7 +63,7 @@ class DnsRecord
     /** @var SupermasterManager */
     private $supermasterManager;
 
-    public function __construct(PDOLayer $db, ConfigurationManager $config)
+    public function __construct(PDOCommon $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;

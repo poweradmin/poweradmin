@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service\Dns;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
@@ -33,7 +33,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class SupermasterManager implements SupermasterManagerInterface
 {
-    private PDOLayer $db;
+    private PDOCommon $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
@@ -42,10 +42,10 @@ class SupermasterManager implements SupermasterManagerInterface
     /**
      * Constructor
      *
-     * @param PDOLayer $db Database connection
+     * @param PDOCommon $db Database connection
      * @param ConfigurationManager $config Configuration manager
      */
-    public function __construct(PDOLayer $db, ConfigurationManager $config)
+    public function __construct(PDOCommon $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;

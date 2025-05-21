@@ -34,7 +34,7 @@ use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
@@ -42,7 +42,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class RecordManager implements RecordManagerInterface
 {
-    private PDOLayer $db;
+    private PDOCommon $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
@@ -54,14 +54,14 @@ class RecordManager implements RecordManagerInterface
     /**
      * Constructor
      *
-     * @param PDOLayer $db Database connection
+     * @param PDOCommon $db Database connection
      * @param ConfigurationManager $config Configuration manager
      * @param DnsRecordValidationServiceInterface $validationService DNS record validation service
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
      */
     public function __construct(
-        PDOLayer $db,
+        PDOCommon $db,
         ConfigurationManager $config,
         DnsRecordValidationServiceInterface $validationService,
         SOARecordManagerInterface $soaRecordManager,
@@ -185,7 +185,9 @@ class RecordManager implements RecordManagerInterface
                 new FakeConfiguration($pdns_api_url, $pdns_api_key)
             );
             $zone_name = $this->domainRepository->getDomainNameById($zone_id);
-            $dnssecProvider->rectifyZone($zone_name);
+            if (is_string($zone_name)) {
+                $dnssecProvider->rectifyZone($zone_name);
+            }
         }
 
         return true;

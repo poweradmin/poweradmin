@@ -26,12 +26,12 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class RecordManagerService
 {
-    private PDOLayer $db;
+    private PDOCommon $db;
     private DnsRecord $dnsRecord;
     private RecordCommentService $recordCommentService;
     private RecordCommentSyncService $commentSyncService;
@@ -39,7 +39,7 @@ class RecordManagerService
     private ConfigurationManager $config;
 
     public function __construct(
-        PDOLayer $db,
+        PDOCommon $db,
         DnsRecord $dnsRecord,
         RecordCommentService $recordCommentService,
         RecordCommentSyncService $commentSyncService,

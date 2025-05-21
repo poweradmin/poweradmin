@@ -8,7 +8,7 @@ use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\ARecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**
  * Tests for the validate_input method
@@ -174,7 +174,7 @@ class ValidateInputTest extends BaseDnsTest
     public function testValidatePriorityWithValidationResult()
     {
         // Create validator with mocks
-        $dbMock = $this->createMock(PDOLayer::class);
+        $dbMock = $this->createMock(PDOCommon::class);
         $configMock = $this->createMock(ConfigurationManager::class);
         $validator = new DnsCommonValidator($dbMock, $configMock);
 

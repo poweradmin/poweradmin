@@ -25,7 +25,7 @@ namespace Poweradmin;
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\SessionAuthenticator;
 use Poweradmin\Infrastructure\Utility\DependencyCheck;
@@ -41,8 +41,8 @@ class AppInitializer
     /** @var ConfigurationManager $configManager Configuration manager */
     private ConfigurationManager $configManager;
 
-    /** @var PDOLayer $db Database connection layer */
-    private PDOLayer $db;
+    /** @var PDOCommon $db Database connection layer */
+    private PDOCommon $db;
 
     /**
      * AppInitializer constructor.
@@ -155,9 +155,9 @@ class AppInitializer
     /**
      * Gets the database connection.
      *
-     * @return PDOLayer The database connection
+     * @return PDOCommon The database connection
      */
-    public function getDb(): PDOLayer
+    public function getDb(): PDOCommon
     {
         return $this->db;
     }

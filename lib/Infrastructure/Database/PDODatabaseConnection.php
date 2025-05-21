@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\DatabaseConnection;
 
 class PDODatabaseConnection implements DatabaseConnection
 {
-    public function connect(array $credentials): PDOLayer
+    public function connect(array $credentials): PDOCommon
     {
         $this->validateDatabaseType($credentials['db_type']);
 
@@ -42,11 +42,11 @@ class PDODatabaseConnection implements DatabaseConnection
         $dsn = $this->constructDSN($credentials);
 
         try {
-            $pdo = new PDOLayer($dsn, $credentials['db_user'], $credentials['db_pass'], []);
+            $pdo = new PDOCommon($dsn, $credentials['db_user'], $credentials['db_pass'], []);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
             if (isset($credentials['db_debug']) && $credentials['db_debug']) {
-                $pdo->setOption('debug', 1);
+                $pdo->setDebug(true);
             }
 
             return $pdo;

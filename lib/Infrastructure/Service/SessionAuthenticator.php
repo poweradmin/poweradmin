@@ -34,7 +34,7 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionService;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
@@ -43,7 +43,7 @@ use ReflectionClass;
 class SessionAuthenticator extends LoggingService
 {
     private AuthenticationService $authService;
-    private PDOLayer $db;
+    private PDOCommon $db;
     private ConfigurationManager $configManager;
     private UserEventLogger $userEventLogger;
     private LdapUserEventLogger $ldapUserEventLogger;
@@ -52,7 +52,7 @@ class SessionAuthenticator extends LoggingService
     private SqlAuthenticator $sqlAuthenticator;
     private LoginAttemptService $loginAttemptService;
 
-    public function __construct(PDOLayer $connection, ConfigurationManager $configManager)
+    public function __construct(PDOCommon $connection, ConfigurationManager $configManager)
     {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
         $loggerLevel = $configManager->get('logging', 'level', 'info');

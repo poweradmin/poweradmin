@@ -2,20 +2,21 @@
 
 namespace unit;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class ZoneCountTest extends TestCase
 {
-    private PDOLayer $dbMock;
-    private ConfigurationManager $configMock;
+    private MockObject&PDOCommon $dbMock;
+    private MockObject&ConfigurationManager $configMock;
     private ZoneCountService $zoneCountService;
 
     protected function setUp(): void
     {
-        $this->dbMock = $this->createMock(PDOLayer::class);
+        $this->dbMock = $this->createMock(PDOCommon::class);
         $this->configMock = $this->createMock(ConfigurationManager::class);
         $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);
     }

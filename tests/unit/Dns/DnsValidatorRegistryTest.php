@@ -30,18 +30,18 @@ use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\KXRecordValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class DnsValidatorRegistryTest extends TestCase
 {
     private DnsValidatorRegistry $registry;
     private ConfigurationManager $configMock;
-    private PDOLayer $dbMock;
+    private PDOCommon $dbMock;
 
     protected function setUp(): void
     {
         $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->dbMock = $this->createMock(PDOLayer::class);
+        $this->dbMock = $this->createMock(PDOCommon::class);
         $this->registry = new DnsValidatorRegistry($this->configMock, $this->dbMock);
     }
 

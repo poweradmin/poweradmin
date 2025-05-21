@@ -30,7 +30,7 @@ use Poweradmin\Domain\Repository\DomainRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
@@ -38,7 +38,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class DomainManager implements DomainManagerInterface
 {
-    private PDOLayer $db;
+    private PDOCommon $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
     private SOARecordManagerInterface $soaRecordManager;
@@ -48,13 +48,13 @@ class DomainManager implements DomainManagerInterface
     /**
      * Constructor
      *
-     * @param PDOLayer $db Database connection
+     * @param PDOCommon $db Database connection
      * @param ConfigurationManager $config Configuration manager
      * @param SOARecordManagerInterface $soaRecordManager SOA record manager
      * @param DomainRepositoryInterface $domainRepository Domain repository
      */
     public function __construct(
-        PDOLayer $db,
+        PDOCommon $db,
         ConfigurationManager $config,
         SOARecordManagerInterface $soaRecordManager,
         DomainRepositoryInterface $domainRepository

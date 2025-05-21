@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**
  * SOA record validator
@@ -48,13 +48,13 @@ class SOARecordValidator implements DnsRecordValidatorInterface
     private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
-    private PDOLayer $db;
+    private PDOCommon $db;
 
     // SOA-specific parameters
     private string $dns_hostmaster;
     private string $zone;
 
-    public function __construct(ConfigurationManager $config, PDOLayer $db)
+    public function __construct(ConfigurationManager $config, PDOCommon $db)
     {
         $this->config = $config;
         $this->db = $db;

@@ -25,13 +25,13 @@ namespace Poweradmin\Infrastructure\Repository;
 use PDO;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class DbUserMfaRepository implements UserMfaRepositoryInterface
 {
-    private PDOLayer $db;
+    private PDOCommon $db;
 
-    public function __construct(PDOLayer $db)
+    public function __construct(PDOCommon $db)
     {
         $this->db = $db;
     }

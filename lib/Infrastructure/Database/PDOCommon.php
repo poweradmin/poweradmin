@@ -61,6 +61,18 @@ class PDOCommon extends PDO
     private int $from = 0;
 
     /**
+     * Debug mode flag
+     * @var bool
+     */
+    private bool $debug = false;
+
+    /**
+     * Storage for executed queries
+     * @var array
+     */
+    private array $queries = [];
+
+    /**
      * PDOCommon constructor
      *
      * @param string $dsn
@@ -111,6 +123,10 @@ class PDOCommon extends PDO
             $this->from = 0;
         }
 
+        if ($this->debug) {
+            $this->queries[] = $query;
+        }
+
         try {
             $obj_pdoStatement = parent::query($query);
         } catch (Exception $e) {
@@ -158,5 +174,25 @@ class PDOCommon extends PDO
     {
         $this->limit = $limit;
         $this->from = $from;
+    }
+
+    /**
+     * Enable/disable debug mode
+     *
+     * @param bool $debug
+     */
+    public function setDebug(bool $debug): void
+    {
+        $this->debug = $debug;
+    }
+
+    /**
+     * Get all executed queries
+     *
+     * @return array
+     */
+    public function getQueries(): array
+    {
+        return $this->queries;
     }
 }

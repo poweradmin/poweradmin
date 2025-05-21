@@ -26,7 +26,7 @@ use PDO;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
@@ -35,7 +35,7 @@ use ReflectionClass;
 
 class LdapAuthenticator extends LoggingService
 {
-    private PDOLayer $db;
+    private PDOCommon $db;
     private ConfigurationManager $configManager;
     private LdapUserEventLogger $ldapUserEventLogger;
     private AuthenticationService $authenticationService;
@@ -44,7 +44,7 @@ class LdapAuthenticator extends LoggingService
     private array $serverParams;
 
     public function __construct(
-        PDOLayer $connection,
+        PDOCommon $connection,
         ConfigurationManager $configManager,
         LdapUserEventLogger $ldapUserEventLogger,
         AuthenticationService $authService,

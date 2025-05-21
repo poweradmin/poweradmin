@@ -24,17 +24,17 @@ namespace Poweradmin\Infrastructure\Service;
 
 use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class PdnsUtilProvider implements DnssecProvider
 {
     private LegacyLogger $logger;
     private ConfigurationManager $config;
-    private PDOLayer $db;
+    private PDOCommon $db;
     private MessageService $messageService;
 
-    public function __construct(PDOLayer $db, ConfigurationManager $config)
+    public function __construct(PDOCommon $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->logger = new LegacyLogger($db);

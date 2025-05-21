@@ -4,7 +4,7 @@ namespace unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use unit\MockConfiguration;
 
 class ZoneTemplateParsingTest extends TestCase
@@ -15,7 +15,7 @@ class ZoneTemplateParsingTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->mockDb = $this->createMock(PDOLayer::class);
+        $this->mockDb = $this->createMock(PDOCommon::class);
         $this->mockConfig = new MockConfiguration();
 
         $this->zoneTemplate = new ZoneTemplate($this->mockDb, $this->mockConfig);

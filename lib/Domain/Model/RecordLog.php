@@ -24,7 +24,7 @@ namespace Poweradmin\Domain\Model;
 
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class RecordLog
@@ -35,7 +35,7 @@ class RecordLog
 
     private bool $record_changed = false;
     private LegacyLogger $logger;
-    private PDOLayer $db;
+    private PDOCommon $db;
 
     private ConfigurationManager $config;
 

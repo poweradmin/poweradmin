@@ -2,29 +2,30 @@
 
 namespace Poweradmin\Tests\Unit\Dns;
 
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**
  * Class DNSViolationValidatorTest
- *
- * @covers \Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator
  */
+#[CoversClass(DNSViolationValidator::class)]
 class DNSViolationValidatorTest extends TestCase
 {
-    private $configMock;
-    private $dbMock;
-    private $validator;
-    private $pdoStatementMock;
+    private MockObject&ConfigurationManager $configMock;
+    private MockObject&PDOCommon $dbMock;
+    private DNSViolationValidator $validator;
+    private MockObject&\PDOStatement $pdoStatementMock;
 
     protected function setUp(): void
     {
         $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->dbMock = $this->createMock(PDOLayer::class);
+        $this->dbMock = $this->createMock(PDOCommon::class);
 
         // Set up the mock PDO statement that will be returned by prepare()
         $this->pdoStatementMock = $this->createMock(\PDOStatement::class);

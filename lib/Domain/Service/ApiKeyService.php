@@ -27,7 +27,7 @@ use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
@@ -38,16 +38,16 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class ApiKeyService
 {
     private ApiKeyRepositoryInterface $apiKeyRepository;
-    private PDOLayer $db;
+    private PDOCommon $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
 
     /**
      * Get the database connection for debugging
      *
-     * @return PDOLayer
+     * @return PDOCommon
      */
-    public function getDb(): PDOLayer
+    public function getDb(): PDOCommon
     {
         return $this->db;
     }
@@ -56,13 +56,13 @@ class ApiKeyService
      * ApiKeyService constructor
      *
      * @param ApiKeyRepositoryInterface $apiKeyRepository The API key repository
-     * @param PDOLayer $db The database connection
+     * @param PDOCommon $db The database connection
      * @param ConfigurationManager $config The configuration manager
      * @param MessageService $messageService The message service
      */
     public function __construct(
         ApiKeyRepositoryInterface $apiKeyRepository,
-        PDOLayer $db,
+        PDOCommon $db,
         ConfigurationManager $config,
         MessageService $messageService
     ) {

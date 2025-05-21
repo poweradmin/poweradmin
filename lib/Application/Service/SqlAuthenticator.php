@@ -30,7 +30,7 @@ use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
@@ -39,7 +39,7 @@ use ReflectionClass;
 
 class SqlAuthenticator extends LoggingService
 {
-    private PDOLayer $connection;
+    private PDOCommon $connection;
     private ConfigurationManager $configManager;
     private UserEventLogger $userEventLogger;
     private $authService; // Can be either AuthenticationService or UserAuthenticationService
@@ -49,7 +49,7 @@ class SqlAuthenticator extends LoggingService
     private ?MfaService $mfaService = null;
 
     public function __construct(
-        PDOLayer $connection,
+        PDOCommon $connection,
         ConfigurationManager $configManager,
         UserEventLogger $userEventLogger,
         $authService, // Changed type to allow UserAuthenticationService

@@ -5,7 +5,7 @@ namespace unit;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use PDOStatement;
 
 class LoginAttemptServiceTest extends TestCase
@@ -16,7 +16,7 @@ class LoginAttemptServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->pdoLayerMock = $this->createMock(PDOLayer::class);
+        $this->pdoLayerMock = $this->createMock(PDOCommon::class);
         $this->configManagerMock = $this->createMock(ConfigurationManager::class);
         $this->loginAttemptService = new LoginAttemptService($this->pdoLayerMock, $this->configManagerMock);
     }

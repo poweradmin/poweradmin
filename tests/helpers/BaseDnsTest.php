@@ -29,7 +29,7 @@ use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
@@ -41,7 +41,7 @@ class BaseDnsTest extends TestCase
 
     protected function setUp(): void
     {
-        $dbMock = $this->createMock(PDOLayer::class);
+        $dbMock = $this->createMock(PDOCommon::class);
         $configMock = $this->createMock(ConfigurationManager::class);
         $messageServiceMock = $this->createMock(MessageService::class);
         $zoneRepositoryMock = $this->createMock(ZoneRepositoryInterface::class);

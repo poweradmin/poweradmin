@@ -27,7 +27,7 @@ use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\HttpClient;
 use Poweradmin\Infrastructure\Api\PowerdnsApiClient;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\CompositeLegacyLogger;
 use Poweradmin\Infrastructure\Logger\SyslogLegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
@@ -83,7 +83,7 @@ class DnssecProviderFactory
         return version_compare($version, '4.0.0', '>=');
     }
 
-    public static function create(PDOLayer $db, ConfigurationInterface $config): DnssecProvider
+    public static function create(PDOCommon $db, ConfigurationInterface $config): DnssecProvider
     {
         // For ConfigurationInterface, we have to be more careful since it doesn't support default values
         // We need to check if the values exist first and provide defaults ourselves

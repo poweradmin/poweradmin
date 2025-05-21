@@ -310,35 +310,6 @@
       <code><![CDATA[$allowedHosts]]></code>
     </NoValue>
   </file>
-  <file src="lib/Domain/Model/UserManager.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$uid]]></code>
-      <code><![CDATA[$uid]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Domain/Repository/DomainRepository.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$userid]]></code>
-      <code><![CDATA[$zid]]></code>
-      <code><![CDATA[$zid]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Domain/Repository/RecordRepository.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$domain_id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$rid]]></code>
-      <code><![CDATA[$rid]]></code>
-      <code><![CDATA[$zid]]></code>
-      <code><![CDATA[$zone_id]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Domain/Service/BatchReverseRecordCreator.php">
     <InvalidScalarArgument>
       <code><![CDATA[$forward_domain_id]]></code>
@@ -363,11 +334,8 @@
   </file>
   <file src="lib/Domain/Service/Dns/RecordManager.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$rid]]></code>
-      <code><![CDATA[$rid]]></code>
       <code><![CDATA[$zone]]></code>
       <code><![CDATA[$zone]]></code>
-      <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>
     <TypeDoesNotContainNull>
       <code><![CDATA[$validationResult === null]]></code>
@@ -378,11 +346,9 @@
     <InvalidScalarArgument>
       <code><![CDATA[$curr_serial]]></code>
       <code><![CDATA[$curr_serial]]></code>
-      <code><![CDATA[$domain_id]]></code>
       <code><![CDATA[$new_serial]]></code>
       <code><![CDATA[$new_serial]]></code>
       <code><![CDATA[$revision]]></code>
-      <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Domain/Service/Dns/SupermasterManager.php">
@@ -410,12 +376,6 @@
     <NoValue>
       <code><![CDATA[$errors]]></code>
     </NoValue>
-  </file>
-  <file src="lib/Domain/Service/DnsValidation/CNAMERecordValidator.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$rid]]></code>
-      <code><![CDATA[$rid]]></code>
-    </InvalidScalarArgument>
   </file>
   <file src="lib/Domain/Service/DnsValidation/DNAMERecordValidator.php">
     <MoreSpecificImplementedParamType>
@@ -544,17 +504,6 @@
     <FalsableReturnStatement>
       <code><![CDATA[$obj_pdoStatement]]></code>
     </FalsableReturnStatement>
-  </file>
-  <file src="lib/Infrastructure/Database/PDOLayer.php">
-    <FalsableReturnStatement>
-      <code><![CDATA[parent::quote($string, $type)]]></code>
-    </FalsableReturnStatement>
-    <ImplementedParamTypeMismatch>
-      <code><![CDATA[$type]]></code>
-    </ImplementedParamTypeMismatch>
-    <InvalidScalarArgument>
-      <code><![CDATA[$type]]></code>
-    </InvalidScalarArgument>
   </file>
   <file src="tests/unit/FormStateServiceTest.php">
     <InvalidScalarArgument>

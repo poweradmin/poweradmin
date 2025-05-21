@@ -25,18 +25,18 @@ namespace Poweradmin\Domain\Service;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class ReverseRecordCreator
 {
-    private PDOLayer $db;
+    private PDOCommon $db;
     private ConfigurationManager $config;
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
 
     public function __construct(
-        PDOLayer $db,
+        PDOCommon $db,
         ConfigurationManager $config,
         LegacyLogger $logger,
         DnsRecord $dnsRecord

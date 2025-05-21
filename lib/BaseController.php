@@ -26,7 +26,7 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOLayer;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\StyleManager;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -42,7 +42,7 @@ abstract class BaseController
 {
     private AppManager $app;
     private AppInitializer $init;
-    protected PDOLayer $db;
+    protected PDOCommon $db;
     private array $request;
     private ValidatorInterface $validator;
     private array $validationConstraints = [];
