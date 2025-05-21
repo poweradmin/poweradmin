@@ -4,7 +4,6 @@ parameters:
   ignoreErrors:
     # Ignore errors in test files related to mocking
     - '#Call to an undefined method .+::expects\(\).#'
-    - '#Call to an undefined method .+::method\(\).#'
     # Ignore constructor unused parameter errors
     - '#Constructor of class .+ has an unused parameter \$_config.#'
     # Ignore other specific warnings
