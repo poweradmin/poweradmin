@@ -48,17 +48,6 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class PDOCommon extends PDO
 {
-    /**
-     * result limit used in the next query
-     * @var int
-     */
-    private int $limit = 0;
-
-    /**
-     * result offset used in the next query
-     * @var int
-     */
-    private int $from = 0;
 
     /**
      * Debug mode flag
@@ -110,18 +99,6 @@ class PDOCommon extends PDO
      */
     public function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement
     {
-        // check if limit has been specified. if so, modify the query
-        if (!empty($this->limit)) {
-            $query .= " LIMIT " . $this->limit;
-            if (!empty($this->from)) {
-                $query .= " OFFSET " . $this->from;
-            }
-
-            // after a query is executed the limits are reset, so that
-            // other queries may be performed with the same object
-            $this->limit = 0;
-            $this->from = 0;
-        }
 
         if ($this->debug) {
             $this->queries[] = $query;
@@ -162,18 +139,6 @@ class PDOCommon extends PDO
             return $row;
         }
         return $row[0];
-    }
-
-    /**
-     * Set the range of the next query
-     *
-     * @param int $limit
-     * @param int $from
-     */
-    public function setLimit(int $limit, int $from = 0): void
-    {
-        $this->limit = $limit;
-        $this->from = $from;
     }
 
     /**

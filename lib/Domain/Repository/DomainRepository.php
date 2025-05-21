@@ -37,6 +37,8 @@ use Poweradmin\Infrastructure\Utility\SortHelper;
  */
 class DomainRepository implements DomainRepositoryInterface
 {
+    private const DEFAULT_MAX_ROWS = 9999;
+
     private PDOCommon $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
@@ -215,13 +217,13 @@ class DomainRepository implements DomainRepositoryInterface
      * @param int $userid Requesting User ID
      * @param string $letterstart Starting letters to match [default='all']
      * @param int $rowstart Start from row in set [default=0]
-     * @param int $rowamount Max number of rows to fetch for this query when not 'all' [default=999999]
+     * @param int $rowamount Max number of rows to fetch for this query when not 'all' [default=9999]
      * @param string $sortby Column to sort results by [default='name']
      * @param string $sortDirection Sort direction [default='ASC']
      *
      * @return boolean|array false or array of zone details [id,name,type,count_records]
      */
-    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name', string $sortDirection = 'ASC'): bool|array
+    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = self::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC'): bool|array
     {
         $db_type = $this->config->get('database', 'type');
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
@@ -292,8 +294,11 @@ class DomainRepository implements DomainRepositoryInterface
                     " . ($iface_zone_comments ? ", zones.comment" : "") . "
                     ORDER BY " . $sql_sortby;
 
-        if ($letterstart != 'all') {
-            $this->db->setLimit($rowamount, $rowstart);
+        if ($letterstart != 'all' && $rowamount < self::DEFAULT_MAX_ROWS) {
+            $query .= " LIMIT " . $rowamount;
+            if ($rowstart > 0) {
+                $query .= " OFFSET " . $rowstart;
+            }
         }
 
         if (!empty($params)) {
@@ -303,7 +308,6 @@ class DomainRepository implements DomainRepositoryInterface
         } else {
             $result = $this->db->query($query);
         }
-        $this->db->setLimit(0);
 
         $ret = array();
         while ($r = $result->fetch()) {

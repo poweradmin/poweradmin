@@ -33,6 +33,8 @@ use Poweradmin\Infrastructure\Utility\SortHelper;
  */
 class RecordRepository implements RecordRepositoryInterface
 {
+    private const DEFAULT_MAX_ROWS = 9999;
+
     private PDOCommon $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
@@ -147,14 +149,14 @@ class RecordRepository implements RecordRepositoryInterface
      * @param string $db_type Database type
      * @param int $id Domain ID
      * @param int $rowstart Starting row [default=0]
-     * @param int $rowamount Number of rows to return in this query [default=999999]
+     * @param int $rowamount Number of rows to return in this query [default=9999]
      * @param string $sortby Column to sort by [default='name']
      * @param string $sortDirection Sort direction [default='ASC']
      * @param bool $fetchComments Whether to fetch record comments [default=false]
      *
      * @return int|array array of record detail, or -1 if nothing found
      */
-    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int
+    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = self::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int
     {
         if (!is_numeric($id)) {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s'), "getRecordsFromDomainId"));
@@ -165,8 +167,6 @@ class RecordRepository implements RecordRepositoryInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
-
-        $this->db->setLimit($rowamount, $rowstart);
 
         if ($sortby == 'name') {
             $sortby = "$records_table.name";
@@ -190,10 +190,16 @@ class RecordRepository implements RecordRepositoryInterface
             AND $records_table.type IS NOT NULL
             ORDER BY " . $sql_sortby;
 
+        if ($rowamount < self::DEFAULT_MAX_ROWS) {
+            $query .= " LIMIT " . $rowamount;
+            if ($rowstart > 0) {
+                $query .= " OFFSET " . $rowstart;
+            }
+        }
+
         $stmt = $this->db->prepare($query);
         $stmt->execute([':domain_id' => $id]);
         $records = $stmt;
-        $this->db->setLimit(0);
 
         if ($records) {
             $result = $records->fetchAll();
