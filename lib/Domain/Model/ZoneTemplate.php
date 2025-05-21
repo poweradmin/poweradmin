@@ -93,13 +93,9 @@ class ZoneTemplate
                 $content = str_replace($domainHyphenatedPattern, '[DOMAIN]-[TLD]', $content);
             }
 
-            // Also replace the domain name directly if it's a standalone part
-            $domainNamePattern = '/\b' . preg_quote($domainName, '/') . '\b/';
-            $content = preg_replace($domainNamePattern, '[DOMAIN]', $content);
-
-            // And the TLD if it's a standalone part
-            $tldPattern = '/\b' . preg_quote($tld, '/') . '\b/';
-            $content = preg_replace($tldPattern, '[TLD]', $content);
+            // We'll only use [DOMAIN] and [TLD] placeholders for specific patterns
+            // where we can't use [ZONE] directly, like domain-tld formats
+            // We won't replace standalone domain and TLD components by default
         }
 
         // Special handling for SOA records

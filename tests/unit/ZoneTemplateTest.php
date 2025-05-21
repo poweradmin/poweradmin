@@ -140,4 +140,40 @@ class ZoneTemplateTest extends TestCase
 
         $this->assertEquals($expected, ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record, $options));
     }
+
+    public function testReplaceWithTemplatePlaceholdersHyphenatedDomainFormat()
+    {
+        $domain = 'example.com';
+        $record = [
+            'name' => 'mail.example.com',
+            'content' => 'example-com.mail.protection.outlook.com'
+        ];
+
+        $expected = [
+            'mail.[ZONE]',
+            '[DOMAIN]-[TLD].mail.protection.outlook.com'
+        ];
+
+        $result = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        $this->assertEquals($expected, $result);
+    }
+
+    public function testDomainComponentsNotOverReplaced()
+    {
+        // This test ensures we're not over-replacing domain components in unrelated text
+        $domain = 'example.net';
+        $record = [
+            'name' => 'mail.example.net',
+            'content' => 'This is an example text with network settings'
+        ];
+
+        // We should NOT replace "example" and "net" in "example text" and "network"
+        $expected = [
+            'mail.[ZONE]',
+            'This is an example text with network settings'
+        ];
+
+        $result = ZoneTemplate::replaceWithTemplatePlaceholders($domain, $record);
+        $this->assertEquals($expected, $result);
+    }
 }
