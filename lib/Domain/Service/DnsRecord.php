@@ -50,12 +50,18 @@ class DnsRecord
     private DnsRecordValidationServiceInterface $validationService;
 
     // New service instances
-    private SOARecordManager $soaRecordManager;
-    private DomainRepository $domainRepository;
-    private RecordRepository $recordRepository;
-    private RecordManager $recordManager;
-    private DomainManager $domainManager;
-    private SupermasterManager $supermasterManager;
+    /** @var SOARecordManager */
+    private $soaRecordManager;
+    /** @var DomainRepository */
+    private $domainRepository;
+    /** @var RecordRepository */
+    private $recordRepository;
+    /** @var RecordManager */
+    private $recordManager;
+    /** @var DomainManager */
+    private $domainManager;
+    /** @var SupermasterManager */
+    private $supermasterManager;
 
     public function __construct(PDOLayer $db, ConfigurationManager $config)
     {
@@ -644,13 +650,13 @@ class DnsRecord
     /** Update All Zone Records for Zone ID with Zone Template
      *
      * @param string $db_type Database type
-     * @param int|string $dns_ttl Default TTL
+     * @param int $dns_ttl Default TTL
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      *
      * @return void
      */
-    public function updateZoneRecords($db_type, $dns_ttl, int $zone_id, int $zone_template_id): void
+    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): void
     {
         $this->domainManager->updateZoneRecords($db_type, $dns_ttl, $zone_id, $zone_template_id);
     }
