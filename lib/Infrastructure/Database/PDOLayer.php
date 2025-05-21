@@ -53,23 +53,6 @@ class PDOLayer extends PDOCommon
     private array $queries = array();
 
     /**
-     * Quotes a string
-     *
-     * @param string $string
-     * @param string $type
-     * @return string Returns quoted string
-     */
-    public function quote(string $string, $type = null): string
-    {
-        if ($type == 'integer') {
-            $type = PDO::PARAM_INT;
-        } elseif ($type == 'text') {
-            $type = PDO::PARAM_STR;
-        }
-        return parent::quote($string, $type);
-    }
-
-    /**
      * Set execution options
      *
      * @param string $option Option name
