@@ -24,18 +24,21 @@ namespace PoweradminInstall;
 
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Domain\Service\DatabaseSchemaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
 class DatabaseHelper
 {
     private PDOLayer $db;
+    private DatabaseSchemaService $schemaService;
     private array $databaseCredentials;
     private const REQUIRED_PDNS_TABLES = ['domains', 'records', 'supermasters', 'domainmetadata', 'comments'];
 
     public function __construct(PDOLayer $db, array $databaseCredentials)
     {
         $this->db = $db;
+        $this->schemaService = new DatabaseSchemaService($db);
         $this->databaseCredentials = $databaseCredentials;
     }
 
@@ -47,7 +50,7 @@ class DatabaseHelper
     public function checkPowerDnsTables(): array
     {
         $missingTables = [];
-        $existingTables = $this->db->listTables();
+        $existingTables = $this->schemaService->listTables();
 
         foreach (self::REQUIRED_PDNS_TABLES as $table) {
             if (!in_array($table, $existingTables)) {
@@ -65,7 +68,7 @@ class DatabaseHelper
             $this->verifySQLiteAccess();
         }
 
-        $current_tables = $this->db->listTables();
+        $current_tables = $this->schemaService->listTables();
         $def_tables = DatabaseStructureHelper::getDefaultTables();
 
         // Disable foreign key checks for the duration of this operation
@@ -87,7 +90,7 @@ class DatabaseHelper
         try {
             foreach ($def_tables as $table) {
                 if (in_array($table['table_name'], $current_tables)) {
-                    $this->db->dropTable($table['table_name']);
+                    $this->schemaService->dropTable($table['table_name']);
                 }
 
                 $options = $table['options'];
@@ -99,7 +102,7 @@ class DatabaseHelper
                 if (isset($this->databaseCredentials['db_collation']) && $this->databaseCredentials['db_collation']) {
                     $options['collation'] = $this->databaseCredentials['db_collation'];
                 }
-                $this->db->createTable($table['table_name'], $table['fields'], $options);
+                $this->schemaService->createTable($table['table_name'], $table['fields'], $options);
 
                 // Set default value for the 'type' column in user_mfa table
                 if ($table['table_name'] === 'user_mfa') {
@@ -134,7 +137,7 @@ class DatabaseHelper
 
         $fill_perm_items = $this->db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
         $def_permissions = PermissionHelper::getPermissionMappings();
-        $this->db->executeMultiple($fill_perm_items, $def_permissions);
+        $this->schemaService->executeMultiple($fill_perm_items, $def_permissions);
         if (method_exists($fill_perm_items, 'free')) {
             $fill_perm_items->free();
         }

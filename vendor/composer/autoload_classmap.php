@@ -589,6 +589,7 @@ return array(
     'Poweradmin\\Domain\\Service\\AuthenticationService' => $baseDir . '/lib/Domain/Service/AuthenticationService.php',
     'Poweradmin\\Domain\\Service\\BatchReverseRecordCreator' => $baseDir . '/lib/Domain/Service/BatchReverseRecordCreator.php',
     'Poweradmin\\Domain\\Service\\DatabaseConnection' => $baseDir . '/lib/Domain/Service/DatabaseConnection.php',
+    'Poweradmin\\Domain\\Service\\DatabaseSchemaService' => $baseDir . '/lib/Domain/Service/DatabaseSchemaService.php',
     'Poweradmin\\Domain\\Service\\DnsFormatter' => $baseDir . '/lib/Domain/Service/DnsFormatter.php',
     'Poweradmin\\Domain\\Service\\DnsIdnService' => $baseDir . '/lib/Domain/Service/DnsIdnService.php',
     'Poweradmin\\Domain\\Service\\DnsRecord' => $baseDir . '/lib/Domain/Service/DnsRecord.php',

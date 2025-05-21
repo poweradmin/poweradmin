@@ -454,8 +454,6 @@ abstract class BaseController
             'theme' => $theme,
             'theme_base_path' => $themeBasePath,
         ]);
-
-        $this->db->disconnect();
     }
 
     /**
