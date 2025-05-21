@@ -483,29 +483,40 @@ class DomainManager implements DomainManagerInterface
                             $ttl = $dns_ttl;
                         }
 
-                        // Insert the record
-                        $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES ("
-                            . $this->db->quote($zone_id, 'integer') . ","
-                            . $this->db->quote($name, 'text') . ","
-                            . $this->db->quote($type, 'text') . ","
-                            . $this->db->quote($content, 'text') . ","
-                            . $this->db->quote($ttl, 'integer') . ","
-                            . $this->db->quote($prio, 'integer') . ")";
-                        $this->db->exec($query);
+                        // Check if a record with the same name, type, and content already exists
+                        $existingCheckQuery = "SELECT COUNT(*) FROM $records_table 
+                            WHERE domain_id = " . $this->db->quote($zone_id, 'integer') . "
+                            AND name = " . $this->db->quote($name, 'text') . "
+                            AND type = " . $this->db->quote($type, 'text') . "
+                            AND content = " . $this->db->quote($content, 'text');
+                        $recordExists = $this->db->queryOne($existingCheckQuery) > 0;
 
-                        // Get the new record ID
-                        if ($db_type == 'pgsql') {
-                            $record_id = $this->db->lastInsertId('records_id_seq');
-                        } else {
-                            $record_id = $this->db->lastInsertId();
+                        // Only insert if the record doesn't already exist
+                        if (!$recordExists) {
+                            // Insert the record
+                            $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES ("
+                                . $this->db->quote($zone_id, 'integer') . ","
+                                . $this->db->quote($name, 'text') . ","
+                                . $this->db->quote($type, 'text') . ","
+                                . $this->db->quote($content, 'text') . ","
+                                . $this->db->quote($ttl, 'integer') . ","
+                                . $this->db->quote($prio, 'integer') . ")";
+                            $this->db->exec($query);
+
+                            // Get the new record ID
+                            if ($db_type == 'pgsql') {
+                                $record_id = $this->db->lastInsertId('records_id_seq');
+                            } else {
+                                $record_id = $this->db->lastInsertId();
+                            }
+
+                            // Link the record to the template in the mapping table
+                            $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
+                                . $this->db->quote($zone_id, 'integer') . ","
+                                . $this->db->quote($record_id, 'integer') . ","
+                                . $this->db->quote($zone_template_id, 'integer') . ")";
+                            $this->db->query($query);
                         }
-
-                        // Link the record to the template in the mapping table
-                        $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
-                            . $this->db->quote($zone_id, 'integer') . ","
-                            . $this->db->quote($record_id, 'integer') . ","
-                            . $this->db->quote($zone_template_id, 'integer') . ")";
-                        $this->db->query($query);
                     }
                 }
             }
