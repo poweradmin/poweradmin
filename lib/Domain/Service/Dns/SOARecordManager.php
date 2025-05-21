@@ -57,8 +57,9 @@ class SOARecordManager implements SOARecordManagerInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $sqlq = "SELECT content FROM $records_table WHERE type = " . $this->db->quote('SOA', 'text') . " AND domain_id = " . $this->db->quote($zone_id, 'integer');
-        return $this->db->queryOne($sqlq) ?: '';
+        $stmt = $this->db->prepare("SELECT content FROM $records_table WHERE type = ? AND domain_id = ?");
+        $stmt->execute(['SOA', $zone_id]);
+        return $stmt->fetchColumn() ?: '';
     }
 
     /**
@@ -174,8 +175,8 @@ class SOARecordManager implements SOARecordManagerInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $sqlq = "UPDATE $records_table SET content = " . $this->db->quote($content, 'text') . " WHERE domain_id = " . $this->db->quote($domain_id, 'integer') . " AND type = " . $this->db->quote('SOA', 'text');
-        $this->db->query($sqlq);
+        $stmt = $this->db->prepare("UPDATE $records_table SET content = ? WHERE domain_id = ? AND type = ?");
+        $stmt->execute([$content, $domain_id, 'SOA']);
 
         return true;
     }

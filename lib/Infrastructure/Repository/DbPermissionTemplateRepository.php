@@ -42,17 +42,21 @@ class DbPermissionTemplateRepository
      */
     public function addPermissionTemplate(array $details): bool
     {
-        $query = "INSERT INTO perm_templ (name, descr)
-			VALUES (" . $this->db->quote($details['templ_name'], 'text') . ", " . $this->db->quote($details['templ_descr'], 'text') . ")";
-
-        $this->db->query($query);
+        $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr) VALUES (:name, :descr)");
+        $stmt->execute([
+            ':name' => $details['templ_name'],
+            ':descr' => $details['templ_descr']
+        ]);
 
         $perm_templ_id = $this->db->lastInsertId();
 
         if (isset($details['perm_id'])) {
+            $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
             foreach ($details['perm_id'] as $perm_id) {
-                $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $this->db->quote($perm_templ_id, 'integer') . "," . $this->db->quote($perm_id, 'integer') . ")";
-                $this->db->query($query);
+                $stmt->execute([
+                    ':templ_id' => $perm_templ_id,
+                    ':perm_id' => $perm_id
+                ]);
             }
         }
 
@@ -74,19 +78,25 @@ class DbPermissionTemplateRepository
      */
     public function getPermissionsByTemplateId(int $templ_id = 0, bool $return_name_only = false): array
     {
-        $limit = '';
         if ($templ_id > 0) {
-            $limit = ", perm_templ_items
-			WHERE perm_templ_items.templ_id = " . $this->db->quote($templ_id, 'integer') . "
-			AND perm_templ_items.perm_id = perm_items.id";
-        }
-
-        $query = "SELECT perm_items.id AS id,
+            $query = "SELECT perm_items.id AS id,
 			perm_items.name AS name,
 			perm_items.descr AS descr
-			FROM perm_items" . $limit . "
+			FROM perm_items, perm_templ_items
+			WHERE perm_templ_items.templ_id = :templ_id
+			AND perm_templ_items.perm_id = perm_items.id
 			ORDER BY name";
-        $response = $this->db->query($query);
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([':templ_id' => $templ_id]);
+            $response = $stmt;
+        } else {
+            $query = "SELECT perm_items.id AS id,
+			perm_items.name AS name,
+			perm_items.descr AS descr
+			FROM perm_items
+			ORDER BY name";
+            $response = $this->db->query($query);
+        }
 
         $permission_list = array();
         while ($permission = $response->fetch()) {
@@ -114,11 +124,12 @@ class DbPermissionTemplateRepository
     {
         // Fix permission template name and description first.
 
-        $query = "UPDATE perm_templ
-			SET name = " . $this->db->quote($details['templ_name'], 'text') . ",
-			descr = " . $this->db->quote($details['templ_descr'], 'text') . "
-			WHERE id = " . $this->db->quote($details['templ_id'], 'integer');
-        $this->db->query($query);
+        $stmt = $this->db->prepare("UPDATE perm_templ SET name = :name, descr = :descr WHERE id = :id");
+        $stmt->execute([
+            ':name' => $details['templ_name'],
+            ':descr' => $details['templ_descr'],
+            ':id' => $details['templ_id']
+        ]);
 
         // Now, update list of permissions assigned to this template. We could do
         // this The Correct Way [tm] by comparing the list of permissions that are
@@ -127,13 +138,16 @@ class DbPermissionTemplateRepository
         // like too much work. Just delete all the permissions currently assigned to
         // the template, then assign all the permissions the template should have.
 
-        $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $details['templ_id'];
-        $this->db->query($query);
+        $stmt = $this->db->prepare("DELETE FROM perm_templ_items WHERE templ_id = :templ_id");
+        $stmt->execute([':templ_id' => $details['templ_id']]);
 
         if (isset($details['perm_id'])) {
+            $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
             foreach ($details['perm_id'] as $perm_id) {
-                $query = "INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (" . $this->db->quote($details['templ_id'], 'integer') . "," . $this->db->quote($perm_id, 'integer') . ")";
-                $this->db->query($query);
+                $stmt->execute([
+                    ':templ_id' => $details['templ_id'],
+                    ':perm_id' => $perm_id
+                ]);
             }
         }
 
@@ -149,12 +163,9 @@ class DbPermissionTemplateRepository
      */
     public function getPermissionTemplateDetails(int $templ_id): array
     {
-        $query = "SELECT *
-			FROM perm_templ
-			WHERE perm_templ.id = " . $this->db->quote($templ_id, 'integer');
-
-        $response = $this->db->query($query);
-        return $response->fetch();
+        $stmt = $this->db->prepare("SELECT * FROM perm_templ WHERE perm_templ.id = :id");
+        $stmt->execute([':id' => $templ_id]);
+        return $stmt->fetch();
     }
 
     /**
@@ -187,8 +198,9 @@ class DbPermissionTemplateRepository
      */
     public function deletePermissionTemplate(int $id): bool
     {
-        $query = "SELECT id FROM users WHERE perm_templ = " . $id;
-        $response = $this->db->queryOne($query);
+        $stmt = $this->db->prepare("SELECT id FROM users WHERE perm_templ = :id");
+        $stmt->execute([':id' => $id]);
+        $response = $stmt->fetchColumn();
 
         if ($response) {
             $messageService = new MessageService();
@@ -196,11 +208,11 @@ class DbPermissionTemplateRepository
 
             return false;
         } else {
-            $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $id;
-            $this->db->query($query);
+            $stmt = $this->db->prepare("DELETE FROM perm_templ_items WHERE templ_id = :id");
+            $stmt->execute([':id' => $id]);
 
-            $query = "DELETE FROM perm_templ WHERE id = " . $id;
-            $this->db->query($query);
+            $stmt = $this->db->prepare("DELETE FROM perm_templ WHERE id = :id");
+            $stmt->execute([':id' => $id]);
             return true;
         }
     }

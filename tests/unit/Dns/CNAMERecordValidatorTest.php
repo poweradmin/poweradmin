@@ -44,15 +44,19 @@ class CNAMERecordValidatorTest extends TestCase
 
         $this->dbMock = $this->createMock(PDOLayer::class);
 
+        // Set up default prepared statement mock
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->method('execute')->willReturn(true);
+        $stmtMock->method('fetchColumn')->willReturn(false); // Default: no conflicts
+
+        $this->dbMock->method('prepare')
+            ->willReturn($stmtMock);
+
         $this->validator = new CNAMERecordValidator($this->configMock, $this->dbMock);
     }
 
     public function testValidateWithValidData()
     {
-        // Mock DB response for validateCnameUnique
-        $this->dbMock->method('queryOne')
-            ->willReturn(false); // No conflicts found
-
         $content = 'target.example.com';
         $name = 'alias.example.com';
         $prio = 0;
@@ -73,9 +77,17 @@ class CNAMERecordValidatorTest extends TestCase
 
     public function testValidateWithConflictingRecord()
     {
-        // Mock DB response to indicate a conflicting record exists
-        $this->dbMock->method('queryOne')
-            ->willReturn(['id' => 1]); // Conflict found
+        // Create a new mock to override the default one
+        $this->dbMock = $this->createMock(PDOLayer::class);
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->method('execute')->willReturn(true);
+        $stmtMock->method('fetchColumn')->willReturn(1); // Conflict found
+
+        $this->dbMock->method('prepare')
+            ->willReturn($stmtMock);
+
+        // Recreate validator with new mock
+        $this->validator = new CNAMERecordValidator($this->configMock, $this->dbMock);
 
         $content = 'target.example.com';
         $name = 'alias.example.com';
@@ -256,8 +268,10 @@ class CNAMERecordValidatorTest extends TestCase
 
         // Mock DB for non-unique CNAME
         $this->dbMock = $this->createMock(PDOLayer::class);
-        $this->dbMock->method('queryOne')
-            ->willReturn(['id' => 1]);
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->method('execute')->willReturn(true);
+        $stmtMock->method('fetchColumn')->willReturn(1); // Conflict found
+        $this->dbMock->method('prepare')->willReturn($stmtMock);
         $this->validator = new CNAMERecordValidator($this->configMock, $this->dbMock);
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
@@ -277,8 +291,10 @@ class CNAMERecordValidatorTest extends TestCase
 
         // Mock DB for valid CNAME name
         $this->dbMock = $this->createMock(PDOLayer::class);
-        $this->dbMock->method('queryOne')
-            ->willReturn(false);
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->method('execute')->willReturn(true);
+        $stmtMock->method('fetchColumn')->willReturn(false);
+        $this->dbMock->method('prepare')->willReturn($stmtMock);
         $this->validator = new CNAMERecordValidator($this->configMock, $this->dbMock);
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);
@@ -290,8 +306,10 @@ class CNAMERecordValidatorTest extends TestCase
 
         // Mock DB for invalid CNAME name
         $this->dbMock = $this->createMock(PDOLayer::class);
-        $this->dbMock->method('queryOne')
-            ->willReturn(['id' => 1]);
+        $stmtMock2 = $this->createMock(\PDOStatement::class);
+        $stmtMock2->method('execute')->willReturn(true);
+        $stmtMock2->method('fetchColumn')->willReturn(1); // MX/NS record found
+        $this->dbMock->method('prepare')->willReturn($stmtMock2);
         $this->validator = new CNAMERecordValidator($this->configMock, $this->dbMock);
 
         $reflection = new \ReflectionClass(CNAMERecordValidator::class);

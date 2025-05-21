@@ -107,9 +107,15 @@ class RecordSearch extends BaseSearch
         $db_type = $this->config->get('database', 'type');
         $sort_records_by = $sort_records_by === 'name' ? SortHelper::getRecordSortOrder($records_table, $db_type, $record_sort_direction) : "$sort_records_by $record_sort_direction";
 
+        // Prepare query parameters
+        $params = [];
+
         // Build query with new type and content filters
-        $typeFilter = !empty($parameters['type_filter']) ?
-            " AND $records_table.type = " . $this->db->quote($parameters['type_filter'], 'text') : '';
+        $typeFilter = '';
+        if (!empty($parameters['type_filter'])) {
+            $typeFilter = " AND $records_table.type = :type_filter";
+            $params[':type_filter'] = $parameters['type_filter'];
+        }
 
         $contentFilter = '';
         if (!empty($parameters['content_filter'])) {
@@ -118,7 +124,8 @@ class RecordSearch extends BaseSearch
             if (strpos($content, '%') === false) {
                 $content = '%' . $content . '%';
             }
-            $contentFilter = " AND $records_table.content LIKE " . $this->db->quote($content, 'text');
+            $contentFilter = " AND $records_table.content LIKE :content_filter";
+            $params[':content_filter'] = $content;
         }
 
         $recordsQuery = "
@@ -142,17 +149,16 @@ class RecordSearch extends BaseSearch
         LEFT JOIN users u on z.owner = u.id" .
             ($iface_record_comments ? " LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type" : "") . "
         WHERE
-            (($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
-            ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
-            ($iface_record_comments && $parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ')' .
+            " . $this->buildWhereConditionsFetch($records_table, $search_string, $reverse, $reverse_search_string, $iface_record_comments, $parameters, $permission_view, $params) .
             $typeFilter .
             $contentFilter .
-            ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '') .
             ' ORDER BY ' . $sort_records_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
-        $recordsResponse = $this->db->query($recordsQuery);
+        $stmt = $this->db->prepare($recordsQuery);
+        $stmt->execute($params);
+        $recordsResponse = $stmt;
 
         $foundRecords = array();
         while ($record = $recordsResponse->fetch()) {
@@ -202,9 +208,15 @@ class RecordSearch extends BaseSearch
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
         $groupByClause = $iface_search_group_records ? "GROUP BY $records_table.name, $records_table.content" : '';
 
+        // Prepare query parameters
+        $params = [];
+
         // Add type and content filters
-        $typeFilter = !empty($parameters['type_filter']) ?
-            " AND $records_table.type = " . $this->db->quote($parameters['type_filter'], 'text') : '';
+        $typeFilter = '';
+        if (!empty($parameters['type_filter'])) {
+            $typeFilter = " AND $records_table.type = :type_filter";
+            $params[':type_filter'] = $parameters['type_filter'];
+        }
 
         $contentFilter = '';
         if (!empty($parameters['content_filter'])) {
@@ -213,7 +225,8 @@ class RecordSearch extends BaseSearch
             if (strpos($content, '%') === false) {
                 $content = '%' . $content . '%';
             }
-            $contentFilter = " AND $records_table.content LIKE " . $this->db->quote($content, 'text');
+            $contentFilter = " AND $records_table.content LIKE :content_filter";
+            $params[':content_filter'] = $content;
         }
 
         // Build a query that correctly applies permission filters for accurate counting
@@ -229,15 +242,80 @@ class RecordSearch extends BaseSearch
             LEFT JOIN users u on z.owner = u.id
             LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type
             WHERE
-                (($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
-            ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
-            ($parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ')' .
+                " . $this->buildWhereConditionsCount($records_table, $search_string, $reverse, $reverse_search_string, $parameters, $permission_view, $params) .
             $typeFilter .
             $contentFilter .
-            ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
             " $groupByClause
         ) as grouped_records";
 
-        return (int)$this->db->queryOne($recordsQuery);
+        $stmt = $this->db->prepare($recordsQuery);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Build WHERE conditions for fetch records query
+     */
+    private function buildWhereConditionsFetch(string $records_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, bool $iface_record_comments, array $parameters, string $permission_view, array &$params): string
+    {
+        // Add main search parameters
+        $params[':search_string1'] = $search_string;
+        $params[':search_string2'] = $search_string;
+
+        // Build WHERE conditions
+        $whereConditions = "($records_table.name LIKE :search_string1 OR $records_table.content LIKE :search_string2";
+
+        if ($reverse) {
+            $whereConditions .= " OR $records_table.name LIKE :reverse_search_string1 OR $records_table.content LIKE :reverse_search_string2";
+            $params[':reverse_search_string1'] = $reverse_search_string;
+            $params[':reverse_search_string2'] = $reverse_search_string;
+        }
+
+        if ($iface_record_comments && $parameters['comments']) {
+            $whereConditions .= " OR c.comment LIKE :search_string_comment";
+            $params[':search_string_comment'] = $search_string;
+        }
+
+        $whereConditions .= ')';
+
+        if ($permission_view == 'own') {
+            $whereConditions .= ' AND z.owner = :user_id';
+            $params[':user_id'] = $_SESSION['userid'];
+        }
+
+        return $whereConditions;
+    }
+
+    /**
+     * Build WHERE conditions for count records query
+     */
+    private function buildWhereConditionsCount(string $records_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, array $parameters, string $permission_view, array &$params): string
+    {
+        // Add main search parameters
+        $params[':search_string1'] = $search_string;
+        $params[':search_string2'] = $search_string;
+
+        // Build WHERE conditions
+        $whereConditions = "($records_table.name LIKE :search_string1 OR $records_table.content LIKE :search_string2";
+
+        if ($reverse) {
+            $whereConditions .= " OR $records_table.name LIKE :reverse_search_string1 OR $records_table.content LIKE :reverse_search_string2";
+            $params[':reverse_search_string1'] = $reverse_search_string;
+            $params[':reverse_search_string2'] = $reverse_search_string;
+        }
+
+        if ($parameters['comments']) {
+            $whereConditions .= " OR c.comment LIKE :search_string_comment";
+            $params[':search_string_comment'] = $search_string;
+        }
+
+        $whereConditions .= ')';
+
+        if ($permission_view == 'own') {
+            $whereConditions .= ' AND z.owner = :user_id';
+            $params[':user_id'] = $_SESSION['userid'];
+        }
+
+        return $whereConditions;
     }
 }

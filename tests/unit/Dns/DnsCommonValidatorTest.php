@@ -131,18 +131,14 @@ class DnsCommonValidatorTest extends TestCase
         $this->configMock->method('get')
             ->willReturn('pdns');
 
-        // Configure mock for query results
-        $this->dbMock->method('quote')
-            ->willReturnCallback(function ($value, $type) {
-                if ($type === 'text') {
-                    return "'$value'";
-                }
-                return $value;
-            });
+        // Configure mock for prepared statement
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->method('execute')->willReturn(true);
+        $stmtMock->method('fetchColumn')->willReturn(false); // No CNAME found
 
         $this->dbMock->expects($this->once())
-            ->method('queryOne')
-            ->willReturn(false);
+            ->method('prepare')
+            ->willReturn($stmtMock);
 
         $result = $this->validator->validateNonAliasTarget("example.com");
         $this->assertTrue($result->isValid());
@@ -155,18 +151,14 @@ class DnsCommonValidatorTest extends TestCase
         $this->configMock->method('get')
             ->willReturn('pdns');
 
-        // Configure mock for query results
-        $this->dbMock->method('quote')
-            ->willReturnCallback(function ($value, $type) {
-                if ($type === 'text') {
-                    return "'$value'";
-                }
-                return $value;
-            });
+        // Configure mock for prepared statement
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->method('execute')->willReturn(true);
+        $stmtMock->method('fetchColumn')->willReturn(1); // CNAME found
 
         $this->dbMock->expects($this->once())
-            ->method('queryOne')
-            ->willReturn(['id' => 1]);
+            ->method('prepare')
+            ->willReturn($stmtMock);
 
         $result = $this->validator->validateNonAliasTarget("has.cname.example.com");
         $this->assertFalse($result->isValid());

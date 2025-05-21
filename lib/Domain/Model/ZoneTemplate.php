@@ -256,12 +256,9 @@ class ZoneTemplate
      */
     public static function getZoneTemplDetails($db, int $zone_templ_id): array
     {
-        $query = "SELECT *"
-            . " FROM zone_templ"
-            . " WHERE id = " . $db->quote($zone_templ_id, 'integer');
-
-        $result = $db->query($query);
-        return $result->fetch() ?: [];
+        $stmt = $db->prepare("SELECT * FROM zone_templ WHERE id = :id");
+        $stmt->execute([':id' => $zone_templ_id]);
+        return $stmt->fetch() ?: [];
     }
 
     /** Delete a zone template
@@ -335,8 +332,9 @@ class ZoneTemplate
      */
     public static function countZoneTemplRecords($db, int $zone_templ_id): int
     {
-        $query = "SELECT COUNT(id) FROM zone_templ_records WHERE zone_templ_id = " . $db->quote($zone_templ_id, 'integer');
-        return $db->queryOne($query);
+        $stmt = $db->prepare("SELECT COUNT(id) FROM zone_templ_records WHERE zone_templ_id = :zone_templ_id");
+        $stmt->execute([':zone_templ_id' => $zone_templ_id]);
+        return $stmt->fetchColumn();
     }
 
     /**
@@ -348,8 +346,9 @@ class ZoneTemplate
      */
     public static function zoneTemplIdExists($db, int $zone_templ_id): bool
     {
-        $query = "SELECT COUNT(id) FROM zone_templ WHERE id = " . $db->quote($zone_templ_id, 'integer');
-        return $db->queryOne($query);
+        $stmt = $db->prepare("SELECT COUNT(id) FROM zone_templ WHERE id = :id");
+        $stmt->execute([':id' => $zone_templ_id]);
+        return (bool)$stmt->fetchColumn();
     }
 
     /**
@@ -364,7 +363,9 @@ class ZoneTemplate
      */
     public static function getZoneTemplRecordFromId($db, int $id): array
     {
-        $result = $db->queryRow("SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id=" . $db->quote($id, 'integer'));
+        $stmt = $db->prepare("SELECT id, zone_templ_id, name, type, content, ttl, prio FROM zone_templ_records WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        $result = $stmt->fetch();
         return $result ? array(
             "id" => $result["id"],
             "zone_templ_id" => $result["zone_templ_id"],

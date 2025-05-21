@@ -63,7 +63,8 @@ class ZoneCountService
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         $tables = $domains_table;
-        $query_addon = '';
+        $conditions = [];
+        $params = [];
 
         if ($perm != "own" && $perm != "all") {
             return 0;
@@ -74,8 +75,9 @@ class ZoneCountService
             $userId = $this->userContext ? $this->userContext->getLoggedInUserId() : ($_SESSION['userid'] ?? null);
 
             if ($userId) {
-                $query_addon = " AND zones.domain_id = $domains_table.id
-                    AND zones.owner = " . $this->db->quote((string)$userId, 'integer');
+                $conditions[] = "zones.domain_id = $domains_table.id";
+                $conditions[] = "zones.owner = ?";
+                $params[] = (string)$userId;
                 $tables .= ', zones';
             } else {
                 return 0; // No user ID available
@@ -86,21 +88,37 @@ class ZoneCountService
         if ($letterstart !== 'all') {
             if ($letterstart === '1') {
                 $db_type = $this->config->get('database', 'type');
-                $query_addon .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+                $conditions[] = DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
             } else {
-                $query_addon .= " AND $domains_table.name LIKE " . $this->db->quote($letterstart . "%", 'text') . " ";
+                $conditions[] = "$domains_table.name LIKE ?";
+                $params[] = $letterstart . "%";
             }
         }
 
         // Add filter for forward/reverse zones
         if ($zone_type == 'forward') {
-            $query_addon .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
+            $conditions[] = "$domains_table.name NOT LIKE '%.in-addr.arpa'";
+            $conditions[] = "$domains_table.name NOT LIKE '%.ip6.arpa'";
         } elseif ($zone_type == 'reverse') {
-            $query_addon .= " AND ($domains_table.name LIKE '%.in-addr.arpa' OR $domains_table.name LIKE '%.ip6.arpa')";
+            $conditions[] = "($domains_table.name LIKE '%.in-addr.arpa' OR $domains_table.name LIKE '%.ip6.arpa')";
         }
 
-        $query = "SELECT COUNT($domains_table.id) AS count_zones FROM $tables WHERE 1=1 $query_addon";
+        $whereClause = empty($conditions) ? '' : ' WHERE ' . implode(' AND ', $conditions);
+        $query = "SELECT COUNT($domains_table.id) AS count_zones FROM $tables" . $whereClause;
 
-        return $this->db->queryOne($query);
+        if (empty($params)) {
+            // No parameters, use queryOne for backward compatibility
+            return (int) $this->db->queryOne($query);
+        } else {
+            // Use prepared statements when parameters are needed
+            $stmt = $this->db->prepare($query);
+            if ($stmt === false) {
+                return 0; // Return 0 if prepare fails
+            }
+            $stmt->execute($params);
+            $result = $stmt->fetch();
+
+            return (int) ($result['count_zones'] ?? 0);
+        }
     }
 }

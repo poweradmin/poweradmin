@@ -788,6 +788,9 @@ class EditController extends BaseController
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
 
+        // Prepare query parameters
+        $params = [':zone_id' => $zone_id];
+
         // Apply search term to both name and content
         $search_condition = '';
         if (!empty($search_term)) {
@@ -795,14 +798,16 @@ class EditController extends BaseController
             if (strpos($search_term, '%') === false) {
                 $search_term = '%' . $search_term . '%';
             }
-            $search_condition = " AND ($records_table.name LIKE " . $this->db->quote($search_term, 'text') .
-                               " OR $records_table.content LIKE " . $this->db->quote($search_term, 'text') . ')';
+            $search_condition = " AND ($records_table.name LIKE :search_term1 OR $records_table.content LIKE :search_term2)";
+            $params[':search_term1'] = $search_term;
+            $params[':search_term2'] = $search_term;
         }
 
         // Apply type filter
         $type_condition = '';
         if (!empty($type_filter)) {
-            $type_condition = " AND $records_table.type = " . $this->db->quote($type_filter, 'text');
+            $type_condition = " AND $records_table.type = :type_filter";
+            $params[':type_filter'] = $type_filter;
         }
 
         // Apply content filter
@@ -812,7 +817,8 @@ class EditController extends BaseController
             if (strpos($content_filter, '%') === false) {
                 $content_filter = '%' . $content_filter . '%';
             }
-            $content_condition = " AND $records_table.content LIKE " . $this->db->quote($content_filter, 'text');
+            $content_condition = " AND $records_table.content LIKE :content_filter";
+            $params[':content_filter'] = $content_filter;
         }
 
         // Base query
@@ -832,16 +838,17 @@ class EditController extends BaseController
         }
 
         // Where clause
-        $query .= " WHERE $records_table.domain_id = " . $zone_id .
+        $query .= " WHERE $records_table.domain_id = :zone_id" .
                  $search_condition . $type_condition . $content_condition;
 
         // Sorting and limits
         $query .= " ORDER BY $sort_by $sort_direction LIMIT $row_amount OFFSET $row_start";
 
-        $result = $this->db->query($query);
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
         $records = [];
 
-        while ($record = $result->fetch()) {
+        while ($record = $stmt->fetch()) {
             $records[] = $record;
         }
 
@@ -869,6 +876,9 @@ class EditController extends BaseController
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
 
+        // Prepare query parameters
+        $params = [':zone_id' => $zone_id];
+
         // Apply search term to both name and content
         $search_condition = '';
         if (!empty($search_term)) {
@@ -876,14 +886,16 @@ class EditController extends BaseController
             if (strpos($search_term, '%') === false) {
                 $search_term = '%' . $search_term . '%';
             }
-            $search_condition = " AND ($records_table.name LIKE " . $this->db->quote($search_term, 'text') .
-                               " OR $records_table.content LIKE " . $this->db->quote($search_term, 'text') . ')';
+            $search_condition = " AND ($records_table.name LIKE :search_term1 OR $records_table.content LIKE :search_term2)";
+            $params[':search_term1'] = $search_term;
+            $params[':search_term2'] = $search_term;
         }
 
         // Apply type filter
         $type_condition = '';
         if (!empty($type_filter)) {
-            $type_condition = " AND $records_table.type = " . $this->db->quote($type_filter, 'text');
+            $type_condition = " AND $records_table.type = :type_filter";
+            $params[':type_filter'] = $type_filter;
         }
 
         // Apply content filter
@@ -893,17 +905,20 @@ class EditController extends BaseController
             if (strpos($content_filter, '%') === false) {
                 $content_filter = '%' . $content_filter . '%';
             }
-            $content_condition = " AND $records_table.content LIKE " . $this->db->quote($content_filter, 'text');
+            $content_condition = " AND $records_table.content LIKE :content_filter";
+            $params[':content_filter'] = $content_filter;
         }
 
         // Create the query
-        $query = "SELECT COUNT(*) FROM $records_table WHERE domain_id = " . $zone_id;
+        $query = "SELECT COUNT(*) FROM $records_table WHERE domain_id = :zone_id";
 
         // Add filter conditions
         $query .= $search_condition . $type_condition . $content_condition;
 
         // Execute and return result
-        return (int)$this->db->queryOne($query);
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
     }
 
     /**

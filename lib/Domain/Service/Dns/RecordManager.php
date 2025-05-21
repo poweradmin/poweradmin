@@ -255,15 +255,18 @@ class RecordManager implements RecordManagerInterface
                 $pdns_db_name = $this->config->get('database', 'pdns_name');
                 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-                $query = "UPDATE $records_table
-                SET name=" . $this->db->quote($name, 'text') . ",
-                type=" . $this->db->quote($record['type'], 'text') . ",
-                content=" . $this->db->quote($content, 'text') . ",
-                ttl=" . $this->db->quote($validatedTtl, 'integer') . ",
-                prio=" . $this->db->quote($validatedPrio, 'integer') . ",
-                disabled=" . $this->db->quote($record['disabled'], 'integer') . "
-                WHERE id=" . $this->db->quote($record['rid'], 'integer');
-                $this->db->query($query);
+                $stmt = $this->db->prepare("UPDATE $records_table
+                SET name = ?, type = ?, content = ?, ttl = ?, prio = ?, disabled = ?
+                WHERE id = ?");
+                $stmt->execute([
+                    $name,
+                    $record['type'],
+                    $content,
+                    $validatedTtl,
+                    $validatedPrio,
+                    $record['disabled'],
+                    $record['rid']
+                ]);
                 return true;
             }
         }
@@ -299,8 +302,8 @@ class RecordManager implements RecordManagerInterface
                 $pdns_db_name = $this->config->get('database', 'pdns_name');
                 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-                $query = "DELETE FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
-                $this->db->query($query);
+                $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = ?");
+                $stmt->execute([$rid]);
                 return true;
             } elseif ($record['type'] == "NS" && $perm_edit == "own_as_client") {
                 // Users with own_as_client permission cannot delete NS records
@@ -310,8 +313,8 @@ class RecordManager implements RecordManagerInterface
                 $pdns_db_name = $this->config->get('database', 'pdns_name');
                 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-                $query = "DELETE FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
-                $this->db->query($query);
+                $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = ?");
+                $stmt->execute([$rid]);
                 return true;
             }
         } else {
@@ -329,8 +332,8 @@ class RecordManager implements RecordManagerInterface
      */
     public static function deleteRecordZoneTempl($db, int $rid): bool
     {
-        $query = "DELETE FROM records_zone_templ WHERE record_id = " . $db->quote($rid, 'integer');
-        $db->query($query);
+        $stmt = $db->prepare("DELETE FROM records_zone_templ WHERE record_id = ?");
+        $stmt->execute([$rid]);
 
         return true;
     }
@@ -344,8 +347,9 @@ class RecordManager implements RecordManagerInterface
      */
     public static function getZoneComment($db, int $zone_id): string
     {
-        $query = "SELECT comment FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
-        $comment = $db->queryOne($query);
+        $stmt = $db->prepare("SELECT comment FROM zones WHERE domain_id = ?");
+        $stmt->execute([$zone_id]);
+        $comment = $stmt->fetchColumn();
 
         return $comment ?: '';
     }

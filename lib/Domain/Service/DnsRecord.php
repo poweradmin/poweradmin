@@ -571,16 +571,21 @@ class DnsRecord
     {
         $owners = array();
 
-        $sqlq = "SELECT owner FROM zones WHERE domain_id =" . $db->quote($id, 'integer');
-        $id_owners = $db->query($sqlq);
+        $stmt = $db->prepare("SELECT owner FROM zones WHERE domain_id = ?");
+        $stmt->execute([$id]);
+        $id_owners = $stmt;
         if ($id_owners) {
             while ($r = $id_owners->fetch()) {
-                $result = $db->queryRow("SELECT username, fullname FROM users WHERE id=" . $r['owner']);
-                $owners[] = array(
-                    "id" => $r['owner'],
-                    "fullname" => $result["fullname"],
-                    "username" => $result["username"],
-                );
+                $userStmt = $db->prepare("SELECT username, fullname FROM users WHERE id = ?");
+                $userStmt->execute([$r['owner']]);
+                $result = $userStmt->fetch();
+                if ($result) {
+                    $owners[] = array(
+                        "id" => $r['owner'],
+                        "fullname" => $result["fullname"],
+                        "username" => $result["username"],
+                    );
+                }
             }
         } else {
             return [];

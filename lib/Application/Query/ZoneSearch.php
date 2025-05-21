@@ -118,6 +118,12 @@ class ZoneSearch extends BaseSearch
 
         $comment_field = $iface_zone_comments ? ', z.comment' : '';
 
+        // Prepare query parameters
+        $params = [];
+
+        // Build WHERE conditions
+        $whereConditions = $this->buildWhereConditionsFetch($domains_table, $search_string, $reverse, $reverse_search_string, $iface_zone_comments, $parameters, $permission_view, $params);
+
         $zonesQuery = "
             SELECT
                 $domains_table.id,
@@ -137,14 +143,13 @@ class ZoneSearch extends BaseSearch
             LEFT JOIN users u on z.owner = u.id
             LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=$domains_table.id
             WHERE
-                (($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
-            ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
-            ($iface_zone_comments && $parameters['comments'] ? " OR z.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ')' .
-            ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
+                " . $whereConditions .
             ' ORDER BY ' . $sort_zones_by .
             ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
 
-        $zonesResponse = $this->db->query($zonesQuery);
+        $stmt = $this->db->prepare($zonesQuery);
+        $stmt->execute($params);
+        $zonesResponse = $stmt;
 
         $zones = [];
         while ($zone = $zonesResponse->fetch()) {
@@ -184,6 +189,12 @@ class ZoneSearch extends BaseSearch
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
+        // Prepare query parameters
+        $params = [];
+
+        // Build WHERE conditions
+        $whereConditions = $this->buildWhereConditionsCount($domains_table, $search_string, $reverse, $reverse_search_string, $parameters, $permission_view, $params);
+
         // Build a query that correctly applies permission filters for accurate counting
         $zonesQuery = "
         SELECT
@@ -194,11 +205,76 @@ class ZoneSearch extends BaseSearch
         LEFT JOIN users u on z.owner = u.id
         LEFT JOIN (SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table WHERE type IS NOT NULL GROUP BY domain_id) record_count ON record_count.domain_id=$domains_table.id
         WHERE
-            (($domains_table.name LIKE " . $this->db->quote($search_string, 'text') .
-            ($reverse ? " OR $domains_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
-            ($parameters['comments'] ? " OR z.comment LIKE " . $this->db->quote($search_string, 'text') : '') . ')' .
-            ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '');
+            " . $whereConditions;
 
-        return (int)$this->db->queryOne($zonesQuery);
+        $stmt = $this->db->prepare($zonesQuery);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Build WHERE conditions for fetch zones query
+     */
+    private function buildWhereConditionsFetch(string $domains_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, bool $iface_zone_comments, array $parameters, string $permission_view, array &$params): string
+    {
+        // Add main search parameters
+        $params[':search_string1'] = $search_string;
+
+        // Build WHERE conditions
+        $whereConditions = "(($domains_table.name LIKE :search_string1";
+
+        if ($reverse) {
+            $whereConditions .= " OR $domains_table.name LIKE :reverse_search_string";
+            $params[':reverse_search_string'] = $reverse_search_string;
+        }
+
+        $whereConditions .= ')';
+
+        if ($iface_zone_comments && $parameters['comments']) {
+            $whereConditions .= " OR z.comment LIKE :search_string_comment";
+            $params[':search_string_comment'] = $search_string;
+        }
+
+        $whereConditions .= ')';
+
+        if ($permission_view == 'own') {
+            $whereConditions .= ' AND z.owner = :user_id';
+            $params[':user_id'] = $_SESSION['userid'];
+        }
+
+        return $whereConditions;
+    }
+
+    /**
+     * Build WHERE conditions for count zones query
+     */
+    private function buildWhereConditionsCount(string $domains_table, mixed $search_string, bool $reverse, mixed $reverse_search_string, array $parameters, string $permission_view, array &$params): string
+    {
+        // Add main search parameters
+        $params[':search_string1'] = $search_string;
+
+        // Build WHERE conditions
+        $whereConditions = "(($domains_table.name LIKE :search_string1";
+
+        if ($reverse) {
+            $whereConditions .= " OR $domains_table.name LIKE :reverse_search_string";
+            $params[':reverse_search_string'] = $reverse_search_string;
+        }
+
+        $whereConditions .= ')';
+
+        if ($parameters['comments']) {
+            $whereConditions .= " OR z.comment LIKE :search_string_comment";
+            $params[':search_string_comment'] = $search_string;
+        }
+
+        $whereConditions .= ')';
+
+        if ($permission_view == 'own') {
+            $whereConditions .= ' AND z.owner = :user_id';
+            $params[':user_id'] = $_SESSION['userid'];
+        }
+
+        return $whereConditions;
     }
 }

@@ -359,17 +359,15 @@ class DomainManager implements DomainManagerInterface
     {
         if ((UserManager::verifyPermission($db, 'zone_meta_edit_others')) || (UserManager::verifyPermission($db, 'zone_meta_edit_own')) && UserManager::verifyUserIsOwnerZoneId($db, $_GET["id"])) {
             if (UserManager::isValidUser($db, $user_id)) {
-                if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer')) == 0) {
+                $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE owner = ? AND domain_id = ?");
+                $stmt->execute([$user_id, $zone_id]);
+                if ($stmt->fetchColumn() == 0) {
                     $zone_templ_id = self::getZoneTemplate($db, $zone_id);
                     if ($zone_templ_id == null) {
                         $zone_templ_id = 0;
                     }
-                    $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES(:zone_id, :user_id, :zone_templ_id)");
-                    $stmt->execute([
-                        "zone_id" => $zone_id,
-                        "user_id" => $user_id,
-                        "zone_templ_id" => $zone_templ_id,
-                    ]);
+                    $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES(?, ?, ?)");
+                    $stmt->execute([$zone_id, $user_id, $zone_templ_id]);
                     return true;
                 } else {
                     $messageService = new MessageService();
@@ -398,8 +396,11 @@ class DomainManager implements DomainManagerInterface
     {
         if ((UserManager::verifyPermission($db, 'zone_meta_edit_others')) || (UserManager::verifyPermission($db, 'zone_meta_edit_own')) && UserManager::verifyUserIsOwnerZoneId($db, $_GET["id"])) {
             if (UserManager::isValidUser($db, $user_id)) {
-                if ($db->queryOne("SELECT COUNT(id) FROM zones WHERE domain_id=" . $db->quote($zone_id, 'integer')) > 1) {
-                    $db->query("DELETE FROM zones WHERE owner=" . $db->quote($user_id, 'integer') . " AND domain_id=" . $db->quote($zone_id, 'integer'));
+                $stmt = $db->prepare("SELECT COUNT(id) FROM zones WHERE domain_id = ?");
+                $stmt->execute([$zone_id]);
+                if ($stmt->fetchColumn() > 1) {
+                    $stmt = $db->prepare("DELETE FROM zones WHERE owner = ? AND domain_id = ?");
+                    $stmt->execute([$user_id, $zone_id]);
                 } else {
                     $messageService = new MessageService();
                     $messageService->addSystemError(_('There must be at least one owner for a zone.'));

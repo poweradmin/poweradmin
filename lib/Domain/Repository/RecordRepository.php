@@ -62,8 +62,9 @@ class RecordRepository implements RecordRepositoryInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $query = "SELECT domain_id FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
-        return $this->db->queryOne($query) ?: 0;
+        $stmt = $this->db->prepare("SELECT domain_id FROM $records_table WHERE id = :id");
+        $stmt->execute([':id' => $rid]);
+        return $stmt->fetchColumn() ?: 0;
     }
 
     /**
@@ -78,8 +79,9 @@ class RecordRepository implements RecordRepositoryInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $sqlq = "SELECT COUNT(id) FROM $records_table WHERE domain_id = " . $this->db->quote($zone_id, 'integer') . " AND type IS NOT NULL";
-        return $this->db->queryOne($sqlq) ?: 0;
+        $stmt = $this->db->prepare("SELECT COUNT(id) FROM $records_table WHERE domain_id = :zone_id AND type IS NOT NULL");
+        $stmt->execute([':zone_id' => $zone_id]);
+        return $stmt->fetchColumn() ?: 0;
     }
 
     /**
@@ -94,10 +96,9 @@ class RecordRepository implements RecordRepositoryInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $query = "SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM $records_table WHERE id = " . $this->db->quote($rid, 'integer');
-
-        $response = $this->db->query($query);
-        return $response->fetch() ?: [];
+        $stmt = $this->db->prepare("SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM $records_table WHERE id = :id");
+        $stmt->execute([':id' => $rid]);
+        return $stmt->fetch() ?: [];
     }
 
     /**
@@ -113,7 +114,9 @@ class RecordRepository implements RecordRepositoryInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $result = $this->db->queryRow("SELECT * FROM $records_table WHERE id=" . $this->db->quote($id, 'integer') . " AND type IS NOT NULL");
+        $stmt = $this->db->prepare("SELECT * FROM $records_table WHERE id = :id AND type IS NOT NULL");
+        $stmt->execute([':id' => $id]);
+        $result = $stmt->fetch();
         if ($result) {
             if ($result["type"] == "" || $result["content"] == "") {
                 return -1;
@@ -183,11 +186,13 @@ class RecordRepository implements RecordRepositoryInterface
                 LIMIT 1
             )" : "NULL") . " AS comment
             FROM $records_table
-            WHERE $records_table.domain_id=" . $this->db->quote($id, 'integer') . "
+            WHERE $records_table.domain_id = :domain_id
             AND $records_table.type IS NOT NULL
             ORDER BY " . $sql_sortby;
 
-        $records = $this->db->query($query);
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':domain_id' => $id]);
+        $records = $stmt;
         $this->db->setLimit(0);
 
         if ($records) {
@@ -212,8 +217,9 @@ class RecordRepository implements RecordRepositoryInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $result = $this->db->query("SELECT domain_id FROM $records_table WHERE id=" . $this->db->quote($id, 'integer'));
-        $r = $result->fetch();
+        $stmt = $this->db->prepare("SELECT domain_id FROM $records_table WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        $r = $stmt->fetch();
         return $r["domain_id"] ?? 0;
     }
 
@@ -229,8 +235,9 @@ class RecordRepository implements RecordRepositoryInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $query = "SELECT COUNT(id) FROM $records_table WHERE name = " . $this->db->quote($name, 'text');
-        $count = $this->db->queryOne($query);
+        $stmt = $this->db->prepare("SELECT COUNT(id) FROM $records_table WHERE name = :name");
+        $stmt->execute([':name' => $name]);
+        $count = $stmt->fetchColumn();
         return $count > 0;
     }
 
@@ -274,14 +281,18 @@ class RecordRepository implements RecordRepositoryInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $query = "SELECT COUNT(*) FROM $records_table 
-                  WHERE domain_id = " . $this->db->quote($domain_id, 'integer') . " 
-                  AND name = " . $this->db->quote($name, 'text') . " 
-                  AND type = " . $this->db->quote($type, 'text') . " 
-                  AND content = " . $this->db->quote($content, 'text');
-
-        $response = $this->db->query($query);
-        return (int)$response->fetchColumn() > 0;
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table 
+                  WHERE domain_id = :domain_id 
+                  AND name = :name 
+                  AND type = :type 
+                  AND content = :content");
+        $stmt->execute([
+            ':domain_id' => $domain_id,
+            ':name' => $name,
+            ':type' => $type,
+            ':content' => $content
+        ]);
+        return (int)$stmt->fetchColumn() > 0;
     }
 
     /**
@@ -296,8 +307,12 @@ class RecordRepository implements RecordRepositoryInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
-        $query = "SELECT content FROM $records_table where TYPE = " . $this->db->quote('SOA', 'text') . " and domain_id = " . $this->db->quote($zid, 'integer');
-        $rr_soa = $this->db->queryOne($query);
+        $stmt = $this->db->prepare("SELECT content FROM $records_table WHERE type = :type AND domain_id = :domain_id");
+        $stmt->execute([
+            ':type' => 'SOA',
+            ':domain_id' => $zid
+        ]);
+        $rr_soa = $stmt->fetchColumn();
         $rr_soa_fields = explode(" ", $rr_soa);
         return $rr_soa_fields[2] ?? '';
     }

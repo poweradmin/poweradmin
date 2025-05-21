@@ -118,9 +118,11 @@ class UserManager
     public static function showUsers($db, int|string $id = '', int $rowstart = 0, int $rowamount = 9999999): array
     {
         $add = '';
+        $params = [];
         if (is_numeric($id)) {
             // When a user id is given, it is excluded from the userlist returned.
-            $add = " WHERE users.id!=" . $db->quote($id, 'integer');
+            $add = " WHERE users.id != :exclude_id";
+            $params[':exclude_id'] = $id;
         }
 
         // Make a huge query.
@@ -146,7 +148,13 @@ class UserManager
 
         // Execute the huge query.
         $db->setLimit($rowamount, $rowstart);
-        $response = $db->query($query);
+        if (!empty($params)) {
+            $stmt = $db->prepare($query);
+            $stmt->execute($params);
+            $response = $stmt;
+        } else {
+            $response = $db->query($query);
+        }
         $db->setLimit(0);
 
         $ret = array();
@@ -175,7 +183,9 @@ class UserManager
      */
     public static function isValidUser($db, int $id): bool
     {
-        $response = $db->queryOne("SELECT id FROM users WHERE id=" . $db->quote($id, 'integer'));
+        $stmt = $db->prepare("SELECT id FROM users WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        $response = $stmt->fetchColumn();
         return (bool)$response;
     }
 
@@ -190,7 +200,9 @@ class UserManager
      */
     public static function userExists($db, string $user): bool
     {
-        $response = $db->queryOne("SELECT id FROM users WHERE username=" . $db->quote($user, 'text'));
+        $stmt = $db->prepare("SELECT id FROM users WHERE username = :username");
+        $stmt->execute([':username' => $user]);
+        $response = $stmt->fetchColumn();
         return (bool)$response;
     }
 
@@ -223,11 +235,11 @@ class UserManager
                 }
             }
 
-            $query = "DELETE FROM zones WHERE owner = " . $this->db->quote($uid, 'integer');
-            $this->db->query($query);
+            $stmt = $this->db->prepare("DELETE FROM zones WHERE owner = :uid");
+            $stmt->execute([':uid' => $uid]);
 
-            $query = "DELETE FROM users WHERE id = " . $this->db->quote($uid, 'integer');
-            $this->db->query($query);
+            $stmt = $this->db->prepare("DELETE FROM users WHERE id = :uid");
+            $stmt->execute([':uid' => $uid]);
 
             $zoneTemplate = new ZoneTemplate($this->db, $this->config);
             $zoneTemplate->deleteZoneTemplUserId($uid);
@@ -244,8 +256,9 @@ class UserManager
      */
     public static function deletePermTempl($db, int $id): bool
     {
-        $query = "SELECT id FROM users WHERE perm_templ = " . $id;
-        $response = $db->queryOne($query);
+        $stmt = $db->prepare("SELECT id FROM users WHERE perm_templ = :id");
+        $stmt->execute([':id' => $id]);
+        $response = $stmt->fetchColumn();
 
         if ($response) {
             // Create a new MessageService instance since this is a static method
@@ -254,11 +267,11 @@ class UserManager
 
             return false;
         } else {
-            $query = "DELETE FROM perm_templ_items WHERE templ_id = " . $id;
-            $db->query($query);
+            $stmt = $db->prepare("DELETE FROM perm_templ_items WHERE templ_id = :id");
+            $stmt->execute([':id' => $id]);
 
-            $query = "DELETE FROM perm_templ WHERE id = " . $id;
-            $db->query($query);
+            $stmt = $db->prepare("DELETE FROM perm_templ WHERE id = :id");
+            $stmt->execute([':id' => $id]);
             return true;
         }
     }
@@ -305,18 +318,18 @@ class UserManager
             // user, the username should apparently be changed. If so, check if the "new"
             // username already exists.
 
-            $query = "SELECT username FROM users WHERE id = " . $this->db->quote($id, 'integer');
-            $response = $this->db->query($query);
-
-            $usercheck = $response->fetch();
+            $stmt = $this->db->prepare("SELECT username FROM users WHERE id = :id");
+            $stmt->execute([':id' => $id]);
+            $usercheck = $stmt->fetch();
 
             if ($usercheck ['username'] != $user) {
                 // Username of user ID in the database is different from the name
                 // we have been given. User wants a change of username. Now, make
                 // sure it doesn't already exist.
 
-                $query = "SELECT id FROM users WHERE username = " . $this->db->quote($user, 'text');
-                $response = $this->db->queryOne($query);
+                $stmt = $this->db->prepare("SELECT id FROM users WHERE username = :username");
+                $stmt->execute([':username' => $user]);
+                $response = $stmt->fetchColumn();
                 if ($response) {
                     $this->messageService->addSystemError(_('Username exist already, please choose another one.'));
 
@@ -396,8 +409,11 @@ class UserManager
             $config->get('security', 'password_encryption'),
             $config->get('security', 'password_cost')
         );
-        $query = "UPDATE users SET password = " . $db->quote($userAuthService->hashPassword($user_pass), 'text') . " WHERE id = " . $db->quote($id, 'integer');
-        $db->query($query);
+        $stmt = $db->prepare("UPDATE users SET password = :password WHERE id = :id");
+        $stmt->execute([
+            ':password' => $userAuthService->hashPassword($user_pass),
+            ':id' => $id
+        ]);
     }
 
     /**
@@ -411,8 +427,9 @@ class UserManager
      */
     public static function getFullnameFromUserId($db, int $id): string
     {
-        $response = $db->query("SELECT fullname FROM users WHERE id=" . $db->quote($id, 'integer'));
-        $r = $response->fetch();
+        $stmt = $db->prepare("SELECT fullname FROM users WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+        $r = $stmt->fetch();
         return $r["fullname"];
     }
 
@@ -425,7 +442,9 @@ class UserManager
      */
     public static function getFullnamesOwnersFromFomainId($db, int $id)
     {
-        $response = $db->query("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id=" . $db->quote($id, 'integer') . " AND zones.owner=users.id ORDER by fullname");
+        $stmt = $db->prepare("SELECT users.id, users.fullname FROM users, zones WHERE zones.domain_id = :id AND zones.owner = users.id ORDER by fullname");
+        $stmt->execute([':id' => $id]);
+        $response = $stmt;
         if ($response) {
             $names = array();
             while ($r = $response->fetch()) {
@@ -446,9 +465,12 @@ class UserManager
     public static function verifyUserIsOwnerZoneId($db, int $zoneid): bool
     {
         $userid = $_SESSION["userid"];
-        $response = $db->queryOne("SELECT zones.id FROM zones
-            WHERE zones.owner = " . $db->quote($userid, 'integer') . "
-            AND zones.domain_id = " . $db->quote($zoneid, 'integer'));
+        $stmt = $db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND zones.domain_id = :zoneid");
+        $stmt->execute([
+            ':userid' => $userid,
+            ':zoneid' => $zoneid
+        ]);
+        $response = $stmt->fetchColumn();
         return (bool)$response;
     }
 
@@ -539,17 +561,24 @@ class UserManager
     {
         $limit = '';
         if ($templ_id > 0) {
-            $limit = ", perm_templ_items
-			WHERE perm_templ_items.templ_id = " . $db->quote($templ_id, 'integer') . "
-			AND perm_templ_items.perm_id = perm_items.id";
-        }
-
-        $query = "SELECT perm_items.id AS id,
+            $query = "SELECT perm_items.id AS id,
 			perm_items.name AS name,
 			perm_items.descr AS descr
-			FROM perm_items" . $limit . "
+			FROM perm_items, perm_templ_items
+			WHERE perm_templ_items.templ_id = :templ_id
+			AND perm_templ_items.perm_id = perm_items.id
 			ORDER BY name";
-        $response = $db->query($query);
+            $stmt = $db->prepare($query);
+            $stmt->execute([':templ_id' => $templ_id]);
+            $response = $stmt;
+        } else {
+            $query = "SELECT perm_items.id AS id,
+			perm_items.name AS name,
+			perm_items.descr AS descr
+			FROM perm_items
+			ORDER BY name";
+            $response = $db->query($query);
+        }
 
         $permission_list = array();
         while ($permission = $response->fetch()) {
@@ -618,8 +647,9 @@ class UserManager
                 // Username of user ID in the database is different from the name
                 // we have been given. User wants a change of username. Now, make
                 // sure it doesn't already exist.
-                $query = "SELECT id FROM users WHERE username = " . $this->db->quote($details['username'], 'text');
-                $response = $this->db->queryOne($query);
+                $stmt = $this->db->prepare("SELECT id FROM users WHERE username = :username");
+                $stmt->execute([':username' => $details['username']]);
+                $response = $stmt->fetchColumn();
                 if ($response) {
                     $this->messageService->addSystemError(_('Username exist already, please choose another one.'));
 
