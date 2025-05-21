@@ -245,18 +245,6 @@
       <code><![CDATA[$id]]></code>
       <code><![CDATA[$iface_rowamount]]></code>
       <code><![CDATA[$itemsPerPage]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/EditZoneTemplRecordController.php">
@@ -368,24 +356,9 @@
       <code><![CDATA[$domain]]></code>
       <code><![CDATA[$domain]]></code>
       <code><![CDATA[$domain]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$id]]></code>
-      <code><![CDATA[$prio]]></code>
-      <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_name]]></code>
       <code><![CDATA[$zone_name]]></code>
       <code><![CDATA[$zone_template]]></code>
-      <code><![CDATA[$zone_template_id]]></code>
-      <code><![CDATA[$zone_template_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Domain/Service/Dns/RecordManager.php">

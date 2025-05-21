@@ -137,14 +137,15 @@ class DomainManager implements DomainManagerInterface
                         // Construct complete SOA record with all parameters
                         $soa_content = "$ns1 $hm $serial $soa_refresh $soa_retry $soa_expire $soa_minimum";
 
-                        $query = "INSERT INTO $records_table (domain_id, name, content, type, ttl, prio) VALUES ("
-                            . $db->quote($domain_id, 'integer') . ","
-                            . $db->quote($domain, 'text') . ","
-                            . $db->quote($soa_content, 'text') . ","
-                            . $db->quote('SOA', 'text') . ","
-                            . $db->quote($ttl, 'integer') . ","
-                            . $db->quote(0, 'integer') . ")";
-                        $db->query($query);
+                        $stmt = $db->prepare("INSERT INTO $records_table (domain_id, name, content, type, ttl, prio) VALUES (:domain_id, :name, :content, :type, :ttl, :prio)");
+                        $stmt->execute([
+                            ':domain_id' => $domain_id,
+                            ':name' => $domain,
+                            ':content' => $soa_content,
+                            ':type' => 'SOA',
+                            ':ttl' => $ttl,
+                            ':prio' => 0
+                        ]);
                         return true;
                     } elseif ($domain_id && is_numeric($zone_template)) {
                         $dns_ttl = $this->config->get('dns', 'ttl');
@@ -165,22 +166,24 @@ class DomainManager implements DomainManagerInterface
                                         $ttl = $dns_ttl;
                                     }
 
-                                    $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES ("
-                                        . $db->quote($domain_id, 'integer') . ","
-                                        . $db->quote($name, 'text') . ","
-                                        . $db->quote($type, 'text') . ","
-                                        . $db->quote($content, 'text') . ","
-                                        . $db->quote($ttl, 'integer') . ","
-                                        . $db->quote($prio, 'integer') . ")";
-                                    $db->query($query);
+                                    $stmt = $db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:domain_id, :name, :type, :content, :ttl, :prio)");
+                                    $stmt->execute([
+                                        ':domain_id' => $domain_id,
+                                        ':name' => $name,
+                                        ':type' => $type,
+                                        ':content' => $content,
+                                        ':ttl' => $ttl,
+                                        ':prio' => $prio
+                                    ]);
 
                                     $record_id = $db->lastInsertId();
 
-                                    $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
-                                        . $db->quote($domain_id, 'integer') . ","
-                                        . $db->quote($record_id, 'integer') . ","
-                                        . $db->quote($r['zone_templ_id'], 'integer') . ")";
-                                    $db->query($query);
+                                    $stmt = $db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:domain_id, :record_id, :zone_templ_id)");
+                                    $stmt->execute([
+                                        ':domain_id' => $domain_id,
+                                        ':record_id' => $record_id,
+                                        ':zone_templ_id' => $r['zone_templ_id']
+                                    ]);
                                 }
                             }
                         }
@@ -217,10 +220,17 @@ class DomainManager implements DomainManagerInterface
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
-            $this->db->query("DELETE FROM zones WHERE domain_id=" . $this->db->quote($id, 'integer'));
-            $this->db->query("DELETE FROM $records_table WHERE domain_id=" . $this->db->quote($id, 'integer'));
-            $this->db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $this->db->quote($id, 'integer'));
-            $this->db->query("DELETE FROM $domains_table WHERE id=" . $this->db->quote($id, 'integer'));
+            $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
+            $stmt->execute([':id' => $id]);
+
+            $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :id");
+            $stmt->execute([':id' => $id]);
+
+            $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
+            $stmt->execute([':id' => $id]);
+
+            $stmt = $this->db->prepare("DELETE FROM $domains_table WHERE id = :id");
+            $stmt->execute([':id' => $id]);
             return true;
         } else {
             $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
@@ -266,10 +276,17 @@ class DomainManager implements DomainManagerInterface
                         }
                     }
 
-                    $this->db->exec("DELETE FROM zones WHERE domain_id=" . $this->db->quote($id, 'integer'));
-                    $this->db->exec("DELETE FROM $records_table WHERE domain_id=" . $this->db->quote($id, 'integer'));
-                    $this->db->query("DELETE FROM records_zone_templ WHERE domain_id=" . $this->db->quote($id, 'integer'));
-                    $this->db->exec("DELETE FROM $domains_table WHERE id=" . $this->db->quote($id, 'integer'));
+                    $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+
+                    $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+
+                    $stmt = $this->db->prepare("DELETE FROM records_zone_templ WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+
+                    $stmt = $this->db->prepare("DELETE FROM $domains_table WHERE id = :id");
+                    $stmt->execute([':id' => $id]);
                 } else {
                     $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "deleteDomains", "id must be a number"));
                 }
@@ -408,8 +425,9 @@ class DomainManager implements DomainManagerInterface
      */
     public static function getZoneTemplate($db, int $zone_id): int
     {
-        $query = "SELECT zone_templ_id FROM zones WHERE domain_id = " . $db->quote($zone_id, 'integer');
-        return $db->queryOne($query);
+        $stmt = $db->prepare("SELECT zone_templ_id FROM zones WHERE domain_id = :zone_id");
+        $stmt->execute([':zone_id' => $zone_id]);
+        return $stmt->fetchColumn();
     }
 
     /**
@@ -467,7 +485,8 @@ class DomainManager implements DomainManagerInterface
 
                         if ($type == "SOA") {
                             // For SOA records, delete existing ones and use updated SOA record
-                            $this->db->exec("DELETE FROM $records_table WHERE domain_id = " . $this->db->quote($zone_id, 'integer') . " AND type = 'SOA'");
+                            $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'");
+                            $stmt->execute([':zone_id' => $zone_id]);
                             $content = $this->soaRecordManager->getUpdatedSOARecord($soa_rec);
                             if ($content == "") {
                                 $content = $zoneTemplate->parseTemplateValue($r["content"], $domain);
@@ -484,24 +503,31 @@ class DomainManager implements DomainManagerInterface
                         }
 
                         // Check if a record with the same name, type, and content already exists
-                        $existingCheckQuery = "SELECT COUNT(*) FROM $records_table 
-                            WHERE domain_id = " . $this->db->quote($zone_id, 'integer') . "
-                            AND name = " . $this->db->quote($name, 'text') . "
-                            AND type = " . $this->db->quote($type, 'text') . "
-                            AND content = " . $this->db->quote($content, 'text');
-                        $recordExists = $this->db->queryOne($existingCheckQuery) > 0;
+                        $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table 
+                            WHERE domain_id = :zone_id
+                            AND name = :name
+                            AND type = :type
+                            AND content = :content");
+                        $stmt->execute([
+                            ':zone_id' => $zone_id,
+                            ':name' => $name,
+                            ':type' => $type,
+                            ':content' => $content
+                        ]);
+                        $recordExists = (int)$stmt->fetchColumn() > 0;
 
                         // Only insert if the record doesn't already exist
                         if (!$recordExists) {
                             // Insert the record
-                            $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES ("
-                                . $this->db->quote($zone_id, 'integer') . ","
-                                . $this->db->quote($name, 'text') . ","
-                                . $this->db->quote($type, 'text') . ","
-                                . $this->db->quote($content, 'text') . ","
-                                . $this->db->quote($ttl, 'integer') . ","
-                                . $this->db->quote($prio, 'integer') . ")";
-                            $this->db->exec($query);
+                            $stmt = $this->db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)");
+                            $stmt->execute([
+                                ':zone_id' => $zone_id,
+                                ':name' => $name,
+                                ':type' => $type,
+                                ':content' => $content,
+                                ':ttl' => $ttl,
+                                ':prio' => $prio
+                            ]);
 
                             // Get the new record ID
                             if ($db_type == 'pgsql') {
@@ -511,11 +537,12 @@ class DomainManager implements DomainManagerInterface
                             }
 
                             // Link the record to the template in the mapping table
-                            $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
-                                . $this->db->quote($zone_id, 'integer') . ","
-                                . $this->db->quote($record_id, 'integer') . ","
-                                . $this->db->quote($zone_template_id, 'integer') . ")";
-                            $this->db->query($query);
+                            $stmt = $this->db->prepare("INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES (:zone_id, :record_id, :zone_template_id)");
+                            $stmt->execute([
+                                ':zone_id' => $zone_id,
+                                ':record_id' => $record_id,
+                                ':zone_template_id' => $zone_template_id
+                            ]);
                         }
                     }
                 }
@@ -523,10 +550,13 @@ class DomainManager implements DomainManagerInterface
         }
 
         // Update the zone's template ID
-        $query = "UPDATE zones
-                    SET zone_templ_id = " . $this->db->quote($zone_template_id, 'integer') . "
-                    WHERE domain_id = " . $this->db->quote($zone_id, 'integer');
-        $this->db->exec($query);
+        $stmt = $this->db->prepare("UPDATE zones 
+                    SET zone_templ_id = :zone_template_id
+                    WHERE domain_id = :zone_id");
+        $stmt->execute([
+            ':zone_template_id' => $zone_template_id,
+            ':zone_id' => $zone_id
+        ]);
         $this->db->commit();
     }
 }
