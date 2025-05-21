@@ -26,6 +26,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
+use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -47,19 +48,22 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
     private DnsValidatorRegistry $validatorRegistry;
     private MessageService $messageService;
     private ZoneRepositoryInterface $zoneRepository;
+    private DNSViolationValidator $dnsViolationValidator;
 
     public function __construct(
         DnsValidatorRegistry $validatorRegistry,
         DnsCommonValidator $dnsCommonValidator,
         TTLValidator $ttlValidator,
         MessageService $messageService,
-        ZoneRepositoryInterface $zoneRepository
+        ZoneRepositoryInterface $zoneRepository,
+        DNSViolationValidator $dnsViolationValidator
     ) {
         $this->validatorRegistry = $validatorRegistry;
         $this->dnsCommonValidator = $dnsCommonValidator;
         $this->ttlValidator = $ttlValidator;
         $this->messageService = $messageService;
         $this->zoneRepository = $zoneRepository;
+        $this->dnsViolationValidator = $dnsViolationValidator;
     }
 
     /**
@@ -111,6 +115,12 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         // Special case for SOA records
         if ($type === RecordType::SOA && method_exists($validator, 'setSOAParams')) {
             $validator->setSOAParams($dns_hostmaster, $zone);
+        }
+
+        // Check for DNS violations (like multiple CNAMEs with the same name)
+        $violationResult = $this->dnsViolationValidator->validate($rid, $zid, $type, $name, $content);
+        if (!$violationResult->isValid()) {
+            return $violationResult;
         }
 
         // Perform validation using the appropriate validator

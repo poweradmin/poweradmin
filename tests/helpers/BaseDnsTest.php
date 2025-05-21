@@ -27,6 +27,7 @@ use Poweradmin\Domain\Service\DnsValidation\SPFRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\SRVRecordValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\TXTRecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -192,6 +193,7 @@ class BaseDnsTest extends TestCase
 
         $ttlValidator = new TTLValidator();
         $dnsCommonValidator = new DnsCommonValidator($dbMock, $configMock);
+        $dnsViolationValidator = new DNSViolationValidator($dbMock, $configMock);
 
         // Create validation service with mocked dependencies for tests
         $this->validationService = new DnsRecordValidationService(
@@ -199,7 +201,8 @@ class BaseDnsTest extends TestCase
             $dnsCommonValidator,
             $ttlValidator,
             $messageServiceMock,
-            $zoneRepositoryMock
+            $zoneRepositoryMock,
+            $dnsViolationValidator
         );
     }
 }

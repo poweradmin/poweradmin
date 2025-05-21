@@ -27,6 +27,7 @@ use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
+use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOLayer;
@@ -60,13 +61,15 @@ class DnsServiceFactory
         $dnsCommonValidator = new DnsCommonValidator($db, $config);
         $messageService = new MessageService();
         $zoneRepository = new DbZoneRepository($db, $config);
+        $dnsViolationValidator = new DNSViolationValidator($db, $config);
 
         return new DnsRecordValidationService(
             $validatorRegistry,
             $dnsCommonValidator,
             $ttlValidator,
             $messageService,
-            $zoneRepository
+            $zoneRepository,
+            $dnsViolationValidator
         );
     }
 }

@@ -35,6 +35,7 @@ use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
+use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
@@ -55,13 +56,15 @@ class ValidationController extends InternalApiController
         $ttlValidator = new TTLValidator();
         $messageService = new MessageService();
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $dnsViolationValidator = new DNSViolationValidator($this->db, $this->getConfig());
 
         $this->validationService = new DnsRecordValidationService(
             $validatorRegistry,
             $dnsCommonValidator,
             $ttlValidator,
             $messageService,
-            $this->zoneRepository
+            $this->zoneRepository,
+            $dnsViolationValidator
         );
     }
 
@@ -166,6 +169,12 @@ class ValidationController extends InternalApiController
             return 'prio';
         } elseif (strpos($lowerError, 'already exists') !== false) {
             return 'name-content-duplicate';
+        } elseif (strpos($lowerError, 'multiple cname') !== false || strpos($lowerError, 'dns violation') !== false) {
+            return 'dns-violation';
+        } elseif (strpos($lowerError, 'conflicts with') !== false) {
+            return 'record-conflict';
+        } elseif (strpos($lowerError, 'cname record cannot coexist') !== false) {
+            return 'cname-conflict';
         }
 
         // Default to content field as that's the most common error source

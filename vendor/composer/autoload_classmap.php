@@ -612,6 +612,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DnsValidation\\DMARCRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DMARCRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DNAMERecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DNAMERecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DNSKEYRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php',
+    'Poweradmin\\Domain\\Service\\DnsValidation\\DNSViolationValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DNSViolationValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DSRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DSRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DefaultRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DefaultRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DnsCommonValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DnsCommonValidator.php',
