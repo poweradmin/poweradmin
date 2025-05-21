@@ -223,6 +223,11 @@ class RdapService
             ]
         ];
 
+        // Validate URL before fetching to prevent path traversal
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            return null;
+        }
+
         $context = stream_context_create($options);
         $response = @file_get_contents($url, false, $context);
 
@@ -258,6 +263,11 @@ class RdapService
 
         // Construct the full URL for the domain query
         $url = $serverUrl . 'domain/' . urlencode($domainForQuery);
+
+        // Validate the constructed URL before proceeding
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            return null;
+        }
 
         // Perform the HTTP request
         $response = $this->httpRequest($url);
