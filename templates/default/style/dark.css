@@ -88,6 +88,14 @@ label, .form-label {
     background-color: var(--bg-dark-accent);
 }
 
+/* Ensure Template Placeholders table rows have correct coloring in dark mode */
+.card-body .table:not(.table-striped) tbody tr,
+.card-body .table:not(.table-striped) tbody tr > td,
+.card-body .table:not(.table-striped) tbody tr > th {
+    color: var(--text-light) !important;
+    background-color: var(--bg-dark-accent) !important;
+}
+
 /* Override bootstrap table-light in dark mode */
 .table-light,
 .table-light > td,
