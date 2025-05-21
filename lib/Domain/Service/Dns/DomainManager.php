@@ -420,18 +420,13 @@ class DomainManager implements DomainManagerInterface
      * @param int $zone_id Zone ID to update
      * @param int $zone_template_id Zone Template ID to use for update
      */
-    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id)
+    public function updateZoneRecords(string $db_type, int $dns_ttl, int $zone_id, int $zone_template_id): void
     {
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        if (UserManager::verifyPermission($this->db, 'zone_master_add')) {
-            $zone_master_add = "1";
-        }
-
-        if (UserManager::verifyPermission($this->db, 'zone_slave_add')) {
-            $zone_slave_add = "1";
-        }
+        $zone_master_add = UserManager::verifyPermission($this->db, 'zone_master_add');
+        $zone_slave_add = UserManager::verifyPermission($this->db, 'zone_slave_add');
 
         $soa_rec = $this->soaRecordManager->getSOARecord($zone_id);
         $this->db->beginTransaction();
@@ -441,6 +436,7 @@ class DomainManager implements DomainManagerInterface
 
         if ($zone_template_id != 0) {
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+                // Delete existing template-based records
                 if ($db_type == 'pgsql') {
                     $query = "DELETE FROM $records_table r USING records_zone_templ rzt WHERE rzt.domain_id = :zone_id AND rzt.zone_templ_id = :zone_template_id AND r.id = rzt.record_id";
                 } elseif ($db_type == 'sqlite') {
@@ -453,19 +449,24 @@ class DomainManager implements DomainManagerInterface
             } else {
                 $this->messageService->addSystemError(_("You do not have the permission to delete a zone."));
             }
-            $zone_master_add = $this->config->get('zone_master_add', false) ? "1" : "0";
-            $zone_slave_add = $this->config->get('zone_slave_add', false) ? "1" : "0";
-            if ($zone_master_add == "1" || $zone_slave_add == "1") {
-                $domain = $this->domainRepository->getDomainNameById($zone_id);
-                $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
 
+            // Use the permissions we already checked earlier
+            if ($zone_master_add || $zone_slave_add) {
+                $domain = $this->domainRepository->getDomainNameById($zone_id);
+
+                // Get all records from the template
+                $templ_records = ZoneTemplate::getZoneTemplRecords($this->db, $zone_template_id);
+                $zoneTemplate = new ZoneTemplate($this->db, $this->config);
+
+                // Process each template record
                 foreach ($templ_records as $r) {
                     // Check if this is a reverse zone and handle NS or SOA records appropriately
                     if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
-                        $zoneTemplate = new ZoneTemplate($this->db, $this->config);
                         $name = $zoneTemplate->parseTemplateValue($r["name"], $domain);
                         $type = $r["type"];
+
                         if ($type == "SOA") {
+                            // For SOA records, delete existing ones and use updated SOA record
                             $this->db->exec("DELETE FROM $records_table WHERE domain_id = " . $this->db->quote($zone_id, 'integer') . " AND type = 'SOA'");
                             $content = $this->soaRecordManager->getUpdatedSOARecord($soa_rec);
                             if ($content == "") {
@@ -482,6 +483,7 @@ class DomainManager implements DomainManagerInterface
                             $ttl = $dns_ttl;
                         }
 
+                        // Insert the record
                         $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES ("
                             . $this->db->quote($zone_id, 'integer') . ","
                             . $this->db->quote($name, 'text') . ","
@@ -491,12 +493,14 @@ class DomainManager implements DomainManagerInterface
                             . $this->db->quote($prio, 'integer') . ")";
                         $this->db->exec($query);
 
+                        // Get the new record ID
                         if ($db_type == 'pgsql') {
                             $record_id = $this->db->lastInsertId('records_id_seq');
                         } else {
                             $record_id = $this->db->lastInsertId();
                         }
 
+                        // Link the record to the template in the mapping table
                         $query = "INSERT INTO records_zone_templ (domain_id, record_id, zone_templ_id) VALUES ("
                             . $this->db->quote($zone_id, 'integer') . ","
                             . $this->db->quote($record_id, 'integer') . ","
@@ -507,6 +511,7 @@ class DomainManager implements DomainManagerInterface
             }
         }
 
+        // Update the zone's template ID
         $query = "UPDATE zones
                     SET zone_templ_id = " . $this->db->quote($zone_template_id, 'integer') . "
                     WHERE domain_id = " . $this->db->quote($zone_id, 'integer');
