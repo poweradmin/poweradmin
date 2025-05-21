@@ -70,10 +70,39 @@ class ZoneTemplate
             return [$record['name'], $record['content']];
         }
 
+        // Parse domain into its components
+        $domainService = new DomainParsingService();
+        $domainComponents = $domainService->parseDomain($domain);
+        $domainName = $domainComponents['domain']; // Example: 'example' from 'example.com'
+        $tld = $domainComponents['tld'];           // Example: 'com' from 'example.com'
+
+        // Replace domain in name field
         $pattern = '/(\.)?' . preg_quote($domain, '/') . '$/';
         $name = preg_replace($pattern, '$1[ZONE]', $record['name']);
+
+        // Replace domain in content field - first handle direct matches
         $content = preg_replace($pattern, '$1[ZONE]', $record['content']);
 
+        // Now handle cases like example-com.mail.protection.outlook.com
+        // Look for domain parts that might be used in content like example-com or example-net
+        if (!empty($domainName) && !empty($tld)) {
+            $domainHyphenatedPattern = $domainName . '-' . $tld;
+
+            // Replace example-com with [DOMAIN]-[TLD]
+            if (strpos($content, $domainHyphenatedPattern) !== false) {
+                $content = str_replace($domainHyphenatedPattern, '[DOMAIN]-[TLD]', $content);
+            }
+
+            // Also replace the domain name directly if it's a standalone part
+            $domainNamePattern = '/\b' . preg_quote($domainName, '/') . '\b/';
+            $content = preg_replace($domainNamePattern, '[DOMAIN]', $content);
+
+            // And the TLD if it's a standalone part
+            $tldPattern = '/\b' . preg_quote($tld, '/') . '\b/';
+            $content = preg_replace($tldPattern, '[TLD]', $content);
+        }
+
+        // Special handling for SOA records
         if (isset($record['type']) && $record['type'] === 'SOA') {
             $parts = explode(' ', $content);
 
