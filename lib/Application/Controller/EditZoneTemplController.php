@@ -53,7 +53,12 @@ class EditZoneTemplController extends BaseController
 
     public function run(): void
     {
-        $zone_templ_id = htmlspecialchars($_GET['id']);
+        if (!isset($_GET['id']) || empty($_GET['id'])) {
+            $this->showError(_('No template ID provided.'));
+            return;
+        }
+
+        $zone_templ_id = (int)$_GET['id'];
         $userId = $this->userContext->getLoggedInUserId();
         $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
@@ -85,7 +90,7 @@ class EditZoneTemplController extends BaseController
         $this->showForm($zone_templ_id);
     }
 
-    private function updateZoneTemplate(string $zone_templ_id): void
+    private function updateZoneTemplate(int $zone_templ_id): void
     {
         $userId = $this->userContext->getLoggedInUserId();
         $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
@@ -104,7 +109,7 @@ class EditZoneTemplController extends BaseController
         }
     }
 
-    private function showForm(string $zone_templ_id): void
+    private function showForm(int $zone_templ_id): void
     {
         $iface_rowamount = $this->config->get('interface', 'rows_per_page', 10);
         $row_start = $this->getRowStart($iface_rowamount);
@@ -161,7 +166,7 @@ class EditZoneTemplController extends BaseController
         return $sortOrder;
     }
 
-    public function updateZoneTemplateDetails(string $zone_templ_id): void
+    public function updateZoneTemplateDetails(int $zone_templ_id): void
     {
         $constraints = [
             'templ_name' => [
@@ -186,7 +191,7 @@ class EditZoneTemplController extends BaseController
         $this->redirect('index.php', ['page' => 'list_zone_templ']);
     }
 
-    public function updateZoneRecords(string $zone_templ_id): void
+    public function updateZoneRecords(int $zone_templ_id): void
     {
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
         $userId = $this->userContext->getLoggedInUserId();
@@ -198,7 +203,7 @@ class EditZoneTemplController extends BaseController
         $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
     }
 
-    private function saveTemplateAs(string $zone_templ_id): void
+    private function saveTemplateAs(int $zone_templ_id): void
     {
         // Check if user has permission to add templates
         if (
