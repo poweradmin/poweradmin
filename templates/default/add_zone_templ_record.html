@@ -14,20 +14,20 @@
     </ol>
 </nav>
 
-<!-- Add Record Card -->
-<div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add record to zone template{% endtrans %}: "{{ templ_name }}"</strong>
-    </div>
-    <div class="card-body">
-        <p class="small text-muted mb-3">{% trans %}Create a new record for this zone template{% endtrans %}</p>
+<div class="row">
+    <div class="col-md-6">
+        <!-- Add Record Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add record to zone template{% endtrans %}: "{{ templ_name }}"</strong>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted mb-3">{% trans %}Create a new record for this zone template{% endtrans %}</p>
 
-        <form class="needs-validation" method="post" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
-            <input type="hidden" name="domain" value="{{ zone_templ_id }}">
+                <form class="needs-validation" method="post" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="domain" value="{{ zone_templ_id }}">
 
-            <div class="row">
-                <div class="col-md-6">
                     <div class="mb-3">
                         <label for="name" class="form-label">{% trans %}Name{% endtrans %}</label>
                         <input class="form-control form-control-sm" type="text" id="name" name="name" value="{{ name }}" required>
@@ -82,77 +82,96 @@
                             <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                         </a>
                     </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Template Placeholders Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Template Placeholders{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>{% trans %}Placeholder{% endtrans %}</th>
+                            <th>{% trans %}Description{% endtrans %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><code>[ZONE]</code></td>
+                            <td>{% trans %}Substituted with current zone name{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[DOMAIN]</code></td>
+                            <td>{% trans %}Substituted with domain name without TLD{% endtrans %} (e.g., example from example.net)</td>
+                        </tr>
+                        <tr>
+                            <td><code>[TLD]</code></td>
+                            <td>{% trans %}Substituted with top-level domain{% endtrans %} (e.g., net from example.net)</td>
+                        </tr>
+                        <tr>
+                            <td><code>[SERIAL]</code></td>
+                            <td>{% trans %}Substituted with current date and 2 numbers{% endtrans %} (YYYYMMDD + 00)</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS1]</code></td>
+                            <td>{% trans %}Substituted with 1st name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS2]</code></td>
+                            <td>{% trans %}Substituted with 2nd name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS3]</code></td>
+                            <td>{% trans %}Substituted with 3rd name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS4]</code></td>
+                            <td>{% trans %}Substituted with 4th name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[HOSTMASTER]</code></td>
+                            <td>{% trans %}Substituted with hostmaster{% endtrans %}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
-
-                <div class="col-md-6">
-                    <!-- Information panel on the right side -->
-                    <div class="card border-info">
-                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
-                            <i class="bi bi-info-circle-fill me-2 text-info"></i>{% trans %}Template Placeholders{% endtrans %}
-                        </div>
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-sm">
-                                    <thead class="table-light">
-                                    <tr>
-                                        <th>{% trans %}Placeholder{% endtrans %}</th>
-                                        <th>{% trans %}Description{% endtrans %}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <td><code>[ZONE]</code></td>
-                                        <td>{% trans %}Substituted with current zone name{% endtrans %}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>[DOMAIN]</code></td>
-                                        <td>{% trans %}Substituted with domain name without TLD{% endtrans %} (e.g., example from example.net)</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>[TLD]</code></td>
-                                        <td>{% trans %}Substituted with top-level domain{% endtrans %} (e.g., net from example.net)</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>[SERIAL]</code></td>
-                                        <td>{% trans %}Substituted with current date and 2 numbers{% endtrans %} (YYYYMMDD + 00)</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>[NS1]</code></td>
-                                        <td>{% trans %}Substituted with 1st name server{% endtrans %}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>[NS2]</code></td>
-                                        <td>{% trans %}Substituted with 2nd name server{% endtrans %}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>[NS3]</code></td>
-                                        <td>{% trans %}Substituted with 3rd name server{% endtrans %}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>[NS4]</code></td>
-                                        <td>{% trans %}Substituted with 4th name server{% endtrans %}</td>
-                                    </tr>
-                                    <tr>
-                                        <td><code>[HOSTMASTER]</code></td>
-                                        <td>{% trans %}Substituted with hostmaster{% endtrans %}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-
-                            <h6 class="mt-3">{% trans %}Examples{% endtrans %}:</h6>
-                            <ul class="small mb-0">
-                                <li>{% trans %}For a subdomain: <code>subdomain.[ZONE]</code>{% endtrans %}</li>
-                                <li>{% trans %}For a wildcard record: <code>*.[ZONE]</code>{% endtrans %}</li>
-                                <li>{% trans %}For the domain itself: <code>[ZONE]</code>{% endtrans %}</li>
-                                <li>{% trans %}For SOA record content: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>{% endtrans %}</li>
-                                <li>{% trans %}For Microsoft 365 MX record: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>{% endtrans %}</li>
-                            </ul>
-                        </div>
+            </div>
+        </div>
+        
+        <!-- Common Record Examples Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-lightbulb me-2"></i>{% trans %}Example Records{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <h6 class="mb-1">{% trans %}Name Examples{% endtrans %}:</h6>
+                        <ul class="small ps-4 mb-2">
+                            <li>{% trans %}For a subdomain: <code>subdomain.[ZONE]</code>{% endtrans %}</li>
+                            <li>{% trans %}For a wildcard record: <code>*.[ZONE]</code>{% endtrans %}</li>
+                            <li>{% trans %}For the domain itself: <code>[ZONE]</code>{% endtrans %}</li>
+                        </ul>
+                        
+                        <h6 class="mb-1">{% trans %}Content Examples{% endtrans %}:</h6>
+                        <ul class="small ps-4 mb-0">
+                            <li>{% trans %}SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>{% endtrans %}</li>
+                            <li>{% trans %}MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>{% endtrans %}</li>
+                            <li>{% trans %}A record: <code>192.0.2.10</code>{% endtrans %}</li>
+                            <li>{% trans %}CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>{% endtrans %}</li>
+                            <li>{% trans %}TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>{% endtrans %}</li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
