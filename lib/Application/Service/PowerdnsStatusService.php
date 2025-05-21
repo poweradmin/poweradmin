@@ -95,15 +95,18 @@ class PowerdnsStatusService
                         $port = isset($parsedUrl['port']) ? $parsedUrl['port'] : '8081';
                         $metricsUrl = "{$parsedUrl['scheme']}://{$parsedUrl['host']}:{$port}/metrics";
 
-                        // Fetch metrics in Prometheus format
-                        $rawMetrics = @file_get_contents($metricsUrl);
-                        if ($rawMetrics !== false) {
-                            // Parse Prometheus-style metrics
-                            $prometheusMetrics = $this->parsePrometheusMetrics($rawMetrics);
-                            // Merge with existing metrics, with Prometheus metrics taking precedence
-                            $metrics = array_merge($metrics, $prometheusMetrics);
-                            // Store metric metadata for UI display
-                            $status['metric_info'] = $this->getMetricInfo($rawMetrics);
+                        // Validate URL before fetching to prevent path traversal
+                        if (filter_var($metricsUrl, FILTER_VALIDATE_URL) !== false) {
+                            // Fetch metrics in Prometheus format
+                            $rawMetrics = @file_get_contents($metricsUrl);
+                            if ($rawMetrics !== false) {
+                                // Parse Prometheus-style metrics
+                                $prometheusMetrics = $this->parsePrometheusMetrics($rawMetrics);
+                                // Merge with existing metrics, with Prometheus metrics taking precedence
+                                $metrics = array_merge($metrics, $prometheusMetrics);
+                                // Store metric metadata for UI display
+                                $status['metric_info'] = $this->getMetricInfo($rawMetrics);
+                            }
                         }
                     }
                 }
