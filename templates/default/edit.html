@@ -412,7 +412,7 @@
             {% endif %}
             {% if r['type'] == "SOA" or r['type'] == "NS" and perm_edit == "own_as_client" %}
             <td class="col-sm-2">{{ r['name'] }}</td>
-            <td class="col-sm-1"><span class="badge {% if r['type'] == 'SOA' %}bg-dark{% elseif r['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ r['type'] }}</span></td>
+            <td><span class="badge {% if r['type'] == 'SOA' %}bg-dark{% elseif r['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ r['type'] }}</span></td>
             <td>{{ r['content'] }}</td>
             <td>-</td>
             <td class="col-sm-1">{{ r['ttl'] }}</td>
@@ -469,13 +469,13 @@
             {% if iface_edit_show_id %}
             <td></td>
             {% endif %}
-            <td colspan="{% if not iface_record_comments %}7{% else %}9{% endif %}">{% trans %}Comments{% endtrans %}:</td>
+            <td colspan="{% if not iface_record_comments %}8{% else %}9{% endif %}">{% trans %}Comments{% endtrans %}:</td>
         </tr>
         <tr>
             {% if iface_edit_show_id %}
             <td></td>
             {% endif %}
-            <td colspan="6"><textarea class="form-control form-control-sm" rows="5" cols="80" name="comment">{{ zone_comment }}</textarea>
+            <td colspan="7"><textarea class="form-control form-control-sm" rows="5" cols="80" name="comment">{{ zone_comment }}</textarea>
             </td>
             <td colspan="2">
                 {% if perm_edit != "none" %}
