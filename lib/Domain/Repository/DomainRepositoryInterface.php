@@ -101,7 +101,7 @@ interface DomainRepositoryInterface
      *
      * @return boolean|array false or array of zone details [id,name,type,count_records]
      */
-    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name', string $sortDirection = 'ASC'): bool|array;
+    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = 9999, string $sortby = 'name', string $sortDirection = 'ASC'): bool|array;
 
     /**
      * Get Zone details from Zone ID

@@ -79,7 +79,7 @@ interface RecordRepositoryInterface
      *
      * @return int|array array of record detail, or -1 if nothing found
      */
-    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int;
+    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = 9999, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int;
 
     /**
      * Record ID to Domain ID

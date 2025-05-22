@@ -39,6 +39,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class ZoneTemplate
 {
+    private const DEFAULT_MAX_ROWS = 9999;
     private ConfigurationInterface $config;
     private PDOCommon $db;
     private DnsFormatter $dnsFormatter;
@@ -384,22 +385,27 @@ class ZoneTemplate
      *
      * @param int $id zone template ID
      * @param int $rowstart Starting row (default=0)
-     * @param int $rowamount Number of rows per query (default=999999)
+     * @param int $rowamount Number of rows per query (default=9999)
      * @param string $sortby Column to sort by (default='name')
      *
      * @return array zone template records numerically indexed
      * [id,zone_templd_id,name,type,content,ttl,pro] or empty array if nothing is found
      */
-    public static function getZoneTemplRecords($db, int $id, int $rowstart = 0, int $rowamount = 999999, string $sortby = 'name'): array
+    public static function getZoneTemplRecords($db, int $id, int $rowstart = 0, int $rowamount = self::DEFAULT_MAX_ROWS, string $sortby = 'name'): array
     {
-        $db->setLimit($rowamount, $rowstart);
-
         $allowedSortColumns = ['name', 'type', 'content', 'priority', 'ttl'];
         $sortby = in_array($sortby, $allowedSortColumns) ? htmlspecialchars($sortby) : 'name';
 
-        $stmt = $db->prepare("SELECT id FROM zone_templ_records WHERE zone_templ_id = :id ORDER BY " . $sortby);
+        $query = "SELECT id FROM zone_templ_records WHERE zone_templ_id = :id ORDER BY " . $sortby;
+        if ($rowamount < self::DEFAULT_MAX_ROWS) {
+            $query .= " LIMIT " . $rowamount;
+            if ($rowstart > 0) {
+                $query .= " OFFSET " . $rowstart;
+            }
+        }
+
+        $stmt = $db->prepare($query);
         $stmt->execute([':id' => $id]);
-        $db->setLimit(0);
 
         $ret = [];
         $retCount = 0;

@@ -33,6 +33,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
 
 class UserManager
 {
+    private const DEFAULT_MAX_ROWS = 9999;
     private PDOCommon $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
@@ -115,7 +116,7 @@ class UserManager
      *
      * @return array array with all users [id,username,fullname,email,description,active,numdomains]
      */
-    public static function showUsers($db, int|string $id = '', int $rowstart = 0, int $rowamount = 9999999): array
+    public static function showUsers($db, int|string $id = '', int $rowstart = 0, int $rowamount = self::DEFAULT_MAX_ROWS): array
     {
         $add = '';
         $params = [];
@@ -146,8 +147,14 @@ class UserManager
 	ORDER BY
 	users.fullname";
 
+        if ($rowamount < self::DEFAULT_MAX_ROWS) {
+            $query .= " LIMIT " . $rowamount;
+            if ($rowstart > 0) {
+                $query .= " OFFSET " . $rowstart;
+            }
+        }
+
         // Execute the huge query.
-        $db->setLimit($rowamount, $rowstart);
         if (!empty($params)) {
             $stmt = $db->prepare($query);
             $stmt->execute($params);
@@ -155,7 +162,6 @@ class UserManager
         } else {
             $response = $db->query($query);
         }
-        $db->setLimit(0);
 
         $ret = array();
         while ($r = $response->fetch()) {
