@@ -25,6 +25,8 @@ namespace Poweradmin\Application\Controller;
 use Exception;
 use Phinx\Console\PhinxApplication;
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Service\DatabaseSchemaService;
+use Poweradmin\Domain\Service\DatabasePermissionService;
 use Symfony\Component\Console\Input\ArrayInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -32,21 +34,31 @@ class MigrationsController extends BaseController
 {
     private const PHINX_CONFIG_PATH = __DIR__ . '/../../../tools/phinx.php';
 
+    private DatabaseSchemaService $schemaService;
+    private DatabasePermissionService $permissionService;
+
+    public function __construct(array $request, bool $authenticate = true)
+    {
+        parent::__construct($request, $authenticate);
+        $this->schemaService = new DatabaseSchemaService($this->db);
+        $this->permissionService = new DatabasePermissionService($this->db);
+    }
+
     public function run(): void
     {
         $this->checkPermission('user_is_ueberuser', _('You do not have the permission to access the migrations.'));
 
-        $db_type = $this->config->get('database', 'type', 'mysql');
-        if ($this->checkOldMigrationsTable($db_type)) {
+        if ($this->schemaService->hasOldMigrationsTable()) {
             $this->render('migrations.html', [
                 'output' => _('Old migrations table detected. Please remove the `migrations` table before proceeding.'),
             ]);
             return;
         }
 
-        if (!$this->checkDatabaseAccess($db_type)) {
+        if (!$this->permissionService->hasCreateAndAlterPermissions()) {
             $this->render('migrations.html', [
-                'output' => _('Database access check failed. Please ensure the current database user has the necessary permissions to create and alter tables.'),            ]);
+                'output' => _('Database access check failed. Please ensure the current database user has the necessary permissions to create and alter tables.'),
+            ]);
             return;
         }
 
@@ -71,71 +83,5 @@ class MigrationsController extends BaseController
         $this->render('migrations.html', [
             'output' => $output,
         ]);
-    }
-
-    private function checkOldMigrationsTable(string $db_type): bool
-    {
-        switch ($db_type) {
-            case 'mysql':
-                $query = $this->db->query("SHOW COLUMNS FROM `migrations` LIKE 'apply_time'");
-                break;
-            case 'pgsql':
-                $query = $this->db->query("SELECT column_name FROM information_schema.columns WHERE table_name='migrations' AND column_name='apply_time'");
-                break;
-            case 'sqlite':
-                $query = $this->db->query("PRAGMA table_info(migrations)");
-                $columns = $query->fetchAll();
-                foreach ($columns as $column) {
-                    if ($column['name'] === 'apply_time') {
-                        return true;
-                    }
-                }
-                return false;
-            default:
-                return false;
-        }
-
-        $result = $query->fetch();
-        return (bool)$result;
-    }
-
-    private function checkDatabaseAccess(string $db_type): bool
-    {
-        if ($db_type === 'sqlite') {
-            return true;
-        }
-
-        try {
-            switch ($db_type) {
-                case 'mysql':
-                    $query = $this->db->query("SHOW GRANTS FOR CURRENT_USER");
-                    $grants = $query->fetchAll();
-
-                    // Check for necessary permissions in MySQL grants
-                    foreach ($grants as $grant) {
-                        $grantStr = implode('', $grant);
-                        // Look for ALL PRIVILEGES or specific CREATE/ALTER privileges
-                        if (
-                            strpos($grantStr, 'ALL PRIVILEGES') !== false ||
-                            (strpos($grantStr, 'CREATE') !== false && strpos($grantStr, 'ALTER') !== false)
-                        ) {
-                            return true;
-                        }
-                    }
-                    return false;
-
-                case 'pgsql':
-                    $query = $this->db->query("SELECT has_schema_privilege(current_user, 'public', 'CREATE') AS can_create");
-                    $result = $query->fetch();
-                    return isset($result['can_create']) && $result['can_create'] === 't';
-
-                default:
-                    return false;
-            }
-        } catch (\Exception $e) {
-            // If we can't check permissions, assume we have them for now
-            // This avoids problems with restricted MySQL users that can't execute SHOW GRANTS
-            return true;
-        }
     }
 }

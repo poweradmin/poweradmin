@@ -830,6 +830,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Domain\\Service\\AuthenticationService' => __DIR__ . '/../..' . '/lib/Domain/Service/AuthenticationService.php',
         'Poweradmin\\Domain\\Service\\BatchReverseRecordCreator' => __DIR__ . '/../..' . '/lib/Domain/Service/BatchReverseRecordCreator.php',
         'Poweradmin\\Domain\\Service\\DatabaseConnection' => __DIR__ . '/../..' . '/lib/Domain/Service/DatabaseConnection.php',
+        'Poweradmin\\Domain\\Service\\DatabasePermissionService' => __DIR__ . '/../..' . '/lib/Domain/Service/DatabasePermissionService.php',
         'Poweradmin\\Domain\\Service\\DatabaseSchemaService' => __DIR__ . '/../..' . '/lib/Domain/Service/DatabaseSchemaService.php',
         'Poweradmin\\Domain\\Service\\DnsFormatter' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsFormatter.php',
         'Poweradmin\\Domain\\Service\\DnsIdnService' => __DIR__ . '/../..' . '/lib/Domain/Service/DnsIdnService.php',
