@@ -558,6 +558,7 @@ return array(
     'Poweradmin\\Domain\\Error\\ApiErrorException' => $baseDir . '/lib/Domain/Error/ApiErrorException.php',
     'Poweradmin\\Domain\\Error\\ErrorMessage' => $baseDir . '/lib/Domain/Error/ErrorMessage.php',
     'Poweradmin\\Domain\\Model\\ApiKey' => $baseDir . '/lib/Domain/Model/ApiKey.php',
+    'Poweradmin\\Domain\\Model\\Constants' => $baseDir . '/lib/Domain/Model/Constants.php',
     'Poweradmin\\Domain\\Model\\CryptoKey' => $baseDir . '/lib/Domain/Model/CryptoKey.php',
     'Poweradmin\\Domain\\Model\\DnssecAlgorithm' => $baseDir . '/lib/Domain/Model/DnssecAlgorithm.php',
     'Poweradmin\\Domain\\Model\\DnssecAlgorithmName' => $baseDir . '/lib/Domain/Model/DnssecAlgorithmName.php',

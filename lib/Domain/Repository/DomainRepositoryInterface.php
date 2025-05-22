@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Repository;
 
+use Poweradmin\Domain\Model\Constants;
+
 /**
  * Interface for domain/zone repository operations
  */
@@ -95,13 +97,13 @@ interface DomainRepositoryInterface
      * @param int $userid Requesting User ID
      * @param string $letterstart Starting letters to match [default='all']
      * @param int $rowstart Start from row in set [default=0]
-     * @param int $rowamount Max number of rows to fetch for this query when not 'all' [default=999999]
+     * @param int $rowamount Max number of rows to fetch for this query when not 'all' [default=9999]
      * @param string $sortby Column to sort results by [default='name']
      * @param string $sortDirection Sort direction [default='ASC']
      *
      * @return boolean|array false or array of zone details [id,name,type,count_records]
      */
-    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = 9999, string $sortby = 'name', string $sortDirection = 'ASC'): bool|array;
+    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC'): bool|array;
 
     /**
      * Get Zone details from Zone ID

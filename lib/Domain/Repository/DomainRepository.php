@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Repository;
 
+use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
@@ -37,7 +38,6 @@ use Poweradmin\Infrastructure\Utility\SortHelper;
  */
 class DomainRepository implements DomainRepositoryInterface
 {
-    private const DEFAULT_MAX_ROWS = 9999;
 
     private PDOCommon $db;
     private ConfigurationManager $config;
@@ -223,7 +223,7 @@ class DomainRepository implements DomainRepositoryInterface
      *
      * @return boolean|array false or array of zone details [id,name,type,count_records]
      */
-    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = self::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC'): bool|array
+    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC'): bool|array
     {
         $db_type = $this->config->get('database', 'type');
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
@@ -294,7 +294,7 @@ class DomainRepository implements DomainRepositoryInterface
                     " . ($iface_zone_comments ? ", zones.comment" : "") . "
                     ORDER BY " . $sql_sortby;
 
-        if ($letterstart != 'all' && $rowamount < self::DEFAULT_MAX_ROWS) {
+        if ($letterstart != 'all' && $rowamount < Constants::DEFAULT_MAX_ROWS) {
             $query .= " LIMIT " . $rowamount;
             if ($rowstart > 0) {
                 $query .= " OFFSET " . $rowstart;

@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Repository;
 
+use Poweradmin\Domain\Model\Constants;
+
 /**
  * Interface for DNS record repository operations
  */
@@ -72,14 +74,14 @@ interface RecordRepositoryInterface
      * @param string $db_type Database type
      * @param int $id Domain ID
      * @param int $rowstart Starting row [default=0]
-     * @param int $rowamount Number of rows to return in this query [default=999999]
+     * @param int $rowamount Number of rows to return in this query [default=9999]
      * @param string $sortby Column to sort by [default='name']
      * @param string $sortDirection Sort direction [default='ASC']
      * @param bool $fetchComments Whether to fetch record comments [default=false]
      *
      * @return int|array array of record detail, or -1 if nothing found
      */
-    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = 9999, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int;
+    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int;
 
     /**
      * Record ID to Domain ID

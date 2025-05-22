@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Repository;
 
 use PDO;
+use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
@@ -33,7 +34,6 @@ use Poweradmin\Infrastructure\Utility\SortHelper;
  */
 class RecordRepository implements RecordRepositoryInterface
 {
-    private const DEFAULT_MAX_ROWS = 9999;
 
     private PDOCommon $db;
     private ConfigurationManager $config;
@@ -156,7 +156,7 @@ class RecordRepository implements RecordRepositoryInterface
      *
      * @return int|array array of record detail, or -1 if nothing found
      */
-    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = self::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int
+    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int
     {
         if (!is_numeric($id)) {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s'), "getRecordsFromDomainId"));
@@ -190,7 +190,7 @@ class RecordRepository implements RecordRepositoryInterface
             AND $records_table.type IS NOT NULL
             ORDER BY " . $sql_sortby;
 
-        if ($rowamount < self::DEFAULT_MAX_ROWS) {
+        if ($rowamount < Constants::DEFAULT_MAX_ROWS) {
             $query .= " LIMIT " . $rowamount;
             if ($rowstart > 0) {
                 $query .= " OFFSET " . $rowstart;

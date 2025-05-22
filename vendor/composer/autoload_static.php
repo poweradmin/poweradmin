@@ -798,6 +798,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Domain\\Error\\ApiErrorException' => __DIR__ . '/../..' . '/lib/Domain/Error/ApiErrorException.php',
         'Poweradmin\\Domain\\Error\\ErrorMessage' => __DIR__ . '/../..' . '/lib/Domain/Error/ErrorMessage.php',
         'Poweradmin\\Domain\\Model\\ApiKey' => __DIR__ . '/../..' . '/lib/Domain/Model/ApiKey.php',
+        'Poweradmin\\Domain\\Model\\Constants' => __DIR__ . '/../..' . '/lib/Domain/Model/Constants.php',
         'Poweradmin\\Domain\\Model\\CryptoKey' => __DIR__ . '/../..' . '/lib/Domain/Model/CryptoKey.php',
         'Poweradmin\\Domain\\Model\\DnssecAlgorithm' => __DIR__ . '/../..' . '/lib/Domain/Model/DnssecAlgorithm.php',
         'Poweradmin\\Domain\\Model\\DnssecAlgorithmName' => __DIR__ . '/../..' . '/lib/Domain/Model/DnssecAlgorithmName.php',

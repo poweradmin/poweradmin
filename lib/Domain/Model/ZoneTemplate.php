@@ -39,7 +39,6 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class ZoneTemplate
 {
-    private const DEFAULT_MAX_ROWS = 9999;
     private ConfigurationInterface $config;
     private PDOCommon $db;
     private DnsFormatter $dnsFormatter;
@@ -391,13 +390,13 @@ class ZoneTemplate
      * @return array zone template records numerically indexed
      * [id,zone_templd_id,name,type,content,ttl,pro] or empty array if nothing is found
      */
-    public static function getZoneTemplRecords($db, int $id, int $rowstart = 0, int $rowamount = self::DEFAULT_MAX_ROWS, string $sortby = 'name'): array
+    public static function getZoneTemplRecords($db, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name'): array
     {
         $allowedSortColumns = ['name', 'type', 'content', 'priority', 'ttl'];
         $sortby = in_array($sortby, $allowedSortColumns) ? htmlspecialchars($sortby) : 'name';
 
         $query = "SELECT id FROM zone_templ_records WHERE zone_templ_id = :id ORDER BY " . $sortby;
-        if ($rowamount < self::DEFAULT_MAX_ROWS) {
+        if ($rowamount < Constants::DEFAULT_MAX_ROWS) {
             $query .= " LIMIT " . $rowamount;
             if ($rowstart > 0) {
                 $query .= " OFFSET " . $rowstart;
