@@ -107,6 +107,13 @@ interface SupermasterManagerInterface
     public function updateSupermaster(string $old_master_ip, string $old_ns_name, string $new_master_ip, string $new_ns_name, string $account): bool;
 
     /**
+     * Get distinct slave server IP addresses
+     *
+     * @return array List of unique slave server IP addresses
+     */
+    public function getSlaveServerIPs(): array;
+
+    /**
      * Validate Account is valid string
      *
      * @param string $account Account name alphanumeric and ._-

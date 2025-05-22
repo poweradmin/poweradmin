@@ -517,7 +517,6 @@ return array(
     'Poweradmin\\Application\\Controller\\MfaVerifyController' => $baseDir . '/lib/Application/Controller/MfaVerifyController.php',
     'Poweradmin\\Application\\Controller\\MigrationsController' => $baseDir . '/lib/Application/Controller/MigrationsController.php',
     'Poweradmin\\Application\\Controller\\PdnsStatusController' => $baseDir . '/lib/Application/Controller/PdnsStatusController.php',
-    'Poweradmin\\Application\\Controller\\PowerdnsStatusController' => $baseDir . '/lib/Application/Controller/PowerdnsStatusController.php',
     'Poweradmin\\Application\\Controller\\RdapController' => $baseDir . '/lib/Application/Controller/RdapController.php',
     'Poweradmin\\Application\\Controller\\SearchController' => $baseDir . '/lib/Application/Controller/SearchController.php',
     'Poweradmin\\Application\\Controller\\UsersController' => $baseDir . '/lib/Application/Controller/UsersController.php',

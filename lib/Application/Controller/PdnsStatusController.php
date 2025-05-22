@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Application\Service\PowerdnsStatusService;
+use Poweradmin\Domain\Service\Dns\SupermasterManager;
 
 /**
  * Controller for displaying PowerDNS server status
@@ -34,6 +35,7 @@ use Poweradmin\Application\Service\PowerdnsStatusService;
 class PdnsStatusController extends BaseController
 {
     private PowerdnsStatusService $statusService;
+    private SupermasterManager $supermasterManager;
 
     /**
      * Constructor
@@ -44,6 +46,7 @@ class PdnsStatusController extends BaseController
     {
         parent::__construct($request);
         $this->statusService = new PowerdnsStatusService();
+        $this->supermasterManager = new SupermasterManager($this->db, $this->config);
     }
 
     /**
@@ -81,7 +84,7 @@ class PdnsStatusController extends BaseController
 
         // Get slave servers if any
         $slaveStatus = [];
-        $slaveServers = $this->getSlaveServers();
+        $slaveServers = $this->supermasterManager->getSlaveServerIPs();
         if (!empty($slaveServers)) {
             $slaveStatus = $this->statusService->checkSlaveServerStatus($slaveServers);
         }
@@ -91,25 +94,5 @@ class PdnsStatusController extends BaseController
             'slave_status' => $slaveStatus,
             'pdns_api_enabled' => $this->statusService->isApiEnabled(),
         ]);
-    }
-
-    /**
-     * Get the list of slave servers from the supermasters table
-     *
-     * @return array List of slave server IP addresses
-     */
-    private function getSlaveServers(): array
-    {
-        $query = "SELECT ip FROM supermasters GROUP BY ip";
-        $result = $this->db->query($query);
-
-        $slaveServers = [];
-        if ($result) {
-            while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
-                $slaveServers[] = $row['ip'];
-            }
-        }
-
-        return $slaveServers;
     }
 }

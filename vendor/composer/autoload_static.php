@@ -757,7 +757,6 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Application\\Controller\\MfaVerifyController' => __DIR__ . '/../..' . '/lib/Application/Controller/MfaVerifyController.php',
         'Poweradmin\\Application\\Controller\\MigrationsController' => __DIR__ . '/../..' . '/lib/Application/Controller/MigrationsController.php',
         'Poweradmin\\Application\\Controller\\PdnsStatusController' => __DIR__ . '/../..' . '/lib/Application/Controller/PdnsStatusController.php',
-        'Poweradmin\\Application\\Controller\\PowerdnsStatusController' => __DIR__ . '/../..' . '/lib/Application/Controller/PowerdnsStatusController.php',
         'Poweradmin\\Application\\Controller\\RdapController' => __DIR__ . '/../..' . '/lib/Application/Controller/RdapController.php',
         'Poweradmin\\Application\\Controller\\SearchController' => __DIR__ . '/../..' . '/lib/Application/Controller/SearchController.php',
         'Poweradmin\\Application\\Controller\\UsersController' => __DIR__ . '/../..' . '/lib/Application/Controller/UsersController.php',

@@ -299,6 +299,28 @@ class SupermasterManager implements SupermasterManagerInterface
     }
 
     /**
+     * Get distinct slave server IP addresses
+     *
+     * @return array List of unique slave server IP addresses
+     */
+    public function getSlaveServerIPs(): array
+    {
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+
+        $result = $this->db->query("SELECT ip FROM $supermasters_table GROUP BY ip");
+
+        $slaveServerIPs = [];
+        if ($result) {
+            while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
+                $slaveServerIPs[] = $row['ip'];
+            }
+        }
+
+        return $slaveServerIPs;
+    }
+
+    /**
      * Validate Account is valid string
      *
      * @param string $account Account name alphanumeric and ._-
