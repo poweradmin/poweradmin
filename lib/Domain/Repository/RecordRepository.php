@@ -483,4 +483,37 @@ class RecordRepository implements RecordRepositoryInterface
         $stmt->execute($params);
         return (int)$stmt->fetchColumn();
     }
+
+    /**
+     * Get the ID of a newly created record
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @param string $content Record content
+     * @return int|null Record ID or null if not found
+     */
+    public function getNewRecordId(int $domainId, string $name, string $type, string $content): ?int
+    {
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $query = "SELECT id FROM $records_table
+                 WHERE domain_id = :domain_id
+                 AND name = :name
+                 AND type = :type
+                 AND content = :content
+                 ORDER BY id DESC LIMIT 1";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([
+            ':domain_id' => $domainId,
+            ':name' => strtolower($name),
+            ':type' => $type,
+            ':content' => $content
+        ]);
+
+        $result = $stmt->fetchColumn();
+        return $result ? (int)$result : null;
+    }
 }

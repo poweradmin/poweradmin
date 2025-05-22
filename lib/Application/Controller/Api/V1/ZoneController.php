@@ -46,6 +46,7 @@ use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\ZoneManagementService;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -54,6 +55,7 @@ class ZoneController extends PublicApiController
     private DbZoneRepository $zoneRepository;
     private RecordRepository $recordRepository;
     private RecordManagerInterface $recordManager;
+    private ZoneManagementService $zoneManagementService;
 
     /**
      * Constructor for ZoneController
@@ -77,6 +79,13 @@ class ZoneController extends PublicApiController
             $validationService,
             $soaRecordManager,
             $domainRepository
+        );
+
+        // Initialize zone management service
+        $this->zoneManagementService = new ZoneManagementService(
+            $this->zoneRepository,
+            $this->getConfig(),
+            $this->db
         );
     }
 
@@ -115,6 +124,7 @@ class ZoneController extends PublicApiController
         return match ($action) {
             'list' => $this->listZones(),
             'get' => $this->getZone(),
+            'records' => $this->getZoneRecords(),
             default => $this->returnApiError('Unknown action', 400),
         };
     }
@@ -160,6 +170,7 @@ class ZoneController extends PublicApiController
     {
         return match ($action) {
             'delete' => $this->deleteZone(),
+            'delete_record' => $this->deleteRecord(),
             default => $this->returnApiError('Unknown action', 400),
         };
     }
@@ -521,65 +532,27 @@ class ZoneController extends PublicApiController
         $owner = isset($input['owner']) ? (int)$input['owner'] : (int)$_SESSION['userid']; // Default to current API user, cast to int
         $zone_template = $input['zone_template'] ?? 'none';
         $slave_master = $input['master'] ?? ''; // For SLAVE zones
+        $enableDnssec = isset($input['dnssec']) && $input['dnssec'];
 
-        // Create DNS record service
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        // Use zone management service to create the zone
+        $result = $this->zoneManagementService->createZone(
+            $domain,
+            $type,
+            $owner,
+            $slave_master,
+            $zone_template,
+            $enableDnssec
+        );
 
-        // Validate domain name
-        $hostnameValidator = new HostnameValidator($this->getConfig());
-        if (!$hostnameValidator->isValid($domain)) {
-            return $this->returnApiError('Invalid domain name', 400);
-        }
-
-        // Check if domain already exists
-        if ($dnsRecord->domainExists($domain)) {
-            return $this->returnApiError('Domain already exists', 400);
-        }
-
-        // Validate zone type
-        $validTypes = ['MASTER', 'SLAVE', 'NATIVE'];
-        if (!in_array($type, $validTypes)) {
-            return $this->returnApiError('Invalid zone type. Must be one of: ' . implode(', ', $validTypes), 400);
-        }
-
-        // For SLAVE zones, ensure master IP is provided
-        if ($type === 'SLAVE' && empty($slave_master)) {
-            return $this->returnApiError('Master IP address is required for SLAVE zones', 400);
-        }
-
-        error_log(sprintf('[ZoneController] Creating zone: %s, Type: %s, Owner: %s', $domain, $type, $owner));
-
-        // Create the domain
-        $success = $dnsRecord->addDomain($this->db, $domain, $owner, $type, $slave_master, $zone_template);
-
-        if (!$success) {
-            return $this->returnApiError('Failed to create zone', 500);
-        }
-
-        // Get the ID of the newly created zone
-        $zoneId = $dnsRecord->getZoneIdFromName($domain);
-
-        // Enable DNSSEC if requested and supported
-        if (isset($input['dnssec']) && $input['dnssec']) {
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-
-            if ($dnssecProvider->isDnssecEnabled()) {
-                try {
-                    $dnssecProvider->secureZone($domain);
-                } catch (Exception $e) {
-                    error_log('[ZoneController] Failed to secure zone with DNSSEC: ' . $e->getMessage());
-                    // We don't return an error since the zone was created successfully
-                }
-
-                $dnssecProvider->rectifyZone($domain);
-            }
+        if (!$result['success']) {
+            return $this->returnApiError($result['message'], 400);
         }
 
         // Return success response with zone ID
         return $this->returnApiResponse([
-            'id' => $zoneId,
-            'name' => $domain,
-            'type' => $type,
+            'id' => $result['zone_id'],
+            'name' => $result['domain'],
+            'type' => $result['type'],
             'message' => 'Zone created successfully'
         ], true, null, 201);
     }
@@ -691,11 +664,31 @@ class ZoneController extends PublicApiController
             return $this->returnApiError('Missing or invalid zone ID', 400);
         }
 
-        // Implementation would continue here with actual zone update logic
-        // For this example, we'll just return a success response
+        $zoneId = (int)$input['id'];
+
+        // Build update array with allowed fields
+        $updates = [];
+        $allowedFields = ['name', 'type', 'master'];
+
+        foreach ($allowedFields as $field) {
+            if (isset($input[$field]) && !empty($input[$field])) {
+                $updates[$field] = $input[$field];
+            }
+        }
+
+        if (empty($updates)) {
+            return $this->returnApiError('No valid fields provided for update', 400);
+        }
+
+        // Use zone management service to update the zone
+        $result = $this->zoneManagementService->updateZone($zoneId, $updates);
+
+        if (!$result['success']) {
+            return $this->returnApiError($result['message'], 400);
+        }
 
         return $this->returnApiResponse([
-            'message' => 'Zone updated successfully'
+            'message' => $result['message']
         ]);
     }
 
@@ -1043,26 +1036,8 @@ class ZoneController extends PublicApiController
                 return $this->returnApiError('Failed to add record', 400);
             }
 
-            // Get the ID of the newly created record
-            // This is a simplified approach and might need adjustment based on how your system works
-            $pdns_db_name = $this->getConfig()->get('database', 'pdns_name');
-            $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-
-            $query = "SELECT id FROM $records_table
-                     WHERE domain_id = :domain_id
-                     AND name = :name
-                     AND type = :type
-                     AND content = :content
-                     ORDER BY id DESC LIMIT 1";
-
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
-            $stmt->bindValue(':name', strtolower($name), PDO::PARAM_STR);
-            $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-            $stmt->bindValue(':content', $content, PDO::PARAM_STR);
-            $stmt->execute();
-
-            $recordId = $stmt->fetchColumn();
+            // Get the ID of the newly created record using repository method
+            $recordId = $this->recordRepository->getNewRecordId($zoneId, $name, $type, $content);
 
             return $this->returnApiResponse(
                 [
@@ -1240,33 +1215,14 @@ class ZoneController extends PublicApiController
             return $this->returnApiError('You do not have permission to modify this domain', 403);
         }
 
-        // Add the user as an owner of the zone
-        $success = DomainManager::addOwnerToZone($this->db, $domainId, $userId);
+        // Use zone management service to set domain permissions
+        $result = $this->zoneManagementService->setDomainPermissions($domainId, $userId);
 
-        if (!$success) {
-            // Check if the user is already an owner
-            $query = "SELECT COUNT(id) FROM zones WHERE owner = :user_id AND domain_id = :domain_id";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
-            $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
-            $stmt->execute();
-
-            if ($stmt->fetchColumn() > 0) {
-                return $this->returnApiResponse([
-                    'message' => 'User is already an owner of this domain',
-                    'domain_id' => $domainId,
-                    'user_id' => $userId
-                ]);
-            }
-
-            return $this->returnApiError('Failed to set domain permissions', 500);
+        if (!$result['success']) {
+            return $this->returnApiError($result['message'], 500);
         }
 
-        return $this->returnApiResponse([
-            'message' => 'Domain permissions set successfully',
-            'domain_id' => $domainId,
-            'user_id' => $userId
-        ]);
+        return $this->returnApiResponse($result);
     }
 
     /**
@@ -1375,15 +1331,19 @@ class ZoneController extends PublicApiController
             return $this->returnApiError('Missing or invalid zone ID', 400);
         }
 
-        // Implementation would continue here with actual zone deletion logic
-        // For this example, we'll just return a success response
+        // Use zone management service to delete the zone
+        $result = $this->zoneManagementService->deleteZone($zoneId);
+
+        if (!$result['success']) {
+            return $this->returnApiError($result['message'], 404);
+        }
 
         return $this->returnApiResponse(
             [
                 'id' => $zoneId
             ],
             true,
-            'Zone deleted successfully',
+            $result['message'],
             200,
             [
                 'meta' => [
@@ -1391,6 +1351,193 @@ class ZoneController extends PublicApiController
                 ]
             ]
         );
+    }
+
+    /**
+     * Get records from a zone
+     *
+     * @return JsonResponse The JSON response
+     */
+    #[OA\Get(
+        path: '/api/v1/zone/records',
+        operationId: 'v1ZoneRecords',
+        summary: 'Get records from a zone',
+        tags: ['zones'],
+        security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
+    )]
+    #[OA\Parameter(
+        name: 'action',
+        in: 'query',
+        required: true,
+        description: 'Action parameter (must be \'records\')',
+        schema: new OA\Schema(type: 'string', default: 'records', enum: ['records'])
+    )]
+    #[OA\Parameter(
+        name: 'zone_id',
+        in: 'query',
+        required: true,
+        description: 'Zone ID',
+        schema: new OA\Schema(type: 'integer')
+    )]
+    #[OA\Parameter(
+        name: 'limit',
+        in: 'query',
+        description: 'Number of records per page',
+        schema: new OA\Schema(type: 'integer', default: 50, minimum: 1, maximum: 100)
+    )]
+    #[OA\Parameter(
+        name: 'offset',
+        in: 'query',
+        description: 'Pagination offset',
+        schema: new OA\Schema(type: 'integer', default: 0, minimum: 0)
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Zone records',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
+                new OA\Property(
+                    property: 'data',
+                    type: 'object',
+                    properties: [
+                        new OA\Property(
+                            property: 'records',
+                            type: 'array',
+                            items: new OA\Items(
+                                properties: [
+                                    new OA\Property(property: 'id', type: 'integer', example: 123),
+                                    new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
+                                    new OA\Property(property: 'type', type: 'string', example: 'A'),
+                                    new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
+                                    new OA\Property(property: 'ttl', type: 'integer', example: 3600),
+                                    new OA\Property(property: 'prio', type: 'integer', example: 0),
+                                    new OA\Property(property: 'disabled', type: 'integer', example: 0)
+                                ],
+                                type: 'object'
+                            )
+                        )
+                    ]
+                )
+            ]
+        )
+    )]
+    public function getZoneRecords(): JsonResponse
+    {
+        $zoneId = $this->request->query->getInt('zone_id', 0);
+
+        if ($zoneId <= 0) {
+            return $this->returnApiError('Missing or invalid zone ID', 400);
+        }
+
+        // Check if zone exists
+        if (!$this->zoneRepository->zoneIdExists($zoneId)) {
+            return $this->returnApiError('Zone not found', 404);
+        }
+
+        $limit = $this->request->query->getInt('limit', 50);
+        $offset = $this->request->query->getInt('offset', 0);
+
+        // Get records from domain
+        $records = $this->recordRepository->getRecordsFromDomainId(
+            $this->getConfig()->get('database', 'type'),
+            $zoneId,
+            $offset,
+            $limit
+        );
+
+        if ($records === -1) {
+            return $this->returnApiError('Failed to retrieve records', 500);
+        }
+
+        return $this->returnApiResponse([
+            'records' => $records
+        ]);
+    }
+
+    /**
+     * Delete a DNS record
+     *
+     * @return JsonResponse The JSON response
+     */
+    #[OA\Delete(
+        path: '/api/v1/zone/record/delete',
+        operationId: 'v1ZoneRecordDelete',
+        summary: 'Delete a DNS record',
+        tags: ['zones'],
+        security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
+    )]
+    #[OA\Parameter(
+        name: 'action',
+        in: 'query',
+        required: true,
+        description: 'Action parameter (must be \'delete_record\')',
+        schema: new OA\Schema(type: 'string', default: 'delete_record', enum: ['delete_record'])
+    )]
+    #[OA\Parameter(
+        name: 'record_id',
+        in: 'query',
+        description: 'Record ID to delete (alternative to providing in request body)',
+        schema: new OA\Schema(type: 'integer')
+    )]
+    #[OA\RequestBody(
+        description: 'Record deletion information (alternative to providing record_id in query parameter)',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'record_id', type: 'integer', example: 123, description: 'ID of the record to delete')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Record deleted successfully',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
+                new OA\Property(
+                    property: 'data',
+                    type: 'object',
+                    properties: [
+                        new OA\Property(property: 'message', type: 'string', example: 'Record deleted successfully')
+                    ]
+                )
+            ]
+        )
+    )]
+    public function deleteRecord(): JsonResponse
+    {
+        $input = $this->getJsonInput();
+
+        // Get record ID from request body or URL parameter
+        $recordId = 0;
+
+        if ($input && isset($input['record_id'])) {
+            $recordId = (int)$input['record_id'];
+        } elseif ($this->request->query->has('record_id')) {
+            $recordId = $this->request->query->getInt('record_id');
+        }
+
+        if ($recordId <= 0) {
+            return $this->returnApiError('Missing or invalid record ID', 400);
+        }
+
+        // Get the record details to verify it exists
+        $record = $this->recordRepository->getRecordFromId($recordId);
+
+        if (!is_array($record) || empty($record)) {
+            return $this->returnApiError('Record not found', 404);
+        }
+
+        // Delete the record using record manager
+        $success = $this->recordManager->deleteRecord($recordId);
+
+        if (!$success) {
+            return $this->returnApiError('Failed to delete record', 500);
+        }
+
+        return $this->returnApiResponse([
+            'message' => 'Record deleted successfully'
+        ]);
     }
 
     /**

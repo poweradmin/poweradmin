@@ -684,4 +684,141 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         return $stmt->execute();
     }
+
+    /**
+     * Check if user is already an owner of the zone
+     *
+     * @param int $zoneId The zone ID
+     * @param int $userId The user ID
+     * @return bool True if user is already an owner
+     */
+    public function isUserZoneOwner(int $zoneId, int $userId): bool
+    {
+        $query = "SELECT COUNT(id) FROM zones WHERE owner = :user_id AND domain_id = :domain_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() > 0;
+    }
+
+    /**
+     * Get zone ID by name
+     *
+     * @param string $zoneName The zone name
+     * @return int|null The zone ID or null if not found
+     */
+    public function getZoneIdByName(string $zoneName): ?int
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT id FROM $domains_table WHERE name = :name";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':name', $zoneName, PDO::PARAM_STR);
+        $stmt->execute();
+
+        $result = $stmt->fetchColumn();
+        return $result ? (int)$result : null;
+    }
+
+    /**
+     * Create a new domain
+     *
+     * @param string $domain Domain name
+     * @param int $owner Owner user ID
+     * @param string $type Domain type (MASTER, SLAVE, NATIVE)
+     * @param string $slaveMaster Master IP for slave zones
+     * @param string $zoneTemplate Zone template to use
+     * @return bool True if domain was created successfully
+     */
+    public function createDomain(string $domain, int $owner, string $type, string $slaveMaster = '', string $zoneTemplate = 'none'): bool
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        // Insert into domains table
+        $query = "INSERT INTO $domains_table (name, type, master) VALUES (:name, :type, :master)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':name', $domain, PDO::PARAM_STR);
+        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+        $stmt->bindValue(':master', $slaveMaster, PDO::PARAM_STR);
+
+        if (!$stmt->execute()) {
+            return false;
+        }
+
+        $domainId = $this->db->lastInsertId();
+
+        // Insert into zones table for ownership
+        $query = "INSERT INTO zones (domain_id, owner, comment) VALUES (:domain_id, :owner, :comment)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
+        $stmt->bindValue(':comment', '', PDO::PARAM_STR);
+
+        return $stmt->execute();
+    }
+
+    /**
+     * Delete a zone by ID
+     *
+     * @param int $zoneId The zone ID
+     * @return bool True if zone was deleted successfully
+     */
+    public function deleteZone(int $zoneId): bool
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $records_table = $this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records';
+
+        // Delete records first
+        $query = "DELETE FROM $records_table WHERE domain_id = :domain_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Delete from zones table
+        $query = "DELETE FROM zones WHERE domain_id = :domain_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        // Delete from domains table
+        $query = "DELETE FROM $domains_table WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    /**
+     * Update zone metadata
+     *
+     * @param int $zoneId The zone ID
+     * @param array $updates Array of field => value pairs to update
+     * @return bool True if zone was updated successfully
+     */
+    public function updateZone(int $zoneId, array $updates): bool
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        $allowedFields = ['name', 'type', 'master'];
+        $setClause = [];
+        $params = [':id' => $zoneId];
+
+        foreach ($updates as $field => $value) {
+            if (in_array($field, $allowedFields)) {
+                $setClause[] = "$field = :$field";
+                $params[":$field"] = $value;
+            }
+        }
+
+        if (empty($setClause)) {
+            return false;
+        }
+
+        $query = "UPDATE $domains_table SET " . implode(', ', $setClause) . " WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+
+        return $stmt->execute($params);
+    }
 }

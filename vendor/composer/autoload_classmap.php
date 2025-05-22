@@ -687,6 +687,7 @@ return array(
     'Poweradmin\\Domain\\Service\\Validation\\ValidationResult' => $baseDir . '/lib/Domain/Service/Validation/ValidationResult.php',
     'Poweradmin\\Domain\\Service\\Validator' => $baseDir . '/lib/Domain/Service/Validator.php',
     'Poweradmin\\Domain\\Service\\ZoneCountService' => $baseDir . '/lib/Domain/Service/ZoneCountService.php',
+    'Poweradmin\\Domain\\Service\\ZoneManagementService' => $baseDir . '/lib/Domain/Service/ZoneManagementService.php',
     'Poweradmin\\Domain\\Service\\ZoneSortingService' => $baseDir . '/lib/Domain/Service/ZoneSortingService.php',
     'Poweradmin\\Domain\\Utility\\DnsHelper' => $baseDir . '/lib/Domain/Utility/DnsHelper.php',
     'Poweradmin\\Domain\\Utility\\DnssecDataTransformer' => $baseDir . '/lib/Domain/Utility/DnssecDataTransformer.php',

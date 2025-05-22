@@ -927,6 +927,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Domain\\Service\\Validation\\ValidationResult' => __DIR__ . '/../..' . '/lib/Domain/Service/Validation/ValidationResult.php',
         'Poweradmin\\Domain\\Service\\Validator' => __DIR__ . '/../..' . '/lib/Domain/Service/Validator.php',
         'Poweradmin\\Domain\\Service\\ZoneCountService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneCountService.php',
+        'Poweradmin\\Domain\\Service\\ZoneManagementService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneManagementService.php',
         'Poweradmin\\Domain\\Service\\ZoneSortingService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneSortingService.php',
         'Poweradmin\\Domain\\Utility\\DnsHelper' => __DIR__ . '/../..' . '/lib/Domain/Utility/DnsHelper.php',
         'Poweradmin\\Domain\\Utility\\DnssecDataTransformer' => __DIR__ . '/../..' . '/lib/Domain/Utility/DnssecDataTransformer.php',

@@ -132,4 +132,46 @@ interface ZoneRepositoryInterface
      * @return bool True if removed successfully
      */
     public function removeOwnerFromZone(int $zoneId, int $userId): bool;
+
+    /**
+     * Get zone ID by name
+     *
+     * @param string $zoneName The zone name
+     * @return int|null The zone ID or null if not found
+     */
+    public function getZoneIdByName(string $zoneName): ?int;
+
+    /**
+     * Update zone metadata
+     *
+     * @param int $zoneId The zone ID
+     * @param array $updates Array of field => value pairs to update
+     * @return bool True if zone was updated successfully
+     */
+    public function updateZone(int $zoneId, array $updates): bool;
+
+    /**
+     * Delete a zone by ID
+     *
+     * @param int $zoneId The zone ID
+     * @return bool True if zone was deleted successfully
+     */
+    public function deleteZone(int $zoneId): bool;
+
+    /**
+     * Get a zone by ID with full details
+     *
+     * @param int $zoneId The zone ID
+     * @return array|null The zone data or null if not found
+     */
+    public function getZone(int $zoneId): ?array;
+
+    /**
+     * Check if user is already an owner of the zone
+     *
+     * @param int $zoneId The zone ID
+     * @param int $userId The user ID
+     * @return bool True if user is already an owner
+     */
+    public function isUserZoneOwner(int $zoneId, int $userId): bool;
 }
