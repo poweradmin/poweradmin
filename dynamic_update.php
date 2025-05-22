@@ -28,6 +28,7 @@ $credentials = [
     'db_collation' => $config->get('database', 'collation'),
     'db_type' => $db_type,
     'db_file' => $config->get('database', 'file'),
+    'db_debug' => $config->get('database', 'debug'),
 ];
 
 $databaseConnection = new PDODatabaseConnection();

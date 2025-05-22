@@ -48,7 +48,6 @@ use Poweradmin\Infrastructure\Service\MessageService;
  */
 class PDOCommon extends PDO
 {
-
     /**
      * Debug mode flag
      * @var bool
@@ -60,6 +59,7 @@ class PDOCommon extends PDO
      * @var array
      */
     private array $queries = [];
+
 
     /**
      * PDOCommon constructor
@@ -99,7 +99,6 @@ class PDOCommon extends PDO
      */
     public function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement
     {
-
         if ($this->debug) {
             $this->queries[] = $query;
         }
@@ -124,6 +123,36 @@ class PDOCommon extends PDO
         return $obj_pdoStatement;
     }
 
+    /**
+     * Prepare a statement for execution and return a statement object
+     *
+     * @param string $query
+     * @param array $options
+     * @return PDOStatement
+     */
+    public function prepare(string $query, array $options = []): PDOStatement
+    {
+        if ($this->debug) {
+            $this->queries[] = $query;
+        }
+
+        return parent::prepare($query, $options);
+    }
+
+    /**
+     * Execute a statement
+     *
+     * @param string $statement
+     * @return int
+     */
+    public function exec(string $statement): int
+    {
+        if ($this->debug) {
+            $this->queries[] = $statement;
+        }
+
+        return parent::exec($statement);
+    }
 
     /**
      * Enable/disable debug mode

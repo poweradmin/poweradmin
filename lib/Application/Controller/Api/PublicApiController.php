@@ -82,6 +82,7 @@ abstract class PublicApiController extends AbstractApiController
             'db_collation' => $dbConfig['collation'] ?? '',
             'db_type' => $dbConfig['type'] ?? '',
             'db_file' => $dbConfig['file'] ?? '',
+            'db_debug' => $dbConfig['debug'] ?? false,
         ];
 
         // Create the database connection
