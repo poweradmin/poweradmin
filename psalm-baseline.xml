@@ -209,18 +209,11 @@
       <code><![CDATA[$iface_rowamount]]></code>
       <code><![CDATA[$itemsPerPage]]></code>
       <code><![CDATA[$row_start]]></code>
-      <code><![CDATA[$this->dnsRecord->getDomainNameById($zone_id)]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name_to_display]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/EditPermTemplController.php">

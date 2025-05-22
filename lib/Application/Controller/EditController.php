@@ -39,7 +39,6 @@ use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordLog;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
@@ -492,7 +491,6 @@ class EditController extends BaseController
         return $sortOrder;
     }
 
-
     private function getSortDirection(string $name): string
     {
         $sortDirection = 'ASC';
@@ -769,7 +767,6 @@ class EditController extends BaseController
             $this->setMessage('edit', 'error', _('Zone has not been updated successfully.'));
         }
     }
-
 
     /**
      * Handle adding a new record directly from the edit page
