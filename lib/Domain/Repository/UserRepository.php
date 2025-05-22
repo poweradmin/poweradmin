@@ -75,4 +75,101 @@ interface UserRepository
      * @return bool True if the user is an admin
      */
     public function hasAdminPermission(int $userId): bool;
+
+    /**
+     * Get a paginated list of users with zone counts
+     *
+     * @param int $offset Starting offset for pagination
+     * @param int $limit Maximum number of users to return
+     * @return array Array of user data with zone counts
+     */
+    public function getUsersList(int $offset, int $limit): array;
+
+    /**
+     * Get total count of users in the system
+     *
+     * @return int Total number of users
+     */
+    public function getTotalUserCount(): int;
+
+    /**
+     * Delete a user by ID
+     *
+     * @param int $userId User ID to delete
+     * @return bool True if the user was deleted successfully
+     */
+    public function deleteUser(int $userId): bool;
+
+    /**
+     * Get zones owned by a user
+     *
+     * @param int $userId User ID
+     * @return array Array of zone data owned by the user
+     */
+    public function getUserZones(int $userId): array;
+
+    /**
+     * Transfer zone ownership from one user to another
+     *
+     * @param int $fromUserId Source user ID
+     * @param int $toUserId Target user ID
+     * @return bool True if zones were transferred successfully
+     */
+    public function transferUserZones(int $fromUserId, int $toUserId): bool;
+
+    /**
+     * Unassign all zones owned by a user (set owner to NULL)
+     *
+     * @param int $userId User ID
+     * @return bool True if zones were unassigned successfully
+     */
+    public function unassignUserZones(int $userId): bool;
+
+    /**
+     * Count total number of uberusers (super admins) in the system
+     *
+     * @return int Number of uberusers
+     */
+    public function countUberusers(): int;
+
+    /**
+     * Check if a specific user is an uberuser
+     *
+     * @param int $userId User ID to check
+     * @return bool True if user is an uberuser
+     */
+    public function isUberuser(int $userId): bool;
+
+    /**
+     * Create a new user
+     *
+     * @param array $userData User data containing username, password, email, etc.
+     * @return int|null User ID if created successfully, null otherwise
+     */
+    public function createUser(array $userData): ?int;
+
+    /**
+     * Get a user by username
+     *
+     * @param string $username Username to search for
+     * @return array|null User data if found, null otherwise
+     */
+    public function getUserByUsername(string $username): ?array;
+
+    /**
+     * Get a user by email
+     *
+     * @param string $email Email to search for
+     * @return array|null User data if found, null otherwise
+     */
+    public function getUserByEmail(string $email): ?array;
+
+    /**
+     * Update a user's information
+     *
+     * @param int $userId User ID to update
+     * @param array $userData Array of user data to update
+     * @return bool True if updated successfully, false otherwise
+     */
+    public function updateUser(int $userId, array $userData): bool;
 }

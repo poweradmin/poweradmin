@@ -821,4 +821,57 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         return $stmt->execute($params);
     }
+
+    public function getAllZones(int $offset, int $limit): array
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT d.id, d.name, d.type, d.master,
+                         COALESCE(z.owner, 0) as owner,
+                         COUNT(DISTINCT r.id) as record_count
+                  FROM $domains_table d
+                  LEFT JOIN zones z ON d.id = z.domain_id
+                  LEFT JOIN " . ($this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records') . " r ON d.id = r.domain_id
+                  GROUP BY d.id, d.name, d.type, d.master, z.owner
+                  ORDER BY d.name
+                  LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getZoneCount(): int
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT COUNT(*) FROM $domains_table";
+        $stmt = $this->db->query($query);
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getZoneById(int $zoneId): ?array
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT d.id, d.name, d.type, d.master,
+                         COALESCE(z.owner, 0) as owner,
+                         COUNT(DISTINCT r.id) as record_count
+                  FROM $domains_table d
+                  LEFT JOIN zones z ON d.id = z.domain_id
+                  LEFT JOIN " . ($this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records') . " r ON d.id = r.domain_id
+                  WHERE d.id = :id
+                  GROUP BY d.id, d.name, d.type, d.master, z.owner";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
+    }
 }

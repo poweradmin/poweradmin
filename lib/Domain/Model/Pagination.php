@@ -109,4 +109,24 @@ class Pagination
     {
         return $this->hasPreviousPage() ? $this->currentPage - 1 : $this->currentPage;
     }
+
+    /**
+     * Get the offset for database queries
+     *
+     * @return int The offset value
+     */
+    public function getOffset(): int
+    {
+        return ($this->currentPage - 1) * $this->itemsPerPage;
+    }
+
+    /**
+     * Get the limit for database queries
+     *
+     * @return int The limit value
+     */
+    public function getLimit(): int
+    {
+        return $this->itemsPerPage;
+    }
 }

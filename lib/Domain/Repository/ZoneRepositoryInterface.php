@@ -27,6 +27,31 @@ interface ZoneRepositoryInterface
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array;
 
     /**
+     * Get all zones with pagination
+     *
+     * @param int $offset Pagination offset
+     * @param int $limit Maximum number of records to return
+     * @return array Array of zones
+     */
+    public function getAllZones(int $offset, int $limit): array;
+
+    /**
+     * Get total count of zones
+     *
+     * @return int Total number of zones
+     */
+    public function getZoneCount(): int;
+
+    /**
+     * Get a zone by ID
+     *
+     * @param int $zoneId Zone ID
+     * @return array|null Zone data if found, null otherwise
+     */
+    public function getZoneById(int $zoneId): ?array;
+
+
+    /**
      * Get reverse zones with efficient database-level filtering and pagination
      *
      * @param string $permType Permission type ('all', 'own')

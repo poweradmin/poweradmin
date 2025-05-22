@@ -30,6 +30,23 @@ use Poweradmin\Domain\Model\Constants;
 interface RecordRepositoryInterface
 {
     /**
+     * Get records by domain ID
+     *
+     * @param int $domainId Domain ID
+     * @param string|null $recordType Optional record type filter
+     * @return array Array of records
+     */
+    public function getRecordsByDomainId(int $domainId, ?string $recordType = null): array;
+
+    /**
+     * Get a record by ID
+     *
+     * @param int $recordId Record ID
+     * @return array|null Record data if found, null otherwise
+     */
+    public function getRecordById(int $recordId): ?array;
+
+    /**
      * Get Zone ID from Record ID
      *
      * @param int $rid Record ID

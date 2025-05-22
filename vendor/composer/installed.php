@@ -3,7 +3,7 @@
         'name' => 'poweradmin/poweradmin',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '2907c01102a5dfc66ce974f9331a658a522c9c00',
+        'reference' => '225e30c9d03bb70eaef31d23c4e49c3ea85a05e9',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -91,6 +91,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'nikic/php-parser' => array(
+            'pretty_version' => 'v5.4.0',
+            'version' => '5.4.0.0',
+            'reference' => '447a020a1f875a434d62f2a401f53b82a396e494',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../nikic/php-parser',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'orno/di' => array(
             'dev_requirement' => false,
             'replaced' => array(
@@ -109,7 +118,7 @@
         'poweradmin/poweradmin' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '2907c01102a5dfc66ce974f9331a658a522c9c00',
+            'reference' => '225e30c9d03bb70eaef31d23c4e49c3ea85a05e9',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -221,6 +230,15 @@
             'reference' => '4856c9cf585d5a0313d8d35afd681a526f038dd3',
             'type' => 'library',
             'install_path' => __DIR__ . '/../symfony/filesystem',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'symfony/finder' => array(
+            'pretty_version' => 'v7.2.2',
+            'version' => '7.2.2.0',
+            'reference' => '87a71856f2f56e4100373e92529eed3171695cfb',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/finder',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
@@ -374,6 +392,15 @@
             'aliases' => array(),
             'dev_requirement' => false,
         ),
+        'symfony/yaml' => array(
+            'pretty_version' => 'v7.2.6',
+            'version' => '7.2.6.0',
+            'reference' => '0feafffb843860624ddfd13478f481f4c3cd8b23',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../symfony/yaml',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
         'twbs/bootstrap' => array(
             'pretty_version' => 'v5.3.6',
             'version' => '5.3.6.0',
@@ -406,6 +433,15 @@
             'replaced' => array(
                 0 => 'v5.3.6',
             ),
+        ),
+        'zircote/swagger-php' => array(
+            'pretty_version' => '5.1.3',
+            'version' => '5.1.3.0',
+            'reference' => 'b8ba6bd99805c0ae09a38d1b26c1c92820509bd0',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../zircote/swagger-php',
+            'aliases' => array(),
+            'dev_requirement' => false,
         ),
     ),
 );

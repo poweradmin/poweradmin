@@ -30,7 +30,7 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
- * Service for managing DNS zones following DDD principles
+ * Service for managing DNS zones
  */
 class ZoneManagementService
 {
@@ -178,6 +178,7 @@ class ZoneManagementService
 
         return ['success' => true, 'message' => 'Zone deleted successfully'];
     }
+
 
     /**
      * Set domain permissions

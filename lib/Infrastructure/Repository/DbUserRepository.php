@@ -143,4 +143,240 @@ class DbUserRepository implements UserRepository
 
         return (bool)$stmt->fetchColumn();
     }
+
+    /**
+     * Get a paginated list of users with zone counts
+     *
+     * @param int $offset Starting offset for pagination
+     * @param int $limit Maximum number of users to return
+     * @return array Array of user data with zone counts
+     */
+    public function getUsersList(int $offset, int $limit): array
+    {
+        $query = "SELECT users.id AS id,
+            users.username AS username,
+            users.fullname AS fullname,
+            users.email AS email,
+            users.description AS description,
+            users.active AS active,
+            users.perm_templ AS perm_templ,
+            COUNT(zones.owner) AS zone_count 
+            FROM users
+            LEFT JOIN zones ON users.id = zones.owner
+            GROUP BY
+            users.id,
+            users.username,
+            users.fullname,
+            users.email,
+            users.description,
+            users.perm_templ,
+            users.active
+            ORDER BY users.id
+            LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $users = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $users[] = [
+                'id' => $row['id'],
+                'username' => $row['username'],
+                'fullname' => $row['fullname'],
+                'email' => $row['email'],
+                'description' => $row['description'],
+                'active' => $row['active'],
+                'zone_count' => $row['zone_count']
+            ];
+        }
+
+        return $users;
+    }
+
+    /**
+     * Get total count of users in the system
+     *
+     * @return int Total number of users
+     */
+    public function getTotalUserCount(): int
+    {
+        $query = "SELECT COUNT(*) FROM users";
+        $stmt = $this->db->query($query);
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Delete a user by ID
+     *
+     * @param int $userId User ID to delete
+     * @return bool True if the user was deleted successfully
+     */
+    public function deleteUser(int $userId): bool
+    {
+        $stmt = $this->db->prepare("DELETE FROM users WHERE id = :userId");
+        return $stmt->execute([':userId' => $userId]);
+    }
+
+    /**
+     * Get zones owned by a user
+     *
+     * @param int $userId User ID
+     * @return array Array of zone data owned by the user
+     */
+    public function getUserZones(int $userId): array
+    {
+        $query = "SELECT z.id, d.name, d.type 
+                  FROM zones z 
+                  INNER JOIN domains d ON z.domain_id = d.id 
+                  WHERE z.owner = :userId";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':userId' => $userId]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Transfer zone ownership from one user to another
+     *
+     * @param int $fromUserId Source user ID
+     * @param int $toUserId Target user ID
+     * @return bool True if zones were transferred successfully
+     */
+    public function transferUserZones(int $fromUserId, int $toUserId): bool
+    {
+        $stmt = $this->db->prepare("UPDATE zones SET owner = :toUserId WHERE owner = :fromUserId");
+        return $stmt->execute([':toUserId' => $toUserId, ':fromUserId' => $fromUserId]);
+    }
+
+    /**
+     * Unassign all zones owned by a user (not used anymore - kept for interface compatibility)
+     *
+     * @param int $userId User ID
+     * @return bool True if zones were unassigned successfully
+     * @deprecated Use transferUserZones() instead
+     */
+    public function unassignUserZones(int $userId): bool
+    {
+        // This method is deprecated - zones should be transferred to another user
+        // to avoid the NOT NULL constraint issue
+        return false;
+    }
+
+    /**
+     * Count total number of uberusers (super admins) in the system
+     *
+     * @return int Number of uberusers
+     */
+    public function countUberusers(): int
+    {
+        $query = "SELECT COUNT(DISTINCT users.id)
+                  FROM users
+                  JOIN perm_templ ON users.perm_templ = perm_templ.id
+                  JOIN perm_templ_items ON perm_templ.id = perm_templ_items.templ_id
+                  JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+                  WHERE perm_items.name = 'user_is_ueberuser'
+                  AND users.active = 1";
+
+        $stmt = $this->db->query($query);
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Check if a specific user is an uberuser
+     *
+     * @param int $userId User ID to check
+     * @return bool True if user is an uberuser
+     */
+    public function isUberuser(int $userId): bool
+    {
+        $query = "SELECT COUNT(*)
+                  FROM users
+                  JOIN perm_templ ON users.perm_templ = perm_templ.id
+                  JOIN perm_templ_items ON perm_templ.id = perm_templ_items.templ_id
+                  JOIN perm_items ON perm_templ_items.perm_id = perm_items.id
+                  WHERE perm_items.name = 'user_is_ueberuser'
+                  AND users.id = :userId
+                  AND users.active = 1";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':userId' => $userId]);
+        return (bool)$stmt->fetchColumn();
+    }
+
+    public function createUser(array $userData): ?int
+    {
+        $query = "INSERT INTO users (username, password, fullname, email, description, active, perm_templ, use_ldap)
+                  VALUES (:username, :password, :fullname, :email, :description, :active, :perm_templ, :use_ldap)";
+
+        $stmt = $this->db->prepare($query);
+        $result = $stmt->execute([
+            ':username' => $userData['username'],
+            ':password' => $userData['password'],
+            ':fullname' => $userData['fullname'] ?? '',
+            ':email' => $userData['email'] ?? '',
+            ':description' => $userData['description'] ?? '',
+            ':active' => (int)($userData['active'] ?? 1),
+            ':perm_templ' => (int)($userData['perm_templ'] ?? 1),
+            ':use_ldap' => (int)($userData['use_ldap'] ?? 0)
+        ]);
+
+        if ($result) {
+            return (int)$this->db->lastInsertId();
+        }
+
+        return null;
+    }
+
+    public function getUserByUsername(string $username): ?array
+    {
+        $query = "SELECT * FROM users WHERE username = :username LIMIT 1";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':username' => $username]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ?: null;
+    }
+
+    public function getUserByEmail(string $email): ?array
+    {
+        $query = "SELECT * FROM users WHERE email = :email LIMIT 1";
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':email' => $email]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ?: null;
+    }
+
+    public function updateUser(int $userId, array $userData): bool
+    {
+        // Build dynamic update query based on provided fields
+        $setFields = [];
+        $params = [':id' => $userId];
+
+        $allowedFields = ['username', 'password', 'fullname', 'email', 'description', 'active', 'perm_templ', 'use_ldap'];
+
+        foreach ($allowedFields as $field) {
+            if (array_key_exists($field, $userData)) {
+                $setFields[] = "{$field} = :{$field}";
+
+                // Handle type casting for specific fields
+                if ($field === 'active' || $field === 'perm_templ' || $field === 'use_ldap') {
+                    $params[":{$field}"] = (int)$userData[$field];
+                } else {
+                    $params[":{$field}"] = $userData[$field];
+                }
+            }
+        }
+
+        if (empty($setFields)) {
+            return true; // No fields to update
+        }
+
+        $query = "UPDATE users SET " . implode(', ', $setFields) . " WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+
+        return $stmt->execute($params);
+    }
 }

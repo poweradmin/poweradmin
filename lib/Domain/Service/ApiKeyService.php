@@ -298,27 +298,16 @@ class ApiKeyService
     {
         // Check if API is enabled
         if (!$this->config->get('api', 'enabled', false)) {
-            error_log('[ApiKeyService] API is disabled in configuration');
             return false;
         }
-
-        // Log exact key info for debugging
-        error_log(sprintf(
-            '[ApiKeyService] API key received with length: %d, first chars: %s, last chars: %s',
-            strlen($secretKey),
-            substr($secretKey, 0, 4),
-            substr($secretKey, -4)
-        ));
 
         // If the key doesn't start with 'pwa_', try to authenticate with it as is
         // This provides backward compatibility with existing keys
         if (strpos($secretKey, 'pwa_') !== 0) {
-            error_log('[ApiKeyService] Legacy key format detected (no pwa_ prefix)');
             return $this->authenticateWithKey($secretKey);
         }
 
         // If it does start with 'pwa_', authenticate with the prefixed key
-        error_log('[ApiKeyService] Prefixed key format detected (with pwa_ prefix)');
         return $this->authenticateWithKey($secretKey);
     }
 
@@ -330,26 +319,6 @@ class ApiKeyService
      */
     private function authenticateWithKey(string $secretKey): bool
     {
-        // Try direct DB lookup first for debugging
-        try {
-            $stmt = $this->db->prepare("SELECT id, name, disabled FROM api_keys WHERE secret_key = ?");
-            $stmt->execute([$secretKey]);
-            $keyData = $stmt->fetch(\PDO::FETCH_ASSOC);
-
-            if ($keyData) {
-                error_log(sprintf(
-                    '[ApiKeyService] Direct DB query found key ID: %d, Name: %s, Disabled: %s',
-                    $keyData['id'],
-                    $keyData['name'],
-                    $keyData['disabled'] ? 'Yes' : 'No'
-                ));
-            } else {
-                error_log('[ApiKeyService] Direct DB query found no matching key');
-            }
-        } catch (\Exception $e) {
-            error_log('[ApiKeyService] Error with direct query: ' . $e->getMessage());
-        }
-
         // Check for a direct database match using BINARY comparison for exact matching
         try {
             $stmt = $this->db->prepare("SELECT id, name, created_by, disabled, expires_at FROM api_keys WHERE BINARY secret_key = ?");
@@ -357,22 +326,13 @@ class ApiKeyService
             $keyData = $stmt->fetch(\PDO::FETCH_ASSOC);
 
             if ($keyData) {
-                error_log(sprintf(
-                    '[ApiKeyService] Found key in database: ID %d, Name %s, User %d',
-                    $keyData['id'],
-                    $keyData['name'],
-                    $keyData['created_by']
-                ));
-
                 // Check if key is disabled
                 if ((bool)$keyData['disabled']) {
-                    error_log('[ApiKeyService] API key is disabled');
                     return false;
                 }
 
                 // Check if key is expired
                 if ($keyData['expires_at'] && new \DateTime($keyData['expires_at']) < new \DateTime()) {
-                    error_log('[ApiKeyService] API key is expired');
                     return false;
                 }
 
@@ -384,28 +344,19 @@ class ApiKeyService
                 $this->apiKeyRepository->updateLastUsed($keyData['id']);
 
                 return true;
-            } else {
-                error_log('[ApiKeyService] API key not found in direct database check');
             }
         } catch (\Exception $e) {
-            error_log('[ApiKeyService] Error with direct database check: ' . $e->getMessage());
+            // Fall through to repository method
         }
 
         // If the direct database check failed, try the repository method as fallback
-        error_log('[ApiKeyService] Direct DB check failed, trying repository lookup...');
         $apiKey = $this->apiKeyRepository->findBySecretKey($secretKey);
 
         if ($apiKey === null) {
-            error_log('[ApiKeyService] API key not found in database via repository');
             return false;
         }
 
         if (!$apiKey->isValid()) {
-            error_log(sprintf(
-                '[ApiKeyService] API key found but invalid. Disabled: %s, Expired: %s',
-                $apiKey->isDisabled() ? 'Yes' : 'No',
-                ($apiKey->getExpiresAt() && $apiKey->getExpiresAt() < new \DateTime()) ? 'Yes' : 'No'
-            ));
             return false;
         }
 
@@ -416,7 +367,6 @@ class ApiKeyService
         $_SESSION['userid'] = $apiKey->getCreatedBy();
         $_SESSION['auth_used'] = 'api_key';
 
-        error_log(sprintf('[ApiKeyService] Authentication successful for user ID: %d via repository', $apiKey->getCreatedBy()));
         return true;
     }
 }

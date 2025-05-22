@@ -516,4 +516,44 @@ class RecordRepository implements RecordRepositoryInterface
         $result = $stmt->fetchColumn();
         return $result ? (int)$result : null;
     }
+
+    public function getRecordsByDomainId(int $domainId, ?string $recordType = null): array
+    {
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth
+                  FROM $records_table
+                  WHERE domain_id = :domain_id";
+
+        $params = [':domain_id' => $domainId];
+
+        if ($recordType !== null) {
+            $query .= " AND type = :type";
+            $params[':type'] = $recordType;
+        }
+
+        $query .= " ORDER BY type, name";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getRecordById(int $recordId): ?array
+    {
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth
+                  FROM $records_table
+                  WHERE id = :id";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([':id' => $recordId]);
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result ?: null;
+    }
 }
