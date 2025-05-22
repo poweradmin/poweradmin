@@ -26,7 +26,7 @@ CREATE TABLE `api_keys` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `name` varchar(255) NOT NULL,
     `secret_key` varchar(255) NOT NULL,
-    `created_by` int(11) NOT NULL,
+    `created_by` int(11) DEFAULT NULL,  
     `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     `last_used_at` timestamp NULL DEFAULT NULL,
     `disabled` tinyint(1) NOT NULL DEFAULT '0',
