@@ -15,20 +15,17 @@
 </nav>
 {% endif %}
 
-<div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-pencil-square me-2"></i>{% trans %}Edit User{% endtrans %}: "{{ name }}"</strong>
-    </div>
-    <div class="card-body">
-        <p class="small text-muted mb-3">{% trans %}Modify user account details and permissions{% endtrans %}</p>
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-pencil-square me-2"></i>{% trans %}Edit User{% endtrans %}: "{{ name }}"</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="number" value="{{ edit_id }}">
 
-        <form class="needs-validation" method="post" action="" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
-            <input type="hidden" name="number" value="{{ edit_id }}">
-
-            <div class="row">
-                <div class="col-md-6">
-                    <!-- Left Column: User Information -->
                     <div class="mb-3">
                         <label for="username" class="form-label">{% trans %}Username{% endtrans %}</label>
                         <input class="form-control form-control-sm" type="text" id="username" name="username" value="{{ user['username'] }}" required>
@@ -42,6 +39,12 @@
                     </div>
 
                     <div class="mb-3">
+                        <label for="email" class="form-label">{% trans %}Email address{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="email" id="email" name="email" value="{{ user['email'] }}" required>
+                        <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
+                    </div>
+
+                    <div class="mb-3">
                         <label for="password" class="form-label">{% trans %}Password{% endtrans %}</label>
                         <div class="input-group input-group-sm">
                             <input class="form-control form-control-sm" type="password" id="password" name="password"
@@ -49,12 +52,6 @@
                             <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill text-secondary" id="eye"></i></button>
                         </div>
                         <small class="text-muted">{% trans %}Leave empty to keep current password{% endtrans %}</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="email" class="form-label">{% trans %}Email address{% endtrans %}</label>
-                        <input class="form-control form-control-sm" type="email" id="email" name="email" value="{{ user['email'] }}" required>
-                        <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
                     </div>
 
                     {% if edit_templ_perm %}
@@ -102,91 +99,111 @@
                     </div>
                     {% endif %}
 
-                    <div class="mb-3">
-                        <button type="submit" class="btn btn-primary btn-sm" name="commit">
-                            <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}
-                        </button>
-                        <button type="reset" class="btn btn-secondary btn-sm" name="reset">
-                            <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
-                        </button>
-                        {% if not (perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike) %}
-                        <a href="index.php" class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-arrow-left me-1"></i>{% trans %}Back to Home{% endtrans %}
-                        </a>
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm" name="commit">
+                                <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}
+                            </button>
+                            <button type="reset" class="btn btn-secondary btn-sm" name="reset">
+                                <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
+                            </button>
+                            {% if not (perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike) %}
+                            <a href="index.php" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i>{% trans %}Back to Home{% endtrans %}
+                            </a>
+                            {% else %}
+                            <a href="index.php?page=users" class="btn btn-outline-secondary btn-sm">
+                                <i class="bi bi-arrow-left me-1"></i>{% trans %}Back to Users{% endtrans %}
+                            </a>
+                            {% endif %}
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Account Information{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-shield-lock text-primary me-2"></i>{% trans %}Password Requirements{% endtrans %}</h6>
+                        <ul class="mb-0 ps-4 small">
+                            {% if password_policy.enabled %}
+                                {% if password_policy.min_length %}
+                                <li>{% trans %}Minimum length{% endtrans %}: {{ password_policy.min_length }} {% trans %}characters{% endtrans %}</li>
+                                {% endif %}
+                                {% if password_policy.require_uppercase %}
+                                <li>{% trans %}Must contain uppercase letters{% endtrans %}</li>
+                                {% endif %}
+                                {% if password_policy.require_lowercase %}
+                                <li>{% trans %}Must contain lowercase letters{% endtrans %}</li>
+                                {% endif %}
+                                {% if password_policy.require_numbers %}
+                                <li>{% trans %}Must contain numbers{% endtrans %}</li>
+                                {% endif %}
+                                {% if password_policy.require_special %}
+                                <li>
+                                    {% trans %}Must contain special characters{% endtrans %}
+                                    <span class="text-muted">({{ password_policy.special_characters }})</span>
+                                </li>
+                                {% endif %}
+                            {% else %}
+                                <li>{% trans %}No specific password requirements{% endtrans %}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-key text-warning me-2"></i>{% trans %}User Permissions{% endtrans %}</h6>
+                        <p class="mb-2 small">
+                            {% trans %}This user has been assigned the permission template{% endtrans %}: <strong>"{{ user['tpl_name'] }}"</strong>
+                        </p>
+
+                        {% if user['tpl_descr'] != "" %}
+                        <p class="mb-2 small">
+                            {% trans %}Description{% endtrans %}: <em>"{{ user['tpl_descr'] }}"</em>
+                        </p>
+                        {% endif %}
+
+                        <p class="mb-2 small">{% trans %}Based on this template, this user has the following permissions{% endtrans %}:</p>
+
+                        {% if user_permissions is empty %}
+                            <p class="small text-muted fst-italic mb-0">{% trans %}No permissions are assigned to this template{% endtrans %}</p>
                         {% else %}
-                        <a href="index.php?page=users" class="btn btn-outline-secondary btn-sm">
-                            <i class="bi bi-arrow-left me-1"></i>{% trans %}Back to Users{% endtrans %}
-                        </a>
+                            <ul class="small mb-0 ps-4">
+                                {% for item in user_permissions %}
+                                {% set descr = item['descr'] %}
+                                <li>{{ descr|trans }} <span class="text-muted">({{ item['name'] }})</span></li>
+                                {% endfor %}
+                            </ul>
                         {% endif %}
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="col-md-6">
-                    <!-- Right Column: Information Cards -->
-                    <div class="card border-info mb-3">
-                        <div class="card-header bg-info bg-opacity-10 text-info border-info">
-                            <i class="bi bi-shield-lock-fill me-2 text-info"></i>{% trans %}Password Requirements{% endtrans %}
-                        </div>
-                        <div class="card-body">
-                            <ul class="mb-0">
-                                {% if password_policy.enabled %}
-                                    {% if password_policy.min_length %}
-                                    <li>{% trans %}Minimum length{% endtrans %}: {{ password_policy.min_length }} {% trans %}characters{% endtrans %}</li>
-                                    {% endif %}
-                                    {% if password_policy.require_uppercase %}
-                                    <li>{% trans %}Must contain uppercase letters{% endtrans %}</li>
-                                    {% endif %}
-                                    {% if password_policy.require_lowercase %}
-                                    <li>{% trans %}Must contain lowercase letters{% endtrans %}</li>
-                                    {% endif %}
-                                    {% if password_policy.require_numbers %}
-                                    <li>{% trans %}Must contain numbers{% endtrans %}</li>
-                                    {% endif %}
-                                    {% if password_policy.require_special %}
-                                    <li>
-                                        {% trans %}Must contain special characters{% endtrans %}
-                                        <span class="text-muted">({{ password_policy.special_characters }})</span>
-                                    </li>
-                                    {% endif %}
-                                {% else %}
-                                    <li>{% trans %}No specific password requirements{% endtrans %}</li>
-                                {% endif %}
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="card border-primary">
-                        <div class="card-header bg-primary bg-opacity-10 text-primary border-primary">
-                            <i class="bi bi-key-fill me-2 text-primary"></i>{% trans %}User Permissions{% endtrans %}
-                        </div>
-                        <div class="card-body">
-                            <p class="mb-2">
-                                {% trans %}This user has been assigned the permission template{% endtrans %}: <strong>"{{ user['tpl_name'] }}"</strong>
-                            </p>
-
-                            {% if user['tpl_descr'] != "" %}
-                            <p class="mb-2">
-                                {% trans %}Description{% endtrans %}: <em>"{{ user['tpl_descr'] }}"</em>
-                            </p>
-                            {% endif %}
-
-                            <p class="mb-2">{% trans %}Based on this template, this user has the following permissions{% endtrans %}:</p>
-
-                            {% if user_permissions is empty %}
-                                <p class="small text-muted fst-italic">{% trans %}No permissions are assigned to this template{% endtrans %}</p>
-                            {% else %}
-                                <ul class="small">
-                                    {% for item in user_permissions %}
-                                    {% set descr = item['descr'] %}
-                                    <li>{{ descr|trans }} <span class="text-muted">({{ item['name'] }})</span></li>
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
-                        </div>
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}User Management Tips{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}Leave password field empty to keep the current password{% endtrans %}</li>
+                            <li>{% trans %}Changing permission templates will update user access immediately{% endtrans %}</li>
+                            <li>{% trans %}Users can be disabled instead of deleted to preserve their settings{% endtrans %}</li>
+                            <li>{% trans %}LDAP users cannot have passwords managed through this interface{% endtrans %}</li>
+                        </ul>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
     </div>
 </div>
 
