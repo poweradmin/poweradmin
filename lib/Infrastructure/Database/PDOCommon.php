@@ -52,13 +52,13 @@ class PDOCommon extends PDO
      * Debug mode flag
      * @var bool
      */
-    private bool $debug = false;
+    protected bool $debug = false;
 
     /**
      * Storage for executed queries
      * @var array
      */
-    private array $queries = [];
+    protected array $queries = [];
 
 
     /**
@@ -128,9 +128,9 @@ class PDOCommon extends PDO
      *
      * @param string $query
      * @param array $options
-     * @return PDOStatement
+     * @return PDOStatement|false
      */
-    public function prepare(string $query, array $options = []): PDOStatement
+    public function prepare(string $query, array $options = []): PDOStatement|false
     {
         if ($this->debug) {
             $this->queries[] = $query;
@@ -143,9 +143,9 @@ class PDOCommon extends PDO
      * Execute a statement
      *
      * @param string $statement
-     * @return int
+     * @return int|false
      */
-    public function exec(string $statement): int
+    public function exec(string $statement): int|false
     {
         if ($this->debug) {
             $this->queries[] = $statement;
