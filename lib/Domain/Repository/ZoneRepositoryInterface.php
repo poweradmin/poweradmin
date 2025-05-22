@@ -65,4 +65,71 @@ interface ZoneRepositoryInterface
      * @return array Array of PTR record matches with forward zone information
      */
     public function findForwardZonesByPtrRecords(array $reverseZoneIds): array;
+
+    /**
+     * Check if zone exists by ID
+     *
+     * @param int $zoneId The zone ID
+     * @return bool True if zone exists
+     */
+    public function zoneIdExists(int $zoneId): bool;
+
+    /**
+     * Get domain type by zone ID
+     *
+     * @param int $zoneId The zone ID
+     * @return string The domain type (MASTER, SLAVE, NATIVE)
+     */
+    public function getDomainType(int $zoneId): string;
+
+    /**
+     * Get slave master by zone ID
+     *
+     * @param int $zoneId The zone ID
+     * @return string|null The slave master or null if not found
+     */
+    public function getDomainSlaveMaster(int $zoneId): ?string;
+
+    /**
+     * Get zone comment by zone ID
+     *
+     * @param int $zoneId The zone ID
+     * @return string|null The zone comment or null if not found
+     */
+    public function getZoneComment(int $zoneId): ?string;
+
+    /**
+     * Update zone comment
+     *
+     * @param int $zoneId The zone ID
+     * @param string $comment The new comment
+     * @return bool True if updated successfully
+     */
+    public function updateZoneComment(int $zoneId, string $comment): bool;
+
+    /**
+     * Get users who own a zone
+     *
+     * @param int $zoneId The zone ID
+     * @return array Array of user information
+     */
+    public function getZoneOwners(int $zoneId): array;
+
+    /**
+     * Add owner to zone
+     *
+     * @param int $zoneId The zone ID
+     * @param int $userId The user ID
+     * @return bool True if added successfully
+     */
+    public function addOwnerToZone(int $zoneId, int $userId): bool;
+
+    /**
+     * Remove owner from zone
+     *
+     * @param int $zoneId The zone ID
+     * @param int $userId The user ID
+     * @return bool True if removed successfully
+     */
+    public function removeOwnerFromZone(int $zoneId, int $userId): bool;
 }

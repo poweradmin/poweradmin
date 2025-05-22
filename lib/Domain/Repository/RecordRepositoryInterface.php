@@ -130,4 +130,48 @@ interface RecordRepositoryInterface
      * @return string Serial Number or false if not found
      */
     public function getSerialByZid(int $zid): string;
+
+    /**
+     * Get filtered records from a domain with search capabilities
+     *
+     * @param int $zone_id The zone ID
+     * @param int $row_start Starting row for pagination
+     * @param int $row_amount Number of rows per page
+     * @param string $sort_by Column to sort by
+     * @param string $sort_direction Sort direction (ASC or DESC)
+     * @param bool $include_comments Whether to include comments
+     * @param string $search_term Optional search term to filter by name or content
+     * @param string $type_filter Optional record type filter
+     * @param string $content_filter Optional content filter
+     * @return array Array of filtered records
+     */
+    public function getFilteredRecords(
+        int $zone_id,
+        int $row_start,
+        int $row_amount,
+        string $sort_by,
+        string $sort_direction,
+        bool $include_comments,
+        string $search_term = '',
+        string $type_filter = '',
+        string $content_filter = ''
+    ): array;
+
+    /**
+     * Get count of filtered records
+     *
+     * @param int $zone_id The zone ID
+     * @param bool $include_comments Whether to include comments in the search
+     * @param string $search_term Optional search term to filter by name or content
+     * @param string $type_filter Optional record type filter
+     * @param string $content_filter Optional content filter
+     * @return int Number of filtered records
+     */
+    public function getFilteredRecordCount(
+        int $zone_id,
+        bool $include_comments,
+        string $search_term = '',
+        string $type_filter = '',
+        string $content_filter = ''
+    ): int;
 }

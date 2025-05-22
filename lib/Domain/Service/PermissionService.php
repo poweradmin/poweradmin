@@ -124,4 +124,56 @@ class PermissionService
             return 'none';
         }
     }
+
+    /**
+     * Get zone meta edit permission level for a user
+     *
+     * @param int $userId User ID to check
+     * @return string "all", "own", or "none" depending on the user's meta edit permission
+     */
+    public function getZoneMetaEditPermissionLevel(int $userId): string
+    {
+        $permissions = $this->getUserPermissions($userId);
+
+        if (in_array('zone_meta_edit_others', $permissions) || $this->isAdmin($userId)) {
+            return 'all';
+        } elseif (in_array('zone_meta_edit_own', $permissions)) {
+            return 'own';
+        } else {
+            return 'none';
+        }
+    }
+
+    /**
+     * Check if user can view other users' content
+     *
+     * @param int $userId User ID to check
+     * @return bool True if user can view others' content
+     */
+    public function canViewOthersContent(int $userId): bool
+    {
+        return $this->hasPermission($userId, 'user_view_others') || $this->isAdmin($userId);
+    }
+
+    /**
+     * Check if user can add zones
+     *
+     * @param int $userId User ID to check
+     * @return bool True if user can add zones
+     */
+    public function canAddZones(int $userId): bool
+    {
+        return $this->hasPermission($userId, 'zone_master_add') || $this->isAdmin($userId);
+    }
+
+    /**
+     * Check if user can add zone templates
+     *
+     * @param int $userId User ID to check
+     * @return bool True if user can add zone templates
+     */
+    public function canAddZoneTemplates(int $userId): bool
+    {
+        return $this->hasPermission($userId, 'zone_templ_add') || $this->isAdmin($userId);
+    }
 }

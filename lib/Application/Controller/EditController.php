@@ -50,11 +50,17 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -69,6 +75,10 @@ class EditController extends BaseController
     private DomainRecordCreator $domainRecordCreator;
     private ReverseRecordCreator $reverseRecordCreator;
     private RecordManagerService $recordManager;
+    private UserContextService $userContextService;
+    private ZoneRepositoryInterface $zoneRepository;
+    private PermissionService $permissionService;
+    private RecordRepository $recordRepository;
 
     public function __construct(array $request)
     {
@@ -104,6 +114,13 @@ class EditController extends BaseController
             $this->logger,
             $this->dnsRecord
         );
+
+        $this->userContextService = new UserContextService();
+        $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+
+        $userRepository = new DbUserRepository($this->db);
+        $this->permissionService = new PermissionService($userRepository);
+        $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
     }
 
     public function run(): void
@@ -147,7 +164,7 @@ class EditController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_id = intval(htmlspecialchars($_GET['id']));
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
 
         if (isset($_GET['export_csv'])) {
             $this->exportCsv($zone_id);
@@ -196,16 +213,10 @@ class EditController extends BaseController
             $this->saveAsTemplate($zone_id);
         }
 
-        $perm_view = Permission::getViewPermission($this->db);
-        $perm_edit = Permission::getEditPermission($this->db);
-
-        if (UserManager::verifyPermission($this->db, 'zone_meta_edit_others')) {
-            $perm_meta_edit = "all";
-        } elseif (UserManager::verifyPermission($this->db, 'zone_meta_edit_own')) {
-            $perm_meta_edit = "own";
-        } else {
-            $perm_meta_edit = "none";
-        }
+        $userId = $this->userContextService->getLoggedInUserId();
+        $perm_view = $this->permissionService->getViewPermissionLevel($userId);
+        $perm_edit = $this->permissionService->getEditPermissionLevel($userId);
+        $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
 
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
@@ -226,12 +237,12 @@ class EditController extends BaseController
 
         if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
             $this->validateCsrfToken();
-            DnsRecord::addOwnerToZone($this->db, $_POST["domain"], $_POST["newowner"]);
+            $this->zoneRepository->addOwnerToZone($_POST["domain"], $_POST["newowner"]);
         }
 
         if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"])) {
             $this->validateCsrfToken();
-            DnsRecord::deleteOwnerFromZone($this->db, $zone_id, $_POST["delete_owner"]);
+            $this->zoneRepository->removeOwnerFromZone($zone_id, $_POST["delete_owner"]);
         }
 
         if (isset($_POST["template_change"])) {
@@ -250,7 +261,7 @@ class EditController extends BaseController
             $this->showError(_("You do not have the permission to view this zone."));
         }
 
-        if ($this->dnsRecord->zoneIdExists($zone_id) == "0") {
+        if (!$this->zoneRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
         }
 
@@ -321,23 +332,23 @@ class EditController extends BaseController
 
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
 
-        $domain_type = $this->dnsRecord->getDomainType($zone_id);
+        $domain_type = $this->zoneRepository->getDomainType($zone_id);
         $record_count = $this->dnsRecord->countZoneRecords($zone_id);
-        $zone_templates = $zone_templates->getListZoneTempl($_SESSION['userid']);
+        $zone_templates = $zone_templates->getListZoneTempl($this->userContextService->getLoggedInUserId());
         $zone_template_id = DnsRecord::getZoneTemplate($this->db, $zone_id);
         $zone_template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id);
 
-        $slave_master = $this->dnsRecord->getDomainSlaveMaster($zone_id);
+        $slave_master = $this->zoneRepository->getDomainSlaveMaster($zone_id);
 
         $users = UserManager::showUsers($this->db);
 
         $zone_comment = '';
-        $raw_zone_comment = DnsRecord::getZoneComment($this->db, $zone_id);
+        $raw_zone_comment = $this->zoneRepository->getZoneComment($zone_id);
         if ($raw_zone_comment) {
             $zone_comment = htmlspecialchars($raw_zone_comment);
         }
 
-        $zone_name_to_display = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name_to_display = $this->zoneRepository->getDomainNameById($zone_id);
         if (str_starts_with($zone_name_to_display, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name_to_display);
         } else {
@@ -345,7 +356,7 @@ class EditController extends BaseController
         }
         // Get filtered records based on search parameters
         if (!empty($searchTerm) || !empty($recordTypeFilter) || !empty($contentFilter)) {
-            $records = $this->getFilteredRecords(
+            $records = $this->recordRepository->getFilteredRecords(
                 $zone_id,
                 $row_start,
                 $iface_rowamount,
@@ -356,7 +367,7 @@ class EditController extends BaseController
                 $recordTypeFilter,
                 $contentFilter
             );
-            $total_filtered_count = $this->getFilteredRecordCount(
+            $total_filtered_count = $this->recordRepository->getFilteredRecordCount(
                 $zone_id,
                 $iface_record_comments,
                 $searchTerm,
@@ -375,7 +386,7 @@ class EditController extends BaseController
             );
             $total_filtered_count = $record_count;
         }
-        $owners = DnsRecord::getUsersFromDomainId($this->db, $zone_id);
+        $owners = $this->zoneRepository->getZoneOwners($zone_id);
 
         $soa_record = $this->dnsRecord->getSOARecord($zone_id);
 
@@ -404,10 +415,10 @@ class EditController extends BaseController
             'perm_edit' => $perm_edit,
             'perm_meta_edit' => $perm_meta_edit,
             'meta_edit' => $meta_edit,
-            'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
-            'perm_zone_templ_add' => UserManager::verifyPermission($this->db, 'zone_templ_add'),
-            'perm_view_others' => UserManager::verifyPermission($this->db, 'user_view_others'),
-            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
+            'perm_zone_master_add' => $this->permissionService->canAddZones($userId),
+            'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
+            'perm_view_others' => $this->permissionService->canViewOthersContent($userId),
+            'perm_is_godlike' => $this->permissionService->isAdmin($userId),
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_types' => $types,
             'row_start' => $row_start,
@@ -417,7 +428,7 @@ class EditController extends BaseController
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_id),
             'pdnssec_use' => $isDnsSecEnabled,
             'is_secured' => $zone_name !== false && $dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig()),
-            'session_userid' => $_SESSION["userid"],
+            'session_userid' => $this->userContextService->getLoggedInUserId(),
             'dns_ttl' => $this->config->get('dns', 'ttl', 86400),
             'is_reverse_zone' => $isReverseZone,
             'record_types' => $isReverseZone ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled) : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled),
@@ -553,14 +564,14 @@ class EditController extends BaseController
                                     $record['name'],
                                     $record['type'],
                                     $record['comment'] ?? '',
-                                    $_SESSION['userlogin']
+                                    $this->userContextService->getLoggedInUsername()
                                 );
 
                                 $this->commentSyncService->updateRelatedRecordComments(
                                     $this->dnsRecord,
                                     $record,
                                     $record['comment'] ?? '',
-                                    $_SESSION['userlogin']
+                                    $this->userContextService->getLoggedInUsername()
                                 );
 
                                 $updatedRecordComments[$recordKey] = true;
@@ -596,7 +607,7 @@ class EditController extends BaseController
                 'HOSTMASTER' => $this->config->get('dns', 'hostmaster', '') ?? '',
             ];
 
-            $zoneTemplate->addZoneTemplSaveAs($template_name, $description, $_SESSION['userid'], $records, $options, $this->dnsRecord->getDomainNameById($zone_id));
+            $zoneTemplate->addZoneTemplSaveAs($template_name, $description, $this->userContextService->getLoggedInUserId(), $records, $options, $this->zoneRepository->getDomainNameById($zone_id));
             $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
         }
     }
@@ -604,13 +615,14 @@ class EditController extends BaseController
     public function exportCsv(int $zone_id): void
     {
         // Check if user is logged in
-        if (!isset($_SESSION['userid'])) {
+        if (!$this->userContextService->isAuthenticated()) {
             $this->showError(_('You need to be logged in to export zone data.'));
             return;
         }
 
         // Check permissions - same as viewing zones
-        $perm_view = Permission::getViewPermission($this->db);
+        $userId = $this->userContextService->getLoggedInUserId();
+        $perm_view = $this->permissionService->getViewPermissionLevel($userId);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
         if ($perm_view == "none" || ($perm_view == "own" && $user_is_zone_owner == "0")) {
@@ -623,14 +635,14 @@ class EditController extends BaseController
             $this->validateCsrfToken();
         }
 
-        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
 
         if (!$zone_name) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
 
-        if ($this->dnsRecord->zoneIdExists($zone_id) == "0") {
+        if (!$this->zoneRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
             return;
         }
@@ -713,10 +725,10 @@ class EditController extends BaseController
      */
     public function processZoneComment(int $zone_id, DnsRecord $dnsRecord, bool $one_record_changed): bool
     {
-        $raw_zone_comment = DnsRecord::getZoneComment($this->db, $zone_id);
+        $raw_zone_comment = $this->zoneRepository->getZoneComment($zone_id);
         $zone_comment = $_POST['comment'] ?? '';
         if ($raw_zone_comment != $zone_comment) {
-            $this->dnsRecord->editZoneComment($zone_id, $zone_comment);
+            $this->zoneRepository->updateZoneComment($zone_id, $zone_comment);
             $one_record_changed = true;
         }
         return $one_record_changed;
@@ -758,168 +770,6 @@ class EditController extends BaseController
         }
     }
 
-    /**
-     * Get filtered records from the domain
-     *
-     * @param int $zone_id The zone ID
-     * @param int $row_start Starting row for pagination
-     * @param int $row_amount Number of rows per page
-     * @param string $sort_by Column to sort by
-     * @param string $sort_direction Sort direction (ASC or DESC)
-     * @param bool $include_comments Whether to include comments
-     * @param string $search_term Optional search term to filter by name or content
-     * @param string $type_filter Optional record type filter
-     * @param string $content_filter Optional content filter
-     * @return array Array of filtered records
-     */
-    private function getFilteredRecords(
-        int $zone_id,
-        int $row_start,
-        int $row_amount,
-        string $sort_by,
-        string $sort_direction,
-        bool $include_comments,
-        string $search_term = '',
-        string $type_filter = '',
-        string $content_filter = ''
-    ): array {
-        $db_type = $this->config->get('database', 'type', 'mysql');
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-        $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
-
-        // Prepare query parameters
-        $params = [':zone_id' => $zone_id];
-
-        // Apply search term to both name and content
-        $search_condition = '';
-        if (!empty($search_term)) {
-            // If search term doesn't already have wildcards, add them
-            if (strpos($search_term, '%') === false) {
-                $search_term = '%' . $search_term . '%';
-            }
-            $search_condition = " AND ($records_table.name LIKE :search_term1 OR $records_table.content LIKE :search_term2)";
-            $params[':search_term1'] = $search_term;
-            $params[':search_term2'] = $search_term;
-        }
-
-        // Apply type filter
-        $type_condition = '';
-        if (!empty($type_filter)) {
-            $type_condition = " AND $records_table.type = :type_filter";
-            $params[':type_filter'] = $type_filter;
-        }
-
-        // Apply content filter
-        $content_condition = '';
-        if (!empty($content_filter)) {
-            // If content filter doesn't already have wildcards, add them
-            if (strpos($content_filter, '%') === false) {
-                $content_filter = '%' . $content_filter . '%';
-            }
-            $content_condition = " AND $records_table.content LIKE :content_filter";
-            $params[':content_filter'] = $content_filter;
-        }
-
-        // Base query
-        $query = "SELECT $records_table.id, $records_table.domain_id, $records_table.name, $records_table.type, 
-                 $records_table.content, $records_table.ttl, $records_table.prio, $records_table.disabled";
-
-        // Add comment column if needed
-        if ($include_comments) {
-            $query .= ", c.comment";
-        }
-
-        // From and joins
-        $query .= " FROM $records_table";
-        if ($include_comments) {
-            $query .= " LEFT JOIN $comments_table c ON $records_table.domain_id = c.domain_id 
-                      AND $records_table.name = c.name AND $records_table.type = c.type";
-        }
-
-        // Where clause
-        $query .= " WHERE $records_table.domain_id = :zone_id" .
-                 $search_condition . $type_condition . $content_condition;
-
-        // Sorting and limits
-        $query .= " ORDER BY $sort_by $sort_direction LIMIT $row_amount OFFSET $row_start";
-
-        $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
-        $records = [];
-
-        while ($record = $stmt->fetch()) {
-            $records[] = $record;
-        }
-
-        return $records;
-    }
-
-    /**
-     * Get count of filtered records
-     *
-     * @param int $zone_id The zone ID
-     * @param bool $include_comments Whether to include comments in the search
-     * @param string $search_term Optional search term to filter by name or content
-     * @param string $type_filter Optional record type filter
-     * @param string $content_filter Optional content filter
-     * @return int Number of filtered records
-     */
-    private function getFilteredRecordCount(
-        int $zone_id,
-        bool $include_comments,
-        string $search_term = '',
-        string $type_filter = '',
-        string $content_filter = ''
-    ): int {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-        $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
-
-        // Prepare query parameters
-        $params = [':zone_id' => $zone_id];
-
-        // Apply search term to both name and content
-        $search_condition = '';
-        if (!empty($search_term)) {
-            // If search term doesn't already have wildcards, add them
-            if (strpos($search_term, '%') === false) {
-                $search_term = '%' . $search_term . '%';
-            }
-            $search_condition = " AND ($records_table.name LIKE :search_term1 OR $records_table.content LIKE :search_term2)";
-            $params[':search_term1'] = $search_term;
-            $params[':search_term2'] = $search_term;
-        }
-
-        // Apply type filter
-        $type_condition = '';
-        if (!empty($type_filter)) {
-            $type_condition = " AND $records_table.type = :type_filter";
-            $params[':type_filter'] = $type_filter;
-        }
-
-        // Apply content filter
-        $content_condition = '';
-        if (!empty($content_filter)) {
-            // If content filter doesn't already have wildcards, add them
-            if (strpos($content_filter, '%') === false) {
-                $content_filter = '%' . $content_filter . '%';
-            }
-            $content_condition = " AND $records_table.content LIKE :content_filter";
-            $params[':content_filter'] = $content_filter;
-        }
-
-        // Create the query
-        $query = "SELECT COUNT(*) FROM $records_table WHERE domain_id = :zone_id";
-
-        // Add filter conditions
-        $query .= $search_condition . $type_condition . $content_condition;
-
-        // Execute and return result
-        $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
-        return (int)$stmt->fetchColumn();
-    }
 
     /**
      * Handle adding a new record directly from the edit page
@@ -1052,7 +902,7 @@ class EditController extends BaseController
             $ttl,
             $prio,
             $comment,
-            $_SESSION['userlogin'],
+            $this->userContextService->getLoggedInUsername(),
             $_SERVER['REMOTE_ADDR']
         );
     }
@@ -1079,7 +929,7 @@ class EditController extends BaseController
             $ttl,
             $prio,
             $comment,
-            $_SESSION['userlogin']
+            $this->userContextService->getLoggedInUsername()
         );
 
         if (isset($result['success']) && !$result['success']) {
@@ -1107,7 +957,7 @@ class EditController extends BaseController
             $content,
             $zone_id,
             $comment,
-            $_SESSION['userlogin']
+            $this->userContextService->getLoggedInUsername()
         );
 
         if ($result['success']) {

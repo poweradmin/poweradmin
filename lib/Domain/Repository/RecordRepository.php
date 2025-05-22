@@ -322,4 +322,165 @@ class RecordRepository implements RecordRepositoryInterface
         $rr_soa_fields = explode(" ", $rr_soa);
         return $rr_soa_fields[2] ?? '';
     }
+
+    /**
+     * Get filtered records from a domain with search capabilities
+     *
+     * @param int $zone_id The zone ID
+     * @param int $row_start Starting row for pagination
+     * @param int $row_amount Number of rows per page
+     * @param string $sort_by Column to sort by
+     * @param string $sort_direction Sort direction (ASC or DESC)
+     * @param bool $include_comments Whether to include comments
+     * @param string $search_term Optional search term to filter by name or content
+     * @param string $type_filter Optional record type filter
+     * @param string $content_filter Optional content filter
+     * @return array Array of filtered records
+     */
+    public function getFilteredRecords(
+        int $zone_id,
+        int $row_start,
+        int $row_amount,
+        string $sort_by,
+        string $sort_direction,
+        bool $include_comments,
+        string $search_term = '',
+        string $type_filter = '',
+        string $content_filter = ''
+    ): array {
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
+
+        // Prepare query parameters
+        $params = [':zone_id' => $zone_id];
+
+        // Apply search term to both name and content
+        $search_condition = '';
+        if (!empty($search_term)) {
+            // If search term doesn't already have wildcards, add them
+            if (strpos($search_term, '%') === false) {
+                $search_term = '%' . $search_term . '%';
+            }
+            $search_condition = " AND ($records_table.name LIKE :search_term1 OR $records_table.content LIKE :search_term2)";
+            $params[':search_term1'] = $search_term;
+            $params[':search_term2'] = $search_term;
+        }
+
+        // Apply type filter
+        $type_condition = '';
+        if (!empty($type_filter)) {
+            $type_condition = " AND $records_table.type = :type_filter";
+            $params[':type_filter'] = $type_filter;
+        }
+
+        // Apply content filter
+        $content_condition = '';
+        if (!empty($content_filter)) {
+            // If content filter doesn't already have wildcards, add them
+            if (strpos($content_filter, '%') === false) {
+                $content_filter = '%' . $content_filter . '%';
+            }
+            $content_condition = " AND $records_table.content LIKE :content_filter";
+            $params[':content_filter'] = $content_filter;
+        }
+
+        // Base query
+        $query = "SELECT $records_table.id, $records_table.domain_id, $records_table.name, $records_table.type, 
+                 $records_table.content, $records_table.ttl, $records_table.prio, $records_table.disabled";
+
+        // Add comment column if needed
+        if ($include_comments) {
+            $query .= ", c.comment";
+        }
+
+        // From and joins
+        $query .= " FROM $records_table";
+        if ($include_comments) {
+            $query .= " LEFT JOIN $comments_table c ON $records_table.domain_id = c.domain_id 
+                      AND $records_table.name = c.name AND $records_table.type = c.type";
+        }
+
+        // Where clause
+        $query .= " WHERE $records_table.domain_id = :zone_id" .
+                 $search_condition . $type_condition . $content_condition;
+
+        // Sorting and limits
+        $query .= " ORDER BY $sort_by $sort_direction LIMIT $row_amount OFFSET $row_start";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        $records = [];
+
+        while ($record = $stmt->fetch()) {
+            $records[] = $record;
+        }
+
+        return $records;
+    }
+
+    /**
+     * Get count of filtered records
+     *
+     * @param int $zone_id The zone ID
+     * @param bool $include_comments Whether to include comments in the search
+     * @param string $search_term Optional search term to filter by name or content
+     * @param string $type_filter Optional record type filter
+     * @param string $content_filter Optional content filter
+     * @return int Number of filtered records
+     */
+    public function getFilteredRecordCount(
+        int $zone_id,
+        bool $include_comments,
+        string $search_term = '',
+        string $type_filter = '',
+        string $content_filter = ''
+    ): int {
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        // Prepare query parameters
+        $params = [':zone_id' => $zone_id];
+
+        // Apply search term to both name and content
+        $search_condition = '';
+        if (!empty($search_term)) {
+            // If search term doesn't already have wildcards, add them
+            if (strpos($search_term, '%') === false) {
+                $search_term = '%' . $search_term . '%';
+            }
+            $search_condition = " AND ($records_table.name LIKE :search_term1 OR $records_table.content LIKE :search_term2)";
+            $params[':search_term1'] = $search_term;
+            $params[':search_term2'] = $search_term;
+        }
+
+        // Apply type filter
+        $type_condition = '';
+        if (!empty($type_filter)) {
+            $type_condition = " AND $records_table.type = :type_filter";
+            $params[':type_filter'] = $type_filter;
+        }
+
+        // Apply content filter
+        $content_condition = '';
+        if (!empty($content_filter)) {
+            // If content filter doesn't already have wildcards, add them
+            if (strpos($content_filter, '%') === false) {
+                $content_filter = '%' . $content_filter . '%';
+            }
+            $content_condition = " AND $records_table.content LIKE :content_filter";
+            $params[':content_filter'] = $content_filter;
+        }
+
+        // Create the query
+        $query = "SELECT COUNT(*) FROM $records_table WHERE domain_id = :zone_id";
+
+        // Add filter conditions
+        $query .= $search_condition . $type_condition . $content_condition;
+
+        // Execute and return result
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+        return (int)$stmt->fetchColumn();
+    }
 }

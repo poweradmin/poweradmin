@@ -541,4 +541,147 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    /**
+     * Check if zone exists by ID
+     *
+     * @param int $zoneId The zone ID
+     * @return bool True if zone exists
+     */
+    public function zoneIdExists(int $zoneId): bool
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT 1 FROM $domains_table WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchColumn() !== false;
+    }
+
+    /**
+     * Get domain type by zone ID
+     *
+     * @param int $zoneId The zone ID
+     * @return string The domain type (MASTER, SLAVE, NATIVE)
+     */
+    public function getDomainType(int $zoneId): string
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT type FROM $domains_table WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetchColumn();
+        return $result ?: '';
+    }
+
+    /**
+     * Get slave master by zone ID
+     *
+     * @param int $zoneId The zone ID
+     * @return string|null The slave master or null if not found
+     */
+    public function getDomainSlaveMaster(int $zoneId): ?string
+    {
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        $query = "SELECT master FROM $domains_table WHERE id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetchColumn();
+        return $result ?: null;
+    }
+
+    /**
+     * Get zone comment by zone ID
+     *
+     * @param int $zoneId The zone ID
+     * @return string|null The zone comment or null if not found
+     */
+    public function getZoneComment(int $zoneId): ?string
+    {
+        $query = "SELECT comment FROM zones WHERE domain_id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $result = $stmt->fetchColumn();
+        return $result ?: null;
+    }
+
+    /**
+     * Update zone comment
+     *
+     * @param int $zoneId The zone ID
+     * @param string $comment The new comment
+     * @return bool True if updated successfully
+     */
+    public function updateZoneComment(int $zoneId, string $comment): bool
+    {
+        $query = "UPDATE zones SET comment = :comment WHERE domain_id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':comment', $comment, PDO::PARAM_STR);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    /**
+     * Get users who own a zone
+     *
+     * @param int $zoneId The zone ID
+     * @return array Array of user information
+     */
+    public function getZoneOwners(int $zoneId): array
+    {
+        $query = "SELECT u.id, u.username, u.fullname 
+                  FROM zones z
+                  JOIN users u ON z.owner = u.id
+                  WHERE z.domain_id = :id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * Add owner to zone
+     *
+     * @param int $zoneId The zone ID
+     * @param int $userId The user ID
+     * @return bool True if added successfully
+     */
+    public function addOwnerToZone(int $zoneId, int $userId): bool
+    {
+        $query = "INSERT INTO zones (domain_id, owner) VALUES (:domain_id, :owner)";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
+
+    /**
+     * Remove owner from zone
+     *
+     * @param int $zoneId The zone ID
+     * @param int $userId The user ID
+     * @return bool True if removed successfully
+     */
+    public function removeOwnerFromZone(int $zoneId, int $userId): bool
+    {
+        $query = "DELETE FROM zones WHERE domain_id = :domain_id AND owner = :owner";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
+
+        return $stmt->execute();
+    }
 }
