@@ -39,8 +39,9 @@ class SOARecordValidatorTest extends TestCase
         $this->configMock = $this->createMock(ConfigurationManager::class);
 
         // Configure the database mock for Validator class queries
-        $this->dbMock->method('queryOne')
-            ->willReturn(null); // For simplicity, assume validation passes
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->method('fetch')->willReturn(false); // For simplicity, assume validation passes
+        $this->dbMock->method('query')->willReturn($stmtMock);
 
         // Configure the quote method to handle SQL queries
         $this->dbMock->method('quote')

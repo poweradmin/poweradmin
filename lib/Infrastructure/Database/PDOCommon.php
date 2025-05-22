@@ -124,22 +124,6 @@ class PDOCommon extends PDO
         return $obj_pdoStatement;
     }
 
-    /**
-     * Execute the specified query, fetch the value from the first column of
-     * the first result row
-     *
-     * @param string $str
-     * @return mixed
-     */
-    public function queryOne(string $str): mixed
-    {
-        $result = $this->query($str);
-        $row = $result->fetch(PDO::FETCH_NUM);
-        if (is_bool($row)) {
-            return $row;
-        }
-        return $row[0];
-    }
 
     /**
      * Enable/disable debug mode

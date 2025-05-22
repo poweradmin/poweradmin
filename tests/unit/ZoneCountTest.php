@@ -36,9 +36,14 @@ class ZoneCountTest extends TestCase
                 return null;
             });
 
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->expects($this->once())
+            ->method('fetch')
+            ->willReturn(['count_zones' => 10]);
+
         $this->dbMock->expects($this->once())
-            ->method('queryOne')
-            ->willReturn(10);
+            ->method('query')
+            ->willReturn($stmtMock);
 
         $result = $this->zoneCountService->countZones('all');
         $this->assertEquals(10, $result);
@@ -59,9 +64,14 @@ class ZoneCountTest extends TestCase
                 return null;
             });
 
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->expects($this->once())
+            ->method('fetch')
+            ->willReturn(['count_zones' => 8]);
+
         $this->dbMock->expects($this->once())
-            ->method('queryOne')
-            ->willReturn(8);
+            ->method('query')
+            ->willReturn($stmtMock);
 
         $result = $this->zoneCountService->countZones('all', 'all', 'forward');
         $this->assertEquals(8, $result);
@@ -82,9 +92,14 @@ class ZoneCountTest extends TestCase
                 return null;
             });
 
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->expects($this->once())
+            ->method('fetch')
+            ->willReturn(['count_zones' => 2]);
+
         $this->dbMock->expects($this->once())
-            ->method('queryOne')
-            ->willReturn(2);
+            ->method('query')
+            ->willReturn($stmtMock);
 
         $result = $this->zoneCountService->countZones('all', 'all', 'reverse');
         $this->assertEquals(2, $result);
@@ -173,9 +188,14 @@ class ZoneCountTest extends TestCase
                 return null;
             });
 
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->expects($this->once())
+            ->method('fetch')
+            ->willReturn(['count_zones' => 2]);
+
         $this->dbMock->expects($this->once())
-            ->method('queryOne')
-            ->willReturn(2);
+            ->method('query')
+            ->willReturn($stmtMock);
 
         $result = $this->zoneCountService->countZones('all', '1');
         $this->assertEquals(2, $result);
@@ -196,9 +216,14 @@ class ZoneCountTest extends TestCase
                 return null;
             });
 
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->expects($this->once())
+            ->method('fetch')
+            ->willReturn(['count_zones' => 10]);
+
         $this->dbMock->expects($this->once())
-            ->method('queryOne')
-            ->willReturn(10);
+            ->method('query')
+            ->willReturn($stmtMock);
 
         $result = $this->zoneCountService->countZones('all');
         $this->assertEquals(10, $result);
@@ -207,7 +232,7 @@ class ZoneCountTest extends TestCase
     public function testCountZonesWithInvalidPermissions(): void
     {
         $this->dbMock->expects($this->never())
-            ->method('queryOne');
+            ->method('query');
 
         $result = $this->zoneCountService->countZones('invalid');
         $this->assertEquals(0, $result);

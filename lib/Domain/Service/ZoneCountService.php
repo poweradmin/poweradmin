@@ -107,8 +107,10 @@ class ZoneCountService
         $query = "SELECT COUNT($domains_table.id) AS count_zones FROM $tables" . $whereClause;
 
         if (empty($params)) {
-            // No parameters, use queryOne for backward compatibility
-            return (int) $this->db->queryOne($query);
+            // No parameters, use direct query and fetch
+            $stmt = $this->db->query($query);
+            $result = $stmt->fetch();
+            return (int) ($result['count_zones'] ?? 0);
         } else {
             // Use prepared statements when parameters are needed
             $stmt = $this->db->prepare($query);

@@ -42,7 +42,9 @@ class SoaValidationTest extends BaseDnsTest
         $this->configMock = $this->createMock(ConfigurationManager::class);
 
         // Configure the database mock
-        $this->dbMock->method('queryOne')->willReturn(null);
+        $stmtMock = $this->createMock(\PDOStatement::class);
+        $stmtMock->method('fetch')->willReturn(false);
+        $this->dbMock->method('query')->willReturn($stmtMock);
         $this->dbMock->method('quote')
             ->willReturnCallback(function ($value, $type = null) {
                 if ($type === 'text') {

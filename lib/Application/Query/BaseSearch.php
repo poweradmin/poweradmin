@@ -86,7 +86,9 @@ abstract class BaseSearch
         $originalSqlMode = '';
 
         if ($this->db_type === 'mysql') {
-            $originalSqlMode = $this->db->queryOne("SELECT @@GLOBAL.sql_mode");
+            $stmt = $this->db->query("SELECT @@GLOBAL.sql_mode");
+            $result = $stmt->fetch();
+            $originalSqlMode = $result[0] ?? '';
 
             if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
                 $newSqlMode = str_replace('ONLY_FULL_GROUP_BY,', '', $originalSqlMode);

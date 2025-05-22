@@ -78,30 +78,38 @@ class BaseDnsTest extends TestCase
                 return "'$value'";
             });
 
-        $dbMock->method('queryOne')
+        $dbMock->method('query')
             ->willReturnCallback(function ($query) {
+                $stmtMock = $this->createMock(\PDOStatement::class);
+
                 // Mock CNAME exists check
                 if (strpos($query, "TYPE = 'CNAME'") !== false) {
                     if (strpos($query, "'existing.cname.example.com'") !== false) {
-                        return ['id' => 123]; // Record exists
+                        $stmtMock->method('fetch')->willReturn([123]); // Record exists
+                    } else {
+                        $stmtMock->method('fetch')->willReturn(false);
                     }
                 }
-
                 // Mock MX/NS check for CNAME validation
-                if (strpos($query, "type = 'MX'") !== false || strpos($query, "type = 'NS'") !== false) {
+                elseif (strpos($query, "type = 'MX'") !== false || strpos($query, "type = 'NS'") !== false) {
                     if (strpos($query, "'invalid.cname.target'") !== false) {
-                        return ['id' => 123]; // Record exists - makes CNAME invalid
+                        $stmtMock->method('fetch')->willReturn([123]); // Record exists - makes CNAME invalid
+                    } else {
+                        $stmtMock->method('fetch')->willReturn(false);
                     }
                 }
-
                 // Mock target is alias check
-                if (strpos($query, "TYPE = 'CNAME'") !== false) {
+                elseif (strpos($query, "TYPE = 'CNAME'") !== false) {
                     if (strpos($query, "'alias.example.com'") !== false) {
-                        return ['id' => 456]; // Record exists - CNAME exists for target
+                        $stmtMock->method('fetch')->willReturn([456]); // Record exists - CNAME exists for target
+                    } else {
+                        $stmtMock->method('fetch')->willReturn(false);
                     }
+                } else {
+                    $stmtMock->method('fetch')->willReturn(false); // No record found by default
                 }
 
-                return null; // No record found by default
+                return $stmtMock;
             });
 
         // Mock ZoneRepository to return domain names
