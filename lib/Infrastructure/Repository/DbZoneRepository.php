@@ -496,4 +496,49 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // Then get the full zone details
         return $this->getZone($zoneId);
     }
+
+    /**
+     * Find forward zones associated with reverse zones through PTR records
+     *
+     * @param array $reverseZoneIds Array of reverse zone IDs
+     * @return array Array of PTR record matches with forward zone information
+     */
+    public function findForwardZonesByPtrRecords(array $reverseZoneIds): array
+    {
+        if (empty($reverseZoneIds)) {
+            return [];
+        }
+
+        $records_table = $this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records';
+        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+
+        // Build placeholders for the IN clause
+        $placeholders = implode(',', array_fill(0, count($reverseZoneIds), '?'));
+
+        // Single optimized query that joins PTR records with forward zones
+        $query = "SELECT 
+                    r.domain_id AS reverse_domain_id, 
+                    d.id AS forward_domain_id, 
+                    d.name AS forward_domain_name,
+                    r.content AS ptr_content
+                  FROM $records_table r
+                  JOIN $domains_table d ON r.content LIKE CONCAT('%', d.name)
+                  WHERE r.domain_id IN ($placeholders)
+                    AND r.type = 'PTR'
+                    AND d.name NOT LIKE '%.arpa'
+                  ORDER BY LENGTH(d.name) DESC";
+
+        $stmt = $this->db->prepare($query);
+
+        // Bind all zone IDs
+        $paramIndex = 1;
+        foreach ($reverseZoneIds as $zoneId) {
+            $stmt->bindValue($paramIndex, $zoneId, PDO::PARAM_INT);
+            $paramIndex++;
+        }
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

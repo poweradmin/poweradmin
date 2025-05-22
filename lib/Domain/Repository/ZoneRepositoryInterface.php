@@ -57,4 +57,12 @@ interface ZoneRepositoryInterface
      * @return string|null The domain name or null if not found
      */
     public function getDomainNameById(int $zoneId): ?string;
+
+    /**
+     * Find forward zones associated with reverse zones through PTR records
+     *
+     * @param array $reverseZoneIds Array of reverse zone IDs
+     * @return array Array of PTR record matches with forward zone information
+     */
+    public function findForwardZonesByPtrRecords(array $reverseZoneIds): array;
 }
