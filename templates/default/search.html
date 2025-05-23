@@ -202,23 +202,23 @@
                                 {% if perm_is_godlike and whois_enabled %}
                                 <a class="btn btn-sm btn-outline-secondary"
                                 href="index.php?page=whois&zone_id={{ zone['id'] }}" data-testid="whois-zone-{{ zone['id'] }}">
-                                    <i class="bi bi-search-heart text-secondary"></i> <span class="d-none d-md-inline text-secondary">{% trans %}WHOIS{% endtrans %}</span>
+                                    <i class="bi bi-search-heart text-secondary"></i>
                                 </a>
                                 {% endif %}
                                 {% if perm_is_godlike and rdap_enabled %}
                                 <a class="btn btn-sm btn-outline-secondary"
                                 href="index.php?page=rdap&zone_id={{ zone['id'] }}" data-testid="rdap-zone-{{ zone['id'] }}">
-                                    <i class="bi bi-search text-secondary"></i> <span class="d-none d-md-inline text-secondary">{% trans %}RDAP{% endtrans %}</span>
+                                    <i class="bi bi-search text-secondary"></i>
                                 </a>
                                 {% endif %}
                                 {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
                                 <a class="btn btn-sm btn-outline-primary"
                                 href="index.php?page=edit&id={{ zone['id'] }}">
-                                    <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
+                                    <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 <a class="btn btn-sm btn-outline-danger"
                                 href="index.php?page=delete_domain&id={{ zone['id'] }}">
-                                    <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
+                                    <i class="bi bi-trash text-danger"></i>
                                 </a>
                                 {% endif %}
                             </div>
@@ -392,7 +392,7 @@
                             {% endif %}
                         </td>
                         <td>{{ record['name'] }}</td>
-                        <td><span class="badge bg-light text-dark">{{ record['type'] }}</span></td>
+                        <td><span class="badge {% if record['type'] == 'A' %}bg-primary{% elseif record['type'] == 'AAAA' %}bg-info{% elseif record['type'] == 'CNAME' %}bg-success{% elseif record['type'] == 'MX' %}bg-warning{% elseif record['type'] == 'TXT' %}bg-secondary{% elseif record['type'] == 'PTR' %}bg-danger{% elseif record['type'] == 'SOA' %}bg-dark{% elseif record['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ record['type'] }}</span></td>
                         <td>{{ record['prio'] }}</td>
                         <td><code class="text-break">{{ record['content'] }}</code></td>
                         <td>{{ record['ttl'] }}</td>
@@ -405,11 +405,11 @@
                             <div class="gap-2">
                                 <a class="btn btn-sm btn-outline-primary"
                                 href="index.php?page=edit_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
-                                    <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% if not iface_record_comments %}{% trans %}Edit{% endtrans %}{% endif %}</span>
+                                    <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 <a class="btn btn-sm btn-outline-danger"
                                 href="index.php?page=delete_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
-                                    <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% if not iface_record_comments %}{% trans %}Delete{% endtrans %}{% endif %}</span>
+                                    <i class="bi bi-trash text-danger"></i>
                                 </a>
                             </div>
                             {% endif %}
