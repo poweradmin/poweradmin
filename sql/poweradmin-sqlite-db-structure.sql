@@ -105,4 +105,15 @@ CREATE TABLE user_mfa (
 CREATE UNIQUE INDEX idx_user_mfa_user_id ON user_mfa(user_id);
 CREATE INDEX idx_user_mfa_enabled ON user_mfa(enabled);
 
+CREATE TABLE user_preferences (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    preference_key VARCHAR(100) NOT NULL,
+    preference_value TEXT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX idx_user_preferences_user_key ON user_preferences(user_id, preference_key);
+CREATE INDEX idx_user_preferences_user_id ON user_preferences(user_id);
+
 --

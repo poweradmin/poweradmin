@@ -80,20 +80,6 @@
                     <option value="50" {{ iface_rowamount == 50 ? 'selected' : '' }}>50</option>
                     <option value="100" {{ iface_rowamount == 100 ? 'selected' : '' }}>100</option>
                 </select>
-
-                <script>
-                    // Initialize rows per page from localStorage on page load
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const storedValue = UserSettings.getSetting('rows_per_page');
-                        if (storedValue) {
-                            // If the current URL doesn't include rows_per_page parameter, use the stored value
-                            const urlParams = new URLSearchParams(window.location.search);
-                            if (!urlParams.has('rows_per_page')) {
-                                changeRowsPerPage(storedValue);
-                            }
-                        }
-                    });
-                </script>
             </div>
         </div>
 

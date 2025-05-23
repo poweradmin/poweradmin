@@ -61,3 +61,15 @@ INSERT INTO perm_items (id, name, descr) VALUES
 -- Add created_by column to zone_templ table
 ALTER TABLE zone_templ ADD COLUMN created_by INTEGER REFERENCES users(id) ON DELETE SET NULL;
 UPDATE zone_templ SET created_by = owner WHERE owner != 0;
+
+-- Add user_preferences table
+CREATE TABLE user_preferences (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    preference_key VARCHAR(100) NOT NULL,
+    preference_value TEXT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX idx_user_preferences_user_key ON user_preferences(user_id, preference_key);
+CREATE INDEX idx_user_preferences_user_id ON user_preferences(user_id);

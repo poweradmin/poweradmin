@@ -194,4 +194,16 @@ CREATE TABLE "public"."user_mfa" (
 CREATE UNIQUE INDEX "idx_user_mfa_user_id" ON "public"."user_mfa" USING btree ("user_id");
 CREATE INDEX "idx_user_mfa_enabled" ON "public"."user_mfa" USING btree ("enabled");
 
+CREATE TABLE "user_preferences" (
+    "id" serial NOT NULL,
+    "user_id" integer NOT NULL,
+    "preference_key" character varying(100) NOT NULL,
+    "preference_value" text,
+    CONSTRAINT "user_preferences_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "fk_user_preferences_users" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) WITH (oids = false);
+
+CREATE UNIQUE INDEX "idx_user_preferences_user_key" ON "public"."user_preferences" USING btree ("user_id", "preference_key");
+CREATE INDEX "idx_user_preferences_user_id" ON "public"."user_preferences" USING btree ("user_id");
+
 -- 2022-09-29 19:10:39.890321+00

@@ -19,70 +19,61 @@
  */
 
 /**
- * UserSettings - A module for managing user preferences in localStorage
+ * UserSettings - A module for managing user preferences with database
  */
 const UserSettings = (function() {
-    // The localStorage key prefix
-    const PREFIX = 'poweradmin_';
+    // API endpoint for user preferences
+    const API_ENDPOINT = '/api/internal/user_preferences';
     
     /**
-     * Get a user setting from localStorage
-     * @param {string} key - The setting key
-     * @param {*} defaultValue - Default value if setting doesn't exist
-     * @returns {*} The setting value or default value
+     * Save a preference to database
+     * @param {string} key - The preference key
+     * @param {*} value - The preference value
+     * @returns {Promise} Promise that resolves when saved
      */
-    function getSetting(key, defaultValue = null) {
-        const fullKey = PREFIX + key;
-        const value = localStorage.getItem(fullKey);
-        
-        if (value === null) {
-            return defaultValue;
-        }
-        
+    async function saveToDatabase(key, value) {
         try {
-            return JSON.parse(value);
-        } catch (e) {
-            return value;
-        }
-    }
-    
-    /**
-     * Save a user setting to localStorage
-     * @param {string} key - The setting key
-     * @param {*} value - The setting value
-     */
-    function saveSetting(key, value) {
-        const fullKey = PREFIX + key;
-        if (value === null || value === undefined) {
-            localStorage.removeItem(fullKey);
-            return;
-        }
-        
-        if (typeof value === 'object') {
-            localStorage.setItem(fullKey, JSON.stringify(value));
-        } else {
-            localStorage.setItem(fullKey, value);
-        }
-    }
-    
-    /**
-     * Remove a user setting from localStorage
-     * @param {string} key - The setting key
-     */
-    function removeSetting(key) {
-        const fullKey = PREFIX + key;
-        localStorage.removeItem(fullKey);
-    }
-    
-    /**
-     * Clear all user settings from localStorage
-     */
-    function clearAllSettings() {
-        for (let i = 0; i < localStorage.length; i++) {
-            const key = localStorage.key(i);
-            if (key && key.startsWith(PREFIX)) {
-                localStorage.removeItem(key);
+            const response = await fetch(API_ENDPOINT, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ key: key, value: String(value) })
+            });
+            
+            if (!response.ok) {
+                console.error('Failed to save preference to database');
             }
+            
+            return response.json();
+        } catch (error) {
+            console.error('Error saving preference:', error);
+        }
+    }
+    
+    /**
+     * Load preferences from database
+     * @returns {Promise} Promise that resolves with preferences object
+     */
+    async function loadFromDatabase() {
+        try {
+            const response = await fetch(API_ENDPOINT, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+            
+            if (!response.ok) {
+                console.error('Failed to load preferences from database');
+                return {};
+            }
+            
+            const data = await response.json();
+            return data.preferences || {};
+        } catch (error) {
+            console.error('Error loading preferences:', error);
+            return {};
         }
     }
     
@@ -92,8 +83,8 @@ const UserSettings = (function() {
      * @param {string} pageType - Type of page (zones, edit, search_zones, search_records)
      */
     function applyRowsPerPageSetting(rowsPerPage, pageType = 'zones') {
-        // Save setting to localStorage with page-specific key
-        saveSetting(`rows_per_page_${pageType}`, rowsPerPage);
+        // Save to database
+        saveToDatabase('rows_per_page', rowsPerPage);
         
         // Get current URL and parse it
         const url = new URL(window.location.href);
@@ -118,52 +109,12 @@ const UserSettings = (function() {
         window.location.href = url.toString();
     }
     
-    /**
-     * Initialize rows per page setting from URL or localStorage
-     * @param {Array} availableOptions - Array of available rows per page options
-     * @param {number} defaultValue - Default value from system config
-     * @param {string} pageType - Type of page (zones, edit, search_zones, search_records)
-     * @returns {number} The active rows per page setting
-     */
-    function initRowsPerPage(availableOptions, defaultValue, pageType = 'zones') {
-        // For search page, we check localStorage only
-        if (pageType === 'search_zones' || pageType === 'search_records') {
-            const storedValue = getSetting(`rows_per_page_${pageType}`, null);
-            if (storedValue !== null && availableOptions.includes(Number(storedValue))) {
-                return Number(storedValue);
-            }
-            return defaultValue;
-        }
-        
-        // For other pages, we check URL first
-        const url = new URL(window.location.href);
-        const paramName = `rows_per_page${pageType !== 'zones' ? `_${pageType}` : ''}`;
-        const urlParam = url.searchParams.get(paramName);
-        
-        if (urlParam && !isNaN(Number(urlParam)) && availableOptions.includes(Number(urlParam))) {
-            // Save to localStorage and return
-            saveSetting(`rows_per_page_${pageType}`, Number(urlParam));
-            return Number(urlParam);
-        }
-        
-        // Check localStorage next
-        const storedValue = getSetting(`rows_per_page_${pageType}`, null);
-        if (storedValue !== null && availableOptions.includes(Number(storedValue))) {
-            return Number(storedValue);
-        }
-        
-        // Fall back to default
-        return defaultValue;
-    }
     
     // Public API
     return {
-        getSetting,
-        saveSetting,
-        removeSetting,
-        clearAllSettings,
         applyRowsPerPageSetting,
-        initRowsPerPage
+        saveToDatabase,
+        loadFromDatabase
     };
 })();
 

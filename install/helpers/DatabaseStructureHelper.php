@@ -864,6 +864,57 @@ class DatabaseStructureHelper
                         'ondelete' => 'CASCADE'
                     )
                 )
+            ),
+            array(
+                'table_name' => 'user_preferences',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'user_preferences',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'user_id' => array(
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'type' => 'integer',
+                        'name' => 'user_id',
+                        'table' => 'user_preferences',
+                        'flags' => 'not_null'
+                    ),
+                    'preference_key' => array(
+                        'notnull' => 1,
+                        'length' => 100,
+                        'fixed' => 0,
+                        'type' => 'text',
+                        'name' => 'preference_key',
+                        'table' => 'user_preferences',
+                        'flags' => 'not_null'
+                    ),
+                    'preference_value' => array(
+                        'notnull' => 0,
+                        'type' => 'text',
+                        'name' => 'preference_value',
+                        'table' => 'user_preferences',
+                        'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'idx_user_preferences_user_key' => array('user_id', 'preference_key'),
+                    'idx_user_preferences_user_id' => array('user_id')
+                ),
+                'foreign_keys' => array(
+                    'fk_user_preferences_users' => array(
+                        'table' => 'users',
+                        'fields' => array('user_id' => 'id'),
+                        'ondelete' => 'CASCADE'
+                    )
+                )
             )
         );
     }

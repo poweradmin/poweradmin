@@ -53,6 +53,7 @@ class Pages
             'api/docs',
             'api/docs/json',
             'api/internal/validation',
+            'api/internal/user_preferences',
             'api/internal/zone',
             'api/v1/users',
             'api/v1/zones',

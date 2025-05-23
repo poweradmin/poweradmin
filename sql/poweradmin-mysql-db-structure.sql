@@ -177,4 +177,15 @@ CREATE TABLE `user_mfa` (
     CONSTRAINT `fk_user_mfa_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `user_preferences` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL,
+    `preference_key` varchar(100) NOT NULL,
+    `preference_value` text DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_user_preferences_user_key` (`user_id`, `preference_key`),
+    KEY `idx_user_preferences_user_id` (`user_id`),
+    CONSTRAINT `fk_user_preferences_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 -- 2022-09-29 19:08:10

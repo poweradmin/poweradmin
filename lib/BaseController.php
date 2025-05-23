@@ -23,10 +23,15 @@
 namespace Poweradmin;
 
 use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaSessionManager;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
+use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\StyleManager;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -289,6 +294,40 @@ abstract class BaseController
             $this->renderFooter();
             exit;
         }
+    }
+
+    /**
+     * Create UserPreferenceService instance
+     *
+     * @return UserPreferenceService
+     */
+    protected function createUserPreferenceService(): UserPreferenceService
+    {
+        $db_type = $this->config->get('database', 'type');
+        $repository = new DbUserPreferenceRepository($this->db, $db_type);
+        return new UserPreferenceService($repository);
+    }
+
+    /**
+     * Create PaginationService with user preferences support
+     *
+     * @return PaginationService
+     */
+    protected function createPaginationService(): PaginationService
+    {
+        $userPreferenceService = $this->createUserPreferenceService();
+        return new PaginationService($userPreferenceService);
+    }
+
+    /**
+     * Get current user ID
+     *
+     * @return int|null
+     */
+    protected function getCurrentUserId(): ?int
+    {
+        $userContext = new UserContextService();
+        return $userContext->getLoggedInUserId();
     }
 
     /**

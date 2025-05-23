@@ -141,16 +141,23 @@ class BasicRouter
         // API paths should always use controller authentication mechanisms
         // instead of relying on session-based authentication
         if (str_starts_with($pageName, 'api/')) {
-            // Force any existing login session to be ignored for API routes
-            $originalSession = $_SESSION;
-            $_SESSION = [];
+            // Internal API routes should maintain session for logged-in users
+            if (str_starts_with($pageName, 'api/internal/')) {
+                // Internal API routes use session authentication
+                $controller = new $controllerClassName($this->request);
+                $controller->run();
+            } else {
+                // Public API routes (v1, v2, etc.) should not use session
+                $originalSession = $_SESSION;
+                $_SESSION = [];
 
-            // Pass path parameters to API controllers
-            $controller = new $controllerClassName($this->request, $this->pathParameters);
-            $controller->run();
+                // Pass path parameters to API controllers
+                $controller = new $controllerClassName($this->request, $this->pathParameters);
+                $controller->run();
 
-            // Restore the session after API controller is done
-            $_SESSION = $originalSession;
+                // Restore the session after API controller is done
+                $_SESSION = $originalSession;
+            }
         } else {
             // Standard controller instantiation for non-API routes
             $controller = new $controllerClassName($this->request);

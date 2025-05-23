@@ -48,17 +48,6 @@
                         window.location.href = window.location.pathname + '?' + urlParams.toString();
                     }
 
-                    // Initialize rows per page from localStorage on page load
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const storedValue = UserSettings.getSetting('rows_per_page');
-                        if (storedValue) {
-                            // If the current URL doesn't include rows_per_page parameter, use the stored value
-                            const urlParams = new URLSearchParams(window.location.search);
-                            if (!urlParams.has('rows_per_page')) {
-                                changeRowsPerPage(storedValue);
-                            }
-                        }
-                    });
                 </script>
             </div>
         </div>

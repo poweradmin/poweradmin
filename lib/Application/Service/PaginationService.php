@@ -23,10 +23,17 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\Pagination;
+use Poweradmin\Domain\Service\UserPreferenceService;
 
 class PaginationService
 {
     private array $allowedRowsPerPage = [10, 20, 50, 100];
+    private ?UserPreferenceService $userPreferenceService;
+
+    public function __construct(?UserPreferenceService $userPreferenceService = null)
+    {
+        $this->userPreferenceService = $userPreferenceService;
+    }
 
     /**
      * Create a pagination object with proper validation
@@ -46,12 +53,27 @@ class PaginationService
      * Get user preference for items per page with validation
      *
      * @param int $defaultRowsPerPage Default rows per page from config
+     * @param int|null $userId User ID to get preferences for
      * @return int Validated rows per page value
      */
-    public function getUserRowsPerPage(int $defaultRowsPerPage): int
+    public function getUserRowsPerPage(int $defaultRowsPerPage, ?int $userId = null): int
     {
         // Check if user has specified a preference via URL
         $userRowsPerPage = isset($_GET['rows_per_page']) ? (int)$_GET['rows_per_page'] : null;
+
+        // If URL parameter is set, update user preference
+        if ($userRowsPerPage !== null && $userId !== null && $this->userPreferenceService !== null) {
+            try {
+                $this->userPreferenceService->setRowsPerPage($userId, $userRowsPerPage);
+            } catch (\InvalidArgumentException $e) {
+                // Invalid value, ignore and continue
+            }
+        }
+
+        // Try to get from user preferences first
+        if ($userId !== null && $this->userPreferenceService !== null && $userRowsPerPage === null) {
+            $userRowsPerPage = $this->userPreferenceService->getRowsPerPage($userId);
+        }
 
         return $this->getValidatedItemsPerPage($userRowsPerPage ?? $defaultRowsPerPage);
     }
