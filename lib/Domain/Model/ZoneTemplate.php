@@ -826,6 +826,24 @@ class ZoneTemplate
 
 
     /**
+     * Unlink a zone from its template
+     *
+     * @param int $zone_id Zone ID to unlink
+     * @return bool True on success, false on failure
+     */
+    public function unlinkZoneFromTemplate(int $zone_id): bool
+    {
+        try {
+            $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE domain_id = ?");
+            $stmt->execute([$zone_id]);
+            return true;
+        } catch (\Exception $e) {
+            $this->messageService->addSystemError(_('Error unlinking zone from template: ') . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Check if zone template name exists
      *
      * @param string $zone_templ_name zone template name

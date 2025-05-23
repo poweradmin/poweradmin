@@ -916,7 +916,7 @@ return array(
     'Poweradmin\\Application\\Controller\\PdnsStatusController' => $baseDir . '/lib/Application/Controller/PdnsStatusController.php',
     'Poweradmin\\Application\\Controller\\RdapController' => $baseDir . '/lib/Application/Controller/RdapController.php',
     'Poweradmin\\Application\\Controller\\SearchController' => $baseDir . '/lib/Application/Controller/SearchController.php',
-    'Poweradmin\\Application\\Controller\\UnlinkZoneTemplController' => $baseDir . '/lib/Application/Controller/UnlinkZoneTemplController.php',
+    'Poweradmin\\Application\\Controller\\UnlinkZonesTemplController' => $baseDir . '/lib/Application/Controller/UnlinkZonesTemplController.php',
     'Poweradmin\\Application\\Controller\\UsersController' => $baseDir . '/lib/Application/Controller/UsersController.php',
     'Poweradmin\\Application\\Controller\\WhoisController' => $baseDir . '/lib/Application/Controller/WhoisController.php',
     'Poweradmin\\Application\\Http\\Request' => $baseDir . '/lib/Application/Http/Request.php',
