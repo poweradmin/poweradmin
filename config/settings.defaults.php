@@ -68,6 +68,16 @@ return [
             'recovery_codes' => 8,               // Number of recovery codes to generate
             'recovery_code_length' => 10,        // Length of recovery codes
         ],
+        /**
+         * Google reCAPTCHA Settings
+         */
+        'recaptcha' => [
+            'enabled' => false,                  // Enable reCAPTCHA on login form
+            'site_key' => '',                    // Your reCAPTCHA site key (public key)
+            'secret_key' => '',                  // Your reCAPTCHA secret key (private key)
+            'version' => 'v3',                   // reCAPTCHA version: 'v2' or 'v3'
+            'v3_threshold' => 0.5,               // Score threshold for v3 (0.0 - 1.0)
+        ],
     ],
 
     /**

@@ -28,6 +28,7 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\SqlAuthenticator;
+use Poweradmin\Application\Service\RecaptchaService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\SessionEntity;
@@ -51,6 +52,7 @@ class SessionAuthenticator extends LoggingService
     private LdapAuthenticator $ldapAuthenticator;
     private SqlAuthenticator $sqlAuthenticator;
     private LoginAttemptService $loginAttemptService;
+    private RecaptchaService $recaptchaService;
 
     public function __construct(PDOCommon $connection, ConfigurationManager $configManager)
     {
@@ -70,6 +72,7 @@ class SessionAuthenticator extends LoggingService
         $this->ldapUserEventLogger = new LdapUserEventLogger($connection);
 
         $this->loginAttemptService = new LoginAttemptService($connection, $this->configManager);
+        $this->recaptchaService = new RecaptchaService($configManager);
 
         $this->ldapAuthenticator = new LdapAuthenticator(
             $connection,
@@ -135,6 +138,22 @@ class SessionAuthenticator extends LoggingService
         // If a user had just entered his/her login && password, store them in our session.
         if (isset($_POST["authenticate"])) {
             $this->logDebug('User {username} attempting to authenticate', ['username' => $_POST["username"] ?? 'unknown']);
+
+            // Verify reCAPTCHA if enabled
+            if ($this->recaptchaService->isEnabled()) {
+                $recaptchaResponse = $_POST['g-recaptcha-response'] ?? '';
+                $remoteIp = $_SERVER['REMOTE_ADDR'] ?? '';
+
+                if (!$this->recaptchaService->verify($recaptchaResponse, $remoteIp)) {
+                    $this->logWarning('reCAPTCHA verification failed for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+
+                    $sessionEntity = new SessionEntity(_('reCAPTCHA verification failed. Please try again.'), 'danger');
+                    $this->authService->auth($sessionEntity);
+
+                    $this->logDebug('Authentication blocked due to reCAPTCHA failure for user {username}', ['username' => $_POST['username'] ?? 'unknown']);
+                    return;
+                }
+            }
 
             if ($_POST['password'] != '') {
                 $passwordEncryptionService = new PasswordEncryptionService($session_key);

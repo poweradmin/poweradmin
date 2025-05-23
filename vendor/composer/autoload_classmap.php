@@ -938,6 +938,7 @@ return array(
     'Poweradmin\\Application\\Service\\PasswordPolicyService' => $baseDir . '/lib/Application/Service/PasswordPolicyService.php',
     'Poweradmin\\Application\\Service\\PowerdnsStatusService' => $baseDir . '/lib/Application/Service/PowerdnsStatusService.php',
     'Poweradmin\\Application\\Service\\RdapService' => $baseDir . '/lib/Application/Service/RdapService.php',
+    'Poweradmin\\Application\\Service\\RecaptchaService' => $baseDir . '/lib/Application/Service/RecaptchaService.php',
     'Poweradmin\\Application\\Service\\RecordCommentService' => $baseDir . '/lib/Application/Service/RecordCommentService.php',
     'Poweradmin\\Application\\Service\\RecordCommentSyncService' => $baseDir . '/lib/Application/Service/RecordCommentSyncService.php',
     'Poweradmin\\Application\\Service\\RecordManagerService' => $baseDir . '/lib/Application/Service/RecordManagerService.php',

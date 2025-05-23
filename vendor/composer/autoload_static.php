@@ -1201,6 +1201,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Application\\Service\\PasswordPolicyService' => __DIR__ . '/../..' . '/lib/Application/Service/PasswordPolicyService.php',
         'Poweradmin\\Application\\Service\\PowerdnsStatusService' => __DIR__ . '/../..' . '/lib/Application/Service/PowerdnsStatusService.php',
         'Poweradmin\\Application\\Service\\RdapService' => __DIR__ . '/../..' . '/lib/Application/Service/RdapService.php',
+        'Poweradmin\\Application\\Service\\RecaptchaService' => __DIR__ . '/../..' . '/lib/Application/Service/RecaptchaService.php',
         'Poweradmin\\Application\\Service\\RecordCommentService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordCommentService.php',
         'Poweradmin\\Application\\Service\\RecordCommentSyncService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordCommentSyncService.php',
         'Poweradmin\\Application\\Service\\RecordManagerService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordManagerService.php',

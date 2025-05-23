@@ -35,12 +35,80 @@
                 </select>
             </div>
             {% endif %}
+            {% if recaptcha_enabled %}
+                {% if recaptcha_version == 'v2' %}
+                <div class="mb-3">
+                    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                </div>
+                {% else %}
+                <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+                {% endif %}
+            {% endif %}
             <div class="d-grid">
                 <button type="submit" data-testid="login-button" name="authenticate" class="btn btn-secondary">{% trans %}Log in{% endtrans %}</button>
             </div>
+            {% if recaptcha_enabled %}
+            <div class="text-center mt-2">
+                <small class="text-muted">
+                    This site is protected by reCAPTCHA and the Google
+                    <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and
+                    <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
+                </small>
+            </div>
+            {% endif %}
         </form>
     </div>
 </div>
+{% if recaptcha_enabled %}
+    {% if recaptcha_version == 'v2' %}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {% else %}
+    <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('form');
+            var submitButton = document.querySelector('button[name="authenticate"]');
+            var isSubmitting = false;
+            
+            // Check if grecaptcha is loaded
+            if (typeof grecaptcha === 'undefined') {
+                console.error('reCAPTCHA failed to load. Check your site key and domain configuration.');
+                return;
+            }
+            
+            form.addEventListener('submit', function(e) {
+                if (isSubmitting) {
+                    return;
+                }
+                
+                e.preventDefault();
+                isSubmitting = true;
+                submitButton.disabled = true;
+                
+                grecaptcha.ready(function() {
+                    grecaptcha.execute('{{ recaptcha_site_key }}', {action: 'login'}).then(function(token) {
+                        document.getElementById('g-recaptcha-response').value = token;
+                        
+                        // Add the authenticate parameter that would normally come from the submit button
+                        var authenticateInput = document.createElement('input');
+                        authenticateInput.type = 'hidden';
+                        authenticateInput.name = 'authenticate';
+                        authenticateInput.value = '1';
+                        form.appendChild(authenticateInput);
+                        
+                        form.submit();
+                    }).catch(function(error) {
+                        console.error('reCAPTCHA error:', error);
+                        isSubmitting = false;
+                        submitButton.disabled = false;
+                        alert('{% trans %}reCAPTCHA verification failed. Please try again.{% endtrans %}');
+                    });
+                });
+            });
+        });
+    </script>
+    {% endif %}
+{% endif %}
 <script type="text/javascript">
     <!--
     document.getElementById('username').focus();

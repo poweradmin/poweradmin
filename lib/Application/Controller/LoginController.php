@@ -80,6 +80,9 @@ class LoginController extends BaseController
             'show_language_selector' => $showLanguageSelector,
             'msg' => $msg,
             'type' => $type,
+            'recaptcha_enabled' => $this->config->get('security', 'recaptcha.enabled', false),
+            'recaptcha_site_key' => $this->config->get('security', 'recaptcha.site_key', ''),
+            'recaptcha_version' => $this->config->get('security', 'recaptcha.version', 'v2'),
         ]);
     }
 
