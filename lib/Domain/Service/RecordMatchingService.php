@@ -46,7 +46,7 @@ class RecordMatchingService
     public function getMatchingForwardRecords(string $domain, int $networkAddress, int $hostCount): array
     {
         $forward_domain_id = $this->dnsRecord->getDomainIdByName($domain);
-        if (!$forward_domain_id || !is_int($forward_domain_id)) {
+        if ($forward_domain_id === null) {
             return [];
         }
 
@@ -84,7 +84,7 @@ class RecordMatchingService
     public function getMatchingIPv6ForwardRecords(string $domain, string $networkPrefix): array
     {
         $forward_domain_id = $this->dnsRecord->getDomainIdByName($domain);
-        if (!$forward_domain_id || !is_int($forward_domain_id)) {
+        if ($forward_domain_id === null) {
             return [];
         }
 

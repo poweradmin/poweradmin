@@ -79,9 +79,9 @@ interface RecordRepositoryInterface
      * Retrieve all fields of the record and send it back to the function caller.
      *
      * @param int $id Record ID
-     * @return int|array array of record detail, or -1 if nothing found
+     * @return array|null array of record detail, or null if nothing found
      */
-    public function getRecordFromId(int $id): int|array;
+    public function getRecordFromId(int $id): ?array;
 
     /**
      * Get all records from a domain id.
@@ -96,9 +96,9 @@ interface RecordRepositoryInterface
      * @param string $sortDirection Sort direction [default='ASC']
      * @param bool $fetchComments Whether to fetch record comments [default=false]
      *
-     * @return int|array array of record detail, or -1 if nothing found
+     * @return array array of record details (empty array if nothing found)
      */
-    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int;
+    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array;
 
     /**
      * Record ID to Domain ID

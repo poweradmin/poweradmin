@@ -21,20 +21,16 @@
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/AddZoneMasterController.php">
     <InvalidScalarArgument>
       <code><![CDATA[$owner]]></code>
-      <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/AddZoneSlaveController.php">
     <InvalidScalarArgument>
       <code><![CDATA[$owner]]></code>
-      <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/AddZoneTemplRecordController.php">
@@ -50,23 +46,12 @@
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/BulkRecordAddController.php">
     <InvalidScalarArgument>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Application/Controller/BulkRegistrationController.php">
-    <InvalidScalarArgument>
       <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
   </file>
@@ -80,8 +65,6 @@
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/DeletePermTemplController.php">
@@ -98,14 +81,6 @@
       <code><![CDATA[$record_id]]></code>
       <code><![CDATA[$record_id]]></code>
       <code><![CDATA[$record_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Application/Controller/DeleteRecordsController.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/DeleteUserController.php">
@@ -133,8 +108,6 @@
   </file>
   <file src="lib/Application/Controller/DnssecAddKeyController.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$domain_name]]></code>
-      <code><![CDATA[$domain_name]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
@@ -142,8 +115,6 @@
   </file>
   <file src="lib/Application/Controller/DnssecController.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$domain_name]]></code>
-      <code><![CDATA[$domain_name]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
@@ -154,17 +125,12 @@
   </file>
   <file src="lib/Application/Controller/DnssecDeleteKeyController.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$domain_name]]></code>
-      <code><![CDATA[$domain_name]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/DnssecDsDnskeyController.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$domain_name]]></code>
-      <code><![CDATA[$domain_name]]></code>
-      <code><![CDATA[$domain_name]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
@@ -175,12 +141,6 @@
   </file>
   <file src="lib/Application/Controller/DnssecEditKeyController.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$domain_name]]></code>
-      <code><![CDATA[$domain_name]]></code>
-      <code><![CDATA[$domain_name]]></code>
-      <code><![CDATA[$domain_name]]></code>
-      <code><![CDATA[$domain_name]]></code>
-      <code><![CDATA[$domain_name]]></code>
       <code><![CDATA[$key_id]]></code>
       <code><![CDATA[$key_id]]></code>
       <code><![CDATA[$key_id]]></code>
@@ -197,7 +157,6 @@
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/EditController.php">
@@ -227,10 +186,6 @@
       <code><![CDATA[$_POST["rid"]]]></code>
       <code><![CDATA[$_POST["rid"]]]></code>
       <code><![CDATA[$record_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/EditZoneTemplController.php">
@@ -280,19 +235,10 @@
       <code><![CDATA[json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)]]></code>
     </FalsableReturnStatement>
   </file>
-  <file src="lib/Application/Service/RecordCommentSyncService.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$contentDomainId]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Application/Service/RecordManagerService.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$contentDomainId]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/BaseController.php">
@@ -303,29 +249,14 @@
       <code><![CDATA[$allowedHosts]]></code>
     </NoValue>
   </file>
-  <file src="lib/Domain/Service/BatchReverseRecordCreator.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$test_zone_rev_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Domain/Service/Dns/DomainManager.php">
     <InvalidScalarArgument>
       <code><![CDATA[$_GET["id"]]]></code>
       <code><![CDATA[$_GET["id"]]]></code>
-      <code><![CDATA[$domain]]></code>
-      <code><![CDATA[$domain]]></code>
-      <code><![CDATA[$domain]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
       <code><![CDATA[$zone_template]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Domain/Service/Dns/RecordManager.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$zone]]></code>
-      <code><![CDATA[$zone]]></code>
-    </InvalidScalarArgument>
     <TypeDoesNotContainNull>
       <code><![CDATA[$validationResult === null]]></code>
       <code><![CDATA[$validationResult === null]]></code>
@@ -466,17 +397,12 @@
   </file>
   <file src="lib/Domain/Service/DomainRecordCreator.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$domainId]]></code>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Domain/Service/ReverseRecordCreator.php">
     <InvalidScalarArgument>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_name]]></code>
-      <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Domain/Utility/IpHelper.php">

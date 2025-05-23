@@ -109,9 +109,9 @@ class RecordRepository implements RecordRepositoryInterface
      * Retrieve all fields of the record and send it back to the function caller.
      *
      * @param int $id Record ID
-     * @return int|array array of record detail, or -1 if nothing found
+     * @return array|null array of record detail, or null if nothing found
      */
-    public function getRecordFromId(int $id): int|array
+    public function getRecordFromId(int $id): ?array
     {
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
@@ -121,7 +121,7 @@ class RecordRepository implements RecordRepositoryInterface
         $result = $stmt->fetch();
         if ($result) {
             if ($result["type"] == "" || $result["content"] == "") {
-                return -1;
+                return null;
             }
 
             return array(
@@ -137,7 +137,7 @@ class RecordRepository implements RecordRepositoryInterface
                 "auth" => $result["auth"],
             );
         } else {
-            return -1;
+            return null;
         }
     }
 
@@ -154,14 +154,12 @@ class RecordRepository implements RecordRepositoryInterface
      * @param string $sortDirection Sort direction [default='ASC']
      * @param bool $fetchComments Whether to fetch record comments [default=false]
      *
-     * @return int|array array of record detail, or -1 if nothing found
+     * @return array array of record details (empty array if nothing found)
      */
-    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int
+    public function getRecordsFromDomainId(string $db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array
     {
         if (!is_numeric($id)) {
-            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s'), "getRecordsFromDomainId"));
-
-            return -1;
+            return [];
         }
 
         $pdns_db_name = $this->config->get('database', 'pdns_name');
@@ -203,11 +201,10 @@ class RecordRepository implements RecordRepositoryInterface
 
         if ($records) {
             $result = $records->fetchAll();
-        } else {
-            return -1;
+            return $result ?: [];
         }
 
-        return $result;
+        return [];
     }
 
     /**

@@ -164,8 +164,14 @@ class BulkRecordAddController extends BaseController
                 $comment = isset($parts[5]) ? trim($parts[5]) : '';
             }
 
-            // Validate record type
+            // Restore full record name if using hostname-only display
+            $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
             $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+            if ($display_hostname_only && $zone_name !== false) {
+                $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
+            }
+
+            // Validate record type
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
             $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
             $valid_types = $isReverseZone ? $this->recordTypeService->getReverseZoneTypes($isDnsSecEnabled) : $this->recordTypeService->getDomainZoneTypes($isDnsSecEnabled);
@@ -252,7 +258,8 @@ class BulkRecordAddController extends BaseController
             'failed_records' => $failed_records,
             'default_ttl' => $this->config->get('dns', 'ttl', 3600),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
-            'is_reverse_zone' => DnsHelper::isReverseZone($zone_name),
+            'is_reverse_zone' => $zone_name !== null && DnsHelper::isReverseZone($zone_name),
+            'display_hostname_only' => $this->config->get('interface', 'display_hostname_only', false),
         ]);
     }
 

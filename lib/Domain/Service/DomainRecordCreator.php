@@ -57,7 +57,7 @@ class DomainRecordCreator
 
         $registeredDomain = DnsHelper::getRegisteredDomain($content);
         $domainId = $this->dnsRecord->getDomainIdByName($registeredDomain);
-        if ($domainId === false) {
+        if ($domainId === null) {
             return $this->errorResponse(sprintf(_('There is no managed zone for domain: %s.'), $content));
         }
 

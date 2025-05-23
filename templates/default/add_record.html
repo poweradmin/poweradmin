@@ -44,7 +44,12 @@
                 <table class="table table-striped table-sm" id="recordsTable">
                     <thead class="table-light">
                         <tr>
-                            <th>{% trans %}Name{% endtrans %}</th>
+                            <th>
+                                {% trans %}Name{% endtrans %}
+                                {% if display_hostname_only %}
+                                <small class="text-muted">(.{{ zone_name }})</small>
+                                {% endif %}
+                            </th>
                             <th>{% trans %}Type{% endtrans %}</th>
                             <th>{% trans %}Content{% endtrans %}</th>
                             <th>{% trans %}Priority{% endtrans %}</th>
