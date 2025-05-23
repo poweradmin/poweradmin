@@ -90,8 +90,8 @@
                 {% endif %}
                 {% if perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike %}
                 <li class="p-1">
-                    <a href="index.php?page=users" class="nav-link text-{{ current_page in ['users', 'add_user', 'edit_user', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ', 'list_log_users'] ? 'primary' : 'secondary' }}"><i class="bi bi-people"></i></a>
-                    <a class="text-{{ current_page in ['users', 'add_user', 'edit_user', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ', 'list_log_users'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a href="index.php?page=users" class="nav-link text-{{ current_page in ['users', 'add_user', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) ? 'primary' : 'secondary' }}"><i class="bi bi-people"></i></a>
+                    <a class="text-{{ current_page in ['users', 'add_user', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Users{% endtrans %}</a>
                     <ul class="dropdown-menu">
@@ -161,8 +161,8 @@
                 </li>
                 {% endif %}
                 <li class="p-1">
-                    <a href="#" class="nav-link text-{{ current_page in ['change_password', 'mfa_setup', 'logout'] ? 'primary' : 'secondary' }}"><i class="bi bi-person-circle"></i></a>
-                    <a class="text-{{ current_page in ['change_password', 'mfa_setup', 'logout'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a href="#" class="nav-link text-{{ current_page in ['change_password', 'mfa_setup', 'logout'] or (current_page == 'edit_user' and request.id == session_userid) ? 'primary' : 'secondary' }}"><i class="bi bi-person-circle"></i></a>
+                    <a class="text-{{ current_page in ['change_password', 'mfa_setup', 'logout'] or (current_page == 'edit_user' and request.id == session_userid) ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Account{% endtrans %}</a>
                     <ul class="dropdown-menu">
