@@ -299,6 +299,30 @@ class RecordRepository implements RecordRepositoryInterface
     }
 
     /**
+     * Check if any PTR record exists for a given reverse domain name
+     *
+     * @param int $domain_id Domain ID
+     * @param string $name Reverse domain name (e.g., "1.1.168.192.in-addr.arpa")
+     *
+     * @return bool True if any PTR record exists for this name
+     */
+    public function hasPtrRecord(int $domain_id, string $name): bool
+    {
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table 
+                  WHERE domain_id = :domain_id 
+                  AND name = :name 
+                  AND type = 'PTR'");
+        $stmt->execute([
+            ':domain_id' => $domain_id,
+            ':name' => $name
+        ]);
+        return (int)$stmt->fetchColumn() > 0;
+    }
+
+    /**
      * Get Serial for Zone ID
      *
      * @param int $zid Zone ID

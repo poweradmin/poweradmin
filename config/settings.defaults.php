@@ -126,6 +126,7 @@ return [
         'top_level_tld_check' => false,            // Prevent creation of top-level domains (added in 2.1.7)
         'third_level_check' => false,              // Prevent creation of third-level domains (added in 2.1.7)
         'txt_auto_quote' => false,                 // Automatically quote TXT records (added in 3.9.2)
+        'prevent_duplicate_ptr' => true,           // Prevent creation of multiple PTR records for same IP in batch operations (added in 4.0.0)
 
         // Record Type Settings (added in 4.0.0)
         // Set to null to use all default types, or provide an array of specific types to show

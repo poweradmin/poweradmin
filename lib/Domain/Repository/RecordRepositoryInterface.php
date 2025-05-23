@@ -131,6 +131,16 @@ interface RecordRepositoryInterface
     public function recordExists(int $domain_id, string $name, string $type, string $content): bool;
 
     /**
+     * Check if any PTR record exists for a given reverse domain name
+     *
+     * @param int $domain_id Domain ID
+     * @param string $name Reverse domain name (e.g., "1.1.168.192.in-addr.arpa")
+     *
+     * @return bool True if any PTR record exists for this name
+     */
+    public function hasPtrRecord(int $domain_id, string $name): bool;
+
+    /**
      * Check if record has similar records with same name and type
      *
      * @param int $domain_id Domain ID

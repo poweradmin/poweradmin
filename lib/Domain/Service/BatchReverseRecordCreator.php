@@ -187,12 +187,21 @@ class BatchReverseRecordCreator
                         continue;
                     }
 
-                    // Check if record already exists before trying to add it
-                    $record_exists = $this->dnsRecord->recordExists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
-
-                    if ($record_exists) {
-                        $skipCount++;
-                        continue;
+                    // Check if ANY PTR record already exists for this IP (if configured)
+                    $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
+                    if ($preventDuplicatePTR) {
+                        $ptr_exists = $this->recordRepository->hasPtrRecord($zone_rev_id, $reverseDomain);
+                        if ($ptr_exists) {
+                            $skipCount++;
+                            continue;
+                        }
+                    } else {
+                        // Check if exact record exists to prevent exact duplicates
+                        $record_exists = $this->dnsRecord->recordExists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
+                        if ($record_exists) {
+                            $skipCount++;
+                            continue;
+                        }
                     }
 
                     try {
@@ -250,12 +259,21 @@ class BatchReverseRecordCreator
                         continue;
                     }
 
-                // Check if record already exists before trying to add it
-                    $record_exists = $this->dnsRecord->recordExists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
-
-                    if ($record_exists) {
-                        $skipCount++;
-                        continue;
+                // Check if ANY PTR record already exists for this IP (if configured)
+                    $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
+                    if ($preventDuplicatePTR) {
+                        $ptr_exists = $this->recordRepository->hasPtrRecord($zone_rev_id, $reverseDomain);
+                        if ($ptr_exists) {
+                            $skipCount++;
+                            continue;
+                        }
+                    } else {
+                        // Check if exact record exists to prevent exact duplicates
+                        $record_exists = $this->dnsRecord->recordExists($zone_rev_id, $reverseDomain, 'PTR', $fqdn);
+                        if ($record_exists) {
+                            $skipCount++;
+                            continue;
+                        }
                     }
 
                     try {
@@ -304,7 +322,12 @@ class BatchReverseRecordCreator
 
         $message = "Created $successCount PTR records successfully";
         if ($skipCount > 0) {
-            $message .= " ($skipCount skipped as they already exist)";
+            $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
+            if ($preventDuplicatePTR) {
+                $message .= " ($skipCount skipped - PTR record already exists for IP address)";
+            } else {
+                $message .= " ($skipCount skipped - exact PTR record already exists)";
+            }
         }
         if ($failCount > 0) {
             $message .= " ($failCount failed)";
@@ -482,12 +505,21 @@ class BatchReverseRecordCreator
                         $reverseDomain = DnsRecord::convertIPv6AddrToPtrRec($ip);
                 }
 
-                // Check if record already exists before trying to add it
-                $record_exists = $this->dnsRecord->recordExists($test_zone_rev_id, $reverseDomain, 'PTR', $fqdn);
-
-                if ($record_exists) {
-                    $skipCount++;
-                    continue;
+                // Check if ANY PTR record already exists for this IP (if configured)
+                $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
+                if ($preventDuplicatePTR) {
+                    $ptr_exists = $this->recordRepository->hasPtrRecord($test_zone_rev_id, $reverseDomain);
+                    if ($ptr_exists) {
+                        $skipCount++;
+                        continue;
+                    }
+                } else {
+                    // Check if exact record exists to prevent exact duplicates
+                    $record_exists = $this->dnsRecord->recordExists($test_zone_rev_id, $reverseDomain, 'PTR', $fqdn);
+                    if ($record_exists) {
+                        $skipCount++;
+                        continue;
+                    }
                 }
 
                 try {
@@ -535,7 +567,12 @@ class BatchReverseRecordCreator
 
         $message = "Created $successCount IPv6 PTR records successfully";
         if ($skipCount > 0) {
-            $message .= " ($skipCount skipped as they already exist)";
+            $preventDuplicatePTR = $this->config->get('dns', 'prevent_duplicate_ptr', true);
+            if ($preventDuplicatePTR) {
+                $message .= " ($skipCount skipped - PTR record already exists for IP address)";
+            } else {
+                $message .= " ($skipCount skipped - exact PTR record already exists)";
+            }
         }
         if ($failCount > 0) {
             $message .= " ($failCount failed)";
@@ -567,12 +604,6 @@ class BatchReverseRecordCreator
 
         if ($zone_rev_id === -1) {
             throw new \Exception("No matching reverse zone found for $content_rev");
-        }
-
-        // Check if the record already exists to prevent duplicates
-        if ($this->dnsRecord->recordExists($zone_rev_id, $content_rev, 'PTR', $fqdn_name)) {
-            // Record already exists, consider it a success but don't log it
-            return true;
         }
 
         try {
