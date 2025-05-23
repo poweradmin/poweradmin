@@ -59,8 +59,9 @@ class ListTemplateZonesController extends BaseController
         $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
 
         // Create pagination service and get user preference
-        $paginationService = new PaginationService();
-        $itemsPerPage = $paginationService->getUserRowsPerPage($default_rowamount);
+        $paginationService = $this->createPaginationService();
+        $userId = $this->getCurrentUserId();
+        $itemsPerPage = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
 
         // Get the current page from request
         $httpParameters = new HttpPaginationParameters();

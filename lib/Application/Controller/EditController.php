@@ -129,8 +129,9 @@ class EditController extends BaseController
         $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
 
         // Create pagination service and get user preference
-        $paginationService = new PaginationService();
-        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount);
+        $paginationService = $this->createPaginationService();
+        $userId = $this->getCurrentUserId();
+        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
         $configManager = ConfigurationManager::getInstance();
         $iface_show_id = $configManager->get('interface', 'show_record_id', false);
         $iface_edit_add_record_top = $configManager->get('interface', 'position_record_form_top', false);
@@ -438,7 +439,7 @@ class EditController extends BaseController
             'row_amount' => $iface_rowamount,
             'record_sort_by' => $record_sort_by,
             'sort_direction' => $sort_direction,
-            'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_id),
+            'pagination' => $this->createAndPresentPagination($total_filtered_count, $iface_rowamount, $zone_id, $paginationService),
             'pdnssec_use' => $isDnsSecEnabled,
             'is_secured' => $zone_name !== null && $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
             'session_userid' => $this->userContextService->getLoggedInUserId(),
@@ -464,12 +465,11 @@ class EditController extends BaseController
         ]);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage, int $id): string
+    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, int $id, PaginationService $paginationService): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
 
-        $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
 
         // Build base URL with any active filters
