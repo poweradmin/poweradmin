@@ -87,7 +87,7 @@ class DnssecDeleteKeyController extends BaseController
                 $result = $dnssecProvider->removeZoneKey($domain_name, $key_id);
 
                 // Check if key still exists to verify deletion
-                $keyStillExists = $domain_name !== false && $dnssecProvider->keyExists((string)$domain_name, $key_id);
+                $keyStillExists = $domain_name !== null && $dnssecProvider->keyExists($domain_name, $key_id);
 
                 if ($result && !$keyStillExists) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));

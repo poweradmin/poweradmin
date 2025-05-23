@@ -80,9 +80,9 @@ class DomainRepository implements DomainRepositoryInterface
      *
      * @param int $id Domain ID
      *
-     * @return bool|string Domain name
+     * @return string|null Domain name or null if not found
      */
-    public function getDomainNameById(int $id): bool|string
+    public function getDomainNameById(int $id): ?string
     {
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
@@ -93,8 +93,7 @@ class DomainRepository implements DomainRepositoryInterface
         if ($result) {
             return $result["name"];
         } else {
-            $this->messageService->addSystemError("Domain does not exist.");
-            return false;
+            return null;
         }
     }
 

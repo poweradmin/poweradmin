@@ -393,14 +393,14 @@ class EditController extends BaseController
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
-        $isReverseZone = $zone_name !== false && DnsHelper::isReverseZone((string)$zone_name);
+        $isReverseZone = $zone_name !== null && DnsHelper::isReverseZone($zone_name);
 
         // Transform records for display using the RecordDisplayService
         $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
         $recordDisplayService = new RecordDisplayService($display_hostname_only);
 
         $displayRecords = [];
-        if ($zone_name !== false) {
+        if ($zone_name !== null) {
             $recordDisplayObjects = $recordDisplayService->transformRecords($records, $zone_name);
             // Convert to arrays for template compatibility
             $displayRecords = array_map(fn($recordDisplay) => $recordDisplay->toArray(), $recordDisplayObjects);
@@ -440,7 +440,7 @@ class EditController extends BaseController
             'sort_direction' => $sort_direction,
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_id),
             'pdnssec_use' => $isDnsSecEnabled,
-            'is_secured' => $zone_name !== false && $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
+            'is_secured' => $zone_name !== null && $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
             'session_userid' => $this->userContextService->getLoggedInUserId(),
             'dns_ttl' => $this->config->get('dns', 'ttl', 86400),
             'is_reverse_zone' => $isReverseZone,
@@ -836,7 +836,7 @@ class EditController extends BaseController
         $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
         $recordDisplayService = new RecordDisplayService($display_hostname_only);
         $zone_name_for_record = $this->zoneRepository->getDomainNameById($zone_id);
-        if ($zone_name_for_record !== false) {
+        if ($zone_name_for_record !== null) {
             $name = $recordDisplayService->restoreFqdn($name, $zone_name_for_record);
         }
 

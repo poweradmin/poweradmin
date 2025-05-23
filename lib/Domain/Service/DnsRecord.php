@@ -413,9 +413,9 @@ class DnsRecord
      *
      * @param int $id Domain ID
      *
-     * @return bool|string Domain name
+     * @return string|null Domain name or null if not found
      */
-    public function getDomainNameById(int $id): bool|string
+    public function getDomainNameById(int $id): ?string
     {
         return $this->domainRepository->getDomainNameById($id);
     }

@@ -148,7 +148,7 @@ class EditRecordController extends BaseController
         $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
         if ($display_hostname_only && isset($postData['name'])) {
             $zone_name = $dnsRecord->getDomainNameById($zid);
-            if ($zone_name !== false && $zone_name !== true) {
+            if ($zone_name !== null) {
                 $postData['name'] = DnsHelper::restoreZoneSuffix($postData['name'], $zone_name);
             }
         }
@@ -206,7 +206,7 @@ class EditRecordController extends BaseController
 
         if ($this->config->get('dnssec', 'enabled', false)) {
             $zone_name = $dnsRecord->getDomainNameById($zid);
-            if ($zone_name !== false && $zone_name !== true) {
+            if ($zone_name !== null) {
                 $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
                 $dnssecProvider->rectifyZone($zone_name);
             }

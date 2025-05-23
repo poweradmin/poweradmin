@@ -250,7 +250,7 @@ class AddRecordController extends BaseController
         $ttl = $this->config->get('dns', 'ttl', 3600);
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
 
-        if ($zone_name !== false && $zone_name !== true && str_starts_with($zone_name, "xn--")) {
+        if ($zone_name !== null && str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name);
         } else {
             $idn_zone_name = "";
