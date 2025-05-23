@@ -28,10 +28,13 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\BatchReverseRecordCreator;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
-use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\Validator\Constraints as Assert;
+use Poweradmin\Domain\Repository\RecordRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Model\Constants;
 
 class BatchPtrRecordController extends BaseController
 {
@@ -46,19 +49,15 @@ class BatchPtrRecordController extends BaseController
         $this->logger = new LegacyLogger($this->db);
         $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
-        $reverseRecordCreator = new ReverseRecordCreator(
-            $this->db,
-            $this->getConfig(),
-            $this->logger,
-            $this->dnsRecord
-        );
+        $recordRepository = new RecordRepository($this->db, $this->getConfig());
 
         $this->batchReverseRecordCreator = new BatchReverseRecordCreator(
             $this->db,
             $this->getConfig(),
             $this->logger,
             $this->dnsRecord,
-            $reverseRecordCreator
+            null,
+            $recordRepository
         );
     }
 
@@ -148,6 +147,7 @@ class BatchPtrRecordController extends BaseController
         $zone_id = isset($_GET['id']) ? (int)$_GET['id'] : 0; // Use 0 when no zone_id is provided
         $ipv6_count = isset($_POST['ipv6_count']) ? (int)$_POST['ipv6_count'] : 256;
         $createForwardRecords = isset($_POST['create_forward_records']) && $_POST['create_forward_records'] === 'on';
+        $onlyMatchingRecords = isset($_POST['only_matching_records']) && $_POST['only_matching_records'] === 'on';
 
         try {
             if ($networkType === 'ipv4') {
@@ -160,7 +160,8 @@ class BatchPtrRecordController extends BaseController
                     $prio,
                     $comment,
                     $_SESSION['userlogin'] ?? '',
-                    $createForwardRecords
+                    $createForwardRecords,
+                    $onlyMatchingRecords
                 );
             } else { // IPv6
                 $result = $this->batchReverseRecordCreator->createIPv6Network(
@@ -213,6 +214,9 @@ class BatchPtrRecordController extends BaseController
             }
         }
 
+        // Get all reverse zones for the dropdown
+        $reverseZones = $this->getReverseZones();
+
         $this->render('batch_ptr_record.html', [
             'network_type' => $formData['network_type'] ?? 'ipv4',
             'network_prefix' => $formData['network_prefix'] ?? '',
@@ -222,6 +226,7 @@ class BatchPtrRecordController extends BaseController
             'ipv6_count' => $formData['ipv6_count'] ?? 256,
             'comment' => $formData['comment'] ?? '',
             'create_forward_records' => $formData['create_forward_records'] ?? '',
+            'only_matching_records' => $formData['only_matching_records'] ?? '',
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
             'idn_zone_name' => $idn_zone_name,
@@ -229,6 +234,7 @@ class BatchPtrRecordController extends BaseController
             'has_zone_id' => $hasZoneId,
             'file_version' => $file_version,
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', false),
+            'reverse_zones' => $reverseZones,
         ]);
     }
 
@@ -246,5 +252,59 @@ class BatchPtrRecordController extends BaseController
         if (!$this->doValidateRequest($_GET)) {
             $this->showFirstValidationError($_GET);
         }
+    }
+
+    /**
+     * Get all reverse zones for the dropdown
+     *
+     * @return array Array of reverse zones
+     */
+    private function getReverseZones(): array
+    {
+        $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
+        $userContextService = new UserContextService();
+
+        // Get permission type and user ID
+        $perm_view = Permission::getViewPermission($this->db);
+        $userId = $userContextService->getLoggedInUserId();
+
+        // Get all reverse zones (using a high limit to get all zones for the dropdown)
+        $reverseZonesResult = $zoneRepository->getReverseZones($perm_view, $userId, 'all', 0, Constants::DEFAULT_MAX_ROWS, 'name', 'ASC');
+
+        $reverseZones = [];
+        foreach ($reverseZonesResult as $zone) {
+            // For IPv4 reverse zones, convert to network notation
+            if (str_ends_with($zone['name'], '.in-addr.arpa')) {
+                $parts = explode('.', str_replace('.in-addr.arpa', '', $zone['name']));
+                $octets = array_reverse($parts);
+
+                // Determine CIDR based on number of octets
+                if (count($octets) == 1) {
+                    $network = $octets[0] . '.0.0.0/8';
+                } elseif (count($octets) == 2) {
+                    $network = $octets[0] . '.' . $octets[1] . '.0.0/16';
+                } elseif (count($octets) == 3) {
+                    $network = $octets[0] . '.' . $octets[1] . '.' . $octets[2] . '.0/24';
+                } else {
+                    // For more specific zones, just show the zone name
+                    $network = $zone['name'];
+                }
+
+                $reverseZones[] = [
+                    'name' => $zone['name'],
+                    'network' => $network,
+                    'type' => 'ipv4'
+                ];
+            } elseif (str_ends_with($zone['name'], '.ip6.arpa')) {
+                // For IPv6, show the zone name as is
+                $reverseZones[] = [
+                    'name' => $zone['name'],
+                    'network' => $zone['name'],
+                    'type' => 'ipv6'
+                ];
+            }
+        }
+
+        return $reverseZones;
     }
 }

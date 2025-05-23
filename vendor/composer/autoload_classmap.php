@@ -1075,6 +1075,7 @@ return array(
     'Poweradmin\\Domain\\Service\\MfaSessionManager' => $baseDir . '/lib/Domain/Service/MfaSessionManager.php',
     'Poweradmin\\Domain\\Service\\PasswordEncryptionService' => $baseDir . '/lib/Domain/Service/PasswordEncryptionService.php',
     'Poweradmin\\Domain\\Service\\PermissionService' => $baseDir . '/lib/Domain/Service/PermissionService.php',
+    'Poweradmin\\Domain\\Service\\RecordMatchingService' => $baseDir . '/lib/Domain/Service/RecordMatchingService.php',
     'Poweradmin\\Domain\\Service\\RecordTypeService' => $baseDir . '/lib/Domain/Service/RecordTypeService.php',
     'Poweradmin\\Domain\\Service\\ReverseRecordCreator' => $baseDir . '/lib/Domain/Service/ReverseRecordCreator.php',
     'Poweradmin\\Domain\\Service\\SessionService' => $baseDir . '/lib/Domain/Service/SessionService.php',

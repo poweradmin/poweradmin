@@ -305,10 +305,6 @@
   </file>
   <file src="lib/Domain/Service/BatchReverseRecordCreator.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$forward_domain_id]]></code>
-      <code><![CDATA[$forward_domain_id]]></code>
-      <code><![CDATA[$forward_domain_id]]></code>
-      <code><![CDATA[$forward_domain_id]]></code>
       <code><![CDATA[$test_zone_rev_id]]></code>
       <code><![CDATA[$zone_name]]></code>
     </InvalidScalarArgument>

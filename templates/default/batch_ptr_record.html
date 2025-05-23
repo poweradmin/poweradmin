@@ -45,7 +45,23 @@
 
                     <div class="mb-3">
                         <label for="network_prefix" class="form-label">{% trans %}Network Prefix{% endtrans %}</label>
-                        <input type="text" id="network_prefix" name="network_prefix" value="{{ network_prefix }}" class="form-control form-control-sm" required>
+                        <div class="input-group">
+                            <input type="text" id="network_prefix" name="network_prefix" value="{{ network_prefix }}" class="form-control form-control-sm" required>
+                            {% if reverse_zones %}
+                            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="bi bi-list text-secondary"></i>
+                            </button>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li><h6 class="dropdown-header">{% trans %}Select from existing reverse zones{% endtrans %}</h6></li>
+                                <li><hr class="dropdown-divider"></li>
+                                {% for zone in reverse_zones %}
+                                    {% if zone.type == 'ipv4' %}
+                                    <li><a class="dropdown-item" href="#" data-network="{{ zone.network }}">{{ zone.network }} <small class="text-muted">({{ zone.name }})</small></a></li>
+                                    {% endif %}
+                                {% endfor %}
+                            </ul>
+                            {% endif %}
+                        </div>
                         <div class="invalid-feedback">{% trans %}Please provide a network prefix{% endtrans %}</div>
                         <small class="form-text text-muted ipv4-help">{% trans %}e.g., "192.168.1.0/24" or "10.0.0.0/20"{% endtrans %}</small>
                         <small class="form-text text-muted ipv6-help">{% trans %}e.g., "2001:db8:1:1"{% endtrans %}</small>
@@ -84,6 +100,12 @@
                         <label for="create_forward_records" class="form-check-label">{% trans %}Create forward A/AAAA records in primary zone{% endtrans %}</label>
                     </div>
 
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" id="only_matching_records" name="only_matching_records" class="form-check-input" {% if only_matching_records == 'on' %}checked{% endif %}>
+                        <label for="only_matching_records" class="form-check-label">{% trans %}Create PTRs only for existing A records in forward zone{% endtrans %}</label>
+                        <small class="form-text text-muted d-block">{% trans %}When checked, PTR records will only be created for IPs that have corresponding A records in the specified domain{% endtrans %}</small>
+                    </div>
+
                     <div class="d-flex justify-content-between">
                         <div>
                             <button type="submit" class="btn btn-sm btn-primary">
@@ -115,13 +137,24 @@
                 <div class="list-group list-group-flush">
                     <div class="list-group-item border-bottom">
                         <h6 class="mb-1"><i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Important Information{% endtrans %}</h6>
-                        <p class="small mb-1">{% trans %}This will create multiple PTR records at once. For IPv4, supported networks are:{% endtrans %}</p>
+                        <p class="small mb-1">{% trans %}This tool creates PTR records in bulk. Two modes are available:{% endtrans %}</p>
+                        <ul class="mb-1 ps-4 small">
+                            <li><strong>{% trans %}All IPs{% endtrans %}:</strong> {% trans %}Creates PTR records for every IP in the network range{% endtrans %}</li>
+                            <li><strong>{% trans %}Matching only{% endtrans %}:</strong> {% trans %}Creates PTR records only for IPs that have existing A records in the forward zone{% endtrans %}</li>
+                        </ul>
+                        <p class="small mb-1">{% trans %}For IPv4, supported networks are:{% endtrans %}</p>
                         <ul class="mb-0 ps-4 small">
-                            <li>/24 (256 records)</li>
-                            <li>/23 (512 records)</li>
-                            <li>/22 (1024 records)</li>
-                            <li>/21 (2048 records)</li>
-                            <li>/20 (4096 records)</li>
+                            <li>/30 (4 addresses, 2 usable hosts)</li>
+                            <li>/29 (8 addresses, 6 usable hosts)</li>
+                            <li>/28 (16 addresses, 14 usable hosts)</li>
+                            <li>/27 (32 addresses, 30 usable hosts)</li>
+                            <li>/26 (64 addresses, 62 usable hosts)</li>
+                            <li>/25 (128 addresses, 126 usable hosts)</li>
+                            <li>/24 (256 addresses, 254 usable hosts)</li>
+                            <li>/23 (512 addresses, 510 usable hosts)</li>
+                            <li>/22 (1024 addresses, 1022 usable hosts)</li>
+                            <li>/21 (2048 addresses, 2046 usable hosts)</li>
+                            <li>/20 (4096 addresses, 4094 usable hosts)</li>
                         </ul>
                     </div>
                     <div class="list-group-item">
@@ -145,9 +178,10 @@
                 <div class="list-group list-group-flush">
                     <div class="list-group-item">
                         <ul class="mb-0 ps-4 small">
-                            <li>{% trans %}Use the Host Prefix field to add a prefix to all hostnames (e.g., "server-" becomes server-1, server-2, etc.){% endtrans %}</li>
-                            <li>{% trans %}Check "Create forward A/AAAA records" to automatically create matching forward records{% endtrans %}</li>
-                            <li>{% trans %}For a /24 network, the last octet will be used as the host number{% endtrans %}</li>
+                            <li>{% trans %}Use the dropdown button next to Network Prefix to select from existing reverse zones{% endtrans %}</li>
+                            <li>{% trans %}Use "Create PTRs only for existing A records" to populate PTRs based on your forward zone{% endtrans %}</li>
+                            <li>{% trans %}Use the Host Prefix field to add a prefix to all hostnames when creating all IPs{% endtrans %}</li>
+                            <li>{% trans %}Check "Create forward A/AAAA records" to automatically create matching forward records (disabled when using matching mode){% endtrans %}</li>
                         </ul>
                     </div>
                 </div>
@@ -173,6 +207,42 @@
 
         networkTypeSelect.addEventListener('change', updateVisibility);
         updateVisibility();
+
+        // Handle dropdown selection for network prefix
+        const dropdownItems = document.querySelectorAll('.dropdown-item[data-network]');
+        const networkPrefixInput = document.getElementById('network_prefix');
+        
+        dropdownItems.forEach(function(item) {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                networkPrefixInput.value = this.getAttribute('data-network');
+            });
+        });
+
+        // Handle checkbox interaction
+        const onlyMatchingCheckbox = document.getElementById('only_matching_records');
+        const createForwardCheckbox = document.getElementById('create_forward_records');
+        const hostPrefixInput = document.getElementById('host_prefix');
+        
+        onlyMatchingCheckbox.addEventListener('change', function() {
+            if (this.checked) {
+                // Disable create forward records when only matching is selected
+                createForwardCheckbox.checked = false;
+                createForwardCheckbox.disabled = true;
+                // Disable host prefix as it won't be used
+                hostPrefixInput.disabled = true;
+                hostPrefixInput.value = '';
+            } else {
+                createForwardCheckbox.disabled = false;
+                hostPrefixInput.disabled = false;
+            }
+        });
+
+        // Initial state
+        if (onlyMatchingCheckbox.checked) {
+            createForwardCheckbox.disabled = true;
+            hostPrefixInput.disabled = true;
+        }
     });
 </script>
 
