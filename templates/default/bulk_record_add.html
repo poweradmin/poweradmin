@@ -34,13 +34,21 @@
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="mb-3">
-                        <label for="records" class="form-label">{% trans %}Records{% endtrans %}</label>
+                        <label for="records" class="form-label">
+                            {% trans %}Records{% endtrans %}
+                            {% if display_hostname_only %}
+                            <small class="text-muted">(.{{ zone_name }})</small>
+                            {% endif %}
+                        </label>
                         <textarea class="form-control form-control-sm" id="records" name="records" rows="15" required>{% if failed_records %}{{ failed_records | join('\n') }}{% endif %}</textarea>
                         <div class="invalid-feedback">{% trans %}Provide at least one record{% endtrans %}</div>
                         <small class="form-text text-muted">{% trans %}Format: name,type,content,priority,ttl,comment (one record per line){% endtrans %}</small>
                         <small class="form-text text-muted d-block">{% trans %}Example: www,A,192.168.1.1,0,3600,web server{% endtrans %}</small>
                         <small class="form-text text-muted d-block">{{ 'Priority and TTL are optional (defaults: priority=0, ttl=' | trans }}{{ default_ttl }})</small>
                         <small class="form-text text-muted d-block">{% trans %}Comment is optional{% endtrans %}</small>
+                        {% if display_hostname_only %}
+                        <small class="form-text text-warning d-block"><i class="bi bi-info-circle"></i> {% trans %}Enter hostnames only - the zone name will be added automatically{% endtrans %}</small>
+                        {% endif %}
                     </div>
 
                     <div class="d-flex justify-content-between">

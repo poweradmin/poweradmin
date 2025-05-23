@@ -70,4 +70,51 @@ class DnsHelper
         $domainNameParts = array_slice($domainParts, 0, $domainPartsCount - 2);
         return implode('.', $domainNameParts);
     }
+
+    /**
+     * Strip zone name from record name for display purposes
+     *
+     * @param string $recordName The full record name (FQDN)
+     * @param string $zoneName The zone name to strip
+     * @return string The hostname part without zone suffix, or '@' for zone apex
+     */
+    public static function stripZoneSuffix(string $recordName, string $zoneName): string
+    {
+        // If record name equals zone name, it's the zone apex
+        if ($recordName === $zoneName) {
+            return '@';
+        }
+
+        // If record name ends with zone name preceded by a dot, strip it
+        $suffix = '.' . $zoneName;
+        if (str_ends_with($recordName, $suffix)) {
+            return substr($recordName, 0, -strlen($suffix));
+        }
+
+        // Otherwise return as-is (shouldn't happen with valid records)
+        return $recordName;
+    }
+
+    /**
+     * Restore full record name from hostname and zone name
+     *
+     * @param string $hostname The hostname part (or '@' for zone apex)
+     * @param string $zoneName The zone name
+     * @return string The full record name (FQDN)
+     */
+    public static function restoreZoneSuffix(string $hostname, string $zoneName): string
+    {
+        // Handle zone apex
+        if ($hostname === '@' || $hostname === '') {
+            return $zoneName;
+        }
+
+        // If hostname already contains zone name, return as-is
+        if ($hostname === $zoneName || str_ends_with($hostname, '.' . $zoneName)) {
+            return $hostname;
+        }
+
+        // Otherwise append zone name
+        return $hostname . '.' . $zoneName;
+    }
 }

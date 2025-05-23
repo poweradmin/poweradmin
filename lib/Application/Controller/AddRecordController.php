@@ -150,6 +150,15 @@ class AddRecordController extends BaseController
         $comment = $_POST['comment'] ?? '';
         $zone_id = (int)$_GET['id'];
 
+        // Restore full record name if using hostname-only display
+        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
+        if ($display_hostname_only) {
+            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+            if ($zone_name !== false) {
+                $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
+            }
+        }
+
         try {
             if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
                 // Get system errors that were generated during validation
@@ -241,7 +250,7 @@ class AddRecordController extends BaseController
         $ttl = $this->config->get('dns', 'ttl', 3600);
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
 
-        if (str_starts_with($zone_name, "xn--")) {
+        if ($zone_name !== false && $zone_name !== true && str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name);
         } else {
             $idn_zone_name = "";
@@ -261,6 +270,7 @@ class AddRecordController extends BaseController
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', false),
             'iface_record_comments' => $this->config->get('interface', 'show_record_comments', true),
+            'display_hostname_only' => $this->config->get('interface', 'display_hostname_only', false),
         ]);
     }
 

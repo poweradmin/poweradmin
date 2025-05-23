@@ -102,7 +102,15 @@ class EditRecordController extends BaseController
 
         $recordTypes = $this->recordTypeService->getAllTypes();
         $record = $dnsRecord->getRecordFromId($record_id);
-        $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
+
+        // Use the new hostname-only display if enabled
+        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
+        if ($display_hostname_only) {
+            $record['record_name'] = DnsHelper::stripZoneSuffix($record['name'], $zone_name);
+        } else {
+            // Legacy behavior - simple string replacement
+            $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
+        }
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name);
@@ -135,6 +143,15 @@ class EditRecordController extends BaseController
         $old_record_info = $dnsRecord->getRecordFromId($_POST["rid"]);
 
         $postData = $_POST;
+
+        // Restore full record name if using hostname-only display
+        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
+        if ($display_hostname_only && isset($postData['name'])) {
+            $zone_name = $dnsRecord->getDomainNameById($zid);
+            if ($zone_name !== false && $zone_name !== true) {
+                $postData['name'] = DnsHelper::restoreZoneSuffix($postData['name'], $zone_name);
+            }
+        }
         if (isset($postData['disabled']) && $postData['disabled'] == "on") {
             $postData['disabled'] = 1;
         } else {
@@ -189,8 +206,10 @@ class EditRecordController extends BaseController
 
         if ($this->config->get('dnssec', 'enabled', false)) {
             $zone_name = $dnsRecord->getDomainNameById($zid);
-            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
-            $dnssecProvider->rectifyZone($zone_name);
+            if ($zone_name !== false && $zone_name !== true) {
+                $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+                $dnssecProvider->rectifyZone($zone_name);
+            }
         }
 
         $this->setMessage('edit', 'success', _('The record has been updated successfully.'));

@@ -48,6 +48,7 @@ use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DomainRecordCreator;
 use Poweradmin\Domain\Service\FormStateService;
+use Poweradmin\Domain\Service\RecordDisplayService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
@@ -394,6 +395,19 @@ class EditController extends BaseController
 
         $isReverseZone = $zone_name !== false && DnsHelper::isReverseZone((string)$zone_name);
 
+        // Transform records for display using the RecordDisplayService
+        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
+        $recordDisplayService = new RecordDisplayService($display_hostname_only);
+
+        $displayRecords = [];
+        if ($zone_name !== false) {
+            $recordDisplayObjects = $recordDisplayService->transformRecords($records, $zone_name);
+            // Convert to arrays for template compatibility
+            $displayRecords = array_map(fn($recordDisplay) => $recordDisplay->toArray(), $recordDisplayObjects);
+        } else {
+            $displayRecords = $records;
+        }
+
         $this->render('edit.html', [
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
@@ -409,7 +423,7 @@ class EditController extends BaseController
             'slave_master' => $slave_master,
             'users' => $users,
             'owners' => $owners,
-            'records' => $records,
+            'records' => $displayRecords,
             'perm_view' => $perm_view,
             'perm_edit' => $perm_edit,
             'perm_meta_edit' => $perm_meta_edit,
@@ -426,7 +440,7 @@ class EditController extends BaseController
             'sort_direction' => $sort_direction,
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_id),
             'pdnssec_use' => $isDnsSecEnabled,
-            'is_secured' => $zone_name !== false && $dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig()),
+            'is_secured' => $zone_name !== false && $dnssecProvider->isZoneSecured($zone_name, $this->getConfig()),
             'session_userid' => $this->userContextService->getLoggedInUserId(),
             'dns_ttl' => $this->config->get('dns', 'ttl', 86400),
             'is_reverse_zone' => $isReverseZone,
@@ -445,7 +459,8 @@ class EditController extends BaseController
             'form_data' => $formData,
             'search_term' => $searchTerm,
             'record_type_filter' => $recordTypeFilter,
-            'content_filter' => $contentFilter
+            'content_filter' => $contentFilter,
+            'display_hostname_only' => $display_hostname_only
         ]);
     }
 
@@ -520,7 +535,16 @@ class EditController extends BaseController
             if ($this->isSerialMismatch($current_serial)) {
                 $serial_mismatch = true;
             } else {
-                foreach ($_POST['record'] as $record) {
+                // Use RecordDisplayService to restore FQDNs if needed
+                $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
+                $recordDisplayService = new RecordDisplayService($display_hostname_only);
+
+                foreach ($_POST['record'] as &$record) {
+                    // Restore full record name if using hostname-only display
+                    if (isset($record['name'])) {
+                        $record['name'] = $recordDisplayService->restoreFqdn($record['name'], $zone_name);
+                    }
+
                     $log = new RecordLog($this->db, $this->getConfig());
 
                     if (isset($record['disabled']) && $record['disabled'] == 'on') {
@@ -807,6 +831,14 @@ class EditController extends BaseController
         $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
         $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config->get('dns', 'ttl', 3600);
         $comment = $_POST['comment'] ?? '';
+
+        // Use RecordDisplayService to restore FQDN if needed
+        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
+        $recordDisplayService = new RecordDisplayService($display_hostname_only);
+        $zone_name_for_record = $this->zoneRepository->getDomainNameById($zone_id);
+        if ($zone_name_for_record !== false) {
+            $name = $recordDisplayService->restoreFqdn($name, $zone_name_for_record);
+        }
 
         try {
             if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
