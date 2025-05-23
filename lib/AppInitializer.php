@@ -23,6 +23,7 @@
 namespace Poweradmin;
 
 use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Database\PDOCommon;
@@ -112,8 +113,9 @@ class AppInitializer
         $supportedLocales = explode(',', $enabledLanguages);
         $locale = new LocaleManager($supportedLocales, './locale');
 
+        $userContextService = new UserContextService();
         $defaultLanguage = $this->configManager->get('interface', 'language', 'en_EN');
-        $userLang = $_SESSION["userlang"] ?? $defaultLanguage;
+        $userLang = $userContextService->getUserLanguage() ?? $defaultLanguage;
         $locale->setLocale($userLang);
     }
 

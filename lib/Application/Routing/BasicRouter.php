@@ -45,9 +45,9 @@ class BasicRouter
     private array $pages = [];
 
     /**
-     * @var string $defaultPage The default page name.
+     * @var string|null $defaultPage The default page name.
      */
-    private string $defaultPage;
+    private ?string $defaultPage = null;
 
     /**
      * @var array $pathParameters Extracted path parameters from RESTful routes.
@@ -76,7 +76,19 @@ class BasicRouter
      */
     public function getPageName(): string
     {
-        $page = $this->request['page'] ?? $this->defaultPage;
+        $page = $this->request['page'] ?? null;
+
+        // If no page is provided, go to default page
+        if ($page === null) {
+            if ($this->defaultPage !== null) {
+                $this->routeFound = true;
+                return $this->defaultPage;
+            } else {
+                // No page and no default page configured
+                throw new \Error('No page specified and no default page configured');
+            }
+        }
+
         $page = explode('?', $page)[0];
 
         // Handle RESTful API routes
@@ -89,7 +101,7 @@ class BasicRouter
             return $page;
         }
 
-        // Route not found, return special 404 page
+        // Bad/wrong page provided - show 404
         $this->routeFound = false;
         return '404';
     }

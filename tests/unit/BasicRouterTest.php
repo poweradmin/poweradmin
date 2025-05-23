@@ -16,13 +16,13 @@ class BasicRouterTest extends TestCase
         $this->assertEquals('valid_page', $router->getPageName());
     }
 
-    public function testDefaultRouteIsReturnedWhenPageIsInvalid(): void
+    public function testFourOhFourIsReturnedWhenPageIsInvalid(): void
     {
         $router = new BasicRouter(['page' => 'invalid_page']);
         $router->setPages(['valid_page']);
         $router->setDefaultPage('default_page');
 
-        $this->assertEquals('default_page', $router->getPageName());
+        $this->assertEquals('404', $router->getPageName());
     }
 
     public function testControllerClassNameIsFormattedCorrectly(): void
@@ -72,8 +72,7 @@ class BasicRouterTest extends TestCase
         $router = new BasicRouter(['page' => 'invalid_page']);
         $router->setPages(['valid_page']);
 
-        $this->expectException(Error::class);
-        $router->getPageName();
+        $this->assertEquals('404', $router->getPageName());
     }
 
     public function testNonExistentControllerClass(): void

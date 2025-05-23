@@ -165,8 +165,6 @@
       <code><![CDATA[$_POST["domain"]]]></code>
       <code><![CDATA[$_POST["newowner"]]]></code>
       <code><![CDATA[$_POST['domain']]]></code>
-      <code><![CDATA[$iface_rowamount]]></code>
-      <code><![CDATA[$itemsPerPage]]></code>
       <code><![CDATA[$row_start]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>

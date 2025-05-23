@@ -23,6 +23,7 @@
 namespace Poweradmin;
 
 use Poweradmin\Application\Service\StatsDisplayService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Utility\MemoryUsage;
 use Poweradmin\Domain\Utility\Timer;
@@ -79,9 +80,11 @@ class AppManager
         $validator = new ConfigValidator($this->configuration->getAll());
         $this->showValidationErrors($validator);
 
+        $userContextService = new UserContextService();
         $iface_lang = $this->configuration->get('interface', 'language', 'en_EN');
-        if (isset($_SESSION["userlang"])) {
-            $iface_lang = $_SESSION["userlang"];
+        $userLang = $userContextService->getUserLanguage();
+        if ($userLang !== null) {
+            $iface_lang = $userLang;
         }
 
         $translator = new Translator($iface_lang);
