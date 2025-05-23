@@ -52,17 +52,17 @@ interface DomainRepositoryInterface
      *
      * @param string $name Domain name
      *
-     * @return bool|int Domain ID or false if not found
+     * @return int|null Domain ID or null if not found
      */
-    public function getDomainIdByName(string $name): bool|int;
+    public function getDomainIdByName(string $name): ?int;
 
     /**
      * Get zone id from name
      *
      * @param string $zname Zone name
-     * @return bool|int Zone ID
+     * @return int|null Zone ID or null if not found
      */
-    public function getZoneIdFromName(string $zname): bool|int;
+    public function getZoneIdFromName(string $zname): ?int;
 
     /**
      * Get Domain Type for Domain ID
@@ -78,9 +78,9 @@ interface DomainRepositoryInterface
      *
      * @param int $id Domain ID
      *
-     * @return string|bool|null Master server
+     * @return string|null Master server or null if not found
      */
-    public function getDomainSlaveMaster(int $id): string|bool|null;
+    public function getDomainSlaveMaster(int $id): ?string;
 
     /**
      * Check if a domain is already existing.
@@ -101,9 +101,9 @@ interface DomainRepositoryInterface
      * @param string $sortby Column to sort results by [default='name']
      * @param string $sortDirection Sort direction [default='ASC']
      *
-     * @return boolean|array false or array of zone details [id,name,type,count_records]
+     * @return array array of zone details [id,name,type,count_records] (empty array if none found)
      */
-    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC'): bool|array;
+    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC'): array;
 
     /**
      * Get Zone details from Zone ID

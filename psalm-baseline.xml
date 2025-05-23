@@ -26,13 +26,11 @@
   <file src="lib/Application/Controller/AddZoneMasterController.php">
     <InvalidScalarArgument>
       <code><![CDATA[$owner]]></code>
-      <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/AddZoneSlaveController.php">
     <InvalidScalarArgument>
       <code><![CDATA[$owner]]></code>
-      <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/AddZoneTemplRecordController.php">
@@ -54,11 +52,6 @@
     <InvalidScalarArgument>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_id]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Application/Controller/BulkRegistrationController.php">
-    <InvalidScalarArgument>
       <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
   </file>
@@ -242,14 +235,8 @@
       <code><![CDATA[json_encode($response, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE)]]></code>
     </FalsableReturnStatement>
   </file>
-  <file src="lib/Application/Service/RecordCommentSyncService.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$contentDomainId]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Application/Service/RecordManagerService.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$contentDomainId]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
@@ -261,11 +248,6 @@
     <NoValue>
       <code><![CDATA[$allowedHosts]]></code>
     </NoValue>
-  </file>
-  <file src="lib/Domain/Service/BatchReverseRecordCreator.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$test_zone_rev_id]]></code>
-    </InvalidScalarArgument>
   </file>
   <file src="lib/Domain/Service/Dns/DomainManager.php">
     <InvalidScalarArgument>
@@ -415,7 +397,6 @@
   </file>
   <file src="lib/Domain/Service/DomainRecordCreator.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$domainId]]></code>
       <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
   </file>

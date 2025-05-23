@@ -102,12 +102,12 @@ class DomainRepository implements DomainRepositoryInterface
      *
      * @param string $name Domain name
      *
-     * @return bool|int Domain ID or false if not found
+     * @return int|null Domain ID or null if not found
      */
-    public function getDomainIdByName(string $name): bool|int
+    public function getDomainIdByName(string $name): ?int
     {
         if (empty($name)) {
-            return false;
+            return null;
         }
 
         $pdns_db_name = $this->config->get('database', 'pdns_name');
@@ -119,34 +119,29 @@ class DomainRepository implements DomainRepositoryInterface
         $stmt->execute();
 
         $result = $stmt->fetch(\PDO::FETCH_ASSOC);
-        return $result ? $result['id'] : false;
+        return $result ? (int)$result['id'] : null;
     }
 
     /**
      * Get zone id from name
      *
      * @param string $zname Zone name
-     * @return bool|int Zone ID
+     * @return int|null Zone ID or null if not found
      */
-    public function getZoneIdFromName(string $zname): bool|int
+    public function getZoneIdFromName(string $zname): ?int
     {
-        if (!empty($zname)) {
-            $pdns_db_name = $this->config->get('database', 'pdns_name');
-            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-
-            $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
-            $stmt->execute([':name' => $zname]);
-            $result = $stmt->fetch();
-            if ($result) {
-                return $result["id"];
-            } else {
-                $this->messageService->addSystemError("Zone does not exist.");
-                return false;
-            }
-        } else {
-            $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "getZoneIdFromName", "Not a valid domainname: $zname"));
-            return false;
+        if (empty($zname)) {
+            return null;
         }
+
+        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
+        $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
+        $stmt->execute([':name' => $zname]);
+        $result = $stmt->fetch();
+
+        return $result ? (int)$result["id"] : null;
     }
 
     /**
@@ -175,16 +170,17 @@ class DomainRepository implements DomainRepositoryInterface
      *
      * @param int $id Domain ID
      *
-     * @return string|bool|null Master server
+     * @return string|null Master server or null if not found
      */
-    public function getDomainSlaveMaster(int $id): string|bool|null
+    public function getDomainSlaveMaster(int $id): ?string
     {
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         $stmt = $this->db->prepare("SELECT master FROM $domains_table WHERE type = 'SLAVE' and id = :id");
         $stmt->execute([':id' => $id]);
-        return $stmt->fetchColumn();
+        $result = $stmt->fetchColumn();
+        return $result !== false ? $result : null;
     }
 
     /**
@@ -220,9 +216,9 @@ class DomainRepository implements DomainRepositoryInterface
      * @param string $sortby Column to sort results by [default='name']
      * @param string $sortDirection Sort direction [default='ASC']
      *
-     * @return boolean|array false or array of zone details [id,name,type,count_records]
+     * @return array array of zone details [id,name,type,count_records] (empty array if none found)
      */
-    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC'): bool|array
+    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC'): array
     {
         $db_type = $this->config->get('database', 'type');
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
@@ -242,9 +238,7 @@ class DomainRepository implements DomainRepositoryInterface
 
         $sql_add = '';
         if ($perm != "own" && $perm != "all") {
-            $this->messageService->addSystemError(_("You do not have the permission to view this zone."));
-
-            return false;
+            return [];
         } else {
             $params = [];
             if ($perm == "own") {

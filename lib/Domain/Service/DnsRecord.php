@@ -420,7 +420,7 @@ class DnsRecord
         return $this->domainRepository->getDomainNameById($id);
     }
 
-    public function getDomainIdByName(string $name): bool|int
+    public function getDomainIdByName(string $name): ?int
     {
         return $this->domainRepository->getDomainIdByName($name);
     }
@@ -428,9 +428,9 @@ class DnsRecord
     /** Get zone id from name
      *
      * @param string $zname Zone name
-     * @return bool|int Zone ID
+     * @return int|null Zone ID or null if not found
      */
-    public function getZoneIdFromName(string $zname): bool|int
+    public function getZoneIdFromName(string $zname): ?int
     {
         return $this->domainRepository->getZoneIdFromName($zname);
     }
@@ -537,9 +537,9 @@ class DnsRecord
      * Retrieve all fields of the record and send it back to the function caller.
      *
      * @param int $id Record ID
-     * @return int|array array of record detail, or -1 if nothing found
+     * @return array|null array of record detail, or null if nothing found
      */
-    public function getRecordFromId(int $id): int|array
+    public function getRecordFromId(int $id): ?array
     {
         return $this->recordRepository->getRecordFromId($id);
     }
@@ -555,9 +555,9 @@ class DnsRecord
      * @param string $sortDirection Sort direction [default='ASC']
      * @param bool $fetchComments Whether to fetch record comments [default=false]
      *
-     * @return int|array array of record detail, or -1 if nothing found
+     * @return array array of record details (empty array if nothing found)
      */
-    public function getRecordsFromDomainId($db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array|int
+    public function getRecordsFromDomainId($db_type, int $id, int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $fetchComments = false): array
     {
         return $this->recordRepository->getRecordsFromDomainId($db_type, $id, $rowstart, $rowamount, $sortby, $sortDirection, $fetchComments);
     }
