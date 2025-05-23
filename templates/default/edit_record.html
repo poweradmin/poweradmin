@@ -76,7 +76,7 @@
                         </td>
                         <td>IN</td>
                         <td>
-                            <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent')">
+                            <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent'); updatePriorityFieldState(this, 'priorityField');">
                                 {% set found_selected_type = false %}
                                 {% for type_available in recordTypes %}
                                 {% if type_available == record["type"] %}
@@ -102,7 +102,7 @@
                                 <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}Warning: CNAME records at the domain root (zone apex) are not recommended and may cause issues. SOA and NS records are required at the domain root and cannot coexist with CNAME.{% endtrans %}
                             </div>
                         </td>
-                        <td><input class="form-control form-control-sm" type="number" name="prio" min="0" max="65535"
+                        <td><input id="priorityField" class="form-control form-control-sm" type="number" name="prio" min="0" max="65535"
                                 pattern="[0-9]*" value="{{ record['prio'] }}"></td>
                         <td><input class="form-control form-control-sm" type="number" name="ttl" min="0" max="2147483647"
                                 pattern="[0-9]*" value="{{ record['ttl'] }}"></td>
@@ -139,6 +139,33 @@
 </div>
 
 <script>
+    // Record types that support priority field
+    const RECORD_TYPES_WITH_PRIORITY = ['MX', 'SRV', 'KX', 'NAPTR'];
+    
+    // Function to check if a record type supports priority
+    function supportsPriority(recordType) {
+        return RECORD_TYPES_WITH_PRIORITY.includes(recordType);
+    }
+    
+    // Function to update priority field state based on record type
+    function updatePriorityFieldState(selectElement, priorityInputId) {
+        const recordType = selectElement.value;
+        const priorityInput = document.getElementById(priorityInputId);
+        
+        if (priorityInput) {
+            if (supportsPriority(recordType)) {
+                priorityInput.removeAttribute('readonly');
+                priorityInput.classList.remove('bg-light');
+                priorityInput.setAttribute('tabindex', '0');
+            } else {
+                priorityInput.setAttribute('readonly', 'readonly');
+                priorityInput.classList.add('bg-light');
+                priorityInput.value = '0';
+                priorityInput.setAttribute('tabindex', '-1');
+            }
+        }
+    }
+    
     // Check if CNAME is being used at domain root, and show warning if it is
     function checkCnameRootWarning() {
         const typeSelect = document.getElementById('recordTypeSelect');
@@ -161,6 +188,9 @@
         
         if (typeSelect) {
             typeSelect.addEventListener('change', checkCnameRootWarning);
+            
+            // Initialize priority field state
+            updatePriorityFieldState(typeSelect, 'priorityField');
         }
         
         if (nameField) {

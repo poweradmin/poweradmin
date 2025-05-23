@@ -87,7 +87,7 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-2">
-                        <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop')" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
+                        <select id="recordTypeSelectTop" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectTop', 'contentInputContainerTop', 'recordContentTop'); updatePriorityFieldState(this, 'priorityFieldTop');" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
                             {% set rev = false %}
                             {% for record_type in record_types %}
                             {% set add = "" %}
@@ -120,7 +120,7 @@
                         </div>
                     </td>
                     <td class="col-sm-1">
-                        <input class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}is-invalid{% endif %}" 
+                        <input id="priorityFieldTop" class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}is-invalid{% endif %}" 
                                type="number" name="prio" value="{{ form_data.prio|default('0') }}" min="0" max="65535" pattern="[0-9]*">
                         {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}
                         <div class="invalid-feedback">{% trans %}Invalid priority{% endtrans %}</div>
@@ -439,8 +439,9 @@
                     <input id="recordContent{{ r['id'] }}" class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][content]" value="{{ r['content'] }}">
                 </div>
             </td>
-            <td><input class="form-control form-control-sm" type="number"
+            <td><input class="form-control form-control-sm record-priority-field" type="number"
                                         id="priority_field_{{ r['id'] }}" name="record[{{ r['id'] }}][prio]"
+                                        data-record-type="{{ r['type'] }}"
                                         min="0" max="65535" pattern="[0-9]*" value="{{ r['prio'] }}"></td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="text"
                                         min="0" max="2147483647" pattern="[0-9]*" name="record[{{ r['id'] }}][ttl]"
@@ -599,7 +600,7 @@
                         {% endif %}
                     </td>
                     <td class="col-sm-2">
-                        <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom')" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
+                        <select id="recordTypeSelectBottom" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelectBottom', 'contentInputContainerBottom', 'recordContentBottom'); updatePriorityFieldState(this, 'priorityFieldBottom');" {% if form_data.type %}data-preselect="{{ form_data.type }}"{% endif %}>
                             {% set rev = false %}
                             {% for record_type in record_types %}
                             {% set add = "" %}
@@ -632,7 +633,7 @@
                         </div>
                     </td>
                     <td class="col-sm-1">
-                        <input class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}is-invalid{% endif %}" 
+                        <input id="priorityFieldBottom" class="form-control form-control-sm {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}is-invalid{% endif %}" 
                                type="number" name="prio" value="{{ form_data.prio|default('0') }}" min="0" max="65535" pattern="[0-9]*">
                         {% if form_data.fieldError is defined and form_data.fieldError == 'prio' %}
                         <div class="invalid-feedback">{% trans %}Invalid priority{% endtrans %}</div>
@@ -867,6 +868,33 @@
 <script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>
 
 <script>
+    // Record types that support priority field
+    const RECORD_TYPES_WITH_PRIORITY = ['MX', 'SRV', 'KX', 'NAPTR'];
+    
+    // Function to check if a record type supports priority
+    function supportsPriority(recordType) {
+        return RECORD_TYPES_WITH_PRIORITY.includes(recordType);
+    }
+    
+    // Function to update priority field state based on record type
+    function updatePriorityFieldState(selectElement, priorityInputId) {
+        const recordType = selectElement.value;
+        const priorityInput = document.getElementById(priorityInputId);
+        
+        if (priorityInput) {
+            if (supportsPriority(recordType)) {
+                priorityInput.removeAttribute('readonly');
+                priorityInput.classList.remove('bg-light');
+                priorityInput.setAttribute('tabindex', '0');
+            } else {
+                priorityInput.setAttribute('readonly', 'readonly');
+                priorityInput.classList.add('bg-light');
+                priorityInput.value = '0';
+                priorityInput.setAttribute('tabindex', '-1');
+            }
+        }
+    }
+    
     // Check if CNAME is being used at domain root and show warning if it is
     function checkCnameRootWarning(selectId, nameInputSelector, warningId) {
         const typeSelect = document.getElementById(selectId);
@@ -923,6 +951,27 @@
         // Apply to both top and bottom forms
         setPreselectedType('recordTypeSelectTop');
         setPreselectedType('recordTypeSelectBottom');
+        
+        // Initialize priority field states for add record forms
+        const topTypeSelect = document.getElementById('recordTypeSelectTop');
+        if (topTypeSelect) {
+            updatePriorityFieldState(topTypeSelect, 'priorityFieldTop');
+        }
+        
+        const bottomTypeSelect = document.getElementById('recordTypeSelectBottom');
+        if (bottomTypeSelect) {
+            updatePriorityFieldState(bottomTypeSelect, 'priorityFieldBottom');
+        }
+        
+        // Initialize priority field states for existing records
+        document.querySelectorAll('.record-priority-field').forEach(priorityField => {
+            const recordType = priorityField.getAttribute('data-record-type');
+            if (recordType && !supportsPriority(recordType)) {
+                priorityField.setAttribute('readonly', 'readonly');
+                priorityField.classList.add('bg-light');
+                priorityField.setAttribute('tabindex', '-1');
+            }
+        });
         
         // Handle disabled checkboxes
         document.querySelectorAll('input[type="checkbox"][name$="[disabled]"]').forEach(checkbox => {
