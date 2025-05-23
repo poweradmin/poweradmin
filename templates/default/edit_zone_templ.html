@@ -116,6 +116,9 @@
                 </a>
             </div>
             <div>
+                <a class="btn btn-outline-secondary btn-sm" href="index.php?page=list_template_zones&id={{zone_templ_id}}">
+                    <i class="bi bi-list me-1 text-secondary"></i>{% trans %}View zones{% endtrans %}
+                </a>
                 <button type="submit" class="btn btn-secondary btn-sm" form="template-records-form" name="update_zones" onclick="return checkZoneTemplateSOA('template-records-form', '.table')">
                     <i class="bi bi-arrow-repeat me-1 text-white"></i>{% trans %}Update zones{% endtrans %}
                 </button>

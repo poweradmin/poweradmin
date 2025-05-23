@@ -1,0 +1,75 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_template_zones&id={{ template_id }}">{% trans %}Zones using template{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=edit&id={{ zone_id }}">{{ zone_name }}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Unlink from template{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-link-45deg me-2 text-danger"></i>{% trans %}Unlink Zone from Template{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-danger bg-danger bg-opacity-10">
+            <h5 class="alert-heading text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
+            <p>{% trans %}You are about to unlink the zone{% endtrans %}: <strong>"{{ zone_name }}"</strong></p>
+            <p class="mb-0">{% trans %}This will disconnect the zone from its template. Are you sure you want to proceed?{% endtrans %}</p>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header py-2">
+                <strong>{% trans %}Zone Details{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Zone{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0"><code>{{ zone_name }}</code></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Type{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0"><span class="badge bg-light text-dark">{{ zone_type }}</span></p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Template{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">{{ template_name }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="alert alert-info bg-info bg-opacity-10">
+            <h5 class="alert-heading text-info"><i class="bi bi-info-circle-fill me-2"></i>{% trans %}Important Note{% endtrans %}</h5>
+            <p class="mb-0">{% trans %}Unlinking the zone from its template will not delete any records. The zone will no longer receive updates when the template is modified.{% endtrans %}</p>
+        </div>
+
+        <div class="mt-4">
+            <form method="get" action="index.php" class="d-inline">
+                <input type="hidden" name="page" value="unlink_zone_templ">
+                <input type="hidden" name="zone_id" value="{{ zone_id }}">
+                <input type="hidden" name="confirm" value="1">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="bi bi-link-45deg me-1 text-white"></i>{% trans %}Yes, unlink this zone{% endtrans %}
+                </button>
+            </form>
+            <a href="index.php?page=list_template_zones&id={{ template_id }}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep template link{% endtrans %}
+            </a>
+        </div>
+    </div>
+</div>

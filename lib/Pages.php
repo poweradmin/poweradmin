@@ -98,6 +98,7 @@ class Pages
             'list_template_zones',
             'login',
             'logout',
+            'unlink_zone_templ',
             'mfa_verify',
             'mfa_setup',
             'migrations',

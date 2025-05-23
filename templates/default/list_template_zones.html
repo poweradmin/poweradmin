@@ -96,6 +96,11 @@
                                href="index.php?page=edit&id={{ zone.id }}">
                                 <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
                             </a>
+                            <a class="btn btn-sm btn-outline-danger"
+                               href="index.php?page=unlink_zone_templ&zone_id={{ zone.id }}"
+                               title="{% trans %}Unlink from template{% endtrans %}">
+                                <i class="bi bi-link-45deg text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Unlink{% endtrans %}</span>
+                            </a>
                         </div>
                     </td>
                 </tr>

@@ -1179,6 +1179,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Application\\Controller\\PdnsStatusController' => __DIR__ . '/../..' . '/lib/Application/Controller/PdnsStatusController.php',
         'Poweradmin\\Application\\Controller\\RdapController' => __DIR__ . '/../..' . '/lib/Application/Controller/RdapController.php',
         'Poweradmin\\Application\\Controller\\SearchController' => __DIR__ . '/../..' . '/lib/Application/Controller/SearchController.php',
+        'Poweradmin\\Application\\Controller\\UnlinkZoneTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/UnlinkZoneTemplController.php',
         'Poweradmin\\Application\\Controller\\UsersController' => __DIR__ . '/../..' . '/lib/Application/Controller/UsersController.php',
         'Poweradmin\\Application\\Controller\\WhoisController' => __DIR__ . '/../..' . '/lib/Application/Controller/WhoisController.php',
         'Poweradmin\\Application\\Http\\Request' => __DIR__ . '/../..' . '/lib/Application/Http/Request.php',
