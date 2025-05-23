@@ -1,0 +1,331 @@
+{% block content %}
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteConfirmModal" tabindex="-1" aria-labelledby="deleteConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteConfirmModalLabel">{% trans %}Confirm Delete{% endtrans %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p id="deleteConfirmMessage"></p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
+                <form id="deleteConfirmForm" method="post" action="index.php?page=database_consistency" style="display: inline;">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="check_type" id="deleteCheckType" value="">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="item_id" id="deleteItemId" value="">
+                    <button type="submit" class="btn btn-danger">{% trans %}Delete{% endtrans %}</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Database Consistency Check{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-database-check me-2"></i>{{ page_title }}</strong>
+    </div>
+    <div class="card-body">
+        <div class="alert {% if error_count > 0 %}alert-danger{% elseif warning_count > 0 %}alert-warning{% else %}alert-success{% endif %} mb-4">
+            <h5 class="alert-heading">{% trans %}Summary{% endtrans %}</h5>
+            <p class="mb-1">{% trans %}Total Issues Found{% endtrans %}: <strong>{{ total_issues }}</strong></p>
+            <p class="mb-1">{% trans %}Errors{% endtrans %}: <strong>{{ error_count }}</strong></p>
+            <p class="mb-0">{% trans %}Warnings{% endtrans %}: <strong>{{ warning_count }}</strong></p>
+        </div>
+
+        <!-- Check 1: Zones without owners -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>{% trans %}Zones Without Owners{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="alert {% if results.zones_have_owners.status == 'success' %}alert-success{% elseif results.zones_have_owners.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0">
+                    {{ results.zones_have_owners.message }}
+                </div>
+                {% if results.zones_have_owners.data is not empty %}
+                    <div class="table-responsive mt-3">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{% trans %}Zone ID{% endtrans %}</th>
+                                    <th>{% trans %}Zone Name{% endtrans %}</th>
+                                    <th>{% trans %}Owner{% endtrans %}</th>
+                                    <th>{% trans %}Actions{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for zone in results.zones_have_owners.data %}
+                                    <tr>
+                                        <td>{{ zone.id }}</td>
+                                        <td>{{ zone.name }}</td>
+                                        <td>{{ zone.owner|default('(none)') }}</td>
+                                        <td>
+                                            <form method="post" action="index.php?page=database_consistency" style="display: inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                                <input type="hidden" name="check_type" value="zones_without_owners">
+                                                <input type="hidden" name="action" value="fix">
+                                                <input type="hidden" name="item_id" value="{{ zone.id }}">
+                                                <button type="submit" class="btn btn-sm btn-success" title="{% trans %}Assign owner{% endtrans %}">
+                                                    <i class="bi bi-check-circle text-white"></i> {% trans %}Fix{% endtrans %}
+                                                </button>
+                                            </form>
+                                            <a href="index.php?page=edit&id={{ zone.id }}" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
+                                                <i class="bi bi-pencil-square text-white"></i> {% trans %}Edit{% endtrans %}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Check 2: Slave zones without master IPs -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>{% trans %}Slave Zones Without Master IP Addresses{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="alert {% if results.slave_zones_have_masters.status == 'success' %}alert-success{% elseif results.slave_zones_have_masters.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0">
+                    {{ results.slave_zones_have_masters.message }}
+                </div>
+                {% if results.slave_zones_have_masters.data is not empty %}
+                    <div class="table-responsive mt-3">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{% trans %}Zone ID{% endtrans %}</th>
+                                    <th>{% trans %}Zone Name{% endtrans %}</th>
+                                    <th>{% trans %}Master IP{% endtrans %}</th>
+                                    <th>{% trans %}Actions{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for zone in results.slave_zones_have_masters.data %}
+                                    <tr>
+                                        <td>{{ zone.id }}</td>
+                                        <td>{{ zone.name }}</td>
+                                        <td><span class="badge bg-light text-dark">{{ zone.master|default('(empty)') }}</span></td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteConfirmModal"
+                                                    data-check-type="slave_zones_without_masters"
+                                                    data-item-id="{{ zone.id }}"
+                                                    data-item-name="{{ zone.name }}"
+                                                    data-delete-type="slave-zone"
+                                                    title="{% trans %}Delete slave zone{% endtrans %}">
+                                                <i class="bi bi-trash text-white"></i> {% trans %}Delete{% endtrans %}
+                                            </button>
+                                            <a href="index.php?page=edit&id={{ zone.id }}" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
+                                                <i class="bi bi-pencil-square text-white"></i> {% trans %}Edit{% endtrans %}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Check 3: Orphaned records -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>{% trans %}Records Not Belonging to Any Zone{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="alert {% if results.records_belong_to_zones.status == 'success' %}alert-success{% elseif results.records_belong_to_zones.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0">
+                    {{ results.records_belong_to_zones.message }}
+                </div>
+                {% if results.records_belong_to_zones.data is not empty %}
+                    <div class="table-responsive mt-3">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{% trans %}Record ID{% endtrans %}</th>
+                                    <th>{% trans %}Name{% endtrans %}</th>
+                                    <th>{% trans %}Type{% endtrans %}</th>
+                                    <th>{% trans %}Content{% endtrans %}</th>
+                                    <th>{% trans %}Zone ID{% endtrans %}</th>
+                                    <th>{% trans %}Actions{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for record in results.records_belong_to_zones.data %}
+                                    <tr>
+                                        <td>{{ record.id }}</td>
+                                        <td>{{ record.name }}</td>
+                                        <td><span class="badge bg-secondary">{{ record.type }}</span></td>
+                                        <td>{{ record.content }}</td>
+                                        <td>{{ record.domain_id }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-sm btn-danger"
+                                                    data-bs-toggle="modal"
+                                                    data-bs-target="#deleteConfirmModal"
+                                                    data-check-type="orphaned_records"
+                                                    data-item-id="{{ record.id }}"
+                                                    data-item-name="{{ record.name }}"
+                                                    data-delete-type="orphaned-record"
+                                                    title="{% trans %}Delete orphaned record{% endtrans %}">
+                                                <i class="bi bi-trash text-white"></i> {% trans %}Delete{% endtrans %}
+                                            </button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Check 4: Duplicate SOA records -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>{% trans %}Zones with Duplicate SOA Records{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="alert {% if results.duplicate_soa_records.status == 'success' %}alert-success{% elseif results.duplicate_soa_records.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0">
+                    {{ results.duplicate_soa_records.message }}
+                </div>
+                {% if results.duplicate_soa_records.data is not empty %}
+                    <div class="table-responsive mt-3">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{% trans %}Zone ID{% endtrans %}</th>
+                                    <th>{% trans %}Zone Name{% endtrans %}</th>
+                                    <th>{% trans %}SOA Count{% endtrans %}</th>
+                                    <th>{% trans %}Actions{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for zone in results.duplicate_soa_records.data %}
+                                    <tr>
+                                        <td>{{ zone.zone_id }}</td>
+                                        <td>{{ zone.zone_name }}</td>
+                                        <td><span class="badge bg-danger">{{ zone.soa_count }}</span></td>
+                                        <td>
+                                            <form method="post" action="index.php?page=database_consistency" style="display: inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                                <input type="hidden" name="check_type" value="duplicate_soa">
+                                                <input type="hidden" name="action" value="fix">
+                                                <input type="hidden" name="item_id" value="{{ zone.zone_id }}">
+                                                <button type="submit" class="btn btn-sm btn-success" title="{% trans %}Keep first SOA, delete duplicates{% endtrans %}">
+                                                    <i class="bi bi-check-circle text-white"></i> {% trans %}Fix{% endtrans %}
+                                                </button>
+                                            </form>
+                                            <a href="index.php?page=edit&id={{ zone.zone_id }}" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
+                                                <i class="bi bi-pencil-square text-white"></i> {% trans %}Edit{% endtrans %}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- Check 5: Zones without SOA records -->
+        <div class="card mb-3">
+            <div class="card-header">
+                <strong>{% trans %}Zones Without SOA Records{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="alert {% if results.zones_without_soa.status == 'success' %}alert-success{% elseif results.zones_without_soa.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0">
+                    {{ results.zones_without_soa.message }}
+                </div>
+                {% if results.zones_without_soa.data is not empty %}
+                    <div class="table-responsive mt-3">
+                        <table class="table table-striped table-hover table-sm">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>{% trans %}Zone ID{% endtrans %}</th>
+                                    <th>{% trans %}Zone Name{% endtrans %}</th>
+                                    <th>{% trans %}Type{% endtrans %}</th>
+                                    <th>{% trans %}Actions{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for zone in results.zones_without_soa.data %}
+                                    <tr>
+                                        <td>{{ zone.id }}</td>
+                                        <td>{{ zone.name }}</td>
+                                        <td><span class="badge bg-secondary">{{ zone.type }}</span></td>
+                                        <td>
+                                            <form method="post" action="index.php?page=database_consistency" style="display: inline;">
+                                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                                <input type="hidden" name="check_type" value="zones_without_soa">
+                                                <input type="hidden" name="action" value="fix">
+                                                <input type="hidden" name="item_id" value="{{ zone.id }}">
+                                                <button type="submit" class="btn btn-sm btn-success" title="{% trans %}Create default SOA record{% endtrans %}">
+                                                    <i class="bi bi-check-circle text-white"></i> {% trans %}Fix{% endtrans %}
+                                                </button>
+                                            </form>
+                                            <a href="index.php?page=edit&id={{ zone.id }}" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
+                                                <i class="bi bi-pencil-square text-white"></i> {% trans %}Edit{% endtrans %}
+                                            </a>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteModal = document.getElementById('deleteConfirmModal');
+    if (deleteModal) {
+        deleteModal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
+            const checkType = button.getAttribute('data-check-type');
+            const itemId = button.getAttribute('data-item-id');
+            const itemName = button.getAttribute('data-item-name');
+            const deleteType = button.getAttribute('data-delete-type');
+
+            // Update the modal's content
+            const modalMessage = document.getElementById('deleteConfirmMessage');
+            const deleteCheckTypeInput = document.getElementById('deleteCheckType');
+            const deleteItemIdInput = document.getElementById('deleteItemId');
+
+            // Set appropriate message based on delete type
+            let message = '';
+            switch(deleteType) {
+                case 'slave-zone':
+                    message = '{% trans %}Are you sure you want to delete the slave zone{% endtrans %} "' + itemName + '"?';
+                    break;
+                case 'orphaned-record':
+                    message = '{% trans %}Are you sure you want to delete the orphaned record{% endtrans %} "' + itemName + '"?';
+                    break;
+                default:
+                    message = '{% trans %}Are you sure you want to delete this item?{% endtrans %}';
+            }
+
+            modalMessage.textContent = message;
+            deleteCheckTypeInput.value = checkType;
+            deleteItemIdInput.value = itemId;
+        });
+    }
+});
+</script>
+{% endblock %}

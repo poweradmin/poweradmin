@@ -115,6 +115,7 @@ class IndexController extends BaseController
             'pdns_server_status' => $pdnsServerStatus,
             'is_limited_user' => $isLimitedUser,
             'user_id' => $userId,
+            'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
         ]);
     }
 }

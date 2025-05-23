@@ -23,6 +23,7 @@
         <UnusedClass errorLevel="info" />
         <ClassMustBeFinal errorLevel="info" />
         <MissingOverrideAttribute errorLevel="info" />
+        <MethodSignatureMismatch errorLevel="suppress" />
         <UndefinedMethod>
             <errorLevel type="suppress">
                 <!-- Suppress UndefinedMethod for PHPUnit mock methods -->

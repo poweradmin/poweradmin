@@ -135,10 +135,10 @@
                     </ul>
                 </li>
                 {% endif %}
-                {% if ((not whois_restrict_to_admin or perm_is_godlike) and whois_enabled) or ((not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled) or (perm_is_godlike and api_enabled) %}
+                {% if ((not whois_restrict_to_admin or perm_is_godlike) and whois_enabled) or ((not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled) or (perm_is_godlike and api_enabled) or (perm_is_godlike and enable_consistency_checks) %}
                 <li class="p-1">
-                    <a href="#" class="nav-link text-{{ current_page in ['whois', 'rdap', 'api_keys'] ? 'primary' : 'secondary' }} text-center"><i class="bi bi-tools"></i></a>
-                    <a class="text-{{ current_page in ['whois', 'rdap', 'api_keys'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a href="#" class="nav-link text-{{ current_page in ['whois', 'rdap', 'api_keys', 'database_consistency'] ? 'primary' : 'secondary' }} text-center"><i class="bi bi-tools"></i></a>
+                    <a class="text-{{ current_page in ['whois', 'rdap', 'api_keys', 'database_consistency'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                         href="#"
                         role="button">{% trans %}Tools{% endtrans %}</a>
                     <ul class="dropdown-menu">
@@ -155,6 +155,11 @@
                         {% if perm_is_godlike and api_enabled %}
                         <li><a class="dropdown-item {{ current_page == 'api_keys' ? 'active' : '' }}" href="index.php?page=api_keys">
                             <i class="bi bi-key-fill me-2"></i>{% trans %}API Keys{% endtrans %}
+                        </a></li>
+                        {% endif %}
+                        {% if perm_is_godlike and enable_consistency_checks %}
+                        <li><a class="dropdown-item {{ current_page == 'database_consistency' ? 'active' : '' }}" href="index.php?page=database_consistency">
+                            <i class="bi bi-database-check me-2"></i>{% trans %}Database Consistency{% endtrans %}
                         </a></li>
                         {% endif %}
                     </ul>

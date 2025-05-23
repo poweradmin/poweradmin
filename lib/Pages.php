@@ -64,6 +64,7 @@ class Pages
             'bulk_record_add',
             'bulk_registration',
             'change_password',
+            'database_consistency',
             'delete_domain',
             'delete_domains',
             'delete_perm_templ',

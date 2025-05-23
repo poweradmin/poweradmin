@@ -109,7 +109,8 @@ return [
         'add_reverse_record' => true,         // Enable checkbox to add PTR record from regular zone view (added in 2.1.7)
         'add_domain_record' => true,          // Enable checkbox to add A/AAAA record from reverse zone view
         'show_migrations' => false,           // Show migrations menu item (experimental)
-        'display_hostname_only' => false,      // Display only hostname part in zone edit form (strips zone suffix) (added in 4.0.0)
+        'display_hostname_only' => false,     // Display only hostname part in zone edit form (strips zone suffix) (added in 4.0.0)
+        'enable_consistency_checks' => false, // Enable database consistency checks page (added in 4.0.0)
     ],
 
     /**

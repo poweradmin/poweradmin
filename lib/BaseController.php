@@ -533,7 +533,8 @@ abstract class BaseController
                 'api_enabled' => $this->config->get('api', 'enabled', false),
                 'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
                 'whois_restrict_to_admin' => $this->config->get('whois', 'restrict_to_admin', true),
-                'rdap_restrict_to_admin' => $this->config->get('rdap', 'restrict_to_admin', true)
+                'rdap_restrict_to_admin' => $this->config->get('rdap', 'restrict_to_admin', true),
+                'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false)
             ]);
         }
 
