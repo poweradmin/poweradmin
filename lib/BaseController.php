@@ -30,7 +30,6 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
-use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\StyleManager;
@@ -110,6 +109,43 @@ abstract class BaseController
     {
         $page = $this->request['page'] ?? '';
         return strpos($page, 'api/') === 0;
+    }
+
+    /**
+     * Checks if the current request expects a JSON response
+     * This is more comprehensive than just checking the route
+     *
+     * @return bool True if this request expects JSON, false otherwise
+     */
+    public static function expectsJson(): bool
+    {
+        // Check if it's an API route
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+        if (str_contains($requestUri, '/api/')) {
+            return true;
+        }
+
+        // Check Accept header
+        $acceptHeader = $_SERVER['HTTP_ACCEPT'] ?? '';
+        if (str_contains($acceptHeader, 'application/json') && !str_contains($acceptHeader, 'text/html')) {
+            return true;
+        }
+
+        // Check if it's an AJAX request
+        if (
+            isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest'
+        ) {
+            return true;
+        }
+
+        // Check Content-Type for JSON requests
+        $contentType = $_SERVER['CONTENT_TYPE'] ?? $_SERVER['HTTP_CONTENT_TYPE'] ?? '';
+        if (str_contains($contentType, 'application/json')) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -339,6 +375,17 @@ abstract class BaseController
     public function checkPermission(string $permission, string $errorMessage): void
     {
         if (!UserManager::verifyPermission($this->db, $permission)) {
+            // Check if this request expects JSON
+            if (self::expectsJson()) {
+                header('Content-Type: application/json');
+                http_response_code(403);
+                echo json_encode([
+                    'error' => true,
+                    'message' => $errorMessage
+                ]);
+                exit;
+            }
+
             // Add as system message
             $this->addSystemMessage('error', $errorMessage);
 
@@ -363,6 +410,17 @@ abstract class BaseController
             $error = sprintf('%s (Record: %s)', $error, $recordName);
         }
 
+        // Check if this request expects JSON
+        if (self::expectsJson()) {
+            header('Content-Type: application/json');
+            http_response_code(400);
+            echo json_encode([
+                'error' => true,
+                'message' => $error
+            ]);
+            exit;
+        }
+
         // Add as system message
         $this->addSystemMessage('error', $error);
 
@@ -382,6 +440,17 @@ abstract class BaseController
     {
         $validationErrors = array_values($errors);
         $firstError = reset($validationErrors);
+
+        // Check if this request expects JSON
+        if (self::expectsJson()) {
+            header('Content-Type: application/json');
+            http_response_code(400);
+            echo json_encode([
+                'error' => true,
+                'message' => $firstError[0]
+            ]);
+            exit;
+        }
 
         // Add as system message so it appears in the right place
         $this->addSystemMessage('error', $firstError[0]);

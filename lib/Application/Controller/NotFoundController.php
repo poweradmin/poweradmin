@@ -37,8 +37,8 @@ class NotFoundController extends BaseController
         // Set 404 HTTP status code
         http_response_code(404);
 
-        // For API requests, return JSON error
-        if ($this->isApiRequest()) {
+        // Check if the request expects JSON
+        if (self::expectsJson()) {
             header('Content-Type: application/json');
             echo json_encode([
                 'error' => 'Not Found',

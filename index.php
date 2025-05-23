@@ -53,22 +53,26 @@ $router->setDefaultPage('index');
 $router->setPages(Pages::getPages());
 
 try {
-    // Check if this is an API request
-    $isApiRequest = str_contains($_SERVER['REQUEST_URI'] ?? '', '/api/');
+    // Use BaseController's expectsJson method to determine if this expects JSON
+    require_once __DIR__ . '/lib/BaseController.php';
+    $expectsJson = \Poweradmin\BaseController::expectsJson();
 
     // For API requests, suppress display errors but still log them
-    if ($isApiRequest) {
+    if ($expectsJson) {
         // Disable displaying errors in output for API responses
         ini_set('display_errors', 0);
         // But still log them for debugging
         error_reporting(E_ALL);
     }
 
-
     $router->process();
 } catch (Exception $e) {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
+
+    // Use BaseController's expectsJson method
+    require_once __DIR__ . '/lib/BaseController.php';
+    $expectsJson = \Poweradmin\BaseController::expectsJson();
 
     // Check if this is a controller not found error
     if (str_contains($e->getMessage(), 'Class') && str_contains($e->getMessage(), 'not found')) {
@@ -81,22 +85,39 @@ try {
         } catch (Exception $notFoundError) {
             // Fallback error handling
             error_log('Error in NotFoundController: ' . $notFoundError->getMessage());
-            echo 'Page not found.';
+
+            if ($expectsJson) {
+                header('Content-Type: application/json');
+                echo json_encode([
+                    'error' => true,
+                    'message' => 'Page not found'
+                ]);
+            } else {
+                echo 'Page not found.';
+            }
         }
-    } elseif (
-        $configManager->get('misc', 'display_errors', false) ||
-        (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false)
-    ) {
-        // Show detailed error if it's an API request or display_errors is enabled
-        header('Content-Type: application/json');
-        echo json_encode([
-            'error' => true,
-            'message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-            'trace' => explode("\n", $e->getTraceAsString())
-        ]);
+    } elseif ($expectsJson || $configManager->get('misc', 'display_errors', false)) {
+        // For JSON requests, always return JSON error
+        if ($expectsJson) {
+            header('Content-Type: application/json');
+            echo json_encode([
+                'error' => true,
+                'message' => $e->getMessage(),
+                'file' => $configManager->get('misc', 'display_errors', false) ? $e->getFile() : null,
+                'line' => $configManager->get('misc', 'display_errors', false) ? $e->getLine() : null,
+                'trace' => $configManager->get('misc', 'display_errors', false) ? explode("\n", $e->getTraceAsString()) : null
+            ]);
+        } else {
+            // For HTML requests with display_errors enabled, show detailed error
+            echo '<pre>';
+            echo 'Error: ' . htmlspecialchars($e->getMessage()) . "\n";
+            echo 'File: ' . htmlspecialchars($e->getFile()) . "\n";
+            echo 'Line: ' . $e->getLine() . "\n";
+            echo 'Trace: ' . "\n" . htmlspecialchars($e->getTraceAsString());
+            echo '</pre>';
+        }
     } else {
+        // For HTML requests without display_errors, show generic message
         echo 'An error occurred while processing the request.';
     }
 }
