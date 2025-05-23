@@ -911,6 +911,7 @@ return array(
     'Poweradmin\\Application\\Controller\\MfaSetupController' => $baseDir . '/lib/Application/Controller/MfaSetupController.php',
     'Poweradmin\\Application\\Controller\\MfaVerifyController' => $baseDir . '/lib/Application/Controller/MfaVerifyController.php',
     'Poweradmin\\Application\\Controller\\MigrationsController' => $baseDir . '/lib/Application/Controller/MigrationsController.php',
+    'Poweradmin\\Application\\Controller\\NotFoundController' => $baseDir . '/lib/Application/Controller/NotFoundController.php',
     'Poweradmin\\Application\\Controller\\PdnsStatusController' => $baseDir . '/lib/Application/Controller/PdnsStatusController.php',
     'Poweradmin\\Application\\Controller\\RdapController' => $baseDir . '/lib/Application/Controller/RdapController.php',
     'Poweradmin\\Application\\Controller\\SearchController' => $baseDir . '/lib/Application/Controller/SearchController.php',

@@ -1174,6 +1174,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Application\\Controller\\MfaSetupController' => __DIR__ . '/../..' . '/lib/Application/Controller/MfaSetupController.php',
         'Poweradmin\\Application\\Controller\\MfaVerifyController' => __DIR__ . '/../..' . '/lib/Application/Controller/MfaVerifyController.php',
         'Poweradmin\\Application\\Controller\\MigrationsController' => __DIR__ . '/../..' . '/lib/Application/Controller/MigrationsController.php',
+        'Poweradmin\\Application\\Controller\\NotFoundController' => __DIR__ . '/../..' . '/lib/Application/Controller/NotFoundController.php',
         'Poweradmin\\Application\\Controller\\PdnsStatusController' => __DIR__ . '/../..' . '/lib/Application/Controller/PdnsStatusController.php',
         'Poweradmin\\Application\\Controller\\RdapController' => __DIR__ . '/../..' . '/lib/Application/Controller/RdapController.php',
         'Poweradmin\\Application\\Controller\\SearchController' => __DIR__ . '/../..' . '/lib/Application/Controller/SearchController.php',

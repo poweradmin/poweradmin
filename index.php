@@ -70,7 +70,20 @@ try {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
 
-    if (
+    // Check if this is a controller not found error
+    if (str_contains($e->getMessage(), 'Class') && str_contains($e->getMessage(), 'not found')) {
+        // Set 404 status and use NotFoundController
+        http_response_code(404);
+
+        try {
+            $notFoundController = new \Poweradmin\Application\Controller\NotFoundController($_REQUEST);
+            $notFoundController->run();
+        } catch (Exception $notFoundError) {
+            // Fallback error handling
+            error_log('Error in NotFoundController: ' . $notFoundError->getMessage());
+            echo 'Page not found.';
+        }
+    } elseif (
         $configManager->get('misc', 'display_errors', false) ||
         (strpos($_SERVER['REQUEST_URI'] ?? '', '/api/') !== false)
     ) {

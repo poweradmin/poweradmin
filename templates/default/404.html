@@ -1,0 +1,55 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8 col-lg-6">
+            <div class="text-center">
+                <!-- Large 404 Icon -->
+                <div class="mb-4">
+                    <i class="bi bi-exclamation-triangle display-1 text-warning"></i>
+                </div>
+                
+                <!-- Error Code -->
+                <h1 class="display-1 fw-bold text-secondary">404</h1>
+                
+                <!-- Error Title -->
+                <h2 class="mb-4">{% trans %}Page Not Found{% endtrans %}</h2>
+                
+                <!-- Error Description -->
+                <div class="card shadow-sm mb-4">
+                    <div class="card-body">
+                        <p class="lead mb-3">{% trans %}The page you are looking for does not exist.{% endtrans %}</p>
+                        
+                        <div class="text-start">
+                            <p class="mb-2 text-muted">{% trans %}This could be because:{% endtrans %}</p>
+                            <ul class="list-unstyled text-muted">
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-danger me-2"></i>
+                                    {% trans %}The URL is incorrect or has been mistyped{% endtrans %}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-danger me-2"></i>
+                                    {% trans %}The page has been moved or deleted{% endtrans %}
+                                </li>
+                                <li class="mb-2">
+                                    <i class="bi bi-check-circle text-danger me-2"></i>
+                                    {% trans %}You do not have permission to access this page{% endtrans %}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                    <a href="{{ basePath }}index.php" class="btn btn-secondary btn-sm px-4">
+                        <i class="bi bi-house-door me-2"></i>
+                        {% trans %}Go to Homepage{% endtrans %}
+                    </a>
+                    <button onclick="history.back()" class="btn btn-outline-secondary btn-sm px-4">
+                        <i class="bi bi-arrow-left me-2"></i>
+                        {% trans %}Go Back{% endtrans %}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

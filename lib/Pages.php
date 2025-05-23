@@ -42,6 +42,7 @@ class Pages
     public static function getPages(): array
     {
         return [
+            '404',
             'add_perm_templ',
             'add_record',
             'add_supermaster',

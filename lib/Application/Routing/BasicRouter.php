@@ -55,6 +55,11 @@ class BasicRouter
     private array $pathParameters = [];
 
     /**
+     * @var bool $routeFound Whether the requested route was found.
+     */
+    private bool $routeFound = true;
+
+    /**
      * BasicRouter constructor.
      *
      * @param array $request The request parameters.
@@ -80,10 +85,13 @@ class BasicRouter
         }
 
         if (in_array($page, $this->pages)) {
+            $this->routeFound = true;
             return $page;
         }
 
-        return $this->defaultPage;
+        // Route not found, return special 404 page
+        $this->routeFound = false;
+        return '404';
     }
 
     /**
@@ -268,5 +276,15 @@ class BasicRouter
     public function getPathParameters(): array
     {
         return $this->pathParameters;
+    }
+
+    /**
+     * Check if the requested route was found
+     *
+     * @return bool Whether the route was found
+     */
+    public function isRouteFound(): bool
+    {
+        return $this->routeFound;
     }
 }
