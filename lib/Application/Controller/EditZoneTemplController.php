@@ -119,7 +119,8 @@ class EditZoneTemplController extends BaseController
 
         // Get count of zones using this template
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
-        $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $_SESSION['userid']);
+        $userId = $this->userContext->getLoggedInUserId();
+        $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
 
         $this->render('edit_zone_templ.html', [

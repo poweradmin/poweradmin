@@ -35,16 +35,19 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\RecordTypeService;
+use Poweradmin\Domain\Service\UserContextService;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneTemplRecordController extends BaseController
 {
     private RecordTypeService $recordTypeService;
+    private UserContextService $userContext;
 
     public function __construct(array $request)
     {
         parent::__construct($request);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
+        $this->userContext = new UserContextService();
     }
 
     public function run(): void
@@ -61,8 +64,9 @@ class AddZoneTemplRecordController extends BaseController
             $this->showFirstValidationError($_GET);
         }
 
-        $zone_templ_id = htmlspecialchars($_GET['id']);
-        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $_SESSION['userid']);
+        $zone_templ_id = (int)$_GET['id'];
+        $userId = $this->userContext->getLoggedInUserId();
+        $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
 
@@ -103,7 +107,7 @@ class AddZoneTemplRecordController extends BaseController
 
     private function addZoneTemplRecord(): void
     {
-        $zone_templ_id = htmlspecialchars($_GET['id']);
+        $zone_templ_id = (int)$_GET['id'];
         $name = $_POST['name'] ?? "[ZONE]";
         $type = $_POST['type'] ?? "";
         $content = $_POST['content'] ?? "";
@@ -123,7 +127,7 @@ class AddZoneTemplRecordController extends BaseController
 
     private function showAddZoneTemplRecord(): void
     {
-        $zone_templ_id = htmlspecialchars($_GET['id']);
+        $zone_templ_id = (int)$_GET['id'];
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
         $name = $_POST['name'] ?? "[ZONE]";
         $type = $_POST['type'] ?? "";
@@ -131,6 +135,12 @@ class AddZoneTemplRecordController extends BaseController
         $prio = $_POST['prio'] ?? 0;
         $dns_ttl = $this->config->get('dns', 'ttl', 3600);
         $ttl = $_POST['ttl'] ?? $dns_ttl;
+
+        // Get count of zones using this template
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        $userId = $this->userContext->getLoggedInUserId();
+        $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
+        $zones_linked_count = count($linked_zones);
 
         $this->render('add_zone_templ_record.html', [
             'templ_name' => $templ_details['name'],
@@ -141,6 +151,7 @@ class AddZoneTemplRecordController extends BaseController
             'content' => htmlspecialchars($content),
             'prio' => htmlspecialchars($prio),
             'ttl' => htmlspecialchars($ttl),
+            'zones_linked_count' => $zones_linked_count,
         ]);
     }
 }

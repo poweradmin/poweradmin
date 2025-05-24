@@ -14,6 +14,15 @@
     </ol>
 </nav>
 
+{% if zones_linked_count > 0 %}
+<div class="alert alert-info alert-dismissible fade show mb-3 py-2 small" role="alert">
+    <i class="bi bi-info-circle-fill me-2"></i>
+    <strong>{% trans %}Reminder{% endtrans %}:</strong> 
+    {% trans %}After adding this record, remember to update the zones using this template by clicking "Update zones" on the template page.{% endtrans %}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
 <div class="row">
     <div class="col-md-6">
         <!-- Add Record Card -->
