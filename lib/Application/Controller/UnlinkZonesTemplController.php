@@ -139,17 +139,9 @@ class UnlinkZonesTemplController extends BaseController
             return;
         }
 
-        // Get zone details
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-
-        $placeholders = str_repeat('?,', count($valid_zone_ids) - 1) . '?';
-        $stmt = $this->db->prepare("SELECT d.id, d.name, d.type 
-                                    FROM $domains_table d 
-                                    WHERE d.id IN ($placeholders)
-                                    ORDER BY d.name");
-        $stmt->execute($valid_zone_ids);
-        $zones = $stmt->fetchAll();
+        // Get zone details using ZoneTemplate service
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        $zones = $zoneTemplate->getZonesByIds($valid_zone_ids);
 
         $this->render('confirm_unlink_zones_templ.html', [
             'zones' => $zones,

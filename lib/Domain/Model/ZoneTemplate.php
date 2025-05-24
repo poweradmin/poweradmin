@@ -844,6 +844,35 @@ class ZoneTemplate
     }
 
     /**
+     * Get zone details by zone IDs
+     *
+     * @param array $zone_ids Array of zone IDs
+     * @return array Array of zone details
+     */
+    public function getZonesByIds(array $zone_ids): array
+    {
+        if (empty($zone_ids)) {
+            return [];
+        }
+
+        try {
+            $pdns_db_name = $this->config->get('database', 'pdns_name');
+            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+
+            $placeholders = str_repeat('?,', count($zone_ids) - 1) . '?';
+            $stmt = $this->db->prepare("SELECT d.id, d.name, d.type 
+                                        FROM $domains_table d 
+                                        WHERE d.id IN ($placeholders)
+                                        ORDER BY d.name");
+            $stmt->execute($zone_ids);
+            return $stmt->fetchAll();
+        } catch (\Exception $e) {
+            $this->messageService->addSystemError(_('Error retrieving zones: ') . $e->getMessage());
+            return [];
+        }
+    }
+
+    /**
      * Check if zone template name exists
      *
      * @param string $zone_templ_name zone template name

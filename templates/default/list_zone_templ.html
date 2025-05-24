@@ -62,12 +62,11 @@
                     {% if (perm_zone_templ_edit and template['owner'] != 0) or perm_is_godlike %}
                     <td class="text-end">
                         <div class="gap-2">
-                            {% if template['zones_linked'] != '0' %}
-                            <a class="btn btn-sm btn-outline-secondary"
-                               href="index.php?page=list_template_zones&id={{ template['id'] }}">
+                            <a class="btn btn-sm btn-outline-secondary {% if template['zones_linked'] == '0' %}disabled{% endif %}"
+                               href="{% if template['zones_linked'] != '0' %}index.php?page=list_template_zones&id={{ template['id'] }}{% else %}#{% endif %}"
+                               {% if template['zones_linked'] == '0' %}title="{% trans %}No zones are using this template{% endtrans %}" tabindex="-1" aria-disabled="true"{% endif %}>
                                 <i class="bi bi-list text-secondary"></i> <span class="d-none d-md-inline text-secondary">{% trans %}View Zones{% endtrans %}</span>
                             </a>
-                            {% endif %}
                             <a class="btn btn-sm btn-outline-primary"
                                href="index.php?page=edit_zone_templ&id={{ template['id'] }}">
                                 <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>

@@ -117,11 +117,17 @@ class EditZoneTemplController extends BaseController
         $record_count = ZoneTemplate::countZoneTemplRecords($this->db, $zone_templ_id);
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
+        // Get count of zones using this template
+        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
+        $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $_SESSION['userid']);
+        $zones_linked_count = count($linked_zones);
+
         $this->render('edit_zone_templ.html', [
             'templ_details' => $templ_details,
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_templ_id),
             'records' => ZoneTemplate::getZoneTemplRecords($this->db, $zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
+            'zones_linked_count' => $zones_linked_count,
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
             'perm_zone_templ_add' => UserManager::verifyPermission($this->db, 'zone_templ_add'),
         ]);

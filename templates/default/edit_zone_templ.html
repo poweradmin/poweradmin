@@ -14,33 +14,6 @@
 </div>
 {% endif %}
 
-<!-- SOA Warning Modal -->
-<div class="modal fade" id="soaWarningModal" tabindex="-1" aria-labelledby="soaWarningModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-warning">
-                <h5 class="modal-title" id="soaWarningModalLabel">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning: Missing SOA Record{% endtrans %}
-                </h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <div class="alert alert-warning" role="alert">
-                    <p>{% trans %}This zone template does not have an SOA (Start of Authority) record.{% endtrans %}</p>
-                    <p>{% trans %}DNS zones typically require an SOA record to function properly, and DNSSEC signing may fail without one.{% endtrans %}</p>
-                    <p>{% trans %}Do you want to continue without adding an SOA record?{% endtrans %}</p>
-                </div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
-                <button type="button" class="btn btn-warning" id="confirmSubmitWithoutSOA">
-                    {% trans %}Continue Without SOA{% endtrans %}
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- Template Records Card -->
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">
@@ -116,192 +89,33 @@
                 </a>
             </div>
             <div>
-                <a class="btn btn-outline-secondary btn-sm" href="index.php?page=list_template_zones&id={{zone_templ_id}}">
+                <a class="btn btn-outline-secondary btn-sm {% if zones_linked_count == 0 %}disabled{% endif %}" 
+                   href="{% if zones_linked_count > 0 %}index.php?page=list_template_zones&id={{zone_templ_id}}{% else %}#{% endif %}"
+                   {% if zones_linked_count == 0 %}title="{% trans %}No zones are using this template{% endtrans %}" tabindex="-1" aria-disabled="true"{% endif %}>
                     <i class="bi bi-list me-1 text-secondary"></i>{% trans %}View zones{% endtrans %}
                 </a>
-                <button type="submit" class="btn btn-secondary btn-sm" form="template-records-form" name="update_zones" onclick="return checkZoneTemplateSOA('template-records-form', '.table')">
+                <button type="submit" class="btn btn-secondary btn-sm" form="template-records-form" name="update_zones" 
+                        onclick="return checkZoneTemplateSOA('template-records-form', '.table')"
+                        {% if zones_linked_count == 0 %}disabled title="{% trans %}No zones are using this template{% endtrans %}"{% endif %}>
                     <i class="bi bi-arrow-repeat me-1 text-white"></i>{% trans %}Update zones{% endtrans %}
                 </button>
             </div>
         </div>
     </div>
-    
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Check if there's an SOA record in the template
-            const recordRows = document.querySelectorAll('.table tbody tr');
-            let hasSOA = false;
-            
-            recordRows.forEach(row => {
-                const typeCell = row.querySelector('td:nth-child(2)');
-                if (typeCell && typeCell.textContent.trim() === 'SOA') {
-                    hasSOA = true;
-                }
-            });
-            
-            // Show warning if no SOA record is found
-            const warningElement = document.getElementById('soaWarning');
-            if (warningElement && recordRows.length > 0 && !hasSOA) {
-                warningElement.style.display = 'block';
-            }
-            
-            // Set up the Bootstrap modal for SOA warnings
-            const soaWarningModal = document.getElementById('soaWarningModal');
-            if (soaWarningModal) {
-                const modal = new bootstrap.Modal(soaWarningModal);
-                
-                // Override the global checkZoneTemplateSOA function
-                window.checkZoneTemplateSOA = function(formId, recordsTable) {
-                    const form = document.getElementById(formId);
-                    if (!form) return true;
-                    
-                    // If there's no records table, we're creating a new template, so no need to check
-                    if (!recordsTable) return true;
-                    
-                    const recordRows = document.querySelectorAll(recordsTable + ' tbody tr');
-                    let hasSOA = false;
-                    
-                    // Check if any record is SOA type
-                    recordRows.forEach(row => {
-                        const typeCell = row.querySelector('td:nth-child(2)');
-                        if (typeCell && typeCell.textContent.trim() === 'SOA') {
-                            hasSOA = true;
-                        }
-                    });
-                    
-                    // If there are records but no SOA, show Bootstrap modal
-                    if (recordRows.length > 0 && !hasSOA) {
-                        // Get the submit button that was clicked
-                        const submitButtonName = document.activeElement.name;
-                        
-                        // Set up the confirm button to submit the correct form with the correct button
-                        document.getElementById('confirmSubmitWithoutSOA').onclick = function() {
-                            modal.hide();
-                            
-                            // Create and trigger a hidden button with the same name as the clicked button
-                            const hiddenButton = document.createElement('button');
-                            hiddenButton.type = 'submit';
-                            hiddenButton.name = submitButtonName;
-                            hiddenButton.style.display = 'none';
-                            form.appendChild(hiddenButton);
-                            hiddenButton.click();
-                            form.removeChild(hiddenButton);
-                        };
-                        
-                        // Show the modal
-                        modal.show();
-                        
-                        // Prevent form submission for now
-                        return false;
-                    }
-                    
-                    return true;
-                };
-            }
-        });
-    </script>
     {% endif %}
 </div>
 
-<!-- Placeholders Info Card -->
-<div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Template Placeholders{% endtrans %}</strong>
-    </div>
-    <div class="card-body">
-        <p>{% trans %}The following placeholders can be used in template records{% endtrans %}:</p>
-        <div class="table-responsive">
-            <table class="table table-sm">
-                <thead class="table-light">
-                <tr>
-                    <th>{% trans %}Placeholder{% endtrans %}</th>
-                    <th>{% trans %}Description{% endtrans %}</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr>
-                    <td><code>[ZONE]</code></td>
-                    <td>{% trans %}Substituted with current zone name{% endtrans %}</td>
-                </tr>
-                <tr>
-                    <td><code>[DOMAIN]</code></td>
-                    <td>{% trans %}Substituted with domain name without TLD{% endtrans %} (e.g., example from example.net)</td>
-                </tr>
-                <tr>
-                    <td><code>[TLD]</code></td>
-                    <td>{% trans %}Substituted with top-level domain{% endtrans %} (e.g., net from example.net)</td>
-                </tr>
-                <tr>
-                    <td><code>[SERIAL]</code></td>
-                    <td>{% trans %}Substituted with current date and 2 numbers{% endtrans %} (YYYYMMDD + 00)</td>
-                </tr>
-                <tr>
-                    <td><code>[NS1]</code></td>
-                    <td>{% trans %}Substituted with 1st name server{% endtrans %}</td>
-                </tr>
-                <tr>
-                    <td><code>[NS2]</code></td>
-                    <td>{% trans %}Substituted with 2nd name server{% endtrans %}</td>
-                </tr>
-                <tr>
-                    <td><code>[NS3]</code></td>
-                    <td>{% trans %}Substituted with 3rd name server{% endtrans %}</td>
-                </tr>
-                <tr>
-                    <td><code>[NS4]</code></td>
-                    <td>{% trans %}Substituted with 4th name server{% endtrans %}</td>
-                </tr>
-                <tr>
-                    <td><code>[HOSTMASTER]</code></td>
-                    <td>{% trans %}Substituted with hostmaster{% endtrans %}</td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
+<div class="row">
+    <div class="col-md-6">
+        <!-- Template Settings Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-gear me-2"></i>{% trans %}Template Settings{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="" id="template-form" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
 
-        <h6 class="mt-4">{% trans %}Examples{% endtrans %}:</h6>
-        <ul class="mb-0">
-            <li>{% trans %}To add a subdomain foo in a zone template you would put foo.[ZONE] into the name field.{% endtrans %}</li>
-            <li>{% trans %}To add a wildcard record put *.[ZONE] in the name field.{% endtrans %}</li>
-            <li>{% trans %}Use just [ZONE] to have the domain itself return a value.{% endtrans %}</li>
-            <li>{% trans %}For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 in the content field.{% endtrans %}</li>
-            <li>{% trans %}For Microsoft 365 MX record: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>{% endtrans %}</li>
-        </ul>
-    </div>
-</div>
-
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const form = document.getElementById('template-form');
-        const originalName = document.getElementById('templ_name').value;
-        const nameInput = document.getElementById('templ_name');
-        const saveAsButton = form.querySelector('button[name="save_as"]');
-
-        // Function to check if Save As should be enabled
-        function checkSaveAsAvailability() {
-            const newName = nameInput.value.trim();
-            saveAsButton.disabled = (newName === originalName || newName === '');
-        }
-
-        // Initial check
-        checkSaveAsAvailability();
-
-        // Add input event listener to the name field
-        nameInput.addEventListener('input', checkSaveAsAvailability);
-    });
-</script>
-
-<!-- Template Settings Card -->
-<div class="card shadow-sm mb-4">
-    <div class="card-header py-3">
-        <strong><i class="bi bi-gear me-2"></i>{% trans %}Template Settings{% endtrans %}</strong>
-    </div>
-    <div class="card-body">
-        <form class="needs-validation" method="post" action="" id="template-form" novalidate>
-            <input type="hidden" name="_token" value="{{ csrf_token }}">
-
-            <div class="row">
-                <div class="col-md-6">
                     <div class="mb-3">
                         <label for="templ_name" class="form-label">{% trans %}Name{% endtrans %}</label>
                         <input class="form-control form-control-sm" type="text" id="templ_name" name="templ_name"
@@ -327,22 +141,133 @@
                         <small class="form-text text-muted">{% trans %}Make this template available to all users{% endtrans %}</small>
                     </div>
                     {% endif %}
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary btn-sm" name="edit" onclick="return checkZoneTemplateSOA('template-form', '.table')">
+                            <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}
+                        </button>
+                        {% if perm_zone_templ_add or perm_is_godlike %}
+                        <button type="submit" class="btn btn-success btn-sm" name="save_as" onclick="return checkZoneTemplateSOA('template-form', '.table')">
+                            <i class="bi bi-save me-1 text-white"></i>{% trans %}Save As{% endtrans %}
+                        </button>
+                        {% endif %}
+                        <a href="index.php?page=list_zone_templ" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Placeholders Info Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Template Placeholders{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <p>{% trans %}The following placeholders can be used in template records{% endtrans %}:</p>
+                <div class="table-responsive">
+                    <table class="table table-sm">
+                        <thead class="table-light">
+                        <tr>
+                            <th>{% trans %}Placeholder{% endtrans %}</th>
+                            <th>{% trans %}Description{% endtrans %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><code>[ZONE]</code></td>
+                            <td>{% trans %}Substituted with current zone name{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[DOMAIN]</code></td>
+                            <td>{% trans %}Substituted with domain name without TLD{% endtrans %} (e.g., example from example.net)</td>
+                        </tr>
+                        <tr>
+                            <td><code>[TLD]</code></td>
+                            <td>{% trans %}Substituted with top-level domain{% endtrans %} (e.g., net from example.net)</td>
+                        </tr>
+                        <tr>
+                            <td><code>[SERIAL]</code></td>
+                            <td>{% trans %}Substituted with current date and 2 numbers{% endtrans %} (YYYYMMDD + 00)</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS1]</code></td>
+                            <td>{% trans %}Substituted with 1st name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS2]</code></td>
+                            <td>{% trans %}Substituted with 2nd name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS3]</code></td>
+                            <td>{% trans %}Substituted with 3rd name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS4]</code></td>
+                            <td>{% trans %}Substituted with 4th name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[HOSTMASTER]</code></td>
+                            <td>{% trans %}Substituted with hostmaster{% endtrans %}</td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
-
-            <div class="mt-3">
-                <button type="submit" class="btn btn-primary btn-sm" name="edit" onclick="return checkZoneTemplateSOA('template-form', '.table')">
-                    <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}
-                </button>
-                {% if perm_zone_templ_add or perm_is_godlike %}
-                <button type="submit" class="btn btn-success btn-sm" name="save_as" onclick="return checkZoneTemplateSOA('template-form', '.table')">
-                    <i class="bi bi-save me-1 text-white"></i>{% trans %}Save As{% endtrans %}
-                </button>
-                {% endif %}
-                <a href="index.php?page=list_zone_templ" class="btn btn-secondary btn-sm">
-                    <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
-                </a>
-            </div>
-        </form>
+        </div>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const form = document.getElementById('template-form');
+        const originalName = document.getElementById('templ_name').value;
+        const nameInput = document.getElementById('templ_name');
+        const saveAsButton = form.querySelector('button[name="save_as"]');
+
+        // Function to check if Save As should be enabled
+        function checkSaveAsAvailability() {
+            if (saveAsButton) {
+                const newName = nameInput.value.trim();
+                saveAsButton.disabled = (newName === originalName || newName === '');
+            }
+        }
+
+        // Initial check
+        checkSaveAsAvailability();
+
+        // Add input event listener to the name field
+        nameInput.addEventListener('input', checkSaveAsAvailability);
+    });
+</script>
+
+<!-- SOA Warning Modal -->
+<div class="modal fade" id="soaWarningModal" tabindex="-1" aria-labelledby="soaWarningModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-warning">
+                <h5 class="modal-title" id="soaWarningModalLabel">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning: Missing SOA Record{% endtrans %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning" role="alert">
+                    <p>{% trans %}This zone template does not have an SOA (Start of Authority) record.{% endtrans %}</p>
+                    <p>{% trans %}DNS zones typically require an SOA record to function properly, and DNSSEC signing may fail without one.{% endtrans %}</p>
+                    <p>{% trans %}Do you want to continue without adding an SOA record?{% endtrans %}</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
+                <button type="button" class="btn btn-warning" id="confirmSubmitWithoutSOA">
+                    {% trans %}Continue Without SOA{% endtrans %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
