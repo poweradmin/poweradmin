@@ -33,13 +33,6 @@
       <code><![CDATA[$owner]]></code>
     </InvalidScalarArgument>
   </file>
-  <file src="lib/Application/Controller/AddZoneTemplRecordController.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-    </InvalidScalarArgument>
-  </file>
   <file src="lib/Application/Controller/BatchPtrRecordController.php">
     <InvalidScalarArgument>
       <code><![CDATA[$zone_id]]></code>
@@ -94,14 +87,6 @@
   <file src="lib/Application/Controller/DeleteZoneTemplController.php">
     <InvalidScalarArgument>
       <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Application/Controller/DeleteZoneTemplRecordController.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$record_id]]></code>
-      <code><![CDATA[$record_id]]></code>
       <code><![CDATA[$zone_templ_id]]></code>
       <code><![CDATA[$zone_templ_id]]></code>
     </InvalidScalarArgument>
@@ -191,13 +176,6 @@
       <code><![CDATA[$id]]></code>
       <code><![CDATA[$iface_rowamount]]></code>
       <code><![CDATA[$itemsPerPage]]></code>
-    </InvalidScalarArgument>
-  </file>
-  <file src="lib/Application/Controller/EditZoneTemplRecordController.php">
-    <InvalidScalarArgument>
-      <code><![CDATA[$record_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
-      <code><![CDATA[$zone_templ_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/ListForwardZonesController.php">

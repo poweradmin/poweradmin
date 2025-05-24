@@ -21,6 +21,7 @@
                     <th>{% trans %}Owner{% endtrans %}</th>
                     <th>{% trans %}Type{% endtrans %}</th>
                     <th>{% trans %}Zones linked{% endtrans %}</th>
+                    <th>{% trans %}Sync Status{% endtrans %}</th>
                     <th class="text-end">{% trans %}Actions{% endtrans %}</th>
                 </tr>
                 </thead>
@@ -28,7 +29,7 @@
                 <tbody>
                 {% if not zone_templates %}
                 <tr>
-                    <td colspan="7" class="text-center py-3">{% trans %}No results found{% endtrans %}</td>
+                    <td colspan="8" class="text-center py-3">{% trans %}No results found{% endtrans %}</td>
                 </tr>
                 {% endif %}
                 {% for template in zone_templates %}
@@ -59,6 +60,22 @@
                         {% endif %}
                     </td>
                     <td><span class="badge {% if template['zones_linked'] == '0' %}bg-warning{% else %}bg-secondary{% endif %}">{{ template['zones_linked'] }}</span></td>
+                    <td>
+                        {% set template_sync = sync_status[template['id']] %}
+                        {% if template_sync and template_sync.total_zones > 0 %}
+                            {% if template_sync.unsynced_zones > 0 %}
+                                <span class="badge bg-warning text-dark" title="{% trans %}Zones need updating{% endtrans %}">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> {{ template_sync.unsynced_zones }}/{{ template_sync.total_zones }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success" title="{% trans %}All zones are synchronized{% endtrans %}">
+                                    <i class="bi bi-check-circle-fill text-white"></i> {% trans %}Synced{% endtrans %}
+                                </span>
+                            {% endif %}
+                        {% else %}
+                            <span class="badge bg-light text-secondary">-</span>
+                        {% endif %}
+                    </td>
                     {% if (perm_zone_templ_edit and template['owner'] != 0) or perm_is_godlike %}
                     <td class="text-end">
                         <div class="gap-2">

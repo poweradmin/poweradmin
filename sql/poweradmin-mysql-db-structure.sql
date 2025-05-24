@@ -26,6 +26,22 @@ CREATE TABLE `log_zones` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
+CREATE TABLE `login_attempts` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NULL,
+    `ip_address` varchar(45) NOT NULL,
+    `timestamp` int(11) NOT NULL,
+    `successful` tinyint(1) NOT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_ip_address` (`ip_address`),
+    KEY `idx_timestamp` (`timestamp`),
+    CONSTRAINT `fk_login_attempts_users`
+        FOREIGN KEY (`user_id`) REFERENCES `users` (`id`)
+        ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 CREATE TABLE `migrations` (
                               `version` bigint(20) NOT NULL,
                               `migration_name` varchar(100) DEFAULT NULL,
@@ -186,6 +202,23 @@ CREATE TABLE `user_preferences` (
     UNIQUE KEY `idx_user_preferences_user_key` (`user_id`, `preference_key`),
     KEY `idx_user_preferences_user_id` (`user_id`),
     CONSTRAINT `fk_user_preferences_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `zone_template_sync` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `zone_id` int(11) NOT NULL,
+    `zone_templ_id` int(11) NOT NULL,
+    `last_synced` timestamp NULL DEFAULT NULL,
+    `template_last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `needs_sync` tinyint(1) NOT NULL DEFAULT 0,
+    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_zone_template_unique` (`zone_id`, `zone_templ_id`),
+    KEY `idx_zone_templ_id` (`zone_templ_id`),
+    KEY `idx_needs_sync` (`needs_sync`),
+    CONSTRAINT `fk_zone_template_sync_zone` FOREIGN KEY (`zone_id`) REFERENCES `domains` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_zone_template_sync_templ` FOREIGN KEY (`zone_templ_id`) REFERENCES `zone_templ` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 2022-09-29 19:08:10

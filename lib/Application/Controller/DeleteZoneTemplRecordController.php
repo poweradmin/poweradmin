@@ -35,6 +35,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 
 class DeleteZoneTemplRecordController extends BaseController
 {
@@ -44,12 +45,12 @@ class DeleteZoneTemplRecordController extends BaseController
         if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $record_id = htmlspecialchars($_GET['id']);
+        $record_id = (int)$_GET['id'];
 
         if (!isset($_GET['zone_templ_id']) || !Validator::isNumber($_GET['zone_templ_id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
+        $zone_templ_id = (int)$_GET['zone_templ_id'];
 
         $confirm = "-1";
         if (isset($_GET['confirm']) && Validator::isNumber($_GET['confirm'])) {
@@ -65,11 +66,16 @@ class DeleteZoneTemplRecordController extends BaseController
         if ($confirm == '1') {
             $zoneTemplate = new ZoneTemplate($this->db, $this->config);
             if ($zoneTemplate->deleteZoneTemplRecord($record_id)) {
+                // Mark template as modified to track sync status
+                $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
+                $syncService->markTemplateAsModified($zone_templ_id);
+
                 $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));
+                $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
             } else {
                 $this->setMessage('edit_zone_templ', 'error', _('The record could not be deleted.'));
+                $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
             }
-            $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
         }
 
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);

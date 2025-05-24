@@ -23,6 +23,23 @@ CREATE TABLE "public"."log_zones" (
 ) WITH (oids = false);
 
 
+CREATE SEQUENCE login_attempts_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."login_attempts" (
+    "id" integer DEFAULT nextval('login_attempts_id_seq') NOT NULL,
+    "user_id" integer NULL,
+    "ip_address" character varying(45) NOT NULL,
+    "timestamp" integer NOT NULL,
+    "successful" boolean NOT NULL,
+    CONSTRAINT "login_attempts_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "fk_login_attempts_users" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+) WITH (oids = false);
+
+CREATE INDEX "idx_login_attempts_user_id" ON "public"."login_attempts" USING btree ("user_id");
+CREATE INDEX "idx_login_attempts_ip_address" ON "public"."login_attempts" USING btree ("ip_address");
+CREATE INDEX "idx_login_attempts_timestamp" ON "public"."login_attempts" USING btree ("timestamp");
+
+
 CREATE TABLE "public"."migrations" (
                                        "version" bigint NOT NULL,
                                        "migration_name" character varying(100),
@@ -205,5 +222,23 @@ CREATE TABLE "user_preferences" (
 
 CREATE UNIQUE INDEX "idx_user_preferences_user_key" ON "public"."user_preferences" USING btree ("user_id", "preference_key");
 CREATE INDEX "idx_user_preferences_user_id" ON "public"."user_preferences" USING btree ("user_id");
+
+CREATE TABLE "zone_template_sync" (
+    "id" serial NOT NULL,
+    "zone_id" integer NOT NULL,
+    "zone_templ_id" integer NOT NULL,
+    "last_synced" timestamp,
+    "template_last_modified" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "needs_sync" boolean NOT NULL DEFAULT false,
+    "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    CONSTRAINT "zone_template_sync_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "fk_zone_template_sync_zone" FOREIGN KEY (zone_id) REFERENCES domains(id) ON DELETE CASCADE,
+    CONSTRAINT "fk_zone_template_sync_templ" FOREIGN KEY (zone_templ_id) REFERENCES zone_templ(id) ON DELETE CASCADE
+) WITH (oids = false);
+
+CREATE UNIQUE INDEX "idx_zone_template_unique" ON "public"."zone_template_sync" USING btree ("zone_id", "zone_templ_id");
+CREATE INDEX "idx_zone_templ_id" ON "public"."zone_template_sync" USING btree ("zone_templ_id");
+CREATE INDEX "idx_needs_sync" ON "public"."zone_template_sync" USING btree ("needs_sync");
 
 -- 2022-09-29 19:10:39.890321+00

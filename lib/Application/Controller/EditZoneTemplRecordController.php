@@ -36,6 +36,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditZoneTemplRecordController extends BaseController
@@ -137,6 +138,10 @@ class EditZoneTemplRecordController extends BaseController
         $template = new ZoneTemplate($this->db, $this->getConfig());
 
         if ($template->editZoneTemplRecord($_POST)) {
+            // Mark template as modified to track sync status
+            $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
+            $syncService->markTemplateAsModified($zone_templ_id);
+
             $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
             $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
         }

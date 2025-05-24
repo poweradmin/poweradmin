@@ -73,3 +73,28 @@ CREATE TABLE user_preferences (
 
 CREATE UNIQUE INDEX idx_user_preferences_user_key ON user_preferences(user_id, preference_key);
 CREATE INDEX idx_user_preferences_user_id ON user_preferences(user_id);
+
+-- Add zone_template_sync table
+CREATE TABLE zone_template_sync (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    zone_id INTEGER NOT NULL,
+    zone_templ_id INTEGER NOT NULL,
+    last_synced TIMESTAMP NULL,
+    template_last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    needs_sync INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (zone_id) REFERENCES domains(id) ON DELETE CASCADE,
+    FOREIGN KEY (zone_templ_id) REFERENCES zone_templ(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX idx_zone_template_unique ON zone_template_sync(zone_id, zone_templ_id);
+CREATE INDEX idx_zone_templ_id ON zone_template_sync(zone_templ_id);
+CREATE INDEX idx_needs_sync ON zone_template_sync(needs_sync);
+
+-- Initialize sync records for existing zone-template relationships
+INSERT OR IGNORE INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
+SELECT d.id, z.zone_templ_id, 0, datetime('now')
+FROM domains d
+INNER JOIN zones z ON d.id = z.domain_id
+WHERE z.zone_templ_id > 0;

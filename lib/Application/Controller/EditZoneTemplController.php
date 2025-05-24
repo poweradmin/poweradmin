@@ -38,6 +38,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Domain\Service\ZoneTemplateSyncService;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -123,12 +124,17 @@ class EditZoneTemplController extends BaseController
         $linked_zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $zones_linked_count = count($linked_zones);
 
+        // Get sync status
+        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
+        $unsynced_zones_count = $syncService->getUnsyncedZoneCount($zone_templ_id);
+
         $this->render('edit_zone_templ.html', [
             'templ_details' => $templ_details,
             'pagination' => $this->createAndPresentPagination($record_count, $iface_rowamount, $zone_templ_id),
             'records' => ZoneTemplate::getZoneTemplRecords($this->db, $zone_templ_id, $row_start, $iface_rowamount, $record_sort_by),
             'zone_templ_id' => $zone_templ_id,
             'zones_linked_count' => $zones_linked_count,
+            'unsynced_zones_count' => $unsynced_zones_count,
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
             'perm_zone_templ_add' => UserManager::verifyPermission($this->db, 'zone_templ_add'),
         ]);
@@ -204,9 +210,15 @@ class EditZoneTemplController extends BaseController
         $userId = $this->userContext->getLoggedInUserId();
         $zones = $zoneTemplate->getListZoneUseTempl($zone_templ_id, $userId);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        $syncService = new ZoneTemplateSyncService($this->db, $this->getConfig());
+
         foreach ($zones as $zone_id) {
             $dnsRecord->updateZoneRecords($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone_id, $zone_templ_id);
         }
+
+        // Mark all zones as synced
+        $syncService->markZonesAsSynced($zones, $zone_templ_id);
+
         $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
     }
 

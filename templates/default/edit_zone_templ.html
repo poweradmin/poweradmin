@@ -8,6 +8,15 @@
     </ol>
 </nav>
 
+{% if unsynced_zones_count > 0 %}
+<div class="alert alert-warning alert-dismissible fade show mb-3 py-2 small" role="alert">
+    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <strong>{% trans %}Sync Required{% endtrans %}:</strong> 
+    {% trans %}There are{% endtrans %} <strong>{{ unsynced_zones_count }}</strong> {% trans %}zones that need to be updated to reflect the current template configuration.{% endtrans %}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
 {% if pagination %}
 <div class="mb-3">
     {{ pagination | raw }}
@@ -98,6 +107,9 @@
                         onclick="return checkZoneTemplateSOA('template-records-form', '.table')"
                         {% if zones_linked_count == 0 %}disabled title="{% trans %}No zones are using this template{% endtrans %}"{% endif %}>
                     <i class="bi bi-arrow-repeat me-1 text-white"></i>{% trans %}Update zones{% endtrans %}
+                    {% if unsynced_zones_count > 0 %}
+                    <span class="badge bg-warning text-dark ms-1">{{ unsynced_zones_count }}</span>
+                    {% endif %}
                 </button>
             </div>
         </div>
@@ -242,6 +254,46 @@
         // Add input event listener to the name field
         nameInput.addEventListener('input', checkSaveAsAvailability);
     });
+    
+    // Check if zone template has SOA record
+    function checkZoneTemplateSOA(formId, tableSelector) {
+        const form = document.getElementById(formId);
+        const table = document.querySelector(tableSelector);
+        
+        if (!table) {
+            // No records table, allow submission
+            return true;
+        }
+        
+        // Check if any SOA record exists
+        let hasSOA = false;
+        const rows = table.querySelectorAll('tbody tr');
+        
+        rows.forEach(row => {
+            const typeCell = row.querySelector('td:nth-child(2)'); // Type column
+            if (typeCell && typeCell.textContent.trim().includes('SOA')) {
+                hasSOA = true;
+            }
+        });
+        
+        if (!hasSOA) {
+            // Show SOA warning modal
+            const modal = new bootstrap.Modal(document.getElementById('soaWarningModal'));
+            
+            // Set up the confirm button to submit the form
+            document.getElementById('confirmSubmitWithoutSOA').onclick = function() {
+                modal.hide();
+                // Submit the form without the onclick handler to avoid infinite loop
+                form.onsubmit = null;
+                form.submit();
+            };
+            
+            modal.show();
+            return false;
+        }
+        
+        return true;
+    }
 </script>
 
 <!-- SOA Warning Modal -->
@@ -270,4 +322,5 @@
         </div>
     </div>
 </div>
+
 

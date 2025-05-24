@@ -76,3 +76,29 @@ CREATE TABLE `user_preferences` (
     KEY `idx_user_preferences_user_id` (`user_id`),
     CONSTRAINT `fk_user_preferences_users` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Add zone_template_sync table
+CREATE TABLE `zone_template_sync` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `zone_id` int(11) NOT NULL,
+    `zone_templ_id` int(11) NOT NULL,
+    `last_synced` timestamp NULL DEFAULT NULL,
+    `template_last_modified` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `needs_sync` tinyint(1) NOT NULL DEFAULT 0,
+    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `updated_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_zone_template_unique` (`zone_id`, `zone_templ_id`),
+    KEY `idx_zone_templ_id` (`zone_templ_id`),
+    KEY `idx_needs_sync` (`needs_sync`),
+    CONSTRAINT `fk_zone_template_sync_zone` FOREIGN KEY (`zone_id`) REFERENCES `domains` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_zone_template_sync_templ` FOREIGN KEY (`zone_templ_id`) REFERENCES `zone_templ` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Initialize sync records for existing zone-template relationships
+INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
+SELECT d.id, z.zone_templ_id, 0, NOW()
+FROM domains d
+INNER JOIN zones z ON d.id = z.domain_id
+WHERE z.zone_templ_id > 0
+ON DUPLICATE KEY UPDATE zone_id = zone_id;

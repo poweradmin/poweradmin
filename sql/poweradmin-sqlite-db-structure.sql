@@ -6,6 +6,21 @@ CREATE TABLE log_users (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, cr
 CREATE TABLE log_zones (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL, zone_id integer);
 
 
+CREATE TABLE login_attempts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NULL,
+    ip_address VARCHAR(45) NOT NULL,
+    timestamp INTEGER NOT NULL,
+    successful BOOLEAN NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE SET NULL
+);
+
+CREATE INDEX idx_login_attempts_user_id ON login_attempts(user_id);
+CREATE INDEX idx_login_attempts_ip_address ON login_attempts(ip_address);
+CREATE INDEX idx_login_attempts_timestamp ON login_attempts(timestamp);
+
+
 CREATE TABLE migrations (
     version INTEGER PRIMARY KEY,
     migration_name VARCHAR(100) NULL,
@@ -115,5 +130,22 @@ CREATE TABLE user_preferences (
 
 CREATE UNIQUE INDEX idx_user_preferences_user_key ON user_preferences(user_id, preference_key);
 CREATE INDEX idx_user_preferences_user_id ON user_preferences(user_id);
+
+CREATE TABLE zone_template_sync (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    zone_id INTEGER NOT NULL,
+    zone_templ_id INTEGER NOT NULL,
+    last_synced TIMESTAMP NULL,
+    template_last_modified TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    needs_sync INTEGER NOT NULL DEFAULT 0,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (zone_id) REFERENCES domains(id) ON DELETE CASCADE,
+    FOREIGN KEY (zone_templ_id) REFERENCES zone_templ(id) ON DELETE CASCADE
+);
+
+CREATE UNIQUE INDEX idx_zone_template_unique ON zone_template_sync(zone_id, zone_templ_id);
+CREATE INDEX idx_zone_templ_id ON zone_template_sync(zone_templ_id);
+CREATE INDEX idx_needs_sync ON zone_template_sync(needs_sync);
 
 --

@@ -1360,6 +1360,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Domain\\Service\\ZoneCountService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneCountService.php',
         'Poweradmin\\Domain\\Service\\ZoneManagementService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneManagementService.php',
         'Poweradmin\\Domain\\Service\\ZoneSortingService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneSortingService.php',
+        'Poweradmin\\Domain\\Service\\ZoneTemplateSyncService' => __DIR__ . '/../..' . '/lib/Domain/Service/ZoneTemplateSyncService.php',
         'Poweradmin\\Domain\\Utility\\DnsHelper' => __DIR__ . '/../..' . '/lib/Domain/Utility/DnsHelper.php',
         'Poweradmin\\Domain\\Utility\\DnssecDataTransformer' => __DIR__ . '/../..' . '/lib/Domain/Utility/DnssecDataTransformer.php',
         'Poweradmin\\Domain\\Utility\\DnssecTransformer' => __DIR__ . '/../..' . '/lib/Domain/Utility/DnssecTransformer.php',
