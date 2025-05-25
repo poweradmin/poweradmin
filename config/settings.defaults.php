@@ -33,22 +33,22 @@ return [
         'password_cost' => 12,                   // Cost factor for bcrypt (added in 2.1.8)
         'login_token_validation' => true,        // Enable token validation for login form (added in 3.9.0)
         'global_token_validation' => true,       // Enable token validation for all forms (added in 3.9.0)
+        /**
+         * Password Policy Settings
+         */
         'password_policy' => [
             // Basic password rules
-            'enable_password_rules' => false,    // Enable password policy enforcement
+            'enable_password_rules' => true,    // Enable password policy enforcement
             'min_length' => 6,                   // Minimum password length
             'require_uppercase' => true,         // Require at least one uppercase letter
             'require_lowercase' => true,         // Require at least one lowercase letter
             'require_numbers' => true,           // Require at least one number
             'require_special' => false,          // Require at least one special character
             'special_characters' => '!@#$%^&*()+-=[]{}|;:,.<>?',  // Allowed special characters
-
-            // Future features (not implemented)
-            'enable_expiration' => false,        // [NOT IMPLEMENTED] Enable password expiration
-            'max_age_days' => 90,               // [NOT IMPLEMENTED] Maximum password age in days
-            'enable_reuse_prevention' => false,  // [NOT IMPLEMENTED] Prevent password reuse
-            'prevent_reuse' => 5,               // [NOT IMPLEMENTED] Number of previous passwords to remember
         ],
+        /**
+         * Account Lockout Settings
+         */
         'account_lockout' => [
             'enable_lockout' => false,           // Enable account lockout after failed login attempts
             'lockout_attempts' => 5,             // Number of attempts before lockout
@@ -67,6 +67,16 @@ return [
             'email_enabled' => true,             // Enable email verification option
             'recovery_codes' => 8,               // Number of recovery codes to generate
             'recovery_code_length' => 10,        // Length of recovery codes
+        ],
+        /**
+         * Password Reset Settings
+         */
+        'password_reset' => [
+            'enabled' => false,                         // Enable/disable password reset functionality
+            'token_lifetime' => 3600,                   // Token validity in seconds (1 hour default)
+            'rate_limit_attempts' => 5,                 // Max reset attempts per time window
+            'rate_limit_window' => 3600,                // Rate limit window in seconds (1 hour)
+            'min_time_between_requests' => 60,          // Minimum seconds between requests (1 minute)
         ],
         /**
          * Google reCAPTCHA Settings
@@ -161,10 +171,10 @@ return [
      * Mail Settings
      */
     'mail' => [
-        'enabled' => false,                        // Enable email functionality
+        'enabled' => true,                         // Enable email functionality
         'from' => 'poweradmin@example.com',        // Default "from" address
         'from_name' => '',                         // Default "from" name
-        'transport' => 'smtp',                     // Transport method: smtp, sendmail, or php
+        'transport' => 'php',                      // Transport method: smtp, sendmail, or php
 
         // SMTP settings
         'host' => 'smtp.example.com',              // SMTP server hostname

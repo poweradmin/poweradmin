@@ -41,11 +41,12 @@ class FakeConfiguration implements ConfigurationInterface
      *
      * @param string $group Configuration group
      * @param string $key Configuration key
-     * @return mixed Configuration value or null if not found
+     * @param mixed $default Default value if not found
+     * @return mixed Configuration value or default if not found
      */
-    public function get(string $group, string $key): mixed
+    public function get(string $group, string $key, mixed $default = null): mixed
     {
-        return $this->config[$group][$key] ?? null;
+        return $this->config[$group][$key] ?? $default;
     }
 
     /**

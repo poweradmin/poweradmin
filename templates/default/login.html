@@ -47,6 +47,11 @@
             <div class="d-grid">
                 <button type="submit" data-testid="login-button" name="authenticate" class="btn btn-secondary">{% trans %}Log in{% endtrans %}</button>
             </div>
+            {% if password_reset_enabled %}
+            <div class="text-center mt-3">
+                <a href="index.php?page=forgot_password" class="text-decoration-none">{% trans %}Forgot your password?{% endtrans %}</a>
+            </div>
+            {% endif %}
             {% if recaptcha_enabled %}
             <div class="text-center mt-2">
                 <small class="text-muted">

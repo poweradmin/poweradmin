@@ -102,3 +102,18 @@ FROM domains d
 INNER JOIN zones z ON d.id = z.domain_id
 WHERE z.zone_templ_id > 0
 ON DUPLICATE KEY UPDATE zone_id = zone_id;
+
+-- Add password_reset_tokens table for password reset functionality
+CREATE TABLE IF NOT EXISTS `password_reset_tokens` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `email` varchar(255) NOT NULL,
+    `token` varchar(64) NOT NULL,
+    `expires_at` timestamp NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `used` tinyint(1) NOT NULL DEFAULT 0,
+    `ip_address` varchar(45) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_token` (`token`),
+    KEY `idx_email` (`email`),
+    KEY `idx_expires` (`expires_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

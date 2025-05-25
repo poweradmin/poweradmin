@@ -114,4 +114,9 @@ class RecaptchaService
     {
         return $this->version;
     }
+
+    public function getSiteKey(): string
+    {
+        return $this->configManager->get('security', 'recaptcha.site_key', '');
+    }
 }

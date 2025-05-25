@@ -116,6 +116,11 @@ class BasicRouter
     {
         $baseNamespace = '\Poweradmin\Application\Controller\\';
 
+        // Special handling for 404 page
+        if ($page === '404') {
+            return $baseNamespace . 'NotFoundController';
+        }
+
         // Support for nested controllers (e.g., 'api/v1/zone', 'api/internal/zone')
         if (strpos($page, '/') !== false) {
             $parts = explode('/', $page);

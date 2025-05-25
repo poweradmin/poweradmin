@@ -63,8 +63,20 @@ class Logger extends AbstractLogger
             $classname = "[{$context['classname']}]";
         }
 
+        // Format context data for logging
+        $contextString = '';
+        if (!empty($context)) {
+            // Remove classname from context as it's handled separately
+            $loggableContext = $context;
+            unset($loggableContext['classname']);
+
+            if (!empty($loggableContext)) {
+                $contextString = ' [' . json_encode($loggableContext, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . ']';
+            }
+        }
+
         $this->logHandler->handle([
-            'message' => self::interpolateMessage((string)$message, $context),
+            'message' => self::interpolateMessage((string)$message, $context) . $contextString,
             'level' => strtoupper($level),
             'timestamp' => ($timestamp),
             'classname' => $classname,

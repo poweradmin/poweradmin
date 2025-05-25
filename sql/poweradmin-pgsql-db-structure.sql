@@ -242,3 +242,17 @@ CREATE INDEX "idx_zone_templ_id" ON "public"."zone_template_sync" USING btree ("
 CREATE INDEX "idx_needs_sync" ON "public"."zone_template_sync" USING btree ("needs_sync");
 
 -- 2022-09-29 19:10:39.890321+00
+CREATE TABLE password_reset_tokens (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    token VARCHAR(64) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    used BOOLEAN NOT NULL DEFAULT FALSE,
+    ip_address VARCHAR(45) DEFAULT NULL
+);
+
+CREATE INDEX idx_prt_email ON password_reset_tokens(email);
+CREATE UNIQUE INDEX idx_prt_token ON password_reset_tokens(token);
+CREATE INDEX idx_prt_expires ON password_reset_tokens(expires_at);
+EOF < /dev/null

@@ -222,3 +222,18 @@ CREATE TABLE `zone_template_sync` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- 2022-09-29 19:08:10
+
+CREATE TABLE `password_reset_tokens` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `email` varchar(255) NOT NULL,
+    `token` varchar(64) NOT NULL,
+    `expires_at` timestamp NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `used` tinyint(1) NOT NULL DEFAULT 0,
+    `ip_address` varchar(45) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `idx_token` (`token`),
+    KEY `idx_email` (`email`),
+    KEY `idx_expires` (`expires_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+EOF < /dev/null

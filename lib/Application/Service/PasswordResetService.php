@@ -1,0 +1,362 @@
+<?php
+
+namespace Poweradmin\Application\Service;
+
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
+use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Application\Service\UserAuthenticationService;
+use Psr\Log\LoggerInterface;
+
+class PasswordResetService
+{
+    private DbPasswordResetTokenRepository $tokenRepository;
+    private UserRepository $userRepository;
+    private MailService $mailService;
+    private ConfigurationInterface $config;
+    private UserAuthenticationService $authService;
+    private IpAddressRetriever $ipRetriever;
+    private LoggerInterface $logger;
+
+    public function __construct(
+        DbPasswordResetTokenRepository $tokenRepository,
+        UserRepository $userRepository,
+        MailService $mailService,
+        ConfigurationInterface $config,
+        UserAuthenticationService $authService,
+        IpAddressRetriever $ipRetriever,
+        LoggerInterface $logger
+    ) {
+        $this->tokenRepository = $tokenRepository;
+        $this->userRepository = $userRepository;
+        $this->mailService = $mailService;
+        $this->config = $config;
+        $this->authService = $authService;
+        $this->ipRetriever = $ipRetriever;
+        $this->logger = $logger;
+    }
+
+    /**
+     * Check if password reset is enabled
+     */
+    public function isEnabled(): bool
+    {
+        return $this->config->get('security', 'password_reset.enabled', false);
+    }
+
+    /**
+     * Generate a cryptographically secure token
+     */
+    private function generateToken(): string
+    {
+        return bin2hex(random_bytes(32));
+    }
+
+    /**
+     * Create a password reset request
+     *
+     * @param string $email
+     * @return bool Always returns true for security (don't reveal if email exists)
+     */
+    public function createResetRequest(string $email): bool
+    {
+        if (!$this->isEnabled()) {
+            return false;
+        }
+
+        // Clean up expired tokens before processing new request
+        $this->cleanupExpiredTokens();
+
+        $ip = $this->ipRetriever->getClientIp();
+
+        // Check rate limits
+        if (!$this->checkRateLimit($email, $ip)) {
+            $this->logger->warning('Password reset rate limit exceeded', [
+                'email' => $email,
+                'ip' => $ip,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return true; // Return true to not reveal rate limiting
+        }
+
+        // Check if user exists
+        $user = $this->userRepository->getUserByEmail($email);
+        if (!$user) {
+            $this->logger->info('Password reset requested for non-existent email', [
+                'email' => $email,
+                'ip' => $ip,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return true; // Return true to not reveal if email exists
+        }
+
+        // Generate token
+        $token = $this->generateToken();
+        $expiresAt = time() + $this->config->get('security', 'password_reset.token_lifetime', 3600);
+
+        // Store token
+        $success = $this->tokenRepository->create([
+            'email' => $email,
+            'token' => $token,
+            'expires_at' => date('Y-m-d H:i:s', $expiresAt),
+            'ip_address' => $ip
+        ]);
+
+        if ($success) {
+            $emailSent = $this->sendResetEmail($email, $token, $user['fullname'] ?? '');
+
+            $this->logger->info('Password reset token created', [
+                'user_id' => $user['id'],
+                'email' => $email,
+                'ip' => $ip,
+                'token_expires_at' => date('Y-m-d H:i:s', $expiresAt),
+                'email_sent' => $emailSent,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+        } else {
+            $this->logger->error('Failed to create password reset token', [
+                'email' => $email,
+                'ip' => $ip,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+        }
+
+        return true;
+    }
+
+    /**
+     * Check rate limiting for password reset requests
+     */
+    private function checkRateLimit(string $email, string $ip): bool
+    {
+        $attempts = $this->config->get('security', 'password_reset.rate_limit_attempts', 3);
+        $window = $this->config->get('security', 'password_reset.rate_limit_window', 3600);
+        $minTime = $this->config->get('security', 'password_reset.min_time_between_requests', 300);
+
+        // Check email rate limit
+        $recentAttempts = $this->tokenRepository->countRecentAttempts($email, $window);
+        if ($recentAttempts >= $attempts) {
+            return false;
+        }
+
+        // Check minimum time between requests
+        $lastAttempt = $this->tokenRepository->getLastAttemptTime($email);
+        if ($lastAttempt && (time() - strtotime($lastAttempt)) < $minTime) {
+            return false;
+        }
+
+        // Check IP rate limit
+        $ipAttempts = $this->tokenRepository->countRecentAttemptsByIp($ip, $window);
+        if ($ipAttempts >= ($attempts * 2)) { // Allow 2x attempts per IP
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Send password reset email
+     */
+    private function sendResetEmail(string $email, string $token, string $name): bool
+    {
+        $resetUrl = $this->getResetUrl($token);
+        $expireTime = $this->config->get('security', 'password_reset.token_lifetime', 3600) / 60; // Convert to minutes
+
+        $subject = 'Password Reset Request';
+        $body = $this->getEmailBody($name, $resetUrl, $expireTime);
+
+        return $this->mailService->sendMail($email, $subject, $body);
+    }
+
+    /**
+     * Get password reset URL
+     */
+    private function getResetUrl(string $token): string
+    {
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $basePath = dirname($_SERVER['SCRIPT_NAME'] ?? '');
+        $basePath = rtrim($basePath, '/');
+
+        return "$protocol://$host$basePath/index.php?page=reset_password&token=" . urlencode($token);
+    }
+
+    /**
+     * Get email body for password reset
+     */
+    private function getEmailBody(string $name, string $resetUrl, int $expireMinutes): string
+    {
+        $greeting = $name ? "Hi $name," : "Hi,";
+
+        return <<<HTML
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Password Reset Request</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #2c3e50;">Password Reset Request</h2>
+        
+        <p>$greeting</p>
+        
+        <p>We received a request to reset your password. If you made this request, please click the link below to reset your password:</p>
+        
+        <p style="margin: 20px 0;">
+            <a href="$resetUrl" style="background-color: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
+        </p>
+        
+        <p>Or copy and paste this link into your browser:</p>
+        <p style="word-break: break-all; background-color: #f4f4f4; padding: 10px; border-radius: 3px;">$resetUrl</p>
+        
+        <p><strong>This link will expire in $expireMinutes minutes.</strong></p>
+        
+        <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
+        
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+        
+        <p style="font-size: 12px; color: #777;">
+            This is an automated message from Poweradmin. Please do not reply to this email.
+        </p>
+    </div>
+</body>
+</html>
+HTML;
+    }
+
+    /**
+     * Validate a password reset token
+     *
+     * @param string $token
+     * @return array|null Returns user data if valid, null otherwise
+     */
+    public function validateToken(string $token): ?array
+    {
+        if (!$this->isEnabled()) {
+            return null;
+        }
+
+        // Clean up expired tokens before validation
+        $this->cleanupExpiredTokens();
+
+        // Find all non-expired tokens
+        $tokens = $this->tokenRepository->findActiveTokens();
+
+        foreach ($tokens as $tokenData) {
+            if ($token === $tokenData['token']) {
+                // Check if already used
+                if ($tokenData['used']) {
+                    $this->logger->warning('Attempted to use already used password reset token', [
+                        'email' => $tokenData['email'],
+                        'token_id' => $tokenData['id'],
+                        'timestamp' => date('Y-m-d H:i:s')
+                    ]);
+                    return null;
+                }
+
+                // Check expiration
+                if (time() > strtotime($tokenData['expires_at'])) {
+                    $this->logger->info('Expired password reset token used', [
+                        'email' => $tokenData['email'],
+                        'token_id' => $tokenData['id'],
+                        'expired_at' => $tokenData['expires_at'],
+                        'timestamp' => date('Y-m-d H:i:s')
+                    ]);
+                    return null;
+                }
+
+                // Get user data
+                $user = $this->userRepository->getUserByEmail($tokenData['email']);
+                if ($user) {
+                    return [
+                        'user' => $user,
+                        'token_id' => $tokenData['id']
+                    ];
+                }
+            }
+        }
+
+        $this->logger->warning('Invalid password reset token used', [
+            'timestamp' => date('Y-m-d H:i:s')
+        ]);
+        return null;
+    }
+
+    /**
+     * Reset password using a valid token
+     *
+     * @param string $token
+     * @param string $newPassword
+     * @return bool
+     */
+    public function resetPassword(string $token, string $newPassword): bool
+    {
+        if (!$this->isEnabled()) {
+            return false;
+        }
+
+        $validationResult = $this->validateToken($token);
+        if (!$validationResult) {
+            return false;
+        }
+
+        $user = $validationResult['user'];
+        $tokenId = $validationResult['token_id'];
+
+        // Hash the new password
+        $hashedPassword = $this->authService->hashPassword($newPassword);
+
+        // Update user password
+        $success = $this->userRepository->updatePassword($user['id'], $hashedPassword);
+
+        if ($success) {
+            // Mark token as used
+            $this->tokenRepository->markAsUsed($tokenId);
+
+            // Alternative: Delete the used token immediately
+            // $this->tokenRepository->deleteById($tokenId);
+
+            $this->logger->info('Password reset completed successfully', [
+                'user_id' => $user['id'],
+                'username' => $user['username'] ?? 'unknown',
+                'email' => $user['email'],
+                'token_id' => $tokenId,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+
+            // Clean up expired tokens
+            $this->cleanupExpiredTokens();
+        } else {
+            $this->logger->error('Failed to update password during reset', [
+                'user_id' => $user['id'],
+                'email' => $user['email'],
+                'token_id' => $tokenId,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+        }
+
+        return $success;
+    }
+
+    /**
+     * Clean up expired tokens
+     *
+     * This method can be called from anywhere to clean up expired tokens.
+     * It's automatically called during:
+     * - Creating new password reset requests
+     * - Validating tokens
+     * - Successful password resets
+     */
+    public function cleanupExpiredTokens(): void
+    {
+        $deleted = $this->tokenRepository->deleteExpired();
+        if ($deleted > 0) {
+            $this->logger->debug('Cleaned up expired password reset tokens', [
+                'count' => $deleted,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+        }
+    }
+}
