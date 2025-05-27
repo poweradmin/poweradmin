@@ -26,7 +26,7 @@ class DnsRecordTest extends TestCase
                 if ($group === 'database' && $key === 'type') {
                     return 'mysql'; // Mock database type for tests
                 }
-                if ($group === 'database' && $key === 'pdns_name') {
+                if ($group === 'database' && $key === 'pdns_db_name') {
                     return 'pdns'; // Mock PowerDNS database name
                 }
                 return null;

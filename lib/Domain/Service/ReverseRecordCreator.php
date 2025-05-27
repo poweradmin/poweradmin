@@ -109,7 +109,7 @@ class ReverseRecordCreator
             return false;
         }
 
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         // Look for a PTR record pointing to this name
@@ -199,7 +199,7 @@ class ReverseRecordCreator
      */
     private function ptrRecordExists(int $zone_id, string $name, string $content): bool
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "SELECT COUNT(*) FROM $records_table 

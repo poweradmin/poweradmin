@@ -15,7 +15,7 @@ $config = ConfigurationManager::getInstance();
 $config->initialize();
 
 $db_type = $config->get('database', 'type');
-$pdns_db_name = $config->get('database', 'pdns_name');
+$pdns_db_name = $config->get('database', 'pdns_db_name');
 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
 $credentials = [

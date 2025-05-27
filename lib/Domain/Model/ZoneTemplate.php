@@ -686,7 +686,7 @@ class ZoneTemplate
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
@@ -738,7 +738,7 @@ class ZoneTemplate
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
@@ -856,7 +856,7 @@ class ZoneTemplate
         }
 
         try {
-            $pdns_db_name = $this->config->get('database', 'pdns_name');
+            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
             $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
             $placeholders = str_repeat('?,', count($zone_ids) - 1) . '?';

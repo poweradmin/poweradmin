@@ -177,7 +177,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameUnique(string $name, int $rid): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         // Check if there are any records with this name
@@ -209,7 +209,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameName(string $name): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "SELECT id FROM $records_table WHERE content = ? AND (type = ? OR type = ?)";
@@ -251,7 +251,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     public function validateCnameExistence(string $name, int $rid): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         if ($rid > 0) {

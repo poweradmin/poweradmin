@@ -59,7 +59,7 @@ class ZoneCountService
      */
     public function countZones(string $perm, string $letterstart = 'all', string $zone_type = 'forward'): int
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         $tables = $domains_table;

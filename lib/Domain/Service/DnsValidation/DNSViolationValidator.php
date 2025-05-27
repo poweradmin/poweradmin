@@ -123,7 +123,7 @@ class DNSViolationValidator
      */
     private function checkDuplicateCNAME(int $recordId, int $zoneId, string $name): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         // Using native PDO parameter binding for security
@@ -170,7 +170,7 @@ class DNSViolationValidator
      */
     private function checkCNAMEConflictsWithOtherTypes(int $recordId, int $zoneId, string $name): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         if ($recordId > 0) {
@@ -218,7 +218,7 @@ class DNSViolationValidator
      */
     private function validateConflictsWithCNAME(int $recordId, int $zoneId, string $name): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         if ($recordId > 0) {

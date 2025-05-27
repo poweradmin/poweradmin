@@ -27,7 +27,7 @@ class ZoneCountTest extends TestCase
         $this->configMock->expects($this->atLeastOnce())
             ->method('get')
             ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_name') {
+                if ($group === 'database' && $key === 'pdns_db_name') {
                     return null; // No prefix for tables
                 }
                 if ($group === 'database' && $key === 'type') {
@@ -55,7 +55,7 @@ class ZoneCountTest extends TestCase
         $this->configMock->expects($this->atLeastOnce())
             ->method('get')
             ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_name') {
+                if ($group === 'database' && $key === 'pdns_db_name') {
                     return null; // No prefix for tables
                 }
                 if ($group === 'database' && $key === 'type') {
@@ -83,7 +83,7 @@ class ZoneCountTest extends TestCase
         $this->configMock->expects($this->atLeastOnce())
             ->method('get')
             ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_name') {
+                if ($group === 'database' && $key === 'pdns_db_name') {
                     return null; // No prefix for tables
                 }
                 if ($group === 'database' && $key === 'type') {
@@ -114,7 +114,7 @@ class ZoneCountTest extends TestCase
         $this->configMock->expects($this->atLeastOnce())
             ->method('get')
             ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_name') {
+                if ($group === 'database' && $key === 'pdns_db_name') {
                     return null; // No prefix for tables
                 }
                 if ($group === 'database' && $key === 'type') {
@@ -148,7 +148,7 @@ class ZoneCountTest extends TestCase
         $this->configMock->expects($this->atLeastOnce())
             ->method('get')
             ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_name') {
+                if ($group === 'database' && $key === 'pdns_db_name') {
                     return null; // No prefix for tables
                 }
                 if ($group === 'database' && $key === 'type') {
@@ -179,7 +179,7 @@ class ZoneCountTest extends TestCase
         $this->configMock->expects($this->atLeastOnce())
             ->method('get')
             ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_name') {
+                if ($group === 'database' && $key === 'pdns_db_name') {
                     return null; // No prefix for tables
                 }
                 if ($group === 'database' && $key === 'type') {
@@ -207,7 +207,7 @@ class ZoneCountTest extends TestCase
         $this->configMock->expects($this->atLeastOnce())
             ->method('get')
             ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_name') {
+                if ($group === 'database' && $key === 'pdns_db_name') {
                     return 'pdns'; // Add prefix for tables
                 }
                 if ($group === 'database' && $key === 'type') {

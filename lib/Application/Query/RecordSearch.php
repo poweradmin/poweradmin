@@ -100,7 +100,7 @@ class RecordSearch extends BaseSearch
     ): array {
         $offset = ($page - 1) * $iface_rowamount;
 
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
 
@@ -203,7 +203,7 @@ class RecordSearch extends BaseSearch
      */
     public function getFoundRecords(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records): int
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
         $groupByClause = $iface_search_group_records ? "GROUP BY $records_table.name, $records_table.content" : '';

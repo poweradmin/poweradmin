@@ -213,7 +213,7 @@ class ConfigurationManagerTest extends TestCase
         $this->assertEquals('testuser', $newConfig['database']['user']);
         $this->assertEquals('testpass', $newConfig['database']['password']);
         $this->assertEquals('testdb', $newConfig['database']['name']);
-        $this->assertEquals('pdnsdb', $newConfig['database']['pdns_name']);
+        $this->assertEquals('pdnsdb', $newConfig['database']['pdns_db_name']);
 
         $this->assertEquals('testsecret', $newConfig['security']['session_key']);
         $this->assertEquals('bcrypt', $newConfig['security']['password_encryption']);

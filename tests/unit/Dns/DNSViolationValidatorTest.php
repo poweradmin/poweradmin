@@ -52,7 +52,7 @@ class DNSViolationValidatorTest extends TestCase
     {
         // Mock configuration
         $this->configMock->method('get')
-            ->with('database', 'pdns_name')
+            ->with('database', 'pdns_db_name')
             ->willReturn('');
 
         // Configure statement mock to return no conflicts
@@ -70,7 +70,7 @@ class DNSViolationValidatorTest extends TestCase
     {
         // Mock configuration
         $this->configMock->method('get')
-            ->with('database', 'pdns_name')
+            ->with('database', 'pdns_db_name')
             ->willReturn('');
 
         // Configure statement mock to return no conflicts for both queries
@@ -88,7 +88,7 @@ class DNSViolationValidatorTest extends TestCase
     {
         // Mock configuration
         $this->configMock->method('get')
-            ->with('database', 'pdns_name')
+            ->with('database', 'pdns_db_name')
             ->willReturn('');
 
         // Configure statement mock to return a duplicate on first call (count of CNAME records)
@@ -107,7 +107,7 @@ class DNSViolationValidatorTest extends TestCase
     {
         // Mock configuration
         $this->configMock->method('get')
-            ->with('database', 'pdns_name')
+            ->with('database', 'pdns_db_name')
             ->willReturn('');
 
         // First call should return false (no duplicate CNAMEs), second call should return 'A' (conflicting record type)
@@ -127,7 +127,7 @@ class DNSViolationValidatorTest extends TestCase
     {
         // Mock configuration
         $this->configMock->method('get')
-            ->with('database', 'pdns_name')
+            ->with('database', 'pdns_db_name')
             ->willReturn('');
 
         // Configure statement mock to return an existing CNAME record ID

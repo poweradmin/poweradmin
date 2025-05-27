@@ -47,7 +47,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $this->db = $db;
         $this->config = $config;
         $this->db_type = $config->get('database', 'type');
-        $this->pdns_db_name = $config->get('database', 'pdns_name');
+        $this->pdns_db_name = $config->get('database', 'pdns_db_name');
         $this->naturalSorting = new NaturalSorting();
         $this->reverseDomainNaturalSorting = new ReverseDomainNaturalSorting();
         $this->reverseZoneSorting = new ReverseZoneSorting();

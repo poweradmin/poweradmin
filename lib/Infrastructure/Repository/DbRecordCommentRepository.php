@@ -35,7 +35,7 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
     public function __construct(PDO $connection, ConfigurationManager $config)
     {
         $this->connection = $connection;
-        $pdns_db_name = $config->get('database', 'pdns_name');
+        $pdns_db_name = $config->get('database', 'pdns_db_name');
         $this->comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
     }
 
