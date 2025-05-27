@@ -84,7 +84,9 @@
                             </a>
                             {{ zone_sort_by == 'owner' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
+                        {% if iface_zonelist_fullname %}
                         <th>{% trans %}Full name{% endtrans %}</th>
+                        {% endif %}
 
                         {% if iface_zonelist_serial %}
                         <th>{% trans %}Serial{% endtrans %}</th>
@@ -128,11 +130,13 @@
                             {{ owner }}<br>
                             {% endfor %}
                         </td>
+                        {% if iface_zonelist_fullname %}
                         <td>
                             {% for full_name in zone['full_names'] %}
                             {{ full_name }}<br>
                             {% endfor %}
                         </td>
+                        {% endif %}
 
                         {% if iface_zonelist_serial %}
                         <td>{{ zone["serial"] }}</td>
@@ -171,12 +175,10 @@
                                 {% endif %}
                                 <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit&id={{ zone['id'] }}" data-testid="edit-zone-{{ zone['id'] }}">
                                     <i class="bi bi-pencil-square text-primary"></i>
-                                    <span class="d-none d-md-inline">{% trans %}Edit{% endtrans %}</span>
                                 </a>
                                 {% if perm_edit == "all" or (perm_edit == "own" and user_is_zone_owner) %}
                                 <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_domain&id={{ zone['id'] }}" data-testid="delete-zone-{{ zone['id'] }}">
                                     <i class="bi bi-trash text-danger"></i>
-                                    <span class="d-none d-md-inline">{% trans %}Delete{% endtrans %}</span>
                                 </a>
                                 {% endif %}
                             </div>

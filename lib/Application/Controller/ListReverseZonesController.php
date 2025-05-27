@@ -53,13 +53,9 @@ class ListReverseZonesController extends BaseController
     private UserContextService $userContextService;
     private ZoneSortingService $zoneSortingService;
 
-    public function run(): void
+    public function __construct(array $request)
     {
-        $perm_view_zone_own = UserManager::verifyPermission($this->db, 'zone_content_view_own');
-        $perm_view_zone_others = UserManager::verifyPermission($this->db, 'zone_content_view_others');
-
-        $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
-        $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
+        parent::__construct($request);
 
         // Initialize repository and services
         $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
@@ -67,6 +63,15 @@ class ListReverseZonesController extends BaseController
         $this->forwardZoneAssociationService = new ForwardZoneAssociationService($zoneRepository);
         $this->userContextService = new UserContextService();
         $this->zoneSortingService = new ZoneSortingService();
+    }
+
+    public function run(): void
+    {
+        $perm_view_zone_own = UserManager::verifyPermission($this->db, 'zone_content_view_own');
+        $perm_view_zone_others = UserManager::verifyPermission($this->db, 'zone_content_view_others');
+
+        $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
+        $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
 
         $this->listReverseZones();
     }
@@ -76,6 +81,7 @@ class ListReverseZonesController extends BaseController
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
         $iface_zonelist_serial = $this->config->get('interface', 'display_serial_in_zone_list', false);
         $iface_zonelist_template = $this->config->get('interface', 'display_template_in_zone_list', false);
+        $iface_zonelist_fullname = $this->config->get('interface', 'display_fullname_in_zone_list', false);
         // Get default rows per page from config
         $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
 
@@ -164,6 +170,7 @@ class ListReverseZonesController extends BaseController
             'zone_sort_direction' => $zone_sort_direction,
             'iface_zonelist_serial' => $iface_zonelist_serial,
             'iface_zonelist_template' => $iface_zonelist_template,
+            'iface_zonelist_fullname' => $iface_zonelist_fullname,
             'pdnssec_use' => $pdnssec_use,
             'pagination' => $this->createAndPresentPagination($count_all_reverse_zones, $iface_rowamount),
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),
