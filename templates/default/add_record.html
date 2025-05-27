@@ -72,7 +72,7 @@
                                 <input class="form-control form-control-sm name-field" type="text" name="records[0][name]" value="{{ name }}">
                             </td>
                             <td>
-                                <select class="form-select form-select-sm record-type-select" name="records[0][type]" onchange="updateContentInput(this, this.closest('tr').querySelector('.content-container'), this.closest('tr').querySelector('.record-content')); updatePtrCheckboxVisibility(this);">
+                                <select class="form-select form-select-sm record-type-select" name="records[0][type]" onchange="updateContentInput(this, this.closest('tr').querySelector('.content-container'), this.closest('tr').querySelector('.record-content')); updatePtrCheckboxVisibility(this); updatePriorityFieldState(this, this.closest('tr').querySelector('input[name*=\'[prio]\']'));">
                                     {% for record_type in types %}
                                     {% set add = '' %}
                                     {% if type == record_type %}
@@ -151,10 +151,40 @@
 </div>
 
 <script>
+    // Record types that support priority field
+    const RECORD_TYPES_WITH_PRIORITY = ['MX', 'SRV', 'KX', 'NAPTR'];
+    
+    // Function to check if a record type supports priority
+    function supportsPriority(recordType) {
+        return RECORD_TYPES_WITH_PRIORITY.includes(recordType);
+    }
+    
+    // Function to update priority field state based on record type
+    function updatePriorityFieldState(selectElement, priorityInput) {
+        const recordType = selectElement.value;
+        
+        if (priorityInput) {
+            if (supportsPriority(recordType)) {
+                priorityInput.removeAttribute('readonly');
+                priorityInput.classList.remove('bg-light');
+                priorityInput.setAttribute('tabindex', '0');
+            } else {
+                priorityInput.setAttribute('readonly', 'readonly');
+                priorityInput.classList.add('bg-light');
+                priorityInput.value = '0';
+                priorityInput.setAttribute('tabindex', '-1');
+            }
+        }
+    }
+
     document.addEventListener('DOMContentLoaded', function() {
         updateDeleteButtons();
         document.querySelectorAll('.record-type-select').forEach(function(select) {
             updatePtrCheckboxVisibility(select);
+            // Initialize priority field state for each row
+            const row = select.closest('tr');
+            const priorityInput = row.querySelector('input[name*="[prio]"]');
+            updatePriorityFieldState(select, priorityInput);
         });
     });
 
@@ -190,6 +220,9 @@
         const typeSelect = newRow.querySelector('.record-type-select');
         if (typeSelect) {
             updatePtrCheckboxVisibility(typeSelect);
+            // Initialize priority field state for the new row
+            const priorityInput = newRow.querySelector('input[name*="[prio]"]');
+            updatePriorityFieldState(typeSelect, priorityInput);
         }
         
         // Setup CNAME root warning for the new row
