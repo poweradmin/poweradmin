@@ -165,13 +165,17 @@ class RecordRepository implements RecordRepositoryInterface
         $pdns_db_name = $this->config->get('database', 'pdns_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
+        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         if ($sortby == 'name') {
             $sortby = "$records_table.name";
         }
         $sql_sortby = $sortby == "$records_table.name" ? SortHelper::getRecordSortOrder($records_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
         if ($sortby == "$records_table.name" and $sortDirection == 'ASC') {
-            $sql_sortby = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, " . $sql_sortby;
+            // Order: SOA first, then NS, then apex records (@), then everything else
+            $sql_sortby = "$records_table.type = 'SOA' DESC, $records_table.type = 'NS' DESC, " .
+                         "$records_table.name = (SELECT name FROM $domains_table WHERE id = :domain_id_apex) DESC, " .
+                         $sql_sortby;
         }
 
         $query = "SELECT $records_table.*,
@@ -196,7 +200,11 @@ class RecordRepository implements RecordRepositoryInterface
         }
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute([':domain_id' => $id]);
+        $params = [':domain_id' => $id];
+        if ($sortby == "$records_table.name" and $sortDirection == 'ASC') {
+            $params[':domain_id_apex'] = $id;
+        }
+        $stmt->execute($params);
         $records = $stmt;
 
         if ($records) {
