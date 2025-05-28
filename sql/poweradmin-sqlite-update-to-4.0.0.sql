@@ -84,7 +84,7 @@ CREATE TABLE zone_template_sync (
     needs_sync INTEGER NOT NULL DEFAULT 0,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (zone_id) REFERENCES domains(id) ON DELETE CASCADE,
+    FOREIGN KEY (zone_id) REFERENCES zones(id) ON DELETE CASCADE,
     FOREIGN KEY (zone_templ_id) REFERENCES zone_templ(id) ON DELETE CASCADE
 );
 
@@ -94,9 +94,8 @@ CREATE INDEX idx_needs_sync ON zone_template_sync(needs_sync);
 
 -- Initialize sync records for existing zone-template relationships
 INSERT OR IGNORE INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
-SELECT d.id, z.zone_templ_id, 0, datetime('now')
-FROM domains d
-INNER JOIN zones z ON d.id = z.domain_id
+SELECT z.id, z.zone_templ_id, 0, datetime('now')
+FROM zones z
 WHERE z.zone_templ_id > 0;
 
 -- Add password_reset_tokens table for password reset functionality

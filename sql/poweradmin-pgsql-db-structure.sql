@@ -233,7 +233,7 @@ CREATE TABLE "zone_template_sync" (
     "created_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT "zone_template_sync_pkey" PRIMARY KEY ("id"),
-    CONSTRAINT "fk_zone_template_sync_zone" FOREIGN KEY (zone_id) REFERENCES domains(id) ON DELETE CASCADE,
+    CONSTRAINT "fk_zone_template_sync_zone" FOREIGN KEY (zone_id) REFERENCES zones(id) ON DELETE CASCADE,
     CONSTRAINT "fk_zone_template_sync_templ" FOREIGN KEY (zone_templ_id) REFERENCES zone_templ(id) ON DELETE CASCADE
 ) WITH (oids = false);
 

@@ -86,7 +86,7 @@ CREATE TABLE zone_template_sync (
     needs_sync BOOLEAN NOT NULL DEFAULT FALSE,
     created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    CONSTRAINT fk_zone_template_sync_zone FOREIGN KEY (zone_id) REFERENCES domains(id) ON DELETE CASCADE,
+    CONSTRAINT fk_zone_template_sync_zone FOREIGN KEY (zone_id) REFERENCES zones(id) ON DELETE CASCADE,
     CONSTRAINT fk_zone_template_sync_templ FOREIGN KEY (zone_templ_id) REFERENCES zone_templ(id) ON DELETE CASCADE
 );
 
@@ -96,9 +96,8 @@ CREATE INDEX idx_needs_sync ON zone_template_sync(needs_sync);
 
 -- Initialize sync records for existing zone-template relationships
 INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
-SELECT d.id, z.zone_templ_id, FALSE, NOW()
-FROM domains d
-INNER JOIN zones z ON d.id = z.domain_id
+SELECT z.id, z.zone_templ_id, FALSE, NOW()
+FROM zones z
 WHERE z.zone_templ_id > 0
 ON CONFLICT (zone_id, zone_templ_id) DO NOTHING;
 

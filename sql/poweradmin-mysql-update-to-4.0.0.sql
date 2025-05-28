@@ -91,15 +91,14 @@ CREATE TABLE `zone_template_sync` (
     UNIQUE KEY `idx_zone_template_unique` (`zone_id`, `zone_templ_id`),
     KEY `idx_zone_templ_id` (`zone_templ_id`),
     KEY `idx_needs_sync` (`needs_sync`),
-    CONSTRAINT `fk_zone_template_sync_zone` FOREIGN KEY (`zone_id`) REFERENCES `domains` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_zone_template_sync_zone` FOREIGN KEY (`zone_id`) REFERENCES `zones` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_zone_template_sync_templ` FOREIGN KEY (`zone_templ_id`) REFERENCES `zone_templ` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- Initialize sync records for existing zone-template relationships
 INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
-SELECT d.id, z.zone_templ_id, 0, NOW()
-FROM domains d
-INNER JOIN zones z ON d.id = z.domain_id
+SELECT z.id, z.zone_templ_id, 0, NOW()
+FROM zones z
 WHERE z.zone_templ_id > 0
 ON DUPLICATE KEY UPDATE zone_id = zone_id;
 

@@ -992,7 +992,7 @@ class DatabaseStructureHelper
                 ),
                 'foreign_keys' => array(
                     'fk_zone_template_sync_zone' => array(
-                        'table' => 'domains',
+                        'table' => 'zones',
                         'fields' => array('zone_id' => 'id'),
                         'ondelete' => 'CASCADE'
                     ),

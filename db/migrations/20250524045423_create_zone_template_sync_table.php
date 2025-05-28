@@ -23,7 +23,7 @@ final class CreateZoneTemplateSyncTable extends AbstractMigration
               ->addIndex(['zone_id', 'zone_templ_id'], ['unique' => true, 'name' => 'idx_zone_template_unique'])
               ->addIndex(['zone_templ_id'], ['name' => 'idx_zone_templ_id'])
               ->addIndex(['needs_sync'], ['name' => 'idx_needs_sync'])
-              ->addForeignKey('zone_id', 'domains', 'id', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
+              ->addForeignKey('zone_id', 'zones', 'id', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
               ->addForeignKey('zone_templ_id', 'zone_templ', 'id', ['delete' => 'CASCADE', 'update' => 'CASCADE'])
               ->create();
     }

@@ -217,7 +217,7 @@ CREATE TABLE `zone_template_sync` (
     UNIQUE KEY `idx_zone_template_unique` (`zone_id`, `zone_templ_id`),
     KEY `idx_zone_templ_id` (`zone_templ_id`),
     KEY `idx_needs_sync` (`needs_sync`),
-    CONSTRAINT `fk_zone_template_sync_zone` FOREIGN KEY (`zone_id`) REFERENCES `domains` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_zone_template_sync_zone` FOREIGN KEY (`zone_id`) REFERENCES `zones` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_zone_template_sync_templ` FOREIGN KEY (`zone_templ_id`) REFERENCES `zone_templ` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
