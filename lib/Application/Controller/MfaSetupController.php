@@ -22,33 +22,28 @@
 
 namespace Poweradmin\Application\Controller;
 
-use Poweradmin\Application\Service\CsrfTokenService;
+use Exception;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Model\UserMfa;
-use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
-use Poweradmin\Domain\Service\SessionService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
-use Poweradmin\Infrastructure\Service\RedirectService;
+use RuntimeException;
 
 class MfaSetupController extends BaseController
 {
     private MfaService $mfaService;
-    private CsrfTokenService $csrfTokenService;
+    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
-        parent::__construct($request, true);
+        parent::__construct($request);
 
         $userMfaRepository = new DbUserMfaRepository($this->db);
         $mailService = new MailService($this->config);
         $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailService);
-
-        $this->csrfTokenService = new CsrfTokenService();
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -101,7 +96,7 @@ class MfaSetupController extends BaseController
 
     private function handleAppSetup(): void
     {
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Check if MFA is already enabled - use getOrCreate since we're setting up
         $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
@@ -125,7 +120,7 @@ class MfaSetupController extends BaseController
             $userMfa->setType(UserMfa::TYPE_APP);
             $this->mfaService->saveUserMfa($userMfa);
 
-            error_log("[MfaSetupController] Generated new secret for app-based MFA for user {$_SESSION['userid']}");
+            error_log("[MfaSetupController] Generated new secret for app-based MFA for user $userId");
         }
 
         // Display verification page
@@ -134,7 +129,7 @@ class MfaSetupController extends BaseController
 
     private function handleAppVerification(): void
     {
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
         $code = $_POST['verification_code'] ?? '';
 
         if (empty($code)) {
@@ -149,7 +144,7 @@ class MfaSetupController extends BaseController
         // Verify the code
         if ($this->mfaService->verifyCode($userId, $code)) {
             // Enable MFA
-            $this->mfaService->enableMfa($userId, UserMfa::TYPE_APP);
+            $this->mfaService->enableMfa($userId);
 
             // Generate recovery codes if they don't exist
             $recoveryCodes = $userMfa->getRecoveryCodesAsArray();
@@ -159,19 +154,17 @@ class MfaSetupController extends BaseController
 
             $this->addSystemMessage('success', _('MFA has been enabled successfully.'));
             $this->displayRecoveryCodes($recoveryCodes);
-            return;
         } else {
             $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
             $userMfa = $this->mfaService->getUserMfa($userId);
             $this->displayAppVerification($userMfa->getSecret());
-            return;
         }
     }
 
     private function handleEmailSetup(): void
     {
-        $userId = $_SESSION['userid'] ?? 0;
-        $email = $_SESSION['email'] ?? '';
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+        $email = $this->userContextService->getSessionData('email') ?? '';
 
         // Check if user has an email address set
         if (empty($email)) {
@@ -219,16 +212,16 @@ class MfaSetupController extends BaseController
 
         try {
             // Send verification code via email
-            $code = $this->mfaService->sendEmailVerificationCode($userId, $email);
+            $this->mfaService->sendEmailVerificationCode($userId, $email);
 
             // Display email verification form
             $this->displayEmailVerification($email);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             // Handle mail configuration issues
             $this->addSystemMessage('error', $e->getMessage());
             $this->displayMfaSetup();
             return;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Handle other errors
             error_log("[MfaSetupController] Email verification error: " . $e->getMessage());
             $this->addSystemMessage('error', _('Failed to send verification code. Please try again later or use app-based authentication.'));
@@ -246,7 +239,7 @@ class MfaSetupController extends BaseController
 
     private function handleEmailVerification(): void
     {
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
         $code = $_POST['verification_code'] ?? '';
 
         if (empty($code)) {
@@ -256,7 +249,7 @@ class MfaSetupController extends BaseController
         }
 
         // Get user MFA record - use getOrCreate since we're in verification
-        $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
+        $this->mfaService->getOrCreateUserMfa($userId);
 
         // Use the MfaService to verify the code instead of direct comparison
         $isValid = $this->mfaService->verifyCode($userId, $code);
@@ -272,13 +265,13 @@ class MfaSetupController extends BaseController
             $this->displayRecoveryCodes($recoveryCodes);
         } else {
             $this->addSystemMessage('error', _('Invalid verification code. Please try again.'));
-            $this->displayEmailVerification($_SESSION['email'] ?? '');
+            $this->displayEmailVerification($this->userContextService->getSessionData('email') ?? '');
         }
     }
 
     private function handleMfaDisable(): void
     {
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Check if MFA exists before trying to disable it
         $userMfa = $this->mfaService->getUserMfa($userId);
@@ -301,7 +294,7 @@ class MfaSetupController extends BaseController
      */
     private function handleRegenerateRecoveryCodes(): void
     {
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Check if MFA is enabled for this user
         $userMfa = $this->mfaService->getUserMfa($userId);
@@ -321,7 +314,7 @@ class MfaSetupController extends BaseController
 
     private function displayMfaSetup(): void
     {
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
         $userMfa = $this->mfaService->getUserMfa($userId);
 
         // Default values if no MFA record exists yet
@@ -341,7 +334,7 @@ class MfaSetupController extends BaseController
         $this->render('mfa_setup.html', [
             'mfa_enabled' => $mfaEnabled,
             'mfa_type' => $mfaType,
-            'email' => $_SESSION['email'] ?? '',
+            'email' => $this->userContextService->getSessionData('email') ?? '',
             'mail_enabled' => $mailEnabled && $emailMfaEnabled
         ]);
     }
@@ -349,20 +342,21 @@ class MfaSetupController extends BaseController
     private function displayAppVerification(string $secret): void
     {
         // Get the user's email or username for the authenticator app
-        $email = $_SESSION['email'] ?? '';
+        $email = $this->userContextService->getSessionData('email') ?? '';
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
         // Make sure we have a valid email for the QR code
         if (empty($email)) {
-            error_log("[MfaSetupController] Warning: Empty email when generating QR code for user {$_SESSION['userid']}");
+            error_log("[MfaSetupController] Warning: Empty email when generating QR code for user $userId");
             // Use a generic username if email is missing
-            $email = "user{$_SESSION['userid']}";
+            $email = "user$userId";
         }
 
         // Generate the QR code with proper email and secret
         $qrCode = $this->mfaService->generateQrCodeSvg($email, $secret);
 
         // Log QR code generation for debugging
-        error_log("[MfaSetupController] Generated QR code for user ID: {$_SESSION['userid']}");
+        error_log("[MfaSetupController] Generated QR code for user ID: $userId");
 
         // Render the template with all necessary data
         $this->render('mfa_verify_app.html', [
@@ -374,7 +368,7 @@ class MfaSetupController extends BaseController
 
     private function displayRecoveryCodes(array $recoveryCodes): void
     {
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
         $userMfa = $this->mfaService->getOrCreateUserMfa($userId);
 
         $this->render('mfa_recovery_codes.html', [

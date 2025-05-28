@@ -22,24 +22,21 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Exception;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\SessionEntity;
-use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
-use Poweradmin\Domain\Service\SessionService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
-use Poweradmin\Infrastructure\Service\RedirectService;
+use RuntimeException;
 
 class MfaVerifyController extends BaseController
 {
     private MfaService $mfaService;
     private CsrfTokenService $csrfTokenService;
-    private AuthenticationService $authService;
+    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
@@ -50,18 +47,16 @@ class MfaVerifyController extends BaseController
         $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailService);
 
         $this->csrfTokenService = new CsrfTokenService();
-        $sessionService = new SessionService();
-        $redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $redirectService);
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
     {
         // Check if MFA is globally enabled or this is a logout request
         if (!$this->config->get('security', 'mfa.enabled', false) || isset($_GET['logout'])) {
-            // If MFA is disabled or this is a logout request but we have MFA session flags, clear them
-            if (isset($_SESSION['mfa_required'])) {
-                unset($_SESSION['mfa_required']);
+            // If MFA is disabled or this is a logout request, but we have MFA session flags, clear them
+            if ($this->userContextService->hasSessionData('mfa_required')) {
+                $this->userContextService->unsetSessionData('mfa_required');
             }
 
             // If this is a logout request, do a proper logout
@@ -71,7 +66,7 @@ class MfaVerifyController extends BaseController
                 header("Location: index.php?page=login");
             } else {
                 // Otherwise just mark as authenticated
-                $_SESSION['authenticated'] = true;
+                $this->userContextService->setSessionData('authenticated', true);
                 session_regenerate_id(true);
                 header("Location: index.php");
             }
@@ -79,7 +74,7 @@ class MfaVerifyController extends BaseController
         }
 
         // Check if we have the necessary session data
-        if (!isset($_SESSION['userlogin']) || !isset($_SESSION['userid']) || !isset($_SESSION['mfa_required'])) {
+        if (!$this->userContextService->getLoggedInUsername() || !$this->userContextService->getLoggedInUserId() || !$this->userContextService->hasSessionData('mfa_required')) {
             header("Location: index.php");
             exit;
         }
@@ -91,7 +86,6 @@ class MfaVerifyController extends BaseController
             header("Location: index.php");
             exit;
         }
-
 
         // Make verification more robust by just checking for the code
         if (isset($_POST['mfa_code'])) {
@@ -109,7 +103,7 @@ class MfaVerifyController extends BaseController
         error_log("[MfaVerifyController] Verification attempt started");
 
         $code = $_POST['mfa_code'] ?? '';
-        $userId = $_SESSION['userid'] ?? 0;
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
         $mfaToken = $_POST['mfa_token'] ?? '';
 
         // Validate CSRF token for security
@@ -122,19 +116,17 @@ class MfaVerifyController extends BaseController
         // Get user MFA record
         try {
             $userMfa = $this->mfaService->getUserMfa($userId);
-            $storedSecret = $userMfa ? $userMfa->getSecret() : null;
 
             if (!$userMfa) {
                 error_log("[MfaVerifyController] No MFA record found for user ID: $userId");
                 $this->displayMfaForm(_('No MFA record found. Please contact administrator.'), 'danger');
                 return;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log("[MfaVerifyController] Error retrieving MFA data: " . $e->getMessage());
             $this->displayMfaForm(_('An error occurred. Please try again.'), 'danger');
             return;
         }
-
 
         // Use the MFA service for verification (handles both regular codes and recovery codes)
         error_log("[MfaVerifyController] Verifying code for user ID: $userId, type: {$userMfa->getType()}");
@@ -151,7 +143,7 @@ class MfaVerifyController extends BaseController
             // After successful verification, update the MFA secret for both app and email based auth
             try {
                 // Get the user's email from session if available (for email-based MFA)
-                $email = $_SESSION['email'] ?? null;
+                $email = $this->userContextService->getSessionData('email');
 
                 // Update the MFA secret only for email-based MFA (app-based MFA must keep the same secret)
                 $mfaType = $this->mfaService->getMfaType($userId);
@@ -162,7 +154,7 @@ class MfaVerifyController extends BaseController
                 } else {
                     error_log("[MfaVerifyController] Successfully verified app-based MFA for user ID: $userId");
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 error_log("[MfaVerifyController] Error updating MFA secret: " . $e->getMessage());
                 // Continue with authentication even if updating the secret fails
             }
@@ -198,13 +190,13 @@ class MfaVerifyController extends BaseController
 
     private function displayMfaForm(?string $message = null, ?string $type = null): void
     {
-        $userId = $_SESSION['userid'] ?? 0;
-        $username = $_SESSION['userlogin'] ?? '';
-        $email = $_SESSION['email'] ?? '';
+        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+        $username = $this->userContextService->getLoggedInUsername() ?? '';
+        $email = $this->userContextService->getSessionData('email') ?? '';
 
         // Generate a new CSRF token
         $mfaToken = $this->csrfTokenService->generateToken();
-        $_SESSION['mfa_token'] = $mfaToken;
+        $this->userContextService->setSessionData('mfa_token', $mfaToken);
 
         // Get MFA type
         $mfaType = $this->mfaService->getMfaType($userId) ?? 'app';
@@ -228,12 +220,12 @@ class MfaVerifyController extends BaseController
                         $type = 'info';
                         error_log("[MfaVerifyController] New email verification code sent for user ID: $userId");
                     }
-                } catch (\RuntimeException $e) {
+                } catch (RuntimeException $e) {
                     // Mail configuration error occurred
                     $message = $e->getMessage() . ' ' . _('Please use a recovery code instead.');
                     $type = 'warning';
                     error_log("[MfaVerifyController] Email verification code refresh failed: " . $e->getMessage());
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     // Other error occurred
                     $message = _('Could not send verification code to your email. Please use a recovery code instead.');
                     $type = 'warning';

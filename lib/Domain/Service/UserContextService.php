@@ -74,4 +74,9 @@ class UserContextService
     {
         $_SESSION[$key] = $value;
     }
+
+    public function unsetSessionData(string $key): void
+    {
+        unset($_SESSION[$key]);
+    }
 }
