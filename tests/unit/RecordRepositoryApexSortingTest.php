@@ -45,7 +45,7 @@ class RecordRepositoryApexSortingTest extends TestCase
         $this->config = $this->createMock(ConfigurationManager::class);
         $this->config->method('get')
             ->willReturnCallback(function ($section, $key, $default = null) {
-                if ($section === 'database' && $key === 'pdns_name') {
+                if ($section === 'database' && $key === 'pdns_db_name') {
                     return null; // No prefix
                 }
                 if ($section === 'database' && $key === 'type') {

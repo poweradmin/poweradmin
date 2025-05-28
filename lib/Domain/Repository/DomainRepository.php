@@ -67,7 +67,7 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function zoneIdExists(int $zid): int
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         $stmt = $this->db->prepare("SELECT COUNT(id) FROM $domains_table WHERE id = :id");
@@ -84,7 +84,7 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function getDomainNameById(int $id): ?string
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :id");
@@ -110,7 +110,7 @@ class DomainRepository implements DomainRepositoryInterface
             return null;
         }
 
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         $query = "SELECT id FROM $domains_table WHERE name = :name";
@@ -134,7 +134,7 @@ class DomainRepository implements DomainRepositoryInterface
             return null;
         }
 
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         $stmt = $this->db->prepare("SELECT id FROM $domains_table WHERE name = :name");
@@ -153,7 +153,7 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function getDomainType(int $id): string
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         $stmt = $this->db->prepare("SELECT type FROM $domains_table WHERE id = :id");
@@ -174,7 +174,7 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function getDomainSlaveMaster(int $id): ?string
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         $stmt = $this->db->prepare("SELECT master FROM $domains_table WHERE type = 'SLAVE' and id = :id");
@@ -191,7 +191,7 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function domainExists(string $domain): bool
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         if ($this->hostnameValidator->isValid($domain)) {
@@ -226,7 +226,7 @@ class DomainRepository implements DomainRepositoryInterface
         $iface_zonelist_serial = $this->config->get('interface', 'display_serial_in_zone_list');
         $iface_zonelist_template = $this->config->get('interface', 'display_template_in_zone_list');
 
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $cryptokeys_table = $pdns_db_name ? $pdns_db_name . '.cryptokeys' : 'cryptokeys';
@@ -350,7 +350,7 @@ class DomainRepository implements DomainRepositoryInterface
             $this->messageService->addSystemError(_("You do not have the permission to view this zone."));
             return [];
         } else {
-            $pdns_db_name = $this->config->get('database', 'pdns_name');
+            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
             $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
             $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
@@ -405,7 +405,7 @@ class DomainRepository implements DomainRepositoryInterface
         $match = 72; // the longest ip6.arpa has a length of 72
         $found_domain_id = -1;
 
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
 
         // get all reverse-zones

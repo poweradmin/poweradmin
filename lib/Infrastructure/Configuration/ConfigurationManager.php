@@ -164,7 +164,7 @@ class ConfigurationManager implements ConfigurationInterface
 
         // In the database section:
         if (isset($legacyConfig['pdns_db_name'])) {
-            $newConfig['database']['pdns_name'] = $legacyConfig['pdns_db_name'];
+            $newConfig['database']['pdns_db_name'] = $legacyConfig['pdns_db_name'];
         }
 
         // Database settings

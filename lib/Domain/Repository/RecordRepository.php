@@ -61,7 +61,7 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getZoneIdFromRecordId(int $rid): int
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $stmt = $this->db->prepare("SELECT domain_id FROM $records_table WHERE id = :id");
@@ -78,7 +78,7 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function countZoneRecords(int $zone_id): int
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $stmt = $this->db->prepare("SELECT COUNT(id) FROM $records_table WHERE domain_id = :zone_id AND type IS NOT NULL");
@@ -95,7 +95,7 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getRecordDetailsFromRecordId(int $rid): array
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $stmt = $this->db->prepare("SELECT id AS rid, domain_id AS zid, name, type, content, ttl, prio FROM $records_table WHERE id = :id");
@@ -113,7 +113,7 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getRecordFromId(int $id): ?array
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $stmt = $this->db->prepare("SELECT * FROM $records_table WHERE id = :id AND type IS NOT NULL");
@@ -162,7 +162,7 @@ class RecordRepository implements RecordRepositoryInterface
             return [];
         }
 
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
@@ -225,7 +225,7 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function recidToDomid(int $id): int
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $stmt = $this->db->prepare("SELECT domain_id FROM $records_table WHERE id = :id");
@@ -243,7 +243,7 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function recordNameExists(string $name): bool
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $stmt = $this->db->prepare("SELECT COUNT(id) FROM $records_table WHERE name = :name");
@@ -263,7 +263,7 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function hasSimilarRecords(int $domain_id, string $name, string $type, int $record_id): bool
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "SELECT COUNT(*) FROM $records_table
@@ -289,7 +289,7 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function recordExists(int $domain_id, string $name, string $type, string $content): bool
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table 
@@ -316,7 +316,7 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function hasPtrRecord(int $domain_id, string $name): bool
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM $records_table 
@@ -339,7 +339,7 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getSerialByZid(int $zid): string
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $stmt = $this->db->prepare("SELECT content FROM $records_table WHERE type = :type AND domain_id = :domain_id");
@@ -377,7 +377,7 @@ class RecordRepository implements RecordRepositoryInterface
         string $type_filter = '',
         string $content_filter = ''
     ): array {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
 
@@ -465,7 +465,7 @@ class RecordRepository implements RecordRepositoryInterface
         string $type_filter = '',
         string $content_filter = ''
     ): int {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         // Prepare query parameters
@@ -524,7 +524,7 @@ class RecordRepository implements RecordRepositoryInterface
      */
     public function getNewRecordId(int $domainId, string $name, string $type, string $content): ?int
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "SELECT id FROM $records_table
@@ -548,7 +548,7 @@ class RecordRepository implements RecordRepositoryInterface
 
     public function getRecordsByDomainId(int $domainId, ?string $recordType = null): array
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth
@@ -572,7 +572,7 @@ class RecordRepository implements RecordRepositoryInterface
 
     public function getRecordById(int $recordId): ?array
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth

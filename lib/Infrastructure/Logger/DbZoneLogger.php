@@ -56,7 +56,7 @@ class DbZoneLogger
 
     public function countLogsByDomain($domain)
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
 
         $stmt = $this->db->prepare("
@@ -95,7 +95,7 @@ class DbZoneLogger
             return array();
         }
 
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
 
         $stmt = $this->db->prepare("

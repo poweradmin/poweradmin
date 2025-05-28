@@ -157,7 +157,7 @@ class RecordManager implements RecordManagerInterface
 
         $this->db->beginTransaction();
 
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)";
@@ -254,7 +254,7 @@ class RecordManager implements RecordManagerInterface
                 $validatedTtl = $validatedData['ttl'];
                 $validatedPrio = $validatedData['prio'];
 
-                $pdns_db_name = $this->config->get('database', 'pdns_name');
+                $pdns_db_name = $this->config->get('database', 'pdns_db_name');
                 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
                 $stmt = $this->db->prepare("UPDATE $records_table
@@ -301,7 +301,7 @@ class RecordManager implements RecordManagerInterface
                 }
 
                 // Admins and regular zone owners can delete SOA records
-                $pdns_db_name = $this->config->get('database', 'pdns_name');
+                $pdns_db_name = $this->config->get('database', 'pdns_db_name');
                 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
                 $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = ?");
@@ -312,7 +312,7 @@ class RecordManager implements RecordManagerInterface
                 $this->messageService->addSystemError(_('You do not have the permission to delete NS records.'));
                 return false;
             } else {
-                $pdns_db_name = $this->config->get('database', 'pdns_name');
+                $pdns_db_name = $this->config->get('database', 'pdns_db_name');
                 $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
                 $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = ?");

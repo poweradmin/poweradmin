@@ -58,7 +58,7 @@ class BaseDnsTest extends TestCase
                 }
 
                 // For database tests
-                if ($group === 'database' && $key === 'pdns_name') {
+                if ($group === 'database' && $key === 'pdns_db_name') {
                     return 'pdns';  // Mock database name for tests
                 }
 

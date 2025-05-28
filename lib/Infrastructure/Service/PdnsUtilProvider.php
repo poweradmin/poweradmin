@@ -186,7 +186,7 @@ class PdnsUtilProvider implements DnssecProvider
     public function isZoneSecured(string $zoneName, $config): bool
     {
         // Use our own configuration instance instead of the passed one
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $cryptokeys_table = $pdns_db_name ? $pdns_db_name . '.cryptokeys' : 'cryptokeys';
         $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
         $domainmetadata_table = $pdns_db_name ? $pdns_db_name . '.domainmetadata' : 'domainmetadata';

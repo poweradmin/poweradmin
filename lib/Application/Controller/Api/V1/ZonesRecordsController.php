@@ -632,7 +632,7 @@ class ZonesRecordsController extends PublicApiController
     {
         try {
             $config = $this->getConfig();
-            $pdns_db_name = $config->get('database', 'pdns_name');
+            $pdns_db_name = $config->get('database', 'pdns_db_name');
             $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
             // Basic record validation
@@ -686,7 +686,7 @@ class ZonesRecordsController extends PublicApiController
     {
         try {
             $config = $this->getConfig();
-            $pdns_db_name = $config->get('database', 'pdns_name');
+            $pdns_db_name = $config->get('database', 'pdns_db_name');
             $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
             // Get current SOA record

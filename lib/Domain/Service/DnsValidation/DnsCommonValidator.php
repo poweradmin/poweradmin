@@ -89,7 +89,7 @@ class DnsCommonValidator
      */
     public function validateNonAliasTarget(string $target): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_name');
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
 
         $stmt = $this->db->prepare("SELECT id FROM $records_table
