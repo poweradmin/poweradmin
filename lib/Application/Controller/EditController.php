@@ -172,34 +172,40 @@ class EditController extends BaseController
             return;
         }
 
-        // Process record addition form directly in the edit page
-        if ($this->isPost() && isset($_POST['commit']) && isset($_POST['name']) && isset($_POST['content']) && isset($_POST['type'])) {
+        // Process form submissions
+        if ($this->isPost() && isset($_POST['commit'])) {
             $this->validateCsrfToken();
 
-            // Store the original form data before processing (in case validation fails)
-            $_SESSION['add_record_last_data'] = [
-                'name' => $_POST['name'] ?? '',
-                'content' => $_POST['content'] ?? '',
-                'type' => $_POST['type'] ?? '',
-                'prio' => isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0,
-                'ttl' => isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config->get('dns', 'ttl', 3600),
-                'comment' => $_POST['comment'] ?? ''
-            ];
+            // Check if this is a record addition (has name, content, type fields)
+            if (isset($_POST['name']) && isset($_POST['content']) && isset($_POST['type'])) {
+                // Store the original form data before processing (in case validation fails)
+                $_SESSION['add_record_last_data'] = [
+                    'name' => $_POST['name'] ?? '',
+                    'content' => $_POST['content'] ?? '',
+                    'type' => $_POST['type'] ?? '',
+                    'prio' => isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0,
+                    'ttl' => isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config->get('dns', 'ttl', 3600),
+                    'comment' => $_POST['comment'] ?? ''
+                ];
 
-            // Handle record addition directly in edit controller (no redirect)
-            if (!isset($_POST['record'])) { // Check if it's an add record operation (not a zone update)
-                $result = $this->addRecord($zone_id);
+                // Handle record addition directly in edit controller (no redirect)
+                if (!isset($_POST['record'])) { // Check if it's an add record operation (not a zone update)
+                    $result = $this->addRecord($zone_id);
 
-                // If the record was added successfully, clear the stored data
-                if ($result) {
-                    unset($_SESSION['add_record_last_data']);
-                    unset($_SESSION['add_record_error']);
-                } elseif (!$formData && isset($_SESSION['add_record_error'])) {
-                    // Create form data from the session error data
-                    $formData = array_merge($_SESSION['add_record_last_data'], $_SESSION['add_record_error']);
+                    // If the record was added successfully, clear the stored data
+                    if ($result) {
+                        unset($_SESSION['add_record_last_data']);
+                        unset($_SESSION['add_record_error']);
+                    } elseif (!$formData && isset($_SESSION['add_record_error'])) {
+                        // Create form data from the session error data
+                        $formData = array_merge($_SESSION['add_record_last_data'], $_SESSION['add_record_error']);
+                    }
+                } else {
+                    // This is a zone update operation, handle as before
+                    $this->saveRecords($zone_id, $zone_name);
                 }
-            } else {
-                // This is a zone update operation, handle as before
+            } elseif (isset($_POST['record'])) {
+                // This is just a save operation without adding new records
                 $this->saveRecords($zone_id, $zone_name);
             }
         }
