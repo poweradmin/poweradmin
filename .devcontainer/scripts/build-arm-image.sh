@@ -34,9 +34,16 @@ if [ -d "pdns" ]; then
 fi
 
 log "Downloading PowerDNS source code"
-if ! git clone -b auth-${PDNS_VERSION} --depth 1 https://github.com/PowerDNS/pdns.git pdns; then
-  log "Error: Failed to clone PowerDNS repository"
-  exit 1
+if [ "${PDNS_BRANCH}" = "master" ] && [ "${PDNS_VERSION}" = "latest" ]; then
+  if ! git clone -b master --depth 1 https://github.com/PowerDNS/pdns.git pdns; then
+    log "Error: Failed to clone PowerDNS repository"
+    exit 1
+  fi
+else
+  if ! git clone -b auth-${PDNS_VERSION} --depth 1 https://github.com/PowerDNS/pdns.git pdns; then
+    log "Error: Failed to clone PowerDNS repository"
+    exit 1
+  fi
 fi
 
 cd pdns
