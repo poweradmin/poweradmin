@@ -511,10 +511,10 @@
     {% endif %}
     {% endif %}
 </div>
+{% endif %}
 </form>
 </div>
 </div>
-{% endif %}
 
 {% if perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1" %}
 {% if domain_type != "SLAVE" and not iface_edit_add_record_top %}
