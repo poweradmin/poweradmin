@@ -25,6 +25,21 @@ CREATE TABLE `log_zones` (
                              PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `users` (
+                         `id` int(11) NOT NULL AUTO_INCREMENT,
+                         `username` varchar(64) NOT NULL,
+                         `password` varchar(128) NOT NULL,
+                         `fullname` varchar(255) NOT NULL,
+                         `email` varchar(255) NOT NULL,
+                         `description` varchar(1024) NOT NULL,
+                         `perm_templ` int(11) NOT NULL,
+                         `active` int(1) NOT NULL,
+                         `use_ldap` int(1) NOT NULL,
+                         PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`) VALUES
+    (1,	'admin',	'$2y$12$10ei/WGJPcUY9Ea8/eVage9zBbxr0xxW82qJF/cfSyev/jX84WHQe',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
 
 CREATE TABLE `login_attempts` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -110,23 +125,6 @@ CREATE TABLE `records_zone_templ` (
                                       `record_id` int(11) NOT NULL,
                                       `zone_templ_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-
-CREATE TABLE `users` (
-                         `id` int(11) NOT NULL AUTO_INCREMENT,
-                         `username` varchar(64) NOT NULL,
-                         `password` varchar(128) NOT NULL,
-                         `fullname` varchar(255) NOT NULL,
-                         `email` varchar(255) NOT NULL,
-                         `description` varchar(1024) NOT NULL,
-                         `perm_templ` int(11) NOT NULL,
-                         `active` int(1) NOT NULL,
-                         `use_ldap` int(1) NOT NULL,
-                         PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
-INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`) VALUES
-    (1,	'admin',	'$2y$12$10ei/WGJPcUY9Ea8/eVage9zBbxr0xxW82qJF/cfSyev/jX84WHQe',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
 
 CREATE TABLE `zones` (
                          `id` int(11) NOT NULL AUTO_INCREMENT,
