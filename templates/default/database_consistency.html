@@ -4,7 +4,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteConfirmModalLabel">{% trans %}Confirm Delete{% endtrans %}</h5>
+                <h6 class="modal-title" id="deleteConfirmModalLabel">{% trans %}Confirm Delete{% endtrans %}</h6>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -36,19 +36,19 @@
     </div>
     <div class="card-body">
         <div class="alert {% if error_count > 0 %}alert-danger{% elseif warning_count > 0 %}alert-warning{% else %}alert-success{% endif %} mb-4">
-            <h5 class="alert-heading">{% trans %}Summary{% endtrans %}</h5>
-            <p class="mb-1">{% trans %}Total Issues Found{% endtrans %}: <strong>{{ total_issues }}</strong></p>
-            <p class="mb-1">{% trans %}Errors{% endtrans %}: <strong>{{ error_count }}</strong></p>
-            <p class="mb-0">{% trans %}Warnings{% endtrans %}: <strong>{{ warning_count }}</strong></p>
+            <h6 class="alert-heading">{% trans %}Summary{% endtrans %}</h6>
+            <p class="mb-1 small text-body">{% trans %}Total Issues Found{% endtrans %}: <strong>{{ total_issues }}</strong></p>
+            <p class="mb-1 small text-body">{% trans %}Errors{% endtrans %}: <strong>{{ error_count }}</strong></p>
+            <p class="mb-0 small text-body">{% trans %}Warnings{% endtrans %}: <strong>{{ warning_count }}</strong></p>
         </div>
 
         <!-- Check 1: Zones without owners -->
         <div class="card mb-3">
-            <div class="card-header">
-                <strong>{% trans %}Zones Without Owners{% endtrans %}</strong>
+            <div class="card-header py-2">
+                <strong class="small">{% trans %}Zones Without Owners{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <div class="alert {% if results.zones_have_owners.status == 'success' %}alert-success{% elseif results.zones_have_owners.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0">
+                <div class="alert {% if results.zones_have_owners.status == 'success' %}alert-success{% elseif results.zones_have_owners.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0 py-2">
                     {{ results.zones_have_owners.message }}
                 </div>
                 {% if results.zones_have_owners.data is not empty %}
@@ -93,11 +93,11 @@
 
         <!-- Check 2: Slave zones without master IPs -->
         <div class="card mb-3">
-            <div class="card-header">
-                <strong>{% trans %}Slave Zones Without Master IP Addresses{% endtrans %}</strong>
+            <div class="card-header py-2">
+                <strong class="small">{% trans %}Slave Zones Without Master IP Addresses{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <div class="alert {% if results.slave_zones_have_masters.status == 'success' %}alert-success{% elseif results.slave_zones_have_masters.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0">
+                <div class="alert {% if results.slave_zones_have_masters.status == 'success' %}alert-success{% elseif results.slave_zones_have_masters.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0 py-2">
                     {{ results.slave_zones_have_masters.message }}
                 </div>
                 {% if results.slave_zones_have_masters.data is not empty %}
@@ -143,11 +143,11 @@
 
         <!-- Check 3: Orphaned records -->
         <div class="card mb-3">
-            <div class="card-header">
-                <strong>{% trans %}Records Not Belonging to Any Zone{% endtrans %}</strong>
+            <div class="card-header py-2">
+                <strong class="small">{% trans %}Records Not Belonging to Any Zone{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <div class="alert {% if results.records_belong_to_zones.status == 'success' %}alert-success{% elseif results.records_belong_to_zones.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0">
+                <div class="alert {% if results.records_belong_to_zones.status == 'success' %}alert-success{% elseif results.records_belong_to_zones.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0 py-2">
                     {{ results.records_belong_to_zones.message }}
                 </div>
                 {% if results.records_belong_to_zones.data is not empty %}
@@ -194,11 +194,11 @@
 
         <!-- Check 4: Duplicate SOA records -->
         <div class="card mb-3">
-            <div class="card-header">
-                <strong>{% trans %}Zones with Duplicate SOA Records{% endtrans %}</strong>
+            <div class="card-header py-2">
+                <strong class="small">{% trans %}Zones with Duplicate SOA Records{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <div class="alert {% if results.duplicate_soa_records.status == 'success' %}alert-success{% elseif results.duplicate_soa_records.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0">
+                <div class="alert {% if results.duplicate_soa_records.status == 'success' %}alert-success{% elseif results.duplicate_soa_records.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0 py-2">
                     {{ results.duplicate_soa_records.message }}
                 </div>
                 {% if results.duplicate_soa_records.data is not empty %}
@@ -243,11 +243,11 @@
 
         <!-- Check 5: Zones without SOA records -->
         <div class="card mb-3">
-            <div class="card-header">
-                <strong>{% trans %}Zones Without SOA Records{% endtrans %}</strong>
+            <div class="card-header py-2">
+                <strong class="small">{% trans %}Zones Without SOA Records{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <div class="alert {% if results.zones_without_soa.status == 'success' %}alert-success{% elseif results.zones_without_soa.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0">
+                <div class="alert {% if results.zones_without_soa.status == 'success' %}alert-success{% elseif results.zones_without_soa.status == 'warning' %}alert-warning{% else %}alert-danger{% endif %} mb-0 py-2">
                     {{ results.zones_without_soa.message }}
                 </div>
                 {% if results.zones_without_soa.data is not empty %}

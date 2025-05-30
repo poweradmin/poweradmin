@@ -505,3 +505,9 @@ input[type=number]::-webkit-outer-spin-button {
 .bg-light {
     background-color: var(--bg-dark-secondary) !important;
 }
+
+/* Fix alert text colors in dark mode */
+.alert p.small,
+.alert .small {
+    color: inherit !important;
+}
