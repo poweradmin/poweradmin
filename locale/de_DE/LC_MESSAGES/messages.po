@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
 "POT-Creation-Date: 2025-05-30 17:37+0300\n"
-"PO-Revision-Date: 2025-04-11 07:48+0300\n"
-"Last-Translator: Automatically generated\n"
+"PO-Revision-Date: 2025-05-31 01:07+0200\n"
+"Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
 "Language: de_DE\n"
 "MIME-Version: 1.0\n"
@@ -5736,7 +5736,7 @@ msgstr "Status:"
 
 #: templates/default/api_key_delete.html:51
 msgid "Disabled"
-msgstr "Disabled"
+msgstr "Deaktiviert"
 
 #: templates/default/api_keys.html:50 templates/default/api_key_delete.html:53
 msgid "Expired"
@@ -5756,11 +5756,11 @@ msgstr "Copied!"
 
 #: templates/default/dnssec_delete_key.html:6
 msgid "Reverse Zones"
-msgstr "Reverse Zones"
+msgstr "Reverse Zonen"
 
 #: templates/default/dnssec_delete_key.html:8
 msgid "Forward Zones"
-msgstr "Forward Zones"
+msgstr "DNS Zonen"
 
 #: templates/default/dnssec_delete_key.html:19
 msgid "DNSSEC"
@@ -5852,7 +5852,7 @@ msgstr "Inactive"
 
 #: templates/default/dnssec_delete_key.html:126
 msgid "Cancel"
-msgstr "Cancel"
+msgstr "Abbrechen"
 
 #: templates/default/api_key_edit.html:5 templates/default/api_key_edit.html:13
 msgid "Edit API Key"
@@ -5892,7 +5892,7 @@ msgstr "Update API Key"
 
 #: templates/default/edit_perm_templ.html:44
 msgid "* Required fields"
-msgstr "* Required fields"
+msgstr "* Notwendige Felder"
 
 #: templates/default/api_key_edit.html:59
 msgid "API Key Information"
@@ -5963,7 +5963,7 @@ msgstr ""
 
 #: templates/default/delete_zone_templ_record.html:39
 msgid "Priority"
-msgstr "Priority"
+msgstr "Priorität"
 
 #: templates/default/add_zone_templ_record.html:62
 msgid "Valid range: 0-65535"
@@ -5983,7 +5983,7 @@ msgstr "Valid range: 0-2147483647"
 
 #: templates/default/delete_zone_templ_record.html:38
 msgid "Content"
-msgstr "Content"
+msgstr "Inhalt"
 
 #: templates/default/add_zone_templ_record.html:78
 msgid "Provide content for your zone record"
@@ -6021,7 +6021,7 @@ msgstr "Placeholder"
 
 #: templates/default/list_perm_templ.html:19
 msgid "Description"
-msgstr "Description"
+msgstr "Beschreibung"
 
 #: templates/default/edit_zone_templ.html:194
 msgid "Substituted with current zone name"
@@ -6142,7 +6142,7 @@ msgstr "Provide host name"
 
 #: templates/default/header.html:172
 msgid "Account"
-msgstr "Account"
+msgstr "Benutzerkonto"
 
 #: templates/default/add_supermaster.html:56
 msgid "Select the account that will own this supermaster"
@@ -6150,11 +6150,11 @@ msgstr "Select the account that will own this supermaster"
 
 #: templates/default/edit.html:501
 msgid "Save changes"
-msgstr "Save changes"
+msgstr "Änderungen speichern"
 
 #: templates/default/change_password.html:55
 msgid "All fields are required"
-msgstr "All fields are required"
+msgstr "Alle Felder ausfüllen"
 
 #: templates/default/edit_supermaster.html:86
 msgid "About Editing Supermasters"
@@ -6226,7 +6226,7 @@ msgstr "ID"
 
 #: templates/default/api_keys.html:34 templates/default/list_perm_templ.html:20
 msgid "Actions"
-msgstr "Actions"
+msgstr "Aktionen"
 
 #: templates/default/dnssec.html:91
 msgid "No DNSSEC keys found for this zone"
@@ -6250,7 +6250,7 @@ msgstr "Activate"
 
 #: templates/default/list_perm_templ.html:39
 msgid "Delete"
-msgstr "Delete"
+msgstr "Löschen"
 
 #: templates/default/forgot_password.html:4
 msgid "Forgot Password"
@@ -6267,7 +6267,7 @@ msgstr ""
 
 #: templates/default/forgot_password.html:27
 msgid "Email Address"
-msgstr "Email Address"
+msgstr "Email Adresse"
 
 #: templates/default/forgot_password.html:29
 msgid "Please provide a valid email address"
@@ -6287,7 +6287,7 @@ msgstr "Modify DNS record properties"
 
 #: templates/default/add_record.html:58
 msgid "Comment"
-msgstr "Comment"
+msgstr "Kommentar"
 
 #: templates/default/edit.html:608 templates/default/add_record.html:91
 msgid "Provide content"
@@ -6295,11 +6295,11 @@ msgstr "Provide content"
 
 #: templates/default/edit_perm_templ.html:38
 msgid "Update"
-msgstr "Update"
+msgstr "Aktualisieren"
 
 #: templates/default/index.html:2
 msgid "Welcome"
-msgstr "Welcome"
+msgstr "Willkommen"
 
 #: templates/default/index.html:13 templates/default/pdns_status.html:168
 msgid "Online"
@@ -6315,7 +6315,7 @@ msgstr "PowerDNS Status"
 
 #: templates/default/index.html:26
 msgid "Server running"
-msgstr "Server running"
+msgstr "Server Version"
 
 #: templates/default/index.html:28
 msgid "Check PowerDNS server status"
@@ -6323,7 +6323,7 @@ msgstr "Check PowerDNS server status"
 
 #: templates/default/index.html:32
 msgid "View Server Status"
-msgstr "View Server Status"
+msgstr "Server Status zeigen"
 
 #: templates/default/index.html:33
 msgid "Server Status"
@@ -6331,67 +6331,67 @@ msgstr "Server Status"
 
 #: templates/default/index.html:46
 msgid "My Profile"
-msgstr "My Profile"
+msgstr "Mein Profil"
 
 #: templates/default/index.html:47
 msgid "Edit your account details"
-msgstr "Edit your account details"
+msgstr "Eigenes Profil bearbeiten"
 
 #: templates/default/header.html:176
 msgid "Edit profile"
-msgstr "Edit profile"
+msgstr "Profil bearbeiten"
 
 #: templates/default/index.html:50
 msgid "Profile"
-msgstr "Profile"
+msgstr "Profil"
 
 #: templates/default/header.html:49
 msgid "Search"
-msgstr "Search"
+msgstr "Suche"
 
 #: templates/default/index.html:64
 msgid "Find zones and records"
-msgstr "Find zones and records"
+msgstr "Zonen und Einträge suchen"
 
 #: templates/default/index.html:66
 msgid "Search zones"
-msgstr "Search zones"
+msgstr "Zonen suchen"
 
 #: templates/default/index.html:81
 msgid "Manage forward DNS zones"
-msgstr "Manage forward DNS zones"
+msgstr "DNS Zonen verwalten"
 
 #: templates/default/index.html:83
 msgid "List forward zones"
-msgstr "List forward zones"
+msgstr "Zonen auflisten"
 
 #: templates/default/index.html:99
 msgid "Manage reverse DNS zones"
-msgstr "Manage reverse DNS zones"
+msgstr "Reverse DNS Zonen verwalten"
 
 #: templates/default/index.html:101
 msgid "List reverse zones"
-msgstr "List reverse zones"
+msgstr "Reverse Zonen"
 
 #: templates/default/header.html:127
 msgid "Templates"
-msgstr "Templates"
+msgstr "Vorlagen"
 
 #: templates/default/index.html:117
 msgid "Manage zone templates"
-msgstr "Manage zone templates"
+msgstr "Zonenvorlagen verwalten"
 
 #: templates/default/index.html:119 templates/default/header.html:130
 msgid "List zone templates"
-msgstr "List zone templates"
+msgstr "Zonenvorlagen auflisten"
 
 #: templates/default/index.html:134
 msgid "Manage supermaster servers"
-msgstr "Manage supermaster servers"
+msgstr "Supermaster Server verwalten"
 
 #: templates/default/index.html:136
 msgid "List supermasters"
-msgstr "List supermasters"
+msgstr "Supermasters auflisten"
 
 #: templates/default/index.html:150
 msgid "Master Zone"
@@ -6399,11 +6399,11 @@ msgstr "Master Zone"
 
 #: templates/default/index.html:151
 msgid "Create new master zone"
-msgstr "Create new master zone"
+msgstr "Neue Master Zone erzeugen"
 
 #: templates/default/add_zone_master.html:11 templates/default/header.html:66
 msgid "Add master zone"
-msgstr "Add master zone"
+msgstr "Neue Master Zone"
 
 #: templates/default/index.html:154
 msgid "Add Master"
@@ -6415,11 +6415,11 @@ msgstr "Slave Zone"
 
 #: templates/default/index.html:168
 msgid "Add new slave zone"
-msgstr "Add new slave zone"
+msgstr "Neue Slave Zone hinzufügen"
 
 #: templates/default/add_zone_slave.html:11 templates/default/header.html:70
 msgid "Add slave zone"
-msgstr "Add slave zone"
+msgstr "Neue Slave Zone"
 
 #: templates/default/index.html:171
 msgid "Add Slave"
@@ -6431,23 +6431,23 @@ msgstr "Supermaster"
 
 #: templates/default/index.html:185
 msgid "Add new supermaster server"
-msgstr "Add new supermaster server"
+msgstr "Neuen Supermaster Server hinzufügen"
 
 #: templates/default/list_supermasters.html:57
 msgid "Add supermaster"
-msgstr "Add supermaster"
+msgstr "Neuer Supermaster"
 
 #: templates/default/index.html:201 templates/default/bulk_registration.html:23
 msgid "Bulk Registration"
-msgstr "Bulk Registration"
+msgstr "Massenregistrierung"
 
 #: templates/default/index.html:202
 msgid "Register multiple domains at once"
-msgstr "Register multiple domains at once"
+msgstr "Mehrere Domains auf einmal erzeugen"
 
 #: templates/default/index.html:204
 msgid "Bulk domain registration"
-msgstr "Bulk domain registration"
+msgstr "Domain Massenregistrierung"
 
 #: templates/default/index.html:205
 msgid "Registration"
@@ -6455,15 +6455,15 @@ msgstr "Registration"
 
 #: templates/default/index.html:218 templates/default/index.html:222
 msgid "PTR Records"
-msgstr "PTR Records"
+msgstr "PTR Einträge"
 
 #: templates/default/index.html:219
 msgid "Manage reverse DNS records"
-msgstr "Manage reverse DNS records"
+msgstr "Reverse DNS Einträge verwalten"
 
 #: templates/default/batch_ptr_record.html:32 templates/default/header.html:79
 msgid "Batch PTR Records"
-msgstr "Batch PTR Records"
+msgstr "Batch PTR Einträge"
 
 #: templates/default/index.html:235 templates/default/index.html:239
 msgid "Zone Logs"
@@ -6496,39 +6496,39 @@ msgstr "Passwort"
 
 #: templates/default/index.html:272
 msgid "Update your account password"
-msgstr "Update your account password"
+msgstr "Benutzerkonto Passwort aktualisieren"
 
 #: templates/default/change_password.html:49 templates/default/header.html:180
 msgid "Change password"
-msgstr "Change password"
+msgstr "Passwort ändern"
 
 #: templates/default/list_perm_templ.html:4
 msgid "Users"
-msgstr "Users"
+msgstr "Benutzer"
 
 #: templates/default/index.html:289
 msgid "Manage system users and access"
-msgstr "Manage system users and access"
+msgstr "Benutzer und Zugänge verwalten"
 
 #: templates/default/index.html:291 templates/default/header.html:98
 msgid "User administration"
-msgstr "User administration"
+msgstr "Benutzerverwaltung"
 
 #: templates/default/index.html:309
 msgid "Permissions"
-msgstr "Permissions"
+msgstr "Berechtigungen"
 
 #: templates/default/index.html:306
 msgid "Manage permission templates"
-msgstr "Manage permission templates"
+msgstr "Berechtigungsvorlagen bearbeiten"
 
 #: templates/default/header.html:187
 msgid "Logout"
-msgstr "Logout"
+msgstr "Abmelden"
 
 #: templates/default/index.html:322
 msgid "End your session"
-msgstr "End your session"
+msgstr "Sitzung beenden"
 
 #: templates/default/migrations.html:4 templates/default/migrations.html:10
 msgid "Migrations"
@@ -6592,7 +6592,7 @@ msgstr "Check DB"
 
 #: templates/default/edit_comment.html:18 templates/default/edit.html:483
 msgid "Edit comment"
-msgstr "Edit comment"
+msgstr "Kommentar bearbeiten"
 
 #: templates/default/edit_comment.html:25
 msgid "Edit comment in zone"
@@ -6624,7 +6624,7 @@ msgstr "Make this template available to all users"
 
 #: templates/default/list_zone_templ.html:126 templates/default/header.html:133
 msgid "Add zone template"
-msgstr "Add zone template"
+msgstr "Neue Zonenvorlage"
 
 #: templates/default/add_zone_templ.html:68
 msgid "Template Information"
@@ -6749,7 +6749,7 @@ msgstr "Bulk Add Records"
 
 #: templates/default/search.html:58 templates/default/search.html:163
 msgid "Records"
-msgstr "Records"
+msgstr "Einträge"
 
 #: templates/default/bulk_record_add.html:44
 msgid "Provide at least one record"
@@ -6947,7 +6947,7 @@ msgstr "New Password"
 
 #: templates/default/reset_password.html:49 templates/default/login.html:27
 msgid "Please provide a password"
-msgstr "Please provide a password"
+msgstr "Bitte ein Passwort angeben"
 
 #: templates/default/reset_password.html:54
 msgid "Confirm Password"
@@ -6963,11 +6963,11 @@ msgstr "Password Requirements"
 
 #: templates/default/change_password.html:79
 msgid "Minimum length"
-msgstr "Minimum length"
+msgstr "Mindestlänge"
 
 #: templates/default/change_password.html:79
 msgid "characters"
-msgstr "characters"
+msgstr "Zeichen"
 
 #: templates/default/reset_password.html:68
 msgid "At least one uppercase letter"
@@ -6987,7 +6987,7 @@ msgstr "At least one special character"
 
 #: templates/default/header.html:57
 msgid "Zones"
-msgstr "Zones"
+msgstr "Zonen"
 
 #: templates/default/list_reverse_zones.html:34
 msgid "Reverse Zone Types"
@@ -7007,31 +7007,31 @@ msgstr "IPv6"
 
 #: templates/default/list_reverse_zones.html:67
 msgid "Reverse zones:"
-msgstr "Reverse zones:"
+msgstr "Reverse Zonen:"
 
 #: templates/default/list_reverse_zones.html:69
 msgid "IPv4 reverse zones:"
-msgstr "IPv4 reverse zones:"
+msgstr "IPv4 Reverse Zonen:"
 
 #: templates/default/list_reverse_zones.html:71
 msgid "IPv6 reverse zones:"
-msgstr "IPv6 reverse zones:"
+msgstr "IPv6 Reverse Zonen:"
 
 #: templates/default/search.html:123 templates/default/search.html:308
 msgid "Rows per page:"
-msgstr "Rows per page:"
+msgstr "Zeilen pro Seite:"
 
 #: templates/default/list_reverse_zones.html:93
 msgid "There are no reverse zones to show in this listing."
-msgstr "There are no reverse zones to show in this listing."
+msgstr "Keine Reverse Zonen gefunden."
 
 #: templates/default/add_zone_slave.html:40
 msgid "Owner"
-msgstr "Owner"
+msgstr "Besitzer"
 
 #: templates/default/list_forward_zones.html:88
 msgid "Full name"
-msgstr "Full name"
+msgstr "Vollständiger Name"
 
 #: templates/default/list_reverse_zones.html:126
 msgid "Associated Forward Zones"
@@ -7043,7 +7043,7 @@ msgstr "Serial"
 
 #: templates/default/bulk_registration.html:60
 msgid "Template"
-msgstr "Template"
+msgstr "Vorlage"
 
 #: templates/default/list_reverse_zones.html:188
 msgid "-"
@@ -7051,7 +7051,7 @@ msgstr "-"
 
 #: templates/default/search.html:285
 msgid "Delete zone(s)"
-msgstr "Delete zone(s)"
+msgstr "Zone(n) löschen"
 
 #: templates/default/dnssec_add_key.html:81
 msgid "Add key"
@@ -7132,7 +7132,7 @@ msgstr "Edit user"
 
 #: templates/default/edit_user.html:22
 msgid "Edit User"
-msgstr "Edit User"
+msgstr "Benutzer bearbeiten"
 
 #: templates/default/users.html:24 templates/default/add_user.html:20
 #: install/templates/step4.html.twig:40 install/templates/step5.html.twig:56
@@ -7145,15 +7145,15 @@ msgstr "Provide user name"
 
 #: templates/default/add_user.html:26
 msgid "Fullname"
-msgstr "Fullname"
+msgstr "Vollständiger Name"
 
 #: templates/default/edit_user.html:38
 msgid "User's full name for identification"
-msgstr "User's full name for identification"
+msgstr "Vollständiger Name des Benutzer zur Identifizierung"
 
 #: templates/default/add_user.html:32
 msgid "Email address"
-msgstr "Email address"
+msgstr "Email Adresse"
 
 #: templates/default/edit_user.html:44 templates/default/add_user.html:34
 msgid "Provide email"
@@ -7161,7 +7161,7 @@ msgstr "Provide email"
 
 #: templates/default/edit_user.html:54
 msgid "Leave empty to keep current password"
-msgstr "Leave empty to keep current password"
+msgstr "Leer lassen um aktuelles Passwort zu verwenden"
 
 #: templates/default/edit_user.html:59 templates/default/add_user.html:69
 msgid "Permission template"
@@ -7173,11 +7173,11 @@ msgstr "Select permissions for this user"
 
 #: templates/default/edit_user.html:76 templates/default/add_user.html:87
 msgid "Optional information about this user"
-msgstr "Optional information about this user"
+msgstr "Optionale Informationen über den Benutzer"
 
 #: templates/default/add_user.html:93
 msgid "Enabled"
-msgstr "Enabled"
+msgstr "Aktiviert"
 
 #: templates/default/edit_user.html:96 templates/default/add_user.html:102
 msgid "LDAP Authentication"
@@ -7197,23 +7197,23 @@ msgstr "Back to Users"
 
 #: templates/default/edit_user.html:130 templates/default/add_user.html:127
 msgid "Account Information"
-msgstr "Account Information"
+msgstr "Konto Information"
 
 #: templates/default/change_password.html:82
 msgid "Must contain uppercase letters"
-msgstr "Must contain uppercase letters"
+msgstr "Muss Großbuchstaben enthalten"
 
 #: templates/default/change_password.html:85
 msgid "Must contain lowercase letters"
-msgstr "Must contain lowercase letters"
+msgstr "Muss Kleinbuchstaben enthalten"
 
 #: templates/default/change_password.html:88
 msgid "Must contain numbers"
-msgstr "Must contain numbers"
+msgstr "Muss Ziffern enthalten"
 
 #: templates/default/change_password.html:92
 msgid "Must contain special characters"
-msgstr "Must contain special characters"
+msgstr "Muss Sonderzeichen enthalten"
 
 #: templates/default/change_password.html:97
 msgid "No specific password requirements"
@@ -7221,7 +7221,7 @@ msgstr "No specific password requirements"
 
 #: templates/default/edit_perm_templ.html:141
 msgid "User Permissions"
-msgstr "User Permissions"
+msgstr "Benutzer Berechtigungen"
 
 #: templates/default/edit_user.html:164
 msgid "This user has been assigned the permission template"
@@ -7237,23 +7237,23 @@ msgstr "No permissions are assigned to this template"
 
 #: templates/default/edit_user.html:192 templates/default/add_user.html:170
 msgid "User Management Tips"
-msgstr "User Management Tips"
+msgstr "Benutzer Verwaltungstipps"
 
 #: templates/default/edit_user.html:198
 msgid "Leave password field empty to keep the current password"
-msgstr "Leave password field empty to keep the current password"
+msgstr "Leeres Passwort Feld übernimmt das aktuelle Passwort"
 
 #: templates/default/edit_user.html:199
 msgid "Changing permission templates will update user access immediately"
-msgstr "Changing permission templates will update user access immediately"
+msgstr "Ändern von Berechtigungsvorlagen ändert Benutzer Zugang sofort"
 
 #: templates/default/edit_user.html:200 templates/default/add_user.html:178
 msgid "Users can be disabled instead of deleted to preserve their settings"
-msgstr "Users can be disabled instead of deleted to preserve their settings"
+msgstr "Um die Einstellungen zu erhalten, kann ein Benutzer deaktiviert anstatt gelöscht werden"
 
 #: templates/default/edit_user.html:201
 msgid "LDAP users cannot have passwords managed through this interface"
-msgstr "LDAP users cannot have passwords managed through this interface"
+msgstr "LDAP Benutzer können Ihr Passwort nicht hier verwalten"
 
 #: templates/default/confirm_unlink_zones_templ.html:6
 msgid "Unlink zones"
@@ -7449,11 +7449,11 @@ msgstr ""
 
 #: templates/default/login.html:11 templates/default/login.html:48
 msgid "Log in"
-msgstr "Log in"
+msgstr "Anmeldung"
 
 #: templates/default/login.html:20
 msgid "Please provide a username"
-msgstr "Please provide a username"
+msgstr "Bitte einen Benutzernamen angeben"
 
 #: templates/default/login.html:32
 msgid "Language"
@@ -7573,7 +7573,7 @@ msgstr "For IPv4, supported networks are:"
 
 #: templates/default/change_password.html:71
 msgid "Requirements"
-msgstr "Requirements"
+msgstr "Voraussetzungen"
 
 #: templates/default/batch_ptr_record.html:162
 msgid ""
@@ -7695,11 +7695,11 @@ msgstr "If you lose the key, you'll need to regenerate it."
 
 #: templates/default/list_perm_templ.html:36
 msgid "Edit"
-msgstr "Edit"
+msgstr "Bearbeiten"
 
 #: templates/default/edit.html:25 templates/default/edit.html:516
 msgid "Add new record"
-msgstr "Add new record"
+msgstr "Neuen Eintrag hinzufügen"
 
 #: templates/default/edit.html:28 templates/default/edit.html:519
 msgid "Multi-record mode"
@@ -7769,7 +7769,7 @@ msgstr ""
 
 #: templates/default/delete_records.html:12
 msgid "Edit zone"
-msgstr "Edit zone"
+msgstr "Zone bearbeiten"
 
 #: templates/default/edit.html:188
 msgid "CSV"
@@ -7797,51 +7797,51 @@ msgstr "Filter:"
 
 #: templates/default/edit.html:253
 msgid "Search by name or content"
-msgstr "Search by name or content"
+msgstr "Nach Name oder Inhalt suchen"
 
 #: templates/default/edit.html:259
 msgid "All Types"
-msgstr "All Types"
+msgstr "Alle Typen"
 
 #: templates/default/edit.html:269
 msgid "Filter by content"
-msgstr "Filter by content"
+msgstr "Nach Inhalt filtern"
 
 #: templates/default/edit.html:275
 msgid "Apply"
-msgstr "Apply"
+msgstr "Anwenden"
 
 #: templates/default/edit.html:298 templates/default/search.html:476
 msgid "Delete record(s)"
-msgstr "Delete record(s)"
+msgstr "Einträge löschen"
 
 #: templates/default/edit.html:306
 msgid "Showing"
-msgstr "Showing"
+msgstr "Zeige"
 
 #: templates/default/edit.html:306
 msgid "of"
-msgstr "of"
+msgstr "von"
 
 #: templates/default/edit.html:306
 msgid "total records"
-msgstr "total records"
+msgstr "Gesamteinträgen"
 
 #: templates/default/edit.html:472 templates/default/search.html:93
 msgid "Comments"
-msgstr "Comments"
+msgstr "Kommentare"
 
 #: templates/default/edit.html:665
 msgid "Save as new template"
-msgstr "Save as new template"
+msgstr "Als neue Vorlage speichern"
 
 #: templates/default/edit.html:668
 msgid "Create a reusable template from this zone's records"
-msgstr "Create a reusable template from this zone's records"
+msgstr "Erstelle eine verwendbare Vorlage aus den Einträgen dieser Zone"
 
 #: templates/default/edit.html:674
 msgid "Template Name"
-msgstr "Template Name"
+msgstr "Vorlagenname"
 
 #: templates/default/edit.html:676
 msgid "Provide template name"
@@ -7849,23 +7849,23 @@ msgstr "Provide template name"
 
 #: templates/default/edit.html:680
 msgid "Template Description"
-msgstr "Template Description"
+msgstr "Vorlagenbeschreibung"
 
 #: templates/default/edit.html:682
 msgid "Optional description for this template"
-msgstr "Optional description for this template"
+msgstr "Optionale Beschreibung der Vorlage"
 
 #: templates/default/edit.html:686
 msgid "Save as template"
-msgstr "Save as template"
+msgstr "Als Vorlage speichern"
 
 #: templates/default/edit.html:697
 msgid "Zone Settings"
-msgstr "Zone Settings"
+msgstr "Zonen Einstellungen"
 
 #: templates/default/edit.html:700
 msgid "Owner of zone"
-msgstr "Owner of zone"
+msgstr "Zonenbesitzer"
 
 #: templates/default/edit.html:703
 msgid "No owner set for this zone."
@@ -7873,7 +7873,7 @@ msgstr "No owner set for this zone."
 
 #: templates/default/edit.html:828
 msgid "Change"
-msgstr "Change"
+msgstr "Ändern"
 
 #: templates/default/edit.html:794 templates/default/add_zone_slave.html:33
 msgid "IP address of master NS"
@@ -7881,15 +7881,15 @@ msgstr "IP address of master NS"
 
 #: templates/default/edit.html:1020
 msgid "Select All Filtered"
-msgstr "Select All Filtered"
+msgstr "Gefilterte auswählen"
 
 #: templates/default/users.html:10
 msgid "User Administration"
-msgstr "User Administration"
+msgstr "Benutzerverwaltung"
 
 #: templates/default/header.html:100
 msgid "Add user"
-msgstr "Add user"
+msgstr "Neuer Benutzer"
 
 #: templates/default/users.html:29
 msgid "LDAP"
@@ -7897,7 +7897,7 @@ msgstr "LDAP"
 
 #: templates/default/list_template_zones.html:16
 msgid "Total number of zones:"
-msgstr "Total number of zones:"
+msgstr "Gesamtanzahl Zonen:"
 
 #: templates/default/list_forward_zones.html:57
 msgid "There are no forward zones to show in this listing."
@@ -8016,7 +8016,7 @@ msgstr "Zone ID"
 
 #: templates/default/database_consistency.html:259
 msgid "Zone Name"
-msgstr "Zone Name"
+msgstr "Zonen Name"
 
 #: templates/default/database_consistency.html:77
 msgid "Assign owner"
@@ -8267,59 +8267,59 @@ msgstr "View zones using this template"
 
 #: templates/default/change_password.html:16
 msgid "Change Password"
-msgstr "Change Password"
+msgstr "Passwort ändern"
 
 #: templates/default/change_password.html:23
 msgid "Current password"
-msgstr "Current password"
+msgstr "Aktuelles Passwort"
 
 #: templates/default/change_password.html:27
 msgid "Provide current password"
-msgstr "Provide current password"
+msgstr "Aktuelles Passwort angeben"
 
 #: templates/default/change_password.html:31
 msgid "New password"
-msgstr "New password"
+msgstr "Neues Passwort"
 
 #: templates/default/change_password.html:43
 msgid "Provide new password"
-msgstr "Provide new password"
+msgstr "Neues Passwort angeben"
 
 #: templates/default/change_password.html:39
 msgid "Repeat password"
-msgstr "Repeat password"
+msgstr "Passwort wiederholen"
 
 #: templates/default/change_password.html:65
 msgid "Password Guidelines"
-msgstr "Password Guidelines"
+msgstr "Passwort Richtlinien"
 
 #: templates/default/change_password.html:73
 msgid "Enforced"
-msgstr "Enforced"
+msgstr "Erzwungen"
 
 #: templates/default/change_password.html:102
 msgid "Security Tips"
-msgstr "Security Tips"
+msgstr "Sicherheitstipps"
 
 #: templates/default/change_password.html:104
 msgid "Use a unique password not used on other sites"
-msgstr "Use a unique password not used on other sites"
+msgstr "Einzigartiges Passwort verwenden"
 
 #: templates/default/change_password.html:105
 msgid "Choose a password that is difficult to guess"
-msgstr "Choose a password that is difficult to guess"
+msgstr "Das Passwort sollte schwer zu erraten sein"
 
 #: templates/default/change_password.html:106
 msgid "Include a mix of letters, numbers, and symbols"
-msgstr "Include a mix of letters, numbers, and symbols"
+msgstr "Buchstaben, Ziffern und Sonderzeichen verwenden"
 
 #: templates/default/change_password.html:107
 msgid "Consider using a password manager"
-msgstr "Consider using a password manager"
+msgstr "Denken Sie über einen Passwort Manager"
 
 #: templates/default/mfa_verify_email.html:4 templates/default/header.html:184
 msgid "Multi-Factor Authentication"
-msgstr "Multi-Factor Authentication"
+msgstr "Multi-Factor Authentikation"
 
 #: templates/default/mfa_verify_app.html:14
 msgid "Set Up Authenticator App"
@@ -8490,7 +8490,7 @@ msgstr "Please enter a domain name to perform an RDAP lookup."
 
 #: templates/default/bulk_registration.html:11 templates/default/header.html:74
 msgid "Bulk registration"
-msgstr "Bulk registration"
+msgstr "Massenregistrierung"
 
 #: templates/default/bulk_registration.html:42
 msgid "Please select an owner"
@@ -8683,11 +8683,11 @@ msgstr "Regenerate Recovery Codes"
 
 #: templates/default/mfa_setup.html:46
 msgid "MFA is currently disabled"
-msgstr "MFA is currently disabled"
+msgstr "MFA ist momentan deaktviert"
 
 #: templates/default/mfa_setup.html:47
 msgid "Your account is not protected with multi-factor authentication."
-msgstr "Your account is not protected with multi-factor authentication."
+msgstr "Ihr Benutzerkonto ist nicht mit Multi-Factor Authentikation geschützt."
 
 #: templates/default/mfa_setup.html:58
 msgid "Authenticator App"
@@ -8717,7 +8717,7 @@ msgstr "Set up app authentication"
 
 #: templates/default/mfa_verify_email.html:5
 msgid "Email Verification"
-msgstr "Email Verification"
+msgstr "Email Überprüfung"
 
 #: templates/default/mfa_setup.html:81
 msgid "Receive a verification code via email when you log in."
@@ -8823,7 +8823,7 @@ msgstr "No, keep this zone"
 
 #: templates/default/search.html:14
 msgid "DNS Search"
-msgstr "DNS Search"
+msgstr "DNS Suche"
 
 #: templates/default/search.html:34
 msgid ""
@@ -8846,7 +8846,7 @@ msgstr ""
 
 #: templates/default/search.html:120
 msgid "Zones found"
-msgstr "Zones found"
+msgstr "Zonen gefunden"
 
 #: templates/default/search.html:284
 msgid ""
@@ -8860,7 +8860,7 @@ msgstr "Toggle all"
 
 #: templates/default/search.html:305
 msgid "Records found"
-msgstr "Records found"
+msgstr "Einträge gefunden"
 
 #: templates/default/search.html:475
 msgid ""
@@ -9153,19 +9153,19 @@ msgstr "No detailed metrics available."
 
 #: templates/default/header.html:60
 msgid "Forward zones"
-msgstr "Forward zones"
+msgstr "DNS Zonen"
 
 #: templates/default/header.html:61
 msgid "Reverse zones"
-msgstr "Reverse zones"
+msgstr "Reverse Zonen"
 
 #: templates/default/header.html:107
 msgid "List permission templates"
-msgstr "List permission templates"
+msgstr "Rechtevorlagen auflisten"
 
 #: templates/default/header.html:109 templates/default/list_perm_templ.html:53
 msgid "Add permission template"
-msgstr "Add permission template"
+msgstr "Rechtevorlage hinzufügen"
 
 #: templates/default/header.html:143
 msgid "Tools"
@@ -9342,7 +9342,7 @@ msgstr "Please enter a domain name to perform a WHOIS lookup."
 
 #: templates/default/list_perm_templ.html:11
 msgid "Permission Templates"
-msgstr "Permission Templates"
+msgstr "Rechtevorlagen"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
