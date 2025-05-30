@@ -485,3 +485,23 @@ input[type=number]::-webkit-outer-spin-button {
     position: relative;
     padding-right: 3rem; /* Provide enough space for the button */
 }
+
+/* RDAP and WHOIS results styling */
+.rdap-results, .whois-results {
+    background-color: var(--bg-dark-secondary) !important;
+    border: 1px solid var(--border-dark);
+    border-radius: 0.25rem;
+}
+
+.rdap-results pre, .whois-results pre {
+    color: var(--text-light) !important;
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    font-size: 0.75rem !important;
+}
+
+/* Override bg-light class in dark mode */
+.bg-light {
+    background-color: var(--bg-dark-secondary) !important;
+}

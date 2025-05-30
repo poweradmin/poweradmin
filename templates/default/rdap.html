@@ -15,10 +15,10 @@
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             
             <div class="row mb-3">
-                <div class="col-md-6">
-                    <div class="input-group">
-                    <input type="text" class="form-control" id="domain" name="domain" placeholder="{% trans %}Enter domain name{% endtrans %}" value="{{ utf8_domain ?: domain }}">
-                    <button type="submit" class="btn btn-primary">
+                <div class="col-md-4">
+                    <div class="input-group input-group-sm">
+                    <input type="text" class="form-control form-control-sm" id="domain" name="domain" placeholder="{% trans %}Enter domain name{% endtrans %}" value="{{ utf8_domain ?: domain }}">
+                    <button type="submit" class="btn btn-sm btn-primary">
                     <i class="bi bi-search me-1 text-white"></i>{% trans %}Lookup{% endtrans %}
                     </button>
                     </div>
@@ -31,10 +31,10 @@
 
         {% if domain %}
             <div class="mt-4">
-                <h5>{% trans %}RDAP results for{% endtrans %} {{ utf8_domain ?: domain }}</h5>
+                <h6>{% trans %}RDAP results for{% endtrans %} {{ utf8_domain ?: domain }}</h6>
                 {% if result.success %}
                     <div class="rdap-results p-3 mt-3 bg-light">
-                        <pre class="mb-0">{{ result.data }}</pre>
+                        <pre class="mb-0 small">{{ result.data }}</pre>
                     </div>
                 {% elseif result.error %}
                     <div class="alert alert-danger mt-3">
