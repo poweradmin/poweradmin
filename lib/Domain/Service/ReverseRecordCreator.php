@@ -145,7 +145,11 @@ class ReverseRecordCreator
     private function addReverseRecord($zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool
     {
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
-        $fqdn_name = sprintf("%s.%s", $name, $zone_name);
+        if (str_ends_with($name, '.' . $zone_name)) {
+            $fqdn_name = $name;
+        } else {
+            $fqdn_name = sprintf("%s.%s", $name, $zone_name);
+        }
 
         // Duplicate check moved to the main createReverseRecord method
 
