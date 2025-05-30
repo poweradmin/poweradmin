@@ -1,3 +1,31 @@
+<!-- Unsign Zone Confirmation Modal -->
+<div class="modal fade" id="unsignZoneModal" tabindex="-1" aria-labelledby="unsignZoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="unsignZoneModalLabel">{% trans %}Confirm Unsign Zone{% endtrans %}</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <strong>{% trans %}Warning{% endtrans %}:</strong> {% trans %}This action will remove all DNSSEC keys and disable DNSSEC for this zone.{% endtrans %}
+                </div>
+                <p>{% trans %}Are you sure you want to unsign the zone{% endtrans %} "<strong>{{ idn_zone_name|default(domain_name) }}</strong>"?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
+                <form method="post" action="index.php?page=dnssec&id={{ zone_id }}" class="d-inline">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <button type="submit" name="unsign_zone" class="btn btn-danger">
+                        <i class="bi bi-shield-x text-white me-1"></i>{% trans %}Unsign Zone{% endtrans %}
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
@@ -36,6 +64,11 @@
             <a href="index.php?page=dnssec_ds_dnskey&id={{ zone_id }}" class="btn btn-secondary btn-sm">
                 <i class="bi bi-key text-white me-1"></i>{% trans %}Show DS and DNSKEY{% endtrans %}
             </a>
+            {% if perm_edit != "none" %}
+            <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#unsignZoneModal">
+                <i class="bi bi-shield-x text-white me-1"></i>{% trans %}Unsign zone{% endtrans %}
+            </button>
+            {% endif %}
         </div>
     </div>
     <div class="card-body p-0">

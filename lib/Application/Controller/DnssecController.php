@@ -53,6 +53,7 @@ class DnssecController extends BaseController
 
         $zone_id = htmlspecialchars($_GET['id']);
         $perm_view = Permission::getViewPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
         (UserManager::verifyPermission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
@@ -64,6 +65,40 @@ class DnssecController extends BaseController
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         if ($dnsRecord->zoneIdExists($zone_id) == "0") {
             $this->showError(_('There is no zone with this ID.'));
+        }
+
+        // Handle unsign zone action
+        if (isset($_POST['unsign_zone']) && $perm_edit != "none") {
+            $this->validateCsrfToken();
+
+            $zone_name = $dnsRecord->getDomainNameById($zone_id);
+            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
+
+            // Check if zone is secured before attempting to unsecure
+            if ($zone_name === false || !$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
+                $this->setMessage('dnssec', 'info', _('Zone is not currently signed with DNSSEC.'));
+            } else {
+                // Try to unsecure the zone
+                $result = $dnssecProvider->unsecureZone((string)$zone_name);
+
+                if ($result) {
+                    // Verify the zone is now unsecured
+                    if (!$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
+                        // Update SOA serial after unsigning
+                        $dnsRecord->updateSOASerial($zone_id);
+                        $this->setMessage('dnssec', 'success', _('Zone has been unsigned successfully.'));
+                        // Redirect to edit page since DNSSEC is no longer relevant
+                        $this->redirect('index.php?page=edit&id=' . $zone_id);
+                        return;
+                    } else {
+                        $this->setMessage('dnssec', 'warning', _('Zone unsigning requested successfully, but verification failed.'));
+                        error_log("DNSSEC unsigning verification failed for zone: $zone_name - API returned success but zone still secured");
+                    }
+                } else {
+                    $this->setMessage('dnssec', 'error', _('Failed to unsign zone. Check PowerDNS logs for details.'));
+                    error_log("DNSSEC unsigning failed for zone: $zone_name");
+                }
+            }
         }
 
         $this->showDnsSecKeys($zone_id);
@@ -82,6 +117,7 @@ class DnssecController extends BaseController
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
+        $perm_edit = Permission::getEditPermission($this->db);
 
         $this->render('dnssec.html', [
             'domain_name' => $domain_name,
@@ -94,6 +130,7 @@ class DnssecController extends BaseController
             'zone_template_id' => DnsRecord::getZoneTemplate($this->db, $zone_id),
             'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
+            'perm_edit' => $perm_edit,
         ]);
     }
 }
