@@ -42,7 +42,21 @@
                         {% endif %}
                     </td>
                     <td>{{ template['name'] }}</td>
-                    <td>{{ template['descr'] }}</td>
+                    <td>
+                        {% if template['descr'] %}
+                            {% if template['descr']|length > 30 %}
+                                <span>{{ template['descr']|slice(0, 30) }}...</span>
+                                <i class="bi bi-info-circle text-secondary ms-1" 
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   title="{{ template['descr'] }}"></i>
+                            {% else %}
+                                {{ template['descr'] }}
+                            {% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
                     <td>
                         {% if template['creator_fullname'] %}
                             {{ template['creator_fullname'] }}
@@ -81,16 +95,19 @@
                         <div class="gap-2">
                             <a class="btn btn-sm btn-outline-secondary {% if template['zones_linked'] == '0' %}disabled{% endif %}"
                                href="{% if template['zones_linked'] != '0' %}index.php?page=list_template_zones&id={{ template['id'] }}{% else %}#{% endif %}"
-                               {% if template['zones_linked'] == '0' %}title="{% trans %}No zones are using this template{% endtrans %}" tabindex="-1" aria-disabled="true"{% endif %}>
-                                <i class="bi bi-list text-secondary"></i> <span class="d-none d-md-inline text-secondary">{% trans %}View Zones{% endtrans %}</span>
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="{% if template['zones_linked'] == '0' %}{% trans %}No zones are using this template{% endtrans %}{% else %}{% trans %}View zones using this template{% endtrans %}{% endif %}"
+                               {% if template['zones_linked'] == '0' %}tabindex="-1" aria-disabled="true"{% endif %}>
+                                <i class="bi bi-list text-secondary"></i>
                             </a>
                             <a class="btn btn-sm btn-outline-primary"
                                href="index.php?page=edit_zone_templ&id={{ template['id'] }}">
-                                <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
+                                <i class="bi bi-pencil-square text-primary"></i>
                             </a>
                             <a class="btn btn-sm btn-outline-danger"
                                href="index.php?page=delete_zone_templ&id={{ template['id'] }}">
-                                <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
+                                <i class="bi bi-trash text-danger"></i>
                             </a>
                         </div>
                     </td>
@@ -111,3 +128,13 @@
         {% endif %}
     </div>
 </div>
+
+<script>
+    // Initialize Bootstrap tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>
