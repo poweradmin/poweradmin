@@ -23,23 +23,6 @@ CREATE TABLE "public"."log_zones" (
 ) WITH (oids = false);
 
 
-CREATE SEQUENCE login_attempts_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
-
-CREATE TABLE "public"."login_attempts" (
-    "id" integer DEFAULT nextval('login_attempts_id_seq') NOT NULL,
-    "user_id" integer NULL,
-    "ip_address" character varying(45) NOT NULL,
-    "timestamp" integer NOT NULL,
-    "successful" boolean NOT NULL,
-    CONSTRAINT "login_attempts_pkey" PRIMARY KEY ("id"),
-    CONSTRAINT "fk_login_attempts_users" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
-) WITH (oids = false);
-
-CREATE INDEX "idx_login_attempts_user_id" ON "public"."login_attempts" USING btree ("user_id");
-CREATE INDEX "idx_login_attempts_ip_address" ON "public"."login_attempts" USING btree ("ip_address");
-CREATE INDEX "idx_login_attempts_timestamp" ON "public"."login_attempts" USING btree ("timestamp");
-
-
 CREATE TABLE "public"."migrations" (
                                        "version" bigint NOT NULL,
                                        "migration_name" character varying(100),
@@ -133,6 +116,22 @@ CREATE TABLE "public"."users" (
 
 INSERT INTO "users" ("id", "username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap") VALUES
     (1,	'admin',	'$2y$12$10ei/WGJPcUY9Ea8/eVage9zBbxr0xxW82qJF/cfSyev/jX84WHQe',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
+
+CREATE SEQUENCE login_attempts_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."login_attempts" (
+    "id" integer DEFAULT nextval('login_attempts_id_seq') NOT NULL,
+    "user_id" integer NULL,
+    "ip_address" character varying(45) NOT NULL,
+    "timestamp" integer NOT NULL,
+    "successful" boolean NOT NULL,
+    CONSTRAINT "login_attempts_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "fk_login_attempts_users" FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE SET NULL
+) WITH (oids = false);
+
+CREATE INDEX "idx_login_attempts_user_id" ON "public"."login_attempts" USING btree ("user_id");
+CREATE INDEX "idx_login_attempts_ip_address" ON "public"."login_attempts" USING btree ("ip_address");
+CREATE INDEX "idx_login_attempts_timestamp" ON "public"."login_attempts" USING btree ("timestamp");
 
 CREATE SEQUENCE zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -255,4 +254,3 @@ CREATE TABLE password_reset_tokens (
 CREATE INDEX idx_prt_email ON password_reset_tokens(email);
 CREATE UNIQUE INDEX idx_prt_token ON password_reset_tokens(token);
 CREATE INDEX idx_prt_expires ON password_reset_tokens(expires_at);
-EOF < /dev/null

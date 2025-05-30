@@ -234,4 +234,3 @@ CREATE TABLE `password_reset_tokens` (
     KEY `idx_email` (`email`),
     KEY `idx_expires` (`expires_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-EOF < /dev/null

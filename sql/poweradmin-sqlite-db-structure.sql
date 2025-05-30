@@ -6,21 +6,6 @@ CREATE TABLE log_users (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, cr
 CREATE TABLE log_zones (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL, zone_id integer);
 
 
-CREATE TABLE login_attempts (
-    id INTEGER PRIMARY KEY AUTOINCREMENT,
-    user_id INTEGER NULL,
-    ip_address VARCHAR(45) NOT NULL,
-    timestamp INTEGER NOT NULL,
-    successful BOOLEAN NOT NULL,
-    FOREIGN KEY (user_id) REFERENCES users(id)
-        ON DELETE SET NULL
-);
-
-CREATE INDEX idx_login_attempts_user_id ON login_attempts(user_id);
-CREATE INDEX idx_login_attempts_ip_address ON login_attempts(ip_address);
-CREATE INDEX idx_login_attempts_timestamp ON login_attempts(timestamp);
-
-
 CREATE TABLE migrations (
     version INTEGER PRIMARY KEY,
     migration_name VARCHAR(100) NULL,
@@ -71,6 +56,20 @@ CREATE TABLE records_zone_templ (domain_id integer NOT NULL, record_id integer N
 CREATE TABLE users (id integer PRIMARY KEY, username VARCHAR(64) NOT NULL, password VARCHAR(128) NOT NULL, fullname VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, description VARCHAR(1024) NOT NULL, perm_templ integer NOT NULL, active integer(1) NOT NULL, use_ldap integer(1) NOT NULL);
 
 INSERT INTO "users" ("id", "username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap") VALUES (1,	'admin',	'$2y$12$10ei/WGJPcUY9Ea8/eVage9zBbxr0xxW82qJF/cfSyev/jX84WHQe',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
+
+CREATE TABLE login_attempts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NULL,
+    ip_address VARCHAR(45) NOT NULL,
+    timestamp INTEGER NOT NULL,
+    successful BOOLEAN NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id)
+        ON DELETE SET NULL
+);
+
+CREATE INDEX idx_login_attempts_user_id ON login_attempts(user_id);
+CREATE INDEX idx_login_attempts_ip_address ON login_attempts(ip_address);
+CREATE INDEX idx_login_attempts_timestamp ON login_attempts(timestamp);
 
 CREATE TABLE zone_templ (
     id integer PRIMARY KEY, 
@@ -162,4 +161,3 @@ CREATE TABLE password_reset_tokens (
 CREATE INDEX idx_prt_email ON password_reset_tokens(email);
 CREATE UNIQUE INDEX idx_prt_token ON password_reset_tokens(token);
 CREATE INDEX idx_prt_expires ON password_reset_tokens(expires_at);
-EOF < /dev/null
