@@ -17,3 +17,4 @@ If your name is missing from the lists below, please [contact me](https://github
 
 * Stefano Rizzetto
 * Asher Manangan
+* Michiel Visser
