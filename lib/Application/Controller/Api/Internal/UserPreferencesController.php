@@ -28,8 +28,9 @@ class UserPreferencesController extends InternalApiController
         $userId = $this->userContextService->getLoggedInUserId();
 
         if (!$userId) {
-            echo $this->returnJsonResponse(['error' => 'Unauthorized'], 401);
-            return;
+            $response = $this->returnJsonResponse(['error' => 'Unauthorized'], 401);
+            $response->send();
+            exit;
         }
 
         $method = $_SERVER['REQUEST_METHOD'] ?? 'GET';
@@ -46,7 +47,9 @@ class UserPreferencesController extends InternalApiController
                 $this->handleDelete($userId);
                 break;
             default:
-                echo $this->returnJsonResponse(['error' => 'Method not allowed'], 405);
+                $response = $this->returnJsonResponse(['error' => 'Method not allowed'], 405);
+                $response->send();
+                exit;
         }
     }
 
@@ -56,15 +59,20 @@ class UserPreferencesController extends InternalApiController
 
         if ($key) {
             if (!UserPreference::isValidKey($key)) {
-                echo $this->returnJsonResponse(['error' => 'Invalid preference key'], 400);
-                return;
+                $response = $this->returnJsonResponse(['error' => 'Invalid preference key'], 400);
+                $response->send();
+                exit;
             }
 
             $value = $this->userPreferenceService->getPreference($userId, $key);
-            echo $this->returnJsonResponse(['key' => $key, 'value' => $value]);
+            $response = $this->returnJsonResponse(['key' => $key, 'value' => $value]);
+            $response->send();
+            exit;
         } else {
             $preferences = $this->userPreferenceService->getAllPreferences($userId);
-            echo $this->returnJsonResponse(['preferences' => $preferences]);
+            $response = $this->returnJsonResponse(['preferences' => $preferences]);
+            $response->send();
+            exit;
         }
     }
 
@@ -73,8 +81,9 @@ class UserPreferencesController extends InternalApiController
         $input = $this->getJsonInput();
 
         if (!$input || !isset($input['key']) || !isset($input['value'])) {
-            echo $this->returnJsonResponse(['error' => 'Missing key or value'], 400);
-            return;
+            $response = $this->returnJsonResponse(['error' => 'Missing key or value'], 400);
+            $response->send();
+            exit;
         }
 
         $key = $input['key'];
@@ -82,13 +91,17 @@ class UserPreferencesController extends InternalApiController
 
         try {
             $this->userPreferenceService->setPreference($userId, $key, $value);
-            echo $this->returnJsonResponse([
+            $response = $this->returnJsonResponse([
                 'success' => true,
                 'key' => $key,
                 'value' => $value
             ]);
+            $response->send();
+            exit;
         } catch (\InvalidArgumentException $e) {
-            echo $this->returnJsonResponse(['error' => $e->getMessage()], 400);
+            $response = $this->returnJsonResponse(['error' => $e->getMessage()], 400);
+            $response->send();
+            exit;
         }
     }
 
@@ -97,16 +110,20 @@ class UserPreferencesController extends InternalApiController
         $key = $_GET['key'] ?? null;
 
         if (!$key) {
-            echo $this->returnJsonResponse(['error' => 'Missing key parameter'], 400);
-            return;
+            $response = $this->returnJsonResponse(['error' => 'Missing key parameter'], 400);
+            $response->send();
+            exit;
         }
 
         if (!UserPreference::isValidKey($key)) {
-            echo $this->returnJsonResponse(['error' => 'Invalid preference key'], 400);
-            return;
+            $response = $this->returnJsonResponse(['error' => 'Invalid preference key'], 400);
+            $response->send();
+            exit;
         }
 
         $this->userPreferenceService->resetPreference($userId, $key);
-        echo $this->returnJsonResponse(['success' => true, 'key' => $key]);
+        $response = $this->returnJsonResponse(['success' => true, 'key' => $key]);
+        $response->send();
+        exit;
     }
 }
