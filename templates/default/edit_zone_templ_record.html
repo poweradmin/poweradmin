@@ -222,11 +222,11 @@
         
         if (supportsPriority(recordType)) {
             priorityInput.removeAttribute('readonly');
-            priorityInput.classList.remove('bg-light');
+            priorityInput.classList.remove('bg-dark-subtle');
             priorityInput.setAttribute('tabindex', '0');
         } else {
             priorityInput.setAttribute('readonly', 'readonly');
-            priorityInput.classList.add('bg-light');
+            priorityInput.classList.add('bg-dark-subtle');
             priorityInput.value = '0';
             priorityInput.setAttribute('tabindex', '-1');
         }

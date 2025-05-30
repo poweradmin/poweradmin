@@ -241,7 +241,7 @@
                 <input type="hidden" name="page" value="edit">
                 <input type="hidden" name="id" value="{{ zone_id }}">
                 
-                <div class="d-flex align-items-center py-2 px-3 {% if search_term or record_type_filter or content_filter %}bg-primary-subtle border-primary{% else %}bg-light{% endif %} border rounded">
+                <div class="d-flex align-items-center py-2 px-3 {% if search_term or record_type_filter or content_filter %}border-primary{% endif %} border rounded">
                     <div class="me-2">
                         <i class="bi bi-funnel{% if search_term or record_type_filter or content_filter %}-fill text-primary{% endif %} me-1"></i>
                         <strong>{% trans %}Filter:{% endtrans %}</strong>
@@ -863,11 +863,11 @@
         if (priorityInput) {
             if (supportsPriority(recordType)) {
                 priorityInput.removeAttribute('readonly');
-                priorityInput.classList.remove('bg-light');
+                priorityInput.classList.remove('bg-dark-subtle');
                 priorityInput.setAttribute('tabindex', '0');
             } else {
                 priorityInput.setAttribute('readonly', 'readonly');
-                priorityInput.classList.add('bg-light');
+                priorityInput.classList.add('bg-dark-subtle');
                 priorityInput.value = '0';
                 priorityInput.setAttribute('tabindex', '-1');
             }
@@ -947,7 +947,7 @@
             const recordType = priorityField.getAttribute('data-record-type');
             if (recordType && !supportsPriority(recordType)) {
                 priorityField.setAttribute('readonly', 'readonly');
-                priorityField.classList.add('bg-light');
+                priorityField.classList.add('bg-dark-subtle');
                 priorityField.setAttribute('tabindex', '-1');
             }
         });
