@@ -51,7 +51,7 @@ class DnssecController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = (int) $_GET['id'];
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
@@ -104,7 +104,7 @@ class DnssecController extends BaseController
         $this->showDnsSecKeys($zone_id);
     }
 
-    public function showDnsSecKeys(string $zone_id): void
+    public function showDnsSecKeys(int $zone_id): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $domain_name = $dnsRecord->getDomainNameById($zone_id);
