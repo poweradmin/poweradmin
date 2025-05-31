@@ -98,6 +98,16 @@ class DeleteRecordController extends BaseController
                 $hasPtrRecord = true;
             }
 
+            // Check if this is a PTR record that might have a corresponding A/AAAA record
+            $hasForwardRecord = false;
+            $deletedForwardRecord = false;
+            if (
+                $record_info['type'] === RecordType::PTR &&
+                $this->config->get('interface', 'add_reverse_record', false)
+            ) {
+                $hasForwardRecord = true;
+            }
+
             if ($dnsRecord->deleteRecord($record_id)) {
                 if (isset($record_info['prio'])) {
                     $this->logger->logInfo(sprintf(
@@ -136,6 +146,15 @@ class DeleteRecordController extends BaseController
                     );
                 }
 
+                // Delete corresponding A/AAAA record if this was a PTR record and deletion is requested
+                $delete_forward = isset($_GET['delete_forward']) && $_GET['delete_forward'] === '1';
+                if ($hasForwardRecord && $delete_forward) {
+                    $deletedForwardRecord = $this->reverseRecordCreator->deleteForwardRecord(
+                        $record_info['name'],
+                        $record_info['content']
+                    );
+                }
+
                 if ($this->config->get('dnssec', 'enabled', false)) {
                     $zone_name = $dnsRecord->getDomainNameById($zid);
                     $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
@@ -145,16 +164,26 @@ class DeleteRecordController extends BaseController
                 if (!$dnsRecord->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
                     $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
 
-                    if ($deletedPtrRecord) {
+                    if ($deletedPtrRecord && $deletedForwardRecord) {
+                        $this->setMessage('edit', 'success', _('The record and its corresponding PTR and A/AAAA records have been deleted successfully.'));
+                    } elseif ($deletedPtrRecord) {
                         $this->setMessage('edit', 'success', _('The record and its corresponding PTR record have been deleted successfully.'));
+                    } elseif ($deletedForwardRecord) {
+                        $this->setMessage('edit', 'success', _('The record and its corresponding A/AAAA record have been deleted successfully.'));
                     } elseif ($hasPtrRecord) {
                         $this->setMessage('edit', 'success', _('The record has been deleted successfully. No matching PTR record was found.'));
+                    } elseif ($hasForwardRecord) {
+                        $this->setMessage('edit', 'success', _('The record has been deleted successfully. No matching A/AAAA record was found.'));
                     } else {
                         $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));
                     }
                 } elseif ($this->config->get('interface', 'show_record_comments', false)) {
-                    if ($deletedPtrRecord) {
+                    if ($deletedPtrRecord && $deletedForwardRecord) {
+                        $this->setMessage('edit', 'warn', _('The record and its corresponding PTR and A/AAAA records were deleted but the comment was preserved because similar records exist.'));
+                    } elseif ($deletedPtrRecord) {
                         $this->setMessage('edit', 'warn', _('The record and its corresponding PTR record were deleted but the comment was preserved because similar records exist.'));
+                    } elseif ($deletedForwardRecord) {
+                        $this->setMessage('edit', 'warn', _('The record and its corresponding A/AAAA record were deleted but the comment was preserved because similar records exist.'));
                     } else {
                         $this->setMessage('edit', 'warn', _('The record was deleted but the comment was preserved because similar records exist.'));
                     }

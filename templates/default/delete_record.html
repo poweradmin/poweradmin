@@ -85,8 +85,18 @@
         </div>
         {% endif %}
 
+        {% if record_info['type'] == 'PTR' %}
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="delete_forward" name="delete_forward" checked
+                   onclick="updateDeleteLinkForward(this.checked)">
+            <label class="form-check-label" for="delete_forward">
+                {% trans %}Also delete corresponding A/AAAA record (if exists){% endtrans %}
+            </label>
+        </div>
+        {% endif %}
+
         <div class="mt-4">
-            <a href="index.php?page=delete_record&id={{ record_id }}&confirm=1{% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}&delete_ptr=1{% endif %}"
+            <a href="index.php?page=delete_record&id={{ record_id }}&confirm=1{% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}&delete_ptr=1{% endif %}{% if record_info['type'] == 'PTR' %}&delete_forward=1{% endif %}"
                id="delete_link" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this record{% endtrans %}
             </a>
@@ -105,6 +115,21 @@
                     deleteLink.href = baseUrl + '&delete_ptr=1';
                 } else {
                     deleteLink.href = baseUrl + '&delete_ptr=0';
+                }
+            }
+        </script>
+        {% endif %}
+
+        {% if record_info['type'] == 'PTR' %}
+        <script>
+            function updateDeleteLinkForward(checked) {
+                const deleteLink = document.getElementById('delete_link');
+                const baseUrl = 'index.php?page=delete_record&id={{ record_id }}&confirm=1';
+
+                if (checked) {
+                    deleteLink.href = baseUrl + '&delete_forward=1';
+                } else {
+                    deleteLink.href = baseUrl + '&delete_forward=0';
                 }
             }
         </script>

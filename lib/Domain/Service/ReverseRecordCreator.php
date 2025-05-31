@@ -142,6 +142,95 @@ class ReverseRecordCreator
         return false;
     }
 
+    /**
+     * Find and delete the corresponding A or AAAA record for a given PTR record
+     *
+     * @param string $ptrName PTR record name (e.g., 1.0.168.192.in-addr.arpa)
+     * @param string $ptrContent PTR record content (hostname)
+     * @return bool True if a matching A/AAAA record was found and deleted
+     */
+    public function deleteForwardRecord(string $ptrName, string $ptrContent): bool
+    {
+        // Extract IP address from PTR name
+        $ipAddress = $this->extractIpFromPtrName($ptrName);
+        if ($ipAddress === null) {
+            return false;
+        }
+
+        // Determine record type based on IP address format
+        $recordType = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? RecordType::A : RecordType::AAAA;
+
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        // Remove trailing dot from PTR content if present
+        $hostname = rtrim($ptrContent, '.');
+
+        // Look for A or AAAA record with matching hostname and IP address
+        $query = "SELECT id, domain_id FROM $records_table 
+                  WHERE type = ? AND content = ? 
+                  AND (name = ? OR name LIKE ?)";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([$recordType, $ipAddress, $hostname, "$hostname.%"]);
+
+        $result = $stmt->fetch();
+        if ($result) {
+            $recordId = $result['id'];
+            $domainId = $result['domain_id'];
+
+            $dnsRecord = new DnsRecord($this->db, $this->config);
+            if ($dnsRecord->deleteRecord($recordId)) {
+                $dnsRecord->updateSOASerial($domainId);
+
+                if ($this->config->get('dnssec', 'enabled')) {
+                    $zone_name = $dnsRecord->getDomainNameById($domainId);
+                    $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
+                    $dnssecProvider->rectifyZone($zone_name);
+                }
+
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Extract IP address from PTR record name
+     *
+     * @param string $ptrName PTR record name (e.g., 1.0.168.192.in-addr.arpa or x.x.x.x.ip6.arpa)
+     * @return string|null IP address or null if extraction fails
+     */
+    private function extractIpFromPtrName(string $ptrName): ?string
+    {
+        // Handle IPv4 PTR records (e.g., 1.0.168.192.in-addr.arpa)
+        if (str_ends_with($ptrName, '.in-addr.arpa')) {
+            $octets = explode('.', str_replace('.in-addr.arpa', '', $ptrName));
+            if (count($octets) === 4) {
+                return implode('.', array_reverse($octets));
+            }
+        }
+
+        // Handle IPv6 PTR records (e.g., b.a.9.8.7.6.5.0.4.0.0.3.2.0.0.1.0.0.0.0.0.0.0.0.0.0.0.0.1.2.3.4.ip6.arpa)
+        if (str_ends_with($ptrName, '.ip6.arpa')) {
+            $nibbles = explode('.', str_replace('.ip6.arpa', '', $ptrName));
+            if (count($nibbles) === 32) {
+                $reversedNibbles = array_reverse($nibbles);
+                $ipv6 = '';
+                for ($i = 0; $i < 28; $i += 4) {
+                    if ($i > 0) {
+                        $ipv6 .= ':';
+                    }
+                    $ipv6 .= $reversedNibbles[$i] . $reversedNibbles[$i + 1] . $reversedNibbles[$i + 2] . $reversedNibbles[$i + 3];
+                }
+                return $ipv6;
+            }
+        }
+
+        return null;
+    }
+
     private function addReverseRecord($zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool
     {
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
