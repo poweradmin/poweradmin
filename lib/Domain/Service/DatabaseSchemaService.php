@@ -67,10 +67,19 @@ class DatabaseSchemaService
      */
     public function createTable(string $name, array $fields, array $options = array()): void
     {
+        if (empty($fields)) {
+            throw new \InvalidArgumentException("Cannot create table '$name' with no fields");
+        }
+
         $db_type = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
         $query_fields = array();
 
         foreach ($fields as $key => $arr) {
+            // Skip fields that don't have a valid type
+            if (!isset($arr['type']) || empty($arr['type'])) {
+                continue;
+            }
+
             if ($arr['type'] == 'text' and isset($arr['length'])) {
                 $arr['type'] = 'VARCHAR';
             }
@@ -89,7 +98,7 @@ class DatabaseSchemaService
                 $line = $key . ' ' . $arr['type'] . (isset($arr['length']) ? '(' . $arr['length'] . ')' : '');
             }
 
-            if ($arr['notnull'] && $db_type != 'pgsql' && !isset($arr['autoincrement'])) {
+            if (isset($arr['notnull']) && $arr['notnull'] && $db_type != 'pgsql' && !isset($arr['autoincrement'])) {
                 $line .= ' NOT NULL';
             }
 
@@ -97,7 +106,7 @@ class DatabaseSchemaService
                 $line .= ' AUTO_INCREMENT';
             }
 
-            if ($arr['flags'] == 'primary_keynot_null') {
+            if (isset($arr['flags']) && $arr['flags'] == 'primary_keynot_null') {
                 $line .= ' PRIMARY KEY';
             }
 
@@ -106,6 +115,10 @@ class DatabaseSchemaService
             }
 
             $query_fields[] = $line;
+        }
+
+        if (empty($query_fields)) {
+            throw new \InvalidArgumentException("Cannot create table '$name' - no valid fields processed");
         }
 
         $query = "CREATE TABLE $name (" . implode(', ', $query_fields) . ')';
@@ -124,7 +137,11 @@ class DatabaseSchemaService
             }
         }
 
-        $this->db->exec($query);
+        try {
+            $this->db->exec($query);
+        } catch (\PDOException $e) {
+            throw new \RuntimeException("Failed to create table '$name'. SQL: $query. Error: " . $e->getMessage(), 0, $e);
+        }
     }
 
     /**

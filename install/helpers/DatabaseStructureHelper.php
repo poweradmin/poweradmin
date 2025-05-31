@@ -290,7 +290,7 @@ class DatabaseStructureHelper
                         'name' => 'zone_templ_id',
                         'table' => 'zones',
                         'flags' => ''
-                    ),
+                    )
                 )
             ),
             array(
@@ -570,7 +570,7 @@ class DatabaseStructureHelper
                         'name' => 'zone_id',
                         'table' => 'log_zones',
                         'flags' => ''
-                    ),
+                    )
                 )
             ),
             array(
@@ -611,9 +611,9 @@ class DatabaseStructureHelper
                         'unsigned' => 0,
                         'type' => 'integer',
                         'name' => 'priority',
-                        'table' => 'log_zones',
+                        'table' => 'log_users',
                         'flags' => ''
-                    ),
+                    )
                 )
             ),
             array(
@@ -1051,7 +1051,7 @@ class DatabaseStructureHelper
                         'flags' => ''
                     ),
                     'user_agent' => array(
-                        'type' => 'clob',
+                        'type' => 'text',
                         'notnull' => 0,
                         'name' => 'user_agent',
                         'table' => 'user_agreements',
