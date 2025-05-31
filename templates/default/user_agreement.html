@@ -1,0 +1,71 @@
+{% block content %}
+<div class="container mt-4">
+    {% if msg %}
+    <div class="alert alert-{{ type }} bg-{{ type }} bg-opacity-10 py-2 border border-{{ type }} small alert-dismissible fade show" role="alert">
+        <i class="bi bi-{% if type == 'danger' %}exclamation-triangle{% elseif type == 'warning' %}exclamation-circle{% elseif type == 'success' %}check-circle{% else %}info-circle{% endif %}-fill me-2 text-{{ type }}"></i>
+        <span class="text-{{ type }}">{{ msg }}</span>
+        <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+    {% endif %}
+
+    <div class="card shadow-sm">
+        <div class="card-header py-3">
+            <strong><i class="bi bi-shield-check me-2"></i>{% trans %}User Agreement{% endtrans %}</strong>
+        </div>
+        <div class="card-body">
+            <div class="agreement-content mb-4" style="max-height: 350px; overflow-y: auto; border: 1px solid #dee2e6; padding: 1rem;">
+                {% if custom_content_exists %}
+                    {% include 'custom/user_agreement_content.html' %}
+                {% else %}
+                    {% include 'user_agreement_content.html' %}
+                {% endif %}
+            </div>
+            
+            <form method="post" action="index.php?page=user_agreement" class="needs-validation" novalidate>
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <input type="hidden" name="agreement_version" value="{{ agreement_version }}">
+                
+                <div class="form-check mb-3">
+                    <input class="form-check-input" type="checkbox" id="accept_agreement" name="accept_agreement" required>
+                    <label class="form-check-label" for="accept_agreement">
+                        <strong>{% trans %}I have read and agree to the terms outlined above{% endtrans %}</strong>
+                    </label>
+                    <div class="invalid-feedback">
+                        {% trans %}You must accept the agreement to continue{% endtrans %}
+                    </div>
+                </div>
+                
+                <div class="d-flex justify-content-between">
+                    <a href="index.php?page=logout" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-x-circle me-1 text-secondary"></i>
+                        {% trans %}Decline & Logout{% endtrans %}
+                    </a>
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        <i class="bi bi-check-circle me-1 text-white"></i>
+                        {% trans %}Accept & Continue{% endtrans %}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+// Form validation
+(function() {
+    'use strict';
+    window.addEventListener('load', function() {
+        var forms = document.getElementsByClassName('needs-validation');
+        var validation = Array.prototype.filter.call(forms, function(form) {
+            form.addEventListener('submit', function(event) {
+                if (form.checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    }, false);
+})();
+</script>
+{% endblock %}

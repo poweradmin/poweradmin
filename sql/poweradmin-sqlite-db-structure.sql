@@ -161,3 +161,17 @@ CREATE TABLE password_reset_tokens (
 CREATE INDEX idx_prt_email ON password_reset_tokens(email);
 CREATE UNIQUE INDEX idx_prt_token ON password_reset_tokens(token);
 CREATE INDEX idx_prt_expires ON password_reset_tokens(expires_at);
+
+CREATE TABLE user_agreements (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    agreement_version VARCHAR(50) NOT NULL,
+    accepted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ip_address VARCHAR(45) DEFAULT NULL,
+    user_agent TEXT DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE UNIQUE INDEX unique_user_agreement ON user_agreements(user_id, agreement_version);
+CREATE INDEX idx_user_agreements_user_id ON user_agreements(user_id);
+CREATE INDEX idx_user_agreements_version ON user_agreements(agreement_version);

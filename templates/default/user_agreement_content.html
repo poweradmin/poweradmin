@@ -1,0 +1,33 @@
+<h5>{% trans %}Terms of Use{% endtrans %}</h5>
+<p>{% trans %}By using this Poweradmin installation, you agree to the following terms:{% endtrans %}</p>
+
+<h6>{% trans %}Acceptable Use{% endtrans %}</h6>
+<ul>
+    <li>{% trans %}You will use this system responsibly and in accordance with applicable laws{% endtrans %}</li>
+    <li>{% trans %}You will not attempt to gain unauthorized access to other users' data{% endtrans %}</li>
+    <li>{% trans %}You will keep your login credentials secure and confidential{% endtrans %}</li>
+    <li>{% trans %}You will not use this system for any malicious or illegal activities{% endtrans %}</li>
+</ul>
+
+<h6>{% trans %}Data Protection{% endtrans %}</h6>
+<ul>
+    <li>{% trans %}Your login activity and DNS management actions may be logged for security and audit purposes{% endtrans %}</li>
+    <li>{% trans %}You are responsible for the accuracy of DNS records you create or modify{% endtrans %}</li>
+    <li>{% trans %}We will protect your personal information in accordance with applicable privacy laws{% endtrans %}</li>
+</ul>
+
+<h6>{% trans %}System Availability{% endtrans %}</h6>
+<p>{% trans %}While we strive to maintain system availability, we cannot guarantee 100% uptime. Users should not rely solely on this system for critical DNS operations without appropriate backups and monitoring.{% endtrans %}</p>
+
+<h6>{% trans %}Limitation of Liability{% endtrans %}</h6>
+<p>{% trans %}This system is provided "as is" without any warranties. The administrators are not liable for any damages or losses resulting from the use of this system.{% endtrans %}</p>
+
+<h6>{% trans %}Changes to Agreement{% endtrans %}</h6>
+<p>{% trans %}These terms may be updated from time to time. Users will be required to accept any changes before continuing to use the system.{% endtrans %}</p>
+
+<div class="text-muted mt-3">
+    <small>
+        <strong>{% trans %}Agreement Version:{% endtrans %}</strong> {{ agreement_version }}<br>
+        <strong>{% trans %}Last Updated:{% endtrans %}</strong> {% trans %}Please contact your administrator for the last update date{% endtrans %}
+    </small>
+</div>

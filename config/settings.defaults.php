@@ -288,4 +288,13 @@ return [
         'log_requests' => false,                       // Log all API requests
         'docs_enabled' => false,                       // Enable API documentation at /api/docs endpoint
     ],
+
+    /**
+     * User Agreement Settings
+     */
+    'user_agreement' => [
+        'enabled' => false,                            // Enable user agreement system
+        'current_version' => '1.0',                    // Current agreement version
+        'require_on_version_change' => true,           // Require re-acceptance when version changes
+    ],
 ];

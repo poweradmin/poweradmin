@@ -35,10 +35,13 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Domain\Service\UserAgreementService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
+use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
 use ReflectionClass;
 
 class SessionAuthenticator extends LoggingService
@@ -201,7 +204,41 @@ class SessionAuthenticator extends LoggingService
             $this->sqlAuthenticator->authenticate();
         }
 
+        // Check for user agreement requirements after successful authentication
+        $this->checkUserAgreementRequirements();
+
         $this->logDebug('Authentication process completed for user {username}', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+    }
+
+    private function checkUserAgreementRequirements(): void
+    {
+        $userContextService = new UserContextService();
+
+        // Only check if user is authenticated and not in API context
+        if (!$userContextService->isAuthenticated()) {
+            return;
+        }
+
+        // Skip agreement check for API requests and specific pages
+        $currentPage = $_REQUEST['page'] ?? '';
+        $skipPages = ['user_agreement', 'logout', 'mfa_verify', 'mfa_setup'];
+        if (in_array($currentPage, $skipPages) || strpos($currentPage, 'api/') === 0) {
+            return;
+        }
+
+        $agreementService = new UserAgreementService(
+            new DbUserAgreementRepository($this->db),
+            $this->configManager
+        );
+
+        $userId = $userContextService->getLoggedInUserId();
+        if ($agreementService->isAgreementRequired($userId)) {
+            $this->logInfo('User agreement required for user {userid}', ['userid' => $userId]);
+
+            // Redirect to agreement page - user will be sent to index after acceptance
+            header('Location: index.php?page=user_agreement');
+            exit;
+        }
     }
 
     private function userUsesLDAP(): bool

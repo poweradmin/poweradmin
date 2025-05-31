@@ -112,3 +112,18 @@ CREATE TABLE IF NOT EXISTS password_reset_tokens (
 CREATE INDEX IF NOT EXISTS idx_prt_email ON password_reset_tokens(email);
 CREATE UNIQUE INDEX IF NOT EXISTS idx_prt_token ON password_reset_tokens(token);
 CREATE INDEX IF NOT EXISTS idx_prt_expires ON password_reset_tokens(expires_at);
+
+-- Add user_agreements table for user agreement functionality
+CREATE TABLE IF NOT EXISTS user_agreements (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER NOT NULL,
+    agreement_version VARCHAR(50) NOT NULL,
+    accepted_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ip_address VARCHAR(45) DEFAULT NULL,
+    user_agent TEXT DEFAULT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+CREATE UNIQUE INDEX IF NOT EXISTS unique_user_agreement ON user_agreements(user_id, agreement_version);
+CREATE INDEX IF NOT EXISTS idx_user_agreements_user_id ON user_agreements(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_agreements_version ON user_agreements(agreement_version);

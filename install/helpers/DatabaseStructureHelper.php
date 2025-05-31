@@ -1002,6 +1002,74 @@ class DatabaseStructureHelper
                         'ondelete' => 'CASCADE'
                     )
                 )
+            ),
+            array(
+                'table_name' => 'user_agreements',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'autoincrement' => 1,
+                        'name' => 'id',
+                        'table' => 'user_agreements',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'user_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'user_id',
+                        'table' => 'user_agreements',
+                        'flags' => 'not_null'
+                    ),
+                    'agreement_version' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'length' => 50,
+                        'fixed' => 0,
+                        'name' => 'agreement_version',
+                        'table' => 'user_agreements',
+                        'flags' => 'not_null'
+                    ),
+                    'accepted_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'CURRENT_TIMESTAMP',
+                        'name' => 'accepted_at',
+                        'table' => 'user_agreements',
+                        'flags' => 'not_null'
+                    ),
+                    'ip_address' => array(
+                        'type' => 'text',
+                        'notnull' => 0,
+                        'length' => 45,
+                        'fixed' => 0,
+                        'name' => 'ip_address',
+                        'table' => 'user_agreements',
+                        'flags' => ''
+                    ),
+                    'user_agent' => array(
+                        'type' => 'clob',
+                        'notnull' => 0,
+                        'name' => 'user_agent',
+                        'table' => 'user_agreements',
+                        'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'unique_user_agreement' => array('user_id', 'agreement_version'),
+                    'idx_user_agreements_user_id' => array('user_id'),
+                    'idx_user_agreements_version' => array('agreement_version')
+                ),
+                'foreign_keys' => array(
+                    'fk_user_agreements_user' => array(
+                        'table' => 'users',
+                        'fields' => array('user_id' => 'id'),
+                        'ondelete' => 'CASCADE'
+                    )
+                )
             )
         );
     }

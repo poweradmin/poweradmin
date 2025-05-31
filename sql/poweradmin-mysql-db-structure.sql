@@ -234,3 +234,17 @@ CREATE TABLE `password_reset_tokens` (
     KEY `idx_email` (`email`),
     KEY `idx_expires` (`expires_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+CREATE TABLE `user_agreements` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `user_id` int(11) NOT NULL,
+    `agreement_version` varchar(50) NOT NULL,
+    `accepted_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `ip_address` varchar(45) DEFAULT NULL,
+    `user_agent` text DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `unique_user_agreement` (`user_id`, `agreement_version`),
+    KEY `idx_user_id` (`user_id`),
+    KEY `idx_agreement_version` (`agreement_version`),
+    CONSTRAINT `fk_user_agreements_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

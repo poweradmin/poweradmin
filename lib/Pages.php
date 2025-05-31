@@ -105,6 +105,7 @@ class Pages
             'migrations',
             'reset_password',
             'search',
+            'user_agreement',
             'users',
             'whois',
             'rdap',
