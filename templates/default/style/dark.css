@@ -310,6 +310,18 @@ table tfoot tr td,
     color: #ffffff !important;
 }
 
+.btn-danger {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+.btn-danger:hover {
+    background-color: #bb2d3b !important;
+    border-color: #b02a37 !important;
+    color: #ffffff !important;
+}
+
 .card-header {
     background-color: var(--bg-dark-secondary) !important;
     border-color: var(--border-dark) !important;
@@ -398,6 +410,26 @@ table tfoot tr td,
     list-style: none;
     background-color: var(--bg-dark-secondary);
     border-radius: 0.25rem;
+}
+
+.breadcrumb-item {
+    color: var(--text-light);
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: var(--text-muted) !important;
+}
+
+.breadcrumb-item.active {
+    color: var(--text-muted);
+}
+
+.breadcrumb-item a {
+    color: var(--text-secondary);
+}
+
+.breadcrumb-item a:hover {
+    color: var(--text-light);
 }
 
 /* Input styling utilities */
@@ -510,4 +542,29 @@ input[type=number]::-webkit-outer-spin-button {
 .alert p.small,
 .alert .small {
     color: inherit !important;
+}
+
+/* Alert variants for dark mode */
+.alert-warning {
+    background-color: #856404 !important;
+    border-color: #b58900 !important;
+    color: #fff3cd !important;
+}
+
+.alert-danger {
+    background-color: #842029 !important;
+    border-color: #b02a37 !important;
+    color: #f8d7da !important;
+}
+
+.alert-success {
+    background-color: #0f5132 !important;
+    border-color: #0a3622 !important;
+    color: #d1e7dd !important;
+}
+
+.alert-info {
+    background-color: #055160 !important;
+    border-color: #087990 !important;
+    color: #b6effb !important;
 }
