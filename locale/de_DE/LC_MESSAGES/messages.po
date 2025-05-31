@@ -5813,7 +5813,7 @@ msgstr "Activate DNSSEC Key"
 
 #: templates/default/dnssec_delete_key.html:33
 msgid "Warning"
-msgstr "Warning"
+msgstr "Warnung"
 
 #: templates/default/dnssec_edit_key.html:45
 msgid "You are about to deactivate a DNSSEC key (ID"
@@ -5957,7 +5957,7 @@ msgstr "Permanently removes this key"
 
 #: templates/default/delete_zone_templ_record.html:11
 msgid "Zone templates"
-msgstr "Zone templates"
+msgstr "Zonen Vorlagen"
 
 #: templates/default/edit_record.html:18
 msgid "Edit record"
@@ -6858,23 +6858,23 @@ msgstr "Advanced Records"
 
 #: templates/default/delete_user.html:5
 msgid "Delete user"
-msgstr "Delete user"
+msgstr "Benutzer löschen"
 
 #: templates/default/delete_user.html:11
 msgid "Delete User"
-msgstr "Delete User"
+msgstr "Benutzer löschen"
 
 #: templates/default/delete_user.html:16
 msgid "You are about to delete the user"
-msgstr "You are about to delete the user"
+msgstr "Sie sind dabei, diesen Benutzer zu löschen"
 
 #: templates/default/dnssec_delete_key.html:42
 msgid "This action cannot be undone. Are you sure you want to proceed?"
-msgstr "This action cannot be undone. Are you sure you want to proceed?"
+msgstr "Dies Aktion kann nicht rückgängig gemacht werden. Sind Sie sicher?"
 
 #: templates/default/delete_user.html:26
 msgid "Zone Ownership Transfer"
-msgstr "Zone Ownership Transfer"
+msgstr "Zonen-Besitzer Wechsel"
 
 #: templates/default/delete_user.html:30
 msgid ""
@@ -6888,35 +6888,35 @@ msgstr "Zone"
 
 #: templates/default/delete_user.html:39
 msgid "Leave"
-msgstr "Leave"
+msgstr "Erhalten"
 
 #: templates/default/delete_user.html:40
 msgid "Add new owner"
-msgstr "Add new owner"
+msgstr "Neuer Besitzer"
 
 #: templates/default/delete_user.html:41
 msgid "Owner to be added"
-msgstr "Owner to be added"
+msgstr "Übertragen an"
 
 #: templates/default/delete_user.html:80
 msgid "Delete: The zone will be completely removed from the system"
-msgstr "Delete: The zone will be completely removed from the system"
+msgstr "Löschen: Die Zone wird komplett vom System entfernt"
 
 #: templates/default/delete_user.html:81
 msgid "Leave: The zone will remain in the system but without an owner"
-msgstr "Leave: The zone will remain in the system but without an owner"
+msgstr "Erhalten: Die Zone wird erhalten, aber ohne Besitzer"
 
 #: templates/default/delete_user.html:82
 msgid "Add new owner: Transfer ownership to another user"
-msgstr "Add new owner: Transfer ownership to another user"
+msgstr "Neuer Besitzer: Eigentümerschaft wird an anderen Benutzer übertragen"
 
 #: templates/default/delete_user.html:91
 msgid "Yes, delete this user"
-msgstr "Yes, delete this user"
+msgstr "Ja, den Benutzer löschen"
 
 #: templates/default/delete_user.html:94
 msgid "No, keep this user"
-msgstr "No, keep this user"
+msgstr "Nein, den Benutzer behalten"
 
 #: templates/default/api_key_regenerate.html:16
 msgid "You are about to regenerate the API key"
@@ -6988,7 +6988,7 @@ msgstr "Passwords do not match"
 
 #: templates/default/edit_user.html:135 templates/default/add_user.html:132
 msgid "Password Requirements"
-msgstr "Password Requirements"
+msgstr "Passwort Anforderungen"
 
 #: templates/default/change_password.html:79
 msgid "Minimum length"
@@ -7194,11 +7194,11 @@ msgstr "Leer lassen um aktuelles Passwort zu verwenden"
 
 #: templates/default/edit_user.html:59 templates/default/add_user.html:69
 msgid "Permission template"
-msgstr "Permission template"
+msgstr "Benutzerrechte Vorlage"
 
 #: templates/default/edit_user.html:69 templates/default/add_user.html:80
 msgid "Select permissions for this user"
-msgstr "Select permissions for this user"
+msgstr "Berechtigungen für den Benutzer auswählen"
 
 #: templates/default/edit_user.html:76 templates/default/add_user.html:87
 msgid "Optional information about this user"
@@ -7258,7 +7258,7 @@ msgstr "This user has been assigned the permission template"
 
 #: templates/default/edit_user.html:173
 msgid "Based on this template, this user has the following permissions"
-msgstr "Based on this template, this user has the following permissions"
+msgstr "Basierend auf der Vorlage, hat der Benutzer diese Berechtigungen"
 
 #: templates/default/edit_user.html:176
 msgid "No permissions are assigned to this template"
@@ -7334,7 +7334,7 @@ msgstr "Yes, unlink these zones"
 
 #: templates/default/list_perm_templ.html:5
 msgid "Permission templates"
-msgstr "Permission templates"
+msgstr "Berechtigungsvorlagen"
 
 #: templates/default/add_perm_templ.html:6 templates/default/edit.html:763
 msgid "Add"
@@ -7346,11 +7346,11 @@ msgstr "Add Permission Template"
 
 #: templates/default/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
-msgstr "A short, descriptive name for this permission set"
+msgstr "Kurzer, erklärender Name für die Vorlage"
 
 #: templates/default/edit_perm_templ.html:32
 msgid "Optional: more detailed description of this permission set"
-msgstr "Optional: more detailed description of this permission set"
+msgstr "Optional: genauere Beschreibung der Vorlage"
 
 #: templates/default/add_perm_templ.html:36
 msgid "Add Template"
@@ -7384,27 +7384,27 @@ msgstr ""
 
 #: templates/default/edit_perm_templ.html:76
 msgid "Available Permissions"
-msgstr "Available Permissions"
+msgstr "Verfügbare Vorlagen"
 
 #: templates/default/edit_perm_templ.html:79
 msgid "Search permissions..."
-msgstr "Search permissions..."
+msgstr "Vorlagen suchen..."
 
 #: templates/default/edit_perm_templ.html:84
 msgid "Select All"
-msgstr "Select All"
+msgstr "Alle auswählen"
 
 #: templates/default/edit_perm_templ.html:95
 msgid "Zone Permissions"
-msgstr "Zone Permissions"
+msgstr "Zonen Berechtigungen"
 
 #: templates/default/edit_perm_templ.html:187
 msgid "Template Permissions"
-msgstr "Template Permissions"
+msgstr "Vorlagen Berechtigungen"
 
 #: templates/default/edit_perm_templ.html:233
 msgid "Other Permissions"
-msgstr "Other Permissions"
+msgstr "Andere Berechtigungen"
 
 #: templates/default/404.html:19
 msgid "The page you are looking for does not exist."
@@ -7674,11 +7674,11 @@ msgstr "Create a new record for this zone template"
 
 #: templates/default/delete_perm_templ.html:12
 msgid "Delete Permission Template"
-msgstr "Delete Permission Template"
+msgstr "Berechtigungsvorlage löschen"
 
 #: templates/default/delete_perm_templ.html:17
 msgid "You are about to delete the permission template"
-msgstr "You are about to delete the permission template"
+msgstr "Sie sind dabei eine Berechtigungsvorlage zu löschen"
 
 #: templates/default/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
@@ -7690,11 +7690,11 @@ msgstr "users"
 
 #: templates/default/delete_zone_templ.html:35
 msgid "Yes, delete this template"
-msgstr "Yes, delete this template"
+msgstr "Ja, diese Vorlage löschen"
 
 #: templates/default/delete_zone_templ.html:38
 msgid "No, keep this template"
-msgstr "No, keep this template"
+msgstr "Nein, die Vorlage behalten"
 
 #: templates/default/api_key_add.html:5 templates/default/api_key_add.html:13
 msgid "Add API Key"
@@ -7842,7 +7842,7 @@ msgstr "Anwenden"
 
 #: templates/default/edit.html:298 templates/default/search.html:476
 msgid "Delete record(s)"
-msgstr "Einträge löschen"
+msgstr "Eintrag/Einträge löschen"
 
 #: templates/default/edit.html:306
 msgid "Showing"
@@ -7968,15 +7968,15 @@ msgstr "No, keep this record"
 
 #: templates/default/mfa_verify.html:6
 msgid "Two-Factor Authentication"
-msgstr "Two-Factor Authentication"
+msgstr "Zwei-Factor Authentifizierung"
 
 #: templates/default/mfa_verify.html:21
 msgid "Enter verification code"
-msgstr "Enter verification code"
+msgstr "Den Überprüfungs-Code eingeben"
 
 #: templates/default/mfa_verify_email.html:28
 msgid "Looks good!"
-msgstr "Looks good!"
+msgstr "Sieht gut aus!"
 
 #: templates/default/mfa_verify.html:29
 msgid "Please enter a valid verification code."
@@ -7988,15 +7988,16 @@ msgstr "Enter the code from your authenticator app"
 
 #: templates/default/mfa_verify.html:35
 msgid "Enter the 6-digit code sent to your email"
-msgstr "Enter the 6-digit code sent to your email"
+msgstr "Den 6-stelligen Code eingeben, der Ihnen an Ihre Email"
+"Adresse geschickt wurde"
 
 #: templates/default/mfa_verify.html:41 templates/default/mfa_verify.html:110
 msgid "Verify"
-msgstr "Verify"
+msgstr "Prüfen"
 
 #: templates/default/mfa_verify.html:72
 msgid "Use a recovery code"
-msgstr "Use a recovery code"
+msgstr "Einen Wiederherstellungscode verwenden"
 
 #: templates/default/mfa_verify.html:86
 msgid "Use Recovery Code"
@@ -8113,11 +8114,11 @@ msgstr "Are you sure you want to delete this item?"
 
 #: templates/default/add_user.html:13 templates/default/add_user.html:111
 msgid "Add User"
-msgstr "Add User"
+msgstr "Benutzer hinzufügen"
 
 #: templates/default/add_user.html:28
 msgid "Optional: User's full name for identification"
-msgstr "Optional: User's full name for identification"
+msgstr "Optional: Vollständiger Name des Benutzer zur Identifizierung"
 
 #: templates/default/add_user.html:42 install/templates/step4.html.twig:56
 msgid "Provide user password"
@@ -8125,7 +8126,7 @@ msgstr "Benutzerpasswort angeben"
 
 #: templates/default/add_user.html:50
 msgid "Auto-generate password"
-msgstr "Auto-generate password"
+msgstr "Passwort automatisch generieren"
 
 #: templates/default/add_user.html:52
 msgid "Generate a secure password that meets all requirements"
@@ -8133,7 +8134,7 @@ msgstr "Generate a secure password that meets all requirements"
 
 #: templates/default/add_user.html:60
 msgid "Send password by email"
-msgstr "Send password by email"
+msgstr "Passwort per Email versenden"
 
 #: templates/default/add_user.html:62
 msgid "Send login credentials to user's email address"
@@ -8148,23 +8149,23 @@ msgstr ""
 
 #: templates/default/add_user.html:176
 msgid "Create descriptive usernames that are easy to identify"
-msgstr "Create descriptive usernames that are easy to identify"
+msgstr "Erstelle Benutzernamen die einfach zu identifizieren sind"
 
 #: templates/default/add_user.html:177
 msgid "Adding a full name helps with user identification"
-msgstr "Adding a full name helps with user identification"
+msgstr "Einen vollständigen Namen angeben erhöht die Identifizierung"
 
 #: templates/default/add_user.html:179
 msgid "Auto-generating passwords is recommended for better security"
-msgstr "Auto-generating passwords is recommended for better security"
+msgstr "Aus Sicherheitsgründen wird das automatische Generieren des Passworts empfohlen"
 
 #: templates/default/add_zone_master.html:19
 msgid "Add Master Zone"
-msgstr "Add Master Zone"
+msgstr "Master Zone hinzufügen"
 
 #: templates/default/add_zone_slave.html:26
 msgid "Zone name"
-msgstr "Zone name"
+msgstr "Name der Zone"
 
 #: templates/default/add_zone_slave.html:28
 msgid "Provide zone name"
@@ -8172,19 +8173,19 @@ msgstr "Provide zone name"
 
 #: templates/default/add_zone_slave.html:29
 msgid "Example: example.com"
-msgstr "Example: example.com"
+msgstr "Beispiel: example.com"
 
 #: templates/default/add_zone_slave.html:62
 msgid "User responsible for this zone"
-msgstr "User responsible for this zone"
+msgstr "Benutzer der für die Zonen verantwortlich ist"
 
 #: templates/default/add_zone_master.html:58
 msgid "Zone type (usually NATIVE)"
-msgstr "Zone type (usually NATIVE)"
+msgstr "Zonen Type (üblich NATIVE)"
 
 #: templates/default/add_zone_master.html:70
 msgid "Optional: Apply predefined records from a template"
-msgstr "Optional: Apply predefined records from a template"
+msgstr "Optional: Vordefinierte Einträge aus einer Vorlage"
 
 #: templates/default/add_zone_master.html:78
 msgid "Enable DNSSEC"
@@ -8196,15 +8197,15 @@ msgstr "Secure this zone with DNSSEC signing"
 
 #: templates/default/add_zone_slave.html:68
 msgid "Add zone"
-msgstr "Add zone"
+msgstr "Zone hinzufügen"
 
 #: templates/default/add_zone_slave.html:84
 msgid "Zone Information"
-msgstr "Zone Information"
+msgstr "Zonen Information"
 
 #: templates/default/add_zone_master.html:108
 msgid "About Master Zones"
-msgstr "About Master Zones"
+msgstr "Über Master Zonen"
 
 #: templates/default/add_zone_master.html:109
 msgid ""
@@ -8236,19 +8237,19 @@ msgstr ""
 
 #: templates/default/add_zone_master.html:132
 msgid "Use fully qualified domain names (example.com)"
-msgstr "Use fully qualified domain names (example.com)"
+msgstr "Benutze \"Fully Qualified Domain Names\" (example.com)"
 
 #: templates/default/add_zone_master.html:133
 msgid "Select a template to automatically create common DNS records"
-msgstr "Select a template to automatically create common DNS records"
+msgstr "Wähle eine Vorlage um die üblichen DNS Einträge automatisch zu erstellen"
 
 #: templates/default/add_zone_master.html:134
 msgid "NATIVE zone type is recommended for most setups"
-msgstr "NATIVE zone type is recommended for most setups"
+msgstr "Der NATIVE Zonen Type ist für die meisten Setups empfohlen"
 
 #: templates/default/list_zone_templ.html:11
 msgid "Zone templates for"
-msgstr "Zone templates for"
+msgstr "Zonen Vorlagen für"
 
 #: templates/default/list_zone_templ.html:18
 msgid "In use"
@@ -8256,7 +8257,7 @@ msgstr "In use"
 
 #: templates/default/list_zone_templ.html:23
 msgid "Zones linked"
-msgstr "Zones linked"
+msgstr "Zonen verbunden"
 
 #: templates/default/list_zone_templ.html:24
 msgid "Sync Status"
@@ -8268,7 +8269,7 @@ msgstr "No results found"
 
 #: templates/default/list_zone_templ.html:71
 msgid "private"
-msgstr "private"
+msgstr "privat"
 
 #: templates/default/list_zone_templ.html:73
 msgid "global"
@@ -8344,11 +8345,11 @@ msgstr "Buchstaben, Ziffern und Sonderzeichen verwenden"
 
 #: templates/default/change_password.html:107
 msgid "Consider using a password manager"
-msgstr "Denken Sie über einen Passwort Manager"
+msgstr "Denken Sie über einen Passwort Manager nach"
 
 #: templates/default/mfa_verify_email.html:4 templates/default/header.html:184
 msgid "Multi-Factor Authentication"
-msgstr "Multi-Factor Authentikation"
+msgstr "Multi-Factor Authentifizierung"
 
 #: templates/default/mfa_verify_app.html:14
 msgid "Set Up Authenticator App"
@@ -8384,7 +8385,7 @@ msgstr "Please enter a valid 6-digit verification code."
 
 #: templates/default/mfa_verify_email.html:40
 msgid "Verify and Enable MFA"
-msgstr "Verify and Enable MFA"
+msgstr "Prüfen und MFA aktivieren"
 
 #: templates/default/mfa_verify_app.html:67
 msgid "Recommended Authenticator Apps"
@@ -8619,19 +8620,19 @@ msgstr "Recovery Codes"
 
 #: templates/default/mfa_recovery_codes.html:14
 msgid "MFA Setup Complete"
-msgstr "MFA Setup Complete"
+msgstr "MFA Einrichtung vollständig"
 
 #: templates/default/mfa_recovery_codes.html:18
 msgid "Multi-Factor Authentication is now enabled"
-msgstr "Multi-Factor Authentication is now enabled"
+msgstr "Multi-Factor Authentifizierung ist jetzt aktiviert"
 
 #: templates/default/mfa_recovery_codes.html:19
 msgid "Your account is now protected with multi-factor authentication."
-msgstr "Your account is now protected with multi-factor authentication."
+msgstr "Ihr Benutzerkonto ist jetzt mit Multi-Factor Authentifizierung geschützt."
 
 #: templates/default/mfa_setup.html:24 templates/default/mfa_setup.html:26
 msgid "Authentication method:"
-msgstr "Authentication method:"
+msgstr "Authentifizierung Methode:"
 
 #: templates/default/mfa_setup.html:24
 msgid "Authenticator app"
@@ -8639,11 +8640,11 @@ msgstr "Authenticator app"
 
 #: templates/default/mfa_setup.html:26
 msgid "Email verification"
-msgstr "Email verification"
+msgstr "Email Überprüfung"
 
 #: templates/default/mfa_recovery_codes.html:29
 msgid "Save Your Recovery Codes"
-msgstr "Save Your Recovery Codes"
+msgstr "Speichern Sie Ihre Recovery Codes"
 
 #: templates/default/mfa_recovery_codes.html:30
 msgid ""
@@ -8653,15 +8654,15 @@ msgstr ""
 
 #: templates/default/mfa_recovery_codes.html:31
 msgid "Store these codes in a safe place!"
-msgstr "Store these codes in a safe place!"
+msgstr "Diese Codes an einem sicheren Ort aufbewahren!"
 
 #: templates/default/mfa_recovery_codes.html:49
 msgid "Print"
-msgstr "Print"
+msgstr "Drucken"
 
 #: templates/default/mfa_recovery_codes.html:52
 msgid "Copy all"
-msgstr "Copy all"
+msgstr "Alle kopieren"
 
 #: templates/default/mfa_recovery_codes.html:55
 msgid "Download"
@@ -8669,19 +8670,19 @@ msgstr "Download"
 
 #: templates/default/mfa_recovery_codes.html:62
 msgid "Back to MFA Settings"
-msgstr "Back to MFA Settings"
+msgstr "Zurück zu MFA Einstellungen"
 
 #: templates/default/mfa_setup.html:39
 msgid "Disable MFA"
-msgstr "Disable MFA"
+msgstr "MFA deaktivieren"
 
 #: templates/default/mfa_recovery_codes.html:71
 msgid "Continue to Dashboard"
-msgstr "Continue to Dashboard"
+msgstr "Weiter zum Dashboard"
 
 #: templates/default/mfa_recovery_codes.html:92
 msgid "All recovery codes copied to clipboard"
-msgstr "All recovery codes copied to clipboard"
+msgstr "Alle Recovery Codes in die Zwischenablage kopiert"
 
 #: templates/default/mfa_recovery_codes.html:101
 msgid "Poweradmin MFA Recovery Codes"
@@ -8700,15 +8701,15 @@ msgstr ""
 
 #: templates/default/mfa_setup.html:20
 msgid "MFA is currently enabled"
-msgstr "MFA is currently enabled"
+msgstr "MFA ist aktiviert"
 
 #: templates/default/mfa_setup.html:21
 msgid "Your account is protected with multi-factor authentication."
-msgstr "Your account is protected with multi-factor authentication."
+msgstr "Ihr Benutzerkonto ist mit Multi-Factor Authentifizierung geschützt."
 
 #: templates/default/mfa_setup.html:33
 msgid "Regenerate Recovery Codes"
-msgstr "Regenerate Recovery Codes"
+msgstr "Recovery Codes regenerieren"
 
 #: templates/default/mfa_setup.html:46
 msgid "MFA is currently disabled"
@@ -8716,11 +8717,11 @@ msgstr "MFA ist momentan deaktviert"
 
 #: templates/default/mfa_setup.html:47
 msgid "Your account is not protected with multi-factor authentication."
-msgstr "Ihr Benutzerkonto ist nicht mit Multi-Factor Authentikation geschützt."
+msgstr "Ihr Benutzerkonto ist nicht mit Multi-Factor Authentifizierung geschützt."
 
 #: templates/default/mfa_setup.html:58
 msgid "Authenticator App"
-msgstr "Authenticator App"
+msgstr "Authentifizierungs-App"
 
 #: templates/default/mfa_setup.html:61
 msgid ""
@@ -8742,7 +8743,7 @@ msgstr "Easy to use"
 
 #: templates/default/mfa_setup.html:69
 msgid "Set up app authentication"
-msgstr "Set up app authentication"
+msgstr "App Authentifizierung einrichten"
 
 #: templates/default/mfa_verify_email.html:5
 msgid "Email Verification"
@@ -8750,19 +8751,19 @@ msgstr "Email Überprüfung"
 
 #: templates/default/mfa_setup.html:81
 msgid "Receive a verification code via email when you log in."
-msgstr "Receive a verification code via email when you log in."
+msgstr "Ein Verifizierungscode wird per Email verschickt, wenn Sie sich anmelden."
 
 #: templates/default/mfa_setup.html:83
 msgid "No additional app required"
-msgstr "No additional app required"
+msgstr "Keine zusätzliche App benötigt"
 
 #: templates/default/mfa_setup.html:84
 msgid "Requires internet connection"
-msgstr "Requires internet connection"
+msgstr "Internet Verbindung benötigt"
 
 #: templates/default/mfa_setup.html:85
 msgid "Relies on email delivery"
-msgstr "Relies on email delivery"
+msgstr "Setzt funktionierende Email Auslieferung voraus"
 
 #: templates/default/mfa_setup.html:90
 msgid ""
@@ -8778,15 +8779,15 @@ msgstr ""
 
 #: templates/default/mfa_setup.html:99
 msgid "Set up email verification"
-msgstr "Set up email verification"
+msgstr "Email Überprüfung einrichten"
 
 #: templates/default/mfa_verify_email.html:14
 msgid "Verify Email Code"
-msgstr "Verify Email Code"
+msgstr "Email Code Überprüfung"
 
 #: templates/default/mfa_verify_email.html:17
 msgid "A verification code has been sent to your email address."
-msgstr "A verification code has been sent to your email address."
+msgstr "Ein Überprüfungs-Code wurde an Ihre Email Adresse verschickt."
 
 #: templates/default/mfa_verify_email.html:18
 msgid ""
@@ -8796,7 +8797,7 @@ msgstr ""
 
 #: templates/default/mfa_verify_email.html:34
 msgid "Enter the 6-digit code from your email"
-msgstr "Enter the 6-digit code from your email"
+msgstr "Den 6-stelligen Code aus Ihrer Email eingeben"
 
 #: templates/default/list_template_zones.html:12
 msgid "Zones using template"
@@ -8820,15 +8821,15 @@ msgstr "Unlink selected zones"
 
 #: templates/default/delete_domain.html:24
 msgid "Delete Zone"
-msgstr "Delete Zone"
+msgstr "Zone löschen"
 
 #: templates/default/delete_domain.html:33
 msgid "You are about to delete the zone"
-msgstr "You are about to delete the zone"
+msgstr "Sie sind dabei diese Zone zu löschen"
 
 #: templates/default/delete_domain.html:41
 msgid "Zone Details"
-msgstr "Zone Details"
+msgstr "Zonen Details"
 
 #: templates/default/delete_domains.html:63
 msgid ""
@@ -8844,11 +8845,11 @@ msgstr ""
 
 #: templates/default/delete_domain.html:73
 msgid "Yes, delete this zone"
-msgstr "Yes, delete this zone"
+msgstr "Ja, diese Zone löschen"
 
 #: templates/default/delete_domain.html:80
 msgid "No, keep this zone"
-msgstr "No, keep this zone"
+msgstr "Nein, diese Zone behalten"
 
 #: templates/default/search.html:14
 msgid "DNS Search"
@@ -9019,15 +9020,15 @@ msgstr "To test the connection, check the PowerDNS logs after adding the zone"
 
 #: templates/default/delete_zone_templ.html:12
 msgid "Delete template"
-msgstr "Delete template"
+msgstr "Vorlage löschen"
 
 #: templates/default/delete_zone_templ.html:18
 msgid "Delete Zone Template"
-msgstr "Delete Zone Template"
+msgstr "Zonenvorlage löschen"
 
 #: templates/default/delete_zone_templ.html:23
 msgid "You are about to delete the zone template"
-msgstr "You are about to delete the zone template"
+msgstr "Sie sind dabei die Zonenvorlage zu löschen"
 
 #: templates/default/delete_zone_templ.html:29
 msgid "This template is currently used by"
