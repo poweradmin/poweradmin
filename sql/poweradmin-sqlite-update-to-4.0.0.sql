@@ -12,6 +12,8 @@ CREATE INDEX idx_login_attempts_user_id ON login_attempts(user_id);
 CREATE INDEX idx_login_attempts_ip_address ON login_attempts(ip_address);
 CREATE INDEX idx_login_attempts_timestamp ON login_attempts(timestamp);
 
+DROP TABLE IF EXISTS migrations;
+
 CREATE TABLE migrations (
     version INTEGER PRIMARY KEY,
     migration_name VARCHAR(100) NULL,

@@ -13,6 +13,8 @@ CREATE TABLE `login_attempts` (
         ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+DROP TABLE IF EXISTS `migrations`;
+
 CREATE TABLE `migrations` (
     `version` bigint(20) NOT NULL,
     `migration_name` varchar(100) DEFAULT NULL,
