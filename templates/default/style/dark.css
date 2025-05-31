@@ -10,13 +10,19 @@
     --text-secondary: #b7b7b8;
     --border-dark: #373b3e;
     --primary-blue: #0d6efd;
-    --input-border: #ced4da;
+    --input-border: #495057;
+    --card-shadow: rgba(0, 0, 0, 0.5);
 }
 
 /* Base layout */
 body {
     color: var(--text-light);
     background-color: var(--bg-dark);
+}
+
+/* Add smooth transitions for better UX */
+.btn, .form-control, .form-select, .card, .list-group-item, .nav-link, .dropdown-item, .page-link {
+    transition: all 0.15s ease-in-out;
 }
 
 /* Header styles */
@@ -58,6 +64,18 @@ a:hover, a:focus {
 .form-control, .form-control:valid, .form-select {
     background-color: var(--bg-dark-accent);
     color: var(--text-light);
+    border-color: var(--input-border);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-dark-accent);
+    border-color: var(--primary-blue);
+    color: var(--text-light);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group .form-control:not(:first-child) {
+    border-left-color: var(--border-dark);
 }
 
 /* Make form labels visible */
@@ -108,8 +126,8 @@ tfoot.table-light {
     color: var(--text-light) !important;
 }
 
-.table tr {
-    border-color: var(--text-muted);
+.table, .table th, .table td, .table tr {
+    border-color: var(--border-dark) !important;
 }
 
 .table > thead > tr > th {
@@ -322,10 +340,42 @@ table tfoot tr td,
     color: #ffffff !important;
 }
 
-.card-header {
-    background-color: var(--bg-dark-secondary) !important;
-    border-color: var(--border-dark) !important;
+.btn-success {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: #ffffff !important;
 }
+
+.btn-success:hover {
+    background-color: #157347 !important;
+    border-color: #146c43 !important;
+    color: #ffffff !important;
+}
+
+.btn-warning {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #000000 !important;
+}
+
+.btn-warning:hover {
+    background-color: #ffca2c !important;
+    border-color: #ffc720 !important;
+    color: #000000 !important;
+}
+
+.btn-info {
+    background-color: #0dcaf0 !important;
+    border-color: #0dcaf0 !important;
+    color: #000000 !important;
+}
+
+.btn-info:hover {
+    background-color: #31d2f2 !important;
+    border-color: #25cff2 !important;
+    color: #000000 !important;
+}
+
 
 .card .small.text-muted,
 .card .small,
@@ -451,6 +501,11 @@ input[type=number]::-webkit-outer-spin-button {
 
 .modal-header .btn-close, .modal-footer .btn-close {
     background-color: var(--text-secondary);
+}
+
+/* Fix close button for dark theme */
+.btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
 }
 
 /* Smaller close button for modals */
