@@ -42,7 +42,7 @@ class DatabaseConsistencyController extends BaseController
             return;
         }
 
-        $consistencyService = new DatabaseConsistencyService($this->db);
+        $consistencyService = new DatabaseConsistencyService($this->db, $this->config);
 
         // Handle fix actions
         if ($this->isPost() && isset($_POST['action']) && isset($_POST['check_type'])) {

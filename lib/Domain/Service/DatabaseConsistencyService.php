@@ -23,15 +23,30 @@
 namespace Poweradmin\Domain\Service;
 
 use PDO;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class DatabaseConsistencyService
 {
     private PDOCommon $db;
+    private ConfigurationManager $config;
 
-    public function __construct(PDOCommon $db)
+    public function __construct(PDOCommon $db, ConfigurationManager $config)
     {
         $this->db = $db;
+        $this->config = $config;
+    }
+
+    /**
+     * Get the table name with proper database prefix for PowerDNS tables
+     *
+     * @param string $tableName The table name (domains, records, etc.)
+     * @return string The fully qualified table name
+     */
+    private function getPdnsTableName(string $tableName): string
+    {
+        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
+        return $pdns_db_name ? $pdns_db_name . '.' . $tableName : $tableName;
     }
 
     /**
@@ -41,9 +56,11 @@ class DatabaseConsistencyService
      */
     public function checkZonesHaveOwners(): array
     {
+        $domains_table = $this->getPdnsTableName('domains');
+
         $stmt = $this->db->query("
             SELECT d.id, d.name, z.owner
-            FROM domains d
+            FROM $domains_table d
             LEFT JOIN zones z ON d.id = z.domain_id
             WHERE z.owner IS NULL OR z.owner = 0
         ");
@@ -79,9 +96,11 @@ class DatabaseConsistencyService
      */
     public function checkSlaveZonesHaveMasters(): array
     {
+        $domains_table = $this->getPdnsTableName('domains');
+
         $stmt = $this->db->query("
             SELECT d.id, d.name, d.master
-            FROM domains d
+            FROM $domains_table d
             WHERE d.type = 'SLAVE'
             AND (d.master IS NULL OR d.master = '' OR d.master = '0.0.0.0')
         ");
@@ -117,10 +136,13 @@ class DatabaseConsistencyService
      */
     public function checkRecordsBelongToZones(): array
     {
+        $records_table = $this->getPdnsTableName('records');
+        $domains_table = $this->getPdnsTableName('domains');
+
         $stmt = $this->db->query("
             SELECT r.id, r.name, r.type, r.content, r.domain_id
-            FROM records r
-            LEFT JOIN domains d ON r.domain_id = d.id
+            FROM $records_table r
+            LEFT JOIN $domains_table d ON r.domain_id = d.id
             WHERE d.id IS NULL
         ");
 
@@ -157,9 +179,12 @@ class DatabaseConsistencyService
      */
     public function checkDuplicateSOARecords(): array
     {
+        $records_table = $this->getPdnsTableName('records');
+        $domains_table = $this->getPdnsTableName('domains');
+
         $stmt = $this->db->query("
             SELECT domain_id, COUNT(*) as soa_count
-            FROM records
+            FROM $records_table
             WHERE type = 'SOA'
             GROUP BY domain_id
             HAVING COUNT(*) > 1
@@ -168,7 +193,7 @@ class DatabaseConsistencyService
         $duplicateSOA = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             // Get zone name
-            $zoneStmt = $this->db->prepare("SELECT name FROM domains WHERE id = :zone_id");
+            $zoneStmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :zone_id");
             $zoneStmt->execute(['zone_id' => $row['domain_id']]);
             $zoneName = $zoneStmt->fetchColumn();
 
@@ -201,10 +226,13 @@ class DatabaseConsistencyService
      */
     public function checkZonesWithoutSOA(): array
     {
+        $domains_table = $this->getPdnsTableName('domains');
+        $records_table = $this->getPdnsTableName('records');
+
         $stmt = $this->db->query("
             SELECT d.id, d.name, d.type
-            FROM domains d
-            LEFT JOIN records r ON d.id = r.domain_id AND r.type = 'SOA'
+            FROM $domains_table d
+            LEFT JOIN $records_table r ON d.id = r.domain_id AND r.type = 'SOA'
             WHERE r.id IS NULL
             AND d.type IN ('MASTER', 'NATIVE')
         ");
@@ -282,10 +310,13 @@ class DatabaseConsistencyService
      */
     public function deleteSlaveZone(int $zoneId): bool
     {
+        $records_table = $this->getPdnsTableName('records');
+        $domains_table = $this->getPdnsTableName('domains');
+
         $this->db->beginTransaction();
         try {
             // Delete records
-            $stmt = $this->db->prepare("DELETE FROM records WHERE domain_id = :domain_id");
+            $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
 
             // Delete zone ownership
@@ -293,7 +324,7 @@ class DatabaseConsistencyService
             $stmt->execute(['domain_id' => $zoneId]);
 
             // Delete domain
-            $stmt = $this->db->prepare("DELETE FROM domains WHERE id = :id");
+            $stmt = $this->db->prepare("DELETE FROM $domains_table WHERE id = :id");
             $stmt->execute(['id' => $zoneId]);
 
             $this->db->commit();
@@ -312,7 +343,9 @@ class DatabaseConsistencyService
      */
     public function deleteOrphanedRecord(int $recordId): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM records WHERE id = :id");
+        $records_table = $this->getPdnsTableName('records');
+
+        $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = :id");
         return $stmt->execute(['id' => $recordId]);
     }
 
@@ -324,10 +357,12 @@ class DatabaseConsistencyService
      */
     public function fixDuplicateSOA(int $zoneId): bool
     {
+        $records_table = $this->getPdnsTableName('records');
+
         $this->db->beginTransaction();
         try {
             // Get all SOA records for this zone, ordered by ID
-            $stmt = $this->db->prepare("SELECT id FROM records WHERE domain_id = :zone_id AND type = 'SOA' ORDER BY id ASC");
+            $stmt = $this->db->prepare("SELECT id FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA' ORDER BY id ASC");
             $stmt->execute(['zone_id' => $zoneId]);
             $soaRecords = $stmt->fetchAll(PDO::FETCH_COLUMN);
 
@@ -339,7 +374,7 @@ class DatabaseConsistencyService
             // Keep the first SOA record, delete the rest
             array_shift($soaRecords); // Remove the first ID from the array
             $placeholders = implode(',', array_fill(0, count($soaRecords), '?'));
-            $stmt = $this->db->prepare("DELETE FROM records WHERE id IN ($placeholders)");
+            $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id IN ($placeholders)");
             $stmt->execute($soaRecords);
 
             $this->db->commit();
@@ -358,8 +393,11 @@ class DatabaseConsistencyService
      */
     public function createDefaultSOA(int $zoneId): bool
     {
+        $domains_table = $this->getPdnsTableName('domains');
+        $records_table = $this->getPdnsTableName('records');
+
         // Get zone name
-        $stmt = $this->db->prepare("SELECT name FROM domains WHERE id = :id");
+        $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :id");
         $stmt->execute(['id' => $zoneId]);
         $zoneName = $stmt->fetchColumn();
 
@@ -382,7 +420,7 @@ class DatabaseConsistencyService
 
         // Insert SOA record
         $stmt = $this->db->prepare("
-            INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled) 
+            INSERT INTO $records_table (domain_id, name, type, content, ttl, prio, disabled) 
             VALUES (:domain_id, :name, 'SOA', :content, 86400, 0, 0)
         ");
 
