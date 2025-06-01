@@ -21,17 +21,18 @@ msgid ""
 "No configuration file found. Please use the <a href=\"install/\">installer</"
 "a> to create one, or create a config/settings.php file manually."
 msgstr ""
+"Aucun fichier de configuration trouvé. Veuillez utiliser l'<a href=\"install/\">installateur</a> pour en créer un, ou créer un fichier config/settings.php manuellement."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:131
 msgid "Invalid CSRF token."
-msgstr "Invalid CSRF token."
+msgstr "Jeton CSRF invalide."
 
 #: lib/BaseController.php:499
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr ""
-"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"Le répertoire <a href=\"install/\">install/</a> existe, vous devez le supprimer avant de continuer."
 "first before proceeding."
 
 #: lib/BaseController.php:525
@@ -39,44 +40,45 @@ msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
-"Default session encryption key is used, please set it in your configuration "
+"La clé de chiffrement de session par défaut est utilisée, veuillez la définir dans votre fichier de configuration."
 "file."
 
 #: lib/BaseController.php:626
 #, php-format
 msgid "The %s field is required."
-msgstr "The %s field is required."
+msgstr "Le champ %s est obligatoire."
 
 #: lib/BaseController.php:634
 #, php-format
 msgid "The %s field must be a number."
-msgstr "The %s field must be a number."
+msgstr "Le champ %s doit être un nombre."
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
 msgid "Previous"
-msgstr "Previous"
+msgstr "Précédent"
 
 #: lib/Application/Presenter/PaginationPresenter.php:79
 msgid "Next"
-msgstr "Next"
+msgstr "Suivant"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:29
 msgid "Show zones beginning with"
-msgstr "Show zones beginning with"
+msgstr "Afficher les zones commençant par"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:61
 msgid "Show all"
-msgstr "Show all"
+msgstr "Tout afficher"
 
 #: lib/Application/Controller/DeleteRecordsController.php:72
 msgid "No records selected for deletion."
-msgstr "No records selected for deletion."
+msgstr "Aucun enregistrement sélectionné pour suppression."
 
 #: lib/Application/Controller/DeleteRecordsController.php:176
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
+"L'enregistrement a été supprimé avec succès. Tous les enregistrements PTR correspondants ont également été supprimés."
 
 #: lib/Application/Controller/DeleteRecordsController.php:178
 #, php-format
@@ -84,381 +86,401 @@ msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
 msgstr ""
+"%d enregistrements ont été supprimés avec succès. Tous les enregistrements PTR correspondants ont également été supprimés."
 
 #: lib/Application/Controller/DeleteRecordsController.php:181
 msgid "No records could be deleted. Please check permissions."
-msgstr "No records could be deleted. Please check permissions."
+msgstr ""
+"Aucun enregistrement n'a pu être supprimé. Veuillez vérifier les permissions."
 
 #: lib/Application/Controller/DeleteRecordsController.php:226
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
+"Aucun enregistrement valide sélectionné pour suppression ou vous n'avez pas la permission de les supprimer."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:91
 msgid "Invalid or unexpected input given."
-msgstr "Invalid or unexpected input given."
+msgstr "Entrée invalide ou inattendue fournie."
 
 #: lib/Domain/Model/UserManager.php:230
 msgid "You do not have the permission to delete this user."
-msgstr "You do not have the permission to delete this user."
+msgstr "Vous n'avez pas la permission de supprimer cet utilisateur."
 
 #: lib/Application/Controller/EditUserController.php:244
 msgid "User does not exist."
-msgstr "User does not exist."
+msgstr "L'utilisateur n'existe pas."
 
 #: lib/Application/Controller/DeleteUserController.php:79
 msgid "The user has been deleted successfully."
-msgstr "The user has been deleted successfully."
+msgstr "L'utilisateur a été supprimé avec succès."
 
 #: lib/Application/Controller/EditCommentController.php:50
 msgid "Zone comments feature is disabled in configuration."
-msgstr "Zone comments feature is disabled in configuration."
+msgstr ""
+"La fonctionnalité de commentaires de zone est désactivée dans la configuration."
 
 #: lib/Application/Controller/EditCommentController.php:63
 msgid "You do not have the permission to view this comment."
-msgstr "You do not have the permission to view this comment."
+msgstr "Vous n'avez pas la permission de voir ce commentaire."
 
 #: lib/Domain/Service/Dns/RecordManager.php:377
 msgid "You do not have the permission to edit this comment."
-msgstr "You do not have the permission to edit this comment."
+msgstr "Vous n'avez pas la permission de modifier ce commentaire."
 
 #: lib/Application/Controller/EditCommentController.php:94
 msgid "The comment has been updated successfully."
-msgstr "The comment has been updated successfully."
+msgstr "Le commentaire a été mis à jour avec succès."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:61
 msgid "There is no zone with this ID."
-msgstr "There is no zone with this ID."
+msgstr "Il n'y a aucune zone avec cet ID."
 
 #: lib/Application/Controller/DeleteRecordController.php:149
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr ""
+"L'enregistrement et son enregistrement PTR correspondant ont été supprimés avec succès."
 
 #: lib/Application/Controller/DeleteRecordController.php:151
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr ""
+"L'enregistrement a été supprimé avec succès. Aucun enregistrement PTR correspondant n'a été trouvé."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:73
 msgid "The record has been deleted successfully."
-msgstr "The record has been deleted successfully."
+msgstr "L'enregistrement a été supprimé avec succès."
 
 #: lib/Application/Controller/DeleteRecordController.php:157
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
 msgstr ""
+"L'enregistrement et son enregistrement PTR correspondant ont été supprimés mais le commentaire a été préservé car des enregistrements similaires existent."
 
 #: lib/Application/Controller/DeleteRecordController.php:159
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
 msgstr ""
-"The record was deleted but the comment was preserved because similar records "
+"L'enregistrement a été supprimé mais le commentaire a été préservé car des enregistrements similaires existent."
 "exist."
 
 #: lib/Domain/Service/Dns/RecordManager.php:230
 msgid "You do not have the permission to edit this record."
-msgstr "You do not have the permission to edit this record."
+msgstr "Vous n'avez pas la permission de modifier cet enregistrement."
 
 #: lib/Application/Controller/MfaSetupController.php:53
 msgid "MFA is not enabled on this system."
-msgstr "MFA is not enabled on this system."
+msgstr ""
+"L'authentification multifacteur (MFA) n'est pas activée sur ce système."
 
 #: lib/Application/Controller/MfaSetupController.php:194
 msgid "Failed to create MFA record."
-msgstr "Failed to create MFA record."
+msgstr "Échec de la création de l'enregistrement MFA."
 
 #: lib/Application/Controller/MfaSetupController.php:201
 msgid "MFA is already enabled."
-msgstr "MFA is already enabled."
+msgstr "L'authentification multifacteur (MFA) est déjà activée."
 
 #: lib/Application/Controller/MfaSetupController.php:246
 msgid "Verification code is required."
-msgstr "Verification code is required."
+msgstr "Le code de vérification est requis."
 
 #: lib/Application/Controller/MfaSetupController.php:155
 msgid "MFA has been enabled successfully."
-msgstr "MFA has been enabled successfully."
+msgstr "L'authentification multifacteur (MFA) a été activée avec succès."
 
 #: lib/Application/Controller/MfaVerifyController.php:187
 msgid "Invalid verification code. Please try again."
-msgstr "Invalid verification code. Please try again."
+msgstr "Code de vérification invalide. Veuillez réessayer."
 
 #: lib/Application/Controller/MfaSetupController.php:171
 msgid ""
 "Email address is not available. Please update your email address in your "
 "profile."
 msgstr ""
+"L'adresse e-mail n'est pas disponible. Veuillez mettre à jour votre adresse e-mail dans votre profil."
 
 #: lib/Application/Controller/MfaSetupController.php:178
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
 msgstr ""
+"La méthode de vérification par e-mail n'est pas disponible car le service de messagerie n'est pas activé sur ce système."
 
 #: lib/Application/Controller/MfaSetupController.php:185
 msgid "Email verification method is not enabled on this system."
-msgstr "Email verification method is not enabled on this system."
+msgstr ""
+"La méthode de vérification par e-mail n'est pas activée sur ce système."
 
 #: lib/Application/Controller/MfaSetupController.php:227
 msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
 msgstr ""
+"Échec de l'envoi du code de vérification. Veuillez réessayer plus tard ou utiliser l'authentification par application."
 
 #: lib/Application/Controller/MfaSetupController.php:264
 msgid "MFA has been enabled with email verification."
-msgstr "MFA has been enabled with email verification."
+msgstr ""
+"L'authentification multifacteur (MFA) a été activée avec vérification par e-mail."
 
 #: lib/Application/Controller/MfaSetupController.php:280
 msgid "MFA is not enabled."
-msgstr "MFA is not enabled."
+msgstr "L'authentification multifacteur (MFA) n'est pas activée."
 
 #: lib/Application/Controller/MfaSetupController.php:288
 msgid "MFA has been disabled."
-msgstr "MFA has been disabled."
+msgstr "L'authentification multifacteur (MFA) a été désactivée."
 
 #: lib/Application/Controller/MfaSetupController.php:303
 msgid "MFA must be enabled to regenerate recovery codes."
-msgstr "MFA must be enabled to regenerate recovery codes."
+msgstr ""
+"L'authentification multifacteur (MFA) doit être activée pour regénérer les codes de récupération."
 
 #: lib/Application/Controller/MfaSetupController.php:311
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
 msgstr ""
+"Les codes de récupération ont été regénérés. Veuillez les sauvegarder dans un endroit sûr."
 
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
-msgstr "You do not have the permission to view supermasters."
+msgstr "Vous n'avez pas la permission de voir les supermasters."
 
 #: lib/Application/Controller/ApiKeysController.php:71
 msgid "The API feature is disabled in the system configuration."
-msgstr "The API feature is disabled in the system configuration."
+msgstr ""
+"La fonctionnalité API est désactivée dans la configuration du système."
 
 #: lib/Application/Controller/ApiKeysController.php:77
 msgid ""
 "You do not have permission to manage API keys. Only administrators can "
 "access this feature."
 msgstr ""
+"Vous n'avez pas la permission de gérer les clés API. Seuls les administrateurs peuvent accéder à cette fonctionnalité."
 
 #: lib/Application/Controller/ApiKeysController.php:199
 msgid "API key name is required."
-msgstr "API key name is required."
+msgstr "Le nom de la clé API est requis."
 
 #: lib/Application/Controller/ApiKeysController.php:209
 msgid "Invalid expiration date format."
-msgstr "Invalid expiration date format."
+msgstr "Format de date d'expiration invalide."
 
 #: lib/Domain/Service/ApiKeyService.php:275
 msgid "API key not found or you do not have permission to edit it."
-msgstr "API key not found or you do not have permission to edit it."
+msgstr "Clé API introuvable ou vous n'avez pas la permission de la modifier."
 
 #: lib/Application/Controller/ApiKeysController.php:218
 msgid "API key updated successfully."
-msgstr "API key updated successfully."
+msgstr "Clé API mise à jour avec succès."
 
 #: lib/Application/Controller/ApiKeysController.php:247
 msgid "API key deleted successfully."
-msgstr "API key deleted successfully."
+msgstr "Clé API supprimée avec succès."
 
 #: lib/Domain/Service/ApiKeyService.php:223
 msgid "API key not found or you do not have permission to delete it."
-msgstr "API key not found or you do not have permission to delete it."
+msgstr "Clé API introuvable ou vous n'avez pas la permission de la supprimer."
 
 #: lib/Application/Controller/ApiKeysController.php:319
 msgid "disabled"
-msgstr "disabled"
+msgstr "désactivée"
 
 #: lib/Application/Controller/ApiKeysController.php:319
 msgid "enabled"
-msgstr "enabled"
+msgstr "activée"
 
 #: lib/Application/Controller/ApiKeysController.php:320
 #, php-format
 msgid "API key %s successfully."
-msgstr "API key %s successfully."
+msgstr "Clé API %s avec succès."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:97
 msgid "You do not have the permission to add records to this zone."
-msgstr "You do not have the permission to add records to this zone."
+msgstr ""
+"Vous n'avez pas la permission d'ajouter des enregistrements à cette zone."
 
 #: lib/Application/Controller/BulkRecordAddController.php:104
 msgid "Please provide at least one record."
-msgstr "Please provide at least one record."
+msgstr "Veuillez fournir au moins un enregistrement."
 
 #: lib/Application/Controller/BulkRecordAddController.php:132
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Invalid format. Expected at least: name,type,content"
+msgstr "Format invalide. Attendu au minimum : nom,type,contenu"
 
 #: lib/Application/Controller/BulkRecordAddController.php:180
 msgid "Invalid record type."
-msgstr "Invalid record type."
+msgstr "Type d'enregistrement invalide."
 
 #: lib/Application/Controller/BulkRecordAddController.php:226
 msgid "Record could not be added."
-msgstr "Record could not be added."
+msgstr "L'enregistrement n'a pas pu être ajouté."
 
 #: lib/Application/Controller/BulkRecordAddController.php:234
 #, php-format
 msgid "%d record(s) have been added successfully."
-msgstr "%d record(s) have been added successfully."
+msgstr "%d enregistrement(s) ont été ajouté(s) avec succès."
 
 #: lib/Application/Controller/BulkRecordAddController.php:237
 msgid "Some record(s) could not be added."
-msgstr "Some record(s) could not be added."
+msgstr "Certains enregistrements n'ont pas pu être ajoutés."
 
 #: lib/Application/Controller/BulkRecordAddController.php:270
 msgid "Zone ID is required."
-msgstr "Zone ID is required."
+msgstr "L'ID de zone est requis."
 
 #: lib/Application/Controller/ListPermTemplController.php:42
 msgid "You do not have the permission to edit permission templates."
-msgstr "You do not have the permission to edit permission templates."
+msgstr "Vous n'avez pas la permission de modifier les modèles de permissions."
 
 #: lib/Application/Controller/EditPermTemplController.php:74
 msgid "The permission template has been updated successfully."
-msgstr "The permission template has been updated successfully."
+msgstr "Le modèle de permissions a été mis à jour avec succès."
 
 #: lib/Application/Controller/SearchController.php:45
 msgid "You do not have the permission to perform searches."
-msgstr "You do not have the permission to perform searches."
+msgstr "Vous n'avez pas la permission d'effectuer des recherches."
 
 #: lib/Domain/Model/UserManager.php:740
 msgid "You do not have the permission to add a new user."
-msgstr "You do not have the permission to add a new user."
+msgstr "Vous n'avez pas la permission d'ajouter un nouvel utilisateur."
 
 #: lib/Application/Controller/AddUserController.php:101
 msgid "The user has been created successfully."
-msgstr "The user has been created successfully."
+msgstr "L'utilisateur a été créé avec succès."
 
 #: lib/Application/Controller/AddUserController.php:110
 #, php-format
 msgid "Generated password: %s"
-msgstr "Generated password: %s"
+msgstr "Mot de passe généré : %s"
 
 #: lib/Application/Controller/AddUserController.php:126
 msgid "Login details have been sent to the user via email."
-msgstr "Login details have been sent to the user via email."
+msgstr "Les détails de connexion ont été envoyés à l'utilisateur par e-mail."
 
 #: lib/Application/Controller/AddUserController.php:128
 msgid "NOTE: Failed to send login details via email."
-msgstr "NOTE: Failed to send login details via email."
+msgstr "NOTE : Échec de l'envoi des détails de connexion par e-mail."
 
 #: lib/Application/Controller/AddUserController.php:134
 msgid "A password was generated but is not displayed for security reasons."
-msgstr "A password was generated but is not displayed for security reasons."
+msgstr ""
+"Un mot de passe a été généré mais n'est pas affiché pour des raisons de sécurité."
 
 #: lib/Application/Controller/ChangePasswordController.php:136
 msgid "Please fill in all required fields correctly."
-msgstr "Please fill in all required fields correctly."
+msgstr "Veuillez remplir correctement tous les champs requis."
 
 #: lib/Domain/Service/Dns/RecordManager.php:323
 msgid "You do not have the permission to delete this record."
-msgstr "You do not have the permission to delete this record."
+msgstr "Vous n'avez pas la permission de supprimer cet enregistrement."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:76
 msgid "The record could not be deleted."
-msgstr "The record could not be deleted."
+msgstr "L'enregistrement n'a pas pu être supprimé."
 
 #: lib/Application/Controller/UsersController.php:49
 msgid "You do not have permission to view the users list."
-msgstr "You do not have permission to view the users list."
+msgstr "Vous n'avez pas la permission de voir la liste des utilisateurs."
 
 #: lib/Application/Controller/UsersController.php:72
 msgid "User details updated"
-msgstr "User details updated"
+msgstr "Détails de l'utilisateur mis à jour"
 
 #: lib/Application/Controller/EditZoneTemplController.php:58
 msgid "No template ID provided."
-msgstr "No template ID provided."
+msgstr "Aucun ID de modèle fourni."
 
 #: lib/Application/Controller/EditZoneTemplController.php:68
 msgid "You do not have the permission to edit zone templates."
-msgstr "You do not have the permission to edit zone templates."
+msgstr "Vous n'avez pas la permission de modifier les modèles de zone."
 
 #: lib/Application/Controller/EditZoneTemplController.php:84
 msgid "There is no zone template with this ID."
-msgstr "There is no zone template with this ID."
+msgstr "Il n'y a aucun modèle de zone avec cet ID."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:145
 msgid "Zone template has been updated successfully."
-msgstr "Zone template has been updated successfully."
+msgstr "Le modèle de zone a été mis à jour avec succès."
 
 #: lib/Application/Controller/EditZoneTemplController.php:222
 msgid "Zones have been updated successfully."
-msgstr "Zones have been updated successfully."
+msgstr "Les zones ont été mises à jour avec succès."
 
 #: lib/Application/Controller/EditZoneTemplController.php:232
 msgid "You do not have permission to create new zone templates."
-msgstr "You do not have permission to create new zone templates."
+msgstr "Vous n'avez pas la permission de créer de nouveaux modèles de zone."
 
 #: lib/Domain/Model/ZoneTemplate.php:176 lib/Domain/Model/ZoneTemplate.php:800
 msgid "Zone template with this name already exists, please choose another one."
 msgstr ""
-"Zone template with this name already exists, please choose another one."
+"Un modèle de zone avec ce nom existe déjà, veuillez en choisir un autre."
 
 #: lib/Application/Controller/EditZoneTemplController.php:263
 msgid "Please enter a different name when using Save As."
-msgstr "Please enter a different name when using Save As."
+msgstr ""
+"Veuillez entrer un nom différent lors de l'utilisation de 'Enregistrer sous'."
 
 #: lib/Application/Controller/EditZoneTemplController.php:287
 msgid "Zone template has been copied successfully."
-msgstr "Zone template has been copied successfully."
+msgstr "Le modèle de zone a été copié avec succès."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:40
 msgid "You do not have permission to view zone templates."
-msgstr "You do not have permission to view zone templates."
+msgstr "Vous n'avez pas la permission de voir les modèles de zone."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:54
 msgid "Invalid template ID."
-msgstr "Invalid template ID."
+msgstr "ID de modèle invalide."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:49
 msgid "Template does not exist."
-msgstr "Template does not exist."
+msgstr "Le modèle n'existe pas."
 
 #: lib/Domain/Repository/DomainRepository.php:350
 msgid "You do not have the permission to view this zone."
-msgstr "You do not have the permission to view this zone."
+msgstr "Vous n'avez pas la permission de voir cette zone."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:40
 msgid "You do not have permission to unlink zones from templates."
-msgstr "You do not have permission to unlink zones from templates."
+msgstr "Vous n'avez pas la permission de délier les zones des modèles."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:49
 msgid "No zones selected."
-msgstr "No zones selected."
+msgstr "Aucune zone sélectionnée."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:64
 msgid "Invalid request method."
-msgstr "Invalid request method."
+msgstr "Méthode de requête invalide."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:98
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zones ont été déliées du modèle avec succès."
+msgstr[1] "%d zone a été déliée du modèle avec succès."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:108
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zones n'ont pas pu être déliées."
+msgstr[1] "%d zone n'a pas pu être déliée."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:118
 msgid "Failed to unlink zones from template."
-msgstr "Failed to unlink zones from template."
+msgstr "Échec de la dissociation des zones du modèle."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:130
 msgid "No valid zones selected."
-msgstr "No valid zones selected."
+msgstr "Aucune zone valide sélectionnée."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:138
 msgid "Template not found."
-msgstr "Template not found."
+msgstr "Modèle introuvable."
 
 #: lib/Application/Controller/WhoisController.php:61
 msgid "WHOIS lookup functionality is disabled."

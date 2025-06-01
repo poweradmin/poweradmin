@@ -21,17 +21,18 @@ msgid ""
 "No configuration file found. Please use the <a href=\"install/\">installer</"
 "a> to create one, or create a config/settings.php file manually."
 msgstr ""
+"Konfigurační soubor nebyl nalezen. Použijte <a href=\"install/\">instalátor</a> k vytvoření jednoho, nebo vytvořte soubor config/settings.php ručně."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:131
 msgid "Invalid CSRF token."
-msgstr "Invalid CSRF token."
+msgstr "Neplatný CSRF token."
 
 #: lib/BaseController.php:499
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr ""
-"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"Adresář <a href=\"install/\">install/</a> existuje, musíte jej nejprve odstranit před pokračováním."
 "first before proceeding."
 
 #: lib/BaseController.php:525
@@ -45,38 +46,39 @@ msgstr ""
 #: lib/BaseController.php:626
 #, php-format
 msgid "The %s field is required."
-msgstr "The %s field is required."
+msgstr "Pole %s je povinné."
 
 #: lib/BaseController.php:634
 #, php-format
 msgid "The %s field must be a number."
-msgstr "The %s field must be a number."
+msgstr "Pole %s musí být číslo."
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
 msgid "Previous"
-msgstr "Previous"
+msgstr "Předchozí"
 
 #: lib/Application/Presenter/PaginationPresenter.php:79
 msgid "Next"
-msgstr "Next"
+msgstr "Další"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:29
 msgid "Show zones beginning with"
-msgstr "Show zones beginning with"
+msgstr "Zobrazit zóny začínající na"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:61
 msgid "Show all"
-msgstr "Show all"
+msgstr "Zobrazit vše"
 
 #: lib/Application/Controller/DeleteRecordsController.php:72
 msgid "No records selected for deletion."
-msgstr "No records selected for deletion."
+msgstr "Žádné záznamy nebyly vybrány ke smazání."
 
 #: lib/Application/Controller/DeleteRecordsController.php:176
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
+"Záznam byl úspěšně smazán. Veškeré odpovídající PTR záznamy byly také odstraněny."
 
 #: lib/Application/Controller/DeleteRecordsController.php:178
 #, php-format
@@ -84,71 +86,74 @@ msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
 msgstr ""
+"%d záznamů bylo úspěšně smazáno. Veškeré odpovídající PTR záznamy byly také odstraněny."
 
 #: lib/Application/Controller/DeleteRecordsController.php:181
 msgid "No records could be deleted. Please check permissions."
-msgstr "No records could be deleted. Please check permissions."
+msgstr "Žádné záznamy nebylo možné smazat. Zkontrolujte oprávnění."
 
 #: lib/Application/Controller/DeleteRecordsController.php:226
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
+"Žádné platné záznamy nebyly vybrány ke smazání nebo nemáte oprávnění je smazat."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:91
 msgid "Invalid or unexpected input given."
-msgstr "Invalid or unexpected input given."
+msgstr "Neplatný nebo neočekávaný vstup."
 
 #: lib/Domain/Model/UserManager.php:230
 msgid "You do not have the permission to delete this user."
-msgstr "You do not have the permission to delete this user."
+msgstr "Nemáte oprávnění smazat tohoto uživatele."
 
 #: lib/Application/Controller/EditUserController.php:244
 msgid "User does not exist."
-msgstr "User does not exist."
+msgstr "Uživatel neexistuje."
 
 #: lib/Application/Controller/DeleteUserController.php:79
 msgid "The user has been deleted successfully."
-msgstr "The user has been deleted successfully."
+msgstr "Uživatel byl úspěšně smazán."
 
 #: lib/Application/Controller/EditCommentController.php:50
 msgid "Zone comments feature is disabled in configuration."
-msgstr "Zone comments feature is disabled in configuration."
+msgstr "Funkce komentářů zón je v konfiguraci zakázána."
 
 #: lib/Application/Controller/EditCommentController.php:63
 msgid "You do not have the permission to view this comment."
-msgstr "You do not have the permission to view this comment."
+msgstr "Nemáte oprávnění zobrazit tento komentář."
 
 #: lib/Domain/Service/Dns/RecordManager.php:377
 msgid "You do not have the permission to edit this comment."
-msgstr "You do not have the permission to edit this comment."
+msgstr "Nemáte oprávnění upravit tento komentář."
 
 #: lib/Application/Controller/EditCommentController.php:94
 msgid "The comment has been updated successfully."
-msgstr "The comment has been updated successfully."
+msgstr "Komentář byl úspěšně aktualizován."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:61
 msgid "There is no zone with this ID."
-msgstr "There is no zone with this ID."
+msgstr "Neexistuje zóna s tímto ID."
 
 #: lib/Application/Controller/DeleteRecordController.php:149
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
-msgstr ""
+msgstr "Záznam a odpovídající PTR záznam byly úspěšně smazány."
 
 #: lib/Application/Controller/DeleteRecordController.php:151
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
-msgstr ""
+msgstr "Záznam byl úspěšně smazán. Nebyl nalezen odpovídající PTR záznam."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:73
 msgid "The record has been deleted successfully."
-msgstr "The record has been deleted successfully."
+msgstr "Záznam byl úspěšně smazán."
 
 #: lib/Application/Controller/DeleteRecordController.php:157
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
 msgstr ""
+"Záznam a odpovídající PTR záznam byly smazány, ale komentář byl zachován, protože existují podobné záznamy."
 
 #: lib/Application/Controller/DeleteRecordController.php:159
 msgid ""
@@ -160,238 +165,242 @@ msgstr ""
 
 #: lib/Domain/Service/Dns/RecordManager.php:230
 msgid "You do not have the permission to edit this record."
-msgstr "You do not have the permission to edit this record."
+msgstr "Nemáte oprávnění upravit tento záznam."
 
 #: lib/Application/Controller/MfaSetupController.php:53
 msgid "MFA is not enabled on this system."
-msgstr "MFA is not enabled on this system."
+msgstr "MFA není na tomto systému povoleno."
 
 #: lib/Application/Controller/MfaSetupController.php:194
 msgid "Failed to create MFA record."
-msgstr "Failed to create MFA record."
+msgstr "Selhalo vytvoření MFA záznamu."
 
 #: lib/Application/Controller/MfaSetupController.php:201
 msgid "MFA is already enabled."
-msgstr "MFA is already enabled."
+msgstr "MFA je již povoleno."
 
 #: lib/Application/Controller/MfaSetupController.php:246
 msgid "Verification code is required."
-msgstr "Verification code is required."
+msgstr "Ověřovací kód je povinný."
 
 #: lib/Application/Controller/MfaSetupController.php:155
 msgid "MFA has been enabled successfully."
-msgstr "MFA has been enabled successfully."
+msgstr "MFA bylo úspěšně povoleno."
 
 #: lib/Application/Controller/MfaVerifyController.php:187
 msgid "Invalid verification code. Please try again."
-msgstr "Invalid verification code. Please try again."
+msgstr "Neplatný ověřovací kód. Zkuste to znovu."
 
 #: lib/Application/Controller/MfaSetupController.php:171
 msgid ""
 "Email address is not available. Please update your email address in your "
 "profile."
 msgstr ""
+"E-mailová adresa není dostupná. Aktualizujte svou e-mailovou adresu ve svém profilu."
 
 #: lib/Application/Controller/MfaSetupController.php:178
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
 msgstr ""
+"E-mailová ověřovací metoda není dostupná, protože poštovní služba není na tomto systému povolena."
 
 #: lib/Application/Controller/MfaSetupController.php:185
 msgid "Email verification method is not enabled on this system."
-msgstr "Email verification method is not enabled on this system."
+msgstr "E-mailová ověřovací metoda není na tomto systému povolena."
 
 #: lib/Application/Controller/MfaSetupController.php:227
 msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
 msgstr ""
+"Selhalo odeslání ověřovacího kódu. Zkuste to později nebo použijte aplikaci pro ověření."
 
 #: lib/Application/Controller/MfaSetupController.php:264
 msgid "MFA has been enabled with email verification."
-msgstr "MFA has been enabled with email verification."
+msgstr "MFA bylo povoleno s e-mailovým ověřením."
 
 #: lib/Application/Controller/MfaSetupController.php:280
 msgid "MFA is not enabled."
-msgstr "MFA is not enabled."
+msgstr "MFA není povoleno."
 
 #: lib/Application/Controller/MfaSetupController.php:288
 msgid "MFA has been disabled."
-msgstr "MFA has been disabled."
+msgstr "MFA bylo zakázáno."
 
 #: lib/Application/Controller/MfaSetupController.php:303
 msgid "MFA must be enabled to regenerate recovery codes."
-msgstr "MFA must be enabled to regenerate recovery codes."
+msgstr "MFA musí být povoleno pro regeneraci záchanných kódů."
 
 #: lib/Application/Controller/MfaSetupController.php:311
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
-msgstr ""
+msgstr "Záchanné kódy byly regenerovány. Uložte je na bezpečné místo."
 
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
-msgstr "You do not have the permission to view supermasters."
+msgstr "Nemáte oprávnění zobrazit supermasters."
 
 #: lib/Application/Controller/ApiKeysController.php:71
 msgid "The API feature is disabled in the system configuration."
-msgstr "The API feature is disabled in the system configuration."
+msgstr "API funkce je v systémové konfiguraci zakázána."
 
 #: lib/Application/Controller/ApiKeysController.php:77
 msgid ""
 "You do not have permission to manage API keys. Only administrators can "
 "access this feature."
 msgstr ""
+"Nemáte oprávnění spravovat API klíče. Pouze administrátoři mají přístup k této funkci."
 
 #: lib/Application/Controller/ApiKeysController.php:199
 msgid "API key name is required."
-msgstr "API key name is required."
+msgstr "Název API klíče je povinný."
 
 #: lib/Application/Controller/ApiKeysController.php:209
 msgid "Invalid expiration date format."
-msgstr "Invalid expiration date format."
+msgstr "Neplatný formát data vypršení."
 
 #: lib/Domain/Service/ApiKeyService.php:275
 msgid "API key not found or you do not have permission to edit it."
-msgstr "API key not found or you do not have permission to edit it."
+msgstr "API klíč nebyl nalezen nebo nemáte oprávnění jej upravit."
 
 #: lib/Application/Controller/ApiKeysController.php:218
 msgid "API key updated successfully."
-msgstr "API key updated successfully."
+msgstr "API klíč byl úspěšně aktualizován."
 
 #: lib/Application/Controller/ApiKeysController.php:247
 msgid "API key deleted successfully."
-msgstr "API key deleted successfully."
+msgstr "API klíč byl úspěšně smazán."
 
 #: lib/Domain/Service/ApiKeyService.php:223
 msgid "API key not found or you do not have permission to delete it."
-msgstr "API key not found or you do not have permission to delete it."
+msgstr "API klíč nenalezen nebo nemáte oprávnění jej smazat."
 
 #: lib/Application/Controller/ApiKeysController.php:319
 msgid "disabled"
-msgstr "disabled"
+msgstr "zakázán"
 
 #: lib/Application/Controller/ApiKeysController.php:319
 msgid "enabled"
-msgstr "enabled"
+msgstr "povolen"
 
 #: lib/Application/Controller/ApiKeysController.php:320
 #, php-format
 msgid "API key %s successfully."
-msgstr "API key %s successfully."
+msgstr "API klíč %s úspěšně."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:97
 msgid "You do not have the permission to add records to this zone."
-msgstr "You do not have the permission to add records to this zone."
+msgstr "Nemáte oprávnění přidávat záznamy do této zóny."
 
 #: lib/Application/Controller/BulkRecordAddController.php:104
 msgid "Please provide at least one record."
-msgstr "Please provide at least one record."
+msgstr "Zadejte prosím alespoň jeden záznam."
 
 #: lib/Application/Controller/BulkRecordAddController.php:132
 msgid "Invalid format. Expected at least: name,type,content"
-msgstr "Invalid format. Expected at least: name,type,content"
+msgstr "Neplatný formát. Očekáváno minimálně: název,typ,obsah"
 
 #: lib/Application/Controller/BulkRecordAddController.php:180
 msgid "Invalid record type."
-msgstr "Invalid record type."
+msgstr "Neplatný typ záznamu."
 
 #: lib/Application/Controller/BulkRecordAddController.php:226
 msgid "Record could not be added."
-msgstr "Record could not be added."
+msgstr "Záznam nemohl být přidán."
 
 #: lib/Application/Controller/BulkRecordAddController.php:234
 #, php-format
 msgid "%d record(s) have been added successfully."
-msgstr "%d record(s) have been added successfully."
+msgstr "%d záznam(y) byly úspěšně přidány."
 
 #: lib/Application/Controller/BulkRecordAddController.php:237
 msgid "Some record(s) could not be added."
-msgstr "Some record(s) could not be added."
+msgstr "Některé záznamy nemohly být přidány."
 
 #: lib/Application/Controller/BulkRecordAddController.php:270
 msgid "Zone ID is required."
-msgstr "Zone ID is required."
+msgstr "ID zóny je povinné."
 
 #: lib/Application/Controller/ListPermTemplController.php:42
 msgid "You do not have the permission to edit permission templates."
-msgstr "You do not have the permission to edit permission templates."
+msgstr "Nemáte oprávnění upravovat šablony oprávnění."
 
 #: lib/Application/Controller/EditPermTemplController.php:74
 msgid "The permission template has been updated successfully."
-msgstr "The permission template has been updated successfully."
+msgstr "Šablona oprávnění byla úspěšně aktualizována."
 
 #: lib/Application/Controller/SearchController.php:45
 msgid "You do not have the permission to perform searches."
-msgstr "You do not have the permission to perform searches."
+msgstr "Nemáte oprávnění provádět vyhledávání."
 
 #: lib/Domain/Model/UserManager.php:740
 msgid "You do not have the permission to add a new user."
-msgstr "You do not have the permission to add a new user."
+msgstr "Nemáte oprávnění přidat nového uživatele."
 
 #: lib/Application/Controller/AddUserController.php:101
 msgid "The user has been created successfully."
-msgstr "The user has been created successfully."
+msgstr "Uživatel byl úspěšně vytvořen."
 
 #: lib/Application/Controller/AddUserController.php:110
 #, php-format
 msgid "Generated password: %s"
-msgstr "Generated password: %s"
+msgstr "Vygenerované heslo: %s"
 
 #: lib/Application/Controller/AddUserController.php:126
 msgid "Login details have been sent to the user via email."
-msgstr "Login details have been sent to the user via email."
+msgstr "Přihlašovací údaje byly odeslány uživateli e-mailem."
 
 #: lib/Application/Controller/AddUserController.php:128
 msgid "NOTE: Failed to send login details via email."
-msgstr "NOTE: Failed to send login details via email."
+msgstr "POZNÁMKA: Nepodařilo se odeslat přihlašovací údaje e-mailem."
 
 #: lib/Application/Controller/AddUserController.php:134
 msgid "A password was generated but is not displayed for security reasons."
-msgstr "A password was generated but is not displayed for security reasons."
+msgstr "Heslo bylo vygenerováno, ale ze bezpečnostních důvodů není zobrazeno."
 
 #: lib/Application/Controller/ChangePasswordController.php:136
 msgid "Please fill in all required fields correctly."
-msgstr "Please fill in all required fields correctly."
+msgstr "Vyplňte prosím všechna povinná pole správně."
 
 #: lib/Domain/Service/Dns/RecordManager.php:323
 msgid "You do not have the permission to delete this record."
-msgstr "You do not have the permission to delete this record."
+msgstr "Nemáte oprávnění smazat tento záznam."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:76
 msgid "The record could not be deleted."
-msgstr "The record could not be deleted."
+msgstr "Záznam nemohl být smazán."
 
 #: lib/Application/Controller/UsersController.php:49
 msgid "You do not have permission to view the users list."
-msgstr "You do not have permission to view the users list."
+msgstr "Nemáte oprávnění zobrazit seznam uživatelů."
 
 #: lib/Application/Controller/UsersController.php:72
 msgid "User details updated"
-msgstr "User details updated"
+msgstr "Údaje uživatele aktualizovány"
 
 #: lib/Application/Controller/EditZoneTemplController.php:58
 msgid "No template ID provided."
-msgstr "No template ID provided."
+msgstr "Nebylo poskytnuto ID šablony."
 
 #: lib/Application/Controller/EditZoneTemplController.php:68
 msgid "You do not have the permission to edit zone templates."
-msgstr "You do not have the permission to edit zone templates."
+msgstr "Nemáte oprávnění upravovat šablony zón."
 
 #: lib/Application/Controller/EditZoneTemplController.php:84
 msgid "There is no zone template with this ID."
-msgstr "There is no zone template with this ID."
+msgstr "Neexistuje šablona zóny s tímto ID."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:145
 msgid "Zone template has been updated successfully."
-msgstr "Zone template has been updated successfully."
+msgstr "Šablona zóny byla úspěšně aktualizována."
 
 #: lib/Application/Controller/EditZoneTemplController.php:222
 msgid "Zones have been updated successfully."
-msgstr "Zones have been updated successfully."
+msgstr "Zóny byly úspěšně aktualizovány."
 
 #: lib/Application/Controller/EditZoneTemplController.php:232
 msgid "You do not have permission to create new zone templates."
-msgstr "You do not have permission to create new zone templates."
+msgstr "Nemáte oprávnění vytvářet nové šablony zón."
 
 #: lib/Domain/Model/ZoneTemplate.php:176 lib/Domain/Model/ZoneTemplate.php:800
 msgid "Zone template with this name already exists, please choose another one."
@@ -399,266 +408,272 @@ msgstr "Šablona zóny s tímto názvem již existuje, vyberte prosím jinou."
 
 #: lib/Application/Controller/EditZoneTemplController.php:263
 msgid "Please enter a different name when using Save As."
-msgstr "Please enter a different name when using Save As."
+msgstr "Zadejte prosím jiný název při použití 'Uložit jako'."
 
 #: lib/Application/Controller/EditZoneTemplController.php:287
 msgid "Zone template has been copied successfully."
-msgstr "Zone template has been copied successfully."
+msgstr "Šablona zóny byla úspěšně zkopírována."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:40
 msgid "You do not have permission to view zone templates."
-msgstr "You do not have permission to view zone templates."
+msgstr "Nemáte oprávnění zobrazit šablony zón."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:54
 msgid "Invalid template ID."
-msgstr "Invalid template ID."
+msgstr "Neplatné ID šablony."
 
 #: lib/Application/Controller/ListTemplateZonesController.php:49
 msgid "Template does not exist."
-msgstr "Template does not exist."
+msgstr "Šablona neexistuje."
 
 #: lib/Domain/Repository/DomainRepository.php:350
 msgid "You do not have the permission to view this zone."
-msgstr "You do not have the permission to view this zone."
+msgstr "Nemáte oprávnění zobrazit tuto zónu."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:40
 msgid "You do not have permission to unlink zones from templates."
-msgstr "You do not have permission to unlink zones from templates."
+msgstr "Nemáte oprávnění odpojit zóny od šablon."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:49
 msgid "No zones selected."
-msgstr "No zones selected."
+msgstr "Nejsou vybrány žádné zóny."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:64
 msgid "Invalid request method."
-msgstr "Invalid request method."
+msgstr "Neplatná metoda požadavku."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:98
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zón bylo úspěšně odpojeno od šablony."
+msgstr[1] "%d zóna byla úspěšně odpojena od šablony."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:108
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] ""
-msgstr[1] ""
+msgstr[0] "%d zón se nepodařilo odpojit."
+msgstr[1] "%d zónu se nepodařilo odpojit."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:118
 msgid "Failed to unlink zones from template."
-msgstr "Failed to unlink zones from template."
+msgstr "Nepodařilo se odpojit zóny od šablony."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:130
 msgid "No valid zones selected."
-msgstr "No valid zones selected."
+msgstr "Nejsou vybrány žádné platné zóny."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:138
 msgid "Template not found."
-msgstr "Template not found."
+msgstr "Šablona nenalezena."
 
 #: lib/Application/Controller/WhoisController.php:61
 msgid "WHOIS lookup functionality is disabled."
-msgstr "WHOIS lookup functionality is disabled."
+msgstr "Funkce WHOIS vyhledávání je zakázána."
 
 #: lib/Application/Controller/WhoisController.php:66
 msgid "You do not have permission to perform WHOIS lookups."
-msgstr "You do not have permission to perform WHOIS lookups."
+msgstr "Nemáte oprávnění provádět WHOIS vyhledávání."
 
 #: lib/Application/Controller/WhoisController.php:137
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
-msgstr "Failed to retrieve WHOIS information using server %s"
+msgstr "Nepodařilo se získat WHOIS informace pomocí serveru %s"
 
 #: lib/Application/Controller/EditController.php:282
 msgid "DNSSEC is not enabled on the server."
-msgstr "DNSSEC is not enabled on the server."
+msgstr "DNSSEC není na serveru povoleno."
 
 #: lib/Application/Controller/EditController.php:285
 msgid "Zone is already signed with DNSSEC."
-msgstr "Zone is already signed with DNSSEC."
+msgstr "Zóna je již podepsána pomocí DNSSEC."
 
 #: lib/Application/Controller/EditController.php:297
 msgid "Zone has been signed successfully."
-msgstr "Zone has been signed successfully."
+msgstr "Zóna byla úspěšně podepsána."
 
 #: lib/Application/Controller/EditController.php:301
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr ""
+"Podepsání zóny bylo úspěšně požadováno, ale ověření selhalo. Zkontrolujte DNSSEC klíče."
 
 #: lib/Application/Controller/EditController.php:305
 msgid "Failed to sign zone. Check PowerDNS logs for details."
-msgstr "Failed to sign zone. Check PowerDNS logs for details."
+msgstr "Nepodařilo se podepsat zónu. Zkontrolujte logy PowerDNS pro detaily."
 
 #: lib/Application/Controller/DnssecController.php:79
 msgid "Zone is not currently signed with DNSSEC."
-msgstr "Zone is not currently signed with DNSSEC."
+msgstr "Zóna není v současnosti podepsána pomocí DNSSEC."
 
 #: lib/Application/Controller/DnssecController.php:89
 msgid "Zone has been unsigned successfully."
-msgstr "Zone has been unsigned successfully."
+msgstr "Zóna byla úspěšně odpodepsána."
 
 #: lib/Application/Controller/DnssecController.php:94
 msgid "Zone unsigning requested successfully, but verification failed."
-msgstr "Zone unsigning requested successfully, but verification failed."
+msgstr "Odpodepsání zóny bylo úspěšně požadováno, ale ověření selhalo."
 
 #: lib/Application/Controller/DnssecController.php:98
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
-msgstr "Failed to unsign zone. Check PowerDNS logs for details."
+msgstr ""
+"Nepodařilo se odpodepsat zónu. Zkontrolujte logy PowerDNS pro detaily."
 
 #: lib/Application/Controller/EditController.php:627
 msgid "Template name can't be an empty string."
-msgstr "Template name can't be an empty string."
+msgstr "Název šablony nemůže být prázdný řetězec."
 
 #: lib/Application/Controller/AddZoneTemplController.php:86
 msgid "Zone template has been added successfully."
-msgstr "Zone template has been added successfully."
+msgstr "Šablona zóny byla úspěšně přidána."
 
 #: lib/Application/Controller/EditController.php:647
 msgid "You need to be logged in to export zone data."
-msgstr "You need to be logged in to export zone data."
+msgstr "Musíte být přihlášeni pro export dat zóny."
 
 #: lib/Application/Controller/EditController.php:657
 msgid "You do not have permission to export this zone."
-msgstr "You do not have permission to export this zone."
+msgstr "Nemáte oprávnění exportovat tuto zónu."
 
 #: lib/Application/Controller/EditController.php:681
 msgid "This zone does not have any records to export."
-msgstr "This zone does not have any records to export."
+msgstr "Tato zóna nemá žádné záznamy k exportu."
 
 #: lib/Application/Controller/EditController.php:781
 msgid "Request has expired, please try again."
-msgstr "Request has expired, please try again."
+msgstr "Požadavek vypršel, zkuste to znovu."
 
 #: lib/Application/Controller/EditController.php:786
 msgid "Zone has been updated successfully."
-msgstr "Zone has been updated successfully."
+msgstr "Zóna byla úspěšně aktualizována."
 
 #: lib/Application/Controller/EditController.php:788
 msgid "Zone did not have any record changes."
-msgstr "Zone did not have any record changes."
+msgstr "Zóna neměla žádné změny záznamů."
 
 #: lib/Application/Controller/EditController.php:797
 msgid "Zone has not been updated successfully."
-msgstr "Zone has not been updated successfully."
+msgstr "Zóna nebyla úspěšně aktualizována."
 
 #: lib/Application/Controller/EditController.php:825
 msgid "Please provide all required fields."
-msgstr "Please provide all required fields."
+msgstr "Zadejte prosím všechna povinná pole."
 
 #: lib/Application/Controller/AddRecordController.php:167
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
 msgstr ""
+"Tento záznam nebyl platný a nemohl být přidán. Možná již existuje nebo obsahuje neplatná data."
 
 #: lib/Application/Controller/AddRecordController.php:222
 msgid "Record successfully added. A matching PTR record was also created."
-msgstr "Record successfully added. A matching PTR record was also created."
+msgstr "Záznam byl úspěšně přidán. Odpovídající PTR záznam byl také vytvořen."
 
 #: lib/Application/Controller/AddRecordController.php:226
 msgid "Record successfully added, but PTR record creation failed: "
-msgstr "Record successfully added, but PTR record creation failed: "
+msgstr "Záznam byl úspěšně přidán, ale vytvoření PTR záznamu selhalo: "
 
 #: lib/Application/Controller/AddRecordController.php:230
 msgid "The record was successfully added, but PTR record creation failed."
-msgstr "The record was successfully added, but PTR record creation failed."
+msgstr "Záznam byl úspěšně přidán, ale vytvoření PTR záznamu selhalo."
 
 #: lib/Application/Controller/AddRecordController.php:234
 msgid "Record successfully added. A matching A record was also created."
-msgstr "Record successfully added. A matching A record was also created."
+msgstr "Záznam byl úspěšně přidán. Odpovídající A záznam byl také vytvořen."
 
 #: lib/Application/Controller/AddRecordController.php:237
 msgid "The record was successfully added."
-msgstr "The record was successfully added."
+msgstr "Záznam byl úspěšně přidán."
 
 #: lib/Application/Controller/MfaVerifyController.php:112
 msgid "Invalid security token. Please try again."
-msgstr "Invalid security token. Please try again."
+msgstr "Neplatný bezpečnostní token. Zkuste to znovu."
 
 #: lib/Application/Controller/MfaVerifyController.php:122
 msgid "No MFA record found. Please contact administrator."
-msgstr "No MFA record found. Please contact administrator."
+msgstr "Nebyl nalezen MFA záznam. Kontaktujte administrátora."
 
 #: lib/Application/Controller/MfaVerifyController.php:127
 msgid "An error occurred. Please try again."
-msgstr "An error occurred. Please try again."
+msgstr "Došlo k chybě. Zkuste to znovu."
 
 #: lib/Application/Controller/MfaVerifyController.php:209
 msgid ""
 "Email verification is not available because mail service is disabled. Please "
 "use a recovery code."
 msgstr ""
+"Ověření e-mailem není k dispozici, protože poštovní služba je zakázána. Použijte prosím obnovovací kód."
 
 #: lib/Application/Controller/MfaVerifyController.php:219
 msgid "A new verification code has been sent to your email."
-msgstr "A new verification code has been sent to your email."
+msgstr "Nový ověřovací kód byl odeslán na váš e-mail."
 
 #: lib/Application/Controller/MfaVerifyController.php:225
 msgid "Please use a recovery code instead."
-msgstr "Please use a recovery code instead."
+msgstr "Použijte prosím místo toho obnovovací kód."
 
 #: lib/Application/Controller/MfaVerifyController.php:230
 msgid ""
 "Could not send verification code to your email. Please use a recovery code "
 "instead."
 msgstr ""
+"Nepodařilo se odeslat ověřovací kód na váš e-mail. Použijte prosím místo toho obnovovací kód."
 
 #: lib/Domain/Service/Dns/RecordManager.php:111
 msgid "You do not have the permission to add a record to this zone."
-msgstr "You do not have the permission to add a record to this zone."
+msgstr "Nemáte oprávnění přidat záznam do této zóny."
 
 #: lib/Application/Controller/AddRecordController.php:386
 msgid "No records were provided."
-msgstr "No records were provided."
+msgstr "Nebyly poskytnuty žádné záznamy."
 
 #: lib/Application/Controller/AddRecordController.php:424
 #, php-format
 msgid "%d record(s) were successfully added."
-msgstr "%d record(s) were successfully added."
+msgstr "%d záznam(y) byly úspěšně přidány."
 
 #: lib/Application/Controller/AddRecordController.php:426
 #, php-format
 msgid "%d record(s) failed to be added."
-msgstr "%d record(s) failed to be added."
+msgstr "%d záznam(y) se nepodařilo přidat."
 
 #: lib/Application/Controller/AddRecordController.php:431
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
 msgstr ""
+"Některé záznamy nemohly být přidány. Možná již existují nebo obsahují neplatná data."
 
 #: lib/Application/Controller/AddRecordController.php:453
 msgid "Failed to add any records. They may contain invalid data."
-msgstr "Failed to add any records. They may contain invalid data."
+msgstr "Nepodařilo se přidat žádné záznamy. Možná obsahují neplatná data."
 
 #: lib/Application/Controller/DeleteDomainsController.php:70
 msgid "No zone selected for deletion."
-msgstr "No zone selected for deletion."
+msgstr "Nebyla vybrána žádná zóna k mazání."
 
 #: lib/Application/Controller/DeleteDomainController.php:120
 msgid "Zone has been deleted successfully."
-msgstr "Zone has been deleted successfully."
+msgstr "Zóna byla úspěšně smazána."
 
 #: lib/Application/Controller/DeleteDomainsController.php:117
 msgid "Zones have been deleted successfully."
-msgstr "Zones have been deleted successfully."
+msgstr "Zóny byly úspěšně smazány."
 
 #: lib/Domain/Service/Dns/DomainManager.php:478
 msgid "You do not have the permission to delete a zone."
-msgstr "You do not have the permission to delete a zone."
+msgstr "Nemáte oprávnění smazat zónu."
 
 #: lib/Application/Controller/EditZoneTemplRecordController.php:80
 msgid "You do not have the permission to edit zone template records."
-msgstr "You do not have the permission to edit zone template records."
+msgstr "Nemáte oprávnění upravovat záznamy šablon zón."
 
 #: lib/Application/Controller/MigrationsController.php:49
 msgid "You do not have the permission to access the migrations."
-msgstr "You do not have the permission to access the migrations."
+msgstr "Nemáte oprávnění přistupovat k migracím."
 
 #: lib/Application/Controller/MigrationsController.php:53
 msgid ""
@@ -678,257 +693,259 @@ msgstr ""
 
 #: lib/Domain/Service/Dns/DomainManager.php:210
 msgid "You do not have the permission to add a master zone."
-msgstr "You do not have the permission to add a master zone."
+msgstr "Nemáte oprávnění přidat hlavní zónu."
 
 #: lib/Application/Controller/BulkRegistrationController.php:104
 msgid "There is already a zone with this name."
-msgstr "There is already a zone with this name."
+msgstr "Zóna s tímto názvem již existuje."
 
 #: lib/Application/Controller/AddZoneMasterController.php:132
 msgid "Zone was created, but securing it with DNSSEC failed."
-msgstr "Zone was created, but securing it with DNSSEC failed."
+msgstr "Zóna byla vytvořena, ale zabezpečení pomocí DNSSEC selhalo."
 
 #: lib/Application/Controller/AddZoneSlaveController.php:128
 msgid "Zone has been added successfully."
-msgstr "Zone has been added successfully."
+msgstr "Zóna byla úspěšně přidána."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:68
 msgid "Batch PTR record creation is not enabled."
-msgstr "Batch PTR record creation is not enabled."
+msgstr "Dávkové vytváření PTR záznamů není povoleno."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:75
 msgid "You do not have permission to edit DNS records."
-msgstr "You do not have permission to edit DNS records."
+msgstr "Nemáte oprávnění upravovat DNS záznamy."
 
 #: lib/Application/Controller/BatchPtrRecordController.php:91
 msgid "Batch PTR record creation is not available for reverse zones."
-msgstr "Batch PTR record creation is not available for reverse zones."
+msgstr "Dávkové vytváření PTR záznamů není dostupné pro reverzní zóny."
 
 #: lib/Application/Controller/ListZoneTemplController.php:56
 msgid "You do not have the permission to view zone templates."
-msgstr "You do not have the permission to view zone templates."
+msgstr "Nemáte oprávnění zobrazit šablony zón."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:82
 msgid "Failed to delete DNSSEC key."
-msgstr "Failed to delete DNSSEC key."
+msgstr "Nepodařilo se smazat DNSSEC klíč."
 
 #: lib/Application/Controller/DnssecEditKeyController.php:89
 msgid "Zone key has been successfully deactivated."
-msgstr "Zone key has been successfully deactivated."
+msgstr "Klíč zóny byl úspěšně deaktivován."
 
 #: lib/Application/Controller/DnssecEditKeyController.php:91
 msgid "Failed to deactivate zone key."
-msgstr "Failed to deactivate zone key."
+msgstr "Nepodařilo se deaktivovat klíč zóny."
 
 #: lib/Application/Controller/DnssecEditKeyController.php:96
 msgid "Zone key has been successfully activated."
-msgstr "Zone key has been successfully activated."
+msgstr "Klíč zóny byl úspěšně aktivován."
 
 #: lib/Application/Controller/DnssecEditKeyController.php:98
 msgid "Failed to activate zone key."
-msgstr "Failed to activate zone key."
+msgstr "Nepodařilo se aktivovat klíč zóny."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:93
 msgid "Zone key has been deleted successfully."
-msgstr "Zone key has been deleted successfully."
+msgstr "Klíč zóny byl úspěšně smazán."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:96
 msgid "Failed to delete the zone key."
-msgstr "Failed to delete the zone key."
+msgstr "Nepodařilo se smazat klíč zóny."
 
 #: lib/Application/Controller/DnssecDeleteKeyController.php:103
 msgid "An error occurred while deleting the DNSSEC key: "
-msgstr "An error occurred while deleting the DNSSEC key: "
+msgstr "Při mazání DNSSEC klíče došlo k chybě: "
 
 #: lib/Application/Controller/ListForwardZonesController.php:57
 msgid "You do not have sufficient permissions to view this page."
-msgstr "You do not have sufficient permissions to view this page."
+msgstr "Nemáte dostatečná oprávnění k zobrazení této stránky."
 
 #: lib/Application/Controller/ListForwardZonesController.php:112
 msgid "You do not have the permission to see any zones."
-msgstr "You do not have the permission to see any zones."
+msgstr "Nemáte oprávnění zobrazit žádné zóny."
 
 #: lib/Application/Controller/AddPermTemplController.php:50
 msgid "You do not have the permission to add permission templates."
-msgstr "You do not have the permission to add permission templates."
+msgstr "Nemáte oprávnění přidávat šablony oprávnění."
 
 #: lib/Application/Controller/AddPermTemplController.php:69
 msgid "The permission template has been added successfully."
-msgstr "The permission template has been added successfully."
+msgstr "Šablona oprávnění byla úspěšně přidána."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:33
 msgid "Not available for anonymous users."
-msgstr "Not available for anonymous users."
+msgstr "Není dostupné pro anonymní uživatele."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:37
 msgid "You do not have the permission to view this page."
-msgstr "You do not have the permission to view this page."
+msgstr "Nemáte oprávnění zobrazit tuto stránku."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:41
 msgid "Database consistency checks are disabled."
-msgstr "Database consistency checks are disabled."
+msgstr "Kontroly konzistence databáze jsou zakázány."
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:77
 #: templates/default/database_consistency.html:29
 msgid "Database Consistency Check"
-msgstr "Database Consistency Check"
+msgstr "Kontrola konzistence databáze"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:96
 msgid "Zone owner assigned successfully"
-msgstr "Zone owner assigned successfully"
+msgstr "Vlastník zóny byl úspěšně přiřazen"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:96
 msgid "Failed to assign zone owner"
-msgstr "Failed to assign zone owner"
+msgstr "Nepodařilo se přiřadit vlastníka zóny"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:103
 msgid "Slave zone deleted successfully"
-msgstr "Slave zone deleted successfully"
+msgstr "Podřízená zóna byla úspěšně smazána"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:103
 msgid "Failed to delete slave zone"
-msgstr "Failed to delete slave zone"
+msgstr "Nepodařilo se smazat podřízenou zónu"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:110
 msgid "Orphaned record deleted successfully"
-msgstr "Orphaned record deleted successfully"
+msgstr "Osamocený záznam byl úspěšně smazán"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:110
 msgid "Failed to delete orphaned record"
-msgstr "Failed to delete orphaned record"
+msgstr "Nepodařilo se smazat osamocený záznam"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:117
 msgid "Duplicate SOA records fixed successfully"
-msgstr "Duplicate SOA records fixed successfully"
+msgstr "Duplicitní SOA záznamy byly úspěšně opraveny"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:117
 msgid "Failed to fix duplicate SOA records"
-msgstr "Failed to fix duplicate SOA records"
+msgstr "Nepodařilo se opravit duplicitní SOA záznamy"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:124
 msgid "Default SOA record created successfully"
-msgstr "Default SOA record created successfully"
+msgstr "Výchozí SOA záznam byl úspěšně vytvořen"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:124
 msgid "Failed to create default SOA record"
-msgstr "Failed to create default SOA record"
+msgstr "Nepodařilo se vytvořit výchozí SOA záznam"
 
 #: lib/Application/Controller/DatabaseConsistencyController.php:129
 msgid "Invalid check type"
-msgstr "Invalid check type"
+msgstr "Neplatný typ kontroly"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:116
 msgid "You have logged out."
-msgstr "You have logged out."
+msgstr "Byli jste odhlášeni."
 
 #: lib/Domain/Model/ZoneTemplate.php:173 lib/Domain/Model/ZoneTemplate.php:615
 msgid "You do not have the permission to add a zone template."
-msgstr "You do not have the permission to add a zone template."
+msgstr "Nemáte oprávnění přidat šablonu zóny."
 
 #: lib/Application/Controller/RdapController.php:60
 msgid "RDAP lookup functionality is disabled."
-msgstr "RDAP lookup functionality is disabled."
+msgstr "Funkce RDAP vyhledávání je zakázána."
 
 #: lib/Application/Controller/RdapController.php:65
 msgid "You do not have permission to perform RDAP lookups."
-msgstr "You do not have permission to perform RDAP lookups."
+msgstr "Nemáte oprávnění provádět RDAP vyhledávání."
 
 #: lib/Application/Controller/RdapController.php:136
 #, php-format
 msgid "Failed to retrieve RDAP information using server %s"
-msgstr "Failed to retrieve RDAP information using server %s"
+msgstr "Nepodařilo se získat RDAP informace pomocí serveru %s"
 
 #: lib/Application/Controller/AddZoneSlaveController.php:59
 msgid "You do not have the permission to add a slave zone."
-msgstr "You do not have the permission to add a slave zone."
+msgstr "Nemáte oprávnění přidat podřízenou zónu."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:259
 msgid "Invalid hostname."
-msgstr "Invalid hostname."
+msgstr "Neplatné jméno hostitele."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:253
 msgid "This is not a valid IPv4 or IPv6 address."
-msgstr "This is not a valid IPv4 or IPv6 address."
+msgstr "Toto není platná IPv4 nebo IPv6 adresa."
 
 #: lib/Domain/Model/ZoneTemplate.php:273 lib/Domain/Model/ZoneTemplate.php:311
 msgid "You do not have the permission to delete zone templates."
-msgstr "You do not have the permission to delete zone templates."
+msgstr "Nemáte oprávnění mazat šablony zón."
 
 #: lib/Application/Controller/DeleteZoneTemplController.php:90
 msgid "Zone template has been deleted successfully."
-msgstr "Zone template has been deleted successfully."
+msgstr "Šablona zóny byla úspěšně smazána."
 
 #: lib/Application/Controller/EditSupermasterController.php:43
 msgid "You do not have the permission to edit a supermaster."
-msgstr "You do not have the permission to edit a supermaster."
+msgstr "Nemáte oprávnění upravovat supermaster."
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:271
 msgid "The supermaster you are trying to edit does not exist."
-msgstr "The supermaster you are trying to edit does not exist."
+msgstr "Supermaster, který se pokoušíte upravit, neexistuje."
 
 #: lib/Application/Controller/EditSupermasterController.php:92
 msgid "The supermaster has been updated successfully."
-msgstr "The supermaster has been updated successfully."
+msgstr "Supermaster byl úspěšně aktualizován."
 
 #: lib/Application/Controller/AddSupermasterController.php:43
 msgid "You do not have the permission to add a new supermaster."
-msgstr "You do not have the permission to add a new supermaster."
+msgstr "Nemáte oprávnění přidat nový supermaster."
 
 #: lib/Application/Controller/AddSupermasterController.php:61
 msgid "The supermaster has been added successfully."
-msgstr "The supermaster has been added successfully."
+msgstr "Supermaster byl úspěšně přidán."
 
 #: lib/Application/Controller/AddZoneTemplRecordController.php:74
 msgid "You do not have the permission to add records to zone templates."
-msgstr "You do not have the permission to add records to zone templates."
+msgstr "Nemáte oprávnění přidávat záznamy do šablon zón."
 
 #: lib/Application/Controller/EditUserController.php:111
 msgid "Your profile has been updated successfully."
-msgstr "Your profile has been updated successfully."
+msgstr "Váš profil byl úspěšně aktualizován."
 
 #: lib/Application/Controller/EditUserController.php:115
 msgid "The user has been updated successfully."
-msgstr "The user has been updated successfully."
+msgstr "Uživatel byl úspěšně aktualizován."
 
 #: lib/Application/Controller/EditUserController.php:119
 msgid "The user could not be updated."
-msgstr "The user could not be updated."
+msgstr "Uživatel nemohl být aktualizován."
 
 #: lib/Domain/Model/UserManager.php:395 lib/Domain/Model/UserManager.php:720
 msgid "You do not have the permission to edit this user."
-msgstr "You do not have the permission to edit this user."
+msgstr "Nemáte oprávnění upravovat tohoto uživatele."
 
 #: lib/Application/Controller/DeletePermTemplController.php:51
 msgid "You do not have the permission to delete permission templates."
-msgstr "You do not have the permission to delete permission templates."
+msgstr "Nemáte oprávnění mazat šablony oprávnění."
 
 #: lib/Application/Controller/DeletePermTemplController.php:69
 msgid "The permission template has been deleted successfully."
-msgstr "The permission template has been deleted successfully."
+msgstr "Šablona oprávnění byla úspěšně smazána."
 
 #: lib/Application/Controller/PdnsStatusController.php:59
 msgid "The PowerDNS status feature is disabled in the system configuration."
-msgstr "The PowerDNS status feature is disabled in the system configuration."
+msgstr "Funkce PowerDNS stavu je v systémové konfiguraci zakázána."
 
 #: lib/Application/Controller/PdnsStatusController.php:65
 msgid ""
 "You do not have permission to view PowerDNS server status. Only "
 "administrators can access this feature."
 msgstr ""
+"Nemáte oprávnění zobrazit stav PowerDNS serveru. Pouze administrátoři mohou přistupovat k této funkci."
 
 #: lib/Application/Controller/PdnsStatusController.php:71
 msgid ""
 "The PowerDNS API feature is not configured. Please set the API URL and key "
 "in the system configuration."
 msgstr ""
+"PowerDNS API funkce není nakonfigurována. Nastavte prosím API URL a klíč v systémové konfiguraci."
 
 #: lib/Application/Controller/EditRecordController.php:82
 msgid "You do not have the permission to view this record."
-msgstr "You do not have the permission to view this record."
+msgstr "Nemáte oprávnění zobrazit tento záznam."
 
 #: lib/Application/Controller/EditRecordController.php:215
 msgid "The record has been updated successfully."
-msgstr "The record has been updated successfully."
+msgstr "Záznam byl úspěšně aktualizován."
 
 #: lib/Application/Controller/ChangePasswordController.php:78
 msgid ""
@@ -939,135 +956,136 @@ msgstr ""
 
 #: lib/Application/Controller/DnssecAddKeyController.php:101
 msgid "ECDSA P-256 algorithm must use 256 bits"
-msgstr "ECDSA P-256 algorithm must use 256 bits"
+msgstr "Algoritmus ECDSA P-256 musí používat 256 bitů"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:104
 msgid "ECDSA P-384 algorithm must use 384 bits"
-msgstr "ECDSA P-384 algorithm must use 384 bits"
+msgstr "Algoritmus ECDSA P-384 musí používat 384 bitů"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:110
 msgid "ED25519 algorithm must use 256 bits"
-msgstr "ED25519 algorithm must use 256 bits"
+msgstr "Algoritmus ED25519 musí používat 256 bitů"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:115
 msgid "ED448 algorithm must use 456 bits (unsupported in this UI)"
-msgstr "ED448 algorithm must use 456 bits (unsupported in this UI)"
+msgstr "Algoritmus ED448 musí používat 456 bitů (nepodporováno v tomto UI)"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:122
 msgid "RSA algorithms should use 1024 or 2048 bits for adequate security"
-msgstr "RSA algorithms should use 1024 or 2048 bits for adequate security"
+msgstr ""
+"RSA algoritmy by měly používat 1024 nebo 2048 bitů pro odpovídající bezpečnost"
 
 #: lib/Application/Controller/DnssecAddKeyController.php:143
 msgid "Zone key has been added successfully."
-msgstr "Zone key has been added successfully."
+msgstr "Klíč zóny byl úspěšně přidán."
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:346
 msgid "Failed to add new DNSSEC key."
-msgstr "Failed to add new DNSSEC key."
+msgstr "Nepodařilo se přidat nový DNSSEC klíč."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:151
 msgid "An error occurred while adding the DNSSEC key: "
-msgstr "An error occurred while adding the DNSSEC key: "
+msgstr "Při přidávání DNSSEC klíče došlo k chybě: "
 
 #: lib/Application/Controller/DnssecAddKeyController.php:155
 msgid "Please select both algorithm and bits"
-msgstr "Please select both algorithm and bits"
+msgstr "Vyberte prosím algoritmus i bity"
 
 #: lib/Application/Controller/DeleteSupermasterController.php:47
 msgid "You do not have the permission to delete a supermaster."
-msgstr "You do not have the permission to delete a supermaster."
+msgstr "Nemáte oprávnění smazat supermaster."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:80
 msgid "Invalid IP address."
-msgstr "Invalid IP address."
+msgstr "Neplatná IP adresa."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:85
 msgid "Invalid NS name."
-msgstr "Invalid NS name."
+msgstr "Neplatné NS jméno."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:91
 msgid "Super master does not exist."
-msgstr "Super master does not exist."
+msgstr "Super master neexistuje."
 
 #: lib/Application/Controller/DeleteSupermasterController.php:95
 msgid "The supermaster has been deleted successfully."
-msgstr "The supermaster has been deleted successfully."
+msgstr "Supermaster byl úspěšně smazán."
 
 #: lib/Application/Controller/BulkRegistrationController.php:119
 msgid "Zones has been added successfully."
-msgstr "Zones has been added successfully."
+msgstr "Zóny byly úspěšně přidány."
 
 #: lib/Application/Controller/BulkRegistrationController.php:122
 msgid "Some zone(s) could not be added."
-msgstr "Some zone(s) could not be added."
+msgstr "Některé zóny nemohly být přidány."
 
 #: lib/Application/Controller/NotFoundController.php:53
 #: templates/default/404.html:14
 msgid "Page Not Found"
-msgstr "Page Not Found"
+msgstr "Stránka nenalezena"
 
 #: lib/Application/Service/LdapAuthenticator.php:80
 msgid "Account is temporarily locked. Please try again later."
-msgstr "Account is temporarily locked. Please try again later."
+msgstr "Účet je dočasně uzamčen. Zkuste to prosím později."
 
 #: lib/Application/Service/SqlAuthenticator.php:138
 msgid "The user account is disabled."
-msgstr "The user account is disabled."
+msgstr "Uživatelský účet je zakázán."
 
 #: lib/Application/Service/SqlAuthenticator.php:213
 msgid "Authentication failed!"
-msgstr "Authentication failed!"
+msgstr "Ověření selhalo!"
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:185
 msgid "Session expired, please login again."
-msgstr "Session expired, please login again."
+msgstr "Relace vypršela, přihlaste se prosím znovu."
 
 #: lib/Application/Service/PasswordChangeService.php:66
 msgid "Failed to update password"
-msgstr "Failed to update password"
+msgstr "Nepodařilo se aktualizovat heslo"
 
 #: lib/Application/Service/LdapAuthenticator.php:113
 msgid "Failed to connect to LDAP server!"
-msgstr "Failed to connect to LDAP server!"
+msgstr "Nepodařilo se připojit k LDAP serveru!"
 
 #: lib/Application/Service/LdapAuthenticator.php:129
 msgid "Failed to bind to LDAP server!"
-msgstr "Failed to bind to LDAP server!"
+msgstr "Nepodařilo se navazat k LDAP serveru!"
 
 #: lib/Application/Service/LdapAuthenticator.php:153
 msgid "Failed to search LDAP."
-msgstr "Failed to search LDAP."
+msgstr "Nepodařilo se vyhledávat v LDAP."
 
 #: lib/Application/Service/LdapAuthenticator.php:170
 msgid "Failed to authenticate against LDAP."
-msgstr "Failed to authenticate against LDAP."
+msgstr "Nepodařilo se ověřit proti LDAP."
 
 #: lib/Application/Service/LdapAuthenticator.php:204
 msgid "LDAP Authentication failed!"
-msgstr "LDAP Authentication failed!"
+msgstr "LDAP ověření selhalo!"
 
 #: lib/Application/Query/RecordSearch.php:167 templates/default/users.html:119
 #: templates/default/users.html:127
 msgid "Yes"
-msgstr "Yes"
+msgstr "Ano"
 
 #: lib/Application/Query/RecordSearch.php:167 templates/default/users.html:121
 #: templates/default/users.html:129
 msgid "No"
-msgstr "No"
+msgstr "Ne"
 
 #: lib/Domain/Model/UserManager.php:271
 msgid "This template is assigned to at least one user."
-msgstr "This template is assigned to at least one user."
+msgstr "Tato šablona je přiřazena alespoň jednomu uživateli."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:150
 #: templates/default/login.html:109
 msgid "reCAPTCHA verification failed. Please try again."
-msgstr "reCAPTCHA verification failed. Please try again."
+msgstr "reCAPTCHA ověření selhalo. Zkuste to znovu."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:173
 msgid "An empty password is not allowed"
-msgstr "An empty password is not allowed"
+msgstr "Prázdné heslo není povoleno"
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:50
 msgid ""
@@ -1079,246 +1097,253 @@ msgstr ""
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:56
 msgid "Failed to call pdnssec utility."
-msgstr "Failed to call pdnssec utility."
+msgstr "Nepodařilo se zavolat pdnssec utilitu."
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:150
 msgid "Failed to secure zone."
-msgstr "Failed to secure zone."
+msgstr "Nepodařilo se zabezpečit zónu."
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:171
 msgid "Failed to disable DNSSEC."
-msgstr "Failed to disable DNSSEC."
+msgstr "Nepodařilo se zakázat DNSSEC."
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:314
 msgid "Failed to get DNSSEC key details."
-msgstr "Failed to get DNSSEC key details."
+msgstr "Nepodařilo se získat detaily DNSSEC klíče."
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:269
 msgid "Failed to active DNSSEC key."
-msgstr "Failed to active DNSSEC key."
+msgstr "Nepodařilo se aktivovat DNSSEC klíč."
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:291
 msgid "Failed to deactivate DNSSEC key."
-msgstr "Failed to deactivate DNSSEC key."
+msgstr "Nepodařilo se deaktivovat DNSSEC klíč."
 
 #: lib/Infrastructure/Service/PdnsUtilProvider.php:370
 msgid "Failed to remove DNSSEC key."
-msgstr "Failed to remove DNSSEC key."
+msgstr "Nepodařilo se odebrat DNSSEC klíč."
 
 #: lib/Domain/Repository/DomainRepository.php:203
 msgid "This is an invalid zone name."
-msgstr "This is an invalid zone name."
+msgstr "Toto je neplatný název zóny."
 
 #: lib/Domain/Model/UserManager.php:752
 msgid "Enter a valid email address."
-msgstr "Enter a valid email address."
+msgstr "Zadejte platnou e-mailovou adresu."
 
 #: lib/Domain/Model/UserManager.php:744
 msgid "Username exist already, please choose another one."
-msgstr "Username exist already, please choose another one."
+msgstr "Uživatelské jméno již existuje, vyberte prosím jiné."
 
 #: lib/Domain/Model/UserManager.php:748
 msgid "Enter a valid user name."
-msgstr "Enter a valid user name."
+msgstr "Zadejte platné uživatelské jméno."
 
 #: lib/Domain/Model/ZoneTemplate.php:200 lib/Domain/Model/ZoneTemplate.php:671
 msgid "Error creating zone template: "
-msgstr "Error creating zone template: "
+msgstr "Chyba při vytváření šablony zóny: "
 
 #: lib/Domain/Model/ZoneTemplate.php:236
 msgid "Error adding default SOA record to template: "
-msgstr "Error adding default SOA record to template: "
+msgstr "Chyba při přidávání výchozího SOA záznamu do šablony: "
 
 #: lib/Domain/Model/ZoneTemplate.php:295
 msgid "Error deleting zone template: "
-msgstr "Error deleting zone template: "
+msgstr "Chyba při mazání šablony zóny: "
 
 #: lib/Domain/Model/ZoneTemplate.php:319
 msgid "Error deleting user zone templates: "
-msgstr "Error deleting user zone templates: "
+msgstr "Chyba při mazání uživatelských šablon zón: "
 
 #: lib/Domain/Model/ZoneTemplate.php:437
 msgid "You do not have the permission to add a record to this zone template."
-msgstr "You do not have the permission to add a record to this zone template."
+msgstr "Nemáte oprávnění přidat záznam do této šablony zóny."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:126
 msgid "Your content field doesnt have a legit value."
-msgstr "Your content field doesnt have a legit value."
+msgstr "Vaše pole obsahu nemá platnou hodnotu."
 
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:74
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
-msgstr "Priority for MX/SRV records must be a number between 0 and 65535."
+msgstr "Priorita pro MX/SRV záznamy musí být číslo mezi 0 a 65535."
 
 #: lib/Domain/Model/ZoneTemplate.php:529
 msgid "Error updating zone template record: "
-msgstr "Error updating zone template record: "
+msgstr "Chyba při aktualizaci záznamu šablony zóny: "
 
 #: lib/Domain/Model/ZoneTemplate.php:552
 msgid "Error deleting zone template record: "
-msgstr "Error deleting zone template record: "
+msgstr "Chyba při mazání záznamu šablony zóny: "
 
 #: lib/Domain/Model/ZoneTemplate.php:575
 msgid "Error checking template ownership: "
-msgstr "Error checking template ownership: "
+msgstr "Chyba při kontrole vlastnictví šablony: "
 
 #: lib/Domain/Model/ZoneTemplate.php:724
 msgid "Error retrieving zones using template: "
-msgstr "Error retrieving zones using template: "
+msgstr "Chyba při získávání zón používajících šablonu: "
 
 #: lib/Domain/Model/ZoneTemplate.php:779
 msgid "Failed to get list of zones using template: "
-msgstr "Failed to get list of zones using template: "
+msgstr "Nepodařilo se získat seznam zón používajících šablonu: "
 
 #: lib/Domain/Model/ZoneTemplate.php:797
 msgid "You do not have the permission to edit a zone template."
-msgstr "You do not have the permission to edit a zone template."
+msgstr "Nemáte oprávnění upravovat šablonu zóny."
 
 #: lib/Domain/Model/ZoneTemplate.php:841
 msgid "Error unlinking zone from template: "
-msgstr "Error unlinking zone from template: "
+msgstr "Chyba při odpojování zóny od šablony: "
 
 #: lib/Domain/Model/ZoneTemplate.php:870
 msgid "Error retrieving zones: "
-msgstr "Error retrieving zones: "
+msgstr "Chyba při získávání zón: "
 
 #: lib/Domain/Model/ZoneTemplate.php:889
 msgid "Error checking template name existence: "
-msgstr "Error checking template name existence: "
+msgstr "Chyba při kontrole existence názvu šablony: "
 
 #: lib/Domain/Model/ZoneTemplate.php:912
 msgid "Error checking template existence: "
-msgstr "Error checking template existence: "
+msgstr "Chyba při kontrole existence šablony: "
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:63
 msgid "All zones have owners"
-msgstr "All zones have owners"
+msgstr "Všechny zóny mají vlastníky"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:70
 #, php-format
 msgid "%d zones found without owners"
-msgstr "%d zones found without owners"
+msgstr "Nalezeno %d zón bez vlastníků"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:101
 msgid "All slave zones have master IP addresses"
-msgstr "All slave zones have master IP addresses"
+msgstr "Všechny podřízené zóny mají hlavní IP adresy"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:108
 #, php-format
 msgid "%d slave zones found without master IP addresses"
-msgstr "%d slave zones found without master IP addresses"
+msgstr "Nalezeno %d podřízených zón bez hlavních IP adres"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:141
 msgid "All records belong to existing zones"
-msgstr "All records belong to existing zones"
+msgstr "Všechny záznamy patří do existujících zón"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:148
 #, php-format
 msgid "%d orphaned records found"
-msgstr "%d orphaned records found"
+msgstr "Nalezeno %d osamocených záznamů"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:185
 msgid "No duplicate SOA records found"
-msgstr "No duplicate SOA records found"
+msgstr "Nebyly nalezeny žádné duplicitní SOA záznamy"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:192
 #, php-format
 msgid "%d zones have duplicate SOA records"
-msgstr "%d zones have duplicate SOA records"
+msgstr "%d zón má duplicitní SOA záznamy"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:224
 msgid "All zones have SOA records"
-msgstr "All zones have SOA records"
+msgstr "Všechny zóny mají SOA záznamy"
 
 #: lib/Domain/Service/DatabaseConsistencyService.php:231
 #, php-format
 msgid "%d zones found without SOA records"
-msgstr "%d zones found without SOA records"
+msgstr "Nalezeno %d zón bez SOA záznamů"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:117
 msgid "Priority field for IPSECKEY records must be 0 or empty"
-msgstr "Priority field for IPSECKEY records must be 0 or empty"
+msgstr "Pole priority pro IPSECKEY záznamy musí být 0 nebo prázdné"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:122
 msgid ""
 "IPSECKEY records should be used with DNSSEC to ensure secure transmission of "
 "keying material (RFC 4025 Section 4)."
 msgstr ""
+"IPSECKEY záznamy by měly být použity s DNSSEC pro zajištění bezpečného přenosu klíčového materiálu (RFC 4025 Sekce 4)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:123
 msgid ""
 "The public key in IPSECKEY records should be regularly rotated for improved "
 "security."
 msgstr ""
+"Veřejný klíč v IPSECKEY záznamech by měl být pravidelně rotován pro zlepšení bezpečnosti."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:132
 msgid ""
 "When using domain name gateways, ensure both forward and reverse DNS records "
 "exist and are properly secured with DNSSEC."
 msgstr ""
+"Při používání brán doménových jmen se ujistěte, že existují přímé i reverzní DNS záznamy a jsou řádně zabezpečeny pomocí DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:160
 msgid "Invalid characters in IPSECKEY record content."
-msgstr "Invalid characters in IPSECKEY record content."
+msgstr "Neplatné znaky v obsahu IPSECKEY záznamu."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:166
 msgid ""
 "IPSECKEY record must contain precedence, gateway type, algorithm, gateway, "
 "and public key."
 msgstr ""
+"IPSECKEY záznam musí obsahovat prioritu, typ brány, algoritmus, bránu a veřejný klíč."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:175
 msgid "IPSECKEY precedence must be a number between 0 and 255."
-msgstr "IPSECKEY precedence must be a number between 0 and 255."
+msgstr "IPSECKEY priorita musí být číslo mezi 0 a 255."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:181
 msgid ""
 "IPSECKEY gateway type must be 0 (No gateway), 1 (IPv4), 2 (IPv6), or 3 "
 "(Domain name)"
 msgstr ""
+"IPSECKEY typ brány musí být 0 (Žádná brána), 1 (IPv4), 2 (IPv6), nebo 3 (Doménové jméno)"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:187
 msgid ""
 "IPSECKEY algorithm must be 0 (No key), 1 (RSA), 2 (DSA), 3 (ECDSA), or 4 "
 "(Ed25519)."
 msgstr ""
+"IPSECKEY algoritmus musí být 0 (Žádný klíč), 1 (RSA), 2 (DSA), 3 (ECDSA), nebo 4 (Ed25519)."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
-msgstr ""
+msgstr "Pro typ brány 0 (Žádná brána), brána musí být \".\"."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
-msgstr "For gateway type 1, gateway must be a valid IPv4 address."
+msgstr "Pro typ brány 1, brána musí být platná IPv4 adresa."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:208
 msgid "For gateway type 2, gateway must be a valid IPv6 address."
-msgstr "For gateway type 2, gateway must be a valid IPv6 address."
+msgstr "Pro typ brány 2, brána musí být platná IPv6 adresa."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:218
 msgid "For gateway type 3, gateway must be a valid domain name."
-msgstr "For gateway type 3, gateway must be a valid domain name."
+msgstr "Pro typ brány 3, brána musí být platné doménové jméno."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:227
 msgid "IPSECKEY public key is required when algorithm is not 0."
-msgstr "IPSECKEY public key is required when algorithm is not 0."
+msgstr "IPSECKEY veřejný klíč je vyžadován, když algoritmus není 0."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:232
 msgid "IPSECKEY public key must be properly Base64 encoded."
-msgstr "IPSECKEY public key must be properly Base64 encoded."
+msgstr "IPSECKEY veřejný klíč musí být správně Base64 kódován."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:239
 msgid "RSA keys should follow the format defined in RFC 3110."
-msgstr "RSA keys should follow the format defined in RFC 3110."
+msgstr "RSA klíče by měly následovat formát definovaný v RFC 3110."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:243
 msgid "DSA keys should follow the format defined in RFC 2536."
-msgstr "DSA keys should follow the format defined in RFC 2536."
+msgstr "DSA klíče by měly následovat formát definovaný v RFC 2536."
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:248
 msgid ""
 "When algorithm is 0 (No key), the public key field is typically empty or "
 "ignored."
 msgstr ""
+"Když je algoritmus 0 (Žádný klíč), pole veřejného klíče je obvykle prázdné nebo ignorované."
 
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:100
 msgid ""
@@ -1330,774 +1355,869 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:106
 msgid "Invalid characters in hostname."
-msgstr "Invalid characters in hostname."
+msgstr "Neplatné znaky v názvu hostitele."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:122
 msgid ""
 "Name appears to be in SRV record format. For TLSA with SRV (RFC 7673), "
 "ensure:"
 msgstr ""
+"Název vypadá být ve formátu SRV záznamu. Pro TLSA s SRV (RFC 7673), ujistěte se:"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:123
 msgid "1. The entire chain of SRV lookups must be DNSSEC-signed"
-msgstr "1. The entire chain of SRV lookups must be DNSSEC-signed"
+msgstr "1. Celý řetězec SRV vyhledávání musí být DNSSEC-podepsaný"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:124
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
 msgstr ""
+"2. TLSA záznamy by měly být nalezeny na _$port._$protocol.$hostname, kde $port, $protocol a $hostname jsou z cíle SRV vyhledávání"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
 "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
-msgstr ""
+msgstr "3. SRV i TLSA záznamy musí mít DNSSEC stav ověření \"secure\""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
 msgstr ""
+"Název TLSA záznamu by měl obvykle následovat formát _port._protocol.hostname (např. _443._tcp.www.example.com)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
 "TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
 "and sctp."
 msgstr ""
+"TLSA záznam používá nestandardní protokol. Běžné protokoly jsou tcp, udp a sctp."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:143
 msgid ""
 "This appears to be a TLSA record for SMTP. Ensure MX records are also "
 "configured correctly."
 msgstr ""
+"Toto vypadá jako TLSA záznam pro SMTP. Ujistěte se, že MX záznamy jsou také správně nakonfigurovány."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:145
 msgid ""
 "This appears to be a TLSA record for HTTPS. Ensure the certificate matches "
 "the domain in the TLSA record."
 msgstr ""
+"Toto vypadá jako TLSA záznam pro HTTPS. Ujistěte se, že certifikát odpovídá doméně v TLSA záznamu."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
 "This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
 "properly configured for DoT."
 msgstr ""
+"Toto vypadá jako TLSA záznam pro DNS over TLS. Ujistěte se, že váš DNS server je správně nakonfigurován pro DoT."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
 msgid ""
 "CRITICAL: TLSA records REQUIRE DNSSEC to provide any security benefits. "
 "Ensure your domain is DNSSEC-signed."
 msgstr ""
+"KRITICKÉ: TLSA záznamy VYŽADUJÍ DNSSEC pro poskytnutí jakýchkoli bezpečnostních výhod. Ujistěte se, že vaše doména je DNSSEC-podepsaná."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:156
 msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
 msgstr ""
+"Při používání CNAME se ujistěte, že celý CNAME řetězec je DNSSEC-podepsaný, aby TLSA fungovalo správně (RFC 7671)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
-msgstr ""
+msgstr "Toto vypadá jako SMIMEA záznam (RFC 8162) pro S/MIME certifikáty."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
 "SMIMEA records use the same format as TLSA but associate S/MIME certificates "
 "with email addresses."
 msgstr ""
+"SMIMEA záznamy používají stejný formát jako TLSA, ale přiřazují S/MIME certifikáty k e-mailovým adresám."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:162
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
 msgstr ""
+"Lokální část e-mailové adresy je hašována pomocí SHA-256 a umístěna před _smimecert.<domain>"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
 msgstr ""
+"TLSA záznamy by měly být obvykle umístěny na \"_port._protocol.hostname\" (např. \"_443._tcp.www.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
 "Invalid value for priority field. TLSA records must have priority value of 0."
 msgstr ""
+"Neplatná hodnota pro pole priority. TLSA záznamy musí mít hodnotu priority 0."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:249
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
 msgstr ""
+"TLSA záznam musí obsahovat usage, selector, matching-type a certificate-data oddělené mezerami."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
-msgstr "TLSA usage field must be a number between 0 and 3."
+msgstr "TLSA pole usage musí být číslo mezi 0 a 3."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:266
 msgid ""
 "Usage 0 (PKIX-TA) requires proper CA certificate management and may break "
 "when certificates expire."
 msgstr ""
+"Usage 0 (PKIX-TA) vyžaduje správnou správu CA certifikátů a může se poškodit, když certifikáty vyprší."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:268
 msgid ""
 "Usage 1 (PKIX-EE) depends on both DANE and traditional PKIX validation. May "
 "break when certificates expire."
 msgstr ""
+"Usage 1 (PKIX-EE) závisí na DANE i tradičním PKIX ověření. Může se poškodit, když certifikáty vyprší."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
 "Usage 2 (DANE-TA) requires proper trust anchor management and may break when "
 "certificates expire."
 msgstr ""
+"Usage 2 (DANE-TA) vyžaduje správnou správu trust anchor a může se poškodit, když certifikáty vyprší."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:272
 msgid ""
 "Usage 3 (DANE-EE) is recommended by RFC 7671 as it is not affected by "
 "certificate expiration or CA validation issues."
 msgstr ""
+"Usage 3 (DANE-EE) je doporučováno RFC 7671, protože není ovlivněno vypršením certifikátu nebo problémy s CA ověřením."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:277
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
 msgstr ""
+"RFC 7671 doporučuje usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 (SHA-256) jako nejrobustnější konfiguraci."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
 "TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
 msgstr ""
+"TLSA pole selector musí být 0 (Plný certifikát) nebo 1 (SubjectPublicKeyInfo)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
 msgid ""
 "Selector 0 (Full certificate) may break when certificate attributes change. "
 "Selector 1 (SPKI) is recommended."
 msgstr ""
+"Selector 0 (Plný certifikát) se může poškodit, když se změní atributy certifikátu. Doporučuje se Selector 1 (SPKI)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:298
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
 msgstr ""
+"TLSA pole matching type musí být 0 (Přesná shoda), 1 (SHA-256), nebo 2 (SHA-512)."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
 msgstr ""
+"Matching-type 0 (Přesná shoda) není doporučováno. SHA-256 (1) poskytuje lepší kompatibilitu a bezpečnost."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
-msgstr "TLSA certificate data must be a hexadecimal string."
+msgstr "TLSA data certifikátu musí být hexadecimální řetězec."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:315
 msgid "TLSA SHA-256 certificate data must be 64 characters long."
-msgstr "TLSA SHA-256 certificate data must be 64 characters long."
+msgstr "TLSA SHA-256 data certifikátu musí mít 64 znaků."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:317
 msgid "TLSA SHA-512 certificate data must be 128 characters long."
-msgstr "TLSA SHA-512 certificate data must be 128 characters long."
+msgstr "TLSA SHA-512 data certifikátu musí mít 128 znaků."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:320
 msgid "TLSA exact match certificate data seems too short to be valid."
-msgstr "TLSA exact match certificate data seems too short to be valid."
+msgstr ""
+"TLSA data certifikátu pro přesnou shodu vypadá příliš krátká na to, aby byla platná."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:104
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
 msgstr ""
+"NSEC3PARAM záznamy MUSÍ být přítomny pouze v apex zóny (kořenová doména, ne subdomain)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
-msgstr "NSEC3PARAM record content cannot be empty."
+msgstr "Obsah NSEC3PARAM záznamu nemůže být prázdný."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:114
 msgid "NSEC3PARAM record contains invalid characters."
-msgstr "NSEC3PARAM record contains invalid characters."
+msgstr "NSEC3PARAM záznam obsahuje neplatné znaky."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:143
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
 msgstr ""
+"Podle RFC 5155 a RFC 9077 by NSEC3PARAM záznamy měly mít stejné TTL jako SOA minimální TTL pole."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
 "NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
 "other DNSSEC records (DNSKEY, RRSIG, etc.)."
 msgstr ""
+"NSEC3PARAM záznamy jsou součástí DNSSEC a měly by být spravovány pouze společně s jinými DNSSEC záznamy (DNSKEY, RRSIG, atd.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
 "Manually editing NSEC3PARAM records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
 msgstr ""
+"Ruční úprava NSEC3PARAM záznamů není doporučována, protože jsou obvykle generovány automaticky DNSSEC-vědomými nameservery."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
 "NSEC3PARAM records indicate to authoritative servers which parameters to use "
 "for NSEC3-based authenticated denial of existence."
 msgstr ""
+"NSEC3PARAM záznamy udávají autoritativním serverům, které parametry použít pro NSEC3-based authenticated denial of existence."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:149
 msgid ""
 "When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
 "generated with the same parameters."
 msgstr ""
+"Při aktualizaci NSEC3 parametrů musí být NSEC3 i NSEC3PARAM záznamy znovu vygenerovány se stejnými parametry."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:181
 msgid ""
 "NSEC3PARAM record must contain exactly hash algorithm, flags, iterations, "
 "and salt."
 msgstr ""
+"NSEC3PARAM záznam musí obsahovat přesně hash algoritmus, flags, iterations a salt."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:187
 msgid "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
-msgstr "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
+msgstr "NSEC3PARAM hash algoritmus musí být 1 (SHA-1)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:193
 msgid "NSEC3PARAM flags must be between 0 and 255."
-msgstr "NSEC3PARAM flags must be between 0 and 255."
+msgstr "NSEC3PARAM flags musí být mezi 0 a 255."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:224
 msgid ""
 "Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover "
 "unsigned delegations."
 msgstr ""
+"Hodnota flag 1 označuje, že se používá Opt-Out. To znamená, že NSEC3 záznamy mohou pokrývat nepodepsané delegace."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:225
 msgid ""
 "RFC 9276 recommends using Opt-Out only for very large and sparsely signed "
 "zones where the majority of records are insecure delegations."
 msgstr ""
+"RFC 9276 doporučuje používat Opt-Out pouze pro velmi velké a řídce podepsané zóny, kde většina záznamů jsou nezabezpečené delegace."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:201
 msgid ""
 "Flags values greater than 1 are reserved for future use. Current "
 "implementations may not handle these values correctly."
 msgstr ""
+"Hodnoty flags větší než 1 jsou vyhrazeny pro budoucí použití. Současné implementace nemusí tyto hodnoty správně zpracovat."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:207
 msgid "NSEC3PARAM iterations must be between 0 and 2500."
-msgstr "NSEC3PARAM iterations must be between 0 and 2500."
+msgstr "NSEC3PARAM iterations musí být mezi 0 a 2500."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:236
 msgid ""
 "RFC 9276 recommends using 0 iterations. Additional iterations add "
 "computational cost without enhancing security."
 msgstr ""
+"RFC 9276 doporučuje používat 0 iterations. Další iterations přidávají výpočetní náklady bez zlepšení bezpečnosti."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:239
 msgid ""
 "High iteration values (>100) may cause validating resolvers to reject your "
 "zones. RFC 9276 STRONGLY recommends using 0 iterations."
 msgstr ""
+"Vysoké hodnoty iterations (>100) mohou způsobit, že validující resolvery odmitnou vaše zóny. RFC 9276 SILNĚ doporučuje používat 0 iterations."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:241
 msgid ""
 "Iteration values >10 create unnecessary computational load without security "
 "benefits. RFC 9276 recommends using 0 iterations."
 msgstr ""
+"Hodnoty iterations >10 vytvářejí zbytené výpočetní zatížení bez bezpečnostních výhod. RFC 9276 doporučuje používat 0 iterations."
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
-msgstr "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
+msgstr "NSEC3PARAM salt musí být - (pro prázdný) nebo hexadecimální hodnota."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:253
 msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
 msgstr ""
+"RFC 9276 doporučuje NEpoužívat salt (označeno \"-\") pro zjednodušení provozu bez snížení bezpečnosti."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
 "Long salts provide no additional security benefit. Consider using a shorter "
 "salt or no salt (-)."
 msgstr ""
+"Dlouhé salts neposkytují žádné další bezpečnostní výhody. Zvažte použití kratšího salt nebo žádného salt (-)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
 "NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
 "not a formal IETF standard."
 msgstr ""
+"POZNÁMKA: Typ záznamu LP je definován v RFC 6742 jako experimentální protokol, ne formální IETF standard."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:112
 msgid ""
 "LP records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
 msgstr ""
+"LP záznamy by měly být používány pouze s Identifier-Locator Network Protocol (ILNP)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
 "LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
 "Section 3.4)."
 msgstr ""
+"LP záznamy NESMÍ být přítomny u uzlů, které nepodporují ILNP (RFC 6742 Sekce 3.4)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:122
 msgid ""
 "Warning: The FQDN in an LP record SHOULD NOT have the same value as the "
 "owner name (RFC 6742)."
 msgstr ""
+"Varování: FQDN v LP záznamu by NEMĚLO mít stejnou hodnotu jako jméno vlastníka (RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:127
 msgid ""
 "It is recommended to end FQDN values with a trailing dot to ensure they are "
 "treated as absolute domain names rather than relative ones."
 msgstr ""
+"Doporučuje se ukončit hodnoty FQDN koncovou tečkou, aby byly považovány za absolutní doménová jména namísto relativních."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:132
 msgid ""
 "Consider using longer TTL values for LP records. Unlike L32/L64 records, LP "
 "records are stable and benefit from longer cache times (RFC 6742)."
 msgstr ""
+"Zvažte použití delších hodnot TTL pro LP záznamy. Na rozdíl od L32/L64 záznamů jsou LP záznamy stabilní a těží z delších časů cache (RFC 6742)."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 msgid "LP record must contain preference and FQDN separated by space."
-msgstr "LP record must contain preference and FQDN separated by space."
+msgstr "LP záznam musí obsahovat prioritu a FQDN oddělené mezerou."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:163
 msgid "LP preference must be a number between 0 and 65535."
-msgstr "LP preference must be a number between 0 and 65535."
+msgstr "LP priorita musí být číslo mezi 0 a 65535."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:169
 msgid "LP FQDN must be a valid fully qualified domain name."
-msgstr "LP FQDN must be a valid fully qualified domain name."
+msgstr "LP FQDN musí být platné plně kvalifikované doménové jméno."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:82
 msgid ""
 "AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
 "service location."
 msgstr ""
+"AFSDB záznamy jsou zastaralé podle RFC 5864 ve prospěch SRV záznamů pro lokalizaci AFS služeb."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:96
 msgid "Invalid AFSDB hostname."
-msgstr "Invalid AFSDB hostname."
+msgstr "Neplatné AFSDB jméno hostitele."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
-msgstr "AFSDB server hostname must be a fully qualified domain name (FQDN)."
+msgstr ""
+"Jméno hostitele AFSDB serveru musí být plně kvalifikované doménové jméno (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
 "AFSDB server hostname must be a fully qualified domain name with at least "
 "two parts."
 msgstr ""
+"Jméno hostitele AFSDB serveru musí být plně kvalifikované doménové jméno s alespoň dvěma částmi."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:164
 msgid ""
 "Invalid AFSDB subtype. Must be 1 (AFS cell database server) or 2 (DCE "
 "authenticated name server)."
 msgstr ""
+"Neplatný AFSDB podtyp. Musí být 1 (AFS cell database server) nebo 2 (DCE authenticated name server)."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:112
 msgid "Priority field for LOC records must be 0 or empty."
-msgstr "Priority field for LOC records must be 0 or empty."
+msgstr "Pole priority pro LOC záznamy musí být 0 nebo prázdné."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:118
 msgid ""
 "NOTE: The LOC record type is defined in RFC 1876 as an experimental "
 "protocol, not a formal IETF standard."
 msgstr ""
+"POZNÁMKA: Typ LOC záznamu je definován v RFC 1876 jako experimentální protokol, ne formální IETF standard."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:119
 msgid ""
 "LOC records are rarely used but can be helpful for geographical mapping of "
 "resources."
 msgstr ""
+"LOC záznamy se používají zřídka, ale mohou být užitečné pro geografické mapování zdrojů."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:128
 msgid ""
 "Exact 90 degrees North latitude (the North Pole) detected. This is an "
 "extreme point and might indicate incorrect data entry."
 msgstr ""
+"Detekována přesná severní šířka 90 stupňů (Severní pól). Toto je extrémní bod a může znamenat nesprávný vstup dat."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:130
 msgid ""
 "Zero latitude detected (the Equator). If this is intentional, it is fine; "
 "otherwise, please verify your coordinates."
 msgstr ""
+"Detekována nulová zeměpisná šířka (rovník). Pokud je to záměrné, je to v pořádku; jinak prosím ověřte své souřadnice."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:135
 msgid ""
 "Default precision values detected (1m size, 10000m horizontal precision, 10m "
 "vertical precision). Consider using more accurate values if you have them."
 msgstr ""
+"Detekovány výchozí hodnoty přesnosti (1m velikost, 10000m horizontální přesnost, 10m vertikální přesnost). Zvažte použití přesnějších hodnot, pokud je máte."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:159
 msgid "Latitude degrees must be between 0 and 90."
-msgstr "Latitude degrees must be between 0 and 90."
+msgstr "Stupně zeměpisné šířky musí být mezi 0 a 90."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:165
 msgid "Latitude direction must be specified as N or S."
-msgstr "Latitude direction must be specified as N or S."
+msgstr "Směr zeměpisné šířky musí být specifikován jako N nebo S."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:169
 msgid "Longitude direction must be specified as E or W."
-msgstr "Longitude direction must be specified as E or W."
+msgstr "Směr zeměpisné délky musí být specifikován jako E nebo W."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:176
 msgid "Longitude degrees must be between 0 and 180."
-msgstr "Longitude degrees must be between 0 and 180."
+msgstr "Stupně zeměpisné délky musí být mezi 0 a 180."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:184
 msgid "Minutes must be between 0 and 59."
-msgstr "Minutes must be between 0 and 59."
+msgstr "Minuty musí být mezi 0 a 59."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:191
 msgid "Seconds must be between 0 and 59.999."
-msgstr "Seconds must be between 0 and 59.999."
+msgstr "Sekundy musí být mezi 0 a 59.999."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:200
 msgid "Altitude must be between -100000 and 42849672.95 meters."
-msgstr "Altitude must be between -100000 and 42849672.95 meters."
+msgstr "Nadmořská výška musí být mezi -100000 a 42849672.95 metry."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:218
 msgid ""
 "Invalid size, horizontal precision, or vertical precision value. These must "
 "be between 0 and 90000000 meters."
 msgstr ""
+"Neplatná hodnota velikosti, horizontální přesnosti nebo vertikální přesnosti. Tyto musí být mezi 0 a 90000000 metry."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 msgstr ""
+"Neplatný formát LOC záznamu. Formát by měl být: d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
-msgstr "Invalid characters in name field."
+msgstr "Neplatné znaky v poli jména."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:141
 msgid "Invalid characters in content field."
-msgstr "Invalid characters in content field."
+msgstr "Neplatné znaky v poli obsahu."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:141
 msgid "Priority field for RKEY records must be 0 or empty."
-msgstr "Priority field for RKEY records must be 0 or empty."
+msgstr "Pole priority pro RKEY záznamy musí být 0 nebo prázdné."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:145
 msgid ""
 "RKEY records should be used with caution as they are not widely supported by "
 "DNS servers and resolvers."
 msgstr ""
+"RKEY záznamy by měly být používány s opatrností, protože nejsou široce podporovány DNS servery a resolvery."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:168
 msgid "RKEY record content cannot be empty."
-msgstr "RKEY record content cannot be empty."
+msgstr "Obsah RKEY záznamu nemůže být prázdný."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:174
 msgid ""
 "RKEY record must contain flags, protocol, algorithm, and public key data."
 msgstr ""
+"RKEY záznam musí obsahovat příznaky, protokol, algoritmus a data veřejného klíče."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:181
 msgid "RKEY flags field must be a numeric value."
-msgstr "RKEY flags field must be a numeric value."
+msgstr "Pole příznaků RKEY musí být číselná hodnota."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:189
 msgid ""
 "Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
 "SEP)."
 msgstr ""
+"Neobvyklá hodnota příznaků. Běžné hodnoty jsou 0, 256 (Zone Key), nebo 257 (Zone Key + SEP)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:194
 msgid ""
 "Bit 7 (Zone Key flag) is set in the flags field, indicating this is a zone "
 "key."
 msgstr ""
+"Bit 7 (příznak Zone Key) je nastaven v poli příznaků, což znamená, že se jedná o klíč zóny."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:198
 msgid ""
 "Bit 0 (SEP flag) is set in the flags field, indicating this is a secure "
 "entry point."
 msgstr ""
+"Bit 0 (příznak SEP) je nastaven v poli příznaků, což znamená, že se jedná o bezpečný vstupní bod."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:203
 msgid "RKEY protocol field must be a numeric value."
-msgstr "RKEY protocol field must be a numeric value."
+msgstr "Pole protokolu RKEY musí být číselná hodnota."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:208
 msgid ""
 "Protocol field should be 3 for compliance with standards based on DNSKEY "
 "format."
 msgstr ""
+"Pole protokolu by mělo být 3 pro shodu se standardy založenými na formátu DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:213
 msgid "RKEY algorithm field must be a numeric value."
-msgstr "RKEY algorithm field must be a numeric value."
+msgstr "Pole algoritmu RKEY musí být číselná hodnota."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:219
 msgid "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
-msgstr "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
+msgstr "Pole algoritmu RKEY musí být platné číslo DNSSEC algoritmu (0-16)."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:224
 msgid "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
-msgstr "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
+msgstr ""
+"Algoritmus 1 (RSA/MD5) je zastaralý (RFC 6725) a NEMĚL by být používán."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:226
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with a "
 "stronger algorithm."
 msgstr ""
+"Algoritmus 3 (DSA/SHA1) je považován za nezabezpečený a měl by být nahrazen silnějším algoritmem."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
 "stronger algorithm."
 msgstr ""
+"Algoritmus 5 (RSA/SHA-1) je považován za nezabezpečený a měl by být nahrazen silnějším algoritmem."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure."
 msgstr ""
+"Algoritmus 7 (RSASHA1-NSEC3-SHA1) používá SHA-1, který již není považován za bezpečný."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
 "Algorithm 8 (RSA/SHA-256) is currently recommended for DNSSEC deployments."
 msgstr ""
+"Algoritmus 8 (RSA/SHA-256) je v současnosti doporučován pro DNSSEC nasazení."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:234
 msgid "Algorithm 10 (RSA/SHA-512) provides strong security."
-msgstr "Algorithm 10 (RSA/SHA-512) provides strong security."
+msgstr "Algoritmus 10 (RSA/SHA-512) poskytuje silnou bezpečnost."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:236
 msgid ""
 "Algorithm 13 (ECDSA Curve P-256 with SHA-256) provides good security with "
 "smaller signatures than RSA."
 msgstr ""
+"Algoritmus 13 (ECDSA Curve P-256 with SHA-256) poskytuje dobrou bezpečnost s menšími podpisy než RSA."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:238
 msgid ""
 "Algorithm 14 (ECDSA Curve P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
 msgstr ""
+"Algoritmus 14 (ECDSA Curve P-384 with SHA-384) poskytuje silnou bezpečnost s menšími podpisy než RSA."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:240
 msgid ""
 "Algorithm 15 (Ed25519) offers modern security but may have compatibility "
 "issues with older validators."
 msgstr ""
+"Algoritmus 15 (Ed25519) poskytuje moderní bezpečnost, ale může mít problémy s kompatibilitou se staršími validátory."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:242
 msgid ""
 "Algorithm 16 (Ed448) offers strong modern security but may have "
 "compatibility issues with older validators."
 msgstr ""
+"Algoritmus 16 (Ed448) poskytuje silnou moderní bezpečnost, ale může mít problémy s kompatibilitou se staršími validátory."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:221
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
 msgstr ""
+"KRITICKÉ: Tento algoritmus je považován za nezabezpečený. Použijte algoritmus 8 (RSA/SHA-256) nebo novější."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
 msgid "RKEY public key data cannot be empty."
-msgstr "RKEY public key data cannot be empty."
+msgstr "Data veřejného klíče RKEY nemohou být prázdná."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:256
 msgid "Public key data should be Base64 encoded according to RFC 4034."
-msgstr "Public key data should be Base64 encoded according to RFC 4034."
+msgstr "Data veřejného klíče by měla být kódována Base64 podle RFC 4034."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:260
 msgid ""
 "RKEY records were never formally standardized as an RFC, only proposed in "
 "draft-reid-dnsext-rkey-00."
 msgstr ""
+"RKEY záznamy nebyly nikdy formálně standardizovány jako RFC, pouze navrženy v draft-reid-dnsext-rkey-00."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
-msgstr "RKEY records are rarely used in modern DNS implementations."
+msgstr "RKEY záznamy se zřídka používají v moderních DNS implementacích."
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:262
 msgid "Consider using standardized record types for cryptographic purposes."
-msgstr "Consider using standardized record types for cryptographic purposes."
+msgstr ""
+"Zvažte použití standardizovaných typů záznamů pro kryptografické účely."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:209
 msgid "Empty APL record represents an empty list of address prefixes."
-msgstr "Empty APL record represents an empty list of address prefixes."
+msgstr "Prázdný APL záznam představuje prázdný seznam prefixů adres."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:295
 msgid ""
 "RFC 3123 recommends that trailing zero octets should not be present in APL "
 "address parts."
 msgstr ""
+"RFC 3123 doporučuje, aby koncové nulové oktety nebyly přítomny v částech adres APL."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:156
 msgid ""
 "RFC 3123 notes security considerations when using APL records for access "
 "control lists."
 msgstr ""
+"RFC 3123 upozorňuje na bezpečnostní úvahy při použití APL záznamů pro seznamy řízení přístupu."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
 "Invalid value for priority field. APL records must have priority value of 0."
 msgstr ""
+"Neplatná hodnota pro pole priority. APL záznamy musí mít hodnotu priority 0."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:256
 msgid "Invalid APL element format. Expected [!]afi:address/prefix."
-msgstr "Invalid APL element format. Expected [!]afi:address/prefix."
+msgstr "Neplatný formát elementu APL. Očekáván [!]afi:adresa/prefix."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:266
 msgid ""
 "Invalid Address Family Identifier (AFI). Must be 1 for IPv4 or 2 for IPv6."
 msgstr ""
+"Neplatný identifikátor rodiny adres (AFI). Musí být 1 pro IPv4 nebo 2 pro IPv6."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:274
 msgid "Invalid IPv4 address in APL record."
-msgstr "Invalid IPv4 address in APL record."
+msgstr "Neplatná IPv4 adresa v APL záznamu."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:279
 msgid "IPv4 prefix must be between 0 and 32."
-msgstr "IPv4 prefix must be between 0 and 32."
+msgstr "IPv4 prefix musí být mezi 0 a 32."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:301
 msgid "Invalid IPv6 address in APL record."
-msgstr "Invalid IPv6 address in APL record."
+msgstr "Neplatná IPv6 adresa v APL záznamu."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:306
 msgid "IPv6 prefix must be between 0 and 128."
-msgstr "IPv6 prefix must be between 0 and 128."
+msgstr "IPv6 prefix musí být mezi 0 a 128."
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:315
 msgid ""
 "Using APL records for AXFR access control should be combined with other "
 "security measures as noted in RFC 3123."
 msgstr ""
+"Použití APL záznamů pro řízení přístupu AXFR by mělo být kombinováno s dalšími bezpečnostními opatřeními, jak je uvedeno v RFC 3123."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
 "Note: NID records are used for the ILNP protocol, which is experimental (RFC "
 "6740, 6742)."
 msgstr ""
+"Poznámka: NID záznamy se používají pro protokol ILNP, který je experimentální (RFC 6740, 6742)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:88
 msgid "NID record content cannot be empty."
-msgstr "NID record content cannot be empty."
+msgstr "Obsah NID záznamu nemůže být prázdný."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:155
 msgid ""
 "NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 "
 "hexadecimal digits."
 msgstr ""
+"Obsah NID záznamu musí být ve formátu xxxx:xxxx:xxxx:xxxx se 4 skupinami po 4 hexadecimálních číslicích."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
-msgstr "NID record content must have exactly 4 groups of hexadecimal digits."
+msgstr "Obsah NID záznamu musí mít přesně 4 skupiny hexadecimálních číslic."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:174
 msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
 msgstr ""
+"Obsah NID záznamu musí být 64-bitová hexadecimální hodnota (16 hex znaků nebo formát xxxx:xxxx:xxxx:xxxx)."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
 "NID records should use the RFC 6742 presentation format "
 "(xxxx:xxxx:xxxx:xxxx) with colons for better readability."
 msgstr ""
+"NID záznamy by měly používat prezentační formát RFC 6742 (xxxx:xxxx:xxxx:xxxx) s dvojtečkami pro lepší čitelnost."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:220
 msgid ""
 "Invalid NID record: The Group bit (g bit, least significant bit of first "
 "byte) MUST be 0 in ILNP as specified in RFC 6742."
 msgstr ""
+"Neplatný NID záznam: Skupinový bit (g bit, nejméně významný bit prvního bajtu) MUSÍ být 0 v ILNP podle RFC 6742."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:227
 msgid ""
 "The universal/local bit (u/l bit) is set to universal (0), indicating this "
 "NID is based on a globally unique identifier."
 msgstr ""
+"Univerzální/lokální bit (u/l bit) je nastaven na univerzální (0), což znamená, že tento NID je založen na globálně jedinečném identifikátoru."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:229
 msgid ""
 "The universal/local bit (u/l bit) is set to local (1), indicating this NID "
 "is locally assigned and not globally unique."
 msgstr ""
+"Univerzální/lokální bit (u/l bit) je nastaven na lokální (1), což znamená, že tento NID je lokálně přiřazen a není globálně jedinečný."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
-msgstr "A zero NodeID value is unusual and may indicate a configuration error."
+msgstr "Nulová hodnota NodeID je neobvyklá a může znamenat chybu konfigurace."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:239
 msgid ""
 "An all-ones NodeID value is unusual and may indicate a configuration error."
 msgstr ""
+"Hodnota NodeID ze samých jedniček je neobvyklá a může znamenat chybu konfigurace."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:273
 msgid "NID record preference must be a number."
-msgstr "NID record preference must be a number."
+msgstr "Priorita NID záznamu musí být číslo."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:280
 msgid "NID record preference must be between 0 and 65535."
-msgstr "NID record preference must be between 0 and 65535."
+msgstr "Priorita NID záznamu musí být mezi 0 a 65535."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:102
 msgid "ALIAS target must be a fully qualified domain name (FQDN)."
-msgstr "ALIAS target must be a fully qualified domain name (FQDN)."
+msgstr "Cíl ALIAS musí být plně kvalifikované doménové jméno (FQDN)."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:107
 msgid ""
 "ALIAS target cannot point to itself, as this would create a resolution loop."
 msgstr ""
+"Cíl ALIAS nemůže ukazovat sám na sebe, protože by to vytvořilo smyčku rozlišení."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:160
 msgid ""
 "Invalid value for priority field. ALIAS records must have priority value of "
 "0."
 msgstr ""
+"Neplatná hodnota pro pole priority. ALIAS záznamy musí mít hodnotu priority 0."
 
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:61
 msgid "Content field cannot be empty."
-msgstr "Content field cannot be empty."
+msgstr "Pole obsahu nemůže být prázdné."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:97
 msgid "NSEC record content cannot be empty."
-msgstr "NSEC record content cannot be empty."
+msgstr "Obsah NSEC záznamu nemůže být prázdný."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:102
 msgid "NSEC record contains invalid characters."
-msgstr "NSEC record contains invalid characters."
+msgstr "NSEC záznam obsahuje neplatné znaky."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:123
 msgid ""
 "According to RFC 4034, NSEC records should have the same TTL as the SOA "
 "minimum TTL field."
 msgstr ""
+"Podle RFC 4034 by NSEC záznamy měly mít stejný TTL jako minimální TTL pole SOA."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
 "NSEC records enable \"zone walking\", allowing enumeration of all names in a "
 "zone, which may be a privacy concern."
 msgstr ""
+"NSEC záznamy umožňují \"procházení zóny\", což dovoluje výčet všech jmen v zóně, což může být problém ochrany soukromí."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:127
 msgid ""
 "If zone enumeration is a concern, consider using NSEC3 records (RFC 5155) "
 "instead, which use hashed owner names."
 msgstr ""
+"Pokud je výčet zóny problémem, zvažte místo toho použití NSEC3 záznamů (RFC 5155), které používají hašovaná jména vlastníků."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:128
 msgid ""
 "NSEC records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
 msgstr ""
+"NSEC záznamy jsou součástí DNSSEC a měly by být spravovány pouze společně s ostatními DNSSEC záznamy (DNSKEY, RRSIG, atd.)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:129
 msgid ""
 "Manually editing NSEC records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
 msgstr ""
+"Ruční úprava NSEC záznamů se nedoporučuje, protože jsou typicky generovány automaticky DNSSEC-aware nameservery."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:133
 msgid ""
 "Wildcard names in NSEC records require special handling. According to RFC "
 "4035, wildcard owner names appear in NSEC records without expansion."
 msgstr ""
+"Wildcard jména v NSEC záznamech vyžadují speciální zacházení. Podle RFC 4035 se wildcard jména vlastníků objevují v NSEC záznamech bez expanze."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:168
 msgid "NSEC record must contain a valid next domain name."
-msgstr "NSEC record must contain a valid next domain name."
+msgstr "NSEC záznam musí obsahovat platné následující doménové jméno."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:173
 msgid ""
@@ -2105,18 +2225,21 @@ msgid ""
 "of the zone. Canonical ordering is case-insensitive and sorts by labels from "
 "right to left."
 msgstr ""
+"Pole následujícího doménového jména musí být následující jméno vlastníka v kanonickém pořadí zóny. Kanonické pořadí je case-insensitive a řadí podle štítků zprava doleva."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:177
 msgid ""
 "If this is the last NSEC record in the zone, the next domain name should be "
 "the zone apex (the owner name of the zone's SOA RR)."
 msgstr ""
+"Pokud je toto poslední NSEC záznam v zóně, následující doménové jméno by mělo být vrchol zóny (jméno vlastníka SOA RR zóny)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:194
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the NSEC "
 "owner name. An empty type bitmap is unusual."
 msgstr ""
+"Typové bitové mapy by měly být přítomny k označení, které typy RR existují u jména vlastníka NSEC. Prázdná typová bitmapa je neobvyklá."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:324
 #, php-format
@@ -2124,29 +2247,33 @@ msgid ""
 "Numeric type \"%s\" should be represented using the RFC 3597 format "
 "(TYPE###)."
 msgstr ""
+"Číselný typ \"%s\" by měl být reprezentován pomocí formátu RFC 3597 (TYPE###)."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:266
 #, php-format
 msgid "NSEC record contains an invalid record type: %s"
-msgstr "NSEC record contains an invalid record type: %s"
+msgstr "NSEC záznam obsahuje neplatný typ záznamu: %s"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:272
 msgid ""
 "NSEC type should typically be present in its own type bit map, as each name "
 "in a signed zone should have an NSEC record."
 msgstr ""
+"NSEC typ by měl být typicky přítomen ve své vlastní typové bitmapě, protože každé jméno v podepsané zóně by mělo mít NSEC záznam."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:276
 msgid ""
 "RRSIG type should typically be present in NSEC type bit maps for DNSSEC-"
 "signed zones."
 msgstr ""
+"RRSIG typ by měl být typicky přítomen v NSEC typových bitmapách pro DNSSEC-podepsané zóny."
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:281
 msgid ""
 "This NSEC record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
 msgstr ""
+"Tento NSEC záznam obsahuje jak SOA, tak NS typy, což naznačuje, že může být pro vrchol zóny."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:112
 msgid ""
@@ -2154,10 +2281,11 @@ msgid ""
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
 msgstr ""
+"Jméno záznamu nesleduje standardní formát OPENPGPKEY (<hash>._openpgpkey.<doména>). Standardní formát je doporučen pro interoperabilitu."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
-msgstr "Priority field for OPENPGPKEY records must be 0 or empty"
+msgstr "Pole priority pro OPENPGPKEY záznamy musí být 0 nebo prázdné"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:142
 msgid ""
@@ -2165,22 +2293,23 @@ msgid ""
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
 msgstr ""
+"OPENPGPKEY záznamy by měly být typicky generovány pomocí specializovaných nástrojů jako GnuPG s volbou --print-dane-records, spíše než vytvářeny ručně."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
-msgstr "OPENPGPKEY record content cannot be empty."
+msgstr "Obsah OPENPGPKEY záznamu nemůže být prázdný."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:202
 msgid "Invalid characters in OPENPGPKEY record content."
-msgstr "Invalid characters in OPENPGPKEY record content."
+msgstr "Neplatné znaky v obsahu OPENPGPKEY záznamu."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:208
 msgid "OPENPGPKEY records must contain valid base64-encoded data."
-msgstr "OPENPGPKEY records must contain valid base64-encoded data."
+msgstr "OPENPGPKEY záznamy musí obsahovat platná base64-kódovaná data."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:214
 msgid "OPENPGPKEY record contains invalid base64 data."
-msgstr "OPENPGPKEY record contains invalid base64 data."
+msgstr "OPENPGPKEY záznam obsahuje neplatná base64 data."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:221
 msgid ""
@@ -2188,53 +2317,62 @@ msgid ""
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
 msgstr ""
+"OPENPGPKEY záznam překračuje velikost 4KB. RFC 7929 doporučuje udržovat DNS záznamy co nejmenší pro zajištění spolehlivého přenosu. Zvažte použití minimálního formátu exportu klíče."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
 msgstr ""
+"OPENPGPKEY záznam je neobvykle malý. Ověřte, že se jedná o platný OpenPGP veřejný klíč."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
 "The decoded content does not appear to be a valid OpenPGP packet. OpenPGP "
 "packets must start with a byte that has the high bit set (RFC 9580)."
 msgstr ""
+"Dekódovaný obsah se nezdá být platný OpenPGP paket. OpenPGP pakety musí začínat bajtem, který má nastavený vysoký bit (RFC 9580)."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:251
 msgid ""
 "The decoded content does not appear to contain a public key packet (tag 6) "
 "or public subkey packet (tag 14) as its first packet."
 msgstr ""
+"Dekódovaný obsah se nezdá obsahovat paket veřejného klíče (tag 6) nebo paket veřejného podklíče (tag 14) jako svůj první paket."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:258
 msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
 msgstr ""
+"OPENPGPKEY záznamy VYŽADUJÍ DNSSEC pro jakýkoli bezpečnostní přínos. Bez DNSSEC validace tyto záznamy nenabízejí žádnou bezpečnostní výhodu."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
 "OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
 "by all email clients or OpenPGP implementations."
 msgstr ""
+"OPENPGPKEY záznamy jsou EXPERIMENTÁLNÍ podle RFC 7929 a nemusí být podporovány všemi emailovými klienty nebo OpenPGP implementacemi."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:260
 msgid ""
 "OPENPGPKEY records are not a replacement for the OpenPGP Web of Trust. "
 "Additional verification methods are still recommended."
 msgstr ""
+"OPENPGPKEY záznamy nejsou náhradou za OpenPGP Web of Trust. Další metody ověření jsou stále doporučeny."
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
 "To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
 "print-dane-records option to ensure correct format and content."
 msgstr ""
+"Pro vytvoření OPENPGPKEY záznamů použijte specializované nástroje jako GnuPG s volbou --print-dane-records pro zajištění správného formátu a obsahu."
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:137
 msgid ""
 "Invalid value for priority field. NS records must have priority value of 0."
 msgstr ""
+"Neplatná hodnota pro pole priority. NS záznamy musí mít hodnotu priority 0."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:118
 msgid ""
@@ -2242,22 +2380,23 @@ msgid ""
 "hardware and software that could be useful to attackers. Consider security "
 "implications before using in public-facing DNS."
 msgstr ""
+"Varování: HINFO záznamy odhalují potenciálně citlivé informace o hardwaru a softwaru hostitele, které mohou být užitečné útočníkům. Zvažte bezpečnostní důsledky před použitím ve veřejně přístupném DNS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
-msgstr "Priority field for HINFO records must be 0 or empty"
+msgstr "Pole priority pro HINFO záznamy musí být 0 nebo prázdné"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:159
 msgid "HINFO record must have CPU type and OS fields."
-msgstr "HINFO record must have CPU type and OS fields."
+msgstr "HINFO záznam musí mít pole typu CPU a OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:175
 msgid "HINFO record must have exactly two fields: CPU type and OS."
-msgstr "HINFO record must have exactly two fields: CPU type and OS."
+msgstr "HINFO záznam musí mít přesně dvě pole: typ CPU a OS."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:200
 msgid "Invalid quoting in HINFO "
-msgstr "Invalid quoting in HINFO "
+msgstr "Neplatné citování v HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:229
 msgid "HINFO "
@@ -2265,134 +2404,152 @@ msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:224
 msgid "Invalid quote marks within HINFO "
-msgstr "Invalid quote marks within HINFO "
+msgstr "Neplatné uvozovky v HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:258
 msgid ""
 "CPU type does not contain any standard values. Consider using a standard CPU "
 "type for better interoperability."
 msgstr ""
+"Typ CPU neobsahuje žádné standardní hodnoty. Zvažte použití standardního typu CPU pro lepší interoperabilitu."
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:262
 msgid ""
 "OS type does not contain any standard values. Consider using a standard OS "
 "type for better interoperability."
 msgstr ""
+"Typ OS neobsahuje žádné standardní hodnoty. Zvažte použití standardního typu OS pro lepší interoperabilitu."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:125
 msgid ""
 "TSIG timestamp is more than 24 hours old. This could indicate a replay "
 "attack or clock synchronization issue."
 msgstr ""
+"TSIG časová značka je starší než 24 hodin. To může znamenat replay útok nebo problém se synchronizací hodin."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:130
 msgid ""
 "TSIG timestamp is set in the future. This could indicate a clock "
 "synchronization issue."
 msgstr ""
+"TSIG časová značka je nastavena v budoucnosti. To může znamenat problém se synchronizací hodin."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
 msgid "TSIG keys should be rotated periodically as a security best practice."
-msgstr "TSIG keys should be rotated periodically as a security best practice."
+msgstr ""
+"TSIG klíče by měly být pravidelně rotovány jako nejlepší bezpečnostní praxe."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:155
 msgid ""
 "TSIG provides transaction authentication but not data integrity. Consider "
 "using DNSSEC in addition to TSIG."
 msgstr ""
+"TSIG poskytuje autentifikaci transakcí, ale ne integritu dat. Zvažte použití DNSSEC navíc k TSIG."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:156
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
 msgstr ""
+"Přesné systémové hodiny jsou vyžadovány jak na klientovi, tak na serveru, aby TSIG fungoval správně."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
 msgstr ""
+"TSIG záznam musí obsahovat alespoň algorithm-name, timestamp, fudge, mac, original-id, error a other-len oddělené mezerami."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
 "TSIG algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
 msgstr ""
+"Jméno TSIG algoritmu musí být platné doménové jméno končící tečkou (např. hmac-sha256.)."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
-msgstr "TSIG timestamp must be a non-negative integer."
+msgstr "TSIG časová značka musí být nezáporné celé číslo."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
-msgstr "TSIG fudge must be a non-negative integer."
+msgstr "TSIG fudge musí být nezáporné celé číslo."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
-msgstr "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
+msgstr ""
+"TSIG MAC musí být platný base64-kódovaný řetězec nebo hexadecimální řetězec."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:232
 msgid ""
 "TSIG MAC is too short. RFC 8945 recommends a minimum of 16 octets for "
 "security."
 msgstr ""
+"TSIG MAC je příliš krátký. RFC 8945 doporučuje minimum 16 oktetů pro bezpečnost."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:237
 msgid "TSIG original ID must be a number between 0 and 65535."
-msgstr "TSIG original ID must be a number between 0 and 65535."
+msgstr "TSIG původní ID musí být číslo mezi 0 a 65535."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:243
 msgid "TSIG error must be a valid DNS RCODE number between 0 and 23."
-msgstr "TSIG error must be a valid DNS RCODE number between 0 and 23."
+msgstr "TSIG chyba musí být platné DNS RCODE číslo mezi 0 a 23."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:250
 msgid ""
 "TSIG error code 16 (BADSIG) indicates that the signature in the TSIG record "
 "is invalid. Check keys and crypto configuration."
 msgstr ""
+"TSIG chybový kód 16 (BADSIG) znamená, že podpis v TSIG záznamu je neplatný. Zkontrolujte klíče a kryptografickou konfiguraci."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:253
 msgid ""
 "TSIG error code 17 (BADKEY) indicates that the key used in the TSIG record "
 "is invalid. Verify the key is configured on both DNS servers."
 msgstr ""
+"TSIG chybový kód 17 (BADKEY) znamená, že klíč použitý v TSIG záznamu je neplatný. Ověřte, že klíč je nakonfigurován na obou DNS serverech."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
 "TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
 "is outside the allowed time window. Check clock synchronization."
 msgstr ""
+"TSIG chybový kód 18 (BADTIME) znamená, že časová značka v TSIG záznamu je mimo povolené časové okno. Zkontrolujte synchronizaci hodin."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:259
 msgid ""
 "TSIG error code 22 (BADTRUNC) indicates that the truncated MAC in the TSIG "
 "record is invalid. Check MAC size configuration."
 msgstr ""
+"TSIG chybový kód 22 (BADTRUNC) znamená, že zkrácený MAC v TSIG záznamu je neplatný. Zkontrolujte konfiguraci velikosti MAC."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "TSIG other-len must be a non-negative integer."
+msgstr "TSIG other-len musí být nezáporné celé číslo."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
 "TSIG other-data must be a valid base64-encoded string or hexadecimal string."
 msgstr ""
+"TSIG other-data musí být platný base64-kódovaný řetězec nebo hexadecimální řetězec."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:312
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. RFC 8945 recommends using "
 "HMAC-SHA256 or stronger algorithms."
 msgstr ""
+"HMAC-MD5 je považován za slabý podle moderních standardů. RFC 8945 doporučuje použití HMAC-SHA256 nebo silnějších algoritmů."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:317
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
 msgstr ""
+"HMAC-SHA256 je doporučován RFC 8945 jako preferovaný TSIG algoritmus pro většinu nasazení."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
-msgstr "TSIG algorithm name must end with a dot."
+msgstr "Jméno TSIG algoritmu musí končit tečkou."
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:333
 msgid "TSIG algorithm name must be a valid domain name ending with a dot."

@@ -21,17 +21,18 @@ msgid ""
 "No configuration file found. Please use the <a href=\"install/\">installer</"
 "a> to create one, or create a config/settings.php file manually."
 msgstr ""
+"Konfigūracijos failas nerastas. Naudokitės <a href=\"install/\">diegimo programa</a> jo sukūrimui arba sukurkite config/settings.php failą rankiniu būdu."
 
 #: lib/Infrastructure/Service/SessionAuthenticator.php:131
 msgid "Invalid CSRF token."
-msgstr "Invalid CSRF token."
+msgstr "Netinkamas CSRF žetonas."
 
 #: lib/BaseController.php:499
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
 msgstr ""
-"The <a href=\"install/\">install/</a> directory exists, you must remove it "
+"<a href=\"install/\">install/</a> katalogas egzistuoja, prieš tęsiant turite jį pašalinti."
 "first before proceeding."
 
 #: lib/BaseController.php:525
@@ -45,38 +46,39 @@ msgstr ""
 #: lib/BaseController.php:626
 #, php-format
 msgid "The %s field is required."
-msgstr "The %s field is required."
+msgstr "Laukas %s yra privalomas."
 
 #: lib/BaseController.php:634
 #, php-format
 msgid "The %s field must be a number."
-msgstr "The %s field must be a number."
+msgstr "Laukas %s turi būti skaičius."
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
 msgid "Previous"
-msgstr "Previous"
+msgstr "Ankstesnis"
 
 #: lib/Application/Presenter/PaginationPresenter.php:79
 msgid "Next"
-msgstr "Next"
+msgstr "Kitas"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:29
 msgid "Show zones beginning with"
-msgstr "Show zones beginning with"
+msgstr "Rodyti zonas prasidedančias"
 
 #: lib/Application/Presenter/ZoneStartingLettersPresenter.php:61
 msgid "Show all"
-msgstr "Show all"
+msgstr "Rodyti visas"
 
 #: lib/Application/Controller/DeleteRecordsController.php:72
 msgid "No records selected for deletion."
-msgstr "No records selected for deletion."
+msgstr "Nėra pasirinktų įrašų ištrinimui."
 
 #: lib/Application/Controller/DeleteRecordsController.php:176
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr ""
+"Įrašas sėkmingai ištrintas. Visi atitinkami PTR įrašai taip pat pašalinti."
 
 #: lib/Application/Controller/DeleteRecordsController.php:178
 #, php-format
@@ -84,71 +86,74 @@ msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
 "were also removed."
 msgstr ""
+"%d įrašai sėkmingai ištrinti. Visi atitinkami PTR įrašai taip pat pašalinti."
 
 #: lib/Application/Controller/DeleteRecordsController.php:181
 msgid "No records could be deleted. Please check permissions."
-msgstr "No records could be deleted. Please check permissions."
+msgstr "Jokį įrašą nepavyko ištrinti. Patikrinkite leidimus."
 
 #: lib/Application/Controller/DeleteRecordsController.php:226
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
+"Nėra pasirinktų tinkamių įrašų ištrinimui arba neturite leidimo juos ištrinti."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:91
 msgid "Invalid or unexpected input given."
-msgstr "Invalid or unexpected input given."
+msgstr "Netinkamas arba nenumatytas įvestis."
 
 #: lib/Domain/Model/UserManager.php:230
 msgid "You do not have the permission to delete this user."
-msgstr "You do not have the permission to delete this user."
+msgstr "Neturite leidimo ištrinti šį vartotoją."
 
 #: lib/Application/Controller/EditUserController.php:244
 msgid "User does not exist."
-msgstr "User does not exist."
+msgstr "Vartotojas neegzistuoja."
 
 #: lib/Application/Controller/DeleteUserController.php:79
 msgid "The user has been deleted successfully."
-msgstr "The user has been deleted successfully."
+msgstr "Vartotojas sėkmingai ištrintas."
 
 #: lib/Application/Controller/EditCommentController.php:50
 msgid "Zone comments feature is disabled in configuration."
-msgstr "Zone comments feature is disabled in configuration."
+msgstr "Zonų komentaru funkcija išjungta konfiguracijoje."
 
 #: lib/Application/Controller/EditCommentController.php:63
 msgid "You do not have the permission to view this comment."
-msgstr "You do not have the permission to view this comment."
+msgstr "Neturite leidimo peržiūrėti šį komentaarą."
 
 #: lib/Domain/Service/Dns/RecordManager.php:377
 msgid "You do not have the permission to edit this comment."
-msgstr "You do not have the permission to edit this comment."
+msgstr "Neturite leidimo redaguoti šį komentaarą."
 
 #: lib/Application/Controller/EditCommentController.php:94
 msgid "The comment has been updated successfully."
-msgstr "The comment has been updated successfully."
+msgstr "Komentaras sėkmingai atnaujintas."
 
 #: lib/Application/Controller/DnssecAddKeyController.php:61
 msgid "There is no zone with this ID."
-msgstr "There is no zone with this ID."
+msgstr "Nėra zonos su šiuo ID."
 
 #: lib/Application/Controller/DeleteRecordController.php:149
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
-msgstr ""
+msgstr "Įrašas ir atitinkamas PTR įrašas sėkmingai ištrinti."
 
 #: lib/Application/Controller/DeleteRecordController.php:151
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
-msgstr ""
+msgstr "Įrašas sėkmingai ištrintas. Atitinkamas PTR įrašas nerastas."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:73
 msgid "The record has been deleted successfully."
-msgstr "The record has been deleted successfully."
+msgstr "Įrašas sėkmingai ištrintas."
 
 #: lib/Application/Controller/DeleteRecordController.php:157
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
 msgstr ""
+"Įrašas ir atitinkamas PTR įrašas ištrinti, bet komentaras išsaugotas, nes egzistuoja panašūs įrašai."
 
 #: lib/Application/Controller/DeleteRecordController.php:159
 msgid ""
@@ -160,103 +165,107 @@ msgstr ""
 
 #: lib/Domain/Service/Dns/RecordManager.php:230
 msgid "You do not have the permission to edit this record."
-msgstr "You do not have the permission to edit this record."
+msgstr "Neturite leidimo redaguoti šį įrašą."
 
 #: lib/Application/Controller/MfaSetupController.php:53
 msgid "MFA is not enabled on this system."
-msgstr "MFA is not enabled on this system."
+msgstr "MFA nėra įjungta šioje sistemoje."
 
 #: lib/Application/Controller/MfaSetupController.php:194
 msgid "Failed to create MFA record."
-msgstr "Failed to create MFA record."
+msgstr "Nepavyko sukurti MFA įrašo."
 
 #: lib/Application/Controller/MfaSetupController.php:201
 msgid "MFA is already enabled."
-msgstr "MFA is already enabled."
+msgstr "MFA jau įjungta."
 
 #: lib/Application/Controller/MfaSetupController.php:246
 msgid "Verification code is required."
-msgstr "Verification code is required."
+msgstr "Patvirtinimo kodas privalomas."
 
 #: lib/Application/Controller/MfaSetupController.php:155
 msgid "MFA has been enabled successfully."
-msgstr "MFA has been enabled successfully."
+msgstr "MFA sėkmingai įjungta."
 
 #: lib/Application/Controller/MfaVerifyController.php:187
 msgid "Invalid verification code. Please try again."
-msgstr "Invalid verification code. Please try again."
+msgstr "Netinkamas patvirtinimo kodas. Bandykite dar kartą."
 
 #: lib/Application/Controller/MfaSetupController.php:171
 msgid ""
 "Email address is not available. Please update your email address in your "
 "profile."
 msgstr ""
+"El. pašto adresas neprieinamas. Atnaujinkite el. pašto adresą savo profilyje."
 
 #: lib/Application/Controller/MfaSetupController.php:178
 msgid ""
 "Email verification method is not available because mail service is not "
 "enabled on this system."
 msgstr ""
+"El. pašto patvirtinimo metodas neprieinamas, nes pašto paslauga nėra įjungta šioje sistemoje."
 
 #: lib/Application/Controller/MfaSetupController.php:185
 msgid "Email verification method is not enabled on this system."
-msgstr "Email verification method is not enabled on this system."
+msgstr "El. pašto patvirtinimo metodas nėra įjungtas šioje sistemoje."
 
 #: lib/Application/Controller/MfaSetupController.php:227
 msgid ""
 "Failed to send verification code. Please try again later or use app-based "
 "authentication."
 msgstr ""
+"Nepavyko išsiųsti patvirtinimo kodo. Bandykite vėliau arba naudokite programos autentifikaciją."
 
 #: lib/Application/Controller/MfaSetupController.php:264
 msgid "MFA has been enabled with email verification."
-msgstr "MFA has been enabled with email verification."
+msgstr "MFA įjungta su el. pašto patvirtinimu."
 
 #: lib/Application/Controller/MfaSetupController.php:280
 msgid "MFA is not enabled."
-msgstr "MFA is not enabled."
+msgstr "MFA nėra įjungta."
 
 #: lib/Application/Controller/MfaSetupController.php:288
 msgid "MFA has been disabled."
-msgstr "MFA has been disabled."
+msgstr "MFA išjungta."
 
 #: lib/Application/Controller/MfaSetupController.php:303
 msgid "MFA must be enabled to regenerate recovery codes."
-msgstr "MFA must be enabled to regenerate recovery codes."
+msgstr "MFA turi būti įjungta atkuriamo kodų regeneravimui."
 
 #: lib/Application/Controller/MfaSetupController.php:311
 msgid "Recovery codes have been regenerated. Please save them in a safe place."
-msgstr ""
+msgstr "Atkuriamieji kodai regeneruoti. Išsaugokite juos saugioje vietoje."
 
 #: lib/Application/Controller/ListSupermastersController.php:43
 msgid "You do not have the permission to view supermasters."
-msgstr "You do not have the permission to view supermasters."
+msgstr "Neturite leidimo peržiūrėti supermasters."
 
 #: lib/Application/Controller/ApiKeysController.php:71
 msgid "The API feature is disabled in the system configuration."
-msgstr "The API feature is disabled in the system configuration."
+msgstr "API funkcija išjungta sistemos konfiguracijoje."
 
 #: lib/Application/Controller/ApiKeysController.php:77
 msgid ""
 "You do not have permission to manage API keys. Only administrators can "
 "access this feature."
 msgstr ""
+"Neturite leidimo valdyti API raktus. Tik administratoriai gali naudotis šia funkcija."
 
 #: lib/Application/Controller/ApiKeysController.php:199
 msgid "API key name is required."
-msgstr "API key name is required."
+msgstr "API rakto pavadinimas privalomas."
 
 #: lib/Application/Controller/ApiKeysController.php:209
 msgid "Invalid expiration date format."
-msgstr "Invalid expiration date format."
+msgstr "Netinkamas galiojimo datos formatas."
 
 #: lib/Domain/Service/ApiKeyService.php:275
 msgid "API key not found or you do not have permission to edit it."
-msgstr "API key not found or you do not have permission to edit it."
+msgstr "API raktas nerastas arba neturite leidimo jį redaguoti."
 
 #: lib/Application/Controller/ApiKeysController.php:218
 msgid "API key updated successfully."
-msgstr "API key updated successfully."
+msgstr "API raktas sėkmingai atnaujintas."
 
 #: lib/Application/Controller/ApiKeysController.php:247
 msgid "API key deleted successfully."
