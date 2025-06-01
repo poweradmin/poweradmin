@@ -8,13 +8,14 @@ msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
 "POT-Creation-Date: 2025-05-30 17:37+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"PO-Revision-Date: 2025-06-02 07:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: en_EN\n"
+"Language-Team: Czech <cs@li.org>\n"
+"Language: cs_CZ\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
 
 #: lib/AppInitializer.php:80
 msgid ""
@@ -33,7 +34,6 @@ msgid ""
 "first before proceeding."
 msgstr ""
 "Adresář <a href=\"install/\">install/</a> existuje, musíte jej nejprve odstranit před pokračováním."
-"first before proceeding."
 
 #: lib/BaseController.php:525
 msgid ""
@@ -446,15 +446,17 @@ msgstr "Neplatná metoda požadavku."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "%d zón bylo úspěšně odpojeno od šablony."
-msgstr[1] "%d zóna byla úspěšně odpojena od šablony."
+msgstr[0] "%d zóna byla úspěšně odpojena od šablony."
+msgstr[1] "%d zóny byly úspěšně odpojeny od šablony."
+msgstr[2] "%d zón bylo úspěšně odpojeno od šablony."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:108
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] "%d zón se nepodařilo odpojit."
-msgstr[1] "%d zónu se nepodařilo odpojit."
+msgstr[0] "%d zónu se nepodařilo odpojit."
+msgstr[1] "%d zóny se nepodařilo odpojit."
+msgstr[2] "%d zón se nepodařilo odpojit."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:118
 msgid "Failed to unlink zones from template."
@@ -6605,7 +6607,7 @@ msgstr "TXT pro SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/default/delete_supermaster.html:4
 msgid "Supermasters"
-msgstr "Supermasters"
+msgstr "Supermastři"
 
 #: templates/default/edit_supermaster.html:5
 msgid "Edit supermaster"
@@ -6798,11 +6800,11 @@ msgstr "Zadejte obsah"
 
 #: templates/default/edit_perm_templ.html:38
 msgid "Update"
-msgstr "Update"
+msgstr "Aktualizovat"
 
 #: templates/default/index.html:2
 msgid "Welcome"
-msgstr "Welcome"
+msgstr "Vítejte"
 
 #: templates/default/index.html:13 templates/default/pdns_status.html:168
 msgid "Online"
@@ -6814,119 +6816,119 @@ msgstr "Offline"
 
 #: templates/default/index.html:23
 msgid "PowerDNS Status"
-msgstr "PowerDNS Status"
+msgstr "Stav PowerDNS"
 
 #: templates/default/index.html:26
 msgid "Server running"
-msgstr "Server running"
+msgstr "Server běží"
 
 #: templates/default/index.html:28
 msgid "Check PowerDNS server status"
-msgstr "Check PowerDNS server status"
+msgstr "Zkontrolovat stav serveru PowerDNS"
 
 #: templates/default/index.html:32
 msgid "View Server Status"
-msgstr "View Server Status"
+msgstr "Zobrazit stav serveru"
 
 #: templates/default/index.html:33
 msgid "Server Status"
-msgstr "Server Status"
+msgstr "Stav serveru"
 
 #: templates/default/index.html:46
 msgid "My Profile"
-msgstr "My Profile"
+msgstr "Můj profil"
 
 #: templates/default/index.html:47
 msgid "Edit your account details"
-msgstr "Edit your account details"
+msgstr "Upravit podrobnosti účtu"
 
 #: templates/default/header.html:176
 msgid "Edit profile"
-msgstr "Edit profile"
+msgstr "Upravit profil"
 
 #: templates/default/index.html:50
 msgid "Profile"
-msgstr "Profile"
+msgstr "Profil"
 
 #: templates/default/header.html:49
 msgid "Search"
-msgstr "Search"
+msgstr "Hledat"
 
 #: templates/default/index.html:64
 msgid "Find zones and records"
-msgstr "Find zones and records"
+msgstr "Najít zóny a záznamy"
 
 #: templates/default/index.html:66
 msgid "Search zones"
-msgstr "Search zones"
+msgstr "Prohledat zóny"
 
 #: templates/default/index.html:81
 msgid "Manage forward DNS zones"
-msgstr "Manage forward DNS zones"
+msgstr "Správa přímých DNS zón"
 
 #: templates/default/index.html:83
 msgid "List forward zones"
-msgstr "List forward zones"
+msgstr "Seznam přímých zón"
 
 #: templates/default/index.html:99
 msgid "Manage reverse DNS zones"
-msgstr "Manage reverse DNS zones"
+msgstr "Správa reverzních DNS zón"
 
 #: templates/default/index.html:101
 msgid "List reverse zones"
-msgstr "List reverse zones"
+msgstr "Seznam reverzních zón"
 
 #: templates/default/header.html:127
 msgid "Templates"
-msgstr "Templates"
+msgstr "Šablony"
 
 #: templates/default/index.html:117
 msgid "Manage zone templates"
-msgstr "Manage zone templates"
+msgstr "Správa šablon zón"
 
 #: templates/default/index.html:119 templates/default/header.html:130
 msgid "List zone templates"
-msgstr "List zone templates"
+msgstr "Seznam šablon zón"
 
 #: templates/default/index.html:134
 msgid "Manage supermaster servers"
-msgstr "Manage supermaster servers"
+msgstr "Správa supermaster serverů"
 
 #: templates/default/index.html:136
 msgid "List supermasters"
-msgstr "List supermasters"
+msgstr "Seznam supermasterů"
 
 #: templates/default/index.html:150
 msgid "Master Zone"
-msgstr "Master Zone"
+msgstr "Hlavní zóna"
 
 #: templates/default/index.html:151
 msgid "Create new master zone"
-msgstr "Create new master zone"
+msgstr "Vytvořit novou hlavní zónu"
 
 #: templates/default/add_zone_master.html:11 templates/default/header.html:66
 msgid "Add master zone"
-msgstr "Add master zone"
+msgstr "Přidat hlavní zónu"
 
 #: templates/default/index.html:154
 msgid "Add Master"
-msgstr "Add Master"
+msgstr "Přidat hlavní"
 
 #: templates/default/index.html:167
 msgid "Slave Zone"
-msgstr "Slave Zone"
+msgstr "Podružná zóna"
 
 #: templates/default/index.html:168
 msgid "Add new slave zone"
-msgstr "Add new slave zone"
+msgstr "Přidat novou podružnou zónu"
 
 #: templates/default/add_zone_slave.html:11 templates/default/header.html:70
 msgid "Add slave zone"
-msgstr "Add slave zone"
+msgstr "Přidat podružnou zónu"
 
 #: templates/default/index.html:171
 msgid "Add Slave"
-msgstr "Add Slave"
+msgstr "Přidat podružnou"
 
 #: templates/default/index.html:184 templates/default/index.html:188
 msgid "Supermaster"
@@ -6934,63 +6936,63 @@ msgstr "Supermaster"
 
 #: templates/default/index.html:185
 msgid "Add new supermaster server"
-msgstr "Add new supermaster server"
+msgstr "Přidat nový supermaster server"
 
 #: templates/default/list_supermasters.html:57
 msgid "Add supermaster"
-msgstr "Add supermaster"
+msgstr "Přidat supermaster"
 
 #: templates/default/index.html:201 templates/default/bulk_registration.html:23
 msgid "Bulk Registration"
-msgstr "Bulk Registration"
+msgstr "Hromadná registrace"
 
 #: templates/default/index.html:202
 msgid "Register multiple domains at once"
-msgstr "Register multiple domains at once"
+msgstr "Zaregistrovat více domén najednou"
 
 #: templates/default/index.html:204
 msgid "Bulk domain registration"
-msgstr "Bulk domain registration"
+msgstr "Hromadná registrace domén"
 
 #: templates/default/index.html:205
 msgid "Registration"
-msgstr "Registration"
+msgstr "Registrace"
 
 #: templates/default/index.html:218 templates/default/index.html:222
 msgid "PTR Records"
-msgstr "PTR Records"
+msgstr "PTR záznamy"
 
 #: templates/default/index.html:219
 msgid "Manage reverse DNS records"
-msgstr "Manage reverse DNS records"
+msgstr "Správa reverzních DNS záznamů"
 
 #: templates/default/batch_ptr_record.html:32 templates/default/header.html:79
 msgid "Batch PTR Records"
-msgstr "Batch PTR Records"
+msgstr "Dávkové PTR záznamy"
 
 #: templates/default/index.html:235 templates/default/index.html:239
 msgid "Zone Logs"
-msgstr "Zone Logs"
+msgstr "Protokoly zón"
 
 #: templates/default/index.html:236
 msgid "View zone change history"
-msgstr "View zone change history"
+msgstr "Zobrazit historii změn zóny"
 
 #: templates/default/index.html:238
 msgid "View zone logs"
-msgstr "View zone logs"
+msgstr "Zobrazit protokoly zóny"
 
 #: templates/default/index.html:253 templates/default/index.html:257
 msgid "User Logs"
-msgstr "User Logs"
+msgstr "Protokoly uživatelů"
 
 #: templates/default/index.html:254
 msgid "View user activity history"
-msgstr "View user activity history"
+msgstr "Zobrazit historii aktivity uživatele"
 
 #: templates/default/index.html:256
 msgid "View user logs"
-msgstr "View user logs"
+msgstr "Zobrazit protokoly uživatele"
 
 #: templates/default/add_user.html:38 install/templates/step4.html.twig:51
 #: install/templates/step5.html.twig:67
@@ -6999,51 +7001,51 @@ msgstr "Heslo"
 
 #: templates/default/index.html:272
 msgid "Update your account password"
-msgstr "Update your account password"
+msgstr "Aktualizovat heslo účtu"
 
 #: templates/default/change_password.html:49 templates/default/header.html:180
 msgid "Change password"
-msgstr "Change password"
+msgstr "Změnit heslo"
 
 #: templates/default/list_perm_templ.html:4
 msgid "Users"
-msgstr "Users"
+msgstr "Uživatelé"
 
 #: templates/default/index.html:289
 msgid "Manage system users and access"
-msgstr "Manage system users and access"
+msgstr "Správa systémových uživatelů a přístupu"
 
 #: templates/default/index.html:291 templates/default/header.html:98
 msgid "User administration"
-msgstr "User administration"
+msgstr "Správa uživatelů"
 
 #: templates/default/index.html:309
 msgid "Permissions"
-msgstr "Permissions"
+msgstr "Oprávnění"
 
 #: templates/default/index.html:306
 msgid "Manage permission templates"
-msgstr "Manage permission templates"
+msgstr "Správa šablon oprávnění"
 
 #: templates/default/header.html:187
 msgid "Logout"
-msgstr "Logout"
+msgstr "Odhlásit"
 
 #: templates/default/index.html:322
 msgid "End your session"
-msgstr "End your session"
+msgstr "Ukončit relaci"
 
 #: templates/default/migrations.html:4 templates/default/migrations.html:10
 msgid "Migrations"
-msgstr "Migrations"
+msgstr "Migrace"
 
 #: templates/default/index.html:337
 msgid "Manage database migrations"
-msgstr "Manage database migrations"
+msgstr "Správa migrací databáze"
 
 #: templates/default/index.html:339
 msgid "Database Migrations"
-msgstr "Database Migrations"
+msgstr "Migrace databáze"
 
 #: templates/default/header.html:147
 msgid "WHOIS"
@@ -7051,11 +7053,11 @@ msgstr "WHOIS"
 
 #: templates/default/index.html:354
 msgid "Lookup domain WHOIS information"
-msgstr "Lookup domain WHOIS information"
+msgstr "Vyhledat WHOIS informace domény"
 
 #: templates/default/whois.html:10
 msgid "WHOIS Lookup"
-msgstr "WHOIS Lookup"
+msgstr "WHOIS vyhledávání"
 
 #: templates/default/header.html:152
 msgid "RDAP"
@@ -7063,442 +7065,449 @@ msgstr "RDAP"
 
 #: templates/default/index.html:371
 msgid "Lookup domain RDAP information"
-msgstr "Lookup domain RDAP information"
+msgstr "Vyhledat RDAP informace domény"
 
 #: templates/default/rdap.html:10
 msgid "RDAP Lookup"
-msgstr "RDAP Lookup"
+msgstr "RDAP vyhledávání"
 
 #: templates/default/index.html:388
 msgid "Manage API access keys"
-msgstr "Manage API access keys"
+msgstr "Správa přístupových klíčů API"
 
 #: templates/default/index.html:390
 msgid "Manage API Keys"
-msgstr "Manage API Keys"
+msgstr "Správa klíčů API"
 
 #: templates/default/index.html:404 templates/default/header.html:162
 msgid "Database Consistency"
-msgstr "Database Consistency"
+msgstr "Konzistence databáze"
 
 #: templates/default/index.html:405
 msgid "Check database integrity"
-msgstr "Check database integrity"
+msgstr "Zkontrolovat integritu databáze"
 
 #: templates/default/index.html:407
 msgid "Check Database"
-msgstr "Check Database"
+msgstr "Zkontrolovat databázi"
 
 #: templates/default/index.html:408
 msgid "Check DB"
-msgstr "Check DB"
+msgstr "Zkontrolovat DB"
 
 #: templates/default/edit_comment.html:18 templates/default/edit.html:483
 msgid "Edit comment"
-msgstr "Edit comment"
+msgstr "Upravit komentář"
 
 #: templates/default/edit_comment.html:25
 msgid "Edit comment in zone"
-msgstr "Edit comment in zone"
+msgstr "Upravit komentář v zóně"
 
 #: templates/default/add_zone_templ.html:12
 msgid "Add template"
-msgstr "Add template"
+msgstr "Přidat šablonu"
 
 #: templates/default/add_zone_templ.html:24
 msgid "Add zone template for"
-msgstr "Add zone template for"
+msgstr "Přidat šablonu zóny pro"
 
 #: templates/default/edit_perm_templ.html:26
 msgid "Provide a name for your template"
-msgstr "Provide a name for your template"
+msgstr "Zadejte název šablony"
 
 #: templates/default/edit_zone_templ.html:143
 msgid "Optional description to help identify this template"
-msgstr "Optional description to help identify this template"
+msgstr "Volitelný popis pro snadnější identifikaci šablony"
 
 #: templates/default/edit_zone_templ.html:151
 msgid "Global template"
-msgstr "Global template"
+msgstr "Globální šablona"
 
 #: templates/default/edit_zone_templ.html:153
 msgid "Make this template available to all users"
-msgstr "Make this template available to all users"
+msgstr "Zpřístupnit tuto šablonu všem uživatelům"
 
 #: templates/default/list_zone_templ.html:126 templates/default/header.html:133
 msgid "Add zone template"
-msgstr "Add zone template"
+msgstr "Přidat šablonu zóny"
 
 #: templates/default/add_zone_templ.html:68
 msgid "Template Information"
-msgstr "Template Information"
+msgstr "Informace o šabloně"
 
 #: templates/default/add_zone_templ.html:73
 msgid "About Templates"
-msgstr "About Templates"
+msgstr "O šablonách"
 
 #: templates/default/add_zone_templ.html:74
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
 msgstr ""
+"Šablony zón umožňují vytvářet předdefinované sady DNS záznamů, které lze rychle aplikovat při vytváření nových zón."
 
 #: templates/default/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
-msgstr "After creating a template, you can add record templates to it."
+msgstr "Po vytvoření šablony k ní můžete přidat šablony záznamů."
 
 #: templates/default/add_zone_templ.html:78
 msgid "Template Usage"
-msgstr "Template Usage"
+msgstr "Použití šablony"
 
 #: templates/default/add_zone_templ.html:80
 msgid "Apply consistent configurations to multiple zones"
-msgstr "Apply consistent configurations to multiple zones"
+msgstr "Aplikovat konzistentní konfigurace na více zón"
 
 #: templates/default/add_zone_templ.html:81
 msgid "Save time when creating new domains"
-msgstr "Save time when creating new domains"
+msgstr "Ušetřit čas při vytváření nových domén"
 
 #: templates/default/add_zone_templ.html:82
 msgid "Maintain standardized DNS setups"
-msgstr "Maintain standardized DNS setups"
+msgstr "Udržovat standardizované DNS nastavení"
 
 #: templates/default/add_zone_templ.html:91
 msgid "Tips & Examples"
-msgstr "Tips & Examples"
+msgstr "Tipy a příklady"
 
 #: templates/default/add_zone_templ.html:97
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
 msgstr ""
+"Vytvořte různé šablony pro různé typy webových stránek (např. \"Základní web\", \"E-mailový server\")"
 
 #: templates/default/add_zone_templ.html:98
 msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
-msgstr ""
+msgstr "Používejte popisné názvy a popisy pro snadnou identifikaci šablon"
 
 #: templates/default/add_zone_templ.html:99
 msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-msgstr "Set up standard records like MX, TXT for SPF, and CNAME for www"
+msgstr "Nastavte standardní záznamy jako MX, TXT pro SPF a CNAME pro www"
 
 #: templates/default/add_zone_templ.html:100
 msgid ""
 "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
 "[SERIAL] in record content"
 msgstr ""
+"Používejte zástupné symboly jako [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER] a [SERIAL] v obsahu záznamu"
 
 #: templates/default/add_zone_templ.html:101
 msgid ""
 "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
 "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
 msgstr ""
+"Zástupné symboly [DOMAIN] a [TLD] jsou užitečné pro Microsoft 365 MX záznamy (např. [DOMAIN]-[TLD].mail.protection.outlook.com)"
 
 #: templates/default/list_log_zones.html:11 templates/default/header.html:86
 msgid "Zone logs"
-msgstr "Zone logs"
+msgstr "Protokoly zón"
 
 #: templates/default/list_log_zones.html:17
 msgid "Zone Change Logs"
-msgstr "Zone Change Logs"
+msgstr "Protokoly změn zón"
 
 #: templates/default/list_log_zones.html:26
 msgid "Search logs by domain"
-msgstr "Search logs by domain"
+msgstr "Hledat protokoly podle domény"
 
 #: templates/default/list_log_users.html:26
 msgid "Clear"
-msgstr "Clear"
+msgstr "Vymazat"
 
 #: templates/default/list_log_users.html:32
 msgid "Total logs"
-msgstr "Total logs"
+msgstr "Celkem protokolů"
 
 #: templates/default/list_log_users.html:47
 msgid "Id"
-msgstr "Id"
+msgstr "ID"
 
 #: templates/default/list_log_users.html:49
 msgid "Event"
-msgstr "Event"
+msgstr "Událost"
 
 #: templates/default/list_log_zones.html:70
 msgid "Details"
-msgstr "Details"
+msgstr "Podrobnosti"
 
 #: templates/default/list_log_zones.html:87
 msgid "Log Details"
-msgstr "Log Details"
+msgstr "Podrobnosti protokolu"
 
 #: templates/default/list_log_zones.html:94
 msgid "Close"
-msgstr "Close"
+msgstr "Zavřít"
 
 #: templates/default/list_log_users.html:73
 msgid "No logs found"
-msgstr "No logs found"
+msgstr "Nebyly nalezeny žádné protokoly"
 
 #: templates/default/list_log_users.html:74
 msgid "Try different search criteria or check back later"
-msgstr "Try different search criteria or check back later"
+msgstr "Zkuste jiná vyhledávací kritéria nebo se podívejte později"
 
 #: templates/default/bulk_record_add.html:18
 msgid "Bulk add records"
-msgstr "Bulk add records"
+msgstr "Hromadné přidání záznamů"
 
 #: templates/default/bulk_record_add.html:30
 msgid "Bulk Add Records"
-msgstr "Bulk Add Records"
+msgstr "Hromadné přidání záznamů"
 
 #: templates/default/search.html:58 templates/default/search.html:163
 msgid "Records"
-msgstr "Records"
+msgstr "Záznamy"
 
 #: templates/default/bulk_record_add.html:44
 msgid "Provide at least one record"
-msgstr "Provide at least one record"
+msgstr "Zadejte alespoň jeden záznam"
 
 #: templates/default/bulk_record_add.html:45
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Format: name,type,content,priority,ttl,comment (one record per line)"
+msgstr "Formát: název,typ,obsah,priorita,ttl,komentář (jeden záznam na řádek)"
 
 #: templates/default/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
-msgstr "Example: www,A,192.168.1.1,0,3600,web server"
+msgstr "Příklad: www,A,192.168.1.1,0,3600,webový server"
 
 #: templates/default/bulk_record_add.html:48
 msgid "Comment is optional"
-msgstr "Comment is optional"
+msgstr "Komentář je volitelný"
 
 #: templates/default/bulk_record_add.html:50
 msgid "Enter hostnames only - the zone name will be added automatically"
-msgstr "Enter hostnames only - the zone name will be added automatically"
+msgstr "Zadejte pouze názvy hostů - název zóny bude přidán automaticky"
 
 #: templates/default/bulk_record_add.html:57
 msgid "Add Records"
-msgstr "Add Records"
+msgstr "Přidat záznamy"
 
 #: templates/default/bulk_registration.html:100
 msgid "Instructions"
-msgstr "Instructions"
+msgstr "Pokyny"
 
 #: templates/default/bulk_record_add.html:78
 msgid "Input Format"
-msgstr "Input Format"
+msgstr "Formát vstupu"
 
 #: templates/default/bulk_record_add.html:80
 msgid "Enter one record per line using CSV format"
-msgstr "Enter one record per line using CSV format"
+msgstr "Zadejte jeden záznam na řádek ve formátu CSV"
 
 #: templates/default/bulk_record_add.html:81
 msgid "Required fields: name, type, content"
-msgstr "Required fields: name, type, content"
+msgstr "Povinná pole: název, typ, obsah"
 
 #: templates/default/bulk_record_add.html:82
 msgid "Optional fields: priority, ttl, comment"
-msgstr "Optional fields: priority, ttl, comment"
+msgstr "Volitelná pole: priorita, ttl, komentář"
 
 #: templates/default/bulk_record_add.html:83
 msgid "Records are validated before creation"
-msgstr "Records are validated before creation"
+msgstr "Záznamy jsou ověřeny před vytvořením"
 
 #: templates/default/bulk_record_add.html:87
 msgid "Best Practices"
-msgstr "Best Practices"
+msgstr "Nejlepší postupy"
 
 #: templates/default/bulk_record_add.html:89
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
-msgstr "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
+msgstr "Pro CNAME, MX, SRV záznamy se ujistěte, že obsah končí tečkou (.)"
 
 #: templates/default/bulk_record_add.html:90
 msgid "Use @ for records at the zone apex (root domain)"
-msgstr "Use @ for records at the zone apex (root domain)"
+msgstr "Použijte @ pro záznamy na vrcholu zóny (kořenová doména)"
 
 #: templates/default/bulk_record_add.html:91
 msgid "Quote TXT record values that contain spaces"
-msgstr "Quote TXT record values that contain spaces"
+msgstr "Hodnoty TXT záznamů obsahující mezery dejte do uvozovek"
 
 #: templates/default/bulk_record_add.html:100
 msgid "Record Type Examples"
-msgstr "Record Type Examples"
+msgstr "Příklady typů záznamů"
 
 #: templates/default/bulk_record_add.html:105
 msgid "Common Records"
-msgstr "Common Records"
+msgstr "Běžné záznamy"
 
 #: templates/default/bulk_record_add.html:114
 msgid "Advanced Records"
-msgstr "Advanced Records"
+msgstr "Pokročilé záznamy"
 
 #: templates/default/delete_user.html:5
 msgid "Delete user"
-msgstr "Delete user"
+msgstr "Smazat uživatele"
 
 #: templates/default/delete_user.html:11
 msgid "Delete User"
-msgstr "Delete User"
+msgstr "Smazat uživatele"
 
 #: templates/default/delete_user.html:16
 msgid "You are about to delete the user"
-msgstr "You are about to delete the user"
+msgstr "Chystáte se smazat uživatele"
 
 #: templates/default/dnssec_delete_key.html:42
 msgid "This action cannot be undone. Are you sure you want to proceed?"
-msgstr "This action cannot be undone. Are you sure you want to proceed?"
+msgstr "Tuto akci nelze vrátit zpět. Jste si jisti, že chcete pokračovat?"
 
 #: templates/default/delete_user.html:26
 msgid "Zone Ownership Transfer"
-msgstr "Zone Ownership Transfer"
+msgstr "Přenos vlastnictví zóny"
 
 #: templates/default/delete_user.html:30
 msgid ""
 "This user is the owner for the following zones. Please decide what to do "
 "with each zone:"
 msgstr ""
+"Tento uživatel je vlastníkem následujících zón. Rozhodněte prosím, co udělat s každou zónou:"
 
 #: templates/default/delete_records.html:39
 msgid "Zone"
-msgstr "Zone"
+msgstr "Zóna"
 
 #: templates/default/delete_user.html:39
 msgid "Leave"
-msgstr "Leave"
+msgstr "Ponechat"
 
 #: templates/default/delete_user.html:40
 msgid "Add new owner"
-msgstr "Add new owner"
+msgstr "Přidat nového vlastníka"
 
 #: templates/default/delete_user.html:41
 msgid "Owner to be added"
-msgstr "Owner to be added"
+msgstr "Vlastník k přidání"
 
 #: templates/default/delete_user.html:80
 msgid "Delete: The zone will be completely removed from the system"
-msgstr "Delete: The zone will be completely removed from the system"
+msgstr "Smazat: Zóna bude úplně odstraněna ze systému"
 
 #: templates/default/delete_user.html:81
 msgid "Leave: The zone will remain in the system but without an owner"
-msgstr "Leave: The zone will remain in the system but without an owner"
+msgstr "Ponechat: Zóna zůstane v systému, ale bez vlastníka"
 
 #: templates/default/delete_user.html:82
 msgid "Add new owner: Transfer ownership to another user"
-msgstr "Add new owner: Transfer ownership to another user"
+msgstr "Přidat nového vlastníka: Převést vlastnictví na jiného uživatele"
 
 #: templates/default/delete_user.html:91
 msgid "Yes, delete this user"
-msgstr "Yes, delete this user"
+msgstr "Ano, smazat tohoto uživatele"
 
 #: templates/default/delete_user.html:94
 msgid "No, keep this user"
-msgstr "No, keep this user"
+msgstr "Ne, ponechat tohoto uživatele"
 
 #: templates/default/api_key_regenerate.html:16
 msgid "You are about to regenerate the API key"
-msgstr "You are about to regenerate the API key"
+msgstr "Chystáte se obnovit API klíč"
 
 #: templates/default/api_key_regenerate.html:17
 msgid "This action will invalidate the existing key!"
-msgstr "This action will invalidate the existing key!"
+msgstr "Tato akce zneplatní stávající klíč!"
 
 #: templates/default/api_key_regenerate.html:18
 msgid ""
 "If you regenerate this API key, any applications using it will no longer be "
 "able to authenticate until updated with the new key."
 msgstr ""
+"Pokud obnovíte tento API klíč, aplikace, které jej používají, se nebudou moci autentizovat, dokud nebudou aktualizovány novým klíčem."
 
 #: templates/default/api_key_regenerate.html:19
 msgid ""
 "The new key will be displayed only once after regeneration, so be prepared "
 "to save it."
 msgstr ""
+"Nový klíč bude zobrazen pouze jednou po obnovení, buďte připraveni jej uložit."
 
 #: templates/default/api_key_delete.html:23
 msgid "API Key Details"
-msgstr "API Key Details"
+msgstr "Podrobnosti API klíče"
 
 #: templates/default/api_key_regenerate.html:71
 msgid "Yes, regenerate this API key"
-msgstr "Yes, regenerate this API key"
+msgstr "Ano, obnovit tento API klíč"
 
 #: templates/default/api_key_regenerate.html:74
 msgid "No, keep current key"
-msgstr "No, keep current key"
+msgstr "Ne, ponechat současný klíč"
 
 #: templates/default/reset_password.html:84
 msgid "Reset Password"
-msgstr "Reset Password"
+msgstr "Resetovat heslo"
 
 #: templates/default/reset_password.html:12
 msgid "Go to Login"
-msgstr "Go to Login"
+msgstr "Přejít na přihlášení"
 
 #: templates/default/reset_password.html:19
 msgid "Request New Reset Link"
-msgstr "Request New Reset Link"
+msgstr "Požádat o nový odkaz pro reset"
 
 #: templates/default/reset_password.html:30
 msgid "Password does not meet requirements"
-msgstr "Password does not meet requirements"
+msgstr "Heslo nesplňuje požadavky"
 
 #: templates/default/reset_password.html:39
 msgid "Enter your new password for"
-msgstr "Enter your new password for"
+msgstr "Zadejte nové heslo pro"
 
 #: templates/default/reset_password.html:45
 msgid "New Password"
-msgstr "New Password"
+msgstr "Nové heslo"
 
 #: templates/default/reset_password.html:49 templates/default/login.html:27
 msgid "Please provide a password"
-msgstr "Please provide a password"
+msgstr "Zadejte prosím heslo"
 
 #: templates/default/reset_password.html:54
 msgid "Confirm Password"
-msgstr "Confirm Password"
+msgstr "Potvrdit heslo"
 
 #: templates/default/reset_password.html:119
 msgid "Passwords do not match"
-msgstr "Passwords do not match"
+msgstr "Hesla se neshodují"
 
 #: templates/default/edit_user.html:135 templates/default/add_user.html:132
 msgid "Password Requirements"
-msgstr "Password Requirements"
+msgstr "Požadavky na heslo"
 
 #: templates/default/change_password.html:79
 msgid "Minimum length"
-msgstr "Minimum length"
+msgstr "Minimální délka"
 
 #: templates/default/change_password.html:79
 msgid "characters"
-msgstr "characters"
+msgstr "znaků"
 
 #: templates/default/reset_password.html:68
 msgid "At least one uppercase letter"
-msgstr "At least one uppercase letter"
+msgstr "Alespoň jedno velké písmeno"
 
 #: templates/default/reset_password.html:71
 msgid "At least one lowercase letter"
-msgstr "At least one lowercase letter"
+msgstr "Alespoň jedno malé písmeno"
 
 #: templates/default/reset_password.html:74
 msgid "At least one number"
-msgstr "At least one number"
+msgstr "Alespoň jedna číslice"
 
 #: templates/default/reset_password.html:77
 msgid "At least one special character"
-msgstr "At least one special character"
+msgstr "Alespoň jeden speciální znak"
 
 #: templates/default/header.html:57
 msgid "Zones"
-msgstr "Zones"
+msgstr "Zóny"
 
 #: templates/default/list_reverse_zones.html:34
 msgid "Reverse Zone Types"
-msgstr "Reverse Zone Types"
+msgstr "Typy reverzních zón"
 
 #: templates/default/list_reverse_zones.html:36
 msgid "All"
-msgstr "All"
+msgstr "Všechny"
 
 #: templates/default/list_reverse_zones.html:39
 msgid "IPv4"
@@ -7510,43 +7519,43 @@ msgstr "IPv6"
 
 #: templates/default/list_reverse_zones.html:67
 msgid "Reverse zones:"
-msgstr "Reverse zones:"
+msgstr "Reverzní zóny:"
 
 #: templates/default/list_reverse_zones.html:69
 msgid "IPv4 reverse zones:"
-msgstr "IPv4 reverse zones:"
+msgstr "IPv4 reverzní zóny:"
 
 #: templates/default/list_reverse_zones.html:71
 msgid "IPv6 reverse zones:"
-msgstr "IPv6 reverse zones:"
+msgstr "IPv6 reverzní zóny:"
 
 #: templates/default/search.html:123 templates/default/search.html:308
 msgid "Rows per page:"
-msgstr "Rows per page:"
+msgstr "Řádků na stránku:"
 
 #: templates/default/list_reverse_zones.html:93
 msgid "There are no reverse zones to show in this listing."
-msgstr "There are no reverse zones to show in this listing."
+msgstr "V tomto seznamu nejsou žádné reverzní zóny k zobrazení."
 
 #: templates/default/add_zone_slave.html:40
 msgid "Owner"
-msgstr "Owner"
+msgstr "Vlastník"
 
 #: templates/default/list_forward_zones.html:88
 msgid "Full name"
-msgstr "Full name"
+msgstr "Celé jméno"
 
 #: templates/default/list_reverse_zones.html:126
 msgid "Associated Forward Zones"
-msgstr "Associated Forward Zones"
+msgstr "Přidružené přímé zóny"
 
 #: templates/default/list_forward_zones.html:92
 msgid "Serial"
-msgstr "Serial"
+msgstr "Sériové číslo"
 
 #: templates/default/bulk_registration.html:60
 msgid "Template"
-msgstr "Template"
+msgstr "Šablona"
 
 #: templates/default/list_reverse_zones.html:188
 msgid "-"
@@ -7554,88 +7563,90 @@ msgstr "-"
 
 #: templates/default/search.html:285
 msgid "Delete zone(s)"
-msgstr "Delete zone(s)"
+msgstr "Smazat zónu/zóny"
 
 #: templates/default/dnssec_add_key.html:81
 msgid "Add key"
-msgstr "Add key"
+msgstr "Přidat klíč"
 
 #: templates/default/dnssec_add_key.html:34
 msgid "Add key for zone"
-msgstr "Add key for zone"
+msgstr "Přidat klíč pro zónu"
 
 #: templates/default/dnssec_add_key.html:43
 msgid "Key type"
-msgstr "Key type"
+msgstr "Typ klíče"
 
 #: templates/default/dnssec_add_key.html:50
 msgid "Select key type"
-msgstr "Select key type"
+msgstr "Vyberte typ klíče"
 
 #: templates/default/dnssec_add_key.html:61
 msgid "Select algorithm"
-msgstr "Select algorithm"
+msgstr "Vyberte algoritmus"
 
 #: templates/default/dnssec_add_key.html:66
 msgid "Bits in length"
-msgstr "Bits in length"
+msgstr "Počet bitů"
 
 #: templates/default/dnssec_add_key.html:75
 msgid "Select bits length"
-msgstr "Select bits length"
+msgstr "Vyberte délku v bitech"
 
 #: templates/default/dnssec_add_key.html:132
 msgid "Recommended bits for"
-msgstr "Recommended bits for"
+msgstr "Doporučené bity pro"
 
 #: templates/default/dnssec_add_key.html:140
 #: install/helpers/InstallStepHandler.php:176
 msgid "Warning:"
-msgstr "Warning:"
+msgstr "Varování:"
 
 #: templates/default/dnssec_add_key.html:140
 msgid "bits is not recommended for"
-msgstr "bits is not recommended for"
+msgstr "bitů se nedoporučuje pro"
 
 #: templates/default/dnssec_add_key.html:177
 msgid "About DNSSEC Key Types"
-msgstr "About DNSSEC Key Types"
+msgstr "O typech DNSSEC klíčů"
 
 #: templates/default/dnssec_add_key.html:181
 msgid "Key Types Explained"
-msgstr "Key Types Explained"
+msgstr "Vysvětlení typů klíčů"
 
 #: templates/default/dnssec_add_key.html:183
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
 msgstr ""
+"Kombinovaný podpisový klíč - slouží jako KSK i ZSK (doporučeno pro PowerDNS 4.0+)"
 
 #: templates/default/dnssec_add_key.html:184
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
-msgstr "Key Signing Key - signs the DNSKEY records in the zone"
+msgstr "Klíč pro podpis klíčů - podepisuje DNSKEY záznamy v zóně"
 
 #: templates/default/dnssec_add_key.html:185
 msgid "Zone Signing Key - signs all other records in the zone"
-msgstr "Zone Signing Key - signs all other records in the zone"
+msgstr "Klíč pro podpis zóny - podepisuje všechny ostatní záznamy v zóně"
 
 #: templates/default/dnssec_add_key.html:190
 msgid "Recommended Settings"
-msgstr "Recommended Settings"
+msgstr "Doporučená nastavení"
 
 #: templates/default/dnssec_add_key.html:191
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
 msgstr ""
+"Pro moderní nasazení poskytuje ECDSA (algoritmus 13, ECDSAP256SHA256) s 256 bity silné zabezpečení s lepším výkonem."
 
 #: templates/default/edit_user.html:13
 msgid "Edit user"
-msgstr "Edit user"
+msgstr "Upravit uživatele"
 
 #: templates/default/edit_user.html:22
 msgid "Edit User"
-msgstr "Edit User"
+msgstr "Upravit uživatele"
 
 #: templates/default/users.html:24 templates/default/add_user.html:20
 #: install/templates/step4.html.twig:40 install/templates/step5.html.twig:56
@@ -7644,199 +7655,203 @@ msgstr "Uživatelské jméno"
 
 #: templates/default/edit_user.html:32 templates/default/add_user.html:22
 msgid "Provide user name"
-msgstr "Provide user name"
+msgstr "Zadejte uživatelské jméno"
 
 #: templates/default/add_user.html:26
 msgid "Fullname"
-msgstr "Fullname"
+msgstr "Celé jméno"
 
 #: templates/default/edit_user.html:38
 msgid "User's full name for identification"
-msgstr "User's full name for identification"
+msgstr "Celé jméno uživatele pro identifikaci"
 
 #: templates/default/add_user.html:32
 msgid "Email address"
-msgstr "Email address"
+msgstr "E-mailová adresa"
 
 #: templates/default/edit_user.html:44 templates/default/add_user.html:34
 msgid "Provide email"
-msgstr "Provide email"
+msgstr "Zadejte e-mail"
 
 #: templates/default/edit_user.html:54
 msgid "Leave empty to keep current password"
-msgstr "Leave empty to keep current password"
+msgstr "Ponechte prázdné pro zachování současného hesla"
 
 #: templates/default/edit_user.html:59 templates/default/add_user.html:69
 msgid "Permission template"
-msgstr "Permission template"
+msgstr "Šablona oprávnění"
 
 #: templates/default/edit_user.html:69 templates/default/add_user.html:80
 msgid "Select permissions for this user"
-msgstr "Select permissions for this user"
+msgstr "Vyberte oprávnění pro tohoto uživatele"
 
 #: templates/default/edit_user.html:76 templates/default/add_user.html:87
 msgid "Optional information about this user"
-msgstr "Optional information about this user"
+msgstr "Volitelné informace o tomto uživateli"
 
 #: templates/default/add_user.html:93
 msgid "Enabled"
-msgstr "Enabled"
+msgstr "Povoleno"
 
 #: templates/default/edit_user.html:96 templates/default/add_user.html:102
 msgid "LDAP Authentication"
-msgstr "LDAP Authentication"
+msgstr "LDAP autentizace"
 
 #: templates/default/edit_user.html:98 templates/default/add_user.html:104
 msgid "Use external LDAP directory for authentication"
-msgstr "Use external LDAP directory for authentication"
+msgstr "Použít externí LDAP adresář pro autentizaci"
 
 #: templates/default/edit_user.html:112
 msgid "Back to Home"
-msgstr "Back to Home"
+msgstr "Zpět na domovskou stránku"
 
 #: templates/default/edit_user.html:116
 msgid "Back to Users"
-msgstr "Back to Users"
+msgstr "Zpět k uživatelům"
 
 #: templates/default/edit_user.html:130 templates/default/add_user.html:127
 msgid "Account Information"
-msgstr "Account Information"
+msgstr "Informace o účtu"
 
 #: templates/default/change_password.html:82
 msgid "Must contain uppercase letters"
-msgstr "Must contain uppercase letters"
+msgstr "Musí obsahovat velká písmena"
 
 #: templates/default/change_password.html:85
 msgid "Must contain lowercase letters"
-msgstr "Must contain lowercase letters"
+msgstr "Musí obsahovat malá písmena"
 
 #: templates/default/change_password.html:88
 msgid "Must contain numbers"
-msgstr "Must contain numbers"
+msgstr "Musí obsahovat číslice"
 
 #: templates/default/change_password.html:92
 msgid "Must contain special characters"
-msgstr "Must contain special characters"
+msgstr "Musí obsahovat speciální znaky"
 
 #: templates/default/change_password.html:97
 msgid "No specific password requirements"
-msgstr "No specific password requirements"
+msgstr "Žádné specifické požadavky na heslo"
 
 #: templates/default/edit_perm_templ.html:141
 msgid "User Permissions"
-msgstr "User Permissions"
+msgstr "Oprávnění uživatele"
 
 #: templates/default/edit_user.html:164
 msgid "This user has been assigned the permission template"
-msgstr "This user has been assigned the permission template"
+msgstr "Tomuto uživateli byla přiřazena šablona oprávnění"
 
 #: templates/default/edit_user.html:173
 msgid "Based on this template, this user has the following permissions"
-msgstr "Based on this template, this user has the following permissions"
+msgstr "Na základě této šablony má tento uživatel následující oprávnění"
 
 #: templates/default/edit_user.html:176
 msgid "No permissions are assigned to this template"
-msgstr "No permissions are assigned to this template"
+msgstr "Této šabloně nejsou přiřazena žádná oprávnění"
 
 #: templates/default/edit_user.html:192 templates/default/add_user.html:170
 msgid "User Management Tips"
-msgstr "User Management Tips"
+msgstr "Tipy pro správu uživatelů"
 
 #: templates/default/edit_user.html:198
 msgid "Leave password field empty to keep the current password"
-msgstr "Leave password field empty to keep the current password"
+msgstr "Ponechte pole hesla prázdné pro zachování současného hesla"
 
 #: templates/default/edit_user.html:199
 msgid "Changing permission templates will update user access immediately"
-msgstr "Changing permission templates will update user access immediately"
+msgstr "Změna šablon oprávnění okamžitě aktualizuje přístup uživatele"
 
 #: templates/default/edit_user.html:200 templates/default/add_user.html:178
 msgid "Users can be disabled instead of deleted to preserve their settings"
-msgstr "Users can be disabled instead of deleted to preserve their settings"
+msgstr ""
+"Uživatelé mohou být zakázáni místo smazání pro zachování jejich nastavení"
 
 #: templates/default/edit_user.html:201
 msgid "LDAP users cannot have passwords managed through this interface"
-msgstr "LDAP users cannot have passwords managed through this interface"
+msgstr ""
+"LDAP uživatelé nemohou mít hesla spravovaná prostřednictvím tohoto rozhraní"
 
 #: templates/default/confirm_unlink_zones_templ.html:6
 msgid "Unlink zones"
-msgstr "Unlink zones"
+msgstr "Odpojit zóny"
 
 #: templates/default/confirm_unlink_zones_templ.html:12
 msgid "Unlink Zones from Template"
-msgstr "Unlink Zones from Template"
+msgstr "Odpojit zóny od šablony"
 
 #: templates/default/confirm_unlink_zones_templ.html:19
 msgid "You are about to unlink 1 zone from template"
-msgstr "You are about to unlink 1 zone from template"
+msgstr "Chystáte se odpojit 1 zónu od šablony"
 
 #: templates/default/confirm_unlink_zones_templ.html:21
 msgid "You are about to unlink multiple zones from template"
-msgstr "You are about to unlink multiple zones from template"
+msgstr "Chystáte se odpojit více zón od šablony"
 
 #: templates/default/confirm_unlink_zones_templ.html:23
 msgid "zones total"
-msgstr "zones total"
+msgstr "zón celkem"
 
 #: templates/default/confirm_unlink_zones_templ.html:25
 msgid ""
 "This will disconnect these zones from their template. Are you sure you want "
 "to proceed?"
 msgstr ""
+"Toto odpojí tyto zóny od jejich šablony. Jste si jisti, že chcete pokračovat?"
 
 #: templates/default/confirm_unlink_zones_templ.html:30
 msgid "Zones to be unlinked"
-msgstr "Zones to be unlinked"
+msgstr "Zóny k odpojení"
 
 #: templates/default/delete_domain.html:66
 msgid "Important Note"
-msgstr "Important Note"
+msgstr "Důležitá poznámka"
 
 #: templates/default/confirm_unlink_zones_templ.html:56
 msgid ""
 "Unlinking the zones from their template will not delete any records. The "
 "zones will no longer receive updates when the template is modified."
 msgstr ""
+"Odpojení zón od jejich šablony nesmaže žádné záznamy. Zóny již nebudou dostávat aktualizace při úpravě šablony."
 
 #: templates/default/confirm_unlink_zones_templ.html:70
 msgid "Yes, unlink this zone"
-msgstr "Yes, unlink this zone"
+msgstr "Ano, odpojit tuto zónu"
 
 #: templates/default/confirm_unlink_zones_templ.html:72
 msgid "Yes, unlink these zones"
-msgstr "Yes, unlink these zones"
+msgstr "Ano, odpojit tyto zóny"
 
 #: templates/default/list_perm_templ.html:5
 msgid "Permission templates"
-msgstr "Permission templates"
+msgstr "Šablony oprávnění"
 
 #: templates/default/add_perm_templ.html:6 templates/default/edit.html:763
 msgid "Add"
-msgstr "Add"
+msgstr "Přidat"
 
 #: templates/default/add_perm_templ.html:18
 msgid "Add Permission Template"
-msgstr "Add Permission Template"
+msgstr "Přidat šablonu oprávnění"
 
 #: templates/default/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
-msgstr "A short, descriptive name for this permission set"
+msgstr "Krátký, popisný název pro tuto sadu oprávnění"
 
 #: templates/default/edit_perm_templ.html:32
 msgid "Optional: more detailed description of this permission set"
-msgstr "Optional: more detailed description of this permission set"
+msgstr "Volitelné: podrobnější popis této sady oprávnění"
 
 #: templates/default/add_perm_templ.html:36
 msgid "Add Template"
-msgstr "Add Template"
+msgstr "Přidat šablonu"
 
 #: templates/default/add_perm_templ.html:52
 msgid "About Permission Templates"
-msgstr "About Permission Templates"
+msgstr "O šablonách oprávnění"
 
 #: templates/default/add_perm_templ.html:57
 msgid "What are Permission Templates?"
-msgstr "What are Permission Templates?"
+msgstr "Co jsou šablony oprávnění?"
 
 #: templates/default/add_perm_templ.html:58
 msgid ""
@@ -7844,10 +7859,11 @@ msgid ""
 "Poweradmin. They provide a quick way to assign common permission "
 "combinations to multiple users."
 msgstr ""
+"Šablony oprávnění definují sady akcí, které mohou uživatelé v Poweradmin provádět. Poskytují rychlý způsob přiřazení běžných kombinací oprávnění více uživatelům."
 
 #: templates/default/add_perm_templ.html:61
 msgid "How to Use Templates"
-msgstr "How to Use Templates"
+msgstr "Jak používat šablony"
 
 #: templates/default/add_perm_templ.html:62
 msgid ""
@@ -7855,108 +7871,113 @@ msgid ""
 "editing user accounts. This ensures consistent permissions across user "
 "groups with similar roles."
 msgstr ""
+"Po vytvoření šablony ji můžete přiřadit uživatelům při vytváření nebo úpravě uživatelských účtů. To zajišťuje konzistentní oprávnění napříč skupinami uživatelů s podobnými rolemi."
 
 #: templates/default/edit_perm_templ.html:76
 msgid "Available Permissions"
-msgstr "Available Permissions"
+msgstr "Dostupná oprávnění"
 
 #: templates/default/edit_perm_templ.html:79
 msgid "Search permissions..."
-msgstr "Search permissions..."
+msgstr "Hledat oprávnění..."
 
 #: templates/default/edit_perm_templ.html:84
 msgid "Select All"
-msgstr "Select All"
+msgstr "Vybrat vše"
 
 #: templates/default/edit_perm_templ.html:95
 msgid "Zone Permissions"
-msgstr "Zone Permissions"
+msgstr "Oprávnění zón"
 
 #: templates/default/edit_perm_templ.html:187
 msgid "Template Permissions"
-msgstr "Template Permissions"
+msgstr "Oprávnění šablon"
 
 #: templates/default/edit_perm_templ.html:233
 msgid "Other Permissions"
-msgstr "Other Permissions"
+msgstr "Ostatní oprávnění"
 
 #: templates/default/404.html:19
 msgid "The page you are looking for does not exist."
-msgstr "The page you are looking for does not exist."
+msgstr "Stránka, kterou hledáte, neexistuje."
 
 #: templates/default/404.html:22
 msgid "This could be because:"
-msgstr "This could be because:"
+msgstr "Může to být z těchto důvodů:"
 
 #: templates/default/404.html:26
 msgid "The URL is incorrect or has been mistyped"
-msgstr "The URL is incorrect or has been mistyped"
+msgstr "URL je nesprávná nebo byla špatně napsána"
 
 #: templates/default/404.html:30
 msgid "The page has been moved or deleted"
-msgstr "The page has been moved or deleted"
+msgstr "Stránka byla přesunuta nebo smazána"
 
 #: templates/default/404.html:34
 msgid "You do not have permission to access this page"
-msgstr "You do not have permission to access this page"
+msgstr "Nemáte oprávnění pro přístup k této stránce"
 
 #: templates/default/404.html:45
 msgid "Go to Homepage"
-msgstr "Go to Homepage"
+msgstr "Přejít na domovskou stránku"
 
 #: templates/default/404.html:49
 msgid "Go Back"
-msgstr "Go Back"
+msgstr "Jít zpět"
 
 #: templates/default/add_supermaster.html:13
 msgid "Add Supermaster"
-msgstr "Add Supermaster"
+msgstr "Přidat supermaster"
 
 #: templates/default/add_supermaster.html:78
 msgid "About Supermasters"
-msgstr "About Supermasters"
+msgstr "O supermasterech"
 
 #: templates/default/add_supermaster.html:83
 msgid "What is a Supermaster?"
-msgstr "What is a Supermaster?"
+msgstr "Co je to supermaster?"
 
 #: templates/default/add_supermaster.html:84
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
 msgstr ""
+"Supermaster je autoritativní server PowerDNS, který automaticky přenáší nové zóny na své podružné servery."
 
 #: templates/default/add_supermaster.html:87
 msgid "How it works"
-msgstr "How it works"
+msgstr "Jak to funguje"
 
 #: templates/default/add_supermaster.html:88
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
 msgstr ""
+"Když podružný server obdrží oznámení od supermastera, přidá doménu a nastaví IP adresu supermastera jako hlavní adresu."
 
 #: templates/default/add_zone_slave.html:94
 msgid "Important Notes"
-msgstr "Important Notes"
+msgstr "Důležité poznámky"
 
 #: templates/default/add_supermaster.html:93
 msgid ""
 "The hostname must match exactly what appears in the NS record of the zone."
 msgstr ""
+"Název hostitele se musí přesně shodovat s tím, co se objevuje v NS záznamu zóny."
 
 #: templates/default/add_supermaster.html:94
 msgid ""
 "Ensure your firewall allows DNS notifications between masters and slaves."
 msgstr ""
+"Ujistěte se, že váš firewall umožňuje DNS oznámení mezi hlavními a podružnými servery."
 
 #: templates/default/login.html:11 templates/default/login.html:48
 msgid "Log in"
-msgstr "Log in"
+msgstr "Přihlásit se"
 
 #: templates/default/login.html:20
 msgid "Please provide a username"
-msgstr "Please provide a username"
+msgstr "Zadejte prosím uživatelské jméno"
 
 #: templates/default/login.html:32
 msgid "Language"
@@ -7964,315 +7985,328 @@ msgstr "Jazyk"
 
 #: templates/default/login.html:52
 msgid "Forgot your password?"
-msgstr "Forgot your password?"
+msgstr "Zapomněli jste heslo?"
 
 #: templates/default/batch_ptr_record.html:39
 msgid "IP Version"
-msgstr "IP Version"
+msgstr "Verze IP"
 
 #: templates/default/batch_ptr_record.html:41
 msgid "IPv4 network"
-msgstr "IPv4 network"
+msgstr "IPv4 síť"
 
 #: templates/default/batch_ptr_record.html:42
 msgid "IPv6 (/64 network)"
-msgstr "IPv6 (/64 network)"
+msgstr "IPv6 (/64 síť)"
 
 #: templates/default/batch_ptr_record.html:47
 msgid "Network Prefix"
-msgstr "Network Prefix"
+msgstr "Síťová předpona"
 
 #: templates/default/batch_ptr_record.html:55
 msgid "Select from existing reverse zones"
-msgstr "Select from existing reverse zones"
+msgstr "Vyberte z existujících reverzních zón"
 
 #: templates/default/batch_ptr_record.html:65
 msgid "Please provide a network prefix"
-msgstr "Please provide a network prefix"
+msgstr "Zadejte prosím síťovou předponu"
 
 #: templates/default/batch_ptr_record.html:66
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
-msgstr ""
+msgstr "např. \"192.168.1.0/24\" nebo \"10.0.0.0/20\""
 
 #: templates/default/batch_ptr_record.html:67
 msgid "e.g., \"2001:db8:1:1\""
-msgstr ""
+msgstr "např. \"2001:db8:1:1\""
 
 #: templates/default/batch_ptr_record.html:71
 msgid "Host Prefix"
-msgstr "Host Prefix"
+msgstr "Předpona hostitele"
 
 #: templates/default/batch_ptr_record.html:71
 msgid "Optional"
-msgstr "Optional"
+msgstr "Volitelné"
 
 #: templates/default/batch_ptr_record.html:73
 msgid "Leave empty to use just the domain for PTR records"
-msgstr "Leave empty to use just the domain for PTR records"
+msgstr "Ponechte prázdné pro použití pouze domény pro PTR záznamy"
 
 #: templates/default/batch_ptr_record.html:79
 msgid "Required"
-msgstr "Required"
+msgstr "Povinné"
 
 #: templates/default/batch_ptr_record.html:83
 msgid "IPv6 Count"
-msgstr "IPv6 Count"
+msgstr "Počet IPv6"
 
 #: templates/default/batch_ptr_record.html:88
 msgid "Using default TTL value from configuration"
-msgstr "Using default TTL value from configuration"
+msgstr "Použití výchozí hodnoty TTL z konfigurace"
 
 #: templates/default/batch_ptr_record.html:100
 msgid "Create forward A/AAAA records in primary zone"
-msgstr "Create forward A/AAAA records in primary zone"
+msgstr "Vytvořit přímé A/AAAA záznamy v primární zóně"
 
 #: templates/default/batch_ptr_record.html:105
 msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Create PTRs only for existing A records in forward zone"
+msgstr "Vytvořit PTR pouze pro existující A záznamy v přímé zóně"
 
 #: templates/default/batch_ptr_record.html:106
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A records in the specified domain"
 msgstr ""
+"Když je zaškrtnuto, PTR záznamy budou vytvořeny pouze pro IP adresy, které mají odpovídající A záznamy v zadané doméně"
 
 #: templates/default/batch_ptr_record.html:112
 msgid "Create PTR Records"
-msgstr "Create PTR Records"
+msgstr "Vytvořit PTR záznamy"
 
 #: templates/default/batch_ptr_record.html:134
 msgid "PTR Record Information"
-msgstr "PTR Record Information"
+msgstr "Informace o PTR záznamech"
 
 #: templates/default/api_key_add.html:49
 msgid "Important Information"
-msgstr "Important Information"
+msgstr "Důležité informace"
 
 #: templates/default/batch_ptr_record.html:140
 msgid "This tool creates PTR records in bulk. Two modes are available:"
-msgstr "This tool creates PTR records in bulk. Two modes are available:"
+msgstr ""
+"Tento nástroj vytváří PTR záznamy hromadně. K dispozici jsou dva režimy:"
 
 #: templates/default/batch_ptr_record.html:142
 msgid "All IPs"
-msgstr "All IPs"
+msgstr "Všechny IP"
 
 #: templates/default/batch_ptr_record.html:142
 msgid "Creates PTR records for every IP in the network range"
-msgstr "Creates PTR records for every IP in the network range"
+msgstr "Vytváří PTR záznamy pro každou IP v síťovém rozsahu"
 
 #: templates/default/batch_ptr_record.html:143
 msgid "Matching only"
-msgstr "Matching only"
+msgstr "Pouze odpovídající"
 
 #: templates/default/batch_ptr_record.html:143
 msgid ""
 "Creates PTR records only for IPs that have existing A records in the forward "
 "zone"
 msgstr ""
+"Vytváří PTR záznamy pouze pro IP adresy, které mají existující A záznamy v přímé zóně"
 
 #: templates/default/batch_ptr_record.html:145
 msgid "For IPv4, supported networks are:"
-msgstr "For IPv4, supported networks are:"
+msgstr "Pro IPv4 jsou podporované sítě:"
 
 #: templates/default/change_password.html:71
 msgid "Requirements"
-msgstr "Requirements"
+msgstr "Požadavky"
 
 #: templates/default/batch_ptr_record.html:162
 msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
 msgstr ""
+"Musíte mít příslušnou reverzní zónu již vytvořenou v PowerDNS před použitím této funkce."
 
 #: templates/default/batch_ptr_record.html:163
 msgid "For example:"
-msgstr "For example:"
+msgstr "Například:"
 
 #: templates/default/batch_ptr_record.html:165
 msgid ""
 "For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-"
 "addr.arpa"
 msgstr ""
+"Pro síť 192.168.1.0/24 potřebujete reverzní zónu pro 1.168.192.in-addr.arpa"
 
 #: templates/default/batch_ptr_record.html:166
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
 msgstr ""
+"Pro větší sítě budete potřebovat odpovídající reverzní zóny (např. 168.192.in-addr.arpa pro síť /16)"
 
 #: templates/default/add_zone_slave.html:103
 msgid "Quick Tips"
-msgstr "Quick Tips"
+msgstr "Rychlé tipy"
 
 #: templates/default/batch_ptr_record.html:181
 msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
 msgstr ""
+"Použijte rozbalovací tlačítko vedle síťové předpony k výběru z existujících reverzních zón"
 
 #: templates/default/batch_ptr_record.html:182
 msgid ""
 "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
 "your forward zone"
 msgstr ""
+"Použijte \"Vytvořit PTR pouze pro existující A záznamy\" k naplnění PTR na základě vaší přímé zóny"
 
 #: templates/default/batch_ptr_record.html:183
 msgid ""
 "Use the Host Prefix field to add a prefix to all hostnames when creating all "
 "IPs"
 msgstr ""
+"Použijte pole předpony hostitele k přidání předpony všem názvům hostitelů při vytváření všech IP"
 
 #: templates/default/batch_ptr_record.html:184
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
 msgstr ""
+"Zaškrtněte \"Vytvořit přímé A/AAAA záznamy\" pro automatické vytvoření odpovídajících přímých záznamů (zakázáno při použití režimu odpovídání)"
 
 #: templates/default/add_record.html:18
 msgid "Add record"
-msgstr "Add record"
+msgstr "Přidat záznam"
 
 #: templates/default/add_zone_templ_record.html:21
 msgid ""
 "After adding this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
 msgstr ""
+"Po přidání tohoto záznamu nezapomeňte aktualizovat zóny používající tuto šablonu kliknutím na \"Aktualizovat zóny\" na stránce šablony."
 
 #: templates/default/add_zone_templ_record.html:31
 msgid "Add record to zone template"
-msgstr "Add record to zone template"
+msgstr "Přidat záznam do šablony zóny"
 
 #: templates/default/add_zone_templ_record.html:34
 msgid "Create a new record for this zone template"
-msgstr "Create a new record for this zone template"
+msgstr "Vytvořit nový záznam pro tuto šablonu zóny"
 
 #: templates/default/delete_perm_templ.html:12
 msgid "Delete Permission Template"
-msgstr "Delete Permission Template"
+msgstr "Smazat šablonu oprávnění"
 
 #: templates/default/delete_perm_templ.html:17
 msgid "You are about to delete the permission template"
-msgstr "You are about to delete the permission template"
+msgstr "Chystáte se smazat šablonu oprávnění"
 
 #: templates/default/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
-msgstr "This template is currently assigned to"
+msgstr "Tato šablona je aktuálně přiřazena"
 
 #: templates/default/delete_perm_templ.html:23
 msgid "users"
-msgstr "users"
+msgstr "uživatelům"
 
 #: templates/default/delete_zone_templ.html:35
 msgid "Yes, delete this template"
-msgstr "Yes, delete this template"
+msgstr "Ano, smazat tuto šablonu"
 
 #: templates/default/delete_zone_templ.html:38
 msgid "No, keep this template"
-msgstr "No, keep this template"
+msgstr "Ne, ponechat tuto šablonu"
 
 #: templates/default/api_key_add.html:5 templates/default/api_key_add.html:13
 msgid "Add API Key"
-msgstr "Add API Key"
+msgstr "Přidat API klíč"
 
 #: templates/default/api_key_add.html:21
 msgid "My application"
-msgstr "My application"
+msgstr "Moje aplikace"
 
 #: templates/default/api_key_add.html:22
 msgid "Provide a name for this API key"
-msgstr "Provide a name for this API key"
+msgstr "Zadejte název pro tento API klíč"
 
 #: templates/default/api_key_add.html:35
 msgid "Create API Key"
-msgstr "Create API Key"
+msgstr "Vytvořit API klíč"
 
 #: templates/default/api_key_add.html:52
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
 "sure to save it in a secure place, as you won't be able to retrieve it later."
 msgstr ""
+"Když vytvoříte nový API klíč, klíč se zobrazí pouze JEDNOU. Ujistěte se, že ho uložíte na bezpečné místo, protože ho později nebudete moci získat."
 
 #: templates/default/api_key_add.html:53
 msgid "If you lose the key, you'll need to regenerate it."
-msgstr "If you lose the key, you'll need to regenerate it."
+msgstr "Pokud klíč ztratíte, budete ho muset obnovit."
 
 #: templates/default/list_perm_templ.html:36
 msgid "Edit"
-msgstr "Edit"
+msgstr "Upravit"
 
 #: templates/default/edit.html:25 templates/default/edit.html:516
 msgid "Add new record"
-msgstr "Add new record"
+msgstr "Přidat nový záznam"
 
 #: templates/default/edit.html:28 templates/default/edit.html:519
 msgid "Multi-record mode"
-msgstr "Multi-record mode"
+msgstr "Režim více záznamů"
 
 #: templates/default/edit.html:31 templates/default/edit.html:522
 msgid "Bulk add"
-msgstr "Bulk add"
+msgstr "Hromadné přidání"
 
 #: templates/default/edit.html:43 templates/default/edit.html:534
 msgid "Failed to add"
-msgstr "Failed to add"
+msgstr "Nepodařilo se přidat"
 
 #: templates/default/edit.html:43 templates/default/edit.html:534
 msgid "record(s). Please check the record format."
-msgstr "record(s). Please check the record format."
+msgstr "záznam(y). Zkontrolujte prosím formát záznamu."
 
 #: templates/default/edit.html:45 templates/default/edit.html:536
 msgid "Failed to add records. Please check the record format."
-msgstr "Failed to add records. Please check the record format."
+msgstr "Nepodařilo se přidat záznamy. Zkontrolujte prosím formát záznamu."
 
 #: templates/default/edit.html:48 templates/default/edit.html:539
 msgid "Content validation failed:"
-msgstr "Content validation failed:"
+msgstr "Ověření obsahu selhalo:"
 
 #: templates/default/edit.html:48 templates/default/edit.html:539
 msgid "Invalid value for record type"
-msgstr "Invalid value for record type"
+msgstr "Neplatná hodnota pro typ záznamu"
 
 #: templates/default/edit.html:50 templates/default/edit.html:541
 msgid "Please provide all required information."
-msgstr "Please provide all required information."
+msgstr "Zadejte prosím všechny požadované informace."
 
 #: templates/default/add_record.html:61
 msgid "Add PTR"
-msgstr "Add PTR"
+msgstr "Přidat PTR"
 
 #: templates/default/add_record.html:64
 msgid "Add A/AAAA"
-msgstr "Add A/AAAA"
+msgstr "Přidat A/AAAA"
 
 #: templates/default/edit.html:86 templates/default/edit.html:578
 msgid "Invalid hostname format"
-msgstr "Invalid hostname format"
+msgstr "Neplatný formát názvu hostitele"
 
 #: templates/default/edit.html:114 templates/default/edit.html:606
 msgid "This record already exists"
-msgstr "This record already exists"
+msgstr "Tento záznam již existuje"
 
 #: templates/default/edit.html:126 templates/default/edit.html:618
 msgid "Invalid priority"
-msgstr "Invalid priority"
+msgstr "Neplatná priorita"
 
 #: templates/default/edit.html:133 templates/default/edit.html:625
 msgid "Invalid TTL value"
-msgstr "Invalid TTL value"
+msgstr "Neplatná hodnota TTL"
 
 #: templates/default/edit.html:135 templates/default/edit.html:627
 msgid "Provide TTL"
-msgstr "Provide TTL"
+msgstr "Zadejte TTL"
 
 #: templates/default/add_record.html:139
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
 msgstr ""
+"Tip: Zadejte pouze název hostitele (např. 'www') a název zóny bude přidán automaticky. Použijte '@' pro vrchol/kořen zóny."
 
 #: templates/default/delete_records.html:12
 msgid "Edit zone"
-msgstr "Edit zone"
+msgstr "Upravit zónu"
 
 #: templates/default/edit.html:188
 msgid "CSV"
@@ -8284,115 +8318,115 @@ msgstr "PTR"
 
 #: templates/default/edit.html:208
 msgid "Sign zone"
-msgstr "Sign zone"
+msgstr "Podepsat zónu"
 
 #: templates/default/edit.html:225
 msgid "No records match your filter criteria."
-msgstr "No records match your filter criteria."
+msgstr "Žádné záznamy neodpovídají vašim filtrovacím kritériím."
 
 #: templates/default/edit.html:233
 msgid "This zone does not have any records."
-msgstr "This zone does not have any records."
+msgstr "Tato zóna nemá žádné záznamy."
 
 #: templates/default/edit.html:247
 msgid "Filter:"
-msgstr "Filter:"
+msgstr "Filtr:"
 
 #: templates/default/edit.html:253
 msgid "Search by name or content"
-msgstr "Search by name or content"
+msgstr "Hledat podle názvu nebo obsahu"
 
 #: templates/default/edit.html:259
 msgid "All Types"
-msgstr "All Types"
+msgstr "Všechny typy"
 
 #: templates/default/edit.html:269
 msgid "Filter by content"
-msgstr "Filter by content"
+msgstr "Filtrovat podle obsahu"
 
 #: templates/default/edit.html:275
 msgid "Apply"
-msgstr "Apply"
+msgstr "Použít"
 
 #: templates/default/edit.html:298 templates/default/search.html:476
 msgid "Delete record(s)"
-msgstr "Delete record(s)"
+msgstr "Smazat záznam(y)"
 
 #: templates/default/edit.html:306
 msgid "Showing"
-msgstr "Showing"
+msgstr "Zobrazuje se"
 
 #: templates/default/edit.html:306
 msgid "of"
-msgstr "of"
+msgstr "z"
 
 #: templates/default/edit.html:306
 msgid "total records"
-msgstr "total records"
+msgstr "celkem záznamů"
 
 #: templates/default/edit.html:472 templates/default/search.html:93
 msgid "Comments"
-msgstr "Comments"
+msgstr "Komentáře"
 
 #: templates/default/edit.html:665
 msgid "Save as new template"
-msgstr "Save as new template"
+msgstr "Uložit jako novou šablonu"
 
 #: templates/default/edit.html:668
 msgid "Create a reusable template from this zone's records"
-msgstr "Create a reusable template from this zone's records"
+msgstr "Vytvořit opakovaně použitelnou šablonu ze záznamů této zóny"
 
 #: templates/default/edit.html:674
 msgid "Template Name"
-msgstr "Template Name"
+msgstr "Název šablony"
 
 #: templates/default/edit.html:676
 msgid "Provide template name"
-msgstr "Provide template name"
+msgstr "Zadejte název šablony"
 
 #: templates/default/edit.html:680
 msgid "Template Description"
-msgstr "Template Description"
+msgstr "Popis šablony"
 
 #: templates/default/edit.html:682
 msgid "Optional description for this template"
-msgstr "Optional description for this template"
+msgstr "Volitelný popis pro tuto šablonu"
 
 #: templates/default/edit.html:686
 msgid "Save as template"
-msgstr "Save as template"
+msgstr "Uložit jako šablonu"
 
 #: templates/default/edit.html:697
 msgid "Zone Settings"
-msgstr "Zone Settings"
+msgstr "Nastavení zóny"
 
 #: templates/default/edit.html:700
 msgid "Owner of zone"
-msgstr "Owner of zone"
+msgstr "Vlastník zóny"
 
 #: templates/default/edit.html:703
 msgid "No owner set for this zone."
-msgstr "No owner set for this zone."
+msgstr "Pro tuto zónu není nastaven žádný vlastník."
 
 #: templates/default/edit.html:828
 msgid "Change"
-msgstr "Change"
+msgstr "Změnit"
 
 #: templates/default/edit.html:794 templates/default/add_zone_slave.html:33
 msgid "IP address of master NS"
-msgstr "IP address of master NS"
+msgstr "IP adresa hlavního NS"
 
 #: templates/default/edit.html:1020
 msgid "Select All Filtered"
-msgstr "Select All Filtered"
+msgstr "Vybrat všechny filtrované"
 
 #: templates/default/users.html:10
 msgid "User Administration"
-msgstr "User Administration"
+msgstr "Správa uživatelů"
 
 #: templates/default/header.html:100
 msgid "Add user"
-msgstr "Add user"
+msgstr "Přidat uživatele"
 
 #: templates/default/users.html:29
 msgid "LDAP"
@@ -8400,27 +8434,27 @@ msgstr "LDAP"
 
 #: templates/default/list_template_zones.html:16
 msgid "Total number of zones:"
-msgstr "Total number of zones:"
+msgstr "Celkový počet zón:"
 
 #: templates/default/list_forward_zones.html:57
 msgid "There are no forward zones to show in this listing."
-msgstr "There are no forward zones to show in this listing."
+msgstr "V tomto seznamu nejsou žádné přímé zóny k zobrazení."
 
 #: templates/default/delete_record.html:24
 msgid "Delete Record"
-msgstr "Delete Record"
+msgstr "Smazat záznam"
 
 #: templates/default/delete_record.html:32
 msgid "You are about to delete a record in zone"
-msgstr "You are about to delete a record in zone"
+msgstr "Chystáte se smazat záznam v zóně"
 
 #: templates/default/delete_zone_templ_record.html:24
 msgid "This action cannot be undone."
-msgstr "This action cannot be undone."
+msgstr "Tuto akci nelze vrátit zpět."
 
 #: templates/default/delete_zone_templ_record.html:29
 msgid "Record Details"
-msgstr "Record Details"
+msgstr "Podrobnosti záznamu"
 
 #: templates/default/delete_record.html:74
 msgid "You are trying to delete a record that is needed for this zone to work."
@@ -8428,168 +8462,169 @@ msgstr "Pokoušíte se smazat záznam, který je potřebný pro fungování tét
 
 #: templates/default/delete_record.html:83
 msgid "Also delete corresponding PTR record (if exists)"
-msgstr "Also delete corresponding PTR record (if exists)"
+msgstr "Také smazat odpovídající PTR záznam (pokud existuje)"
 
 #: templates/default/delete_zone_templ_record.html:59
 msgid "Yes, delete this record"
-msgstr "Yes, delete this record"
+msgstr "Ano, smazat tento záznam"
 
 #: templates/default/delete_zone_templ_record.html:62
 msgid "No, keep this record"
-msgstr "No, keep this record"
+msgstr "Ne, ponechat tento záznam"
 
 #: templates/default/mfa_verify.html:6
 msgid "Two-Factor Authentication"
-msgstr "Two-Factor Authentication"
+msgstr "Dvoucestné ověření"
 
 #: templates/default/mfa_verify.html:21
 msgid "Enter verification code"
-msgstr "Enter verification code"
+msgstr "Zadejte ověřovací kód"
 
 #: templates/default/mfa_verify_email.html:28
 msgid "Looks good!"
-msgstr "Looks good!"
+msgstr "Vypadá to dobře!"
 
 #: templates/default/mfa_verify.html:29
 msgid "Please enter a valid verification code."
-msgstr "Please enter a valid verification code."
+msgstr "Zadejte prosím platný ověřovací kód."
 
 #: templates/default/mfa_verify.html:33
 msgid "Enter the code from your authenticator app"
-msgstr "Enter the code from your authenticator app"
+msgstr "Zadejte kód z vaší autentifikační aplikace"
 
 #: templates/default/mfa_verify.html:35
 msgid "Enter the 6-digit code sent to your email"
-msgstr "Enter the 6-digit code sent to your email"
+msgstr "Zadejte 6místný kód zaslaný na váš e-mail"
 
 #: templates/default/mfa_verify.html:41 templates/default/mfa_verify.html:110
 msgid "Verify"
-msgstr "Verify"
+msgstr "Ověřit"
 
 #: templates/default/mfa_verify.html:72
 msgid "Use a recovery code"
-msgstr "Use a recovery code"
+msgstr "Použít záložní kód"
 
 #: templates/default/mfa_verify.html:86
 msgid "Use Recovery Code"
-msgstr "Use Recovery Code"
+msgstr "Použít záložní kód"
 
 #: templates/default/mfa_verify.html:95
 msgid "Recovery Code"
-msgstr "Recovery Code"
+msgstr "Záložní kód"
 
 #: templates/default/mfa_verify.html:102
 msgid "Please enter a valid recovery code."
-msgstr "Please enter a valid recovery code."
+msgstr "Zadejte prosím platný záložní kód."
 
 #: templates/default/mfa_verify.html:105
 msgid ""
 "Enter one of your recovery codes. Note that each code can only be used once."
 msgstr ""
+"Zadejte jeden ze svých záložních kódů. Pamatujte, že každý kód lze použít pouze jednou."
 
 #: templates/default/database_consistency.html:7
 msgid "Confirm Delete"
-msgstr "Confirm Delete"
+msgstr "Potvrdit smazání"
 
 #: templates/default/database_consistency.html:39
 msgid "Summary"
-msgstr "Summary"
+msgstr "Shrnutí"
 
 #: templates/default/database_consistency.html:40
 msgid "Total Issues Found"
-msgstr "Total Issues Found"
+msgstr "Celkem nalezeno problémů"
 
 #: templates/default/database_consistency.html:41
 msgid "Errors"
-msgstr "Errors"
+msgstr "Chyby"
 
 #: templates/default/database_consistency.html:42
 msgid "Warnings"
-msgstr "Warnings"
+msgstr "Varování"
 
 #: templates/default/database_consistency.html:48
 msgid "Zones Without Owners"
-msgstr "Zones Without Owners"
+msgstr "Zóny bez vlastníků"
 
 #: templates/default/database_consistency.html:258
 msgid "Zone ID"
-msgstr "Zone ID"
+msgstr "ID zóny"
 
 #: templates/default/database_consistency.html:259
 msgid "Zone Name"
-msgstr "Zone Name"
+msgstr "Název zóny"
 
 #: templates/default/database_consistency.html:77
 msgid "Assign owner"
-msgstr "Assign owner"
+msgstr "Přiřadit vlastníka"
 
 #: templates/default/database_consistency.html:277
 msgid "Fix"
-msgstr "Fix"
+msgstr "Opravit"
 
 #: templates/default/database_consistency.html:97
 msgid "Slave Zones Without Master IP Addresses"
-msgstr "Slave Zones Without Master IP Addresses"
+msgstr "Podružné zóny bez IP adres hlavního serveru"
 
 #: templates/default/database_consistency.html:110
 msgid "Master IP"
-msgstr "Master IP"
+msgstr "IP hlavního serveru"
 
 #: templates/default/database_consistency.html:128
 msgid "Delete slave zone"
-msgstr "Delete slave zone"
+msgstr "Smazat podružnou zónu"
 
 #: templates/default/database_consistency.html:147
 msgid "Records Not Belonging to Any Zone"
-msgstr "Records Not Belonging to Any Zone"
+msgstr "Záznamy nepatřící žádné zóně"
 
 #: templates/default/database_consistency.html:158
 msgid "Record ID"
-msgstr "Record ID"
+msgstr "ID záznamu"
 
 #: templates/default/database_consistency.html:182
 msgid "Delete orphaned record"
-msgstr "Delete orphaned record"
+msgstr "Smazat osiřelý záznam"
 
 #: templates/default/database_consistency.html:198
 msgid "Zones with Duplicate SOA Records"
-msgstr "Zones with Duplicate SOA Records"
+msgstr "Zóny s duplicitními SOA záznamy"
 
 #: templates/default/database_consistency.html:211
 msgid "SOA Count"
-msgstr "SOA Count"
+msgstr "Počet SOA"
 
 #: templates/default/database_consistency.html:227
 msgid "Keep first SOA, delete duplicates"
-msgstr "Keep first SOA, delete duplicates"
+msgstr "Ponechat první SOA, smazat duplikáty"
 
 #: templates/default/database_consistency.html:247
 msgid "Zones Without SOA Records"
-msgstr "Zones Without SOA Records"
+msgstr "Zóny bez SOA záznamů"
 
 #: templates/default/database_consistency.html:276
 msgid "Create default SOA record"
-msgstr "Create default SOA record"
+msgstr "Vytvořit výchozí SOA záznam"
 
 #: templates/default/database_consistency.html:315
 msgid "Are you sure you want to delete the slave zone"
-msgstr "Are you sure you want to delete the slave zone"
+msgstr "Jste si jisti, že chcete smazat podružnou zónu"
 
 #: templates/default/database_consistency.html:318
 msgid "Are you sure you want to delete the orphaned record"
-msgstr "Are you sure you want to delete the orphaned record"
+msgstr "Jste si jisti, že chcete smazat osiřelý záznam"
 
 #: templates/default/database_consistency.html:321
 msgid "Are you sure you want to delete this item?"
-msgstr "Are you sure you want to delete this item?"
+msgstr "Jste si jisti, že chcete smazat tuto položku?"
 
 #: templates/default/add_user.html:13 templates/default/add_user.html:111
 msgid "Add User"
-msgstr "Add User"
+msgstr "Přidat uživatele"
 
 #: templates/default/add_user.html:28
 msgid "Optional: User's full name for identification"
-msgstr "Optional: User's full name for identification"
+msgstr "Volitelné: Celé jméno uživatele pro identifikaci"
 
 #: templates/default/add_user.html:42 install/templates/step4.html.twig:56
 msgid "Provide user password"
@@ -8597,19 +8632,19 @@ msgstr "Zadejte heslo uživatele"
 
 #: templates/default/add_user.html:50
 msgid "Auto-generate password"
-msgstr "Auto-generate password"
+msgstr "Automaticky generovat heslo"
 
 #: templates/default/add_user.html:52
 msgid "Generate a secure password that meets all requirements"
-msgstr "Generate a secure password that meets all requirements"
+msgstr "Generovat bezpečné heslo splňující všechny požadavky"
 
 #: templates/default/add_user.html:60
 msgid "Send password by email"
-msgstr "Send password by email"
+msgstr "Odeslat heslo e-mailem"
 
 #: templates/default/add_user.html:62
 msgid "Send login credentials to user's email address"
-msgstr "Send login credentials to user's email address"
+msgstr "Odeslat přihlašovací údaje na e-mailovou adresu uživatele"
 
 #: templates/default/add_user.html:161
 msgid ""
@@ -8617,81 +8652,84 @@ msgid ""
 "selected template. You can modify these permissions later by editing the "
 "user."
 msgstr ""
+"Při vytváření nového uživatele získá oprávnění na základě vybrané šablony. Tato oprávnění můžete později upravit editací uživatele."
 
 #: templates/default/add_user.html:176
 msgid "Create descriptive usernames that are easy to identify"
-msgstr "Create descriptive usernames that are easy to identify"
+msgstr ""
+"Vytvářejte popisná uživatelská jména, která jsou snadno identifikovatelná"
 
 #: templates/default/add_user.html:177
 msgid "Adding a full name helps with user identification"
-msgstr "Adding a full name helps with user identification"
+msgstr "Přidání celého jména pomáhá s identifikací uživatele"
 
 #: templates/default/add_user.html:179
 msgid "Auto-generating passwords is recommended for better security"
-msgstr "Auto-generating passwords is recommended for better security"
+msgstr "Automatické generování hesel se doporučuje pro lepší bezpečnost"
 
 #: templates/default/add_zone_master.html:19
 msgid "Add Master Zone"
-msgstr "Add Master Zone"
+msgstr "Přidat hlavní zónu"
 
 #: templates/default/add_zone_slave.html:26
 msgid "Zone name"
-msgstr "Zone name"
+msgstr "Název zóny"
 
 #: templates/default/add_zone_slave.html:28
 msgid "Provide zone name"
-msgstr "Provide zone name"
+msgstr "Zadejte název zóny"
 
 #: templates/default/add_zone_slave.html:29
 msgid "Example: example.com"
-msgstr "Example: example.com"
+msgstr "Příklad: example.com"
 
 #: templates/default/add_zone_slave.html:62
 msgid "User responsible for this zone"
-msgstr "User responsible for this zone"
+msgstr "Uživatel odpovědný za tuto zónu"
 
 #: templates/default/add_zone_master.html:58
 msgid "Zone type (usually NATIVE)"
-msgstr "Zone type (usually NATIVE)"
+msgstr "Typ zóny (obvykle NATIVE)"
 
 #: templates/default/add_zone_master.html:70
 msgid "Optional: Apply predefined records from a template"
-msgstr "Optional: Apply predefined records from a template"
+msgstr "Volitelné: Aplikovat předdefinované záznamy ze šablony"
 
 #: templates/default/add_zone_master.html:78
 msgid "Enable DNSSEC"
-msgstr "Enable DNSSEC"
+msgstr "Povolit DNSSEC"
 
 #: templates/default/add_zone_master.html:80
 msgid "Secure this zone with DNSSEC signing"
-msgstr "Secure this zone with DNSSEC signing"
+msgstr "Zabezpečit tuto zónu pomocí DNSSEC podpisu"
 
 #: templates/default/add_zone_slave.html:68
 msgid "Add zone"
-msgstr "Add zone"
+msgstr "Přidat zónu"
 
 #: templates/default/add_zone_slave.html:84
 msgid "Zone Information"
-msgstr "Zone Information"
+msgstr "Informace o zóně"
 
 #: templates/default/add_zone_master.html:108
 msgid "About Master Zones"
-msgstr "About Master Zones"
+msgstr "O hlavních zónách"
 
 #: templates/default/add_zone_master.html:109
 msgid ""
 "A master zone is a zone for which this PowerDNS server is the primary "
 "authority. You can add, edit and delete records in master zones."
 msgstr ""
+"Hlavní zóna je zóna, pro kterou je tento PowerDNS server primární autoritou. Můžete přidávat, upravovat a mazat záznamy v hlavních zónách."
 
 #: templates/default/add_zone_master.html:110
 msgid ""
 "After creating the zone, you will be redirected to add DNS records to it."
-msgstr ""
+msgstr "Po vytvoření zóny budete přesměrováni na přidání DNS záznamů."
 
 #: templates/default/add_zone_master.html:115
 msgid "DNSSEC Information"
-msgstr "DNSSEC Information"
+msgstr "Informace o DNSSEC"
 
 #: templates/default/add_zone_master.html:116
 msgid ""
@@ -8699,608 +8737,626 @@ msgid ""
 "signatures to DNS records to protect against spoofing and cache poisoning "
 "attacks."
 msgstr ""
+"DNSSEC (Domain Name System Security Extensions) přidává kryptografické podpisy k DNS záznamům pro ochranu proti útokům spoofingu a cache poisoning."
 
 #: templates/default/add_zone_master.html:117
 msgid ""
 "When enabled, PowerDNS will automatically generate and manage the necessary "
 "keys and signatures for the zone."
 msgstr ""
+"Když je povoleno, PowerDNS automaticky vygeneruje a spravuje potřebné klíče a podpisy pro zónu."
 
 #: templates/default/add_zone_master.html:132
 msgid "Use fully qualified domain names (example.com)"
-msgstr "Use fully qualified domain names (example.com)"
+msgstr "Používejte plně kvalifikované názvy domén (example.com)"
 
 #: templates/default/add_zone_master.html:133
 msgid "Select a template to automatically create common DNS records"
-msgstr "Select a template to automatically create common DNS records"
+msgstr "Vyberte šablonu pro automatické vytvoření běžných DNS záznamů"
 
 #: templates/default/add_zone_master.html:134
 msgid "NATIVE zone type is recommended for most setups"
-msgstr "NATIVE zone type is recommended for most setups"
+msgstr "Typ zóny NATIVE se doporučuje pro většinu nastavení"
 
 #: templates/default/list_zone_templ.html:11
 msgid "Zone templates for"
-msgstr "Zone templates for"
+msgstr "Šablony zón pro"
 
 #: templates/default/list_zone_templ.html:18
 msgid "In use"
-msgstr "In use"
+msgstr "V použití"
 
 #: templates/default/list_zone_templ.html:23
 msgid "Zones linked"
-msgstr "Zones linked"
+msgstr "Propojené zóny"
 
 #: templates/default/list_zone_templ.html:24
 msgid "Sync Status"
-msgstr "Sync Status"
+msgstr "Stav synchronizace"
 
 #: templates/default/list_zone_templ.html:32 templates/default/search.html:497
 msgid "No results found"
-msgstr "No results found"
+msgstr "Nebyly nalezeny žádné výsledky"
 
 #: templates/default/list_zone_templ.html:71
 msgid "private"
-msgstr "private"
+msgstr "soukromé"
 
 #: templates/default/list_zone_templ.html:73
 msgid "global"
-msgstr "global"
+msgstr "globální"
 
 #: templates/default/list_zone_templ.html:81
 msgid "Zones need updating"
-msgstr "Zones need updating"
+msgstr "Zóny potřebují aktualizaci"
 
 #: templates/default/list_zone_templ.html:85
 msgid "All zones are synchronized"
-msgstr "All zones are synchronized"
+msgstr "Všechny zóny jsou synchronizovány"
 
 #: templates/default/list_zone_templ.html:86
 msgid "Synced"
-msgstr "Synced"
+msgstr "Synchronizováno"
 
 #: templates/default/edit_zone_templ.html:108
 msgid "No zones are using this template"
-msgstr "No zones are using this template"
+msgstr "Žádné zóny nepoužívají tuto šablonu"
 
 #: templates/default/list_zone_templ.html:100
 msgid "View zones using this template"
-msgstr "View zones using this template"
+msgstr "Zobrazit zóny používající tuto šablonu"
 
 #: templates/default/change_password.html:16
 msgid "Change Password"
-msgstr "Change Password"
+msgstr "Změnit heslo"
 
 #: templates/default/change_password.html:23
 msgid "Current password"
-msgstr "Current password"
+msgstr "Současné heslo"
 
 #: templates/default/change_password.html:27
 msgid "Provide current password"
-msgstr "Provide current password"
+msgstr "Zadejte současné heslo"
 
 #: templates/default/change_password.html:31
 msgid "New password"
-msgstr "New password"
+msgstr "Nové heslo"
 
 #: templates/default/change_password.html:43
 msgid "Provide new password"
-msgstr "Provide new password"
+msgstr "Zadejte nové heslo"
 
 #: templates/default/change_password.html:39
 msgid "Repeat password"
-msgstr "Repeat password"
+msgstr "Zopakujte heslo"
 
 #: templates/default/change_password.html:65
 msgid "Password Guidelines"
-msgstr "Password Guidelines"
+msgstr "Pokyny pro heslo"
 
 #: templates/default/change_password.html:73
 msgid "Enforced"
-msgstr "Enforced"
+msgstr "Vynuceno"
 
 #: templates/default/change_password.html:102
 msgid "Security Tips"
-msgstr "Security Tips"
+msgstr "Bezpečnostní tipy"
 
 #: templates/default/change_password.html:104
 msgid "Use a unique password not used on other sites"
-msgstr "Use a unique password not used on other sites"
+msgstr "Používejte jedinečné heslo nepoužívané na jiných stránkách"
 
 #: templates/default/change_password.html:105
 msgid "Choose a password that is difficult to guess"
-msgstr "Choose a password that is difficult to guess"
+msgstr "Vyberte heslo, které je těžké uhodnout"
 
 #: templates/default/change_password.html:106
 msgid "Include a mix of letters, numbers, and symbols"
-msgstr "Include a mix of letters, numbers, and symbols"
+msgstr "Zahrňte kombinaci písmen, číslic a symbolů"
 
 #: templates/default/change_password.html:107
 msgid "Consider using a password manager"
-msgstr "Consider using a password manager"
+msgstr "Zvažte použití správce hesel"
 
 #: templates/default/mfa_verify_email.html:4 templates/default/header.html:184
 msgid "Multi-Factor Authentication"
-msgstr "Multi-Factor Authentication"
+msgstr "Vícefaktorové ověření"
 
 #: templates/default/mfa_verify_app.html:14
 msgid "Set Up Authenticator App"
-msgstr "Set Up Authenticator App"
+msgstr "Nastavit autentifikační aplikaci"
 
 #: templates/default/mfa_verify_app.html:19
 msgid "Step 1: Scan QR Code"
-msgstr "Step 1: Scan QR Code"
+msgstr "Krok 1: Naskenovat QR kód"
 
 #: templates/default/mfa_verify_app.html:20
 msgid "Scan this QR code with your authenticator app"
-msgstr "Scan this QR code with your authenticator app"
+msgstr "Naskenujte tento QR kód vaší autentifikační aplikací"
 
 #: templates/default/mfa_verify_app.html:26
 msgid "Or manually enter this key in your authenticator app"
-msgstr "Or manually enter this key in your authenticator app"
+msgstr "Nebo ručně zadejte tento klíč ve vaší autentifikační aplikaci"
 
 #: templates/default/mfa_verify_app.html:36
 msgid "Step 2: Verify Setup"
-msgstr "Step 2: Verify Setup"
+msgstr "Krok 2: Ověřit nastavení"
 
 #: templates/default/mfa_verify_app.html:37
 msgid "Enter the 6-digit code from your authenticator app"
-msgstr "Enter the 6-digit code from your authenticator app"
+msgstr "Zadejte 6místný kód z vaší autentifikační aplikace"
 
 #: templates/default/mfa_verify_email.html:24
 msgid "Verification Code"
-msgstr "Verification Code"
+msgstr "Ověřovací kód"
 
 #: templates/default/mfa_verify_email.html:31
 msgid "Please enter a valid 6-digit verification code."
-msgstr "Please enter a valid 6-digit verification code."
+msgstr "Zadejte prosím platný 6místný ověřovací kód."
 
 #: templates/default/mfa_verify_email.html:40
 msgid "Verify and Enable MFA"
-msgstr "Verify and Enable MFA"
+msgstr "Ověřit a povolit MFA"
 
 #: templates/default/mfa_verify_app.html:67
 msgid "Recommended Authenticator Apps"
-msgstr "Recommended Authenticator Apps"
+msgstr "Doporučené autentifikační aplikace"
 
 #: templates/default/mfa_verify_app.html:97
 msgid "Available for Android and iOS"
-msgstr "Available for Android and iOS"
+msgstr "Dostupné pro Android a iOS"
 
 #: templates/default/edit_zone_templ.html:7
 msgid "Edit template"
-msgstr "Edit template"
+msgstr "Upravit šablonu"
 
 #: templates/default/edit_zone_templ.html:14
 msgid "Sync Required"
-msgstr "Sync Required"
+msgstr "Vyžadována synchronizace"
 
 #: templates/default/edit_zone_templ.html:15
 msgid "There are"
-msgstr "There are"
+msgstr "Existuje"
 
 #: templates/default/edit_zone_templ.html:15
 msgid ""
 "zones that need to be updated to reflect the current template configuration."
 msgstr ""
+"zón, které je třeba aktualizovat, aby odrážely současnou konfiguraci šablony."
 
 #: templates/default/edit_zone_templ.html:29
 msgid "Template Records"
-msgstr "Template Records"
+msgstr "Záznamy šablony"
 
 #: templates/default/edit_zone_templ.html:33
 msgid ""
 "This template does not have an SOA record. DNS zones typically require an "
 "SOA record to function properly, and DNSSEC signing may fail without one."
 msgstr ""
+"Tato šablona nemá SOA záznam. DNS zóny obvykle vyžadují SOA záznam pro správné fungování a DNSSEC podpis může selhat bez něj."
 
 #: templates/default/edit_zone_templ.html:39
 msgid "This zone template does not have any records yet."
-msgstr "This zone template does not have any records yet."
+msgstr "Tato šablona zóny zatím nemá žádné záznamy."
 
 #: templates/default/edit_zone_templ.html:104
 msgid "View zones"
-msgstr "View zones"
+msgstr "Zobrazit zóny"
 
 #: templates/default/edit_zone_templ.html:109
 msgid "Update zones"
-msgstr "Update zones"
+msgstr "Aktualizovat zóny"
 
 #: templates/default/edit_zone_templ.html:125
 msgid "Template Settings"
-msgstr "Template Settings"
+msgstr "Nastavení šablony"
 
 #: templates/default/edit_zone_templ.html:136
 msgid "To use 'Save As', change the name first"
-msgstr "To use 'Save As', change the name first"
+msgstr "Pro použití 'Uložit jako' nejdříve změňte název"
 
 #: templates/default/edit_zone_templ.html:163
 msgid "Save As"
-msgstr "Save As"
+msgstr "Uložit jako"
 
 #: templates/default/edit_zone_templ.html:182
 msgid "The following placeholders can be used in template records"
-msgstr "The following placeholders can be used in template records"
+msgstr "Následující zástupné symboly lze použít v záznamech šablony"
 
 #: templates/default/edit_zone_templ.html:305
 msgid "Warning: Missing SOA Record"
-msgstr "Warning: Missing SOA Record"
+msgstr "Varování: Chybí SOA záznam"
 
 #: templates/default/edit_zone_templ.html:311
 msgid "This zone template does not have an SOA (Start of Authority) record."
-msgstr "This zone template does not have an SOA (Start of Authority) record."
+msgstr "Tato šablona zóny nemá SOA (Start of Authority) záznam."
 
 #: templates/default/edit_zone_templ.html:312
 msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
 msgstr ""
+"DNS zóny obvykle vyžadují SOA záznam pro správné fungování a DNSSEC podpis může selhat bez něj."
 
 #: templates/default/edit_zone_templ.html:313
 msgid "Do you want to continue without adding an SOA record?"
-msgstr "Do you want to continue without adding an SOA record?"
+msgstr "Chcete pokračovat bez přidání SOA záznamu?"
 
 #: templates/default/edit_zone_templ.html:319
 msgid "Continue Without SOA"
-msgstr "Continue Without SOA"
+msgstr "Pokračovat bez SOA"
 
 #: templates/default/list_supermasters.html:50
 msgid "There are no supermasters to show in this listing."
-msgstr "There are no supermasters to show in this listing."
+msgstr "V tomto seznamu nejsou žádní supermastři k zobrazení."
 
 #: templates/default/api_key_created.html:5
 msgid "API Key Created"
-msgstr "API Key Created"
+msgstr "API klíč vytvořen"
 
 #: templates/default/api_key_created.html:11
 msgid "API Key Created Successfully"
-msgstr "API Key Created Successfully"
+msgstr "API klíč úspěšně vytvořen"
 
 #: templates/default/api_key_created.html:16
 msgid "IMPORTANT: Save your API key now!"
-msgstr "IMPORTANT: Save your API key now!"
+msgstr "DŮLEŽITÉ: Uložte si svůj API klíč nyní!"
 
 #: templates/default/api_key_created.html:17
 msgid ""
 "This is the only time your API key will be displayed. Please save it now as "
 "you won't be able to see it again."
 msgstr ""
+"Toto je jediná příležitost, kdy se váš API klíč zobrazí. Uložte si ho nyní, protože ho již neuvidíte."
 
 #: templates/default/api_key_created.html:27
 msgid "API Key:"
-msgstr "API Key:"
+msgstr "API klíč:"
 
 #: templates/default/rdap.html:20 templates/default/whois.html:20
 msgid "Enter domain name"
-msgstr "Enter domain name"
+msgstr "Zadejte název domény"
 
 #: templates/default/rdap.html:22 templates/default/whois.html:22
 msgid "Lookup"
-msgstr "Lookup"
+msgstr "Vyhledat"
 
 #: templates/default/rdap.html:26
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr "Enter a domain name (e.g., example.com) to lookup its RDAP information"
+msgstr ""
+"Zadejte název domény (např. example.com) pro vyhledání jejích RDAP informací"
 
 #: templates/default/rdap.html:34
 msgid "RDAP results for"
-msgstr "RDAP results for"
+msgstr "RDAP výsledky pro"
 
 #: templates/default/rdap.html:45
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Zadejte prosím název domény pro provedení RDAP vyhledávání."
 
 #: templates/default/bulk_registration.html:11 templates/default/header.html:74
 msgid "Bulk registration"
-msgstr "Bulk registration"
+msgstr "Hromadná registrace"
 
 #: templates/default/bulk_registration.html:42
 msgid "Please select an owner"
-msgstr "Please select an owner"
+msgstr "Prosím vyberte vlastníka"
 
 #: templates/default/bulk_registration.html:46
 msgid "Zone Type"
-msgstr "Zone Type"
+msgstr "Typ zóny"
 
 #: templates/default/bulk_registration.html:70
 msgid "Domains"
-msgstr "Domains"
+msgstr "Domény"
 
 #: templates/default/bulk_registration.html:72
 msgid "Provide a domain name(s)"
-msgstr "Provide a domain name(s)"
+msgstr "Zadejte název domény/domén"
 
 #: templates/default/bulk_registration.html:73
 msgid "Type one domain per line"
-msgstr "Type one domain per line"
+msgstr "Zadejte jednu doménu na řádek"
 
 #: templates/default/bulk_registration.html:79
 msgid "Add Zones"
-msgstr "Add Zones"
+msgstr "Přidat zóny"
 
 #: templates/default/bulk_registration.html:95
 msgid "About Bulk Registration"
-msgstr "About Bulk Registration"
+msgstr "O hromadné registraci"
 
 #: templates/default/bulk_registration.html:101
 msgid "This tool allows you to create multiple DNS zones at once."
-msgstr "This tool allows you to create multiple DNS zones at once."
+msgstr "Tento nástroj umožňuje vytvořit více DNS zón najednou."
 
 #: templates/default/bulk_registration.html:103
 msgid "Enter one domain name per line in the Domains field"
-msgstr "Enter one domain name per line in the Domains field"
+msgstr "Zadejte jeden název domény na řádek do pole Domény"
 
 #: templates/default/bulk_registration.html:104
 msgid "Select a zone template to apply standard records to all zones"
-msgstr "Select a zone template to apply standard records to all zones"
+msgstr ""
+"Vyberte šablonu zóny pro aplikaci standardních záznamů na všechny zóny"
 
 #: templates/default/bulk_registration.html:105
 msgid "The chosen owner will have full access to all created zones"
-msgstr "The chosen owner will have full access to all created zones"
+msgstr "Vybraný vlastník bude mít plný přístup ke všem vytvořeným zónám"
 
 #: templates/default/bulk_registration.html:109
 msgid "How It Works"
-msgstr "How It Works"
+msgstr "Jak to funguje"
 
 #: templates/default/bulk_registration.html:110
 msgid ""
 "The system will attempt to create each zone with the same settings. Failed "
 "domains will be displayed so you can correct any issues and try again."
 msgstr ""
+"Systém se pokusí vytvořit každou zónu se stejnými nastaveními. Neúspěšné domény budou zobrazeny, abyste mohli opravit případné problémy a zkusit to znovu."
 
 #: templates/default/bulk_registration.html:118
 msgid "Tips & Recommendations"
-msgstr "Tips & Recommendations"
+msgstr "Tipy a doporučení"
 
 #: templates/default/bulk_registration.html:124
 msgid "Use NATIVE zone type for most standard setups"
-msgstr "Use NATIVE zone type for most standard setups"
+msgstr "Používejte typ zóny NATIVE pro většinu standardních nastavení"
 
 #: templates/default/bulk_registration.html:125
 msgid "Create a template first if you need standard records for all zones"
-msgstr "Create a template first if you need standard records for all zones"
+msgstr ""
+"Nejprve vytvořte šablonu, pokud potřebujete standardní záznamy pro všechny zóny"
 
 #: templates/default/bulk_registration.html:126
 msgid "You can copy and paste a list of domains from a spreadsheet"
-msgstr "You can copy and paste a list of domains from a spreadsheet"
+msgstr "Můžete zkopírovat a vložit seznam domén z tabulky"
 
 #: templates/default/bulk_registration.html:127
 msgid "Make sure the domain names follow valid DNS naming conventions"
-msgstr "Make sure the domain names follow valid DNS naming conventions"
+msgstr ""
+"Ujistěte se, že názvy domén dodržují platné konvence pojmenovávání DNS"
 
 #: templates/default/delete_records.html:22
 msgid "Delete records"
-msgstr "Delete records"
+msgstr "Smazat záznamy"
 
 #: templates/default/delete_records.html:27
 msgid ""
 "Are you sure you want to delete the following records? This action cannot be "
 "undone."
 msgstr ""
+"Jste si jisti, že chcete smazat následující záznamy? Tuto akci nelze vrátit zpět."
 
 #: templates/default/delete_records.html:78
 msgid "Also delete corresponding PTR records (if they exist)"
-msgstr "Also delete corresponding PTR records (if they exist)"
+msgstr "Také smazat odpovídající PTR záznamy (pokud existují)"
 
 #: templates/default/delete_records.html:84
 msgid "Yes, delete these records"
-msgstr "Yes, delete these records"
+msgstr "Ano, smazat tyto záznamy"
 
 #: templates/default/mfa_recovery_codes.html:36
 msgid "Recovery Codes"
-msgstr "Recovery Codes"
+msgstr "Záložní kódy"
 
 #: templates/default/mfa_recovery_codes.html:14
 msgid "MFA Setup Complete"
-msgstr "MFA Setup Complete"
+msgstr "Nastavení MFA dokončeno"
 
 #: templates/default/mfa_recovery_codes.html:18
 msgid "Multi-Factor Authentication is now enabled"
-msgstr "Multi-Factor Authentication is now enabled"
+msgstr "Vícefaktorové ověření je nyní povoleno"
 
 #: templates/default/mfa_recovery_codes.html:19
 msgid "Your account is now protected with multi-factor authentication."
-msgstr "Your account is now protected with multi-factor authentication."
+msgstr "Váš účet je nyní chráněn vícefaktorovým ověřením."
 
 #: templates/default/mfa_setup.html:24 templates/default/mfa_setup.html:26
 msgid "Authentication method:"
-msgstr "Authentication method:"
+msgstr "Metoda ověření:"
 
 #: templates/default/mfa_setup.html:24
 msgid "Authenticator app"
-msgstr "Authenticator app"
+msgstr "Autentifikační aplikace"
 
 #: templates/default/mfa_setup.html:26
 msgid "Email verification"
-msgstr "Email verification"
+msgstr "Ověření e-mailem"
 
 #: templates/default/mfa_recovery_codes.html:29
 msgid "Save Your Recovery Codes"
-msgstr "Save Your Recovery Codes"
+msgstr "Uložte si záložní kódy"
 
 #: templates/default/mfa_recovery_codes.html:30
 msgid ""
 "Recovery codes can be used to access your account if you lose access to your "
 "authenticator device. Each code can only be used once."
 msgstr ""
+"Záložní kódy lze použít pro přístup k účtu, pokud ztratíte přístup k autentifikačnímu zařízení. Každý kód lze použít pouze jednou."
 
 #: templates/default/mfa_recovery_codes.html:31
 msgid "Store these codes in a safe place!"
-msgstr "Store these codes in a safe place!"
+msgstr "Uložte tyto kódy na bezpečné místo!"
 
 #: templates/default/mfa_recovery_codes.html:49
 msgid "Print"
-msgstr "Print"
+msgstr "Tisk"
 
 #: templates/default/mfa_recovery_codes.html:52
 msgid "Copy all"
-msgstr "Copy all"
+msgstr "Zkopírovat vše"
 
 #: templates/default/mfa_recovery_codes.html:55
 msgid "Download"
-msgstr "Download"
+msgstr "Stáhnout"
 
 #: templates/default/mfa_recovery_codes.html:62
 msgid "Back to MFA Settings"
-msgstr "Back to MFA Settings"
+msgstr "Zpět na nastavení MFA"
 
 #: templates/default/mfa_setup.html:39
 msgid "Disable MFA"
-msgstr "Disable MFA"
+msgstr "Zakázat MFA"
 
 #: templates/default/mfa_recovery_codes.html:71
 msgid "Continue to Dashboard"
-msgstr "Continue to Dashboard"
+msgstr "Pokračovat na přehled"
 
 #: templates/default/mfa_recovery_codes.html:92
 msgid "All recovery codes copied to clipboard"
-msgstr "All recovery codes copied to clipboard"
+msgstr "Všechny záložní kódy zkopírovány do schránky"
 
 #: templates/default/mfa_recovery_codes.html:101
 msgid "Poweradmin MFA Recovery Codes"
-msgstr "Poweradmin MFA Recovery Codes"
+msgstr "Záložní kódy Poweradmin MFA"
 
 #: templates/default/mfa_recovery_codes.html:115
 msgid ""
 "Store these codes in a safe place. Each code can be used once to log in if "
 "you lose access to your authenticator device."
 msgstr ""
+"Uložte tyto kódy na bezpečné místo. Každý kód lze použít jednou k přihlášení, pokud ztratíte přístup k autentifikačnímu zařízení."
 
 #: templates/default/mfa_setup.html:16
 msgid ""
 "Multi-factor authentication adds an extra layer of security to your account."
-msgstr ""
+msgstr "Vícefaktorové ověření přidává další vrstvu zabezpečení k vašemu účtu."
 
 #: templates/default/mfa_setup.html:20
 msgid "MFA is currently enabled"
-msgstr "MFA is currently enabled"
+msgstr "MFA je aktuálně povoleno"
 
 #: templates/default/mfa_setup.html:21
 msgid "Your account is protected with multi-factor authentication."
-msgstr "Your account is protected with multi-factor authentication."
+msgstr "Váš účet je chráněn vícefaktorovým ověřením."
 
 #: templates/default/mfa_setup.html:33
 msgid "Regenerate Recovery Codes"
-msgstr "Regenerate Recovery Codes"
+msgstr "Obnovit záložní kódy"
 
 #: templates/default/mfa_setup.html:46
 msgid "MFA is currently disabled"
-msgstr "MFA is currently disabled"
+msgstr "MFA je aktuálně zakázáno"
 
 #: templates/default/mfa_setup.html:47
 msgid "Your account is not protected with multi-factor authentication."
-msgstr "Your account is not protected with multi-factor authentication."
+msgstr "Váš účet není chráněn vícefaktorovým ověřením."
 
 #: templates/default/mfa_setup.html:58
 msgid "Authenticator App"
-msgstr "Authenticator App"
+msgstr "Autentifikační aplikace"
 
 #: templates/default/mfa_setup.html:61
 msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
 "or Authy."
 msgstr ""
+"Používejte autentifikační aplikaci jako Google Authenticator, Microsoft Authenticator nebo Authy."
 
 #: templates/default/mfa_setup.html:63
 msgid "Works offline"
-msgstr "Works offline"
+msgstr "Funguje offline"
 
 #: templates/default/mfa_setup.html:64
 msgid "More secure"
-msgstr "More secure"
+msgstr "Bezpečnější"
 
 #: templates/default/mfa_setup.html:65
 msgid "Easy to use"
-msgstr "Easy to use"
+msgstr "Snadné použití"
 
 #: templates/default/mfa_setup.html:69
 msgid "Set up app authentication"
-msgstr "Set up app authentication"
+msgstr "Nastavit ověření aplikací"
 
 #: templates/default/mfa_verify_email.html:5
 msgid "Email Verification"
-msgstr "Email Verification"
+msgstr "Ověření e-mailu"
 
 #: templates/default/mfa_setup.html:81
 msgid "Receive a verification code via email when you log in."
-msgstr "Receive a verification code via email when you log in."
+msgstr "Obdrží ověřovací kód e-mailem při přihlášení."
 
 #: templates/default/mfa_setup.html:83
 msgid "No additional app required"
-msgstr "No additional app required"
+msgstr "Žádná další aplikace není vyžadována"
 
 #: templates/default/mfa_setup.html:84
 msgid "Requires internet connection"
-msgstr "Requires internet connection"
+msgstr "Vyžaduje připojení k internetu"
 
 #: templates/default/mfa_setup.html:85
 msgid "Relies on email delivery"
-msgstr "Relies on email delivery"
+msgstr "Spoléhá na doručení e-mailu"
 
 #: templates/default/mfa_setup.html:90
 msgid ""
 "Email verification is not available because mail service is not enabled on "
 "this system."
 msgstr ""
+"Ověření e-mailem není dostupné, protože na tomto systému není povolena poštovní služba."
 
 #: templates/default/mfa_setup.html:94
 msgid ""
 "You need to set your email address in your profile before you can use email "
 "verification."
 msgstr ""
+"Musíte nastavit e-mailovou adresu ve svém profilu, než budete moci použít ověření e-mailem."
 
 #: templates/default/mfa_setup.html:99
 msgid "Set up email verification"
-msgstr "Set up email verification"
+msgstr "Nastavit ověření e-mailem"
 
 #: templates/default/mfa_verify_email.html:14
 msgid "Verify Email Code"
-msgstr "Verify Email Code"
+msgstr "Ověřit kód e-mailu"
 
 #: templates/default/mfa_verify_email.html:17
 msgid "A verification code has been sent to your email address."
-msgstr "A verification code has been sent to your email address."
+msgstr "Na vaši e-mailovou adresu byl zaslán ověřovací kód."
 
 #: templates/default/mfa_verify_email.html:18
 msgid ""
 "Please enter the 6-digit code to verify and enable Multi-Factor "
 "Authentication."
 msgstr ""
+"Zadejte prosím 6místný kód pro ověření a povolení vícefaktorového ověření."
 
 #: templates/default/mfa_verify_email.html:34
 msgid "Enter the 6-digit code from your email"
-msgstr "Enter the 6-digit code from your email"
+msgstr "Zadejte 6místný kód z vašeho e-mailu"
 
 #: templates/default/list_template_zones.html:12
 msgid "Zones using template"
-msgstr "Zones using template"
+msgstr "Zóny používající šablonu"
 
 #: templates/default/list_template_zones.html:63
 msgid "Domain name"
-msgstr "Domain name"
+msgstr "Název domény"
 
 #: templates/default/list_template_zones.html:75
 msgid "No domains using this template"
-msgstr "No domains using this template"
+msgstr "Žádné domény nepoužívají tuto šablonu"
 
 #: templates/default/list_template_zones.html:123
 msgid "Back to templates"
-msgstr "Back to templates"
+msgstr "Zpět na šablony"
 
 #: templates/default/list_template_zones.html:129
 msgid "Unlink selected zones"
-msgstr "Unlink selected zones"
+msgstr "Odpojit vybrané zóny"
 
 #: templates/default/delete_domain.html:24
 msgid "Delete Zone"
-msgstr "Delete Zone"
+msgstr "Smazat zónu"
 
 #: templates/default/delete_domain.html:33
 msgid "You are about to delete the zone"
-msgstr "You are about to delete the zone"
+msgstr "Chystáte se smazat zónu"
 
 #: templates/default/delete_domain.html:41
 msgid "Zone Details"
-msgstr "Zone Details"
+msgstr "Podrobnosti zóny"
 
 #: templates/default/delete_domains.html:63
 msgid ""
@@ -9315,142 +9371,146 @@ msgstr ""
 
 #: templates/default/delete_domain.html:73
 msgid "Yes, delete this zone"
-msgstr "Yes, delete this zone"
+msgstr "Ano, smazat tuto zónu"
 
 #: templates/default/delete_domain.html:80
 msgid "No, keep this zone"
-msgstr "No, keep this zone"
+msgstr "Ne, ponechat tuto zónu"
 
 #: templates/default/search.html:14
 msgid "DNS Search"
-msgstr "DNS Search"
+msgstr "DNS vyhledávání"
 
 #: templates/default/search.html:34
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
 msgstr ""
+"Zadejte název domény, hostname nebo IP (např. example.com type:txt content:spf)"
 
 #: templates/default/search.html:76
 msgid "Wildcards"
-msgstr "Wildcards"
+msgstr "Zástupné znaky"
 
 #: templates/default/search.html:84
 msgid "Reverse"
-msgstr "Reverse"
+msgstr "Reverzní"
 
 #: templates/default/search.html:107
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
 msgstr ""
+"Syntaxe filtru: type:txt content:spf. Zástupný znak přidá % k vyhledávání. Reverzní převádí IP na PTR formát (např. 192.168.1.1 na 1.1.168.192.in-addr.arpa)"
 
 #: templates/default/search.html:120
 msgid "Zones found"
-msgstr "Zones found"
+msgstr "Nalezené zóny"
 
 #: templates/default/search.html:284
 msgid ""
 "Are you sure you want to delete the selected zones? This action cannot be "
 "undone."
 msgstr ""
+"Jste si jisti, že chcete smazat vybrané zóny? Tuto akci nelze vrátit zpět."
 
 #: templates/default/search.html:291 templates/default/search.html:482
 msgid "Toggle all"
-msgstr "Toggle all"
+msgstr "Přepnout vše"
 
 #: templates/default/search.html:305
 msgid "Records found"
-msgstr "Records found"
+msgstr "Nalezené záznamy"
 
 #: templates/default/search.html:475
 msgid ""
 "Are you sure you want to delete the selected records? This action cannot be "
 "undone."
 msgstr ""
+"Jste si jisti, že chcete smazat vybrané záznamy? Tuto akci nelze vrátit zpět."
 
 #: templates/default/search.html:498
 msgid "Try different search terms or filters"
-msgstr "Try different search terms or filters"
+msgstr "Zkuste jiné vyhledávací termíny nebo filtry"
 
 #: templates/default/delete_domains.html:11
 msgid "Delete zones"
-msgstr "Delete zones"
+msgstr "Smazat zóny"
 
 #: templates/default/delete_domains.html:17
 msgid "Delete Multiple Zones"
-msgstr "Delete Multiple Zones"
+msgstr "Smazat více zón"
 
 #: templates/default/delete_domains.html:22
 msgid "You are about to delete multiple zones. This action cannot be undone."
-msgstr "You are about to delete multiple zones. This action cannot be undone."
+msgstr "Chystáte se smazat více zón. Tuto akci nelze vrátit zpět."
 
 #: templates/default/delete_domains.html:27
 msgid "Zones to Delete"
-msgstr "Zones to Delete"
+msgstr "Zóny ke smazání"
 
 #: templates/default/delete_domains.html:40
 msgid "Note"
-msgstr "Note"
+msgstr "Poznámka"
 
 #: templates/default/delete_domains.html:75
 msgid "Yes, delete these zones"
-msgstr "Yes, delete these zones"
+msgstr "Ano, smazat tyto zóny"
 
 #: templates/default/delete_domains.html:87
 msgid "No, keep these zones"
-msgstr "No, keep these zones"
+msgstr "Ne, ponechat tyto zóny"
 
 #: templates/default/delete_supermaster.html:5
 msgid "Delete supermaster"
-msgstr "Delete supermaster"
+msgstr "Smazat supermaster"
 
 #: templates/default/delete_supermaster.html:11
 msgid "Delete Supermaster"
-msgstr "Delete Supermaster"
+msgstr "Smazat supermaster"
 
 #: templates/default/delete_supermaster.html:16
 msgid "You are about to delete the supermaster"
-msgstr "You are about to delete the supermaster"
+msgstr "Chystáte se smazat supermaster"
 
 #: templates/default/delete_supermaster.html:22
 msgid "Supermaster Details"
-msgstr "Supermaster Details"
+msgstr "Podrobnosti supermastera"
 
 #: templates/default/delete_supermaster.html:47
 msgid "Yes, delete this supermaster"
-msgstr "Yes, delete this supermaster"
+msgstr "Ano, smazat tento supermaster"
 
 #: templates/default/delete_supermaster.html:50
 msgid "No, keep this supermaster"
-msgstr "No, keep this supermaster"
+msgstr "Ne, ponechat tento supermaster"
 
 #: templates/default/list_log_users.html:5 templates/default/header.html:116
 msgid "User logs"
-msgstr "User logs"
+msgstr "Protokoly uživatelů"
 
 #: templates/default/list_log_users.html:11
 msgid "User Activity Logs"
-msgstr "User Activity Logs"
+msgstr "Protokoly aktivity uživatelů"
 
 #: templates/default/list_log_users.html:20
 msgid "Search logs by user"
-msgstr "Search logs by user"
+msgstr "Hledat protokoly podle uživatele"
 
 #: templates/default/add_zone_slave.html:19
 msgid "Add Slave Zone"
-msgstr "Add Slave Zone"
+msgstr "Přidat podružnou zónu"
 
 #: templates/default/add_zone_slave.html:35
 msgid "Provide IP address"
-msgstr "Provide IP address"
+msgstr "Zadejte IP adresu"
 
 #: templates/default/add_zone_slave.html:36
 msgid "IP address of the master name server (can be IPv4 or IPv6)"
-msgstr "IP address of the master name server (can be IPv4 or IPv6)"
+msgstr "IP adresa hlavního jmenného serveru (může být IPv4 nebo IPv6)"
 
 #: templates/default/add_zone_slave.html:89
 msgid "About Slave Zones"
-msgstr "About Slave Zones"
+msgstr "O podružných zónách"
 
 #: templates/default/add_zone_slave.html:90
 msgid ""
@@ -9458,12 +9518,14 @@ msgid ""
 "PowerDNS will automatically fetch and update zone data from the master "
 "server."
 msgstr ""
+"Podružná zóna je kopie zóny pouze pro čtení hostovaná na jiném DNS serveru. PowerDNS automaticky načte a aktualizuje data zóny z hlavního serveru."
 
 #: templates/default/add_zone_slave.html:91
 msgid ""
 "You cannot edit records in a slave zone - all changes must be made on the "
 "master server."
 msgstr ""
+"Nemůžete upravovat záznamy v podružné zóně - všechny změny musí být provedeny na hlavním serveru."
 
 #: templates/default/add_zone_slave.html:95
 msgid ""
@@ -9471,109 +9533,114 @@ msgid ""
 "master server. The master server must have an allow-transfer or similar "
 "configuration permitting zone transfers to this server's IP address."
 msgstr ""
+"Ujistěte se, že tento PowerDNS server má povoleno přenést zónu z hlavního serveru. Hlavní server musí mít konfiguraci allow-transfer nebo podobnou, která umožňuje přenos zón na IP adresu tohoto serveru."
 
 #: templates/default/add_zone_slave.html:109
 msgid ""
 "You can specify multiple master servers by separating IP addresses with "
 "commas"
-msgstr ""
+msgstr "Můžete zadat více hlavních serverů oddělením IP adres čárkami"
 
 #: templates/default/add_zone_slave.html:110
 msgid ""
 "Slave zones will automatically update when the master server sends a "
 "notification"
 msgstr ""
+"Podružné zóny se automaticky aktualizují, když hlavní server pošle oznámení"
 
 #: templates/default/add_zone_slave.html:111
 msgid "To test the connection, check the PowerDNS logs after adding the zone"
-msgstr "To test the connection, check the PowerDNS logs after adding the zone"
+msgstr ""
+"Pro testování připojení zkontrolujte PowerDNS protokoly po přidání zóny"
 
 #: templates/default/delete_zone_templ.html:12
 msgid "Delete template"
-msgstr "Delete template"
+msgstr "Smazat šablonu"
 
 #: templates/default/delete_zone_templ.html:18
 msgid "Delete Zone Template"
-msgstr "Delete Zone Template"
+msgstr "Smazat šablonu zóny"
 
 #: templates/default/delete_zone_templ.html:23
 msgid "You are about to delete the zone template"
-msgstr "You are about to delete the zone template"
+msgstr "Chystáte se smazat šablonu zóny"
 
 #: templates/default/delete_zone_templ.html:29
 msgid "This template is currently used by"
-msgstr "This template is currently used by"
+msgstr "Tato šablona je aktuálně používána"
 
 #: templates/default/delete_zone_templ.html:29
 msgid "zones"
-msgstr "zones"
+msgstr "zónami"
 
 #: templates/default/pdns_status.html:5 templates/default/pdns_status.html:11
 msgid "PowerDNS Server Status"
-msgstr "PowerDNS Server Status"
+msgstr "Stav serveru PowerDNS"
 
 #: templates/default/pdns_status.html:16
 msgid "Refresh Status"
-msgstr "Refresh Status"
+msgstr "Obnovit stav"
 
 #: templates/default/pdns_status.html:25
 msgid ""
 "PowerDNS API is not configured. Please configure the PowerDNS API URL and "
 "key in your settings."
 msgstr ""
+"PowerDNS API není nakonfigurováno. Nakonfigurujte PowerDNS API URL a klíč ve vašich nastaveních."
 
 #: templates/default/pdns_status.html:32
 msgid "Server Running"
-msgstr "Server Running"
+msgstr "Server běží"
 
 #: templates/default/pdns_status.html:37
 msgid "Server Not Running"
-msgstr "Server Not Running"
+msgstr "Server neběží"
 
 #: templates/default/pdns_status.html:51
 msgid "Server Information"
-msgstr "Server Information"
+msgstr "Informace o serveru"
 
 #: templates/default/pdns_status.html:58
 msgid "Server Name"
-msgstr "Server Name"
+msgstr "Název serveru"
 
 #: templates/default/pdns_status.html:63
 msgid "Server ID"
-msgstr "Server ID"
+msgstr "ID serveru"
 
 #: templates/default/pdns_status.html:68
 msgid "PowerDNS Version"
-msgstr "PowerDNS Version"
+msgstr "Verze PowerDNS"
 
 #: templates/default/pdns_status.html:72
 msgid "Daemon Type"
-msgstr "Daemon Type"
+msgstr "Typ démona"
 
 #: templates/default/pdns_status.html:77 templates/default/pdns_status.html:178
 msgid "Uptime"
-msgstr "Uptime"
+msgstr "Doba běhu"
 
 #: templates/default/pdns_status.html:86
 msgid "Server information is not available."
-msgstr "Server information is not available."
+msgstr "Informace o serveru nejsou dostupné."
 
 #: templates/default/pdns_status.html:97
 msgid "Slave Servers"
-msgstr "Slave Servers"
+msgstr "Podružné servery"
 
 #: templates/default/pdns_status.html:100
 msgid ""
 "Showing connectivity status for DNS servers listed in the supermasters table."
 msgstr ""
+"Zobrazuje stav připojení pro DNS servery uvedené v tabulce supermasterů."
 
 #: templates/default/pdns_status.html:110
 msgid "Server IP"
-msgstr "Server IP"
+msgstr "IP serveru"
 
 #: templates/default/pdns_status.html:112
 msgid "Last Checked"
-msgstr "Last Checked"
+msgstr "Naposledy zkontrolováno"
 
 #: templates/default/pdns_status.html:121 install/templates/step2.html.twig:27
 msgid "OK"
@@ -9581,201 +9648,204 @@ msgstr "OK"
 
 #: templates/default/pdns_status.html:123
 msgid "Unreachable"
-msgstr "Unreachable"
+msgstr "Nedostupný"
 
 #: templates/default/pdns_status.html:125
 msgid "Error"
-msgstr "Error"
+msgstr "Chyba"
 
 #: templates/default/pdns_status.html:156
 msgid "Server Statistics"
-msgstr "Server Statistics"
+msgstr "Statistiky serveru"
 
 #: templates/default/pdns_status.html:166
 msgid "Server Health"
-msgstr "Server Health"
+msgstr "Zdraví serveru"
 
 #: templates/default/pdns_status.html:185 templates/default/api_keys.html:44
 msgid "Unknown"
-msgstr "Unknown"
+msgstr "Neznámé"
 
 #: templates/default/pdns_status.html:194
 msgid "Latency"
-msgstr "Latency"
+msgstr "Latence"
 
 #: templates/default/pdns_status.html:204
 msgid "CPU Usage"
-msgstr "CPU Usage"
+msgstr "Využití CPU"
 
 #: templates/default/pdns_status.html:219
 msgid "Query Statistics"
-msgstr "Query Statistics"
+msgstr "Statistiky dotazů"
 
 #: templates/default/pdns_status.html:239
 msgid "UDP Queries"
-msgstr "UDP Queries"
+msgstr "UDP dotazy"
 
 #: templates/default/pdns_status.html:256
 msgid "TCP Queries"
-msgstr "TCP Queries"
+msgstr "TCP dotazy"
 
 #: templates/default/pdns_status.html:275
 msgid "Cache Hits"
-msgstr "Cache Hits"
+msgstr "Zásahy cache"
 
 #: templates/default/pdns_status.html:292
 msgid "Cache Misses"
-msgstr "Cache Misses"
+msgstr "Nezásahy cache"
 
 #: templates/default/pdns_status.html:327
 msgid "Toggle View"
-msgstr "Toggle View"
+msgstr "Přepnout zobrazení"
 
 #: templates/default/pdns_status.html:332
 msgid "Refresh"
-msgstr "Refresh"
+msgstr "Obnovit"
 
 #: templates/default/pdns_status.html:429
 msgid "Bytes"
-msgstr "Bytes"
+msgstr "Bajty"
 
 #: templates/default/pdns_status.html:402
 msgid "Metric"
-msgstr "Metric"
+msgstr "Metrika"
 
 #: templates/default/pdns_status.html:403
 msgid "Value"
-msgstr "Value"
+msgstr "Hodnota"
 
 #: templates/default/pdns_status.html:453
 msgid "No detailed metrics available."
-msgstr "No detailed metrics available."
+msgstr "Nejsou dostupné podrobné metriky."
 
 #: templates/default/header.html:60
 msgid "Forward zones"
-msgstr "Forward zones"
+msgstr "Přímé zóny"
 
 #: templates/default/header.html:61
 msgid "Reverse zones"
-msgstr "Reverse zones"
+msgstr "Reverzní zóny"
 
 #: templates/default/header.html:107
 msgid "List permission templates"
-msgstr "List permission templates"
+msgstr "Seznam šablon oprávnění"
 
 #: templates/default/header.html:109 templates/default/list_perm_templ.html:53
 msgid "Add permission template"
-msgstr "Add permission template"
+msgstr "Přidat šablonu oprávnění"
 
 #: templates/default/header.html:143
 msgid "Tools"
-msgstr "Tools"
+msgstr "Nástroje"
 
 #: templates/default/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
-msgstr "DS and DNS keys"
+msgstr "DS a DNS klíče"
 
 #: templates/default/dnssec_ds_dnskey.html:36
 msgid "DNSSEC public records for zone"
-msgstr "DNSSEC public records for zone"
+msgstr "DNSSEC veřejné záznamy pro zónu"
 
 #: templates/default/dnssec_ds_dnskey.html:41
 msgid "Back to DNSSEC keys"
-msgstr "Back to DNSSEC keys"
+msgstr "Zpět na DNSSEC klíče"
 
 #: templates/default/dnssec_ds_dnskey.html:47
 msgid "DNSKEY Records"
-msgstr "DNSKEY Records"
+msgstr "DNSKEY záznamy"
 
 #: templates/default/dnssec_ds_dnskey.html:55
 msgid "DS Records"
-msgstr "DS Records"
+msgstr "DS záznamy"
 
 #: templates/default/dnssec_ds_dnskey.html:62
 msgid ""
 "DS records should be added to the parent zone to establish the chain of "
 "trust."
 msgstr ""
+"DS záznamy by měly být přidány do nadřazené zóny pro vytvoření řetězce důvěry."
 
 #: templates/default/add_record.html:27 templates/default/add_record.html:29
 msgid "Add record to zone"
-msgstr "Add record to zone"
+msgstr "Přidat záznam do zóny"
 
 #: templates/default/add_record.html:35
 msgid "Create a new DNS record in this zone"
-msgstr "Create a new DNS record in this zone"
+msgstr "Vytvořit nový DNS záznam v této zóně"
 
 #: templates/default/add_record.html:128
 msgid "Add another record"
-msgstr "Add another record"
+msgstr "Přidat další záznam"
 
 #: templates/default/add_record.html:143
 msgid "Add records"
-msgstr "Add records"
+msgstr "Přidat záznamy"
 
 #: templates/default/api_keys.html:10
 msgid "API Keys Management"
-msgstr "API Keys Management"
+msgstr "Správa API klíčů"
 
 #: templates/default/api_keys.html:13
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
 "is linked to your user account and inherits your permissions."
 msgstr ""
+"API klíče umožňují externím aplikacím přístup k Poweradmin API. Každý klíč je spojen s vaším uživatelským účtem a dědí vaše oprávnění."
 
 #: templates/default/api_keys.html:29
 msgid "Created by"
-msgstr "Created by"
+msgstr "Vytvořil"
 
 #: templates/default/api_keys.html:60 templates/default/api_keys.html:61
 msgid "Regenerate"
-msgstr "Regenerate"
+msgstr "Regenerovat"
 
 #: templates/default/api_keys.html:64 templates/default/api_keys.html:65
 msgid "Enable"
-msgstr "Enable"
+msgstr "Povolit"
 
 #: templates/default/api_keys.html:68 templates/default/api_keys.html:69
 msgid "Disable"
-msgstr "Disable"
+msgstr "Zakázat"
 
 #: templates/default/api_keys.html:87
 msgid "No API keys found."
-msgstr "No API keys found."
+msgstr "Nebyly nalezeny žádné API klíče."
 
 #: templates/default/api_keys.html:95
 msgid "Add new API key"
-msgstr "Add new API key"
+msgstr "Přidat nový API klíč"
 
 #: templates/default/api_key_delete.html:16
 msgid "You are about to delete the API key"
-msgstr "You are about to delete the API key"
+msgstr "Chystáte se smazat API klíč"
 
 #: templates/default/api_key_delete.html:18
 msgid ""
 "If you delete this API key, any applications using it will no longer be able "
 "to authenticate."
 msgstr ""
+"Pokud smažete tento API klíč, žádné aplikace ho používající se již nebudou moci ověřit."
 
 #: templates/default/api_key_delete.html:70
 msgid "Yes, delete this API key"
-msgstr "Yes, delete this API key"
+msgstr "Ano, smazat tento API klíč"
 
 #: templates/default/api_key_delete.html:73
 msgid "No, keep this API key"
-msgstr "No, keep this API key"
+msgstr "Ne, ponechat tento API klíč"
 
 #: templates/default/edit_perm_templ.html:19
 msgid "Edit Permission Template"
-msgstr "Edit Permission Template"
+msgstr "Upravit šablonu oprávnění"
 
 #: templates/default/edit_perm_templ.html:54
 msgid "Template Usage Information"
-msgstr "Template Usage Information"
+msgstr "Informace o použití šablony"
 
 #: templates/default/edit_perm_templ.html:59
 msgid "Template Assignment"
-msgstr "Template Assignment"
+msgstr "Přiřazení šablony"
 
 #: templates/default/edit_perm_templ.html:60
 msgid ""
@@ -9783,66 +9853,70 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
+"Tuto šablonu lze přiřadit uživatelům pro rychlé použití její sady oprávnění. Změny provedené zde ovlivní všechny uživatele, kteří mají přiřazenou tuto šablonu."
 
 #: templates/default/edit_perm_templ.html:63
 msgid "Permission Groups"
-msgstr "Permission Groups"
+msgstr "Skupiny oprávnění"
 
 #: templates/default/edit_perm_templ.html:64
 msgid ""
 "Permissions are organized into groups below for easier management. Use the "
 "search feature to quickly find specific permissions."
 msgstr ""
+"Oprávnění jsou pro snadnější správu uspořádána do skupin níže. Použijte funkci vyhledávání k rychlému nalezení konkrétních oprávnění."
 
 #: templates/default/delete_zone_templ_record.html:13
 msgid "Delete record"
-msgstr "Delete record"
+msgstr "Smazat záznam"
 
 #: templates/default/delete_zone_templ_record.html:19
 msgid "Delete Template Record"
-msgstr "Delete Template Record"
+msgstr "Smazat záznam šablony"
 
 #: templates/default/delete_zone_templ_record.html:24
 msgid "You are about to delete a record from template"
-msgstr "You are about to delete a record from template"
+msgstr "Chystáte se smazat záznam ze šablony"
 
 #: templates/default/dnssec_delete_key.html:123
 msgid "Delete key"
-msgstr "Delete key"
+msgstr "Smazat klíč"
 
 #: templates/default/dnssec_delete_key.html:29
 msgid "Delete DNSSEC Key"
-msgstr "Delete DNSSEC Key"
+msgstr "Smazat DNSSEC klíč"
 
 #: templates/default/dnssec_delete_key.html:36
 msgid "You are about to delete an active DNSSEC key (ID"
-msgstr "You are about to delete an active DNSSEC key (ID"
+msgstr "Chystáte se smazat aktivní DNSSEC klíč (ID"
 
 #: templates/default/dnssec_delete_key.html:37
 msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
 msgstr ""
+"Smazání aktivního klíče ovlivní bezpečnost vaší zóny a může způsobit selhání validace."
 
 #: templates/default/dnssec_delete_key.html:39
 msgid "You are about to delete a DNSSEC key (ID"
-msgstr "You are about to delete a DNSSEC key (ID"
+msgstr "Chystáte se smazat DNSSEC klíč (ID"
 
 #: templates/default/whois.html:26
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
 msgstr ""
+"Zadejte název domény (např. example.com) pro vyhledání jejích WHOIS informací"
 
 #: templates/default/whois.html:34
 msgid "WHOIS results for"
-msgstr "WHOIS results for"
+msgstr "WHOIS výsledky pro"
 
 #: templates/default/whois.html:45
 msgid "Please enter a domain name to perform a WHOIS lookup."
-msgstr "Please enter a domain name to perform a WHOIS lookup."
+msgstr "Zadejte prosím název domény pro provedení WHOIS vyhledávání."
 
 #: templates/default/list_perm_templ.html:11
 msgid "Permission Templates"
-msgstr "Permission Templates"
+msgstr "Šablony oprávnění"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -9913,19 +9987,19 @@ msgstr "Konfigurační soubor:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Vytvořte soubor"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "s následujícím obsahem:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Vyberte jazyk"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "Vyberte jazyk pro instalaci"
 
 #: install/templates/step1.html.twig:12
 msgid ""
@@ -9934,7 +10008,7 @@ msgstr "Vyberte prosím preferovaný jazyk pro pokračování v instalaci:"
 
 #: install/templates/step1.html.twig:222
 msgid "Begin Installation"
-msgstr "Begin Installation"
+msgstr "Zahájit instalaci"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
@@ -9958,7 +10032,7 @@ msgstr ""
 
 #: install/templates/step4.html.twig:14
 msgid "Important:"
-msgstr "Important:"
+msgstr "Důležité:"
 
 #: install/templates/step4.html.twig:14
 msgid ""
@@ -9966,6 +10040,7 @@ msgid ""
 "already created. This installer will NOT create PowerDNS tables - only "
 "Poweradmin-specific tables."
 msgstr ""
+"Poweradmin vyžaduje správně nakonfigurovanou PowerDNS databázi s již vytvořenými tabulkami. Tento instalátor NEVYTVOŘÍ PowerDNS tabulky - pouze tabulky specifické pro Poweradmin."
 
 #: install/templates/step4.html.twig:22
 msgid "Database Settings"
@@ -10001,7 +10076,7 @@ msgstr "Zadejte hostname"
 
 #: install/templates/step4.html.twig:71
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr "Hostname databázového serveru (obvykle \"localhost\")."
 
 #: install/templates/step4.html.twig:76
 msgid "DB Port"
@@ -10275,7 +10350,7 @@ msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
 msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
+"Musíte odstranit adresář \"install/\" z kořenového adresáře Poweradmin."
 "directory."
 
 #: install/templates/step8.html.twig:17
@@ -10292,14 +10367,14 @@ msgstr "Další kroky"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr "Odstraňte adresář \"install/\" ze svého serveru"
 
 #: install/templates/step8.html.twig:27
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
+"Přihlaste se do <a href=\"../index.php\">Poweradmin</a> pomocí výchozího uživatelského jména \"admin\" a hesla, které jste nastavili v kroku 3"
 "\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
@@ -10372,44 +10447,47 @@ msgstr "Vytvoří konfigurační soubor k uložení vašich nastavení"
 
 #: install/helpers/InstallStepHandler.php:177
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "Chybějící PowerDNS tabulky:"
 
 #: install/helpers/InstallStepHandler.php:178
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr "Poweradmin vyžaduje tyto PowerDNS tabulky pro správné fungování."
 
 #: install/helpers/InstallStepHandler.php:185
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Aktualizace databáze... hotovo!"
 
 #: install/helpers/InstallStepHandler.php:207
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Problémy s omezeními cizích klíčů:"
 
 #: install/helpers/InstallStepHandler.php:209
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
+"Instalátor nemohl odstranit existující tabulky kvůli omezením cizích klíčů"
 
 #: install/helpers/InstallStepHandler.php:210
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
+"To se může stát při přeinstalování, pokud máte vlastní omezení nebo pokud jsou tabulky odkazovány jinými tabulkami"
 
 #: install/helpers/InstallStepHandler.php:211
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 msgstr ""
+"Můžete zkusit ručně zakázat kontroly cizích klíčů před spuštěním instalátoru:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
-msgstr "Suggestions:"
+msgstr "Návrhy:"
 
 #: install/helpers/InstallStepHandler.php:218
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "Ujistěte se, že soubor SQLite databáze existuje"
 
 #: install/helpers/InstallStepHandler.php:219
 msgid ""
@@ -10421,23 +10499,23 @@ msgstr ""
 
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr "Ověřte, že úplná cesta k databázovému souboru je správná a dostupná"
 
 #: install/helpers/InstallStepHandler.php:226
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "Ověřte, že přihlašovací údaje k databázi jsou správné"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Zkontrolujte, že databázový uživatel má dostatečná oprávnění"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "Zajistěte, aby databázový server běžel a byl dostupný"
 
 #: install/helpers/InstallStepHandler.php:233
 msgid "Database Error"
-msgstr "Database Error"
+msgstr "Chyba databáze"
 
 #: install/helpers/DatabaseHelper.php:158
 #, php-format
@@ -10466,11 +10544,11 @@ msgstr ""
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Nelze přistupovat k SQLite databázovému souboru %s: %s"
 
 #: install/helpers/DatabaseHelper.php:242
 msgid "or"
-msgstr "or"
+msgstr "nebo"
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:55
 msgid ""
