@@ -196,10 +196,10 @@ class MailService implements MailServiceInterface
         $messageBody = $this->getMessageBody($body, $plainBody, $boundary);
 
         // add "Return-Path" to Header
-        $return_path = "-f".$this->config->get('mail', 'return_path', 'poweradmin@example.com');
+        $returnPath = "-f" . $this->config->get('mail', 'return_path', 'poweradmin@example.com');
 
         // Send the email
-        return mail($to, $subject, $messageBody, $headersStr, $return_path);
+        return mail($to, $subject, $messageBody, $headersStr, $returnPath);
     }
 
     /**
