@@ -5915,7 +5915,7 @@ msgstr "Edit API Key"
 
 #: templates/default/list_perm_templ.html:18
 msgid "Name"
-msgstr "Name"
+msgstr "Name der Zonenvorlage"
 
 #: templates/default/api_key_edit.html:22
 msgid "Please provide a name for this API key"
@@ -6042,7 +6042,7 @@ msgstr "Inhalt"
 
 #: templates/default/add_zone_templ_record.html:78
 msgid "Provide content for your zone record"
-msgstr "Provide content for your zone record"
+msgstr "Bitte Inhalt für den Eintrag angeben"
 
 #: templates/default/add_record.html:93
 msgid ""
@@ -6057,22 +6057,26 @@ msgid ""
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
 msgstr ""
+"Tipp: Für SOA Einträge können <code>[ZONE]</code> als Name und "
+"<code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> als Inhalt "
+"verwendet werden. SOA Einträge sind für das Funktionieren der "
+"DNS Zone erforderlich."
 
 #: templates/default/edit_zone_templ_record.html:103
 msgid "Update record"
-msgstr "Update record"
+msgstr "Eintrag aktualisieren"
 
 #: templates/default/users.html:148
 msgid "Reset"
-msgstr "Reset"
+msgstr "Zurücksetzen"
 
 #: templates/default/edit_zone_templ.html:179
 msgid "Template Placeholders"
-msgstr "Template Placeholders"
+msgstr "Platzhalter Zonenvorlage"
 
 #: templates/default/edit_zone_templ.html:187
 msgid "Placeholder"
-msgstr "Placeholder"
+msgstr "Platzhalter"
 
 #: templates/default/list_perm_templ.html:19
 msgid "Description"
@@ -6080,39 +6084,39 @@ msgstr "Beschreibung"
 
 #: templates/default/edit_zone_templ.html:194
 msgid "Substituted with current zone name"
-msgstr "Substituted with current zone name"
+msgstr "ersetzt durch aktuellen Zonennamen"
 
 #: templates/default/edit_zone_templ.html:198
 msgid "Substituted with domain name without TLD"
-msgstr "Substituted with domain name without TLD"
+msgstr "ersetzt durch Domainnamen ohne TLD"
 
 #: templates/default/edit_zone_templ.html:202
 msgid "Substituted with top-level domain"
-msgstr "Substituted with top-level domain"
+msgstr "ersetzt durch Top-Level Domain"
 
 #: templates/default/edit_zone_templ.html:206
 msgid "Substituted with current date and 2 numbers"
-msgstr "Substituted with current date and 2 numbers"
+msgstr "ersetzt durch aktuelles Datum und 2 Ziffern"
 
 #: templates/default/edit_zone_templ.html:210
 msgid "Substituted with 1st name server"
-msgstr "Substituted with 1st name server"
+msgstr "ersetzt durch 1sten Nameserver"
 
 #: templates/default/edit_zone_templ.html:214
 msgid "Substituted with 2nd name server"
-msgstr "Substituted with 2nd name server"
+msgstr "ersetzt durch 2ten Nameserver"
 
 #: templates/default/edit_zone_templ.html:218
 msgid "Substituted with 3rd name server"
-msgstr "Substituted with 3rd name server"
+msgstr "ersetzt durch 3ten Nameserver"
 
 #: templates/default/edit_zone_templ.html:222
 msgid "Substituted with 4th name server"
-msgstr "Substituted with 4th name server"
+msgstr "ersetzt durch 4ten Nameserver"
 
 #: templates/default/edit_zone_templ.html:226
 msgid "Substituted with hostmaster"
-msgstr "Substituted with hostmaster"
+msgstr "ersetzt durch Hostmaster"
 
 #: templates/default/add_zone_templ_record.html:161
 msgid "Example Records"
@@ -6603,7 +6607,7 @@ msgstr "WHOIS"
 
 #: templates/default/index.html:354
 msgid "Lookup domain WHOIS information"
-msgstr "Lookup domain WHOIS information"
+msgstr "Domain Informationen per WHOIS abfragen"
 
 #: templates/default/whois.html:10
 msgid "WHOIS Lookup"
@@ -6655,27 +6659,27 @@ msgstr "Edit comment in zone"
 
 #: templates/default/add_zone_templ.html:12
 msgid "Add template"
-msgstr "Add template"
+msgstr "Vorlage hinzufügen"
 
 #: templates/default/add_zone_templ.html:24
 msgid "Add zone template for"
-msgstr "Add zone template for"
+msgstr "Zonenvorlage hinzufügen für"
 
 #: templates/default/edit_perm_templ.html:26
 msgid "Provide a name for your template"
-msgstr "Provide a name for your template"
+msgstr "Geben Sie einen Namen für die Vorlage an"
 
 #: templates/default/edit_zone_templ.html:143
 msgid "Optional description to help identify this template"
-msgstr "Optional description to help identify this template"
+msgstr "Optionale Beschreibung um die Vorlage zu identifizieren"
 
 #: templates/default/edit_zone_templ.html:151
 msgid "Global template"
-msgstr "Global template"
+msgstr "Globale Vorlage"
 
 #: templates/default/edit_zone_templ.html:153
 msgid "Make this template available to all users"
-msgstr "Make this template available to all users"
+msgstr "Vorlage für alle Benutzer verfügbar"
 
 #: templates/default/list_zone_templ.html:126 templates/default/header.html:133
 msgid "Add zone template"
@@ -6683,11 +6687,11 @@ msgstr "Neue Zonenvorlage"
 
 #: templates/default/add_zone_templ.html:68
 msgid "Template Information"
-msgstr "Template Information"
+msgstr "Zonenvorlagen Information"
 
 #: templates/default/add_zone_templ.html:73
 msgid "About Templates"
-msgstr "About Templates"
+msgstr "Über Zonenvorlagen"
 
 #: templates/default/add_zone_templ.html:74
 msgid ""
@@ -6697,54 +6701,61 @@ msgstr ""
 
 #: templates/default/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
-msgstr "After creating a template, you can add record templates to it."
+msgstr "Nach dem erstellen einer Vorlage, können Sie Einträge hinzufügen."
 
 #: templates/default/add_zone_templ.html:78
 msgid "Template Usage"
-msgstr "Template Usage"
+msgstr "Benutzung der Vorlage"
 
 #: templates/default/add_zone_templ.html:80
 msgid "Apply consistent configurations to multiple zones"
-msgstr "Apply consistent configurations to multiple zones"
+msgstr "Konsistente Konfigurationen für mehrere Zonen"
 
 #: templates/default/add_zone_templ.html:81
 msgid "Save time when creating new domains"
-msgstr "Save time when creating new domains"
+msgstr "Sparen Sie Zeit beim Erstellen neuer Domains"
 
 #: templates/default/add_zone_templ.html:82
 msgid "Maintain standardized DNS setups"
-msgstr "Maintain standardized DNS setups"
+msgstr "Standardisierte DNS-Konfigurationen pflegen"
 
 #: templates/default/add_zone_templ.html:91
 msgid "Tips & Examples"
-msgstr "Tips & Examples"
+msgstr "Tipps & Beispiele"
 
 #: templates/default/add_zone_templ.html:97
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
 msgstr ""
+"Erstellen Sie verschiedene Vorlagen für unterschiedliche Arten von Domains "
+"(z.B. \"Standard Website\", \"E-Mail Server\")"
 
 #: templates/default/add_zone_templ.html:98
 msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
 msgstr ""
+"Benutzen Sie aussagekräftige und identifizierbare Namen für Vorlagen"
 
 #: templates/default/add_zone_templ.html:99
 msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-msgstr "Set up standard records like MX, TXT for SPF, and CNAME for www"
+msgstr "Standard Einträge wie MX, TXT for SPF, und CNAME für www erstellen"
 
 #: templates/default/add_zone_templ.html:100
 msgid ""
 "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
 "[SERIAL] in record content"
 msgstr ""
+"Benutzen Sie Platzhalter wie [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], und "
+"[SERIAL] in Einträgen"
 
 #: templates/default/add_zone_templ.html:101
 msgid ""
 "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
 "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
 msgstr ""
+"[DOMAIN] und [TLD] Platzhalter sind nützlich für Microsoft 365 MX Einträge "
+"(z.B., [DOMAIN]-[TLD].mail.protection.outlook.com)"
 
 #: templates/default/list_log_zones.html:11 templates/default/header.html:86
 msgid "Zone logs"
@@ -7364,7 +7375,7 @@ msgstr "Berechtigungsvorlagen"
 
 #: templates/default/add_perm_templ.html:6 templates/default/edit.html:763
 msgid "Add"
-msgstr "Add"
+msgstr "Hinzufügen"
 
 #: templates/default/add_perm_templ.html:18
 msgid "Add Permission Template"
@@ -7682,7 +7693,7 @@ msgstr ""
 
 #: templates/default/add_record.html:18
 msgid "Add record"
-msgstr "Add record"
+msgstr "Eintrag hinzufügen"
 
 #: templates/default/add_zone_templ_record.html:21
 msgid ""
@@ -7692,11 +7703,11 @@ msgstr ""
 
 #: templates/default/add_zone_templ_record.html:31
 msgid "Add record to zone template"
-msgstr "Add record to zone template"
+msgstr "Neuer Eintrag für Zonenvorlage"
 
 #: templates/default/add_zone_templ_record.html:34
 msgid "Create a new record for this zone template"
-msgstr "Create a new record for this zone template"
+msgstr "Erzeugen Sie einen neuen Eintrag für diese Zonenvorlage"
 
 #: templates/default/delete_perm_templ.html:12
 msgid "Delete Permission Template"
@@ -7960,19 +7971,19 @@ msgstr "There are no forward zones to show in this listing."
 
 #: templates/default/delete_record.html:24
 msgid "Delete Record"
-msgstr "Delete Record"
+msgstr "Eintrag löschen"
 
 #: templates/default/delete_record.html:32
 msgid "You are about to delete a record in zone"
-msgstr "You are about to delete a record in zone"
+msgstr "Sie sind dabei einen Eintrag aus der Zone zu löschen"
 
 #: templates/default/delete_zone_templ_record.html:24
 msgid "This action cannot be undone."
-msgstr "This action cannot be undone."
+msgstr "Diese Aktion ist unumkehrbar."
 
 #: templates/default/delete_zone_templ_record.html:29
 msgid "Record Details"
-msgstr "Record Details"
+msgstr "Eintrag Details"
 
 #: templates/default/delete_record.html:74
 msgid "You are trying to delete a record that is needed for this zone to work."
@@ -7986,11 +7997,11 @@ msgstr "Also delete corresponding PTR record (if exists)"
 
 #: templates/default/delete_zone_templ_record.html:59
 msgid "Yes, delete this record"
-msgstr "Yes, delete this record"
+msgstr "Ja, den Eintrag löschen"
 
 #: templates/default/delete_zone_templ_record.html:62
 msgid "No, keep this record"
-msgstr "No, keep this record"
+msgstr "Nein, den Eintrag behalten"
 
 #: templates/default/mfa_verify.html:6
 msgid "Two-Factor Authentication"
@@ -8423,7 +8434,7 @@ msgstr "Available for Android and iOS"
 
 #: templates/default/edit_zone_templ.html:7
 msgid "Edit template"
-msgstr "Edit template"
+msgstr "Vorlage bearbeiten"
 
 #: templates/default/edit_zone_templ.html:14
 msgid "Sync Required"
@@ -8440,7 +8451,7 @@ msgstr ""
 
 #: templates/default/edit_zone_templ.html:29
 msgid "Template Records"
-msgstr "Template Records"
+msgstr "Vorlageneinträge"
 
 #: templates/default/edit_zone_templ.html:33
 msgid ""
@@ -8454,27 +8465,27 @@ msgstr "This zone template does not have any records yet."
 
 #: templates/default/edit_zone_templ.html:104
 msgid "View zones"
-msgstr "View zones"
+msgstr "Zonen anzeigen"
 
 #: templates/default/edit_zone_templ.html:109
 msgid "Update zones"
-msgstr "Update zones"
+msgstr "Zonen aktualisieren"
 
 #: templates/default/edit_zone_templ.html:125
 msgid "Template Settings"
-msgstr "Template Settings"
+msgstr "Vorlagen Einstellungen"
 
 #: templates/default/edit_zone_templ.html:136
 msgid "To use 'Save As', change the name first"
-msgstr "To use 'Save As', change the name first"
+msgstr "Um 'Speichern als' zu nutzen, erst den Namen ändern"
 
 #: templates/default/edit_zone_templ.html:163
 msgid "Save As"
-msgstr "Save As"
+msgstr "Speichern als"
 
 #: templates/default/edit_zone_templ.html:182
 msgid "The following placeholders can be used in template records"
-msgstr "The following placeholders can be used in template records"
+msgstr "Die folgenden Platzhalter können in Vorlageneinträgen verwendet werden"
 
 #: templates/default/edit_zone_templ.html:305
 msgid "Warning: Missing SOA Record"
@@ -8526,7 +8537,7 @@ msgstr "API Key:"
 
 #: templates/default/rdap.html:20 templates/default/whois.html:20
 msgid "Enter domain name"
-msgstr "Enter domain name"
+msgstr "Domain Namen angeben"
 
 #: templates/default/rdap.html:22 templates/default/whois.html:22
 msgid "Lookup"
@@ -8757,15 +8768,15 @@ msgstr ""
 
 #: templates/default/mfa_setup.html:63
 msgid "Works offline"
-msgstr "Works offline"
+msgstr "Funkioniert auch offline"
 
 #: templates/default/mfa_setup.html:64
 msgid "More secure"
-msgstr "More secure"
+msgstr "Viel sicherer"
 
 #: templates/default/mfa_setup.html:65
 msgid "Easy to use"
-msgstr "Easy to use"
+msgstr "Einfach zu benutzen"
 
 #: templates/default/mfa_setup.html:69
 msgid "Set up app authentication"
@@ -9356,11 +9367,11 @@ msgstr "Delete record"
 
 #: templates/default/delete_zone_templ_record.html:19
 msgid "Delete Template Record"
-msgstr "Delete Template Record"
+msgstr "Vorlageneintrag löschen"
 
 #: templates/default/delete_zone_templ_record.html:24
 msgid "You are about to delete a record from template"
-msgstr "You are about to delete a record from template"
+msgstr "Sie sind dabei einen Eintrag aus der Vorlage zu löschen"
 
 #: templates/default/dnssec_delete_key.html:123
 msgid "Delete key"
