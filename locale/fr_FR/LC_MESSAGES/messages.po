@@ -8,13 +8,14 @@ msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
 "POT-Creation-Date: 2025-05-30 17:37+0300\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
-"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
-"Language-Team: LANGUAGE <LL@li.org>\n"
+"PO-Revision-Date: 2025-06-02 20:15+0000\n"
+"Last-Translator: Claude AI <noreply@anthropic.com>\n"
+"Language-Team: French\n"
 "Language: fr_FR\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: lib/AppInitializer.php:80
 msgid ""
@@ -458,15 +459,15 @@ msgstr "Méthode de requête invalide."
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "%d zones ont été déliées du modèle avec succès."
-msgstr[1] "%d zone a été déliée du modèle avec succès."
+msgstr[0] "%d zone a été déliée du modèle avec succès."
+msgstr[1] "%d zones ont été déliées du modèle avec succès."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:108
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
-msgstr[0] "%d zones n'ont pas pu être déliées."
-msgstr[1] "%d zone n'a pas pu être déliée."
+msgstr[0] "%d zone n'a pas pu être déliée."
+msgstr[1] "%d zones n'ont pas pu être déliées."
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:118
 msgid "Failed to unlink zones from template."
@@ -3645,8 +3646,7 @@ msgstr "Le nom d'hôte contient des caractères invalides."
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:139
 msgid "Priority field for RRSIG records must be 0 or empty"
-msgstr ""
-"Le champ de priorité pour les enregistrements RRSIG doit être 0 ou vide"
+msgstr "Le champ priorité pour les enregistrements RRSIG doit être 0 ou vide"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:143
 msgid ""
@@ -5385,6 +5385,7 @@ msgid ""
 "Unusual flag value. Common values are 0 (authentication prohibited), 256 "
 "(user key), or 257 (zone key)."
 msgstr ""
+"Valeur de drapeau inhabituelle. Les valeurs communes sont 0 (authentification interdite), 256 (clé utilisateur) ou 257 (clé de zone)."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:202
 msgid "KEY protocol must be a number between 0 and 255."
@@ -5394,6 +5395,7 @@ msgstr "Le protocole KEY doit être un nombre entre 0 et 255."
 msgid ""
 "Unusual protocol value. Protocol 3 (DNSSEC) is most common for KEY records."
 msgstr ""
+"Valeur de protocole inhabituelle. Le protocole 3 (DNSSEC) est le plus courant pour les enregistrements KEY."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:213
 msgid "KEY algorithm must be a number between 0 and 255."
@@ -5404,42 +5406,46 @@ msgid ""
 "Unusual algorithm value. Common values are 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
 "(RSA/SHA-1), 8 (RSA/SHA-256)."
 msgstr ""
+"Valeur d'algorithme inhabituelle. Les valeurs communes sont 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 (RSA/SHA-1), 8 (RSA/SHA-256)."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:224
 msgid "KEY public key is required."
-msgstr "KEY public key is required."
+msgstr "La clé publique KEY est requise."
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:231
 msgid "KEY public key must be properly Base64 encoded."
-msgstr "KEY public key must be properly Base64 encoded."
+msgstr "La clé publique KEY doit être correctement encodée en Base64."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "DMARC records must be placed at _dmarc.<domain>."
+msgstr "Les enregistrements DMARC doivent être placés à _dmarc.<domaine>."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
 "Invalid value for priority field. DMARC records must have a priority value "
 "of 0."
 msgstr ""
+"Valeur invalide pour le champ priorité. Les enregistrements DMARC doivent avoir une valeur de priorité de 0."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:162
 msgid "DMARC record must start with \"v=DMARC1\""
-msgstr ""
+msgstr "L'enregistrement DMARC doit commencer par \"v=DMARC1\""
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:167
 msgid ""
 "DMARC record exceeds 255 character limit. For complex policies, consider "
 "simplifying or using URI references."
 msgstr ""
+"L'enregistrement DMARC dépasse la limite de 255 caractères. Pour les politiques complexes, envisagez de simplifier ou d'utiliser des références URI."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
-msgstr "DMARC version tag (v) must be DMARC1"
+msgstr "La balise de version DMARC (v) doit être DMARC1"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:195
 msgid "DMARC policy tag (p) must be one of: none, quarantine, reject"
-msgstr "DMARC policy tag (p) must be one of: none, quarantine, reject"
+msgstr ""
+"La balise de politique DMARC (p) doit être l'une de : none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:200
 msgid ""
@@ -5447,23 +5453,27 @@ msgid ""
 "affecting delivery. Consider a stricter policy once you've reviewed the "
 "reports."
 msgstr ""
+"L'utilisation de \"p=none\" offre une visibilité sur l'authentification des e-mails sans affecter la livraison. Envisagez une politique plus stricte une fois que vous avez examiné les rapports."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
 "DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
 msgstr ""
+"La balise de politique de sous-domaine DMARC (sp) doit être l'une de : none, quarantine, reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
+msgstr ""
+"La balise d'alignement DKIM DMARC (adkim) doit être r (relaxed) ou s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
+msgstr ""
+"La balise d'alignement SPF DMARC (aspf) doit être r (relaxed) ou s (strict)"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
-msgstr "DMARC percentage tag (pct) must be between 0 and 100"
+msgstr "La balise de pourcentage DMARC (pct) doit être entre 0 et 100"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:234
 #, php-format
@@ -5471,96 +5481,107 @@ msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
 msgstr ""
+"La politique DMARC n'est appliquée qu'à %d%% des messages. Ceci ne devrait être utilisé que pendant le déploiement de la politique."
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
-msgstr "DMARC reporting interval tag (ri) must be a positive integer"
+msgstr ""
+"La balise d'intervalle de rapport DMARC (ri) doit être un entier positif"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:248
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
 msgstr ""
+"La balise d'options de rapport d'échec DMARC (fo) ne doit contenir que 0, 1, d, s, ou des combinaisons séparées par des deux-points"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
-msgstr "DMARC %s tag must contain valid mailto: or https: URIs"
+msgstr "La balise DMARC %s doit contenir des URI mailto: ou https: valides"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
-msgstr "Invalid email address in DMARC %s tag: %s"
+msgstr "Adresse e-mail invalide dans la balise DMARC %s : %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
-msgstr "DMARC report format tag (rf) must be afrf or iodef"
+msgstr "La balise de format de rapport DMARC (rf) doit être afrf ou iodef"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
 msgid "Unknown DMARC tag: %s"
-msgstr "Unknown DMARC tag: %s"
+msgstr "Balise DMARC inconnue : %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
 #, php-format
 msgid "Required DMARC tag missing: %s"
-msgstr "Required DMARC tag missing: %s"
+msgstr "Balise DMARC requise manquante : %s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:299
 msgid ""
 "DMARC record does not specify any reporting URIs (rua or ruf). This may "
 "limit your ability to monitor authentication results."
 msgstr ""
+"L'enregistrement DMARC ne spécifie aucun URI de rapport (rua ou ruf). Cela peut limiter votre capacité à surveiller les résultats d'authentification."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:86
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
 msgstr ""
+"Il s'agit d'un enregistrement DMARC traité via le type d'enregistrement TXT. Les enregistrements DMARC doivent utiliser le type d'enregistrement TXT avec un contenu commençant par \"v=DMARC1\"."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:145
 msgid "HTML tags are not allowed in content field."
-msgstr "HTML tags are not allowed in content field."
+msgstr "Les balises HTML ne sont pas autorisées dans le champ de contenu."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:159
 msgid "TXT record content must be enclosed in quotes."
-msgstr "TXT record content must be enclosed in quotes."
+msgstr "Le contenu de l'enregistrement TXT doit être entouré de guillemets."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:85
 msgid "Backslashes must precede all quotes (\") in TXT content"
-msgstr "Backslashes must precede all quotes (\") in TXT content"
+msgstr ""
+"Les barres obliques inverses doivent précéder tous les guillemets (\") dans le contenu TXT"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:173
 msgid ""
 "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or less. "
 "For longer content, split into multiple quoted strings separated by spaces."
 msgstr ""
+"La chaîne d'enregistrement TXT dépasse 255 octets. Les chaînes TXT doivent faire 255 octets ou moins. Pour un contenu plus long, divisez en plusieurs chaînes entre guillemets séparées par des espaces."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:192
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
 msgstr ""
+"Chaque chaîne d'enregistrement TXT doit faire 255 octets ou moins. Divisez le contenu long en plusieurs chaînes."
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:250
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
 msgstr ""
+"Valeur invalide pour le champ priorité. Les enregistrements TXT doivent avoir une valeur de priorité de 0."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
-msgstr "Invalid IPv4 address format."
+msgstr "Format d'adresse IPv4 invalide."
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:136
 msgid ""
 "Invalid value for priority field. A records must have priority value of 0."
 msgstr ""
+"Valeur invalide pour le champ priorité. Les enregistrements A doivent avoir une valeur de priorité de 0."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:95
 msgid ""
 "CDS records should only be placed at the zone apex, not on subdomains, as "
 "required by RFC 7344."
 msgstr ""
+"Les enregistrements CDS ne doivent être placés qu'au sommet de la zone, pas sur les sous-domaines, comme l'exige la RFC 7344."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
@@ -5571,6 +5592,7 @@ msgid ""
 "According to RFC 8078, CDS records should be stable for some time before "
 "parent zones accept them."
 msgstr ""
+"Selon la RFC 8078, les enregistrements CDS doivent être stables pendant un certain temps avant que les zones parentes ne les acceptent."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:147
 msgid "Invalid characters in CDS record content."
@@ -5581,6 +5603,7 @@ msgid ""
 "This is a CDS deletion record as defined in RFC 8078. It signals that the "
 "corresponding DS records should be removed from the parent."
 msgstr ""
+"Il s'agit d'un enregistrement de suppression CDS tel que défini dans la RFC 8078. Il signale que les enregistrements DS correspondants doivent être supprimés du parent."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
@@ -5607,6 +5630,7 @@ msgid ""
 "SHA-1 (digest type 1) is deprecated for security reasons. Consider using "
 "SHA-256 (digest type 2) or SHA-384 (digest type 4) instead."
 msgstr ""
+"SHA-1 (type de condensé 1) est obsolète pour des raisons de sécurité. Considérez l'utilisation de SHA-256 (type de condensé 2) ou SHA-384 (type de condensé 4) à la place."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:237
 #, php-format
@@ -5614,62 +5638,71 @@ msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
 msgstr ""
+"Le condensé CDS doit être une chaîne hexadécimale valide de longueur %d pour le type de condensé sélectionné."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
 "CDS records must be accompanied by matching CDNSKEY records as recommended "
 "by RFC 7344."
 msgstr ""
+"Les enregistrements CDS doivent être accompagnés d'enregistrements CDNSKEY correspondants comme recommandé par la RFC 7344."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
 msgstr ""
+"Les enregistrements CDS ne doivent être placés qu'au sommet de la zone (pas sur les sous-domaines)."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:112
 msgid ""
 "NOTE: The L32 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
 msgstr ""
+"NOTE : Le type d'enregistrement L32 est défini dans RFC 6742 comme un protocole expérimental, pas un standard IETF formel."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
 "L32 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
 msgstr ""
+"Les enregistrements L32 devraient seulement être utilisés avec le Protocole Réseau Identifiant-Localisateur (ILNP)."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
 "Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
 "in ILNP deployments."
 msgstr ""
+"L'utilisation d'adresses IP privées (RFC 1918) comme localisateurs L32 peut limiter l'accessibilité dans les déploiements ILNP."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:131
 msgid ""
 "RFC 6742 recommends very low TTL values for L32 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
 msgstr ""
+"La RFC 6742 recommande des valeurs TTL très faibles pour les enregistrements L32 des nœuds mobiles ou multi-hébergés, car les valeurs de localisateur peuvent changer fréquemment."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
-msgstr "L32 record must contain preference and locator separated by space."
+msgstr ""
+"L'enregistrement L32 doit contenir la préférence et le localisateur séparés par un espace."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:162
 msgid "L32 preference must be a number between 0 and 65535."
-msgstr "L32 preference must be a number between 0 and 65535."
+msgstr "La préférence L32 doit être un nombre entre 0 et 65535."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:168
 msgid "L32 locator must be a valid IPv4 address."
-msgstr "L32 locator must be a valid IPv4 address."
+msgstr "Le localisateur L32 doit être une adresse IPv4 valide."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:174
 msgid "L32 locator must be a fully specified IPv4 address."
-msgstr "L32 locator must be a fully specified IPv4 address."
+msgstr "Le localisateur L32 doit être une adresse IPv4 entièrement spécifiée."
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:180
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
 msgstr ""
+"Le localisateur L32 ne peut pas utiliser des adresses de diffusion ou non spécifiées (0.0.0.0 ou 255.255.255.255)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:122
 #, php-format
@@ -5677,22 +5710,26 @@ msgid ""
 "Priority value in record parameter (%d) does not match priority in content "
 "(%d)."
 msgstr ""
+"La valeur de priorité dans le paramètre d'enregistrement (%d) ne correspond pas à la priorité dans le contenu (%d)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:249
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "SRV record name must be in format _service._protocol.domain"
+msgstr ""
+"Le nom d'enregistrement SRV doit être au format _service._protocole.domaine"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:258
 msgid ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
 msgstr ""
+"Valeur de service invalide dans l'enregistrement SRV. Le nom du service doit commencer par un trait de soulignement suivi de caractères alphanumériques."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:263
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
 msgstr ""
+"Valeur de protocole invalide dans l'enregistrement SRV. Le protocole doit commencer par un trait de soulignement suivi de caractères alphanumériques."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:272
 #, php-format
@@ -5700,6 +5737,7 @@ msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
 msgstr ""
+"Le nom de service \"%s\" n'est pas dans la liste des services bien connus. Ceci est autorisé mais inhabituel."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:280
 #, php-format
@@ -5707,28 +5745,33 @@ msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
 msgstr ""
+"Le protocole \"%s\" n'est pas dans la liste des protocoles bien connus. Les protocoles courants sont _tcp et _udp."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:288
 msgid "Invalid domain name in SRV record."
-msgstr "Invalid domain name in SRV record."
+msgstr "Nom de domaine invalide dans l'enregistrement SRV."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:313
 msgid ""
 "SRV record content must have priority, weight, port and target (4 fields)."
 msgstr ""
+"Le contenu de l'enregistrement SRV doit avoir la priorité, le poids, le port et la cible (4 champs)."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid ""
 "Invalid value for the priority field of the SRV record. Must be 0-65535."
 msgstr ""
+"Valeur invalide pour le champ priorité de l'enregistrement SRV. Doit être 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr "Invalid value for the weight field of the SRV record. Must be 0-65535."
+msgstr ""
+"Valeur invalide pour le champ poids de l'enregistrement SRV. Doit être 0-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:341
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-msgstr "Invalid value for the port field of the SRV record. Must be 1-65535."
+msgstr ""
+"Valeur invalide pour le champ port de l'enregistrement SRV. Doit être 1-65535."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:350
 #, php-format
@@ -5736,44 +5779,50 @@ msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
 msgstr ""
+"Le port %d diffère du port standard %d pour le service %s. Ceci est autorisé mais inhabituel."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:360
 msgid "SRV target cannot be empty."
-msgstr "SRV target cannot be empty."
+msgstr "La cible SRV ne peut pas être vide."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:379
 msgid ""
 "Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
 "or higher."
 msgstr ""
+"La priorité 0 est valide mais inhabituelle. Typiquement, les enregistrements SRV commencent à la priorité 10 ou plus."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:384
 msgid "When target is \".\" (no service), port and weight should both be 0."
 msgstr ""
+"Quand la cible est \".\" (aucun service), le port et le poids devraient être tous les deux à 0."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:410
 msgid "Invalid SRV target."
-msgstr "Invalid SRV target."
+msgstr "Cible SRV invalide."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:433
 msgid "Invalid value for the priority field of the SRV record."
-msgstr "Invalid value for the priority field of the SRV record."
+msgstr "Valeur invalide pour le champ priorité de l'enregistrement SRV."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:85
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
 msgstr ""
+"Les adresses IPv6 non spécifiées (::) ou de bouclage (::1) ne devraient pas être utilisées dans les enregistrements AAAA."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
 "Site-local IPv6 addresses (fec0::/10) are deprecated and should not be used."
 msgstr ""
+"Les adresses IPv6 locales au site (fec0::/10) sont obsolètes et ne devraient pas être utilisées."
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
 msgstr ""
+"Valeur invalide pour le champ priorité. Les enregistrements AAAA doivent avoir une valeur de priorité de 0."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
@@ -5781,44 +5830,50 @@ msgid ""
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 msgstr ""
+"Les noms de propriétaire d'enregistrement NSEC3 devraient typiquement être un hash encodé en Base32hex suivi du nom de zone (par ex., \"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
-msgstr "NSEC3 record content cannot be empty."
+msgstr "Le contenu de l'enregistrement NSEC3 ne peut pas être vide."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:113
 msgid "NSEC3 record contains invalid characters."
-msgstr "NSEC3 record contains invalid characters."
+msgstr "L'enregistrement NSEC3 contient des caractères invalides."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:142
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
 msgstr ""
+"Selon la RFC 5155 et la RFC 9077, les enregistrements NSEC3 devraient avoir le même TTL que le champ TTL minimum du SOA."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
 "NSEC3 records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
 msgstr ""
+"Les enregistrements NSEC3 font partie de DNSSEC et ne devraient être gérés qu'avec d'autres enregistrements DNSSEC (DNSKEY, RRSIG, etc.)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:146
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
 msgstr ""
+"La modification manuelle des enregistrements NSEC3 n'est pas recommandée car ils sont typiquement générés automatiquement par les serveurs de noms compatibles DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
 "NSEC3 records require a corresponding NSEC3PARAM record at the zone apex to "
 "indicate the NSEC3 parameters in use."
 msgstr ""
+"Les enregistrements NSEC3 nécessitent un enregistrement NSEC3PARAM correspondant au sommet de la zone pour indiquer les paramètres NSEC3 en usage."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:207
 msgid ""
 "NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
 "and next hashed owner name."
 msgstr ""
+"L'enregistrement NSEC3 doit contenir au moins l'algorithme de hash, les drapeaux, les itérations, le sel, et le prochain nom de propriétaire hashé."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:213
 msgid "NSEC3 hash algorithm must be 1 (SHA-1)."
@@ -5826,136 +5881,157 @@ msgstr "L'algorithme de hachage NSEC3 doit être 1 (SHA-1)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:219
 msgid "NSEC3 flags must be 0 or 1."
-msgstr "NSEC3 flags must be 0 or 1."
+msgstr "Les drapeaux NSEC3 doivent être 0 ou 1."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:231
 msgid "NSEC3 iterations must be between 0 and 2500."
-msgstr "NSEC3 iterations must be between 0 and 2500."
+msgstr "Les itérations NSEC3 doivent être entre 0 et 2500."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:248
 msgid "NSEC3 salt must be - (for empty) or a hexadecimal value."
-msgstr "NSEC3 salt must be - (for empty) or a hexadecimal value."
+msgstr "Le sel NSEC3 doit être - (pour vide) ou une valeur hexadécimale."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:264
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
 msgstr ""
+"Le prochain nom de propriétaire hashé NSEC3 doit être une valeur Base32hex encodée valide (utilisant les caractères 0-9 et A-V)."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
 msgstr ""
+"Les cartes de bits de type devraient être présentes pour indiquer quels types RR existent au nom de propriétaire original."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
 msgid "NSEC3 record contains an invalid record type: %s"
-msgstr "NSEC3 record contains an invalid record type: %s"
+msgstr ""
+"L'enregistrement NSEC3 contient un type d'enregistrement invalide : %s"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:361
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
 msgstr ""
+"Le type RRSIG devrait typiquement être présent dans les cartes de bits de type NSEC3 pour les zones signées DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
 "This NSEC3 record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
 msgstr ""
+"Cet enregistrement NSEC3 contient les types SOA et NS, indiquant qu'il pourrait être pour un sommet de zone."
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
 "For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
 "along with DNSKEY."
 msgstr ""
+"Pour un sommet de zone utilisant NSEC3, le type NSEC3PARAM devrait typiquement être présent avec DNSKEY."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
-msgstr "Invalid characters have been used in this record."
+msgstr "Des caractères invalides ont été utilisés dans cet enregistrement."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:60
 msgid "You cannot use html tags for this type of record."
-msgstr "You cannot use html tags for this type of record."
+msgstr ""
+"Vous ne pouvez pas utiliser de balises HTML pour ce type d'enregistrement."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:105
 msgid "Add quotes around TXT record content."
-msgstr "Add quotes around TXT record content."
+msgstr "Ajoutez des guillemets autour du contenu de l'enregistrement TXT."
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:220
 msgid "Invalid domain name format."
-msgstr "Invalid domain name format."
+msgstr "Format de nom de domaine invalide."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:103
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
 msgstr ""
+"Ceci semble être un domaine ENUM. Les enregistrements NAPTR devraient utiliser le champ de service E2U et suivre la RFC 6116."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:135
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
 msgstr ""
+"Les modèles d'expressions régulières complexes dans les enregistrements NAPTR peuvent être difficiles à déboguer et maintenir."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:139
 msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
 msgstr ""
+"Cet enregistrement suit la RFC 3403. Soyez conscient que certains serveurs DNS peuvent ne pas supporter entièrement toutes les fonctionnalités NAPTR."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:170
 msgid ""
 "Invalid value for priority field. NAPTR records have priority within the "
 "content field and must have a priority value of 0."
 msgstr ""
+"Valeur invalide pour le champ priorité. Les enregistrements NAPTR ont la priorité dans le champ de contenu et doivent avoir une valeur de priorité de 0."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:189
 msgid ""
 "NAPTR record must contain order, preference, flags, service, regexp, and "
 "replacement values."
 msgstr ""
+"L'enregistrement NAPTR doit contenir les valeurs d'ordre, préférence, drapeaux, service, regexp, et remplacement."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:196
 msgid "NAPTR record order must be a number between 0 and 65535."
-msgstr "NAPTR record order must be a number between 0 and 65535."
+msgstr ""
+"L'ordre de l'enregistrement NAPTR doit être un nombre entre 0 et 65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
 msgid "NAPTR record preference must be a number between 0 and 65535."
-msgstr "NAPTR record preference must be a number between 0 and 65535."
+msgstr ""
+"La préférence de l'enregistrement NAPTR doit être un nombre entre 0 et 65535."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:207
 msgid "NAPTR record flags must be a quoted string."
-msgstr "NAPTR record flags must be a quoted string."
+msgstr ""
+"Les drapeaux de l'enregistrement NAPTR doivent être une chaîne entre guillemets."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record flags must contain only A, P, S, or U."
-msgstr "NAPTR record flags must contain only A, P, S, or U."
+msgstr ""
+"Les drapeaux de l'enregistrement NAPTR ne doivent contenir que A, P, S, ou U."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
 msgid "NAPTR record service must be a quoted string."
-msgstr "NAPTR record service must be a quoted string."
+msgstr ""
+"Le service de l'enregistrement NAPTR doit être une chaîne entre guillemets."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:244
 msgid "NAPTR record regexp must be a quoted string."
-msgstr "NAPTR record regexp must be a quoted string."
+msgstr ""
+"La regexp de l'enregistrement NAPTR doit être une chaîne entre guillemets."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:264
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
 msgstr ""
+"Le remplacement de l'enregistrement NAPTR doit être soit \".\" soit un nom de domaine pleinement qualifié valide."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:270
 msgid ""
 "NAPTR record must have either a regexp or a replacement (with \".\"), but "
 "not both."
 msgstr ""
+"L'enregistrement NAPTR doit avoir soit une regexp soit un remplacement (avec \".\"), mais pas les deux."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:275
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
 msgstr ""
+"Un enregistrement NAPTR avec une regexp doit avoir \".\" comme remplacement."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:309
 msgid ""
@@ -5963,109 +6039,125 @@ msgid ""
 "and rs start with a letter and contain only alphanumeric characters (max 32 "
 "chars each)."
 msgstr ""
+"Le service NAPTR doit suivre le format : [protocole][+rs][+rs]... où protocole et rs commencent par une lettre et contiennent seulement des caractères alphanumériques (max 32 caractères chacun)."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:339
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
 msgstr ""
+"Les drapeaux terminaux \"S\", \"A\", \"U\", et \"P\" ne devraient pas être combinés avec d'autres drapeaux."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid "NAPTR regexp must start with a delimiter character."
-msgstr "NAPTR regexp must start with a delimiter character."
+msgstr "La regexp NAPTR doit commencer par un caractère délimiteur."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:367
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
 msgstr ""
+"La regexp NAPTR doit avoir le format délimiteur+modèle+délimiteur+remplacement+délimiteur+drapeaux."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:374
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
 msgstr ""
+"Les drapeaux de regexp NAPTR (après le troisième délimiteur) ne devraient contenir que \"i\" ou être vides."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:392
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
 msgstr ""
+"Ceci semble être un enregistrement NAPTR ENUM (RFC 6116). Assurez-vous que le domaine est sous e164.arpa ou un arbre ENUM privé."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:393
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
 msgstr ""
+"Les enregistrements ENUM devraient avoir le drapeau \"U\" pour indiquer une sortie URI."
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:420
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp contains potentially dangerous pattern: "
+msgstr "La regexp NAPTR contient un modèle potentiellement dangereux : "
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:427
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
-msgstr "NAPTR regexp is too long. Maximum length is 1000 characters."
+msgstr ""
+"La regexp NAPTR est trop longue. La longueur maximale est de 1000 caractères."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:96
 msgid ""
 "DNSKEY records are typically placed at the zone apex. This record does not "
 "appear to be at a zone apex, which is unusual for DNSSEC deployments."
 msgstr ""
+"Les enregistrements DNSKEY sont typiquement placés au sommet de la zone. Cet enregistrement ne semble pas être au sommet d'une zone, ce qui est inhabituel pour les déploiements DNSSEC."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
-msgstr "Priority field for DNSKEY records must be 0 or empty."
+msgstr ""
+"Le champ priorité pour les enregistrements DNSKEY doit être 0 ou vide."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:145
 msgid ""
 "DNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
 msgstr ""
+"L'enregistrement DNSKEY doit contenir les drapeaux, le protocole, l'algorithme et la clé publique séparés par des espaces."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
-msgstr "DNSKEY flags must be 0, 256, or 257."
+msgstr "Les drapeaux DNSKEY doivent être 0, 256, ou 257."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:158
 msgid ""
 "Flag value 0 indicates this key is NOT intended for use as a zone key in "
 "DNSSEC. Make sure this is intentional."
 msgstr ""
+"La valeur de drapeau 0 indique que cette clé n'est PAS destinée à être utilisée comme clé de zone dans DNSSEC. Assurez-vous que c'est intentionnel."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:160
 msgid ""
 "Flag value 256 indicates this is a Zone Signing Key (ZSK) with Zone Key bit "
 "set and SEP bit unset."
 msgstr ""
+"La valeur de drapeau 256 indique qu'il s'agit d'une clé de signature de zone (ZSK) avec le bit Zone Key activé et le bit SEP désactivé."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:162
 msgid ""
 "Flag value 257 indicates this is a Key Signing Key (KSK) with both Zone Key "
 "and SEP bits set."
 msgstr ""
+"La valeur de drapeau 257 indique qu'il s'agit d'une clé de signature de clé (KSK) avec les bits Zone Key et SEP activés."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
-msgstr "DNSKEY protocol must be 3."
+msgstr "Le protocole DNSKEY doit être 3."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:173
 msgid "DNSKEY algorithm must be a number between 1 and 16."
-msgstr "DNSKEY algorithm must be a number between 1 and 16."
+msgstr "L'algorithme DNSKEY doit être un nombre entre 1 et 16."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:207
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
 msgstr ""
+"ECDSAP256SHA256 (algorithme 13) est l'algorithme RECOMMANDÉ pour la signature DNSSEC selon la RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
+msgstr ""
+"%s (algorithme %d) est un algorithme qui DOIT être implémenté selon la RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
 msgstr ""
+"%s (algorithme %d) est spécifié comme optionnel pour l'implémentation dans la RFC 8624."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
@@ -6073,6 +6165,7 @@ msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
 msgstr ""
+"%s (algorithme %d) est OBSOLÈTE selon la RFC 8624. N'utilisez pas cet algorithme pour de nouveaux déploiements."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
@@ -6080,32 +6173,34 @@ msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
 msgstr ""
+"L'algorithme %d NE DOIT PAS être implémenté selon la RFC 8624. Cette valeur ne devrait pas être utilisée."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
-msgstr "DNSKEY public key must be valid base64-encoded data."
+msgstr "La clé publique DNSKEY doit être des données base64 valides."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:237
 msgid ""
 "RSA key size is less than 2048 bits. RFC 8624 recommends a minimum of 2048 "
 "bits for RSA keys."
 msgstr ""
+"La taille de clé RSA est inférieure à 2048 bits. La RFC 8624 recommande un minimum de 2048 bits pour les clés RSA."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:254
 msgid "Base64 encoding has incorrect padding."
-msgstr "Base64 encoding has incorrect padding."
+msgstr "L'encodage base64 a un remplissage incorrect."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:259
 msgid "Invalid base64 characters detected."
-msgstr "Invalid base64 characters detected."
+msgstr "Caractères base64 invalides détectés."
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:265
 msgid "Invalid base64 encoding."
-msgstr "Invalid base64 encoding."
+msgstr "Encodage base64 invalide."
 
 #: lib/Domain/Service/MfaService.php:454
 msgid "Your verification code"
-msgstr "Your verification code"
+msgstr "Votre code de vérification"
 
 #: lib/Domain/Service/MfaService.php:456
 #, php-format
@@ -6114,106 +6209,112 @@ msgid ""
 "\n"
 "This code will expire in 10 minutes at %s."
 msgstr ""
+"Votre code de vérification est : %s\n"
+"\n"
+"Ce code expirera dans 10 minutes à %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:61
 #, php-format
 msgid "There is no managed zone for domain: %s."
-msgstr "There is no managed zone for domain: %s."
+msgstr "Il n'y a pas de zone gérée pour le domaine : %s."
 
 #: lib/Domain/Service/DomainRecordCreator.php:74
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-msgstr "Adding IPv6 domain records from reverse zones is not supported yet."
+msgstr ""
+"L'ajout d'enregistrements de domaine IPv6 à partir de zones inverses n'est pas encore supporté."
 
 #: lib/Domain/Service/DomainRecordCreator.php:112
 msgid "This domain record was not valid and could not be added."
-msgstr "This domain record was not valid and could not be added."
+msgstr ""
+"Cet enregistrement de domaine n'était pas valide et n'a pas pu être ajouté."
 
 #: lib/Domain/Service/DomainRecordCreator.php:108
 msgid "The domain record was successfully added."
-msgstr "The domain record was successfully added."
+msgstr "L'enregistrement de domaine a été ajouté avec succès."
 
 #: lib/Domain/Service/DnsRecordValidationService.php:97
 msgid "Unable to find domain with the given ID."
-msgstr "Unable to find domain with the given ID."
+msgstr "Impossible de trouver le domaine avec l'ID donné."
 
 #: lib/Domain/Service/DnsRecordValidationService.php:103
 msgid "Unknown record type."
-msgstr "Unknown record type."
+msgstr "Type d'enregistrement inconnu."
 
 #: lib/Domain/Service/ApiKeyService.php:149
 msgid "API functionality is disabled."
-msgstr "API functionality is disabled."
+msgstr "La fonctionnalité API est désactivée."
 
 #: lib/Domain/Service/ApiKeyService.php:155
 msgid "You do not have permission to create API keys."
-msgstr "You do not have permission to create API keys."
+msgstr "Vous n'avez pas la permission de créer des clés API."
 
 #: lib/Domain/Service/ApiKeyService.php:162 templates/default/api_keys.html:18
 msgid "You have reached the maximum number of API keys allowed."
-msgstr "You have reached the maximum number of API keys allowed."
+msgstr "Vous avez atteint le nombre maximum de clés API autorisées."
 
 #: lib/Domain/Service/ApiKeyService.php:281
 msgid "You do not have permission to update API keys."
-msgstr "You do not have permission to update API keys."
+msgstr "Vous n'avez pas la permission de mettre à jour les clés API."
 
 #: lib/Domain/Service/ApiKeyService.php:229
 msgid "You do not have permission to delete API keys."
-msgstr "You do not have permission to delete API keys."
+msgstr "Vous n'avez pas la permission de supprimer les clés API."
 
 #: lib/Domain/Service/ApiKeyService.php:253
 msgid "You do not have permission to regenerate API keys."
-msgstr "You do not have permission to regenerate API keys."
+msgstr "Vous n'avez pas la permission de régénérer les clés API."
 
 #: lib/Domain/Service/DatabaseSchemaService.php:51
 msgid "Unknown database type."
-msgstr "Unknown database type."
+msgstr "Type de base de données inconnu."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:62
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
-msgstr "There is no matching reverse-zone for: %s."
+msgstr "Il n'y a pas de zone inverse correspondante pour : %s."
 
 #: lib/Domain/Service/ReverseRecordCreator.php:70
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
-msgstr "A PTR record for %s pointing to %s already exists."
+msgstr "Un enregistrement PTR pour %s pointant vers %s existe déjà."
 
 #: lib/Domain/Service/Dns/RecordManager.php:103
 msgid "You do not have the permission to add SOA record."
-msgstr "You do not have the permission to add SOA record."
+msgstr "Vous n'avez pas la permission d'ajouter un enregistrement SOA."
 
 #: lib/Domain/Service/Dns/RecordManager.php:107
 msgid "You do not have the permission to add NS record."
-msgstr "You do not have the permission to add NS record."
+msgstr "Vous n'avez pas la permission d'ajouter un enregistrement NS."
 
 #: lib/Domain/Service/Dns/RecordManager.php:154
 msgid "A record with this hostname, type, and content already exists."
-msgstr "A record with this hostname, type, and content already exists."
+msgstr ""
+"Un enregistrement avec ce nom d'hôte, ce type et ce contenu existe déjà."
 
 #: lib/Domain/Service/Dns/RecordManager.php:214
 msgid "You do not have the permission to edit this SOA record."
-msgstr "You do not have the permission to edit this SOA record."
+msgstr "Vous n'avez pas la permission de modifier cet enregistrement SOA."
 
 #: lib/Domain/Service/Dns/RecordManager.php:219
 msgid "You do not have the permission to edit this NS record."
-msgstr "You do not have the permission to edit this NS record."
+msgstr "Vous n'avez pas la permission de modifier cet enregistrement NS."
 
 #: lib/Domain/Service/Dns/RecordManager.php:299
 msgid "You do not have the permission to delete SOA records."
-msgstr "You do not have the permission to delete SOA records."
+msgstr "Vous n'avez pas la permission de supprimer les enregistrements SOA."
 
 #: lib/Domain/Service/Dns/RecordManager.php:312
 msgid "You do not have the permission to delete NS records."
-msgstr "You do not have the permission to delete NS records."
+msgstr "Vous n'avez pas la permission de supprimer les enregistrements NS."
 
 #: lib/Domain/Service/Dns/DomainManager.php:420
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
-msgstr "Invalid argument(s) given to function %s %s"
+msgstr "Argument(s) invalide(s) donné(s) à la fonction %s %s"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:280
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "There is already a supermaster with this IP address and hostname."
+msgstr "Il existe déjà un supermaster avec cette adresse IP et ce nom d'hôte."
 
 #: lib/Domain/Service/Dns/DomainManager.php:206
 #, php-format

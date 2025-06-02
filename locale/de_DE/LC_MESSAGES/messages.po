@@ -40,8 +40,8 @@ msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
 msgstr ""
-"Der Standard-Sitzungsverschlüsselungsschlüssel wird verwendet, bitte stellen "
-"Sie ihn in Ihrer Konfigurationsdatei ein."
+"Der Standard-Verschlüsselungsschlüssel für Sitzungen wird verwendet, bitte "
+"stellen Sie ihn in Ihrer Konfigurationsdatei ein."
 
 #: lib/BaseController.php:626
 #, php-format
