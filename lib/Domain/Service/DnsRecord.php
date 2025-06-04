@@ -1286,32 +1286,93 @@ class DnsRecord
 
         $sql_sortby = $sortby == "$domains_table.name" ? SortHelper::getZoneSortOrder($domains_table, $db_type, $sortDirection) : $sortby . " " . $sortDirection;
 
-        $query = "SELECT $domains_table.id,
-                        $domains_table.name,
-                        $domains_table.type,
-                        COUNT($records_table.id) AS count_records,
-                        users.username,
-                        users.fullname
-                        " . ($pdnssec_use ? ", COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured" : "") . "
-                        " . ($iface_zone_comments ? ", zones.comment" : "") . "
+        // Fix for pagination with multiple zone owners
+        // When zones have multiple owners, the JOIN creates duplicate rows which breaks pagination
+        // Solution: First get distinct domains with LIMIT, then join for owner details
+        if ($letterstart != 'all' && $rowamount != 999999) {
+            // Step 1: Get paginated list of unique domain IDs
+            $id_query = "SELECT DISTINCT $domains_table.id
+                        FROM $domains_table";
+
+            if ($perm == "own") {
+                $id_query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
+            }
+
+            $id_query .= " WHERE 1=1";
+
+            if ($perm == "own") {
+                $id_query .= " AND zones.owner = " . $this->db->quote($userid, 'integer');
+            }
+
+            if ($letterstart != 'all' && $letterstart != 1) {
+                $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = " . $this->db->quote($letterstart, 'text');
+            } elseif ($letterstart == 1) {
+                $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+            }
+
+            // Apply sorting to the ID query
+            if (strpos($sql_sortby, 'users.username') === false && strpos($sql_sortby, 'COUNT(') === false) {
+                $id_query .= " ORDER BY " . $sql_sortby;
+            } else {
+                // For complex sorts, use simple name sorting for the ID query
+                $id_query .= " ORDER BY $domains_table.name";
+            }
+
+            $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
+
+            // Step 2: Get full details for these domains
+            $query = "SELECT $domains_table.id,
+                            $domains_table.name,
+                            $domains_table.type,
+                            COUNT(DISTINCT $records_table.id) AS count_records,
+                            users.username,
+                            users.fullname
+                            " . ($pdnssec_use ? ", MAX(CASE WHEN $cryptokeys_table.id IS NOT NULL OR $domainmetadata_table.id IS NOT NULL THEN 1 ELSE 0 END) AS secured" : "") . "
+                            " . ($iface_zone_comments ? ", zones.comment" : "") . "
                         FROM $domains_table
+                        INNER JOIN (" . $id_query . ") AS limited_domains ON $domains_table.id = limited_domains.id
                         LEFT JOIN zones ON $domains_table.id=zones.domain_id
                         LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL
                         LEFT JOIN users ON users.id=zones.owner";
 
-        if ($pdnssec_use) {
-            $query .= " LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
-                        LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'";
+            if ($pdnssec_use) {
+                $query .= " LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
+                            LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'";
+            }
+
+            $query .= " GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, users.username, users.fullname
+                        " . ($iface_zone_comments ? ", zones.comment" : "") . "
+                        ORDER BY " . $sql_sortby;
+        } else {
+            // Original query for unpaginated results or 'all' letter filter
+            $query = "SELECT $domains_table.id,
+                            $domains_table.name,
+                            $domains_table.type,
+                            COUNT($records_table.id) AS count_records,
+                            users.username,
+                            users.fullname
+                            " . ($pdnssec_use ? ", COUNT($cryptokeys_table.id) > 0 OR COUNT($domainmetadata_table.id) > 0 AS secured" : "") . "
+                            " . ($iface_zone_comments ? ", zones.comment" : "") . "
+                            FROM $domains_table
+                            LEFT JOIN zones ON $domains_table.id=zones.domain_id
+                            LEFT JOIN $records_table ON $records_table.domain_id=$domains_table.id AND $records_table.type IS NOT NULL
+                            LEFT JOIN users ON users.id=zones.owner";
+
+            if ($pdnssec_use) {
+                $query .= " LEFT JOIN $cryptokeys_table ON $domains_table.id = $cryptokeys_table.domain_id AND $cryptokeys_table.active
+                            LEFT JOIN $domainmetadata_table ON $domains_table.id = $domainmetadata_table.domain_id AND $domainmetadata_table.kind = 'PRESIGNED'";
+            }
+
+            $query .= " WHERE 1=1" . $sql_add . "
+                        GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, users.username, users.fullname
+                        " . ($iface_zone_comments ? ", zones.comment" : "") . "
+                        ORDER BY " . $sql_sortby;
+
+            if ($letterstart != 'all') {
+                $this->db->setLimit($rowamount, $rowstart);
+            }
         }
 
-        $query .= " WHERE 1=1" . $sql_add . "
-                    GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, users.username, users.fullname
-                    " . ($iface_zone_comments ? ", zones.comment" : "") . "
-                    ORDER BY " . $sql_sortby;
-
-        if ($letterstart != 'all') {
-            $this->db->setLimit($rowamount, $rowstart);
-        }
         $result = $this->db->query($query);
         $this->db->setLimit(0);
 
