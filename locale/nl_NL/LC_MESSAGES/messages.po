@@ -258,7 +258,7 @@ msgstr "API-sleutelnaam is verplicht."
 
 #: lib/Application/Controller/ApiKeysController.php:209
 msgid "Invalid expiration date format."
-msgstr "Ongeldig vervaldatum formaat."
+msgstr "Ongeldig formaat voor vervaldatum."
 
 #: lib/Domain/Service/ApiKeyService.php:275
 msgid "API key not found or you do not have permission to edit it."
@@ -347,7 +347,7 @@ msgstr "De gebruiker is succesvol aangemaakt."
 #: lib/Application/Controller/AddUserController.php:110
 #, php-format
 msgid "Generated password: %s"
-msgstr "Gegenereerd wachtwoord: %s"
+msgstr "Gegenereerd wachtwoord: %s."
 
 #: lib/Application/Controller/AddUserController.php:126
 msgid "Login details have been sent to the user via email."
@@ -1770,7 +1770,7 @@ msgid ""
 "AFSDB server hostname must be a fully qualified domain name with at least "
 "two parts."
 msgstr ""
-"AFSDB server hostnaam moet een fully qualified domain name zijn met minstens twee delen."
+"AFSDB-serverhostnaam moet een volledig gekwalificeerde domeinnaam zijn met minstens twee delen."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:164
 msgid ""
@@ -1824,11 +1824,11 @@ msgstr "Breedtegraden moeten tussen 0 en 90 liggen."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:165
 msgid "Latitude direction must be specified as N or S."
-msgstr "Breedtegraadrichting moet worden opgegeven als N of Z."
+msgstr "Breedtegraadrichting moet worden opgegeven als N of S."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:169
 msgid "Longitude direction must be specified as E or W."
-msgstr "Lengtegraadrichting moet worden opgegeven als O of W."
+msgstr "Lengtegraadrichting moet worden opgegeven als E of W."
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:176
 msgid "Longitude degrees must be between 0 and 180."
@@ -2723,7 +2723,7 @@ msgstr ""
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
 msgstr ""
-"CERT type moet een getal tussen 0 en 65535 of een geldige geheugensteun zijn."
+"CERT type moet een getal tussen 0 en 65535 of een geldige afkorting zijn."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
@@ -2734,7 +2734,7 @@ msgid ""
 "CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
 "SPKI, PGP, etc.)."
 msgstr ""
-"CERT type moet een getal tussen 0 en 65535 of een geldige geheugensteun (PKIX, SPKI, PGP, etc.) zijn."
+"CERT type moet een getal tussen 0 en 65535 of een geldig acroniem (PKIX, SPKI, PGP, etc.) zijn."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:192
 msgid ""
@@ -2757,7 +2757,7 @@ msgid ""
 "CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
 "(RSASHA1, DSA, etc.)."
 msgstr ""
-"CERT algoritme moet een getal tussen 0 en 255 of een geldige geheugensteun (RSASHA1, DSA, etc.) zijn."
+"CERT algoritme moet een getal tussen 0 en 255 of een geldig acroniem (RSASHA1, DSA, etc.) zijn."
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
@@ -5049,7 +5049,7 @@ msgstr "Ongeldige karakters in LUA record inhoud."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:119
 msgid "Priority field for LUA records must be 0 or empty"
-msgstr "Prioriteitsveld voor LUA records moet 0 of leeg zijn"
+msgstr "Prioriteitsveld voor LUA records moet 0 of leeg zijn."
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:127
 msgid ""
@@ -8817,7 +8817,7 @@ msgstr ""
 
 #: templates/default/add_zone_master.html:132
 msgid "Use fully qualified domain names (example.com)"
-msgstr "Gebruik fully qualified domain names (voorbeeld.com)"
+msgstr "Gebruik volledig gekwalificeerde domeinnamen (voorbeeld.com)"
 
 #: templates/default/add_zone_master.html:133
 msgid "Select a template to automatically create common DNS records"
