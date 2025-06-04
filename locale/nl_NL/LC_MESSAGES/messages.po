@@ -11,7 +11,7 @@ msgstr ""
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
-"Language: en_EN\n"
+"Language: nl_NL\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -33,7 +33,6 @@ msgid ""
 "first before proceeding."
 msgstr ""
 "De <a href=\"install/\">install/</a> map bestaat, u moet deze eerst verwijderen voordat u doorgaat."
-"first before proceeding."
 
 #: lib/BaseController.php:525
 msgid ""
@@ -46,12 +45,12 @@ msgstr ""
 #: lib/BaseController.php:626
 #, php-format
 msgid "The %s field is required."
-msgstr "Het %s veld is verplicht."
+msgstr "Het veld %s is verplicht."
 
 #: lib/BaseController.php:634
 #, php-format
 msgid "The %s field must be a number."
-msgstr "Het %s veld moet een getal zijn."
+msgstr "Het veld %s moet een getal zijn."
 
 #: lib/Application/Presenter/PaginationPresenter.php:52
 msgid "Previous"
@@ -1178,7 +1177,7 @@ msgstr "Uw inhoudsveld heeft geen geldige waarde."
 
 #: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:74
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
-msgstr "Prioriteit voor MX/SRV-records moet een getal tussen 0 en 65535 zijn."
+msgstr "Prioriteit voor MX/SRV-records moet tussen 0 en 65535 liggen."
 
 #: lib/Domain/Model/ZoneTemplate.php:529
 msgid "Error updating zone template record: "
@@ -1552,7 +1551,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
-msgstr "TLSA-certificaatgegevens moeten een hexadecimale string zijn."
+msgstr "TLSA-certificaatgegevens moeten hexadecimaal zijn."
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:315
 msgid "TLSA SHA-256 certificate data must be 64 characters long."
@@ -1748,7 +1747,7 @@ msgstr "LP voorkeur moet een getal tussen 0 en 65535 zijn."
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:169
 msgid "LP FQDN must be a valid fully qualified domain name."
-msgstr "LP FQDN moet een geldige fully qualified domain name zijn."
+msgstr "LP FQDN moet een geldige volledig gekwalificeerde domeinnaam zijn."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:82
 msgid ""
@@ -1764,7 +1763,7 @@ msgstr "Ongeldige AFSDB hostnaam."
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
 msgstr ""
-"AFSDB server hostnaam moet een fully qualified domain name (FQDN) zijn."
+"AFSDB-serverhostnaam moet een volledig gekwalificeerde domeinnaam (FQDN) zijn."
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
@@ -2158,7 +2157,7 @@ msgstr ""
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:273
 msgid "NID record preference must be a number."
-msgstr "NID record voorkeur moet een getal zijn."
+msgstr "De voorkeur voor NID-records moet een getal zijn."
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:280
 msgid "NID record preference must be between 0 and 65535."
@@ -2166,7 +2165,7 @@ msgstr "NID record voorkeur moet tussen 0 en 65535 liggen."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:102
 msgid "ALIAS target must be a fully qualified domain name (FQDN)."
-msgstr "ALIAS doel moet een fully qualified domain name (FQDN) zijn."
+msgstr "ALIAS-doel moet een volledig gekwalificeerde domeinnaam (FQDN) zijn."
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:107
 msgid ""
@@ -2751,7 +2750,7 @@ msgstr "CERT key tag moet een getal tussen 0 en 65535 zijn."
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:221
 msgid "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
 msgstr ""
-"CERT algoritme moet een getal tussen 0 en 255 of een geldige geheugensteun zijn."
+"CERT-algoritme moet een getal tussen 0 en 255 of een geldige afkorting zijn."
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:227
 msgid ""
@@ -4606,7 +4605,7 @@ msgstr "Serienummer moet numeriek zijn."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:214
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
-msgstr "Serienummer moet een 32-bit unsigned integer zijn (0 tot 4294967295)."
+msgstr "Serienummer moet tussen 0 en 4294967295 liggen."
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:227
 msgid ""
@@ -6231,7 +6230,7 @@ msgstr "De geselecteerde gebruiker is al eigenaar van de zone."
 
 #: templates/default/list_perm_templ.html:3
 msgid "Home"
-msgstr "Home"
+msgstr "Start"
 
 #: templates/default/api_keys.html:4 templates/default/api_key_delete.html:4
 msgid "API Keys"
@@ -6239,11 +6238,11 @@ msgstr "API Sleutels"
 
 #: templates/default/api_key_regenerated.html:5
 msgid "API Key Regenerated"
-msgstr "API Sleutel Geregeneerd"
+msgstr "API Sleutel Geregenereerd"
 
 #: templates/default/api_key_regenerated.html:11
 msgid "API Key Regenerated Successfully"
-msgstr "API Sleutel Succesvol Geregeneerd"
+msgstr "API Sleutel Succesvol Geregenereerd"
 
 #: templates/default/api_key_regenerated.html:16
 msgid "IMPORTANT: Save your new API key now!"
@@ -6574,7 +6573,7 @@ msgstr "Sjabloon Placeholders"
 
 #: templates/default/edit_zone_templ.html:187
 msgid "Placeholder"
-msgstr "Placeholder"
+msgstr "Tijdelijke aanduiding"
 
 #: templates/default/list_perm_templ.html:19
 msgid "Description"
@@ -6890,7 +6889,7 @@ msgstr "Server Status Bekijken"
 
 #: templates/default/index.html:33
 msgid "Server Status"
-msgstr "Server Status"
+msgstr "Serverstatus"
 
 #: templates/default/index.html:46
 msgid "My Profile"
@@ -7030,7 +7029,7 @@ msgstr "Batch PTR Records"
 
 #: templates/default/index.html:235 templates/default/index.html:239
 msgid "Zone Logs"
-msgstr "Zone Logs"
+msgstr "Zonelogs"
 
 #: templates/default/index.html:236
 msgid "View zone change history"
@@ -7115,7 +7114,7 @@ msgstr "Domein WHOIS informatie opzoeken"
 
 #: templates/default/whois.html:10
 msgid "WHOIS Lookup"
-msgstr "WHOIS Opzoeken"
+msgstr "WHOIS Opzoeking"
 
 #: templates/default/header.html:152
 msgid "RDAP"
@@ -7262,7 +7261,7 @@ msgstr ""
 
 #: templates/default/list_log_zones.html:11 templates/default/header.html:86
 msgid "Zone logs"
-msgstr "Zone logs"
+msgstr "Zonelogs"
 
 #: templates/default/list_log_zones.html:17
 msgid "Zone Change Logs"
@@ -7294,7 +7293,7 @@ msgstr "Details"
 
 #: templates/default/list_log_zones.html:87
 msgid "Log Details"
-msgstr "Log Details"
+msgstr "Logdetails"
 
 #: templates/default/list_log_zones.html:94
 msgid "Close"
@@ -7571,7 +7570,7 @@ msgstr "Reverse Zone Types"
 
 #: templates/default/list_reverse_zones.html:36
 msgid "All"
-msgstr "All"
+msgstr "Alle"
 
 #: templates/default/list_reverse_zones.html:39
 msgid "IPv4"
@@ -7595,31 +7594,31 @@ msgstr "IPv6 reverse zones:"
 
 #: templates/default/search.html:123 templates/default/search.html:308
 msgid "Rows per page:"
-msgstr "Rows per page:"
+msgstr "Rijen per pagina:"
 
 #: templates/default/list_reverse_zones.html:93
 msgid "There are no reverse zones to show in this listing."
-msgstr "There are no reverse zones to show in this listing."
+msgstr "Er zijn geen reverse zones om te tonen in deze lijst."
 
 #: templates/default/add_zone_slave.html:40
 msgid "Owner"
-msgstr "Owner"
+msgstr "Eigenaar"
 
 #: templates/default/list_forward_zones.html:88
 msgid "Full name"
-msgstr "Full name"
+msgstr "Volledige naam"
 
 #: templates/default/list_reverse_zones.html:126
 msgid "Associated Forward Zones"
-msgstr "Associated Forward Zones"
+msgstr "Geassocieerde Forward Zones"
 
 #: templates/default/list_forward_zones.html:92
 msgid "Serial"
-msgstr "Serial"
+msgstr "Serienummer"
 
 #: templates/default/bulk_registration.html:60
 msgid "Template"
-msgstr "Template"
+msgstr "Sjabloon"
 
 #: templates/default/list_reverse_zones.html:188
 msgid "-"
@@ -7627,27 +7626,27 @@ msgstr "-"
 
 #: templates/default/search.html:285
 msgid "Delete zone(s)"
-msgstr "Delete zone(s)"
+msgstr "Zone(s) verwijderen"
 
 #: templates/default/dnssec_add_key.html:81
 msgid "Add key"
-msgstr "Add key"
+msgstr "Sleutel toevoegen"
 
 #: templates/default/dnssec_add_key.html:34
 msgid "Add key for zone"
-msgstr "Add key for zone"
+msgstr "Sleutel toevoegen voor zone"
 
 #: templates/default/dnssec_add_key.html:43
 msgid "Key type"
-msgstr "Key type"
+msgstr "Sleuteltype"
 
 #: templates/default/dnssec_add_key.html:50
 msgid "Select key type"
-msgstr "Select key type"
+msgstr "Selecteer sleuteltype"
 
 #: templates/default/dnssec_add_key.html:61
 msgid "Select algorithm"
-msgstr "Select algorithm"
+msgstr "Selecteer algoritme"
 
 #: templates/default/dnssec_add_key.html:66
 msgid "Bits in length"
@@ -8087,7 +8086,7 @@ msgstr "bijv. \"2001:db8:1:1\""
 
 #: templates/default/batch_ptr_record.html:71
 msgid "Host Prefix"
-msgstr "Host Prefix"
+msgstr "Hostprefix"
 
 #: templates/default/batch_ptr_record.html:71
 msgid "Optional"
@@ -8519,7 +8518,7 @@ msgstr "Deze actie kan niet ongedaan gemaakt worden."
 
 #: templates/default/delete_zone_templ_record.html:29
 msgid "Record Details"
-msgstr "Record Details"
+msgstr "Recorddetails"
 
 #: templates/default/delete_record.html:74
 msgid "You are trying to delete a record that is needed for this zone to work."
@@ -8975,106 +8974,110 @@ msgstr "Aanbevolen Authenticator Apps"
 
 #: templates/default/mfa_verify_app.html:97
 msgid "Available for Android and iOS"
-msgstr "Available for Android and iOS"
+msgstr "Beschikbaar voor Android en iOS"
 
 #: templates/default/edit_zone_templ.html:7
 msgid "Edit template"
-msgstr "Edit template"
+msgstr "Sjabloon bewerken"
 
 #: templates/default/edit_zone_templ.html:14
 msgid "Sync Required"
-msgstr "Sync Required"
+msgstr "Synchronisatie Vereist"
 
 #: templates/default/edit_zone_templ.html:15
 msgid "There are"
-msgstr "There are"
+msgstr "Er zijn"
 
 #: templates/default/edit_zone_templ.html:15
 msgid ""
 "zones that need to be updated to reflect the current template configuration."
 msgstr ""
+"zones die bijgewerkt moeten worden om de huidige sjabloonconfiguratie te reflecteren."
 
 #: templates/default/edit_zone_templ.html:29
 msgid "Template Records"
-msgstr "Template Records"
+msgstr "Sjabloon Records"
 
 #: templates/default/edit_zone_templ.html:33
 msgid ""
 "This template does not have an SOA record. DNS zones typically require an "
 "SOA record to function properly, and DNSSEC signing may fail without one."
 msgstr ""
+"Dit sjabloon heeft geen SOA record. DNS zones vereisen doorgaans een SOA record om goed te functioneren, en DNSSEC ondertekening kan mislukken zonder een SOA record."
 
 #: templates/default/edit_zone_templ.html:39
 msgid "This zone template does not have any records yet."
-msgstr "This zone template does not have any records yet."
+msgstr "Dit zone sjabloon heeft nog geen records."
 
 #: templates/default/edit_zone_templ.html:104
 msgid "View zones"
-msgstr "View zones"
+msgstr "Zones bekijken"
 
 #: templates/default/edit_zone_templ.html:109
 msgid "Update zones"
-msgstr "Update zones"
+msgstr "Zones bijwerken"
 
 #: templates/default/edit_zone_templ.html:125
 msgid "Template Settings"
-msgstr "Template Settings"
+msgstr "Sjabloon Instellingen"
 
 #: templates/default/edit_zone_templ.html:136
 msgid "To use 'Save As', change the name first"
-msgstr "To use 'Save As', change the name first"
+msgstr "Om 'Opslaan Als' te gebruiken, wijzig eerst de naam"
 
 #: templates/default/edit_zone_templ.html:163
 msgid "Save As"
-msgstr "Save As"
+msgstr "Opslaan Als"
 
 #: templates/default/edit_zone_templ.html:182
 msgid "The following placeholders can be used in template records"
-msgstr "The following placeholders can be used in template records"
+msgstr "De volgende placeholders kunnen gebruikt worden in sjabloon records"
 
 #: templates/default/edit_zone_templ.html:305
 msgid "Warning: Missing SOA Record"
-msgstr "Warning: Missing SOA Record"
+msgstr "Waarschuwing: Ontbrekend SOA Record"
 
 #: templates/default/edit_zone_templ.html:311
 msgid "This zone template does not have an SOA (Start of Authority) record."
-msgstr "This zone template does not have an SOA (Start of Authority) record."
+msgstr "Dit zone sjabloon heeft geen SOA (Start of Authority) record."
 
 #: templates/default/edit_zone_templ.html:312
 msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
 msgstr ""
+"DNS zones vereisen doorgaans een SOA record om goed te functioneren, en DNSSEC ondertekening kan mislukken zonder een SOA record."
 
 #: templates/default/edit_zone_templ.html:313
 msgid "Do you want to continue without adding an SOA record?"
-msgstr "Do you want to continue without adding an SOA record?"
+msgstr "Wilt u doorgaan zonder een SOA record toe te voegen?"
 
 #: templates/default/edit_zone_templ.html:319
 msgid "Continue Without SOA"
-msgstr "Continue Without SOA"
+msgstr "Doorgaan Zonder SOA"
 
 #: templates/default/list_supermasters.html:50
 msgid "There are no supermasters to show in this listing."
-msgstr "There are no supermasters to show in this listing."
+msgstr "Er zijn geen supermasters om te tonen in deze lijst."
 
 #: templates/default/api_key_created.html:5
 msgid "API Key Created"
-msgstr "API Key Created"
+msgstr "API Sleutel Aangemaakt"
 
 #: templates/default/api_key_created.html:11
 msgid "API Key Created Successfully"
-msgstr "API Key Created Successfully"
+msgstr "API Sleutel Succesvol Aangemaakt"
 
 #: templates/default/api_key_created.html:16
 msgid "IMPORTANT: Save your API key now!"
-msgstr "IMPORTANT: Save your API key now!"
+msgstr "BELANGRIJK: Sla uw API sleutel nu op!"
 
 #: templates/default/api_key_created.html:17
 msgid ""
 "This is the only time your API key will be displayed. Please save it now as "
 "you won't be able to see it again."
 msgstr ""
+"Dit is de enige keer dat uw API sleutel wordt getoond. Sla deze nu op aangezien u deze niet meer kunt bekijken."
 
 #: templates/default/api_key_created.html:27
 msgid "API Key:"
@@ -9082,31 +9085,32 @@ msgstr "API Key:"
 
 #: templates/default/rdap.html:20 templates/default/whois.html:20
 msgid "Enter domain name"
-msgstr "Enter domain name"
+msgstr "Voer domeinnaam in"
 
 #: templates/default/rdap.html:22 templates/default/whois.html:22
 msgid "Lookup"
-msgstr "Lookup"
+msgstr "Opzoeken"
 
 #: templates/default/rdap.html:26
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
-msgstr "Enter a domain name (e.g., example.com) to lookup its RDAP information"
+msgstr ""
+"Voer een domeinnaam in (bijv. voorbeeld.com) om de RDAP informatie op te zoeken"
 
 #: templates/default/rdap.html:34
 msgid "RDAP results for"
-msgstr "RDAP results for"
+msgstr "RDAP resultaten voor"
 
 #: templates/default/rdap.html:45
 msgid "Please enter a domain name to perform an RDAP lookup."
-msgstr "Please enter a domain name to perform an RDAP lookup."
+msgstr "Voer een domeinnaam in om een RDAP opzoeking uit te voeren."
 
 #: templates/default/bulk_registration.html:11 templates/default/header.html:74
 msgid "Bulk registration"
-msgstr "Bulk registration"
+msgstr "Bulk registratie"
 
 #: templates/default/bulk_registration.html:42
 msgid "Please select an owner"
-msgstr "Please select an owner"
+msgstr "Selecteer een eigenaar"
 
 #: templates/default/bulk_registration.html:46
 msgid "Zone Type"
@@ -9114,107 +9118,114 @@ msgstr "Zone Type"
 
 #: templates/default/bulk_registration.html:70
 msgid "Domains"
-msgstr "Domains"
+msgstr "Domeinen"
 
 #: templates/default/bulk_registration.html:72
 msgid "Provide a domain name(s)"
-msgstr "Provide a domain name(s)"
+msgstr "Geef domeinnaam/namen op"
 
 #: templates/default/bulk_registration.html:73
 msgid "Type one domain per line"
-msgstr "Type one domain per line"
+msgstr "Typ één domein per regel"
 
 #: templates/default/bulk_registration.html:79
 msgid "Add Zones"
-msgstr "Add Zones"
+msgstr "Zones Toevoegen"
 
 #: templates/default/bulk_registration.html:95
 msgid "About Bulk Registration"
-msgstr "About Bulk Registration"
+msgstr "Over Bulk Registratie"
 
 #: templates/default/bulk_registration.html:101
 msgid "This tool allows you to create multiple DNS zones at once."
-msgstr "This tool allows you to create multiple DNS zones at once."
+msgstr ""
+"Dit gereedschap stelt u in staat om meerdere DNS zones tegelijk aan te maken."
 
 #: templates/default/bulk_registration.html:103
 msgid "Enter one domain name per line in the Domains field"
-msgstr "Enter one domain name per line in the Domains field"
+msgstr "Voer één domeinnaam per regel in het Domeinen veld in"
 
 #: templates/default/bulk_registration.html:104
 msgid "Select a zone template to apply standard records to all zones"
-msgstr "Select a zone template to apply standard records to all zones"
+msgstr ""
+"Selecteer een zone sjabloon om standaard records toe te passen op alle zones"
 
 #: templates/default/bulk_registration.html:105
 msgid "The chosen owner will have full access to all created zones"
-msgstr "The chosen owner will have full access to all created zones"
+msgstr ""
+"De gekozen eigenaar heeft volledige toegang tot alle aangemaakte zones"
 
 #: templates/default/bulk_registration.html:109
 msgid "How It Works"
-msgstr "How It Works"
+msgstr "Hoe Het Werkt"
 
 #: templates/default/bulk_registration.html:110
 msgid ""
 "The system will attempt to create each zone with the same settings. Failed "
 "domains will be displayed so you can correct any issues and try again."
 msgstr ""
+"Het systeem zal proberen elke zone met dezelfde instellingen aan te maken. Mislukte domeinen worden getoond zodat u eventuele problemen kunt corrigeren en opnieuw kunt proberen."
 
 #: templates/default/bulk_registration.html:118
 msgid "Tips & Recommendations"
-msgstr "Tips & Recommendations"
+msgstr "Tips & Aanbevelingen"
 
 #: templates/default/bulk_registration.html:124
 msgid "Use NATIVE zone type for most standard setups"
-msgstr "Use NATIVE zone type for most standard setups"
+msgstr "Gebruik NATIVE zone type voor de meeste standaard configuraties"
 
 #: templates/default/bulk_registration.html:125
 msgid "Create a template first if you need standard records for all zones"
-msgstr "Create a template first if you need standard records for all zones"
+msgstr ""
+"Maak eerst een sjabloon aan als u standaard records nodig hebt voor alle zones"
 
 #: templates/default/bulk_registration.html:126
 msgid "You can copy and paste a list of domains from a spreadsheet"
-msgstr "You can copy and paste a list of domains from a spreadsheet"
+msgstr ""
+"U kunt een lijst met domeinen kopiëren en plakken vanuit een spreadsheet"
 
 #: templates/default/bulk_registration.html:127
 msgid "Make sure the domain names follow valid DNS naming conventions"
-msgstr "Make sure the domain names follow valid DNS naming conventions"
+msgstr "Zorg ervoor dat de domeinnamen geldige DNS naamconventies volgen"
 
 #: templates/default/delete_records.html:22
 msgid "Delete records"
-msgstr "Delete records"
+msgstr "Records verwijderen"
 
 #: templates/default/delete_records.html:27
 msgid ""
 "Are you sure you want to delete the following records? This action cannot be "
 "undone."
 msgstr ""
+"Weet u zeker dat u de volgende records wilt verwijderen? Deze actie kan niet ongedaan gemaakt worden."
 
 #: templates/default/delete_records.html:78
 msgid "Also delete corresponding PTR records (if they exist)"
-msgstr "Also delete corresponding PTR records (if they exist)"
+msgstr "Ook overeenkomende PTR records verwijderen (indien aanwezig)"
 
 #: templates/default/delete_records.html:84
 msgid "Yes, delete these records"
-msgstr "Yes, delete these records"
+msgstr "Ja, deze records verwijderen"
 
 #: templates/default/mfa_recovery_codes.html:36
 msgid "Recovery Codes"
-msgstr "Recovery Codes"
+msgstr "Herstelcodes"
 
 #: templates/default/mfa_recovery_codes.html:14
 msgid "MFA Setup Complete"
-msgstr "MFA Setup Complete"
+msgstr "MFA Installatie Voltooid"
 
 #: templates/default/mfa_recovery_codes.html:18
 msgid "Multi-Factor Authentication is now enabled"
-msgstr "Multi-Factor Authentication is now enabled"
+msgstr "Multi-Factor Authenticatie is nu ingeschakeld"
 
 #: templates/default/mfa_recovery_codes.html:19
 msgid "Your account is now protected with multi-factor authentication."
-msgstr "Your account is now protected with multi-factor authentication."
+msgstr "Uw account is nu beschermd met multi-factor authenticatie."
 
 #: templates/default/mfa_setup.html:24 templates/default/mfa_setup.html:26
 msgid "Authentication method:"
-msgstr "Authentication method:"
+msgstr "Authenticatie methode:"
 
 #: templates/default/mfa_setup.html:24
 msgid "Authenticator app"
@@ -9222,84 +9233,87 @@ msgstr "Authenticator app"
 
 #: templates/default/mfa_setup.html:26
 msgid "Email verification"
-msgstr "Email verification"
+msgstr "E-mail verificatie"
 
 #: templates/default/mfa_recovery_codes.html:29
 msgid "Save Your Recovery Codes"
-msgstr "Save Your Recovery Codes"
+msgstr "Sla Uw Herstelcodes Op"
 
 #: templates/default/mfa_recovery_codes.html:30
 msgid ""
 "Recovery codes can be used to access your account if you lose access to your "
 "authenticator device. Each code can only be used once."
 msgstr ""
+"Herstelcodes kunnen gebruikt worden om toegang te krijgen tot uw account als u de toegang tot uw authenticator apparaat verliest. Elke code kan slechts eenmaal gebruikt worden."
 
 #: templates/default/mfa_recovery_codes.html:31
 msgid "Store these codes in a safe place!"
-msgstr "Store these codes in a safe place!"
+msgstr "Bewaar deze codes op een veilige plaats!"
 
 #: templates/default/mfa_recovery_codes.html:49
 msgid "Print"
-msgstr "Print"
+msgstr "Afdrukken"
 
 #: templates/default/mfa_recovery_codes.html:52
 msgid "Copy all"
-msgstr "Copy all"
+msgstr "Alles kopiëren"
 
 #: templates/default/mfa_recovery_codes.html:55
 msgid "Download"
-msgstr "Download"
+msgstr "Downloaden"
 
 #: templates/default/mfa_recovery_codes.html:62
 msgid "Back to MFA Settings"
-msgstr "Back to MFA Settings"
+msgstr "Terug naar MFA Instellingen"
 
 #: templates/default/mfa_setup.html:39
 msgid "Disable MFA"
-msgstr "Disable MFA"
+msgstr "MFA Uitschakelen"
 
 #: templates/default/mfa_recovery_codes.html:71
 msgid "Continue to Dashboard"
-msgstr "Continue to Dashboard"
+msgstr "Doorgaan naar Dashboard"
 
 #: templates/default/mfa_recovery_codes.html:92
 msgid "All recovery codes copied to clipboard"
-msgstr "All recovery codes copied to clipboard"
+msgstr "Alle herstelcodes gekopieerd naar klembord"
 
 #: templates/default/mfa_recovery_codes.html:101
 msgid "Poweradmin MFA Recovery Codes"
-msgstr "Poweradmin MFA Recovery Codes"
+msgstr "Poweradmin MFA Herstelcodes"
 
 #: templates/default/mfa_recovery_codes.html:115
 msgid ""
 "Store these codes in a safe place. Each code can be used once to log in if "
 "you lose access to your authenticator device."
 msgstr ""
+"Bewaar deze codes op een veilige plaats. Elke code kan eenmaal gebruikt worden om in te loggen als u de toegang tot uw authenticator apparaat verliest."
 
 #: templates/default/mfa_setup.html:16
 msgid ""
 "Multi-factor authentication adds an extra layer of security to your account."
 msgstr ""
+"Multi-factor authenticatie voegt een extra beveiligingslaag toe aan uw account."
 
 #: templates/default/mfa_setup.html:20
 msgid "MFA is currently enabled"
-msgstr "MFA is currently enabled"
+msgstr "MFA is momenteel ingeschakeld"
 
 #: templates/default/mfa_setup.html:21
 msgid "Your account is protected with multi-factor authentication."
-msgstr "Your account is protected with multi-factor authentication."
+msgstr "Uw account is beschermd met multi-factor authenticatie."
 
 #: templates/default/mfa_setup.html:33
 msgid "Regenerate Recovery Codes"
-msgstr "Regenerate Recovery Codes"
+msgstr "Herstelcodes Regenereren"
 
 #: templates/default/mfa_setup.html:46
 msgid "MFA is currently disabled"
-msgstr "MFA is currently disabled"
+msgstr "MFA is momenteel uitgeschakeld"
 
 #: templates/default/mfa_setup.html:47
 msgid "Your account is not protected with multi-factor authentication."
-msgstr "Your account is not protected with multi-factor authentication."
+msgstr "Uw account is niet beschermd met multi-factor authenticatie."
 
 #: templates/default/mfa_setup.html:58
 msgid "Authenticator App"
@@ -9310,104 +9324,108 @@ msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
 "or Authy."
 msgstr ""
+"Gebruik een authenticator app zoals Google Authenticator, Microsoft Authenticator, of Authy."
 
 #: templates/default/mfa_setup.html:63
 msgid "Works offline"
-msgstr "Works offline"
+msgstr "Werkt offline"
 
 #: templates/default/mfa_setup.html:64
 msgid "More secure"
-msgstr "More secure"
+msgstr "Veiliger"
 
 #: templates/default/mfa_setup.html:65
 msgid "Easy to use"
-msgstr "Easy to use"
+msgstr "Eenvoudig te gebruiken"
 
 #: templates/default/mfa_setup.html:69
 msgid "Set up app authentication"
-msgstr "Set up app authentication"
+msgstr "App authenticatie instellen"
 
 #: templates/default/mfa_verify_email.html:5
 msgid "Email Verification"
-msgstr "Email Verification"
+msgstr "E-mail Verificatie"
 
 #: templates/default/mfa_setup.html:81
 msgid "Receive a verification code via email when you log in."
-msgstr "Receive a verification code via email when you log in."
+msgstr "Ontvang een verificatiecode via e-mail wanneer u inlogt."
 
 #: templates/default/mfa_setup.html:83
 msgid "No additional app required"
-msgstr "No additional app required"
+msgstr "Geen extra app vereist"
 
 #: templates/default/mfa_setup.html:84
 msgid "Requires internet connection"
-msgstr "Requires internet connection"
+msgstr "Vereist internetverbinding"
 
 #: templates/default/mfa_setup.html:85
 msgid "Relies on email delivery"
-msgstr "Relies on email delivery"
+msgstr "Afhankelijk van e-mail bezorging"
 
 #: templates/default/mfa_setup.html:90
 msgid ""
 "Email verification is not available because mail service is not enabled on "
 "this system."
 msgstr ""
+"E-mail verificatie is niet beschikbaar omdat de e-mailservice niet is ingeschakeld op dit systeem."
 
 #: templates/default/mfa_setup.html:94
 msgid ""
 "You need to set your email address in your profile before you can use email "
 "verification."
 msgstr ""
+"U moet uw e-mailadres instellen in uw profiel voordat u e-mail verificatie kunt gebruiken."
 
 #: templates/default/mfa_setup.html:99
 msgid "Set up email verification"
-msgstr "Set up email verification"
+msgstr "E-mail verificatie instellen"
 
 #: templates/default/mfa_verify_email.html:14
 msgid "Verify Email Code"
-msgstr "Verify Email Code"
+msgstr "E-mail Code Verifiëren"
 
 #: templates/default/mfa_verify_email.html:17
 msgid "A verification code has been sent to your email address."
-msgstr "A verification code has been sent to your email address."
+msgstr "Een verificatiecode is verzonden naar uw e-mailadres."
 
 #: templates/default/mfa_verify_email.html:18
 msgid ""
 "Please enter the 6-digit code to verify and enable Multi-Factor "
 "Authentication."
 msgstr ""
+"Voer de 6-cijferige code in om Multi-Factor Authenticatie te verifiëren en in te schakelen."
 
 #: templates/default/mfa_verify_email.html:34
 msgid "Enter the 6-digit code from your email"
-msgstr "Enter the 6-digit code from your email"
+msgstr "Voer de 6-cijferige code van uw e-mail in"
 
 #: templates/default/list_template_zones.html:12
 msgid "Zones using template"
-msgstr "Zones using template"
+msgstr "Zones die sjabloon gebruiken"
 
 #: templates/default/list_template_zones.html:63
 msgid "Domain name"
-msgstr "Domain name"
+msgstr "Domeinnaam"
 
 #: templates/default/list_template_zones.html:75
 msgid "No domains using this template"
-msgstr "No domains using this template"
+msgstr "Geen domeinen gebruiken dit sjabloon"
 
 #: templates/default/list_template_zones.html:123
 msgid "Back to templates"
-msgstr "Back to templates"
+msgstr "Terug naar sjablonen"
 
 #: templates/default/list_template_zones.html:129
 msgid "Unlink selected zones"
-msgstr "Unlink selected zones"
+msgstr "Geselecteerde zones ontkoppelen"
 
 #: templates/default/delete_domain.html:24
 msgid "Delete Zone"
-msgstr "Delete Zone"
+msgstr "Zone Verwijderen"
 
 #: templates/default/delete_domain.html:33
 msgid "You are about to delete the zone"
-msgstr "You are about to delete the zone"
+msgstr "U staat op het punt de zone te verwijderen"
 
 #: templates/default/delete_domain.html:41
 msgid "Zone Details"
@@ -9427,20 +9445,21 @@ msgstr ""
 
 #: templates/default/delete_domain.html:73
 msgid "Yes, delete this zone"
-msgstr "Yes, delete this zone"
+msgstr "Ja, deze zone verwijderen"
 
 #: templates/default/delete_domain.html:80
 msgid "No, keep this zone"
-msgstr "No, keep this zone"
+msgstr "Nee, deze zone behouden"
 
 #: templates/default/search.html:14
 msgid "DNS Search"
-msgstr "DNS Search"
+msgstr "DNS Zoeken"
 
 #: templates/default/search.html:34
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
 msgstr ""
+"Voer domeinnaam, hostnaam of IP in (bijv. voorbeeld.com type:txt content:spf)"
 
 #: templates/default/search.html:76
 msgid "Wildcards"
@@ -9448,81 +9467,85 @@ msgstr "Wildcards"
 
 #: templates/default/search.html:84
 msgid "Reverse"
-msgstr "Reverse"
+msgstr "Omkeren"
 
 #: templates/default/search.html:107
 msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
 msgstr ""
+"Filter syntax: type:txt content:spf. Wildcard voegt % toe aan zoekterm. Omkeren converteert IP's naar PTR formaat (bijv. 192.168.1.1 naar 1.1.168.192.in-addr.arpa)"
 
 #: templates/default/search.html:120
 msgid "Zones found"
-msgstr "Zones found"
+msgstr "Zones gevonden"
 
 #: templates/default/search.html:284
 msgid ""
 "Are you sure you want to delete the selected zones? This action cannot be "
 "undone."
 msgstr ""
+"Weet u zeker dat u de geselecteerde zones wilt verwijderen? Deze actie kan niet ongedaan gemaakt worden."
 
 #: templates/default/search.html:291 templates/default/search.html:482
 msgid "Toggle all"
-msgstr "Toggle all"
+msgstr "Alles omschakelen"
 
 #: templates/default/search.html:305
 msgid "Records found"
-msgstr "Records found"
+msgstr "Records gevonden"
 
 #: templates/default/search.html:475
 msgid ""
 "Are you sure you want to delete the selected records? This action cannot be "
 "undone."
 msgstr ""
+"Weet u zeker dat u de geselecteerde records wilt verwijderen? Deze actie kan niet ongedaan gemaakt worden."
 
 #: templates/default/search.html:498
 msgid "Try different search terms or filters"
-msgstr "Try different search terms or filters"
+msgstr "Probeer andere zoektermen of filters"
 
 #: templates/default/delete_domains.html:11
 msgid "Delete zones"
-msgstr "Delete zones"
+msgstr "Zones verwijderen"
 
 #: templates/default/delete_domains.html:17
 msgid "Delete Multiple Zones"
-msgstr "Delete Multiple Zones"
+msgstr "Meerdere Zones Verwijderen"
 
 #: templates/default/delete_domains.html:22
 msgid "You are about to delete multiple zones. This action cannot be undone."
-msgstr "You are about to delete multiple zones. This action cannot be undone."
+msgstr ""
+"U staat op het punt meerdere zones te verwijderen. Deze actie kan niet ongedaan gemaakt worden."
 
 #: templates/default/delete_domains.html:27
 msgid "Zones to Delete"
-msgstr "Zones to Delete"
+msgstr "Te Verwijderen Zones"
 
 #: templates/default/delete_domains.html:40
 msgid "Note"
-msgstr "Note"
+msgstr "Opmerking"
 
 #: templates/default/delete_domains.html:75
 msgid "Yes, delete these zones"
-msgstr "Yes, delete these zones"
+msgstr "Ja, deze zones verwijderen"
 
 #: templates/default/delete_domains.html:87
 msgid "No, keep these zones"
-msgstr "No, keep these zones"
+msgstr "Nee, deze zones behouden"
 
 #: templates/default/delete_supermaster.html:5
 msgid "Delete supermaster"
-msgstr "Delete supermaster"
+msgstr "Supermaster verwijderen"
 
 #: templates/default/delete_supermaster.html:11
 msgid "Delete Supermaster"
-msgstr "Delete Supermaster"
+msgstr "Supermaster Verwijderen"
 
 #: templates/default/delete_supermaster.html:16
 msgid "You are about to delete the supermaster"
-msgstr "You are about to delete the supermaster"
+msgstr "U staat op het punt de supermaster te verwijderen"
 
 #: templates/default/delete_supermaster.html:22
 msgid "Supermaster Details"
@@ -9530,39 +9553,39 @@ msgstr "Supermaster Details"
 
 #: templates/default/delete_supermaster.html:47
 msgid "Yes, delete this supermaster"
-msgstr "Yes, delete this supermaster"
+msgstr "Ja, deze supermaster verwijderen"
 
 #: templates/default/delete_supermaster.html:50
 msgid "No, keep this supermaster"
-msgstr "No, keep this supermaster"
+msgstr "Nee, deze supermaster behouden"
 
 #: templates/default/list_log_users.html:5 templates/default/header.html:116
 msgid "User logs"
-msgstr "User logs"
+msgstr "Gebruikerslogs"
 
 #: templates/default/list_log_users.html:11
 msgid "User Activity Logs"
-msgstr "User Activity Logs"
+msgstr "Gebruikersactiviteit Logs"
 
 #: templates/default/list_log_users.html:20
 msgid "Search logs by user"
-msgstr "Search logs by user"
+msgstr "Zoek logs op gebruiker"
 
 #: templates/default/add_zone_slave.html:19
 msgid "Add Slave Zone"
-msgstr "Add Slave Zone"
+msgstr "Slave Zone Toevoegen"
 
 #: templates/default/add_zone_slave.html:35
 msgid "Provide IP address"
-msgstr "Provide IP address"
+msgstr "Geef IP adres op"
 
 #: templates/default/add_zone_slave.html:36
 msgid "IP address of the master name server (can be IPv4 or IPv6)"
-msgstr "IP address of the master name server (can be IPv4 or IPv6)"
+msgstr "IP adres van de master nameserver (kan IPv4 of IPv6 zijn)"
 
 #: templates/default/add_zone_slave.html:89
 msgid "About Slave Zones"
-msgstr "About Slave Zones"
+msgstr "Over Slave Zones"
 
 #: templates/default/add_zone_slave.html:90
 msgid ""
@@ -9570,12 +9593,14 @@ msgid ""
 "PowerDNS will automatically fetch and update zone data from the master "
 "server."
 msgstr ""
+"Een slave zone is een alleen-lezen kopie van een zone die gehost wordt op een andere DNS server. PowerDNS haalt automatisch zone data op en werkt deze bij vanaf de master server."
 
 #: templates/default/add_zone_slave.html:91
 msgid ""
 "You cannot edit records in a slave zone - all changes must be made on the "
 "master server."
 msgstr ""
+"U kunt geen records bewerken in een slave zone - alle wijzigingen moeten gemaakt worden op de master server."
 
 #: templates/default/add_zone_slave.html:95
 msgid ""
@@ -9583,38 +9608,42 @@ msgid ""
 "master server. The master server must have an allow-transfer or similar "
 "configuration permitting zone transfers to this server's IP address."
 msgstr ""
+"Zorg ervoor dat deze PowerDNS server toestemming heeft om de zone over te dragen vanaf de master server. De master server moet een allow-transfer of vergelijkbare configuratie hebben die zone overdrachten naar het IP adres van deze server toestaat."
 
 #: templates/default/add_zone_slave.html:109
 msgid ""
 "You can specify multiple master servers by separating IP addresses with "
 "commas"
 msgstr ""
+"U kunt meerdere master servers opgeven door IP adressen te scheiden met komma's"
 
 #: templates/default/add_zone_slave.html:110
 msgid ""
 "Slave zones will automatically update when the master server sends a "
 "notification"
 msgstr ""
+"Slave zones worden automatisch bijgewerkt wanneer de master server een notificatie stuurt"
 
 #: templates/default/add_zone_slave.html:111
 msgid "To test the connection, check the PowerDNS logs after adding the zone"
-msgstr "To test the connection, check the PowerDNS logs after adding the zone"
+msgstr ""
+"Om de verbinding te testen, controleer de PowerDNS logs na het toevoegen van de zone"
 
 #: templates/default/delete_zone_templ.html:12
 msgid "Delete template"
-msgstr "Delete template"
+msgstr "Sjabloon verwijderen"
 
 #: templates/default/delete_zone_templ.html:18
 msgid "Delete Zone Template"
-msgstr "Delete Zone Template"
+msgstr "Zone Sjabloon Verwijderen"
 
 #: templates/default/delete_zone_templ.html:23
 msgid "You are about to delete the zone template"
-msgstr "You are about to delete the zone template"
+msgstr "U staat op het punt het zone sjabloon te verwijderen"
 
 #: templates/default/delete_zone_templ.html:29
 msgid "This template is currently used by"
-msgstr "This template is currently used by"
+msgstr "Dit sjabloon wordt momenteel gebruikt door"
 
 #: templates/default/delete_zone_templ.html:29
 msgid "zones"
@@ -9626,29 +9655,30 @@ msgstr "PowerDNS Server Status"
 
 #: templates/default/pdns_status.html:16
 msgid "Refresh Status"
-msgstr "Refresh Status"
+msgstr "Status Vernieuwen"
 
 #: templates/default/pdns_status.html:25
 msgid ""
 "PowerDNS API is not configured. Please configure the PowerDNS API URL and "
 "key in your settings."
 msgstr ""
+"PowerDNS API is niet geconfigureerd. Configureer de PowerDNS API URL en sleutel in uw instellingen."
 
 #: templates/default/pdns_status.html:32
 msgid "Server Running"
-msgstr "Server Running"
+msgstr "Server Actief"
 
 #: templates/default/pdns_status.html:37
 msgid "Server Not Running"
-msgstr "Server Not Running"
+msgstr "Server Niet Actief"
 
 #: templates/default/pdns_status.html:51
 msgid "Server Information"
-msgstr "Server Information"
+msgstr "Server Informatie"
 
 #: templates/default/pdns_status.html:58
 msgid "Server Name"
-msgstr "Server Name"
+msgstr "Server Naam"
 
 #: templates/default/pdns_status.html:63
 msgid "Server ID"
@@ -9656,7 +9686,7 @@ msgstr "Server ID"
 
 #: templates/default/pdns_status.html:68
 msgid "PowerDNS Version"
-msgstr "PowerDNS Version"
+msgstr "PowerDNS Versie"
 
 #: templates/default/pdns_status.html:72
 msgid "Daemon Type"
@@ -9668,7 +9698,7 @@ msgstr "Uptime"
 
 #: templates/default/pdns_status.html:86
 msgid "Server information is not available."
-msgstr "Server information is not available."
+msgstr "Server informatie is niet beschikbaar."
 
 #: templates/default/pdns_status.html:97
 msgid "Slave Servers"
@@ -9678,6 +9708,7 @@ msgstr "Slave Servers"
 msgid ""
 "Showing connectivity status for DNS servers listed in the supermasters table."
 msgstr ""
+"Toont connectiviteitsstatus voor DNS servers vermeld in de supermasters tabel."
 
 #: templates/default/pdns_status.html:110
 msgid "Server IP"
@@ -9685,7 +9716,7 @@ msgstr "Server IP"
 
 #: templates/default/pdns_status.html:112
 msgid "Last Checked"
-msgstr "Last Checked"
+msgstr "Laatst Gecontroleerd"
 
 #: templates/default/pdns_status.html:121 install/templates/step2.html.twig:27
 msgid "OK"
@@ -9693,7 +9724,7 @@ msgstr "OK"
 
 #: templates/default/pdns_status.html:123
 msgid "Unreachable"
-msgstr "Unreachable"
+msgstr "Onbereikbaar"
 
 #: templates/default/pdns_status.html:125
 msgid "Error"
@@ -9701,27 +9732,27 @@ msgstr "Error"
 
 #: templates/default/pdns_status.html:156
 msgid "Server Statistics"
-msgstr "Server Statistics"
+msgstr "Server Statistieken"
 
 #: templates/default/pdns_status.html:166
 msgid "Server Health"
-msgstr "Server Health"
+msgstr "Server Gezondheid"
 
 #: templates/default/pdns_status.html:185 templates/default/api_keys.html:44
 msgid "Unknown"
-msgstr "Unknown"
+msgstr "Onbekend"
 
 #: templates/default/pdns_status.html:194
 msgid "Latency"
-msgstr "Latency"
+msgstr "Latentie"
 
 #: templates/default/pdns_status.html:204
 msgid "CPU Usage"
-msgstr "CPU Usage"
+msgstr "CPU Gebruik"
 
 #: templates/default/pdns_status.html:219
 msgid "Query Statistics"
-msgstr "Query Statistics"
+msgstr "Query Statistieken"
 
 #: templates/default/pdns_status.html:239
 msgid "UDP Queries"
@@ -9741,11 +9772,11 @@ msgstr "Cache Misses"
 
 #: templates/default/pdns_status.html:327
 msgid "Toggle View"
-msgstr "Toggle View"
+msgstr "Weergave Omschakelen"
 
 #: templates/default/pdns_status.html:332
 msgid "Refresh"
-msgstr "Refresh"
+msgstr "Vernieuwen"
 
 #: templates/default/pdns_status.html:429
 msgid "Bytes"
@@ -9753,15 +9784,15 @@ msgstr "Bytes"
 
 #: templates/default/pdns_status.html:402
 msgid "Metric"
-msgstr "Metric"
+msgstr "Metriek"
 
 #: templates/default/pdns_status.html:403
 msgid "Value"
-msgstr "Value"
+msgstr "Waarde"
 
 #: templates/default/pdns_status.html:453
 msgid "No detailed metrics available."
-msgstr "No detailed metrics available."
+msgstr "Geen gedetailleerde metrieken beschikbaar."
 
 #: templates/default/header.html:60
 msgid "Forward zones"
@@ -9773,27 +9804,27 @@ msgstr "Reverse zones"
 
 #: templates/default/header.html:107
 msgid "List permission templates"
-msgstr "List permission templates"
+msgstr "Machtigingssjablonen weergeven"
 
 #: templates/default/header.html:109 templates/default/list_perm_templ.html:53
 msgid "Add permission template"
-msgstr "Add permission template"
+msgstr "Machtigingssjabloon toevoegen"
 
 #: templates/default/header.html:143
 msgid "Tools"
-msgstr "Tools"
+msgstr "Hulpmiddelen"
 
 #: templates/default/dnssec_ds_dnskey.html:22
 msgid "DS and DNS keys"
-msgstr "DS and DNS keys"
+msgstr "DS en DNS sleutels"
 
 #: templates/default/dnssec_ds_dnskey.html:36
 msgid "DNSSEC public records for zone"
-msgstr "DNSSEC public records for zone"
+msgstr "DNSSEC publieke records voor zone"
 
 #: templates/default/dnssec_ds_dnskey.html:41
 msgid "Back to DNSSEC keys"
-msgstr "Back to DNSSEC keys"
+msgstr "Terug naar DNSSEC sleutels"
 
 #: templates/default/dnssec_ds_dnskey.html:47
 msgid "DNSKEY Records"
@@ -9808,86 +9839,89 @@ msgid ""
 "DS records should be added to the parent zone to establish the chain of "
 "trust."
 msgstr ""
+"DS records moeten toegevoegd worden aan de bovenliggende zone om de vertrouwensketen te vestigen."
 
 #: templates/default/add_record.html:27 templates/default/add_record.html:29
 msgid "Add record to zone"
-msgstr "Add record to zone"
+msgstr "Record toevoegen aan zone"
 
 #: templates/default/add_record.html:35
 msgid "Create a new DNS record in this zone"
-msgstr "Create a new DNS record in this zone"
+msgstr "Maak een nieuw DNS record aan in deze zone"
 
 #: templates/default/add_record.html:128
 msgid "Add another record"
-msgstr "Add another record"
+msgstr "Nog een record toevoegen"
 
 #: templates/default/add_record.html:143
 msgid "Add records"
-msgstr "Add records"
+msgstr "Records toevoegen"
 
 #: templates/default/api_keys.html:10
 msgid "API Keys Management"
-msgstr "API Keys Management"
+msgstr "API Sleutels Beheer"
 
 #: templates/default/api_keys.html:13
 msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
 "is linked to your user account and inherits your permissions."
 msgstr ""
+"API sleutels stellen externe applicaties in staat om toegang te krijgen tot de Poweradmin API. Elke sleutel is gekoppeld aan uw gebruikersaccount en erft uw machtigingen."
 
 #: templates/default/api_keys.html:29
 msgid "Created by"
-msgstr "Created by"
+msgstr "Aangemaakt door"
 
 #: templates/default/api_keys.html:60 templates/default/api_keys.html:61
 msgid "Regenerate"
-msgstr "Regenerate"
+msgstr "Regenereren"
 
 #: templates/default/api_keys.html:64 templates/default/api_keys.html:65
 msgid "Enable"
-msgstr "Enable"
+msgstr "Inschakelen"
 
 #: templates/default/api_keys.html:68 templates/default/api_keys.html:69
 msgid "Disable"
-msgstr "Disable"
+msgstr "Uitschakelen"
 
 #: templates/default/api_keys.html:87
 msgid "No API keys found."
-msgstr "No API keys found."
+msgstr "Geen API sleutels gevonden."
 
 #: templates/default/api_keys.html:95
 msgid "Add new API key"
-msgstr "Add new API key"
+msgstr "Nieuwe API sleutel toevoegen"
 
 #: templates/default/api_key_delete.html:16
 msgid "You are about to delete the API key"
-msgstr "You are about to delete the API key"
+msgstr "U staat op het punt de API sleutel te verwijderen"
 
 #: templates/default/api_key_delete.html:18
 msgid ""
 "If you delete this API key, any applications using it will no longer be able "
 "to authenticate."
 msgstr ""
+"Als u deze API sleutel verwijdert, kunnen applicaties die deze gebruiken niet meer authenticeren."
 
 #: templates/default/api_key_delete.html:70
 msgid "Yes, delete this API key"
-msgstr "Yes, delete this API key"
+msgstr "Ja, deze API sleutel verwijderen"
 
 #: templates/default/api_key_delete.html:73
 msgid "No, keep this API key"
-msgstr "No, keep this API key"
+msgstr "Nee, deze API sleutel behouden"
 
 #: templates/default/edit_perm_templ.html:19
 msgid "Edit Permission Template"
-msgstr "Edit Permission Template"
+msgstr "Machtigingssjabloon Bewerken"
 
 #: templates/default/edit_perm_templ.html:54
 msgid "Template Usage Information"
-msgstr "Template Usage Information"
+msgstr "Sjabloon Gebruiksinformatie"
 
 #: templates/default/edit_perm_templ.html:59
 msgid "Template Assignment"
-msgstr "Template Assignment"
+msgstr "Sjabloon Toewijzing"
 
 #: templates/default/edit_perm_templ.html:60
 msgid ""
@@ -9895,66 +9929,70 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
+"Dit sjabloon kan aan gebruikers worden toegewezen om snel de bijbehorende machtigingen toe te passen. Wijzigingen hier beïnvloeden alle gebruikers die dit sjabloon hebben toegewezen."
 
 #: templates/default/edit_perm_templ.html:63
 msgid "Permission Groups"
-msgstr "Permission Groups"
+msgstr "Machtigingsgroepen"
 
 #: templates/default/edit_perm_templ.html:64
 msgid ""
 "Permissions are organized into groups below for easier management. Use the "
 "search feature to quickly find specific permissions."
 msgstr ""
+"Machtigingen zijn hieronder georganiseerd in groepen voor eenvoudiger beheer. Gebruik de zoekfunctie om snel specifieke machtigingen te vinden."
 
 #: templates/default/delete_zone_templ_record.html:13
 msgid "Delete record"
-msgstr "Delete record"
+msgstr "Record verwijderen"
 
 #: templates/default/delete_zone_templ_record.html:19
 msgid "Delete Template Record"
-msgstr "Delete Template Record"
+msgstr "Sjabloonrecord Verwijderen"
 
 #: templates/default/delete_zone_templ_record.html:24
 msgid "You are about to delete a record from template"
-msgstr "You are about to delete a record from template"
+msgstr "U staat op het punt een record uit het sjabloon te verwijderen"
 
 #: templates/default/dnssec_delete_key.html:123
 msgid "Delete key"
-msgstr "Delete key"
+msgstr "Sleutel verwijderen"
 
 #: templates/default/dnssec_delete_key.html:29
 msgid "Delete DNSSEC Key"
-msgstr "Delete DNSSEC Key"
+msgstr "DNSSEC Sleutel Verwijderen"
 
 #: templates/default/dnssec_delete_key.html:36
 msgid "You are about to delete an active DNSSEC key (ID"
-msgstr "You are about to delete an active DNSSEC key (ID"
+msgstr "U staat op het punt een actieve DNSSEC sleutel te verwijderen (ID"
 
 #: templates/default/dnssec_delete_key.html:37
 msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
 msgstr ""
+"Het verwijderen van een actieve sleutel beïnvloedt de beveiliging van uw zone en kan validatiefouten veroorzaken."
 
 #: templates/default/dnssec_delete_key.html:39
 msgid "You are about to delete a DNSSEC key (ID"
-msgstr "You are about to delete a DNSSEC key (ID"
+msgstr "U gaat een DNSSEC-sleutel verwijderen (ID"
 
 #: templates/default/whois.html:26
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
 msgstr ""
+"Voer een domeinnaam in (bijv. voorbeeld.com) om de WHOIS informatie op te zoeken"
 
 #: templates/default/whois.html:34
 msgid "WHOIS results for"
-msgstr "WHOIS results for"
+msgstr "WHOIS resultaten voor"
 
 #: templates/default/whois.html:45
 msgid "Please enter a domain name to perform a WHOIS lookup."
-msgstr "Please enter a domain name to perform a WHOIS lookup."
+msgstr "Voer een domeinnaam in om een WHOIS opzoeking uit te voeren."
 
 #: templates/default/list_perm_templ.html:11
 msgid "Permission Templates"
-msgstr "Permission Templates"
+msgstr "Machtigingssjablonen"
 
 #: install/templates/step6.html.twig:3
 msgid "Create limited rights user"
@@ -10028,19 +10066,19 @@ msgstr "Configuratiebestand:"
 
 #: install/templates/step7.html.twig:12
 msgid "Create the file"
-msgstr "Create the file"
+msgstr "Maak het bestand aan"
 
 #: install/templates/step7.html.twig:14
 msgid "with the following content:"
-msgstr "with the following content:"
+msgstr "met de volgende inhoud:"
 
 #: install/templates/step1.html.twig:3
 msgid "Choose a language"
-msgstr "Choose a language"
+msgstr "Kies een taal"
 
 #: install/templates/step1.html.twig:8
 msgid "Choose a language for installation"
-msgstr "Choose a language for installation"
+msgstr "Kies een taal voor de installatie"
 
 #: install/templates/step1.html.twig:12
 msgid ""
@@ -10049,7 +10087,7 @@ msgstr "Selecteer uw voorkeurstaal om door te gaan met de installatie:"
 
 #: install/templates/step1.html.twig:222
 msgid "Begin Installation"
-msgstr "Begin Installation"
+msgstr "Installatie Beginnen"
 
 #: install/templates/step4.html.twig:3
 msgid "Configuring database"
@@ -10074,7 +10112,7 @@ msgstr ""
 
 #: install/templates/step4.html.twig:14
 msgid "Important:"
-msgstr "Important:"
+msgstr "Belangrijk:"
 
 #: install/templates/step4.html.twig:14
 msgid ""
@@ -10082,6 +10120,7 @@ msgid ""
 "already created. This installer will NOT create PowerDNS tables - only "
 "Poweradmin-specific tables."
 msgstr ""
+"Poweradmin vereist een correct geconfigureerde PowerDNS database met reeds aangemaakte tabellen. Deze installer zal GEEN PowerDNS tabellen aanmaken - alleen Poweradmin-specifieke tabellen."
 
 #: install/templates/step4.html.twig:22
 msgid "Database Settings"
@@ -10117,7 +10156,7 @@ msgstr "Geef de hostnaam op"
 
 #: install/templates/step4.html.twig:71
 msgid "Database server hostname (usually \"localhost\")."
-msgstr "Database server hostname (usually \"localhost\")."
+msgstr "Database server hostnaam (meestal \"localhost\")."
 
 #: install/templates/step4.html.twig:76
 msgid "DB Port"
@@ -10392,8 +10431,7 @@ msgstr "Belangrijke beveiligingsmededeling:"
 msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
-msgstr ""
-"You must remove the \"install/\" directory from the Poweradmin root "
+msgstr "U moet de \"install/\" map verwijderen uit de Poweradmin hoofdmap."
 "directory."
 
 #: install/templates/step8.html.twig:17
@@ -10410,14 +10448,14 @@ msgstr "Volgende stappen"
 
 #: install/templates/step8.html.twig:26
 msgid "Remove the \"install/\" directory from your server"
-msgstr "Remove the \"install/\" directory from your server"
+msgstr "Verwijder de \"install/\" map van uw server"
 
 #: install/templates/step8.html.twig:27
 msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
+"Log in op <a href=\"../index.php\">Poweradmin</a> met de standaard gebruikersnaam \"admin\" en het wachtwoord dat u in stap 3 hebt ingesteld"
 "\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
@@ -10490,44 +10528,48 @@ msgstr "Een configuratiebestand aanmaken om uw instellingen op te slaan"
 
 #: install/helpers/InstallStepHandler.php:177
 msgid "Missing PowerDNS tables:"
-msgstr "Missing PowerDNS tables:"
+msgstr "Ontbrekende PowerDNS tabellen:"
 
 #: install/helpers/InstallStepHandler.php:178
 msgid "Poweradmin requires these PowerDNS tables to function properly."
-msgstr "Poweradmin requires these PowerDNS tables to function properly."
+msgstr ""
+"Poweradmin heeft deze PowerDNS tabellen nodig om correct te functioneren."
 
 #: install/helpers/InstallStepHandler.php:185
 msgid "Updating database... done!"
-msgstr "Updating database... done!"
+msgstr "Database bijwerken... voltooid!"
 
 #: install/helpers/InstallStepHandler.php:207
 msgid "Foreign Key Constraint Issues:"
-msgstr "Foreign Key Constraint Issues:"
+msgstr "Foreign Key Beperking Problemen:"
 
 #: install/helpers/InstallStepHandler.php:209
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
+"De installer kon bestaande tabellen niet verwijderen vanwege foreign key beperkingen"
 
 #: install/helpers/InstallStepHandler.php:210
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
+"Dit kan gebeuren tijdens herinstallatie als u aangepaste beperkingen hebt of als tabellen worden gerefereerd door andere tabellen"
 
 #: install/helpers/InstallStepHandler.php:211
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 msgstr ""
+"U kunt proberen foreign key controles handmatig uit te schakelen voordat u de installer uitvoert:"
 
 #: install/helpers/InstallStepHandler.php:224
 msgid "Suggestions:"
-msgstr "Suggestions:"
+msgstr "Suggesties:"
 
 #: install/helpers/InstallStepHandler.php:218
 msgid "Make sure the SQLite database file exists"
-msgstr "Make sure the SQLite database file exists"
+msgstr "Zorg ervoor dat het SQLite database bestand bestaat"
 
 #: install/helpers/InstallStepHandler.php:219
 msgid ""
@@ -10539,23 +10581,24 @@ msgstr ""
 
 #: install/helpers/InstallStepHandler.php:220
 msgid "Verify the full path to the database file is correct and accessible"
-msgstr "Verify the full path to the database file is correct and accessible"
+msgstr ""
+"Controleer of het volledige pad naar het database bestand correct en toegankelijk is"
 
 #: install/helpers/InstallStepHandler.php:226
 msgid "Verify database credentials are correct"
-msgstr "Verify database credentials are correct"
+msgstr "Controleer of de database inloggegevens correct zijn"
 
 #: install/helpers/InstallStepHandler.php:227
 msgid "Check that the database user has sufficient privileges"
-msgstr "Check that the database user has sufficient privileges"
+msgstr "Controleer of de database gebruiker voldoende rechten heeft"
 
 #: install/helpers/InstallStepHandler.php:228
 msgid "Ensure the database server is running and accessible"
-msgstr "Ensure the database server is running and accessible"
+msgstr "Zorg ervoor dat de database server actief en toegankelijk is"
 
 #: install/helpers/InstallStepHandler.php:233
 msgid "Database Error"
-msgstr "Database Error"
+msgstr "Database Fout"
 
 #: install/helpers/DatabaseHelper.php:158
 #, php-format
@@ -10585,11 +10628,11 @@ msgstr ""
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr "Could not access the SQLite database file %s: %s"
+msgstr "Kon geen toegang krijgen tot het SQLite database bestand %s: %s"
 
 #: install/helpers/DatabaseHelper.php:242
 msgid "or"
-msgstr "or"
+msgstr "of"
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:55
 msgid ""
