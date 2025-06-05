@@ -6450,9 +6450,9 @@ msgstr "Abbrechen"
 msgid "Edit API Key"
 msgstr "API-Schlüssel bearbeiten"
 
-#: templates/default/list_perm_templ.html:18
+#: templates/default/edit.html:61
 msgid "Name"
-msgstr "Name der Zonenvorlage"
+msgstr "Name"
 
 #: templates/default/api_key_edit.html:22
 msgid "Please provide a name for this API key"
@@ -10694,3 +10694,7 @@ msgid ""
 msgstr ""
 "Keine Konfigurationsdatei gefunden. Bitte erstellen Sie die Datei config/"
 "settings.php, bevor Sie fortfahren."
+
+#: templates/default/list_perm_templ.html:18
+msgid "Template name"
+msgstr "Name der Zonenvorlage"
