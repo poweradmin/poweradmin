@@ -109,7 +109,7 @@ server {
         deny all;
     }
     
-    location ~ /(config|lib|install|vendor|tests|tools)/ {
+    location ~ /(config|lib|tests|tools)/ {
         deny all;
     }
     
