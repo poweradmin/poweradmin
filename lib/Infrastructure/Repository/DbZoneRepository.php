@@ -660,10 +660,20 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function addOwnerToZone(int $zoneId, int $userId): bool
     {
-        $query = "INSERT INTO zones (domain_id, owner) VALUES (:domain_id, :owner)";
+        // Get the zone_templ_id from an existing zone record for this domain
+        $getTemplateQuery = "SELECT zone_templ_id FROM zones WHERE domain_id = :domain_id LIMIT 1";
+        $getStmt = $this->db->prepare($getTemplateQuery);
+        $getStmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $getStmt->execute();
+        $templateResult = $getStmt->fetch(PDO::FETCH_ASSOC);
+
+        $zoneTemplId = $templateResult ? $templateResult['zone_templ_id'] : 0;
+
+        $query = "INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_templ_id)";
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
+        $stmt->bindValue(':zone_templ_id', $zoneTemplId, PDO::PARAM_INT);
 
         return $stmt->execute();
     }
