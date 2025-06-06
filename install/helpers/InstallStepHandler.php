@@ -286,7 +286,7 @@ class InstallStepHandler
         $databaseService = new DatabaseService($databaseConnection);
         $db = $databaseService->connect($credentials);
         $databaseHelper = new DatabaseHelper($db, $credentials);
-        $instructions = $databaseHelper->generateDatabaseUserInstructions();
+        $instructionBlocks = $databaseHelper->generateDatabaseUserInstructions();
 
         $this->renderTemplate('step6.html.twig', array(
             'current_step' => $this->currentStep,
@@ -307,7 +307,7 @@ class InstallStepHandler
             'dns_ns2' => $dns_ns2,
             'dns_ns3' => $dns_ns3,
             'dns_ns4' => $dns_ns4,
-            'instructions' => $instructions,
+            'instruction_blocks' => $instructionBlocks,
             'errors' => $errors,
         ));
     }
