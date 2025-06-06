@@ -6974,7 +6974,7 @@ msgstr "Zonen auflisten"
 
 #: templates/default/index.html:99
 msgid "Manage reverse DNS zones"
-msgstr "Reverse DNS-Zonen verwalten"
+msgstr "Reverse Zonen verwalten"
 
 #: templates/default/index.html:101
 msgid "List reverse zones"
@@ -7078,7 +7078,7 @@ msgstr "Zonen-Logs"
 
 #: templates/default/index.html:236
 msgid "View zone change history"
-msgstr "Zonen-Änderungshistorie anzeigen"
+msgstr "Zonen Logfile anzeigen"
 
 #: templates/default/index.html:238
 msgid "View zone logs"
@@ -7090,7 +7090,7 @@ msgstr "Benutzer-Logs"
 
 #: templates/default/index.html:254
 msgid "View user activity history"
-msgstr "Benutzeraktivitätshistorie anzeigen"
+msgstr "Benutzer Logfile anzeigen"
 
 #: templates/default/index.html:256
 msgid "View user logs"
@@ -7103,7 +7103,7 @@ msgstr "Passwort"
 
 #: templates/default/index.html:272
 msgid "Update your account password"
-msgstr "Benutzerkonto Passwort aktualisieren"
+msgstr "Passwort des Kontos aktualisieren"
 
 #: templates/default/change_password.html:49 templates/default/header.html:180
 msgid "Change password"
@@ -7786,7 +7786,7 @@ msgstr "E-Mail angeben"
 
 #: templates/default/edit_user.html:54
 msgid "Leave empty to keep current password"
-msgstr "Leer lassen um aktuelles Passwort zu verwenden"
+msgstr "Leer lassen, um aktuelles Passwort zu behalten"
 
 #: templates/default/edit_user.html:59 templates/default/add_user.html:69
 msgid "Permission template"
@@ -7850,7 +7850,7 @@ msgstr "Benutzer Berechtigungen"
 
 #: templates/default/edit_user.html:164
 msgid "This user has been assigned the permission template"
-msgstr "Dieser Benutzer wurde der Berechtigungsvorlage zugewiesen"
+msgstr "Dem Benutzer wurde diese Berechtigungsvorlage zugewiesen"
 
 #: templates/default/edit_user.html:173
 msgid "Based on this template, this user has the following permissions"
@@ -8548,7 +8548,7 @@ msgstr "Gesamtanzahl Zonen:"
 #: templates/default/list_forward_zones.html:57
 msgid "There are no forward zones to show in this listing."
 msgstr ""
-"Es gibt keine Forward-Zonen, die in dieser Auflistung angezeigt werden können."
+"Es gibt keine DNS-Zonen, die in dieser Auflistung angezeigt werden können."
 
 #: templates/default/delete_record.html:24
 msgid "Delete Record"
@@ -8606,7 +8606,7 @@ msgstr "Geben Sie den Code aus Ihrer Authenticator-App ein"
 
 #: templates/default/mfa_verify.html:35
 msgid "Enter the 6-digit code sent to your email"
-msgstr "Den 6-stelligen Code eingeben, der Ihnen an Ihre Email"
+msgstr "Den 6-stelligen Code eingeben, der Ihnen an Ihre E-Mail "
 "Adresse geschickt wurde"
 
 #: templates/default/mfa_verify.html:41 templates/default/mfa_verify.html:110
@@ -9279,11 +9279,11 @@ msgstr "Authenticator-App"
 
 #: templates/default/mfa_setup.html:26
 msgid "Email verification"
-msgstr "Email Überprüfung"
+msgstr "E-Mail Überprüfung"
 
 #: templates/default/mfa_recovery_codes.html:29
 msgid "Save Your Recovery Codes"
-msgstr "Speichern Sie Ihre Recovery Codes"
+msgstr "Speichern Sie Ihre Wiederherstellungscodes"
 
 #: templates/default/mfa_recovery_codes.html:30
 msgid ""
@@ -9390,11 +9390,11 @@ msgstr "App Authentifizierung einrichten"
 
 #: templates/default/mfa_verify_email.html:5
 msgid "Email Verification"
-msgstr "Email Überprüfung"
+msgstr "E-Mail Überprüfung"
 
 #: templates/default/mfa_setup.html:81
 msgid "Receive a verification code via email when you log in."
-msgstr "Ein Verifizierungscode wird per Email verschickt, wenn Sie sich anmelden."
+msgstr "Ein Verifizierungscode wird per E-Mail verschickt, wenn Sie sich anmelden."
 
 #: templates/default/mfa_setup.html:83
 msgid "No additional app required"
@@ -9406,7 +9406,7 @@ msgstr "Internet Verbindung benötigt"
 
 #: templates/default/mfa_setup.html:85
 msgid "Relies on email delivery"
-msgstr "Setzt funktionierende Email Auslieferung voraus"
+msgstr "Setzt funktionierende E-Mail Auslieferung voraus"
 
 #: templates/default/mfa_setup.html:90
 msgid ""
@@ -9424,15 +9424,15 @@ msgstr ""
 
 #: templates/default/mfa_setup.html:99
 msgid "Set up email verification"
-msgstr "Email Überprüfung einrichten"
+msgstr "E-Mail Überprüfung einrichten"
 
 #: templates/default/mfa_verify_email.html:14
 msgid "Verify Email Code"
-msgstr "Email Code Überprüfung"
+msgstr "E-Mail Code Überprüfung"
 
 #: templates/default/mfa_verify_email.html:17
 msgid "A verification code has been sent to your email address."
-msgstr "Ein Überprüfungs-Code wurde an Ihre Email Adresse verschickt."
+msgstr "Ein Überprüfungs-Code wurde an Ihre E-Mail Adresse verschickt."
 
 #: templates/default/mfa_verify_email.html:18
 msgid ""
@@ -9443,7 +9443,7 @@ msgstr ""
 
 #: templates/default/mfa_verify_email.html:34
 msgid "Enter the 6-digit code from your email"
-msgstr "Den 6-stelligen Code aus Ihrer Email eingeben"
+msgstr "Den 6-stelligen Code aus Ihrer E-Mail eingeben"
 
 #: templates/default/list_template_zones.html:12
 msgid "Zones using template"
