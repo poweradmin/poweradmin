@@ -2,7 +2,7 @@
 <footer class="footer py-3">
     <div class="container">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-11">
                 {% if custom_footer %}
                 {% include ('custom/footer.html') %}
                 {% else %}
@@ -13,7 +13,7 @@
                 </a>
                 {% endif %}
             </div>
-            <div class="col-md-6 d-flex justify-content-end">
+            <div class="col-md-1 d-flex justify-content-end">
                 {% if show_style_switcher %}
                 <button class="btn btn-outline-secondary btn-sm" id="style-switcher">
                     <i class="bi" id="style-icon"></i>
