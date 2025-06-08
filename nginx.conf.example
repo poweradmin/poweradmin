@@ -109,8 +109,8 @@ server {
         deny all;
     }
 
-    # Allow access to Bootstrap CSS/JS in vendor/twbs/bootstrap
-    location ~ ^/vendor/twbs/bootstrap/ {
+    # Allow access to Bootstrap CSS/JS and Bootstrap Icons in vendor/twbs/
+    location ~ ^/vendor/twbs/(bootstrap|bootstrap-icons)/ {
         allow all;
     }
 

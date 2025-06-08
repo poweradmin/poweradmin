@@ -58,6 +58,32 @@ Options -Indexes
 # Set default character set
 AddDefaultCharset UTF-8
 
+# Security: Allow access to Bootstrap CSS/JS and Bootstrap Icons
+<Files ~ "^vendor/twbs/(bootstrap|bootstrap-icons)/.*\.(css|js|woff|woff2|ttf|eot|svg)$">
+    Order Allow,Deny
+    Allow from all
+</Files>
+
+# Security: Deny access to sensitive directories
+<IfModule mod_rewrite.c>
+    # Allow Bootstrap files before general vendor blocking
+    RewriteCond %{REQUEST_URI} !^/vendor/twbs/(bootstrap|bootstrap-icons)/
+    # Block access to sensitive directories
+    RewriteRule ^(config|lib|tests|tools|vendor)/ - [F,L]
+</IfModule>
+
+# Security: Deny access to hidden files and directories
+<Files ~ "^\.*">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
+# Security: Deny access to sensitive file types
+<Files ~ "\.(sql|md|log)$">
+    Order Allow,Deny
+    Deny from all
+</Files>
+
 # Enable CORS for API endpoints
 <IfModule mod_headers.c>
     <FilesMatch "^index\.php$">
