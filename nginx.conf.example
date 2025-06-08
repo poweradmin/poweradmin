@@ -27,7 +27,7 @@ server {
     location ~ ^/api/v1/users/([0-9]+)/?$ {
         rewrite ^/api/v1/users/([0-9]+)/?$ /index.php?page=api/v1/users/$1 last;
     }
-    
+
     # Users collection route
     location ~ ^/api/v1/users/?$ {
         rewrite ^ /index.php?page=api/v1/users last;
@@ -37,7 +37,7 @@ server {
     location ~ ^/api/v1/zones/([0-9]+)/?$ {
         rewrite ^/api/v1/zones/([0-9]+)/?$ /index.php?page=api/v1/zones/$1 last;
     }
-    
+
     # Zones collection route
     location ~ ^/api/v1/zones/?$ {
         rewrite ^ /index.php?page=api/v1/zones last;
@@ -47,7 +47,7 @@ server {
     location ~ ^/api/v1/zones/([0-9]+)/records/([0-9]+)/?$ {
         rewrite ^/api/v1/zones/([0-9]+)/records/([0-9]+)/?$ /index.php?page=api/v1/zones_records/$1/$2 last;
     }
-    
+
     # Zone records collection routes
     location ~ ^/api/v1/zones/([0-9]+)/records/?$ {
         rewrite ^/api/v1/zones/([0-9]+)/records/?$ /index.php?page=api/v1/zones_records/$1 last;
@@ -99,7 +99,7 @@ server {
         fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
         fastcgi_read_timeout 180;
         include fastcgi_params;
-        
+
         # Ensure HTTP Authorization header is forwarded for API authentication
         fastcgi_param HTTP_AUTHORIZATION $http_authorization;
     }
@@ -108,11 +108,16 @@ server {
     location ~ /\. {
         deny all;
     }
-    
-    location ~ /(config|lib|tests|tools)/ {
+
+    # Allow access to Bootstrap CSS/JS in vendor/twbs/bootstrap
+    location ~ ^/vendor/twbs/bootstrap/ {
+        allow all;
+    }
+
+    location ~ /(config|lib|tests|tools|vendor)/ {
         deny all;
     }
-    
+
     location ~ \.(sql|md|log)$ {
         deny all;
     }
