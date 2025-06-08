@@ -156,10 +156,12 @@
                     </td>
                 </tr>
             </table>
+            {% if not is_reverse_zone %}
             <small class="text-muted d-block mt-2">
                 <i class="bi bi-info-circle"></i> 
                 {% trans %}Tip: Enter just the hostname (e.g. 'www') and the zone name will be added automatically. Use '@' for the zone apex/root.{% endtrans %}
             </small>
+            {% endif %}
         </form>
     </div>
 </div>
