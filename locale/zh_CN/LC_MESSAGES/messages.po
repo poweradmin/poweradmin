@@ -435,15 +435,15 @@ msgstr "请求方法无效。"
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
-msgstr[0] "%d 个区域已成功从模板取消链接。"
-msgstr[1] ""
+msgstr[0] "%d 个区域已成功从模板中取消链接。"
+msgstr[1] "%d 个区域已成功从模板中取消链接。"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:108
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
 msgstr[0] "%d 个区域无法取消链接。"
-msgstr[1] ""
+msgstr[1] "%d 个区域无法取消链接。"
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:118
 msgid "Failed to unlink zones from template."
@@ -1284,7 +1284,7 @@ msgstr "IPSECKEY 算法必须是 0（无密钥）、1（RSA）、2（DSA）、3�
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:194
 msgid "For gateway type 0 (No gateway), gateway must be \".\"."
-msgstr ""
+msgstr "对于网关类型 0（无网关），网关必须为 \".\"。"
 
 #: lib/Domain/Service/DnsValidation/IPSECKEYRecordValidator.php:201
 msgid "For gateway type 1, gateway must be a valid IPv4 address."
@@ -1340,924 +1340,931 @@ msgstr "名称似乎是 SRV 记录格式。对于 TLSA 与 SRV（RFC 7673），�
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:123
 msgid "1. The entire chain of SRV lookups must be DNSSEC-signed"
-msgstr "1. The entire chain of SRV lookups must be DNSSEC-signed"
+msgstr "1. 整个 SRV 查找链必须经过 DNSSEC 签名"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:124
 msgid ""
 "2. TLSA records should be found at _$port._$protocol.$hostname where $port, "
 "$protocol, and $hostname are from the target of SRV lookup"
 msgstr ""
+"2. TLSA 记录应在 _$port._$protocol.$hostname 位置找到，其中 $port、$protocol 和 $hostname 来自 SRV 查找的目标"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:125
 msgid ""
 "3. Both SRV and TLSA records must have DNSSEC validation status \"secure\""
-msgstr ""
+msgstr "3. SRV 和 TLSA 记录都必须具有 DNSSEC 验证状态 \"secure\""
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:226
 msgid ""
 "TLSA record name should typically follow the format _port._protocol.hostname "
 "(e.g., _443._tcp.www.example.com)."
 msgstr ""
+"TLSA 记录名称通常应遵循格式 _port._protocol.hostname（例如，_443._tcp.www.example.com）。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:133
 msgid ""
 "TLSA record is using a non-standard protocol. Common protocols are tcp, udp, "
 "and sctp."
-msgstr ""
+msgstr "TLSA 记录使用了非标准协议。常见协议包括 tcp、udp 和 sctp。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:143
 msgid ""
 "This appears to be a TLSA record for SMTP. Ensure MX records are also "
 "configured correctly."
-msgstr ""
+msgstr "这似乎是 SMTP 的 TLSA 记录。请确保 MX 记录也配置正确。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:145
 msgid ""
 "This appears to be a TLSA record for HTTPS. Ensure the certificate matches "
 "the domain in the TLSA record."
-msgstr ""
+msgstr "这似乎是 HTTPS 的 TLSA 记录。请确保证书与 TLSA 记录中的域名匹配。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:147
 msgid ""
 "This appears to be a TLSA record for DNS over TLS. Ensure your DNS server is "
 "properly configured for DoT."
-msgstr ""
+msgstr "这似乎是 DNS over TLS 的 TLSA 记录。请确保您的 DNS 服务器已正确配置 DoT。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:153
 msgid ""
 "CRITICAL: TLSA records REQUIRE DNSSEC to provide any security benefits. "
 "Ensure your domain is DNSSEC-signed."
-msgstr ""
+msgstr "重要：TLSA 记录需要 DNSSEC 才能提供任何安全效益。请确保您的域名已进行 DNSSEC 签名。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:156
 msgid ""
 "If using CNAMEs, ensure the entire CNAME chain is DNSSEC-signed for TLSA to "
 "work correctly (RFC 7671)."
-msgstr ""
+msgstr "如果使用 CNAME，请确保整个 CNAME 链都经过 DNSSEC 签名，以便 TLSA 正常工作（RFC 7671）。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:160
 msgid "This appears to be an SMIMEA record (RFC 8162) for S/MIME certificates."
-msgstr ""
+msgstr "这似乎是用于 S/MIME 证书的 SMIMEA 记录（RFC 8162）。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:161
 msgid ""
 "SMIMEA records use the same format as TLSA but associate S/MIME certificates "
 "with email addresses."
-msgstr ""
+msgstr "SMIMEA 记录使用与 TLSA 相同的格式，但将 S/MIME 证书与电子邮件地址关联。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:162
 msgid ""
 "The local part of an email address is hashed with SHA-256 and placed before "
 "_smimecert.<domain>"
-msgstr ""
+msgstr "电子邮件地址的本地部分使用 SHA-256 哈希并放置在 _smimecert.<domain> 之前"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:174
 msgid ""
 "TLSA records should typically be placed at \"_port._protocol.hostname\" "
 "(e.g., \"_443._tcp.www.example.com\")."
 msgstr ""
+"TLSA 记录通常应放置在 \"_port._protocol.hostname\"（例如，\"_443._tcp.www.example.com\"）。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:199
 msgid ""
 "Invalid value for priority field. TLSA records must have priority value of 0."
-msgstr ""
+msgstr "优先级字段值无效。TLSA 记录的优先级值必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:249
 msgid ""
 "TLSA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
+msgstr "TLSA 记录必须包含用法、选择器、匹配类型和证书数据，以空格分隔。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:260
 msgid "TLSA usage field must be a number between 0 and 3."
-msgstr "TLSA usage field must be a number between 0 and 3."
+msgstr "TLSA 用法字段必须是 0 到 3 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:266
 msgid ""
 "Usage 0 (PKIX-TA) requires proper CA certificate management and may break "
 "when certificates expire."
-msgstr ""
+msgstr "用法 0（PKIX-TA）需要正确的 CA 证书管理，当证书过期时可能会中断。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:268
 msgid ""
 "Usage 1 (PKIX-EE) depends on both DANE and traditional PKIX validation. May "
 "break when certificates expire."
-msgstr ""
+msgstr "用法 1（PKIX-EE）依赖于 DANE 和传统 PKIX 验证。当证书过期时可能会中断。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:270
 msgid ""
 "Usage 2 (DANE-TA) requires proper trust anchor management and may break when "
 "certificates expire."
-msgstr ""
+msgstr "用法 2（DANE-TA）需要正确的信任锚管理，当证书过期时可能会中断。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:272
 msgid ""
 "Usage 3 (DANE-EE) is recommended by RFC 7671 as it is not affected by "
 "certificate expiration or CA validation issues."
-msgstr ""
+msgstr "RFC 7671 推荐使用用法 3（DANE-EE），因为它不受证书过期或 CA 验证问题的影响。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:277
 msgid ""
 "RFC 7671 recommends usage=3 (DANE-EE), selector=1 (SPKI), matching-type=1 "
 "(SHA-256) as the most robust configuration."
 msgstr ""
+"RFC 7671 推荐使用 usage=3（DANE-EE）、selector=1（SPKI）、matching-type=1（SHA-256）作为最稳健的配置。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:284
 msgid ""
 "TLSA selector field must be 0 (Full certificate) or 1 (SubjectPublicKeyInfo)."
-msgstr ""
+msgstr "TLSA 选择器字段必须为 0（完整证书）或 1（SubjectPublicKeyInfo）。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:290
 msgid ""
 "Selector 0 (Full certificate) may break when certificate attributes change. "
 "Selector 1 (SPKI) is recommended."
-msgstr ""
+msgstr "选择器 0（完整证书）在证书属性更改时可能会中断。推荐使用选择器 1（SPKI）。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:298
 msgid ""
 "TLSA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr ""
+msgstr "TLSA 匹配类型字段必须为 0（完全匹配）、1（SHA-256）或 2（SHA-512）。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:304
 msgid ""
 "Matching-type 0 (Exact match) is not recommended. SHA-256 (1) provides "
 "better compatibility and security."
-msgstr ""
+msgstr "不推荐匹配类型 0（完全匹配）。SHA-256（1）提供更好的兼容性和安全性。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:309
 msgid "TLSA certificate data must be a hexadecimal string."
-msgstr "TLSA certificate data must be a hexadecimal string."
+msgstr "TLSA 证书数据必须是十六进制字符串。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:315
 msgid "TLSA SHA-256 certificate data must be 64 characters long."
-msgstr "TLSA SHA-256 certificate data must be 64 characters long."
+msgstr "TLSA SHA-256 证书数据必须为 64 个字符长。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:317
 msgid "TLSA SHA-512 certificate data must be 128 characters long."
-msgstr "TLSA SHA-512 certificate data must be 128 characters long."
+msgstr "TLSA SHA-512 证书数据必须为 128 个字符长。"
 
 #: lib/Domain/Service/DnsValidation/TLSARecordValidator.php:320
 msgid "TLSA exact match certificate data seems too short to be valid."
-msgstr "TLSA exact match certificate data seems too short to be valid."
+msgstr "TLSA 完全匹配证书数据似乎太短，可能无效。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:104
 msgid ""
 "NSEC3PARAM records MUST only be present at the zone apex (root domain, not "
 "subdomain)."
-msgstr ""
+msgstr "NSEC3PARAM 记录必须只存在于区域顶点（根域，而非子域）。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:109
 msgid "NSEC3PARAM record content cannot be empty."
-msgstr "NSEC3PARAM record content cannot be empty."
+msgstr "NSEC3PARAM 记录内容不能为空。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:114
 msgid "NSEC3PARAM record contains invalid characters."
-msgstr "NSEC3PARAM record contains invalid characters."
+msgstr "NSEC3PARAM 记录包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:143
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3PARAM records should have the same "
 "TTL as the SOA minimum TTL field."
-msgstr ""
+msgstr "根据 RFC 5155 和 RFC 9077，NSEC3PARAM 记录应与 SOA 最小 TTL 字段具有相同的 TTL。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:146
 msgid ""
 "NSEC3PARAM records are part of DNSSEC and should only be managed alongside "
 "other DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
+msgstr "NSEC3PARAM 记录是 DNSSEC 的一部分，只应与其他 DNSSEC 记录（DNSKEY、RRSIG 等）一起管理。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:147
 msgid ""
 "Manually editing NSEC3PARAM records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
+msgstr "不建议手动编辑 NSEC3PARAM 记录，因为它们通常由支持 DNSSEC 的名称服务器自动生成。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:148
 msgid ""
 "NSEC3PARAM records indicate to authoritative servers which parameters to use "
 "for NSEC3-based authenticated denial of existence."
-msgstr ""
+msgstr "NSEC3PARAM 记录向权威服务器指示基于 NSEC3 的认证拒绝存在要使用的参数。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:149
 msgid ""
 "When updating NSEC3 parameters, both NSEC3 and NSEC3PARAM records must be re-"
 "generated with the same parameters."
-msgstr ""
+msgstr "更新 NSEC3 参数时，NSEC3 和 NSEC3PARAM 记录都必须使用相同参数重新生成。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:181
 msgid ""
 "NSEC3PARAM record must contain exactly hash algorithm, flags, iterations, "
 "and salt."
-msgstr ""
+msgstr "NSEC3PARAM 记录必须恰好包含哈希算法、标志、迭代次数和盐值。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:187
 msgid "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
-msgstr "NSEC3PARAM hash algorithm must be 1 (SHA-1)."
+msgstr "NSEC3PARAM 哈希算法必须为 1（SHA-1）。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:193
 msgid "NSEC3PARAM flags must be between 0 and 255."
-msgstr "NSEC3PARAM flags must be between 0 and 255."
+msgstr "NSEC3PARAM 标志必须在 0 到 255 之间。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:224
 msgid ""
 "Flag value 1 indicates Opt-Out is in use. This means NSEC3 records may cover "
 "unsigned delegations."
-msgstr ""
+msgstr "标志值 1 表示正在使用 Opt-Out。这意味着 NSEC3 记录可能覆盖未签名的委派。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:225
 msgid ""
 "RFC 9276 recommends using Opt-Out only for very large and sparsely signed "
 "zones where the majority of records are insecure delegations."
-msgstr ""
+msgstr "RFC 9276 建议仅在非常大且稀疏签名的区域中使用 Opt-Out，其中大部分记录是不安全的委派。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:201
 msgid ""
 "Flags values greater than 1 are reserved for future use. Current "
 "implementations may not handle these values correctly."
-msgstr ""
+msgstr "大于 1 的标志值保留供将来使用。当前实现可能无法正确处理这些值。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:207
 msgid "NSEC3PARAM iterations must be between 0 and 2500."
-msgstr "NSEC3PARAM iterations must be between 0 and 2500."
+msgstr "NSEC3PARAM 迭代次数必须在 0 到 2500 之间。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:236
 msgid ""
 "RFC 9276 recommends using 0 iterations. Additional iterations add "
 "computational cost without enhancing security."
-msgstr ""
+msgstr "RFC 9276 建议使用 0 次迭代。额外的迭代会增加计算成本而不会提高安全性。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:239
 msgid ""
 "High iteration values (>100) may cause validating resolvers to reject your "
 "zones. RFC 9276 STRONGLY recommends using 0 iterations."
-msgstr ""
+msgstr "高迭代值（>100）可能导致验证解析器拒绝您的区域。RFC 9276 强烈建议使用 0 次迭代。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:241
 msgid ""
 "Iteration values >10 create unnecessary computational load without security "
 "benefits. RFC 9276 recommends using 0 iterations."
-msgstr ""
+msgstr "迭代值 >10 会造成不必要的计算负载而无安全效益。RFC 9276 建议使用 0 次迭代。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3PARAMRecordValidator.php:224
 msgid "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
-msgstr "NSEC3PARAM salt must be - (for empty) or a hexadecimal value."
+msgstr "NSEC3PARAM 盐值必须为 -（表示空）或十六进制值。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:253
 msgid ""
 "RFC 9276 recommends NOT using a salt (indicated by \"-\") to simplify "
 "operation without reducing security."
-msgstr ""
+msgstr "RFC 9276 建议不使用盐值（用 \"-\" 表示）以简化操作而不降低安全性。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:256
 msgid ""
 "Long salts provide no additional security benefit. Consider using a shorter "
 "salt or no salt (-)."
-msgstr ""
+msgstr "长盐值不提供额外的安全效益。考虑使用较短的盐值或无盐值（-）。"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:111
 msgid ""
 "NOTE: The LP record type is defined in RFC 6742 as an experimental protocol, "
 "not a formal IETF standard."
-msgstr ""
+msgstr "注意：LP 记录类型在 RFC 6742 中定义为实验性协议，而非正式的 IETF 标准。"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:112
 msgid ""
 "LP records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr ""
+msgstr "LP 记录应仅与标识符-定位器网络协议（ILNP）一起使用。"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:113
 msgid ""
 "LP records MUST NOT be present for nodes that are not ILNP-capable (RFC 6742 "
 "Section 3.4)."
-msgstr ""
+msgstr "对于不支持 ILNP 的节点，不得存在 LP 记录（RFC 6742 第 3.4 节）。"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:122
 msgid ""
 "Warning: The FQDN in an LP record SHOULD NOT have the same value as the "
 "owner name (RFC 6742)."
-msgstr ""
+msgstr "警告：LP 记录中的 FQDN 不应与所有者名称具有相同值（RFC 6742）。"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:127
 msgid ""
 "It is recommended to end FQDN values with a trailing dot to ensure they are "
 "treated as absolute domain names rather than relative ones."
-msgstr ""
+msgstr "建议以尾随点结束 FQDN 值，以确保它们被视为绝对域名而非相对域名。"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:132
 msgid ""
 "Consider using longer TTL values for LP records. Unlike L32/L64 records, LP "
 "records are stable and benefit from longer cache times (RFC 6742)."
 msgstr ""
+"考虑为 LP 记录使用更长的 TTL 值。与 L32/L64 记录不同，LP 记录是稳定的，可以从更长的缓存时间中受益（RFC 6742）。"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:156
 msgid "LP record must contain preference and FQDN separated by space."
-msgstr "LP record must contain preference and FQDN separated by space."
+msgstr "LP 记录必须包含由空格分隔的优先级和 FQDN。"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:163
 msgid "LP preference must be a number between 0 and 65535."
-msgstr "LP preference must be a number between 0 and 65535."
+msgstr "LP 优先级必须是 0 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/LPRecordValidator.php:169
 msgid "LP FQDN must be a valid fully qualified domain name."
-msgstr "LP FQDN must be a valid fully qualified domain name."
+msgstr "LP FQDN 必须是有效的完全限定域名。"
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:82
 msgid ""
 "AFSDB records are deprecated by RFC 5864 in favor of SRV records for AFS "
 "service location."
-msgstr ""
+msgstr "AFSDB 记录已被 RFC 5864 弃用，改为使用 SRV 记录进行 AFS 服务定位。"
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:96
 msgid "Invalid AFSDB hostname."
-msgstr "Invalid AFSDB hostname."
+msgstr "无效的 AFSDB 主机名。"
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:105
 msgid "AFSDB server hostname must be a fully qualified domain name (FQDN)."
-msgstr "AFSDB server hostname must be a fully qualified domain name (FQDN)."
+msgstr "AFSDB 服务器主机名必须是完全限定域名（FQDN）。"
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:111
 msgid ""
 "AFSDB server hostname must be a fully qualified domain name with at least "
 "two parts."
-msgstr ""
+msgstr "AFSDB 服务器主机名必须是至少包含两部分的完全限定域名。"
 
 #: lib/Domain/Service/DnsValidation/AFSDBRecordValidator.php:164
 msgid ""
 "Invalid AFSDB subtype. Must be 1 (AFS cell database server) or 2 (DCE "
 "authenticated name server)."
-msgstr ""
+msgstr "无效的 AFSDB 子类型。必须为 1（AFS 单元数据库服务器）或 2（DCE 认证名称服务器）。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:112
 msgid "Priority field for LOC records must be 0 or empty."
-msgstr "Priority field for LOC records must be 0 or empty."
+msgstr "LOC 记录的优先级字段必须为 0 或空。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:118
 msgid ""
 "NOTE: The LOC record type is defined in RFC 1876 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr ""
+msgstr "注意：LOC 记录类型在 RFC 1876 中定义为实验性协议，而非正式的 IETF 标准。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:119
 msgid ""
 "LOC records are rarely used but can be helpful for geographical mapping of "
 "resources."
-msgstr ""
+msgstr "LOC 记录很少使用，但对资源的地理映射很有帮助。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:128
 msgid ""
 "Exact 90 degrees North latitude (the North Pole) detected. This is an "
 "extreme point and might indicate incorrect data entry."
-msgstr ""
+msgstr "检测到精确的北纬 90 度（北极）。这是一个极端点，可能表示数据输入错误。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:130
 msgid ""
 "Zero latitude detected (the Equator). If this is intentional, it is fine; "
 "otherwise, please verify your coordinates."
-msgstr ""
+msgstr "检测到零纬度（赤道）。如果这是有意的，那没问题；否则，请验证您的坐标。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:135
 msgid ""
 "Default precision values detected (1m size, 10000m horizontal precision, 10m "
 "vertical precision). Consider using more accurate values if you have them."
-msgstr ""
+msgstr "检测到默认精度值（1m 大小，10000m 水平精度，10m 垂直精度）。如果您有更准确的值，请考虑使用。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:159
 msgid "Latitude degrees must be between 0 and 90."
-msgstr "Latitude degrees must be between 0 and 90."
+msgstr "纬度度数必须在 0 到 90 之间。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:165
 msgid "Latitude direction must be specified as N or S."
-msgstr "Latitude direction must be specified as N or S."
+msgstr "纬度方向必须指定为 N 或 S。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:169
 msgid "Longitude direction must be specified as E or W."
-msgstr "Longitude direction must be specified as E or W."
+msgstr "经度方向必须指定为 E 或 W。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:176
 msgid "Longitude degrees must be between 0 and 180."
-msgstr "Longitude degrees must be between 0 and 180."
+msgstr "经度度数必须在 0 到 180 之间。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:184
 msgid "Minutes must be between 0 and 59."
-msgstr "Minutes must be between 0 and 59."
+msgstr "分钟必须在 0 到 59 之间。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:191
 msgid "Seconds must be between 0 and 59.999."
-msgstr "Seconds must be between 0 and 59.999."
+msgstr "秒必须在 0 到 59.999 之间。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:200
 msgid "Altitude must be between -100000 and 42849672.95 meters."
-msgstr "Altitude must be between -100000 and 42849672.95 meters."
+msgstr "海拔必须在 -100000 到 42849672.95 米之间。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:218
 msgid ""
 "Invalid size, horizontal precision, or vertical precision value. These must "
 "be between 0 and 90000000 meters."
-msgstr ""
+msgstr "无效的大小、水平精度或垂直精度值。这些值必须在 0 到 90000000 米之间。"
 
 #: lib/Domain/Service/DnsValidation/LOCRecordValidator.php:223
 msgid ""
 "Invalid LOC record format. Format should be: d1 [m1 [s1]] {\"N\"|\"S\"} d2 "
 "[m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]."
 msgstr ""
+"无效的 LOC 记录格式。格式应为：d1 [m1 [s1]] {\"N\"|\"S\"} d2 [m2 [s2]] {\"E\"|\"W\"} alt[\"m\"] [siz[\"m\"] [hp[\"m\"] [vp[\"m\"]]]。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:76
 msgid "Invalid characters in name field."
-msgstr "Invalid characters in name field."
+msgstr "名称字段中包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:141
 msgid "Invalid characters in content field."
-msgstr "Invalid characters in content field."
+msgstr "内容字段中包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:141
 msgid "Priority field for RKEY records must be 0 or empty."
-msgstr "Priority field for RKEY records must be 0 or empty."
+msgstr "RKEY 记录的优先级字段必须为 0 或空。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:145
 msgid ""
 "RKEY records should be used with caution as they are not widely supported by "
 "DNS servers and resolvers."
-msgstr ""
+msgstr "RKEY 记录应谨慎使用，因为 DNS 服务器和解析器并不广泛支持它们。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:168
 msgid "RKEY record content cannot be empty."
-msgstr "RKEY record content cannot be empty."
+msgstr "RKEY 记录内容不能为空。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:174
 msgid ""
 "RKEY record must contain flags, protocol, algorithm, and public key data."
-msgstr ""
+msgstr "RKEY 记录必须包含标志、协议、算法和公钥数据。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:181
 msgid "RKEY flags field must be a numeric value."
-msgstr "RKEY flags field must be a numeric value."
+msgstr "RKEY 标志字段必须是数值。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:189
 msgid ""
 "Unusual flags value. Common values are 0, 256 (Zone Key), or 257 (Zone Key + "
 "SEP)."
-msgstr ""
+msgstr "异常的标志值。常见值为 0、256（区域密钥）或 257（区域密钥 + SEP）。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:194
 msgid ""
 "Bit 7 (Zone Key flag) is set in the flags field, indicating this is a zone "
 "key."
-msgstr ""
+msgstr "标志字段中设置了位 7（区域密钥标志），表示这是一个区域密钥。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:198
 msgid ""
 "Bit 0 (SEP flag) is set in the flags field, indicating this is a secure "
 "entry point."
-msgstr ""
+msgstr "标志字段中设置了位 0（SEP 标志），表示这是一个安全入口点。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:203
 msgid "RKEY protocol field must be a numeric value."
-msgstr "RKEY protocol field must be a numeric value."
+msgstr "RKEY 协议字段必须是数值。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:208
 msgid ""
 "Protocol field should be 3 for compliance with standards based on DNSKEY "
 "format."
-msgstr ""
+msgstr "协议字段应为 3，以符合基于 DNSKEY 格式的标准。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:213
 msgid "RKEY algorithm field must be a numeric value."
-msgstr "RKEY algorithm field must be a numeric value."
+msgstr "RKEY 算法字段必须是数值。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:219
 msgid "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
-msgstr "RKEY algorithm field must be a valid DNSSEC algorithm number (0-16)."
+msgstr "RKEY 算法字段必须是有效的 DNSSEC 算法编号（0-16）。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:224
 msgid "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
-msgstr "Algorithm 1 (RSA/MD5) is deprecated (RFC 6725) and should NOT be used."
+msgstr "算法 1（RSA/MD5）已被弃用（RFC 6725），不应使用。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:226
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr ""
+msgstr "算法 3（DSA/SHA1）被认为不安全，应替换为更强的算法。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:228
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with a "
 "stronger algorithm."
-msgstr ""
+msgstr "算法 5（RSA/SHA-1）被认为不安全，应替换为更强的算法。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:230
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure."
-msgstr ""
+msgstr "算法 7（RSASHA1-NSEC3-SHA1）使用的 SHA-1 不再被认为是安全的。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
 "Algorithm 8 (RSA/SHA-256) is currently recommended for DNSSEC deployments."
-msgstr ""
+msgstr "算法 8（RSA/SHA-256）目前被推荐用于 DNSSEC 部署。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:234
 msgid "Algorithm 10 (RSA/SHA-512) provides strong security."
-msgstr "Algorithm 10 (RSA/SHA-512) provides strong security."
+msgstr "算法 10（RSA/SHA-512）提供强安全性。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:236
 msgid ""
 "Algorithm 13 (ECDSA Curve P-256 with SHA-256) provides good security with "
 "smaller signatures than RSA."
-msgstr ""
+msgstr "算法 13（ECDSA 曲线 P-256 与 SHA-256）提供良好的安全性，签名比 RSA 更小。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:238
 msgid ""
 "Algorithm 14 (ECDSA Curve P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr ""
+msgstr "算法 14（ECDSA 曲线 P-384 与 SHA-384）提供强安全性，签名比 RSA 更小。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:240
 msgid ""
 "Algorithm 15 (Ed25519) offers modern security but may have compatibility "
 "issues with older validators."
-msgstr ""
+msgstr "算法 15（Ed25519）提供现代安全性，但可能与较旧的验证器存在兼容性问题。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:242
 msgid ""
 "Algorithm 16 (Ed448) offers strong modern security but may have "
 "compatibility issues with older validators."
-msgstr ""
+msgstr "算法 16（Ed448）提供强现代安全性，但可能与较旧的验证器存在兼容性问题。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:221
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
-msgstr ""
+msgstr "重要：此算法被认为不安全。请使用算法 8（RSA/SHA-256）或更高版本。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:251
 msgid "RKEY public key data cannot be empty."
-msgstr "RKEY public key data cannot be empty."
+msgstr "RKEY 公钥数据不能为空。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:256
 msgid "Public key data should be Base64 encoded according to RFC 4034."
-msgstr "Public key data should be Base64 encoded according to RFC 4034."
+msgstr "根据 RFC 4034，公钥数据应使用 Base64 编码。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:260
 msgid ""
 "RKEY records were never formally standardized as an RFC, only proposed in "
 "draft-reid-dnsext-rkey-00."
-msgstr ""
+msgstr "RKEY 记录从未正式标准化为 RFC，仅在 draft-reid-dnsext-rkey-00 中提出。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:261
 msgid "RKEY records are rarely used in modern DNS implementations."
-msgstr "RKEY records are rarely used in modern DNS implementations."
+msgstr "RKEY 记录在现代 DNS 实现中很少使用。"
 
 #: lib/Domain/Service/DnsValidation/RKEYRecordValidator.php:262
 msgid "Consider using standardized record types for cryptographic purposes."
-msgstr "Consider using standardized record types for cryptographic purposes."
+msgstr "考虑使用标准化的记录类型进行加密目的。"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:209
 msgid "Empty APL record represents an empty list of address prefixes."
-msgstr "Empty APL record represents an empty list of address prefixes."
+msgstr "空的 APL 记录表示地址前缀的空列表。"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:295
 msgid ""
 "RFC 3123 recommends that trailing zero octets should not be present in APL "
 "address parts."
-msgstr ""
+msgstr "RFC 3123 建议 APL 地址部分中不应存在尾随零八位字节。"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:156
 msgid ""
 "RFC 3123 notes security considerations when using APL records for access "
 "control lists."
-msgstr ""
+msgstr "RFC 3123 注意到使用 APL 记录进行访问控制列表时的安全考虑。"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:190
 msgid ""
 "Invalid value for priority field. APL records must have priority value of 0."
-msgstr ""
+msgstr "优先级字段值无效。APL 记录的优先级值必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:256
 msgid "Invalid APL element format. Expected [!]afi:address/prefix."
-msgstr "Invalid APL element format. Expected [!]afi:address/prefix."
+msgstr "无效的 APL 元素格式。期望格式为 [!]afi:address/prefix。"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:266
 msgid ""
 "Invalid Address Family Identifier (AFI). Must be 1 for IPv4 or 2 for IPv6."
-msgstr ""
+msgstr "无效的地址族标识符（AFI）。IPv4 必须为 1，IPv6 必须为 2。"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:274
 msgid "Invalid IPv4 address in APL record."
-msgstr "Invalid IPv4 address in APL record."
+msgstr "APL 记录中的 IPv4 地址无效。"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:279
 msgid "IPv4 prefix must be between 0 and 32."
-msgstr "IPv4 prefix must be between 0 and 32."
+msgstr "IPv4 前缀必须在 0 到 32 之间。"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:301
 msgid "Invalid IPv6 address in APL record."
-msgstr "Invalid IPv6 address in APL record."
+msgstr "APL 记录中的 IPv6 地址无效。"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:306
 msgid "IPv6 prefix must be between 0 and 128."
-msgstr "IPv6 prefix must be between 0 and 128."
+msgstr "IPv6 前缀必须在 0 到 128 之间。"
 
 #: lib/Domain/Service/DnsValidation/APLRecordValidator.php:315
 msgid ""
 "Using APL records for AXFR access control should be combined with other "
 "security measures as noted in RFC 3123."
-msgstr ""
+msgstr "根据 RFC 3123，使用 APL 记录进行 AXFR 访问控制应与其他安全措施结合使用。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:84
 msgid ""
 "Note: NID records are used for the ILNP protocol, which is experimental (RFC "
 "6740, 6742)."
-msgstr ""
+msgstr "注意：NID 记录用于 ILNP 协议，这是实验性的（RFC 6740、6742）。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:88
 msgid "NID record content cannot be empty."
-msgstr "NID record content cannot be empty."
+msgstr "NID 记录内容不能为空。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:155
 msgid ""
 "NID record content must be in format xxxx:xxxx:xxxx:xxxx with 4 groups of 4 "
 "hexadecimal digits."
-msgstr ""
+msgstr "NID 记录内容必须为 xxxx:xxxx:xxxx:xxxx 格式，包含 4 组 4 位十六进制数字。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:161
 msgid "NID record content must have exactly 4 groups of hexadecimal digits."
-msgstr "NID record content must have exactly 4 groups of hexadecimal digits."
+msgstr "NID 记录内容必须恰好包含 4 组十六进制数字。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:174
 msgid ""
 "NID record content must be a 64-bit hexadecimal value (16 hex characters or "
 "xxxx:xxxx:xxxx:xxxx format)."
-msgstr ""
+msgstr "NID 记录内容必须是 64 位十六进制值（16 位十六进制字符或 xxxx:xxxx:xxxx:xxxx 格式）。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:181
 msgid ""
 "NID records should use the RFC 6742 presentation format "
 "(xxxx:xxxx:xxxx:xxxx) with colons for better readability."
-msgstr ""
+msgstr "NID 记录应使用 RFC 6742 表示格式（xxxx:xxxx:xxxx:xxxx）带有冒号，以提高可读性。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:220
 msgid ""
 "Invalid NID record: The Group bit (g bit, least significant bit of first "
 "byte) MUST be 0 in ILNP as specified in RFC 6742."
-msgstr ""
+msgstr "无效的 NID 记录：根据 RFC 6742 规定，在 ILNP 中组位（g 位，第一个字节的最低有效位）必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:227
 msgid ""
 "The universal/local bit (u/l bit) is set to universal (0), indicating this "
 "NID is based on a globally unique identifier."
-msgstr ""
+msgstr "通用/本地位（u/l 位）设置为通用（0），表示此 NID 基于全球唯一标识符。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:229
 msgid ""
 "The universal/local bit (u/l bit) is set to local (1), indicating this NID "
 "is locally assigned and not globally unique."
-msgstr ""
+msgstr "通用/本地位（u/l 位）设置为本地（1），表示此 NID 是本地分配的，不是全球唯一的。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:234
 msgid "A zero NodeID value is unusual and may indicate a configuration error."
-msgstr "A zero NodeID value is unusual and may indicate a configuration error."
+msgstr "零 NodeID 值异常，可能表示配置错误。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:239
 msgid ""
 "An all-ones NodeID value is unusual and may indicate a configuration error."
-msgstr ""
+msgstr "全为 1 的 NodeID 值异常，可能表示配置错误。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:273
 msgid "NID record preference must be a number."
-msgstr "NID record preference must be a number."
+msgstr "NID 记录优先级必须是数字。"
 
 #: lib/Domain/Service/DnsValidation/NIDRecordValidator.php:280
 msgid "NID record preference must be between 0 and 65535."
-msgstr "NID record preference must be between 0 and 65535."
+msgstr "NID 记录优先级必须在 0 到 65535 之间。"
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:102
 msgid "ALIAS target must be a fully qualified domain name (FQDN)."
-msgstr "ALIAS target must be a fully qualified domain name (FQDN)."
+msgstr "ALIAS 目标必须是完全限定域名（FQDN）。"
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:107
 msgid ""
 "ALIAS target cannot point to itself, as this would create a resolution loop."
-msgstr ""
+msgstr "ALIAS 目标不能指向自身，因为这会创建解析循环。"
 
 #: lib/Domain/Service/DnsValidation/ALIASRecordValidator.php:160
 msgid ""
 "Invalid value for priority field. ALIAS records must have priority value of "
 "0."
-msgstr ""
+msgstr "优先级字段值无效。ALIAS 记录的优先级值必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/DefaultRecordValidator.php:61
 msgid "Content field cannot be empty."
-msgstr "Content field cannot be empty."
+msgstr "内容字段不能为空。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:97
 msgid "NSEC record content cannot be empty."
-msgstr "NSEC record content cannot be empty."
+msgstr "NSEC 记录内容不能为空。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:102
 msgid "NSEC record contains invalid characters."
-msgstr "NSEC record contains invalid characters."
+msgstr "NSEC 记录包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:123
 msgid ""
 "According to RFC 4034, NSEC records should have the same TTL as the SOA "
 "minimum TTL field."
-msgstr ""
+msgstr "根据 RFC 4034，NSEC 记录应与 SOA 最小 TTL 字段具有相同的 TTL。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:126
 msgid ""
 "NSEC records enable \"zone walking\", allowing enumeration of all names in a "
 "zone, which may be a privacy concern."
-msgstr ""
+msgstr "NSEC 记录启用\"区域遍历\"，允许枚举区域中的所有名称，这可能是隐私问题。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:127
 msgid ""
 "If zone enumeration is a concern, consider using NSEC3 records (RFC 5155) "
 "instead, which use hashed owner names."
-msgstr ""
+msgstr "如果担心区域枚举，请考虑使用 NSEC3 记录（RFC 5155），它使用哈希所有者名称。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:128
 msgid ""
 "NSEC records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
+msgstr "NSEC 记录是 DNSSEC 的一部分，只应与其他 DNSSEC 记录（DNSKEY、RRSIG 等）一起管理。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:129
 msgid ""
 "Manually editing NSEC records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
+msgstr "不建议手动编辑 NSEC 记录，因为它们通常由支持 DNSSEC 的名称服务器自动生成。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:133
 msgid ""
 "Wildcard names in NSEC records require special handling. According to RFC "
 "4035, wildcard owner names appear in NSEC records without expansion."
-msgstr ""
+msgstr "NSEC 记录中的通配符名称需要特殊处理。根据 RFC 4035，通配符所有者名称在 NSEC 记录中出现时不展开。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:168
 msgid "NSEC record must contain a valid next domain name."
-msgstr "NSEC record must contain a valid next domain name."
+msgstr "NSEC 记录必须包含有效的下一个域名。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:173
 msgid ""
 "The next domain name field must be the next owner name in canonical ordering "
 "of the zone. Canonical ordering is case-insensitive and sorts by labels from "
 "right to left."
-msgstr ""
+msgstr "下一个域名字段必须是区域规范排序中的下一个所有者名称。规范排序不区分大小写，从右到左按标签排序。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:177
 msgid ""
 "If this is the last NSEC record in the zone, the next domain name should be "
 "the zone apex (the owner name of the zone's SOA RR)."
-msgstr ""
+msgstr "如果这是区域中的最后一个 NSEC 记录，下一个域名应该是区域顶点（区域 SOA RR 的所有者名称）。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:194
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the NSEC "
 "owner name. An empty type bitmap is unusual."
-msgstr ""
+msgstr "应存在类型位图以指示 NSEC 所有者名称处存在的 RR 类型。空的类型位图是异常的。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:324
 #, php-format
 msgid ""
 "Numeric type \"%s\" should be represented using the RFC 3597 format "
 "(TYPE###)."
-msgstr ""
+msgstr "数字类型 \"%s\" 应使用 RFC 3597 格式（TYPE###）表示。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:266
 #, php-format
 msgid "NSEC record contains an invalid record type: %s"
-msgstr "NSEC record contains an invalid record type: %s"
+msgstr "NSEC 记录包含无效的记录类型：%s"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:272
 msgid ""
 "NSEC type should typically be present in its own type bit map, as each name "
 "in a signed zone should have an NSEC record."
-msgstr ""
+msgstr "NSEC 类型通常应存在于其自己的类型位图中，因为签名区域中的每个名称都应有一个 NSEC 记录。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:276
 msgid ""
 "RRSIG type should typically be present in NSEC type bit maps for DNSSEC-"
 "signed zones."
-msgstr ""
+msgstr "对于 DNSSEC 签名的区域，RRSIG 类型通常应存在于 NSEC 类型位图中。"
 
 #: lib/Domain/Service/DnsValidation/NSECRecordValidator.php:281
 msgid ""
 "This NSEC record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr ""
+msgstr "此 NSEC 记录包含 SOA 和 NS 类型，表明它可能用于区域顶点。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:112
 msgid ""
 "The record name does not follow the standard OPENPGPKEY format "
 "(<hash>._openpgpkey.<domain>). Standard format is recommended for "
 "interoperability."
-msgstr ""
+msgstr "记录名称不符合标准 OPENPGPKEY 格式（<hash>._openpgpkey.<domain>）。建议使用标准格式以确保互操作性。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:138
 msgid "Priority field for OPENPGPKEY records must be 0 or empty"
-msgstr "Priority field for OPENPGPKEY records must be 0 or empty"
+msgstr "OPENPGPKEY 记录的优先级字段必须为 0 或空"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:142
 msgid ""
 "OPENPGPKEY records should typically be generated using specialized tools "
 "like GnuPG with the --print-dane-records option, rather than created "
 "manually."
-msgstr ""
+msgstr "OPENPGPKEY 记录通常应使用专门工具（如带有 --print-dane-records 选项的 GnuPG）生成，而不是手动创建。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:196
 msgid "OPENPGPKEY record content cannot be empty."
-msgstr "OPENPGPKEY record content cannot be empty."
+msgstr "OPENPGPKEY 记录内容不能为空。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:202
 msgid "Invalid characters in OPENPGPKEY record content."
-msgstr "Invalid characters in OPENPGPKEY record content."
+msgstr "OPENPGPKEY 记录内容中包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:208
 msgid "OPENPGPKEY records must contain valid base64-encoded data."
-msgstr "OPENPGPKEY records must contain valid base64-encoded data."
+msgstr "OPENPGPKEY 记录必须包含有效的 base64 编码数据。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:214
 msgid "OPENPGPKEY record contains invalid base64 data."
-msgstr "OPENPGPKEY record contains invalid base64 data."
+msgstr "OPENPGPKEY 记录包含无效的 base64 数据。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:221
 msgid ""
 "OPENPGPKEY record exceeds 4KB in size. RFC 7929 recommends keeping DNS "
 "records as small as possible to ensure reliable transport. Consider using a "
 "minimal key export format."
-msgstr ""
+msgstr "OPENPGPKEY 记录大小超过 4KB。RFC 7929 建议尽可能保持 DNS 记录小以确保可靠传输。考虑使用最小密钥导出格式。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:223
 msgid ""
 "OPENPGPKEY record is unusually small. Verify that this is a valid OpenPGP "
 "public key."
-msgstr ""
+msgstr "OPENPGPKEY 记录异常小。请验证这是否为有效的 OpenPGP 公钥。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:232
 msgid ""
 "The decoded content does not appear to be a valid OpenPGP packet. OpenPGP "
 "packets must start with a byte that has the high bit set (RFC 9580)."
-msgstr ""
+msgstr "解码的内容似乎不是有效的 OpenPGP 数据包。OpenPGP 数据包必须以设置了高位的字节开始（RFC 9580）。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:251
 msgid ""
 "The decoded content does not appear to contain a public key packet (tag 6) "
 "or public subkey packet (tag 14) as its first packet."
-msgstr ""
+msgstr "解码的内容似乎没有包含公钥数据包（标签 6）或公钥子密钥数据包（标签 14）作为其第一个数据包。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:258
 msgid ""
 "OPENPGPKEY records REQUIRE DNSSEC for any security benefit. Without DNSSEC "
 "validation, these records offer no security advantage."
-msgstr ""
+msgstr "OPENPGPKEY 记录需要 DNSSEC 才能获得任何安全效益。没有 DNSSEC 验证，这些记录不提供安全优势。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:259
 msgid ""
 "OPENPGPKEY records are EXPERIMENTAL as per RFC 7929 and may not be supported "
 "by all email clients or OpenPGP implementations."
-msgstr ""
+msgstr "根据 RFC 7929，OPENPGPKEY 记录是实验性的，可能不被所有电子邮件客户端或 OpenPGP 实现支持。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:260
 msgid ""
 "OPENPGPKEY records are not a replacement for the OpenPGP Web of Trust. "
 "Additional verification methods are still recommended."
-msgstr ""
+msgstr "OPENPGPKEY 记录不是 OpenPGP 信任网络的替代品。仍建议使用其他验证方法。"
 
 #: lib/Domain/Service/DnsValidation/OPENPGPKEYRecordValidator.php:261
 msgid ""
 "To create OPENPGPKEY records, use specialized tools like GnuPG with the --"
 "print-dane-records option to ensure correct format and content."
 msgstr ""
+"要创建 OPENPGPKEY 记录，请使用专门工具（如带有 --print-dane-records 选项的 GnuPG）以确保正确的格式和内容。"
 
 #: lib/Domain/Service/DnsValidation/NSRecordValidator.php:137
 msgid ""
 "Invalid value for priority field. NS records must have priority value of 0."
-msgstr ""
+msgstr "优先级字段值无效。NS 记录的优先级值必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:118
 msgid ""
 "Warning: HINFO records reveal potentially sensitive information about host "
 "hardware and software that could be useful to attackers. Consider security "
 "implications before using in public-facing DNS."
-msgstr ""
+msgstr "警告：HINFO 记录可能泄露主机硬件和软件的敏感信息，这对攻击者可能有用。在面向公众的 DNS 中使用之前，请考虑安全影响。"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:147
 msgid "Priority field for HINFO records must be 0 or empty"
-msgstr "Priority field for HINFO records must be 0 or empty"
+msgstr "HINFO 记录的优先级字段必须为 0 或空"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:159
 msgid "HINFO record must have CPU type and OS fields."
-msgstr "HINFO record must have CPU type and OS fields."
+msgstr "HINFO 记录必须有 CPU 类型和操作系统字段。"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:175
 msgid "HINFO record must have exactly two fields: CPU type and OS."
-msgstr "HINFO record must have exactly two fields: CPU type and OS."
+msgstr "HINFO 记录必须恰好包含两个字段：CPU 类型和操作系统。"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:200
 msgid "Invalid quoting in HINFO "
-msgstr "Invalid quoting in HINFO "
+msgstr "HINFO 中的引号无效 "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:229
 msgid "HINFO "
@@ -2265,336 +2272,336 @@ msgstr "HINFO "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:224
 msgid "Invalid quote marks within HINFO "
-msgstr "Invalid quote marks within HINFO "
+msgstr "HINFO 中的引号无效 "
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:258
 msgid ""
 "CPU type does not contain any standard values. Consider using a standard CPU "
 "type for better interoperability."
-msgstr ""
+msgstr "CPU 类型不包含任何标准值。考虑使用标准 CPU 类型以获得更好的互操作性。"
 
 #: lib/Domain/Service/DnsValidation/HINFORecordValidator.php:262
 msgid ""
 "OS type does not contain any standard values. Consider using a standard OS "
 "type for better interoperability."
-msgstr ""
+msgstr "操作系统类型不包含任何标准值。考虑使用标准操作系统类型以获得更好的互操作性。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:125
 msgid ""
 "TSIG timestamp is more than 24 hours old. This could indicate a replay "
 "attack or clock synchronization issue."
-msgstr ""
+msgstr "TSIG 时间戳超过 24 小时。这可能表示重放攻击或时钟同步问题。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:130
 msgid ""
 "TSIG timestamp is set in the future. This could indicate a clock "
 "synchronization issue."
-msgstr ""
+msgstr "TSIG 时间戳设置在未来。这可能表示时钟同步问题。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:154
 msgid "TSIG keys should be rotated periodically as a security best practice."
-msgstr "TSIG keys should be rotated periodically as a security best practice."
+msgstr "作为安全最佳实践，TSIG 密钥应定期轮换。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:155
 msgid ""
 "TSIG provides transaction authentication but not data integrity. Consider "
 "using DNSSEC in addition to TSIG."
-msgstr ""
+msgstr "TSIG 提供事务认证但不提供数据完整性。考虑在 TSIG 之外使用 DNSSEC。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:156
 msgid ""
 "Accurate system clocks are required on both client and server for TSIG to "
 "work correctly."
-msgstr ""
+msgstr "客户端和服务器都需要准确的系统时钟，TSIG 才能正常工作。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:181
 msgid ""
 "TSIG record must contain at least algorithm-name, timestamp, fudge, mac, "
 "original-id, error, and other-len separated by spaces."
-msgstr ""
+msgstr "TSIG 记录必须至少包含算法名称、时间戳、容错、MAC、原始 ID、错误和其他长度，以空格分隔。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:189
 msgid ""
 "TSIG algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr ""
+msgstr "TSIG 算法名称必须是以点结尾的有效域名（例如，hmac-sha256.）。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:195
 msgid "TSIG timestamp must be a non-negative integer."
-msgstr "TSIG timestamp must be a non-negative integer."
+msgstr "TSIG 时间戳必须是非负整数。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:201
 msgid "TSIG fudge must be a non-negative integer."
-msgstr "TSIG fudge must be a non-negative integer."
+msgstr "TSIG 容错必须是非负整数。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:207
 msgid "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
-msgstr "TSIG MAC must be a valid base64-encoded string or hexadecimal string."
+msgstr "TSIG MAC 必须是有效的 base64 编码字符串或十六进制字符串。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:232
 msgid ""
 "TSIG MAC is too short. RFC 8945 recommends a minimum of 16 octets for "
 "security."
-msgstr ""
+msgstr "TSIG MAC 太短。RFC 8945 建议最少 16 个八位字节以确保安全。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:237
 msgid "TSIG original ID must be a number between 0 and 65535."
-msgstr "TSIG original ID must be a number between 0 and 65535."
+msgstr "TSIG 原始 ID 必须是 0 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:243
 msgid "TSIG error must be a valid DNS RCODE number between 0 and 23."
-msgstr "TSIG error must be a valid DNS RCODE number between 0 and 23."
+msgstr "TSIG 错误必须是 0 到 23 之间的有效 DNS RCODE 数字。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:250
 msgid ""
 "TSIG error code 16 (BADSIG) indicates that the signature in the TSIG record "
 "is invalid. Check keys and crypto configuration."
-msgstr ""
+msgstr "TSIG 错误代码 16（BADSIG）表示 TSIG 记录中的签名无效。检查密钥和加密配置。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:253
 msgid ""
 "TSIG error code 17 (BADKEY) indicates that the key used in the TSIG record "
 "is invalid. Verify the key is configured on both DNS servers."
-msgstr ""
+msgstr "TSIG 错误代码 17（BADKEY）表示 TSIG 记录中使用的密钥无效。验证密钥在两个 DNS 服务器上都已配置。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:256
 msgid ""
 "TSIG error code 18 (BADTIME) indicates that the timestamp in the TSIG record "
 "is outside the allowed time window. Check clock synchronization."
-msgstr ""
+msgstr "TSIG 错误代码 18（BADTIME）表示 TSIG 记录中的时间戳超出允许的时间窗口。检查时钟同步。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:259
 msgid ""
 "TSIG error code 22 (BADTRUNC) indicates that the truncated MAC in the TSIG "
 "record is invalid. Check MAC size configuration."
-msgstr ""
+msgstr "TSIG 错误代码 22（BADTRUNC）表示 TSIG 记录中的截断 MAC 无效。检查 MAC 大小配置。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:265
 msgid "TSIG other-len must be a non-negative integer."
-msgstr "TSIG other-len must be a non-negative integer."
+msgstr "TSIG 其他长度必须是非负整数。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:271
 msgid ""
 "TSIG other-data must be a valid base64-encoded string or hexadecimal string."
-msgstr ""
+msgstr "TSIG 其他数据必须是有效的 base64 编码字符串或十六进制字符串。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:312
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. RFC 8945 recommends using "
 "HMAC-SHA256 or stronger algorithms."
-msgstr ""
+msgstr "HMAC-MD5 按现代标准被认为是脆弱的。RFC 8945 建议使用 HMAC-SHA256 或更强的算法。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:317
 msgid ""
 "HMAC-SHA256 is recommended by RFC 8945 as the preferred TSIG algorithm for "
 "most deployments."
-msgstr ""
+msgstr "RFC 8945 推荐 HMAC-SHA256 作为大多数部署的首选 TSIG 算法。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:325
 msgid "TSIG algorithm name must end with a dot."
-msgstr "TSIG algorithm name must end with a dot."
+msgstr "TSIG 算法名称必须以点结尾。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:333
 msgid "TSIG algorithm name must be a valid domain name ending with a dot."
-msgstr "TSIG algorithm name must be a valid domain name ending with a dot."
+msgstr "TSIG 算法名称必须是以点结尾的有效域名。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:337
 msgid ""
 "Using a non-standard TSIG algorithm name. This may not be widely supported."
-msgstr ""
+msgstr "使用非标准的 TSIG 算法名称。这可能不被广泛支持。"
 
 #: lib/Domain/Service/DnsValidation/TSIGRecordValidator.php:338
 msgid "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
-msgstr "RFC 8945 recommends using HMAC-SHA256 as the standard TSIG algorithm."
+msgstr "RFC 8945 建议使用 HMAC-SHA256 作为标准 TSIG 算法。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:110
 msgid ""
 "ZONEMD is defined in RFC 8976 (February 2021) and may not be supported by "
 "all DNS servers."
-msgstr ""
+msgstr "ZONEMD 在 RFC 8976（2021年2月）中定义，可能不被所有 DNS 服务器支持。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:111
 msgid "ZONEMD records must be placed at the zone apex (same as SOA record)."
-msgstr "ZONEMD records must be placed at the zone apex (same as SOA record)."
+msgstr "ZONEMD 记录必须放置在区域顶点（与 SOA 记录相同的位置）。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:112
 msgid ""
 "For proper security, zones with ZONEMD records should also be signed with "
 "DNSSEC."
-msgstr ""
+msgstr "为了保证安全性，包含 ZONEMD 记录的区域也应使用 DNSSEC 签名。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:113
 msgid ""
 "The serial number in the ZONEMD record should match the zone's SOA serial "
 "number."
-msgstr ""
+msgstr "ZONEMD 记录中的序列号应与区域的 SOA 序列号匹配。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:124
 msgid ""
 "ZONEMD scheme values 240-255 are reserved for private use and may not be "
 "interoperable."
-msgstr ""
+msgstr "ZONEMD 模式值 240-255 保留供私人使用，可能不具有互操作性。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:129
 msgid ""
 "SHA-384 (algorithm 1) is the recommended hash algorithm for ZONEMD records."
-msgstr ""
+msgstr "SHA-384（算法 1）是 ZONEMD 记录的推荐哈希算法。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:131
 msgid ""
 "SHA-512 (algorithm 2) provides stronger security but requires more "
 "processing resources than SHA-384."
-msgstr ""
+msgstr "SHA-512（算法 2）提供更强的安全性，但比 SHA-384 需要更多的处理资源。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:133
 msgid ""
 "ZONEMD hash algorithm values 240-255 are reserved for private use and may "
 "not be interoperable."
-msgstr ""
+msgstr "ZONEMD 哈希算法值 240-255 保留供私人使用，可能不具有互操作性。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:159
 msgid ""
 "ZONEMD record must contain serial, scheme, hash-algorithm, and digest "
 "separated by spaces."
-msgstr ""
+msgstr "ZONEMD 记录必须包含序列号、模式、哈希算法和摘要，以空格分隔。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:167
 msgid ""
 "ZONEMD serial must be a number between 0 and 4294967295 (32-bit unsigned "
 "integer)."
-msgstr ""
+msgstr "ZONEMD 序列号必须是 0 到 4294967295 之间的数字（32 位无符号整数）。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:178
 msgid "ZONEMD scheme must be a number between 0 and 255."
-msgstr "ZONEMD scheme must be a number between 0 and 255."
+msgstr "ZONEMD 模式必须是 0 到 255 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:185
 msgid ""
 "ZONEMD scheme must be 1 (Simple ZONEMD scheme) for standard use. Other "
 "values are reserved or unassigned."
-msgstr ""
+msgstr "标准使用时，ZONEMD 模式必须为 1（简单 ZONEMD 模式）。其他值为保留或未分配。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:191
 msgid "ZONEMD scheme 0 is reserved and not for standard use."
-msgstr "ZONEMD scheme 0 is reserved and not for standard use."
+msgstr "ZONEMD 模式 0 为保留值，不用于标准使用。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:203
 msgid "ZONEMD hash algorithm must be a number between 0 and 255."
-msgstr "ZONEMD hash algorithm must be a number between 0 and 255."
+msgstr "ZONEMD 哈希算法必须是 0 到 255 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:210
 msgid "ZONEMD hash algorithm 0 is reserved and not for standard use."
-msgstr "ZONEMD hash algorithm 0 is reserved and not for standard use."
+msgstr "ZONEMD 哈希算法 0 为保留值，不用于标准使用。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:216
 msgid "ZONEMD digest must be a hexadecimal string."
-msgstr "ZONEMD digest must be a hexadecimal string."
+msgstr "ZONEMD 摘要必须是十六进制字符串。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:222
 msgid "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
-msgstr "ZONEMD digest must be at least 24 hexadecimal characters (12 octets)."
+msgstr "ZONEMD 摘要必须至少包含 24 个十六进制字符（12 个八位字节）。"
 
 #: lib/Domain/Service/DnsValidation/ZONEMDRecordValidator.php:230
 msgid ""
 "ZONEMD digest for SHA-384 (algorithm 1) must be exactly 96 hexadecimal "
 "characters (48 octets)."
-msgstr ""
+msgstr "SHA-384（算法 1）的 ZONEMD 摘要必须恰好为 96 个十六进制字符（48 个八位字节）。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:104
 msgid "Priority field for CERT records must be 0 or empty"
-msgstr "Priority field for CERT records must be 0 or empty"
+msgstr "CERT 记录的优先级字段必须为 0 或空"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:108
 msgid ""
 "Per RFC 4398, consider DNS record size limitations when using CERT records. "
 "Large certificates may cause DNS message fragmentation."
-msgstr ""
+msgstr "根据 RFC 4398，使用 CERT 记录时应考虑 DNS 记录大小限制。大型证书可能导致 DNS 消息分片。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:111
 msgid "This CERT record content is quite large ("
-msgstr "This CERT record content is quite large ("
+msgstr "此 CERT 记录内容相当大（"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:138
 msgid "Invalid characters in CERT record content."
-msgstr "Invalid characters in CERT record content."
+msgstr "CERT 记录内容中包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:144
 msgid ""
 "CERT record must contain type, key-tag, algorithm and certificate-data "
 "separated by spaces."
-msgstr ""
+msgstr "CERT 记录必须包含类型、密钥标签、算法和证书数据，以空格分隔。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:170
 msgid "CERT type must be a number between 0 and 65535 or a valid mnemonic."
-msgstr "CERT type must be a number between 0 and 65535 or a valid mnemonic."
+msgstr "CERT 类型必须是 0 到 65535 之间的数字或有效的助记符。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:180
 msgid "CERT type value "
-msgstr "CERT type value "
+msgstr "CERT 类型值 "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:186
 msgid ""
 "CERT type must be a number between 0 and 65535 or a valid mnemonic (PKIX, "
 "SPKI, PGP, etc.)."
-msgstr ""
+msgstr "CERT 类型必须是 0 到 65535 之间的数字或有效助记符（PKIX、SPKI、PGP 等）。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:192
 msgid ""
 "URL-based certificate types (IPKIX, ISPKI, IPGP, IACPKIX) introduce "
 "additional indirection and potential security concerns."
-msgstr ""
+msgstr "基于 URL 的证书类型（IPKIX、ISPKI、IPGP、IACPKIX）引入额外的间接性和潜在的安全问题。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:197
 msgid "CERT key tag must be a number between 0 and 65535."
-msgstr "CERT key tag must be a number between 0 and 65535."
+msgstr "CERT 密钥标签必须是 0 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:221
 msgid "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
-msgstr "CERT algorithm must be a number between 0 and 255 or a valid mnemonic."
+msgstr "CERT 算法必须是 0 到 255 之间的数字或有效的助记符。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:227
 msgid ""
 "CERT algorithm must be a number between 0 and 255 or a valid mnemonic "
 "(RSASHA1, DSA, etc.)."
-msgstr ""
+msgstr "CERT 算法必须是 0 到 255 之间的数字或有效助记符（RSASHA1、DSA 等）。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:205
 msgid "Algorithm "
-msgstr "Algorithm "
+msgstr "算法 "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:249
 msgid "For URL-based CERT types, the certificate data must be a valid URL."
-msgstr "For URL-based CERT types, the certificate data must be a valid URL."
+msgstr "对于基于 URL 的 CERT 类型，证书数据必须是有效的 URL。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:261
 msgid "Certificate data is "
-msgstr "Certificate data is "
+msgstr "证书数据为 "
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:280
 msgid ""
 "CERT certificate data must contain only valid base64 characters (A-Z, a-z, "
 "0-9, +, /, =)."
-msgstr ""
+msgstr "CERT 证书数据必须只包含有效的 base64 字符（A-Z、a-z、0-9、+、/、=）。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:285
 msgid ""
 "CERT certificate data has invalid base64 padding. Equals signs (=) should "
 "only appear at the end of the data."
-msgstr ""
+msgstr "CERT 证书数据的 base64 填充无效。等号（=）应只出现在数据末尾。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:293
 msgid ""
 "CERT certificate data has invalid base64 length. Base64 data must be a "
 "multiple of 4 characters (with padding)."
-msgstr ""
+msgstr "CERT 证书数据的 base64 长度无效。Base64 数据必须是 4 个字符的倍数（包含填充）。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:299
 msgid "CERT certificate data must be valid base64-encoded data."
-msgstr "CERT certificate data must be valid base64-encoded data."
+msgstr "CERT 证书数据必须是有效的 base64 编码数据。"
 
 #: lib/Domain/Service/DnsValidation/CERTRecordValidator.php:304
 msgid "CERT certificate data must not be empty after base64 decoding."
-msgstr "CERT certificate data must not be empty after base64 decoding."
+msgstr "CERT 证书数据在 base64 解码后不能为空。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:85
 msgid ""
@@ -2602,216 +2609,217 @@ msgid ""
 "DNS resolvers have removed or deprecated DLV support. Consider using "
 "standard DNSSEC validation with DS records instead."
 msgstr ""
+"重要：DLV 记录已被 RFC 8749（2020年3月）废弃。主要 DNS 解析器已移除或弃用 DLV 支持。请考虑使用带有 DS 记录的标准 DNSSEC 验证。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:97
 msgid ""
 "This name appears to be in a DLV lookup domain. Note that dlv.isc.org, the "
 "main DLV registry, was decommissioned in 2017."
-msgstr ""
+msgstr "此名称似乎位于 DLV 查找域中。注意主要的 DLV 注册中心 dlv.isc.org 已于 2017 年停用。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:121
 msgid "Priority field for DLV records must be 0 or empty."
-msgstr "Priority field for DLV records must be 0 or empty."
+msgstr "DLV 记录的优先级字段必须为 0 或空。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:125
 msgid ""
 "DLV records were typically placed in special DLV registry domains, not in "
 "the same domain as the DNSKEY records they reference."
-msgstr ""
+msgstr "DLV 记录通常放置在特殊的 DLV 注册域中，而不是与它们引用的 DNSKEY 记录在同一域中。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:149
 msgid ""
 "Invalid DLV record format. Expected: <key-tag> <algorithm> <digest-type> "
 "<digest>."
-msgstr ""
+msgstr "无效的 DLV 记录格式。期望格式：<key-tag> <algorithm> <digest-type> <digest>。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:155
 msgid "Invalid DLV record format. Should contain exactly 4 parts."
-msgstr "Invalid DLV record format. Should contain exactly 4 parts."
+msgstr "无效的 DLV 记录格式。应恰好包含 4 部分。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:162
 msgid "Invalid key tag. Must be a number between 1 and 65535."
-msgstr "Invalid key tag. Must be a number between 1 and 65535."
+msgstr "无效的密钥标签。必须是 1 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:166
 msgid ""
 "The key tag field does not uniquely identify a DNSKEY. More than one key can "
 "have the same key tag."
-msgstr ""
+msgstr "密钥标签字段不能唯一标识 DNSKEY。多个密钥可以具有相同的密钥标签。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:183
 msgid "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
-msgstr "Invalid algorithm. Must be one of the valid DNSSEC algorithms (1-16)."
+msgstr "无效的算法。必须是有效的 DNSSEC 算法之一（1-16）。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:202
 msgid "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "Invalid digest type. Must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
+msgstr "无效的摘要类型。必须为 1（SHA-1）、2（SHA-256）或 4（SHA-384）。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:207
 msgid ""
 "SHA-1 (digest type 1) is considered weak for cryptographic use. Consider "
 "using SHA-256 (type 2) or SHA-384 (type 4) instead."
-msgstr ""
+msgstr "SHA-1（摘要类型 1）在加密使用中被认为是脆弱的。请考虑使用 SHA-256（类型 2）或 SHA-384（类型 4）。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:215
 msgid "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
-msgstr "Invalid digest length for SHA-1. Should be 40 hexadecimal characters."
+msgstr "SHA-1 的摘要长度无效。应为 40 个十六进制字符。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:220
 msgid "Invalid digest length for SHA-256. Should be 64 hexadecimal characters."
-msgstr ""
+msgstr "SHA-256 的摘要长度无效。应为 64 个十六进制字符。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:225
 msgid "Invalid digest length for SHA-384. Should be 96 hexadecimal characters."
-msgstr ""
+msgstr "SHA-384 的摘要长度无效。应为 96 个十六进制字符。"
 
 #: lib/Domain/Service/DnsValidation/DLVRecordValidator.php:232
 msgid "Digest must contain only hexadecimal characters (0-9, a-f)."
-msgstr "Digest must contain only hexadecimal characters (0-9, a-f)."
+msgstr "摘要必须只包含十六进制字符（0-9、a-f）。"
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:92
 msgid "Null MX record (.) must have priority 0 according to RFC 7505."
-msgstr "Null MX record (.) must have priority 0 according to RFC 7505."
+msgstr "根据 RFC 7505，空 MX 记录（.）的优先级必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:98
 msgid ""
 "This is a null MX record (RFC 7505) indicating this domain does not accept "
 "email."
-msgstr ""
+msgstr "这是一个空 MX 记录（RFC 7505），表示此域不接受电子邮件。"
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:99
 msgid "A domain with null MX record must not have any other MX records."
-msgstr "A domain with null MX record must not have any other MX records."
+msgstr "具有空 MX 记录的域不得有任何其他 MX 记录。"
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:105
 msgid "Invalid mail server hostname."
-msgstr "Invalid mail server hostname."
+msgstr "无效的邮件服务器主机名。"
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:112
 msgid "MX records should not point to CNAME records (RFC 2181)."
-msgstr "MX records should not point to CNAME records (RFC 2181)."
+msgstr "MX 记录不应指向 CNAME 记录（RFC 2181）。"
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:116
 msgid "Priority values above 100 are unusual and may be unnecessary."
-msgstr "Priority values above 100 are unusual and may be unnecessary."
+msgstr "优先级值超过 100 是异常的，可能是不必要的。"
 
 #: lib/Domain/Service/DnsValidation/MXRecordValidator.php:169
 msgid "Invalid value for MX priority field. Must be between 0 and 65535."
-msgstr "Invalid value for MX priority field. Must be between 0 and 65535."
+msgstr "MX 优先级字段值无效。必须在 0 到 65535 之间。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:90
 msgid ""
 "Priority field should not be used for HTTPS records as priority is part of "
 "the content."
-msgstr ""
+msgstr "HTTPS 记录不应使用优先级字段，因为优先级是内容的一部分。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:119
 msgid "HTTPS record must contain at least priority and target values."
-msgstr "HTTPS record must contain at least priority and target values."
+msgstr "HTTPS 记录必须至少包含优先级和目标值。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:126
 msgid "HTTPS record priority must be a number between 0 and 65535."
-msgstr "HTTPS record priority must be a number between 0 and 65535."
+msgstr "HTTPS 记录优先级必须是 0 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:135
 msgid ""
 "HTTPS record target must be either \".\" or a valid fully-qualified domain "
 "name."
-msgstr ""
+msgstr "HTTPS 记录目标必须是 \".\" 或有效的完全限定域名。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:157
 msgid ""
 "HTTPS record in AliasMode (priority=0) with target \".\" cannot have "
 "parameters according to RFC 9460."
-msgstr ""
+msgstr "根据 RFC 9460，别名模式（优先级=0）且目标为 \".\" 的 HTTPS 记录不能有参数。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:215
 msgid ""
 "HTTPS record parameters must be in key=value format separated by spaces."
-msgstr ""
+msgstr "HTTPS 记录参数必须是以空格分隔的 key=value 格式。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:223
 #, php-format
 msgid "Unknown HTTPS parameter key: \"%s\". See RFC 9460 for valid keys."
-msgstr ""
+msgstr "未知的 HTTPS 参数键：\"%s\"。请参阅 RFC 9460 了解有效的键。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:228
 #, php-format
 msgid "Duplicate HTTPS parameter key: \"%s\". Each key can only appear once."
-msgstr ""
+msgstr "重复的 HTTPS 参数键：\"%s\"。每个键只能出现一次。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:229
 msgid "ALPN value must be a comma-separated list of protocol identifiers."
-msgstr "ALPN value must be a comma-separated list of protocol identifiers."
+msgstr "ALPN 值必须是协议标识符的逗号分隔列表。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:236
 msgid "The no-default-alpn parameter must have an empty value."
-msgstr "The no-default-alpn parameter must have an empty value."
+msgstr "no-default-alpn 参数必须为空值。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:243
 msgid "Port value must be a number between 1 and 65535."
-msgstr "Port value must be a number between 1 and 65535."
+msgstr "端口值必须是 1 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:252
 #, php-format
 msgid "Invalid IPv4 address in ipv4hint: \"%s\"."
-msgstr ""
+msgstr "ipv4hint 中的 IPv4 地址无效：\"%s\"。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:262
 #, php-format
 msgid "Invalid IPv6 address in ipv6hint: \"%s\"."
-msgstr ""
+msgstr "ipv6hint 中的 IPv6 地址无效：\"%s\"。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:270
 msgid "DoH path must start with a forward slash (/)."
-msgstr "DoH path must start with a forward slash (/)."
+msgstr "DoH 路径必须以正斜杠（/）开头。"
 
 #: lib/Domain/Service/DnsValidation/HTTPSRecordValidator.php:296
 #, php-format
 msgid "Parameter \"%s\" is marked as mandatory but not included in the record."
-msgstr ""
+msgstr "参数 \"%s\" 被标记为必需但未包含在记录中。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:133
 msgid ""
 "RFC 2930 requires TKEY records to have TTL=0 to prevent caching. The current "
 "non-zero TTL may cause issues with older DNS implementations."
-msgstr ""
+msgstr "RFC 2930 要求 TKEY 记录的 TTL=0 以防止缓存。当前非零 TTL 可能导致较旧 DNS 实现出现问题。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:138
 msgid "Priority field for TKEY records must be 0 or empty"
-msgstr "Priority field for TKEY records must be 0 or empty"
+msgstr "TKEY 记录的优先级字段必须为 0 或空"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:142
 msgid ""
 "TKEY records are not for DNS data authentication, they are for key "
 "establishment between DNS servers/resolvers."
-msgstr ""
+msgstr "TKEY 记录不用于 DNS 数据认证，而是用于 DNS 服务器/解析器之间的密钥建立。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:167
 msgid "Invalid characters in TKEY record content."
-msgstr "Invalid characters in TKEY record content."
+msgstr "TKEY 记录内容中包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:173
 msgid ""
 "TKEY record must contain algorithm-name, inception-time, expiration-time, "
 "mode, error, and key-data separated by spaces."
-msgstr ""
+msgstr "TKEY 记录必须包含算法名称、起始时间、过期时间、模式、错误和密钥数据，以空格分隔。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:181
 msgid ""
 "TKEY algorithm name must be a valid domain name ending with a dot (e.g., "
 "hmac-sha256.)."
-msgstr ""
+msgstr "TKEY 算法名称必须是以点结尾的有效域名（例如，hmac-sha256.）。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:191
 msgid ""
 "TKEY inception time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr ""
+msgstr "TKEY 起始时间必须是有效的 Unix 时间戳或 YYYYMMDDHHmmSS 格式。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:195
 msgid ""
 "TKEY expiration time must be a valid Unix timestamp or YYYYMMDDHHmmSS format."
-msgstr ""
+msgstr "TKEY 过期时间必须是有效的 Unix 时间戳或 YYYYMMDDHHmmSS 格式。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:200
 msgid ""
@@ -2819,366 +2827,367 @@ msgid ""
 "Hellman exchange, 3: GSS-API negotiation, 4: Resolver assignment, 5: Key "
 "deletion)."
 msgstr ""
+"TKEY 模式必须是 1 到 5 之间的数字（1：服务器分配，2：Diffie-Hellman 交换，3：GSS-API 协商，4：解析器分配，5：密钥删除）。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:210
 msgid "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
-msgstr "GSS-API mode (3) ignores inception and expiration times per RFC 3645."
+msgstr "根据 RFC 3645，GSS-API 模式（3）忽略起始和过期时间。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:214
 msgid "GSS-API mode requires key data to contain a GSS-API token."
-msgstr "GSS-API mode requires key data to contain a GSS-API token."
+msgstr "GSS-API 模式要求密钥数据包含 GSS-API 令牌。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:217
 msgid ""
 "Diffie-Hellman mode should be authenticated using TSIG or SIG(0) to prevent "
 "man-in-the-middle attacks."
-msgstr ""
+msgstr "Diffie-Hellman 模式应使用 TSIG 或 SIG(0) 进行认证以防止中间人攻击。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:219
 msgid ""
 "Key deletion operations MUST be authenticated using TSIG with the key being "
 "deleted."
-msgstr ""
+msgstr "密钥删除操作必须使用 TSIG 与被删除的密钥进行认证。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:224
 msgid "TKEY error must be a valid DNS RCODE number between 0 and 23."
-msgstr "TKEY error must be a valid DNS RCODE number between 0 and 23."
+msgstr "TKEY 错误必须是 0 到 23 之间的有效 DNS RCODE 数字。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:229
 msgid ""
 "TKEY key data must be valid base64-encoded data or a hexadecimal string."
-msgstr ""
+msgstr "TKEY 密钥数据必须是有效的 base64 编码数据或十六进制字符串。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:233
 msgid ""
 "TKEY established keys are associated with DNS servers/resolvers, not zones."
-msgstr ""
+msgstr "TKEY 建立的密钥与 DNS 服务器/解析器关联，而不是与区域关联。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:234
 msgid ""
 "TKEY record exchanges should be secured - authentication depends on mode "
 "used."
-msgstr ""
+msgstr "TKEY 记录交换应该是安全的 - 认证取决于使用的模式。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:286
 msgid ""
 "HMAC-MD5 is considered weak by modern standards. HMAC-SHA256 or stronger is "
 "recommended."
-msgstr ""
+msgstr "HMAC-MD5 按现代标准被认为是脆弱的。建议使用 HMAC-SHA256 或更强的算法。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:293
 msgid ""
 "Legacy algorithm detected. HMAC-SHA256 or stronger is recommended for better "
 "security."
-msgstr ""
+msgstr "检测到旧版算法。建议使用 HMAC-SHA256 或更强算法以获得更好的安全性。"
 
 #: lib/Domain/Service/DnsValidation/TKEYRecordValidator.php:316
 msgid ""
 "Custom algorithm name detected. Standard algorithm names like \"hmac-"
 "sha256.\" are recommended for better compatibility."
-msgstr ""
+msgstr "检测到自定义算法名称。建议使用标准算法名称（如 \"hmac-sha256.\"）以获得更好的兼容性。"
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:77
 msgid ""
 "Invalid value for default TTL. It must be a number between 0 and 2147483647."
-msgstr ""
+msgstr "默认 TTL 值无效。必须是 0 到 2147483647 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:98
 msgid "Invalid value for TTL field. It must be numeric."
-msgstr "Invalid value for TTL field. It must be numeric."
+msgstr "TTL 字段值无效。必须是数字。"
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:105
 msgid "TTL value cannot be negative. It must be 0 or higher."
-msgstr "TTL value cannot be negative. It must be 0 or higher."
+msgstr "TTL 值不能为负数。必须为 0 或更高。"
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:110
 #, php-format
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
 "bit integer."
-msgstr ""
+msgstr "TTL 值超过允许的最大值（%d）。RFC 2181 将其限制为有符号的 32 位整数。"
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:143
 #, php-format
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
 "Low TTL values increase DNS traffic."
-msgstr ""
+msgstr "TTL 值（%d）低于推荐的最小值 %d 秒（5 分钟）。低 TTL 值会增加 DNS 流量。"
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:152
 #, php-format
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
 "TTL values delay DNS updates."
-msgstr ""
+msgstr "TTL 值（%d）超过推荐的最大值 %d 秒（1 周）。高 TTL 值会延迟 DNS 更新。"
 
 #: lib/Domain/Service/DnsValidation/TTLValidator.php:162
 #, php-format
 msgid ""
 "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
-msgstr ""
+msgstr "SOA 记录 TTL（%d）低于推荐的最小值 %d 秒（1 小时）。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:132
 msgid ""
 "URI records should be protected with DNSSEC to prevent manipulation by "
 "attackers."
-msgstr ""
+msgstr "URI 记录应使用 DNSSEC 保护以防止攻击者操纵。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:196
 msgid "Consider using HTTPS instead of HTTP for better security."
-msgstr "Consider using HTTPS instead of HTTP for better security."
+msgstr "考虑使用 HTTPS 而不是 HTTP 以获得更好的安全性。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:200
 msgid "FTP is considered less secure than alternatives like SFTP or HTTPS."
-msgstr "FTP is considered less secure than alternatives like SFTP or HTTPS."
+msgstr "FTP 被认为不如 SFTP 或 HTTPS 等替代方案安全。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:204
 msgid "Consider using LDAPS (LDAP over SSL/TLS) for securing LDAP connections."
-msgstr ""
+msgstr "考虑使用 LDAPS（基于 SSL/TLS 的 LDAP）来保护 LDAP 连接。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:209
 msgid "Phone-related URI schemes may contain sensitive personal information."
-msgstr "Phone-related URI schemes may contain sensitive personal information."
+msgstr "电话相关的 URI 方案可能包含敏感的个人信息。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:213
 msgid ""
 "The \"file\" URI scheme may pose security risks and is not recommended for "
 "public DNS records."
-msgstr ""
+msgstr "\"file\" URI 方案可能带来安全风险，不建议用于公共 DNS 记录。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:234
 msgid "URI record must be in the format: <priority> <weight> \"<target URI>\""
-msgstr ""
+msgstr "URI 记录必须采用格式：<priority> <weight> \"<target URI>\""
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:244
 msgid "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr "URI priority must be between 0 and 65535 (16-bit unsigned integer)."
+msgstr "URI 优先级必须在 0 到 65535 之间（16 位无符号整数）。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:250
 msgid "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
-msgstr "URI weight must be between 0 and 65535 (16-bit unsigned integer)."
+msgstr "URI 权重必须在 0 到 65535 之间（16 位无符号整数）。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:256
 msgid "URI must not be empty."
-msgstr "URI must not be empty."
+msgstr "URI 不能为空。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:262
 msgid ""
 "URI must start with a valid scheme that begins with a letter followed by "
 "letters, digits, plus, period, or hyphen."
-msgstr ""
+msgstr "URI 必须以有效方案开头，该方案以字母开头，后跟字母、数字、加号、句点或连字符。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:271
 msgid ""
 "URI uses an uncommon protocol. Consider using a standard URI scheme for "
 "better compatibility."
-msgstr ""
+msgstr "URI 使用了不常见的协议。考虑使用标准 URI 方案以获得更好的兼容性。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:280
 msgid "URI with this protocol must include \"://\" after the protocol name."
-msgstr ""
+msgstr "使用此协议的 URI 必须在协议名称后包含 \"://\"。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:289
 msgid "HTTP/HTTPS URIs must include a hostname."
-msgstr "HTTP/HTTPS URIs must include a hostname."
+msgstr "HTTP/HTTPS URI 必须包含主机名。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:295
 msgid "URI must not contain control characters."
-msgstr "URI must not contain control characters."
+msgstr "URI 不得包含控制字符。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:301
 msgid ""
 "URI contains backslash characters, which may be interpreted differently "
 "across systems."
-msgstr ""
+msgstr "URI 包含反斜杠字符，在不同系统中可能会有不同的解释。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:305
 msgid ""
 "URI contains \"..\" sequences, which may be used for directory traversal "
 "attacks."
-msgstr ""
+msgstr "URI 包含 \"..\" 序列，可能被用于目录遍历攻击。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:312
 msgid ""
 "URI contains percent characters not used for properly formatted percent-"
 "encoding."
-msgstr ""
+msgstr "URI 包含未用于正确格式化百分号编码的百分号字符。"
 
 #: lib/Domain/Service/DnsValidation/URIRecordValidator.php:320
 msgid ""
 "URI contains non-ASCII characters in hostname. Consider using Punycode for "
 "international domain names."
-msgstr ""
+msgstr "URI 在主机名中包含非 ASCII 字符。考虑为国际域名使用 Punycode。"
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:91
 msgid ""
 "Invalid key exchanger hostname. The exchanger field must be a valid domain "
 "name."
-msgstr ""
+msgstr "无效的密钥交换器主机名。交换器字段必须是有效的域名。"
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:123
 msgid ""
 "IMPORTANT: RFC 2230 requires KX records to be signed using DNSSEC. Unsigned "
 "KX records MUST be ignored for security reasons."
-msgstr ""
+msgstr "重要：RFC 2230 要求 KX 记录使用 DNSSEC 签名。出于安全原因，必须忽略未签名的 KX 记录。"
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:124
 msgid ""
 "Systems not implementing Secure DNS should ignore KX records entirely "
 "according to RFC 2230."
-msgstr ""
+msgstr "根据 RFC 2230，未实现安全 DNS 的系统应完全忽略 KX 记录。"
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:129
 msgid ""
 "Ensure that the key exchanger host has appropriate forward and reverse DNS "
 "records configured."
-msgstr ""
+msgstr "确保密钥交换器主机配置了适当的正向和反向 DNS 记录。"
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:130
 msgid ""
 "The key exchanger host should have appropriate A/AAAA records for type A/"
 "AAAA additional section processing."
-msgstr ""
+msgstr "密钥交换器主机应具有适当的 A/AAAA 记录，用于类型 A/AAAA 附加部分处理。"
 
 #: lib/Domain/Service/DnsValidation/KXRecordValidator.php:166
 msgid "Invalid value for KX preference field. Must be between 0 and 65535."
-msgstr "Invalid value for KX preference field. Must be between 0 and 65535."
+msgstr "KX 优先级字段值无效。必须在 0 到 65535 之间。"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:84
 msgid ""
 "NOTE: The MINFO record type is marked as EXPERIMENTAL in RFC 1035. It may "
 "not be universally supported."
-msgstr ""
+msgstr "注意：MINFO 记录类型在 RFC 1035 中标记为实验性的。可能不被普遍支持。"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:96
 msgid "MINFO record content cannot be empty."
-msgstr "MINFO record content cannot be empty."
+msgstr "MINFO 记录内容不能为空。"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:102
 msgid ""
 "MINFO record must contain both responsible mailbox and error mailbox "
 "separated by a space (RFC 1035 Section 3.3.7)."
-msgstr ""
+msgstr "MINFO 记录必须包含负责邮箱和错误邮箱，以空格分隔（RFC 1035 第 3.3.7 节）。"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:113
 msgid "Invalid responsible mailbox hostname (RMAILBX)."
-msgstr "Invalid responsible mailbox hostname (RMAILBX)."
+msgstr "无效的负责邮箱主机名（RMAILBX）。"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:121
 msgid ""
 "RFC 1035 notes that many mailing lists use a mailbox \"list-name-request\" "
 "for the responsible mailbox field."
-msgstr ""
+msgstr "RFC 1035 指出，许多邮件列表使用邮箱 \"list-name-request\" 作为负责邮箱字段。"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:126
 msgid ""
 "Using \".\" (root) for RMAILBX indicates that the owner of the MINFO record "
 "is responsible for itself."
-msgstr ""
+msgstr "对 RMAILBX 使用 \".\"（根）表示 MINFO 记录的所有者对自己负责。"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:133
 msgid "Invalid error mailbox hostname (EMAILBX)."
-msgstr "Invalid error mailbox hostname (EMAILBX)."
+msgstr "无效的错误邮箱主机名（EMAILBX）。"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:141
 msgid ""
 "Using \".\" (root) for EMAILBX indicates that errors should be returned to "
 "the sender of the message."
-msgstr ""
+msgstr "对 EMAILBX 使用 \".\"（根）表示错误应返回给消息发送者。"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:146
 msgid ""
 "The responsible mailbox and error mailbox are identical. Consider using "
 "different mailboxes for these functions."
-msgstr ""
+msgstr "负责邮箱和错误邮箱相同。考虑为这些功能使用不同的邮箱。"
 
 #: lib/Domain/Service/DnsValidation/MINFORecordValidator.php:159
 msgid ""
 "Priority field for MINFO records must be 0 or empty. MINFO does not use "
 "priority values per RFC 1035."
-msgstr ""
+msgstr "MINFO 记录的优先级字段必须为 0 或空。根据 RFC 1035，MINFO 不使用优先级值。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:147
 msgid "Priority field for SPF records must be 0 or empty"
-msgstr "Priority field for SPF records must be 0 or empty"
+msgstr "SPF 记录的优先级字段必须为 0 或空"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:160
 msgid "SPF record must start with \"v=spf1\""
-msgstr ""
+msgstr "SPF 记录必须以 \"v=spf1\" 开头"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:166
 msgid ""
 "SPF record exceeds 255 character limit. Split across multiple TXT records."
-msgstr ""
+msgstr "SPF 记录超过 255 字符限制。拆分为多个 TXT 记录。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:190
 #, php-format
 msgid ""
 "Duplicate %s mechanism found. Each mechanism type should appear at most once."
-msgstr ""
+msgstr "发现重复的 %s 机制。每种机制类型最多应出现一次。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
 msgid "Duplicate %s modifier found. Each modifier can appear at most once."
-msgstr "Duplicate %s modifier found. Each modifier can appear at most once."
+msgstr "发现重复的 %s 修饰符。每个修饰符最多可出现一次。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:218
 msgid "Invalid IPv4 address or network in ip4 mechanism."
-msgstr "Invalid IPv4 address or network in ip4 mechanism."
+msgstr "ip4 机制中的 IPv4 地址或网络无效。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:224
 msgid "Invalid IPv6 address or network in ip6 mechanism."
-msgstr "Invalid IPv6 address or network in ip6 mechanism."
+msgstr "ip6 机制中的 IPv6 地址或网络无效。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:238
 #, php-format
 msgid "Invalid domain name in %s mechanism."
-msgstr "Invalid domain name in %s mechanism."
+msgstr "%s 机制中的域名无效。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:244
 #, php-format
 msgid "CIDR notation is not valid with the %s mechanism."
-msgstr "CIDR notation is not valid with the %s mechanism."
+msgstr "CIDR 记号法对 %s 机制无效。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:247
 msgid "Invalid CIDR length in mechanism."
-msgstr "Invalid CIDR length in mechanism."
+msgstr "机制中的 CIDR 长度无效。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:254
 msgid ""
 "The ptr mechanism is not recommended due to performance issues (RFC 7208 "
 "Section 5.5)."
-msgstr ""
+msgstr "由于性能问题，不建议使用 ptr 机制（RFC 7208 第 5.5 节）。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:261
 msgid ""
 "The \"all\" mechanism should be the last mechanism in the record (RFC 7208 "
 "Section 5.1)."
-msgstr ""
+msgstr "\"all\" 机制应该是记录中的最后一个机制（RFC 7208 第 5.1 节）。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:270
 msgid "Invalid domain in redirect modifier."
-msgstr "Invalid domain in redirect modifier."
+msgstr "redirect 修饰符中的域名无效。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:275
 msgid "Invalid domain in exp modifier."
-msgstr "Invalid domain in exp modifier."
+msgstr "exp 修饰符中的域名无效。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:279
 #, php-format
 msgid "Unknown modifier: %s"
-msgstr "Unknown modifier: %s"
+msgstr "未知修饰符：%s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:285
 #, php-format
 msgid "Unknown mechanism: %s"
-msgstr "Unknown mechanism: %s"
+msgstr "未知机制：%s"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:292
 msgid ""
 "SPF record should have either a terminating \"all\" mechanism or a "
 "\"redirect\" modifier (RFC 7208 Section 4.6.2)."
-msgstr ""
+msgstr "SPF 记录应具有终止的 \"all\" 机制或 \"redirect\" 修饰符（RFC 7208 第 4.6.2 节）。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:297
 msgid ""
@@ -3186,12 +3195,13 @@ msgid ""
 "\"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 "
 "Section 6.1)."
 msgstr ""
+"SPF 记录同时具有 \"all\" 机制和 \"redirect\" 修饰符。当存在 \"all\" 时，\"redirect\" 修饰符将被忽略（RFC 7208 第 6.1 节）。"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:167
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
-msgstr ""
+msgstr "优先级字段值无效。CNAME 记录的优先级值必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:196
 msgid ""
@@ -3205,26 +3215,26 @@ msgstr "Bu geçerli bir CNAME değil. Kayda bir MX veya NS kaydı atadınız mı
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:239
 msgid "Empty CNAME records are not allowed."
-msgstr "Empty CNAME records are not allowed."
+msgstr "不允许空的 CNAME 记录。"
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:269
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
-msgstr ""
+msgstr "这不是有效记录。已存在具有此名称的 CNAME。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
-msgstr "Invalid characters in DHCID record content."
+msgstr "DHCID 记录内容中包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:107
 msgid ""
 "As per RFC 4701 and RFC 4703, DHCID records should be placed at the same "
 "name as the A or AAAA records they correspond to."
-msgstr ""
+msgstr "根据 RFC 4701 和 RFC 4703，DHCID 记录应放置在与其对应的 A 或 AAAA 记录相同的名称位置。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:120
 msgid "Priority field for DHCID records must be 0 or empty."
-msgstr "Priority field for DHCID records must be 0 or empty."
+msgstr "DHCID 记录的优先级字段必须为 0 或空。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:124
 msgid ""
@@ -3232,175 +3242,177 @@ msgid ""
 "DHCP clients claim the same name. The presence of a DHCID record indicates "
 "the name is in use by a DHCP client."
 msgstr ""
+"根据 RFC 4703，当多个 DHCP 客户端声明相同名称时，DHCID 记录用于冲突检测。DHCID 记录的存在表明该名称正被 DHCP 客户端使用。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:151
 msgid ""
 "DHCID record must contain only valid base64 characters (A-Z, a-z, 0-9, +, /, "
 "=)."
-msgstr ""
+msgstr "DHCID 记录必须只包含有效的 base64 字符（A-Z、a-z、0-9、+、/、=）。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:157
 msgid ""
 "DHCID record has invalid base64 padding. Equals signs (=) should only appear "
 "at the end of the data."
-msgstr ""
+msgstr "DHCID 记录的 base64 填充无效。等号（=）应只出现在数据末尾。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:166
 msgid ""
 "DHCID record has invalid base64 length. Base64 data must be a multiple of 4 "
 "characters (with padding)."
-msgstr ""
+msgstr "DHCID 记录的 base64 长度无效。Base64 数据必须是 4 个字符的倍数（包含填充）。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:172
 msgid "DHCID record must contain valid base64-encoded data."
-msgstr "DHCID record must contain valid base64-encoded data."
+msgstr "DHCID 记录必须包含有效的 base64 编码数据。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:181
 msgid ""
 "DHCID record is too short. The decoded data must contain at least 3 bytes "
 "(type codes and digest)."
-msgstr ""
+msgstr "DHCID 记录太短。解码数据必须至少包含 3 个字节（类型代码和摘要）。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:190
 #, php-format
 msgid ""
 "DHCID identifier type 0x%04X is not one of the standard types defined in RFC "
 "4701 (0x0000, 0x0001, 0x0002)."
-msgstr ""
+msgstr "DHCID 标识符类型 0x%04X 不是 RFC 4701 中定义的标准类型之一（0x0000、0x0001、0x0002）。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:198
 #, php-format
 msgid ""
 "DHCID digest type %d is not the standard type (1 for SHA-256) defined in RFC "
 "4701."
-msgstr ""
+msgstr "DHCID 摘要类型 %d 不是 RFC 4701 中定义的标准类型（SHA-256 为 1）。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:203
 msgid ""
 "DHCID record with SHA-256 digest (type 1) must be at least 35 bytes when "
 "decoded (2 for identifier type, 1 for digest type, 32 for SHA-256 digest)."
 msgstr ""
+"具有 SHA-256 摘要（类型 1）的 DHCID 记录在解码时必须至少为 35 个字节（标识符类型 2 字节，摘要类型 1 字节，SHA-256 摘要 32 字节）。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:207
 msgid ""
 "DHCID records should be updated only by authorized DHCP clients or servers "
 "to prevent conflicts and unauthorized DNS updates."
-msgstr ""
+msgstr "DHCID 记录应仅由授权的 DHCP 客户端或服务器更新，以防止冲突和未授权的 DNS 更新。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:208
 msgid ""
 "Consider using DNSSEC or TSIG authentication (RFC 3007) for secure DHCID "
 "updates as recommended by RFC 4701."
-msgstr ""
+msgstr "根据 RFC 4701 的建议，考虑使用 DNSSEC 或 TSIG 认证（RFC 3007）进行安全的 DHCID 更新。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:92
 msgid "Hostname contains invalid characters."
-msgstr "Hostname contains invalid characters."
+msgstr "主机名包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:139
 msgid "Priority field for RRSIG records must be 0 or empty"
-msgstr "Priority field for RRSIG records must be 0 or empty"
+msgstr "RRSIG 记录的优先级字段必须为 0 或空"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:143
 msgid ""
 "RRSIG records should only be created by your DNS server when signing a zone. "
 "Manual manipulation is not recommended."
-msgstr ""
+msgstr "RRSIG 记录应仅由您的 DNS 服务器在签名区域时创建。不建议手动操作。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:144
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
-msgstr ""
+msgstr "定期密钥轮换是推荐的安全实践：ZSK 每 1-3 个月，KSK 每 1-2 年。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:167
 msgid "RRSIG record content cannot be empty."
-msgstr "RRSIG record content cannot be empty."
+msgstr "RRSIG 记录内容不能为空。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:172
 msgid "RRSIG record contains invalid characters."
-msgstr "RRSIG record contains invalid characters."
+msgstr "RRSIG 记录包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:178
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
-msgstr ""
+msgstr "RRSIG 记录必须包含覆盖类型、算法、标签、原始 TTL、过期时间、起始时间、密钥标签、签名者名称和签名。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:186
 msgid "RRSIG covered type must be a valid DNS record type."
-msgstr "RRSIG covered type must be a valid DNS record type."
+msgstr "RRSIG 覆盖类型必须是有效的 DNS 记录类型。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:191
 msgid "RRSIG algorithm field must be a numeric value."
-msgstr "RRSIG algorithm field must be a numeric value."
+msgstr "RRSIG 算法字段必须是数值。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:197
 msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
-msgstr ""
+msgstr "算法 1（RSA/MD5）已被弃用，由于加密弱点不应使用。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr ""
+msgstr "算法 3（DSA/SHA1）被认为不安全，应替换为更强的算法。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
-msgstr ""
+msgstr "算法 5（RSA/SHA-1）被认为不安全，应替换为更强的算法。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure. Consider using RSA/SHA-256 or newer algorithms."
-msgstr ""
+msgstr "算法 7（RSASHA1-NSEC3-SHA1）使用的 SHA-1 不再被认为是安全的。考虑使用 RSA/SHA-256 或更新的算法。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
 msgid ""
 "Algorithm 10 (RSA/SHA-512) provides strong security but may have "
 "interoperability issues with some validators."
-msgstr ""
+msgstr "算法 10（RSA/SHA-512）提供强安全性，但可能与某些验证器存在互操作性问题。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
 msgid ""
 "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller "
 "signatures than RSA."
-msgstr ""
+msgstr "算法 13（ECDSA P-256 与 SHA-256）提供良好的安全性，签名比 RSA 更小。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
 msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
-msgstr ""
+msgstr "算法 14（ECDSA P-384 与 SHA-384）提供强安全性，签名比 RSA 更小。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid ""
 "Algorithm 15 (ED25519) offers modern security but may have compatibility "
 "issues with older DNSSEC validators."
-msgstr ""
+msgstr "算法 15（ED25519）提供现代安全性，但可能与较旧的 DNSSEC 验证器存在兼容性问题。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
 "Algorithm 16 (ED448) offers strong modern security but may have "
 "compatibility issues with older DNSSEC validators."
-msgstr ""
+msgstr "算法 16（ED448）提供强现代安全性，但可能与较旧的 DNSSEC 验证器存在兼容性问题。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
 msgid ""
 "Unknown algorithm value. Only algorithms defined in RFCs should be used."
-msgstr ""
+msgstr "未知算法值。应仅使用 RFC 中定义的算法。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:226
 msgid "RRSIG labels field must be a numeric value."
-msgstr "RRSIG labels field must be a numeric value."
+msgstr "RRSIG 标签字段必须是数值。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:232
 msgid "RRSIG labels field must be a reasonable value (0-128)."
-msgstr "RRSIG labels field must be a reasonable value (0-128)."
+msgstr "RRSIG 标签字段必须是合理值（0-128）。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:237
 msgid "RRSIG original TTL field must be a numeric value."
