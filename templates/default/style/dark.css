@@ -588,6 +588,21 @@ input[type=number]::-webkit-outer-spin-button {
     font-size: 0.75rem !important;
 }
 
+/* Style switcher button - fix size to prevent growing */
+#style-switcher {
+    width: 2rem !important;
+    height: 2rem !important;
+    min-width: 2rem !important;
+    min-height: 2rem !important;
+    max-width: 2rem !important;
+    max-height: 2rem !important;
+    flex-shrink: 0 !important;
+    padding: 0.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
 /* Override bg-light class in dark mode */
 .bg-light {
     background-color: var(--bg-dark-secondary) !important;
