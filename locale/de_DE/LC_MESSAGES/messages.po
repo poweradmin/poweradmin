@@ -8,7 +8,7 @@ msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
 "POT-Creation-Date: 2025-05-30 17:37+0300\n"
-"PO-Revision-Date: 2025-05-31 01:07+0200\n"
+"PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
 "Language: de_DE\n"
@@ -6926,7 +6926,7 @@ msgstr "Server Version"
 
 #: templates/default/index.html:28
 msgid "Check PowerDNS server status"
-msgstr "PowerDNS-Serverstatus prüfen"
+msgstr "PowerDNS Serverstatus prüfen"
 
 #: templates/default/index.html:32
 msgid "View Server Status"
