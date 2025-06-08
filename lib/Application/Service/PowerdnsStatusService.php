@@ -118,11 +118,11 @@ class PowerdnsStatusService
             $metricCategories = $this->categorizeMetrics($metrics);
 
             // Verify that PDNS server is running
-            $pdns_server_running = !empty($serverInfo) ? true : false;
+            $pdnsServerRunning = !empty($serverInfo);
 
             // Extract essential information
             $status = [
-                'running' => $pdns_server_running,
+                'running' => $pdnsServerRunning,
                 'daemon_type' => $serverInfo['daemon_type'] ?? 'unknown',
                 'version' => $serverInfo['version'] ?? 'unknown',
                 'configured' => true,
