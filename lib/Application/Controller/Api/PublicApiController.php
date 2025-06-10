@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Domain\Service\ApiKeyService;
+use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
@@ -77,19 +78,7 @@ abstract class PublicApiController extends AbstractApiController
 
         // Create database connection with proper credentials
         $config = $this->getConfig();
-        $dbConfig = $config->getGroup('database');
-        $credentials = [
-            'db_host' => $dbConfig['host'] ?? '',
-            'db_port' => $dbConfig['port'] ?? '',
-            'db_user' => $dbConfig['user'] ?? '',
-            'db_pass' => $dbConfig['password'] ?? '',
-            'db_name' => $dbConfig['name'] ?? '',
-            'db_charset' => $dbConfig['charset'] ?? '',
-            'db_collation' => $dbConfig['collation'] ?? '',
-            'db_type' => $dbConfig['type'] ?? '',
-            'db_file' => $dbConfig['file'] ?? '',
-            'db_debug' => $dbConfig['debug'] ?? false,
-        ];
+        $credentials = DatabaseCredentialMapper::mapCredentials($config);
 
         // Create the database connection
         $databaseConnection = new PDODatabaseConnection();

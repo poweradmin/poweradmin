@@ -23,6 +23,7 @@
 namespace Poweradmin;
 
 use Poweradmin\Application\Service\DatabaseService;
+use Poweradmin\Domain\Service\DatabaseCredentialMapper;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
@@ -139,22 +140,7 @@ class AppInitializer
      */
     private function connectToDatabase(): void
     {
-        // Get database configuration from the database section
-        $dbConfig = $this->configManager->getGroup('database');
-
-        // Map database configuration to the credentials expected by PDODatabaseConnection
-        $credentials = [
-            'db_host' => $dbConfig['host'] ?? '',
-            'db_port' => $dbConfig['port'] ?? '',
-            'db_user' => $dbConfig['user'] ?? '',
-            'db_pass' => $dbConfig['password'] ?? '',
-            'db_name' => $dbConfig['name'] ?? '',
-            'db_charset' => $dbConfig['charset'] ?? '',
-            'db_collation' => $dbConfig['collation'] ?? '',
-            'db_type' => $dbConfig['type'] ?? '',
-            'db_file' => $dbConfig['file'] ?? '',
-            'db_debug' => $dbConfig['debug'] ?? false,
-        ];
+        $credentials = DatabaseCredentialMapper::mapCredentials($this->configManager);
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);

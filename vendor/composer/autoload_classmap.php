@@ -1000,6 +1000,7 @@ return array(
     'Poweradmin\\Domain\\Service\\BatchReverseRecordCreator' => $baseDir . '/lib/Domain/Service/BatchReverseRecordCreator.php',
     'Poweradmin\\Domain\\Service\\DatabaseConnection' => $baseDir . '/lib/Domain/Service/DatabaseConnection.php',
     'Poweradmin\\Domain\\Service\\DatabaseConsistencyService' => $baseDir . '/lib/Domain/Service/DatabaseConsistencyService.php',
+    'Poweradmin\\Domain\\Service\\DatabaseCredentialMapper' => $baseDir . '/lib/Domain/Service/DatabaseCredentialMapper.php',
     'Poweradmin\\Domain\\Service\\DatabasePermissionService' => $baseDir . '/lib/Domain/Service/DatabasePermissionService.php',
     'Poweradmin\\Domain\\Service\\DatabaseSchemaService' => $baseDir . '/lib/Domain/Service/DatabaseSchemaService.php',
     'Poweradmin\\Domain\\Service\\DnsFormatter' => $baseDir . '/lib/Domain/Service/DnsFormatter.php',
