@@ -22,21 +22,21 @@
 
 /**
  * POWERADMIN CONTROLLER SKELETON
- * 
+ *
  * This is an example controller demonstrating the standard PowerAdmin controller pattern.
- * 
+ *
  * == HOW TO ENABLE THIS PAGE ==
- * 
+ *
  * 1. Add your page identifier to lib/Pages.php in the getPages() method array:
  *    Example: Add 'example' to the array in Pages::getPages()
- * 
+ *
  * 2. Create a corresponding template file in templates/default/:
  *    Example: Create templates/default/example.html
- * 
+ *
  * 3. Access your page via: index.php?page=example
- * 
+ *
  * == CONTROLLER REQUIREMENTS ==
- * 
+ *
  * - Must extend BaseController
  * - Must implement run() method
  * - Must use proper namespace: Poweradmin\Application\Controller
@@ -45,16 +45,16 @@
  * - Should validate permissions before performing actions
  * - Should validate CSRF tokens for POST requests
  * - Should use proper error handling and user feedback
- * 
+ *
  * == COMMON PATTERNS ==
- * 
+ *
  * - Check permissions with: $this->checkPermission('permission_name', 'Error message')
  * - Validate CSRF for POST: $this->validateCsrfToken()
  * - Show errors with: $this->showError('Error message')
  * - Redirect with: $this->redirect('index.php', ['page' => 'target'])
  * - Render template with: $this->render('template.html', $params)
  * - Get safe input with: $this->getSafeRequestValue('field_name')
- * 
+ *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
  * @copyright   2010-2025 Poweradmin Development Team
@@ -70,7 +70,7 @@ use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * ExampleController demonstrates standard PowerAdmin controller implementation
- * 
+ *
  * This controller showcases common patterns including:
  * - Permission checking
  * - Form handling (GET/POST)
@@ -83,18 +83,18 @@ use Poweradmin\Infrastructure\Service\MessageService;
 class ExampleController extends BaseController
 {
     private UserContextService $userContextService;
-    private MessageService $messageService;
+    protected MessageService $messageService;
 
     /**
      * Constructor - initialize required services
-     * 
+     *
      * @param array $request Request parameters from $_REQUEST
      */
     public function __construct(array $request)
     {
         // Call parent constructor with authentication enabled (true by default)
         parent::__construct($request, true);
-        
+
         // Initialize required services
         $this->userContextService = new UserContextService();
         $this->messageService = new MessageService();
@@ -102,7 +102,7 @@ class ExampleController extends BaseController
 
     /**
      * Main controller entry point
-     * 
+     *
      * This method is called by the router and contains the main logic flow.
      * Common pattern: check permissions, then route to appropriate handler.
      */
@@ -122,7 +122,7 @@ class ExampleController extends BaseController
 
     /**
      * Display the form (GET request handler)
-     * 
+     *
      * This method handles displaying the initial form/page content.
      */
     private function showForm(): void
@@ -154,7 +154,7 @@ class ExampleController extends BaseController
 
     /**
      * Handle form submission (POST request handler)
-     * 
+     *
      * This method handles processing form submissions with proper validation.
      */
     private function handleFormSubmission(): void
@@ -190,11 +190,10 @@ class ExampleController extends BaseController
                 // Business logic failure
                 $this->showError(_('Failed to process the request. Please try again.'));
             }
-
         } catch (\Exception $e) {
             // Log the error for debugging
             error_log('ExampleController error: ' . $e->getMessage());
-            
+
             // Show user-friendly error message
             $this->showError(_('An unexpected error occurred. Please contact the administrator.'));
         }
@@ -202,7 +201,7 @@ class ExampleController extends BaseController
 
     /**
      * Example method for retrieving data
-     * 
+     *
      * @return array Example data array
      */
     private function getExampleData(): array
@@ -221,7 +220,7 @@ class ExampleController extends BaseController
 
     /**
      * Example method for processing form data
-     * 
+     *
      * @param string $exampleField The example field value
      * @param string $numericField The numeric field value
      * @return bool Success status
