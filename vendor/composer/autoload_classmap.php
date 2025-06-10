@@ -898,6 +898,7 @@ return array(
     'Poweradmin\\Application\\Controller\\EditUserController' => $baseDir . '/lib/Application/Controller/EditUserController.php',
     'Poweradmin\\Application\\Controller\\EditZoneTemplController' => $baseDir . '/lib/Application/Controller/EditZoneTemplController.php',
     'Poweradmin\\Application\\Controller\\EditZoneTemplRecordController' => $baseDir . '/lib/Application/Controller/EditZoneTemplRecordController.php',
+    'Poweradmin\\Application\\Controller\\ExampleController' => $baseDir . '/lib/Application/Controller/ExampleController.php',
     'Poweradmin\\Application\\Controller\\ForgotPasswordController' => $baseDir . '/lib/Application/Controller/ForgotPasswordController.php',
     'Poweradmin\\Application\\Controller\\IndexController' => $baseDir . '/lib/Application/Controller/IndexController.php',
     'Poweradmin\\Application\\Controller\\ListForwardZonesController' => $baseDir . '/lib/Application/Controller/ListForwardZonesController.php',

@@ -114,12 +114,15 @@ class DomainManager implements DomainManagerInterface
                 $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, \PDO::PARAM_INT);
                 $stmt->execute();
 
+                // Get the zone ID from the zones table (not the domain ID from domains table)
+                $zone_id = $db->lastInsertId();
+
                 // Create sync tracking record if using a template
                 if ($zone_template != "none" && is_numeric($zone_template)) {
                     $syncService = new ZoneTemplateSyncService($db, $this->config);
-                    $syncService->createSyncRecord($domain_id, (int)$zone_template);
+                    $syncService->createSyncRecord($zone_id, (int)$zone_template);
                     // Mark as synced since we're creating from template
-                    $syncService->markZoneAsSynced($domain_id, (int)$zone_template);
+                    $syncService->markZoneAsSynced($zone_id, (int)$zone_template);
                 }
 
                 if ($type == "SLAVE") {

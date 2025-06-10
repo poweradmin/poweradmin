@@ -1161,6 +1161,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Application\\Controller\\EditUserController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditUserController.php',
         'Poweradmin\\Application\\Controller\\EditZoneTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditZoneTemplController.php',
         'Poweradmin\\Application\\Controller\\EditZoneTemplRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditZoneTemplRecordController.php',
+        'Poweradmin\\Application\\Controller\\ExampleController' => __DIR__ . '/../..' . '/lib/Application/Controller/ExampleController.php',
         'Poweradmin\\Application\\Controller\\ForgotPasswordController' => __DIR__ . '/../..' . '/lib/Application/Controller/ForgotPasswordController.php',
         'Poweradmin\\Application\\Controller\\IndexController' => __DIR__ . '/../..' . '/lib/Application/Controller/IndexController.php',
         'Poweradmin\\Application\\Controller\\ListForwardZonesController' => __DIR__ . '/../..' . '/lib/Application/Controller/ListForwardZonesController.php',
