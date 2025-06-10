@@ -3416,419 +3416,420 @@ msgstr "RRSIG 标签字段必须是合理值（0-128）。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:237
 msgid "RRSIG original TTL field must be a numeric value."
-msgstr "RRSIG original TTL field must be a numeric value."
+msgstr "RRSIG 原始 TTL 字段必须是数值。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:242
 msgid "RRSIG original TTL must be a valid positive integer."
-msgstr "RRSIG original TTL must be a valid positive integer."
+msgstr "RRSIG 原始 TTL 必须是有效的正整数。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:246
 msgid ""
 "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
 "are generally preferred for faster recovery in case of key compromise."
-msgstr ""
+msgstr "原始 TTL 大于 1 天 (86400)。对于 DNSSEC 记录，通常首选较短的 TTL，以便在密钥泄露时更快恢复。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:251
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
-msgstr "RRSIG expiration must be in YYYYMMDDHHmmSS format."
+msgstr "RRSIG 过期时间必须采用 YYYYMMDDHHmmSS 格式。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:256
 msgid "RRSIG inception must be in YYYYMMDDHHmmSS format."
-msgstr "RRSIG inception must be in YYYYMMDDHHmmSS format."
+msgstr "RRSIG 生效时间必须采用 YYYYMMDDHHmmSS 格式。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:268
 msgid ""
 "The expiration time must be later than the inception time. This signature "
 "appears to have expired before it became valid."
-msgstr ""
+msgstr "过期时间必须晚于生效时间。此签名似乎在生效之前就已过期。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:273
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
-msgstr ""
+msgstr "严重：此签名已过期。DNSSEC 解析器将不会验证它。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
-msgstr ""
+msgstr "警告：此签名将在未来 7 天内过期。请考虑尽快续签。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid "This signature will expire within the next 30 days. Plan for renewal."
-msgstr "This signature will expire within the next 30 days. Plan for renewal."
+msgstr "此签名将在未来 30 天内过期。请计划续签。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:282
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
-msgstr ""
+msgstr "警告：此签名尚未生效。在达到生效时间之前，DNSSEC 解析器不会验证它。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:289
 msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
 "of key compromise."
-msgstr ""
+msgstr "签名有效期超过 90 天，这比推荐做法要长。较长的有效期会在密钥泄露情况下增加漏洞。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
 msgid "Could not parse signature timestamps to check validity period."
-msgstr "Could not parse signature timestamps to check validity period."
+msgstr "无法解析签名时间戳以检查有效期。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:298
 msgid "RRSIG key tag field must be a numeric value."
-msgstr "RRSIG key tag field must be a numeric value."
+msgstr "RRSIG 密钥标签字段必须是数值。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:303
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
-msgstr "RRSIG key tag must be a valid value between 0 and 65535."
+msgstr "RRSIG 密钥标签必须是 0 到 65535 之间的有效值。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:308
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
-msgstr ""
+msgstr "RRSIG 签名者名称必须是完全限定域名（以点结尾）。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:314
 msgid "RRSIG signer name must be a valid domain name."
-msgstr "RRSIG signer name must be a valid domain name."
+msgstr "RRSIG 签名者名称必须是有效的域名。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:319
 msgid "RRSIG signature cannot be empty."
-msgstr "RRSIG signature cannot be empty."
+msgstr "RRSIG 签名不能为空。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:324
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
-msgstr ""
+msgstr "签名似乎不是有效的 base64 编码数据。RRSIG 签名应该使用 base64 编码。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
-msgstr ""
+msgstr "RRSIG 记录是 DNSSEC 的一部分，为 DNS 记录提供加密签名。它们应该由 DNS 服务器自动管理。"
 
 #: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:329
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
-msgstr ""
+msgstr "请记住，RRSIG 记录必须在过期日期之前重新生成，以维持 DNSSEC 验证。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:125
 msgid "Priority field for RP records must be 0 or empty"
-msgstr "Priority field for RP records must be 0 or empty"
+msgstr "RP 记录的优先级字段必须是 0 或空"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:129
 msgid ""
 "RP records were defined in RFC 1183 (1990) and are not widely used in modern "
 "DNS configurations."
-msgstr ""
+msgstr "RP 记录在 RFC 1183 (1990) 中定义，在现代 DNS 配置中并不广泛使用。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:130
 msgid ""
 "Consider including other contact methods besides RP records for critical "
 "domains."
-msgstr ""
+msgstr "对于关键域，请考虑在 RP 记录之外包含其他联系方式。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:131
 msgid "Type code for RP records is 17."
-msgstr "Type code for RP records is 17."
+msgstr "RP 记录的类型代码是 17。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:154
 msgid "RP record content cannot be empty."
-msgstr "RP record content cannot be empty."
+msgstr "RP 记录内容不能为空。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:159
 msgid "RP record contains invalid characters."
-msgstr "RP record contains invalid characters."
+msgstr "RP 记录包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:165
 msgid ""
 "RP record must contain mailbox-domain (mbox-dname) and txt-record-domain "
 "(txt-dname)."
-msgstr ""
+msgstr "RP 记录必须包含邮箱域 (mbox-dname) 和文本记录域 (txt-dname)。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:193
 msgid ""
 "RP records expose contact information in DNS which can create privacy and "
 "security concerns."
-msgstr ""
+msgstr "RP 记录在 DNS 中暴露联系信息，可能引起隐私和安全问题。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:194
 msgid ""
 "The RP record is less commonly used today. Consider using WHOIS records or "
 "other contact mechanisms instead."
-msgstr ""
+msgstr "RP 记录在今天使用较少。请考虑使用 WHOIS 记录或其他联系机制。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:195
 msgid ""
 "Ensure corresponding TXT records exist for the txt-dname field if not using "
 "a dot (.)."
-msgstr ""
+msgstr "如果不使用点 (.)，请确保为 txt-dname 字段存在相应的 TXT 记录。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:213
 msgid ""
 "Using \".\" for the mailbox domain indicates no responsible person is "
 "specified. This is not recommended for production domains."
-msgstr ""
+msgstr "在邮箱域中使用 \".\" 表示未指定负责人。不建议在生产域中使用。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:219
 msgid ""
 "RP mailbox domain must be a fully qualified domain name (end with a dot)."
-msgstr ""
+msgstr "RP 邮箱域必须是完全限定域名（以点结尾）。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:233
 msgid ""
 "RP mailbox local part contains invalid characters. Only characters valid in "
 "email addresses are allowed."
-msgstr ""
+msgstr "RP 邮箱本地部分包含无效字符。只允许在电子邮件地址中有效的字符。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:238
 #, php-format
 msgid "The mailbox domain represents the email address: %s"
-msgstr "The mailbox domain represents the email address: %s"
+msgstr "邮箱域代表电子邮件地址：%s"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:242
 msgid ""
 "RP mailbox domain part contains underscores, which are not allowed in domain "
 "names."
-msgstr ""
+msgstr "RP 邮箱域部分包含下划线，这在域名中是不允许的。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:245
 msgid "RP mailbox domain must include both local part and domain sections."
-msgstr "RP mailbox domain must include both local part and domain sections."
+msgstr "RP 邮箱域必须包含本地部分和域部分。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:256
 msgid "RP mailbox domain contains empty label."
-msgstr "RP mailbox domain contains empty label."
+msgstr "RP 邮箱域包含空标签。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:261
 msgid "RP mailbox domain label exceeds maximum length of 63 characters."
-msgstr "RP mailbox domain label exceeds maximum length of 63 characters."
+msgstr "RP 邮箱域标签超过最大长度 63 个字符。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:266
 msgid "RP mailbox domain contains invalid characters or format."
-msgstr "RP mailbox domain contains invalid characters or format."
+msgstr "RP 邮箱域包含无效字符或格式。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:272
 msgid "RP mailbox domain exceeds maximum length of 253 characters."
-msgstr "RP mailbox domain exceeds maximum length of 253 characters."
+msgstr "RP 邮箱域超过最大长度 253 个字符。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:277
 msgid "RP mailbox domain part is not a valid domain name."
-msgstr "RP mailbox domain part is not a valid domain name."
+msgstr "RP 邮箱域部分不是有效的域名。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:281
 msgid ""
 "The mailbox domain should use the same format as the RNAME field in SOA "
 "records, with @ replaced by a dot."
-msgstr ""
+msgstr "邮箱域应使用与 SOA 记录中 RNAME 字段相同的格式，将 @ 替换为点。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:299
 msgid ""
 "Using \".\" for the TXT domain indicates no additional information TXT "
 "record is available."
-msgstr ""
+msgstr "在 TXT 域中使用 \".\" 表示没有可用的附加信息 TXT 记录。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:305
 msgid "RP TXT domain must be a fully qualified domain name (end with a dot)."
-msgstr "RP TXT domain must be a fully qualified domain name (end with a dot)."
+msgstr "RP TXT 域必须是完全限定域名（以点结尾）。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:313
 msgid "RP TXT domain is not a valid domain name."
-msgstr "RP TXT domain is not a valid domain name."
+msgstr "RP TXT 域不是有效的域名。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:320
 msgid "RP TXT domain contains empty label."
-msgstr "RP TXT domain contains empty label."
+msgstr "RP TXT 域包含空标签。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:325
 msgid "RP TXT domain label exceeds maximum length of 63 characters."
-msgstr "RP TXT domain label exceeds maximum length of 63 characters."
+msgstr "RP TXT 域标签超过最大长度 63 个字符。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:330
 msgid "RP TXT domain contains invalid characters or format."
-msgstr "RP TXT domain contains invalid characters or format."
+msgstr "RP TXT 域包含无效字符或格式。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:336
 msgid "RP TXT domain exceeds maximum length of 253 characters."
-msgstr "RP TXT domain exceeds maximum length of 253 characters."
+msgstr "RP TXT 域超过最大长度 253 个字符。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:340
 msgid ""
 "Ensure a TXT record exists at this domain name containing contact "
 "information for the responsible person."
-msgstr ""
+msgstr "确保在此域名存在包含负责人联系信息的 TXT 记录。"
 
 #: lib/Domain/Service/DnsValidation/RPRecordValidator.php:341
 #, php-format
 msgid "You should create a TXT record at domain: %s"
-msgstr "You should create a TXT record at domain: %s"
+msgstr "您应在域 %s 创建一个 TXT 记录"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:191
 msgid ""
 "This appears to be an EUI-64 address derived from an EUI-48 address "
 "(contains FF-FE in the middle)."
-msgstr ""
+msgstr "这似乎是从 EUI-48 地址派生的 EUI-64 地址（中间包含 FF-FE）。"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:195
 msgid ""
 "This appears to be an IPv6 interface identifier (has the universal/local bit "
 "flipped compared to standard EUI-64)."
-msgstr ""
+msgstr "这似乎是 IPv6 接口标识符（与标准 EUI-64 相比，通用/本地位被翻转）。"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:128
 msgid "Priority field for EUI64 records must be 0 or empty."
-msgstr "Priority field for EUI64 records must be 0 or empty."
+msgstr "EUI64 记录的优先级字段必须是 0 或空。"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:132
 msgid ""
 "RFC 7043 recommends against publishing EUI-64 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr ""
+msgstr "RFC 7043 建议不要在公共 DNS 中发布 EUI-64 地址，因为可能存在隐私问题。"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:155
 msgid ""
 "EUI64 record uses colon separators (xx:xx:xx:xx:xx:xx:xx:xx) but requires "
 "hyphen separators (xx-xx-xx-xx-xx-xx-xx-xx)."
 msgstr ""
+"EUI64 记录使用了冒号分隔符 (xx:xx:xx:xx:xx:xx:xx:xx)，但需要连字符分隔符 (xx-xx-xx-xx-xx-xx-xx-xx)。"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:158
 msgid ""
 "EUI64 record is missing separators. Format must be xx-xx-xx-xx-xx-xx-xx-xx "
 "with hyphens between octets."
-msgstr ""
+msgstr "EUI64 记录缺少分隔符。格式必须是 xx-xx-xx-xx-xx-xx-xx-xx，在字节之间使用连字符。"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:161
 msgid ""
 "EUI64 record appears to be in dotted format. Format must be xx-xx-xx-xx-xx-"
 "xx-xx-xx."
-msgstr ""
+msgstr "EUI64 记录似乎采用了点分格式。格式必须是 xx-xx-xx-xx-xx-xx-xx-xx。"
 
 #: lib/Domain/Service/DnsValidation/EUI64RecordValidator.php:165
 msgid ""
 "EUI64 record must be a valid EUI-64 address in xx-xx-xx-xx-xx-xx-xx-xx "
 "format (where x is a hexadecimal digit)."
-msgstr ""
+msgstr "EUI64 记录必须是 xx-xx-xx-xx-xx-xx-xx-xx 格式的有效 EUI-64 地址（其中 x 是十六进制数字）。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:158
 msgid ""
 "This appears to be a multicast address (the least significant bit of the "
 "first octet is set to 1)."
-msgstr ""
+msgstr "这似乎是一个多播地址（第一个字节的最低有效位被设置为 1）。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:163
 msgid ""
 "This appears to be a locally administered address (the second least "
 "significant bit of the first octet is set to 1)."
-msgstr ""
+msgstr "这似乎是一个本地管理地址（第一个字节的第二最低有效位被设置为 1）。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:168
 msgid "This is the all-zeros address, which may not be valid in all contexts."
-msgstr "This is the all-zeros address, which may not be valid in all contexts."
+msgstr "这是全零地址，在所有上下文中可能都不有效。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:178
 msgid "This appears to be an IANA OUI (00-00-5E) address."
-msgstr "This appears to be an IANA OUI (00-00-5E) address."
+msgstr "这似乎是 IANA OUI (00-00-5E) 地址。"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:91
 msgid ""
 "This DNAME record appears to be at zone apex. According to RFC 6672, using "
 "DNAME at the zone apex requires special handling for NS and related records."
-msgstr ""
+msgstr "此 DNAME 记录似乎位于区域顶点。根据 RFC 6672，在区域顶点使用 DNAME 需要对 NS 和相关记录进行特殊处理。"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:97
 msgid "DNAME target must be a valid fully-qualified domain name."
-msgstr "DNAME target must be a valid fully-qualified domain name."
+msgstr "DNAME 目标必须是有效的完全限定域名。"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:104
 msgid "DNAME record cannot point to itself."
-msgstr "DNAME record cannot point to itself."
+msgstr "DNAME 记录不能指向自身。"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:109
 msgid ""
 "The DNAME target appears to be a subdomain of the owner name. This could "
 "create problematic circular references when resolving subdomains."
-msgstr ""
+msgstr "DNAME 目标似乎是所有者名称的子域。这可能在解析子域时创建有问题的循环引用。"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:122
 msgid "Priority field for DNAME records must be 0 or empty."
-msgstr "Priority field for DNAME records must be 0 or empty."
+msgstr "DNAME 记录的优先级字段必须是 0 或空。"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:126
 msgid ""
 "According to RFC 6672, DNAME records must be unique at a given owner name "
 "(singleton rule)."
-msgstr ""
+msgstr "根据 RFC 6672，DNAME 记录在给定的所有者名称下必须是唯一的（单例规则）。"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:127
 msgid ""
 "DNAME and CNAME records MUST NOT coexist at the same owner name (RFC 6672 "
 "Section 2.3)."
-msgstr ""
+msgstr "DNAME 和 CNAME 记录不能在同一个所有者名称下共存 (RFC 6672 第 2.3 节)。"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:130
 msgid ""
 "DNAME records MUST NOT appear at the same owner name as NS records, unless "
 "the owner name is the zone apex."
-msgstr ""
+msgstr "DNAME 记录不能与 NS 记录出现在同一个所有者名称下，除非所有者名称是区域顶点。"
 
 #: lib/Domain/Service/DnsValidation/DNAMERecordValidator.php:133
 msgid ""
 "DNAME creates synthetic aliases for all subdomains of its owner name. "
 "Consider this carefully when planning your zone structure."
-msgstr ""
+msgstr "DNAME 为其所有者名称的所有子域创建合成别名。在规划区域结构时请仔细考虑这一点。"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:101
 msgid ""
 "DS records should typically be placed at delegation points, not at the zone "
 "apex. Check if this is intentional."
-msgstr ""
+msgstr "DS 记录通常应放置在委托点，而不是区域顶点。请检查这是否是有意的。"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:282
 msgid ""
 "This is a special CDS deletion record (RFC 8078) that signals the parent to "
 "remove the DS record."
-msgstr ""
+msgstr "这是一个特殊的 CDS 删除记录 (RFC 8078)，向父区域发出信号以删除 DS 记录。"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:145
 msgid "Priority field for DS records must be 0 or empty."
-msgstr "Priority field for DS records must be 0 or empty."
+msgstr "DS 记录的优先级字段必须是 0 或空。"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:169
 msgid ""
 "DS record must be in the format: <key-tag> <algorithm> <digest-type> <digest>"
-msgstr ""
+msgstr "DS 记录必须采用以下格式：<key-tag> <algorithm> <digest-type> <digest>"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:175
 msgid "DS record must contain exactly 4 fields"
-msgstr "DS record must contain exactly 4 fields"
+msgstr "DS 记录必须包含恰好 4 个字段"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:182
 msgid "Key tag must be a number between 1 and 65535"
-msgstr "Key tag must be a number between 1 and 65535"
+msgstr "密钥标签必须是 1 到 65535 之间的数字"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:211
 msgid "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
-msgstr "Algorithm must be one of: 1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
+msgstr "算法必须是以下之一：1, 2, 3, 5, 6, 7, 8, 10, 12, 13, 14, 15, 16"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:212
 #, php-format
 msgid ""
 "%s (algorithm %d) is a RECOMMENDED algorithm for use according to RFC 8624."
-msgstr ""
+msgstr "根据 RFC 8624，%s（算法 %d）是推荐使用的算法。"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:220
 #, php-format
 msgid ""
 "%s (algorithm %d) is in common use, but newer algorithms like "
 "ECDSAP256SHA256 (13) or ED25519 (15) are preferred."
-msgstr ""
+msgstr "%s（算法 %d）常用，但首选更新的算法，如 ECDSAP256SHA256 (13) 或 ED25519 (15)。"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:222
 #, php-format
 msgid "%s (algorithm %d) is optional for implementation according to RFC 8624."
-msgstr ""
+msgstr "根据 RFC 8624，%s（算法 %d）在实现中是可选的。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:216
 #, php-format
@@ -3836,22 +3837,23 @@ msgid ""
 "%s (algorithm %d) is NOT RECOMMENDED for use according to RFC 8624. Consider "
 "using ECDSAP256SHA256 (13) or ED25519 (15) instead."
 msgstr ""
+"根据 RFC 8624，不推荐使用 %s（算法 %d）。请考虑使用 ECDSAP256SHA256 (13) 或 ED25519 (15) 代替。"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:233
 msgid "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
-msgstr "Digest type must be one of: 1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
+msgstr "摘要类型必须是以下之一：1 (SHA-1), 2 (SHA-256), 4 (SHA-384)"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:238
 msgid ""
 "SHA-1 (digest type 1) is NOT RECOMMENDED for use according to RFC 8624. "
 "SHA-256 (digest type 2) is the recommended digest algorithm."
-msgstr ""
+msgstr "根据 RFC 8624，不推荐使用 SHA-1（摘要类型 1）。SHA-256（摘要类型 2）是推荐的摘要算法。"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:240
 msgid ""
 "SHA-256 (digest type 2) is the RECOMMENDED digest algorithm according to RFC "
 "8624."
-msgstr ""
+msgstr "根据 RFC 8624，SHA-256（摘要类型 2）是推荐的摘要算法。"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:242
 msgid ""
@@ -3859,110 +3861,111 @@ msgid ""
 "but SHA-256 (digest type 2) is sufficient for most deployments and has wider "
 "support."
 msgstr ""
+"SHA-384（摘要类型 4）对于更高的安全要求是一个好选择，但 SHA-256（摘要类型 2）对于大多数部署已足够，并且具有更广泛的支持。"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:250
 msgid "SHA-1 digest must be exactly 40 hexadecimal characters"
-msgstr "SHA-1 digest must be exactly 40 hexadecimal characters"
+msgstr "SHA-1 摘要必须恰好是 40 个十六进制字符"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:255
 msgid "SHA-256 digest must be exactly 64 hexadecimal characters"
-msgstr "SHA-256 digest must be exactly 64 hexadecimal characters"
+msgstr "SHA-256 摘要必须恰好是 64 个十六进制字符"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:260
 msgid "SHA-384 digest must be exactly 96 hexadecimal characters"
-msgstr "SHA-384 digest must be exactly 96 hexadecimal characters"
+msgstr "SHA-384 摘要必须恰好是 96 个十六进制字符"
 
 #: lib/Domain/Service/DnsValidation/DSRecordValidator.php:266
 msgid ""
 "DS records establish a chain of trust from parent to child zones. The parent "
 "zone must have this DS record, and the child zone must have the "
 "corresponding DNSKEY record."
-msgstr ""
+msgstr "DS 记录建立从父区域到子区域的信任链。父区域必须有此 DS 记录，子区域必须有相应的 DNSKEY 记录。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:96
 msgid ""
 "CSYNC records should only be placed at the zone apex (RFC 7477). This record "
 "may not be processed by parental agents."
-msgstr ""
+msgstr "CSYNC 记录应只放置在区域顶点 (RFC 7477)。此记录可能不会被父代理处理。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:126
 msgid ""
 "CSYNC records require DNSSEC signing to be processed by parental agents (RFC "
 "7477). Ensure your zone is properly signed with DNSSEC."
-msgstr ""
+msgstr "CSYNC 记录需要 DNSSEC 签名才能被父代理处理 (RFC 7477)。确保您的区域已正确使用 DNSSEC 签名。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:129
 msgid ""
 "Only one CSYNC record should exist per zone (RFC 7477). Multiple records may "
 "cause unexpected behavior."
-msgstr ""
+msgstr "每个区域应只存在一个 CSYNC 记录 (RFC 7477)。多个记录可能导致意外行为。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:138
 msgid ""
 "No flags are set in this CSYNC record. The record may not be processed "
 "immediately by parental agents."
-msgstr ""
+msgstr "此 CSYNC 记录中未设置标志。该记录可能不会被父代理立即处理。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:142
 msgid ""
 "The \"immediate\" flag (0x0001) is not set. Parental agents may delay "
 "processing this record."
-msgstr ""
+msgstr "未设置“立即”标志 (0x0001)。父代理可能会延迟处理此记录。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:146
 msgid ""
 "The \"soaminimum\" flag (0x0002) is not set. SOA serial number validation "
 "may not be enforced."
-msgstr ""
+msgstr "未设置“soaminimum”标志 (0x0002)。SOA 序列号验证可能不会被强制执行。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:178
 msgid ""
 "Invalid value for priority field. CSYNC records must have priority value of "
 "0."
-msgstr ""
+msgstr "优先级字段值无效。CSYNC 记录的优先级值必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:196
 msgid ""
 "Invalid SOA Serial in CSYNC record. It must be a 32-bit unsigned integer "
 "(0-4294967295)."
-msgstr ""
+msgstr "CSYNC 记录中的 SOA 序列号无效。它必须是 32 位无符号整数 (0-4294967295)。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:201
 msgid "Invalid Flags in CSYNC record. Flags must be a numeric value."
-msgstr "Invalid Flags in CSYNC record. Flags must be a numeric value."
+msgstr "CSYNC 记录中的标志无效。标志必须是数值。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:208
 msgid "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
-msgstr "Invalid Flags in CSYNC record. Flags must be between 0 and 65535."
+msgstr "CSYNC 记录中的标志无效。标志必须在 0 到 65535 之间。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:217
 msgid ""
 "Invalid Flags in CSYNC record. Only bits 0-1 are defined (values 0-3). Valid "
 "values are 0, 1, 2, or 3."
-msgstr ""
+msgstr "CSYNC 记录中的标志无效。只定义了第 0-1 位（值 0-3）。有效值为 0、1、2 或 3。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:223
 msgid ""
 "CSYNC record must specify at least one record type in the Type Bit Map field."
-msgstr ""
+msgstr "CSYNC 记录必须在类型位图字段中指定至少一种记录类型。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:244
 msgid "Invalid Type \""
-msgstr ""
+msgstr "无效类型 \""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:249
 msgid "Type \""
-msgstr ""
+msgstr "类型 \""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:254
 msgid "Duplicate type \""
-msgstr ""
+msgstr "重复类型 \""
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:262
 msgid ""
 "NS record synchronization requires careful consideration. Parent zones may "
 "have specific NS record policies that can prevent successful synchronization."
-msgstr ""
+msgstr "NS 记录同步需要仔细考虑。父区域可能有特定的 NS 记录策略，可能阻止成功同步。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:266
 msgid ""
@@ -3970,229 +3973,231 @@ msgid ""
 "4.1.2 format. Poweradmin uses a simplified representation with space-"
 "separated record types."
 msgstr ""
+"注意：CSYNC 类型位图的真实线路格式遵循 RFC 4034 第 4.1.2 节格式。Poweradmin 使用以空格分隔记录类型的简化表示。"
 
 #: lib/Domain/Service/DnsValidation/CSYNCRecordValidator.php:269
 msgid ""
 "RFC 7477 requires an \"all or nothing\" approach to CSYNC processing. If any "
 "type cannot be synchronized, no changes will be made by the parent."
-msgstr ""
+msgstr "RFC 7477 要求对 CSYNC 处理采用\"全有或全无\"的方法。如果任何类型无法同步，父区域将不会进行任何更改。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:206
 msgid "Priority must be 0 for EUI48 records."
-msgstr "Priority must be 0 for EUI48 records."
+msgstr "EUI48 记录的优先级必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:115
 msgid ""
 "RFC 7043 recommends against publishing EUI-48 addresses in the public DNS "
 "due to potential privacy implications."
-msgstr ""
+msgstr "RFC 7043 建议不要在公共 DNS 中发布 EUI-48 地址，因为可能存在隐私问题。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:138
 msgid ""
 "EUI48 record uses colon separators (xx:xx:xx:xx:xx:xx) but requires hyphen "
 "separators (xx-xx-xx-xx-xx-xx)."
-msgstr ""
+msgstr "EUI48 记录使用了冒号分隔符 (xx:xx:xx:xx:xx:xx)，但需要连字符分隔符 (xx-xx-xx-xx-xx-xx)。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:141
 msgid ""
 "EUI48 record is missing separators. Format must be xx-xx-xx-xx-xx-xx with "
 "hyphens between octets."
-msgstr ""
+msgstr "EUI48 记录缺少分隔符。格式必须是 xx-xx-xx-xx-xx-xx，在字节之间使用连字符。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:144
 msgid ""
 "EUI48 record appears to be in Cisco format. Format must be xx-xx-xx-xx-xx-xx."
-msgstr ""
+msgstr "EUI48 记录似乎采用了 Cisco 格式。格式必须是 xx-xx-xx-xx-xx-xx。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:148
 msgid ""
 "EUI48 record must be a valid MAC address in xx-xx-xx-xx-xx-xx format (where "
 "x is a hexadecimal digit)."
-msgstr ""
+msgstr "EUI48 记录必须是 xx-xx-xx-xx-xx-xx 格式的有效 MAC 地址（其中 x 是十六进制数字）。"
 
 #: lib/Domain/Service/DnsValidation/EUI48RecordValidator.php:173
 msgid ""
 "This is the broadcast address (all-ones), which may not be valid in all "
 "contexts."
-msgstr ""
+msgstr "这是广播地址（全 1），在所有上下文中可能都不有效。"
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:117
 msgid ""
 "The record name does not appear to be a standard reverse DNS zone name "
 "(should end with .in-addr.arpa for IPv4 or .ip6.arpa for IPv6)."
 msgstr ""
+"记录名称似乎不是标准的反向 DNS 区域名称（IPv4 应以 .in-addr.arpa 结尾，IPv6 应以 .ip6.arpa 结尾）。"
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:130
 msgid ""
 "Priority field for PTR records should be 0 or empty. The specified value "
 "will be ignored."
-msgstr ""
+msgstr "PTR 记录的优先级字段应为 0 或空。指定的值将被忽略。"
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:134
 msgid ""
 "PTR records should have corresponding forward (A/AAAA) records to avoid "
 "problems with services that check reverse DNS."
-msgstr ""
+msgstr "PTR 记录应该有相应的正向（A/AAAA）记录，以避免检查反向 DNS 的服务出现问题。"
 
 #: lib/Domain/Service/DnsValidation/PTRRecordValidator.php:135
 msgid ""
 "Email servers often require properly configured reverse DNS to accept mail "
 "from your server."
-msgstr ""
+msgstr "邮件服务器通常需要正确配置的反向 DNS 才能接受来自您服务器的邮件。"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:53
 msgid "This is not a valid IPv4 address."
-msgstr "This is not a valid IPv4 address."
+msgstr "这不是有效的 IPv4 地址。"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:93
 msgid "This is not a valid IPv6 address."
-msgstr "This is not a valid IPv6 address."
+msgstr "这不是有效的 IPv6 地址。"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:98
 msgid "IPv6 address should use lowercase for hexadecimal digits."
-msgstr "IPv6 address should use lowercase for hexadecimal digits."
+msgstr "IPv6 地址应使用小写十六进制数字。"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:107
 msgid "Invalid IPv4 part in IPv4-mapped IPv6 address."
-msgstr "Invalid IPv4 part in IPv4-mapped IPv6 address."
+msgstr "IPv4 映射的 IPv6 地址中的 IPv4 部分无效。"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:113
 msgid "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
-msgstr "IPv4-compatible IPv6 addresses (::a.b.c.d) are deprecated."
+msgstr "IPv4 兼容的 IPv6 地址 (::a.b.c.d) 已弃用。"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:118
 msgid "Invalid IPv6 address: more than two consecutive colons."
-msgstr "Invalid IPv6 address: more than two consecutive colons."
+msgstr "无效的 IPv6 地址：超过两个连续冒号。"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:127
 msgid "Invalid IPv6 address: must have 8 hextets when expanded."
-msgstr "Invalid IPv6 address: must have 8 hextets when expanded."
+msgstr "无效的 IPv6 地址：展开时必须有 8 个十六进制段。"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:132
 msgid "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
-msgstr "Invalid IPv6 address: each hextet must be 4 hexadecimal digits."
+msgstr "无效的 IPv6 地址：每个十六进制段必须是 4 个十六进制数字。"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:142
 #, php-format
 msgid "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
-msgstr "IPv6 address is not in canonical form (RFC 5952). Canonical form: %s"
+msgstr "IPv6 地址不是规范形式 (RFC 5952)。规范形式：%s"
 
 #: lib/Domain/Service/DnsValidation/IPAddressValidator.php:312
 #, php-format
 msgid "IP address \"%s\" is not valid. Must be a valid IPv4 or IPv6 address."
-msgstr ""
+msgstr "IP 地址 \"%s\" 无效。必须是有效的 IPv4 或 IPv6 地址。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:101
 msgid "Priority field for CAA records must be 0 or empty."
-msgstr "Priority field for CAA records must be 0 or empty."
+msgstr "CAA 记录的优先级字段必须为 0 或空。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:125
 msgid "CAA record must contain flags, tag, and value separated by spaces."
-msgstr "CAA record must contain flags, tag, and value separated by spaces."
+msgstr "CAA 记录必须包含用空格分隔的标志、标签和值。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:132
 msgid "CAA flags must be a number between 0 and 255."
-msgstr "CAA flags must be a number between 0 and 255."
+msgstr "CAA 标志必须是 0 到 255 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:141
 msgid "CAA tag must only contain ASCII letters and numbers."
-msgstr "CAA tag must only contain ASCII letters and numbers."
+msgstr "CAA 标签只能包含 ASCII 字母和数字。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:164
 #, php-format
 msgid ""
 "Critical flag set for unknown tag \"%s\". This may cause certificate "
 "issuance failures."
-msgstr ""
+msgstr "为未知标签 \"%s\" 设置了关键标志。这可能导致证书颁发失败。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:193
 msgid "Empty value is not allowed. Use \";\" to allow all CAs."
-msgstr ""
+msgstr "不允许空值。使用 \";\" 来允许所有 CA。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:204
 msgid "Invalid CA domain in issue tag."
-msgstr "Invalid CA domain in issue tag."
+msgstr "issue 标签中的 CA 域无效。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:216
 msgid "Issue tag parameters must be in key=value format."
-msgstr "Issue tag parameters must be in key=value format."
+msgstr "Issue 标签参数必须采用 key=value 格式。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:221
 msgid "accounturi parameter cannot be empty."
-msgstr "accounturi parameter cannot be empty."
+msgstr "accounturi 参数不能为空。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:230
 msgid "Empty validation method specified."
-msgstr "Empty validation method specified."
+msgstr "指定了空的验证方法。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:238
 msgid "Invalid CA domain in issuewild tag."
-msgstr "Invalid CA domain in issuewild tag."
+msgstr "issuewild 标签中的 CA 域无效。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:251
 msgid ""
 "CAA iodef value must be a URL starting with http://, https://, or mailto:."
-msgstr ""
+msgstr "CAA iodef 值必须是以 http://、https:// 或 mailto: 开头的 URL。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:262
 msgid "contactemail value must be a valid email address."
-msgstr "contactemail value must be a valid email address."
+msgstr "contactemail 值必须是有效的电子邮件地址。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:273
 msgid ""
 "contactphone value must contain only numbers, spaces, and common phone "
 "number punctuation."
-msgstr ""
+msgstr "contactphone 值只能包含数字、空格和常见的电话号码标点符号。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:465
 msgid "Value must be enclosed in double quotes."
-msgstr "Value must be enclosed in double quotes."
+msgstr "值必须用双引号括起来。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:313
 msgid "Backslashes must precede all quotes (\") in value content."
-msgstr ""
+msgstr "在值内容中，所有引号 (\") 前面必须有反斜杠。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:319
 msgid "CAA property value exceeds maximum length of 512 characters."
-msgstr "CAA property value exceeds maximum length of 512 characters."
+msgstr "CAA 属性值超过最大长度 512 个字符。"
 
 #: lib/Domain/Service/DnsValidation/CAARecordValidator.php:325
 msgid "CAA property value cannot contain NUL (0) characters."
-msgstr "CAA property value cannot contain NUL (0) characters."
+msgstr "CAA 属性值不能包含 NUL (0) 字符。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:241
 msgid "The hostname is too long."
-msgstr "The hostname is too long."
+msgstr "主机名太长。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:77
 msgid "Single-label hostnames are not allowed."
-msgstr "Single-label hostnames are not allowed."
+msgstr "不允许单标签主机名。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:90
 msgid "You have invalid characters in your zone name."
-msgstr "You have invalid characters in your zone name."
+msgstr "您的区域名称中有无效字符。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:99
 msgid "A hostname can not start or end with a dash."
-msgstr "A hostname can not start or end with a dash."
+msgstr "主机名不能以破折号开头或结尾。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:103
 msgid "Given hostname or one of the labels is too short or too long."
-msgstr "Given hostname or one of the labels is too short or too long."
+msgstr "给定的主机名或其中一个标签太短或太长。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:132
 msgid "Given hostname has too many slashes."
-msgstr "Given hostname has too many slashes."
+msgstr "给定的主机名有太多斜杠。"
 
 #: lib/Domain/Service/DnsValidation/HostnameValidator.php:137
 msgid "You are using an invalid top level domain."
-msgstr "You are using an invalid top level domain."
+msgstr "您正在使用无效的顶级域。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:100
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
-msgstr ""
+msgstr "SOA 验证参数未设置。请先调用 setSOAParams() 或将它们作为参数提供。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:111
 msgid ""
@@ -4202,317 +4207,322 @@ msgstr "SOA kaydının ad alanı için geçersiz değer. Bölgenin adı olmalıd
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:170
 msgid "SOA record must have between 1 and 7 fields."
-msgstr "SOA record must have between 1 and 7 fields."
+msgstr "SOA 记录必须有 1 到 7 个字段。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:177
 msgid "Invalid primary nameserver in SOA record."
-msgstr "Invalid primary nameserver in SOA record."
+msgstr "SOA 记录中的主名称服务器无效。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:197
 msgid "Invalid email address in SOA record."
-msgstr "Invalid email address in SOA record."
+msgstr "SOA 记录中的电子邮件地址无效。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:208
 msgid "Serial number must be numeric."
-msgstr "Serial number must be numeric."
+msgstr "序列号必须是数字。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:214
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
-msgstr "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
+msgstr "序列号必须是 32 位无符号整数（0 到 4294967295）。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:227
 msgid ""
 "Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
 "This is allowed but not recommended."
-msgstr ""
+msgstr "序列号似乎使用 YYYYMMDDnn 格式，但包含无效日期。这是允许的，但不建议。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:241
 msgid ""
 "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
 "retry, expire, minimum)."
-msgstr ""
+msgstr "SOA 记录必须恰好有 7 个字段（主 NS、邮箱、序列号、刷新、重试、过期、最小值）。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:261
 #, php-format
 msgid "SOA %s field must be numeric."
-msgstr "SOA %s field must be numeric."
+msgstr "SOA %s 字段必须是数字。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:267
 #, php-format
 msgid "SOA %s field must be a positive integer."
-msgstr "SOA %s field must be a positive integer."
+msgstr "SOA %s 字段必须是正整数。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:275
 #, php-format
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
-msgstr ""
+msgstr "SOA %s 值 (%d) 低于 RFC 2308 推荐的最小值 (%d)。这是允许的，但不建议。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:284
 msgid ""
 "SOA retry value should be less than refresh value according to RFC 2308. "
 "This is allowed but not recommended."
-msgstr ""
+msgstr "根据 RFC 2308，SOA 重试值应小于刷新值。这是允许的，但不建议。"
 
 #: lib/Domain/Service/DnsValidation/SOARecordValidator.php:292
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
-msgstr ""
+msgstr "SOA 最小值（负缓存）值超过 24 小时 (86400)，根据 RFC 2308 这可能过多。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:124
 msgid ""
 "SVCB record must start with a priority and target: <priority> <target> "
 "[<params>...]"
-msgstr ""
+msgstr "SVCB 记录必须以优先级和目标开始：<priority> <target> [<params>...]"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:133
 msgid "SVCB priority must be between 0 and 65535."
-msgstr "SVCB priority must be between 0 and 65535."
+msgstr "SVCB 优先级必须在 0 到 65535 之间。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:140
 msgid ""
 "SVCB target must be either \".\" (for Service Mode) or a valid hostname."
-msgstr ""
+msgstr "SVCB 目标必须是 \".\"（服务模式）或有效的主机名。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:150
 msgid ""
 "In Service Mode (priority = 0) with \".\" target, at least one SvcParam is "
 "required."
-msgstr ""
+msgstr "在使用 \".\" 目标的服务模式（优先级 = 0）中，至少需要一个 SvcParam。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:157
 msgid "In Alias Mode (priority > 0), the target cannot be \".\"."
-msgstr ""
+msgstr "在别名模式（优先级 > 0）中，目标不能是 \".\"。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:162
 msgid "In Alias Mode (priority > 0), no SvcParams are allowed."
-msgstr "In Alias Mode (priority > 0), no SvcParams are allowed."
+msgstr "在别名模式（优先级 > 0）中，不允许 SvcParams。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:207
 msgid "SVCB parameters must be in key=value format separated by spaces."
-msgstr "SVCB parameters must be in key=value format separated by spaces."
+msgstr "SVCB 参数必须采用用空格分隔的 key=value 格式。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:215
 #, php-format
 msgid "Unknown SVCB parameter key: \"%s\"."
-msgstr ""
+msgstr "未知的 SVCB 参数键：\"%s\"。"
 
 #: lib/Domain/Service/DnsValidation/SVCBRecordValidator.php:220
 #, php-format
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
-msgstr ""
+msgstr "重复的 SVCB 参数键：\"%s\"。每个键只能出现一次。"
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:156
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
-msgstr ""
+msgstr "不允许具有相同名称的多个 CNAME 记录。这将产生 DNS 违规。"
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:204
 #, php-format
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
 "Found existing %s record."
-msgstr ""
+msgstr "CNAME 记录不能与同名的其他记录类型共存。发现现有的 %s 记录。"
 
 #: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:252
 msgid ""
 "This record conflicts with an existing CNAME record with the same name. A "
 "CNAME record cannot coexist with other record types."
-msgstr ""
+msgstr "此记录与同名的现有 CNAME 记录冲突。CNAME 记录不能与其他记录类型共存。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:118
 msgid ""
 "The local-part hash in SMIMEA records should be a 64-character SHA-256 hex "
 "hash. The format should be: SHA256(local-part)._smimecert.domain.tld"
 msgstr ""
+"SMIMEA 记录中的本地部分哈希应该是 64 字符的 SHA-256 十六进制哈希。格式应为：SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:122
 msgid ""
 "SMIMEA record name is in the format: SHA256(local-"
 "part)._smimecert.domain.tld for email addresses like local-part@domain.tld"
 msgstr ""
+"SMIMEA 记录名称格式为：SHA256(local-part)._smimecert.domain.tld，用于 local-part@domain.tld 这样的电子邮件地址"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:132
 msgid ""
 "This does not use the standard SMIMEA name format. SMIMEA records should "
 "typically use: SHA256(local-part)._smimecert.domain.tld"
 msgstr ""
+"这不使用标准的 SMIMEA 名称格式。SMIMEA 记录通常应使用：SHA256(local-part)._smimecert.domain.tld"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:156
 msgid ""
 "Invalid value for priority field. SMIMEA records must have priority value of "
 "0."
-msgstr ""
+msgstr "优先级字段值无效。SMIMEA 记录的优先级值必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:160
 msgid ""
 "SMIMEA makes email addresses visible in DNS. Consider privacy implications "
 "when publishing SMIMEA records."
-msgstr ""
+msgstr "SMIMEA 使电子邮件地址在 DNS 中可见。发布 SMIMEA 记录时请考虑隐私影响。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:184
 msgid "SMIMEA record content cannot be empty."
-msgstr "SMIMEA record content cannot be empty."
+msgstr "SMIMEA 记录内容不能为空。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:189
 msgid "SMIMEA record contains invalid characters."
-msgstr "SMIMEA record contains invalid characters."
+msgstr "SMIMEA 记录包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:195
 msgid ""
 "SMIMEA record must contain usage, selector, matching-type, and certificate-"
 "data separated by spaces."
-msgstr ""
+msgstr "SMIMEA 记录必须包含用空格分隔的用法、选择器、匹配类型和证书数据。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:206
 msgid "SMIMEA usage field must be a number between 0 and 3."
-msgstr "SMIMEA usage field must be a number between 0 and 3."
+msgstr "SMIMEA 用法字段必须是 0 到 3 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:212
 msgid ""
 "PKIX-TA usage (0) requires the CA certificate to be in the certificate "
 "validation path. Ensure this CA is publicly known and trusted."
-msgstr ""
+msgstr "PKIX-TA 用法 (0) 要求 CA 证书在证书验证路径中。确保此 CA 是公开已知且受信任的。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:214
 msgid ""
 "PKIX-EE usage (1) requires the end entity certificate to be validated using "
 "PKIX validation rules. Ensure proper intermediate certificates are available."
-msgstr ""
+msgstr "PKIX-EE 用法 (1) 要求使用 PKIX 验证规则验证终端实体证书。确保可用适当的中间证书。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:216
 msgid ""
 "DANE-TA usage (2) designates this certificate as a trust anchor for "
 "validating the end entity certificate. Ensure this certificate is properly "
 "secured."
-msgstr ""
+msgstr "DANE-TA 用法 (2) 将此证书指定为验证终端实体证书的信任锚。确保此证书得到适当保护。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:218
 msgid ""
 "DANE-EE usage (3) is recommended as it provides the simplest deployment with "
 "direct certificate usage without additional validation."
-msgstr ""
+msgstr "建议使用 DANE-EE 用法 (3)，因为它提供最简单的部署，直接使用证书而无需额外验证。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:225
 msgid ""
 "SMIMEA selector field must be 0 (Full certificate) or 1 "
 "(SubjectPublicKeyInfo)."
-msgstr ""
+msgstr "SMIMEA 选择器字段必须是 0（完整证书）或 1（SubjectPublicKeyInfo）。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:231
 msgid ""
 "Selector 0 (Full certificate) means the entire certificate is matched. Using "
 "selector 1 (SubjectPublicKeyInfo) is recommended as it offers more "
 "flexibility for certificate renewals."
-msgstr ""
+msgstr "选择器 0（完整证书）意味着匹配整个证书。建议使用选择器 1（SubjectPublicKeyInfo），因为它为证书续签提供更多灵活性。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:233
 msgid ""
 "Selector 1 (SubjectPublicKeyInfo) is recommended as it allows certificate "
 "renewal without SMIMEA record updates, as long as the public key stays the "
 "same."
-msgstr ""
+msgstr "建议使用选择器 1（SubjectPublicKeyInfo），因为只要公钥保持不变，它允许证书续签而无需更新 SMIMEA 记录。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:241
 msgid ""
 "SMIMEA matching type field must be 0 (Exact match), 1 (SHA-256), or 2 "
 "(SHA-512)."
-msgstr ""
+msgstr "SMIMEA 匹配类型字段必须是 0（精确匹配）、1（SHA-256）或 2（SHA-512）。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:247
 msgid ""
 "Matching type 0 (Exact match) uses raw certificate data. SHA-256 (type 1) is "
 "recommended for better performance and compatibility."
-msgstr ""
+msgstr "匹配类型 0（精确匹配）使用原始证书数据。建议使用 SHA-256（类型 1）以获得更好的性能和兼容性。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:249
 msgid ""
 "Matching type 1 (SHA-256) provides a good balance of security and efficiency."
-msgstr ""
+msgstr "匹配类型 1（SHA-256）在安全性和效率之间提供良好平衡。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:251
 msgid ""
 "Matching type 2 (SHA-512) provides the highest security but may have "
 "compatibility issues with some implementations."
-msgstr ""
+msgstr "匹配类型 2（SHA-512）提供最高安全性，但可能与某些实现存在兼容性问题。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:256
 msgid "SMIMEA certificate data must be a hexadecimal string."
-msgstr "SMIMEA certificate data must be a hexadecimal string."
+msgstr "SMIMEA 证书数据必须是十六进制字符串。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:262
 msgid "SMIMEA SHA-256 certificate data must be 64 characters long."
-msgstr "SMIMEA SHA-256 certificate data must be 64 characters long."
+msgstr "SMIMEA SHA-256 证书数据必须为 64 个字符。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:264
 msgid "SMIMEA SHA-512 certificate data must be 128 characters long."
-msgstr "SMIMEA SHA-512 certificate data must be 128 characters long."
+msgstr "SMIMEA SHA-512 证书数据必须为 128 个字符。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:269
 msgid ""
 "Recommended SMIMEA configuration is usage=3 (DANE-EE), selector=1 "
 "(SubjectPublicKeyInfo), and matching-type=1 (SHA-256)."
 msgstr ""
+"推荐的 SMIMEA 配置是 usage=3 (DANE-EE)、selector=1 (SubjectPublicKeyInfo) 和 matching-type=1 (SHA-256)。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:273
 msgid ""
 "WARNING: SMIMEA (RFC 8162) is currently an EXPERIMENTAL protocol and may not "
 "be widely supported."
-msgstr ""
+msgstr "警告：SMIMEA (RFC 8162) 目前是实验性协议，可能不被广泛支持。"
 
 #: lib/Domain/Service/DnsValidation/SMIMEARecordValidator.php:276
 msgid ""
 "CRITICAL: SMIMEA records REQUIRE DNSSEC to provide security. Without DNSSEC, "
 "SMIMEA offers NO security benefit."
-msgstr ""
+msgstr "严重：SMIMEA 记录需要 DNSSEC 才能提供安全性。没有 DNSSEC，SMIMEA 不提供任何安全益处。"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:112
 msgid ""
 "NOTE: The L64 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr ""
+msgstr "注意：L64 记录类型在 RFC 6742 中定义为实验性协议，而不是正式的 IETF 标准。"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:113
 msgid ""
 "L64 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr ""
+msgstr "L64 记录只应与标识符-定位器网络协议 (ILNP) 一起使用。"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:114
 msgid ""
 "An IP host that is NOT ILNPv6-capable MUST NOT have L64 records in its DNS "
 "entries (RFC 6742 Section 3.2)."
-msgstr ""
+msgstr "不支持 ILNPv6 的 IP 主机在其 DNS 条目中不得有 L64 记录 (RFC 6742 第 3.2 节)。"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:119
 msgid ""
 "RFC 6742 recommends very low TTL values for L64 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
-msgstr ""
+msgstr "RFC 6742 建议移动或多宿主节点的 L64 记录使用非常低的 TTL 值，因为定位器值可能经常变化。"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:128
 msgid ""
 "L64 records for subnetworks (using wildcard DNS entries) are typically used "
 "when the named subnetwork is, was, or might become mobile (RFC 6742 Section "
 "3.2)."
-msgstr ""
+msgstr "子网的 L64 记录（使用通配符 DNS 条目）通常在命名子网是、曾经是或可能变成移动网络时使用 (RFC 6742 第 3.2 节)。"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:152
 msgid "L64 record must contain preference and locator64 separated by space."
-msgstr "L64 record must contain preference and locator64 separated by space."
+msgstr "L64 记录必须包含用空格分隔的优先级和 locator64。"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:159
 msgid "L64 preference must be a number between 0 and 65535."
-msgstr "L64 preference must be a number between 0 and 65535."
+msgstr "L64 优先级必须是 0 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:164
 msgid ""
 "L64 locator must be a valid 64-bit hexadecimal IPv6 address segment "
 "consisting of exactly 4 groups of hex digits (e.g., 2001:0db8:1140:1000)."
 msgstr ""
+"L64 定位器必须是有效的 64 位十六进制 IPv6 地址段，由恰好 4 组十六进制数字组成（例如，2001:0db8:1140:1000）。"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:172
 msgid ""
@@ -4520,714 +4530,715 @@ msgid ""
 "(ffff:ffff:ffff:ffff) addresses, as they may not be suitable for ILNP "
 "locators."
 msgstr ""
+"L64 定位器不应使用未指定 (0000:0000:0000:0000) 或全 1 (ffff:ffff:ffff:ffff) 地址，因为它们可能不适合 ILNP 定位器。"
 
 #: lib/Domain/Service/DnsValidation/L64RecordValidator.php:179
 msgid "Each hexadecimal group in L64 locator must be 4 or fewer characters."
-msgstr "Each hexadecimal group in L64 locator must be 4 or fewer characters."
+msgstr "L64 定位器中的每个十六进制组必须为 4 个或更少字符。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:86
 msgid ""
 "CDNSKEY records are typically published at the zone apex, not in subdomains."
-msgstr ""
+msgstr "CDNSKEY 记录通常发布在区域顶点，而不是在子域中。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:121
 msgid "Priority field for CDNSKEY records must be 0 or empty"
-msgstr "Priority field for CDNSKEY records must be 0 or empty"
+msgstr "CDNSKEY 记录的优先级字段必须为 0 或空"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:125
 msgid ""
 "RFC 7344 recommends that if you publish a CDNSKEY record, you should also "
 "publish a corresponding CDS record."
-msgstr ""
+msgstr "RFC 7344 建议如果您发布 CDNSKEY 记录，您也应该发布相应的 CDS 记录。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:151
 msgid "Invalid characters in CDNSKEY record content."
-msgstr "Invalid characters in CDNSKEY record content."
+msgstr "CDNSKEY 记录内容中有无效字符。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:165
 msgid ""
 "Using \"0 3 0 0\" format from RFC 8078 erratum, consider using the standard "
 "\"0 3 0 AA==\" format."
-msgstr ""
+msgstr "使用来自 RFC 8078 勘误表的 \"0 3 0 0\" 格式，考虑使用标准的 \"0 3 0 AA==\" 格式。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:172
 msgid ""
 "CDNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr ""
+msgstr "CDNSKEY 记录必须包含用空格分隔的标志、协议、算法和公钥。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:179
 msgid "CDNSKEY flags must be 0, 256, or 257."
-msgstr "CDNSKEY flags must be 0, 256, or 257."
+msgstr "CDNSKEY 标志必须是 0、256 或 257。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:184
 msgid ""
 "Flag 257 indicates a Key Signing Key (KSK). Ensure this key is properly "
 "managed according to your DNSSEC key rollover policy."
-msgstr ""
+msgstr "标志 257 表示密钥签名密钥 (KSK)。确保根据您的 DNSSEC 密钥轮转策略正确管理此密钥。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:189
 msgid "CDNSKEY protocol must be 3."
-msgstr "CDNSKEY protocol must be 3."
+msgstr "CDNSKEY 协议必须是 3。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:195
 msgid "CDNSKEY algorithm must be a number between 1 and 16."
-msgstr "CDNSKEY algorithm must be a number between 1 and 16."
+msgstr "CDNSKEY 算法必须是 1 到 16 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:205
 msgid ""
 "Algorithm 8 (RSASHA256) is being replaced with ECDSAP256SHA256 (13) due to "
 "shorter key and signature size, resulting in smaller DNS packets."
-msgstr ""
+msgstr "算法 8 (RSASHA256) 正被 ECDSAP256SHA256 (13) 替代，因为密钥和签名大小更短，导致 DNS 数据包更小。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:208
 msgid ""
 "Algorithm 10 (RSASHA512) is NOT RECOMMENDED for signing although it must be "
 "supported for validation."
-msgstr ""
+msgstr "算法 10 (RSASHA512) 不推荐用于签名，尽管必须支持它进行验证。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:219
 msgid ""
 "Base64 encoded data should be padded to a multiple of 4 bytes using \"=\" "
 "characters."
-msgstr ""
+msgstr "Base64 编码数据应使用 \"=\" 字符填充到 4 字节的倍数。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:235
 msgid "CDNSKEY public key must contain only valid base64 characters."
-msgstr "CDNSKEY public key must contain only valid base64 characters."
+msgstr "CDNSKEY 公钥只能包含有效的 base64 字符。"
 
 #: lib/Domain/Service/DnsValidation/CDNSKEYRecordValidator.php:241
 msgid "CDNSKEY public key must be valid base64-encoded data."
-msgstr "CDNSKEY public key must be valid base64-encoded data."
+msgstr "CDNSKEY 公钥必须是有效的 base64 编码数据。"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:181
 msgid "LUA record content cannot be empty."
-msgstr "LUA record content cannot be empty."
+msgstr "LUA 记录内容不能为空。"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:100
 msgid "Invalid characters in LUA record content."
-msgstr "Invalid characters in LUA record content."
+msgstr "LUA 记录内容中有无效字符。"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:119
 msgid "Priority field for LUA records must be 0 or empty"
-msgstr "Priority field for LUA records must be 0 or empty"
+msgstr "LUA 记录的优先级字段必须为 0 或空"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:127
 msgid ""
 "WARNING: This LUA record contains potentially unsafe file or system "
 "operations. These may be blocked by PowerDNS security mechanisms."
-msgstr ""
+msgstr "警告：此 LUA 记录包含可能不安全的文件或系统操作。这些可能被 PowerDNS 安全机制阻止。"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:132
 msgid ""
 "This LUA record uses explicit return mode (starts with semicolon). Ensure "
 "your Lua script explicitly returns the appropriate value."
-msgstr ""
+msgstr "此 LUA 记录使用显式返回模式（以分号开头）。确保您的 Lua 脚本显式返回适当的值。"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:146
 msgid ""
 "This LUA record doesn't appear to use common PowerDNS Lua functions. Make "
 "sure it returns an appropriate value for the record type."
-msgstr ""
+msgstr "此 LUA 记录似乎没有使用常见的 PowerDNS Lua 函数。确保它为记录类型返回适当的值。"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:154
 msgid ""
 "WARNING: This LUA record appears to have unbalanced quotes, which may cause "
 "syntax errors."
-msgstr ""
+msgstr "警告：此 LUA 记录似乎有不平衡的引号，这可能导致语法错误。"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:188
 msgid "LUA record has mismatched parentheses. Check your syntax."
-msgstr "LUA record has mismatched parentheses. Check your syntax."
+msgstr "LUA 记录有不匹配的括号。请检查您的语法。"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:195
 msgid "LUA record has mismatched braces. Check your syntax."
-msgstr "LUA record has mismatched braces. Check your syntax."
+msgstr "LUA 记录有不匹配的大括号。请检查您的语法。"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:202
 msgid ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
-msgstr ""
+msgstr "显式返回模式下的 LUA 记录（以分号开头）必须包含至少一个 \"return\" 语句。"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:222
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
-msgstr ""
+msgstr "隐式返回模式下的 LUA 记录应该是有效的函数调用或带有 \"function\" 和 \"end\" 关键字的函数定义。"
 
 #: lib/Domain/Service/DnsValidation/LUARecordValidator.php:228
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
-msgstr ""
+msgstr "LUA 记录包含可能危险的系统访问函数。这些可能会被 PowerDNS 安全限制阻止。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:126
 msgid "Priority field for SSHFP records must be 0 or empty"
-msgstr "Priority field for SSHFP records must be 0 or empty"
+msgstr "SSHFP 记录的优先级字段必须为 0 或空"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:130
 msgid ""
 "SSHFP records can be generated with \"ssh-keygen -r hostname\" command on "
 "systems with OpenSSH."
-msgstr ""
+msgstr "SSHFP 记录可以在使用 OpenSSH 的系统上使用 \"ssh-keygen -r hostname\" 命令生成。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:133
 msgid ""
 "For maximum security, publish both SHA-1 and SHA-256 fingerprints for "
 "compatibility, but prefer SHA-256 in clients."
-msgstr ""
+msgstr "为了最大安全性，发布 SHA-1 和 SHA-256 指纹以保持兼容性，但在客户端中首选 SHA-256。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:171
 msgid ""
 "SSHFP record must contain algorithm, fingerprint-type and fingerprint "
 "separated by spaces."
-msgstr ""
+msgstr "SSHFP 记录必须包含用空格分隔的算法、指纹类型和指纹。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:179
 msgid ""
 "SSHFP algorithm must be 1 (RSA), 2 (DSA), 3 (ECDSA), 4 (Ed25519), or 6 "
 "(Ed448)."
-msgstr ""
+msgstr "SSHFP 算法必须是 1 (RSA)、2 (DSA)、3 (ECDSA)、4 (Ed25519) 或 6 (Ed448)。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:187
 msgid ""
 "DSA keys are considered weak and are deprecated in many SSH implementations. "
 "Consider using RSA, Ed25519, or Ed448 instead."
-msgstr ""
+msgstr "DSA 密钥被认为是弱的，在许多 SSH 实现中已被弃用。考虑改用 RSA、Ed25519 或 Ed448。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:189
 msgid ""
 "Ed25519 keys are recommended for good security and performance with modern "
 "SSH implementations."
-msgstr ""
+msgstr "建议使用 Ed25519 密钥在现代 SSH 实现中获得良好的安全性和性能。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:191
 msgid ""
 "Ed448 keys offer very high security but may not be supported by all SSH "
 "implementations."
-msgstr ""
+msgstr "Ed448 密钥提供非常高的安全性，但可能不被所有 SSH 实现支持。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:196
 msgid "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
-msgstr "SSHFP fingerprint type must be 1 (SHA-1) or 2 (SHA-256)."
+msgstr "SSHFP 指纹类型必须是 1 (SHA-1) 或 2 (SHA-256)。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:202
 msgid ""
 "SHA-1 fingerprints are deprecated. RFC 6594 recommends using SHA-256 "
 "fingerprints (type 2) for better security."
-msgstr ""
+msgstr "SHA-1 指纹已弃用。RFC 6594 建议使用 SHA-256 指纹（类型 2）以获得更好的安全性。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:204
 msgid ""
 "SHA-256 fingerprints are recommended by RFC 6594 and provide better security "
 "than SHA-1."
-msgstr ""
+msgstr "RFC 6594 推荐 SHA-256 指纹，它提供比 SHA-1 更好的安全性。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:209
 msgid "SSHFP fingerprint must be a hexadecimal string."
-msgstr "SSHFP fingerprint must be a hexadecimal string."
+msgstr "SSHFP 指纹必须是十六进制字符串。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:215
 msgid "SSHFP SHA-1 fingerprint must be 40 characters long."
-msgstr "SSHFP SHA-1 fingerprint must be 40 characters long."
+msgstr "SSHFP SHA-1 指纹必须为 40 个字符。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:217
 msgid "SSHFP SHA-256 fingerprint must be 64 characters long."
-msgstr "SSHFP SHA-256 fingerprint must be 64 characters long."
+msgstr "SSHFP SHA-256 指纹必须为 64 个字符。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:221
 msgid ""
 "CRITICAL: SSHFP records REQUIRE DNSSEC validation to provide any security "
 "benefits. Without DNSSEC, they offer no protection against man-in-the-middle "
 "attacks."
-msgstr ""
+msgstr "严重：SSHFP 记录需要 DNSSEC 验证才能提供任何安全益处。没有 DNSSEC，它们无法防止中间人攻击。"
 
 #: lib/Domain/Service/DnsValidation/SSHFPRecordValidator.php:224
 msgid ""
 "Configure SSH clients with \"VerifyHostKeyDNS yes\" to utilize SSHFP records "
 "for server verification."
-msgstr ""
+msgstr "配置 SSH 客户端使用 \"VerifyHostKeyDNS yes\" 来利用 SSHFP 记录进行服务器验证。"
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:91
 msgid "MR record name (old mailbox) cannot be empty."
-msgstr "MR record name (old mailbox) cannot be empty."
+msgstr "MR 记录名称（旧邮箱）不能为空。"
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:97
 msgid "MR record name must be a valid domain name."
-msgstr "MR record name must be a valid domain name."
+msgstr "MR 记录名称必须是有效的域名。"
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:106
 msgid "MR record content (new mailbox) cannot be empty."
-msgstr "MR record content (new mailbox) cannot be empty."
+msgstr "MR 记录内容（新邮箱）不能为空。"
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:112
 msgid "MR record content must be a valid domain name."
-msgstr "MR record content must be a valid domain name."
+msgstr "MR 记录内容必须是有效的域名。"
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:121
 msgid ""
 "MR record content (new mailbox) should be a fully qualified domain name (end "
 "with a dot)."
-msgstr ""
+msgstr "MR 记录内容（新邮箱）应该是完全限定域名（以点结尾）。"
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:129
 msgid ""
 "The new mailbox is the same as the old mailbox. MR records are intended for "
 "redirecting to a different mailbox."
-msgstr ""
+msgstr "新邮箱与旧邮箱相同。MR 记录旨在重定向到不同的邮箱。"
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:142
 msgid "Priority field for MR records must be 0 or empty."
-msgstr "Priority field for MR records must be 0 or empty."
+msgstr "MR 记录的优先级字段必须为 0 或空。"
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:146
 msgid ""
 "MR records were marked as EXPERIMENTAL in RFC 1035 and are rarely used in "
 "modern mail systems."
-msgstr ""
+msgstr "MR 记录在 RFC 1035 中被标记为实验性的，在现代邮件系统中很少使用。"
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:147
 msgid ""
 "Consider using standard mail forwarding mechanisms instead of MR records."
-msgstr ""
+msgstr "考虑使用标准邮件转发机制而不是 MR 记录。"
 
 #: lib/Domain/Service/DnsValidation/MRRecordValidator.php:148
 msgid ""
 "The MR record indicates that the mail user has moved from the old mailbox to "
 "the new mailbox."
-msgstr ""
+msgstr "MR 记录表示邮件用户已从旧邮箱移动到新邮箱。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:124
 msgid "Priority field for KEY records must be 0 or empty"
-msgstr "Priority field for KEY records must be 0 or empty"
+msgstr "KEY 记录的优先级字段必须为 0 或空"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:129
 msgid ""
 "KEY records have been obsoleted by RFC 4034. For DNSSEC, use DNSKEY records "
 "instead."
-msgstr ""
+msgstr "KEY 记录已被 RFC 4034 淘汰。对于 DNSSEC，请改用 DNSKEY 记录。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:130
 msgid "KEY records may not be supported by all DNS servers and resolvers."
-msgstr "KEY records may not be supported by all DNS servers and resolvers."
+msgstr "并非所有 DNS 服务器和解析器都支持 KEY 记录。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:141
 msgid ""
 "Algorithm 1 (RSA/MD5) is considered cryptographically weak and should not be "
 "used."
-msgstr ""
+msgstr "算法 1 (RSA/MD5) 被认为在密码学上是弱的，不应使用。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:146
 msgid ""
 "For DNSSEC zone keys (flags=257, protocol=3), DNSKEY records should be used "
 "instead of KEY records."
-msgstr ""
+msgstr "对于 DNSSEC 区域密钥（flags=257, protocol=3），应使用 DNSKEY 记录而不是 KEY 记录。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:175
 msgid "Invalid characters in KEY record content."
-msgstr "Invalid characters in KEY record content."
+msgstr "KEY 记录内容中有无效字符。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:181
 msgid "KEY record must contain flags, protocol, algorithm, and public key."
-msgstr "KEY record must contain flags, protocol, algorithm, and public key."
+msgstr "KEY 记录必须包含标志、协议、算法和公钥。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:190
 msgid "KEY flags must be a number between 0 and 65535."
-msgstr "KEY flags must be a number between 0 and 65535."
+msgstr "KEY 标志必须是 0 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:197
 msgid ""
 "Unusual flag value. Common values are 0 (authentication prohibited), 256 "
 "(user key), or 257 (zone key)."
-msgstr ""
+msgstr "异常的标志值。常见值为 0（禁止认证）、256（用户密钥）或 257（区域密钥）。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:202
 msgid "KEY protocol must be a number between 0 and 255."
-msgstr "KEY protocol must be a number between 0 and 255."
+msgstr "KEY 协议必须是 0 到 255 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:208
 msgid ""
 "Unusual protocol value. Protocol 3 (DNSSEC) is most common for KEY records."
-msgstr ""
+msgstr "异常的协议值。协议 3 (DNSSEC) 是 KEY 记录最常见的。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:213
 msgid "KEY algorithm must be a number between 0 and 255."
-msgstr "KEY algorithm must be a number between 0 and 255."
+msgstr "KEY 算法必须是 0 到 255 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:219
 msgid ""
 "Unusual algorithm value. Common values are 1 (RSA/MD5), 2 (DH), 3 (DSA), 5 "
 "(RSA/SHA-1), 8 (RSA/SHA-256)."
-msgstr ""
+msgstr "异常的算法值。常见值为 1 (RSA/MD5)、2 (DH)、3 (DSA)、5 (RSA/SHA-1)、8 (RSA/SHA-256)。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:224
 msgid "KEY public key is required."
-msgstr "KEY public key is required."
+msgstr "需要 KEY 公钥。"
 
 #: lib/Domain/Service/DnsValidation/KEYRecordValidator.php:231
 msgid "KEY public key must be properly Base64 encoded."
-msgstr "KEY public key must be properly Base64 encoded."
+msgstr "KEY 公钥必须正确进行 Base64 编码。"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:80
 msgid "DMARC records must be placed at _dmarc.<domain>."
-msgstr "DMARC records must be placed at _dmarc.<domain>."
+msgstr "DMARC 记录必须放置在 _dmarc.<domain>。"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:149
 msgid ""
 "Invalid value for priority field. DMARC records must have a priority value "
 "of 0."
-msgstr ""
+msgstr "优先级字段值无效。DMARC 记录的优先级值必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:162
 msgid "DMARC record must start with \"v=DMARC1\""
-msgstr ""
+msgstr "DMARC 记录必须以 \"v=DMARC1\" 开头"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:167
 msgid ""
 "DMARC record exceeds 255 character limit. For complex policies, consider "
 "simplifying or using URI references."
-msgstr ""
+msgstr "DMARC 记录超过 255 字符限制。对于复杂策略，考虑简化或使用 URI 引用。"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:187
 msgid "DMARC version tag (v) must be DMARC1"
-msgstr "DMARC version tag (v) must be DMARC1"
+msgstr "DMARC 版本标签 (v) 必须是 DMARC1"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:195
 msgid "DMARC policy tag (p) must be one of: none, quarantine, reject"
-msgstr "DMARC policy tag (p) must be one of: none, quarantine, reject"
+msgstr "DMARC 策略标签 (p) 必须是以下之一：none、quarantine、reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:200
 msgid ""
 "Using \"p=none\" provides visibility into email authentication without "
 "affecting delivery. Consider a stricter policy once you've reviewed the "
 "reports."
-msgstr ""
+msgstr "使用 \"p=none\" 提供电子邮件认证的可见性而不影响投递。一旦您审查了报告，请考虑更严格的策略。"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:208
 msgid ""
 "DMARC subdomain policy tag (sp) must be one of: none, quarantine, reject"
-msgstr ""
+msgstr "DMARC 子域策略标签 (sp) 必须是以下之一：none、quarantine、reject"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:215
 msgid "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
-msgstr "DMARC DKIM alignment tag (adkim) must be r (relaxed) or s (strict)"
+msgstr "DMARC DKIM 对齐标签 (adkim) 必须是 r（宽松）或 s（严格）"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:222
 msgid "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
-msgstr "DMARC SPF alignment tag (aspf) must be r (relaxed) or s (strict)"
+msgstr "DMARC SPF 对齐标签 (aspf) 必须是 r（宽松）或 s（严格）"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:229
 msgid "DMARC percentage tag (pct) must be between 0 and 100"
-msgstr "DMARC percentage tag (pct) must be between 0 and 100"
+msgstr "DMARC 百分比标签 (pct) 必须在 0 到 100 之间"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:234
 #, php-format
 msgid ""
 "DMARC policy is applied to only %d%% of messages. This should only be used "
 "during policy rollout."
-msgstr ""
+msgstr "DMARC 策略仅应用于 %d%% 的消息。这应该只在策略推出期间使用。"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:241
 msgid "DMARC reporting interval tag (ri) must be a positive integer"
-msgstr "DMARC reporting interval tag (ri) must be a positive integer"
+msgstr "DMARC 报告间隔标签 (ri) 必须是正整数"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:248
 msgid ""
 "DMARC failure reporting options tag (fo) must contain only 0, 1, d, s, or "
 "colon-separated combinations"
-msgstr ""
+msgstr "DMARC 故障报告选项标签 (fo) 只能包含 0、1、d、s 或冒号分隔的组合"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:258
 #, php-format
 msgid "DMARC %s tag must contain valid mailto: or https: URIs"
-msgstr "DMARC %s tag must contain valid mailto: or https: URIs"
+msgstr "DMARC %s 标签必须包含有效的 mailto: 或 https: URI"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:269
 #, php-format
 msgid "Invalid email address in DMARC %s tag: %s"
-msgstr "Invalid email address in DMARC %s tag: %s"
+msgstr "DMARC %s 标签中的电子邮件地址无效：%s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:279
 msgid "DMARC report format tag (rf) must be afrf or iodef"
-msgstr "DMARC report format tag (rf) must be afrf or iodef"
+msgstr "DMARC 报告格式标签 (rf) 必须是 afrf 或 iodef"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:285
 #, php-format
 msgid "Unknown DMARC tag: %s"
-msgstr "Unknown DMARC tag: %s"
+msgstr "未知的 DMARC 标签：%s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:293
 #, php-format
 msgid "Required DMARC tag missing: %s"
-msgstr "Required DMARC tag missing: %s"
+msgstr "缺少必需的 DMARC 标签：%s"
 
 #: lib/Domain/Service/DnsValidation/DMARCRecordValidator.php:299
 msgid ""
 "DMARC record does not specify any reporting URIs (rua or ruf). This may "
 "limit your ability to monitor authentication results."
-msgstr ""
+msgstr "DMARC 记录未指定任何报告 URI（rua 或 ruf）。这可能会限制您监控身份验证结果的能力。"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:86
 msgid ""
 "This is a DMARC record being processed through TXT record type. DMARC "
 "records should use TXT record type with content starting with \"v=DMARC1\"."
-msgstr ""
+msgstr "这是通过 TXT 记录类型处理的 DMARC 记录。DMARC 记录应使用以 \\\"v=DMARC1\\\" 开头的 TXT 记录类型。"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:145
 msgid "HTML tags are not allowed in content field."
-msgstr "HTML tags are not allowed in content field."
+msgstr "内容字段中不允许使用 HTML 标签。"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:159
 msgid "TXT record content must be enclosed in quotes."
-msgstr "TXT record content must be enclosed in quotes."
+msgstr "TXT 记录内容必须用引号括起来。"
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:85
 msgid "Backslashes must precede all quotes (\") in TXT content"
-msgstr "Backslashes must precede all quotes (\") in TXT content"
+msgstr "在 TXT 内容中，所有引号 (\\\") 前必须加反斜杠"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:173
 msgid ""
 "TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or less. "
 "For longer content, split into multiple quoted strings separated by spaces."
-msgstr ""
+msgstr "TXT 记录字符串超过 255 字节。TXT 字符串必须为 255 字节或更少。对于较长的内容，请分割成多个由空格分隔的带引号字符串。"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:192
 msgid ""
 "Each TXT record string must be 255 bytes or less. Split long content into "
 "multiple strings."
-msgstr ""
+msgstr "每个 TXT 记录字符串必须为 255 字节或更少。将长内容分割成多个字符串。"
 
 #: lib/Domain/Service/DnsValidation/TXTRecordValidator.php:250
 msgid ""
 "Invalid value for priority field. TXT records must have priority value of 0."
-msgstr ""
+msgstr "优先级字段的值无效。TXT 记录的优先级值必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:78
 msgid "Invalid IPv4 address format."
-msgstr "Invalid IPv4 address format."
+msgstr "无效的 IPv4 地址格式。"
 
 #: lib/Domain/Service/DnsValidation/ARecordValidator.php:136
 msgid ""
 "Invalid value for priority field. A records must have priority value of 0."
-msgstr ""
+msgstr "优先级字段的值无效。A 记录的优先级值必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:95
 msgid ""
 "CDS records should only be placed at the zone apex, not on subdomains, as "
 "required by RFC 7344."
-msgstr ""
+msgstr "根据 RFC 7344 的要求，CDS 记录应仅放置在区域顶点，而不是子域。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:119
 msgid "Priority field for CDS records must be 0 or empty"
-msgstr "Priority field for CDS records must be 0 or empty"
+msgstr "CDS 记录的优先级字段必须为 0 或为空"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:123
 msgid ""
 "According to RFC 8078, CDS records should be stable for some time before "
 "parent zones accept them."
-msgstr ""
+msgstr "根据 RFC 8078，CDS 记录应在父区域接受它们之前保持稳定一段时间。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:147
 msgid "Invalid characters in CDS record content."
-msgstr "Invalid characters in CDS record content."
+msgstr "CDS 记录内容中包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:154
 msgid ""
 "This is a CDS deletion record as defined in RFC 8078. It signals that the "
 "corresponding DS records should be removed from the parent."
-msgstr ""
+msgstr "这是 RFC 8078 中定义的 CDS 删除记录。它表示应从父级删除相应的 DS 记录。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:161
 msgid ""
 "CDS record must contain key-tag, algorithm, digest-type and digest separated "
 "by spaces."
-msgstr ""
+msgstr "CDS 记录必须包含由空格分隔的密钥标签、算法、摘要类型和摘要。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:169
 msgid "CDS key tag must be a number between 0 and 65535."
-msgstr "CDS key tag must be a number between 0 and 65535."
+msgstr "CDS 密钥标签必须是 0 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:175
 msgid "CDS algorithm must be a number between 1 and 16."
-msgstr "CDS algorithm must be a number between 1 and 16."
+msgstr "CDS 算法必须是 1 到 16 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:211
 msgid "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
-msgstr "CDS digest type must be 1 (SHA-1), 2 (SHA-256), or 4 (SHA-384)."
+msgstr "CDS 摘要类型必须是 1 (SHA-1)、2 (SHA-256) 或 4 (SHA-384)。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:216
 msgid ""
 "SHA-1 (digest type 1) is deprecated for security reasons. Consider using "
 "SHA-256 (digest type 2) or SHA-384 (digest type 4) instead."
-msgstr ""
+msgstr "由于安全原因，SHA-1（摘要类型 1）已被弃用。建议使用 SHA-256（摘要类型 2）或 SHA-384（摘要类型 4）。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:237
 #, php-format
 msgid ""
 "CDS digest must be a valid hex string of length %d for the selected digest "
 "type."
-msgstr ""
+msgstr "对于所选摘要类型，CDS 摘要必须是长度为 %d 的有效十六进制字符串。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:241
 msgid ""
 "CDS records must be accompanied by matching CDNSKEY records as recommended "
 "by RFC 7344."
-msgstr ""
+msgstr "根据 RFC 7344 的建议，CDS 记录必须与匹配的 CDNSKEY 记录一起使用。"
 
 #: lib/Domain/Service/DnsValidation/CDSRecordValidator.php:242
 msgid "CDS records should only be placed at the zone apex (not on subdomains)."
-msgstr ""
+msgstr "CDS 记录应仅放置在区域顶点（而不是子域）。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:112
 msgid ""
 "NOTE: The L32 record type is defined in RFC 6742 as an experimental "
 "protocol, not a formal IETF standard."
-msgstr ""
+msgstr "注意：L32 记录类型在 RFC 6742 中定义为实验性协议，而不是正式的 IETF 标准。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:113
 msgid ""
 "L32 records should only be used with the Identifier-Locator Network Protocol "
 "(ILNP)."
-msgstr ""
+msgstr "L32 记录应仅与标识符-定位符网络协议 (ILNP) 一起使用。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:126
 msgid ""
 "Using private IP addresses (RFC 1918) as L32 locators may limit reachability "
 "in ILNP deployments."
-msgstr ""
+msgstr "使用私有 IP 地址 (RFC 1918) 作为 L32 定位符可能会限制 ILNP 部署中的可达性。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:131
 msgid ""
 "RFC 6742 recommends very low TTL values for L32 records of mobile or "
 "multihomed nodes, as locator values might change frequently."
-msgstr ""
+msgstr "RFC 6742 建议为移动或多宿主节点的 L32 记录设置非常低的 TTL 值，因为定位符值可能会频繁更改。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:155
 msgid "L32 record must contain preference and locator separated by space."
-msgstr "L32 record must contain preference and locator separated by space."
+msgstr "L32 记录必须包含由空格分隔的首选项和定位符。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:162
 msgid "L32 preference must be a number between 0 and 65535."
-msgstr "L32 preference must be a number between 0 and 65535."
+msgstr "L32 首选项必须是 0 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:168
 msgid "L32 locator must be a valid IPv4 address."
-msgstr "L32 locator must be a valid IPv4 address."
+msgstr "L32 定位符必须是有效的 IPv4 地址。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:174
 msgid "L32 locator must be a fully specified IPv4 address."
-msgstr "L32 locator must be a fully specified IPv4 address."
+msgstr "L32 定位符必须是完全指定的 IPv4 地址。"
 
 #: lib/Domain/Service/DnsValidation/L32RecordValidator.php:180
 msgid ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
-msgstr ""
+msgstr "L32 定位符不能使用广播或未指定地址（0.0.0.0 或 255.255.255.255）。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:122
 #, php-format
 msgid ""
 "Priority value in record parameter (%d) does not match priority in content "
 "(%d)."
-msgstr ""
+msgstr "记录参数中的优先级值 (%d) 与内容中的优先级 (%d) 不匹配。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:249
 msgid "SRV record name must be in format _service._protocol.domain"
-msgstr "SRV record name must be in format _service._protocol.domain"
+msgstr "SRV 记录名称必须采用 _service._protocol.domain 格式"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:258
 msgid ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
-msgstr ""
+msgstr "SRV 记录中的服务值无效。服务名称必须以下划线开头，后跟字母数字字符。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:263
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
-msgstr ""
+msgstr "SRV 记录中的协议值无效。协议必须以下划线开头，后跟字母数字字符。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:272
 #, php-format
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
-msgstr ""
+msgstr "服务名称 \\\"%s\\\" 不在已知服务列表中。这是允许的，但不常见。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:280
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
-msgstr ""
+msgstr "协议 \\\"%s\\\" 不在已知协议列表中。常见协议是 _tcp 和 _udp。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:288
 msgid "Invalid domain name in SRV record."
-msgstr "Invalid domain name in SRV record."
+msgstr "SRV 记录中的域名无效。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:313
 msgid ""
 "SRV record content must have priority, weight, port and target (4 fields)."
-msgstr ""
+msgstr "SRV 记录内容必须包含优先级、权重、端口和目标（4 个字段）。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
 msgid ""
 "Invalid value for the priority field of the SRV record. Must be 0-65535."
-msgstr ""
+msgstr "SRV 记录优先级字段的值无效。必须为 0-65535。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
-msgstr "Invalid value for the weight field of the SRV record. Must be 0-65535."
+msgstr "SRV 记录权重字段的值无效。必须为 0-65535。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:341
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
-msgstr "Invalid value for the port field of the SRV record. Must be 1-65535."
+msgstr "SRV 记录端口字段的值无效。必须为 1-65535。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:350
 #, php-format
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
-msgstr ""
+msgstr "端口 %d 与 %s 服务的标准端口 %d 不同。这是允许的，但不常见。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:360
 msgid "SRV target cannot be empty."
-msgstr "SRV target cannot be empty."
+msgstr "SRV 目标不能为空。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:379
 msgid ""
 "Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
 "or higher."
-msgstr ""
+msgstr "优先级 0 有效但不常见。通常 SRV 记录从优先级 10 或更高开始。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:384
 msgid "When target is \".\" (no service), port and weight should both be 0."
-msgstr ""
+msgstr "当目标为 \\\".\\\"（无服务）时，端口和权重都应为 0。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:410
 msgid "Invalid SRV target."
-msgstr "Invalid SRV target."
+msgstr "无效的 SRV 目标。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:433
 msgid "Invalid value for the priority field of the SRV record."
-msgstr "Invalid value for the priority field of the SRV record."
+msgstr "SRV 记录优先级字段的值无效。"
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:85
 msgid ""
 "Unspecified (::) or loopback (::1) IPv6 addresses should not be used in AAAA "
 "records."
-msgstr ""
+msgstr "未指定 (::) 或回环 (::1) IPv6 地址不应在 AAAA 记录中使用。"
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:90
 msgid ""
 "Site-local IPv6 addresses (fec0::/10) are deprecated and should not be used."
-msgstr ""
+msgstr "站点本地 IPv6 地址 (fec0::/10) 已被弃用，不应使用。"
 
 #: lib/Domain/Service/DnsValidation/AAAARecordValidator.php:147
 msgid ""
 "Invalid value for priority field. AAAA records must have priority value of 0."
-msgstr ""
+msgstr "优先级字段的值无效。AAAA 记录的优先级值必须为 0。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:103
 msgid ""
@@ -5235,181 +5246,182 @@ msgid ""
 "followed by the zone name (e.g., "
 "\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\")."
 msgstr ""
+"NSEC3 记录所有者名称通常应为 Base32hex 编码的哈希值，后跟区域名称（例如，\\\"B4Q3JBMLEL2C7EMPGKUDAMPIP4DI4C2L.example.com\\\"）。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:108
 msgid "NSEC3 record content cannot be empty."
-msgstr "NSEC3 record content cannot be empty."
+msgstr "NSEC3 记录内容不能为空。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:113
 msgid "NSEC3 record contains invalid characters."
-msgstr "NSEC3 record contains invalid characters."
+msgstr "NSEC3 记录包含无效字符。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:142
 msgid ""
 "According to RFC 5155 and RFC 9077, NSEC3 records should have the same TTL "
 "as the SOA minimum TTL field."
-msgstr ""
+msgstr "根据 RFC 5155 和 RFC 9077，NSEC3 记录应与 SOA 最小 TTL 字段具有相同的 TTL。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:145
 msgid ""
 "NSEC3 records are part of DNSSEC and should only be managed alongside other "
 "DNSSEC records (DNSKEY, RRSIG, etc.)."
-msgstr ""
+msgstr "NSEC3 记录是 DNSSEC 的一部分，应仅与其他 DNSSEC 记录（DNSKEY、RRSIG 等）一起管理。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:146
 msgid ""
 "Manually editing NSEC3 records is not recommended as they are typically "
 "generated automatically by DNSSEC-aware nameservers."
-msgstr ""
+msgstr "不建议手动编辑 NSEC3 记录，因为它们通常由支持 DNSSEC 的名称服务器自动生成。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:147
 msgid ""
 "NSEC3 records require a corresponding NSEC3PARAM record at the zone apex to "
 "indicate the NSEC3 parameters in use."
-msgstr ""
+msgstr "NSEC3 记录需要在区域顶点处有相应的 NSEC3PARAM 记录来指示正在使用的 NSEC3 参数。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:207
 msgid ""
 "NSEC3 record must contain at least hash algorithm, flags, iterations, salt, "
 "and next hashed owner name."
-msgstr ""
+msgstr "NSEC3 记录必须至少包含哈希算法、标志、迭代次数、盐值和下一个哈希所有者名称。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:213
 msgid "NSEC3 hash algorithm must be 1 (SHA-1)."
-msgstr "NSEC3 hash algorithm must be 1 (SHA-1)."
+msgstr "NSEC3 哈希算法必须为 1 (SHA-1)。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:219
 msgid "NSEC3 flags must be 0 or 1."
-msgstr "NSEC3 flags must be 0 or 1."
+msgstr "NSEC3 标志必须为 0 或 1。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:231
 msgid "NSEC3 iterations must be between 0 and 2500."
-msgstr "NSEC3 iterations must be between 0 and 2500."
+msgstr "NSEC3 迭代次数必须在 0 到 2500 之间。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:248
 msgid "NSEC3 salt must be - (for empty) or a hexadecimal value."
-msgstr "NSEC3 salt must be - (for empty) or a hexadecimal value."
+msgstr "NSEC3 盐值必须为 -（表示空）或十六进制值。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:264
 msgid ""
 "NSEC3 next hashed owner name must be a valid Base32hex encoded value (using "
 "characters 0-9 and A-V)."
-msgstr ""
+msgstr "NSEC3 下一个哈希所有者名称必须是有效的 Base32hex 编码值（使用字符 0-9 和 A-V）。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:281
 msgid ""
 "Type bit maps should be present to indicate which RR types exist at the "
 "original owner name."
-msgstr ""
+msgstr "应存在类型位映射以指示原始所有者名称处存在哪些 RR 类型。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:355
 #, php-format
 msgid "NSEC3 record contains an invalid record type: %s"
-msgstr "NSEC3 record contains an invalid record type: %s"
+msgstr "NSEC3 记录包含无效的记录类型：%s"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:361
 msgid ""
 "RRSIG type should typically be present in NSEC3 type bit maps for DNSSEC-"
 "signed zones."
-msgstr ""
+msgstr "对于 DNSSEC 签名区域，RRSIG 类型通常应存在于 NSEC3 类型位映射中。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:366
 msgid ""
 "This NSEC3 record contains both SOA and NS types, indicating it might be for "
 "a zone apex."
-msgstr ""
+msgstr "此 NSEC3 记录包含 SOA 和 NS 类型，表明它可能用于区域顶点。"
 
 #: lib/Domain/Service/DnsValidation/NSEC3RecordValidator.php:369
 msgid ""
 "For a zone apex using NSEC3, the NSEC3PARAM type should typically be present "
 "along with DNSKEY."
-msgstr ""
+msgstr "对于使用 NSEC3 的区域顶点，NSEC3PARAM 类型通常应与 DNSKEY 一起存在。"
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:46
 msgid "Invalid characters have been used in this record."
-msgstr "Invalid characters have been used in this record."
+msgstr "此记录中使用了无效字符。"
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:60
 msgid "You cannot use html tags for this type of record."
-msgstr "You cannot use html tags for this type of record."
+msgstr "此类型的记录不能使用 HTML 标签。"
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:105
 msgid "Add quotes around TXT record content."
-msgstr "Add quotes around TXT record content."
+msgstr "在 TXT 记录内容周围添加引号。"
 
 #: lib/Domain/Service/DnsValidation/StringValidator.php:220
 msgid "Invalid domain name format."
-msgstr "Invalid domain name format."
+msgstr "无效的域名格式。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:103
 msgid ""
 "This appears to be an ENUM domain. NAPTR records should use E2U service "
 "field and follow RFC 6116."
-msgstr ""
+msgstr "这似乎是一个 ENUM 域。NAPTR 记录应使用 E2U 服务字段并遵循 RFC 6116。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:135
 msgid ""
 "Complex regexp patterns in NAPTR records can be difficult to debug and "
 "maintain."
-msgstr ""
+msgstr "NAPTR 记录中的复杂正则表达式模式可能难以调试和维护。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:139
 msgid ""
 "This record follows RFC 3403. Be aware that some DNS servers may not fully "
 "support all NAPTR features."
-msgstr ""
+msgstr "此记录遵循 RFC 3403。请注意，某些 DNS 服务器可能不完全支持所有 NAPTR 功能。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:170
 msgid ""
 "Invalid value for priority field. NAPTR records have priority within the "
 "content field and must have a priority value of 0."
-msgstr ""
+msgstr "优先级字段的值无效。NAPTR 记录在内容字段中具有优先级，必须具有 0 的优先级值。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:189
 msgid ""
 "NAPTR record must contain order, preference, flags, service, regexp, and "
 "replacement values."
-msgstr ""
+msgstr "NAPTR 记录必须包含顺序、首选项、标志、服务、正则表达式和替换值。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:196
 msgid "NAPTR record order must be a number between 0 and 65535."
-msgstr "NAPTR record order must be a number between 0 and 65535."
+msgstr "NAPTR 记录顺序必须是 0 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:201
 msgid "NAPTR record preference must be a number between 0 and 65535."
-msgstr "NAPTR record preference must be a number between 0 and 65535."
+msgstr "NAPTR 记录首选项必须是 0 到 65535 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:207
 msgid "NAPTR record flags must be a quoted string."
-msgstr "NAPTR record flags must be a quoted string."
+msgstr "NAPTR 记录标志必须是带引号的字符串。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:213
 msgid "NAPTR record flags must contain only A, P, S, or U."
-msgstr "NAPTR record flags must contain only A, P, S, or U."
+msgstr "NAPTR 记录标志只能包含 A、P、S 或 U。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:225
 msgid "NAPTR record service must be a quoted string."
-msgstr "NAPTR record service must be a quoted string."
+msgstr "NAPTR 记录服务必须是带引号的字符串。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:244
 msgid "NAPTR record regexp must be a quoted string."
-msgstr "NAPTR record regexp must be a quoted string."
+msgstr "NAPTR 记录正则表达式必须是带引号的字符串。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:264
 msgid ""
 "NAPTR record replacement must be either \".\" or a valid fully-qualified "
 "domain name."
-msgstr ""
+msgstr "NAPTR 记录替换必须是 \\\".\\\" 或有效的完全限定域名。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:270
 msgid ""
 "NAPTR record must have either a regexp or a replacement (with \".\"), but "
 "not both."
-msgstr ""
+msgstr "NAPTR 记录必须有正则表达式或替换（带有 \\\".\\\")，但不能两者都有。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:275
 msgid "NAPTR record with a regexp must have \".\" as the replacement."
-msgstr ""
+msgstr "带有正则表达式的 NAPTR 记录必须将 \\\".\\\" 作为替换。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:309
 msgid ""
@@ -5417,149 +5429,150 @@ msgid ""
 "and rs start with a letter and contain only alphanumeric characters (max 32 "
 "chars each)."
 msgstr ""
+"NAPTR 服务必须遵循格式：[protocol][+rs][+rs]...，其中 protocol 和 rs 以字母开头并且只包含字母数字字符（每个最多 32 个字符）。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:339
 msgid ""
 "Terminal flags \"S\", \"A\", \"U\", and \"P\" should not be combined with "
 "other flags."
-msgstr ""
+msgstr "终端标志 \\\"S\\\"、\\\"A\\\"、\\\"U\\\" 和 \\\"P\\\" 不应与其他标志组合。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:361
 msgid "NAPTR regexp must start with a delimiter character."
-msgstr "NAPTR regexp must start with a delimiter character."
+msgstr "NAPTR 正则表达式必须以分隔符字符开头。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:367
 msgid ""
 "NAPTR regexp must have the format "
 "delimiter+pattern+delimiter+replacement+delimiter+flags."
-msgstr ""
+msgstr "NAPTR 正则表达式必须具有格式：分隔符+模式+分隔符+替换+分隔符+标志。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:374
 msgid ""
 "NAPTR regexp flags (after third delimiter) should only contain \"i\" or be "
 "empty."
-msgstr ""
+msgstr "NAPTR 正则表达式标志（第三个分隔符之后）应仅包含 \\\"i\\\" 或为空。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:392
 msgid ""
 "This appears to be an ENUM NAPTR record (RFC 6116). Ensure the domain is "
 "under e164.arpa or a private ENUM tree."
-msgstr ""
+msgstr "这似乎是 ENUM NAPTR 记录 (RFC 6116)。确保域在 e164.arpa 或私有 ENUM 树下。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:393
 msgid "ENUM records should have the \"U\" flag to indicate URI output."
-msgstr ""
+msgstr "ENUM 记录应具有 \\\"U\\\" 标志以指示 URI 输出。"
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:420
 msgid "NAPTR regexp contains potentially dangerous pattern: "
-msgstr "NAPTR regexp contains potentially dangerous pattern: "
+msgstr "NAPTR 正则表达式包含潜在危险模式："
 
 #: lib/Domain/Service/DnsValidation/NAPTRRecordValidator.php:427
 msgid "NAPTR regexp is too long. Maximum length is 1000 characters."
-msgstr "NAPTR regexp is too long. Maximum length is 1000 characters."
+msgstr "NAPTR 正则表达式太长。最大长度为 1000 个字符。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:96
 msgid ""
 "DNSKEY records are typically placed at the zone apex. This record does not "
 "appear to be at a zone apex, which is unusual for DNSSEC deployments."
-msgstr ""
+msgstr "DNSKEY 记录通常放置在区域顶点。此记录似乎不在区域顶点，这对于 DNSSEC 部署来说是不寻常的。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:120
 msgid "Priority field for DNSKEY records must be 0 or empty."
-msgstr "Priority field for DNSKEY records must be 0 or empty."
+msgstr "DNSKEY 记录的优先级字段必须为 0 或为空。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:145
 msgid ""
 "DNSKEY record must contain flags, protocol, algorithm and public-key "
 "separated by spaces."
-msgstr ""
+msgstr "DNSKEY 记录必须包含由空格分隔的标志、协议、算法和公钥。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:152
 msgid "DNSKEY flags must be 0, 256, or 257."
-msgstr "DNSKEY flags must be 0, 256, or 257."
+msgstr "DNSKEY 标志必须为 0、256 或 257。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:158
 msgid ""
 "Flag value 0 indicates this key is NOT intended for use as a zone key in "
 "DNSSEC. Make sure this is intentional."
-msgstr ""
+msgstr "标志值 0 表示此密钥不用作 DNSSEC 中的区域密钥。请确保这是故意的。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:160
 msgid ""
 "Flag value 256 indicates this is a Zone Signing Key (ZSK) with Zone Key bit "
 "set and SEP bit unset."
-msgstr ""
+msgstr "标志值 256 表示这是一个区域签名密钥 (ZSK)，设置了区域密钥位且未设置 SEP 位。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:162
 msgid ""
 "Flag value 257 indicates this is a Key Signing Key (KSK) with both Zone Key "
 "and SEP bits set."
-msgstr ""
+msgstr "标志值 257 表示这是一个密钥签名密钥 (KSK)，同时设置了区域密钥和 SEP 位。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:167
 msgid "DNSKEY protocol must be 3."
-msgstr "DNSKEY protocol must be 3."
+msgstr "DNSKEY 协议必须为 3。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:173
 msgid "DNSKEY algorithm must be a number between 1 and 16."
-msgstr "DNSKEY algorithm must be a number between 1 and 16."
+msgstr "DNSKEY 算法必须是 1 到 16 之间的数字。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:207
 msgid ""
 "ECDSAP256SHA256 (algorithm 13) is the RECOMMENDED algorithm for DNSSEC "
 "signing according to RFC 8624."
-msgstr ""
+msgstr "根据 RFC 8624，ECDSAP256SHA256（算法 13）是 DNSSEC 签名的推荐算法。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:209
 #, php-format
 msgid "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
-msgstr "%s (algorithm %d) is a MUST implement algorithm according to RFC 8624."
+msgstr "根据 RFC 8624，%s（算法 %d）是必须实现的算法。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:214
 #, php-format
 msgid ""
 "%s (algorithm %d) is specified as optional for implementation in RFC 8624."
-msgstr ""
+msgstr "在 RFC 8624 中，%s（算法 %d）被指定为可选实现。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:218
 #, php-format
 msgid ""
 "%s (algorithm %d) is DEPRECATED according to RFC 8624. Do not use this "
 "algorithm for new deployments."
-msgstr ""
+msgstr "根据 RFC 8624，%s（算法 %d）已被弃用。不要在新部署中使用此算法。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:220
 #, php-format
 msgid ""
 "Algorithm %d MUST NOT be implemented according to RFC 8624. This value "
 "should not be used."
-msgstr ""
+msgstr "根据 RFC 8624，算法 %d 不得实现。不应使用此值。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:226
 msgid "DNSKEY public key must be valid base64-encoded data."
-msgstr "DNSKEY public key must be valid base64-encoded data."
+msgstr "DNSKEY 公钥必须是有效的 base64 编码数据。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:237
 msgid ""
 "RSA key size is less than 2048 bits. RFC 8624 recommends a minimum of 2048 "
 "bits for RSA keys."
-msgstr ""
+msgstr "RSA 密钥大小小于 2048 位。RFC 8624 建议 RSA 密钥至少为 2048 位。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:254
 msgid "Base64 encoding has incorrect padding."
-msgstr "Base64 encoding has incorrect padding."
+msgstr "Base64 编码的填充不正确。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:259
 msgid "Invalid base64 characters detected."
-msgstr "Invalid base64 characters detected."
+msgstr "检测到无效的 base64 字符。"
 
 #: lib/Domain/Service/DnsValidation/DNSKEYRecordValidator.php:265
 msgid "Invalid base64 encoding."
-msgstr "Invalid base64 encoding."
+msgstr "无效的 base64 编码。"
 
 #: lib/Domain/Service/MfaService.php:454
 msgid "Your verification code"
-msgstr "Your verification code"
+msgstr "您的验证码"
 
 #: lib/Domain/Service/MfaService.php:456
 #, php-format
@@ -5567,198 +5580,198 @@ msgid ""
 "Your verification code is: %s\n"
 "\n"
 "This code will expire in 10 minutes at %s."
-msgstr ""
+msgstr "您的验证码是：%s\\n\\n此验证码将在 %s 的 10 分钟后过期。"
 
 #: lib/Domain/Service/DomainRecordCreator.php:61
 #, php-format
 msgid "There is no managed zone for domain: %s."
-msgstr "There is no managed zone for domain: %s."
+msgstr "域 %s 没有托管区域。"
 
 #: lib/Domain/Service/DomainRecordCreator.php:74
 msgid "Adding IPv6 domain records from reverse zones is not supported yet."
-msgstr "Adding IPv6 domain records from reverse zones is not supported yet."
+msgstr "尚不支持从反向区域添加 IPv6 域记录。"
 
 #: lib/Domain/Service/DomainRecordCreator.php:112
 msgid "This domain record was not valid and could not be added."
-msgstr "This domain record was not valid and could not be added."
+msgstr "此域记录无效，无法添加。"
 
 #: lib/Domain/Service/DomainRecordCreator.php:108
 msgid "The domain record was successfully added."
-msgstr "The domain record was successfully added."
+msgstr "域记录已成功添加。"
 
 #: lib/Domain/Service/DnsRecordValidationService.php:97
 msgid "Unable to find domain with the given ID."
-msgstr "Unable to find domain with the given ID."
+msgstr "无法找到具有给定 ID 的域。"
 
 #: lib/Domain/Service/DnsRecordValidationService.php:103
 msgid "Unknown record type."
-msgstr "Unknown record type."
+msgstr "未知的记录类型。"
 
 #: lib/Domain/Service/ApiKeyService.php:149
 msgid "API functionality is disabled."
-msgstr "API functionality is disabled."
+msgstr "API 功能已禁用。"
 
 #: lib/Domain/Service/ApiKeyService.php:155
 msgid "You do not have permission to create API keys."
-msgstr "You do not have permission to create API keys."
+msgstr "您没有创建 API 密钥的权限。"
 
 #: lib/Domain/Service/ApiKeyService.php:162 templates/default/api_keys.html:18
 msgid "You have reached the maximum number of API keys allowed."
-msgstr "You have reached the maximum number of API keys allowed."
+msgstr "您已达到允许的 API 密钥的最大数量。"
 
 #: lib/Domain/Service/ApiKeyService.php:281
 msgid "You do not have permission to update API keys."
-msgstr "You do not have permission to update API keys."
+msgstr "您没有更新 API 密钥的权限。"
 
 #: lib/Domain/Service/ApiKeyService.php:229
 msgid "You do not have permission to delete API keys."
-msgstr "You do not have permission to delete API keys."
+msgstr "您没有删除 API 密钥的权限。"
 
 #: lib/Domain/Service/ApiKeyService.php:253
 msgid "You do not have permission to regenerate API keys."
-msgstr "You do not have permission to regenerate API keys."
+msgstr "您没有重新生成 API 密钥的权限。"
 
 #: lib/Domain/Service/DatabaseSchemaService.php:51
 msgid "Unknown database type."
-msgstr "Unknown database type."
+msgstr "未知的数据库类型。"
 
 #: lib/Domain/Service/ReverseRecordCreator.php:62
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
-msgstr "There is no matching reverse-zone for: %s."
+msgstr "%s 没有匹配的反向区域。"
 
 #: lib/Domain/Service/ReverseRecordCreator.php:70
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
-msgstr "A PTR record for %s pointing to %s already exists."
+msgstr "指向 %s 的 %s 的 PTR 记录已存在。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:103
 msgid "You do not have the permission to add SOA record."
-msgstr "You do not have the permission to add SOA record."
+msgstr "您没有添加 SOA 记录的权限。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:107
 msgid "You do not have the permission to add NS record."
-msgstr "You do not have the permission to add NS record."
+msgstr "您没有添加 NS 记录的权限。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:154
 msgid "A record with this hostname, type, and content already exists."
-msgstr "A record with this hostname, type, and content already exists."
+msgstr "具有此主机名、类型和内容的记录已存在。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:214
 msgid "You do not have the permission to edit this SOA record."
-msgstr "You do not have the permission to edit this SOA record."
+msgstr "您没有编辑此 SOA 记录的权限。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:219
 msgid "You do not have the permission to edit this NS record."
-msgstr "You do not have the permission to edit this NS record."
+msgstr "您没有编辑此 NS 记录的权限。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:299
 msgid "You do not have the permission to delete SOA records."
-msgstr "You do not have the permission to delete SOA records."
+msgstr "您没有删除 SOA 记录的权限。"
 
 #: lib/Domain/Service/Dns/RecordManager.php:312
 msgid "You do not have the permission to delete NS records."
-msgstr "You do not have the permission to delete NS records."
+msgstr "您没有删除 NS 记录的权限。"
 
 #: lib/Domain/Service/Dns/DomainManager.php:420
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
-msgstr "Invalid argument(s) given to function %s %s"
+msgstr "给函数 %s %s 提供了无效参数"
 
 #: lib/Domain/Service/Dns/SupermasterManager.php:280
 msgid "There is already a supermaster with this IP address and hostname."
-msgstr "There is already a supermaster with this IP address and hostname."
+msgstr "已存在具有此 IP 地址和主机名的超级主服务器。"
 
 #: lib/Domain/Service/Dns/DomainManager.php:206
 #, php-format
 msgid "Invalid argument(s) given to function %s"
-msgstr "Invalid argument(s) given to function %s"
+msgstr "给函数 %s 提供了无效参数"
 
 #: lib/Domain/Service/Dns/DomainManager.php:383
 msgid "The selected user already owns the zone."
-msgstr "The selected user already owns the zone."
+msgstr "选定的用户已拥有该区域。"
 
 #: templates/default/list_perm_templ.html:3
 msgid "Home"
-msgstr "Home"
+msgstr "主页"
 
 #: templates/default/api_keys.html:4 templates/default/api_key_delete.html:4
 msgid "API Keys"
-msgstr "API Keys"
+msgstr "API 密钥"
 
 #: templates/default/api_key_regenerated.html:5
 msgid "API Key Regenerated"
-msgstr "API Key Regenerated"
+msgstr "API 密钥已重新生成"
 
 #: templates/default/api_key_regenerated.html:11
 msgid "API Key Regenerated Successfully"
-msgstr "API Key Regenerated Successfully"
+msgstr "API 密钥重新生成成功"
 
 #: templates/default/api_key_regenerated.html:16
 msgid "IMPORTANT: Save your new API key now!"
-msgstr "IMPORTANT: Save your new API key now!"
+msgstr "重要：请立即保存您的新 API 密钥！"
 
 #: templates/default/api_key_regenerated.html:17
 msgid ""
 "This is the only time your new API key will be displayed. Please save it now "
 "as you won't be able to see it again."
-msgstr ""
+msgstr "这是您的新 API 密钥唯一一次显示。请立即保存，因为您将无法再次看到它。"
 
 #: templates/default/api_key_created.html:22
 msgid "Name:"
-msgstr "Name:"
+msgstr "名称："
 
 #: templates/default/api_key_regenerated.html:27
 msgid "New API Key:"
-msgstr "New API Key:"
+msgstr "新 API 密钥："
 
 #: templates/default/api_key_created.html:32
 msgid "Copy"
-msgstr "Copy"
+msgstr "复制"
 
 #: templates/default/api_key_created.html:40
 msgid "Created at:"
-msgstr "Created at:"
+msgstr "创建时间："
 
 #: templates/default/api_key_created.html:51
 msgid "Expires at:"
-msgstr "Expires at:"
+msgstr "到期时间："
 
 #: templates/default/api_keys.html:57 templates/default/api_key_delete.html:39
 msgid "Never"
-msgstr "Never"
+msgstr "永不"
 
 #: templates/default/api_key_regenerated.html:56
 msgid "Status:"
-msgstr "Status:"
+msgstr "状态："
 
 #: templates/default/api_key_delete.html:51
 msgid "Disabled"
-msgstr "Disabled"
+msgstr "已禁用"
 
 #: templates/default/api_keys.html:50 templates/default/api_key_delete.html:53
 msgid "Expired"
-msgstr "Expired"
+msgstr "已过期"
 
 #: templates/default/dnssec_delete_key.html:111
 msgid "Active"
-msgstr "Active"
+msgstr "活跃"
 
 #: templates/default/api_key_created.html:59
 msgid "Return to API Keys"
-msgstr "Return to API Keys"
+msgstr "返回 API 密钥"
 
 #: templates/default/api_key_created.html:72
 msgid "Copied!"
-msgstr "Copied!"
+msgstr "已复制！"
 
 #: templates/default/dnssec_delete_key.html:6
 msgid "Reverse Zones"
-msgstr "Reverse Zones"
+msgstr "反向区域"
 
 #: templates/default/dnssec_delete_key.html:8
 msgid "Forward Zones"
-msgstr "Forward Zones"
+msgstr "正向区域"
 
 #: templates/default/dnssec_delete_key.html:19
 msgid "DNSSEC"
@@ -5766,19 +5779,19 @@ msgstr "DNSSEC"
 
 #: templates/default/dnssec_edit_key.html:138
 msgid "Deactivate key"
-msgstr "Deactivate key"
+msgstr "停用密钥"
 
 #: templates/default/dnssec_edit_key.html:140
 msgid "Activate key"
-msgstr "Activate key"
+msgstr "激活密钥"
 
 #: templates/default/dnssec_edit_key.html:35
 msgid "Deactivate DNSSEC Key"
-msgstr "Deactivate DNSSEC Key"
+msgstr "停用 DNSSEC 密钥"
 
 #: templates/default/dnssec_edit_key.html:37
 msgid "Activate DNSSEC Key"
-msgstr "Activate DNSSEC Key"
+msgstr "激活 DNSSEC 密钥"
 
 #: templates/default/dnssec_delete_key.html:33
 msgid "Warning"
@@ -5786,39 +5799,39 @@ msgstr "Warning"
 
 #: templates/default/dnssec_edit_key.html:45
 msgid "You are about to deactivate a DNSSEC key (ID"
-msgstr "You are about to deactivate a DNSSEC key (ID"
+msgstr "您即将停用 DNSSEC 密钥（ID"
 
 #: templates/default/dnssec_edit_key.html:46
 msgid ""
 "Deactivating an active key will affect the security of your zone and may "
 "cause validation failures."
-msgstr ""
+msgstr "停用活跃密钥将影响您区域的安全性，并可能导致验证失败。"
 
 #: templates/default/dnssec_edit_key.html:54
 msgid "Are you sure you want to proceed?"
-msgstr "Are you sure you want to proceed?"
+msgstr "您确定要继续吗？"
 
 #: templates/default/dnssec_edit_key.html:51
 msgid "Information"
-msgstr "Information"
+msgstr "信息"
 
 #: templates/default/dnssec_edit_key.html:52
 msgid "You are about to activate a DNSSEC key (ID"
-msgstr "You are about to activate a DNSSEC key (ID"
+msgstr "您即将激活 DNSSEC 密钥（ID"
 
 #: templates/default/dnssec_edit_key.html:53
 msgid ""
 "Activating this key will make it part of the active DNSSEC signing chain for "
 "this zone."
-msgstr ""
+msgstr "激活此密钥将使其成为此区域活跃 DNSSEC 签名链的一部分。"
 
 #: templates/default/dnssec_delete_key.html:47
 msgid "Key Details"
-msgstr "Key Details"
+msgstr "密钥详细信息"
 
 #: templates/default/dnssec_delete_key.html:52
 msgid "Domain"
-msgstr "Domain"
+msgstr "域"
 
 #: templates/default/dnssec_delete_key.html:66
 msgid "Key ID"
@@ -5826,150 +5839,150 @@ msgstr "Key ID"
 
 #: templates/default/dnssec_delete_key.html:74
 msgid "Type"
-msgstr "Type"
+msgstr "类型"
 
 #: templates/default/dnssec_delete_key.html:82
 msgid "Tag"
-msgstr "Tag"
+msgstr "标签"
 
 #: templates/default/dnssec_delete_key.html:90
 msgid "Algorithm"
-msgstr "Algorithm"
+msgstr "算法"
 
 #: templates/default/dnssec_delete_key.html:98
 msgid "Bits"
-msgstr "Bits"
+msgstr "位数"
 
 #: templates/default/dnssec_delete_key.html:106
 msgid "Status"
-msgstr "Status"
+msgstr "状态"
 
 #: templates/default/dnssec_delete_key.html:113
 msgid "Inactive"
-msgstr "Inactive"
+msgstr "非活跃"
 
 #: templates/default/dnssec_delete_key.html:126
 msgid "Cancel"
-msgstr "Cancel"
+msgstr "取消"
 
 #: templates/default/api_key_edit.html:5 templates/default/api_key_edit.html:13
 msgid "Edit API Key"
-msgstr "Edit API Key"
+msgstr "编辑 API 密钥"
 
 #: templates/default/list_perm_templ.html:18
 msgid "Name"
-msgstr "Name"
+msgstr "名称"
 
 #: templates/default/api_key_edit.html:22
 msgid "Please provide a name for this API key"
-msgstr "Please provide a name for this API key"
+msgstr "请为此 API 密钥提供名称"
 
 #: templates/default/api_key_edit.html:23 templates/default/api_key_add.html:23
 msgid "A descriptive name to help you identify this key"
-msgstr "A descriptive name to help you identify this key"
+msgstr "帮助您识别此密钥的描述性名称"
 
 #: templates/default/api_key_delete.html:43
 msgid "Expires at"
-msgstr "Expires at"
+msgstr "到期时间"
 
 #: templates/default/api_key_edit.html:29 templates/default/api_key_add.html:29
 msgid "Leave empty for a key that never expires"
-msgstr "Leave empty for a key that never expires"
+msgstr "留空表示密钥永不过期"
 
 #: templates/default/api_key_edit.html:35
 msgid "Disable this API key"
-msgstr "Disable this API key"
+msgstr "禁用此 API 密钥"
 
 #: templates/default/api_key_edit.html:37
 msgid "Disabled keys cannot be used for authentication"
-msgstr "Disabled keys cannot be used for authentication"
+msgstr "已禁用的密钥不能用于身份验证"
 
 #: templates/default/api_key_edit.html:43
 msgid "Update API Key"
-msgstr "Update API Key"
+msgstr "更新 API 密钥"
 
 #: templates/default/edit_perm_templ.html:44
 msgid "* Required fields"
-msgstr "* Required fields"
+msgstr "* 必填字段"
 
 #: templates/default/api_key_edit.html:59
 msgid "API Key Information"
-msgstr "API Key Information"
+msgstr "API 密钥信息"
 
 #: templates/default/api_key_delete.html:34
 msgid "Created at"
-msgstr "Created at"
+msgstr "创建时间"
 
 #: templates/default/api_keys.html:32 templates/default/api_key_delete.html:38
 msgid "Last used"
-msgstr "Last used"
+msgstr "最后使用"
 
 #: templates/default/api_key_edit.html:93
 msgid "Additional Actions"
-msgstr "Additional Actions"
+msgstr "其他操作"
 
 #: templates/default/api_key_regenerate.html:11
 msgid "Regenerate API Key"
-msgstr "Regenerate API Key"
+msgstr "重新生成 API 密钥"
 
 #: templates/default/api_key_edit.html:99
 msgid "Creates a new key, invalidating the old one"
-msgstr "Creates a new key, invalidating the old one"
+msgstr "创建新密钥，使旧密钥失效"
 
 #: templates/default/api_key_delete.html:11
 msgid "Delete API Key"
-msgstr "Delete API Key"
+msgstr "删除 API 密钥"
 
 #: templates/default/api_key_edit.html:103
 msgid "Permanently removes this key"
-msgstr "Permanently removes this key"
+msgstr "永久删除此密钥"
 
 #: templates/default/delete_zone_templ_record.html:11
 msgid "Zone templates"
-msgstr "Zone templates"
+msgstr "区域模板"
 
 #: templates/default/edit_record.html:18
 msgid "Edit record"
-msgstr "Edit record"
+msgstr "编辑记录"
 
 #: templates/default/add_zone_templ_record.html:20
 msgid "Reminder"
-msgstr "Reminder"
+msgstr "提醒"
 
 #: templates/default/edit_zone_templ_record.html:22
 msgid ""
 "After editing this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr ""
+msgstr "编辑此记录后，请记住通过在模板页面上点击\\\"更新区域\\\"来更新使用此模板的区域。"
 
 #: templates/default/edit_zone_templ_record.html:32
 msgid "Edit record in zone template"
-msgstr "Edit record in zone template"
+msgstr "编辑区域模板中的记录"
 
 #: templates/default/edit_zone_templ_record.html:35
 msgid "Modify the record for this zone template"
-msgstr "Modify the record for this zone template"
+msgstr "修改此区域模板的记录"
 
 #: templates/default/add_zone_templ_record.html:43
 msgid "Provide a name for your record"
-msgstr "Provide a name for your record"
+msgstr "为您的记录提供名称"
 
 #: templates/default/add_zone_templ_record.html:44
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
-msgstr ""
+msgstr "示例：[ZONE] 表示区域本身，或 subdomain.[ZONE] 表示子域"
 
 #: templates/default/delete_zone_templ_record.html:39
 msgid "Priority"
-msgstr "Priority"
+msgstr "优先级"
 
 #: templates/default/add_zone_templ_record.html:62
 msgid "Valid range: 0-65535"
-msgstr "Valid range: 0-65535"
+msgstr "有效范围：0-65535"
 
 #: templates/default/add_zone_templ_record.html:63
 msgid "Only for MX, SRV, KX, NAPTR"
-msgstr "Only for MX, SRV, KX, NAPTR"
+msgstr "仅适用于 MX、SRV、KX、NAPTR"
 
 #: templates/default/delete_zone_templ_record.html:40
 msgid "TTL"
@@ -5977,22 +5990,22 @@ msgstr "TTL"
 
 #: templates/default/add_zone_templ_record.html:70
 msgid "Valid range: 0-2147483647"
-msgstr "Valid range: 0-2147483647"
+msgstr "有效范围：0-2147483647"
 
 #: templates/default/delete_zone_templ_record.html:38
 msgid "Content"
-msgstr "Content"
+msgstr "内容"
 
 #: templates/default/add_zone_templ_record.html:78
 msgid "Provide content for your zone record"
-msgstr "Provide content for your zone record"
+msgstr "为您的区域记录提供内容"
 
 #: templates/default/add_record.html:93
 msgid ""
 "Warning: CNAME records at the domain root (zone apex) are not recommended "
 "and may cause issues. SOA and NS records are required at the domain root and "
 "cannot coexist with CNAME."
-msgstr ""
+msgstr "警告：不建议在域根（区域顶点）使用 CNAME 记录，这可能会导致问题。域根需要 SOA 和 NS 记录，不能与 CNAME 共存。"
 
 #: templates/default/add_zone_templ_record.html:83
 msgid ""
@@ -6000,223 +6013,225 @@ msgid ""
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
 msgstr ""
+"提示：对于 SOA 记录，使用 <code>[ZONE]</code> 作为名称，使用 <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> 作为内容。SOA 记录是正确的 DNS 区域功能所必需的。"
 
 #: templates/default/edit_zone_templ_record.html:103
 msgid "Update record"
-msgstr "Update record"
+msgstr "更新记录"
 
 #: templates/default/users.html:148
 msgid "Reset"
-msgstr "Reset"
+msgstr "重置"
 
 #: templates/default/edit_zone_templ.html:179
 msgid "Template Placeholders"
-msgstr "Template Placeholders"
+msgstr "模板占位符"
 
 #: templates/default/edit_zone_templ.html:187
 msgid "Placeholder"
-msgstr "Placeholder"
+msgstr "占位符"
 
 #: templates/default/list_perm_templ.html:19
 msgid "Description"
-msgstr "Description"
+msgstr "描述"
 
 #: templates/default/edit_zone_templ.html:194
 msgid "Substituted with current zone name"
-msgstr "Substituted with current zone name"
+msgstr "替换为当前区域名称"
 
 #: templates/default/edit_zone_templ.html:198
 msgid "Substituted with domain name without TLD"
-msgstr "Substituted with domain name without TLD"
+msgstr "替换为不含 TLD 的域名"
 
 #: templates/default/edit_zone_templ.html:202
 msgid "Substituted with top-level domain"
-msgstr "Substituted with top-level domain"
+msgstr "替换为顶级域"
 
 #: templates/default/edit_zone_templ.html:206
 msgid "Substituted with current date and 2 numbers"
-msgstr "Substituted with current date and 2 numbers"
+msgstr "替换为当前日期和 2 个数字"
 
 #: templates/default/edit_zone_templ.html:210
 msgid "Substituted with 1st name server"
-msgstr "Substituted with 1st name server"
+msgstr "替换为第 1 个名称服务器"
 
 #: templates/default/edit_zone_templ.html:214
 msgid "Substituted with 2nd name server"
-msgstr "Substituted with 2nd name server"
+msgstr "替换为第 2 个名称服务器"
 
 #: templates/default/edit_zone_templ.html:218
 msgid "Substituted with 3rd name server"
-msgstr "Substituted with 3rd name server"
+msgstr "替换为第 3 个名称服务器"
 
 #: templates/default/edit_zone_templ.html:222
 msgid "Substituted with 4th name server"
-msgstr "Substituted with 4th name server"
+msgstr "替换为第 4 个名称服务器"
 
 #: templates/default/edit_zone_templ.html:226
 msgid "Substituted with hostmaster"
-msgstr "Substituted with hostmaster"
+msgstr "替换为 hostmaster"
 
 #: templates/default/add_zone_templ_record.html:161
 msgid "Example Records"
-msgstr "Example Records"
+msgstr "示例记录"
 
 #: templates/default/add_zone_templ_record.html:166
 msgid "Name Examples"
-msgstr "Name Examples"
+msgstr "名称示例"
 
 #: templates/default/add_zone_templ_record.html:168
 msgid "For a subdomain: <code>subdomain.[ZONE]</code>"
-msgstr "For a subdomain: <code>subdomain.[ZONE]</code>"
+msgstr "对于子域：<code>subdomain.[ZONE]</code>"
 
 #: templates/default/add_zone_templ_record.html:169
 msgid "For a wildcard record: <code>*.[ZONE]</code>"
-msgstr "For a wildcard record: <code>*.[ZONE]</code>"
+msgstr "对于通配符记录：<code>*.[ZONE]</code>"
 
 #: templates/default/add_zone_templ_record.html:170
 msgid "For the domain itself: <code>[ZONE]</code>"
-msgstr "For the domain itself: <code>[ZONE]</code>"
+msgstr "对于域本身：<code>[ZONE]</code>"
 
 #: templates/default/add_zone_templ_record.html:173
 msgid "Content Examples"
-msgstr "Content Examples"
+msgstr "内容示例"
 
 #: templates/default/add_zone_templ_record.html:175
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
-msgstr "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
+msgstr "SOA：<code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/default/add_zone_templ_record.html:176
 msgid ""
 "MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 msgstr ""
+"Microsoft 365 的 MX：<code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 
 #: templates/default/add_zone_templ_record.html:177
 msgid "A record: <code>192.0.2.10</code>"
-msgstr "A record: <code>192.0.2.10</code>"
+msgstr "A 记录：<code>192.0.2.10</code>"
 
 #: templates/default/add_zone_templ_record.html:178
 msgid "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
-msgstr "CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>"
+msgstr "CNAME：<code>target.[ZONE]</code> 或 <code>example.com.</code>"
 
 #: templates/default/add_zone_templ_record.html:179
 msgid "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
-msgstr "TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
+msgstr "SPF 的 TXT：<code>v=spf1 mx ip4:192.0.2.0/24 -all</code>"
 
 #: templates/default/delete_supermaster.html:4
 msgid "Supermasters"
-msgstr "Supermasters"
+msgstr "超级主服务器"
 
 #: templates/default/edit_supermaster.html:5
 msgid "Edit supermaster"
-msgstr "Edit supermaster"
+msgstr "编辑超级主服务器"
 
 #: templates/default/edit_supermaster.html:13
 msgid "Edit Supermaster"
-msgstr "Edit Supermaster"
+msgstr "编辑超级主服务器"
 
 #: templates/default/list_supermasters.html:18
 msgid "IP address of supermaster"
-msgstr "IP address of supermaster"
+msgstr "超级主服务器的 IP 地址"
 
 #: templates/default/add_supermaster.html:22
 msgid "Enter the IP address of the master nameserver"
-msgstr "Enter the IP address of the master nameserver"
+msgstr "输入主名称服务器的 IP 地址"
 
 #: templates/default/add_supermaster.html:23
 msgid "Provide ip address"
-msgstr "Provide ip address"
+msgstr "提供 IP 地址"
 
 #: templates/default/delete_supermaster.html:27
 msgid "Hostname in NS record"
-msgstr "Hostname in NS record"
+msgstr "NS 记录中的主机名"
 
 #: templates/default/add_supermaster.html:29
 msgid "Enter the hostname as it appears in the NS record"
-msgstr "Enter the hostname as it appears in the NS record"
+msgstr "输入在 NS 记录中显示的主机名"
 
 #: templates/default/add_supermaster.html:30
 msgid "Provide host name"
-msgstr "Provide host name"
+msgstr "提供主机名"
 
 #: templates/default/header.html:172
 msgid "Account"
-msgstr "Account"
+msgstr "账户"
 
 #: templates/default/add_supermaster.html:56
 msgid "Select the account that will own this supermaster"
-msgstr "Select the account that will own this supermaster"
+msgstr "选择将拥有此超级主服务器的账户"
 
 #: templates/default/edit.html:501
 msgid "Save changes"
-msgstr "Save changes"
+msgstr "保存更改"
 
 #: templates/default/change_password.html:55
 msgid "All fields are required"
-msgstr "All fields are required"
+msgstr "所有字段都是必需的"
 
 #: templates/default/edit_supermaster.html:86
 msgid "About Editing Supermasters"
-msgstr "About Editing Supermasters"
+msgstr "关于编辑超级主服务器"
 
 #: templates/default/edit_supermaster.html:91
 msgid "Update Credentials"
-msgstr "Update Credentials"
+msgstr "更新凭据"
 
 #: templates/default/edit_supermaster.html:92
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
-msgstr ""
+msgstr "您可以修改此超级主服务器的 IP 地址、主机名或账户。"
 
 #: templates/default/edit_supermaster.html:95
 msgid "Important"
-msgstr "Important"
+msgstr "重要"
 
 #: templates/default/edit_supermaster.html:96
 msgid ""
 "Ensure that the hostname matches exactly what appears in NS records, or "
 "slave zone creation may fail."
-msgstr ""
+msgstr "确保主机名与 NS 记录中显示的完全匹配，否则从区域创建可能会失败。"
 
 #: templates/default/edit_supermaster.html:99
 msgid "Validation"
-msgstr "Validation"
+msgstr "验证"
 
 #: templates/default/edit_supermaster.html:100
 msgid "All fields will be validated to ensure they contain proper values."
-msgstr "All fields will be validated to ensure they contain proper values."
+msgstr "所有字段都将进行验证以确保它们包含正确的值。"
 
 #: templates/default/dnssec.html:6
 msgid "Confirm Unsign Zone"
-msgstr "Confirm Unsign Zone"
+msgstr "确认取消区域签名"
 
 #: templates/default/dnssec.html:12
 msgid ""
 "This action will remove all DNSSEC keys and disable DNSSEC for this zone."
-msgstr ""
+msgstr "此操作将删除所有 DNSSEC 密钥并禁用此区域的 DNSSEC。"
 
 #: templates/default/dnssec.html:14
 msgid "Are you sure you want to unsign the zone"
-msgstr "Are you sure you want to unsign the zone"
+msgstr "您确定要取消区域签名吗"
 
 #: templates/default/dnssec.html:21
 msgid "Unsign Zone"
-msgstr "Unsign Zone"
+msgstr "取消区域签名"
 
 #: templates/default/dnssec.html:55 templates/default/dnssec.html:57
 msgid "DNSSEC keys for zone"
-msgstr "DNSSEC keys for zone"
+msgstr "区域的 DNSSEC 密钥"
 
 #: templates/default/dnssec.html:62
 msgid "Add new key"
-msgstr "Add new key"
+msgstr "添加新密钥"
 
 #: templates/default/dnssec.html:65
 msgid "Show DS and DNSKEY"
-msgstr "Show DS and DNSKEY"
+msgstr "显示 DS 和 DNSKEY"
 
 #: templates/default/dnssec.html:69
 msgid "Unsign zone"
-msgstr "Unsign zone"
+msgstr "取消区域签名"
 
 #: templates/default/dnssec.html:79
 msgid "ID"
@@ -6224,268 +6239,268 @@ msgstr "ID"
 
 #: templates/default/api_keys.html:34 templates/default/list_perm_templ.html:20
 msgid "Actions"
-msgstr "Actions"
+msgstr "操作"
 
 #: templates/default/dnssec.html:91
 msgid "No DNSSEC keys found for this zone"
-msgstr "No DNSSEC keys found for this zone"
+msgstr "未找到此区域的 DNSSEC 密钥"
 
 #: templates/default/dnssec.html:119
 msgid "Deactivate this key"
-msgstr "Deactivate this key"
+msgstr "停用此密钥"
 
 #: templates/default/dnssec.html:119
 msgid "Activate this key"
-msgstr "Activate this key"
+msgstr "激活此密钥"
 
 #: templates/default/dnssec.html:120
 msgid "Deactivate"
-msgstr "Deactivate"
+msgstr "停用"
 
 #: templates/default/dnssec.html:120
 msgid "Activate"
-msgstr "Activate"
+msgstr "激活"
 
 #: templates/default/list_perm_templ.html:39
 msgid "Delete"
-msgstr "Delete"
+msgstr "删除"
 
 #: templates/default/forgot_password.html:4
 msgid "Forgot Password"
-msgstr "Forgot Password"
+msgstr "忘记密码"
 
 #: templates/default/reset_password.html:89
 msgid "Back to Login"
-msgstr "Back to Login"
+msgstr "返回登录"
 
 #: templates/default/forgot_password.html:21
 msgid ""
 "Enter your email address and we'll send you a link to reset your password."
-msgstr ""
+msgstr "输入您的电子邮件地址，我们将发送重置密码的链接给您。"
 
 #: templates/default/forgot_password.html:27
 msgid "Email Address"
-msgstr "Email Address"
+msgstr "电子邮件地址"
 
 #: templates/default/forgot_password.html:29
 msgid "Please provide a valid email address"
-msgstr "Please provide a valid email address"
+msgstr "请提供有效的电子邮件地址"
 
 #: templates/default/forgot_password.html:41
 msgid "Send Reset Link"
-msgstr "Send Reset Link"
+msgstr "发送重置链接"
 
 #: templates/default/edit_record.html:27 templates/default/edit_record.html:29
 msgid "Edit record in zone"
-msgstr "Edit record in zone"
+msgstr "编辑区域中的记录"
 
 #: templates/default/edit_record.html:35
 msgid "Modify DNS record properties"
-msgstr "Modify DNS record properties"
+msgstr "修改 DNS 记录属性"
 
 #: templates/default/add_record.html:58
 msgid "Comment"
-msgstr "Comment"
+msgstr "备注"
 
 #: templates/default/edit.html:608 templates/default/add_record.html:91
 msgid "Provide content"
-msgstr "Provide content"
+msgstr "提供内容"
 
 #: templates/default/edit_perm_templ.html:38
 msgid "Update"
-msgstr "Update"
+msgstr "更新"
 
 #: templates/default/index.html:2
 msgid "Welcome"
-msgstr "Welcome"
+msgstr "欢迎"
 
 #: templates/default/index.html:13 templates/default/pdns_status.html:168
 msgid "Online"
-msgstr "Online"
+msgstr "在线"
 
 #: templates/default/index.html:17 templates/default/pdns_status.html:170
 msgid "Offline"
-msgstr "Offline"
+msgstr "离线"
 
 #: templates/default/index.html:23
 msgid "PowerDNS Status"
-msgstr "PowerDNS Status"
+msgstr "PowerDNS 状态"
 
 #: templates/default/index.html:26
 msgid "Server running"
-msgstr "Server running"
+msgstr "服务器运行中"
 
 #: templates/default/index.html:28
 msgid "Check PowerDNS server status"
-msgstr "Check PowerDNS server status"
+msgstr "检查 PowerDNS 服务器状态"
 
 #: templates/default/index.html:32
 msgid "View Server Status"
-msgstr "View Server Status"
+msgstr "查看服务器状态"
 
 #: templates/default/index.html:33
 msgid "Server Status"
-msgstr "Server Status"
+msgstr "服务器状态"
 
 #: templates/default/index.html:46
 msgid "My Profile"
-msgstr "My Profile"
+msgstr "我的资料"
 
 #: templates/default/index.html:47
 msgid "Edit your account details"
-msgstr "Edit your account details"
+msgstr "编辑您的账户详情"
 
 #: templates/default/header.html:176
 msgid "Edit profile"
-msgstr "Edit profile"
+msgstr "编辑资料"
 
 #: templates/default/index.html:50
 msgid "Profile"
-msgstr "Profile"
+msgstr "资料"
 
 #: templates/default/header.html:49
 msgid "Search"
-msgstr "Search"
+msgstr "搜索"
 
 #: templates/default/index.html:64
 msgid "Find zones and records"
-msgstr "Find zones and records"
+msgstr "查找区域和记录"
 
 #: templates/default/index.html:66
 msgid "Search zones"
-msgstr "Search zones"
+msgstr "搜索区域"
 
 #: templates/default/index.html:81
 msgid "Manage forward DNS zones"
-msgstr "Manage forward DNS zones"
+msgstr "管理正向 DNS 区域"
 
 #: templates/default/index.html:83
 msgid "List forward zones"
-msgstr "List forward zones"
+msgstr "列出正向区域"
 
 #: templates/default/index.html:99
 msgid "Manage reverse DNS zones"
-msgstr "Manage reverse DNS zones"
+msgstr "管理反向 DNS 区域"
 
 #: templates/default/index.html:101
 msgid "List reverse zones"
-msgstr "List reverse zones"
+msgstr "列出反向区域"
 
 #: templates/default/header.html:127
 msgid "Templates"
-msgstr "Templates"
+msgstr "模板"
 
 #: templates/default/index.html:117
 msgid "Manage zone templates"
-msgstr "Manage zone templates"
+msgstr "管理区域模板"
 
 #: templates/default/index.html:119 templates/default/header.html:130
 msgid "List zone templates"
-msgstr "List zone templates"
+msgstr "列出区域模板"
 
 #: templates/default/index.html:134
 msgid "Manage supermaster servers"
-msgstr "Manage supermaster servers"
+msgstr "管理超级主服务器"
 
 #: templates/default/index.html:136
 msgid "List supermasters"
-msgstr "List supermasters"
+msgstr "列出超级主服务器"
 
 #: templates/default/index.html:150
 msgid "Master Zone"
-msgstr "Master Zone"
+msgstr "主区域"
 
 #: templates/default/index.html:151
 msgid "Create new master zone"
-msgstr "Create new master zone"
+msgstr "创建新的主区域"
 
 #: templates/default/add_zone_master.html:11 templates/default/header.html:66
 msgid "Add master zone"
-msgstr "Add master zone"
+msgstr "添加主区域"
 
 #: templates/default/index.html:154
 msgid "Add Master"
-msgstr "Add Master"
+msgstr "添加主区域"
 
 #: templates/default/index.html:167
 msgid "Slave Zone"
-msgstr "Slave Zone"
+msgstr "从区域"
 
 #: templates/default/index.html:168
 msgid "Add new slave zone"
-msgstr "Add new slave zone"
+msgstr "添加新的从区域"
 
 #: templates/default/add_zone_slave.html:11 templates/default/header.html:70
 msgid "Add slave zone"
-msgstr "Add slave zone"
+msgstr "添加从区域"
 
 #: templates/default/index.html:171
 msgid "Add Slave"
-msgstr "Add Slave"
+msgstr "添加从区域"
 
 #: templates/default/index.html:184 templates/default/index.html:188
 msgid "Supermaster"
-msgstr "Supermaster"
+msgstr "超级主服务器"
 
 #: templates/default/index.html:185
 msgid "Add new supermaster server"
-msgstr "Add new supermaster server"
+msgstr "添加新的超级主服务器"
 
 #: templates/default/list_supermasters.html:57
 msgid "Add supermaster"
-msgstr "Add supermaster"
+msgstr "添加超级主服务器"
 
 #: templates/default/index.html:201 templates/default/bulk_registration.html:23
 msgid "Bulk Registration"
-msgstr "Bulk Registration"
+msgstr "批量注册"
 
 #: templates/default/index.html:202
 msgid "Register multiple domains at once"
-msgstr "Register multiple domains at once"
+msgstr "一次注册多个域名"
 
 #: templates/default/index.html:204
 msgid "Bulk domain registration"
-msgstr "Bulk domain registration"
+msgstr "批量域名注册"
 
 #: templates/default/index.html:205
 msgid "Registration"
-msgstr "Registration"
+msgstr "注册"
 
 #: templates/default/index.html:218 templates/default/index.html:222
 msgid "PTR Records"
-msgstr "PTR Records"
+msgstr "PTR 记录"
 
 #: templates/default/index.html:219
 msgid "Manage reverse DNS records"
-msgstr "Manage reverse DNS records"
+msgstr "管理反向 DNS 记录"
 
 #: templates/default/batch_ptr_record.html:32 templates/default/header.html:79
 msgid "Batch PTR Records"
-msgstr "Batch PTR Records"
+msgstr "批量 PTR 记录"
 
 #: templates/default/index.html:235 templates/default/index.html:239
 msgid "Zone Logs"
-msgstr "Zone Logs"
+msgstr "区域日志"
 
 #: templates/default/index.html:236
 msgid "View zone change history"
-msgstr "View zone change history"
+msgstr "查看区域变更历史"
 
 #: templates/default/index.html:238
 msgid "View zone logs"
-msgstr "View zone logs"
+msgstr "查看区域日志"
 
 #: templates/default/index.html:253 templates/default/index.html:257
 msgid "User Logs"
-msgstr "User Logs"
+msgstr "用户日志"
 
 #: templates/default/index.html:254
 msgid "View user activity history"
-msgstr "View user activity history"
+msgstr "查看用户活动历史"
 
 #: templates/default/index.html:256
 msgid "View user logs"
-msgstr "View user logs"
+msgstr "查看用户日志"
 
 #: templates/default/add_user.html:38 install/templates/step4.html.twig:51
 #: install/templates/step5.html.twig:67
@@ -6494,51 +6509,51 @@ msgstr "Şifre"
 
 #: templates/default/index.html:272
 msgid "Update your account password"
-msgstr "Update your account password"
+msgstr "更新您的账户密码"
 
 #: templates/default/change_password.html:49 templates/default/header.html:180
 msgid "Change password"
-msgstr "Change password"
+msgstr "更改密码"
 
 #: templates/default/list_perm_templ.html:4
 msgid "Users"
-msgstr "Users"
+msgstr "用户"
 
 #: templates/default/index.html:289
 msgid "Manage system users and access"
-msgstr "Manage system users and access"
+msgstr "管理系统用户和访问"
 
 #: templates/default/index.html:291 templates/default/header.html:98
 msgid "User administration"
-msgstr "User administration"
+msgstr "用户管理"
 
 #: templates/default/index.html:309
 msgid "Permissions"
-msgstr "Permissions"
+msgstr "权限"
 
 #: templates/default/index.html:306
 msgid "Manage permission templates"
-msgstr "Manage permission templates"
+msgstr "管理权限模板"
 
 #: templates/default/header.html:187
 msgid "Logout"
-msgstr "Logout"
+msgstr "注销"
 
 #: templates/default/index.html:322
 msgid "End your session"
-msgstr "End your session"
+msgstr "结束您的会话"
 
 #: templates/default/migrations.html:4 templates/default/migrations.html:10
 msgid "Migrations"
-msgstr "Migrations"
+msgstr "迁移"
 
 #: templates/default/index.html:337
 msgid "Manage database migrations"
-msgstr "Manage database migrations"
+msgstr "管理数据库迁移"
 
 #: templates/default/index.html:339
 msgid "Database Migrations"
-msgstr "Database Migrations"
+msgstr "数据库迁移"
 
 #: templates/default/header.html:147
 msgid "WHOIS"
@@ -6546,11 +6561,11 @@ msgstr "WHOIS"
 
 #: templates/default/index.html:354
 msgid "Lookup domain WHOIS information"
-msgstr "Lookup domain WHOIS information"
+msgstr "查找域名 WHOIS 信息"
 
 #: templates/default/whois.html:10
 msgid "WHOIS Lookup"
-msgstr "WHOIS Lookup"
+msgstr "WHOIS 查询"
 
 #: templates/default/header.html:152
 msgid "RDAP"
@@ -6558,156 +6573,157 @@ msgstr "RDAP"
 
 #: templates/default/index.html:371
 msgid "Lookup domain RDAP information"
-msgstr "Lookup domain RDAP information"
+msgstr "查找域名 RDAP 信息"
 
 #: templates/default/rdap.html:10
 msgid "RDAP Lookup"
-msgstr "RDAP Lookup"
+msgstr "RDAP 查询"
 
 #: templates/default/index.html:388
 msgid "Manage API access keys"
-msgstr "Manage API access keys"
+msgstr "管理 API 访问密钥"
 
 #: templates/default/index.html:390
 msgid "Manage API Keys"
-msgstr "Manage API Keys"
+msgstr "管理 API 密钥"
 
 #: templates/default/index.html:404 templates/default/header.html:162
 msgid "Database Consistency"
-msgstr "Database Consistency"
+msgstr "数据库一致性"
 
 #: templates/default/index.html:405
 msgid "Check database integrity"
-msgstr "Check database integrity"
+msgstr "检查数据库完整性"
 
 #: templates/default/index.html:407
 msgid "Check Database"
-msgstr "Check Database"
+msgstr "检查数据库"
 
 #: templates/default/index.html:408
 msgid "Check DB"
-msgstr "Check DB"
+msgstr "检查数据库"
 
 #: templates/default/edit_comment.html:18 templates/default/edit.html:483
 msgid "Edit comment"
-msgstr "Edit comment"
+msgstr "编辑备注"
 
 #: templates/default/edit_comment.html:25
 msgid "Edit comment in zone"
-msgstr "Edit comment in zone"
+msgstr "编辑区域中的备注"
 
 #: templates/default/add_zone_templ.html:12
 msgid "Add template"
-msgstr "Add template"
+msgstr "添加模板"
 
 #: templates/default/add_zone_templ.html:24
 msgid "Add zone template for"
-msgstr "Add zone template for"
+msgstr "为以下对象添加区域模板"
 
 #: templates/default/edit_perm_templ.html:26
 msgid "Provide a name for your template"
-msgstr "Provide a name for your template"
+msgstr "为您的模板提供名称"
 
 #: templates/default/edit_zone_templ.html:143
 msgid "Optional description to help identify this template"
-msgstr "Optional description to help identify this template"
+msgstr "可选描述，帮助识别此模板"
 
 #: templates/default/edit_zone_templ.html:151
 msgid "Global template"
-msgstr "Global template"
+msgstr "全局模板"
 
 #: templates/default/edit_zone_templ.html:153
 msgid "Make this template available to all users"
-msgstr "Make this template available to all users"
+msgstr "使此模板对所有用户可用"
 
 #: templates/default/list_zone_templ.html:126 templates/default/header.html:133
 msgid "Add zone template"
-msgstr "Add zone template"
+msgstr "添加区域模板"
 
 #: templates/default/add_zone_templ.html:68
 msgid "Template Information"
-msgstr "Template Information"
+msgstr "模板信息"
 
 #: templates/default/add_zone_templ.html:73
 msgid "About Templates"
-msgstr "About Templates"
+msgstr "关于模板"
 
 #: templates/default/add_zone_templ.html:74
 msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
-msgstr ""
+msgstr "区域模板允许您创建预定义的 DNS 记录集，在创建新区域时可以快速应用。"
 
 #: templates/default/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
-msgstr "After creating a template, you can add record templates to it."
+msgstr "创建模板后，您可以向其添加记录模板。"
 
 #: templates/default/add_zone_templ.html:78
 msgid "Template Usage"
-msgstr "Template Usage"
+msgstr "模板用法"
 
 #: templates/default/add_zone_templ.html:80
 msgid "Apply consistent configurations to multiple zones"
-msgstr "Apply consistent configurations to multiple zones"
+msgstr "将一致的配置应用到多个区域"
 
 #: templates/default/add_zone_templ.html:81
 msgid "Save time when creating new domains"
-msgstr "Save time when creating new domains"
+msgstr "在创建新域名时节省时间"
 
 #: templates/default/add_zone_templ.html:82
 msgid "Maintain standardized DNS setups"
-msgstr "Maintain standardized DNS setups"
+msgstr "维护标准化的 DNS 设置"
 
 #: templates/default/add_zone_templ.html:91
 msgid "Tips & Examples"
-msgstr "Tips & Examples"
+msgstr "提示和示例"
 
 #: templates/default/add_zone_templ.html:97
 msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
-msgstr ""
+msgstr "为不同类型的网站创建不同的模板（例如，\\\"基本网站\\\"、\\\"邮件服务器\\\"）"
 
 #: templates/default/add_zone_templ.html:98
 msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
-msgstr ""
+msgstr "使用描述性名称和说明，使模板易于识别"
 
 #: templates/default/add_zone_templ.html:99
 msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
-msgstr "Set up standard records like MX, TXT for SPF, and CNAME for www"
+msgstr "设置标准记录，如 MX、SPF 的 TXT 和 www 的 CNAME"
 
 #: templates/default/add_zone_templ.html:100
 msgid ""
 "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
 "[SERIAL] in record content"
-msgstr ""
+msgstr "在记录内容中使用 [ZONE]、[DOMAIN]、[TLD]、[NS1]、[HOSTMASTER] 和 [SERIAL] 等占位符"
 
 #: templates/default/add_zone_templ.html:101
 msgid ""
 "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
 "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
 msgstr ""
+"[DOMAIN] 和 [TLD] 占位符对 Microsoft 365 MX 记录很有用（例如，[DOMAIN]-[TLD].mail.protection.outlook.com）"
 
 #: templates/default/list_log_zones.html:11 templates/default/header.html:86
 msgid "Zone logs"
-msgstr "Zone logs"
+msgstr "区域日志"
 
 #: templates/default/list_log_zones.html:17
 msgid "Zone Change Logs"
-msgstr "Zone Change Logs"
+msgstr "区域变更日志"
 
 #: templates/default/list_log_zones.html:26
 msgid "Search logs by domain"
-msgstr "Search logs by domain"
+msgstr "按域名搜索日志"
 
 #: templates/default/list_log_users.html:26
 msgid "Clear"
-msgstr "Clear"
+msgstr "清除"
 
 #: templates/default/list_log_users.html:32
 msgid "Total logs"
-msgstr "Total logs"
+msgstr "总日志数"
 
 #: templates/default/list_log_users.html:47
 msgid "Id"
@@ -6715,285 +6731,285 @@ msgstr "Id"
 
 #: templates/default/list_log_users.html:49
 msgid "Event"
-msgstr "Event"
+msgstr "事件"
 
 #: templates/default/list_log_zones.html:70
 msgid "Details"
-msgstr "Details"
+msgstr "详细信息"
 
 #: templates/default/list_log_zones.html:87
 msgid "Log Details"
-msgstr "Log Details"
+msgstr "日志详细信息"
 
 #: templates/default/list_log_zones.html:94
 msgid "Close"
-msgstr "Close"
+msgstr "关闭"
 
 #: templates/default/list_log_users.html:73
 msgid "No logs found"
-msgstr "No logs found"
+msgstr "未找到日志"
 
 #: templates/default/list_log_users.html:74
 msgid "Try different search criteria or check back later"
-msgstr "Try different search criteria or check back later"
+msgstr "尝试不同的搜索条件或稍后再查看"
 
 #: templates/default/bulk_record_add.html:18
 msgid "Bulk add records"
-msgstr "Bulk add records"
+msgstr "批量添加记录"
 
 #: templates/default/bulk_record_add.html:30
 msgid "Bulk Add Records"
-msgstr "Bulk Add Records"
+msgstr "批量添加记录"
 
 #: templates/default/search.html:58 templates/default/search.html:163
 msgid "Records"
-msgstr "Records"
+msgstr "记录"
 
 #: templates/default/bulk_record_add.html:44
 msgid "Provide at least one record"
-msgstr "Provide at least one record"
+msgstr "至少提供一个记录"
 
 #: templates/default/bulk_record_add.html:45
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
-msgstr "Format: name,type,content,priority,ttl,comment (one record per line)"
+msgstr "格式：name,type,content,priority,ttl,comment（每行一个记录）"
 
 #: templates/default/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
-msgstr "Example: www,A,192.168.1.1,0,3600,web server"
+msgstr "示例：www,A,192.168.1.1,0,3600,web server"
 
 #: templates/default/bulk_record_add.html:48
 msgid "Comment is optional"
-msgstr "Comment is optional"
+msgstr "注释是可选的"
 
 #: templates/default/bulk_record_add.html:50
 msgid "Enter hostnames only - the zone name will be added automatically"
-msgstr "Enter hostnames only - the zone name will be added automatically"
+msgstr "只输入主机名 - 区域名称将自动添加"
 
 #: templates/default/bulk_record_add.html:57
 msgid "Add Records"
-msgstr "Add Records"
+msgstr "添加记录"
 
 #: templates/default/bulk_registration.html:100
 msgid "Instructions"
-msgstr "Instructions"
+msgstr "说明"
 
 #: templates/default/bulk_record_add.html:78
 msgid "Input Format"
-msgstr "Input Format"
+msgstr "输入格式"
 
 #: templates/default/bulk_record_add.html:80
 msgid "Enter one record per line using CSV format"
-msgstr "Enter one record per line using CSV format"
+msgstr "使用 CSV 格式每行输入一个记录"
 
 #: templates/default/bulk_record_add.html:81
 msgid "Required fields: name, type, content"
-msgstr "Required fields: name, type, content"
+msgstr "必填字段：name、type、content"
 
 #: templates/default/bulk_record_add.html:82
 msgid "Optional fields: priority, ttl, comment"
-msgstr "Optional fields: priority, ttl, comment"
+msgstr "可选字段：priority、ttl、comment"
 
 #: templates/default/bulk_record_add.html:83
 msgid "Records are validated before creation"
-msgstr "Records are validated before creation"
+msgstr "记录在创建前会进行验证"
 
 #: templates/default/bulk_record_add.html:87
 msgid "Best Practices"
-msgstr "Best Practices"
+msgstr "最佳实践"
 
 #: templates/default/bulk_record_add.html:89
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
-msgstr "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
+msgstr "对于 CNAME、MX、SRV 记录，确保内容以点（.）结尾"
 
 #: templates/default/bulk_record_add.html:90
 msgid "Use @ for records at the zone apex (root domain)"
-msgstr "Use @ for records at the zone apex (root domain)"
+msgstr "对于区域顶点（根域）的记录使用 @"
 
 #: templates/default/bulk_record_add.html:91
 msgid "Quote TXT record values that contain spaces"
-msgstr "Quote TXT record values that contain spaces"
+msgstr "包含空格的 TXT 记录值需要加引号"
 
 #: templates/default/bulk_record_add.html:100
 msgid "Record Type Examples"
-msgstr "Record Type Examples"
+msgstr "记录类型示例"
 
 #: templates/default/bulk_record_add.html:105
 msgid "Common Records"
-msgstr "Common Records"
+msgstr "常见记录"
 
 #: templates/default/bulk_record_add.html:114
 msgid "Advanced Records"
-msgstr "Advanced Records"
+msgstr "高级记录"
 
 #: templates/default/delete_user.html:5
 msgid "Delete user"
-msgstr "Delete user"
+msgstr "删除用户"
 
 #: templates/default/delete_user.html:11
 msgid "Delete User"
-msgstr "Delete User"
+msgstr "删除用户"
 
 #: templates/default/delete_user.html:16
 msgid "You are about to delete the user"
-msgstr "You are about to delete the user"
+msgstr "您即将删除用户"
 
 #: templates/default/dnssec_delete_key.html:42
 msgid "This action cannot be undone. Are you sure you want to proceed?"
-msgstr "This action cannot be undone. Are you sure you want to proceed?"
+msgstr "此操作无法撤销。您确定要继续吗？"
 
 #: templates/default/delete_user.html:26
 msgid "Zone Ownership Transfer"
-msgstr "Zone Ownership Transfer"
+msgstr "区域所有权转移"
 
 #: templates/default/delete_user.html:30
 msgid ""
 "This user is the owner for the following zones. Please decide what to do "
 "with each zone:"
-msgstr ""
+msgstr "此用户是以下区域的所有者。请决定如何处理每个区域："
 
 #: templates/default/delete_records.html:39
 msgid "Zone"
-msgstr "Zone"
+msgstr "区域"
 
 #: templates/default/delete_user.html:39
 msgid "Leave"
-msgstr "Leave"
+msgstr "保留"
 
 #: templates/default/delete_user.html:40
 msgid "Add new owner"
-msgstr "Add new owner"
+msgstr "添加新所有者"
 
 #: templates/default/delete_user.html:41
 msgid "Owner to be added"
-msgstr "Owner to be added"
+msgstr "要添加的所有者"
 
 #: templates/default/delete_user.html:80
 msgid "Delete: The zone will be completely removed from the system"
-msgstr "Delete: The zone will be completely removed from the system"
+msgstr "删除：区域将从系统中完全移除"
 
 #: templates/default/delete_user.html:81
 msgid "Leave: The zone will remain in the system but without an owner"
-msgstr "Leave: The zone will remain in the system but without an owner"
+msgstr "保留：区域将保留在系统中但没有所有者"
 
 #: templates/default/delete_user.html:82
 msgid "Add new owner: Transfer ownership to another user"
-msgstr "Add new owner: Transfer ownership to another user"
+msgstr "添加新所有者：将所有权转移给其他用户"
 
 #: templates/default/delete_user.html:91
 msgid "Yes, delete this user"
-msgstr "Yes, delete this user"
+msgstr "是的，删除此用户"
 
 #: templates/default/delete_user.html:94
 msgid "No, keep this user"
-msgstr "No, keep this user"
+msgstr "不，保留此用户"
 
 #: templates/default/api_key_regenerate.html:16
 msgid "You are about to regenerate the API key"
-msgstr "You are about to regenerate the API key"
+msgstr "您即将重新生成 API 密钥"
 
 #: templates/default/api_key_regenerate.html:17
 msgid "This action will invalidate the existing key!"
-msgstr "This action will invalidate the existing key!"
+msgstr "此操作将使现有密钥失效！"
 
 #: templates/default/api_key_regenerate.html:18
 msgid ""
 "If you regenerate this API key, any applications using it will no longer be "
 "able to authenticate until updated with the new key."
-msgstr ""
+msgstr "如果您重新生成此 API 密钥，使用它的任何应用程序将无法进行身份验证，直到更新为新密钥。"
 
 #: templates/default/api_key_regenerate.html:19
 msgid ""
 "The new key will be displayed only once after regeneration, so be prepared "
 "to save it."
-msgstr ""
+msgstr "新密钥在重新生成后只会显示一次，请准备好保存它。"
 
 #: templates/default/api_key_delete.html:23
 msgid "API Key Details"
-msgstr "API Key Details"
+msgstr "API 密钥详情"
 
 #: templates/default/api_key_regenerate.html:71
 msgid "Yes, regenerate this API key"
-msgstr "Yes, regenerate this API key"
+msgstr "是的，重新生成此 API 密钥"
 
 #: templates/default/api_key_regenerate.html:74
 msgid "No, keep current key"
-msgstr "No, keep current key"
+msgstr "不，保留当前密钥"
 
 #: templates/default/reset_password.html:84
 msgid "Reset Password"
-msgstr "Reset Password"
+msgstr "重置密码"
 
 #: templates/default/reset_password.html:12
 msgid "Go to Login"
-msgstr "Go to Login"
+msgstr "前往登录"
 
 #: templates/default/reset_password.html:19
 msgid "Request New Reset Link"
-msgstr "Request New Reset Link"
+msgstr "请求新的重置链接"
 
 #: templates/default/reset_password.html:30
 msgid "Password does not meet requirements"
-msgstr "Password does not meet requirements"
+msgstr "密码不符合要求"
 
 #: templates/default/reset_password.html:39
 msgid "Enter your new password for"
-msgstr "Enter your new password for"
+msgstr "为以下对象输入新密码"
 
 #: templates/default/reset_password.html:45
 msgid "New Password"
-msgstr "New Password"
+msgstr "新密码"
 
 #: templates/default/reset_password.html:49 templates/default/login.html:27
 msgid "Please provide a password"
-msgstr "Please provide a password"
+msgstr "请提供密码"
 
 #: templates/default/reset_password.html:54
 msgid "Confirm Password"
-msgstr "Confirm Password"
+msgstr "确认密码"
 
 #: templates/default/reset_password.html:119
 msgid "Passwords do not match"
-msgstr "Passwords do not match"
+msgstr "密码不匹配"
 
 #: templates/default/edit_user.html:135 templates/default/add_user.html:132
 msgid "Password Requirements"
-msgstr "Password Requirements"
+msgstr "密码要求"
 
 #: templates/default/change_password.html:79
 msgid "Minimum length"
-msgstr "Minimum length"
+msgstr "最小长度"
 
 #: templates/default/change_password.html:79
 msgid "characters"
-msgstr "characters"
+msgstr "个字符"
 
 #: templates/default/reset_password.html:68
 msgid "At least one uppercase letter"
-msgstr "At least one uppercase letter"
+msgstr "至少一个大写字母"
 
 #: templates/default/reset_password.html:71
 msgid "At least one lowercase letter"
-msgstr "At least one lowercase letter"
+msgstr "至少一个小写字母"
 
 #: templates/default/reset_password.html:74
 msgid "At least one number"
-msgstr "At least one number"
+msgstr "至少一个数字"
 
 #: templates/default/reset_password.html:77
 msgid "At least one special character"
-msgstr "At least one special character"
+msgstr "至少一个特殊字符"
 
 #: templates/default/header.html:57
 msgid "Zones"
-msgstr "Zones"
+msgstr "区域"
 
 #: templates/default/list_reverse_zones.html:34
 msgid "Reverse Zone Types"
-msgstr "Reverse Zone Types"
+msgstr "反向区域类型"
 
 #: templates/default/list_reverse_zones.html:36
 msgid "All"
-msgstr "All"
+msgstr "全部"
 
 #: templates/default/list_reverse_zones.html:39
 msgid "IPv4"
@@ -7005,43 +7021,43 @@ msgstr "IPv6"
 
 #: templates/default/list_reverse_zones.html:67
 msgid "Reverse zones:"
-msgstr "Reverse zones:"
+msgstr "反向区域："
 
 #: templates/default/list_reverse_zones.html:69
 msgid "IPv4 reverse zones:"
-msgstr "IPv4 reverse zones:"
+msgstr "IPv4 反向区域："
 
 #: templates/default/list_reverse_zones.html:71
 msgid "IPv6 reverse zones:"
-msgstr "IPv6 reverse zones:"
+msgstr "IPv6 反向区域："
 
 #: templates/default/search.html:123 templates/default/search.html:308
 msgid "Rows per page:"
-msgstr "Rows per page:"
+msgstr "每页行数："
 
 #: templates/default/list_reverse_zones.html:93
 msgid "There are no reverse zones to show in this listing."
-msgstr "There are no reverse zones to show in this listing."
+msgstr "此列表中没有反向区域可显示。"
 
 #: templates/default/add_zone_slave.html:40
 msgid "Owner"
-msgstr "Owner"
+msgstr "所有者"
 
 #: templates/default/list_forward_zones.html:88
 msgid "Full name"
-msgstr "Full name"
+msgstr "全名"
 
 #: templates/default/list_reverse_zones.html:126
 msgid "Associated Forward Zones"
-msgstr "Associated Forward Zones"
+msgstr "关联的正向区域"
 
 #: templates/default/list_forward_zones.html:92
 msgid "Serial"
-msgstr "Serial"
+msgstr "序列号"
 
 #: templates/default/bulk_registration.html:60
 msgid "Template"
-msgstr "Template"
+msgstr "模板"
 
 #: templates/default/list_reverse_zones.html:188
 msgid "-"
@@ -7049,39 +7065,39 @@ msgstr "-"
 
 #: templates/default/search.html:285
 msgid "Delete zone(s)"
-msgstr "Delete zone(s)"
+msgstr "删除区域"
 
 #: templates/default/dnssec_add_key.html:81
 msgid "Add key"
-msgstr "Add key"
+msgstr "添加密钥"
 
 #: templates/default/dnssec_add_key.html:34
 msgid "Add key for zone"
-msgstr "Add key for zone"
+msgstr "为区域添加密钥"
 
 #: templates/default/dnssec_add_key.html:43
 msgid "Key type"
-msgstr "Key type"
+msgstr "密钥类型"
 
 #: templates/default/dnssec_add_key.html:50
 msgid "Select key type"
-msgstr "Select key type"
+msgstr "选择密钥类型"
 
 #: templates/default/dnssec_add_key.html:61
 msgid "Select algorithm"
-msgstr "Select algorithm"
+msgstr "选择算法"
 
 #: templates/default/dnssec_add_key.html:66
 msgid "Bits in length"
-msgstr "Bits in length"
+msgstr "长度位数"
 
 #: templates/default/dnssec_add_key.html:75
 msgid "Select bits length"
-msgstr "Select bits length"
+msgstr "选择位数长度"
 
 #: templates/default/dnssec_add_key.html:132
 msgid "Recommended bits for"
-msgstr "Recommended bits for"
+msgstr "推荐位数"
 
 #: templates/default/dnssec_add_key.html:140
 #: install/helpers/InstallStepHandler.php:176
@@ -7090,47 +7106,47 @@ msgstr "Warning:"
 
 #: templates/default/dnssec_add_key.html:140
 msgid "bits is not recommended for"
-msgstr "bits is not recommended for"
+msgstr "位数不推荐用于"
 
 #: templates/default/dnssec_add_key.html:177
 msgid "About DNSSEC Key Types"
-msgstr "About DNSSEC Key Types"
+msgstr "关于 DNSSEC 密钥类型"
 
 #: templates/default/dnssec_add_key.html:181
 msgid "Key Types Explained"
-msgstr "Key Types Explained"
+msgstr "密钥类型说明"
 
 #: templates/default/dnssec_add_key.html:183
 msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
-msgstr ""
+msgstr "组合签名密钥 - 同时用作 KSK 和 ZSK（推荐用于 PowerDNS 4.0+）"
 
 #: templates/default/dnssec_add_key.html:184
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
-msgstr "Key Signing Key - signs the DNSKEY records in the zone"
+msgstr "密钥签名密钥 - 签名区域中的 DNSKEY 记录"
 
 #: templates/default/dnssec_add_key.html:185
 msgid "Zone Signing Key - signs all other records in the zone"
-msgstr "Zone Signing Key - signs all other records in the zone"
+msgstr "区域签名密钥 - 签名区域中的所有其他记录"
 
 #: templates/default/dnssec_add_key.html:190
 msgid "Recommended Settings"
-msgstr "Recommended Settings"
+msgstr "推荐设置"
 
 #: templates/default/dnssec_add_key.html:191
 msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
-msgstr ""
+msgstr "对于现代部署，ECDSA（算法 13，ECDSAP256SHA256）配合 256 位提供强安全性和更好的性能。"
 
 #: templates/default/edit_user.html:13
 msgid "Edit user"
-msgstr "Edit user"
+msgstr "编辑用户"
 
 #: templates/default/edit_user.html:22
 msgid "Edit User"
-msgstr "Edit User"
+msgstr "编辑用户"
 
 #: templates/default/users.html:24 templates/default/add_user.html:20
 #: install/templates/step4.html.twig:40 install/templates/step5.html.twig:56
@@ -7139,319 +7155,319 @@ msgstr "Kullanıcı adı"
 
 #: templates/default/edit_user.html:32 templates/default/add_user.html:22
 msgid "Provide user name"
-msgstr "Provide user name"
+msgstr "提供用户名"
 
 #: templates/default/add_user.html:26
 msgid "Fullname"
-msgstr "Fullname"
+msgstr "全名"
 
 #: templates/default/edit_user.html:38
 msgid "User's full name for identification"
-msgstr "User's full name for identification"
+msgstr "用于识别的用户全名"
 
 #: templates/default/add_user.html:32
 msgid "Email address"
-msgstr "Email address"
+msgstr "电子邮件地址"
 
 #: templates/default/edit_user.html:44 templates/default/add_user.html:34
 msgid "Provide email"
-msgstr "Provide email"
+msgstr "提供电子邮件"
 
 #: templates/default/edit_user.html:54
 msgid "Leave empty to keep current password"
-msgstr "Leave empty to keep current password"
+msgstr "留空以保持当前密码"
 
 #: templates/default/edit_user.html:59 templates/default/add_user.html:69
 msgid "Permission template"
-msgstr "Permission template"
+msgstr "权限模板"
 
 #: templates/default/edit_user.html:69 templates/default/add_user.html:80
 msgid "Select permissions for this user"
-msgstr "Select permissions for this user"
+msgstr "为此用户选择权限"
 
 #: templates/default/edit_user.html:76 templates/default/add_user.html:87
 msgid "Optional information about this user"
-msgstr "Optional information about this user"
+msgstr "关于此用户的可选信息"
 
 #: templates/default/add_user.html:93
 msgid "Enabled"
-msgstr "Enabled"
+msgstr "已启用"
 
 #: templates/default/edit_user.html:96 templates/default/add_user.html:102
 msgid "LDAP Authentication"
-msgstr "LDAP Authentication"
+msgstr "LDAP 身份验证"
 
 #: templates/default/edit_user.html:98 templates/default/add_user.html:104
 msgid "Use external LDAP directory for authentication"
-msgstr "Use external LDAP directory for authentication"
+msgstr "使用外部 LDAP 目录进行身份验证"
 
 #: templates/default/edit_user.html:112
 msgid "Back to Home"
-msgstr "Back to Home"
+msgstr "返回首页"
 
 #: templates/default/edit_user.html:116
 msgid "Back to Users"
-msgstr "Back to Users"
+msgstr "返回用户"
 
 #: templates/default/edit_user.html:130 templates/default/add_user.html:127
 msgid "Account Information"
-msgstr "Account Information"
+msgstr "账户信息"
 
 #: templates/default/change_password.html:82
 msgid "Must contain uppercase letters"
-msgstr "Must contain uppercase letters"
+msgstr "必须包含大写字母"
 
 #: templates/default/change_password.html:85
 msgid "Must contain lowercase letters"
-msgstr "Must contain lowercase letters"
+msgstr "必须包含小写字母"
 
 #: templates/default/change_password.html:88
 msgid "Must contain numbers"
-msgstr "Must contain numbers"
+msgstr "必须包含数字"
 
 #: templates/default/change_password.html:92
 msgid "Must contain special characters"
-msgstr "Must contain special characters"
+msgstr "必须包含特殊字符"
 
 #: templates/default/change_password.html:97
 msgid "No specific password requirements"
-msgstr "No specific password requirements"
+msgstr "无特定密码要求"
 
 #: templates/default/edit_perm_templ.html:141
 msgid "User Permissions"
-msgstr "User Permissions"
+msgstr "用户权限"
 
 #: templates/default/edit_user.html:164
 msgid "This user has been assigned the permission template"
-msgstr "This user has been assigned the permission template"
+msgstr "此用户已分配权限模板"
 
 #: templates/default/edit_user.html:173
 msgid "Based on this template, this user has the following permissions"
-msgstr "Based on this template, this user has the following permissions"
+msgstr "基于此模板，此用户具有以下权限"
 
 #: templates/default/edit_user.html:176
 msgid "No permissions are assigned to this template"
-msgstr "No permissions are assigned to this template"
+msgstr "此模板未分配任何权限"
 
 #: templates/default/edit_user.html:192 templates/default/add_user.html:170
 msgid "User Management Tips"
-msgstr "User Management Tips"
+msgstr "用户管理提示"
 
 #: templates/default/edit_user.html:198
 msgid "Leave password field empty to keep the current password"
-msgstr "Leave password field empty to keep the current password"
+msgstr "保留密码字段为空以保持当前密码"
 
 #: templates/default/edit_user.html:199
 msgid "Changing permission templates will update user access immediately"
-msgstr "Changing permission templates will update user access immediately"
+msgstr "更改权限模板将立即更新用户访问权限"
 
 #: templates/default/edit_user.html:200 templates/default/add_user.html:178
 msgid "Users can be disabled instead of deleted to preserve their settings"
-msgstr "Users can be disabled instead of deleted to preserve their settings"
+msgstr "可以禁用用户而不是删除用户以保留其设置"
 
 #: templates/default/edit_user.html:201
 msgid "LDAP users cannot have passwords managed through this interface"
-msgstr "LDAP users cannot have passwords managed through this interface"
+msgstr "LDAP 用户无法通过此界面管理密码"
 
 #: templates/default/confirm_unlink_zones_templ.html:6
 msgid "Unlink zones"
-msgstr "Unlink zones"
+msgstr "取消链接区域"
 
 #: templates/default/confirm_unlink_zones_templ.html:12
 msgid "Unlink Zones from Template"
-msgstr "Unlink Zones from Template"
+msgstr "从模板取消链接区域"
 
 #: templates/default/confirm_unlink_zones_templ.html:19
 msgid "You are about to unlink 1 zone from template"
-msgstr "You are about to unlink 1 zone from template"
+msgstr "您即将从模板取消链接 1 个区域"
 
 #: templates/default/confirm_unlink_zones_templ.html:21
 msgid "You are about to unlink multiple zones from template"
-msgstr "You are about to unlink multiple zones from template"
+msgstr "您即将从模板取消链接多个区域"
 
 #: templates/default/confirm_unlink_zones_templ.html:23
 msgid "zones total"
-msgstr "zones total"
+msgstr "个区域"
 
 #: templates/default/confirm_unlink_zones_templ.html:25
 msgid ""
 "This will disconnect these zones from their template. Are you sure you want "
 "to proceed?"
-msgstr ""
+msgstr "这将断开这些区域与其模板的连接。您确定要继续吗？"
 
 #: templates/default/confirm_unlink_zones_templ.html:30
 msgid "Zones to be unlinked"
-msgstr "Zones to be unlinked"
+msgstr "要取消链接的区域"
 
 #: templates/default/delete_domain.html:66
 msgid "Important Note"
-msgstr "Important Note"
+msgstr "重要提示"
 
 #: templates/default/confirm_unlink_zones_templ.html:56
 msgid ""
 "Unlinking the zones from their template will not delete any records. The "
 "zones will no longer receive updates when the template is modified."
-msgstr ""
+msgstr "从模板取消链接区域不会删除任何记录。当模板被修改时，区域将不再接收更新。"
 
 #: templates/default/confirm_unlink_zones_templ.html:70
 msgid "Yes, unlink this zone"
-msgstr "Yes, unlink this zone"
+msgstr "是的，取消链接此区域"
 
 #: templates/default/confirm_unlink_zones_templ.html:72
 msgid "Yes, unlink these zones"
-msgstr "Yes, unlink these zones"
+msgstr "是的，取消链接这些区域"
 
 #: templates/default/list_perm_templ.html:5
 msgid "Permission templates"
-msgstr "Permission templates"
+msgstr "权限模板"
 
 #: templates/default/add_perm_templ.html:6 templates/default/edit.html:763
 msgid "Add"
-msgstr "Add"
+msgstr "添加"
 
 #: templates/default/add_perm_templ.html:18
 msgid "Add Permission Template"
-msgstr "Add Permission Template"
+msgstr "添加权限模板"
 
 #: templates/default/edit_perm_templ.html:27
 msgid "A short, descriptive name for this permission set"
-msgstr "A short, descriptive name for this permission set"
+msgstr "此权限集的简短描述性名称"
 
 #: templates/default/edit_perm_templ.html:32
 msgid "Optional: more detailed description of this permission set"
-msgstr "Optional: more detailed description of this permission set"
+msgstr "可选：此权限集的更详细描述"
 
 #: templates/default/add_perm_templ.html:36
 msgid "Add Template"
-msgstr "Add Template"
+msgstr "添加模板"
 
 #: templates/default/add_perm_templ.html:52
 msgid "About Permission Templates"
-msgstr "About Permission Templates"
+msgstr "关于权限模板"
 
 #: templates/default/add_perm_templ.html:57
 msgid "What are Permission Templates?"
-msgstr "What are Permission Templates?"
+msgstr "什么是权限模板？"
 
 #: templates/default/add_perm_templ.html:58
 msgid ""
 "Permission templates define sets of actions that users can perform in "
 "Poweradmin. They provide a quick way to assign common permission "
 "combinations to multiple users."
-msgstr ""
+msgstr "权限模板定义用户在 Poweradmin 中可以执行的操作集。它们提供了一种快速方法来为多个用户分配常见的权限组合。"
 
 #: templates/default/add_perm_templ.html:61
 msgid "How to Use Templates"
-msgstr "How to Use Templates"
+msgstr "如何使用模板"
 
 #: templates/default/add_perm_templ.html:62
 msgid ""
 "After creating a template, you can assign it to users when creating or "
 "editing user accounts. This ensures consistent permissions across user "
 "groups with similar roles."
-msgstr ""
+msgstr "创建模板后，您可以在创建或编辑用户账户时将其分配给用户。这确保了具有相似角色的用户组之间权限的一致性。"
 
 #: templates/default/edit_perm_templ.html:76
 msgid "Available Permissions"
-msgstr "Available Permissions"
+msgstr "可用权限"
 
 #: templates/default/edit_perm_templ.html:79
 msgid "Search permissions..."
-msgstr "Search permissions..."
+msgstr "搜索权限..."
 
 #: templates/default/edit_perm_templ.html:84
 msgid "Select All"
-msgstr "Select All"
+msgstr "全选"
 
 #: templates/default/edit_perm_templ.html:95
 msgid "Zone Permissions"
-msgstr "Zone Permissions"
+msgstr "区域权限"
 
 #: templates/default/edit_perm_templ.html:187
 msgid "Template Permissions"
-msgstr "Template Permissions"
+msgstr "模板权限"
 
 #: templates/default/edit_perm_templ.html:233
 msgid "Other Permissions"
-msgstr "Other Permissions"
+msgstr "其他权限"
 
 #: templates/default/404.html:19
 msgid "The page you are looking for does not exist."
-msgstr "The page you are looking for does not exist."
+msgstr "您查找的页面不存在。"
 
 #: templates/default/404.html:22
 msgid "This could be because:"
-msgstr "This could be because:"
+msgstr "这可能是因为："
 
 #: templates/default/404.html:26
 msgid "The URL is incorrect or has been mistyped"
-msgstr "The URL is incorrect or has been mistyped"
+msgstr "URL 不正确或输入错误"
 
 #: templates/default/404.html:30
 msgid "The page has been moved or deleted"
-msgstr "The page has been moved or deleted"
+msgstr "页面已被移动或删除"
 
 #: templates/default/404.html:34
 msgid "You do not have permission to access this page"
-msgstr "You do not have permission to access this page"
+msgstr "您没有访问此页面的权限"
 
 #: templates/default/404.html:45
 msgid "Go to Homepage"
-msgstr "Go to Homepage"
+msgstr "前往首页"
 
 #: templates/default/404.html:49
 msgid "Go Back"
-msgstr "Go Back"
+msgstr "返回"
 
 #: templates/default/add_supermaster.html:13
 msgid "Add Supermaster"
-msgstr "Add Supermaster"
+msgstr "添加超级主服务器"
 
 #: templates/default/add_supermaster.html:78
 msgid "About Supermasters"
-msgstr "About Supermasters"
+msgstr "关于超级主服务器"
 
 #: templates/default/add_supermaster.html:83
 msgid "What is a Supermaster?"
-msgstr "What is a Supermaster?"
+msgstr "什么是超级主服务器？"
 
 #: templates/default/add_supermaster.html:84
 msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
-msgstr ""
+msgstr "超级主服务器是一个 PowerDNS 权威服务器，它自动将新区域推送到其从服务器。"
 
 #: templates/default/add_supermaster.html:87
 msgid "How it works"
-msgstr "How it works"
+msgstr "工作原理"
 
 #: templates/default/add_supermaster.html:88
 msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
-msgstr ""
+msgstr "当从服务器收到来自超级主服务器的通知时，它会添加域名并将超级主服务器的 IP 地址设置为主服务器地址。"
 
 #: templates/default/add_zone_slave.html:94
 msgid "Important Notes"
-msgstr "Important Notes"
+msgstr "重要提示"
 
 #: templates/default/add_supermaster.html:93
 msgid ""
 "The hostname must match exactly what appears in the NS record of the zone."
-msgstr ""
+msgstr "主机名必须与区域 NS 记录中显示的完全匹配。"
 
 #: templates/default/add_supermaster.html:94
 msgid ""
 "Ensure your firewall allows DNS notifications between masters and slaves."
-msgstr ""
+msgstr "确保您的防火墙允许主服务器和从服务器之间的 DNS 通知。"
 
 #: templates/default/login.html:11 templates/default/login.html:48
 msgid "Log in"
-msgstr "Log in"
+msgstr "登录"
 
 #: templates/default/login.html:20
 msgid "Please provide a username"
-msgstr "Please provide a username"
+msgstr "请提供用户名"
 
 #: templates/default/login.html:32
 msgid "Language"
@@ -7459,315 +7475,315 @@ msgstr "语言"
 
 #: templates/default/login.html:52
 msgid "Forgot your password?"
-msgstr "Forgot your password?"
+msgstr "忘记密码？"
 
 #: templates/default/batch_ptr_record.html:39
 msgid "IP Version"
-msgstr "IP Version"
+msgstr "IP 版本"
 
 #: templates/default/batch_ptr_record.html:41
 msgid "IPv4 network"
-msgstr "IPv4 network"
+msgstr "IPv4 网络"
 
 #: templates/default/batch_ptr_record.html:42
 msgid "IPv6 (/64 network)"
-msgstr "IPv6 (/64 network)"
+msgstr "IPv6 (/64 网络)"
 
 #: templates/default/batch_ptr_record.html:47
 msgid "Network Prefix"
-msgstr "Network Prefix"
+msgstr "网络前缀"
 
 #: templates/default/batch_ptr_record.html:55
 msgid "Select from existing reverse zones"
-msgstr "Select from existing reverse zones"
+msgstr "从现有反向区域中选择"
 
 #: templates/default/batch_ptr_record.html:65
 msgid "Please provide a network prefix"
-msgstr "Please provide a network prefix"
+msgstr "请提供网络前缀"
 
 #: templates/default/batch_ptr_record.html:66
 msgid "e.g., \"192.168.1.0/24\" or \"10.0.0.0/20\""
-msgstr ""
+msgstr "例如，\"192.168.1.0/24\" 或 \"10.0.0.0/20\""
 
 #: templates/default/batch_ptr_record.html:67
 msgid "e.g., \"2001:db8:1:1\""
-msgstr ""
+msgstr "例如，\"2001:db8:1:1\""
 
 #: templates/default/batch_ptr_record.html:71
 msgid "Host Prefix"
-msgstr "Host Prefix"
+msgstr "主机前缀"
 
 #: templates/default/batch_ptr_record.html:71
 msgid "Optional"
-msgstr "Optional"
+msgstr "可选"
 
 #: templates/default/batch_ptr_record.html:73
 msgid "Leave empty to use just the domain for PTR records"
-msgstr "Leave empty to use just the domain for PTR records"
+msgstr "留空仅使用域名作为 PTR 记录"
 
 #: templates/default/batch_ptr_record.html:79
 msgid "Required"
-msgstr "Required"
+msgstr "必填"
 
 #: templates/default/batch_ptr_record.html:83
 msgid "IPv6 Count"
-msgstr "IPv6 Count"
+msgstr "IPv6 数量"
 
 #: templates/default/batch_ptr_record.html:88
 msgid "Using default TTL value from configuration"
-msgstr "Using default TTL value from configuration"
+msgstr "使用配置中的默认 TTL 值"
 
 #: templates/default/batch_ptr_record.html:100
 msgid "Create forward A/AAAA records in primary zone"
-msgstr "Create forward A/AAAA records in primary zone"
+msgstr "在主区域中创建正向 A/AAAA 记录"
 
 #: templates/default/batch_ptr_record.html:105
 msgid "Create PTRs only for existing A records in forward zone"
-msgstr "Create PTRs only for existing A records in forward zone"
+msgstr "仅为正向区域中现有的 A 记录创建 PTR"
 
 #: templates/default/batch_ptr_record.html:106
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A records in the specified domain"
-msgstr ""
+msgstr "选中时，PTR 记录将仅为在指定域中具有相应 A 记录的 IP 创建"
 
 #: templates/default/batch_ptr_record.html:112
 msgid "Create PTR Records"
-msgstr "Create PTR Records"
+msgstr "创建 PTR 记录"
 
 #: templates/default/batch_ptr_record.html:134
 msgid "PTR Record Information"
-msgstr "PTR Record Information"
+msgstr "PTR 记录信息"
 
 #: templates/default/api_key_add.html:49
 msgid "Important Information"
-msgstr "Important Information"
+msgstr "重要信息"
 
 #: templates/default/batch_ptr_record.html:140
 msgid "This tool creates PTR records in bulk. Two modes are available:"
-msgstr "This tool creates PTR records in bulk. Two modes are available:"
+msgstr "此工具批量创建 PTR 记录。有两种模式可用："
 
 #: templates/default/batch_ptr_record.html:142
 msgid "All IPs"
-msgstr "All IPs"
+msgstr "所有 IP"
 
 #: templates/default/batch_ptr_record.html:142
 msgid "Creates PTR records for every IP in the network range"
-msgstr "Creates PTR records for every IP in the network range"
+msgstr "为网络范围内的每个 IP 创建 PTR 记录"
 
 #: templates/default/batch_ptr_record.html:143
 msgid "Matching only"
-msgstr "Matching only"
+msgstr "仅匹配"
 
 #: templates/default/batch_ptr_record.html:143
 msgid ""
 "Creates PTR records only for IPs that have existing A records in the forward "
 "zone"
-msgstr ""
+msgstr "仅为在正向区域中具有现有 A 记录的 IP 创建 PTR 记录"
 
 #: templates/default/batch_ptr_record.html:145
 msgid "For IPv4, supported networks are:"
-msgstr "For IPv4, supported networks are:"
+msgstr "对于 IPv4，支持的网络有："
 
 #: templates/default/change_password.html:71
 msgid "Requirements"
-msgstr "Requirements"
+msgstr "要求"
 
 #: templates/default/batch_ptr_record.html:162
 msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
-msgstr ""
+msgstr "在使用此功能之前，您必须在 PowerDNS 中已创建相应的反向区域。"
 
 #: templates/default/batch_ptr_record.html:163
 msgid "For example:"
-msgstr "For example:"
+msgstr "例如："
 
 #: templates/default/batch_ptr_record.html:165
 msgid ""
 "For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-"
 "addr.arpa"
-msgstr ""
+msgstr "对于网络 192.168.1.0/24，您需要为 1.168.192.in-addr.arpa 创建反向区域"
 
 #: templates/default/batch_ptr_record.html:166
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
-msgstr ""
+msgstr "对于更大的网络，您需要相应的反向区域（例如，/16 网络需要 168.192.in-addr.arpa）"
 
 #: templates/default/add_zone_slave.html:103
 msgid "Quick Tips"
-msgstr "Quick Tips"
+msgstr "快速提示"
 
 #: templates/default/batch_ptr_record.html:181
 msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
-msgstr ""
+msgstr "使用网络前缀旁边的下拉按钮从现有反向区域中选择"
 
 #: templates/default/batch_ptr_record.html:182
 msgid ""
 "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
 "your forward zone"
-msgstr ""
+msgstr "使用\\\"仅为现有 A 记录创建 PTR\\\"根据您的正向区域填充 PTR"
 
 #: templates/default/batch_ptr_record.html:183
 msgid ""
 "Use the Host Prefix field to add a prefix to all hostnames when creating all "
 "IPs"
-msgstr ""
+msgstr "创建所有 IP 时，使用主机前缀字段为所有主机名添加前缀"
 
 #: templates/default/batch_ptr_record.html:184
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
-msgstr ""
+msgstr "选中\\\"创建正向 A/AAAA 记录\\\"以自动创建匹配的正向记录（使用匹配模式时被禁用）"
 
 #: templates/default/add_record.html:18
 msgid "Add record"
-msgstr "Add record"
+msgstr "添加记录"
 
 #: templates/default/add_zone_templ_record.html:21
 msgid ""
 "After adding this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
-msgstr ""
+msgstr "添加此记录后，记住通过在模板页面上点击\\\"更新区域\\\"来更新使用此模板的区域。"
 
 #: templates/default/add_zone_templ_record.html:31
 msgid "Add record to zone template"
-msgstr "Add record to zone template"
+msgstr "向区域模板添加记录"
 
 #: templates/default/add_zone_templ_record.html:34
 msgid "Create a new record for this zone template"
-msgstr "Create a new record for this zone template"
+msgstr "为此区域模板创建新记录"
 
 #: templates/default/delete_perm_templ.html:12
 msgid "Delete Permission Template"
-msgstr "Delete Permission Template"
+msgstr "删除权限模板"
 
 #: templates/default/delete_perm_templ.html:17
 msgid "You are about to delete the permission template"
-msgstr "You are about to delete the permission template"
+msgstr "您即将删除权限模板"
 
 #: templates/default/delete_perm_templ.html:23
 msgid "This template is currently assigned to"
-msgstr "This template is currently assigned to"
+msgstr "此模板当前分配给"
 
 #: templates/default/delete_perm_templ.html:23
 msgid "users"
-msgstr "users"
+msgstr "用户"
 
 #: templates/default/delete_zone_templ.html:35
 msgid "Yes, delete this template"
-msgstr "Yes, delete this template"
+msgstr "是的，删除此模板"
 
 #: templates/default/delete_zone_templ.html:38
 msgid "No, keep this template"
-msgstr "No, keep this template"
+msgstr "不，保留此模板"
 
 #: templates/default/api_key_add.html:5 templates/default/api_key_add.html:13
 msgid "Add API Key"
-msgstr "Add API Key"
+msgstr "添加 API 密钥"
 
 #: templates/default/api_key_add.html:21
 msgid "My application"
-msgstr "My application"
+msgstr "我的应用程序"
 
 #: templates/default/api_key_add.html:22
 msgid "Provide a name for this API key"
-msgstr "Provide a name for this API key"
+msgstr "为此 API 密钥提供名称"
 
 #: templates/default/api_key_add.html:35
 msgid "Create API Key"
-msgstr "Create API Key"
+msgstr "创建 API 密钥"
 
 #: templates/default/api_key_add.html:52
 msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
 "sure to save it in a secure place, as you won't be able to retrieve it later."
-msgstr ""
+msgstr "创建新的 API 密钥时，密钥只会显示一次。请确保将其保存在安全的地方，因为您以后无法检索它。"
 
 #: templates/default/api_key_add.html:53
 msgid "If you lose the key, you'll need to regenerate it."
-msgstr "If you lose the key, you'll need to regenerate it."
+msgstr "如果您丢失了密钥，您需要重新生成它。"
 
 #: templates/default/list_perm_templ.html:36
 msgid "Edit"
-msgstr "Edit"
+msgstr "编辑"
 
 #: templates/default/edit.html:25 templates/default/edit.html:516
 msgid "Add new record"
-msgstr "Add new record"
+msgstr "添加新记录"
 
 #: templates/default/edit.html:28 templates/default/edit.html:519
 msgid "Multi-record mode"
-msgstr "Multi-record mode"
+msgstr "多记录模式"
 
 #: templates/default/edit.html:31 templates/default/edit.html:522
 msgid "Bulk add"
-msgstr "Bulk add"
+msgstr "批量添加"
 
 #: templates/default/edit.html:43 templates/default/edit.html:534
 msgid "Failed to add"
-msgstr "Failed to add"
+msgstr "添加失败"
 
 #: templates/default/edit.html:43 templates/default/edit.html:534
 msgid "record(s). Please check the record format."
-msgstr "record(s). Please check the record format."
+msgstr "条记录。请检查记录格式。"
 
 #: templates/default/edit.html:45 templates/default/edit.html:536
 msgid "Failed to add records. Please check the record format."
-msgstr "Failed to add records. Please check the record format."
+msgstr "添加记录失败。请检查记录格式。"
 
 #: templates/default/edit.html:48 templates/default/edit.html:539
 msgid "Content validation failed:"
-msgstr "Content validation failed:"
+msgstr "内容验证失败："
 
 #: templates/default/edit.html:48 templates/default/edit.html:539
 msgid "Invalid value for record type"
-msgstr "Invalid value for record type"
+msgstr "记录类型的值无效"
 
 #: templates/default/edit.html:50 templates/default/edit.html:541
 msgid "Please provide all required information."
-msgstr "Please provide all required information."
+msgstr "请提供所有必需信息。"
 
 #: templates/default/add_record.html:61
 msgid "Add PTR"
-msgstr "Add PTR"
+msgstr "添加 PTR"
 
 #: templates/default/add_record.html:64
 msgid "Add A/AAAA"
-msgstr "Add A/AAAA"
+msgstr "添加 A/AAAA"
 
 #: templates/default/edit.html:86 templates/default/edit.html:578
 msgid "Invalid hostname format"
-msgstr "Invalid hostname format"
+msgstr "主机名格式无效"
 
 #: templates/default/edit.html:114 templates/default/edit.html:606
 msgid "This record already exists"
-msgstr "This record already exists"
+msgstr "此记录已存在"
 
 #: templates/default/edit.html:126 templates/default/edit.html:618
 msgid "Invalid priority"
-msgstr "Invalid priority"
+msgstr "优先级无效"
 
 #: templates/default/edit.html:133 templates/default/edit.html:625
 msgid "Invalid TTL value"
-msgstr "Invalid TTL value"
+msgstr "TTL 值无效"
 
 #: templates/default/edit.html:135 templates/default/edit.html:627
 msgid "Provide TTL"
-msgstr "Provide TTL"
+msgstr "提供 TTL"
 
 #: templates/default/add_record.html:139
 msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
-msgstr ""
+msgstr "提示：只输入主机名（例如 'www'），区域名称将自动添加。使用 '@' 表示区域顶点/根。"
 
 #: templates/default/delete_records.html:12
 msgid "Edit zone"
-msgstr "Edit zone"
+msgstr "编辑区域"
 
 #: templates/default/edit.html:188
 msgid "CSV"
@@ -7779,115 +7795,115 @@ msgstr "PTR"
 
 #: templates/default/edit.html:208
 msgid "Sign zone"
-msgstr "Sign zone"
+msgstr "签名区域"
 
 #: templates/default/edit.html:225
 msgid "No records match your filter criteria."
-msgstr "No records match your filter criteria."
+msgstr "没有记录匹配您的筛选条件。"
 
 #: templates/default/edit.html:233
 msgid "This zone does not have any records."
-msgstr "This zone does not have any records."
+msgstr "此区域没有任何记录。"
 
 #: templates/default/edit.html:247
 msgid "Filter:"
-msgstr "Filter:"
+msgstr "筛选："
 
 #: templates/default/edit.html:253
 msgid "Search by name or content"
-msgstr "Search by name or content"
+msgstr "按名称或内容搜索"
 
 #: templates/default/edit.html:259
 msgid "All Types"
-msgstr "All Types"
+msgstr "所有类型"
 
 #: templates/default/edit.html:269
 msgid "Filter by content"
-msgstr "Filter by content"
+msgstr "按内容筛选"
 
 #: templates/default/edit.html:275
 msgid "Apply"
-msgstr "Apply"
+msgstr "应用"
 
 #: templates/default/edit.html:298 templates/default/search.html:476
 msgid "Delete record(s)"
-msgstr "Delete record(s)"
+msgstr "删除记录"
 
 #: templates/default/edit.html:306
 msgid "Showing"
-msgstr "Showing"
+msgstr "显示"
 
 #: templates/default/edit.html:306
 msgid "of"
-msgstr "of"
+msgstr "，共"
 
 #: templates/default/edit.html:306
 msgid "total records"
-msgstr "total records"
+msgstr "条记录"
 
 #: templates/default/edit.html:472 templates/default/search.html:93
 msgid "Comments"
-msgstr "Comments"
+msgstr "备注"
 
 #: templates/default/edit.html:665
 msgid "Save as new template"
-msgstr "Save as new template"
+msgstr "保存为新模板"
 
 #: templates/default/edit.html:668
 msgid "Create a reusable template from this zone's records"
-msgstr "Create a reusable template from this zone's records"
+msgstr "从此区域的记录创建可重用模板"
 
 #: templates/default/edit.html:674
 msgid "Template Name"
-msgstr "Template Name"
+msgstr "模板名称"
 
 #: templates/default/edit.html:676
 msgid "Provide template name"
-msgstr "Provide template name"
+msgstr "提供模板名称"
 
 #: templates/default/edit.html:680
 msgid "Template Description"
-msgstr "Template Description"
+msgstr "模板描述"
 
 #: templates/default/edit.html:682
 msgid "Optional description for this template"
-msgstr "Optional description for this template"
+msgstr "此模板的可选描述"
 
 #: templates/default/edit.html:686
 msgid "Save as template"
-msgstr "Save as template"
+msgstr "保存为模板"
 
 #: templates/default/edit.html:697
 msgid "Zone Settings"
-msgstr "Zone Settings"
+msgstr "区域设置"
 
 #: templates/default/edit.html:700
 msgid "Owner of zone"
-msgstr "Owner of zone"
+msgstr "区域所有者"
 
 #: templates/default/edit.html:703
 msgid "No owner set for this zone."
-msgstr "No owner set for this zone."
+msgstr "此区域未设置所有者。"
 
 #: templates/default/edit.html:828
 msgid "Change"
-msgstr "Change"
+msgstr "更改"
 
 #: templates/default/edit.html:794 templates/default/add_zone_slave.html:33
 msgid "IP address of master NS"
-msgstr "IP address of master NS"
+msgstr "主 NS 的 IP 地址"
 
 #: templates/default/edit.html:1020
 msgid "Select All Filtered"
-msgstr "Select All Filtered"
+msgstr "选择所有已筛选"
 
 #: templates/default/users.html:10
 msgid "User Administration"
-msgstr "User Administration"
+msgstr "用户管理"
 
 #: templates/default/header.html:100
 msgid "Add user"
-msgstr "Add user"
+msgstr "添加用户"
 
 #: templates/default/users.html:29
 msgid "LDAP"
@@ -7895,27 +7911,27 @@ msgstr "LDAP"
 
 #: templates/default/list_template_zones.html:16
 msgid "Total number of zones:"
-msgstr "Total number of zones:"
+msgstr "区域总数："
 
 #: templates/default/list_forward_zones.html:57
 msgid "There are no forward zones to show in this listing."
-msgstr "There are no forward zones to show in this listing."
+msgstr "此列表中没有正向区域可显示。"
 
 #: templates/default/delete_record.html:24
 msgid "Delete Record"
-msgstr "Delete Record"
+msgstr "删除记录"
 
 #: templates/default/delete_record.html:32
 msgid "You are about to delete a record in zone"
-msgstr "You are about to delete a record in zone"
+msgstr "您即将删除区域中的记录"
 
 #: templates/default/delete_zone_templ_record.html:24
 msgid "This action cannot be undone."
-msgstr "This action cannot be undone."
+msgstr "此操作无法撤销。"
 
 #: templates/default/delete_zone_templ_record.html:29
 msgid "Record Details"
-msgstr "Record Details"
+msgstr "记录详情"
 
 #: templates/default/delete_record.html:74
 msgid "You are trying to delete a record that is needed for this zone to work."
@@ -7924,120 +7940,120 @@ msgstr ""
 
 #: templates/default/delete_record.html:83
 msgid "Also delete corresponding PTR record (if exists)"
-msgstr "Also delete corresponding PTR record (if exists)"
+msgstr "同时删除相应的 PTR 记录（如果存在）"
 
 #: templates/default/delete_zone_templ_record.html:59
 msgid "Yes, delete this record"
-msgstr "Yes, delete this record"
+msgstr "是的，删除此记录"
 
 #: templates/default/delete_zone_templ_record.html:62
 msgid "No, keep this record"
-msgstr "No, keep this record"
+msgstr "不，保留此记录"
 
 #: templates/default/mfa_verify.html:6
 msgid "Two-Factor Authentication"
-msgstr "Two-Factor Authentication"
+msgstr "双因素身份验证"
 
 #: templates/default/mfa_verify.html:21
 msgid "Enter verification code"
-msgstr "Enter verification code"
+msgstr "输入验证码"
 
 #: templates/default/mfa_verify_email.html:28
 msgid "Looks good!"
-msgstr "Looks good!"
+msgstr "看起来不错！"
 
 #: templates/default/mfa_verify.html:29
 msgid "Please enter a valid verification code."
-msgstr "Please enter a valid verification code."
+msgstr "请输入有效的验证码。"
 
 #: templates/default/mfa_verify.html:33
 msgid "Enter the code from your authenticator app"
-msgstr "Enter the code from your authenticator app"
+msgstr "输入来自您的身份验证器应用的代码"
 
 #: templates/default/mfa_verify.html:35
 msgid "Enter the 6-digit code sent to your email"
-msgstr "Enter the 6-digit code sent to your email"
+msgstr "输入发送到您邮箱的 6 位代码"
 
 #: templates/default/mfa_verify.html:41 templates/default/mfa_verify.html:110
 msgid "Verify"
-msgstr "Verify"
+msgstr "验证"
 
 #: templates/default/mfa_verify.html:72
 msgid "Use a recovery code"
-msgstr "Use a recovery code"
+msgstr "使用恢复代码"
 
 #: templates/default/mfa_verify.html:86
 msgid "Use Recovery Code"
-msgstr "Use Recovery Code"
+msgstr "使用恢复代码"
 
 #: templates/default/mfa_verify.html:95
 msgid "Recovery Code"
-msgstr "Recovery Code"
+msgstr "恢复代码"
 
 #: templates/default/mfa_verify.html:102
 msgid "Please enter a valid recovery code."
-msgstr "Please enter a valid recovery code."
+msgstr "请输入有效的恢复代码。"
 
 #: templates/default/mfa_verify.html:105
 msgid ""
 "Enter one of your recovery codes. Note that each code can only be used once."
-msgstr ""
+msgstr "输入您的恢复代码之一。请注意，每个代码只能使用一次。"
 
 #: templates/default/database_consistency.html:7
 msgid "Confirm Delete"
-msgstr "Confirm Delete"
+msgstr "确认删除"
 
 #: templates/default/database_consistency.html:39
 msgid "Summary"
-msgstr "Summary"
+msgstr "摘要"
 
 #: templates/default/database_consistency.html:40
 msgid "Total Issues Found"
-msgstr "Total Issues Found"
+msgstr "发现的问题总数"
 
 #: templates/default/database_consistency.html:41
 msgid "Errors"
-msgstr "Errors"
+msgstr "错误"
 
 #: templates/default/database_consistency.html:42
 msgid "Warnings"
-msgstr "Warnings"
+msgstr "警告"
 
 #: templates/default/database_consistency.html:48
 msgid "Zones Without Owners"
-msgstr "Zones Without Owners"
+msgstr "没有所有者的区域"
 
 #: templates/default/database_consistency.html:258
 msgid "Zone ID"
-msgstr "Zone ID"
+msgstr "区域 ID"
 
 #: templates/default/database_consistency.html:259
 msgid "Zone Name"
-msgstr "Zone Name"
+msgstr "区域名称"
 
 #: templates/default/database_consistency.html:77
 msgid "Assign owner"
-msgstr "Assign owner"
+msgstr "分配所有者"
 
 #: templates/default/database_consistency.html:277
 msgid "Fix"
-msgstr "Fix"
+msgstr "修复"
 
 #: templates/default/database_consistency.html:97
 msgid "Slave Zones Without Master IP Addresses"
-msgstr "Slave Zones Without Master IP Addresses"
+msgstr "没有主 IP 地址的从区域"
 
 #: templates/default/database_consistency.html:110
 msgid "Master IP"
-msgstr "Master IP"
+msgstr "主 IP"
 
 #: templates/default/database_consistency.html:128
 msgid "Delete slave zone"
-msgstr "Delete slave zone"
+msgstr "删除从区域"
 
 #: templates/default/database_consistency.html:147
 msgid "Records Not Belonging to Any Zone"
-msgstr "Records Not Belonging to Any Zone"
+msgstr "不属于任何区域的记录"
 
 #: templates/default/database_consistency.html:158
 msgid "Record ID"
