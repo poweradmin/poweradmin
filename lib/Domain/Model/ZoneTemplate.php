@@ -698,18 +698,18 @@ class ZoneTemplate
             $params[':userid'] = $userid;
         }
 
-        $query = "SELECT $domains_table.id,
+        $query = "SELECT zones.id,
             $domains_table.name,
             $domains_table.type,
             Record_Count.count_records
             FROM $domains_table
-            LEFT JOIN zones ON $domains_table.id=zones.domain_id
+            INNER JOIN zones ON $domains_table.id=zones.domain_id
             LEFT JOIN (
                 SELECT COUNT(domain_id) AS count_records, domain_id FROM $records_table GROUP BY domain_id
             ) Record_Count ON Record_Count.domain_id=$domains_table.id
             WHERE 1=1" . $sql_add . "
-            AND zone_templ_id = :zone_templ_id
-            GROUP BY $domains_table.name, $domains_table.id, $domains_table.type, Record_Count.count_records";
+            AND zones.zone_templ_id = :zone_templ_id
+            GROUP BY $domains_table.name, zones.id, $domains_table.type, Record_Count.count_records";
 
         try {
             $stmt = $this->db->prepare($query);

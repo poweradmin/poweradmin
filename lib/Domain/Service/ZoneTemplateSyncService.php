@@ -190,7 +190,8 @@ class ZoneTemplateSyncService
                     zts.template_last_modified,
                     zts.last_synced
                   FROM zone_template_sync zts
-                  JOIN domains d ON zts.zone_id = d.id
+                  JOIN zones z ON zts.zone_id = z.id
+                  JOIN domains d ON z.domain_id = d.id
                   WHERE zts.zone_templ_id = :template_id 
                     AND zts.needs_sync = 1
                   ORDER BY d.name";
@@ -218,6 +219,7 @@ class ZoneTemplateSyncService
         ]);
 
         $result = $stmt->fetchColumn();
+        // If no sync record exists, assume it needs sync (should be created)
         return $result === false ? true : (bool) $result;
     }
 
@@ -228,9 +230,8 @@ class ZoneTemplateSyncService
     {
         // Insert sync records for all existing zone-template relationships
         $query = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
-                  SELECT d.id, z.zone_templ_id, 0, NOW()
-                  FROM domains d
-                  INNER JOIN zones z ON d.id = z.domain_id
+                  SELECT z.id, z.zone_templ_id, 0, NOW()
+                  FROM zones z
                   WHERE z.zone_templ_id > 0
                   ON DUPLICATE KEY UPDATE zone_id = zone_id";
 
