@@ -73,7 +73,7 @@ AddDefaultCharset UTF-8
 </IfModule>
 
 # Security: Deny access to hidden files and directories
-<Files ~ "^\.*">
+<Files ~ "^\..*">
     Order Allow,Deny
     Deny from all
 </Files>
