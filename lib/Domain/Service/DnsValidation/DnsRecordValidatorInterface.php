@@ -42,8 +42,9 @@ interface DnsRecordValidatorInterface
      * @param mixed $prio The priority value (if applicable)
      * @param int|string|null $ttl The TTL value
      * @param int $defaultTTL The default TTL to use if not specified
+     * @param mixed ...$args Additional validator-specific parameters
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult;
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult;
 }

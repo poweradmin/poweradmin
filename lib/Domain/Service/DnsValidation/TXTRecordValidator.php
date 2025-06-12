@@ -70,7 +70,7 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
         // Check if this is a DMARC record
         $isDmarc = str_starts_with(strtolower($name), '_dmarc.') &&

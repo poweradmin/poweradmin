@@ -68,7 +68,7 @@ class ARecordValidator implements DnsRecordValidatorInterface
      *
      * @return ValidationResult ValidationResult containing validated data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
         $errors = [];
 

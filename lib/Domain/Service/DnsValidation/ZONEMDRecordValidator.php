@@ -81,7 +81,7 @@ class ZONEMDRecordValidator implements DnsRecordValidatorInterface
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
         // ZONEMD records should be at the apex of the zone
         // Just check if the name is printable and valid for tests

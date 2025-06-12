@@ -80,7 +80,7 @@ class L64RecordValidator implements DnsRecordValidatorInterface
      *
      * @return ValidationResult Validation result with data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
         // Validate hostname/name
         $hostnameResult = $this->hostnameValidator->validate($name, true);

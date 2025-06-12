@@ -124,7 +124,16 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         }
 
         // Perform validation using the appropriate validator
-        $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl);
+        if ($type === RecordType::CNAME) {
+            // CNAME validator expects: $rid, $zone
+            $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl, $rid, $zone);
+        } elseif ($type === RecordType::SOA) {
+            // SOA validator expects: $dns_hostmaster, $zone
+            $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl, $dns_hostmaster, $zone);
+        } else {
+            // Other validators don't need additional parameters
+            $validationResult = $validator->validate($content, $name, $prio, $ttl, $dns_ttl);
+        }
 
         // If validation failed, return the errors
         if (!$validationResult->isValid()) {

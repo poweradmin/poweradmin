@@ -85,7 +85,7 @@ class IPSECKEYRecordValidator implements DnsRecordValidatorInterface
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
         // Validate hostname/name
         $hostnameResult = $this->hostnameValidator->validate($name, true);

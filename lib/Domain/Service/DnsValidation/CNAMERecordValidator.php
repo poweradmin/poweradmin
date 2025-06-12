@@ -72,13 +72,16 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority (not used for CNAME records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
-     * @param int $rid Record ID (for checking uniqueness)
-     * @param string $zone Zone name (for checking empty CNAME)
+     * @param mixed ...$args Additional parameters: [0] => int $rid, [1] => string $zone
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, int $rid = 0, string $zone = ''): ValidationResult
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
+        // Extract optional parameters
+        $rid = $args[0] ?? 0;
+        $zone = $args[1] ?? '';
+
         // 1. Check if CNAME unique (already exists as another record type)
         $uniqueResult = $this->validateCnameUnique($name, $rid);
         if (!$uniqueResult->isValid()) {

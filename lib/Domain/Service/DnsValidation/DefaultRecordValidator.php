@@ -54,7 +54,7 @@ class DefaultRecordValidator implements DnsRecordValidatorInterface
      *
      * @return ValidationResult Validation result with data or errors
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
         // Validate content - just ensure it's not empty
         if (empty(trim($content))) {

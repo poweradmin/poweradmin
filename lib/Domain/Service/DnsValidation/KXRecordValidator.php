@@ -80,7 +80,7 @@ class KXRecordValidator implements DnsRecordValidatorInterface
      *
      * @see https://datatracker.ietf.org/doc/html/rfc2230 RFC 2230, Section 3.1
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
         $errors = [];
 

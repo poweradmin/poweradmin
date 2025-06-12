@@ -239,7 +239,7 @@ class AAAARecordValidatorTest extends TestCase
                 // Override constructor to skip dependency injection
             }
 
-            public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
+            public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
             {
                 // Create a simplified validation that only tests the IPv6 full-form handling
                 if (filter_var($content, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {

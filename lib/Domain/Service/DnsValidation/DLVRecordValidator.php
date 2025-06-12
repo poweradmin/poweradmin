@@ -77,7 +77,7 @@ class DLVRecordValidator implements DnsRecordValidatorInterface
      *
      * @return ValidationResult Validation result with data, errors, or warnings
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL): ValidationResult
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
         $warnings = [];
 

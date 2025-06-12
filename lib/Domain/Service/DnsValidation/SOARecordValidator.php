@@ -82,14 +82,17 @@ class SOARecordValidator implements DnsRecordValidatorInterface
      * @param mixed $prio Priority (not used for SOA records)
      * @param int|string|null $ttl TTL value
      * @param int $defaultTTL Default TTL value
-     * @param string|null $dns_hostmaster Hostmaster email (optional)
-     * @param string|null $zone Zone name (optional)
+     * @param mixed ...$args Additional parameters: [0] => string|null $dns_hostmaster, [1] => string|null $zone
      *
      * @return ValidationResult ValidationResult containing validated data or error messages
      */
-    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ?string $dns_hostmaster = null, ?string $zone = null): ValidationResult
+    public function validate(string $content, string $name, mixed $prio, $ttl, int $defaultTTL, ...$args): ValidationResult
     {
         $errors = [];
+
+        // Extract optional parameters
+        $dns_hostmaster = $args[0] ?? null;
+        $zone = $args[1] ?? null;
 
         // If params are passed directly, use them; otherwise use the ones set via setSOAParams
         $dns_hostmaster_to_use = $dns_hostmaster ?? $this->dns_hostmaster ?? null;
