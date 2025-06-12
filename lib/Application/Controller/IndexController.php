@@ -88,6 +88,7 @@ class IndexController extends BaseController
             $statusService = new \Poweradmin\Application\Service\PowerdnsStatusService();
             $serverStatus = $statusService->getServerStatus();
             $pdnsServerStatus = [
+                'display' => $serverStatus['display_name'] ?? 'localhost',
                 'running' => $serverStatus['running'] ?? false,
                 'version' => $serverStatus['version'] ?? 'unknown'
             ];
