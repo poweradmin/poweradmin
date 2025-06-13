@@ -1291,34 +1291,62 @@ class DnsRecord
         // Solution: First get distinct domains with LIMIT, then join for owner details
         if ($letterstart != 'all' && $rowamount != 999999) {
             // Step 1: Get paginated list of unique domain IDs
-            $id_query = "SELECT DISTINCT $domains_table.id
-                        FROM $domains_table";
+            // For PostgreSQL compatibility with complex sorting, we need a simpler approach
+            if ($db_type == 'pgsql' && $sortby == "$domains_table.name") {
+                // For PostgreSQL, use a window function approach to avoid DISTINCT + complex ORDER BY issues
+                $id_query = "SELECT DISTINCT $domains_table.id, $domains_table.name
+                            FROM $domains_table";
 
-            if ($perm == "own") {
-                $id_query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
-            }
+                if ($perm == "own") {
+                    $id_query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
+                }
 
-            $id_query .= " WHERE 1=1";
+                $id_query .= " WHERE 1=1";
 
-            if ($perm == "own") {
-                $id_query .= " AND zones.owner = " . $this->db->quote($userid, 'integer');
-            }
+                if ($perm == "own") {
+                    $id_query .= " AND zones.owner = " . $this->db->quote($userid, 'integer');
+                }
 
-            if ($letterstart != 'all' && $letterstart != 1) {
-                $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = " . $this->db->quote($letterstart, 'text');
-            } elseif ($letterstart == 1) {
-                $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
-            }
+                if ($letterstart != 'all' && $letterstart != 1) {
+                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = " . $this->db->quote($letterstart, 'text');
+                } elseif ($letterstart == 1) {
+                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+                }
 
-            // Apply sorting to the ID query
-            if (strpos($sql_sortby, 'users.username') === false && strpos($sql_sortby, 'COUNT(') === false) {
-                $id_query .= " ORDER BY " . $sql_sortby;
+                // Use simple name sorting for the subquery, complex sorting will be applied to main query
+                $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
+                $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
             } else {
-                // For complex sorts, use simple name sorting for the ID query
-                $id_query .= " ORDER BY $domains_table.name";
-            }
+                // For MySQL and non-complex sorts
+                $id_query = "SELECT DISTINCT $domains_table.id
+                            FROM $domains_table";
 
-            $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
+                if ($perm == "own") {
+                    $id_query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
+                }
+
+                $id_query .= " WHERE 1=1";
+
+                if ($perm == "own") {
+                    $id_query .= " AND zones.owner = " . $this->db->quote($userid, 'integer');
+                }
+
+                if ($letterstart != 'all' && $letterstart != 1) {
+                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = " . $this->db->quote($letterstart, 'text');
+                } elseif ($letterstart == 1) {
+                    $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+                }
+
+                // Apply sorting to the ID query
+                if (strpos($sql_sortby, 'users.username') === false && strpos($sql_sortby, 'COUNT(') === false) {
+                    $id_query .= " ORDER BY " . $sql_sortby;
+                } else {
+                    // For complex sorts, use simple name sorting for the ID query
+                    $id_query .= " ORDER BY $domains_table.name";
+                }
+
+                $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
+            }
 
             // Step 2: Get full details for these domains
             $query = "SELECT $domains_table.id,
