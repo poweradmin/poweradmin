@@ -20,7 +20,7 @@
                 {% endif %}
             </div>
             <div class="card-body d-flex flex-column justify-content-between">
-                <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}PowerDNS Status{% endtrans %}</h6>
+                <h6 class="card-title text-center text-truncate d-none d-md-block">{{ pdns_server_status.display }}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">
                     {% if pdns_server_status is defined and pdns_server_status.running %}
                         {% trans %}Server running{% endtrans %} v{{ pdns_server_status.version }}

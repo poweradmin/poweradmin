@@ -34,6 +34,7 @@ class PowerdnsStatusService
     private bool $apiEnabled;
     private string $apiUrl;
     private string $apiKey;
+    private string $displayName;
     private string $serverName;
 
     public function __construct()
@@ -41,6 +42,7 @@ class PowerdnsStatusService
         $config = ConfigurationManager::getInstance();
         $this->apiUrl = $config->get('pdns_api', 'url', '');
         $this->apiKey = $config->get('pdns_api', 'key', '');
+        $this->displayName = $config->get('pdns_api', 'display_name', '');
         $this->serverName = $config->get('pdns_api', 'server_name', 'localhost');
         $this->apiEnabled = !empty($this->apiUrl) && !empty($this->apiKey);
 
@@ -126,6 +128,7 @@ class PowerdnsStatusService
                 'daemon_type' => $serverInfo['daemon_type'] ?? 'unknown',
                 'version' => $serverInfo['version'] ?? 'unknown',
                 'configured' => true,
+                'display_name' => $this->displayName,
                 'server_name' => $this->serverName,
                 'id' => $serverInfo['id'] ?? $this->serverName,
                 'metrics' => $metrics,

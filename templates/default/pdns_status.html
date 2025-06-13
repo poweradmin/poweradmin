@@ -55,6 +55,10 @@
                         <table class="table table-hover">
                             <tbody>
                                 <tr>
+                                    <th scope="row">{% trans %}PDNS Server{% endtrans %}</th>
+                                    <td>{{ server_status.display_name }}</td>
+                                </tr>
+                                <tr>
                                     <th scope="row">{% trans %}Server Name{% endtrans %}</th>
                                     <td>{{ server_status.server_name }}</td>
                                 </tr>

@@ -207,6 +207,7 @@ return [
      * PowerDNS API Settings
      */
     'pdns_api' => [
+        'display_name' => 'PowerDNS',              // PowerDNS name to identify server
         'url' => '',                               // PowerDNS API URL, e.g., 'http://127.0.0.1:8081' (added in 3.7.0)
         'key' => '',                               // PowerDNS API key (added in 3.7.0)
         'server_name' => 'localhost',              // PowerDNS server name used in API calls (added in 4.0.0)
