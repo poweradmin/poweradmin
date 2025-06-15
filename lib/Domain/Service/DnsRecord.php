@@ -1947,7 +1947,10 @@ class DnsRecord
 
     public function has_similar_records($domain_id, $name, $type, $record_id): bool
     {
-        $query = "SELECT COUNT(*) FROM records
+        $pdns_db_name = $this->config->get('pdns_db_name');
+        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+
+        $query = "SELECT COUNT(*) FROM $records_table
               WHERE domain_id = :domain_id AND name = :name AND type = :type AND id != :record_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
