@@ -57,7 +57,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
     {
         $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
 
-        $query = "SELECT DISTINCT " . DbCompat::substr($this->db_type) . "($domains_table.name, 1, 1) AS letter FROM $domains_table";
+        $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->db_type) . "($domains_table.name, 1, 1)) AS letter FROM $domains_table";
 
         if (!$viewOthers) {
             $query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
