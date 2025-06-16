@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-05-30 17:37+0300\n"
+"POT-Creation-Date: 2025-06-16 08:39+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -17,13 +17,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: lib/AppInitializer.php:80
+#: lib/AppInitializer.php:82
 msgid ""
 "No configuration file found. Please use the <a href=\"install/\">installer</"
 "a> to create one, or create a config/settings.php file manually."
 msgstr ""
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:131
+#: lib/Infrastructure/Service/SessionAuthenticator.php:134
 msgid "Invalid CSRF token."
 msgstr ""
 
@@ -127,27 +127,57 @@ msgstr ""
 msgid "There is no zone with this ID."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:149
+#: lib/Application/Controller/DeleteRecordController.php:168
+msgid ""
+"The record and its corresponding PTR and A/AAAA records have been deleted "
+"successfully."
+msgstr ""
+
+#: lib/Application/Controller/DeleteRecordController.php:170
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:151
+#: lib/Application/Controller/DeleteRecordController.php:172
+msgid ""
+"The record and its corresponding A/AAAA record have been deleted "
+"successfully."
+msgstr ""
+
+#: lib/Application/Controller/DeleteRecordController.php:174
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
+msgstr ""
+
+#: lib/Application/Controller/DeleteRecordController.php:176
+msgid ""
+"The record has been deleted successfully. No matching A/AAAA record was "
+"found."
 msgstr ""
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:73
 msgid "The record has been deleted successfully."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:157
+#: lib/Application/Controller/DeleteRecordController.php:182
+msgid ""
+"The record and its corresponding PTR and A/AAAA records were deleted but the "
+"comment was preserved because similar records exist."
+msgstr ""
+
+#: lib/Application/Controller/DeleteRecordController.php:184
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
 msgstr ""
 
-#: lib/Application/Controller/DeleteRecordController.php:159
+#: lib/Application/Controller/DeleteRecordController.php:186
+msgid ""
+"The record and its corresponding A/AAAA record were deleted but the comment "
+"was preserved because similar records exist."
+msgstr ""
+
+#: lib/Application/Controller/DeleteRecordController.php:188
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
@@ -412,7 +442,7 @@ msgstr ""
 msgid "Template does not exist."
 msgstr ""
 
-#: lib/Domain/Repository/DomainRepository.php:350
+#: lib/Domain/Repository/DomainRepository.php:439
 msgid "You do not have the permission to view this zone."
 msgstr ""
 
@@ -452,6 +482,10 @@ msgstr ""
 
 #: lib/Application/Controller/UnlinkZonesTemplController.php:138
 msgid "Template not found."
+msgstr ""
+
+#: lib/Application/Controller/UserAgreementController.php:97
+msgid "User agreement accepted successfully."
 msgstr ""
 
 #: lib/Application/Controller/WhoisController.php:61
@@ -643,7 +677,7 @@ msgstr ""
 msgid "Zones have been deleted successfully."
 msgstr ""
 
-#: lib/Domain/Service/Dns/DomainManager.php:478
+#: lib/Domain/Service/Dns/DomainManager.php:481
 msgid "You do not have the permission to delete a zone."
 msgstr ""
 
@@ -667,7 +701,7 @@ msgid ""
 "the necessary permissions to create and alter tables."
 msgstr ""
 
-#: lib/Domain/Service/Dns/DomainManager.php:210
+#: lib/Domain/Service/Dns/DomainManager.php:213
 msgid "You do not have the permission to add a master zone."
 msgstr ""
 
@@ -808,7 +842,7 @@ msgstr ""
 msgid "Invalid check type"
 msgstr ""
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:116
+#: lib/Infrastructure/Service/SessionAuthenticator.php:119
 msgid "You have logged out."
 msgstr ""
 
@@ -913,6 +947,22 @@ msgid ""
 "in the system configuration."
 msgstr ""
 
+#: lib/Application/Controller/ExampleController.php:113
+msgid "You do not have the permission to access this feature."
+msgstr ""
+
+#: lib/Application/Controller/ExampleController.php:187
+msgid "Operation completed successfully."
+msgstr ""
+
+#: lib/Application/Controller/ExampleController.php:191
+msgid "Failed to process the request. Please try again."
+msgstr ""
+
+#: lib/Application/Controller/ExampleController.php:198
+msgid "An unexpected error occurred. Please contact the administrator."
+msgstr ""
+
 #: lib/Application/Controller/EditRecordController.php:82
 msgid "You do not have the permission to view this record."
 msgstr ""
@@ -1008,7 +1058,7 @@ msgstr ""
 msgid "Authentication failed!"
 msgstr ""
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:185
+#: lib/Infrastructure/Service/SessionAuthenticator.php:188
 msgid "Session expired, please login again."
 msgstr ""
 
@@ -1050,12 +1100,12 @@ msgstr ""
 msgid "This template is assigned to at least one user."
 msgstr ""
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:150
+#: lib/Infrastructure/Service/SessionAuthenticator.php:153
 #: templates/default/login.html:109
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr ""
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:173
+#: lib/Infrastructure/Service/SessionAuthenticator.php:176
 msgid "An empty password is not allowed"
 msgstr ""
 
@@ -1129,7 +1179,7 @@ msgstr ""
 msgid "You do not have the permission to add a record to this zone template."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:126
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:129
 msgid "Your content field doesnt have a legit value."
 msgstr ""
 
@@ -1177,47 +1227,47 @@ msgstr ""
 msgid "Error checking template existence: "
 msgstr ""
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:63
+#: lib/Domain/Service/DatabaseConsistencyService.php:80
 msgid "All zones have owners"
 msgstr ""
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:70
+#: lib/Domain/Service/DatabaseConsistencyService.php:87
 #, php-format
 msgid "%d zones found without owners"
 msgstr ""
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:101
+#: lib/Domain/Service/DatabaseConsistencyService.php:120
 msgid "All slave zones have master IP addresses"
 msgstr ""
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:108
+#: lib/Domain/Service/DatabaseConsistencyService.php:127
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr ""
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:141
+#: lib/Domain/Service/DatabaseConsistencyService.php:163
 msgid "All records belong to existing zones"
 msgstr ""
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:148
+#: lib/Domain/Service/DatabaseConsistencyService.php:170
 #, php-format
 msgid "%d orphaned records found"
 msgstr ""
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:185
+#: lib/Domain/Service/DatabaseConsistencyService.php:210
 msgid "No duplicate SOA records found"
 msgstr ""
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:192
+#: lib/Domain/Service/DatabaseConsistencyService.php:217
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr ""
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:224
+#: lib/Domain/Service/DatabaseConsistencyService.php:252
 msgid "All zones have SOA records"
 msgstr ""
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:231
+#: lib/Domain/Service/DatabaseConsistencyService.php:259
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr ""
@@ -3173,27 +3223,27 @@ msgid ""
 "Section 6.1)."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:167
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:170
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:196
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:199
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:225
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:239
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:242
 msgid "Empty CNAME records are not allowed."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:269
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:272
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
 msgstr ""
@@ -4162,74 +4212,74 @@ msgstr ""
 msgid "You are using an invalid top level domain."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:100
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:103
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:111
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:114
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:170
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:173
 msgid "SOA record must have between 1 and 7 fields."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:177
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:180
 msgid "Invalid primary nameserver in SOA record."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:197
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:200
 msgid "Invalid email address in SOA record."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:208
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:211
 msgid "Serial number must be numeric."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:214
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:217
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:227
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:230
 msgid ""
 "Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
 "This is allowed but not recommended."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:241
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:244
 msgid ""
 "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
 "retry, expire, minimum)."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:261
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:264
 #, php-format
 msgid "SOA %s field must be numeric."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:267
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:270
 #, php-format
 msgid "SOA %s field must be a positive integer."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:278
 #, php-format
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
 "allowed but not recommended."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:284
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:287
 msgid ""
 "SOA retry value should be less than refresh value according to RFC 2308. "
 "This is allowed but not recommended."
 msgstr ""
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:292
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:295
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
@@ -5634,7 +5684,7 @@ msgstr ""
 msgid "You do not have the permission to delete NS records."
 msgstr ""
 
-#: lib/Domain/Service/Dns/DomainManager.php:420
+#: lib/Domain/Service/Dns/DomainManager.php:423
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr ""
@@ -5643,12 +5693,12 @@ msgstr ""
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr ""
 
-#: lib/Domain/Service/Dns/DomainManager.php:206
+#: lib/Domain/Service/Dns/DomainManager.php:209
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr ""
 
-#: lib/Domain/Service/Dns/DomainManager.php:383
+#: lib/Domain/Service/Dns/DomainManager.php:386
 msgid "The selected user already owns the zone."
 msgstr ""
 
@@ -6120,7 +6170,7 @@ msgstr ""
 msgid "Select the account that will own this supermaster"
 msgstr ""
 
-#: templates/default/edit.html:501
+#: templates/default/edit.html:503
 msgid "Save changes"
 msgstr ""
 
@@ -6261,7 +6311,7 @@ msgstr ""
 msgid "Comment"
 msgstr ""
 
-#: templates/default/edit.html:608 templates/default/add_record.html:91
+#: templates/default/edit.html:610 templates/default/add_record.html:91
 msgid "Provide content"
 msgstr ""
 
@@ -6273,16 +6323,12 @@ msgstr ""
 msgid "Welcome"
 msgstr ""
 
-#: templates/default/index.html:13 templates/default/pdns_status.html:168
+#: templates/default/index.html:13 templates/default/pdns_status.html:172
 msgid "Online"
 msgstr ""
 
-#: templates/default/index.html:17 templates/default/pdns_status.html:170
+#: templates/default/index.html:17 templates/default/pdns_status.html:174
 msgid "Offline"
-msgstr ""
-
-#: templates/default/index.html:23
-msgid "PowerDNS Status"
 msgstr ""
 
 #: templates/default/index.html:26
@@ -6562,7 +6608,7 @@ msgstr ""
 msgid "Check DB"
 msgstr ""
 
-#: templates/default/edit_comment.html:18 templates/default/edit.html:483
+#: templates/default/edit_comment.html:18 templates/default/edit.html:485
 msgid "Edit comment"
 msgstr ""
 
@@ -6859,6 +6905,101 @@ msgstr ""
 
 #: templates/default/delete_user.html:94
 msgid "No, keep this user"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:1
+msgid "Terms of Use"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:2
+msgid ""
+"By using this Poweradmin installation, you agree to the following terms:"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:4
+msgid "Acceptable Use"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:6
+msgid ""
+"You will use this system responsibly and in accordance with applicable laws"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:7
+msgid "You will not attempt to gain unauthorized access to other users' data"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:8
+msgid "You will keep your login credentials secure and confidential"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:9
+msgid "You will not use this system for any malicious or illegal activities"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:12
+msgid "Data Protection"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:14
+msgid ""
+"Your login activity and DNS management actions may be logged for security "
+"and audit purposes"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:15
+msgid ""
+"You are responsible for the accuracy of DNS records you create or modify"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:16
+msgid ""
+"We will protect your personal information in accordance with applicable "
+"privacy laws"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:19
+msgid "System Availability"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:20
+msgid ""
+"While we strive to maintain system availability, we cannot guarantee 100% "
+"uptime. Users should not rely solely on this system for critical DNS "
+"operations without appropriate backups and monitoring."
+msgstr ""
+
+#: templates/default/user_agreement_content.html:22
+msgid "Limitation of Liability"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:23
+msgid ""
+"This system is provided \"as is\" without any warranties. The administrators "
+"are not liable for any damages or losses resulting from the use of this "
+"system."
+msgstr ""
+
+#: templates/default/user_agreement_content.html:25
+msgid "Changes to Agreement"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:26
+msgid ""
+"These terms may be updated from time to time. Users will be required to "
+"accept any changes before continuing to use the system."
+msgstr ""
+
+#: templates/default/user_agreement_content.html:30
+msgid "Agreement Version:"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:31
+msgid "Last Updated:"
+msgstr ""
+
+#: templates/default/user_agreement_content.html:31
+msgid "Please contact your administrator for the last update date"
 msgstr ""
 
 #: templates/default/api_key_regenerate.html:16
@@ -7279,7 +7420,7 @@ msgstr ""
 msgid "Permission templates"
 msgstr ""
 
-#: templates/default/add_perm_templ.html:6 templates/default/edit.html:763
+#: templates/default/add_perm_templ.html:6 templates/default/edit.html:765
 msgid "Add"
 msgstr ""
 
@@ -7669,39 +7810,39 @@ msgstr ""
 msgid "Edit"
 msgstr ""
 
-#: templates/default/edit.html:25 templates/default/edit.html:516
+#: templates/default/edit.html:25 templates/default/edit.html:518
 msgid "Add new record"
 msgstr ""
 
-#: templates/default/edit.html:28 templates/default/edit.html:519
+#: templates/default/edit.html:28 templates/default/edit.html:521
 msgid "Multi-record mode"
 msgstr ""
 
-#: templates/default/edit.html:31 templates/default/edit.html:522
+#: templates/default/edit.html:31 templates/default/edit.html:524
 msgid "Bulk add"
 msgstr ""
 
-#: templates/default/edit.html:43 templates/default/edit.html:534
+#: templates/default/edit.html:43 templates/default/edit.html:536
 msgid "Failed to add"
 msgstr ""
 
-#: templates/default/edit.html:43 templates/default/edit.html:534
+#: templates/default/edit.html:43 templates/default/edit.html:536
 msgid "record(s). Please check the record format."
 msgstr ""
 
-#: templates/default/edit.html:45 templates/default/edit.html:536
+#: templates/default/edit.html:45 templates/default/edit.html:538
 msgid "Failed to add records. Please check the record format."
 msgstr ""
 
-#: templates/default/edit.html:48 templates/default/edit.html:539
+#: templates/default/edit.html:48 templates/default/edit.html:541
 msgid "Content validation failed:"
 msgstr ""
 
-#: templates/default/edit.html:48 templates/default/edit.html:539
+#: templates/default/edit.html:48 templates/default/edit.html:541
 msgid "Invalid value for record type"
 msgstr ""
 
-#: templates/default/edit.html:50 templates/default/edit.html:541
+#: templates/default/edit.html:50 templates/default/edit.html:543
 msgid "Please provide all required information."
 msgstr ""
 
@@ -7713,23 +7854,23 @@ msgstr ""
 msgid "Add A/AAAA"
 msgstr ""
 
-#: templates/default/edit.html:86 templates/default/edit.html:578
+#: templates/default/edit.html:86 templates/default/edit.html:580
 msgid "Invalid hostname format"
 msgstr ""
 
-#: templates/default/edit.html:114 templates/default/edit.html:606
+#: templates/default/edit.html:114 templates/default/edit.html:608
 msgid "This record already exists"
 msgstr ""
 
-#: templates/default/edit.html:126 templates/default/edit.html:618
+#: templates/default/edit.html:126 templates/default/edit.html:620
 msgid "Invalid priority"
 msgstr ""
 
-#: templates/default/edit.html:133 templates/default/edit.html:625
+#: templates/default/edit.html:133 templates/default/edit.html:627
 msgid "Invalid TTL value"
 msgstr ""
 
-#: templates/default/edit.html:135 templates/default/edit.html:627
+#: templates/default/edit.html:135 templates/default/edit.html:629
 msgid "Provide TTL"
 msgstr ""
 
@@ -7743,7 +7884,7 @@ msgstr ""
 msgid "Edit zone"
 msgstr ""
 
-#: templates/default/edit.html:188
+#: templates/default/edit.html:190
 msgid "CSV"
 msgstr ""
 
@@ -7751,107 +7892,107 @@ msgstr ""
 msgid "PTR"
 msgstr ""
 
-#: templates/default/edit.html:208
+#: templates/default/edit.html:210
 msgid "Sign zone"
 msgstr ""
 
-#: templates/default/edit.html:225
+#: templates/default/edit.html:227
 msgid "No records match your filter criteria."
 msgstr ""
 
-#: templates/default/edit.html:233
+#: templates/default/edit.html:235
 msgid "This zone does not have any records."
 msgstr ""
 
-#: templates/default/edit.html:247
+#: templates/default/edit.html:249
 msgid "Filter:"
 msgstr ""
 
-#: templates/default/edit.html:253
+#: templates/default/edit.html:255
 msgid "Search by name or content"
 msgstr ""
 
-#: templates/default/edit.html:259
+#: templates/default/edit.html:261
 msgid "All Types"
 msgstr ""
 
-#: templates/default/edit.html:269
+#: templates/default/edit.html:271
 msgid "Filter by content"
 msgstr ""
 
-#: templates/default/edit.html:275
+#: templates/default/edit.html:277
 msgid "Apply"
 msgstr ""
 
-#: templates/default/edit.html:298 templates/default/search.html:476
+#: templates/default/edit.html:300 templates/default/search.html:476
 msgid "Delete record(s)"
 msgstr ""
 
-#: templates/default/edit.html:306
+#: templates/default/edit.html:308
 msgid "Showing"
 msgstr ""
 
-#: templates/default/edit.html:306
+#: templates/default/edit.html:308
 msgid "of"
 msgstr ""
 
-#: templates/default/edit.html:306
+#: templates/default/edit.html:308
 msgid "total records"
 msgstr ""
 
-#: templates/default/edit.html:472 templates/default/search.html:93
+#: templates/default/edit.html:474 templates/default/search.html:93
 msgid "Comments"
 msgstr ""
 
-#: templates/default/edit.html:665
+#: templates/default/edit.html:667
 msgid "Save as new template"
 msgstr ""
 
-#: templates/default/edit.html:668
+#: templates/default/edit.html:670
 msgid "Create a reusable template from this zone's records"
 msgstr ""
 
-#: templates/default/edit.html:674
+#: templates/default/edit.html:676
 msgid "Template Name"
 msgstr ""
 
-#: templates/default/edit.html:676
+#: templates/default/edit.html:678
 msgid "Provide template name"
 msgstr ""
 
-#: templates/default/edit.html:680
+#: templates/default/edit.html:682
 msgid "Template Description"
 msgstr ""
 
-#: templates/default/edit.html:682
+#: templates/default/edit.html:684
 msgid "Optional description for this template"
 msgstr ""
 
-#: templates/default/edit.html:686
+#: templates/default/edit.html:688
 msgid "Save as template"
 msgstr ""
 
-#: templates/default/edit.html:697
+#: templates/default/edit.html:699
 msgid "Zone Settings"
 msgstr ""
 
-#: templates/default/edit.html:700
+#: templates/default/edit.html:702
 msgid "Owner of zone"
 msgstr ""
 
-#: templates/default/edit.html:703
+#: templates/default/edit.html:705
 msgid "No owner set for this zone."
 msgstr ""
 
-#: templates/default/edit.html:828
+#: templates/default/edit.html:830
 msgid "Change"
 msgstr ""
 
-#: templates/default/edit.html:794 templates/default/add_zone_slave.html:33
+#: templates/default/edit.html:796 templates/default/add_zone_slave.html:33
 msgid "IP address of master NS"
 msgstr ""
 
-#: templates/default/edit.html:1020
+#: templates/default/edit.html:1022
 msgid "Select All Filtered"
 msgstr ""
 
@@ -7897,6 +8038,10 @@ msgstr ""
 
 #: templates/default/delete_record.html:83
 msgid "Also delete corresponding PTR record (if exists)"
+msgstr ""
+
+#: templates/default/delete_record.html:93
+msgid "Also delete corresponding A/AAAA record (if exists)"
 msgstr ""
 
 #: templates/default/delete_zone_templ_record.html:59
@@ -8195,6 +8340,10 @@ msgstr ""
 msgid "In use"
 msgstr ""
 
+#: templates/default/edit_zone_templ.html:132
+msgid "Template name"
+msgstr ""
+
 #: templates/default/list_zone_templ.html:23
 msgid "Zones linked"
 msgstr ""
@@ -8233,6 +8382,17 @@ msgstr ""
 
 #: templates/default/list_zone_templ.html:100
 msgid "View zones using this template"
+msgstr ""
+
+#: templates/default/list_zone_templ.html:134
+msgid "Template Behavior:"
+msgstr ""
+
+#: templates/default/list_zone_templ.html:135
+msgid ""
+"Changing a zone's template overwrites template-based records but preserves "
+"manual additions. Template modifications don't automatically update zones - "
+"use \"Update Zones\" button when editing templates to apply changes."
 msgstr ""
 
 #: templates/default/change_password.html:16
@@ -8534,6 +8694,26 @@ msgstr ""
 
 #: templates/default/bulk_registration.html:127
 msgid "Make sure the domain names follow valid DNS naming conventions"
+msgstr ""
+
+#: templates/default/user_agreement.html:13
+msgid "User Agreement"
+msgstr ""
+
+#: templates/default/user_agreement.html:31
+msgid "I have read and agree to the terms outlined above"
+msgstr ""
+
+#: templates/default/user_agreement.html:34
+msgid "You must accept the agreement to continue"
+msgstr ""
+
+#: templates/default/user_agreement.html:41
+msgid "Decline & Logout"
+msgstr ""
+
+#: templates/default/user_agreement.html:45
+msgid "Accept & Continue"
 msgstr ""
 
 #: templates/default/delete_records.html:22
@@ -9001,119 +9181,123 @@ msgid "Server Information"
 msgstr ""
 
 #: templates/default/pdns_status.html:58
+msgid "PDNS Server"
+msgstr ""
+
+#: templates/default/pdns_status.html:62
 msgid "Server Name"
 msgstr ""
 
-#: templates/default/pdns_status.html:63
+#: templates/default/pdns_status.html:67
 msgid "Server ID"
 msgstr ""
 
-#: templates/default/pdns_status.html:68
+#: templates/default/pdns_status.html:72
 msgid "PowerDNS Version"
 msgstr ""
 
-#: templates/default/pdns_status.html:72
+#: templates/default/pdns_status.html:76
 msgid "Daemon Type"
 msgstr ""
 
-#: templates/default/pdns_status.html:77 templates/default/pdns_status.html:178
+#: templates/default/pdns_status.html:81 templates/default/pdns_status.html:182
 msgid "Uptime"
 msgstr ""
 
-#: templates/default/pdns_status.html:86
+#: templates/default/pdns_status.html:90
 msgid "Server information is not available."
 msgstr ""
 
-#: templates/default/pdns_status.html:97
+#: templates/default/pdns_status.html:101
 msgid "Slave Servers"
 msgstr ""
 
-#: templates/default/pdns_status.html:100
+#: templates/default/pdns_status.html:104
 msgid ""
 "Showing connectivity status for DNS servers listed in the supermasters table."
 msgstr ""
 
-#: templates/default/pdns_status.html:110
+#: templates/default/pdns_status.html:114
 msgid "Server IP"
 msgstr ""
 
-#: templates/default/pdns_status.html:112
+#: templates/default/pdns_status.html:116
 msgid "Last Checked"
 msgstr ""
 
-#: templates/default/pdns_status.html:121 install/templates/step2.html.twig:27
+#: templates/default/pdns_status.html:125 install/templates/step2.html.twig:27
 msgid "OK"
 msgstr ""
 
-#: templates/default/pdns_status.html:123
+#: templates/default/pdns_status.html:127
 msgid "Unreachable"
 msgstr ""
 
-#: templates/default/pdns_status.html:125
+#: templates/default/pdns_status.html:129
 msgid "Error"
 msgstr ""
 
-#: templates/default/pdns_status.html:156
+#: templates/default/pdns_status.html:160
 msgid "Server Statistics"
 msgstr ""
 
-#: templates/default/pdns_status.html:166
+#: templates/default/pdns_status.html:170
 msgid "Server Health"
 msgstr ""
 
-#: templates/default/pdns_status.html:185 templates/default/api_keys.html:44
+#: templates/default/pdns_status.html:189 templates/default/api_keys.html:44
 msgid "Unknown"
 msgstr ""
 
-#: templates/default/pdns_status.html:194
+#: templates/default/pdns_status.html:198
 msgid "Latency"
 msgstr ""
 
-#: templates/default/pdns_status.html:204
+#: templates/default/pdns_status.html:208
 msgid "CPU Usage"
 msgstr ""
 
-#: templates/default/pdns_status.html:219
+#: templates/default/pdns_status.html:223
 msgid "Query Statistics"
 msgstr ""
 
-#: templates/default/pdns_status.html:239
+#: templates/default/pdns_status.html:243
 msgid "UDP Queries"
 msgstr ""
 
-#: templates/default/pdns_status.html:256
+#: templates/default/pdns_status.html:260
 msgid "TCP Queries"
 msgstr ""
 
-#: templates/default/pdns_status.html:275
+#: templates/default/pdns_status.html:279
 msgid "Cache Hits"
 msgstr ""
 
-#: templates/default/pdns_status.html:292
+#: templates/default/pdns_status.html:296
 msgid "Cache Misses"
 msgstr ""
 
-#: templates/default/pdns_status.html:327
+#: templates/default/pdns_status.html:331
 msgid "Toggle View"
 msgstr ""
 
-#: templates/default/pdns_status.html:332
+#: templates/default/pdns_status.html:336
 msgid "Refresh"
 msgstr ""
 
-#: templates/default/pdns_status.html:429
+#: templates/default/pdns_status.html:433
 msgid "Bytes"
 msgstr ""
 
-#: templates/default/pdns_status.html:402
+#: templates/default/pdns_status.html:406
 msgid "Metric"
 msgstr ""
 
-#: templates/default/pdns_status.html:403
+#: templates/default/pdns_status.html:407
 msgid "Value"
 msgstr ""
 
-#: templates/default/pdns_status.html:453
+#: templates/default/pdns_status.html:457
 msgid "No detailed metrics available."
 msgstr ""
 
@@ -9333,15 +9517,15 @@ msgid ""
 "to select, delete, insert, and update records in the PowerDNS database."
 msgstr ""
 
-#: install/templates/step6.html.twig:18
+#: install/templates/step6.html.twig:20
 msgid "Database Commands"
 msgstr ""
 
-#: install/templates/step6.html.twig:21
-msgid "Execute the following commands based on your database:"
+#: install/templates/step6.html.twig:23
+msgid "Execute the following commands:"
 msgstr ""
 
-#: install/templates/step6.html.twig:26
+#: install/templates/step6.html.twig:35
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
 msgstr ""
@@ -9350,7 +9534,7 @@ msgstr ""
 msgid "Note:"
 msgstr ""
 
-#: install/templates/step6.html.twig:29
+#: install/templates/step6.html.twig:38
 msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
@@ -9892,10 +10076,6 @@ msgstr ""
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
 msgid "Could not access the SQLite database file %s: %s"
-msgstr ""
-
-#: install/helpers/DatabaseHelper.php:242
-msgid "or"
 msgstr ""
 
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:55
