@@ -94,6 +94,9 @@ class DatabaseSchemaService
                 $line = $key . ' SERIAL';
             } elseif ($db_type == 'pgsql' && $arr['type'] == 'integer') {
                 $line = $key . ' ' . $arr['type'];
+            } elseif ($db_type == 'pgsql' && $arr['type'] == 'boolean') {
+                // PostgreSQL boolean type doesn't accept length parameter
+                $line = $key . ' ' . $arr['type'];
             } else {
                 $line = $key . ' ' . $arr['type'] . (isset($arr['length']) ? '(' . $arr['length'] . ')' : '');
             }

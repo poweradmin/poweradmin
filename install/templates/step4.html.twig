@@ -8,10 +8,8 @@
             {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Configuring Database Connection{% endtrans %}
         </div>
         <div class="card-body">
-            <div class="alert alert-info py-2 mb-3">
-                <strong>{% trans %}Database Preparation:{% endtrans %}</strong> {% trans %}The installer needs to modify the PowerDNS database with tables for Poweradmin. Use an account with sufficient rights (like root) to proceed.{% endtrans %}
-                <hr class="my-2">
-                <strong>{% trans %}Important:{% endtrans %}</strong> {% trans %}Poweradmin requires a properly configured PowerDNS database with tables already created. This installer will NOT create PowerDNS tables - only Poweradmin-specific tables.{% endtrans %}
+            <div class="alert alert-info py-1 mb-2 small">
+                <strong>{% trans %}Database Configuration:{% endtrans %}</strong> {% trans %}Configure database connection with table creation rights. PowerDNS location can be specified separately if needed.{% endtrans %}
             </div>
 
             <form class="needs-validation" method="post" novalidate>
@@ -19,7 +17,7 @@
 
                 <div class="card mb-3">
                     <div class="card-header">
-                        <strong>{% trans %}Database Settings{% endtrans %}</strong>
+                        <strong>{% trans %}Database Connection Settings{% endtrans %}</strong>
                     </div>
                     <div class="card-body">
                         <div class="row mb-2">
@@ -32,7 +30,7 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <span class="form-text small">{% trans %}The type of the PowerDNS database.{% endtrans %}</span>
+                                <span class="form-text small">{% trans %}Database server type.{% endtrans %}</span>
                             </div>
                         </div>
 
@@ -43,7 +41,7 @@
                                 <div class="invalid-feedback">{% trans %}Provide the user name{% endtrans %}</div>
                             </div>
                             <div class="col-md-6">
-                                <span class="form-text small">{% trans %}Database username with administrative rights.{% endtrans %}</span>
+                                <span class="form-text small">{% trans %}Database username with rights to create tables.{% endtrans %}</span>
                             </div>
                         </div>
 
@@ -90,7 +88,7 @@
                                 <div class="invalid-feedback">{% trans %}Provide the name of the database{% endtrans %}</div>
                             </div>
                             <div class="col-md-6">
-                                <span class="form-text small" id="db_name_title">{% trans %}PowerDNS database name.{% endtrans %}</span>
+                                <span class="form-text small" id="db_name_title">{% trans %}Database name (will be used for Poweradmin tables).{% endtrans %}</span>
                                 <span class="form-text small" id="db_path_title" style="display: none;">
                                     {% trans %}Full path to SQLite database file{% endtrans %}
                                     <div class="alert alert-warning py-1 mt-1 mb-0">
@@ -128,9 +126,28 @@
                     </div>
                 </div>
 
+                <!-- PowerDNS Database Location (only for MySQL) -->
+                <div class="card mb-3" id="pdns_db_section" style="display: none;">
+                    <div class="card-header">
+                        <strong>{% trans %}PowerDNS Database{% endtrans %} ({% trans %}Optional{% endtrans %})</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <label for="pdns_db_name" class="col-md-2 col-form-label col-form-label-sm">{% trans %}Database name{% endtrans %}</label>
+                            <div class="col-md-4">
+                                <input type="text" class="form-control form-control-sm" id="pdns_db_name" name="pdns_db_name" 
+                                       value="{{ pdns_db_name }}" placeholder="{% trans %}Leave empty for same database{% endtrans %}">
+                            </div>
+                            <div class="col-md-6">
+                                <span class="form-text small">{% trans %}MySQL database with PowerDNS tables (if different).{% endtrans %}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="card mb-3">
                     <div class="card-header">
-                        <strong>{% trans %}Administrator Account{% endtrans %}</strong>
+                        <strong>{% trans %}Poweradmin Account{% endtrans %}</strong>
                     </div>
                     <div class="card-body">
                         <div class="row mb-2">
@@ -144,7 +161,7 @@
                             </div>
                             <div class="col-md-6">
                                 <div class="form-text small">
-                                    {% trans %}Password for "admin" username with full rights to the Poweradmin interface.{% endtrans %}
+                                    {% trans %}Password for "admin" username.{% endtrans %}
                                     <span class="badge bg-info text-dark ms-1">6+ chars</span>
                                     <span class="badge bg-info text-dark">1+ uppercase</span>
                                     <span class="badge bg-info text-dark">1+ lowercase</span>
@@ -204,6 +221,7 @@
             const portRow = document.getElementById('db_port_row');
             const charsetRow = document.getElementById('db_charset_row');
             const collationRow = document.getElementById('db_collation_row');
+            const pdnsDbSection = document.getElementById('pdns_db_section');
 
             // Input fields
             const usernameInput = document.getElementById('username');
@@ -226,6 +244,7 @@
                 portRow.style.display = 'none';
                 charsetRow.style.display = 'none';
                 collationRow.style.display = 'none';
+                pdnsDbSection.style.display = 'none';
 
                 // Remove 'required' attribute from hidden fields
                 usernameInput.removeAttribute('required');
@@ -256,6 +275,18 @@
                 charsetRow.style.display = '';
                 collationRow.style.display = '';
 
+                // Only show PowerDNS database section for MySQL
+                if (dbType === 'mysql') {
+                    pdnsDbSection.style.display = '';
+                } else {
+                    pdnsDbSection.style.display = 'none';
+                    // Clear the PowerDNS database name when switching away from MySQL
+                    const pdnsDbNameInput = document.getElementById('pdns_db_name');
+                    if (pdnsDbNameInput) {
+                        pdnsDbNameInput.value = '';
+                    }
+                }
+
                 // Add 'required' attribute back to visible fields
                 usernameInput.setAttribute('required', '');
                 passwordInput.setAttribute('required', '');
@@ -267,12 +298,12 @@
                 dbPathTitle.style.display = 'none';
 
                 // Update input placeholder for MySQL/PostgreSQL
-                dbNameInput.placeholder = 'powerdns';
+                dbNameInput.placeholder = 'poweradmin';
                 
                 // Clear SQLite path if switching from SQLite to MySQL/PostgreSQL
                 if (dbNameInput.value && dbNameInput.value.includes('/')) {
                     // Check if it looks like a file path (contains slash)
-                    dbNameInput.value = 'powerdns';
+                    dbNameInput.value = 'poweradmin';
                 }
 
                 // Update port if it's one of the standard ports

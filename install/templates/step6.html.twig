@@ -9,8 +9,8 @@
         </div>
         <div class="card-body">
             {% if db_type != 'sqlite' %}
-                <div class="alert alert-info py-2">
-                    <strong>{% trans %}Limited Database Rights:{% endtrans %}</strong> {% trans %}You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS database.{% endtrans %}
+                <div class="alert alert-info py-1 mb-2 small">
+                    <strong>{% trans %}Limited Database Rights:{% endtrans %}</strong> {% trans %}Create a database user with limited rights (select, insert, update, delete) for Poweradmin to access PowerDNS tables.{% endtrans %}
                 </div>
 
                 {% if instruction_blocks %}
@@ -25,7 +25,7 @@
                                     <button class="copy-btn btn btn-sm btn-secondary position-absolute top-0 end-0 m-2" data-target="commands-{{ loop.index }}">
                                         <i class="bi bi-clipboard"></i> Copy
                                     </button>
-                                    <pre id="commands-{{ loop.index }}" class="bg-dark text-light p-2 rounded small">{{ block.commands }}</pre>
+                                    <pre id="commands-{{ loop.index }}" class="bg-dark text-light p-2 rounded small" style="font-size: 0.75rem;">{{ block.commands }}</pre>
                                 </div>
                             </div>
                         </div>
@@ -70,6 +70,7 @@
                 <input type="hidden" name="pa_db_user" value="{{ pa_db_user }}">
                 <input type="hidden" name="pa_db_pass" value="{{ pa_db_pass }}">
                 <input type="hidden" name="pa_pass" value="{{ pa_pass }}">
+                <input type="hidden" name="pdns_db_name" value="{{ pdns_db_name }}">
                 <input type="hidden" name="dns_hostmaster" value="{{ dns_hostmaster }}">
                 <input type="hidden" name="dns_ns1" value="{{ dns_ns1 }}">
                 <input type="hidden" name="dns_ns2" value="{{ dns_ns2 }}">

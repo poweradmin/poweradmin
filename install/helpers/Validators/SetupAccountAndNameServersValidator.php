@@ -51,6 +51,8 @@ class SetupAccountAndNameServersValidator extends BaseValidator
                         'message' => 'The step must be equal to ' . InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER
                     ])
                 ],
+                // PowerDNS database field (optional)
+                'pdns_db_name' => new Assert\Optional(),
             ]
         ));
 

@@ -843,6 +843,7 @@ return array(
     'PoweradminInstall\\Validators\\DnsValidationTrait' => $baseDir . '/install/helpers/Validators/DnsValidationTrait.php',
     'PoweradminInstall\\Validators\\EmptyValidator' => $baseDir . '/install/helpers/Validators/EmptyValidator.php',
     'PoweradminInstall\\Validators\\GettingReadyValidator' => $baseDir . '/install/helpers/Validators/GettingReadyValidator.php',
+    'PoweradminInstall\\Validators\\PdnsDatabaseValidationTrait' => $baseDir . '/install/helpers/Validators/PdnsDatabaseValidationTrait.php',
     'PoweradminInstall\\Validators\\SetupAccountAndNameServersValidator' => $baseDir . '/install/helpers/Validators/SetupAccountAndNameServersValidator.php',
     'PoweradminInstall\\Validators\\UserPasswordValidationTrait' => $baseDir . '/install/helpers/Validators/UserPasswordValidationTrait.php',
     'PoweradminInstall\\Validators\\ValidationErrorHelper' => $baseDir . '/install/helpers/Validators/ValidationErrorHelper.php',

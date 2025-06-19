@@ -29,6 +29,7 @@ class ConfiguringDatabaseValidator extends BaseValidator
 {
     use DatabaseValidationTrait;
     use UserPasswordValidationTrait;
+    use PdnsDatabaseValidationTrait;
 
     public function validate(): array
     {
@@ -44,12 +45,20 @@ class ConfiguringDatabaseValidator extends BaseValidator
                         'message' => 'The step must be equal to ' . InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS
                     ])
                 ],
+                // PowerDNS database field (optional)
+                'pdns_db_name' => new Assert\Optional(),
             ]
         ));
 
         $input = $this->request->request->all();
         $violations = $this->validator->validate($input, $constraints);
 
-        return ValidationErrorHelper::formatErrors($violations);
+        $errors = ValidationErrorHelper::formatErrors($violations);
+
+        // Add PowerDNS database validation
+        $pdnsErrors = $this->validatePdnsDatabase($input);
+        $errors = array_merge($errors, $pdnsErrors);
+
+        return $errors;
     }
 }

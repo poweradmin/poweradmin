@@ -51,6 +51,8 @@ class CreateLimitedRightsUserValidator extends BaseValidator
                         'message' => 'The step must be equal to ' . InstallationSteps::STEP_CREATE_CONFIGURATION_FILE
                     ])
                 ],
+                // PowerDNS database field (optional)
+                'pdns_db_name' => new Assert\Optional(),
             ]
         ));
 

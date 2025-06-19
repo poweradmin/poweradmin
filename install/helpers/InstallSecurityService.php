@@ -51,9 +51,9 @@ class InstallSecurityService
         if ($this->config['csrf']['enabled'] && $request->isMethod('POST')) {
             $token = $request->get('install_token');
             if (empty($token)) {
-                $errors['csrf'] = 'Security Token Missing: A required security token was not provided. Please refresh the page and try again.';
+                $errors['csrf'] = 'Security Token Missing: A required security token was not provided. Please start the installation from the beginning.';
             } elseif (!$this->csrfTokenService->validateToken($token, 'install_token')) {
-                $errors['csrf'] = 'Invalid Security Token: The provided token is invalid. Please refresh the page and try again.';
+                $errors['csrf'] = 'Invalid Security Token: The provided token is invalid or has expired. Please start the installation from the beginning.';
             }
         }
 

@@ -1106,6 +1106,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'PoweradminInstall\\Validators\\DnsValidationTrait' => __DIR__ . '/../..' . '/install/helpers/Validators/DnsValidationTrait.php',
         'PoweradminInstall\\Validators\\EmptyValidator' => __DIR__ . '/../..' . '/install/helpers/Validators/EmptyValidator.php',
         'PoweradminInstall\\Validators\\GettingReadyValidator' => __DIR__ . '/../..' . '/install/helpers/Validators/GettingReadyValidator.php',
+        'PoweradminInstall\\Validators\\PdnsDatabaseValidationTrait' => __DIR__ . '/../..' . '/install/helpers/Validators/PdnsDatabaseValidationTrait.php',
         'PoweradminInstall\\Validators\\SetupAccountAndNameServersValidator' => __DIR__ . '/../..' . '/install/helpers/Validators/SetupAccountAndNameServersValidator.php',
         'PoweradminInstall\\Validators\\UserPasswordValidationTrait' => __DIR__ . '/../..' . '/install/helpers/Validators/UserPasswordValidationTrait.php',
         'PoweradminInstall\\Validators\\ValidationErrorHelper' => __DIR__ . '/../..' . '/install/helpers/Validators/ValidationErrorHelper.php',

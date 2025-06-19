@@ -8,13 +8,13 @@
             {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Installation complete{% endtrans %}
         </div>
         <div class="card-body">
-            <div class="alert alert-success py-2 mb-3">
+            <div class="alert alert-success py-1 mb-2 small">
                 <strong>{% trans %}Installation Complete!{% endtrans %}</strong> {% trans %}Congratulations! Your Poweradmin installation is now configured.{% endtrans %}
             </div>
 
-            <div class="alert alert-warning py-2 mb-3">
+            <div class="alert alert-warning py-1 mb-2 small">
                 <strong>{% trans %}Important Security Notice:{% endtrans %}</strong> {% trans %}You must remove the "install/" directory from the Poweradmin root directory.{% endtrans %}
-                <p class="mb-0 mt-1 small">{% trans %}Poweradmin will not function if the install directory exists, as a security measure.{% endtrans %}</p>
+                <br>{% trans %}Poweradmin will not function if the install directory exists, as a security measure.{% endtrans %}
             </div>
 
             <div class="card mt-3">

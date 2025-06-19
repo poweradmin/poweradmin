@@ -8,7 +8,7 @@
             {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Create configuration file{% endtrans %}
         </div>
         <div class="card-body">
-            <div class="alert alert-success py-2 mb-3">
+            <div class="alert alert-success py-1 mb-2 small">
                 <strong>{% trans %}Configuration File:{% endtrans %}</strong> {% trans %}Create the file {% endtrans %}
                 <em>config/settings.php</em>
                 {% trans %} with the following content:{% endtrans %}
@@ -18,7 +18,7 @@
                 <button id="copy-config" class="btn btn-sm btn-secondary position-absolute top-0 end-0 m-2">
                     <i class="bi bi-clipboard"></i> Copy
                 </button>
-                <pre id="config-content" class="bg-dark text-light p-2 rounded small">
+                <pre id="config-content" class="bg-dark text-light p-2 rounded small" style="font-size: 0.75rem;">
 &lt;?php
 
 /**
@@ -46,6 +46,9 @@ return [
 {% endif %}
 {% if db_charset %}
         'charset' => '{{ db_charset }}',
+{% endif %}
+{% if pdns_db_name is defined and pdns_db_name is not empty %}
+        'pdns_db_name' => '{{ pdns_db_name }}',
 {% endif %}
 {% endif %}
     ],

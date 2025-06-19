@@ -8,7 +8,7 @@
             {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Setup account and name servers{% endtrans %}
         </div>
         <div class="card-body">
-            <div class="alert alert-info py-2 mb-3">
+            <div class="alert alert-info py-1 mb-2 small">
                 <strong>{% trans %}Configuration:{% endtrans %}</strong> {% trans %}Now we will gather all details for the configuration itself.{% endtrans %}
             </div>
             
@@ -37,7 +37,7 @@
                 {% endif %}
                 
                 {% if messages.db_success is defined %}
-                    <div class="alert alert-secondary py-2 mb-3">
+                    <div class="alert alert-secondary py-1 mb-2 small">
                         {{ messages.db_success }}
                     </div>
                 {% endif %}
@@ -93,7 +93,7 @@
                                 <div class="invalid-feedback">{% trans %}Provide the DNS hostmaster{% endtrans %}</div>
                             </div>
                             <div class="col-md-6">
-                                <span class="form-text small">{% trans %}When creating SOA records and no hostmaster is provided, this value here will be used.{% endtrans %}</span>
+                                <span class="form-text small">{% trans %}Default hostmaster for SOA records.{% endtrans %}</span>
                             </div>
                         </div>
 
@@ -105,7 +105,7 @@
                                 <div class="invalid-feedback">{% trans %}Provide the primary nameserver{% endtrans %}</div>
                             </div>
                             <div class="col-md-6">
-                                <span class="form-text small">{% trans %}When creating new zones using the template, this value will be used as primary nameserver.{% endtrans %}</span>
+                                <span class="form-text small">{% trans %}Primary nameserver for new zones.{% endtrans %}</span>
                             </div>
                         </div>
 
@@ -117,7 +117,7 @@
                                 <div class="invalid-feedback">{% trans %}Provide the secondary nameserver{% endtrans %}</div>
                             </div>
                             <div class="col-md-6">
-                                <span class="form-text small">{% trans %}When creating new zones using the template, this value will be used as secondary nameserver.{% endtrans %}</span>
+                                <span class="form-text small">{% trans %}Secondary nameserver for new zones.{% endtrans %}</span>
                             </div>
                         </div>
 
@@ -130,7 +130,7 @@
                                        placeholder="ns3.example.net">
                             </div>
                             <div class="col-md-6">
-                                <span class="form-text small">{% trans %}When creating new zones using the template, this optional value will be used as tertiary nameserver.{% endtrans %}</span>
+                                <span class="form-text small">{% trans %}Optional tertiary nameserver for new zones.{% endtrans %}</span>
                             </div>
                         </div>
 
@@ -143,7 +143,7 @@
                                        placeholder="ns4.example.net">
                             </div>
                             <div class="col-md-6">
-                                <span class="form-text small">{% trans %}When creating new zones using the template, this optional value will be used as quaternary nameserver.{% endtrans %}</span>
+                                <span class="form-text small">{% trans %}Optional quaternary nameserver for new zones.{% endtrans %}</span>
                             </div>
                         </div>
                     </div>
@@ -159,6 +159,7 @@
                     <input type="hidden" name="db_charset" value="{{ db_charset }}">
                     <input type="hidden" name="db_collation" value="{{ db_collation }}">
                     <input type="hidden" name="pa_pass" value="{{ pa_pass }}">
+                    <input type="hidden" name="pdns_db_name" value="{{ pdns_db_name }}">
                     <input type="hidden" name="step" value="{{ next_step }}">
                     <input type="hidden" name="language" value="{{ language }}">
                     <div class="mt-4 text-center">

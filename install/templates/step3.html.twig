@@ -8,42 +8,24 @@
             {% trans %}Step{% endtrans %} {{ current_step }}: {% trans %}Getting Ready{% endtrans %}
         </div>
         <div class="card-body">
-            <div class="alert alert-info py-2 mb-3">
-                <strong>{% trans %}Preparation:{% endtrans %}</strong> {% trans %}Let's get your PowerDNS database ready for Poweradmin.{% endtrans %}
-            </div>
-
             <div class="card mb-3 bg-light">
                 <div class="card-header">
-                    <strong>{% trans %}About PowerDNS{% endtrans %}</strong>
+                    <strong>{% trans %}Prerequisites{% endtrans %}</strong>
                 </div>
                 <div class="card-body">
-                    <p>{% trans %}PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin will help you manage this database via a web interface.{% endtrans %}</p>
-                    <p>{% trans %}Before proceeding, you should have:{% endtrans %}</p>
+                    <p>{% trans %}Before proceeding, ensure you have:{% endtrans %}</p>
                     <ul>
-                        <li>{% trans %}An operational PowerDNS installation{% endtrans %}</li>
-                        <li>{% trans %}Database connectivity details (hostname, username, password){% endtrans %}</li>
-                        <li>{% trans %}Administrative access to your database{% endtrans %}</li>
+                        <li>{% trans %}PowerDNS installed with database tables created{% endtrans %}</li>
+                        <li>{% trans %}Database credentials (hostname, username, password){% endtrans %}</li>
+                        <li>{% trans %}Permission to create tables for Poweradmin{% endtrans %}</li>
                     </ul>
                 </div>
             </div>
 
-            <div class="card mb-3 bg-light">
-                <div class="card-header">
-                    <strong>{% trans %}Database Preparations{% endtrans %}</strong>
-                </div>
-                <div class="card-body">
-                    <p>{% trans %}In the next steps, Poweradmin will:{% endtrans %}</p>
-                    <ol>
-                        <li>{% trans %}Connect to your PowerDNS database{% endtrans %}</li>
-                        <li>{% trans %}Create tables needed for Poweradmin functionality{% endtrans %}</li>
-                        <li>{% trans %}Set up an administrator account for web access{% endtrans %}</li>
-                        <li>{% trans %}Create a config file to store your settings{% endtrans %}</li>
-                    </ol>
-                    <div class="alert alert-warning py-2">
-                        <i class="bi bi-exclamation-triangle"></i> 
-                        <strong>{% trans %}Note:{% endtrans %}</strong>{% trans %}You will need database administrative privileges for the installation.{% endtrans %}
-                    </div>
-                </div>
+            <div class="alert alert-info py-2">
+                <i class="bi bi-info-circle"></i>
+                <strong>{% trans %}Next:{% endtrans %}</strong> {% trans %}Configure database connection, create admin account, and generate configuration file.{% endtrans %}
+                <br><small class="text-muted">{% trans %}Note: PostgreSQL and SQLite must use the same database for both PowerDNS and Poweradmin.{% endtrans %}</small>
             </div>
 
             <!-- Form for continuing -->

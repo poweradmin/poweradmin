@@ -220,7 +220,7 @@ class DatabaseHelper
         $user_query->execute(array($userAuthService->hashPassword($pa_pass), $permTemplId));
     }
 
-    public function generateDatabaseUserInstructions(): array
+    public function generateDatabaseUserInstructions(?string $pdns_db_name = null): array
     {
         $instructions = [];
 
@@ -235,9 +235,17 @@ class DatabaseHelper
 
             foreach ($db_hosts as $host) {
                 $hostLabel = $host === '%' ? 'Any Host (%)' : "Specific Host ($host)";
+                $commands = "CREATE USER '$user'@'$host' IDENTIFIED BY '$pass';\nGRANT SELECT, INSERT, UPDATE, DELETE ON $db.* TO '$user'@'$host';";
+
+                // Add grants for PowerDNS database if defined and different from main database
+                if (!empty($pdns_db_name) && $pdns_db_name !== $this->databaseCredentials['db_name']) {
+                    $pdns_db = htmlspecialchars($pdns_db_name);
+                    $commands .= "\nGRANT SELECT, INSERT, UPDATE, DELETE ON $pdns_db.* TO '$user'@'$host';";
+                }
+
                 $instructions[] = [
                     'title' => $hostLabel,
-                    'commands' => "CREATE USER '$user'@'$host' IDENTIFIED BY '$pass';\nGRANT SELECT, INSERT, UPDATE, DELETE ON $db.* TO '$user'@'$host';"
+                    'commands' => $commands
                 ];
             }
         } elseif ($this->databaseCredentials['db_type'] == 'pgsql') {

@@ -13,7 +13,7 @@ return [
      */
     'database' => [
         'host' => 'localhost',
-        'port' => '3306',
+        'port' => '',
         'user' => 'poweradmin',
         'password' => 'your_password',
         'name' => 'powerdns',

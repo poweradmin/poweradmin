@@ -140,6 +140,8 @@ class InstallStepHandler
             'db_collation' => $this->request->get('db_collation'),
             'db_type' => $this->request->get('db_type'),
             'pa_pass' => $this->request->get('pa_pass'),
+            // PowerDNS database field
+            'pdns_db_name' => $this->getPdnsDbName(),
         ];
 
         $this->renderTemplate('step4.html.twig', array_merge([
@@ -171,12 +173,17 @@ class InstallStepHandler
             $databaseHelper = new DatabaseHelper($db, $credentials);
 
             // Check for PowerDNS tables before proceeding
-            $missingTables = $databaseHelper->checkPowerDnsTables();
-            if (!empty($missingTables)) {
-                $warningMsg = '<strong>' . _('Warning:') . '</strong> ';
-                $warningMsg .= _('Missing PowerDNS tables:') . ' <strong>' . implode(', ', $missingTables) . '</strong>';
-                $warningMsg .= ' - ' . _('Poweradmin requires these PowerDNS tables to function properly.');
-                $messages['pdns_warning'] = $warningMsg;
+            // Skip this check if using a separate PowerDNS database (it's already validated)
+            $pdns_db_name = $this->getPdnsDbName();
+            if (empty($pdns_db_name)) {
+                // Only check PowerDNS tables if using the same database
+                $missingTables = $databaseHelper->checkPowerDnsTables();
+                if (!empty($missingTables)) {
+                    $warningMsg = '<strong>' . _('Warning:') . '</strong> ';
+                    $warningMsg .= _('Missing PowerDNS tables:') . ' <strong>' . implode(', ', $missingTables) . '</strong>';
+                    $warningMsg .= ' - ' . _('Poweradmin requires these PowerDNS tables to function properly.');
+                    $messages['pdns_warning'] = $warningMsg;
+                }
             }
 
             $databaseHelper->updateDatabase();
@@ -253,6 +260,7 @@ class InstallStepHandler
             'dns_ns2' => $this->request->get('dns_ns2'),
             'dns_ns3' => $this->request->get('dns_ns3'),
             'dns_ns4' => $this->request->get('dns_ns4'),
+            'pdns_db_name' => $this->request->get('pdns_db_name'),
         ];
 
         $this->renderTemplate('step5.html.twig', array_merge([
@@ -286,7 +294,7 @@ class InstallStepHandler
         $databaseService = new DatabaseService($databaseConnection);
         $db = $databaseService->connect($credentials);
         $databaseHelper = new DatabaseHelper($db, $credentials);
-        $instructionBlocks = $databaseHelper->generateDatabaseUserInstructions();
+        $instructionBlocks = $databaseHelper->generateDatabaseUserInstructions($this->request->get('pdns_db_name'));
 
         $this->renderTemplate('step6.html.twig', array(
             'current_step' => $this->currentStep,
@@ -307,6 +315,7 @@ class InstallStepHandler
             'dns_ns2' => $dns_ns2,
             'dns_ns3' => $dns_ns3,
             'dns_ns4' => $dns_ns4,
+            'pdns_db_name' => $this->request->get('pdns_db_name'),
             'instruction_blocks' => $instructionBlocks,
             'errors' => $errors,
         ));
@@ -347,6 +356,8 @@ class InstallStepHandler
         // Format display paths for the UI (remove leading slashes)
         $displayNewConfigFile = 'config/settings.php';
 
+        $pdns_db_name = $this->request->get('pdns_db_name');
+
         $this->renderTemplate('step7.html.twig', array(
             'current_step' => $this->currentStep,
             'language' => $this->language,
@@ -366,6 +377,7 @@ class InstallStepHandler
             'db_port' => $db_port,
             'db_charset' => $db_charset,
             'db_collation' => $db_collation,
+            'pdns_db_name' => $pdns_db_name,
             'errors' => $errors,
         ));
     }
@@ -389,5 +401,14 @@ class InstallStepHandler
             'db_collation' => $this->request->get('db_collation'),
             'db_type' => $this->request->get('db_type'),
         ];
+    }
+
+    private function getPdnsDbName(): string
+    {
+        $dbType = $this->request->get('db_type');
+        $pdnsDbName = $this->request->get('pdns_db_name');
+
+        // Only allow pdns_db_name for MySQL
+        return ($dbType === 'mysql') ? $pdnsDbName : '';
     }
 }
