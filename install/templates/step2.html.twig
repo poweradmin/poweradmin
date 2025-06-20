@@ -113,9 +113,12 @@
                         <strong>{% trans %}Some required components are missing.{% endtrans %}</strong> 
                         {% trans %}Please install the missing components before continuing.{% endtrans %}
                     </div>
-                    <input type="button" class="btn btn-sm btn-secondary" 
-                           onclick="window.location.reload();" 
-                           value="{% trans %}Check Again{% endtrans %}">
+                    <form method="get" class="d-inline">
+                        <input type="hidden" name="language" value="{{ language }}">
+                        <input type="hidden" name="step" value="{{ current_step }}">
+                        <input type="submit" class="btn btn-sm btn-secondary" 
+                               value="{% trans %}Check Again{% endtrans %}">
+                    </form>
                 {% endif %}
             </form>
         </div>
