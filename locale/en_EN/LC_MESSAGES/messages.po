@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-16 09:23+0300\n"
+"POT-Creation-Date: 2025-06-20 19:17+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -7493,7 +7493,7 @@ msgstr "View user activity history"
 msgid "View user logs"
 msgstr "View user logs"
 
-#: templates/default/add_user.html:38 install/templates/step4.html.twig:51
+#: templates/default/add_user.html:38 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:67
 msgid "Password"
 msgstr "Password"
@@ -8215,7 +8215,7 @@ msgid "Recommended bits for"
 msgstr "Recommended bits for"
 
 #: templates/default/dnssec_add_key.html:140
-#: install/helpers/InstallStepHandler.php:176
+#: install/helpers/InstallStepHandler.php:182
 msgid "Warning:"
 msgstr "Warning:"
 
@@ -8268,7 +8268,7 @@ msgid "Edit User"
 msgstr "Edit User"
 
 #: templates/default/users.html:24 templates/default/add_user.html:20
-#: install/templates/step4.html.twig:40 install/templates/step5.html.twig:56
+#: install/templates/step4.html.twig:38 install/templates/step5.html.twig:56
 msgid "Username"
 msgstr "Username"
 
@@ -8649,6 +8649,7 @@ msgid "Host Prefix"
 msgstr "Host Prefix"
 
 #: templates/default/batch_ptr_record.html:71
+#: install/templates/step4.html.twig:132
 msgid "Optional"
 msgstr "Optional"
 
@@ -9267,7 +9268,7 @@ msgstr "Add User"
 msgid "Optional: User's full name for identification"
 msgstr "Optional: User's full name for identification"
 
-#: templates/default/add_user.html:42 install/templates/step4.html.twig:56
+#: templates/default/add_user.html:42 install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr "Provide user password"
 
@@ -10652,13 +10653,11 @@ msgstr "Limited Database Rights:"
 
 #: install/templates/step6.html.twig:13
 msgid ""
-"You now want to give limited rights to Poweradmin so it can update the data "
-"in the tables. To do this, you should create a new user and give it rights "
-"to select, delete, insert, and update records in the PowerDNS database."
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
 msgstr ""
-"You now want to give limited rights to Poweradmin so it can update the data "
-"in the tables. To do this, you should create a new user and give it rights "
-"to select, delete, insert, and update records in the PowerDNS database."
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -10674,7 +10673,7 @@ msgid ""
 msgstr ""
 "After you have added the new user, proceed with this installation procedure."
 
-#: install/templates/step3.html.twig:44
+#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:96
 msgid "Note:"
 msgstr "Note:"
 
@@ -10686,7 +10685,7 @@ msgstr ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 
-#: install/templates/step5.html.twig:165 install/templates/step3.html.twig:56
+#: install/templates/step5.html.twig:166 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "Continue to step"
 
@@ -10737,138 +10736,138 @@ msgid "Configuring Database Connection"
 msgstr "Configuring Database Connection"
 
 #: install/templates/step4.html.twig:12
-msgid "Database Preparation:"
-msgstr "Database Preparation:"
+msgid "Database Configuration:"
+msgstr "Database Configuration:"
 
 #: install/templates/step4.html.twig:12
 msgid ""
-"The installer needs to modify the PowerDNS database with tables for "
-"Poweradmin. Use an account with sufficient rights (like root) to proceed."
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
 msgstr ""
-"The installer needs to modify the PowerDNS database with tables for "
-"Poweradmin. Use an account with sufficient rights (like root) to proceed."
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
 
-#: install/templates/step4.html.twig:14
-msgid "Important:"
-msgstr "Important:"
+#: install/templates/step4.html.twig:20
+msgid "Database Connection Settings"
+msgstr "Database Connection Settings"
 
-#: install/templates/step4.html.twig:14
-msgid ""
-"Poweradmin requires a properly configured PowerDNS database with tables "
-"already created. This installer will NOT create PowerDNS tables - only "
-"Poweradmin-specific tables."
-msgstr ""
-"Poweradmin requires a properly configured PowerDNS database with tables "
-"already created. This installer will NOT create PowerDNS tables - only "
-"Poweradmin-specific tables."
-
-#: install/templates/step4.html.twig:22
-msgid "Database Settings"
-msgstr "Database Settings"
-
-#: install/templates/step4.html.twig:26
+#: install/templates/step4.html.twig:24
 msgid "Database type"
 msgstr "Database type"
 
-#: install/templates/step4.html.twig:35
-msgid "The type of the PowerDNS database."
-msgstr "The type of the PowerDNS database."
+#: install/templates/step4.html.twig:33
+msgid "Database server type."
+msgstr "Database server type."
 
-#: install/templates/step4.html.twig:43 install/templates/step5.html.twig:59
+#: install/templates/step4.html.twig:41 install/templates/step5.html.twig:59
 msgid "Provide the user name"
 msgstr "Provide the user name"
 
-#: install/templates/step4.html.twig:46
-msgid "Database username with administrative rights."
-msgstr "Database username with administrative rights."
+#: install/templates/step4.html.twig:44
+msgid "Database username with rights to create tables."
+msgstr "Database username with rights to create tables."
 
-#: install/templates/step4.html.twig:60
+#: install/templates/step4.html.twig:58
 msgid "Password for this database user."
 msgstr "Password for this database user."
 
-#: install/templates/step4.html.twig:65
+#: install/templates/step4.html.twig:63
 msgid "Hostname"
 msgstr "Hostname"
 
-#: install/templates/step4.html.twig:68
+#: install/templates/step4.html.twig:66
 msgid "Provide the hostname"
 msgstr "Provide the hostname"
 
-#: install/templates/step4.html.twig:71
+#: install/templates/step4.html.twig:69
 msgid "Database server hostname (usually \"localhost\")."
 msgstr "Database server hostname (usually \"localhost\")."
 
-#: install/templates/step4.html.twig:76
+#: install/templates/step4.html.twig:74
 msgid "DB Port"
 msgstr "DB Port"
 
-#: install/templates/step4.html.twig:79
+#: install/templates/step4.html.twig:77
 msgid "Provide database port"
 msgstr "Provide database port"
 
-#: install/templates/step4.html.twig:82
+#: install/templates/step4.html.twig:80
 msgid "Database server port."
 msgstr "Database server port."
 
-#: install/templates/step4.html.twig:87
+#: install/templates/step4.html.twig:85
 msgid "Database"
 msgstr "Database"
 
-#: install/templates/step4.html.twig:90
+#: install/templates/step4.html.twig:88
 msgid "Provide the name of the database"
 msgstr "Provide the name of the database"
 
-#: install/templates/step4.html.twig:93
-msgid "PowerDNS database name."
-msgstr "PowerDNS database name."
+#: install/templates/step4.html.twig:91
+msgid "Database name (will be used for Poweradmin tables)."
+msgstr "Database name (will be used for Poweradmin tables)."
 
-#: install/templates/step4.html.twig:95
+#: install/templates/step4.html.twig:93
 msgid "Full path to SQLite database file"
 msgstr "Full path to SQLite database file"
 
-#: install/templates/step4.html.twig:98
+#: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr "File must exist with web server read/write access. Use absolute path."
 
-#: install/templates/step4.html.twig:106
+#: install/templates/step4.html.twig:104
 msgid "DB charset"
 msgstr "DB charset"
 
-#: install/templates/step4.html.twig:182 install/templates/step4.html.twig:190
+#: install/templates/step4.html.twig:199 install/templates/step4.html.twig:207
 msgid "Use default"
 msgstr "Use default"
 
-#: install/templates/step4.html.twig:113
+#: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
 msgstr "Charset for new tables. Leave empty for database default."
 
-#: install/templates/step4.html.twig:118
+#: install/templates/step4.html.twig:116
 msgid "DB collation"
 msgstr "DB collation"
 
-#: install/templates/step4.html.twig:125
+#: install/templates/step4.html.twig:123
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
 "Collation rules for character comparison. Leave empty for database default."
 
-#: install/templates/step4.html.twig:133
-msgid "Administrator Account"
-msgstr "Administrator Account"
+#: install/templates/step4.html.twig:132
+msgid "PowerDNS Database"
+msgstr "PowerDNS Database"
 
-#: install/templates/step4.html.twig:137
+#: install/templates/step4.html.twig:136
+msgid "Database name"
+msgstr "Database name"
+
+#: install/templates/step4.html.twig:139
+msgid "Leave empty for same database"
+msgstr "Leave empty for same database"
+
+#: install/templates/step4.html.twig:142
+msgid "MySQL database with PowerDNS tables (if different)."
+msgstr "MySQL database with PowerDNS tables (if different)."
+
+#: install/templates/step4.html.twig:150
+msgid "Poweradmin Account"
+msgstr "Poweradmin Account"
+
+#: install/templates/step4.html.twig:154
 msgid "Administrator password"
 msgstr "Administrator password"
 
-#: install/templates/step4.html.twig:142
+#: install/templates/step4.html.twig:159
 msgid "Provide a password"
 msgstr "Provide a password"
 
-#: install/templates/step4.html.twig:147
-msgid ""
-"Password for \"admin\" username with full rights to the Poweradmin interface."
-msgstr ""
-"Password for \"admin\" username with full rights to the Poweradmin interface."
+#: install/templates/step4.html.twig:164
+msgid "Password for \"admin\" username."
+msgstr "Password for \"admin\" username."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -10977,12 +10976,8 @@ msgid "Provide the DNS hostmaster"
 msgstr "Provide the DNS hostmaster"
 
 #: install/templates/step5.html.twig:96
-msgid ""
-"When creating SOA records and no hostmaster is provided, this value here "
-"will be used."
-msgstr ""
-"When creating SOA records and no hostmaster is provided, this value here "
-"will be used."
+msgid "Default hostmaster for SOA records."
+msgstr "Default hostmaster for SOA records."
 
 #: install/templates/step5.html.twig:101
 msgid "Primary nameserver"
@@ -10993,12 +10988,8 @@ msgid "Provide the primary nameserver"
 msgstr "Provide the primary nameserver"
 
 #: install/templates/step5.html.twig:108
-msgid ""
-"When creating new zones using the template, this value will be used as "
-"primary nameserver."
-msgstr ""
-"When creating new zones using the template, this value will be used as "
-"primary nameserver."
+msgid "Primary nameserver for new zones."
+msgstr "Primary nameserver for new zones."
 
 #: install/templates/step5.html.twig:113
 msgid "Secondary nameserver"
@@ -11009,12 +11000,8 @@ msgid "Provide the secondary nameserver"
 msgstr "Provide the secondary nameserver"
 
 #: install/templates/step5.html.twig:120
-msgid ""
-"When creating new zones using the template, this value will be used as "
-"secondary nameserver."
-msgstr ""
-"When creating new zones using the template, this value will be used as "
-"secondary nameserver."
+msgid "Secondary nameserver for new zones."
+msgstr "Secondary nameserver for new zones."
 
 #: install/templates/step5.html.twig:126
 msgid "Tertiary Nameserver"
@@ -11025,24 +11012,16 @@ msgid "optional"
 msgstr "optional"
 
 #: install/templates/step5.html.twig:133
-msgid ""
-"When creating new zones using the template, this optional value will be used "
-"as tertiary nameserver."
-msgstr ""
-"When creating new zones using the template, this optional value will be used "
-"as tertiary nameserver."
+msgid "Optional tertiary nameserver for new zones."
+msgstr "Optional tertiary nameserver for new zones."
 
 #: install/templates/step5.html.twig:139
 msgid "Quaternary Nameserver"
 msgstr "Quaternary Nameserver"
 
 #: install/templates/step5.html.twig:146
-msgid ""
-"When creating new zones using the template, this optional value will be used "
-"as quaternary nameserver."
-msgstr ""
-"When creating new zones using the template, this optional value will be used "
-"as quaternary nameserver."
+msgid "Optional quaternary nameserver for new zones."
+msgstr "Optional quaternary nameserver for new zones."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -11100,89 +11079,61 @@ msgstr "Begin configuring your DNS zones and records"
 msgid "Getting Ready"
 msgstr "Getting Ready"
 
-#: install/templates/step3.html.twig:12
-msgid "Preparation:"
-msgstr "Preparation:"
+#: install/templates/step3.html.twig:13
+msgid "Prerequisites"
+msgstr "Prerequisites"
 
-#: install/templates/step3.html.twig:12
-msgid "Let's get your PowerDNS database ready for Poweradmin."
-msgstr "Let's get your PowerDNS database ready for Poweradmin."
+#: install/templates/step3.html.twig:16
+msgid "Before proceeding, ensure you have:"
+msgstr "Before proceeding, ensure you have:"
 
-#: install/templates/step3.html.twig:17
-msgid "About PowerDNS"
-msgstr "About PowerDNS"
+#: install/templates/step3.html.twig:18
+msgid "PowerDNS installed with database tables created"
+msgstr "PowerDNS installed with database tables created"
+
+#: install/templates/step3.html.twig:19
+msgid "Database credentials (hostname, username, password)"
+msgstr "Database credentials (hostname, username, password)"
 
 #: install/templates/step3.html.twig:20
+msgid "Permission to create tables for Poweradmin"
+msgstr "Permission to create tables for Poweradmin"
+
+#: install/templates/step3.html.twig:27
+msgid "Next:"
+msgstr "Next:"
+
+#: install/templates/step3.html.twig:27
 msgid ""
-"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
-"will help you manage this database via a web interface."
+"Configure database connection, create admin account, and generate "
+"configuration file."
 msgstr ""
-"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
-"will help you manage this database via a web interface."
+"Configure database connection, create admin account, and generate "
+"configuration file."
 
-#: install/templates/step3.html.twig:21
-msgid "Before proceeding, you should have:"
-msgstr "Before proceeding, you should have:"
-
-#: install/templates/step3.html.twig:23
-msgid "An operational PowerDNS installation"
-msgstr "An operational PowerDNS installation"
-
-#: install/templates/step3.html.twig:24
-msgid "Database connectivity details (hostname, username, password)"
-msgstr "Database connectivity details (hostname, username, password)"
-
-#: install/templates/step3.html.twig:25
-msgid "Administrative access to your database"
-msgstr "Administrative access to your database"
-
-#: install/templates/step3.html.twig:32
-msgid "Database Preparations"
-msgstr "Database Preparations"
-
-#: install/templates/step3.html.twig:35
-msgid "In the next steps, Poweradmin will:"
-msgstr "In the next steps, Poweradmin will:"
-
-#: install/templates/step3.html.twig:37
-msgid "Connect to your PowerDNS database"
-msgstr "Connect to your PowerDNS database"
-
-#: install/templates/step3.html.twig:38
-msgid "Create tables needed for Poweradmin functionality"
-msgstr "Create tables needed for Poweradmin functionality"
-
-#: install/templates/step3.html.twig:39
-msgid "Set up an administrator account for web access"
-msgstr "Set up an administrator account for web access"
-
-#: install/templates/step3.html.twig:40
-msgid "Create a config file to store your settings"
-msgstr "Create a config file to store your settings"
-
-#: install/helpers/InstallStepHandler.php:177
+#: install/helpers/InstallStepHandler.php:183
 msgid "Missing PowerDNS tables:"
 msgstr "Missing PowerDNS tables:"
 
-#: install/helpers/InstallStepHandler.php:178
+#: install/helpers/InstallStepHandler.php:184
 msgid "Poweradmin requires these PowerDNS tables to function properly."
 msgstr "Poweradmin requires these PowerDNS tables to function properly."
 
-#: install/helpers/InstallStepHandler.php:185
+#: install/helpers/InstallStepHandler.php:192
 msgid "Updating database... done!"
 msgstr "Updating database... done!"
 
-#: install/helpers/InstallStepHandler.php:207
+#: install/helpers/InstallStepHandler.php:214
 msgid "Foreign Key Constraint Issues:"
 msgstr "Foreign Key Constraint Issues:"
 
-#: install/helpers/InstallStepHandler.php:209
+#: install/helpers/InstallStepHandler.php:216
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
 "The installer could not remove existing tables due to foreign key constraints"
 
-#: install/helpers/InstallStepHandler.php:210
+#: install/helpers/InstallStepHandler.php:217
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
@@ -11190,7 +11141,7 @@ msgstr ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 
-#: install/helpers/InstallStepHandler.php:211
+#: install/helpers/InstallStepHandler.php:218
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
@@ -11198,15 +11149,15 @@ msgstr ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 
-#: install/helpers/InstallStepHandler.php:224
+#: install/helpers/InstallStepHandler.php:231
 msgid "Suggestions:"
 msgstr "Suggestions:"
 
-#: install/helpers/InstallStepHandler.php:218
+#: install/helpers/InstallStepHandler.php:225
 msgid "Make sure the SQLite database file exists"
 msgstr "Make sure the SQLite database file exists"
 
-#: install/helpers/InstallStepHandler.php:219
+#: install/helpers/InstallStepHandler.php:226
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
@@ -11214,23 +11165,23 @@ msgstr ""
 "Check that the web server has read and write permissions for the database "
 "file"
 
-#: install/helpers/InstallStepHandler.php:220
+#: install/helpers/InstallStepHandler.php:227
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr "Verify the full path to the database file is correct and accessible"
 
-#: install/helpers/InstallStepHandler.php:226
+#: install/helpers/InstallStepHandler.php:233
 msgid "Verify database credentials are correct"
 msgstr "Verify database credentials are correct"
 
-#: install/helpers/InstallStepHandler.php:227
+#: install/helpers/InstallStepHandler.php:234
 msgid "Check that the database user has sufficient privileges"
 msgstr "Check that the database user has sufficient privileges"
 
-#: install/helpers/InstallStepHandler.php:228
+#: install/helpers/InstallStepHandler.php:235
 msgid "Ensure the database server is running and accessible"
 msgstr "Ensure the database server is running and accessible"
 
-#: install/helpers/InstallStepHandler.php:233
+#: install/helpers/InstallStepHandler.php:240
 msgid "Database Error"
 msgstr "Database Error"
 
@@ -11269,3 +11220,163 @@ msgid ""
 msgstr ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:47
+msgid ""
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
+msgstr ""
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
+#, php-format
+msgid ""
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
+msgstr ""
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
+#, php-format
+msgid "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Cannot connect to PowerDNS database \"%s\": %s"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "You now want to give limited rights to Poweradmin so it can update the "
+# OBSOLETE: "data in the tables. To do this, you should create a new user and give it "
+# OBSOLETE: "rights to select, delete, insert, and update records in the PowerDNS "
+# OBSOLETE: "database."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "You now want to give limited rights to Poweradmin so it can update the "
+# OBSOLETE: "data in the tables. To do this, you should create a new user and give it "
+# OBSOLETE: "rights to select, delete, insert, and update records in the PowerDNS "
+# OBSOLETE: "database."
+
+# OBSOLETE: msgid "Database Preparation:"
+# OBSOLETE: msgstr "Database Preparation:"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "The installer needs to modify the PowerDNS database with tables for "
+# OBSOLETE: "Poweradmin. Use an account with sufficient rights (like root) to proceed."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "The installer needs to modify the PowerDNS database with tables for "
+# OBSOLETE: "Poweradmin. Use an account with sufficient rights (like root) to proceed."
+
+# OBSOLETE: msgid "Important:"
+# OBSOLETE: msgstr "Important:"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Poweradmin requires a properly configured PowerDNS database with tables "
+# OBSOLETE: "already created. This installer will NOT create PowerDNS tables - only "
+# OBSOLETE: "Poweradmin-specific tables."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Poweradmin requires a properly configured PowerDNS database with tables "
+# OBSOLETE: "already created. This installer will NOT create PowerDNS tables - only "
+# OBSOLETE: "Poweradmin-specific tables."
+
+# OBSOLETE: msgid "Database Settings"
+# OBSOLETE: msgstr "Database Settings"
+
+# OBSOLETE: msgid "The type of the PowerDNS database."
+# OBSOLETE: msgstr "The type of the PowerDNS database."
+
+# OBSOLETE: msgid "Database username with administrative rights."
+# OBSOLETE: msgstr "Database username with administrative rights."
+
+# OBSOLETE: msgid "PowerDNS database name."
+# OBSOLETE: msgstr "PowerDNS database name."
+
+# OBSOLETE: msgid "Administrator Account"
+# OBSOLETE: msgstr "Administrator Account"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "Password for \"admin\" username with full rights to the Poweradmin "
+# OBSOLETE: "interface."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Password for \"admin\" username with full rights to the Poweradmin "
+# OBSOLETE: "interface."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating SOA records and no hostmaster is provided, this value here "
+# OBSOLETE: "will be used."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "When creating SOA records and no hostmaster is provided, this value here "
+# OBSOLETE: "will be used."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this value will be used as "
+# OBSOLETE: "primary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "When creating new zones using the template, this value will be used as "
+# OBSOLETE: "primary nameserver."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this value will be used as "
+# OBSOLETE: "secondary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "When creating new zones using the template, this value will be used as "
+# OBSOLETE: "secondary nameserver."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this optional value will be "
+# OBSOLETE: "used as tertiary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "When creating new zones using the template, this optional value will be "
+# OBSOLETE: "used as tertiary nameserver."
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this optional value will be "
+# OBSOLETE: "used as quaternary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "When creating new zones using the template, this optional value will be "
+# OBSOLETE: "used as quaternary nameserver."
+
+# OBSOLETE: msgid "Preparation:"
+# OBSOLETE: msgstr "Preparation:"
+
+# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
+# OBSOLETE: msgstr "Let's get your PowerDNS database ready for Poweradmin."
+
+# OBSOLETE: msgid "About PowerDNS"
+# OBSOLETE: msgstr "About PowerDNS"
+
+# OBSOLETE: msgid ""
+# OBSOLETE: "PowerDNS is a DNS server that stores its data in an SQL database. "
+# OBSOLETE: "Poweradmin will help you manage this database via a web interface."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PowerDNS is a DNS server that stores its data in an SQL database. "
+# OBSOLETE: "Poweradmin will help you manage this database via a web interface."
+
+# OBSOLETE: msgid "Before proceeding, you should have:"
+# OBSOLETE: msgstr "Before proceeding, you should have:"
+
+# OBSOLETE: msgid "An operational PowerDNS installation"
+# OBSOLETE: msgstr "An operational PowerDNS installation"
+
+# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
+# OBSOLETE: msgstr "Database connectivity details (hostname, username, password)"
+
+# OBSOLETE: msgid "Administrative access to your database"
+# OBSOLETE: msgstr "Administrative access to your database"
+
+# OBSOLETE: msgid "Database Preparations"
+# OBSOLETE: msgstr "Database Preparations"
+
+# OBSOLETE: msgid "In the next steps, Poweradmin will:"
+# OBSOLETE: msgstr "In the next steps, Poweradmin will:"
+
+# OBSOLETE: msgid "Connect to your PowerDNS database"
+# OBSOLETE: msgstr "Connect to your PowerDNS database"
+
+# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
+# OBSOLETE: msgstr "Create tables needed for Poweradmin functionality"
+
+# OBSOLETE: msgid "Set up an administrator account for web access"
+# OBSOLETE: msgstr "Set up an administrator account for web access"
+
+# OBSOLETE: msgid "Create a config file to store your settings"
+# OBSOLETE: msgstr "Create a config file to store your settings"
+
+

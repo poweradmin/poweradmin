@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-16 09:23+0300\n"
+"POT-Creation-Date: 2025-06-20 19:17+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -118,8 +118,7 @@ msgstr "Nie znaleziono strefy o podanym identyfikatorze."
 
 #: lib/Application/Controller/DeleteRecordController.php:168
 msgid "The record and its corresponding PTR and A/AAAA records have been deleted successfully."
-msgstr ""
-"Rekord oraz odpowiadające mu rekordy PTR i A/AAAA zostały pomyślnie usunięte."
+msgstr "Rekord oraz odpowiadające mu rekordy PTR i A/AAAA zostały pomyślnie usunięte."
 
 #: lib/Application/Controller/DeleteRecordController.php:170
 msgid "The record and its corresponding PTR record have been deleted successfully."
@@ -127,8 +126,7 @@ msgstr "Rekord i odpowiadający mu rekord PTR zostały pomyślnie usunięte."
 
 #: lib/Application/Controller/DeleteRecordController.php:172
 msgid "The record and its corresponding A/AAAA record have been deleted successfully."
-msgstr ""
-"Rekord oraz odpowiadający mu rekord A/AAAA zostały pomyślnie usunięte."
+msgstr "Rekord oraz odpowiadający mu rekord A/AAAA zostały pomyślnie usunięte."
 
 #: lib/Application/Controller/DeleteRecordController.php:174
 msgid "The record has been deleted successfully. No matching PTR record was found."
@@ -136,8 +134,7 @@ msgstr "Rekord został pomyślnie usunięty. Nie znaleziono odpowiadającego rek
 
 #: lib/Application/Controller/DeleteRecordController.php:176
 msgid "The record has been deleted successfully. No matching A/AAAA record was found."
-msgstr ""
-"Rekord został pomyślnie usunięty. Nie znaleziono pasującego rekordu A/AAAA."
+msgstr "Rekord został pomyślnie usunięty. Nie znaleziono pasującego rekordu A/AAAA."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:73
 msgid "The record has been deleted successfully."
@@ -145,8 +142,7 @@ msgstr "Rekord został pomyślnie usunięty."
 
 #: lib/Application/Controller/DeleteRecordController.php:182
 msgid "The record and its corresponding PTR and A/AAAA records were deleted but the comment was preserved because similar records exist."
-msgstr ""
-"Rekord oraz odpowiadające mu rekordy PTR i A/AAAA zostały usunięte, ale komentarz zostały zachowany, ponieważ istnieją podobne rekordy."
+msgstr "Rekord oraz odpowiadające mu rekordy PTR i A/AAAA zostały usunięte, ale komentarz zostały zachowany, ponieważ istnieją podobne rekordy."
 
 #: lib/Application/Controller/DeleteRecordController.php:184
 msgid "The record and its corresponding PTR record were deleted but the comment was preserved because similar records exist."
@@ -154,8 +150,7 @@ msgstr "Rekord i odpowiadający mu rekord PTR zostały usunięte, ale komentarz 
 
 #: lib/Application/Controller/DeleteRecordController.php:186
 msgid "The record and its corresponding A/AAAA record were deleted but the comment was preserved because similar records exist."
-msgstr ""
-"Rekord oraz odpowiadający mu rekord A/AAAA zostały usunięte, ale komentarz został zachowany, ponieważ istnieją podobne rekordy."
+msgstr "Rekord oraz odpowiadający mu rekord A/AAAA zostały usunięte, ale komentarz został zachowany, ponieważ istnieją podobne rekordy."
 
 #: lib/Application/Controller/DeleteRecordController.php:188
 msgid "The record was deleted but the comment was preserved because similar records exist."
@@ -5543,7 +5538,7 @@ msgstr "Zobacz historię aktywności użytkowników"
 msgid "View user logs"
 msgstr "Zobacz logi użytkowników"
 
-#: templates/default/add_user.html:38 install/templates/step4.html.twig:51
+#: templates/default/add_user.html:38 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:67
 msgid "Password"
 msgstr "Hasło"
@@ -5938,8 +5933,7 @@ msgstr "Warunki korzystania"
 
 #: templates/default/user_agreement_content.html:2
 msgid "By using this Poweradmin installation, you agree to the following terms:"
-msgstr ""
-"Korzystając z tej instalacji Poweradmin, wyrażasz zgodę na następujące warunki:"
+msgstr "Korzystając z tej instalacji Poweradmin, wyrażasz zgodę na następujące warunki:"
 
 #: templates/default/user_agreement_content.html:4
 msgid "Acceptable Use"
@@ -5947,23 +5941,19 @@ msgstr "Dopuszczalne użytkowanie"
 
 #: templates/default/user_agreement_content.html:6
 msgid "You will use this system responsibly and in accordance with applicable laws"
-msgstr ""
-"Będziesz używać tego systemu odpowiedzialnie i zgodnie z obowiązującym prawem"
+msgstr "Będziesz używać tego systemu odpowiedzialnie i zgodnie z obowiązującym prawem"
 
 #: templates/default/user_agreement_content.html:7
 msgid "You will not attempt to gain unauthorized access to other users' data"
-msgstr ""
-"Nie będziesz próbować uzyskać nieautoryzowanego dostępu do danych innych użytkowników"
+msgstr "Nie będziesz próbować uzyskać nieautoryzowanego dostępu do danych innych użytkowników"
 
 #: templates/default/user_agreement_content.html:8
 msgid "You will keep your login credentials secure and confidential"
-msgstr ""
-"Będziesz utrzymywać swoje dane logowania w bezpieczeństwie i poufności"
+msgstr "Będziesz utrzymywać swoje dane logowania w bezpieczeństwie i poufności"
 
 #: templates/default/user_agreement_content.html:9
 msgid "You will not use this system for any malicious or illegal activities"
-msgstr ""
-"Nie będziesz używać tego systemu do żadnych złośliwych lub nielegalnych działań"
+msgstr "Nie będziesz używać tego systemu do żadnych złośliwych lub nielegalnych działań"
 
 #: templates/default/user_agreement_content.html:12
 msgid "Data Protection"
@@ -5971,18 +5961,15 @@ msgstr "Ochrona danych"
 
 #: templates/default/user_agreement_content.html:14
 msgid "Your login activity and DNS management actions may be logged for security and audit purposes"
-msgstr ""
-"Twoja aktywność logowania i działania związane z zarządzaniem DNS mogą być rejestrowane w celach bezpieczeństwa i audytu"
+msgstr "Twoja aktywność logowania i działania związane z zarządzaniem DNS mogą być rejestrowane w celach bezpieczeństwa i audytu"
 
 #: templates/default/user_agreement_content.html:15
 msgid "You are responsible for the accuracy of DNS records you create or modify"
-msgstr ""
-"Jesteś odpowiedzialny za dokładność rekordów DNS, które tworzysz lub modyfikujesz"
+msgstr "Jesteś odpowiedzialny za dokładność rekordów DNS, które tworzysz lub modyfikujesz"
 
 #: templates/default/user_agreement_content.html:16
 msgid "We will protect your personal information in accordance with applicable privacy laws"
-msgstr ""
-"Będziemy chronić Twoje dane osobowe zgodnie z obowiązującymi przepisami o prywatności"
+msgstr "Będziemy chronić Twoje dane osobowe zgodnie z obowiązującymi przepisami o prywatności"
 
 #: templates/default/user_agreement_content.html:19
 msgid "System Availability"
@@ -5990,8 +5977,7 @@ msgstr "Dostępność systemu"
 
 #: templates/default/user_agreement_content.html:20
 msgid "While we strive to maintain system availability, we cannot guarantee 100% uptime. Users should not rely solely on this system for critical DNS operations without appropriate backups and monitoring."
-msgstr ""
-"Chociaż dążymy do utrzymania dostępności systemu, nie możemy zagwarantować 100% czasu działania. Użytkownicy nie powinni polegać wyłącznie na tym systemie w przypadku krytycznych operacji DNS bez odpowiednich kopii zapasowych i monitorowania."
+msgstr "Chociaż dążymy do utrzymania dostępności systemu, nie możemy zagwarantować 100% czasu działania. Użytkownicy nie powinni polegać wyłącznie na tym systemie w przypadku krytycznych operacji DNS bez odpowiednich kopii zapasowych i monitorowania."
 
 #: templates/default/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -5999,8 +5985,7 @@ msgstr "Ograniczenie odpowiedzialności"
 
 #: templates/default/user_agreement_content.html:23
 msgid "This system is provided \"as is\" without any warranties. The administrators are not liable for any damages or losses resulting from the use of this system."
-msgstr ""
-"Ten system jest dostarczany \"w stanie, w jakim się znajduje\" bez żadnych gwarancji. Administratorzy nie ponoszą odpowiedzialności za jakiekolwiek szkody lub straty wynikające z korzystania z tego systemu."
+msgstr "Ten system jest dostarczany \"w stanie, w jakim się znajduje\" bez żadnych gwarancji. Administratorzy nie ponoszą odpowiedzialności za jakiekolwiek szkody lub straty wynikające z korzystania z tego systemu."
 
 #: templates/default/user_agreement_content.html:25
 msgid "Changes to Agreement"
@@ -6008,8 +5993,7 @@ msgstr "Zmiany w umowie"
 
 #: templates/default/user_agreement_content.html:26
 msgid "These terms may be updated from time to time. Users will be required to accept any changes before continuing to use the system."
-msgstr ""
-"Te warunki mogą być aktualizowane od czasu do czasu. Użytkownicy będą musieli zaakceptować wszelkie zmiany przed kontynuowaniem korzystania z systemu."
+msgstr "Te warunki mogą być aktualizowane od czasu do czasu. Użytkownicy będą musieli zaakceptować wszelkie zmiany przed kontynuowaniem korzystania z systemu."
 
 #: templates/default/user_agreement_content.html:30
 msgid "Agreement Version:"
@@ -6021,8 +6005,7 @@ msgstr "Ostatnia aktualizacja:"
 
 #: templates/default/user_agreement_content.html:31
 msgid "Please contact your administrator for the last update date"
-msgstr ""
-"Skontaktuj się z administratorem w sprawie daty ostatniej aktualizacji"
+msgstr "Skontaktuj się z administratorem w sprawie daty ostatniej aktualizacji"
 
 #: templates/default/api_key_regenerate.html:16
 msgid "You are about to regenerate the API key"
@@ -6217,7 +6200,7 @@ msgid "Recommended bits for"
 msgstr "Zalecana długość dla"
 
 #: templates/default/dnssec_add_key.html:140
-#: install/helpers/InstallStepHandler.php:176
+#: install/helpers/InstallStepHandler.php:182
 msgid "Warning:"
 msgstr "Warning:"
 
@@ -6262,7 +6245,7 @@ msgid "Edit User"
 msgstr "Edytuj użytkownika"
 
 #: templates/default/users.html:24 templates/default/add_user.html:20
-#: install/templates/step4.html.twig:40 install/templates/step5.html.twig:56
+#: install/templates/step4.html.twig:38 install/templates/step5.html.twig:56
 msgid "Username"
 msgstr "Nazwa użytkownika"
 
@@ -6611,6 +6594,7 @@ msgid "Host Prefix"
 msgstr "Prefiks hosta"
 
 #: templates/default/batch_ptr_record.html:71
+#: install/templates/step4.html.twig:132
 msgid "Optional"
 msgstr "Opcjonalne"
 
@@ -7178,7 +7162,7 @@ msgstr "Dodaj użytkownika"
 msgid "Optional: User's full name for identification"
 msgstr "Opcjonalnie: Pełne imię i nazwisko użytkownika do identyfikacji"
 
-#: templates/default/add_user.html:42 install/templates/step4.html.twig:56
+#: templates/default/add_user.html:42 install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr "Podaj hasło użytkownika"
 
@@ -7352,8 +7336,7 @@ msgstr "Zachowanie szablonu:"
 
 #: templates/default/list_zone_templ.html:135
 msgid "Changing a zone's template overwrites template-based records but preserves manual additions. Template modifications don't automatically update zones - use \"Update Zones\" button when editing templates to apply changes."
-msgstr ""
-"Zmiana szablonu strefy nadpisuje rekordy oparte na szablonie, ale zachowuje ręczne dodatki. Modyfikacje szablonu nie aktualizują automatycznie stref - użyj przycisku \"Aktualizuj strefy\" podczas edycji szablonów, aby zastosować zmiany."
+msgstr "Zmiana szablonu strefy nadpisuje rekordy oparte na szablonie, ale zachowuje ręczne dodatki. Modyfikacje szablonu nie aktualizują automatycznie stref - użyj przycisku \"Aktualizuj strefy\" podczas edycji szablonów, aby zastosować zmiany."
 
 #: templates/default/change_password.html:16
 msgid "Change Password"
@@ -8408,8 +8391,9 @@ msgid "Limited Database Rights:"
 msgstr "Ograniczone prawa do bazy danych:"
 
 #: install/templates/step6.html.twig:13
-msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS database."
-msgstr "Teraz chcesz nadać ograniczone prawa Poweradminowi, aby mógł aktualizować dane w tabelach. W tym celu należy utworzyć nowego użytkownika i nadać mu prawa do wybierania, usuwania, wstawiania i aktualizowania rekordów w bazie danych PowerDNS."
+msgid "Create a database user with limited rights (select, insert, update, delete) for Poweradmin to access PowerDNS tables."
+msgstr ""
+"Utwórz użytkownika bazy danych z ograniczonymi uprawnieniami (select, insert, update, delete), aby Poweradmin mógł uzyskiwać dostęp do tabel PowerDNS."
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -8423,7 +8407,7 @@ msgstr "Wykonaj następujące polecenia:"
 msgid "After you have added the new user, proceed with this installation procedure."
 msgstr "Po dodaniu nowego użytkownika kontynuuj tę procedurę instalacji."
 
-#: install/templates/step3.html.twig:44
+#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:96
 msgid "Note:"
 msgstr "Uwaga:"
 
@@ -8431,7 +8415,7 @@ msgstr "Uwaga:"
 msgid "Since you are using SQLite, there is no need to create a new user with limited rights."
 msgstr "Ponieważ korzystasz z SQLite, nie ma potrzeby tworzenia nowego użytkownika z ograniczonymi uprawnieniami."
 
-#: install/templates/step5.html.twig:165 install/templates/step3.html.twig:56
+#: install/templates/step5.html.twig:166 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "Przejdź do kroku"
 
@@ -8480,124 +8464,133 @@ msgid "Configuring Database Connection"
 msgstr "Konfiguracja Połączenia z Bazą Danych"
 
 #: install/templates/step4.html.twig:12
-msgid "Database Preparation:"
-msgstr "Przygotowanie Bazy Danych:"
+msgid "Database Configuration:"
+msgstr "Konfiguracja bazy danych:"
 
 #: install/templates/step4.html.twig:12
-msgid "The installer needs to modify the PowerDNS database with tables for Poweradmin. Use an account with sufficient rights (like root) to proceed."
-msgstr "Instalator musi zmodyfikować bazę danych PowerDNS, tworząc tabele dla Poweradmin. Użyj konta z wystarczającymi uprawnieniami (jak root), aby kontynuować."
+msgid "Configure database connection with table creation rights. PowerDNS location can be specified separately if needed."
+msgstr ""
+"Skonfiguruj połączenie z bazą danych z uprawnieniami do tworzenia tabel. Lokalizacja PowerDNS może być określona oddzielnie, jeśli jest to potrzebne."
 
-#: install/templates/step4.html.twig:14
-msgid "Important:"
-msgstr "Ważne:"
+#: install/templates/step4.html.twig:20
+msgid "Database Connection Settings"
+msgstr "Ustawienia połączenia z bazą danych"
 
-#: install/templates/step4.html.twig:14
-msgid "Poweradmin requires a properly configured PowerDNS database with tables already created. This installer will NOT create PowerDNS tables - only Poweradmin-specific tables."
-msgstr "Poweradmin wymaga poprawnie skonfigurowanej bazy danych PowerDNS z już utworzonymi tabelami. Ten instalator NIE utworzy tabel PowerDNS - tylko tabele specyficzne dla Poweradmin."
-
-#: install/templates/step4.html.twig:22
-msgid "Database Settings"
-msgstr "Ustawienia Bazy Danych"
-
-#: install/templates/step4.html.twig:26
+#: install/templates/step4.html.twig:24
 msgid "Database type"
 msgstr "Typ bazy danych"
 
-#: install/templates/step4.html.twig:35
-msgid "The type of the PowerDNS database."
-msgstr "Typ bazy danych PowerDNS."
+#: install/templates/step4.html.twig:33
+msgid "Database server type."
+msgstr "Typ serwera bazy danych."
 
-#: install/templates/step4.html.twig:43 install/templates/step5.html.twig:59
+#: install/templates/step4.html.twig:41 install/templates/step5.html.twig:59
 msgid "Provide the user name"
 msgstr "Podaj nazwę użytkownika"
 
-#: install/templates/step4.html.twig:46
-msgid "Database username with administrative rights."
-msgstr "Nazwa użytkownika bazy danych z uprawnieniami administracyjnymi."
+#: install/templates/step4.html.twig:44
+msgid "Database username with rights to create tables."
+msgstr "Nazwa użytkownika bazy danych z uprawnieniami do tworzenia tabel."
 
-#: install/templates/step4.html.twig:60
+#: install/templates/step4.html.twig:58
 msgid "Password for this database user."
 msgstr "Hasło dla tego użytkownika bazy danych."
 
-#: install/templates/step4.html.twig:65
+#: install/templates/step4.html.twig:63
 msgid "Hostname"
 msgstr "Nazwa hosta"
 
-#: install/templates/step4.html.twig:68
+#: install/templates/step4.html.twig:66
 msgid "Provide the hostname"
 msgstr "Podaj nazwę hosta"
 
-#: install/templates/step4.html.twig:71
+#: install/templates/step4.html.twig:69
 msgid "Database server hostname (usually \"localhost\")."
 msgstr "Nazwa hosta serwera bazy danych (zwykle \"localhost\")."
 
-#: install/templates/step4.html.twig:76
+#: install/templates/step4.html.twig:74
 msgid "DB Port"
 msgstr "Port DB"
 
-#: install/templates/step4.html.twig:79
+#: install/templates/step4.html.twig:77
 msgid "Provide database port"
 msgstr "Podaj port bazy danych"
 
-#: install/templates/step4.html.twig:82
+#: install/templates/step4.html.twig:80
 msgid "Database server port."
 msgstr "Port serwera bazy danych."
 
-#: install/templates/step4.html.twig:87
+#: install/templates/step4.html.twig:85
 msgid "Database"
 msgstr "Baza danych"
 
-#: install/templates/step4.html.twig:90
+#: install/templates/step4.html.twig:88
 msgid "Provide the name of the database"
 msgstr "Podaj nazwę bazy danych"
 
-#: install/templates/step4.html.twig:93
-msgid "PowerDNS database name."
-msgstr "Nazwa bazy danych PowerDNS."
+#: install/templates/step4.html.twig:91
+msgid "Database name (will be used for Poweradmin tables)."
+msgstr "Nazwa bazy danych (będzie używana dla tabel Poweradmin)."
 
-#: install/templates/step4.html.twig:95
+#: install/templates/step4.html.twig:93
 msgid "Full path to SQLite database file"
 msgstr "Pełna ścieżka do pliku bazy danych SQLite"
 
-#: install/templates/step4.html.twig:98
+#: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr "Plik musi istnieć z dostępem do odczytu/zapisu dla serwera WWW. Użyj ścieżki bezwzględnej."
 
-#: install/templates/step4.html.twig:106
+#: install/templates/step4.html.twig:104
 msgid "DB charset"
 msgstr "Zestaw znaków DB"
 
-#: install/templates/step4.html.twig:182 install/templates/step4.html.twig:190
+#: install/templates/step4.html.twig:199 install/templates/step4.html.twig:207
 msgid "Use default"
 msgstr "Użyj domyślnego"
 
-#: install/templates/step4.html.twig:113
+#: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
 msgstr "Zestaw znaków dla nowych tabel. Pozostaw puste dla domyślnych ustawień bazy danych."
 
-#: install/templates/step4.html.twig:118
+#: install/templates/step4.html.twig:116
 msgid "DB collation"
 msgstr "Porównywanie DB"
 
-#: install/templates/step4.html.twig:125
+#: install/templates/step4.html.twig:123
 msgid "Collation rules for character comparison. Leave empty for database default."
 msgstr "Reguły porównywania znaków. Pozostaw puste dla domyślnych ustawień bazy danych."
 
-#: install/templates/step4.html.twig:133
-msgid "Administrator Account"
-msgstr "Konto Administratora"
+#: install/templates/step4.html.twig:132
+msgid "PowerDNS Database"
+msgstr "Baza danych PowerDNS"
 
-#: install/templates/step4.html.twig:137
+#: install/templates/step4.html.twig:136
+msgid "Database name"
+msgstr "Nazwa bazy danych"
+
+#: install/templates/step4.html.twig:139
+msgid "Leave empty for same database"
+msgstr "Zostaw puste dla tej samej bazy danych"
+
+#: install/templates/step4.html.twig:142
+msgid "MySQL database with PowerDNS tables (if different)."
+msgstr "Baza danych MySQL z tabelami PowerDNS (jeśli inna)."
+
+#: install/templates/step4.html.twig:150
+msgid "Poweradmin Account"
+msgstr "Konto Poweradmin"
+
+#: install/templates/step4.html.twig:154
 msgid "Administrator password"
 msgstr "Hasło administratora"
 
-#: install/templates/step4.html.twig:142
+#: install/templates/step4.html.twig:159
 msgid "Provide a password"
 msgstr "Podaj hasło"
 
-#: install/templates/step4.html.twig:147
-msgid "Password for \"admin\" username with full rights to the Poweradmin interface."
-msgstr "Hasło dla nazwy użytkownika \"admin\" z pełnymi prawami do interfejsu Poweradmin."
+#: install/templates/step4.html.twig:164
+msgid "Password for \"admin\" username."
+msgstr "Hasło dla nazwy użytkownika \"admin\"."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -8704,8 +8697,8 @@ msgid "Provide the DNS hostmaster"
 msgstr "Podaj hostmaster DNS"
 
 #: install/templates/step5.html.twig:96
-msgid "When creating SOA records and no hostmaster is provided, this value here will be used."
-msgstr "Podczas tworzenia rekordów SOA, gdy nie podano hostmastera, zostanie użyta ta wartość."
+msgid "Default hostmaster for SOA records."
+msgstr "Domyślny hostmaster dla rekordów SOA."
 
 #: install/templates/step5.html.twig:101
 msgid "Primary nameserver"
@@ -8716,8 +8709,8 @@ msgid "Provide the primary nameserver"
 msgstr "Podaj podstawowy serwer nazw"
 
 #: install/templates/step5.html.twig:108
-msgid "When creating new zones using the template, this value will be used as primary nameserver."
-msgstr "Podczas tworzenia nowych stref przy użyciu szablonu, ta wartość będzie używana jako główny serwer nazw."
+msgid "Primary nameserver for new zones."
+msgstr "Podstawowy serwer nazw dla nowych stref."
 
 #: install/templates/step5.html.twig:113
 msgid "Secondary nameserver"
@@ -8728,8 +8721,8 @@ msgid "Provide the secondary nameserver"
 msgstr "Podaj pomocniczy serwer nazw"
 
 #: install/templates/step5.html.twig:120
-msgid "When creating new zones using the template, this value will be used as secondary nameserver."
-msgstr "Podczas tworzenia nowych stref przy użyciu szablonu, ta wartość będzie używana jako drugorzędny serwer nazw."
+msgid "Secondary nameserver for new zones."
+msgstr "Pomocniczy serwer nazw dla nowych stref."
 
 #: install/templates/step5.html.twig:126
 msgid "Tertiary Nameserver"
@@ -8740,16 +8733,16 @@ msgid "optional"
 msgstr "opcjonalny"
 
 #: install/templates/step5.html.twig:133
-msgid "When creating new zones using the template, this optional value will be used as tertiary nameserver."
-msgstr "Podczas tworzenia nowych stref przy użyciu szablonu, ta opcjonalna wartość będzie używana jako trzeciorzędny serwer nazw."
+msgid "Optional tertiary nameserver for new zones."
+msgstr "Opcjonalny trzeciorzędny serwer nazw dla nowych stref."
 
 #: install/templates/step5.html.twig:139
 msgid "Quaternary Nameserver"
 msgstr "Czwarty serwer nazw"
 
 #: install/templates/step5.html.twig:146
-msgid "When creating new zones using the template, this optional value will be used as quaternary nameserver."
-msgstr "Podczas tworzenia nowych stref przy użyciu szablonu, ta opcjonalna wartość będzie używana jako czwartorzędny serwer nazw."
+msgid "Optional quaternary nameserver for new zones."
+msgstr "Opcjonalny czwartorzędny serwer nazw dla nowych stref."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -8795,119 +8788,92 @@ msgstr "Zacznij konfigurować strefy DNS i rekordy"
 msgid "Getting Ready"
 msgstr "Przygotowanie"
 
-#: install/templates/step3.html.twig:12
-msgid "Preparation:"
-msgstr "Przygotowanie:"
+#: install/templates/step3.html.twig:13
+msgid "Prerequisites"
+msgstr "Wymagania wstępne"
 
-#: install/templates/step3.html.twig:12
-msgid "Let's get your PowerDNS database ready for Poweradmin."
-msgstr "Przygotujmy bazę danych PowerDNS do korzystania z Poweradmin."
+#: install/templates/step3.html.twig:16
+msgid "Before proceeding, ensure you have:"
+msgstr "Przed kontynuowaniem upewnij się, że masz:"
 
-#: install/templates/step3.html.twig:17
-msgid "About PowerDNS"
-msgstr "O PowerDNS"
+#: install/templates/step3.html.twig:18
+msgid "PowerDNS installed with database tables created"
+msgstr "Zainstalowany PowerDNS z utworzonymi tabelami bazy danych"
+
+#: install/templates/step3.html.twig:19
+msgid "Database credentials (hostname, username, password)"
+msgstr "Dane dostępowe do bazy danych (nazwa hosta, nazwa użytkownika, hasło)"
 
 #: install/templates/step3.html.twig:20
-msgid "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin will help you manage this database via a web interface."
-msgstr "PowerDNS to serwer DNS, który przechowuje swoje dane w bazie danych SQL. Poweradmin pomoże zarządzać tą bazą danych za pośrednictwem interfejsu internetowego."
+msgid "Permission to create tables for Poweradmin"
+msgstr "Uprawnienia do tworzenia tabel dla Poweradmin"
 
-#: install/templates/step3.html.twig:21
-msgid "Before proceeding, you should have:"
-msgstr "Przed kontynuacją powinieneś mieć:"
+#: install/templates/step3.html.twig:27
+msgid "Next:"
+msgstr "Następny:"
 
-#: install/templates/step3.html.twig:23
-msgid "An operational PowerDNS installation"
-msgstr "Działającą instalację PowerDNS"
+#: install/templates/step3.html.twig:27
+msgid "Configure database connection, create admin account, and generate configuration file."
+msgstr ""
+"Skonfiguruj połączenie z bazą danych, utwórz konto administratora i wygeneruj plik konfiguracyjny."
 
-#: install/templates/step3.html.twig:24
-msgid "Database connectivity details (hostname, username, password)"
-msgstr "Dane połączenia z bazą danych (nazwa hosta, nazwa użytkownika, hasło)"
-
-#: install/templates/step3.html.twig:25
-msgid "Administrative access to your database"
-msgstr "Administracyjny dostęp do twojej bazy danych"
-
-#: install/templates/step3.html.twig:32
-msgid "Database Preparations"
-msgstr "Przygotowanie Bazy Danych"
-
-#: install/templates/step3.html.twig:35
-msgid "In the next steps, Poweradmin will:"
-msgstr "W następnych krokach, Poweradmin:"
-
-#: install/templates/step3.html.twig:37
-msgid "Connect to your PowerDNS database"
-msgstr "Połączy się z twoją bazą danych PowerDNS"
-
-#: install/templates/step3.html.twig:38
-msgid "Create tables needed for Poweradmin functionality"
-msgstr "Stworzy tabele potrzebne do funkcjonalności Poweradmin"
-
-#: install/templates/step3.html.twig:39
-msgid "Set up an administrator account for web access"
-msgstr "Skonfiguruje konto administratora do dostępu przez stronę WWW"
-
-#: install/templates/step3.html.twig:40
-msgid "Create a config file to store your settings"
-msgstr "Stworzy plik konfiguracyjny do przechowywania twoich ustawień"
-
-#: install/helpers/InstallStepHandler.php:177
+#: install/helpers/InstallStepHandler.php:183
 msgid "Missing PowerDNS tables:"
 msgstr "Brakujące tabele PowerDNS:"
 
-#: install/helpers/InstallStepHandler.php:178
+#: install/helpers/InstallStepHandler.php:184
 msgid "Poweradmin requires these PowerDNS tables to function properly."
 msgstr "Poweradmin wymaga tych tabel PowerDNS do prawidłowego funkcjonowania."
 
-#: install/helpers/InstallStepHandler.php:185
+#: install/helpers/InstallStepHandler.php:192
 msgid "Updating database... done!"
 msgstr "Aktualizacja bazy danych... zakończona!"
 
-#: install/helpers/InstallStepHandler.php:207
+#: install/helpers/InstallStepHandler.php:214
 msgid "Foreign Key Constraint Issues:"
 msgstr "Problemy z ograniczeniami klucza obcego:"
 
-#: install/helpers/InstallStepHandler.php:209
+#: install/helpers/InstallStepHandler.php:216
 msgid "The installer could not remove existing tables due to foreign key constraints"
 msgstr "Instalator nie mógł usunąć istniejących tabel z powodu ograniczeń klucza obcego"
 
-#: install/helpers/InstallStepHandler.php:210
+#: install/helpers/InstallStepHandler.php:217
 msgid "This can happen during reinstallation if you have custom constraints or if tables are referenced by other tables"
 msgstr "Może to wystąpić podczas ponownej instalacji, jeśli masz niestandardowe ograniczenia lub jeśli tabele są odwoływane przez inne tabele"
 
-#: install/helpers/InstallStepHandler.php:211
+#: install/helpers/InstallStepHandler.php:218
 msgid "You can try manually disabling foreign key checks before running the installer:"
 msgstr "Możesz spróbować ręcznie wyłączyć sprawdzanie kluczy obcych przed uruchomieniem instalatora:"
 
-#: install/helpers/InstallStepHandler.php:224
+#: install/helpers/InstallStepHandler.php:231
 msgid "Suggestions:"
 msgstr "Sugestie:"
 
-#: install/helpers/InstallStepHandler.php:218
+#: install/helpers/InstallStepHandler.php:225
 msgid "Make sure the SQLite database file exists"
 msgstr "Upewnij się, że plik bazy danych SQLite istnieje"
 
-#: install/helpers/InstallStepHandler.php:219
+#: install/helpers/InstallStepHandler.php:226
 msgid "Check that the web server has read and write permissions for the database file"
 msgstr "Sprawdź, czy serwer WWW ma uprawnienia do odczytu i zapisu pliku bazy danych"
 
-#: install/helpers/InstallStepHandler.php:220
+#: install/helpers/InstallStepHandler.php:227
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr "Sprawdź, czy pełna ścieżka do pliku bazy danych jest poprawna i dostępna"
 
-#: install/helpers/InstallStepHandler.php:226
+#: install/helpers/InstallStepHandler.php:233
 msgid "Verify database credentials are correct"
 msgstr "Sprawdź, czy dane uwierzytelniające bazy danych są poprawne"
 
-#: install/helpers/InstallStepHandler.php:227
+#: install/helpers/InstallStepHandler.php:234
 msgid "Check that the database user has sufficient privileges"
 msgstr "Sprawdź, czy użytkownik bazy danych ma wystarczające uprawnienia"
 
-#: install/helpers/InstallStepHandler.php:228
+#: install/helpers/InstallStepHandler.php:235
 msgid "Ensure the database server is running and accessible"
 msgstr "Upewnij się, że serwer bazy danych działa i jest dostępny"
 
-#: install/helpers/InstallStepHandler.php:233
+#: install/helpers/InstallStepHandler.php:240
 msgid "Database Error"
 msgstr "Błąd bazy danych"
 
@@ -8934,3 +8900,111 @@ msgstr "Nie można uzyskać dostępu do pliku bazy danych SQLite %s: %s"
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:55
 msgid "No configuration file found. Please create the config/settings.php file before proceeding."
 msgstr "Nie znaleziono pliku konfiguracyjnego. Utwórz plik config/settings.php przed kontynuowaniem."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:47
+msgid "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL and SQLite, please use the same database."
+msgstr ""
+"Oddzielne bazy danych PowerDNS są obsługiwane tylko z MySQL. Dla PostgreSQL i SQLite, proszę używać tej samej bazy danych."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
+#, php-format
+msgid "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is properly installed in this database."
+msgstr ""
+"Brakuje tabel PowerDNS w bazie danych \"%s\": %s. Proszę upewnić się, że PowerDNS jest prawidłowo zainstalowany w tej bazie danych."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
+#, php-format
+msgid "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Nie można połączyć się z bazą danych PowerDNS \"%s\": %s"
+
+# OBSOLETE: msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS database."
+# OBSOLETE: msgstr "Teraz chcesz nadać ograniczone prawa Poweradminowi, aby mógł aktualizować dane w tabelach. W tym celu należy utworzyć nowego użytkownika i nadać mu prawa do wybierania, usuwania, wstawiania i aktualizowania rekordów w bazie danych PowerDNS."
+
+# OBSOLETE: msgid "Database Preparation:"
+# OBSOLETE: msgstr "Przygotowanie Bazy Danych:"
+
+# OBSOLETE: msgid "The installer needs to modify the PowerDNS database with tables for Poweradmin. Use an account with sufficient rights (like root) to proceed."
+# OBSOLETE: msgstr "Instalator musi zmodyfikować bazę danych PowerDNS, tworząc tabele dla Poweradmin. Użyj konta z wystarczającymi uprawnieniami (jak root), aby kontynuować."
+
+# OBSOLETE: msgid "Important:"
+# OBSOLETE: msgstr "Ważne:"
+
+# OBSOLETE: msgid "Poweradmin requires a properly configured PowerDNS database with tables already created. This installer will NOT create PowerDNS tables - only Poweradmin-specific tables."
+# OBSOLETE: msgstr "Poweradmin wymaga poprawnie skonfigurowanej bazy danych PowerDNS z już utworzonymi tabelami. Ten instalator NIE utworzy tabel PowerDNS - tylko tabele specyficzne dla Poweradmin."
+
+# OBSOLETE: msgid "Database Settings"
+# OBSOLETE: msgstr "Ustawienia Bazy Danych"
+
+# OBSOLETE: msgid "The type of the PowerDNS database."
+# OBSOLETE: msgstr "Typ bazy danych PowerDNS."
+
+# OBSOLETE: msgid "Database username with administrative rights."
+# OBSOLETE: msgstr "Nazwa użytkownika bazy danych z uprawnieniami administracyjnymi."
+
+# OBSOLETE: msgid "PowerDNS database name."
+# OBSOLETE: msgstr "Nazwa bazy danych PowerDNS."
+
+# OBSOLETE: msgid "Administrator Account"
+# OBSOLETE: msgstr "Konto Administratora"
+
+# OBSOLETE: msgid "Password for \"admin\" username with full rights to the Poweradmin interface."
+# OBSOLETE: msgstr "Hasło dla nazwy użytkownika \"admin\" z pełnymi prawami do interfejsu Poweradmin."
+
+# OBSOLETE: msgid "When creating SOA records and no hostmaster is provided, this value here will be used."
+# OBSOLETE: msgstr "Podczas tworzenia rekordów SOA, gdy nie podano hostmastera, zostanie użyta ta wartość."
+
+# OBSOLETE: msgid "When creating new zones using the template, this value will be used as primary nameserver."
+# OBSOLETE: msgstr "Podczas tworzenia nowych stref przy użyciu szablonu, ta wartość będzie używana jako główny serwer nazw."
+
+# OBSOLETE: msgid "When creating new zones using the template, this value will be used as secondary nameserver."
+# OBSOLETE: msgstr "Podczas tworzenia nowych stref przy użyciu szablonu, ta wartość będzie używana jako drugorzędny serwer nazw."
+
+# OBSOLETE: msgid "When creating new zones using the template, this optional value will be used as tertiary nameserver."
+# OBSOLETE: msgstr "Podczas tworzenia nowych stref przy użyciu szablonu, ta opcjonalna wartość będzie używana jako trzeciorzędny serwer nazw."
+
+# OBSOLETE: msgid "When creating new zones using the template, this optional value will be used as quaternary nameserver."
+# OBSOLETE: msgstr "Podczas tworzenia nowych stref przy użyciu szablonu, ta opcjonalna wartość będzie używana jako czwartorzędny serwer nazw."
+
+# OBSOLETE: msgid "Preparation:"
+# OBSOLETE: msgstr "Przygotowanie:"
+
+# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
+# OBSOLETE: msgstr "Przygotujmy bazę danych PowerDNS do korzystania z Poweradmin."
+
+# OBSOLETE: msgid "About PowerDNS"
+# OBSOLETE: msgstr "O PowerDNS"
+
+# OBSOLETE: msgid "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin will help you manage this database via a web interface."
+# OBSOLETE: msgstr "PowerDNS to serwer DNS, który przechowuje swoje dane w bazie danych SQL. Poweradmin pomoże zarządzać tą bazą danych za pośrednictwem interfejsu internetowego."
+
+# OBSOLETE: msgid "Before proceeding, you should have:"
+# OBSOLETE: msgstr "Przed kontynuacją powinieneś mieć:"
+
+# OBSOLETE: msgid "An operational PowerDNS installation"
+# OBSOLETE: msgstr "Działającą instalację PowerDNS"
+
+# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
+# OBSOLETE: msgstr "Dane połączenia z bazą danych (nazwa hosta, nazwa użytkownika, hasło)"
+
+# OBSOLETE: msgid "Administrative access to your database"
+# OBSOLETE: msgstr "Administracyjny dostęp do twojej bazy danych"
+
+# OBSOLETE: msgid "Database Preparations"
+# OBSOLETE: msgstr "Przygotowanie Bazy Danych"
+
+# OBSOLETE: msgid "In the next steps, Poweradmin will:"
+# OBSOLETE: msgstr "W następnych krokach, Poweradmin:"
+
+# OBSOLETE: msgid "Connect to your PowerDNS database"
+# OBSOLETE: msgstr "Połączy się z twoją bazą danych PowerDNS"
+
+# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
+# OBSOLETE: msgstr "Stworzy tabele potrzebne do funkcjonalności Poweradmin"
+
+# OBSOLETE: msgid "Set up an administrator account for web access"
+# OBSOLETE: msgstr "Skonfiguruje konto administratora do dostępu przez stronę WWW"
+
+# OBSOLETE: msgid "Create a config file to store your settings"
+# OBSOLETE: msgstr "Stworzy plik konfiguracyjny do przechowywania twoich ustawień"
+
+

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-16 09:23+0300\n"
+"POT-Creation-Date: 2025-06-20 19:17+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -176,7 +176,8 @@ msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
 msgstr ""
-"Posten og tilhørende PTR- og A/AAAA-poster ble slettet, men kommentaren ble bevart fordi lignende poster eksisterer."
+"Posten og tilhørende PTR- og A/AAAA-poster ble slettet, men kommentaren ble "
+"bevart fordi lignende poster eksisterer."
 
 #: lib/Application/Controller/DeleteRecordController.php:184
 msgid ""
@@ -191,7 +192,8 @@ msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
 msgstr ""
-"Posten og tilhørende A/AAAA-post ble slettet, men kommentaren ble bevart fordi lignende poster eksisterer."
+"Posten og tilhørende A/AAAA-post ble slettet, men kommentaren ble bevart "
+"fordi lignende poster eksisterer."
 
 #: lib/Application/Controller/DeleteRecordController.php:188
 msgid ""
@@ -7495,7 +7497,7 @@ msgstr "Vis brukeraktivitetshistorikk"
 msgid "View user logs"
 msgstr "Vis brukerlogger"
 
-#: templates/default/add_user.html:38 install/templates/step4.html.twig:51
+#: templates/default/add_user.html:38 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:67
 msgid "Password"
 msgstr "Passord"
@@ -7914,8 +7916,7 @@ msgstr "Bruksvilkår"
 #: templates/default/user_agreement_content.html:2
 msgid ""
 "By using this Poweradmin installation, you agree to the following terms:"
-msgstr ""
-"Ved å bruke denne Poweradmin-installasjonen godtar du følgende vilkår:"
+msgstr "Ved å bruke denne Poweradmin-installasjonen godtar du følgende vilkår:"
 
 #: templates/default/user_agreement_content.html:4
 msgid "Acceptable Use"
@@ -7925,7 +7926,8 @@ msgstr "Akseptabel bruk"
 msgid ""
 "You will use this system responsibly and in accordance with applicable laws"
 msgstr ""
-"Du vil bruke dette systemet ansvarlig og i overenstemmelse med gjeldende lover"
+"Du vil bruke dette systemet ansvarlig og i overenstemmelse med gjeldende "
+"lover"
 
 #: templates/default/user_agreement_content.html:7
 msgid "You will not attempt to gain unauthorized access to other users' data"
@@ -7937,8 +7939,7 @@ msgstr "Du vil holde dine innloggingsopplysninger sikre og konfidensielle"
 
 #: templates/default/user_agreement_content.html:9
 msgid "You will not use this system for any malicious or illegal activities"
-msgstr ""
-"Du vil ikke bruke dette systemet til ondsinnet eller ulovlig aktivitet"
+msgstr "Du vil ikke bruke dette systemet til ondsinnet eller ulovlig aktivitet"
 
 #: templates/default/user_agreement_content.html:12
 msgid "Data Protection"
@@ -7949,7 +7950,8 @@ msgid ""
 "Your login activity and DNS management actions may be logged for security "
 "and audit purposes"
 msgstr ""
-"Din innloggingsaktivitet og DNS-administrasjonshandlinger kan logges for sikkerhets- og revisjonsformal"
+"Din innloggingsaktivitet og DNS-administrasjonshandlinger kan logges for "
+"sikkerhets- og revisjonsformal"
 
 #: templates/default/user_agreement_content.html:15
 msgid ""
@@ -7962,7 +7964,8 @@ msgid ""
 "We will protect your personal information in accordance with applicable "
 "privacy laws"
 msgstr ""
-"Vi vil beskytte din personlige informasjon i henhold til gjeldende personvernlover"
+"Vi vil beskytte din personlige informasjon i henhold til gjeldende "
+"personvernlover"
 
 #: templates/default/user_agreement_content.html:19
 msgid "System Availability"
@@ -7974,7 +7977,9 @@ msgid ""
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
 msgstr ""
-"Selv om vi strå etter å opprettholde systemtilgjengelighet, kan vi ikke garantere 100% oppetid. Brukere bør ikke stole utelukkende på dette systemet for kritiske DNS-operasjoner uten passende sikkerhetskopier og overvåking."
+"Selv om vi strå etter å opprettholde systemtilgjengelighet, kan vi ikke "
+"garantere 100% oppetid. Brukere bør ikke stole utelukkende på dette systemet "
+"for kritiske DNS-operasjoner uten passende sikkerhetskopier og overvåking."
 
 #: templates/default/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -7986,7 +7991,8 @@ msgid ""
 "are not liable for any damages or losses resulting from the use of this "
 "system."
 msgstr ""
-"Dette systemet leveres \"som det er\" uten noen garantier. Administratorene er ikke ansvarlige for skader eller tap som følge av bruk av dette systemet."
+"Dette systemet leveres \"som det er\" uten noen garantier. Administratorene "
+"er ikke ansvarlige for skader eller tap som følge av bruk av dette systemet."
 
 #: templates/default/user_agreement_content.html:25
 msgid "Changes to Agreement"
@@ -7997,7 +8003,8 @@ msgid ""
 "These terms may be updated from time to time. Users will be required to "
 "accept any changes before continuing to use the system."
 msgstr ""
-"Disse vilkårene kan oppdateres fra tid til annen. Brukere må godta eventuelle endringer før de fortsetter å bruke systemet."
+"Disse vilkårene kan oppdateres fra tid til annen. Brukere må godta "
+"eventuelle endringer før de fortsetter å bruke systemet."
 
 #: templates/default/user_agreement_content.html:30
 msgid "Agreement Version:"
@@ -8212,7 +8219,7 @@ msgid "Recommended bits for"
 msgstr "Anbefalte bits for"
 
 #: templates/default/dnssec_add_key.html:140
-#: install/helpers/InstallStepHandler.php:176
+#: install/helpers/InstallStepHandler.php:182
 msgid "Warning:"
 msgstr "Advarsel:"
 
@@ -8265,7 +8272,7 @@ msgid "Edit User"
 msgstr "Rediger bruker"
 
 #: templates/default/users.html:24 templates/default/add_user.html:20
-#: install/templates/step4.html.twig:40 install/templates/step5.html.twig:56
+#: install/templates/step4.html.twig:38 install/templates/step5.html.twig:56
 msgid "Username"
 msgstr "Brukernavn"
 
@@ -8649,6 +8656,7 @@ msgid "Host Prefix"
 msgstr "Vertsprefiks"
 
 #: templates/default/batch_ptr_record.html:71
+#: install/templates/step4.html.twig:132
 msgid "Optional"
 msgstr "Valgfritt"
 
@@ -9269,7 +9277,7 @@ msgstr "Legg til bruker"
 msgid "Optional: User's full name for identification"
 msgstr "Valgfritt: Brukerens fulle navn for identifikasjon"
 
-#: templates/default/add_user.html:42 install/templates/step4.html.twig:56
+#: templates/default/add_user.html:42 install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr "Oppgi brukerpassord"
 
@@ -9469,7 +9477,9 @@ msgid ""
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
 msgstr ""
-"Endring av en sones mal overskriver malbaserte poster, men bevarer manuelle tillegg. Malendringer oppdaterer ikke soner automatisk - bruk \"Oppdater soner\"-knappen når du redigerer maler for å aktivere endringer."
+"Endring av en sones mal overskriver malbaserte poster, men bevarer manuelle "
+"tillegg. Malendringer oppdaterer ikke soner automatisk - bruk \"Oppdater "
+"soner\"-knappen når du redigerer maler for å aktivere endringer."
 
 #: templates/default/change_password.html:16
 msgid "Change Password"
@@ -10654,14 +10664,10 @@ msgstr "Begrensede databaserettigheter:"
 
 #: install/templates/step6.html.twig:13
 msgid ""
-"You now want to give limited rights to Poweradmin so it can update the data "
-"in the tables. To do this, you should create a new user and give it rights "
-"to select, delete, insert, and update records in the PowerDNS database."
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Du ønsker nå å gi begrensede rettigheter til Poweradmin slik at den kan "
-"oppdatere dataene i tabellene. For å gjøre dette, bør du opprette en ny "
-"bruker og gi den rettigheter til å velge, slette, sette inn og oppdatere "
-"poster i PowerDNS-databasen."
+"Opprett en databasebruker med begrensede rettigheter (select, insert, update, delete) for at Poweradmin skal kunne få tilgang til PowerDNS-tabeller."
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -10678,7 +10684,7 @@ msgstr ""
 "Etter at du har lagt til den nye brukeren, fortsett med denne "
 "installasjonsprosedyren."
 
-#: install/templates/step3.html.twig:44
+#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:96
 msgid "Note:"
 msgstr "Merk:"
 
@@ -10690,7 +10696,7 @@ msgstr ""
 "Siden du bruker SQLite, er det ikke nødvendig å opprette en ny bruker med "
 "begrensede rettigheter."
 
-#: install/templates/step5.html.twig:165 install/templates/step3.html.twig:56
+#: install/templates/step5.html.twig:166 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "Fortsett til trinn"
 
@@ -10740,143 +10746,150 @@ msgid "Configuring Database Connection"
 msgstr "Konfigurerer databasetilkobling"
 
 #: install/templates/step4.html.twig:12
-msgid "Database Preparation:"
-msgstr "Databaseforberedelse:"
+#, auto-english-fallback
+msgid "Database Configuration:"
+msgstr "Databasekonfigurasjon:"
 
 #: install/templates/step4.html.twig:12
 msgid ""
-"The installer needs to modify the PowerDNS database with tables for "
-"Poweradmin. Use an account with sufficient rights (like root) to proceed."
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
 msgstr ""
-"Installeringsprogrammet må modifisere PowerDNS-databasen med tabeller for "
-"Poweradmin. Bruk en konto med tilstrekkelige rettigheter (som root) for å "
-"fortsette."
+"Konfigurer databasetilkobling med tabellopprettingsrettigheter. PowerDNS-plassering kan spesifiseres separat om nødvendig."
 
-#: install/templates/step4.html.twig:14
-msgid "Important:"
-msgstr "Viktig:"
+#: install/templates/step4.html.twig:20
+#, auto-english-fallback
+msgid "Database Connection Settings"
+msgstr "Innstillinger for databasetilkobling"
 
-#: install/templates/step4.html.twig:14
-msgid ""
-"Poweradmin requires a properly configured PowerDNS database with tables "
-"already created. This installer will NOT create PowerDNS tables - only "
-"Poweradmin-specific tables."
-msgstr ""
-"Poweradmin krever en riktig konfigurert PowerDNS-database med tabeller "
-"allerede opprettet. Denne installasjonen vil IKKE opprette PowerDNS-tabeller "
-"- bare Poweradmin-spesifikke tabeller."
-
-#: install/templates/step4.html.twig:22
-msgid "Database Settings"
-msgstr "Databaseinnstillinger"
-
-#: install/templates/step4.html.twig:26
+#: install/templates/step4.html.twig:24
 msgid "Database type"
 msgstr "Databasetype"
 
-#: install/templates/step4.html.twig:35
-msgid "The type of the PowerDNS database."
-msgstr "Typen PowerDNS-database."
+#: install/templates/step4.html.twig:33
+#, auto-english-fallback
+msgid "Database server type."
+msgstr "Type databaseserver."
 
-#: install/templates/step4.html.twig:43 install/templates/step5.html.twig:59
+#: install/templates/step4.html.twig:41 install/templates/step5.html.twig:59
 msgid "Provide the user name"
 msgstr "Oppgi brukernavnet"
 
-#: install/templates/step4.html.twig:46
-msgid "Database username with administrative rights."
-msgstr "Databasebrukernavn med administrative rettigheter."
+#: install/templates/step4.html.twig:44
+#, auto-english-fallback
+msgid "Database username with rights to create tables."
+msgstr "Databasebrukernavn med rettigheter til å opprette tabeller."
 
-#: install/templates/step4.html.twig:60
+#: install/templates/step4.html.twig:58
 msgid "Password for this database user."
 msgstr "Passord for denne databasebrukeren."
 
-#: install/templates/step4.html.twig:65
+#: install/templates/step4.html.twig:63
 msgid "Hostname"
 msgstr "Vertsnavn"
 
-#: install/templates/step4.html.twig:68
+#: install/templates/step4.html.twig:66
 msgid "Provide the hostname"
 msgstr "Oppgi vertsnavnet"
 
-#: install/templates/step4.html.twig:71
+#: install/templates/step4.html.twig:69
 msgid "Database server hostname (usually \"localhost\")."
 msgstr "Databaseserver vertsnavn (vanligvis \"localhost\")."
 
-#: install/templates/step4.html.twig:76
+#: install/templates/step4.html.twig:74
 msgid "DB Port"
 msgstr "DB-port"
 
-#: install/templates/step4.html.twig:79
+#: install/templates/step4.html.twig:77
 msgid "Provide database port"
 msgstr "Oppgi databaseport"
 
-#: install/templates/step4.html.twig:82
+#: install/templates/step4.html.twig:80
 msgid "Database server port."
 msgstr "Databaseserver-port."
 
-#: install/templates/step4.html.twig:87
+#: install/templates/step4.html.twig:85
 msgid "Database"
 msgstr "Database"
 
-#: install/templates/step4.html.twig:90
+#: install/templates/step4.html.twig:88
 msgid "Provide the name of the database"
 msgstr "Oppgi navnet på databasen"
 
-#: install/templates/step4.html.twig:93
-msgid "PowerDNS database name."
-msgstr "PowerDNS-databasenavn."
+#: install/templates/step4.html.twig:91
+#, auto-english-fallback
+msgid "Database name (will be used for Poweradmin tables)."
+msgstr "Databasenavn (vil bli brukt til Poweradmin-tabeller)."
 
-#: install/templates/step4.html.twig:95
+#: install/templates/step4.html.twig:93
 msgid "Full path to SQLite database file"
 msgstr "Full bane til SQLite-databasefil"
 
-#: install/templates/step4.html.twig:98
+#: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr ""
 "Filen må eksistere med lese-/skrivetilgang for webserveren. Bruk absolutt "
 "bane."
 
-#: install/templates/step4.html.twig:106
+#: install/templates/step4.html.twig:104
 msgid "DB charset"
 msgstr "DB-tegnsett"
 
-#: install/templates/step4.html.twig:182 install/templates/step4.html.twig:190
+#: install/templates/step4.html.twig:199 install/templates/step4.html.twig:207
 msgid "Use default"
 msgstr "Bruk standard"
 
-#: install/templates/step4.html.twig:113
+#: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
 msgstr "Tegnsett for nye tabeller. La stå tomt for databasestandard."
 
-#: install/templates/step4.html.twig:118
+#: install/templates/step4.html.twig:116
 msgid "DB collation"
 msgstr "DB-kollasjon"
 
-#: install/templates/step4.html.twig:125
+#: install/templates/step4.html.twig:123
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
 "Sorteringsregler for tegnsammenligning. La det være tomt for "
 "databasestandard."
 
-#: install/templates/step4.html.twig:133
-msgid "Administrator Account"
-msgstr "Administratorkonto"
+#: install/templates/step4.html.twig:132
+#, auto-english-fallback
+msgid "PowerDNS Database"
+msgstr "PowerDNS-database"
 
-#: install/templates/step4.html.twig:137
+#: install/templates/step4.html.twig:136
+#, auto-english-fallback
+msgid "Database name"
+msgstr "Databasenavn"
+
+#: install/templates/step4.html.twig:139
+#, auto-english-fallback
+msgid "Leave empty for same database"
+msgstr "La stå tom for samme database"
+
+#: install/templates/step4.html.twig:142
+#, auto-english-fallback
+msgid "MySQL database with PowerDNS tables (if different)."
+msgstr "MySQL-database med PowerDNS-tabeller (hvis forskjellig)."
+
+#: install/templates/step4.html.twig:150
+#, auto-english-fallback
+msgid "Poweradmin Account"
+msgstr "Poweradmin-konto"
+
+#: install/templates/step4.html.twig:154
 msgid "Administrator password"
 msgstr "Administratorpassord"
 
-#: install/templates/step4.html.twig:142
+#: install/templates/step4.html.twig:159
 msgid "Provide a password"
 msgstr "Oppgi et passord"
 
-#: install/templates/step4.html.twig:147
-msgid ""
-"Password for \"admin\" username with full rights to the Poweradmin interface."
-msgstr ""
-"Passord for \"admin\" brukernavn med fulle rettigheter til Poweradmin-"
-"grensesnittet."
+#: install/templates/step4.html.twig:164
+msgid "Password for \"admin\" username."
+msgstr "Passord for \"admin\"-brukernavnet."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -10986,12 +10999,9 @@ msgid "Provide the DNS hostmaster"
 msgstr "Oppgi DNS-hostmaster"
 
 #: install/templates/step5.html.twig:96
-msgid ""
-"When creating SOA records and no hostmaster is provided, this value here "
-"will be used."
-msgstr ""
-"Når du oppretter SOA-poster og ingen hostmaster er oppgitt, vil denne "
-"verdien brukes."
+#, auto-english-fallback
+msgid "Default hostmaster for SOA records."
+msgstr "Standard hostmaster for SOA-poster."
 
 #: install/templates/step5.html.twig:101
 msgid "Primary nameserver"
@@ -11002,12 +11012,9 @@ msgid "Provide the primary nameserver"
 msgstr "Oppgi den primære navnetjeneren"
 
 #: install/templates/step5.html.twig:108
-msgid ""
-"When creating new zones using the template, this value will be used as "
-"primary nameserver."
-msgstr ""
-"Når du oppretter nye soner ved hjelp av malen, vil denne verdien brukes som "
-"primær navneserver."
+#, auto-english-fallback
+msgid "Primary nameserver for new zones."
+msgstr "Primær navneserver for nye soner."
 
 #: install/templates/step5.html.twig:113
 msgid "Secondary nameserver"
@@ -11018,12 +11025,9 @@ msgid "Provide the secondary nameserver"
 msgstr "Oppgi den sekundære navnetjeneren"
 
 #: install/templates/step5.html.twig:120
-msgid ""
-"When creating new zones using the template, this value will be used as "
-"secondary nameserver."
-msgstr ""
-"Når du oppretter nye soner ved hjelp av malen, vil denne verdien brukes som "
-"sekundær navneserver."
+#, auto-english-fallback
+msgid "Secondary nameserver for new zones."
+msgstr "Sekundær navneserver for nye soner."
 
 #: install/templates/step5.html.twig:126
 msgid "Tertiary Nameserver"
@@ -11034,24 +11038,18 @@ msgid "optional"
 msgstr "valgfri"
 
 #: install/templates/step5.html.twig:133
-msgid ""
-"When creating new zones using the template, this optional value will be used "
-"as tertiary nameserver."
-msgstr ""
-"Når du oppretter nye soner ved hjelp av malen, vil denne valgfrie verdien "
-"brukes som tertiær navneserver."
+#, auto-english-fallback
+msgid "Optional tertiary nameserver for new zones."
+msgstr "Valgfri tertiær navneserver for nye soner."
 
 #: install/templates/step5.html.twig:139
 msgid "Quaternary Nameserver"
 msgstr "Kvaternær navnetjener"
 
 #: install/templates/step5.html.twig:146
-msgid ""
-"When creating new zones using the template, this optional value will be used "
-"as quaternary nameserver."
-msgstr ""
-"Når du oppretter nye soner ved hjelp av malen, vil denne valgfrie verdien "
-"brukes som kvaternær navneserver."
+#, auto-english-fallback
+msgid "Optional quaternary nameserver for new zones."
+msgstr "Valgfri kvartenær navneserver for nye soner."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -11108,91 +11106,67 @@ msgstr "Begynn å konfigurere DNS-soner og -poster"
 msgid "Getting Ready"
 msgstr "Gjør klar"
 
-#: install/templates/step3.html.twig:12
-msgid "Preparation:"
-msgstr "Forberedelse:"
+#: install/templates/step3.html.twig:13
+#, auto-english-fallback
+msgid "Prerequisites"
+msgstr "Forutsetninger"
 
-#: install/templates/step3.html.twig:12
-msgid "Let's get your PowerDNS database ready for Poweradmin."
-msgstr "La oss gjøre PowerDNS-databasen din klar for Poweradmin."
+#: install/templates/step3.html.twig:16
+#, auto-english-fallback
+msgid "Before proceeding, ensure you have:"
+msgstr "Før du fortsetter, sørg for at du har:"
 
-#: install/templates/step3.html.twig:17
-msgid "About PowerDNS"
-msgstr "Om PowerDNS"
+#: install/templates/step3.html.twig:18
+#, auto-english-fallback
+msgid "PowerDNS installed with database tables created"
+msgstr "PowerDNS installert med databasetabeller opprettet"
+
+#: install/templates/step3.html.twig:19
+#, auto-english-fallback
+msgid "Database credentials (hostname, username, password)"
+msgstr "Database-legitimasjon (vertsnavn, brukernavn, passord)"
 
 #: install/templates/step3.html.twig:20
+#, auto-english-fallback
+msgid "Permission to create tables for Poweradmin"
+msgstr "Tillatelse til å opprette tabeller for Poweradmin"
+
+#: install/templates/step3.html.twig:27
+#, auto-english-fallback
+msgid "Next:"
+msgstr "Neste:"
+
+#: install/templates/step3.html.twig:27
 msgid ""
-"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
-"will help you manage this database via a web interface."
+"Configure database connection, create admin account, and generate "
+"configuration file."
 msgstr ""
-"PowerDNS er en DNS-server som lagrer dataene sine i en SQL-database. "
-"Poweradmin vil hjelpe deg å administrere denne databasen via et "
-"webgrensesnitt."
+"Konfigurer databasetilkobling, opprett administratorkonto og generer konfigurasjonsfil."
 
-#: install/templates/step3.html.twig:21
-msgid "Before proceeding, you should have:"
-msgstr "Før du fortsetter, bør du ha:"
-
-#: install/templates/step3.html.twig:23
-msgid "An operational PowerDNS installation"
-msgstr "En fungerende PowerDNS-installasjon"
-
-#: install/templates/step3.html.twig:24
-msgid "Database connectivity details (hostname, username, password)"
-msgstr "Databasetilkoblingsdetaljer (vertsnavn, brukernavn, passord)"
-
-#: install/templates/step3.html.twig:25
-msgid "Administrative access to your database"
-msgstr "Administrativ tilgang til databasen din"
-
-#: install/templates/step3.html.twig:32
-msgid "Database Preparations"
-msgstr "Databaseforberedelser"
-
-#: install/templates/step3.html.twig:35
-msgid "In the next steps, Poweradmin will:"
-msgstr "I de neste trinnene vil Poweradmin:"
-
-#: install/templates/step3.html.twig:37
-msgid "Connect to your PowerDNS database"
-msgstr "Koble til PowerDNS-databasen din"
-
-#: install/templates/step3.html.twig:38
-msgid "Create tables needed for Poweradmin functionality"
-msgstr "Opprette tabeller som trengs for Poweradmin-funksjonalitet"
-
-#: install/templates/step3.html.twig:39
-msgid "Set up an administrator account for web access"
-msgstr "Sette opp en administratorkonto for webtilgang"
-
-#: install/templates/step3.html.twig:40
-msgid "Create a config file to store your settings"
-msgstr "Opprette en konfigurasjonsfil for å lagre innstillingene dine"
-
-#: install/helpers/InstallStepHandler.php:177
+#: install/helpers/InstallStepHandler.php:183
 msgid "Missing PowerDNS tables:"
 msgstr "Manglende PowerDNS-tabeller:"
 
-#: install/helpers/InstallStepHandler.php:178
+#: install/helpers/InstallStepHandler.php:184
 msgid "Poweradmin requires these PowerDNS tables to function properly."
 msgstr "Poweradmin krever disse PowerDNS-tabellene for å fungere riktig."
 
-#: install/helpers/InstallStepHandler.php:185
+#: install/helpers/InstallStepHandler.php:192
 msgid "Updating database... done!"
 msgstr "Oppdaterer database... ferdig!"
 
-#: install/helpers/InstallStepHandler.php:207
+#: install/helpers/InstallStepHandler.php:214
 msgid "Foreign Key Constraint Issues:"
 msgstr "Problemer med fremmednøkkelbegrensninger:"
 
-#: install/helpers/InstallStepHandler.php:209
+#: install/helpers/InstallStepHandler.php:216
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
 "Installasjonen kunne ikke fjerne eksisterende tabeller på grunn av "
 "fremmednøkkelbegrensninger"
 
-#: install/helpers/InstallStepHandler.php:210
+#: install/helpers/InstallStepHandler.php:217
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
@@ -11200,7 +11174,7 @@ msgstr ""
 "Dette kan skje under reinstallasjon hvis du har tilpassede begrensninger "
 "eller hvis tabeller refereres av andre tabeller"
 
-#: install/helpers/InstallStepHandler.php:211
+#: install/helpers/InstallStepHandler.php:218
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
@@ -11208,37 +11182,37 @@ msgstr ""
 "Du kan prøve å manuelt deaktivere fremmednøkkelkontroller før du kjører "
 "installasjonen:"
 
-#: install/helpers/InstallStepHandler.php:224
+#: install/helpers/InstallStepHandler.php:231
 msgid "Suggestions:"
 msgstr "Forslag:"
 
-#: install/helpers/InstallStepHandler.php:218
+#: install/helpers/InstallStepHandler.php:225
 msgid "Make sure the SQLite database file exists"
 msgstr "Sørg for at SQLite-databasefilen eksisterer"
 
-#: install/helpers/InstallStepHandler.php:219
+#: install/helpers/InstallStepHandler.php:226
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr "Sjekk at webserveren har lese- og skrivetillatelser for databasefilen"
 
-#: install/helpers/InstallStepHandler.php:220
+#: install/helpers/InstallStepHandler.php:227
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr "Bekreft at hele banen til databasefilen er riktig og tilgjengelig"
 
-#: install/helpers/InstallStepHandler.php:226
+#: install/helpers/InstallStepHandler.php:233
 msgid "Verify database credentials are correct"
 msgstr "Bekreft at databasepåloggingsdata er riktige"
 
-#: install/helpers/InstallStepHandler.php:227
+#: install/helpers/InstallStepHandler.php:234
 msgid "Check that the database user has sufficient privileges"
 msgstr "Sjekk at databasebrukeren har tilstrekkelige rettigheter"
 
-#: install/helpers/InstallStepHandler.php:228
+#: install/helpers/InstallStepHandler.php:235
 msgid "Ensure the database server is running and accessible"
 msgstr "Sørg for at databaseserveren kjører og er tilgjengelig"
 
-#: install/helpers/InstallStepHandler.php:233
+#: install/helpers/InstallStepHandler.php:240
 msgid "Database Error"
 msgstr "Databasefeil"
 
@@ -11277,5 +11251,174 @@ msgid ""
 msgstr ""
 "Ingen konfigurasjonsfil funnet. Vennligst opprett config/settings.php filen "
 "før du fortsetter."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:47
+msgid ""
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
+msgstr ""
+"Separate PowerDNS-databaser støttes bare med MySQL. For PostgreSQL og SQLite, vennligst bruk samme database."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
+#, php-format
+msgid ""
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
+msgstr ""
+"Manglende PowerDNS-tabeller i database \"%s\": %s. Sørg for at PowerDNS er ordentlig installert i denne databasen."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
+#, php-format
+msgid "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Kan ikke koble til PowerDNS-database \"%s\": %s"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "You now want to give limited rights to Poweradmin so it can update the "
+# OBSOLETE: "data in the tables. To do this, you should create a new user and give it "
+# OBSOLETE: "rights to select, delete, insert, and update records in the PowerDNS "
+# OBSOLETE: "database."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Du ønsker nå å gi begrensede rettigheter til Poweradmin slik at den kan "
+# OBSOLETE: "oppdatere dataene i tabellene. For å gjøre dette, bør du opprette en ny "
+# OBSOLETE: "bruker og gi den rettigheter til å velge, slette, sette inn og oppdatere "
+# OBSOLETE: "poster i PowerDNS-databasen."
+
+# OBSOLETE: msgid "Database Preparation:"
+# OBSOLETE: msgstr "Databaseforberedelse:"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "The installer needs to modify the PowerDNS database with tables for "
+# OBSOLETE: "Poweradmin. Use an account with sufficient rights (like root) to proceed."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Installeringsprogrammet må modifisere PowerDNS-databasen med tabeller for "
+# OBSOLETE: "Poweradmin. Bruk en konto med tilstrekkelige rettigheter (som root) for å "
+# OBSOLETE: "fortsette."
+
+# OBSOLETE: msgid "Important:"
+# OBSOLETE: msgstr "Viktig:"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Poweradmin requires a properly configured PowerDNS database with tables "
+# OBSOLETE: "already created. This installer will NOT create PowerDNS tables - only "
+# OBSOLETE: "Poweradmin-specific tables."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Poweradmin krever en riktig konfigurert PowerDNS-database med tabeller "
+# OBSOLETE: "allerede opprettet. Denne installasjonen vil IKKE opprette PowerDNS-"
+# OBSOLETE: "tabeller - bare Poweradmin-spesifikke tabeller."
+
+# OBSOLETE: msgid "Database Settings"
+# OBSOLETE: msgstr "Databaseinnstillinger"
+
+# OBSOLETE: msgid "The type of the PowerDNS database."
+# OBSOLETE: msgstr "Typen PowerDNS-database."
+
+# OBSOLETE: msgid "Database username with administrative rights."
+# OBSOLETE: msgstr "Databasebrukernavn med administrative rettigheter."
+
+# OBSOLETE: msgid "PowerDNS database name."
+# OBSOLETE: msgstr "PowerDNS-databasenavn."
+
+# OBSOLETE: msgid "Administrator Account"
+# OBSOLETE: msgstr "Administratorkonto"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Password for \"admin\" username with full rights to the Poweradmin "
+# OBSOLETE: "interface."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Passord for \"admin\" brukernavn med fulle rettigheter til Poweradmin-"
+# OBSOLETE: "grensesnittet."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating SOA records and no hostmaster is provided, this value here "
+# OBSOLETE: "will be used."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Når du oppretter SOA-poster og ingen hostmaster er oppgitt, vil denne "
+# OBSOLETE: "verdien brukes."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this value will be used as "
+# OBSOLETE: "primary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Når du oppretter nye soner ved hjelp av malen, vil denne verdien brukes "
+# OBSOLETE: "som primær navneserver."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this value will be used as "
+# OBSOLETE: "secondary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Når du oppretter nye soner ved hjelp av malen, vil denne verdien brukes "
+# OBSOLETE: "som sekundær navneserver."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this optional value will be "
+# OBSOLETE: "used as tertiary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Når du oppretter nye soner ved hjelp av malen, vil denne valgfrie verdien "
+# OBSOLETE: "brukes som tertiær navneserver."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this optional value will be "
+# OBSOLETE: "used as quaternary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Når du oppretter nye soner ved hjelp av malen, vil denne valgfrie verdien "
+# OBSOLETE: "brukes som kvaternær navneserver."
+
+# OBSOLETE: msgid "Preparation:"
+# OBSOLETE: msgstr "Forberedelse:"
+
+# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
+# OBSOLETE: msgstr "La oss gjøre PowerDNS-databasen din klar for Poweradmin."
+
+# OBSOLETE: msgid "About PowerDNS"
+# OBSOLETE: msgstr "Om PowerDNS"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "PowerDNS is a DNS server that stores its data in an SQL database. "
+# OBSOLETE: "Poweradmin will help you manage this database via a web interface."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PowerDNS er en DNS-server som lagrer dataene sine i en SQL-database. "
+# OBSOLETE: "Poweradmin vil hjelpe deg å administrere denne databasen via et "
+# OBSOLETE: "webgrensesnitt."
+
+# OBSOLETE: msgid "Before proceeding, you should have:"
+# OBSOLETE: msgstr "Før du fortsetter, bør du ha:"
+
+# OBSOLETE: msgid "An operational PowerDNS installation"
+# OBSOLETE: msgstr "En fungerende PowerDNS-installasjon"
+
+# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
+# OBSOLETE: msgstr "Databasetilkoblingsdetaljer (vertsnavn, brukernavn, passord)"
+
+# OBSOLETE: msgid "Administrative access to your database"
+# OBSOLETE: msgstr "Administrativ tilgang til databasen din"
+
+# OBSOLETE: msgid "Database Preparations"
+# OBSOLETE: msgstr "Databaseforberedelser"
+
+# OBSOLETE: msgid "In the next steps, Poweradmin will:"
+# OBSOLETE: msgstr "I de neste trinnene vil Poweradmin:"
+
+# OBSOLETE: msgid "Connect to your PowerDNS database"
+# OBSOLETE: msgstr "Koble til PowerDNS-databasen din"
+
+# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
+# OBSOLETE: msgstr "Opprette tabeller som trengs for Poweradmin-funksjonalitet"
+
+# OBSOLETE: msgid "Set up an administrator account for web access"
+# OBSOLETE: msgstr "Sette opp en administratorkonto for webtilgang"
+
+# OBSOLETE: msgid "Create a config file to store your settings"
+# OBSOLETE: msgstr "Opprette en konfigurasjonsfil for å lagre innstillingene dine"
+
 
 

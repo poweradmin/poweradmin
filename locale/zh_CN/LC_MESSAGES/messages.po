@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-16 09:23+0300\n"
+"POT-Creation-Date: 2025-06-20 19:17+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -5533,7 +5533,7 @@ msgstr "查看用户活动历史"
 msgid "View user logs"
 msgstr "查看用户日志"
 
-#: templates/default/add_user.html:38 install/templates/step4.html.twig:51
+#: templates/default/add_user.html:38 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:67
 msgid "Password"
 msgstr "密码"
@@ -6195,7 +6195,7 @@ msgid "Recommended bits for"
 msgstr "推荐位数"
 
 #: templates/default/dnssec_add_key.html:140
-#: install/helpers/InstallStepHandler.php:176
+#: install/helpers/InstallStepHandler.php:182
 msgid "Warning:"
 msgstr "警告："
 
@@ -6240,7 +6240,7 @@ msgid "Edit User"
 msgstr "编辑用户"
 
 #: templates/default/users.html:24 templates/default/add_user.html:20
-#: install/templates/step4.html.twig:40 install/templates/step5.html.twig:56
+#: install/templates/step4.html.twig:38 install/templates/step5.html.twig:56
 msgid "Username"
 msgstr "用户名"
 
@@ -6589,6 +6589,7 @@ msgid "Host Prefix"
 msgstr "主机前缀"
 
 #: templates/default/batch_ptr_record.html:71
+#: install/templates/step4.html.twig:132
 msgid "Optional"
 msgstr "可选"
 
@@ -7156,7 +7157,7 @@ msgstr "添加用户"
 msgid "Optional: User's full name for identification"
 msgstr "可选：用于识别的用户全名"
 
-#: templates/default/add_user.html:42 install/templates/step4.html.twig:56
+#: templates/default/add_user.html:42 install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr "提供用户密码"
 
@@ -8385,8 +8386,9 @@ msgid "Limited Database Rights:"
 msgstr "有限的数据库权限："
 
 #: install/templates/step6.html.twig:13
-msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS database."
-msgstr "现在您需要给 Poweradmin 授予有限权限，以便它能更新表中的数据。为此，您应该创建一个新用户并授予其在 PowerDNS 数据库中选择、删除、插入和更新记录的权限。"
+msgid "Create a database user with limited rights (select, insert, update, delete) for Poweradmin to access PowerDNS tables."
+msgstr ""
+"为Poweradmin访问PowerDNS表创建一个具有有限权限（select, insert, update, delete）的数据库用户。"
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -8400,7 +8402,7 @@ msgstr "执行以下命令："
 msgid "After you have added the new user, proceed with this installation procedure."
 msgstr "添加新用户后，请继续安装程序。"
 
-#: install/templates/step3.html.twig:44
+#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:96
 msgid "Note:"
 msgstr "注意："
 
@@ -8408,7 +8410,7 @@ msgstr "注意："
 msgid "Since you are using SQLite, there is no need to create a new user with limited rights."
 msgstr "由于您使用的是 SQLite，因此无需创建权限有限的新用户。"
 
-#: install/templates/step5.html.twig:165 install/templates/step3.html.twig:56
+#: install/templates/step5.html.twig:166 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "继续到步骤"
 
@@ -8457,124 +8459,132 @@ msgid "Configuring Database Connection"
 msgstr "配置数据库连接"
 
 #: install/templates/step4.html.twig:12
-msgid "Database Preparation:"
-msgstr "数据库准备："
+msgid "Database Configuration:"
+msgstr "数据库配置："
 
 #: install/templates/step4.html.twig:12
-msgid "The installer needs to modify the PowerDNS database with tables for Poweradmin. Use an account with sufficient rights (like root) to proceed."
-msgstr "安装程序需要修改 PowerDNS 数据库，为 Poweradmin 添加表。使用具有足够权限的账户（如 root）继续。"
+msgid "Configure database connection with table creation rights. PowerDNS location can be specified separately if needed."
+msgstr "配置具有表创建权限的数据库连接。如果需要，可以单独指定PowerDNS位置。"
 
-#: install/templates/step4.html.twig:14
-msgid "Important:"
-msgstr "重要："
+#: install/templates/step4.html.twig:20
+msgid "Database Connection Settings"
+msgstr "数据库连接设置"
 
-#: install/templates/step4.html.twig:14
-msgid "Poweradmin requires a properly configured PowerDNS database with tables already created. This installer will NOT create PowerDNS tables - only Poweradmin-specific tables."
-msgstr "Poweradmin 需要一个正确配置的 PowerDNS 数据库，其中已创建表。此安装程序不会创建 PowerDNS 表，只会创建 Poweradmin 特定的表。"
-
-#: install/templates/step4.html.twig:22
-msgid "Database Settings"
-msgstr "数据库设置"
-
-#: install/templates/step4.html.twig:26
+#: install/templates/step4.html.twig:24
 msgid "Database type"
 msgstr "数据库类型"
 
-#: install/templates/step4.html.twig:35
-msgid "The type of the PowerDNS database."
-msgstr "PowerDNS 数据库的类型。"
+#: install/templates/step4.html.twig:33
+msgid "Database server type."
+msgstr "数据库服务器类型。"
 
-#: install/templates/step4.html.twig:43 install/templates/step5.html.twig:59
+#: install/templates/step4.html.twig:41 install/templates/step5.html.twig:59
 msgid "Provide the user name"
 msgstr "提供用户名"
 
-#: install/templates/step4.html.twig:46
-msgid "Database username with administrative rights."
-msgstr "具有管理权限的数据库用户名。"
+#: install/templates/step4.html.twig:44
+msgid "Database username with rights to create tables."
+msgstr "具有创建表权限的数据库用户名。"
 
-#: install/templates/step4.html.twig:60
+#: install/templates/step4.html.twig:58
 msgid "Password for this database user."
 msgstr "此数据库用户的密码。"
 
-#: install/templates/step4.html.twig:65
+#: install/templates/step4.html.twig:63
 msgid "Hostname"
 msgstr "主机名"
 
-#: install/templates/step4.html.twig:68
+#: install/templates/step4.html.twig:66
 msgid "Provide the hostname"
 msgstr "提供主机名"
 
-#: install/templates/step4.html.twig:71
+#: install/templates/step4.html.twig:69
 msgid "Database server hostname (usually \"localhost\")."
 msgstr "数据库服务器主机名（通常为 \"localhost\"）。"
 
-#: install/templates/step4.html.twig:76
+#: install/templates/step4.html.twig:74
 msgid "DB Port"
 msgstr "数据库端口"
 
-#: install/templates/step4.html.twig:79
+#: install/templates/step4.html.twig:77
 msgid "Provide database port"
 msgstr "输入数据库端口"
 
-#: install/templates/step4.html.twig:82
+#: install/templates/step4.html.twig:80
 msgid "Database server port."
 msgstr "数据库服务器端口。"
 
-#: install/templates/step4.html.twig:87
+#: install/templates/step4.html.twig:85
 msgid "Database"
 msgstr "数据库"
 
-#: install/templates/step4.html.twig:90
+#: install/templates/step4.html.twig:88
 msgid "Provide the name of the database"
 msgstr "输入数据库名称"
 
-#: install/templates/step4.html.twig:93
-msgid "PowerDNS database name."
-msgstr "PowerDNS 数据库名称。"
+#: install/templates/step4.html.twig:91
+msgid "Database name (will be used for Poweradmin tables)."
+msgstr "数据库名称（将用于Poweradmin表）。"
 
-#: install/templates/step4.html.twig:95
+#: install/templates/step4.html.twig:93
 msgid "Full path to SQLite database file"
 msgstr "SQLite 数据库文件的完整路径"
 
-#: install/templates/step4.html.twig:98
+#: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr "文件必须存在并具有 Web 服务器读/写访问权限。使用绝对路径。"
 
-#: install/templates/step4.html.twig:106
+#: install/templates/step4.html.twig:104
 msgid "DB charset"
 msgstr "数据库字符集"
 
-#: install/templates/step4.html.twig:182 install/templates/step4.html.twig:190
+#: install/templates/step4.html.twig:199 install/templates/step4.html.twig:207
 msgid "Use default"
 msgstr "使用默认值"
 
-#: install/templates/step4.html.twig:113
+#: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
 msgstr "新表的字符集。留空使用数据库默认值。"
 
-#: install/templates/step4.html.twig:118
+#: install/templates/step4.html.twig:116
 msgid "DB collation"
 msgstr "数据库排序规则"
 
-#: install/templates/step4.html.twig:125
+#: install/templates/step4.html.twig:123
 msgid "Collation rules for character comparison. Leave empty for database default."
 msgstr "用于字符比较的排序规则。留空使用数据库默认值。"
 
-#: install/templates/step4.html.twig:133
-msgid "Administrator Account"
-msgstr "管理员账户"
+#: install/templates/step4.html.twig:132
+msgid "PowerDNS Database"
+msgstr "PowerDNS数据库"
 
-#: install/templates/step4.html.twig:137
+#: install/templates/step4.html.twig:136
+msgid "Database name"
+msgstr "数据库名称"
+
+#: install/templates/step4.html.twig:139
+msgid "Leave empty for same database"
+msgstr "同一数据库请留空"
+
+#: install/templates/step4.html.twig:142
+msgid "MySQL database with PowerDNS tables (if different)."
+msgstr "包含PowerDNS表的MySQL数据库（如果不同）。"
+
+#: install/templates/step4.html.twig:150
+msgid "Poweradmin Account"
+msgstr "Poweradmin账户"
+
+#: install/templates/step4.html.twig:154
 msgid "Administrator password"
 msgstr "管理员密码"
 
-#: install/templates/step4.html.twig:142
+#: install/templates/step4.html.twig:159
 msgid "Provide a password"
 msgstr "提供密码"
 
-#: install/templates/step4.html.twig:147
-msgid "Password for \"admin\" username with full rights to the Poweradmin interface."
-msgstr "具有 Poweradmin 界面完全访问权限的 \"admin\" 用户名的密码。"
+#: install/templates/step4.html.twig:164
+msgid "Password for \"admin\" username."
+msgstr "\"admin\"用户名的密码。"
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -8681,8 +8691,8 @@ msgid "Provide the DNS hostmaster"
 msgstr "提供 DNS 主机管理员"
 
 #: install/templates/step5.html.twig:96
-msgid "When creating SOA records and no hostmaster is provided, this value here will be used."
-msgstr "创建 SOA 记录时如果未提供主机管理员，将使用此处的值。"
+msgid "Default hostmaster for SOA records."
+msgstr "SOA记录的默认主机管理员。"
 
 #: install/templates/step5.html.twig:101
 msgid "Primary nameserver"
@@ -8693,8 +8703,8 @@ msgid "Provide the primary nameserver"
 msgstr "提供主域名服务器"
 
 #: install/templates/step5.html.twig:108
-msgid "When creating new zones using the template, this value will be used as primary nameserver."
-msgstr "使用模板创建新区域时，此值将用作主域名服务器。"
+msgid "Primary nameserver for new zones."
+msgstr "新区域的主名称服务器。"
 
 #: install/templates/step5.html.twig:113
 msgid "Secondary nameserver"
@@ -8705,8 +8715,8 @@ msgid "Provide the secondary nameserver"
 msgstr "提供辅助域名服务器"
 
 #: install/templates/step5.html.twig:120
-msgid "When creating new zones using the template, this value will be used as secondary nameserver."
-msgstr "使用模板创建新区域时，此值将用作辅助域名服务器。"
+msgid "Secondary nameserver for new zones."
+msgstr "新区域的辅助名称服务器。"
 
 #: install/templates/step5.html.twig:126
 msgid "Tertiary Nameserver"
@@ -8717,16 +8727,16 @@ msgid "optional"
 msgstr "可选"
 
 #: install/templates/step5.html.twig:133
-msgid "When creating new zones using the template, this optional value will be used as tertiary nameserver."
-msgstr "使用模板创建新区域时，此可选值将用作第三域名服务器。"
+msgid "Optional tertiary nameserver for new zones."
+msgstr "新区域的可选第三名称服务器。"
 
 #: install/templates/step5.html.twig:139
 msgid "Quaternary Nameserver"
 msgstr "第四域名服务器"
 
 #: install/templates/step5.html.twig:146
-msgid "When creating new zones using the template, this optional value will be used as quaternary nameserver."
-msgstr "使用模板创建新区域时，此可选值将用作第四域名服务器。"
+msgid "Optional quaternary nameserver for new zones."
+msgstr "新区域的可选第四名称服务器。"
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -8772,119 +8782,91 @@ msgstr "开始配置您的 DNS 区域和记录"
 msgid "Getting Ready"
 msgstr "准备就绪"
 
-#: install/templates/step3.html.twig:12
-msgid "Preparation:"
-msgstr "准备："
+#: install/templates/step3.html.twig:13
+msgid "Prerequisites"
+msgstr "先决条件"
 
-#: install/templates/step3.html.twig:12
-msgid "Let's get your PowerDNS database ready for Poweradmin."
-msgstr "让我们为 Poweradmin 准备您的 PowerDNS 数据库。"
+#: install/templates/step3.html.twig:16
+msgid "Before proceeding, ensure you have:"
+msgstr "在继续之前，请确保您拥有："
 
-#: install/templates/step3.html.twig:17
-msgid "About PowerDNS"
-msgstr "关于 PowerDNS"
+#: install/templates/step3.html.twig:18
+msgid "PowerDNS installed with database tables created"
+msgstr "已安装PowerDNS并创建了数据库表"
+
+#: install/templates/step3.html.twig:19
+msgid "Database credentials (hostname, username, password)"
+msgstr "数据库凭据（主机名、用户名、密码）"
 
 #: install/templates/step3.html.twig:20
-msgid "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin will help you manage this database via a web interface."
-msgstr "PowerDNS 是一个将数据存储在 SQL 数据库中的 DNS 服务器。Poweradmin 将帮助您通过 Web 界面管理此数据库。"
+msgid "Permission to create tables for Poweradmin"
+msgstr "为Poweradmin创建表的权限"
 
-#: install/templates/step3.html.twig:21
-msgid "Before proceeding, you should have:"
-msgstr "在继续之前，您应该具备："
+#: install/templates/step3.html.twig:27
+msgid "Next:"
+msgstr "下一步："
 
-#: install/templates/step3.html.twig:23
-msgid "An operational PowerDNS installation"
-msgstr "正常运行的 PowerDNS 安装"
+#: install/templates/step3.html.twig:27
+msgid "Configure database connection, create admin account, and generate configuration file."
+msgstr "配置数据库连接，创建管理员账户，并生成配置文件。"
 
-#: install/templates/step3.html.twig:24
-msgid "Database connectivity details (hostname, username, password)"
-msgstr "数据库连接详细信息（主机名、用户名、密码）"
-
-#: install/templates/step3.html.twig:25
-msgid "Administrative access to your database"
-msgstr "对数据库的管理访问权限"
-
-#: install/templates/step3.html.twig:32
-msgid "Database Preparations"
-msgstr "数据库准备"
-
-#: install/templates/step3.html.twig:35
-msgid "In the next steps, Poweradmin will:"
-msgstr "在接下来的步骤中，Poweradmin 将："
-
-#: install/templates/step3.html.twig:37
-msgid "Connect to your PowerDNS database"
-msgstr "连接到您的 PowerDNS 数据库"
-
-#: install/templates/step3.html.twig:38
-msgid "Create tables needed for Poweradmin functionality"
-msgstr "创建 Poweradmin 功能所需的表"
-
-#: install/templates/step3.html.twig:39
-msgid "Set up an administrator account for web access"
-msgstr "为 Web 访问创建管理员账户"
-
-#: install/templates/step3.html.twig:40
-msgid "Create a config file to store your settings"
-msgstr "创建配置文件以存储您的设置"
-
-#: install/helpers/InstallStepHandler.php:177
+#: install/helpers/InstallStepHandler.php:183
 msgid "Missing PowerDNS tables:"
 msgstr "缺少 PowerDNS 表："
 
-#: install/helpers/InstallStepHandler.php:178
+#: install/helpers/InstallStepHandler.php:184
 msgid "Poweradmin requires these PowerDNS tables to function properly."
 msgstr "Poweradmin 需要这些 PowerDNS 表才能正常运行。"
 
-#: install/helpers/InstallStepHandler.php:185
+#: install/helpers/InstallStepHandler.php:192
 msgid "Updating database... done!"
 msgstr "更新数据库... 完成！"
 
-#: install/helpers/InstallStepHandler.php:207
+#: install/helpers/InstallStepHandler.php:214
 msgid "Foreign Key Constraint Issues:"
 msgstr "外键约束问题："
 
-#: install/helpers/InstallStepHandler.php:209
+#: install/helpers/InstallStepHandler.php:216
 msgid "The installer could not remove existing tables due to foreign key constraints"
 msgstr "由于外键约束，安装程序无法删除现有表"
 
-#: install/helpers/InstallStepHandler.php:210
+#: install/helpers/InstallStepHandler.php:217
 msgid "This can happen during reinstallation if you have custom constraints or if tables are referenced by other tables"
 msgstr "如果您有自定义约束或表被其他表引用，在重新安装期间可能会发生这种情况"
 
-#: install/helpers/InstallStepHandler.php:211
+#: install/helpers/InstallStepHandler.php:218
 msgid "You can try manually disabling foreign key checks before running the installer:"
 msgstr "您可以尝试在运行安装程序之前手动禁用外键检查："
 
-#: install/helpers/InstallStepHandler.php:224
+#: install/helpers/InstallStepHandler.php:231
 msgid "Suggestions:"
 msgstr "建议："
 
-#: install/helpers/InstallStepHandler.php:218
+#: install/helpers/InstallStepHandler.php:225
 msgid "Make sure the SQLite database file exists"
 msgstr "确保 SQLite 数据库文件存在"
 
-#: install/helpers/InstallStepHandler.php:219
+#: install/helpers/InstallStepHandler.php:226
 msgid "Check that the web server has read and write permissions for the database file"
 msgstr "检查 Web 服务器是否对数据库文件具有读写权限"
 
-#: install/helpers/InstallStepHandler.php:220
+#: install/helpers/InstallStepHandler.php:227
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr "验证数据库文件的完整路径是否正确且可访问"
 
-#: install/helpers/InstallStepHandler.php:226
+#: install/helpers/InstallStepHandler.php:233
 msgid "Verify database credentials are correct"
 msgstr "验证数据库凭据是否正确"
 
-#: install/helpers/InstallStepHandler.php:227
+#: install/helpers/InstallStepHandler.php:234
 msgid "Check that the database user has sufficient privileges"
 msgstr "检查数据库用户是否具有足够的权限"
 
-#: install/helpers/InstallStepHandler.php:228
+#: install/helpers/InstallStepHandler.php:235
 msgid "Ensure the database server is running and accessible"
 msgstr "确保数据库服务器正在运行且可访问"
 
-#: install/helpers/InstallStepHandler.php:233
+#: install/helpers/InstallStepHandler.php:240
 msgid "Database Error"
 msgstr "数据库错误"
 
@@ -8911,3 +8893,109 @@ msgstr "无法访问 SQLite 数据库文件 %s：%s"
 #: install/helpers/Validators/CreateConfigurationFileValidator.php:55
 msgid "No configuration file found. Please create the config/settings.php file before proceeding."
 msgstr "找不到配置文件。请在继续之前创建 config/settings.php 文件。"
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:47
+msgid "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL and SQLite, please use the same database."
+msgstr "独立的PowerDNS数据库仅支持MySQL。对于PostgreSQL和SQLite，请使用相同的数据库。"
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
+#, php-format
+msgid "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is properly installed in this database."
+msgstr "数据库\"%s\"中缺少PowerDNS表：%s。请确保PowerDNS已正确安装在此数据库中。"
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
+#, php-format
+msgid "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "无法连接到PowerDNS数据库\"%s\"：%s"
+
+# OBSOLETE: msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS database."
+# OBSOLETE: msgstr "现在您需要给 Poweradmin 授予有限权限，以便它能更新表中的数据。为此，您应该创建一个新用户并授予其在 PowerDNS 数据库中选择、删除、插入和更新记录的权限。"
+
+# OBSOLETE: msgid "Database Preparation:"
+# OBSOLETE: msgstr "数据库准备："
+
+# OBSOLETE: msgid "The installer needs to modify the PowerDNS database with tables for Poweradmin. Use an account with sufficient rights (like root) to proceed."
+# OBSOLETE: msgstr "安装程序需要修改 PowerDNS 数据库，为 Poweradmin 添加表。使用具有足够权限的账户（如 root）继续。"
+
+# OBSOLETE: msgid "Important:"
+# OBSOLETE: msgstr "重要："
+
+# OBSOLETE: msgid "Poweradmin requires a properly configured PowerDNS database with tables already created. This installer will NOT create PowerDNS tables - only Poweradmin-specific tables."
+# OBSOLETE: msgstr "Poweradmin 需要一个正确配置的 PowerDNS 数据库，其中已创建表。此安装程序不会创建 PowerDNS 表，只会创建 Poweradmin 特定的表。"
+
+# OBSOLETE: msgid "Database Settings"
+# OBSOLETE: msgstr "数据库设置"
+
+# OBSOLETE: msgid "The type of the PowerDNS database."
+# OBSOLETE: msgstr "PowerDNS 数据库的类型。"
+
+# OBSOLETE: msgid "Database username with administrative rights."
+# OBSOLETE: msgstr "具有管理权限的数据库用户名。"
+
+# OBSOLETE: msgid "PowerDNS database name."
+# OBSOLETE: msgstr "PowerDNS 数据库名称。"
+
+# OBSOLETE: msgid "Administrator Account"
+# OBSOLETE: msgstr "管理员账户"
+
+# OBSOLETE: msgid "Password for \"admin\" username with full rights to the Poweradmin interface."
+# OBSOLETE: msgstr "具有 Poweradmin 界面完全访问权限的 \"admin\" 用户名的密码。"
+
+# OBSOLETE: msgid "When creating SOA records and no hostmaster is provided, this value here will be used."
+# OBSOLETE: msgstr "创建 SOA 记录时如果未提供主机管理员，将使用此处的值。"
+
+# OBSOLETE: msgid "When creating new zones using the template, this value will be used as primary nameserver."
+# OBSOLETE: msgstr "使用模板创建新区域时，此值将用作主域名服务器。"
+
+# OBSOLETE: msgid "When creating new zones using the template, this value will be used as secondary nameserver."
+# OBSOLETE: msgstr "使用模板创建新区域时，此值将用作辅助域名服务器。"
+
+# OBSOLETE: msgid "When creating new zones using the template, this optional value will be used as tertiary nameserver."
+# OBSOLETE: msgstr "使用模板创建新区域时，此可选值将用作第三域名服务器。"
+
+# OBSOLETE: msgid "When creating new zones using the template, this optional value will be used as quaternary nameserver."
+# OBSOLETE: msgstr "使用模板创建新区域时，此可选值将用作第四域名服务器。"
+
+# OBSOLETE: msgid "Preparation:"
+# OBSOLETE: msgstr "准备："
+
+# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
+# OBSOLETE: msgstr "让我们为 Poweradmin 准备您的 PowerDNS 数据库。"
+
+# OBSOLETE: msgid "About PowerDNS"
+# OBSOLETE: msgstr "关于 PowerDNS"
+
+# OBSOLETE: msgid "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin will help you manage this database via a web interface."
+# OBSOLETE: msgstr "PowerDNS 是一个将数据存储在 SQL 数据库中的 DNS 服务器。Poweradmin 将帮助您通过 Web 界面管理此数据库。"
+
+# OBSOLETE: msgid "Before proceeding, you should have:"
+# OBSOLETE: msgstr "在继续之前，您应该具备："
+
+# OBSOLETE: msgid "An operational PowerDNS installation"
+# OBSOLETE: msgstr "正常运行的 PowerDNS 安装"
+
+# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
+# OBSOLETE: msgstr "数据库连接详细信息（主机名、用户名、密码）"
+
+# OBSOLETE: msgid "Administrative access to your database"
+# OBSOLETE: msgstr "对数据库的管理访问权限"
+
+# OBSOLETE: msgid "Database Preparations"
+# OBSOLETE: msgstr "数据库准备"
+
+# OBSOLETE: msgid "In the next steps, Poweradmin will:"
+# OBSOLETE: msgstr "在接下来的步骤中，Poweradmin 将："
+
+# OBSOLETE: msgid "Connect to your PowerDNS database"
+# OBSOLETE: msgstr "连接到您的 PowerDNS 数据库"
+
+# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
+# OBSOLETE: msgstr "创建 Poweradmin 功能所需的表"
+
+# OBSOLETE: msgid "Set up an administrator account for web access"
+# OBSOLETE: msgstr "为 Web 访问创建管理员账户"
+
+# OBSOLETE: msgid "Create a config file to store your settings"
+# OBSOLETE: msgstr "创建配置文件以存储您的设置"
+
+

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-16 09:23+0300\n"
+"POT-Creation-Date: 2025-06-20 19:17+0300\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -172,7 +172,8 @@ msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
 msgstr ""
-"Kayıt ve buna karşılık gelen PTR ile A/AAAA kayıtları silindi ancak benzer kayıtlar mevcut olduğu için yorum korundu."
+"Kayıt ve buna karşılık gelen PTR ile A/AAAA kayıtları silindi ancak benzer "
+"kayıtlar mevcut olduğu için yorum korundu."
 
 #: lib/Application/Controller/DeleteRecordController.php:184
 msgid ""
@@ -187,7 +188,8 @@ msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
 msgstr ""
-"Kayıt ve buna karşılık gelen A/AAAA kaydı silindi ancak benzer kayıtlar mevcut olduğu için yorum korundu."
+"Kayıt ve buna karşılık gelen A/AAAA kaydı silindi ancak benzer kayıtlar "
+"mevcut olduğu için yorum korundu."
 
 #: lib/Application/Controller/DeleteRecordController.php:188
 msgid ""
@@ -7563,7 +7565,7 @@ msgstr "Kullanıcı etkinlik geçmişini görüntüle"
 msgid "View user logs"
 msgstr "Kullanıcı kayıtlarını görüntüle"
 
-#: templates/default/add_user.html:38 install/templates/step4.html.twig:51
+#: templates/default/add_user.html:38 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:67
 msgid "Password"
 msgstr "Şifre"
@@ -7983,7 +7985,8 @@ msgstr "Kullanım Koşulları"
 msgid ""
 "By using this Poweradmin installation, you agree to the following terms:"
 msgstr ""
-"Bu Poweradmin kurulumunu kullanarak aşağıdaki koşulları kabul etmiş olursunuz:"
+"Bu Poweradmin kurulumunu kullanarak aşağıdaki koşulları kabul etmiş "
+"olursunuz:"
 
 #: templates/default/user_agreement_content.html:4
 msgid "Acceptable Use"
@@ -8007,7 +8010,8 @@ msgstr "Giriş bilgilerinizi güvenli ve gizli tutacaksınız"
 #: templates/default/user_agreement_content.html:9
 msgid "You will not use this system for any malicious or illegal activities"
 msgstr ""
-"Bu sistemi herhangi bir kötü niyetli veya yasadışı faaliyet için kullanmayacaksınız"
+"Bu sistemi herhangi bir kötü niyetli veya yasadışı faaliyet için "
+"kullanmayacaksınız"
 
 #: templates/default/user_agreement_content.html:12
 msgid "Data Protection"
@@ -8018,13 +8022,15 @@ msgid ""
 "Your login activity and DNS management actions may be logged for security "
 "and audit purposes"
 msgstr ""
-"Giriş etkinlikleriniz ve DNS yönetim işlemleriniz güvenlik ve denetim amaçlarıyla kaydedilebilir"
+"Giriş etkinlikleriniz ve DNS yönetim işlemleriniz güvenlik ve denetim "
+"amaçlarıyla kaydedilebilir"
 
 #: templates/default/user_agreement_content.html:15
 msgid ""
 "You are responsible for the accuracy of DNS records you create or modify"
 msgstr ""
-"Oluşturduğunuz veya değiştirdiğiniz DNS kayıtlarının doğruluğundan siz sorumlusunuz"
+"Oluşturduğunuz veya değiştirdiğiniz DNS kayıtlarının doğruluğundan siz "
+"sorumlusunuz"
 
 #: templates/default/user_agreement_content.html:16
 msgid ""
@@ -8043,7 +8049,9 @@ msgid ""
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
 msgstr ""
-"Sistem kullanılabilirliğini korumaya çalışırken %100 çalışma süresi garanti edemeyiz. Kullanıcılar kritik DNS işlemleri için uygun yedekleme ve izleme olmaksızın yalnızca bu sisteme güvenmemelidir."
+"Sistem kullanılabilirliğini korumaya çalışırken %100 çalışma süresi garanti "
+"edemeyiz. Kullanıcılar kritik DNS işlemleri için uygun yedekleme ve izleme "
+"olmaksızın yalnızca bu sisteme güvenmemelidir."
 
 #: templates/default/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -8055,7 +8063,9 @@ msgid ""
 "are not liable for any damages or losses resulting from the use of this "
 "system."
 msgstr ""
-"Bu sistem herhangi bir garanti olmaksızın \"olduğu gibi\" sağlanır. Yöneticiler bu sistemin kullanımından kaynaklanan herhangi bir hasar veya kayıptan sorumlu değildir."
+"Bu sistem herhangi bir garanti olmaksızın \"olduğu gibi\" sağlanır. "
+"Yöneticiler bu sistemin kullanımından kaynaklanan herhangi bir hasar veya "
+"kayıptan sorumlu değildir."
 
 #: templates/default/user_agreement_content.html:25
 msgid "Changes to Agreement"
@@ -8066,7 +8076,8 @@ msgid ""
 "These terms may be updated from time to time. Users will be required to "
 "accept any changes before continuing to use the system."
 msgstr ""
-"Bu koşullar zaman zaman güncellenebilir. Kullanıcılar sistemi kullanmaya devam etmeden önce herhangi bir değişikliği kabul etmeleri gerekecektir."
+"Bu koşullar zaman zaman güncellenebilir. Kullanıcılar sistemi kullanmaya "
+"devam etmeden önce herhangi bir değişikliği kabul etmeleri gerekecektir."
 
 #: templates/default/user_agreement_content.html:30
 msgid "Agreement Version:"
@@ -8281,7 +8292,7 @@ msgid "Recommended bits for"
 msgstr "Önerilen bit sayısı"
 
 #: templates/default/dnssec_add_key.html:140
-#: install/helpers/InstallStepHandler.php:176
+#: install/helpers/InstallStepHandler.php:182
 msgid "Warning:"
 msgstr "Uyarı:"
 
@@ -8334,7 +8345,7 @@ msgid "Edit User"
 msgstr "Kullanıcıyı Düzenle"
 
 #: templates/default/users.html:24 templates/default/add_user.html:20
-#: install/templates/step4.html.twig:40 install/templates/step5.html.twig:56
+#: install/templates/step4.html.twig:38 install/templates/step5.html.twig:56
 msgid "Username"
 msgstr "Kullanıcı adı"
 
@@ -8717,6 +8728,7 @@ msgid "Host Prefix"
 msgstr "Host Öneki"
 
 #: templates/default/batch_ptr_record.html:71
+#: install/templates/step4.html.twig:132
 msgid "Optional"
 msgstr "İsteğe bağlı"
 
@@ -9337,7 +9349,7 @@ msgstr "Kullanıcı Ekle"
 msgid "Optional: User's full name for identification"
 msgstr "İsteğe bağlı: Tanımlama için kullanıcının tam adı"
 
-#: templates/default/add_user.html:42 install/templates/step4.html.twig:56
+#: templates/default/add_user.html:42 install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr "Kullanıcı şifresini girin"
 
@@ -9538,7 +9550,10 @@ msgid ""
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
 msgstr ""
-"Bir alanın şablonunu değiştirmek şablon tabanlı kayıtları üstüne yazar ancak manuel eklemeleri korur. Şablon değişiklikleri alanları otomatik olarak güncellemez - değişiklikleri uygulamak için şablonları düzenlerken \"Alanları Güncelle\" düğmesini kullanın."
+"Bir alanın şablonunu değiştirmek şablon tabanlı kayıtları üstüne yazar ancak "
+"manuel eklemeleri korur. Şablon değişiklikleri alanları otomatik olarak "
+"güncellemez - değişiklikleri uygulamak için şablonları düzenlerken "
+"\"Alanları Güncelle\" düğmesini kullanın."
 
 #: templates/default/change_password.html:16
 msgid "Change Password"
@@ -10725,14 +10740,10 @@ msgstr "Sınırlı Veritabanı Hakları:"
 
 #: install/templates/step6.html.twig:13
 msgid ""
-"You now want to give limited rights to Poweradmin so it can update the data "
-"in the tables. To do this, you should create a new user and give it rights "
-"to select, delete, insert, and update records in the PowerDNS database."
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Şimdi Poweradmin'e tablolardaki verileri güncelleyebilmesi için sınırlı "
-"haklar vermek istiyorsunuz. Bunun için, yeni bir kullanıcı oluşturmalı ve "
-"ona PowerDNS veritabanındaki kayıtları seçme, silme, ekleme ve güncelleme "
-"hakları vermelisiniz."
+"Poweradmin'in PowerDNS tablolarına erişmesi için sınırlı haklara (select, insert, update, delete) sahip bir veritabanı kullanıcısı oluşturun."
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -10747,7 +10758,7 @@ msgid ""
 "After you have added the new user, proceed with this installation procedure."
 msgstr "Yeni kullanıcıyı ekledikten sonra, bu kurulum prosedürüne devam edin."
 
-#: install/templates/step3.html.twig:44
+#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:96
 msgid "Note:"
 msgstr "Not:"
 
@@ -10759,7 +10770,7 @@ msgstr ""
 "SQLite kullandığınız için, sınırlı haklara sahip yeni bir kullanıcı "
 "oluşturmanıza gerek yoktur."
 
-#: install/templates/step5.html.twig:165 install/templates/step3.html.twig:56
+#: install/templates/step5.html.twig:166 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "Adıma devam et"
 
@@ -10809,144 +10820,151 @@ msgid "Configuring Database Connection"
 msgstr "Veritabanı Bağlantısını Yapılandırma"
 
 #: install/templates/step4.html.twig:12
-msgid "Database Preparation:"
-msgstr "Veritabanı Hazırlığı:"
+#, auto-english-fallback
+msgid "Database Configuration:"
+msgstr "Veritabanı Yapılandırması:"
 
 #: install/templates/step4.html.twig:12
 msgid ""
-"The installer needs to modify the PowerDNS database with tables for "
-"Poweradmin. Use an account with sufficient rights (like root) to proceed."
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
 msgstr ""
-"Yükleyici, Poweradmin için tablolarla PowerDNS veritabanını değiştirmesi "
-"gerekiyor. Devam etmek için yeterli haklara sahip bir hesap kullanın (root "
-"gibi)."
+"Tablo oluşturma haklarına sahip veritabanı bağlantısını yapılandırın. Gerekirse PowerDNS konumu ayrı olarak belirtilebilir."
 
-#: install/templates/step4.html.twig:14
-msgid "Important:"
-msgstr "Önemli:"
+#: install/templates/step4.html.twig:20
+#, auto-english-fallback
+msgid "Database Connection Settings"
+msgstr "Veritabanı Bağlantısı Ayarları"
 
-#: install/templates/step4.html.twig:14
-msgid ""
-"Poweradmin requires a properly configured PowerDNS database with tables "
-"already created. This installer will NOT create PowerDNS tables - only "
-"Poweradmin-specific tables."
-msgstr ""
-"Poweradmin, tabloları zaten oluşturulmuş düzgün yapılandırılmış bir PowerDNS "
-"veritabanı gerektirir. Bu yükleyici PowerDNS tablolarını oluşturmayacaktır - "
-"yalnızca Poweradmin'e özgü tabloları."
-
-#: install/templates/step4.html.twig:22
-msgid "Database Settings"
-msgstr "Veritabanı Ayarları"
-
-#: install/templates/step4.html.twig:26
+#: install/templates/step4.html.twig:24
 msgid "Database type"
 msgstr "Veritabanı türü"
 
-#: install/templates/step4.html.twig:35
-msgid "The type of the PowerDNS database."
-msgstr "PowerDNS veritabanının türü."
+#: install/templates/step4.html.twig:33
+#, auto-english-fallback
+msgid "Database server type."
+msgstr "Veritabanı sunucu türü."
 
-#: install/templates/step4.html.twig:43 install/templates/step5.html.twig:59
+#: install/templates/step4.html.twig:41 install/templates/step5.html.twig:59
 msgid "Provide the user name"
 msgstr "Kullanıcı adını girin"
 
-#: install/templates/step4.html.twig:46
-msgid "Database username with administrative rights."
-msgstr "Yönetici haklarına sahip veritabanı kullanıcı adı."
+#: install/templates/step4.html.twig:44
+#, auto-english-fallback
+msgid "Database username with rights to create tables."
+msgstr "Tablo oluşturma haklarına sahip veritabanı kullanıcı adı."
 
-#: install/templates/step4.html.twig:60
+#: install/templates/step4.html.twig:58
 msgid "Password for this database user."
 msgstr "Bu veritabanı kullanıcısı için şifre."
 
-#: install/templates/step4.html.twig:65
+#: install/templates/step4.html.twig:63
 msgid "Hostname"
 msgstr "Sunucu adı"
 
-#: install/templates/step4.html.twig:68
+#: install/templates/step4.html.twig:66
 msgid "Provide the hostname"
 msgstr "Sunucu adını girin"
 
-#: install/templates/step4.html.twig:71
+#: install/templates/step4.html.twig:69
 msgid "Database server hostname (usually \"localhost\")."
 msgstr "Veritabanı sunucusu hostname'i (genellikle \"localhost\")."
 
-#: install/templates/step4.html.twig:76
+#: install/templates/step4.html.twig:74
 msgid "DB Port"
 msgstr "DB Portu"
 
-#: install/templates/step4.html.twig:79
+#: install/templates/step4.html.twig:77
 msgid "Provide database port"
 msgstr "Veritabanı portunu girin"
 
-#: install/templates/step4.html.twig:82
+#: install/templates/step4.html.twig:80
 msgid "Database server port."
 msgstr "Veritabanı sunucusu portu."
 
-#: install/templates/step4.html.twig:87
+#: install/templates/step4.html.twig:85
 msgid "Database"
 msgstr "Veritabanı"
 
-#: install/templates/step4.html.twig:90
+#: install/templates/step4.html.twig:88
 msgid "Provide the name of the database"
 msgstr "Veritabanının adını girin"
 
-#: install/templates/step4.html.twig:93
-msgid "PowerDNS database name."
-msgstr "PowerDNS veritabanı adı."
+#: install/templates/step4.html.twig:91
+#, auto-english-fallback
+msgid "Database name (will be used for Poweradmin tables)."
+msgstr "Veritabanı adı (Poweradmin tabloları için kullanılacak)."
 
-#: install/templates/step4.html.twig:95
+#: install/templates/step4.html.twig:93
 msgid "Full path to SQLite database file"
 msgstr "SQLite veritabanı dosyasının tam yolu"
 
-#: install/templates/step4.html.twig:98
+#: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr ""
 "Dosya, web sunucusu okuma/yazma erişimiyle var olmalıdır. Mutlak yol "
 "kullanın."
 
-#: install/templates/step4.html.twig:106
+#: install/templates/step4.html.twig:104
 msgid "DB charset"
 msgstr "DB karakter seti"
 
-#: install/templates/step4.html.twig:182 install/templates/step4.html.twig:190
+#: install/templates/step4.html.twig:199 install/templates/step4.html.twig:207
 msgid "Use default"
 msgstr "Varsayılanı kullan"
 
-#: install/templates/step4.html.twig:113
+#: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
 msgstr ""
 "Yeni tablolar için karakter seti. Veritabanı varsayılanı için boş bırakın."
 
-#: install/templates/step4.html.twig:118
+#: install/templates/step4.html.twig:116
 msgid "DB collation"
 msgstr "DB karşılaştırması"
 
-#: install/templates/step4.html.twig:125
+#: install/templates/step4.html.twig:123
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
 "Karakter karşılaştırması için harmanlama kuralları. Veritabanı varsayılanı "
 "için boş bırakın."
 
-#: install/templates/step4.html.twig:133
-msgid "Administrator Account"
-msgstr "Yönetici Hesabı"
+#: install/templates/step4.html.twig:132
+#, auto-english-fallback
+msgid "PowerDNS Database"
+msgstr "PowerDNS Veritabanı"
 
-#: install/templates/step4.html.twig:137
+#: install/templates/step4.html.twig:136
+#, auto-english-fallback
+msgid "Database name"
+msgstr "Veritabanı adı"
+
+#: install/templates/step4.html.twig:139
+#, auto-english-fallback
+msgid "Leave empty for same database"
+msgstr "Aynı veritabanı için boş bırakın"
+
+#: install/templates/step4.html.twig:142
+#, auto-english-fallback
+msgid "MySQL database with PowerDNS tables (if different)."
+msgstr "PowerDNS tablolarına sahip MySQL veritabanı (farklı ise)."
+
+#: install/templates/step4.html.twig:150
+#, auto-english-fallback
+msgid "Poweradmin Account"
+msgstr "Poweradmin Hesabı"
+
+#: install/templates/step4.html.twig:154
 msgid "Administrator password"
 msgstr "Yönetici şifresi"
 
-#: install/templates/step4.html.twig:142
+#: install/templates/step4.html.twig:159
 msgid "Provide a password"
 msgstr "Bir şifre girin"
 
-#: install/templates/step4.html.twig:147
-msgid ""
-"Password for \"admin\" username with full rights to the Poweradmin interface."
-msgstr ""
-"Poweradmin arayüzüne tam erişim hakkına sahip \"admin\" kullanıcı adı için "
-"şifre."
+#: install/templates/step4.html.twig:164
+msgid "Password for \"admin\" username."
+msgstr "\"admin\" kullanıcı adı için şifre."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -11058,12 +11076,9 @@ msgid "Provide the DNS hostmaster"
 msgstr "DNS hostmaster'ı girin"
 
 #: install/templates/step5.html.twig:96
-msgid ""
-"When creating SOA records and no hostmaster is provided, this value here "
-"will be used."
-msgstr ""
-"SOA kayıtları oluşturulurken ve hostmaster sağlanmadığında, buradaki değer "
-"kullanılacaktır."
+#, auto-english-fallback
+msgid "Default hostmaster for SOA records."
+msgstr "SOA kayıtları için varsayılan hostmaster."
 
 #: install/templates/step5.html.twig:101
 msgid "Primary nameserver"
@@ -11074,12 +11089,9 @@ msgid "Provide the primary nameserver"
 msgstr "Birincil ad sunucusunu girin"
 
 #: install/templates/step5.html.twig:108
-msgid ""
-"When creating new zones using the template, this value will be used as "
-"primary nameserver."
-msgstr ""
-"Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu değer birincil ad "
-"sunucusu olarak kullanılacaktır."
+#, auto-english-fallback
+msgid "Primary nameserver for new zones."
+msgstr "Yeni bölgeler için birincil ad sunucusu."
 
 #: install/templates/step5.html.twig:113
 msgid "Secondary nameserver"
@@ -11090,12 +11102,9 @@ msgid "Provide the secondary nameserver"
 msgstr "İkincil ad sunucusunu girin"
 
 #: install/templates/step5.html.twig:120
-msgid ""
-"When creating new zones using the template, this value will be used as "
-"secondary nameserver."
-msgstr ""
-"Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu değer ikincil ad "
-"sunucusu olarak kullanılacaktır."
+#, auto-english-fallback
+msgid "Secondary nameserver for new zones."
+msgstr "Yeni bölgeler için ikincil ad sunucusu."
 
 #: install/templates/step5.html.twig:126
 msgid "Tertiary Nameserver"
@@ -11106,24 +11115,18 @@ msgid "optional"
 msgstr "isteğe bağlı"
 
 #: install/templates/step5.html.twig:133
-msgid ""
-"When creating new zones using the template, this optional value will be used "
-"as tertiary nameserver."
-msgstr ""
-"Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu isteğe bağlı değer "
-"üçüncü ad sunucusu olarak kullanılacaktır."
+#, auto-english-fallback
+msgid "Optional tertiary nameserver for new zones."
+msgstr "Yeni bölgeler için isteğe bağlı üçüncül ad sunucusu."
 
 #: install/templates/step5.html.twig:139
 msgid "Quaternary Nameserver"
 msgstr "Dördüncül Ad Sunucusu"
 
 #: install/templates/step5.html.twig:146
-msgid ""
-"When creating new zones using the template, this optional value will be used "
-"as quaternary nameserver."
-msgstr ""
-"Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu isteğe bağlı değer "
-"dördüncü ad sunucusu olarak kullanılacaktır."
+#, auto-english-fallback
+msgid "Optional quaternary nameserver for new zones."
+msgstr "Yeni bölgeler için isteğe bağlı dördüncül ad sunucusu."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -11180,92 +11183,67 @@ msgstr "DNS bölgelerinizi ve kayıtlarınızı yapılandırmaya başlayın"
 msgid "Getting Ready"
 msgstr "Hazırlanıyor"
 
-#: install/templates/step3.html.twig:12
-msgid "Preparation:"
-msgstr "Hazırlık:"
+#: install/templates/step3.html.twig:13
+#, auto-english-fallback
+msgid "Prerequisites"
+msgstr "Ön Koşullar"
 
-#: install/templates/step3.html.twig:12
-msgid "Let's get your PowerDNS database ready for Poweradmin."
-msgstr "PowerDNS veritabanınızı Poweradmin için hazırlayalım."
+#: install/templates/step3.html.twig:16
+#, auto-english-fallback
+msgid "Before proceeding, ensure you have:"
+msgstr "Devam etmeden önce, sahip olduğunuzdan emin olun:"
 
-#: install/templates/step3.html.twig:17
-msgid "About PowerDNS"
-msgstr "PowerDNS Hakkında"
+#: install/templates/step3.html.twig:18
+#, auto-english-fallback
+msgid "PowerDNS installed with database tables created"
+msgstr "Veritabanı tabloları oluşturulmuş PowerDNS yüklü"
+
+#: install/templates/step3.html.twig:19
+#, auto-english-fallback
+msgid "Database credentials (hostname, username, password)"
+msgstr "Veritabanı kimlik bilgileri (sunucu adı, kullanıcı adı, şifre)"
 
 #: install/templates/step3.html.twig:20
+#, auto-english-fallback
+msgid "Permission to create tables for Poweradmin"
+msgstr "Poweradmin için tablo oluşturma izni"
+
+#: install/templates/step3.html.twig:27
+#, auto-english-fallback
+msgid "Next:"
+msgstr "Sonraki:"
+
+#: install/templates/step3.html.twig:27
 msgid ""
-"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
-"will help you manage this database via a web interface."
+"Configure database connection, create admin account, and generate "
+"configuration file."
 msgstr ""
-"PowerDNS, verilerini bir SQL veritabanında saklayan bir DNS sunucusudur. "
-"Poweradmin, bu veritabanını bir web arayüzü üzerinden yönetmenize yardımcı "
-"olacaktır."
+"Veritabanı bağlantısını yapılandırın, yönetici hesabı oluşturun ve yapılandırma dosyası oluşturun."
 
-#: install/templates/step3.html.twig:21
-msgid "Before proceeding, you should have:"
-msgstr "Devam etmeden önce, şunlara sahip olmalısınız:"
-
-#: install/templates/step3.html.twig:23
-msgid "An operational PowerDNS installation"
-msgstr "Çalışan bir PowerDNS kurulumu"
-
-#: install/templates/step3.html.twig:24
-msgid "Database connectivity details (hostname, username, password)"
-msgstr ""
-"Veritabanı bağlantı detayları (ana bilgisayar adı, kullanıcı adı, şifre)"
-
-#: install/templates/step3.html.twig:25
-msgid "Administrative access to your database"
-msgstr "Veritabanınıza yönetici erişimi"
-
-#: install/templates/step3.html.twig:32
-msgid "Database Preparations"
-msgstr "Veritabanı Hazırlıkları"
-
-#: install/templates/step3.html.twig:35
-msgid "In the next steps, Poweradmin will:"
-msgstr "Sonraki adımlarda, Poweradmin:"
-
-#: install/templates/step3.html.twig:37
-msgid "Connect to your PowerDNS database"
-msgstr "PowerDNS veritabanınıza bağlanacak"
-
-#: install/templates/step3.html.twig:38
-msgid "Create tables needed for Poweradmin functionality"
-msgstr "Poweradmin işlevselliği için gereken tabloları oluşturacak"
-
-#: install/templates/step3.html.twig:39
-msgid "Set up an administrator account for web access"
-msgstr "Web erişimi için bir yönetici hesabı oluşturacak"
-
-#: install/templates/step3.html.twig:40
-msgid "Create a config file to store your settings"
-msgstr "Ayarlarınızı saklamak için bir yapılandırma dosyası oluşturacak"
-
-#: install/helpers/InstallStepHandler.php:177
+#: install/helpers/InstallStepHandler.php:183
 msgid "Missing PowerDNS tables:"
 msgstr "Eksik PowerDNS tabloları:"
 
-#: install/helpers/InstallStepHandler.php:178
+#: install/helpers/InstallStepHandler.php:184
 msgid "Poweradmin requires these PowerDNS tables to function properly."
 msgstr "Poweradmin'in düzgün çalışması için bu PowerDNS tabloları gereklidir."
 
-#: install/helpers/InstallStepHandler.php:185
+#: install/helpers/InstallStepHandler.php:192
 msgid "Updating database... done!"
 msgstr "Veritabanı güncelleniyor... tamamlandı!"
 
-#: install/helpers/InstallStepHandler.php:207
+#: install/helpers/InstallStepHandler.php:214
 msgid "Foreign Key Constraint Issues:"
 msgstr "Yabancı Anahtar Kısıtlama Sorunları:"
 
-#: install/helpers/InstallStepHandler.php:209
+#: install/helpers/InstallStepHandler.php:216
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
 "Yükleyici, yabancı anahtar kısıtlamaları nedeniyle mevcut tabloları "
 "kaldıramadı"
 
-#: install/helpers/InstallStepHandler.php:210
+#: install/helpers/InstallStepHandler.php:217
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
@@ -11273,7 +11251,7 @@ msgstr ""
 "Özel kısıtlamalarınız varsa veya tablolar başka tablolar tarafından referans "
 "alınıyorsa yeniden kurulum sırasında bu olabilir"
 
-#: install/helpers/InstallStepHandler.php:211
+#: install/helpers/InstallStepHandler.php:218
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
@@ -11281,15 +11259,15 @@ msgstr ""
 "Yükleyiciyi çalıştırmadan önce yabancı anahtar kontrollerini manuel olarak "
 "devre dışı bırakmayı deneyebilirsiniz:"
 
-#: install/helpers/InstallStepHandler.php:224
+#: install/helpers/InstallStepHandler.php:231
 msgid "Suggestions:"
 msgstr "Öneriler:"
 
-#: install/helpers/InstallStepHandler.php:218
+#: install/helpers/InstallStepHandler.php:225
 msgid "Make sure the SQLite database file exists"
 msgstr "SQLite veritabanı dosyasının mevcut olduğundan emin olun"
 
-#: install/helpers/InstallStepHandler.php:219
+#: install/helpers/InstallStepHandler.php:226
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
@@ -11297,26 +11275,26 @@ msgstr ""
 "Web sunucusunun veritabanı dosyası için okuma ve yazma izinlerine sahip "
 "olduğunu kontrol edin"
 
-#: install/helpers/InstallStepHandler.php:220
+#: install/helpers/InstallStepHandler.php:227
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr ""
 "Veritabanı dosyasının tam yolunun doğru ve erişilebilir olduğunu doğrulayın"
 
-#: install/helpers/InstallStepHandler.php:226
+#: install/helpers/InstallStepHandler.php:233
 msgid "Verify database credentials are correct"
 msgstr "Veritabanı kimlik bilgilerinin doğru olduğunu doğrulayın"
 
-#: install/helpers/InstallStepHandler.php:227
+#: install/helpers/InstallStepHandler.php:234
 msgid "Check that the database user has sufficient privileges"
 msgstr ""
 "Veritabanı kullanıcısının yeterli ayrıcalıklara sahip olduğunu kontrol edin"
 
-#: install/helpers/InstallStepHandler.php:228
+#: install/helpers/InstallStepHandler.php:235
 msgid "Ensure the database server is running and accessible"
 msgstr ""
 "Veritabanı sunucusunun çalıştığından ve erişilebilir olduğundan emin olun"
 
-#: install/helpers/InstallStepHandler.php:233
+#: install/helpers/InstallStepHandler.php:240
 msgid "Database Error"
 msgstr "Veritabanı Hatası"
 
@@ -11357,5 +11335,175 @@ msgid ""
 msgstr ""
 "Yapılandırma dosyası bulunamadı. Devam etmeden önce lütfen config/"
 "settings.php dosyasını oluşturun."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:47
+msgid ""
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
+msgstr ""
+"Ayrı PowerDNS veritabanları yalnızca MySQL ile desteklenir. PostgreSQL ve SQLite için lütfen aynı veritabanını kullanın."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
+#, php-format
+msgid ""
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
+msgstr ""
+"\"%s\" veritabanında PowerDNS tabloları eksik: %s. PowerDNS'in bu veritabanında düzgün şekilde yüklü olduğundan emin olun."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
+#, php-format
+msgid "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "PowerDNS veritabanına bağlanılamıyor \"%s\": %s"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "You now want to give limited rights to Poweradmin so it can update the "
+# OBSOLETE: "data in the tables. To do this, you should create a new user and give it "
+# OBSOLETE: "rights to select, delete, insert, and update records in the PowerDNS "
+# OBSOLETE: "database."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Şimdi Poweradmin'e tablolardaki verileri güncelleyebilmesi için sınırlı "
+# OBSOLETE: "haklar vermek istiyorsunuz. Bunun için, yeni bir kullanıcı oluşturmalı ve "
+# OBSOLETE: "ona PowerDNS veritabanındaki kayıtları seçme, silme, ekleme ve güncelleme "
+# OBSOLETE: "hakları vermelisiniz."
+
+# OBSOLETE: msgid "Database Preparation:"
+# OBSOLETE: msgstr "Veritabanı Hazırlığı:"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "The installer needs to modify the PowerDNS database with tables for "
+# OBSOLETE: "Poweradmin. Use an account with sufficient rights (like root) to proceed."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Yükleyici, Poweradmin için tablolarla PowerDNS veritabanını değiştirmesi "
+# OBSOLETE: "gerekiyor. Devam etmek için yeterli haklara sahip bir hesap kullanın "
+# OBSOLETE: "(root gibi)."
+
+# OBSOLETE: msgid "Important:"
+# OBSOLETE: msgstr "Önemli:"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Poweradmin requires a properly configured PowerDNS database with tables "
+# OBSOLETE: "already created. This installer will NOT create PowerDNS tables - only "
+# OBSOLETE: "Poweradmin-specific tables."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Poweradmin, tabloları zaten oluşturulmuş düzgün yapılandırılmış bir "
+# OBSOLETE: "PowerDNS veritabanı gerektirir. Bu yükleyici PowerDNS tablolarını "
+# OBSOLETE: "oluşturmayacaktır - yalnızca Poweradmin'e özgü tabloları."
+
+# OBSOLETE: msgid "Database Settings"
+# OBSOLETE: msgstr "Veritabanı Ayarları"
+
+# OBSOLETE: msgid "The type of the PowerDNS database."
+# OBSOLETE: msgstr "PowerDNS veritabanının türü."
+
+# OBSOLETE: msgid "Database username with administrative rights."
+# OBSOLETE: msgstr "Yönetici haklarına sahip veritabanı kullanıcı adı."
+
+# OBSOLETE: msgid "PowerDNS database name."
+# OBSOLETE: msgstr "PowerDNS veritabanı adı."
+
+# OBSOLETE: msgid "Administrator Account"
+# OBSOLETE: msgstr "Yönetici Hesabı"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Password for \"admin\" username with full rights to the Poweradmin "
+# OBSOLETE: "interface."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Poweradmin arayüzüne tam erişim hakkına sahip \"admin\" kullanıcı adı "
+# OBSOLETE: "için şifre."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating SOA records and no hostmaster is provided, this value here "
+# OBSOLETE: "will be used."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "SOA kayıtları oluşturulurken ve hostmaster sağlanmadığında, buradaki "
+# OBSOLETE: "değer kullanılacaktır."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this value will be used as "
+# OBSOLETE: "primary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu değer birincil ad "
+# OBSOLETE: "sunucusu olarak kullanılacaktır."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this value will be used as "
+# OBSOLETE: "secondary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu değer ikincil ad "
+# OBSOLETE: "sunucusu olarak kullanılacaktır."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this optional value will be "
+# OBSOLETE: "used as tertiary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu isteğe bağlı değer "
+# OBSOLETE: "üçüncü ad sunucusu olarak kullanılacaktır."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this optional value will be "
+# OBSOLETE: "used as quaternary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu isteğe bağlı değer "
+# OBSOLETE: "dördüncü ad sunucusu olarak kullanılacaktır."
+
+# OBSOLETE: msgid "Preparation:"
+# OBSOLETE: msgstr "Hazırlık:"
+
+# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
+# OBSOLETE: msgstr "PowerDNS veritabanınızı Poweradmin için hazırlayalım."
+
+# OBSOLETE: msgid "About PowerDNS"
+# OBSOLETE: msgstr "PowerDNS Hakkında"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "PowerDNS is a DNS server that stores its data in an SQL database. "
+# OBSOLETE: "Poweradmin will help you manage this database via a web interface."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PowerDNS, verilerini bir SQL veritabanında saklayan bir DNS sunucusudur. "
+# OBSOLETE: "Poweradmin, bu veritabanını bir web arayüzü üzerinden yönetmenize "
+# OBSOLETE: "yardımcı olacaktır."
+
+# OBSOLETE: msgid "Before proceeding, you should have:"
+# OBSOLETE: msgstr "Devam etmeden önce, şunlara sahip olmalısınız:"
+
+# OBSOLETE: msgid "An operational PowerDNS installation"
+# OBSOLETE: msgstr "Çalışan bir PowerDNS kurulumu"
+
+# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Veritabanı bağlantı detayları (ana bilgisayar adı, kullanıcı adı, şifre)"
+
+# OBSOLETE: msgid "Administrative access to your database"
+# OBSOLETE: msgstr "Veritabanınıza yönetici erişimi"
+
+# OBSOLETE: msgid "Database Preparations"
+# OBSOLETE: msgstr "Veritabanı Hazırlıkları"
+
+# OBSOLETE: msgid "In the next steps, Poweradmin will:"
+# OBSOLETE: msgstr "Sonraki adımlarda, Poweradmin:"
+
+# OBSOLETE: msgid "Connect to your PowerDNS database"
+# OBSOLETE: msgstr "PowerDNS veritabanınıza bağlanacak"
+
+# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
+# OBSOLETE: msgstr "Poweradmin işlevselliği için gereken tabloları oluşturacak"
+
+# OBSOLETE: msgid "Set up an administrator account for web access"
+# OBSOLETE: msgstr "Web erişimi için bir yönetici hesabı oluşturacak"
+
+# OBSOLETE: msgid "Create a config file to store your settings"
+# OBSOLETE: msgstr "Ayarlarınızı saklamak için bir yapılandırma dosyası oluşturacak"
+
 
 

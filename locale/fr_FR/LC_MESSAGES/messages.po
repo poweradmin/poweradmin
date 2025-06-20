@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-16 09:23+0300\n"
+"POT-Creation-Date: 2025-06-20 19:17+0300\n"
 "PO-Revision-Date: 2025-06-02 20:15+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: French\n"
@@ -148,7 +148,8 @@ msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr ""
-"L'enregistrement et ses enregistrements PTR et A/AAAA correspondants ont été supprimés avec succès."
+"L'enregistrement et ses enregistrements PTR et A/AAAA correspondants ont été "
+"supprimés avec succès."
 
 #: lib/Application/Controller/DeleteRecordController.php:170
 msgid ""
@@ -162,7 +163,8 @@ msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr ""
-"L'enregistrement et son enregistrement A/AAAA correspondant ont été supprimés avec succès."
+"L'enregistrement et son enregistrement A/AAAA correspondant ont été "
+"supprimés avec succès."
 
 #: lib/Application/Controller/DeleteRecordController.php:174
 msgid ""
@@ -176,7 +178,8 @@ msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
 msgstr ""
-"L'enregistrement a été supprimé avec succès. Aucun enregistrement A/AAAA correspondant n'a été trouvé."
+"L'enregistrement a été supprimé avec succès. Aucun enregistrement A/AAAA "
+"correspondant n'a été trouvé."
 
 #: lib/Application/Controller/DeleteZoneTemplRecordController.php:73
 msgid "The record has been deleted successfully."
@@ -187,7 +190,9 @@ msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
 msgstr ""
-"L'enregistrement et ses enregistrements PTR et A/AAAA correspondants ont été supprimés mais le commentaire a été conservé car des enregistrements similaires existent."
+"L'enregistrement et ses enregistrements PTR et A/AAAA correspondants ont été "
+"supprimés mais le commentaire a été conservé car des enregistrements "
+"similaires existent."
 
 #: lib/Application/Controller/DeleteRecordController.php:184
 msgid ""
@@ -203,7 +208,9 @@ msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
 msgstr ""
-"L'enregistrement et son enregistrement A/AAAA correspondant ont été supprimés mais le commentaire a été conservé car des enregistrements similaires existent."
+"L'enregistrement et son enregistrement A/AAAA correspondant ont été "
+"supprimés mais le commentaire a été conservé car des enregistrements "
+"similaires existent."
 
 #: lib/Application/Controller/DeleteRecordController.php:188
 msgid ""
@@ -7068,7 +7075,8 @@ msgid ""
 "This is the only time your new API key will be displayed. Please save it now "
 "as you won't be able to see it again."
 msgstr ""
-"C'est la seule fois que votre nouvelle clé API sera affichée. Veuillez l'enregistrer maintenant car vous ne pourrez plus la voir."
+"C'est la seule fois que votre nouvelle clé API sera affichée. Veuillez "
+"l'enregistrer maintenant car vous ne pourrez plus la voir."
 
 #: templates/default/api_key_created.html:22
 msgid "Name:"
@@ -7159,7 +7167,8 @@ msgid ""
 "Deactivating an active key will affect the security of your zone and may "
 "cause validation failures."
 msgstr ""
-"Désactiver une clé active affectera la sécurité de votre zone et peut causer des échecs de validation."
+"Désactiver une clé active affectera la sécurité de votre zone et peut causer "
+"des échecs de validation."
 
 #: templates/default/dnssec_edit_key.html:54
 msgid "Are you sure you want to proceed?"
@@ -7178,7 +7187,8 @@ msgid ""
 "Activating this key will make it part of the active DNSSEC signing chain for "
 "this zone."
 msgstr ""
-"Activer cette clé en fera partie de la chaîne de signature DNSSEC active pour cette zone."
+"Activer cette clé en fera partie de la chaîne de signature DNSSEC active "
+"pour cette zone."
 
 #: templates/default/dnssec_delete_key.html:47
 msgid "Key Details"
@@ -7310,7 +7320,9 @@ msgid ""
 "After editing this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
 msgstr ""
-"Après avoir modifié cet enregistrement, n'oubliez pas de mettre à jour les zones utilisant ce modèle en cliquant sur \"Mettre à jour les zones\" sur la page du modèle."
+"Après avoir modifié cet enregistrement, n'oubliez pas de mettre à jour les "
+"zones utilisant ce modèle en cliquant sur \"Mettre à jour les zones\" sur la "
+"page du modèle."
 
 #: templates/default/edit_zone_templ_record.html:32
 msgid "Edit record in zone template"
@@ -7328,7 +7340,8 @@ msgstr "Fournissez un nom pour votre enregistrement"
 msgid ""
 "Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain"
 msgstr ""
-"Exemple : [ZONE] pour la zone elle-même, ou sousdomaine.[ZONE] pour un sous-domaine"
+"Exemple : [ZONE] pour la zone elle-même, ou sousdomaine.[ZONE] pour un sous-"
+"domaine"
 
 #: templates/default/delete_zone_templ_record.html:39
 msgid "Priority"
@@ -7364,7 +7377,10 @@ msgid ""
 "and may cause issues. SOA and NS records are required at the domain root and "
 "cannot coexist with CNAME."
 msgstr ""
-"Avertissement : Les enregistrements CNAME à la racine du domaine (apex de zone) ne sont pas recommandés et peuvent causer des problèmes. Les enregistrements SOA et NS sont requis à la racine du domaine et ne peuvent coexister avec CNAME."
+"Avertissement : Les enregistrements CNAME à la racine du domaine (apex de "
+"zone) ne sont pas recommandés et peuvent causer des problèmes. Les "
+"enregistrements SOA et NS sont requis à la racine du domaine et ne peuvent "
+"coexister avec CNAME."
 
 #: templates/default/add_zone_templ_record.html:83
 msgid ""
@@ -7372,7 +7388,10 @@ msgid ""
 "[HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA "
 "records are required for proper DNS zone functionality."
 msgstr ""
-"Astuce : Pour les enregistrements SOA, utilisez <code>[ZONE]</code> comme nom et <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> comme contenu. Les enregistrements SOA sont requis pour le bon fonctionnement de la zone DNS."
+"Astuce : Pour les enregistrements SOA, utilisez <code>[ZONE]</code> comme "
+"nom et <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> "
+"comme contenu. Les enregistrements SOA sont requis pour le bon "
+"fonctionnement de la zone DNS."
 
 #: templates/default/edit_zone_templ_record.html:103
 msgid "Update record"
@@ -7456,14 +7475,14 @@ msgstr "Exemples de Contenu"
 
 #: templates/default/add_zone_templ_record.html:175
 msgid "SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
-msgstr ""
-"SOA : <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
+msgstr "SOA : <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>"
 
 #: templates/default/add_zone_templ_record.html:176
 msgid ""
 "MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
 msgstr ""
-"MX pour Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>"
+"MX pour Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</"
+"code>"
 
 #: templates/default/add_zone_templ_record.html:177
 msgid "A record: <code>192.0.2.10</code>"
@@ -7541,7 +7560,8 @@ msgstr "Mettre à Jour les Identifiants"
 msgid ""
 "You can modify the IP address, hostname, or account for this supermaster."
 msgstr ""
-"Vous pouvez modifier l'adresse IP, le nom d'hôte ou le compte pour ce supermaster."
+"Vous pouvez modifier l'adresse IP, le nom d'hôte ou le compte pour ce "
+"supermaster."
 
 #: templates/default/edit_supermaster.html:95
 msgid "Important"
@@ -7552,7 +7572,8 @@ msgid ""
 "Ensure that the hostname matches exactly what appears in NS records, or "
 "slave zone creation may fail."
 msgstr ""
-"Assurez-vous que le nom d'hôte correspond exactement à ce qui apparaît dans les enregistrements NS, ou la création de zone esclave pourrait échouer."
+"Assurez-vous que le nom d'hôte correspond exactement à ce qui apparaît dans "
+"les enregistrements NS, ou la création de zone esclave pourrait échouer."
 
 #: templates/default/edit_supermaster.html:99
 msgid "Validation"
@@ -7561,7 +7582,8 @@ msgstr "Validation"
 #: templates/default/edit_supermaster.html:100
 msgid "All fields will be validated to ensure they contain proper values."
 msgstr ""
-"Tous les champs seront validés pour s'assurer qu'ils contiennent des valeurs appropriées."
+"Tous les champs seront validés pour s'assurer qu'ils contiennent des valeurs "
+"appropriées."
 
 #: templates/default/dnssec.html:6
 msgid "Confirm Unsign Zone"
@@ -7571,7 +7593,8 @@ msgstr "Confirmer la Désignature de Zone"
 msgid ""
 "This action will remove all DNSSEC keys and disable DNSSEC for this zone."
 msgstr ""
-"Cette action supprimera toutes les clés DNSSEC et désactivera DNSSEC pour cette zone."
+"Cette action supprimera toutes les clés DNSSEC et désactivera DNSSEC pour "
+"cette zone."
 
 #: templates/default/dnssec.html:14
 msgid "Are you sure you want to unsign the zone"
@@ -7641,7 +7664,8 @@ msgstr "Retour à la Connexion"
 msgid ""
 "Enter your email address and we'll send you a link to reset your password."
 msgstr ""
-"Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe."
+"Entrez votre adresse e-mail et nous vous enverrons un lien pour "
+"réinitialiser votre mot de passe."
 
 #: templates/default/forgot_password.html:27
 msgid "Email Address"
@@ -7863,7 +7887,7 @@ msgstr "Voir l'historique d'activité de l'utilisateur"
 msgid "View user logs"
 msgstr "Voir les journaux utilisateur"
 
-#: templates/default/add_user.html:38 install/templates/step4.html.twig:51
+#: templates/default/add_user.html:38 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:67
 msgid "Password"
 msgstr "Mot de passe"
@@ -8013,12 +8037,15 @@ msgid ""
 "Zone templates allow you to create predefined sets of DNS records that can "
 "be quickly applied when creating new zones."
 msgstr ""
-"Les modèles de zone vous permettent de créer des ensembles prédéfinis d'enregistrements DNS qui peuvent être rapidement appliqués lors de la création de nouvelles zones."
+"Les modèles de zone vous permettent de créer des ensembles prédéfinis "
+"d'enregistrements DNS qui peuvent être rapidement appliqués lors de la "
+"création de nouvelles zones."
 
 #: templates/default/add_zone_templ.html:75
 msgid "After creating a template, you can add record templates to it."
 msgstr ""
-"Après avoir créé un modèle, vous pouvez y ajouter des modèles d'enregistrements."
+"Après avoir créé un modèle, vous pouvez y ajouter des modèles "
+"d'enregistrements."
 
 #: templates/default/add_zone_templ.html:78
 msgid "Template Usage"
@@ -8045,32 +8072,37 @@ msgid ""
 "Create different templates for different types of websites (e.g., \"Basic "
 "Website\", \"Email Server\")"
 msgstr ""
-"Créer différents modèles pour différents types de sites web (par ex., \"Site Web Basique\", \"Serveur Email\")"
+"Créer différents modèles pour différents types de sites web (par ex., \"Site "
+"Web Basique\", \"Serveur Email\")"
 
 #: templates/default/add_zone_templ.html:98
 msgid ""
 "Use descriptive names and descriptions to make templates easy to identify"
 msgstr ""
-"Utiliser des noms et descriptions descriptifs pour faciliter l'identification des modèles"
+"Utiliser des noms et descriptions descriptifs pour faciliter "
+"l'identification des modèles"
 
 #: templates/default/add_zone_templ.html:99
 msgid "Set up standard records like MX, TXT for SPF, and CNAME for www"
 msgstr ""
-"Configurer des enregistrements standard comme MX, TXT pour SPF, et CNAME pour www"
+"Configurer des enregistrements standard comme MX, TXT pour SPF, et CNAME "
+"pour www"
 
 #: templates/default/add_zone_templ.html:100
 msgid ""
 "Use placeholders like [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], and "
 "[SERIAL] in record content"
 msgstr ""
-"Utiliser des espaces réservés comme [ZONE], [DOMAIN], [TLD], [NS1], [HOSTMASTER], et [SERIAL] dans le contenu des enregistrements"
+"Utiliser des espaces réservés comme [ZONE], [DOMAIN], [TLD], [NS1], "
+"[HOSTMASTER], et [SERIAL] dans le contenu des enregistrements"
 
 #: templates/default/add_zone_templ.html:101
 msgid ""
 "[DOMAIN] and [TLD] placeholders are useful for Microsoft 365 MX records "
 "(e.g., [DOMAIN]-[TLD].mail.protection.outlook.com)"
 msgstr ""
-"Les espaces réservés [DOMAIN] et [TLD] sont utiles pour les enregistrements MX Microsoft 365 (par ex., [DOMAIN]-[TLD].mail.protection.outlook.com)"
+"Les espaces réservés [DOMAIN] et [TLD] sont utiles pour les enregistrements "
+"MX Microsoft 365 (par ex., [DOMAIN]-[TLD].mail.protection.outlook.com)"
 
 #: templates/default/list_log_zones.html:11 templates/default/header.html:86
 msgid "Zone logs"
@@ -8139,7 +8171,8 @@ msgstr "Fournir au moins un enregistrement"
 #: templates/default/bulk_record_add.html:45
 msgid "Format: name,type,content,priority,ttl,comment (one record per line)"
 msgstr ""
-"Format: nom,type,contenu,priorité,ttl,commentaire (un enregistrement par ligne)"
+"Format: nom,type,contenu,priorité,ttl,commentaire (un enregistrement par "
+"ligne)"
 
 #: templates/default/bulk_record_add.html:46
 msgid "Example: www,A,192.168.1.1,0,3600,web server"
@@ -8189,7 +8222,8 @@ msgstr "Meilleures Pratiques"
 #: templates/default/bulk_record_add.html:89
 msgid "For CNAME, MX, SRV records, make sure content ends with a dot (.)"
 msgstr ""
-"Pour les enregistrements CNAME, MX, SRV, assurez-vous que le contenu se termine par un point (.)"
+"Pour les enregistrements CNAME, MX, SRV, assurez-vous que le contenu se "
+"termine par un point (.)"
 
 #: templates/default/bulk_record_add.html:90
 msgid "Use @ for records at the zone apex (root domain)"
@@ -8198,7 +8232,8 @@ msgstr "Utilisez @ pour les enregistrements à l'apex de zone (domaine racine)"
 #: templates/default/bulk_record_add.html:91
 msgid "Quote TXT record values that contain spaces"
 msgstr ""
-"Mettez entre guillemets les valeurs d'enregistrements TXT qui contiennent des espaces"
+"Mettez entre guillemets les valeurs d'enregistrements TXT qui contiennent "
+"des espaces"
 
 #: templates/default/bulk_record_add.html:100
 msgid "Record Type Examples"
@@ -8238,7 +8273,8 @@ msgid ""
 "This user is the owner for the following zones. Please decide what to do "
 "with each zone:"
 msgstr ""
-"Cet utilisateur est propriétaire des zones suivantes. Veuillez décider quoi faire avec chaque zone:"
+"Cet utilisateur est propriétaire des zones suivantes. Veuillez décider quoi "
+"faire avec chaque zone:"
 
 #: templates/default/delete_records.html:39
 msgid "Zone"
@@ -8267,7 +8303,8 @@ msgstr "Laisser: La zone restera dans le système mais sans propriétaire"
 #: templates/default/delete_user.html:82
 msgid "Add new owner: Transfer ownership to another user"
 msgstr ""
-"Ajouter un nouveau propriétaire: Transférer la propriété à un autre utilisateur"
+"Ajouter un nouveau propriétaire: Transférer la propriété à un autre "
+"utilisateur"
 
 #: templates/default/delete_user.html:91
 msgid "Yes, delete this user"
@@ -8285,7 +8322,8 @@ msgstr "Conditions d'Utilisation"
 msgid ""
 "By using this Poweradmin installation, you agree to the following terms:"
 msgstr ""
-"En utilisant cette installation Poweradmin, vous acceptez les conditions suivantes:"
+"En utilisant cette installation Poweradmin, vous acceptez les conditions "
+"suivantes:"
 
 #: templates/default/user_agreement_content.html:4
 msgid "Acceptable Use"
@@ -8295,22 +8333,24 @@ msgstr "Utilisation Acceptable"
 msgid ""
 "You will use this system responsibly and in accordance with applicable laws"
 msgstr ""
-"Vous utiliserez ce système de manière responsable et conformément aux lois applicables"
+"Vous utiliserez ce système de manière responsable et conformément aux lois "
+"applicables"
 
 #: templates/default/user_agreement_content.html:7
 msgid "You will not attempt to gain unauthorized access to other users' data"
 msgstr ""
-"Vous ne tenterez pas d'obtenir un accès non autorisé aux données d'autres utilisateurs"
+"Vous ne tenterez pas d'obtenir un accès non autorisé aux données d'autres "
+"utilisateurs"
 
 #: templates/default/user_agreement_content.html:8
 msgid "You will keep your login credentials secure and confidential"
-msgstr ""
-"Vous garderez vos identifiants de connexion sécurisés et confidentiels"
+msgstr "Vous garderez vos identifiants de connexion sécurisés et confidentiels"
 
 #: templates/default/user_agreement_content.html:9
 msgid "You will not use this system for any malicious or illegal activities"
 msgstr ""
-"Vous n'utiliserez pas ce système pour des activités malveillantes ou illégales"
+"Vous n'utiliserez pas ce système pour des activités malveillantes ou "
+"illégales"
 
 #: templates/default/user_agreement_content.html:12
 msgid "Data Protection"
@@ -8321,20 +8361,23 @@ msgid ""
 "Your login activity and DNS management actions may be logged for security "
 "and audit purposes"
 msgstr ""
-"Votre activité de connexion et vos actions de gestion DNS peuvent être enregistrées à des fins de sécurité et d'audit"
+"Votre activité de connexion et vos actions de gestion DNS peuvent être "
+"enregistrées à des fins de sécurité et d'audit"
 
 #: templates/default/user_agreement_content.html:15
 msgid ""
 "You are responsible for the accuracy of DNS records you create or modify"
 msgstr ""
-"Vous êtes responsable de l'exactitude des enregistrements DNS que vous créez ou modifiez"
+"Vous êtes responsable de l'exactitude des enregistrements DNS que vous créez "
+"ou modifiez"
 
 #: templates/default/user_agreement_content.html:16
 msgid ""
 "We will protect your personal information in accordance with applicable "
 "privacy laws"
 msgstr ""
-"Nous protégerons vos informations personnelles conformément aux lois sur la vie privée applicables"
+"Nous protégerons vos informations personnelles conformément aux lois sur la "
+"vie privée applicables"
 
 #: templates/default/user_agreement_content.html:19
 msgid "System Availability"
@@ -8346,7 +8389,10 @@ msgid ""
 "uptime. Users should not rely solely on this system for critical DNS "
 "operations without appropriate backups and monitoring."
 msgstr ""
-"Bien que nous nous efforcions de maintenir la disponibilité du système, nous ne pouvons garantir un temps de fonctionnement de 100%. Les utilisateurs ne doivent pas compter uniquement sur ce système pour les opérations DNS critiques sans sauvegardes et surveillance appropriées."
+"Bien que nous nous efforcions de maintenir la disponibilité du système, nous "
+"ne pouvons garantir un temps de fonctionnement de 100%. Les utilisateurs ne "
+"doivent pas compter uniquement sur ce système pour les opérations DNS "
+"critiques sans sauvegardes et surveillance appropriées."
 
 #: templates/default/user_agreement_content.html:22
 msgid "Limitation of Liability"
@@ -8358,7 +8404,9 @@ msgid ""
 "are not liable for any damages or losses resulting from the use of this "
 "system."
 msgstr ""
-"Ce système est fourni \"en l'état\" sans aucune garantie. Les administrateurs ne sont pas responsables des dommages ou pertes résultant de l'utilisation de ce système."
+"Ce système est fourni \"en l'état\" sans aucune garantie. Les "
+"administrateurs ne sont pas responsables des dommages ou pertes résultant de "
+"l'utilisation de ce système."
 
 #: templates/default/user_agreement_content.html:25
 msgid "Changes to Agreement"
@@ -8369,7 +8417,8 @@ msgid ""
 "These terms may be updated from time to time. Users will be required to "
 "accept any changes before continuing to use the system."
 msgstr ""
-"Ces conditions peuvent être mises à jour de temps en temps. Les utilisateurs devront accepter tout changement avant de continuer à utiliser le système."
+"Ces conditions peuvent être mises à jour de temps en temps. Les utilisateurs "
+"devront accepter tout changement avant de continuer à utiliser le système."
 
 #: templates/default/user_agreement_content.html:30
 msgid "Agreement Version:"
@@ -8397,14 +8446,17 @@ msgid ""
 "If you regenerate this API key, any applications using it will no longer be "
 "able to authenticate until updated with the new key."
 msgstr ""
-"Si vous regénérez cette clé API, toutes les applications qui l'utilisent ne pourront plus s'authentifier jusqu'à ce qu'elles soient mises à jour avec la nouvelle clé."
+"Si vous regénérez cette clé API, toutes les applications qui l'utilisent ne "
+"pourront plus s'authentifier jusqu'à ce qu'elles soient mises à jour avec la "
+"nouvelle clé."
 
 #: templates/default/api_key_regenerate.html:19
 msgid ""
 "The new key will be displayed only once after regeneration, so be prepared "
 "to save it."
 msgstr ""
-"La nouvelle clé ne sera affichée qu'une seule fois après la regénération, alors préparez-vous à la sauvegarder."
+"La nouvelle clé ne sera affichée qu'une seule fois après la regénération, "
+"alors préparez-vous à la sauvegarder."
 
 #: templates/default/api_key_delete.html:23
 msgid "API Key Details"
@@ -8583,7 +8635,7 @@ msgid "Recommended bits for"
 msgstr "Bits recommandés pour"
 
 #: templates/default/dnssec_add_key.html:140
-#: install/helpers/InstallStepHandler.php:176
+#: install/helpers/InstallStepHandler.php:182
 msgid "Warning:"
 msgstr "Avertissement :"
 
@@ -8604,7 +8656,8 @@ msgid ""
 "Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS "
 "4.0+)"
 msgstr ""
-"Clé de Signature Combinée - sert à la fois de KSK et ZSK (recommandé pour PowerDNS 4.0+)"
+"Clé de Signature Combinée - sert à la fois de KSK et ZSK (recommandé pour "
+"PowerDNS 4.0+)"
 
 #: templates/default/dnssec_add_key.html:184
 msgid "Key Signing Key - signs the DNSKEY records in the zone"
@@ -8625,7 +8678,8 @@ msgid ""
 "For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits "
 "provides strong security with better performance."
 msgstr ""
-"Pour les déploiements modernes, ECDSA (algorithme 13, ECDSAP256SHA256) avec 256 bits offre une sécurité robuste avec de meilleures performances."
+"Pour les déploiements modernes, ECDSA (algorithme 13, ECDSAP256SHA256) avec "
+"256 bits offre une sécurité robuste avec de meilleures performances."
 
 #: templates/default/edit_user.html:13
 msgid "Edit user"
@@ -8636,7 +8690,7 @@ msgid "Edit User"
 msgstr "Modifier l'Utilisateur"
 
 #: templates/default/users.html:24 templates/default/add_user.html:20
-#: install/templates/step4.html.twig:40 install/templates/step5.html.twig:56
+#: install/templates/step4.html.twig:38 install/templates/step5.html.twig:56
 msgid "Username"
 msgstr "Nom d'utilisateur"
 
@@ -8748,17 +8802,20 @@ msgstr ""
 #: templates/default/edit_user.html:199
 msgid "Changing permission templates will update user access immediately"
 msgstr ""
-"Changer les modèles de permissions mettra à jour l'accès utilisateur immédiatement"
+"Changer les modèles de permissions mettra à jour l'accès utilisateur "
+"immédiatement"
 
 #: templates/default/edit_user.html:200 templates/default/add_user.html:178
 msgid "Users can be disabled instead of deleted to preserve their settings"
 msgstr ""
-"Les utilisateurs peuvent être désactivés au lieu d'être supprimés pour préserver leurs paramètres"
+"Les utilisateurs peuvent être désactivés au lieu d'être supprimés pour "
+"préserver leurs paramètres"
 
 #: templates/default/edit_user.html:201
 msgid "LDAP users cannot have passwords managed through this interface"
 msgstr ""
-"Les utilisateurs LDAP ne peuvent pas avoir leurs mots de passe gérés via cette interface"
+"Les utilisateurs LDAP ne peuvent pas avoir leurs mots de passe gérés via "
+"cette interface"
 
 #: templates/default/confirm_unlink_zones_templ.html:6
 msgid "Unlink zones"
@@ -8785,7 +8842,8 @@ msgid ""
 "This will disconnect these zones from their template. Are you sure you want "
 "to proceed?"
 msgstr ""
-"Ceci déconnectera ces zones de leur modèle. Êtes-vous sûr de vouloir continuer?"
+"Ceci déconnectera ces zones de leur modèle. Êtes-vous sûr de vouloir "
+"continuer?"
 
 #: templates/default/confirm_unlink_zones_templ.html:30
 msgid "Zones to be unlinked"
@@ -8800,7 +8858,8 @@ msgid ""
 "Unlinking the zones from their template will not delete any records. The "
 "zones will no longer receive updates when the template is modified."
 msgstr ""
-"Délier les zones de leur modèle ne supprimera aucun enregistrement. Les zones ne recevront plus de mises à jour lorsque le modèle sera modifié."
+"Délier les zones de leur modèle ne supprimera aucun enregistrement. Les "
+"zones ne recevront plus de mises à jour lorsque le modèle sera modifié."
 
 #: templates/default/confirm_unlink_zones_templ.html:70
 msgid "Yes, unlink this zone"
@@ -8848,7 +8907,10 @@ msgid ""
 "Poweradmin. They provide a quick way to assign common permission "
 "combinations to multiple users."
 msgstr ""
-"Les modèles de permissions définissent des ensembles d'actions que les utilisateurs peuvent effectuer dans Poweradmin. Ils offrent un moyen rapide d'attribuer des combinaisons de permissions communes à plusieurs utilisateurs."
+"Les modèles de permissions définissent des ensembles d'actions que les "
+"utilisateurs peuvent effectuer dans Poweradmin. Ils offrent un moyen rapide "
+"d'attribuer des combinaisons de permissions communes à plusieurs "
+"utilisateurs."
 
 #: templates/default/add_perm_templ.html:61
 msgid "How to Use Templates"
@@ -8860,7 +8922,10 @@ msgid ""
 "editing user accounts. This ensures consistent permissions across user "
 "groups with similar roles."
 msgstr ""
-"Après avoir créé un modèle, vous pouvez l'attribuer aux utilisateurs lors de la création ou de la modification des comptes utilisateur. Cela garantit des permissions cohérentes entre les groupes d'utilisateurs ayant des rôles similaires."
+"Après avoir créé un modèle, vous pouvez l'attribuer aux utilisateurs lors de "
+"la création ou de la modification des comptes utilisateur. Cela garantit des "
+"permissions cohérentes entre les groupes d'utilisateurs ayant des rôles "
+"similaires."
 
 #: templates/default/edit_perm_templ.html:76
 msgid "Available Permissions"
@@ -8931,7 +8996,8 @@ msgid ""
 "A supermaster is a PowerDNS authoritative server that automatically pushes "
 "new zones to its slaves."
 msgstr ""
-"Un supermaster est un serveur PowerDNS autoritaire qui pousse automatiquement de nouvelles zones vers ses esclaves."
+"Un supermaster est un serveur PowerDNS autoritaire qui pousse "
+"automatiquement de nouvelles zones vers ses esclaves."
 
 #: templates/default/add_supermaster.html:87
 msgid "How it works"
@@ -8942,7 +9008,8 @@ msgid ""
 "When a slave receives a notification from a supermaster, it adds the domain "
 "and sets the supermaster's IP address as the master address."
 msgstr ""
-"Lorsqu'un esclave reçoit une notification d'un supermaster, il ajoute le domaine et définit l'adresse IP du supermaster comme adresse maître."
+"Lorsqu'un esclave reçoit une notification d'un supermaster, il ajoute le "
+"domaine et définit l'adresse IP du supermaster comme adresse maître."
 
 #: templates/default/add_zone_slave.html:94
 msgid "Important Notes"
@@ -8952,13 +9019,15 @@ msgstr "Notes Importantes"
 msgid ""
 "The hostname must match exactly what appears in the NS record of the zone."
 msgstr ""
-"Le nom d'hôte doit correspondre exactement à ce qui apparaît dans l'enregistrement NS de la zone."
+"Le nom d'hôte doit correspondre exactement à ce qui apparaît dans "
+"l'enregistrement NS de la zone."
 
 #: templates/default/add_supermaster.html:94
 msgid ""
 "Ensure your firewall allows DNS notifications between masters and slaves."
 msgstr ""
-"Assurez-vous que votre pare-feu autorise les notifications DNS entre maîtres et esclaves."
+"Assurez-vous que votre pare-feu autorise les notifications DNS entre maîtres "
+"et esclaves."
 
 #: templates/default/login.html:11 templates/default/login.html:48
 msgid "Log in"
@@ -9013,6 +9082,7 @@ msgid "Host Prefix"
 msgstr "Préfixe Hôte"
 
 #: templates/default/batch_ptr_record.html:71
+#: install/templates/step4.html.twig:132
 msgid "Optional"
 msgstr "Optionnel"
 
@@ -9040,14 +9110,16 @@ msgstr "Créer des enregistrements A/AAAA directs dans la zone primaire"
 #: templates/default/batch_ptr_record.html:105
 msgid "Create PTRs only for existing A records in forward zone"
 msgstr ""
-"Créer des PTR seulement pour les enregistrements A existants dans la zone directe"
+"Créer des PTR seulement pour les enregistrements A existants dans la zone "
+"directe"
 
 #: templates/default/batch_ptr_record.html:106
 msgid ""
 "When checked, PTR records will only be created for IPs that have "
 "corresponding A records in the specified domain"
 msgstr ""
-"Lorsque coché, les enregistrements PTR ne seront créés que pour les IP ayant des enregistrements A correspondants dans le domaine spécifié"
+"Lorsque coché, les enregistrements PTR ne seront créés que pour les IP ayant "
+"des enregistrements A correspondants dans le domaine spécifié"
 
 #: templates/default/batch_ptr_record.html:112
 msgid "Create PTR Records"
@@ -9083,7 +9155,8 @@ msgid ""
 "Creates PTR records only for IPs that have existing A records in the forward "
 "zone"
 msgstr ""
-"Crée des enregistrements PTR seulement pour les IP ayant des enregistrements A existants dans la zone directe"
+"Crée des enregistrements PTR seulement pour les IP ayant des enregistrements "
+"A existants dans la zone directe"
 
 #: templates/default/batch_ptr_record.html:145
 msgid "For IPv4, supported networks are:"
@@ -9098,7 +9171,8 @@ msgid ""
 "You must have the appropriate reverse zone already created in PowerDNS "
 "before using this feature."
 msgstr ""
-"Vous devez avoir la zone inverse appropriée déjà créée dans PowerDNS avant d'utiliser cette fonctionnalité."
+"Vous devez avoir la zone inverse appropriée déjà créée dans PowerDNS avant "
+"d'utiliser cette fonctionnalité."
 
 #: templates/default/batch_ptr_record.html:163
 msgid "For example:"
@@ -9109,14 +9183,16 @@ msgid ""
 "For network 192.168.1.0/24, you need a reverse zone for 1.168.192.in-"
 "addr.arpa"
 msgstr ""
-"Pour le réseau 192.168.1.0/24, vous avez besoin d'une zone inverse pour 1.168.192.in-addr.arpa"
+"Pour le réseau 192.168.1.0/24, vous avez besoin d'une zone inverse pour "
+"1.168.192.in-addr.arpa"
 
 #: templates/default/batch_ptr_record.html:166
 msgid ""
 "For larger networks, you will need the corresponding reverse zones (e.g., "
 "168.192.in-addr.arpa for a /16 network)"
 msgstr ""
-"Pour les réseaux plus larges, vous aurez besoin des zones inverses correspondantes (par ex., 168.192.in-addr.arpa pour un réseau /16)"
+"Pour les réseaux plus larges, vous aurez besoin des zones inverses "
+"correspondantes (par ex., 168.192.in-addr.arpa pour un réseau /16)"
 
 #: templates/default/add_zone_slave.html:103
 msgid "Quick Tips"
@@ -9127,28 +9203,33 @@ msgid ""
 "Use the dropdown button next to Network Prefix to select from existing "
 "reverse zones"
 msgstr ""
-"Utilisez le bouton déroulant à côté du Préfixe Réseau pour sélectionner parmi les zones inverses existantes"
+"Utilisez le bouton déroulant à côté du Préfixe Réseau pour sélectionner "
+"parmi les zones inverses existantes"
 
 #: templates/default/batch_ptr_record.html:182
 msgid ""
 "Use \"Create PTRs only for existing A records\" to populate PTRs based on "
 "your forward zone"
 msgstr ""
-"Utilisez \"Créer des PTR seulement pour les enregistrements A existants\" pour peupler les PTR basés sur votre zone directe"
+"Utilisez \"Créer des PTR seulement pour les enregistrements A existants\" "
+"pour peupler les PTR basés sur votre zone directe"
 
 #: templates/default/batch_ptr_record.html:183
 msgid ""
 "Use the Host Prefix field to add a prefix to all hostnames when creating all "
 "IPs"
 msgstr ""
-"Utilisez le champ Préfixe Hôte pour ajouter un préfixe à tous les noms d'hôte lors de la création de toutes les IP"
+"Utilisez le champ Préfixe Hôte pour ajouter un préfixe à tous les noms "
+"d'hôte lors de la création de toutes les IP"
 
 #: templates/default/batch_ptr_record.html:184
 msgid ""
 "Check \"Create forward A/AAAA records\" to automatically create matching "
 "forward records (disabled when using matching mode)"
 msgstr ""
-"Cochez \"Créer des enregistrements A/AAAA directs\" pour créer automatiquement des enregistrements directs correspondants (désactivé en mode correspondance)"
+"Cochez \"Créer des enregistrements A/AAAA directs\" pour créer "
+"automatiquement des enregistrements directs correspondants (désactivé en "
+"mode correspondance)"
 
 #: templates/default/add_record.html:18
 msgid "Add record"
@@ -9159,7 +9240,9 @@ msgid ""
 "After adding this record, remember to update the zones using this template "
 "by clicking \"Update zones\" on the template page."
 msgstr ""
-"Après avoir ajouté cet enregistrement, n'oubliez pas de mettre à jour les zones utilisant ce modèle en cliquant sur \"Mettre à jour les zones\" sur la page du modèle."
+"Après avoir ajouté cet enregistrement, n'oubliez pas de mettre à jour les "
+"zones utilisant ce modèle en cliquant sur \"Mettre à jour les zones\" sur la "
+"page du modèle."
 
 #: templates/default/add_zone_templ_record.html:31
 msgid "Add record to zone template"
@@ -9214,7 +9297,9 @@ msgid ""
 "When you create a new API key, you will be shown the key only ONCE. Make "
 "sure to save it in a secure place, as you won't be able to retrieve it later."
 msgstr ""
-"Lorsque vous créez une nouvelle clé API, elle ne vous sera montrée qu'UNE SEULE FOIS. Assurez-vous de la sauvegarder dans un endroit sécurisé, car vous ne pourrez pas la récupérer plus tard."
+"Lorsque vous créez une nouvelle clé API, elle ne vous sera montrée qu'UNE "
+"SEULE FOIS. Assurez-vous de la sauvegarder dans un endroit sécurisé, car "
+"vous ne pourrez pas la récupérer plus tard."
 
 #: templates/default/api_key_add.html:53
 msgid "If you lose the key, you'll need to regenerate it."
@@ -9247,7 +9332,8 @@ msgstr "enregistrement(s). Veuillez vérifier le format de l'enregistrement."
 #: templates/default/edit.html:45 templates/default/edit.html:538
 msgid "Failed to add records. Please check the record format."
 msgstr ""
-"Échec de l'ajout des enregistrements. Veuillez vérifier le format des enregistrements."
+"Échec de l'ajout des enregistrements. Veuillez vérifier le format des "
+"enregistrements."
 
 #: templates/default/edit.html:48 templates/default/edit.html:541
 msgid "Content validation failed:"
@@ -9294,7 +9380,8 @@ msgid ""
 "Tip: Enter just the hostname (e.g. 'www') and the zone name will be added "
 "automatically. Use '@' for the zone apex/root."
 msgstr ""
-"Astuce: Entrez seulement le nom d'hôte (par ex. 'www') et le nom de zone sera ajouté automatiquement. Utilisez '@' pour l'apex/racine de zone."
+"Astuce: Entrez seulement le nom d'hôte (par ex. 'www') et le nom de zone "
+"sera ajouté automatiquement. Utilisez '@' pour l'apex/racine de zone."
 
 #: templates/default/delete_records.html:12
 msgid "Edit zone"
@@ -9452,7 +9539,8 @@ msgstr "Détails de l'Enregistrement"
 #: templates/default/delete_record.html:74
 msgid "You are trying to delete a record that is needed for this zone to work."
 msgstr ""
-"Vous essayez de supprimer un enregistrement nécessaire au fonctionnement de cette zone."
+"Vous essayez de supprimer un enregistrement nécessaire au fonctionnement de "
+"cette zone."
 
 #: templates/default/delete_record.html:83
 msgid "Also delete corresponding PTR record (if exists)"
@@ -9518,7 +9606,8 @@ msgstr "Veuillez entrer un code de récupération valide."
 msgid ""
 "Enter one of your recovery codes. Note that each code can only be used once."
 msgstr ""
-"Entrez l'un de vos codes de récupération. Notez que chaque code ne peut être utilisé qu'une seule fois."
+"Entrez l'un de vos codes de récupération. Notez que chaque code ne peut être "
+"utilisé qu'une seule fois."
 
 #: templates/default/database_consistency.html:7
 msgid "Confirm Delete"
@@ -9624,7 +9713,7 @@ msgstr "Ajouter un Utilisateur"
 msgid "Optional: User's full name for identification"
 msgstr "Optionnel: Nom complet de l'utilisateur pour identification"
 
-#: templates/default/add_user.html:42 install/templates/step4.html.twig:56
+#: templates/default/add_user.html:42 install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr "Fournir le mot de passe utilisateur"
 
@@ -9651,7 +9740,9 @@ msgid ""
 "selected template. You can modify these permissions later by editing the "
 "user."
 msgstr ""
-"Lors de la création d'un nouvel utilisateur, il recevra des permissions basées sur le modèle sélectionné. Vous pouvez modifier ces permissions plus tard en modifiant l'utilisateur."
+"Lors de la création d'un nouvel utilisateur, il recevra des permissions "
+"basées sur le modèle sélectionné. Vous pouvez modifier ces permissions plus "
+"tard en modifiant l'utilisateur."
 
 #: templates/default/add_user.html:176
 msgid "Create descriptive usernames that are easy to identify"
@@ -9664,7 +9755,8 @@ msgstr "Ajouter un nom complet aide à l'identification de l'utilisateur"
 #: templates/default/add_user.html:179
 msgid "Auto-generating passwords is recommended for better security"
 msgstr ""
-"La génération automatique de mots de passe est recommandée pour une meilleure sécurité"
+"La génération automatique de mots de passe est recommandée pour une "
+"meilleure sécurité"
 
 #: templates/default/add_zone_master.html:19
 msgid "Add Master Zone"
@@ -9719,13 +9811,16 @@ msgid ""
 "A master zone is a zone for which this PowerDNS server is the primary "
 "authority. You can add, edit and delete records in master zones."
 msgstr ""
-"Une zone maître est une zone pour laquelle ce serveur PowerDNS est l'autorité primaire. Vous pouvez ajouter, modifier et supprimer des enregistrements dans les zones maîtres."
+"Une zone maître est une zone pour laquelle ce serveur PowerDNS est "
+"l'autorité primaire. Vous pouvez ajouter, modifier et supprimer des "
+"enregistrements dans les zones maîtres."
 
 #: templates/default/add_zone_master.html:110
 msgid ""
 "After creating the zone, you will be redirected to add DNS records to it."
 msgstr ""
-"Après avoir créé la zone, vous serez redirigé pour y ajouter des enregistrements DNS."
+"Après avoir créé la zone, vous serez redirigé pour y ajouter des "
+"enregistrements DNS."
 
 #: templates/default/add_zone_master.html:115
 msgid "DNSSEC Information"
@@ -9737,14 +9832,17 @@ msgid ""
 "signatures to DNS records to protect against spoofing and cache poisoning "
 "attacks."
 msgstr ""
-"DNSSEC (Extensions de Sécurité du Système de Noms de Domaine) ajoute des signatures cryptographiques aux enregistrements DNS pour protéger contre les attaques d'usurpation et d'empoisonnement de cache."
+"DNSSEC (Extensions de Sécurité du Système de Noms de Domaine) ajoute des "
+"signatures cryptographiques aux enregistrements DNS pour protéger contre les "
+"attaques d'usurpation et d'empoisonnement de cache."
 
 #: templates/default/add_zone_master.html:117
 msgid ""
 "When enabled, PowerDNS will automatically generate and manage the necessary "
 "keys and signatures for the zone."
 msgstr ""
-"Lorsqu'activé, PowerDNS générera et gérera automatiquement les clés et signatures nécessaires pour la zone."
+"Lorsqu'activé, PowerDNS générera et gérera automatiquement les clés et "
+"signatures nécessaires pour la zone."
 
 #: templates/default/add_zone_master.html:132
 msgid "Use fully qualified domain names (example.com)"
@@ -9753,7 +9851,8 @@ msgstr "Utiliser des noms de domaine pleinement qualifiés (exemple.com)"
 #: templates/default/add_zone_master.html:133
 msgid "Select a template to automatically create common DNS records"
 msgstr ""
-"Sélectionner un modèle pour créer automatiquement des enregistrements DNS courants"
+"Sélectionner un modèle pour créer automatiquement des enregistrements DNS "
+"courants"
 
 #: templates/default/add_zone_master.html:134
 msgid "NATIVE zone type is recommended for most setups"
@@ -9822,7 +9921,10 @@ msgid ""
 "manual additions. Template modifications don't automatically update zones - "
 "use \"Update Zones\" button when editing templates to apply changes."
 msgstr ""
-"Changer le modèle d'une zone écrase les enregistrements basés sur le modèle mais préserve les ajouts manuels. Les modifications de modèle ne mettent pas automatiquement à jour les zones - utilisez le bouton \"Mettre à jour les Zones\" lors de l'édition des modèles pour appliquer les changements."
+"Changer le modèle d'une zone écrase les enregistrements basés sur le modèle "
+"mais préserve les ajouts manuels. Les modifications de modèle ne mettent pas "
+"automatiquement à jour les zones - utilisez le bouton \"Mettre à jour les "
+"Zones\" lors de l'édition des modèles pour appliquer les changements."
 
 #: templates/default/change_password.html:16
 msgid "Change Password"
@@ -9941,7 +10043,8 @@ msgstr "Il y a"
 msgid ""
 "zones that need to be updated to reflect the current template configuration."
 msgstr ""
-"zones qui doivent être mises à jour pour refléter la configuration actuelle du modèle."
+"zones qui doivent être mises à jour pour refléter la configuration actuelle "
+"du modèle."
 
 #: templates/default/edit_zone_templ.html:29
 msgid "Template Records"
@@ -9952,7 +10055,9 @@ msgid ""
 "This template does not have an SOA record. DNS zones typically require an "
 "SOA record to function properly, and DNSSEC signing may fail without one."
 msgstr ""
-"Ce modèle n'a pas d'enregistrement SOA. Les zones DNS nécessitent généralement un enregistrement SOA pour fonctionner correctement, et la signature DNSSEC peut échouer sans celui-ci."
+"Ce modèle n'a pas d'enregistrement SOA. Les zones DNS nécessitent "
+"généralement un enregistrement SOA pour fonctionner correctement, et la "
+"signature DNSSEC peut échouer sans celui-ci."
 
 #: templates/default/edit_zone_templ.html:39
 msgid "This zone template does not have any records yet."
@@ -9981,7 +10086,8 @@ msgstr "Enregistrer sous"
 #: templates/default/edit_zone_templ.html:182
 msgid "The following placeholders can be used in template records"
 msgstr ""
-"Les espaces réservés suivants peuvent être utilisés dans les enregistrements de modèle"
+"Les espaces réservés suivants peuvent être utilisés dans les enregistrements "
+"de modèle"
 
 #: templates/default/edit_zone_templ.html:305
 msgid "Warning: Missing SOA Record"
@@ -9996,7 +10102,8 @@ msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
 msgstr ""
-"Les zones DNS nécessitent généralement un enregistrement SOA pour fonctionner correctement, et la signature DNSSEC peut échouer sans celui-ci."
+"Les zones DNS nécessitent généralement un enregistrement SOA pour "
+"fonctionner correctement, et la signature DNSSEC peut échouer sans celui-ci."
 
 #: templates/default/edit_zone_templ.html:313
 msgid "Do you want to continue without adding an SOA record?"
@@ -10027,7 +10134,8 @@ msgid ""
 "This is the only time your API key will be displayed. Please save it now as "
 "you won't be able to see it again."
 msgstr ""
-"C'est la seule fois que votre clé API sera affichée. Veuillez la sauvegarder maintenant car vous ne pourrez plus la voir."
+"C'est la seule fois que votre clé API sera affichée. Veuillez la sauvegarder "
+"maintenant car vous ne pourrez plus la voir."
 
 #: templates/default/api_key_created.html:27
 msgid "API Key:"
@@ -10044,7 +10152,8 @@ msgstr "Rechercher"
 #: templates/default/rdap.html:26
 msgid "Enter a domain name (e.g., example.com) to lookup its RDAP information"
 msgstr ""
-"Entrez un nom de domaine (ex: exemple.com) pour rechercher ses informations RDAP"
+"Entrez un nom de domaine (ex: exemple.com) pour rechercher ses informations "
+"RDAP"
 
 #: templates/default/rdap.html:34
 msgid "RDAP results for"
@@ -10097,12 +10206,12 @@ msgstr "Entrez un nom de domaine par ligne dans le champ Domaines"
 #: templates/default/bulk_registration.html:104
 msgid "Select a zone template to apply standard records to all zones"
 msgstr ""
-"Sélectionnez un modèle de zone pour appliquer des enregistrements standard à toutes les zones"
+"Sélectionnez un modèle de zone pour appliquer des enregistrements standard à "
+"toutes les zones"
 
 #: templates/default/bulk_registration.html:105
 msgid "The chosen owner will have full access to all created zones"
-msgstr ""
-"Le propriétaire choisi aura un accès complet à toutes les zones créées"
+msgstr "Le propriétaire choisi aura un accès complet à toutes les zones créées"
 
 #: templates/default/bulk_registration.html:109
 msgid "How It Works"
@@ -10113,7 +10222,9 @@ msgid ""
 "The system will attempt to create each zone with the same settings. Failed "
 "domains will be displayed so you can correct any issues and try again."
 msgstr ""
-"Le système tentera de créer chaque zone avec les mêmes paramètres. Les domaines échoués seront affichés pour que vous puissiez corriger les problèmes et réessayer."
+"Le système tentera de créer chaque zone avec les mêmes paramètres. Les "
+"domaines échoués seront affichés pour que vous puissiez corriger les "
+"problèmes et réessayer."
 
 #: templates/default/bulk_registration.html:118
 msgid "Tips & Recommendations"
@@ -10127,17 +10238,20 @@ msgstr ""
 #: templates/default/bulk_registration.html:125
 msgid "Create a template first if you need standard records for all zones"
 msgstr ""
-"Créez d'abord un modèle si vous avez besoin d'enregistrements standard pour toutes les zones"
+"Créez d'abord un modèle si vous avez besoin d'enregistrements standard pour "
+"toutes les zones"
 
 #: templates/default/bulk_registration.html:126
 msgid "You can copy and paste a list of domains from a spreadsheet"
 msgstr ""
-"Vous pouvez copier et coller une liste de domaines depuis une feuille de calcul"
+"Vous pouvez copier et coller une liste de domaines depuis une feuille de "
+"calcul"
 
 #: templates/default/bulk_registration.html:127
 msgid "Make sure the domain names follow valid DNS naming conventions"
 msgstr ""
-"Assurez-vous que les noms de domaine suivent les conventions de nommage DNS valides"
+"Assurez-vous que les noms de domaine suivent les conventions de nommage DNS "
+"valides"
 
 #: templates/default/user_agreement.html:13
 msgid "User Agreement"
@@ -10168,7 +10282,8 @@ msgid ""
 "Are you sure you want to delete the following records? This action cannot be "
 "undone."
 msgstr ""
-"Êtes-vous sûr de vouloir supprimer les enregistrements suivants? Cette action ne peut pas être annulée."
+"Êtes-vous sûr de vouloir supprimer les enregistrements suivants? Cette "
+"action ne peut pas être annulée."
 
 #: templates/default/delete_records.html:78
 msgid "Also delete corresponding PTR records (if they exist)"
@@ -10217,7 +10332,9 @@ msgid ""
 "Recovery codes can be used to access your account if you lose access to your "
 "authenticator device. Each code can only be used once."
 msgstr ""
-"Les codes de récupération peuvent être utilisés pour accéder à votre compte si vous perdez l'accès à votre appareil d'authentification. Chaque code ne peut être utilisé qu'une seule fois."
+"Les codes de récupération peuvent être utilisés pour accéder à votre compte "
+"si vous perdez l'accès à votre appareil d'authentification. Chaque code ne "
+"peut être utilisé qu'une seule fois."
 
 #: templates/default/mfa_recovery_codes.html:31
 msgid "Store these codes in a safe place!"
@@ -10260,13 +10377,16 @@ msgid ""
 "Store these codes in a safe place. Each code can be used once to log in if "
 "you lose access to your authenticator device."
 msgstr ""
-"Stockez ces codes dans un endroit sûr. Chaque code peut être utilisé une fois pour vous connecter si vous perdez l'accès à votre appareil d'authentification."
+"Stockez ces codes dans un endroit sûr. Chaque code peut être utilisé une "
+"fois pour vous connecter si vous perdez l'accès à votre appareil "
+"d'authentification."
 
 #: templates/default/mfa_setup.html:16
 msgid ""
 "Multi-factor authentication adds an extra layer of security to your account."
 msgstr ""
-"L'authentification multi-facteurs ajoute une couche de sécurité supplémentaire à votre compte."
+"L'authentification multi-facteurs ajoute une couche de sécurité "
+"supplémentaire à votre compte."
 
 #: templates/default/mfa_setup.html:20
 msgid "MFA is currently enabled"
@@ -10297,7 +10417,8 @@ msgid ""
 "Use an authenticator app like Google Authenticator, Microsoft Authenticator, "
 "or Authy."
 msgstr ""
-"Utilisez une application d'authentification comme Google Authenticator, Microsoft Authenticator ou Authy."
+"Utilisez une application d'authentification comme Google Authenticator, "
+"Microsoft Authenticator ou Authy."
 
 #: templates/default/mfa_setup.html:63
 msgid "Works offline"
@@ -10341,14 +10462,16 @@ msgid ""
 "Email verification is not available because mail service is not enabled on "
 "this system."
 msgstr ""
-"La vérification par e-mail n'est pas disponible car le service de messagerie n'est pas activé sur ce système."
+"La vérification par e-mail n'est pas disponible car le service de messagerie "
+"n'est pas activé sur ce système."
 
 #: templates/default/mfa_setup.html:94
 msgid ""
 "You need to set your email address in your profile before you can use email "
 "verification."
 msgstr ""
-"Vous devez définir votre adresse e-mail dans votre profil avant de pouvoir utiliser la vérification par e-mail."
+"Vous devez définir votre adresse e-mail dans votre profil avant de pouvoir "
+"utiliser la vérification par e-mail."
 
 #: templates/default/mfa_setup.html:99
 msgid "Set up email verification"
@@ -10367,7 +10490,8 @@ msgid ""
 "Please enter the 6-digit code to verify and enable Multi-Factor "
 "Authentication."
 msgstr ""
-"Veuillez entrer le code à 6 chiffres pour vérifier et activer l'Authentification Multi-Facteurs."
+"Veuillez entrer le code à 6 chiffres pour vérifier et activer "
+"l'Authentification Multi-Facteurs."
 
 #: templates/default/mfa_verify_email.html:34
 msgid "Enter the 6-digit code from your email"
@@ -10412,10 +10536,13 @@ msgid ""
 "Whenever the supermaster sends a notification for this zone, it will be "
 "added again!"
 msgstr ""
-"Vous êtes sur le point de supprimer une zone esclave dont le serveur de noms maître est un serveur maître secondaire. Supprimer la zone maintenant ne résultera qu'en une suppression temporaire. Chaque fois que le serveur maître secondaire enverra une notification pour cette zone, elle sera ajoutée à nouveau!"
-"supermaster. Deleting the zone now, will result in temporary removal only. "
-"Whenever the supermaster sends a notification for this zone, it will be "
-"added again!"
+"Vous êtes sur le point de supprimer une zone esclave dont le serveur de noms "
+"maître est un serveur maître secondaire. Supprimer la zone maintenant ne "
+"résultera qu'en une suppression temporaire. Chaque fois que le serveur "
+"maître secondaire enverra une notification pour cette zone, elle sera "
+"ajoutée à nouveau!supermaster. Deleting the zone now, will result in "
+"temporary removal only. Whenever the supermaster sends a notification for "
+"this zone, it will be added again!"
 
 #: templates/default/delete_domain.html:73
 msgid "Yes, delete this zone"
@@ -10433,7 +10560,8 @@ msgstr "Recherche DNS"
 msgid ""
 "Enter domain name, hostname or IP (e.g., example.com type:txt content:spf)"
 msgstr ""
-"Entrez le nom de domaine, nom d'hôte ou IP (ex: exemple.com type:txt content:spf)"
+"Entrez le nom de domaine, nom d'hôte ou IP (ex: exemple.com type:txt "
+"content:spf)"
 
 #: templates/default/search.html:76
 msgid "Wildcards"
@@ -10448,7 +10576,9 @@ msgid ""
 "Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse "
 "converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa)"
 msgstr ""
-"Syntaxe de filtre: type:txt content:spf. Les caractères jokers ajoutent % à la recherche. L'inverse convertit les IP au format PTR (ex: 192.168.1.1 vers 1.1.168.192.in-addr.arpa)"
+"Syntaxe de filtre: type:txt content:spf. Les caractères jokers ajoutent % à "
+"la recherche. L'inverse convertit les IP au format PTR (ex: 192.168.1.1 vers "
+"1.1.168.192.in-addr.arpa)"
 
 #: templates/default/search.html:120
 msgid "Zones found"
@@ -10459,7 +10589,8 @@ msgid ""
 "Are you sure you want to delete the selected zones? This action cannot be "
 "undone."
 msgstr ""
-"Êtes-vous sûr de vouloir supprimer les zones sélectionnées? Cette action ne peut pas être annulée."
+"Êtes-vous sûr de vouloir supprimer les zones sélectionnées? Cette action ne "
+"peut pas être annulée."
 
 #: templates/default/search.html:291 templates/default/search.html:482
 msgid "Toggle all"
@@ -10474,7 +10605,8 @@ msgid ""
 "Are you sure you want to delete the selected records? This action cannot be "
 "undone."
 msgstr ""
-"Êtes-vous sûr de vouloir supprimer les enregistrements sélectionnés? Cette action ne peut pas être annulée."
+"Êtes-vous sûr de vouloir supprimer les enregistrements sélectionnés? Cette "
+"action ne peut pas être annulée."
 
 #: templates/default/search.html:498
 msgid "Try different search terms or filters"
@@ -10491,7 +10623,8 @@ msgstr "Supprimer Plusieurs Zones"
 #: templates/default/delete_domains.html:22
 msgid "You are about to delete multiple zones. This action cannot be undone."
 msgstr ""
-"Vous êtes sur le point de supprimer plusieurs zones. Cette action ne peut pas être annulée."
+"Vous êtes sur le point de supprimer plusieurs zones. Cette action ne peut "
+"pas être annulée."
 
 #: templates/default/delete_domains.html:27
 msgid "Zones to Delete"
@@ -10567,14 +10700,17 @@ msgid ""
 "PowerDNS will automatically fetch and update zone data from the master "
 "server."
 msgstr ""
-"Une zone esclave est une copie en lecture seule d'une zone hébergée sur un autre serveur DNS. PowerDNS récupérera et mettra automatiquement à jour les données de zone depuis le serveur maître."
+"Une zone esclave est une copie en lecture seule d'une zone hébergée sur un "
+"autre serveur DNS. PowerDNS récupérera et mettra automatiquement à jour les "
+"données de zone depuis le serveur maître."
 
 #: templates/default/add_zone_slave.html:91
 msgid ""
 "You cannot edit records in a slave zone - all changes must be made on the "
 "master server."
 msgstr ""
-"Vous ne pouvez pas modifier les enregistrements dans une zone esclave - tous les changements doivent être effectués sur le serveur maître."
+"Vous ne pouvez pas modifier les enregistrements dans une zone esclave - tous "
+"les changements doivent être effectués sur le serveur maître."
 
 #: templates/default/add_zone_slave.html:95
 msgid ""
@@ -10582,26 +10718,32 @@ msgid ""
 "master server. The master server must have an allow-transfer or similar "
 "configuration permitting zone transfers to this server's IP address."
 msgstr ""
-"Assurez-vous que ce serveur PowerDNS est autorisé à transférer la zone depuis le serveur maître. Le serveur maître doit avoir une configuration allow-transfer ou similaire permettant les transferts de zone vers l'adresse IP de ce serveur."
+"Assurez-vous que ce serveur PowerDNS est autorisé à transférer la zone "
+"depuis le serveur maître. Le serveur maître doit avoir une configuration "
+"allow-transfer ou similaire permettant les transferts de zone vers l'adresse "
+"IP de ce serveur."
 
 #: templates/default/add_zone_slave.html:109
 msgid ""
 "You can specify multiple master servers by separating IP addresses with "
 "commas"
 msgstr ""
-"Vous pouvez spécifier plusieurs serveurs maîtres en séparant les adresses IP par des virgules"
+"Vous pouvez spécifier plusieurs serveurs maîtres en séparant les adresses IP "
+"par des virgules"
 
 #: templates/default/add_zone_slave.html:110
 msgid ""
 "Slave zones will automatically update when the master server sends a "
 "notification"
 msgstr ""
-"Les zones esclaves se mettront automatiquement à jour lorsque le serveur maître enverra une notification"
+"Les zones esclaves se mettront automatiquement à jour lorsque le serveur "
+"maître enverra une notification"
 
 #: templates/default/add_zone_slave.html:111
 msgid "To test the connection, check the PowerDNS logs after adding the zone"
 msgstr ""
-"Pour tester la connexion, vérifiez les journaux PowerDNS après avoir ajouté la zone"
+"Pour tester la connexion, vérifiez les journaux PowerDNS après avoir ajouté "
+"la zone"
 
 #: templates/default/delete_zone_templ.html:12
 msgid "Delete template"
@@ -10636,7 +10778,8 @@ msgid ""
 "PowerDNS API is not configured. Please configure the PowerDNS API URL and "
 "key in your settings."
 msgstr ""
-"L'API PowerDNS n'est pas configurée. Veuillez configurer l'URL de l'API PowerDNS et la clé dans vos paramètres."
+"L'API PowerDNS n'est pas configurée. Veuillez configurer l'URL de l'API "
+"PowerDNS et la clé dans vos paramètres."
 
 #: templates/default/pdns_status.html:32
 msgid "Server Running"
@@ -10686,7 +10829,8 @@ msgstr "Serveurs Esclaves"
 msgid ""
 "Showing connectivity status for DNS servers listed in the supermasters table."
 msgstr ""
-"Affichage de l'état de connectivité pour les serveurs DNS listés dans la table des serveurs maîtres secondaires."
+"Affichage de l'état de connectivité pour les serveurs DNS listés dans la "
+"table des serveurs maîtres secondaires."
 
 #: templates/default/pdns_status.html:114
 msgid "Server IP"
@@ -10817,7 +10961,8 @@ msgid ""
 "DS records should be added to the parent zone to establish the chain of "
 "trust."
 msgstr ""
-"Les enregistrements DS doivent être ajoutés à la zone parente pour établir la chaîne de confiance."
+"Les enregistrements DS doivent être ajoutés à la zone parente pour établir "
+"la chaîne de confiance."
 
 #: templates/default/add_record.html:27 templates/default/add_record.html:29
 msgid "Add record to zone"
@@ -10844,7 +10989,9 @@ msgid ""
 "API keys allow external applications to access the Poweradmin API. Each key "
 "is linked to your user account and inherits your permissions."
 msgstr ""
-"Les clés API permettent aux applications externes d'accéder à l'API Poweradmin. Chaque clé est liée à votre compte utilisateur et hérite de vos permissions."
+"Les clés API permettent aux applications externes d'accéder à l'API "
+"Poweradmin. Chaque clé est liée à votre compte utilisateur et hérite de vos "
+"permissions."
 
 #: templates/default/api_keys.html:29
 msgid "Created by"
@@ -10879,7 +11026,8 @@ msgid ""
 "If you delete this API key, any applications using it will no longer be able "
 "to authenticate."
 msgstr ""
-"Si vous supprimez cette clé API, toute application l'utilisant ne pourra plus s'authentifier."
+"Si vous supprimez cette clé API, toute application l'utilisant ne pourra "
+"plus s'authentifier."
 
 #: templates/default/api_key_delete.html:70
 msgid "Yes, delete this API key"
@@ -10907,7 +11055,9 @@ msgid ""
 "permissions. Changes made here will affect all users who have this template "
 "assigned."
 msgstr ""
-"Ce modèle peut être attribué aux utilisateurs pour appliquer rapidement son ensemble de permissions. Les modifications apportées ici affecteront tous les utilisateurs ayant ce modèle attribué."
+"Ce modèle peut être attribué aux utilisateurs pour appliquer rapidement son "
+"ensemble de permissions. Les modifications apportées ici affecteront tous "
+"les utilisateurs ayant ce modèle attribué."
 
 #: templates/default/edit_perm_templ.html:63
 msgid "Permission Groups"
@@ -10918,7 +11068,9 @@ msgid ""
 "Permissions are organized into groups below for easier management. Use the "
 "search feature to quickly find specific permissions."
 msgstr ""
-"Les permissions sont organisées en groupes ci-dessous pour une gestion plus facile. Utilisez la fonction de recherche pour trouver rapidement des permissions spécifiques."
+"Les permissions sont organisées en groupes ci-dessous pour une gestion plus "
+"facile. Utilisez la fonction de recherche pour trouver rapidement des "
+"permissions spécifiques."
 
 #: templates/default/delete_zone_templ_record.html:13
 msgid "Delete record"
@@ -10949,17 +11101,18 @@ msgid ""
 "Deleting an active key will affect the security of your zone and may cause "
 "validation failures."
 msgstr ""
-"La suppression d'une clé active affectera la sécurité de votre zone et peut provoquer des échecs de validation."
+"La suppression d'une clé active affectera la sécurité de votre zone et peut "
+"provoquer des échecs de validation."
 
 #: templates/default/dnssec_delete_key.html:39
 msgid "You are about to delete a DNSSEC key (ID"
 msgstr "Vous êtes sur le point de supprimer une clé DNSSEC (ID"
 
 #: templates/default/whois.html:26
-#, auto-english-fallback
 msgid "Enter a domain name (e.g., example.com) to lookup its WHOIS information"
 msgstr ""
-"Entrez un nom de domaine (par ex., example.com) pour consulter ses informations WHOIS"
+"Entrez un nom de domaine (par ex., example.com) pour consulter ses "
+"informations WHOIS"
 
 #: templates/default/whois.html:34
 msgid "WHOIS results for"
@@ -10991,13 +11144,10 @@ msgstr "Droits de base de données limités :"
 
 #: install/templates/step6.html.twig:13
 msgid ""
-"You now want to give limited rights to Poweradmin so it can update the data "
-"in the tables. To do this, you should create a new user and give it rights "
-"to select, delete, insert, and update records in the PowerDNS database."
+"Create a database user with limited rights (select, insert, update, delete) "
+"for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Vous voulez maintenant donner des droits limités à Poweradmin pour qu'il puisse mettre à jour les données dans les tables. Pour ce faire, vous devez créer un nouvel utilisateur et lui donner les droits de sélectionner, supprimer, insérer et mettre à jour les enregistrements dans la base de données PowerDNS."
-"in the tables. To do this, you should create a new user and give it rights "
-"to select, delete, insert, and update records in the PowerDNS database."
+"Créez un utilisateur de base de données avec des droits limités (select, insert, update, delete) pour que Poweradmin accède aux tables PowerDNS."
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -11011,9 +11161,10 @@ msgstr "Exécutez les commandes suivantes :"
 msgid ""
 "After you have added the new user, proceed with this installation procedure."
 msgstr ""
-"Après avoir ajouté le nouvel utilisateur, poursuivez cette procédure d'installation."
+"Après avoir ajouté le nouvel utilisateur, poursuivez cette procédure "
+"d'installation."
 
-#: install/templates/step3.html.twig:44
+#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:96
 msgid "Note:"
 msgstr "Remarque :"
 
@@ -11022,10 +11173,10 @@ msgid ""
 "Since you are using SQLite, there is no need to create a new user with "
 "limited rights."
 msgstr ""
-"Puisque vous utilisez SQLite, il n'est pas nécessaire de créer un nouvel utilisateur avec des droits limités."
-"limited rights."
+"Puisque vous utilisez SQLite, il n'est pas nécessaire de créer un nouvel "
+"utilisateur avec des droits limités.limited rights."
 
-#: install/templates/step5.html.twig:165 install/templates/step3.html.twig:56
+#: install/templates/step5.html.twig:166 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "Continuer vers l'étape"
 
@@ -11076,142 +11227,153 @@ msgid "Configuring Database Connection"
 msgstr "Configuration de la connexion à la base de données"
 
 #: install/templates/step4.html.twig:12
-msgid "Database Preparation:"
-msgstr "Préparation de la base de données :"
+#, auto-english-fallback
+msgid "Database Configuration:"
+msgstr "Configuration de la base de données :"
 
 #: install/templates/step4.html.twig:12
 msgid ""
-"The installer needs to modify the PowerDNS database with tables for "
-"Poweradmin. Use an account with sufficient rights (like root) to proceed."
+"Configure database connection with table creation rights. PowerDNS location "
+"can be specified separately if needed."
 msgstr ""
-"L'installateur doit modifier la base de données PowerDNS avec des tables pour Poweradmin. Utilisez un compte avec des droits suffisants (comme root) pour continuer."
-"Poweradmin. Use an account with sufficient rights (like root) to proceed."
+"Configurez la connexion à la base de données avec les droits de création de tables. L'emplacement PowerDNS peut être spécifié séparément si nécessaire."
 
-#: install/templates/step4.html.twig:14
-msgid "Important:"
-msgstr "Important :"
+#: install/templates/step4.html.twig:20
+#, auto-english-fallback
+msgid "Database Connection Settings"
+msgstr "Paramètres de connexion à la base de données"
 
-#: install/templates/step4.html.twig:14
-msgid ""
-"Poweradmin requires a properly configured PowerDNS database with tables "
-"already created. This installer will NOT create PowerDNS tables - only "
-"Poweradmin-specific tables."
-msgstr ""
-"Poweradmin nécessite une base de données PowerDNS correctement configurée avec des tables déjà créées. Cet installateur ne créera PAS les tables PowerDNS - seulement les tables spécifiques à Poweradmin."
-
-#: install/templates/step4.html.twig:22
-msgid "Database Settings"
-msgstr "Paramètres de la base de données"
-
-#: install/templates/step4.html.twig:26
+#: install/templates/step4.html.twig:24
 msgid "Database type"
 msgstr "Type de base de données"
 
-#: install/templates/step4.html.twig:35
-msgid "The type of the PowerDNS database."
-msgstr "Le type de la base de données PowerDNS."
+#: install/templates/step4.html.twig:33
+#, auto-english-fallback
+msgid "Database server type."
+msgstr "Type de serveur de base de données."
 
-#: install/templates/step4.html.twig:43 install/templates/step5.html.twig:59
+#: install/templates/step4.html.twig:41 install/templates/step5.html.twig:59
 msgid "Provide the user name"
 msgstr "Fournir le nom d'utilisateur"
 
-#: install/templates/step4.html.twig:46
-msgid "Database username with administrative rights."
+#: install/templates/step4.html.twig:44
+#, auto-english-fallback
+msgid "Database username with rights to create tables."
 msgstr ""
-"Nom d'utilisateur de la base de données avec des droits administratifs."
+"Nom d'utilisateur de base de données avec droits de création de tables."
 
-#: install/templates/step4.html.twig:60
+#: install/templates/step4.html.twig:58
 msgid "Password for this database user."
 msgstr "Mot de passe pour cet utilisateur de base de données."
 
-#: install/templates/step4.html.twig:65
+#: install/templates/step4.html.twig:63
 msgid "Hostname"
 msgstr "Nom d'hôte"
 
-#: install/templates/step4.html.twig:68
+#: install/templates/step4.html.twig:66
 msgid "Provide the hostname"
 msgstr "Fournir le nom d'hôte"
 
-#: install/templates/step4.html.twig:71
+#: install/templates/step4.html.twig:69
 msgid "Database server hostname (usually \"localhost\")."
-msgstr ""
-"Nom d'hôte du serveur de base de données (généralement \"localhost\")."
+msgstr "Nom d'hôte du serveur de base de données (généralement \"localhost\")."
 
-#: install/templates/step4.html.twig:76
+#: install/templates/step4.html.twig:74
 msgid "DB Port"
 msgstr "Port DB"
 
-#: install/templates/step4.html.twig:79
+#: install/templates/step4.html.twig:77
 msgid "Provide database port"
 msgstr "Fournir le port de la base de données"
 
-#: install/templates/step4.html.twig:82
+#: install/templates/step4.html.twig:80
 msgid "Database server port."
 msgstr "Port du serveur de base de données."
 
-#: install/templates/step4.html.twig:87
+#: install/templates/step4.html.twig:85
 msgid "Database"
 msgstr "Base de données"
 
-#: install/templates/step4.html.twig:90
+#: install/templates/step4.html.twig:88
 msgid "Provide the name of the database"
 msgstr "Fournir le nom de la base de données"
 
-#: install/templates/step4.html.twig:93
-msgid "PowerDNS database name."
-msgstr "Nom de la base de données PowerDNS."
+#: install/templates/step4.html.twig:91
+#, auto-english-fallback
+msgid "Database name (will be used for Poweradmin tables)."
+msgstr "Nom de la base de données (sera utilisé pour les tables Poweradmin)."
 
-#: install/templates/step4.html.twig:95
+#: install/templates/step4.html.twig:93
 msgid "Full path to SQLite database file"
 msgstr "Chemin complet vers le fichier de base de données SQLite"
 
-#: install/templates/step4.html.twig:98
+#: install/templates/step4.html.twig:96
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr ""
 "Le fichier doit exister avec un accès en lecture/écriture pour le serveur "
 "web. Utilisez un chemin absolu."
 
-#: install/templates/step4.html.twig:106
+#: install/templates/step4.html.twig:104
 msgid "DB charset"
 msgstr "Jeu de caractères DB"
 
-#: install/templates/step4.html.twig:182 install/templates/step4.html.twig:190
+#: install/templates/step4.html.twig:199 install/templates/step4.html.twig:207
 msgid "Use default"
 msgstr "Utiliser la valeur par défaut"
 
-#: install/templates/step4.html.twig:113
+#: install/templates/step4.html.twig:111
 msgid "Charset for new tables. Leave empty for database default."
 msgstr ""
 "Jeu de caractères pour les nouvelles tables. Laissez vide pour la valeur par "
 "défaut de la base de données."
 
-#: install/templates/step4.html.twig:118
+#: install/templates/step4.html.twig:116
 msgid "DB collation"
 msgstr "Collation DB"
 
-#: install/templates/step4.html.twig:125
+#: install/templates/step4.html.twig:123
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
-"Règles de classement pour la comparaison de caractères. Laissez vide pour la valeur par défaut de la base de données."
+"Règles de classement pour la comparaison de caractères. Laissez vide pour la "
+"valeur par défaut de la base de données."
 
-#: install/templates/step4.html.twig:133
-msgid "Administrator Account"
-msgstr "Compte administrateur"
+#: install/templates/step4.html.twig:132
+#, auto-english-fallback
+msgid "PowerDNS Database"
+msgstr "Base de données PowerDNS"
 
-#: install/templates/step4.html.twig:137
+#: install/templates/step4.html.twig:136
+#, auto-english-fallback
+msgid "Database name"
+msgstr "Nom de la base de données"
+
+#: install/templates/step4.html.twig:139
+#, auto-english-fallback
+msgid "Leave empty for same database"
+msgstr "Laisser vide pour la même base de données"
+
+#: install/templates/step4.html.twig:142
+#, auto-english-fallback
+msgid "MySQL database with PowerDNS tables (if different)."
+msgstr "Base de données MySQL avec tables PowerDNS (si différente)."
+
+#: install/templates/step4.html.twig:150
+#, auto-english-fallback
+msgid "Poweradmin Account"
+msgstr "Compte Poweradmin"
+
+#: install/templates/step4.html.twig:154
 msgid "Administrator password"
 msgstr "Mot de passe administrateur"
 
-#: install/templates/step4.html.twig:142
+#: install/templates/step4.html.twig:159
 msgid "Provide a password"
 msgstr "Fournir un mot de passe"
 
-#: install/templates/step4.html.twig:147
-msgid ""
-"Password for \"admin\" username with full rights to the Poweradmin interface."
-msgstr ""
-"Mot de passe pour le nom d'utilisateur \"admin\" avec tous les droits sur l'interface Poweradmin."
+#: install/templates/step4.html.twig:164
+msgid "Password for \"admin\" username."
+msgstr "Mot de passe pour le nom d'utilisateur \"admin\"."
 
 #: install/templates/step2.html.twig:3
 msgid "System Requirements"
@@ -11301,7 +11463,8 @@ msgstr "Utilisateur de la base de données"
 msgid ""
 "Poweradmin database username with restricted access. Not for web UI login."
 msgstr ""
-"Nom d'utilisateur de la base de données Poweradmin avec accès restreint. Pas pour la connexion à l'interface web."
+"Nom d'utilisateur de la base de données Poweradmin avec accès restreint. Pas "
+"pour la connexion à l'interface web."
 
 #: install/templates/step5.html.twig:72
 msgid "Provide the user password"
@@ -11324,12 +11487,9 @@ msgid "Provide the DNS hostmaster"
 msgstr "Fournir le hostmaster DNS"
 
 #: install/templates/step5.html.twig:96
-msgid ""
-"When creating SOA records and no hostmaster is provided, this value here "
-"will be used."
-msgstr ""
-"Lors de la création d'enregistrements SOA et qu'aucun hostmaster n'est fourni, cette valeur sera utilisée."
-"will be used."
+#, auto-english-fallback
+msgid "Default hostmaster for SOA records."
+msgstr "Hostmaster par défaut pour les enregistrements SOA."
 
 #: install/templates/step5.html.twig:101
 msgid "Primary nameserver"
@@ -11340,12 +11500,9 @@ msgid "Provide the primary nameserver"
 msgstr "Fournir le serveur de noms primaire"
 
 #: install/templates/step5.html.twig:108
-msgid ""
-"When creating new zones using the template, this value will be used as "
-"primary nameserver."
-msgstr ""
-"Lors de la création de nouvelles zones utilisant le modèle, cette valeur sera utilisée comme serveur de noms primaire."
-"primary nameserver."
+#, auto-english-fallback
+msgid "Primary nameserver for new zones."
+msgstr "Serveur de noms primaire pour les nouvelles zones."
 
 #: install/templates/step5.html.twig:113
 msgid "Secondary nameserver"
@@ -11356,12 +11513,9 @@ msgid "Provide the secondary nameserver"
 msgstr "Fournir le serveur de noms secondaire"
 
 #: install/templates/step5.html.twig:120
-msgid ""
-"When creating new zones using the template, this value will be used as "
-"secondary nameserver."
-msgstr ""
-"Lors de la création de nouvelles zones utilisant le modèle, cette valeur sera utilisée comme serveur de noms secondaire."
-"secondary nameserver."
+#, auto-english-fallback
+msgid "Secondary nameserver for new zones."
+msgstr "Serveur de noms secondaire pour les nouvelles zones."
 
 #: install/templates/step5.html.twig:126
 msgid "Tertiary Nameserver"
@@ -11372,24 +11526,18 @@ msgid "optional"
 msgstr "optionnel"
 
 #: install/templates/step5.html.twig:133
-msgid ""
-"When creating new zones using the template, this optional value will be used "
-"as tertiary nameserver."
-msgstr ""
-"Lors de la création de nouvelles zones utilisant le modèle, cette valeur optionnelle sera utilisée comme serveur de noms tertiaire."
-"as tertiary nameserver."
+#, auto-english-fallback
+msgid "Optional tertiary nameserver for new zones."
+msgstr "Serveur de noms tertiaire optionnel pour les nouvelles zones."
 
 #: install/templates/step5.html.twig:139
 msgid "Quaternary Nameserver"
 msgstr "Serveur de noms quaternaire"
 
 #: install/templates/step5.html.twig:146
-msgid ""
-"When creating new zones using the template, this optional value will be used "
-"as quaternary nameserver."
-msgstr ""
-"Lors de la création de nouvelles zones utilisant le modèle, cette valeur optionnelle sera utilisée comme serveur de noms quaternaire."
-"as quaternary nameserver."
+#, auto-english-fallback
+msgid "Optional quaternary nameserver for new zones."
+msgstr "Serveur de noms quaternaire optionnel pour les nouvelles zones."
 
 #: install/templates/step8.html.twig:3 install/templates/step8.html.twig:8
 msgid "Installation complete"
@@ -11413,16 +11561,16 @@ msgid ""
 "You must remove the \"install/\" directory from the Poweradmin root "
 "directory."
 msgstr ""
-"Vous devez supprimer le répertoire \"install/\" du répertoire racine de Poweradmin."
-"directory."
+"Vous devez supprimer le répertoire \"install/\" du répertoire racine de "
+"Poweradmin.directory."
 
 #: install/templates/step8.html.twig:17
 msgid ""
 "Poweradmin will not function if the install directory exists, as a security "
 "measure."
 msgstr ""
-"Poweradmin ne fonctionnera pas si le répertoire d'installation existe, par mesure de sécurité."
-"measure."
+"Poweradmin ne fonctionnera pas si le répertoire d'installation existe, par "
+"mesure de sécurité.measure."
 
 #: install/templates/step8.html.twig:22
 msgid "Next Steps"
@@ -11437,8 +11585,9 @@ msgid ""
 "Login to <a href=\"../index.php\">Poweradmin</a> using the default username "
 "\"admin\" and the password you set in step 3"
 msgstr ""
-"Connectez-vous à <a href=\"../index.php\">Poweradmin</a> en utilisant le nom d'utilisateur par défaut \"admin\" et le mot de passe que vous avez défini à l'étape 3"
-"\"admin\" and the password you set in step 3"
+"Connectez-vous à <a href=\"../index.php\">Poweradmin</a> en utilisant le nom "
+"d'utilisateur par défaut \"admin\" et le mot de passe que vous avez défini à "
+"l'étape 3\"admin\" and the password you set in step 3"
 
 #: install/templates/step8.html.twig:28
 msgid "Begin configuring your DNS zones and records"
@@ -11448,142 +11597,121 @@ msgstr "Commencez à configurer vos zones et enregistrements DNS"
 msgid "Getting Ready"
 msgstr "Préparation"
 
-#: install/templates/step3.html.twig:12
-msgid "Preparation:"
-msgstr "Préparation :"
+#: install/templates/step3.html.twig:13
+#, auto-english-fallback
+msgid "Prerequisites"
+msgstr "Prérequis"
 
-#: install/templates/step3.html.twig:12
-msgid "Let's get your PowerDNS database ready for Poweradmin."
-msgstr "Préparons votre base de données PowerDNS pour Poweradmin."
+#: install/templates/step3.html.twig:16
+#, auto-english-fallback
+msgid "Before proceeding, ensure you have:"
+msgstr "Avant de continuer, assurez-vous d'avoir :"
 
-#: install/templates/step3.html.twig:17
-msgid "About PowerDNS"
-msgstr "À propos de PowerDNS"
+#: install/templates/step3.html.twig:18
+#, auto-english-fallback
+msgid "PowerDNS installed with database tables created"
+msgstr "PowerDNS installé avec les tables de base de données créées"
+
+#: install/templates/step3.html.twig:19
+#, auto-english-fallback
+msgid "Database credentials (hostname, username, password)"
+msgstr ""
+"Identifiants de base de données (nom d'hôte, nom d'utilisateur, mot de passe)"
 
 #: install/templates/step3.html.twig:20
+#, auto-english-fallback
+msgid "Permission to create tables for Poweradmin"
+msgstr "Permission de créer des tables pour Poweradmin"
+
+#: install/templates/step3.html.twig:27
+#, auto-english-fallback
+msgid "Next:"
+msgstr "Suivant :"
+
+#: install/templates/step3.html.twig:27
 msgid ""
-"PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin "
-"will help you manage this database via a web interface."
+"Configure database connection, create admin account, and generate "
+"configuration file."
 msgstr ""
-"PowerDNS est un serveur DNS qui stocke ses données dans une base de données "
-"SQL. Poweradmin vous aidera à gérer cette base de données via une interface "
-"web."
+"Configurez la connexion à la base de données, créez un compte administrateur et générez le fichier de configuration."
 
-#: install/templates/step3.html.twig:21
-msgid "Before proceeding, you should have:"
-msgstr "Avant de continuer, vous devriez avoir :"
-
-#: install/templates/step3.html.twig:23
-msgid "An operational PowerDNS installation"
-msgstr "Une installation PowerDNS opérationnelle"
-
-#: install/templates/step3.html.twig:24
-msgid "Database connectivity details (hostname, username, password)"
-msgstr ""
-"Détails de connexion à la base de données (nom d'hôte, nom d'utilisateur, "
-"mot de passe)"
-
-#: install/templates/step3.html.twig:25
-msgid "Administrative access to your database"
-msgstr "Accès administratif à votre base de données"
-
-#: install/templates/step3.html.twig:32
-msgid "Database Preparations"
-msgstr "Préparations de la base de données"
-
-#: install/templates/step3.html.twig:35
-msgid "In the next steps, Poweradmin will:"
-msgstr "Dans les prochaines étapes, Poweradmin va :"
-
-#: install/templates/step3.html.twig:37
-msgid "Connect to your PowerDNS database"
-msgstr "Se connecter à votre base de données PowerDNS"
-
-#: install/templates/step3.html.twig:38
-msgid "Create tables needed for Poweradmin functionality"
-msgstr "Créer les tables nécessaires pour les fonctionnalités de Poweradmin"
-
-#: install/templates/step3.html.twig:39
-msgid "Set up an administrator account for web access"
-msgstr "Configurer un compte administrateur pour l'accès web"
-
-#: install/templates/step3.html.twig:40
-msgid "Create a config file to store your settings"
-msgstr "Créer un fichier de configuration pour stocker vos paramètres"
-
-#: install/helpers/InstallStepHandler.php:177
+#: install/helpers/InstallStepHandler.php:183
 msgid "Missing PowerDNS tables:"
 msgstr "Tables PowerDNS manquantes :"
 
-#: install/helpers/InstallStepHandler.php:178
+#: install/helpers/InstallStepHandler.php:184
 msgid "Poweradmin requires these PowerDNS tables to function properly."
 msgstr ""
 "Poweradmin nécessite ces tables PowerDNS pour fonctionner correctement."
 
-#: install/helpers/InstallStepHandler.php:185
+#: install/helpers/InstallStepHandler.php:192
 msgid "Updating database... done!"
 msgstr "Mise à jour de la base de données... fait !"
 
-#: install/helpers/InstallStepHandler.php:207
+#: install/helpers/InstallStepHandler.php:214
 msgid "Foreign Key Constraint Issues:"
 msgstr "Problèmes de contraintes de clés étrangères :"
 
-#: install/helpers/InstallStepHandler.php:209
+#: install/helpers/InstallStepHandler.php:216
 msgid ""
 "The installer could not remove existing tables due to foreign key constraints"
 msgstr ""
-"L'installateur n'a pas pu supprimer les tables existantes en raison de contraintes de clés étrangères"
+"L'installateur n'a pas pu supprimer les tables existantes en raison de "
+"contraintes de clés étrangères"
 
-#: install/helpers/InstallStepHandler.php:210
+#: install/helpers/InstallStepHandler.php:217
 msgid ""
 "This can happen during reinstallation if you have custom constraints or if "
 "tables are referenced by other tables"
 msgstr ""
-"Cela peut arriver lors d'une réinstallation si vous avez des contraintes personnalisées ou si des tables sont référencées par d'autres tables"
+"Cela peut arriver lors d'une réinstallation si vous avez des contraintes "
+"personnalisées ou si des tables sont référencées par d'autres tables"
 
-#: install/helpers/InstallStepHandler.php:211
+#: install/helpers/InstallStepHandler.php:218
 msgid ""
 "You can try manually disabling foreign key checks before running the "
 "installer:"
 msgstr ""
-"Vous pouvez essayer de désactiver manuellement les vérifications de clés étrangères avant d'exécuter l'installateur :"
+"Vous pouvez essayer de désactiver manuellement les vérifications de clés "
+"étrangères avant d'exécuter l'installateur :"
 
-#: install/helpers/InstallStepHandler.php:224
+#: install/helpers/InstallStepHandler.php:231
 msgid "Suggestions:"
 msgstr "Suggestions :"
 
-#: install/helpers/InstallStepHandler.php:218
+#: install/helpers/InstallStepHandler.php:225
 msgid "Make sure the SQLite database file exists"
 msgstr "Assurez-vous que le fichier de base de données SQLite existe"
 
-#: install/helpers/InstallStepHandler.php:219
+#: install/helpers/InstallStepHandler.php:226
 msgid ""
 "Check that the web server has read and write permissions for the database "
 "file"
 msgstr ""
-"Vérifiez que le serveur web a les permissions de lecture et d'écriture pour le fichier de base de données"
-"file"
+"Vérifiez que le serveur web a les permissions de lecture et d'écriture pour "
+"le fichier de base de donnéesfile"
 
-#: install/helpers/InstallStepHandler.php:220
+#: install/helpers/InstallStepHandler.php:227
 msgid "Verify the full path to the database file is correct and accessible"
 msgstr ""
-"Vérifiez que le chemin complet vers le fichier de base de données est correct et accessible"
+"Vérifiez que le chemin complet vers le fichier de base de données est "
+"correct et accessible"
 
-#: install/helpers/InstallStepHandler.php:226
+#: install/helpers/InstallStepHandler.php:233
 msgid "Verify database credentials are correct"
 msgstr "Vérifiez que les identifiants de la base de données sont corrects"
 
-#: install/helpers/InstallStepHandler.php:227
+#: install/helpers/InstallStepHandler.php:234
 msgid "Check that the database user has sufficient privileges"
 msgstr ""
 "Vérifiez que l'utilisateur de la base de données a des privilèges suffisants"
 
-#: install/helpers/InstallStepHandler.php:228
+#: install/helpers/InstallStepHandler.php:235
 msgid "Ensure the database server is running and accessible"
 msgstr ""
 "Assurez-vous que le serveur de base de données fonctionne et est accessible"
 
-#: install/helpers/InstallStepHandler.php:233
+#: install/helpers/InstallStepHandler.php:240
 msgid "Database Error"
 msgstr "Erreur de base de données"
 
@@ -11593,22 +11721,24 @@ msgid ""
 "The SQLite database file %s does not exist. Please create the database file "
 "before proceeding."
 msgstr ""
-"Le fichier de base de données SQLite %s n'existe pas. Veuillez créer le fichier de base de données avant de continuer."
-"before proceeding."
+"Le fichier de base de données SQLite %s n'existe pas. Veuillez créer le "
+"fichier de base de données avant de continuer.before proceeding."
 
 #: install/helpers/DatabaseHelper.php:166
 #, php-format
 msgid ""
 "The SQLite database file %s is not readable. Please check file permissions."
 msgstr ""
-"Le fichier de base de données SQLite %s n'est pas lisible. Veuillez vérifier les permissions du fichier."
+"Le fichier de base de données SQLite %s n'est pas lisible. Veuillez vérifier "
+"les permissions du fichier."
 
 #: install/helpers/DatabaseHelper.php:174
 #, php-format
 msgid ""
 "The SQLite database file %s is not writable. Please check file permissions."
 msgstr ""
-"Le fichier de base de données SQLite %s n'est pas modifiable. Veuillez vérifier les permissions du fichier."
+"Le fichier de base de données SQLite %s n'est pas modifiable. Veuillez "
+"vérifier les permissions du fichier."
 
 #: install/helpers/DatabaseHelper.php:186
 #, php-format
@@ -11620,7 +11750,185 @@ msgid ""
 "No configuration file found. Please create the config/settings.php file "
 "before proceeding."
 msgstr ""
-"Aucun fichier de configuration trouvé. Veuillez créer le fichier config/settings.php avant de continuer."
-"before proceeding."
+"Aucun fichier de configuration trouvé. Veuillez créer le fichier config/"
+"settings.php avant de continuer.before proceeding."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:47
+msgid ""
+"Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
+"and SQLite, please use the same database."
+msgstr ""
+"Les bases de données PowerDNS séparées ne sont prises en charge qu'avec MySQL. Pour PostgreSQL et SQLite, veuillez utiliser la même base de données."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
+#, php-format
+msgid ""
+"Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
+"properly installed in this database."
+msgstr ""
+"Tables PowerDNS manquantes dans la base de données \"%s\" : %s. Veuillez vous assurer que PowerDNS est correctement installé dans cette base de données."
+
+#: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
+#, php-format
+msgid "Cannot connect to PowerDNS database \"%s\": %s"
+msgstr "Impossible de se connecter à la base de données PowerDNS \"%s\" : %s"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "You now want to give limited rights to Poweradmin so it can update the "
+# OBSOLETE: "data in the tables. To do this, you should create a new user and give it "
+# OBSOLETE: "rights to select, delete, insert, and update records in the PowerDNS "
+# OBSOLETE: "database."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Vous voulez maintenant donner des droits limités à Poweradmin pour qu'il "
+# OBSOLETE: "puisse mettre à jour les données dans les tables. Pour ce faire, vous "
+# OBSOLETE: "devez créer un nouvel utilisateur et lui donner les droits de "
+# OBSOLETE: "sélectionner, supprimer, insérer et mettre à jour les enregistrements "
+# OBSOLETE: "dans la base de données PowerDNS.in the tables. To do this, you should "
+# OBSOLETE: "create a new user and give it rights to select, delete, insert, and "
+# OBSOLETE: "update records in the PowerDNS database."
+
+# OBSOLETE: msgid "Database Preparation:"
+# OBSOLETE: msgstr "Préparation de la base de données :"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "The installer needs to modify the PowerDNS database with tables for "
+# OBSOLETE: "Poweradmin. Use an account with sufficient rights (like root) to proceed."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "L'installateur doit modifier la base de données PowerDNS avec des tables "
+# OBSOLETE: "pour Poweradmin. Utilisez un compte avec des droits suffisants (comme "
+# OBSOLETE: "root) pour continuer.Poweradmin. Use an account with sufficient rights "
+# OBSOLETE: "(like root) to proceed."
+
+# OBSOLETE: msgid "Important:"
+# OBSOLETE: msgstr "Important :"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Poweradmin requires a properly configured PowerDNS database with tables "
+# OBSOLETE: "already created. This installer will NOT create PowerDNS tables - only "
+# OBSOLETE: "Poweradmin-specific tables."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Poweradmin nécessite une base de données PowerDNS correctement configurée "
+# OBSOLETE: "avec des tables déjà créées. Cet installateur ne créera PAS les tables "
+# OBSOLETE: "PowerDNS - seulement les tables spécifiques à Poweradmin."
+
+# OBSOLETE: msgid "Database Settings"
+# OBSOLETE: msgstr "Paramètres de la base de données"
+
+# OBSOLETE: msgid "The type of the PowerDNS database."
+# OBSOLETE: msgstr "Le type de la base de données PowerDNS."
+
+# OBSOLETE: msgid "Database username with administrative rights."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Nom d'utilisateur de la base de données avec des droits administratifs."
+
+# OBSOLETE: msgid "PowerDNS database name."
+# OBSOLETE: msgstr "Nom de la base de données PowerDNS."
+
+# OBSOLETE: msgid "Administrator Account"
+# OBSOLETE: msgstr "Compte administrateur"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Password for \"admin\" username with full rights to the Poweradmin "
+# OBSOLETE: "interface."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Mot de passe pour le nom d'utilisateur \"admin\" avec tous les droits sur "
+# OBSOLETE: "l'interface Poweradmin."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating SOA records and no hostmaster is provided, this value here "
+# OBSOLETE: "will be used."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Lors de la création d'enregistrements SOA et qu'aucun hostmaster n'est "
+# OBSOLETE: "fourni, cette valeur sera utilisée.will be used."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this value will be used as "
+# OBSOLETE: "primary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Lors de la création de nouvelles zones utilisant le modèle, cette valeur "
+# OBSOLETE: "sera utilisée comme serveur de noms primaire.primary nameserver."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this value will be used as "
+# OBSOLETE: "secondary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Lors de la création de nouvelles zones utilisant le modèle, cette valeur "
+# OBSOLETE: "sera utilisée comme serveur de noms secondaire.secondary nameserver."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this optional value will be "
+# OBSOLETE: "used as tertiary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Lors de la création de nouvelles zones utilisant le modèle, cette valeur "
+# OBSOLETE: "optionnelle sera utilisée comme serveur de noms tertiaire.as tertiary "
+# OBSOLETE: "nameserver."
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "When creating new zones using the template, this optional value will be "
+# OBSOLETE: "used as quaternary nameserver."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Lors de la création de nouvelles zones utilisant le modèle, cette valeur "
+# OBSOLETE: "optionnelle sera utilisée comme serveur de noms quaternaire.as quaternary "
+# OBSOLETE: "nameserver."
+
+# OBSOLETE: msgid "Preparation:"
+# OBSOLETE: msgstr "Préparation :"
+
+# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
+# OBSOLETE: msgstr "Préparons votre base de données PowerDNS pour Poweradmin."
+
+# OBSOLETE: msgid "About PowerDNS"
+# OBSOLETE: msgstr "À propos de PowerDNS"
+
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "PowerDNS is a DNS server that stores its data in an SQL database. "
+# OBSOLETE: "Poweradmin will help you manage this database via a web interface."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "PowerDNS est un serveur DNS qui stocke ses données dans une base de "
+# OBSOLETE: "données SQL. Poweradmin vous aidera à gérer cette base de données via une "
+# OBSOLETE: "interface web."
+
+# OBSOLETE: msgid "Before proceeding, you should have:"
+# OBSOLETE: msgstr "Avant de continuer, vous devriez avoir :"
+
+# OBSOLETE: msgid "An operational PowerDNS installation"
+# OBSOLETE: msgstr "Une installation PowerDNS opérationnelle"
+
+# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Détails de connexion à la base de données (nom d'hôte, nom d'utilisateur, "
+# OBSOLETE: "mot de passe)"
+
+# OBSOLETE: msgid "Administrative access to your database"
+# OBSOLETE: msgstr "Accès administratif à votre base de données"
+
+# OBSOLETE: msgid "Database Preparations"
+# OBSOLETE: msgstr "Préparations de la base de données"
+
+# OBSOLETE: msgid "In the next steps, Poweradmin will:"
+# OBSOLETE: msgstr "Dans les prochaines étapes, Poweradmin va :"
+
+# OBSOLETE: msgid "Connect to your PowerDNS database"
+# OBSOLETE: msgstr "Se connecter à votre base de données PowerDNS"
+
+# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
+# OBSOLETE: msgstr "Créer les tables nécessaires pour les fonctionnalités de Poweradmin"
+
+# OBSOLETE: msgid "Set up an administrator account for web access"
+# OBSOLETE: msgstr "Configurer un compte administrateur pour l'accès web"
+
+# OBSOLETE: msgid "Create a config file to store your settings"
+# OBSOLETE: msgstr "Créer un fichier de configuration pour stocker vos paramètres"
+
 
 
