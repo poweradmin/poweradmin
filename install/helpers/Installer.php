@@ -91,7 +91,12 @@ class Installer
             return;
         }
 
-        $errors = $this->validatePreviousStep($currentStep - 1);
+        // Only validate previous steps for POST requests (form submissions)
+        // GET requests like "Check Again" should not validate previous steps
+        $errors = [];
+        if ($this->request->isMethod('POST')) {
+            $errors = $this->validatePreviousStep($currentStep - 1);
+        }
 
         if ($this->hasLanguageError($errors)) {
             echo 'Please select a language to proceed with the installation.';
