@@ -23,7 +23,7 @@ class MailServiceTest extends TestCase
     public function testBoundaryGenerationConsistency(): void
     {
         // Configure mock to enable mail and use PHP transport
-        $this->config->method('get')->willReturnMap([
+        $this->config->expects($this->any())->method('get')->willReturnMap([
             ['mail', 'enabled', false, true],
             ['mail', 'transport', 'smtp', 'php'],
             ['mail', 'from', 'poweradmin@example.com', 'test@example.com'],
@@ -116,7 +116,7 @@ class MailServiceTest extends TestCase
         $sendMailMethod = $reflection->getMethod('sendMail');
 
         // Configure mock
-        $this->config->method('get')->willReturnMap([
+        $this->config->expects($this->any())->method('get')->willReturnMap([
             ['mail', 'enabled', false, false], // Disable mail to avoid actual sending
         ]);
 
@@ -130,7 +130,7 @@ class MailServiceTest extends TestCase
     public function testNoBoundaryForSinglePart(): void
     {
         // Configure mock
-        $this->config->method('get')->willReturnMap([
+        $this->config->expects($this->any())->method('get')->willReturnMap([
             ['mail', 'enabled', false, false], // Disable mail to avoid actual sending
         ]);
 
