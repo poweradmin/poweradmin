@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-20 19:17+0300\n"
+"POT-Creation-Date: 2025-06-21 12:12+0300\n"
 "PO-Revision-Date: 2025-06-02 07:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -10670,7 +10670,8 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Vytvořte databázového uživatele s omezenými právy (select, insert, update, delete) pro přístup Poweradmin k tabulkám PowerDNS."
+"Vytvořte databázového uživatele s omezenými právy (select, insert, update, "
+"delete) pro přístup Poweradmin k tabulkám PowerDNS."
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -10747,7 +10748,6 @@ msgid "Configuring Database Connection"
 msgstr "Konfigurace připojení k databázi"
 
 #: install/templates/step4.html.twig:12
-#, auto-english-fallback
 msgid "Database Configuration:"
 msgstr "Konfigurace databáze:"
 
@@ -10756,10 +10756,10 @@ msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
 msgstr ""
-"Nastavte připojení k databázi s právy na vytváření tabulek. Umístění PowerDNS lze specifikovat samostatně, pokud je to potřebné."
+"Nastavte připojení k databázi s právy na vytváření tabulek. Umístění "
+"PowerDNS lze specifikovat samostatně, pokud je to potřebné."
 
 #: install/templates/step4.html.twig:20
-#, auto-english-fallback
 msgid "Database Connection Settings"
 msgstr "Nastavení připojení k databázi"
 
@@ -10768,7 +10768,6 @@ msgid "Database type"
 msgstr "Typ databáze"
 
 #: install/templates/step4.html.twig:33
-#, auto-english-fallback
 msgid "Database server type."
 msgstr "Typ databázového serveru."
 
@@ -10777,7 +10776,6 @@ msgid "Provide the user name"
 msgstr "Zadejte uživatelské jméno"
 
 #: install/templates/step4.html.twig:44
-#, auto-english-fallback
 msgid "Database username with rights to create tables."
 msgstr "Uživatelské jméno databáze s právy na vytváření tabulek."
 
@@ -10818,7 +10816,6 @@ msgid "Provide the name of the database"
 msgstr "Zadejte název databáze"
 
 #: install/templates/step4.html.twig:91
-#, auto-english-fallback
 msgid "Database name (will be used for Poweradmin tables)."
 msgstr "Název databáze (bude použit pro tabulky Poweradmin)."
 
@@ -10856,27 +10853,22 @@ msgstr ""
 "Pravidla porovnávání znaků. Ponechte prázdné pro výchozí hodnotu databáze."
 
 #: install/templates/step4.html.twig:132
-#, auto-english-fallback
 msgid "PowerDNS Database"
 msgstr "Databáze PowerDNS"
 
 #: install/templates/step4.html.twig:136
-#, auto-english-fallback
 msgid "Database name"
 msgstr "Název databáze"
 
 #: install/templates/step4.html.twig:139
-#, auto-english-fallback
 msgid "Leave empty for same database"
 msgstr "Ponechte prázdné pro stejnou databázi"
 
 #: install/templates/step4.html.twig:142
-#, auto-english-fallback
 msgid "MySQL database with PowerDNS tables (if different)."
 msgstr "MySQL databáze s tabulkami PowerDNS (pokud je odlišná)."
 
 #: install/templates/step4.html.twig:150
-#, auto-english-fallback
 msgid "Poweradmin Account"
 msgstr "Účet Poweradmin"
 
@@ -10949,10 +10941,6 @@ msgstr "Některé požadované komponenty chybí."
 msgid "Please install the missing components before continuing."
 msgstr "Před pokračováním nainstalujte chybějící komponenty."
 
-#: install/templates/step2.html.twig:118
-msgid "Check Again"
-msgstr "Zkontrolovat znovu"
-
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
 msgstr "Nastavení účtu a jmenných serverů"
@@ -11001,7 +10989,6 @@ msgid "Provide the DNS hostmaster"
 msgstr "Zadejte správce DNS"
 
 #: install/templates/step5.html.twig:96
-#, auto-english-fallback
 msgid "Default hostmaster for SOA records."
 msgstr "Výchozí hostmaster pro SOA záznamy."
 
@@ -11014,7 +11001,6 @@ msgid "Provide the primary nameserver"
 msgstr "Zadejte primární jmenný server"
 
 #: install/templates/step5.html.twig:108
-#, auto-english-fallback
 msgid "Primary nameserver for new zones."
 msgstr "Primární nameserver pro nové zóny."
 
@@ -11027,7 +11013,6 @@ msgid "Provide the secondary nameserver"
 msgstr "Zadejte sekundární jmenný server"
 
 #: install/templates/step5.html.twig:120
-#, auto-english-fallback
 msgid "Secondary nameserver for new zones."
 msgstr "Sekundární nameserver pro nové zóny."
 
@@ -11040,7 +11025,6 @@ msgid "optional"
 msgstr "volitelné"
 
 #: install/templates/step5.html.twig:133
-#, auto-english-fallback
 msgid "Optional tertiary nameserver for new zones."
 msgstr "Volitelný tertiární nameserver pro nové zóny."
 
@@ -11049,7 +11033,6 @@ msgid "Quaternary Nameserver"
 msgstr "Kvartární jmenný server"
 
 #: install/templates/step5.html.twig:146
-#, auto-english-fallback
 msgid "Optional quaternary nameserver for new zones."
 msgstr "Volitelný kvartenní nameserver pro nové zóny."
 
@@ -11111,32 +11094,26 @@ msgid "Getting Ready"
 msgstr "Příprava"
 
 #: install/templates/step3.html.twig:13
-#, auto-english-fallback
 msgid "Prerequisites"
 msgstr "Předpoklady"
 
 #: install/templates/step3.html.twig:16
-#, auto-english-fallback
 msgid "Before proceeding, ensure you have:"
 msgstr "Před pokračováním se ujistěte, že máte:"
 
 #: install/templates/step3.html.twig:18
-#, auto-english-fallback
 msgid "PowerDNS installed with database tables created"
 msgstr "Nainstalovaný PowerDNS s vytvořenými databázovými tabulkami"
 
 #: install/templates/step3.html.twig:19
-#, auto-english-fallback
 msgid "Database credentials (hostname, username, password)"
 msgstr "Přihlašovací údaje k databázi (hostname, uživatelské jméno, heslo)"
 
 #: install/templates/step3.html.twig:20
-#, auto-english-fallback
 msgid "Permission to create tables for Poweradmin"
 msgstr "Oprávnění k vytváření tabulek pro Poweradmin"
 
 #: install/templates/step3.html.twig:27
-#, auto-english-fallback
 msgid "Next:"
 msgstr "Další:"
 
@@ -11145,7 +11122,8 @@ msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Nastavte připojení k databázi, vytvořte administrátorský účet a vygenerujte konfigurační soubor."
+"Nastavte připojení k databázi, vytvořte administrátorský účet a vygenerujte "
+"konfigurační soubor."
 
 #: install/helpers/InstallStepHandler.php:183
 msgid "Missing PowerDNS tables:"
@@ -11262,7 +11240,8 @@ msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Oddělené databáze PowerDNS jsou podporovány pouze s MySQL. Pro PostgreSQL a SQLite použijte prosim stejnou databázi."
+"Oddělené databáze PowerDNS jsou podporovány pouze s MySQL. Pro PostgreSQL a "
+"SQLite použijte prosim stejnou databázi."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
 #, php-format
@@ -11270,157 +11249,12 @@ msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"Chybí tabulky PowerDNS v databázi \"%s\": %s. Ujistěte se prosím, že je PowerDNS správně nainstalován v této databázi."
+"Chybí tabulky PowerDNS v databázi \"%s\": %s. Ujistěte se prosím, že je "
+"PowerDNS správně nainstalován v této databázi."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nelze se připojit k databázi PowerDNS \"%s\": %s"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You now want to give limited rights to Poweradmin so it can update the "
-# OBSOLETE: "data in the tables. To do this, you should create a new user and give it "
-# OBSOLETE: "rights to select, delete, insert, and update records in the PowerDNS "
-# OBSOLETE: "database."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nyní chcete dát omezená práva Poweradminu, aby mohl aktualizovat data v "
-# OBSOLETE: "tabulkách. K tomu byste měli vytvořit nového uživatele a dát mu práva na "
-# OBSOLETE: "výběr, mazání, vkládání a aktualizaci záznamů v databázi PowerDNS."
-
-# OBSOLETE: msgid "Database Preparation:"
-# OBSOLETE: msgstr "Příprava databáze:"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "The installer needs to modify the PowerDNS database with tables for "
-# OBSOLETE: "Poweradmin. Use an account with sufficient rights (like root) to proceed."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Instalační program potřebuje upravit databázi PowerDNS s tabulkami pro "
-# OBSOLETE: "Poweradmin. Použijte účet s dostatečnými právy (jako root) k pokračování."
-
-# OBSOLETE: msgid "Important:"
-# OBSOLETE: msgstr "Důležité:"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Poweradmin requires a properly configured PowerDNS database with tables "
-# OBSOLETE: "already created. This installer will NOT create PowerDNS tables - only "
-# OBSOLETE: "Poweradmin-specific tables."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Poweradmin vyžaduje správně nakonfigurovanou PowerDNS databázi s již "
-# OBSOLETE: "vytvořenými tabulkami. Tento instalátor NEVYTVOŘÍ PowerDNS tabulky - "
-# OBSOLETE: "pouze tabulky specifické pro Poweradmin."
-
-# OBSOLETE: msgid "Database Settings"
-# OBSOLETE: msgstr "Nastavení databáze"
-
-# OBSOLETE: msgid "The type of the PowerDNS database."
-# OBSOLETE: msgstr "Typ databáze PowerDNS."
-
-# OBSOLETE: msgid "Database username with administrative rights."
-# OBSOLETE: msgstr "Uživatelské jméno databáze s administrátorskými právy."
-
-# OBSOLETE: msgid "PowerDNS database name."
-# OBSOLETE: msgstr "Název databáze PowerDNS."
-
-# OBSOLETE: msgid "Administrator Account"
-# OBSOLETE: msgstr "Účet administrátora"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Password for \"admin\" username with full rights to the Poweradmin "
-# OBSOLETE: "interface."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Heslo pro \"admin\" uživatelské jméno s plnými právy pro rozhraní "
-# OBSOLETE: "Poweradmin."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating SOA records and no hostmaster is provided, this value here "
-# OBSOLETE: "will be used."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Při vytváření záznamů SOA a pokud není poskytnut hostmaster, bude použita "
-# OBSOLETE: "tato hodnota."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this value will be used as "
-# OBSOLETE: "primary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Při vytváření nových zón pomocí šablony bude tato hodnota použita jako "
-# OBSOLETE: "primární nameserver."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this value will be used as "
-# OBSOLETE: "secondary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Při vytváření nových zón pomocí šablony bude tato hodnota použita jako "
-# OBSOLETE: "sekundární nameserver."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this optional value will be "
-# OBSOLETE: "used as tertiary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Při vytváření nových zón pomocí šablony bude tato volitelná hodnota "
-# OBSOLETE: "použita jako terciální nameserver."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this optional value will be "
-# OBSOLETE: "used as quaternary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Při vytváření nových zón pomocí šablony bude tato volitelná hodnota "
-# OBSOLETE: "použita jako kvartérní nameserver."
-
-# OBSOLETE: msgid "Preparation:"
-# OBSOLETE: msgstr "Příprava:"
-
-# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
-# OBSOLETE: msgstr "Připravme vaši databázi PowerDNS pro Poweradmin."
-
-# OBSOLETE: msgid "About PowerDNS"
-# OBSOLETE: msgstr "O PowerDNS"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "PowerDNS is a DNS server that stores its data in an SQL database. "
-# OBSOLETE: "Poweradmin will help you manage this database via a web interface."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "PowerDNS je DNS server, který ukládá svá data v SQL databázi. Poweradmin "
-# OBSOLETE: "vám pomůže spravovat tuto databázi prostřednictvím webového rozhraní."
-
-# OBSOLETE: msgid "Before proceeding, you should have:"
-# OBSOLETE: msgstr "Před pokračováním byste měli mít:"
-
-# OBSOLETE: msgid "An operational PowerDNS installation"
-# OBSOLETE: msgstr "Funkční instalaci PowerDNS"
-
-# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
-# OBSOLETE: msgstr "Detaily připojení k databázi (hostname, uživatelské jméno, heslo)"
-
-# OBSOLETE: msgid "Administrative access to your database"
-# OBSOLETE: msgstr "Administrátorský přístup k vaší databázi"
-
-# OBSOLETE: msgid "Database Preparations"
-# OBSOLETE: msgstr "Příprava databáze"
-
-# OBSOLETE: msgid "In the next steps, Poweradmin will:"
-# OBSOLETE: msgstr "V dalších krocích Poweradmin:"
-
-# OBSOLETE: msgid "Connect to your PowerDNS database"
-# OBSOLETE: msgstr "Se připojí k vaší PowerDNS databázi"
-
-# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
-# OBSOLETE: msgstr "Vytvoří tabulky potřebné pro funkčnost Poweradminu"
-
-# OBSOLETE: msgid "Set up an administrator account for web access"
-# OBSOLETE: msgstr "Nastaví administrátorský účet pro webový přístup"
-
-# OBSOLETE: msgid "Create a config file to store your settings"
-# OBSOLETE: msgstr "Vytvoří konfigurační soubor k uložení vašich nastavení"
-
 
 

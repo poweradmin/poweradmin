@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-20 19:17+0300\n"
+"POT-Creation-Date: 2025-06-21 12:12+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -10750,7 +10750,8 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Sukurkite duomenų bazės vartotoją su ribotomis teisėmis (select, insert, update, delete), kad Poweradmin galėtų pasiekti PowerDNS lenteles."
+"Sukurkite duomenų bazės vartotoją su ribotomis teisėmis (select, insert, "
+"update, delete), kad Poweradmin galėtų pasiekti PowerDNS lenteles."
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -10827,7 +10828,6 @@ msgid "Configuring Database Connection"
 msgstr "Duomenų bazės ryšio konfigūravimas"
 
 #: install/templates/step4.html.twig:12
-#, auto-english-fallback
 msgid "Database Configuration:"
 msgstr "Duomenų bazės konfiguracija:"
 
@@ -10836,10 +10836,10 @@ msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
 msgstr ""
-"Sukonfigurėkite duomenų bazės ryšį su lentelės kūrimo teisėmis. Jei reikia, PowerDNS vieta gali būti nurodyta atskirai."
+"Sukonfigurėkite duomenų bazės ryšį su lentelės kūrimo teisėmis. Jei reikia, "
+"PowerDNS vieta gali būti nurodyta atskirai."
 
 #: install/templates/step4.html.twig:20
-#, auto-english-fallback
 msgid "Database Connection Settings"
 msgstr "Duomenų bazės ryšio nustatymai"
 
@@ -10848,7 +10848,6 @@ msgid "Database type"
 msgstr "Duomenų bazės tipas"
 
 #: install/templates/step4.html.twig:33
-#, auto-english-fallback
 msgid "Database server type."
 msgstr "Duomenų bazės serverio tipas."
 
@@ -10857,7 +10856,6 @@ msgid "Provide the user name"
 msgstr "Nurodykite vartotojo vardą"
 
 #: install/templates/step4.html.twig:44
-#, auto-english-fallback
 msgid "Database username with rights to create tables."
 msgstr "Duomenų bazės vartotojo vardas su teisėmis kurti lenteles."
 
@@ -10898,7 +10896,6 @@ msgid "Provide the name of the database"
 msgstr "Nurodykite duomenų bazės pavadinimą"
 
 #: install/templates/step4.html.twig:91
-#, auto-english-fallback
 msgid "Database name (will be used for Poweradmin tables)."
 msgstr "Duomenų bazės pavadinimas (bus naudojamas Poweradmin lentelėms)."
 
@@ -10938,27 +10935,22 @@ msgstr ""
 "naudoti duomenų bazės numatytąjį."
 
 #: install/templates/step4.html.twig:132
-#, auto-english-fallback
 msgid "PowerDNS Database"
 msgstr "PowerDNS duomenų bazė"
 
 #: install/templates/step4.html.twig:136
-#, auto-english-fallback
 msgid "Database name"
 msgstr "Duomenų bazės pavadinimas"
 
 #: install/templates/step4.html.twig:139
-#, auto-english-fallback
 msgid "Leave empty for same database"
 msgstr "Palikite tuščią tai pačiai duomenų bazei"
 
 #: install/templates/step4.html.twig:142
-#, auto-english-fallback
 msgid "MySQL database with PowerDNS tables (if different)."
 msgstr "MySQL duomenų bazė su PowerDNS lentelėmis (jei skirtinga)."
 
 #: install/templates/step4.html.twig:150
-#, auto-english-fallback
 msgid "Poweradmin Account"
 msgstr "Poweradmin paskyra"
 
@@ -11031,10 +11023,6 @@ msgstr "Trūksta kai kurių reikalingų komponentų."
 msgid "Please install the missing components before continuing."
 msgstr "Prieš tęsdami įdiekite trūkstamus komponentus."
 
-#: install/templates/step2.html.twig:118
-msgid "Check Again"
-msgstr "Tikrinti dar kartą"
-
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
 msgstr "Paskyros ir vardų serverių nustatymas"
@@ -11083,7 +11071,6 @@ msgid "Provide the DNS hostmaster"
 msgstr "Nurodykite DNS pagrindinę stotį"
 
 #: install/templates/step5.html.twig:96
-#, auto-english-fallback
 msgid "Default hostmaster for SOA records."
 msgstr "Numatytasis hostmaster SOA įrašams."
 
@@ -11096,7 +11083,6 @@ msgid "Provide the primary nameserver"
 msgstr "Nurodykite pagrindinį vardų serverį"
 
 #: install/templates/step5.html.twig:108
-#, auto-english-fallback
 msgid "Primary nameserver for new zones."
 msgstr "Pirminis vardų serveris naujoms zonoms."
 
@@ -11109,7 +11095,6 @@ msgid "Provide the secondary nameserver"
 msgstr "Nurodykite antrinį vardų serverį"
 
 #: install/templates/step5.html.twig:120
-#, auto-english-fallback
 msgid "Secondary nameserver for new zones."
 msgstr "Antrinis vardų serveris naujoms zonoms."
 
@@ -11122,7 +11107,6 @@ msgid "optional"
 msgstr "neprivalomas"
 
 #: install/templates/step5.html.twig:133
-#, auto-english-fallback
 msgid "Optional tertiary nameserver for new zones."
 msgstr "Pasirenkamas trečiasis vardų serveris naujoms zonoms."
 
@@ -11131,7 +11115,6 @@ msgid "Quaternary Nameserver"
 msgstr "Ketvirtinis vardų serveris"
 
 #: install/templates/step5.html.twig:146
-#, auto-english-fallback
 msgid "Optional quaternary nameserver for new zones."
 msgstr "Pasirenkamas ketvirtasis vardų serveris naujoms zonoms."
 
@@ -11192,33 +11175,28 @@ msgid "Getting Ready"
 msgstr "Pasiruošimas"
 
 #: install/templates/step3.html.twig:13
-#, auto-english-fallback
 msgid "Prerequisites"
 msgstr "Išankstiniai reikalavimai"
 
 #: install/templates/step3.html.twig:16
-#, auto-english-fallback
 msgid "Before proceeding, ensure you have:"
 msgstr "Prieš tęsdami įsitikinkite, kad turite:"
 
 #: install/templates/step3.html.twig:18
-#, auto-english-fallback
 msgid "PowerDNS installed with database tables created"
 msgstr "Įdiegtus PowerDNS su sukurtomis duomenų bazės lentelėmis"
 
 #: install/templates/step3.html.twig:19
-#, auto-english-fallback
 msgid "Database credentials (hostname, username, password)"
 msgstr ""
-"Duomenų bazės prisijungimo duomenis (serverio pavadinimas, vartotojo vardas, slaptažodis)"
+"Duomenų bazės prisijungimo duomenis (serverio pavadinimas, vartotojo vardas, "
+"slaptažodis)"
 
 #: install/templates/step3.html.twig:20
-#, auto-english-fallback
 msgid "Permission to create tables for Poweradmin"
 msgstr "Leidimą kurti lenteles Poweradmin"
 
 #: install/templates/step3.html.twig:27
-#, auto-english-fallback
 msgid "Next:"
 msgstr "Toliau:"
 
@@ -11227,7 +11205,8 @@ msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Sukonfigurėkite duomenų bazės ryšį, sukurkite administratoriaus paskyrą ir sugeneruokite konfigracijos failą."
+"Sukonfigurėkite duomenų bazės ryšį, sukurkite administratoriaus paskyrą ir "
+"sugeneruokite konfigracijos failą."
 
 #: install/helpers/InstallStepHandler.php:183
 msgid "Missing PowerDNS tables:"
@@ -11347,7 +11326,8 @@ msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Atskiros PowerDNS duomenų bazės palaikomos tik su MySQL. PostgreSQL ir SQLite naudokite tą pačią duomenų bazę."
+"Atskiros PowerDNS duomenų bazės palaikomos tik su MySQL. PostgreSQL ir "
+"SQLite naudokite tą pačią duomenų bazę."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
 #, php-format
@@ -11355,160 +11335,12 @@ msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"Trūksta PowerDNS lentelės duomenų bazėje \"%s\": %s. Įsitikinkite, kad PowerDNS tinkamai įdiegtas šioje duomenų bazėje."
+"Trūksta PowerDNS lentelės duomenų bazėje \"%s\": %s. Įsitikinkite, kad "
+"PowerDNS tinkamai įdiegtas šioje duomenų bazėje."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You now want to give limited rights to Poweradmin so it can update the "
-# OBSOLETE: "data in the tables. To do this, you should create a new user and give it "
-# OBSOLETE: "rights to select, delete, insert, and update records in the PowerDNS "
-# OBSOLETE: "database."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Dabar norite suteikti ribotas teises Poweradmin, kad jis galėtų "
-# OBSOLETE: "atnaujinti duomenis lentelėse. Tam turite sukurti naują vartotoją ir "
-# OBSOLETE: "suteikti jam teises rinktis, trinti, įterpti ir atnaujinti įrašus "
-# OBSOLETE: "PowerDNS duomenų bazėje."
-
-# OBSOLETE: msgid "Database Preparation:"
-# OBSOLETE: msgstr "Duomenų bazės paruošimas:"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "The installer needs to modify the PowerDNS database with tables for "
-# OBSOLETE: "Poweradmin. Use an account with sufficient rights (like root) to proceed."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Diegimo programa turi modifikuoti PowerDNS duomenų bazę su Poweradmin "
-# OBSOLETE: "lentelėmis. Naudokite paskyrą su pakankamomis teisėmis (pvz., root) "
-# OBSOLETE: "norėdami tęsti."
-
-# OBSOLETE: msgid "Important:"
-# OBSOLETE: msgstr "Svarbu:"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Poweradmin requires a properly configured PowerDNS database with tables "
-# OBSOLETE: "already created. This installer will NOT create PowerDNS tables - only "
-# OBSOLETE: "Poweradmin-specific tables."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Poweradmin reikia tinkamai sukonfigūruotos PowerDNS duomenų bazės su jau "
-# OBSOLETE: "sukurtomis lentelėmis. Šis diegimo įrankis NESUKURS PowerDNS lentelių - "
-# OBSOLETE: "tik Poweradmin specifines lenteles."
-
-# OBSOLETE: msgid "Database Settings"
-# OBSOLETE: msgstr "Duomenų bazės nustatymai"
-
-# OBSOLETE: msgid "The type of the PowerDNS database."
-# OBSOLETE: msgstr "PowerDNS duomenų bazės tipas."
-
-# OBSOLETE: msgid "Database username with administrative rights."
-# OBSOLETE: msgstr "Duomenų bazės vartotojo vardas su administracinėmis teisėmis."
-
-# OBSOLETE: msgid "PowerDNS database name."
-# OBSOLETE: msgstr "PowerDNS duomenų bazės pavadinimas."
-
-# OBSOLETE: msgid "Administrator Account"
-# OBSOLETE: msgstr "Administratoriaus paskyra"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Password for \"admin\" username with full rights to the Poweradmin "
-# OBSOLETE: "interface."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Slaptažodis \"admin\" vartotojo vardui su visomis teisėmis Poweradmin "
-# OBSOLETE: "sąsajoje."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating SOA records and no hostmaster is provided, this value here "
-# OBSOLETE: "will be used."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Kuriant SOA įrašus ir nepateikus hostmaster, bus naudojama ši reikšmė."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this value will be used as "
-# OBSOLETE: "primary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip "
-# OBSOLETE: "pagrindinis vardų serveris."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this value will be used as "
-# OBSOLETE: "secondary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Kuriant naujas zonas naudojant šabloną, ši reikšmė bus naudojama kaip "
-# OBSOLETE: "antrinis vardų serveris."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this optional value will be "
-# OBSOLETE: "used as tertiary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Kuriant naujas zonas naudojant šabloną, ši pasirenkama reikšmė bus "
-# OBSOLETE: "naudojama kaip tretinis vardų serveris."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this optional value will be "
-# OBSOLETE: "used as quaternary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Kuriant naujas zonas naudojant šabloną, ši pasirenkama reikšmė bus "
-# OBSOLETE: "naudojama kaip ketvirtinis vardų serveris."
-
-# OBSOLETE: msgid "Preparation:"
-# OBSOLETE: msgstr "Pasiruošimas:"
-
-# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
-# OBSOLETE: msgstr "Paruoškime jūsų PowerDNS duomenų bazę Poweradmin."
-
-# OBSOLETE: msgid "About PowerDNS"
-# OBSOLETE: msgstr "Apie PowerDNS"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "PowerDNS is a DNS server that stores its data in an SQL database. "
-# OBSOLETE: "Poweradmin will help you manage this database via a web interface."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "PowerDNS yra DNS serveris, kuris saugo savo duomenis SQL duomenų bazėje. "
-# OBSOLETE: "Poweradmin padės jums valdyti šią duomenų bazę per žiniatinklio sąsają."
-
-# OBSOLETE: msgid "Before proceeding, you should have:"
-# OBSOLETE: msgstr "Prieš tęsdami, turėtumėte turėti:"
-
-# OBSOLETE: msgid "An operational PowerDNS installation"
-# OBSOLETE: msgstr "Veikiančią PowerDNS instaliaciją"
-
-# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Duomenų bazės prisijungimo duomenys (serverio vardas, vartotojo vardas, "
-# OBSOLETE: "slaptažodis)"
-
-# OBSOLETE: msgid "Administrative access to your database"
-# OBSOLETE: msgstr "Administracinę prieigą prie jūsų duomenų bazės"
-
-# OBSOLETE: msgid "Database Preparations"
-# OBSOLETE: msgstr "Duomenų bazės paruošimas"
-
-# OBSOLETE: msgid "In the next steps, Poweradmin will:"
-# OBSOLETE: msgstr "Tolimesniuose etapuose Poweradmin:"
-
-# OBSOLETE: msgid "Connect to your PowerDNS database"
-# OBSOLETE: msgstr "Prisijungs prie jūsų PowerDNS duomenų bazės"
-
-# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
-# OBSOLETE: msgstr "Sukurs lenteles, reikalingas Poweradmin funkcionalumui"
-
-# OBSOLETE: msgid "Set up an administrator account for web access"
-# OBSOLETE: msgstr "Sukurs administratoriaus paskyrą internetinei prieigai"
-
-# OBSOLETE: msgid "Create a config file to store your settings"
-# OBSOLETE: msgstr "Sukurs konfigūracijos failą jūsų nustatymams saugoti"
-
 
 

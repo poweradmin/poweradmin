@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-20 19:17+0300\n"
+"POT-Creation-Date: 2025-06-21 12:12+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -8387,8 +8387,7 @@ msgstr "有限的数据库权限："
 
 #: install/templates/step6.html.twig:13
 msgid "Create a database user with limited rights (select, insert, update, delete) for Poweradmin to access PowerDNS tables."
-msgstr ""
-"为Poweradmin访问PowerDNS表创建一个具有有限权限（select, insert, update, delete）的数据库用户。"
+msgstr "为Poweradmin访问PowerDNS表创建一个具有有限权限（select, insert, update, delete）的数据库用户。"
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -8641,10 +8640,6 @@ msgstr "缺少一些必需的组件。"
 #: install/templates/step2.html.twig:114
 msgid "Please install the missing components before continuing."
 msgstr "请在继续之前安装缺少的组件。"
-
-#: install/templates/step2.html.twig:118
-msgid "Check Again"
-msgstr "重新检查"
 
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
@@ -8907,95 +8902,3 @@ msgstr "数据库\"%s\"中缺少PowerDNS表：%s。请确保PowerDNS已正确安
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "无法连接到PowerDNS数据库\"%s\"：%s"
-
-# OBSOLETE: msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS database."
-# OBSOLETE: msgstr "现在您需要给 Poweradmin 授予有限权限，以便它能更新表中的数据。为此，您应该创建一个新用户并授予其在 PowerDNS 数据库中选择、删除、插入和更新记录的权限。"
-
-# OBSOLETE: msgid "Database Preparation:"
-# OBSOLETE: msgstr "数据库准备："
-
-# OBSOLETE: msgid "The installer needs to modify the PowerDNS database with tables for Poweradmin. Use an account with sufficient rights (like root) to proceed."
-# OBSOLETE: msgstr "安装程序需要修改 PowerDNS 数据库，为 Poweradmin 添加表。使用具有足够权限的账户（如 root）继续。"
-
-# OBSOLETE: msgid "Important:"
-# OBSOLETE: msgstr "重要："
-
-# OBSOLETE: msgid "Poweradmin requires a properly configured PowerDNS database with tables already created. This installer will NOT create PowerDNS tables - only Poweradmin-specific tables."
-# OBSOLETE: msgstr "Poweradmin 需要一个正确配置的 PowerDNS 数据库，其中已创建表。此安装程序不会创建 PowerDNS 表，只会创建 Poweradmin 特定的表。"
-
-# OBSOLETE: msgid "Database Settings"
-# OBSOLETE: msgstr "数据库设置"
-
-# OBSOLETE: msgid "The type of the PowerDNS database."
-# OBSOLETE: msgstr "PowerDNS 数据库的类型。"
-
-# OBSOLETE: msgid "Database username with administrative rights."
-# OBSOLETE: msgstr "具有管理权限的数据库用户名。"
-
-# OBSOLETE: msgid "PowerDNS database name."
-# OBSOLETE: msgstr "PowerDNS 数据库名称。"
-
-# OBSOLETE: msgid "Administrator Account"
-# OBSOLETE: msgstr "管理员账户"
-
-# OBSOLETE: msgid "Password for \"admin\" username with full rights to the Poweradmin interface."
-# OBSOLETE: msgstr "具有 Poweradmin 界面完全访问权限的 \"admin\" 用户名的密码。"
-
-# OBSOLETE: msgid "When creating SOA records and no hostmaster is provided, this value here will be used."
-# OBSOLETE: msgstr "创建 SOA 记录时如果未提供主机管理员，将使用此处的值。"
-
-# OBSOLETE: msgid "When creating new zones using the template, this value will be used as primary nameserver."
-# OBSOLETE: msgstr "使用模板创建新区域时，此值将用作主域名服务器。"
-
-# OBSOLETE: msgid "When creating new zones using the template, this value will be used as secondary nameserver."
-# OBSOLETE: msgstr "使用模板创建新区域时，此值将用作辅助域名服务器。"
-
-# OBSOLETE: msgid "When creating new zones using the template, this optional value will be used as tertiary nameserver."
-# OBSOLETE: msgstr "使用模板创建新区域时，此可选值将用作第三域名服务器。"
-
-# OBSOLETE: msgid "When creating new zones using the template, this optional value will be used as quaternary nameserver."
-# OBSOLETE: msgstr "使用模板创建新区域时，此可选值将用作第四域名服务器。"
-
-# OBSOLETE: msgid "Preparation:"
-# OBSOLETE: msgstr "准备："
-
-# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
-# OBSOLETE: msgstr "让我们为 Poweradmin 准备您的 PowerDNS 数据库。"
-
-# OBSOLETE: msgid "About PowerDNS"
-# OBSOLETE: msgstr "关于 PowerDNS"
-
-# OBSOLETE: msgid "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin will help you manage this database via a web interface."
-# OBSOLETE: msgstr "PowerDNS 是一个将数据存储在 SQL 数据库中的 DNS 服务器。Poweradmin 将帮助您通过 Web 界面管理此数据库。"
-
-# OBSOLETE: msgid "Before proceeding, you should have:"
-# OBSOLETE: msgstr "在继续之前，您应该具备："
-
-# OBSOLETE: msgid "An operational PowerDNS installation"
-# OBSOLETE: msgstr "正常运行的 PowerDNS 安装"
-
-# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
-# OBSOLETE: msgstr "数据库连接详细信息（主机名、用户名、密码）"
-
-# OBSOLETE: msgid "Administrative access to your database"
-# OBSOLETE: msgstr "对数据库的管理访问权限"
-
-# OBSOLETE: msgid "Database Preparations"
-# OBSOLETE: msgstr "数据库准备"
-
-# OBSOLETE: msgid "In the next steps, Poweradmin will:"
-# OBSOLETE: msgstr "在接下来的步骤中，Poweradmin 将："
-
-# OBSOLETE: msgid "Connect to your PowerDNS database"
-# OBSOLETE: msgstr "连接到您的 PowerDNS 数据库"
-
-# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
-# OBSOLETE: msgstr "创建 Poweradmin 功能所需的表"
-
-# OBSOLETE: msgid "Set up an administrator account for web access"
-# OBSOLETE: msgstr "为 Web 访问创建管理员账户"
-
-# OBSOLETE: msgid "Create a config file to store your settings"
-# OBSOLETE: msgstr "创建配置文件以存储您的设置"
-
-

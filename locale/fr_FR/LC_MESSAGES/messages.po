@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-20 19:17+0300\n"
+"POT-Creation-Date: 2025-06-21 12:12+0300\n"
 "PO-Revision-Date: 2025-06-02 20:15+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: French\n"
@@ -11147,7 +11147,8 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Créez un utilisateur de base de données avec des droits limités (select, insert, update, delete) pour que Poweradmin accède aux tables PowerDNS."
+"Créez un utilisateur de base de données avec des droits limités (select, "
+"insert, update, delete) pour que Poweradmin accède aux tables PowerDNS."
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -11227,7 +11228,6 @@ msgid "Configuring Database Connection"
 msgstr "Configuration de la connexion à la base de données"
 
 #: install/templates/step4.html.twig:12
-#, auto-english-fallback
 msgid "Database Configuration:"
 msgstr "Configuration de la base de données :"
 
@@ -11236,10 +11236,10 @@ msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
 msgstr ""
-"Configurez la connexion à la base de données avec les droits de création de tables. L'emplacement PowerDNS peut être spécifié séparément si nécessaire."
+"Configurez la connexion à la base de données avec les droits de création de "
+"tables. L'emplacement PowerDNS peut être spécifié séparément si nécessaire."
 
 #: install/templates/step4.html.twig:20
-#, auto-english-fallback
 msgid "Database Connection Settings"
 msgstr "Paramètres de connexion à la base de données"
 
@@ -11248,7 +11248,6 @@ msgid "Database type"
 msgstr "Type de base de données"
 
 #: install/templates/step4.html.twig:33
-#, auto-english-fallback
 msgid "Database server type."
 msgstr "Type de serveur de base de données."
 
@@ -11257,7 +11256,6 @@ msgid "Provide the user name"
 msgstr "Fournir le nom d'utilisateur"
 
 #: install/templates/step4.html.twig:44
-#, auto-english-fallback
 msgid "Database username with rights to create tables."
 msgstr ""
 "Nom d'utilisateur de base de données avec droits de création de tables."
@@ -11299,7 +11297,6 @@ msgid "Provide the name of the database"
 msgstr "Fournir le nom de la base de données"
 
 #: install/templates/step4.html.twig:91
-#, auto-english-fallback
 msgid "Database name (will be used for Poweradmin tables)."
 msgstr "Nom de la base de données (sera utilisé pour les tables Poweradmin)."
 
@@ -11339,27 +11336,22 @@ msgstr ""
 "valeur par défaut de la base de données."
 
 #: install/templates/step4.html.twig:132
-#, auto-english-fallback
 msgid "PowerDNS Database"
 msgstr "Base de données PowerDNS"
 
 #: install/templates/step4.html.twig:136
-#, auto-english-fallback
 msgid "Database name"
 msgstr "Nom de la base de données"
 
 #: install/templates/step4.html.twig:139
-#, auto-english-fallback
 msgid "Leave empty for same database"
 msgstr "Laisser vide pour la même base de données"
 
 #: install/templates/step4.html.twig:142
-#, auto-english-fallback
 msgid "MySQL database with PowerDNS tables (if different)."
 msgstr "Base de données MySQL avec tables PowerDNS (si différente)."
 
 #: install/templates/step4.html.twig:150
-#, auto-english-fallback
 msgid "Poweradmin Account"
 msgstr "Compte Poweradmin"
 
@@ -11433,10 +11425,6 @@ msgstr "Certains composants requis sont manquants."
 msgid "Please install the missing components before continuing."
 msgstr "Veuillez installer les composants manquants avant de continuer."
 
-#: install/templates/step2.html.twig:118
-msgid "Check Again"
-msgstr "Vérifier à Nouveau"
-
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
 msgstr "Configuration du compte et des serveurs de noms"
@@ -11487,7 +11475,6 @@ msgid "Provide the DNS hostmaster"
 msgstr "Fournir le hostmaster DNS"
 
 #: install/templates/step5.html.twig:96
-#, auto-english-fallback
 msgid "Default hostmaster for SOA records."
 msgstr "Hostmaster par défaut pour les enregistrements SOA."
 
@@ -11500,7 +11487,6 @@ msgid "Provide the primary nameserver"
 msgstr "Fournir le serveur de noms primaire"
 
 #: install/templates/step5.html.twig:108
-#, auto-english-fallback
 msgid "Primary nameserver for new zones."
 msgstr "Serveur de noms primaire pour les nouvelles zones."
 
@@ -11513,7 +11499,6 @@ msgid "Provide the secondary nameserver"
 msgstr "Fournir le serveur de noms secondaire"
 
 #: install/templates/step5.html.twig:120
-#, auto-english-fallback
 msgid "Secondary nameserver for new zones."
 msgstr "Serveur de noms secondaire pour les nouvelles zones."
 
@@ -11526,7 +11511,6 @@ msgid "optional"
 msgstr "optionnel"
 
 #: install/templates/step5.html.twig:133
-#, auto-english-fallback
 msgid "Optional tertiary nameserver for new zones."
 msgstr "Serveur de noms tertiaire optionnel pour les nouvelles zones."
 
@@ -11535,7 +11519,6 @@ msgid "Quaternary Nameserver"
 msgstr "Serveur de noms quaternaire"
 
 #: install/templates/step5.html.twig:146
-#, auto-english-fallback
 msgid "Optional quaternary nameserver for new zones."
 msgstr "Serveur de noms quaternaire optionnel pour les nouvelles zones."
 
@@ -11598,33 +11581,27 @@ msgid "Getting Ready"
 msgstr "Préparation"
 
 #: install/templates/step3.html.twig:13
-#, auto-english-fallback
 msgid "Prerequisites"
 msgstr "Prérequis"
 
 #: install/templates/step3.html.twig:16
-#, auto-english-fallback
 msgid "Before proceeding, ensure you have:"
 msgstr "Avant de continuer, assurez-vous d'avoir :"
 
 #: install/templates/step3.html.twig:18
-#, auto-english-fallback
 msgid "PowerDNS installed with database tables created"
 msgstr "PowerDNS installé avec les tables de base de données créées"
 
 #: install/templates/step3.html.twig:19
-#, auto-english-fallback
 msgid "Database credentials (hostname, username, password)"
 msgstr ""
 "Identifiants de base de données (nom d'hôte, nom d'utilisateur, mot de passe)"
 
 #: install/templates/step3.html.twig:20
-#, auto-english-fallback
 msgid "Permission to create tables for Poweradmin"
 msgstr "Permission de créer des tables pour Poweradmin"
 
 #: install/templates/step3.html.twig:27
-#, auto-english-fallback
 msgid "Next:"
 msgstr "Suivant :"
 
@@ -11633,7 +11610,8 @@ msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Configurez la connexion à la base de données, créez un compte administrateur et générez le fichier de configuration."
+"Configurez la connexion à la base de données, créez un compte administrateur "
+"et générez le fichier de configuration."
 
 #: install/helpers/InstallStepHandler.php:183
 msgid "Missing PowerDNS tables:"
@@ -11758,7 +11736,8 @@ msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Les bases de données PowerDNS séparées ne sont prises en charge qu'avec MySQL. Pour PostgreSQL et SQLite, veuillez utiliser la même base de données."
+"Les bases de données PowerDNS séparées ne sont prises en charge qu'avec "
+"MySQL. Pour PostgreSQL et SQLite, veuillez utiliser la même base de données."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
 #, php-format
@@ -11766,169 +11745,13 @@ msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"Tables PowerDNS manquantes dans la base de données \"%s\" : %s. Veuillez vous assurer que PowerDNS est correctement installé dans cette base de données."
+"Tables PowerDNS manquantes dans la base de données \"%s\" : %s. Veuillez "
+"vous assurer que PowerDNS est correctement installé dans cette base de "
+"données."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Impossible de se connecter à la base de données PowerDNS \"%s\" : %s"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You now want to give limited rights to Poweradmin so it can update the "
-# OBSOLETE: "data in the tables. To do this, you should create a new user and give it "
-# OBSOLETE: "rights to select, delete, insert, and update records in the PowerDNS "
-# OBSOLETE: "database."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Vous voulez maintenant donner des droits limités à Poweradmin pour qu'il "
-# OBSOLETE: "puisse mettre à jour les données dans les tables. Pour ce faire, vous "
-# OBSOLETE: "devez créer un nouvel utilisateur et lui donner les droits de "
-# OBSOLETE: "sélectionner, supprimer, insérer et mettre à jour les enregistrements "
-# OBSOLETE: "dans la base de données PowerDNS.in the tables. To do this, you should "
-# OBSOLETE: "create a new user and give it rights to select, delete, insert, and "
-# OBSOLETE: "update records in the PowerDNS database."
-
-# OBSOLETE: msgid "Database Preparation:"
-# OBSOLETE: msgstr "Préparation de la base de données :"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "The installer needs to modify the PowerDNS database with tables for "
-# OBSOLETE: "Poweradmin. Use an account with sufficient rights (like root) to proceed."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "L'installateur doit modifier la base de données PowerDNS avec des tables "
-# OBSOLETE: "pour Poweradmin. Utilisez un compte avec des droits suffisants (comme "
-# OBSOLETE: "root) pour continuer.Poweradmin. Use an account with sufficient rights "
-# OBSOLETE: "(like root) to proceed."
-
-# OBSOLETE: msgid "Important:"
-# OBSOLETE: msgstr "Important :"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Poweradmin requires a properly configured PowerDNS database with tables "
-# OBSOLETE: "already created. This installer will NOT create PowerDNS tables - only "
-# OBSOLETE: "Poweradmin-specific tables."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Poweradmin nécessite une base de données PowerDNS correctement configurée "
-# OBSOLETE: "avec des tables déjà créées. Cet installateur ne créera PAS les tables "
-# OBSOLETE: "PowerDNS - seulement les tables spécifiques à Poweradmin."
-
-# OBSOLETE: msgid "Database Settings"
-# OBSOLETE: msgstr "Paramètres de la base de données"
-
-# OBSOLETE: msgid "The type of the PowerDNS database."
-# OBSOLETE: msgstr "Le type de la base de données PowerDNS."
-
-# OBSOLETE: msgid "Database username with administrative rights."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Nom d'utilisateur de la base de données avec des droits administratifs."
-
-# OBSOLETE: msgid "PowerDNS database name."
-# OBSOLETE: msgstr "Nom de la base de données PowerDNS."
-
-# OBSOLETE: msgid "Administrator Account"
-# OBSOLETE: msgstr "Compte administrateur"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Password for \"admin\" username with full rights to the Poweradmin "
-# OBSOLETE: "interface."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Mot de passe pour le nom d'utilisateur \"admin\" avec tous les droits sur "
-# OBSOLETE: "l'interface Poweradmin."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating SOA records and no hostmaster is provided, this value here "
-# OBSOLETE: "will be used."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Lors de la création d'enregistrements SOA et qu'aucun hostmaster n'est "
-# OBSOLETE: "fourni, cette valeur sera utilisée.will be used."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this value will be used as "
-# OBSOLETE: "primary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Lors de la création de nouvelles zones utilisant le modèle, cette valeur "
-# OBSOLETE: "sera utilisée comme serveur de noms primaire.primary nameserver."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this value will be used as "
-# OBSOLETE: "secondary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Lors de la création de nouvelles zones utilisant le modèle, cette valeur "
-# OBSOLETE: "sera utilisée comme serveur de noms secondaire.secondary nameserver."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this optional value will be "
-# OBSOLETE: "used as tertiary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Lors de la création de nouvelles zones utilisant le modèle, cette valeur "
-# OBSOLETE: "optionnelle sera utilisée comme serveur de noms tertiaire.as tertiary "
-# OBSOLETE: "nameserver."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this optional value will be "
-# OBSOLETE: "used as quaternary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Lors de la création de nouvelles zones utilisant le modèle, cette valeur "
-# OBSOLETE: "optionnelle sera utilisée comme serveur de noms quaternaire.as quaternary "
-# OBSOLETE: "nameserver."
-
-# OBSOLETE: msgid "Preparation:"
-# OBSOLETE: msgstr "Préparation :"
-
-# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
-# OBSOLETE: msgstr "Préparons votre base de données PowerDNS pour Poweradmin."
-
-# OBSOLETE: msgid "About PowerDNS"
-# OBSOLETE: msgstr "À propos de PowerDNS"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "PowerDNS is a DNS server that stores its data in an SQL database. "
-# OBSOLETE: "Poweradmin will help you manage this database via a web interface."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "PowerDNS est un serveur DNS qui stocke ses données dans une base de "
-# OBSOLETE: "données SQL. Poweradmin vous aidera à gérer cette base de données via une "
-# OBSOLETE: "interface web."
-
-# OBSOLETE: msgid "Before proceeding, you should have:"
-# OBSOLETE: msgstr "Avant de continuer, vous devriez avoir :"
-
-# OBSOLETE: msgid "An operational PowerDNS installation"
-# OBSOLETE: msgstr "Une installation PowerDNS opérationnelle"
-
-# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Détails de connexion à la base de données (nom d'hôte, nom d'utilisateur, "
-# OBSOLETE: "mot de passe)"
-
-# OBSOLETE: msgid "Administrative access to your database"
-# OBSOLETE: msgstr "Accès administratif à votre base de données"
-
-# OBSOLETE: msgid "Database Preparations"
-# OBSOLETE: msgstr "Préparations de la base de données"
-
-# OBSOLETE: msgid "In the next steps, Poweradmin will:"
-# OBSOLETE: msgstr "Dans les prochaines étapes, Poweradmin va :"
-
-# OBSOLETE: msgid "Connect to your PowerDNS database"
-# OBSOLETE: msgstr "Se connecter à votre base de données PowerDNS"
-
-# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
-# OBSOLETE: msgstr "Créer les tables nécessaires pour les fonctionnalités de Poweradmin"
-
-# OBSOLETE: msgid "Set up an administrator account for web access"
-# OBSOLETE: msgstr "Configurer un compte administrateur pour l'accès web"
-
-# OBSOLETE: msgid "Create a config file to store your settings"
-# OBSOLETE: msgstr "Créer un fichier de configuration pour stocker vos paramètres"
-
 
 

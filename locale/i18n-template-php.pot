@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-20 19:17+0300\n"
+"POT-Creation-Date: 2025-06-21 12:12+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9774,10 +9774,6 @@ msgstr ""
 
 #: install/templates/step2.html.twig:114
 msgid "Please install the missing components before continuing."
-msgstr ""
-
-#: install/templates/step2.html.twig:118
-msgid "Check Again"
 msgstr ""
 
 #: install/templates/step5.html.twig:3

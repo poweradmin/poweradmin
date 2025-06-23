@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-20 19:17+0300\n"
+"POT-Creation-Date: 2025-06-21 12:12+0300\n"
 "PO-Revision-Date: 2025-06-05 21:47+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Turkish <tr@li.org>\n"
@@ -10743,7 +10743,8 @@ msgid ""
 "Create a database user with limited rights (select, insert, update, delete) "
 "for Poweradmin to access PowerDNS tables."
 msgstr ""
-"Poweradmin'in PowerDNS tablolarına erişmesi için sınırlı haklara (select, insert, update, delete) sahip bir veritabanı kullanıcısı oluşturun."
+"Poweradmin'in PowerDNS tablolarına erişmesi için sınırlı haklara (select, "
+"insert, update, delete) sahip bir veritabanı kullanıcısı oluşturun."
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -10820,7 +10821,6 @@ msgid "Configuring Database Connection"
 msgstr "Veritabanı Bağlantısını Yapılandırma"
 
 #: install/templates/step4.html.twig:12
-#, auto-english-fallback
 msgid "Database Configuration:"
 msgstr "Veritabanı Yapılandırması:"
 
@@ -10829,10 +10829,10 @@ msgid ""
 "Configure database connection with table creation rights. PowerDNS location "
 "can be specified separately if needed."
 msgstr ""
-"Tablo oluşturma haklarına sahip veritabanı bağlantısını yapılandırın. Gerekirse PowerDNS konumu ayrı olarak belirtilebilir."
+"Tablo oluşturma haklarına sahip veritabanı bağlantısını yapılandırın. "
+"Gerekirse PowerDNS konumu ayrı olarak belirtilebilir."
 
 #: install/templates/step4.html.twig:20
-#, auto-english-fallback
 msgid "Database Connection Settings"
 msgstr "Veritabanı Bağlantısı Ayarları"
 
@@ -10841,7 +10841,6 @@ msgid "Database type"
 msgstr "Veritabanı türü"
 
 #: install/templates/step4.html.twig:33
-#, auto-english-fallback
 msgid "Database server type."
 msgstr "Veritabanı sunucu türü."
 
@@ -10850,7 +10849,6 @@ msgid "Provide the user name"
 msgstr "Kullanıcı adını girin"
 
 #: install/templates/step4.html.twig:44
-#, auto-english-fallback
 msgid "Database username with rights to create tables."
 msgstr "Tablo oluşturma haklarına sahip veritabanı kullanıcı adı."
 
@@ -10891,7 +10889,6 @@ msgid "Provide the name of the database"
 msgstr "Veritabanının adını girin"
 
 #: install/templates/step4.html.twig:91
-#, auto-english-fallback
 msgid "Database name (will be used for Poweradmin tables)."
 msgstr "Veritabanı adı (Poweradmin tabloları için kullanılacak)."
 
@@ -10930,27 +10927,22 @@ msgstr ""
 "için boş bırakın."
 
 #: install/templates/step4.html.twig:132
-#, auto-english-fallback
 msgid "PowerDNS Database"
 msgstr "PowerDNS Veritabanı"
 
 #: install/templates/step4.html.twig:136
-#, auto-english-fallback
 msgid "Database name"
 msgstr "Veritabanı adı"
 
 #: install/templates/step4.html.twig:139
-#, auto-english-fallback
 msgid "Leave empty for same database"
 msgstr "Aynı veritabanı için boş bırakın"
 
 #: install/templates/step4.html.twig:142
-#, auto-english-fallback
 msgid "MySQL database with PowerDNS tables (if different)."
 msgstr "PowerDNS tablolarına sahip MySQL veritabanı (farklı ise)."
 
 #: install/templates/step4.html.twig:150
-#, auto-english-fallback
 msgid "Poweradmin Account"
 msgstr "Poweradmin Hesabı"
 
@@ -11024,10 +11016,6 @@ msgstr "Bazı gerekli bileşenler eksik."
 msgid "Please install the missing components before continuing."
 msgstr "Devam etmeden önce lütfen eksik bileşenleri yükleyin."
 
-#: install/templates/step2.html.twig:118
-msgid "Check Again"
-msgstr "Tekrar Kontrol Et"
-
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
 msgstr "Hesap ve ad sunucularını ayarla"
@@ -11076,7 +11064,6 @@ msgid "Provide the DNS hostmaster"
 msgstr "DNS hostmaster'ı girin"
 
 #: install/templates/step5.html.twig:96
-#, auto-english-fallback
 msgid "Default hostmaster for SOA records."
 msgstr "SOA kayıtları için varsayılan hostmaster."
 
@@ -11089,7 +11076,6 @@ msgid "Provide the primary nameserver"
 msgstr "Birincil ad sunucusunu girin"
 
 #: install/templates/step5.html.twig:108
-#, auto-english-fallback
 msgid "Primary nameserver for new zones."
 msgstr "Yeni bölgeler için birincil ad sunucusu."
 
@@ -11102,7 +11088,6 @@ msgid "Provide the secondary nameserver"
 msgstr "İkincil ad sunucusunu girin"
 
 #: install/templates/step5.html.twig:120
-#, auto-english-fallback
 msgid "Secondary nameserver for new zones."
 msgstr "Yeni bölgeler için ikincil ad sunucusu."
 
@@ -11115,7 +11100,6 @@ msgid "optional"
 msgstr "isteğe bağlı"
 
 #: install/templates/step5.html.twig:133
-#, auto-english-fallback
 msgid "Optional tertiary nameserver for new zones."
 msgstr "Yeni bölgeler için isteğe bağlı üçüncül ad sunucusu."
 
@@ -11124,7 +11108,6 @@ msgid "Quaternary Nameserver"
 msgstr "Dördüncül Ad Sunucusu"
 
 #: install/templates/step5.html.twig:146
-#, auto-english-fallback
 msgid "Optional quaternary nameserver for new zones."
 msgstr "Yeni bölgeler için isteğe bağlı dördüncül ad sunucusu."
 
@@ -11184,32 +11167,26 @@ msgid "Getting Ready"
 msgstr "Hazırlanıyor"
 
 #: install/templates/step3.html.twig:13
-#, auto-english-fallback
 msgid "Prerequisites"
 msgstr "Ön Koşullar"
 
 #: install/templates/step3.html.twig:16
-#, auto-english-fallback
 msgid "Before proceeding, ensure you have:"
 msgstr "Devam etmeden önce, sahip olduğunuzdan emin olun:"
 
 #: install/templates/step3.html.twig:18
-#, auto-english-fallback
 msgid "PowerDNS installed with database tables created"
 msgstr "Veritabanı tabloları oluşturulmuş PowerDNS yüklü"
 
 #: install/templates/step3.html.twig:19
-#, auto-english-fallback
 msgid "Database credentials (hostname, username, password)"
 msgstr "Veritabanı kimlik bilgileri (sunucu adı, kullanıcı adı, şifre)"
 
 #: install/templates/step3.html.twig:20
-#, auto-english-fallback
 msgid "Permission to create tables for Poweradmin"
 msgstr "Poweradmin için tablo oluşturma izni"
 
 #: install/templates/step3.html.twig:27
-#, auto-english-fallback
 msgid "Next:"
 msgstr "Sonraki:"
 
@@ -11218,7 +11195,8 @@ msgid ""
 "Configure database connection, create admin account, and generate "
 "configuration file."
 msgstr ""
-"Veritabanı bağlantısını yapılandırın, yönetici hesabı oluşturun ve yapılandırma dosyası oluşturun."
+"Veritabanı bağlantısını yapılandırın, yönetici hesabı oluşturun ve "
+"yapılandırma dosyası oluşturun."
 
 #: install/helpers/InstallStepHandler.php:183
 msgid "Missing PowerDNS tables:"
@@ -11341,7 +11319,8 @@ msgid ""
 "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL "
 "and SQLite, please use the same database."
 msgstr ""
-"Ayrı PowerDNS veritabanları yalnızca MySQL ile desteklenir. PostgreSQL ve SQLite için lütfen aynı veritabanını kullanın."
+"Ayrı PowerDNS veritabanları yalnızca MySQL ile desteklenir. PostgreSQL ve "
+"SQLite için lütfen aynı veritabanını kullanın."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
 #, php-format
@@ -11349,161 +11328,12 @@ msgid ""
 "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is "
 "properly installed in this database."
 msgstr ""
-"\"%s\" veritabanında PowerDNS tabloları eksik: %s. PowerDNS'in bu veritabanında düzgün şekilde yüklü olduğundan emin olun."
+"\"%s\" veritabanında PowerDNS tabloları eksik: %s. PowerDNS'in bu "
+"veritabanında düzgün şekilde yüklü olduğundan emin olun."
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNS veritabanına bağlanılamıyor \"%s\": %s"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "You now want to give limited rights to Poweradmin so it can update the "
-# OBSOLETE: "data in the tables. To do this, you should create a new user and give it "
-# OBSOLETE: "rights to select, delete, insert, and update records in the PowerDNS "
-# OBSOLETE: "database."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Şimdi Poweradmin'e tablolardaki verileri güncelleyebilmesi için sınırlı "
-# OBSOLETE: "haklar vermek istiyorsunuz. Bunun için, yeni bir kullanıcı oluşturmalı ve "
-# OBSOLETE: "ona PowerDNS veritabanındaki kayıtları seçme, silme, ekleme ve güncelleme "
-# OBSOLETE: "hakları vermelisiniz."
-
-# OBSOLETE: msgid "Database Preparation:"
-# OBSOLETE: msgstr "Veritabanı Hazırlığı:"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "The installer needs to modify the PowerDNS database with tables for "
-# OBSOLETE: "Poweradmin. Use an account with sufficient rights (like root) to proceed."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Yükleyici, Poweradmin için tablolarla PowerDNS veritabanını değiştirmesi "
-# OBSOLETE: "gerekiyor. Devam etmek için yeterli haklara sahip bir hesap kullanın "
-# OBSOLETE: "(root gibi)."
-
-# OBSOLETE: msgid "Important:"
-# OBSOLETE: msgstr "Önemli:"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Poweradmin requires a properly configured PowerDNS database with tables "
-# OBSOLETE: "already created. This installer will NOT create PowerDNS tables - only "
-# OBSOLETE: "Poweradmin-specific tables."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Poweradmin, tabloları zaten oluşturulmuş düzgün yapılandırılmış bir "
-# OBSOLETE: "PowerDNS veritabanı gerektirir. Bu yükleyici PowerDNS tablolarını "
-# OBSOLETE: "oluşturmayacaktır - yalnızca Poweradmin'e özgü tabloları."
-
-# OBSOLETE: msgid "Database Settings"
-# OBSOLETE: msgstr "Veritabanı Ayarları"
-
-# OBSOLETE: msgid "The type of the PowerDNS database."
-# OBSOLETE: msgstr "PowerDNS veritabanının türü."
-
-# OBSOLETE: msgid "Database username with administrative rights."
-# OBSOLETE: msgstr "Yönetici haklarına sahip veritabanı kullanıcı adı."
-
-# OBSOLETE: msgid "PowerDNS database name."
-# OBSOLETE: msgstr "PowerDNS veritabanı adı."
-
-# OBSOLETE: msgid "Administrator Account"
-# OBSOLETE: msgstr "Yönetici Hesabı"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "Password for \"admin\" username with full rights to the Poweradmin "
-# OBSOLETE: "interface."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Poweradmin arayüzüne tam erişim hakkına sahip \"admin\" kullanıcı adı "
-# OBSOLETE: "için şifre."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating SOA records and no hostmaster is provided, this value here "
-# OBSOLETE: "will be used."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "SOA kayıtları oluşturulurken ve hostmaster sağlanmadığında, buradaki "
-# OBSOLETE: "değer kullanılacaktır."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this value will be used as "
-# OBSOLETE: "primary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu değer birincil ad "
-# OBSOLETE: "sunucusu olarak kullanılacaktır."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this value will be used as "
-# OBSOLETE: "secondary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu değer ikincil ad "
-# OBSOLETE: "sunucusu olarak kullanılacaktır."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this optional value will be "
-# OBSOLETE: "used as tertiary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu isteğe bağlı değer "
-# OBSOLETE: "üçüncü ad sunucusu olarak kullanılacaktır."
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "When creating new zones using the template, this optional value will be "
-# OBSOLETE: "used as quaternary nameserver."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Şablonu kullanarak yeni bölgeler oluşturulduğunda, bu isteğe bağlı değer "
-# OBSOLETE: "dördüncü ad sunucusu olarak kullanılacaktır."
-
-# OBSOLETE: msgid "Preparation:"
-# OBSOLETE: msgstr "Hazırlık:"
-
-# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
-# OBSOLETE: msgstr "PowerDNS veritabanınızı Poweradmin için hazırlayalım."
-
-# OBSOLETE: msgid "About PowerDNS"
-# OBSOLETE: msgstr "PowerDNS Hakkında"
-
-#, auto-english-fallback
-# OBSOLETE: msgid ""
-# OBSOLETE: "PowerDNS is a DNS server that stores its data in an SQL database. "
-# OBSOLETE: "Poweradmin will help you manage this database via a web interface."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "PowerDNS, verilerini bir SQL veritabanında saklayan bir DNS sunucusudur. "
-# OBSOLETE: "Poweradmin, bu veritabanını bir web arayüzü üzerinden yönetmenize "
-# OBSOLETE: "yardımcı olacaktır."
-
-# OBSOLETE: msgid "Before proceeding, you should have:"
-# OBSOLETE: msgstr "Devam etmeden önce, şunlara sahip olmalısınız:"
-
-# OBSOLETE: msgid "An operational PowerDNS installation"
-# OBSOLETE: msgstr "Çalışan bir PowerDNS kurulumu"
-
-# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
-# OBSOLETE: msgstr ""
-# OBSOLETE: "Veritabanı bağlantı detayları (ana bilgisayar adı, kullanıcı adı, şifre)"
-
-# OBSOLETE: msgid "Administrative access to your database"
-# OBSOLETE: msgstr "Veritabanınıza yönetici erişimi"
-
-# OBSOLETE: msgid "Database Preparations"
-# OBSOLETE: msgstr "Veritabanı Hazırlıkları"
-
-# OBSOLETE: msgid "In the next steps, Poweradmin will:"
-# OBSOLETE: msgstr "Sonraki adımlarda, Poweradmin:"
-
-# OBSOLETE: msgid "Connect to your PowerDNS database"
-# OBSOLETE: msgstr "PowerDNS veritabanınıza bağlanacak"
-
-# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
-# OBSOLETE: msgstr "Poweradmin işlevselliği için gereken tabloları oluşturacak"
-
-# OBSOLETE: msgid "Set up an administrator account for web access"
-# OBSOLETE: msgstr "Web erişimi için bir yönetici hesabı oluşturacak"
-
-# OBSOLETE: msgid "Create a config file to store your settings"
-# OBSOLETE: msgstr "Ayarlarınızı saklamak için bir yapılandırma dosyası oluşturacak"
-
 
 

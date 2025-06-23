@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-20 19:17+0300\n"
+"POT-Creation-Date: 2025-06-21 12:12+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -8390,8 +8390,7 @@ msgstr "制限されたデータベース権限："
 
 #: install/templates/step6.html.twig:13
 msgid "Create a database user with limited rights (select, insert, update, delete) for Poweradmin to access PowerDNS tables."
-msgstr ""
-"PoweradminがPowerDNSテーブルにアクセスするために制限された権限（select、insert、update、delete）を持つデータベースユーザーを作成してください。"
+msgstr "PoweradminがPowerDNSテーブルにアクセスするために制限された権限（select、insert、update、delete）を持つデータベースユーザーを作成してください。"
 
 #: install/templates/step6.html.twig:20
 msgid "Database Commands"
@@ -8645,10 +8644,6 @@ msgstr "いくつかの必要なコンポーネントが不足しています。
 msgid "Please install the missing components before continuing."
 msgstr "続行する前に不足しているコンポーネントをインストールしてください。"
 
-#: install/templates/step2.html.twig:118
-msgid "Check Again"
-msgstr "再度チェック"
-
 #: install/templates/step5.html.twig:3
 msgid "Setup account and nameservers"
 msgstr "アカウントとネームサーバーの設定"
@@ -8899,108 +8894,14 @@ msgstr "設定ファイルが見つかりません。続行する前にconfig/se
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:47
 msgid "Separate PowerDNS databases are only supported with MySQL. For PostgreSQL and SQLite, please use the same database."
-msgstr ""
-"別途PowerDNSデータベースはMySQLでのみサポートされています。PostgreSQLとSQLiteの場合は、同じデータベースを使用してください。"
+msgstr "別途PowerDNSデータベースはMySQLでのみサポートされています。PostgreSQLとSQLiteの場合は、同じデータベースを使用してください。"
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:75
 #, php-format
 msgid "Missing PowerDNS tables in database \"%s\": %s. Please ensure PowerDNS is properly installed in this database."
-msgstr ""
-"データベース\"%s\"にPowerDNSテーブルがありません: %s。このデータベースにPowerDNSが正しくインストールされていることを確認してください。"
+msgstr "データベース\"%s\"にPowerDNSテーブルがありません: %s。このデータベースにPowerDNSが正しくインストールされていることを確認してください。"
 
 #: install/helpers/Validators/PdnsDatabaseValidationTrait.php:82
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNSデータベース\"%s\"に接続できません: %s"
-
-# OBSOLETE: msgid "You now want to give limited rights to Poweradmin so it can update the data in the tables. To do this, you should create a new user and give it rights to select, delete, insert, and update records in the PowerDNS database."
-# OBSOLETE: msgstr "Poweradminがテーブル内のデータを更新できるように制限された権限を与えたいと思います。そのためには、新しいユーザーを作成し、PowerDNSデータベース内のレコードを選択、削除、挿入、更新する権限を与える必要があります。"
-
-# OBSOLETE: msgid "Database Preparation:"
-# OBSOLETE: msgstr "データベース準備："
-
-# OBSOLETE: msgid "The installer needs to modify the PowerDNS database with tables for Poweradmin. Use an account with sufficient rights (like root) to proceed."
-# OBSOLETE: msgstr "インストーラーはPoweradmin用のテーブルでPowerDNSデータベースを変更する必要があります。十分な権限（rootなど）を持つアカウントを使用して続行してください。"
-
-# OBSOLETE: msgid "Important:"
-# OBSOLETE: msgstr "重要："
-
-# OBSOLETE: msgid "Poweradmin requires a properly configured PowerDNS database with tables already created. This installer will NOT create PowerDNS tables - only Poweradmin-specific tables."
-# OBSOLETE: msgstr "Poweradminには、テーブルが既に作成された適切に設定されたPowerDNSデータベースが必要です。このインストーラーはPowerDNSテーブルを作成しません - Poweradmin固有のテーブルのみを作成します。"
-
-# OBSOLETE: msgid "Database Settings"
-# OBSOLETE: msgstr "データベース設定"
-
-# OBSOLETE: msgid "The type of the PowerDNS database."
-# OBSOLETE: msgstr "PowerDNSデータベースのタイプ。"
-
-# OBSOLETE: msgid "Database username with administrative rights."
-# OBSOLETE: msgstr "管理者権限を持つデータベースのユーザー名。"
-
-# OBSOLETE: msgid "PowerDNS database name."
-# OBSOLETE: msgstr "PowerDNSデータベース名。"
-
-# OBSOLETE: msgid "Administrator Account"
-# OBSOLETE: msgstr "管理者アカウント"
-
-# OBSOLETE: msgid "Password for \"admin\" username with full rights to the Poweradmin interface."
-# OBSOLETE: msgstr "Poweradminインターフェースに対する完全な権限を持つ「admin」ユーザー名のパスワード。"
-
-# OBSOLETE: msgid "When creating SOA records and no hostmaster is provided, this value here will be used."
-# OBSOLETE: msgstr "SOAレコードを作成し、ホストマスターが提供されていない場合、ここの値が使用されます。"
-
-# OBSOLETE: msgid "When creating new zones using the template, this value will be used as primary nameserver."
-# OBSOLETE: msgstr "テンプレートを使用して新しいゾーンを作成する場合、この値がプライマリネームサーバーとして使用されます。"
-
-# OBSOLETE: msgid "When creating new zones using the template, this value will be used as secondary nameserver."
-# OBSOLETE: msgstr "テンプレートを使用して新しいゾーンを作成する場合、この値がセカンダリネームサーバーとして使用されます。"
-
-# OBSOLETE: msgid "When creating new zones using the template, this optional value will be used as tertiary nameserver."
-# OBSOLETE: msgstr "テンプレートを使用して新しいゾーンを作成する場合、このオプション値は第三のネームサーバーとして使用されます。"
-
-# OBSOLETE: msgid "When creating new zones using the template, this optional value will be used as quaternary nameserver."
-# OBSOLETE: msgstr "テンプレートを使用して新しいゾーンを作成する場合、このオプション値は第四のネームサーバーとして使用されます。"
-
-# OBSOLETE: msgid "Preparation:"
-# OBSOLETE: msgstr "準備："
-
-# OBSOLETE: msgid "Let's get your PowerDNS database ready for Poweradmin."
-# OBSOLETE: msgstr "PoweradminのためにPowerDNSデータベースを準備しましょう。"
-
-# OBSOLETE: msgid "About PowerDNS"
-# OBSOLETE: msgstr "PowerDNSについて"
-
-# OBSOLETE: msgid "PowerDNS is a DNS server that stores its data in an SQL database. Poweradmin will help you manage this database via a web interface."
-# OBSOLETE: msgstr "PowerDNSはSQLデータベースにデータを保存するDNSサーバーです。Poweradminはウェブインターフェースを通じてこのデータベースの管理を支援します。"
-
-# OBSOLETE: msgid "Before proceeding, you should have:"
-# OBSOLETE: msgstr "続行する前に、以下が必要です："
-
-# OBSOLETE: msgid "An operational PowerDNS installation"
-# OBSOLETE: msgstr "動作するPowerDNSのインストール"
-
-# OBSOLETE: msgid "Database connectivity details (hostname, username, password)"
-# OBSOLETE: msgstr "データベース接続の詳細（ホスト名、ユーザー名、パスワード）"
-
-# OBSOLETE: msgid "Administrative access to your database"
-# OBSOLETE: msgstr "データベースへの管理者アクセス"
-
-# OBSOLETE: msgid "Database Preparations"
-# OBSOLETE: msgstr "データベースの準備"
-
-# OBSOLETE: msgid "In the next steps, Poweradmin will:"
-# OBSOLETE: msgstr "次のステップでは、Poweradminは："
-
-# OBSOLETE: msgid "Connect to your PowerDNS database"
-# OBSOLETE: msgstr "PowerDNSデータベースに接続します"
-
-# OBSOLETE: msgid "Create tables needed for Poweradmin functionality"
-# OBSOLETE: msgstr "Poweradminの機能に必要なテーブルを作成します"
-
-# OBSOLETE: msgid "Set up an administrator account for web access"
-# OBSOLETE: msgstr "ウェブアクセスのための管理者アカウントを設定します"
-
-# OBSOLETE: msgid "Create a config file to store your settings"
-# OBSOLETE: msgstr "設定を保存するための設定ファイルを作成します"
-
-
