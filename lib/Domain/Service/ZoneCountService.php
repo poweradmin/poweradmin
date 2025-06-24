@@ -26,6 +26,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Database\TableNameService;
 
 /**
  * Zone counting service
@@ -40,12 +41,14 @@ class ZoneCountService
     private PDOCommon $db;
     private ConfigurationManager $config;
     private ?UserContextService $userContext;
+    private TableNameService $tableNameService;
 
     public function __construct(PDOCommon $db, ConfigurationManager $config, ?UserContextService $userContext = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->userContext = $userContext;
+        $this->tableNameService = new TableNameService($config);
     }
 
     /**
@@ -59,8 +62,7 @@ class ZoneCountService
      */
     public function countZones(string $perm, string $letterstart = 'all', string $zone_type = 'forward'): int
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getPdnsTable('domains');
 
         $tables = $domains_table;
         $conditions = [];

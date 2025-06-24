@@ -27,6 +27,7 @@ use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Utility\NaturalSorting;
 use Poweradmin\Infrastructure\Utility\ReverseDomainNaturalSorting;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
@@ -40,6 +41,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
     private ReverseDomainNaturalSorting $reverseDomainNaturalSorting;
     private ReverseZoneSorting $reverseZoneSorting;
     private object $config;
+    private TableNameService $tableNameService;
 
     public function __construct($db, $config)
     {
@@ -50,7 +52,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $this->naturalSorting = new NaturalSorting();
         $this->reverseDomainNaturalSorting = new ReverseDomainNaturalSorting();
         $this->reverseZoneSorting = new ReverseZoneSorting();
+        $this->tableNameService = new TableNameService($config);
     }
+
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
     {
@@ -396,7 +400,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function zoneExists(int $zoneId, ?int $userId = null): bool
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getPdnsTable('domains');
 
         $query = "SELECT 1 FROM $domains_table";
 
@@ -833,14 +837,15 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     public function getAllZones(int $offset, int $limit): array
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $records_table = $this->tableNameService->getPdnsTable('records');
 
         $query = "SELECT d.id, d.name, d.type, d.master,
                          COALESCE(z.owner, 0) as owner,
                          COUNT(DISTINCT r.id) as record_count
                   FROM $domains_table d
                   LEFT JOIN zones z ON d.id = z.domain_id
-                  LEFT JOIN " . ($this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records') . " r ON d.id = r.domain_id
+                  LEFT JOIN $records_table r ON d.id = r.domain_id
                   GROUP BY d.id, d.name, d.type, d.master, z.owner
                   ORDER BY d.name
                   LIMIT :limit OFFSET :offset";
@@ -855,7 +860,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneCount(): int
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getPdnsTable('domains');
 
         $query = "SELECT COUNT(*) FROM $domains_table";
         $stmt = $this->db->query($query);

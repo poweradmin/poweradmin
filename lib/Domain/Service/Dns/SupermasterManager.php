@@ -27,6 +27,7 @@ use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Database\TableNameService;
 
 /**
  * Service class for managing PowerDNS supermasters
@@ -38,6 +39,7 @@ class SupermasterManager implements SupermasterManagerInterface
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
     private IPAddressValidator $ipAddressValidator;
+    private TableNameService $tableNameService;
 
     /**
      * Constructor
@@ -52,6 +54,7 @@ class SupermasterManager implements SupermasterManagerInterface
         $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ipAddressValidator = new IPAddressValidator();
+        $this->tableNameService = new TableNameService($config);
     }
 
     /**
@@ -87,7 +90,7 @@ class SupermasterManager implements SupermasterManagerInterface
             return false;
         } else {
             $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+            $supermasters_table = $this->tableNameService->getPdnsTable('supermasters');
 
             $stmt = $this->db->prepare("INSERT INTO $supermasters_table (ip, nameserver, account) VALUES (:master_ip, :ns_name, :account)");
             $stmt->execute([
@@ -113,7 +116,7 @@ class SupermasterManager implements SupermasterManagerInterface
     {
         if ($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip) || $this->hostnameValidator->isValid($ns_name)) {
             $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+            $supermasters_table = $this->tableNameService->getPdnsTable('supermasters');
 
             $stmt = $this->db->prepare("DELETE FROM $supermasters_table WHERE ip = :master_ip AND nameserver = :ns_name");
             $stmt->execute([
@@ -136,8 +139,7 @@ class SupermasterManager implements SupermasterManagerInterface
      */
     public function getSupermasters(): array
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+        $supermasters_table = $this->tableNameService->getPdnsTable('supermasters');
 
         $result = $this->db->query("SELECT ip, nameserver, account FROM $supermasters_table");
 
@@ -166,7 +168,7 @@ class SupermasterManager implements SupermasterManagerInterface
     {
         if ($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip)) {
             $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+            $supermasters_table = $this->tableNameService->getPdnsTable('supermasters');
 
             $stmt = $this->db->prepare("SELECT ip,nameserver,account FROM $supermasters_table WHERE ip = :master_ip");
             $stmt->execute([':master_ip' => $master_ip]);
@@ -194,7 +196,7 @@ class SupermasterManager implements SupermasterManagerInterface
     {
         if ($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip)) {
             $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+            $supermasters_table = $this->tableNameService->getPdnsTable('supermasters');
 
             $stmt = $this->db->prepare("SELECT ip FROM $supermasters_table WHERE ip = :master_ip");
             $stmt->execute([':master_ip' => $master_ip]);
@@ -218,7 +220,7 @@ class SupermasterManager implements SupermasterManagerInterface
     {
         if (($this->ipAddressValidator->isValidIPv4($master_ip) || $this->ipAddressValidator->isValidIPv6($master_ip)) && $this->hostnameValidator->isValid($ns_name)) {
             $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+            $supermasters_table = $this->tableNameService->getPdnsTable('supermasters');
 
             $stmt = $this->db->prepare("SELECT ip FROM $supermasters_table WHERE ip = :master_ip AND nameserver = :ns_name");
             $stmt->execute([
@@ -281,8 +283,7 @@ class SupermasterManager implements SupermasterManagerInterface
             return false;
         }
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+        $supermasters_table = $this->tableNameService->getPdnsTable('supermasters');
 
         $stmt = $this->db->prepare("UPDATE $supermasters_table SET ip = :new_master_ip, nameserver = :new_ns_name, account = :account 
                                     WHERE ip = :old_master_ip AND nameserver = :old_ns_name");
@@ -305,8 +306,7 @@ class SupermasterManager implements SupermasterManagerInterface
      */
     public function getSlaveServerIPs(): array
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $supermasters_table = $pdns_db_name ? $pdns_db_name . ".supermasters" : "supermasters";
+        $supermasters_table = $this->tableNameService->getPdnsTable('supermasters');
 
         $result = $this->db->query("SELECT ip FROM $supermasters_table GROUP BY ip");
 

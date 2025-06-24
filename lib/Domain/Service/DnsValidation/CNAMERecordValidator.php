@@ -25,6 +25,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Database\TableNameService;
 
 /**
  * Validator for CNAME DNS records
@@ -49,6 +50,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
     private TTLValidator $ttlValidator;
     private ConfigurationManager $config;
     private PDOCommon $db;
+    private TableNameService $tableNameService;
 
     /**
      * Constructor
@@ -62,6 +64,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $this->ttlValidator = new TTLValidator();
         $this->config = $config;
         $this->db = $db;
+        $this->tableNameService = new TableNameService($config);
     }
 
     /**
@@ -180,8 +183,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameUnique(string $name, int $rid): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $records_table = $this->tableNameService->getPdnsTable('records');
 
         // Check if there are any records with this name
         if ($rid > 0) {
@@ -212,8 +214,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameName(string $name): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $records_table = $this->tableNameService->getPdnsTable('records');
 
         $query = "SELECT id FROM $records_table WHERE content = ? AND (type = ? OR type = ?)";
         $stmt = $this->db->prepare($query);
@@ -254,8 +255,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     public function validateCnameExistence(string $name, int $rid): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $records_table = $this->tableNameService->getPdnsTable('records');
 
         if ($rid > 0) {
             $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME' AND id != ?";
