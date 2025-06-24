@@ -384,11 +384,11 @@ class RecordRepository implements RecordRepositoryInterface
         $allowedSortColumns = ['name', 'type', 'content', 'ttl', 'prio'];
         $sort_by = $this->tableNameService->validateOrderBy($sort_by, $allowedSortColumns);
         $sort_direction = $this->tableNameService->validateDirection($sort_direction);
-        
+
         // Validate limit/offset parameters
         $row_amount = $this->tableNameService->validateLimit($row_amount);
         $row_start = $this->tableNameService->validateOffset($row_start);
-        
+
         $records_table = $this->tableNameService->getPdnsTable('records');
         $comments_table = $this->tableNameService->getPdnsTable('comments');
 

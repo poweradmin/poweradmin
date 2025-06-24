@@ -227,7 +227,7 @@ class DomainRepository implements DomainRepositoryInterface
         $allowedSortColumns = ['name', 'type', 'count_records'];
         $sortby = $this->tableNameService->validateOrderBy($sortby, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
-        
+
         $db_type = $this->config->get('database', 'type');
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
         $iface_zone_comments = $this->config->get('interface', 'show_zone_comments');

@@ -52,7 +52,7 @@ class TableNameService
         if (!in_array($column, $allowedColumns, true)) {
             throw new \InvalidArgumentException("Invalid ORDER BY column: $column");
         }
-        
+
         return $column;
     }
 
@@ -60,11 +60,11 @@ class TableNameService
     {
         $allowedDirections = ['ASC', 'DESC'];
         $direction = strtoupper($direction);
-        
+
         if (!in_array($direction, $allowedDirections, true)) {
             throw new \InvalidArgumentException("Invalid sort direction: $direction");
         }
-        
+
         return $direction;
     }
 
@@ -73,11 +73,11 @@ class TableNameService
         if ($limit < 0) {
             throw new \InvalidArgumentException("LIMIT cannot be negative: $limit");
         }
-        
+
         if ($limit > $maxLimit) {
             throw new \InvalidArgumentException("LIMIT too large: $limit (max: $maxLimit)");
         }
-        
+
         return $limit;
     }
 
@@ -86,7 +86,7 @@ class TableNameService
         if ($offset < 0) {
             throw new \InvalidArgumentException("OFFSET cannot be negative: $offset");
         }
-        
+
         return $offset;
     }
 }

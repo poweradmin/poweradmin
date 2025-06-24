@@ -19,7 +19,7 @@ class MailServiceTest extends TestCase
     protected function setUp(): void
     {
         $this->markTestSkipped('MailServiceTest is temporarily disabled');
-        
+
         $this->config = $this->createMock(ConfigurationManager::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->mailService = new MailService($this->config, $this->logger);

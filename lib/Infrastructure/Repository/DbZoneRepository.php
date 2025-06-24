@@ -111,7 +111,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $allowedSortColumns = ['name', 'owner', 'count_records', 'type'];
         $sortBy = $this->tableNameService->validateOrderBy($sortBy, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
-        
+
         $domains_table = $this->tableNameService->getPdnsTable('domains');
         $records_table = $this->tableNameService->getPdnsTable('records');
         $cryptokeys_table = $this->tableNameService->getPdnsTable('cryptokeys');
