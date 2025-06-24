@@ -18,23 +18,19 @@ class ZoneCountTest extends TestCase
     {
         $this->dbMock = $this->createMock(PDOCommon::class);
         $this->configMock = $this->createMock(ConfigurationManager::class);
-        $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);
+        // Don't create the service here - do it in each test to allow proper mock setup
     }
 
     public function testCountZonesWithAllZonesAndAllPermissions(): void
     {
-        // Configure mocks
-        $this->configMock->expects($this->atLeastOnce())
+        // Configure mocks - TableNameService calls get() during construction
+        $this->configMock->expects($this->once())
             ->method('get')
-            ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return null; // No prefix for tables
-                }
-                if ($group === 'database' && $key === 'type') {
-                    return 'mysql';
-                }
-                return null;
-            });
+            ->with('database', 'pdns_db_name')
+            ->willReturn(null); // No prefix for tables
+
+        // Create service after mock expectations are set
+        $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);
 
         $stmtMock = $this->createMock(\PDOStatement::class);
         $stmtMock->expects($this->once())
@@ -51,18 +47,14 @@ class ZoneCountTest extends TestCase
 
     public function testCountZonesWithForwardZonesOnly(): void
     {
-        // Configure mocks
-        $this->configMock->expects($this->atLeastOnce())
+        // Configure mocks - TableNameService calls get() during construction
+        $this->configMock->expects($this->once())
             ->method('get')
-            ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return null; // No prefix for tables
-                }
-                if ($group === 'database' && $key === 'type') {
-                    return 'mysql';
-                }
-                return null;
-            });
+            ->with('database', 'pdns_db_name')
+            ->willReturn(null); // No prefix for tables
+
+        // Create service after mock expectations are set
+        $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);
 
         $stmtMock = $this->createMock(\PDOStatement::class);
         $stmtMock->expects($this->once())
@@ -79,18 +71,14 @@ class ZoneCountTest extends TestCase
 
     public function testCountZonesWithReverseZonesOnly(): void
     {
-        // Configure mocks
-        $this->configMock->expects($this->atLeastOnce())
+        // Configure mocks - TableNameService calls get() during construction
+        $this->configMock->expects($this->once())
             ->method('get')
-            ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return null; // No prefix for tables
-                }
-                if ($group === 'database' && $key === 'type') {
-                    return 'mysql';
-                }
-                return null;
-            });
+            ->with('database', 'pdns_db_name')
+            ->willReturn(null); // No prefix for tables
+
+        // Create service after mock expectations are set
+        $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);
 
         $stmtMock = $this->createMock(\PDOStatement::class);
         $stmtMock->expects($this->once())
@@ -110,18 +98,14 @@ class ZoneCountTest extends TestCase
         // Set up session for 'own' permission test
         $_SESSION['userid'] = 5;
 
-        // Configure mocks
-        $this->configMock->expects($this->atLeastOnce())
+        // Configure mocks - TableNameService calls get() during construction
+        $this->configMock->expects($this->once())
             ->method('get')
-            ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return null; // No prefix for tables
-                }
-                if ($group === 'database' && $key === 'type') {
-                    return 'mysql';
-                }
-                return null;
-            });
+            ->with('database', 'pdns_db_name')
+            ->willReturn(null); // No prefix for tables
+
+        // Create service after mock expectations are set
+        $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);
 
         $stmtMock = $this->createMock(\PDOStatement::class);
         $stmtMock->expects($this->once())
@@ -144,18 +128,14 @@ class ZoneCountTest extends TestCase
 
     public function testCountZonesWithLetterFilter(): void
     {
-        // Configure mocks
-        $this->configMock->expects($this->atLeastOnce())
+        // Configure mocks - TableNameService calls get() during construction
+        $this->configMock->expects($this->once())
             ->method('get')
-            ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return null; // No prefix for tables
-                }
-                if ($group === 'database' && $key === 'type') {
-                    return 'mysql';
-                }
-                return null;
-            });
+            ->with('database', 'pdns_db_name')
+            ->willReturn(null); // No prefix for tables
+
+        // Create service after mock expectations are set
+        $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);
 
         $stmtMock = $this->createMock(\PDOStatement::class);
         $stmtMock->expects($this->once())
@@ -175,8 +155,8 @@ class ZoneCountTest extends TestCase
 
     public function testCountZonesWithNumericFilter(): void
     {
-        // Configure mocks
-        $this->configMock->expects($this->atLeastOnce())
+        // Configure mocks - This test uses '1' filter which needs database type
+        $this->configMock->expects($this->exactly(2))
             ->method('get')
             ->willReturnCallback(function ($group, $key) {
                 if ($group === 'database' && $key === 'pdns_db_name') {
@@ -187,6 +167,9 @@ class ZoneCountTest extends TestCase
                 }
                 return null;
             });
+
+        // Create service after mock expectations are set
+        $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);
 
         $stmtMock = $this->createMock(\PDOStatement::class);
         $stmtMock->expects($this->once())
@@ -203,18 +186,14 @@ class ZoneCountTest extends TestCase
 
     public function testCountZonesWithDatabasePrefix(): void
     {
-        // Configure mocks
-        $this->configMock->expects($this->atLeastOnce())
+        // Configure mocks - TableNameService calls get() during construction
+        $this->configMock->expects($this->once())
             ->method('get')
-            ->willReturnCallback(function ($group, $key) {
-                if ($group === 'database' && $key === 'pdns_db_name') {
-                    return 'pdns'; // Add prefix for tables
-                }
-                if ($group === 'database' && $key === 'type') {
-                    return 'mysql';
-                }
-                return null;
-            });
+            ->with('database', 'pdns_db_name')
+            ->willReturn('pdns'); // Add prefix for tables
+
+        // Create service after mock expectations are set
+        $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);
 
         $stmtMock = $this->createMock(\PDOStatement::class);
         $stmtMock->expects($this->once())
@@ -231,6 +210,15 @@ class ZoneCountTest extends TestCase
 
     public function testCountZonesWithInvalidPermissions(): void
     {
+        // Configure mocks - TableNameService calls get() during construction
+        $this->configMock->expects($this->once())
+            ->method('get')
+            ->with('database', 'pdns_db_name')
+            ->willReturn(null);
+
+        // Create service after mock expectations are set
+        $this->zoneCountService = new ZoneCountService($this->dbMock, $this->configMock);
+
         $this->dbMock->expects($this->never())
             ->method('query');
 
