@@ -25,13 +25,10 @@ namespace Poweradmin\Application\Controller;
 use DateTime;
 use Exception;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Domain\Service\ApiKeyService;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbApiKeyRepository;
-use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
  * Controller for managing API keys

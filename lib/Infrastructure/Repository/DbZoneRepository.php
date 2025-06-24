@@ -26,7 +26,6 @@ use PDO;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Utility\NaturalSorting;
 use Poweradmin\Infrastructure\Utility\ReverseDomainNaturalSorting;

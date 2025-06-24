@@ -25,8 +25,6 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
-use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;

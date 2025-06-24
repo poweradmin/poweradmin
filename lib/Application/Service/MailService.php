@@ -25,8 +25,6 @@ namespace Poweradmin\Application\Service;
 use Exception;
 use Poweradmin\Domain\Service\MailService as MailServiceInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
-use Poweradmin\Infrastructure\Logger\LegacyLoggerInterface;
 use Psr\Log\LoggerInterface;
 
 class MailService implements MailServiceInterface

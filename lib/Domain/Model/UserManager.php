@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Model;
 use PDO;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\DnsRecord;
-use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;

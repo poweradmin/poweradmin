@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
-use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecordValidationService;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
