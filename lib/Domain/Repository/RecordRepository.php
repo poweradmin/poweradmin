@@ -28,6 +28,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
+use Poweradmin\Infrastructure\Database\TableNameService;
 
 /**
  * Repository class for DNS record operations
@@ -38,6 +39,7 @@ class RecordRepository implements RecordRepositoryInterface
     private PDOCommon $db;
     private ConfigurationManager $config;
     private MessageService $messageService;
+    private TableNameService $tableNameService;
 
     /**
      * Constructor
@@ -50,6 +52,7 @@ class RecordRepository implements RecordRepositoryInterface
         $this->db = $db;
         $this->config = $config;
         $this->messageService = new MessageService();
+        $this->tableNameService = new TableNameService($config);
     }
 
     /**
@@ -377,9 +380,17 @@ class RecordRepository implements RecordRepositoryInterface
         string $type_filter = '',
         string $content_filter = ''
     ): array {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-        $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
+        // Validate sort parameters
+        $allowedSortColumns = ['name', 'type', 'content', 'ttl', 'prio'];
+        $sort_by = $this->tableNameService->validateOrderBy($sort_by, $allowedSortColumns);
+        $sort_direction = $this->tableNameService->validateDirection($sort_direction);
+        
+        // Validate limit/offset parameters
+        $row_amount = $this->tableNameService->validateLimit($row_amount);
+        $row_start = $this->tableNameService->validateOffset($row_start);
+        
+        $records_table = $this->tableNameService->getPdnsTable('records');
+        $comments_table = $this->tableNameService->getPdnsTable('comments');
 
         // Prepare query parameters
         $params = [':zone_id' => $zone_id];
@@ -435,7 +446,9 @@ class RecordRepository implements RecordRepositoryInterface
                  $search_condition . $type_condition . $content_condition;
 
         // Sorting and limits
-        $query .= " ORDER BY $sort_by $sort_direction LIMIT $row_amount OFFSET $row_start";
+        $query .= " ORDER BY $sort_by $sort_direction LIMIT :row_amount OFFSET :row_start";
+        $params[':row_amount'] = $row_amount;
+        $params[':row_start'] = $row_start;
 
         $stmt = $this->db->prepare($query);
         $stmt->execute($params);

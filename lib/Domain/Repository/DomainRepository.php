@@ -32,6 +32,7 @@ use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
+use Poweradmin\Infrastructure\Database\TableNameService;
 
 /**
  * Repository class for domain/zone operations
@@ -43,6 +44,7 @@ class DomainRepository implements DomainRepositoryInterface
     private ConfigurationManager $config;
     private MessageService $messageService;
     private HostnameValidator $hostnameValidator;
+    private TableNameService $tableNameService;
 
     /**
      * Constructor
@@ -56,6 +58,7 @@ class DomainRepository implements DomainRepositoryInterface
         $this->config = $config;
         $this->messageService = new MessageService();
         $this->hostnameValidator = new HostnameValidator($config);
+        $this->tableNameService = new TableNameService($config);
     }
 
     /**
@@ -220,17 +223,21 @@ class DomainRepository implements DomainRepositoryInterface
      */
     public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC'): array
     {
+        // Validate sort parameters
+        $allowedSortColumns = ['name', 'type', 'count_records'];
+        $sortby = $this->tableNameService->validateOrderBy($sortby, $allowedSortColumns);
+        $sortDirection = $this->tableNameService->validateDirection($sortDirection);
+        
         $db_type = $this->config->get('database', 'type');
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
         $iface_zone_comments = $this->config->get('interface', 'show_zone_comments');
         $iface_zonelist_serial = $this->config->get('interface', 'display_serial_in_zone_list');
         $iface_zonelist_template = $this->config->get('interface', 'display_template_in_zone_list');
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-        $cryptokeys_table = $pdns_db_name ? $pdns_db_name . '.cryptokeys' : 'cryptokeys';
-        $domainmetadata_table = $pdns_db_name ? $pdns_db_name . '.domainmetadata' : 'domainmetadata';
+        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $records_table = $this->tableNameService->getPdnsTable('records');
+        $cryptokeys_table = $this->tableNameService->getPdnsTable('cryptokeys');
+        $domainmetadata_table = $this->tableNameService->getPdnsTable('domainmetadata');
 
         if ($letterstart == '_') {
             $letterstart = '\_';

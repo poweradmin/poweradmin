@@ -107,10 +107,15 @@ class DbZoneRepository implements ZoneRepositoryInterface
         string $sortDirection = 'ASC',
         bool $countOnly = false
     ) {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
-        $records_table = $this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records';
-        $cryptokeys_table = $this->pdns_db_name ? $this->pdns_db_name . '.cryptokeys' : 'cryptokeys';
-        $domainmetadata_table = $this->pdns_db_name ? $this->pdns_db_name . '.domainmetadata' : 'domainmetadata';
+        // Validate sort parameters
+        $allowedSortColumns = ['name', 'owner', 'count_records', 'type'];
+        $sortBy = $this->tableNameService->validateOrderBy($sortBy, $allowedSortColumns);
+        $sortDirection = $this->tableNameService->validateDirection($sortDirection);
+        
+        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $records_table = $this->tableNameService->getPdnsTable('records');
+        $cryptokeys_table = $this->tableNameService->getPdnsTable('cryptokeys');
+        $domainmetadata_table = $this->tableNameService->getPdnsTable('domainmetadata');
 
         // Determine what fields to select
         if ($countOnly) {
@@ -304,10 +309,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
-        $records_table = $this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records';
-        $cryptokeys_table = $this->pdns_db_name ? $this->pdns_db_name . '.cryptokeys' : 'cryptokeys';
-        $domainmetadata_table = $this->pdns_db_name ? $this->pdns_db_name . '.domainmetadata' : 'domainmetadata';
+        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $records_table = $this->tableNameService->getPdnsTable('records');
+        $cryptokeys_table = $this->tableNameService->getPdnsTable('cryptokeys');
+        $domainmetadata_table = $this->tableNameService->getPdnsTable('domainmetadata');
 
         $query = "SELECT
                 $domains_table.id,
@@ -432,9 +437,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
     public function getZone(int $zoneId): ?array
     {
         $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
-        $records_table = $this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records';
-        $cryptokeys_table = $this->pdns_db_name ? $this->pdns_db_name . '.cryptokeys' : 'cryptokeys';
-        $domainmetadata_table = $this->pdns_db_name ? $this->pdns_db_name . '.domainmetadata' : 'domainmetadata';
+        $records_table = $this->tableNameService->getPdnsTable('records');
+        $cryptokeys_table = $this->tableNameService->getPdnsTable('cryptokeys');
+        $domainmetadata_table = $this->tableNameService->getPdnsTable('domainmetadata');
 
         // First get the zone details
         $query = "SELECT

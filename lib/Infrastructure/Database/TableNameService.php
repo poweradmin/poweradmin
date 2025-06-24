@@ -46,4 +46,47 @@ class TableNameService
 
         return $this->pdnsDbName ? $this->pdnsDbName . '.' . $tableName : $tableName;
     }
+
+    public function validateOrderBy(string $column, array $allowedColumns): string
+    {
+        if (!in_array($column, $allowedColumns, true)) {
+            throw new \InvalidArgumentException("Invalid ORDER BY column: $column");
+        }
+        
+        return $column;
+    }
+
+    public function validateDirection(string $direction): string
+    {
+        $allowedDirections = ['ASC', 'DESC'];
+        $direction = strtoupper($direction);
+        
+        if (!in_array($direction, $allowedDirections, true)) {
+            throw new \InvalidArgumentException("Invalid sort direction: $direction");
+        }
+        
+        return $direction;
+    }
+
+    public function validateLimit(int $limit, int $maxLimit = 10000): int
+    {
+        if ($limit < 0) {
+            throw new \InvalidArgumentException("LIMIT cannot be negative: $limit");
+        }
+        
+        if ($limit > $maxLimit) {
+            throw new \InvalidArgumentException("LIMIT too large: $limit (max: $maxLimit)");
+        }
+        
+        return $limit;
+    }
+
+    public function validateOffset(int $offset): int
+    {
+        if ($offset < 0) {
+            throw new \InvalidArgumentException("OFFSET cannot be negative: $offset");
+        }
+        
+        return $offset;
+    }
 }
