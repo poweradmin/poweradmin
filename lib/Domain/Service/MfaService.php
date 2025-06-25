@@ -509,9 +509,7 @@ HTML;
         $expireTime = date('H:i:s', $expiresAt);
         $appName = $this->configManager->get('interface', 'title', 'Poweradmin');
 
-        return "Your Verification Code\n" .
-            "======================\n\n" .
-            "Your verification code for {$appName} is: {$verificationCode}\n\n" .
+        return "Your verification code for {$appName} is: {$verificationCode}\n\n" .
             "This code will expire at {$expireTime} (in 10 minutes).\n\n" .
             "If you did not request this verification code, please ignore this email.\n\n" .
             "---\n" .

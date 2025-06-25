@@ -255,8 +255,6 @@ HTML;
         $greeting = $name ? "Hi $name," : "Hi,";
 
         return $greeting . "\n\n" .
-            "Password Reset Request\n" .
-            "========================\n\n" .
             "We received a request to reset your password. If you made this request, please copy and paste the link below into your browser to reset your password:\n\n" .
             $resetUrl . "\n\n" .
             "This link will expire in $expireMinutes minutes.\n\n" .
