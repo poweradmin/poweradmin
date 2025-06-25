@@ -478,8 +478,6 @@ class MailService implements MailServiceInterface
         ];
 
         if (!empty($boundary)) {
-            // use $boundary external generated
-            // $boundary = md5(uniqid(time()));
             $headers['Content-Type'] = "multipart/alternative; boundary=\"$boundary\"";
         } else {
             $headers['Content-Type'] = 'text/html; charset=UTF-8';
@@ -499,8 +497,6 @@ class MailService implements MailServiceInterface
         }
 
         // Otherwise, create a multipart message
-        // use $boundary external generated
-        // $boundary = md5(uniqid(time()));
 
         $message = "--$boundary\r\n";
         $message .= "Content-Type: text/plain; charset=UTF-8\r\n";

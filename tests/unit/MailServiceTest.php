@@ -7,9 +7,6 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\LoggerInterface;
 
-/**
- * @group disabled
- */
 class MailServiceTest extends TestCase
 {
     private MailService $mailService;
@@ -18,8 +15,6 @@ class MailServiceTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->markTestSkipped('MailServiceTest is temporarily disabled');
-
         $this->config = $this->createMock(ConfigurationManager::class);
         $this->logger = $this->createMock(LoggerInterface::class);
         $this->mailService = new MailService($this->config, $this->logger);
