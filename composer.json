@@ -100,6 +100,11 @@
       "rm -rf tests/"
     ]
   },
+  "config": {
+    "platform": {
+      "php": "8.1"
+    }
+  },
   "archive": {
     "exclude": [
       ".devcontainer",
