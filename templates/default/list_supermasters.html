@@ -26,7 +26,7 @@
                 <tbody>
                 {% for server in supermasters %}
                     <tr>
-                        <td><span class="badge bg-light text-dark">{{ server['master_ip'] }}</span></td>
+                        <td><span class="badge supermaster-ip">{{ server['master_ip'] }}</span></td>
                         <td>{{ server['ns_name'] }}</td>
                         <td>{{ server['account'] }}</td>
                         {% if perm_sm_edit %}

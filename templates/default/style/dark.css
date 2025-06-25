@@ -638,3 +638,8 @@ input[type=number]::-webkit-outer-spin-button {
     border-color: #087990 !important;
     color: #b6effb !important;
 }
+
+/* List supermasters */
+.supermaster-ip {
+    color: var(--text-light);
+}

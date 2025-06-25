@@ -210,3 +210,8 @@ input[type=number]::-webkit-outer-spin-button {
     align-items: center !important;
     justify-content: center !important;
 }
+
+/* List supermasters */
+.supermaster-ip {
+    color: #212529;
+}
