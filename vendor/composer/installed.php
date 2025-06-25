@@ -3,7 +3,7 @@
         'name' => 'poweradmin/poweradmin',
         'pretty_version' => 'dev-master',
         'version' => 'dev-master',
-        'reference' => '3812054e78a9eb4191a6e3386ae4c8520aeedd81',
+        'reference' => '63a46254afc23aa87b4f42401ee1a4e39fe821ca',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -118,7 +118,7 @@
         'poweradmin/poweradmin' => array(
             'pretty_version' => 'dev-master',
             'version' => 'dev-master',
-            'reference' => '3812054e78a9eb4191a6e3386ae4c8520aeedd81',
+            'reference' => '63a46254afc23aa87b4f42401ee1a4e39fe821ca',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -402,18 +402,18 @@
             'dev_requirement' => false,
         ),
         'twbs/bootstrap' => array(
-            'pretty_version' => 'v5.3.6',
-            'version' => '5.3.6.0',
-            'reference' => 'f849680d16a9695c9a6c9c062d6cff55ddcf071e',
+            'pretty_version' => 'v5.3.7',
+            'version' => '5.3.7.0',
+            'reference' => 'e0032ae6a5a628a51a8552091816cec09b6434df',
             'type' => 'library',
             'install_path' => __DIR__ . '/../twbs/bootstrap',
             'aliases' => array(),
             'dev_requirement' => false,
         ),
         'twbs/bootstrap-icons' => array(
-            'pretty_version' => 'v1.12.1',
-            'version' => '1.12.1.0',
-            'reference' => '805db3aa03e9a6e07d658ebe360e38b0a70c1b1c',
+            'pretty_version' => 'v1.13.1',
+            'version' => '1.13.1.0',
+            'reference' => 'ce0e49dd063243118a115f17ad1fe1fe7576d552',
             'type' => 'library',
             'install_path' => __DIR__ . '/../twbs/bootstrap-icons',
             'aliases' => array(),
@@ -431,7 +431,7 @@
         'twitter/bootstrap' => array(
             'dev_requirement' => false,
             'replaced' => array(
-                0 => 'v5.3.6',
+                0 => 'v5.3.7',
             ),
         ),
         'zircote/swagger-php' => array(
