@@ -64,15 +64,22 @@ class MailService implements MailServiceInterface
         // Determine which transport to use
         $transportType = $this->config->get('mail', 'transport', 'smtp');
 
+        // check if email is multipart and generate boundary
+        if ($plainBody !== '') {
+            $boundary = md5(uniqid(time()));
+        } else {
+            $boundary = '';
+        }
+
         try {
             switch ($transportType) {
                 case 'smtp':
-                    return $this->sendSmtp($to, $subject, $body, $plainBody, $headers);
+                    return $this->sendSmtp($to, $subject, $body, $plainBody, $headers, $boundary);
                 case 'sendmail':
-                    return $this->sendSendmail($to, $subject, $body, $plainBody, $headers);
+                    return $this->sendSendmail($to, $subject, $body, $plainBody, $headers, $boundary);
                 case 'php':
                 default:
-                    return $this->sendPhpMail($to, $subject, $body, $plainBody, $headers);
+                    return $this->sendPhpMail($to, $subject, $body, $plainBody, $headers, $boundary);
             }
         } catch (Exception $e) {
             $this->logError('Mail sending failed: ' . $e->getMessage());
@@ -167,13 +174,14 @@ class MailService implements MailServiceInterface
         string $subject,
         string $body,
         string $plainBody,
-        array $headers
+        array $headers,
+        string $boundary
     ): bool {
         $fromEmail = $this->config->get('mail', 'from', 'poweradmin@example.com');
         $fromName = $this->config->get('mail', 'from_name', '');
 
         // Set up email headers
-        $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $plainBody !== '');
+        $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $boundary);
         $mailHeaders = array_merge($mailHeaders, $headers);
 
         // Convert headers array to string
@@ -183,10 +191,13 @@ class MailService implements MailServiceInterface
         }
 
         // Create message body (multipart if we have plain text version)
-        $messageBody = $this->getMessageBody($body, $plainBody);
+        $messageBody = $this->getMessageBody($body, $plainBody, $boundary);
+
+        // add "Return-Path" to Header
+        $returnPath = "-f" . $this->config->get('mail', 'return_path', 'poweradmin@example.com');
 
         // Send the email
-        return mail($to, $subject, $messageBody, $headersStr);
+        return mail($to, $subject, $messageBody, $headersStr, $returnPath);
     }
 
     /**
@@ -197,14 +208,15 @@ class MailService implements MailServiceInterface
         string $subject,
         string $body,
         string $plainBody,
-        array $headers
+        array $headers,
+        string $boundary
     ): bool {
         $fromEmail = $this->config->get('mail', 'from', 'poweradmin@example.com');
         $fromName = $this->config->get('mail', 'from_name', '');
         $sendmailPath = $this->config->get('mail', 'sendmail_path', '/usr/sbin/sendmail -bs');
 
         // Set up email headers
-        $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $plainBody !== '');
+        $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $boundary);
         $mailHeaders = array_merge($mailHeaders, $headers);
 
         try {
@@ -223,7 +235,7 @@ class MailService implements MailServiceInterface
             fputs($sendmail, "\r\n");
 
             // Write message body
-            fputs($sendmail, $this->getMessageBody($body, $plainBody));
+            fputs($sendmail, $this->getMessageBody($body, $plainBody, $boundary));
 
             // Close sendmail process
             $status = pclose($sendmail);
@@ -246,7 +258,8 @@ class MailService implements MailServiceInterface
         string $subject,
         string $body,
         string $plainBody,
-        array $headers
+        array $headers,
+        string $boundary
     ): bool {
         $host = $this->config->get('mail', 'host', 'localhost');
         $port = $this->config->get('mail', 'port', 25);
@@ -311,7 +324,7 @@ class MailService implements MailServiceInterface
             $this->sendSmtpCommand($socket, "DATA");
 
             // Set up email headers
-            $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $plainBody !== '');
+            $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $boundary);
             $mailHeaders = array_merge($mailHeaders, $headers);
 
             // Send headers
@@ -323,7 +336,7 @@ class MailService implements MailServiceInterface
             fputs($socket, "\r\n");
 
             // Send message body
-            fputs($socket, $this->getMessageBody($body, $plainBody));
+            fputs($socket, $this->getMessageBody($body, $plainBody, $boundary));
 
             // End data
             $this->sendSmtpCommand($socket, "\r\n.");
@@ -456,7 +469,7 @@ class MailService implements MailServiceInterface
     /**
      * Get base headers for email
      */
-    private function getBaseHeaders(string $fromEmail, string $fromName, bool $isMultipart): array
+    private function getBaseHeaders(string $fromEmail, string $fromName, string $boundary): array
     {
         $headers = [
             'From' => empty($fromName) ? $fromEmail : "$fromName <$fromEmail>",
@@ -464,8 +477,9 @@ class MailService implements MailServiceInterface
             'MIME-Version' => '1.0',
         ];
 
-        if ($isMultipart) {
-            $boundary = md5(uniqid(time()));
+        if (!empty($boundary)) {
+            // use $boundary external generated
+            // $boundary = md5(uniqid(time()));
             $headers['Content-Type'] = "multipart/alternative; boundary=\"$boundary\"";
         } else {
             $headers['Content-Type'] = 'text/html; charset=UTF-8';
@@ -477,7 +491,7 @@ class MailService implements MailServiceInterface
     /**
      * Construct message body (multipart if plain text is provided)
      */
-    private function getMessageBody(string $htmlBody, string $plainBody): string
+    private function getMessageBody(string $htmlBody, string $plainBody, string $boundary): string
     {
         // If no plain text body is provided, just return the HTML body
         if (empty($plainBody)) {
@@ -485,7 +499,8 @@ class MailService implements MailServiceInterface
         }
 
         // Otherwise, create a multipart message
-        $boundary = md5(uniqid(time()));
+        // use $boundary external generated
+        // $boundary = md5(uniqid(time()));
 
         $message = "--$boundary\r\n";
         $message .= "Content-Type: text/plain; charset=UTF-8\r\n";

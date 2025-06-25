@@ -172,10 +172,11 @@ return [
      * Mail Settings
      */
     'mail' => [
-        'enabled' => true,                         // Enable email functionality
-        'from' => 'poweradmin@example.com',        // Default "from" address
-        'from_name' => '',                         // Default "from" name
-        'transport' => 'php',                      // Transport method: smtp, sendmail, or php
+        'enabled' => true,                          // Enable email functionality
+        'from' => 'poweradmin@example.com',         // Default "from" address
+        'from_name' => '',                          // Default "from" name
+        'return_path' => 'poweradmin@example.com',  // Default "Return-Path" address
+        'transport' => 'php',                       // Transport method: smtp, sendmail, or php
 
         // SMTP settings
         'host' => 'smtp.example.com',              // SMTP server hostname

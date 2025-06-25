@@ -193,7 +193,6 @@
   <file src="lib/Application/Service/MailService.php">
     <InvalidScalarArgument>
       <code><![CDATA[time()]]></code>
-      <code><![CDATA[time()]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Service/RecordManagerService.php">
