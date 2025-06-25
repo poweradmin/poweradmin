@@ -21,7 +21,6 @@
     <issueHandlers>
         <MissingReturnType errorLevel="info" />
         <UnusedClass errorLevel="info" />
-        <ClassMustBeFinal errorLevel="info" />
         <MissingOverrideAttribute errorLevel="info" />
         <MethodSignatureMismatch errorLevel="suppress" />
         <UndefinedMethod>

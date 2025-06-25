@@ -257,7 +257,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
         // Process the SOA timing fields (refresh, retry, expire, minimum)
         for ($i = 3; ($i < 7); $i++) {
             $field_idx = $i - 3;
-            $field_name = $soa_field_names[$field_idx];
+            $field_name = $soa_field_names[$field_idx] ?? 'unknown';
 
             // Basic validation - fields must be numeric
             if (!is_numeric($fields[$i])) {
