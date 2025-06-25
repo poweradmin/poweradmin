@@ -1070,6 +1070,78 @@ class DatabaseStructureHelper
                         'ondelete' => 'CASCADE'
                     )
                 )
+            ),
+            array(
+                'table_name' => 'password_reset_tokens',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'autoincrement' => 1,
+                        'name' => 'id',
+                        'table' => 'password_reset_tokens',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'email' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'name' => 'email',
+                        'table' => 'password_reset_tokens',
+                        'flags' => 'not_null'
+                    ),
+                    'token' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'length' => 64,
+                        'fixed' => 0,
+                        'name' => 'token',
+                        'table' => 'password_reset_tokens',
+                        'flags' => 'not_null'
+                    ),
+                    'expires_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'name' => 'expires_at',
+                        'table' => 'password_reset_tokens',
+                        'flags' => 'not_null'
+                    ),
+                    'created_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'created_at',
+                        'table' => 'password_reset_tokens',
+                        'flags' => 'not_null'
+                    ),
+                    'used' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'length' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'name' => 'used',
+                        'table' => 'password_reset_tokens',
+                        'flags' => 'not_null'
+                    ),
+                    'ip_address' => array(
+                        'type' => 'text',
+                        'notnull' => 0,
+                        'length' => 45,
+                        'fixed' => 0,
+                        'name' => 'ip_address',
+                        'table' => 'password_reset_tokens',
+                        'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'idx_password_reset_tokens_token' => array('token'),
+                    'idx_password_reset_tokens_email' => array('email'),
+                    'idx_password_reset_tokens_expires' => array('expires_at')
+                )
             )
         );
     }
