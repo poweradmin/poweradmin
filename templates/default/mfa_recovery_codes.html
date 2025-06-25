@@ -46,13 +46,13 @@
             </div>
             <div class="card-footer">
               <button class="btn btn-sm btn-outline-secondary" onclick="printRecoveryCodes()">
-                <i class="bi bi-printer"></i> {% trans %}Print{% endtrans %}
+                <i class="bi bi-printer text-secondary"></i> {% trans %}Print{% endtrans %}
               </button>
               <button class="btn btn-sm btn-outline-secondary" onclick="copyAllCodes()">
-                <i class="bi bi-clipboard"></i> {% trans %}Copy all{% endtrans %}
+                <i class="bi bi-clipboard text-secondary"></i> {% trans %}Copy all{% endtrans %}
               </button>
               <button class="btn btn-sm btn-outline-secondary" id="download-btn" onclick="downloadCodes()">
-                <i class="bi bi-download"></i> {% trans %}Download{% endtrans %}
+                <i class="bi bi-download text-secondary"></i> {% trans %}Download{% endtrans %}
               </button>
             </div>
           </div>
@@ -89,7 +89,6 @@
     document.execCommand('copy');
     document.body.removeChild(tempElement);
     
-    alert("{% trans %}All recovery codes copied to clipboard{% endtrans %}");
   }
   
   function printRecoveryCodes() {
