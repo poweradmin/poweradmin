@@ -184,9 +184,10 @@ class PasswordResetService
         $expireTime = $this->config->get('security', 'password_reset.token_lifetime', 3600) / 60; // Convert to minutes
 
         $subject = 'Password Reset Request';
-        $body = $this->getEmailBody($name, $resetUrl, $expireTime);
+        $htmlBody = $this->getEmailBodyHtml($name, $resetUrl, $expireTime);
+        $plainBody = $this->getEmailBodyPlain($name, $resetUrl, $expireTime);
 
-        return $this->mailService->sendMail($email, $subject, $body);
+        return $this->mailService->sendMail($email, $subject, $htmlBody, $plainBody);
     }
 
     /**
@@ -203,9 +204,9 @@ class PasswordResetService
     }
 
     /**
-     * Get email body for password reset
+     * Get HTML email body for password reset
      */
-    private function getEmailBody(string $name, string $resetUrl, int $expireMinutes): string
+    private function getEmailBodyHtml(string $name, string $resetUrl, int $expireMinutes): string
     {
         $greeting = $name ? "Hi $name," : "Hi,";
 
@@ -244,6 +245,24 @@ class PasswordResetService
 </body>
 </html>
 HTML;
+    }
+
+    /**
+     * Get plain text email body for password reset
+     */
+    private function getEmailBodyPlain(string $name, string $resetUrl, int $expireMinutes): string
+    {
+        $greeting = $name ? "Hi $name," : "Hi,";
+
+        return $greeting . "\n\n" .
+            "Password Reset Request\n" .
+            "========================\n\n" .
+            "We received a request to reset your password. If you made this request, please copy and paste the link below into your browser to reset your password:\n\n" .
+            $resetUrl . "\n\n" .
+            "This link will expire in $expireMinutes minutes.\n\n" .
+            "If you did not request a password reset, please ignore this email. Your password will remain unchanged.\n\n" .
+            "---\n" .
+            "This is an automated message from Poweradmin. Please do not reply to this email.";
     }
 
     /**
