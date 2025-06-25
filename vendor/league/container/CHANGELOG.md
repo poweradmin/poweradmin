@@ -2,6 +2,11 @@
 
 All Notable changes to `League\Container` will be documented in this file
 
+## 4.2.5
+
+### Fixed
+- Restored ability to perform recursive definition search. (@spider-mane)
+
 ## 4.2.4
 
 ### Fixed

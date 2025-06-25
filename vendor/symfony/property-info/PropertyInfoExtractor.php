@@ -11,9 +11,6 @@
 
 namespace Symfony\Component\PropertyInfo;
 
-use Symfony\Component\PropertyInfo\Util\LegacyTypeConverter;
-use Symfony\Component\TypeInfo\Type;
-
 /**
  * Default {@see PropertyInfoExtractorInterface} implementation.
  *
@@ -52,27 +49,6 @@ class PropertyInfoExtractor implements PropertyInfoExtractorInterface, PropertyI
     public function getLongDescription(string $class, string $property, array $context = []): ?string
     {
         return $this->extract($this->descriptionExtractors, 'getLongDescription', [$class, $property, $context]);
-    }
-
-    public function getType(string $class, string $property, array $context = []): ?Type
-    {
-        foreach ($this->typeExtractors as $extractor) {
-            if (!method_exists($extractor, 'getType')) {
-                $legacyTypes = $extractor->getTypes($class, $property, $context);
-
-                if (null !== $legacyTypes) {
-                    return LegacyTypeConverter::toTypeInfoType($legacyTypes);
-                }
-
-                continue;
-            }
-
-            if (null !== $value = $extractor->getType($class, $property, $context)) {
-                return $value;
-            }
-        }
-
-        return null;
     }
 
     public function getTypes(string $class, string $property, array $context = []): ?array

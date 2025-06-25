@@ -1,21 +1,6 @@
 CHANGELOG
 =========
 
-7.2
----
-
- * Deprecate parsing duplicate mapping keys whose value is `null`
-
-7.1
----
-
- * Add support for getting all the enum cases with `!php/enum Foo`
-
-7.0
----
-
- * Remove the `!php/const:` tag, use `!php/const` instead (without the colon)
-
 6.3
 ---
 

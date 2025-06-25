@@ -172,8 +172,8 @@ final class PhpStanTypeHelper
             return [new Type(Type::BUILTIN_TYPE_OBJECT, false, $nameScope->resolveRootClass())];
         }
         if ($node instanceof IdentifierTypeNode) {
-            if (\in_array($node->name, Type::$builtinTypes, true)) {
-                return [new Type($node->name, false, null, \in_array($node->name, Type::$builtinCollectionTypes, true))];
+            if (\in_array($node->name, Type::$builtinTypes)) {
+                return [new Type($node->name, false, null, \in_array($node->name, Type::$builtinCollectionTypes))];
             }
 
             return match ($node->name) {

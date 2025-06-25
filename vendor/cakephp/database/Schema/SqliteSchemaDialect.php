@@ -614,11 +614,8 @@ class SqliteSchemaDialect extends SchemaDialect
             [$config['schema'], $tableName] = explode('.', $tableName);
         }
 
-        $sql = sprintf(
-            'SELECT * FROM pragma_foreign_key_list(%s) ORDER BY id, seq',
-            $this->_driver->quoteIdentifier($tableName),
-        );
         $keys = [];
+        $sql = sprintf('PRAGMA foreign_key_list(%s)', $this->_driver->quoteIdentifier($tableName));
         $statement = $this->_driver->execute($sql);
         foreach ($statement->fetchAll('assoc') as $row) {
             $id = $row['id'];
@@ -641,7 +638,7 @@ class SqliteSchemaDialect extends SchemaDialect
         foreach ($keys as $id => $data) {
             // sqlite doesn't provide a simple way to get foreign key names, but we
             // can extract them from the normalized create table sql.
-            $name = $this->extractIndexName($createTableSql, 'FOREIGN KEY', $data['columns']);
+            $name = $this->extractIndexName($createTableSql, 'FOREIGN\s*KEY', $data['columns']);
             if ($name === null) {
                 $name = implode('_', $data['columns']) . '_' . $id . '_fk';
             }

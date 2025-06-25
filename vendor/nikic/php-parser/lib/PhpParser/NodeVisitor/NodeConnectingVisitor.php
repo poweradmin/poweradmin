@@ -14,11 +14,12 @@ use PhpParser\NodeVisitorAbstract;
  * node can be accessed through <code>$node->getAttribute('previous')</code>,
  * and the next node can be accessed through <code>$node->getAttribute('next')</code>.
  */
-final class NodeConnectingVisitor extends NodeVisitorAbstract {
+final class NodeConnectingVisitor extends NodeVisitorAbstract
+{
     /**
      * @var Node[]
      */
-    private array $stack = [];
+    private $stack = [];
 
     /**
      * @var ?Node
