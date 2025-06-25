@@ -23,7 +23,7 @@
 /**
  * POWERADMIN CONTROLLER SKELETON
  *
- * This is an example controller demonstrating the standard PowerAdmin controller pattern.
+ * This is an example controller demonstrating the standard Poweradmin controller pattern.
  *
  * == HOW TO ENABLE THIS PAGE ==
  *
@@ -69,7 +69,7 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
- * ExampleController demonstrates standard PowerAdmin controller implementation
+ * ExampleController demonstrates standard Poweradmin controller implementation
  *
  * This controller showcases common patterns including:
  * - Permission checking
