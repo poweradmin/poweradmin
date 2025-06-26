@@ -534,7 +534,8 @@ abstract class BaseController
                 'mfa_enabled' => $this->config->get('security', 'mfa.enabled', false),
                 'whois_restrict_to_admin' => $this->config->get('whois', 'restrict_to_admin', true),
                 'rdap_restrict_to_admin' => $this->config->get('rdap', 'restrict_to_admin', true),
-                'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false)
+                'enable_consistency_checks' => $this->config->get('interface', 'enable_consistency_checks', false),
+                'email_previews_enabled' => $this->config->get('misc', 'email_previews_enabled', false)
             ]);
         }
 

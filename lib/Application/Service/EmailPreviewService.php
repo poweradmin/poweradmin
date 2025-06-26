@@ -1,0 +1,161 @@
+<?php
+
+/*  Poweradmin, a friendly web-based admin tool for PowerDNS.
+ *  See <https://www.poweradmin.org> for more details.
+ *
+ *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
+ *  Copyright 2010-2025 Poweradmin Development Team
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+namespace Poweradmin\Application\Service;
+
+class EmailPreviewService
+{
+    private EmailTemplateService $emailTemplateService;
+
+    public function __construct(EmailTemplateService $emailTemplateService)
+    {
+        $this->emailTemplateService = $emailTemplateService;
+    }
+
+    public function generateNewAccountPreview(bool $forceDarkMode = false): array
+    {
+        $sampleData = $this->emailTemplateService->renderNewAccountEmail(
+            'john.doe',
+            'SecureP@ssw0rd123',
+            'John Doe'
+        );
+
+        return [
+            'light' => $sampleData['html'],
+            'dark' => $this->forceDarkMode($sampleData['html']),
+            'subject' => $sampleData['subject']
+        ];
+    }
+
+    public function generatePasswordResetPreview(bool $forceDarkMode = false): array
+    {
+        $sampleData = $this->emailTemplateService->renderPasswordResetEmail(
+            'Jane Smith',
+            'https://poweradmin.example.com/reset?token=abc123def456',
+            30
+        );
+
+        return [
+            'light' => $sampleData['html'],
+            'dark' => $this->forceDarkMode($sampleData['html']),
+            'subject' => $sampleData['subject']
+        ];
+    }
+
+    public function generateMfaVerificationPreview(bool $forceDarkMode = false): array
+    {
+        $sampleData = $this->emailTemplateService->renderMfaVerificationEmail(
+            '123456',
+            time() + 300
+        );
+
+        return [
+            'light' => $sampleData['html'],
+            'dark' => $this->forceDarkMode($sampleData['html']),
+            'subject' => $sampleData['subject']
+        ];
+    }
+
+    public function generateAllPreviews(): array
+    {
+        return [
+            'new-account' => $this->generateNewAccountPreview(),
+            'password-reset' => $this->generatePasswordResetPreview(),
+            'mfa-verification' => $this->generateMfaVerificationPreview()
+        ];
+    }
+
+    private function forceDarkMode(string $html): string
+    {
+        // Force dark mode by overriding the media query with a style that applies dark mode classes
+        $darkModeOverride = '
+        <style>
+            /* Force dark mode styles */
+            .email-container {
+                background-color: #1a1a1a !important;
+                color: #ffffff !important;
+            }
+            .email-content {
+                background-color: #1a1a1a !important;
+                color: #ffffff !important;
+            }
+            .table-header {
+                background-color: #2d2d2d !important;
+                color: #ffffff !important;
+            }
+            .table-border {
+                border-color: #444444 !important;
+            }
+            .button-primary {
+                background-color: #4a90e2 !important;
+                color: #ffffff !important;
+            }
+            .code-container {
+                background-color: #2d2d2d !important;
+                border-color: #444444 !important;
+                color: #ffffff !important;
+            }
+            .url-container {
+                background-color: #2d2d2d !important;
+                color: #ffffff !important;
+            }
+            .divider {
+                border-color: #444444 !important;
+            }
+            .disclaimer-text {
+                color: #cccccc !important;
+            }
+            .heading {
+                color: #5dade2 !important;
+            }
+        </style>';
+
+        // Insert the dark mode override before the closing </head> tag
+        return str_replace('</head>', $darkModeOverride . '</head>', $html);
+    }
+
+    public function savePreviewsToFiles(string $outputDir = 'email-previews'): array
+    {
+        if (!is_dir($outputDir)) {
+            mkdir($outputDir, 0755, true);
+        }
+
+        $previews = $this->generateAllPreviews();
+        $savedFiles = [];
+
+        foreach ($previews as $templateName => $templateData) {
+            $lightFile = $outputDir . '/' . $templateName . '-light.html';
+            $darkFile = $outputDir . '/' . $templateName . '-dark.html';
+
+            file_put_contents($lightFile, $templateData['light']);
+            file_put_contents($darkFile, $templateData['dark']);
+
+            $savedFiles[$templateName] = [
+                'light' => $lightFile,
+                'dark' => $darkFile,
+                'subject' => $templateData['subject']
+            ];
+        }
+
+        return $savedFiles;
+    }
+}

@@ -253,6 +253,7 @@ return [
         'edit_conflict_resolution' => 'last_writer_wins', // Options: 'last_writer_wins', 'only_latest_version', '3_way_merge'
         'display_errors' => false,                     // Display PHP errors (false for production) (added in 4.0.0)
         'show_generated_passwords' => true,            // Show generated passwords on user creation (added in 4.0.0)
+        'email_previews_enabled' => false,             // Enable email template preview functionality (added in 4.0.0)
     ],
 
     /**

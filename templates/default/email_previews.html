@@ -1,0 +1,55 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Email Template Previews{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-envelope-fill me-2"></i>{% trans %}Email Template Previews{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <p>{% trans %}Preview how email templates will appear to users in both light and dark modes. These previews use sample data to demonstrate the email formatting and styling.{% endtrans %}</p>
+        
+        <div class="row">
+            {% for template_key, template_name in template_names %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-header">
+                        <h6 class="card-title mb-0">
+                            <i class="bi bi-envelope me-2"></i>{{ template_name }}
+                        </h6>
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text text-muted">
+                            <strong>{% trans %}Subject:{% endtrans %}</strong> {{ previews[template_key].subject }}
+                        </p>
+                        
+                        <div class="d-grid gap-2">
+                            <a href="index.php?page=email_previews&template={{ template_key }}&mode=light" 
+                               class="btn btn-outline-primary btn-sm" target="_blank">
+                                <i class="bi bi-sun me-2 text-primary"></i>{% trans %}View Light Mode{% endtrans %}
+                            </a>
+                            <a href="index.php?page=email_previews&template={{ template_key }}&mode=dark" 
+                               class="btn btn-outline-secondary btn-sm" target="_blank">
+                                <i class="bi bi-moon me-2 text-secondary"></i>{% trans %}View Dark Mode{% endtrans %}
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="alert alert-info mt-4">
+            <h6><i class="bi bi-info-circle me-2"></i>{% trans %}About Email Previews{% endtrans %}</h6>
+            <ul class="mb-0">
+                <li>{% trans %}Previews use sample data to demonstrate email appearance{% endtrans %}</li>
+                <li>{% trans %}Light mode is the default appearance for most email clients{% endtrans %}</li>
+                <li>{% trans %}Dark mode preview shows how emails appear when users have dark mode enabled{% endtrans %}</li>
+                <li>{% trans %}These previews reflect the actual templates used in production{% endtrans %}</li>
+            </ul>
+        </div>
+    </div>
+</div>
