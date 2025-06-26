@@ -27,6 +27,7 @@ use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
 use Poweradmin\Application\Service\MailService;
+use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -38,6 +39,7 @@ class MfaService
     private UserMfaRepositoryInterface $userMfaRepository;
     private ConfigurationManager $configManager;
     private MailService $mailService;
+    private EmailTemplateService $templateService;
 
     /**
      * MfaService constructor
@@ -51,6 +53,7 @@ class MfaService
         $this->userMfaRepository = $userMfaRepository;
         $this->configManager = $configManager;
         $this->mailService = $mailService;
+        $this->templateService = new EmailTemplateService($configManager);
     }
 
     /**
@@ -452,68 +455,11 @@ class MfaService
             date('Y-m-d H:i:s', $expiresAt));
 
         // Send the code via email
-        $subject = _('Your verification code');
-        $htmlBody = $this->getMfaEmailBodyHtml($verificationCode, $expiresAt);
-        $plainBody = $this->getMfaEmailBodyPlain($verificationCode, $expiresAt);
+        $templates = $this->templateService->renderMfaVerificationEmail($verificationCode, $expiresAt);
 
-        $this->mailService->sendMail($email, $subject, $htmlBody, $plainBody);
+        $this->mailService->sendMail($email, $templates['subject'], $templates['html'], $templates['text']);
 
         return $verificationCode;
-    }
-
-    /**
-     * Get HTML email body for MFA verification code
-     */
-    private function getMfaEmailBodyHtml(string $verificationCode, int $expiresAt): string
-    {
-        $expireTime = date('H:i:s', $expiresAt);
-        $appName = $this->configManager->get('interface', 'title', 'Poweradmin');
-
-        return <<<HTML
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Your Verification Code</title>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #2c3e50;">Your Verification Code</h2>
-
-        <p>Your verification code for {$appName} is:</p>
-
-        <div style="background-color: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0;">
-            <span style="font-size: 32px; font-weight: bold; color: #495057; letter-spacing: 4px;">{$verificationCode}</span>
-        </div>
-
-        <p><strong>This code will expire at {$expireTime} (in 10 minutes).</strong></p>
-
-        <p>If you did not request this verification code, please ignore this email.</p>
-
-        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-
-        <p style="font-size: 12px; color: #777;">
-            This is an automated message from {$appName}. Please do not reply to this email.
-        </p>
-    </div>
-</body>
-</html>
-HTML;
-    }
-
-    /**
-     * Get plain text email body for MFA verification code
-     */
-    private function getMfaEmailBodyPlain(string $verificationCode, int $expiresAt): string
-    {
-        $expireTime = date('H:i:s', $expiresAt);
-        $appName = $this->configManager->get('interface', 'title', 'Poweradmin');
-
-        return "Your verification code for {$appName} is: {$verificationCode}\n\n" .
-            "This code will expire at {$expireTime} (in 10 minutes).\n\n" .
-            "If you did not request this verification code, please ignore this email.\n\n" .
-            "---\n" .
-            "This is an automated message from {$appName}. Please do not reply to this email.";
     }
 
     /**

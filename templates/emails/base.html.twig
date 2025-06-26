@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{{ appName }}{% endblock %}</title>
+</head>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        {% block content %}{% endblock %}
+        
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+        
+        <p style="font-size: 12px; color: #777;">
+            {% block disclaimer %}
+                This is an automated message from {{ appName }}. Please do not reply to this email.
+            {% endblock %}
+        </p>
+    </div>
+</body>
+</html>

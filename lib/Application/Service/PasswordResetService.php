@@ -27,6 +27,7 @@ use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\EmailTemplateService;
 use Psr\Log\LoggerInterface;
 
 class PasswordResetService
@@ -38,6 +39,7 @@ class PasswordResetService
     private UserAuthenticationService $authService;
     private IpAddressRetriever $ipRetriever;
     private LoggerInterface $logger;
+    private EmailTemplateService $templateService;
 
     public function __construct(
         DbPasswordResetTokenRepository $tokenRepository,
@@ -55,6 +57,7 @@ class PasswordResetService
         $this->authService = $authService;
         $this->ipRetriever = $ipRetriever;
         $this->logger = $logger;
+        $this->templateService = new EmailTemplateService($config);
     }
 
     /**
@@ -183,11 +186,9 @@ class PasswordResetService
         $resetUrl = $this->getResetUrl($token);
         $expireTime = $this->config->get('security', 'password_reset.token_lifetime', 3600) / 60; // Convert to minutes
 
-        $subject = 'Password Reset Request';
-        $htmlBody = $this->getEmailBodyHtml($name, $resetUrl, $expireTime);
-        $plainBody = $this->getEmailBodyPlain($name, $resetUrl, $expireTime);
+        $templates = $this->templateService->renderPasswordResetEmail($name, $resetUrl, $expireTime);
 
-        return $this->mailService->sendMail($email, $subject, $htmlBody, $plainBody);
+        return $this->mailService->sendMail($email, $templates['subject'], $templates['html'], $templates['text']);
     }
 
     /**
@@ -201,68 +202,6 @@ class PasswordResetService
         $basePath = rtrim($basePath, '/');
 
         return "$protocol://$host$basePath/index.php?page=reset_password&token=" . urlencode($token);
-    }
-
-    /**
-     * Get HTML email body for password reset
-     */
-    private function getEmailBodyHtml(string $name, string $resetUrl, int $expireMinutes): string
-    {
-        $greeting = $name ? "Hi $name," : "Hi,";
-        $appName = $this->config->get('interface', 'title', 'Poweradmin');
-
-        return <<<HTML
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Password Reset Request</title>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #2c3e50;">Password Reset Request</h2>
-        
-        <p>$greeting</p>
-        
-        <p>We received a request to reset your password. If you made this request, please click the link below to reset your password:</p>
-        
-        <p style="margin: 20px 0;">
-            <a href="$resetUrl" style="background-color: #3498db; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">Reset Password</a>
-        </p>
-        
-        <p>Or copy and paste this link into your browser:</p>
-        <p style="word-break: break-all; background-color: #f4f4f4; padding: 10px; border-radius: 3px;">$resetUrl</p>
-        
-        <p><strong>This link will expire in $expireMinutes minutes.</strong></p>
-        
-        <p>If you did not request a password reset, please ignore this email. Your password will remain unchanged.</p>
-        
-        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-        
-        <p style="font-size: 12px; color: #777;">
-            This is an automated message from $appName. Please do not reply to this email.
-        </p>
-    </div>
-</body>
-</html>
-HTML;
-    }
-
-    /**
-     * Get plain text email body for password reset
-     */
-    private function getEmailBodyPlain(string $name, string $resetUrl, int $expireMinutes): string
-    {
-        $greeting = $name ? "Hi $name," : "Hi,";
-        $appName = $this->config->get('interface', 'title', 'Poweradmin');
-
-        return $greeting . "\n\n" .
-            "We received a request to reset your password. If you made this request, please copy and paste the link below into your browser to reset your password:\n\n" .
-            $resetUrl . "\n\n" .
-            "This link will expire in $expireMinutes minutes.\n\n" .
-            "If you did not request a password reset, please ignore this email. Your password will remain unchanged.\n\n" .
-            "---\n" .
-            "This is an automated message from " . $appName . ". Please do not reply to this email.";
     }
 
     /**

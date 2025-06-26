@@ -1,0 +1,21 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Your Account Information{% endblock %}
+
+{% block content %}
+    <h2 style="color: #2c3e50;">Your Account Information</h2>
+    <p>{{ greeting }},</p>
+    <p>Your account has been created. Here are your login details:</p>
+    <table style="border-collapse: collapse; width: 100%; margin: 20px 0; border: 1px solid #ddd;">
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><strong>Username:</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ username }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><strong>Password:</strong></td>
+            <td style="padding: 10px; border: 1px solid #ddd;">{{ password }}</td>
+        </tr>
+    </table>
+    <p>For security reasons, please change your password after your first login.</p>
+    <p>If you have any questions, please contact your administrator.</p>
+{% endblock %}

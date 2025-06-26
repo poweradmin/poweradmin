@@ -1,0 +1,74 @@
+# Custom Email Templates
+
+This directory allows you to override the default email templates used by Poweradmin.
+
+## How to Customize Templates
+
+1. **Copy a template** from the parent directory (`../`) to this directory
+2. **Modify** the template to suit your needs
+3. **Save** the file with the same name
+
+Templates in this directory take **priority** over the default templates.
+
+## Available Templates
+
+### HTML Templates
+- `new-account.html.twig` - New user account creation email
+- `password-reset.html.twig` - Password reset request email  
+- `mfa-verification.html.twig` - MFA verification code email
+- `base.html.twig` - Base template (shared styling and structure)
+
+### Text Templates
+- `new-account.txt.twig` - Plain text version of new account email
+- `password-reset.txt.twig` - Plain text version of password reset email
+- `mfa-verification.txt.twig` - Plain text version of MFA verification email
+
+## Template Variables
+
+### New Account Email
+- `greeting` - Personalized greeting (e.g., "Hello John" or "Hello")
+- `username` - User's login username
+- `password` - User's initial password
+- `fullname` - User's full name
+- `appName` - Application name from configuration
+
+### Password Reset Email
+- `greeting` - Personalized greeting (e.g., "Hi John," or "Hi,")
+- `name` - User's name
+- `resetUrl` - Password reset URL
+- `expireMinutes` - Token expiration time in minutes
+- `appName` - Application name from configuration
+
+### MFA Verification Email
+- `verificationCode` - 6-digit verification code
+- `expireTime` - Code expiration time (HH:MM:SS format)
+- `expiresAt` - Expiration timestamp
+- `appName` - Application name from configuration
+
+## Template Syntax
+
+Templates use **Twig** syntax. Common patterns:
+
+### Variables
+```twig
+{{ username }}
+{{ appName }}
+```
+
+### Conditionals
+```twig
+{% if fullname %}
+    Hello {{ fullname }},
+{% else %}
+    Hello,
+{% endif %}
+```
+
+### Template Inheritance
+```twig
+{% extends "base.html.twig" %}
+
+{% block content %}
+    Your custom content here
+{% endblock %}
+```

@@ -25,17 +25,20 @@ namespace Poweradmin\Application\Service;
 use Exception;
 use Poweradmin\Domain\Service\MailService as MailServiceInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Application\Service\EmailTemplateService;
 use Psr\Log\LoggerInterface;
 
 class MailService implements MailServiceInterface
 {
     private ConfigurationManager $config;
     private ?LoggerInterface $logger;
+    private EmailTemplateService $templateService;
 
     public function __construct(ConfigurationManager $config, ?LoggerInterface $logger = null)
     {
         $this->config = $config;
         $this->logger = $logger;
+        $this->templateService = new EmailTemplateService($config);
     }
 
     /**
@@ -102,73 +105,9 @@ class MailService implements MailServiceInterface
         string $password,
         string $fullname = ''
     ): bool {
-        $subject = 'Your new account information';
+        $templates = $this->templateService->renderNewAccountEmail($username, $password, $fullname);
 
-        // Create both HTML and plain text versions of the email
-        $htmlBody = $this->getNewAccountEmailHtml($username, $password, $fullname);
-        $plainBody = $this->getNewAccountEmailPlain($username, $password, $fullname);
-
-        return $this->sendMail($to, $subject, $htmlBody, $plainBody);
-    }
-
-    /**
-     * Create HTML version of new account email
-     */
-    private function getNewAccountEmailHtml(string $username, string $password, string $fullname): string
-    {
-        $greeting = empty($fullname) ? 'Hello' : "Hello $fullname";
-        $appName = $this->config->get('interface', 'title', 'Poweradmin');
-
-        return '<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Your Account Information</title>
-</head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h2 style="color: #2c3e50;">Your Account Information</h2>
-        <p>' . $greeting . ',</p>
-        <p>Your account has been created. Here are your login details:</p>
-        <table style="border-collapse: collapse; width: 100%; margin: 20px 0; border: 1px solid #ddd;">
-            <tr>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><strong>Username:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($username) . '</td>
-            </tr>
-            <tr>
-                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><strong>Password:</strong></td>
-                <td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($password) . '</td>
-            </tr>
-        </table>
-        <p>For security reasons, please change your password after your first login.</p>
-        <p>If you have any questions, please contact your administrator.</p>
-        
-        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-        
-        <p style="font-size: 12px; color: #777;">
-            This is an automated message from ' . htmlspecialchars($appName) . '. Please do not reply to this email.
-        </p>
-    </div>
-</body>
-</html>';
-    }
-
-    /**
-     * Create plain text version of new account email
-     */
-    private function getNewAccountEmailPlain(string $username, string $password, string $fullname): string
-    {
-        $greeting = empty($fullname) ? 'Hello' : "Hello $fullname";
-        $appName = $this->config->get('interface', 'title', 'Poweradmin');
-
-        return $greeting . ",\n\n" .
-            "Your account has been created. Here are your login details:\n\n" .
-            "Username: " . $username . "\n" .
-            "Password: " . $password . "\n\n" .
-            "For security reasons, please change your password after your first login.\n\n" .
-            "If you have any questions, please contact your administrator.\n\n" .
-            "---\n" .
-            "This is an automated message from " . $appName . ". Please do not reply to this email.";
+        return $this->sendMail($to, $templates['subject'], $templates['html'], $templates['text']);
     }
 
     /**

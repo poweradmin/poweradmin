@@ -922,6 +922,7 @@ return array(
     'Poweradmin\\Application\\Service\\DatabaseService' => $baseDir . '/lib/Application/Service/DatabaseService.php',
     'Poweradmin\\Application\\Service\\DnssecProviderFactory' => $baseDir . '/lib/Application/Service/DnssecProviderFactory.php',
     'Poweradmin\\Application\\Service\\DnssecService' => $baseDir . '/lib/Application/Service/DnssecService.php',
+    'Poweradmin\\Application\\Service\\EmailTemplateService' => $baseDir . '/lib/Application/Service/EmailTemplateService.php',
     'Poweradmin\\Application\\Service\\LdapAuthenticator' => $baseDir . '/lib/Application/Service/LdapAuthenticator.php',
     'Poweradmin\\Application\\Service\\LocaleService' => $baseDir . '/lib/Application/Service/LocaleService.php',
     'Poweradmin\\Application\\Service\\LoggingService' => $baseDir . '/lib/Application/Service/LoggingService.php',
