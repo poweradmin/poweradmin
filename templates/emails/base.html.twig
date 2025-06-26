@@ -2,15 +2,116 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light dark">
     <title>{% block title %}{{ appName }}{% endblock %}</title>
+    <style>
+        /* Light mode (default) */
+        .email-container {
+            background-color: #ffffff !important;
+            color: #333333 !important;
+        }
+
+        .email-content {
+            background-color: #ffffff !important;
+            color: #333333 !important;
+        }
+
+        .table-header {
+            background-color: #f9f9f9 !important;
+            color: #333333 !important;
+        }
+
+        .table-border {
+            border-color: #dddddd !important;
+        }
+
+        .button-primary {
+            background-color: #3498db !important;
+            color: #ffffff !important;
+        }
+
+        .code-container {
+            background-color: #f8f9fa !important;
+            border-color: #dee2e6 !important;
+            color: #495057 !important;
+        }
+
+        .url-container {
+            background-color: #f4f4f4 !important;
+            color: #333333 !important;
+        }
+
+        .divider {
+            border-color: #dddddd !important;
+        }
+
+        .disclaimer-text {
+            color: #777777 !important;
+        }
+
+        .heading {
+            color: #2c3e50 !important;
+        }
+
+        /* Dark mode */
+        @media (prefers-color-scheme: dark) {
+            .email-container {
+                background-color: #1a1a1a !important;
+                color: #ffffff !important;
+            }
+
+            .email-content {
+                background-color: #1a1a1a !important;
+                color: #ffffff !important;
+            }
+
+            .table-header {
+                background-color: #2d2d2d !important;
+                color: #ffffff !important;
+            }
+
+            .table-border {
+                border-color: #444444 !important;
+            }
+
+            .button-primary {
+                background-color: #4a90e2 !important;
+                color: #ffffff !important;
+            }
+
+            .code-container {
+                background-color: #2d2d2d !important;
+                border-color: #444444 !important;
+                color: #ffffff !important;
+            }
+
+            .url-container {
+                background-color: #2d2d2d !important;
+                color: #ffffff !important;
+            }
+
+            .divider {
+                border-color: #444444 !important;
+            }
+
+            .disclaimer-text {
+                color: #cccccc !important;
+            }
+
+            .heading {
+                color: #5dade2 !important;
+            }
+        }
+    </style>
 </head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
-    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+<body style="font-family: Arial, sans-serif; line-height: 1.6; margin: 0; padding: 0;" class="email-container">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;" class="email-content">
         {% block content %}{% endblock %}
-        
-        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
-        
-        <p style="font-size: 12px; color: #777;">
+
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;" class="divider">
+
+        <p style="font-size: 12px;" class="disclaimer-text">
             {% block disclaimer %}
                 This is an automated message from {{ appName }}. Please do not reply to this email.
             {% endblock %}

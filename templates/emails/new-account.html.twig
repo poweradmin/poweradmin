@@ -3,17 +3,17 @@
 {% block title %}Your Account Information{% endblock %}
 
 {% block content %}
-    <h2 style="color: #2c3e50;">Your Account Information</h2>
+    <h2 class="heading">Your Account Information</h2>
     <p>{{ greeting }},</p>
     <p>Your account has been created. Here are your login details:</p>
-    <table style="border-collapse: collapse; width: 100%; margin: 20px 0; border: 1px solid #ddd;">
+    <table style="border-collapse: collapse; width: 100%; margin: 20px 0;" class="table-border">
         <tr>
-            <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><strong>Username:</strong></td>
-            <td style="padding: 10px; border: 1px solid #ddd;">{{ username }}</td>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Username:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ username }}</td>
         </tr>
         <tr>
-            <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><strong>Password:</strong></td>
-            <td style="padding: 10px; border: 1px solid #ddd;">{{ password }}</td>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Password:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ password }}</td>
         </tr>
     </table>
     <p>For security reasons, please change your password after your first login.</p>

@@ -3,12 +3,12 @@
 {% block title %}Your Verification Code{% endblock %}
 
 {% block content %}
-    <h2 style="color: #2c3e50;">Your Verification Code</h2>
+    <h2 class="heading">Your Verification Code</h2>
 
     <p>Your verification code for {{ appName }} is:</p>
 
-    <div style="background-color: #f8f9fa; border: 2px solid #dee2e6; border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0;">
-        <span style="font-size: 32px; font-weight: bold; color: #495057; letter-spacing: 4px;">{{ verificationCode }}</span>
+    <div style="border-radius: 8px; padding: 20px; text-align: center; margin: 20px 0;" class="code-container">
+        <span style="font-size: 32px; font-weight: bold; letter-spacing: 4px;">{{ verificationCode }}</span>
     </div>
 
     <p><strong>This code will expire at {{ expireTime }} (in 10 minutes).</strong></p>
