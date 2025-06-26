@@ -12,28 +12,56 @@
     <div class="card-body">
         <p>{% trans %}Preview how email templates will appear to users in both light and dark modes. These previews use sample data to demonstrate the email formatting and styling.{% endtrans %}</p>
         
+        <!-- Active Templates Section -->
+        <h6 class="mt-4 mb-3">
+            {% if using_custom %}
+                <i class="bi bi-palette me-2"></i>{% trans %}Active Email Templates{% endtrans %}
+                <span class="badge bg-success ms-2">{% trans %}Custom{% endtrans %}</span>
+            {% else %}
+                <i class="bi bi-file-earmark-text me-2"></i>{% trans %}Active Email Templates{% endtrans %}
+                <span class="badge bg-primary ms-2">{% trans %}Standard{% endtrans %}</span>
+            {% endif %}
+        </h6>
+        
+        {% if using_custom %}
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>
+            {% trans %}Custom templates are active and override the default templates. These are the templates currently used when sending emails.{% endtrans %}
+        </div>
+        {% else %}
+        <div class="alert alert-primary">
+            <i class="bi bi-info-circle me-2"></i>
+            {% trans %}Standard templates are active. These are the default templates used when sending emails.{% endtrans %}
+        </div>
+        {% endif %}
+        
         <div class="row">
-            {% for template_key, template_name in template_names %}
+            {% for template_key, template_data in templates %}
             <div class="col-lg-4 col-md-6 mb-4">
-                <div class="card h-100">
-                    <div class="card-header">
+                <div class="card h-100 {% if using_custom %}border-success{% endif %}">
+                    <div class="card-header {% if using_custom %}bg-success bg-opacity-10{% endif %}">
                         <h6 class="card-title mb-0">
-                            <i class="bi bi-envelope me-2"></i>{{ template_name }}
+                            {% if using_custom %}
+                                <i class="bi bi-palette me-2"></i>{{ template_names[template_key] }}
+                                <small class="text-success">({% trans %}Custom{% endtrans %})</small>
+                            {% else %}
+                                <i class="bi bi-envelope me-2"></i>{{ template_names[template_key] }}
+                            {% endif %}
                         </h6>
                     </div>
                     <div class="card-body">
                         <p class="card-text text-muted">
-                            <strong>{% trans %}Subject:{% endtrans %}</strong> {{ previews[template_key].subject }}
+                            <strong>{% trans %}Subject:{% endtrans %}</strong> {{ template_data.subject }}
                         </p>
                         
                         <div class="d-grid gap-2">
-                            <a href="index.php?page=email_previews&template={{ template_key }}&mode=light" 
-                               class="btn btn-outline-primary btn-sm" target="_blank">
-                                <i class="bi bi-sun me-2 text-primary"></i>{% trans %}View Light Mode{% endtrans %}
+                            <a href="index.php?page=email_previews&template={{ template_key }}&mode=light{% if using_custom %}&custom=true{% endif %}" 
+                               class="btn btn-outline-{% if using_custom %}success{% else %}primary{% endif %} btn-sm" target="_blank">
+                                <i class="bi bi-sun me-2 text-{% if using_custom %}success{% else %}primary{% endif %}"></i>{% trans %}View Light Mode{% endtrans %}
                             </a>
-                            <a href="index.php?page=email_previews&template={{ template_key }}&mode=dark" 
-                               class="btn btn-outline-secondary btn-sm" target="_blank">
-                                <i class="bi bi-moon me-2 text-secondary"></i>{% trans %}View Dark Mode{% endtrans %}
+                            <a href="index.php?page=email_previews&template={{ template_key }}&mode=dark{% if using_custom %}&custom=true{% endif %}" 
+                               class="btn btn-outline-dark btn-sm" target="_blank">
+                                <i class="bi bi-moon me-2 text-dark"></i>{% trans %}View Dark Mode{% endtrans %}
                             </a>
                         </div>
                     </div>
@@ -41,6 +69,25 @@
             </div>
             {% endfor %}
         </div>
+        
+        <!-- Information Section -->
+        {% if using_custom %}
+        <div class="alert alert-warning mt-4">
+            <h6><i class="bi bi-exclamation-triangle me-2"></i>{% trans %}Template Override Information{% endtrans %}</h6>
+            <p class="mb-2">{% trans %}The following standard templates are currently overridden by custom templates:{% endtrans %}</p>
+            <ul class="mb-0">
+                {% for template_key, template_data in templates %}
+                <li><strong>{{ template_names[template_key] }}</strong> - {% trans %}using custom template{% endtrans %}</li>
+                {% endfor %}
+            </ul>
+            <p class="mt-2 mb-0"><small>{% trans %}To revert to standard templates, remove or rename the custom template files in <code>templates/emails/custom/</code>.{% endtrans %}</small></p>
+        </div>
+        {% else %}
+        <div class="alert alert-secondary mt-4">
+            <h6><i class="bi bi-lightbulb me-2"></i>{% trans %}Custom Templates{% endtrans %}</h6>
+            <p class="mb-0">{% trans %}You can create custom email templates by placing them in <code>templates/emails/custom/</code> to override these standard templates with your own designs.{% endtrans %}</p>
+        </div>
+        {% endif %}
         
         <div class="alert alert-info mt-4">
             <h6><i class="bi bi-info-circle me-2"></i>{% trans %}About Email Previews{% endtrans %}</h6>

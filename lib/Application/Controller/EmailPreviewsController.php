@@ -50,17 +50,19 @@ class EmailPreviewsController extends BaseController
 
         $template = $this->getSafeRequestValue('template');
         $mode = $this->getSafeRequestValue('mode');
+        $isCustom = $this->getSafeRequestValue('custom') === 'true';
 
         if ($template && $mode) {
-            $this->renderEmailPreview($template, $mode);
+            $this->renderEmailPreview($template, $mode, $isCustom);
             return;
         }
 
-        $previews = $this->emailPreviewService->generateAllPreviews();
+        $previewData = $this->emailPreviewService->generateAllPreviews();
 
         $this->render('email_previews.html', [
             'page_title' => 'Email Template Previews',
-            'previews' => $previews,
+            'templates' => $previewData['templates'],
+            'using_custom' => $previewData['using_custom'],
             'template_names' => [
                 'new-account' => 'New Account',
                 'password-reset' => 'Password Reset',
@@ -69,26 +71,25 @@ class EmailPreviewsController extends BaseController
         ]);
     }
 
-    private function renderEmailPreview(string $template, string $mode): void
+    private function renderEmailPreview(string $template, string $mode, bool $isCustom = false): void
     {
         header('Content-Type: text/html; charset=utf-8');
+        header("Content-Security-Policy: default-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'");
+        header('X-Content-Type-Options: nosniff');
+        header('X-Frame-Options: DENY');
+        header('X-XSS-Protection: 1; mode=block');
 
         try {
-            switch ($template) {
-                case 'new-account':
-                    $preview = $this->emailPreviewService->generateNewAccountPreview();
-                    break;
-                case 'password-reset':
-                    $preview = $this->emailPreviewService->generatePasswordResetPreview();
-                    break;
-                case 'mfa-verification':
-                    $preview = $this->emailPreviewService->generateMfaVerificationPreview();
-                    break;
-                default:
-                    http_response_code(404);
-                    echo '<h1>Template not found</h1>';
-                    return;
+            $previewData = $this->emailPreviewService->generateAllPreviews();
+            $templates = $previewData['templates'];
+
+            if (!isset($templates[$template])) {
+                http_response_code(404);
+                echo '<h1>Template not found</h1>';
+                return;
             }
+
+            $preview = $templates[$template];
 
             if ($mode === 'dark') {
                 echo $preview['dark'];
@@ -97,7 +98,11 @@ class EmailPreviewsController extends BaseController
             }
         } catch (\Exception $e) {
             http_response_code(500);
-            echo '<h1>Error generating preview</h1><p>' . htmlspecialchars($e->getMessage()) . '</p>';
+            if ($this->config->get('misc', 'display_errors', false)) {
+                echo '<h1>Error generating preview</h1><p>' . htmlspecialchars($e->getMessage()) . '</p>';
+            } else {
+                echo '<h1>Error generating preview</h1><p>An error occurred while generating the email preview. Please contact your administrator.</p>';
+            }
         }
 
         exit;

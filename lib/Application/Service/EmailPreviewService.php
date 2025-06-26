@@ -77,11 +77,61 @@ class EmailPreviewService
 
     public function generateAllPreviews(): array
     {
-        return [
-            'new-account' => $this->generateNewAccountPreview(),
-            'password-reset' => $this->generatePasswordResetPreview(),
-            'mfa-verification' => $this->generateMfaVerificationPreview()
-        ];
+        // Check if custom templates exist first
+        $customPreviews = $this->generateCustomPreviews();
+
+        if (!empty($customPreviews)) {
+            // If custom templates exist, use only those (they override standard)
+            return [
+                'templates' => $customPreviews,
+                'using_custom' => true
+            ];
+        } else {
+            // If no custom templates, use standard templates
+            return [
+                'templates' => [
+                    'new-account' => $this->generateNewAccountPreview(),
+                    'password-reset' => $this->generatePasswordResetPreview(),
+                    'mfa-verification' => $this->generateMfaVerificationPreview()
+                ],
+                'using_custom' => false
+            ];
+        }
+    }
+
+    public function generateCustomPreviews(): array
+    {
+        $customPreviews = [];
+        $customTemplatePath = __DIR__ . '/../../../templates/emails/custom';
+
+        if (!is_dir($customTemplatePath)) {
+            return $customPreviews;
+        }
+
+        // Check for custom versions of standard templates
+        $standardTemplates = ['new-account', 'password-reset', 'mfa-verification'];
+
+        foreach ($standardTemplates as $templateName) {
+            if ($this->emailTemplateService->hasCustomTemplate($templateName . '.html.twig')) {
+                $customPreviews[$templateName] = $this->generateCustomTemplatePreview($templateName);
+            }
+        }
+
+        return $customPreviews;
+    }
+
+    private function generateCustomTemplatePreview(string $templateName): array
+    {
+        switch ($templateName) {
+            case 'new-account':
+                return $this->generateNewAccountPreview();
+            case 'password-reset':
+                return $this->generatePasswordResetPreview();
+            case 'mfa-verification':
+                return $this->generateMfaVerificationPreview();
+            default:
+                throw new \InvalidArgumentException("Unknown template: $templateName");
+        }
     }
 
     private function forceDarkMode(string $html): string
@@ -135,21 +185,37 @@ class EmailPreviewService
 
     public function savePreviewsToFiles(string $outputDir = 'email-previews'): array
     {
-        if (!is_dir($outputDir)) {
-            mkdir($outputDir, 0755, true);
+        // Sanitize output directory to prevent path traversal
+        $outputDir = basename($outputDir);
+        $outputDir = preg_replace('/[^a-zA-Z0-9_-]/', '', $outputDir);
+
+        if (empty($outputDir)) {
+            $outputDir = 'email-previews';
         }
 
-        $previews = $this->generateAllPreviews();
+        // Ensure the directory is relative and safe - create in project root
+        $safeOutputDir = $outputDir;
+
+        if (!is_dir($safeOutputDir)) {
+            if (!mkdir($safeOutputDir, 0755, true)) {
+                throw new \RuntimeException('Failed to create preview directory: ' . $safeOutputDir);
+            }
+        }
+
+        $previewData = $this->generateAllPreviews();
+        $templates = $previewData['templates'];
+        $usingCustom = $previewData['using_custom'];
         $savedFiles = [];
 
-        foreach ($previews as $templateName => $templateData) {
-            $lightFile = $outputDir . '/' . $templateName . '-light.html';
-            $darkFile = $outputDir . '/' . $templateName . '-dark.html';
+        foreach ($templates as $templateName => $templateData) {
+            $suffix = $usingCustom ? '-custom' : '';
+            $lightFile = $safeOutputDir . '/' . $templateName . $suffix . '-light.html';
+            $darkFile = $safeOutputDir . '/' . $templateName . $suffix . '-dark.html';
 
             file_put_contents($lightFile, $templateData['light']);
             file_put_contents($darkFile, $templateData['dark']);
 
-            $savedFiles[$templateName] = [
+            $savedFiles[$templateName . $suffix] = [
                 'light' => $lightFile,
                 'dark' => $darkFile,
                 'subject' => $templateData['subject']

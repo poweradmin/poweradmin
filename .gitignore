@@ -6,6 +6,7 @@
 /templates/default/custom
 !/templates/default
 !/templates/emails
+/templates/emails/custom/
 
 # OS generated files
 .DS_Store
