@@ -182,46 +182,4 @@ class EmailPreviewService
         // Insert the dark mode override before the closing </head> tag
         return str_replace('</head>', $darkModeOverride . '</head>', $html);
     }
-
-    public function savePreviewsToFiles(string $outputDir = 'email-previews'): array
-    {
-        // Sanitize output directory to prevent path traversal
-        $outputDir = basename($outputDir);
-        $outputDir = preg_replace('/[^a-zA-Z0-9_-]/', '', $outputDir);
-
-        if (empty($outputDir)) {
-            $outputDir = 'email-previews';
-        }
-
-        // Ensure the directory is relative and safe - create in project root
-        $safeOutputDir = $outputDir;
-
-        if (!is_dir($safeOutputDir)) {
-            if (!mkdir($safeOutputDir, 0755, true)) {
-                throw new \RuntimeException('Failed to create preview directory: ' . $safeOutputDir);
-            }
-        }
-
-        $previewData = $this->generateAllPreviews();
-        $templates = $previewData['templates'];
-        $usingCustom = $previewData['using_custom'];
-        $savedFiles = [];
-
-        foreach ($templates as $templateName => $templateData) {
-            $suffix = $usingCustom ? '-custom' : '';
-            $lightFile = $safeOutputDir . '/' . $templateName . $suffix . '-light.html';
-            $darkFile = $safeOutputDir . '/' . $templateName . $suffix . '-dark.html';
-
-            file_put_contents($lightFile, $templateData['light']);
-            file_put_contents($darkFile, $templateData['dark']);
-
-            $savedFiles[$templateName . $suffix] = [
-                'light' => $lightFile,
-                'dark' => $darkFile,
-                'subject' => $templateData['subject']
-            ];
-        }
-
-        return $savedFiles;
-    }
 }
