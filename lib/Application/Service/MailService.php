@@ -94,16 +94,16 @@ class MailService implements MailServiceInterface
      * @param string $username User's username
      * @param string $password User's password
      * @param string $fullname User's full name (optional)
-     * @param string $subject Email subject (optional)
      * @return bool True if email was sent successfully, false otherwise
      */
     public function sendNewAccountEmail(
         string $to,
         string $username,
         string $password,
-        string $fullname = '',
-        string $subject = 'Your new account information'
+        string $fullname = ''
     ): bool {
+        $subject = 'Your new account information';
+
         // Create both HTML and plain text versions of the email
         $htmlBody = $this->getNewAccountEmailHtml($username, $password, $fullname);
         $plainBody = $this->getNewAccountEmailPlain($username, $password, $fullname);
