@@ -94,16 +94,16 @@ class MailService implements MailServiceInterface
      * @param string $username User's username
      * @param string $password User's password
      * @param string $fullname User's full name (optional)
+     * @param string $subject Email subject (optional)
      * @return bool True if email was sent successfully, false otherwise
      */
     public function sendNewAccountEmail(
         string $to,
         string $username,
         string $password,
-        string $fullname = ''
+        string $fullname = '',
+        string $subject = 'Your new account information'
     ): bool {
-        $subject = $this->config->get('mail', 'password_email_subject', 'Your new account information');
-
         // Create both HTML and plain text versions of the email
         $htmlBody = $this->getNewAccountEmailHtml($username, $password, $fullname);
         $plainBody = $this->getNewAccountEmailPlain($username, $password, $fullname);
@@ -117,8 +117,7 @@ class MailService implements MailServiceInterface
     private function getNewAccountEmailHtml(string $username, string $password, string $fullname): string
     {
         $greeting = empty($fullname) ? 'Hello' : "Hello $fullname";
-        $emailTitle = $this->config->get('mail', 'email_title', 'Your DNS Account Information');
-        $emailSignature = $this->config->get('mail', 'email_signature', 'DNS Admin');
+        $appName = $this->config->get('interface', 'title', 'Poweradmin');
 
         return '<!DOCTYPE html>
 <html>
@@ -126,23 +125,30 @@ class MailService implements MailServiceInterface
     <meta charset="UTF-8">
     <title>Your Account Information</title>
 </head>
-<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-    <h2 style="color: #2c3e50;">' . htmlspecialchars($emailTitle) . '</h2>
-    <p>' . $greeting . ',</p>
-    <p>Your account has been created. Here are your login details:</p>
-    <table style="border-collapse: collapse; width: 100%; margin: 20px 0; border: 1px solid #ddd;">
-        <tr>
-            <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><strong>Username:</strong></td>
-            <td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($username) . '</td>
-        </tr>
-        <tr>
-            <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><strong>Password:</strong></td>
-            <td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($password) . '</td>
-        </tr>
-    </table>
-    <p>For security reasons, please change your password after your first login.</p>
-    <p>If you have any questions, please contact your administrator.</p>
-    <p>Thank you,<br>' . htmlspecialchars($emailSignature) . '</p>
+<body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333;">
+    <div style="max-width: 600px; margin: 0 auto; padding: 20px;">
+        <h2 style="color: #2c3e50;">Your Account Information</h2>
+        <p>' . $greeting . ',</p>
+        <p>Your account has been created. Here are your login details:</p>
+        <table style="border-collapse: collapse; width: 100%; margin: 20px 0; border: 1px solid #ddd;">
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><strong>Username:</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($username) . '</td>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ddd; background-color: #f9f9f9;"><strong>Password:</strong></td>
+                <td style="padding: 10px; border: 1px solid #ddd;">' . htmlspecialchars($password) . '</td>
+            </tr>
+        </table>
+        <p>For security reasons, please change your password after your first login.</p>
+        <p>If you have any questions, please contact your administrator.</p>
+        
+        <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+        
+        <p style="font-size: 12px; color: #777;">
+            This is an automated message from ' . htmlspecialchars($appName) . '. Please do not reply to this email.
+        </p>
+    </div>
 </body>
 </html>';
     }
@@ -153,8 +159,7 @@ class MailService implements MailServiceInterface
     private function getNewAccountEmailPlain(string $username, string $password, string $fullname): string
     {
         $greeting = empty($fullname) ? 'Hello' : "Hello $fullname";
-        $emailTitle = $this->config->get('mail', 'email_title', 'Your DNS Account Information');
-        $emailSignature = $this->config->get('mail', 'email_signature', 'DNS Admin');
+        $appName = $this->config->get('interface', 'title', 'Poweradmin');
 
         return $greeting . ",\n\n" .
             "Your account has been created. Here are your login details:\n\n" .
@@ -162,8 +167,8 @@ class MailService implements MailServiceInterface
             "Password: " . $password . "\n\n" .
             "For security reasons, please change your password after your first login.\n\n" .
             "If you have any questions, please contact your administrator.\n\n" .
-            "Thank you,\n" .
-            $emailSignature;
+            "---\n" .
+            "This is an automated message from " . $appName . ". Please do not reply to this email.";
     }
 
     /**

@@ -188,11 +188,6 @@ return [
 
         // Sendmail settings
         'sendmail_path' => '/usr/sbin/sendmail -bs', // Path to sendmail binary
-
-        // Email templates
-        'password_email_subject' => 'Your new account information',
-        'email_signature' => 'DNS Admin',
-        'email_title' => 'Your DNS Account Information'
     ],
 
     /**

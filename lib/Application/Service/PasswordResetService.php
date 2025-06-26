@@ -209,6 +209,7 @@ class PasswordResetService
     private function getEmailBodyHtml(string $name, string $resetUrl, int $expireMinutes): string
     {
         $greeting = $name ? "Hi $name," : "Hi,";
+        $appName = $this->config->get('interface', 'title', 'Poweradmin');
 
         return <<<HTML
 <!DOCTYPE html>
@@ -239,7 +240,7 @@ class PasswordResetService
         <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
         
         <p style="font-size: 12px; color: #777;">
-            This is an automated message from Poweradmin. Please do not reply to this email.
+            This is an automated message from $appName. Please do not reply to this email.
         </p>
     </div>
 </body>
@@ -253,6 +254,7 @@ HTML;
     private function getEmailBodyPlain(string $name, string $resetUrl, int $expireMinutes): string
     {
         $greeting = $name ? "Hi $name," : "Hi,";
+        $appName = $this->config->get('interface', 'title', 'Poweradmin');
 
         return $greeting . "\n\n" .
             "We received a request to reset your password. If you made this request, please copy and paste the link below into your browser to reset your password:\n\n" .
@@ -260,7 +262,7 @@ HTML;
             "This link will expire in $expireMinutes minutes.\n\n" .
             "If you did not request a password reset, please ignore this email. Your password will remain unchanged.\n\n" .
             "---\n" .
-            "This is an automated message from Poweradmin. Please do not reply to this email.";
+            "This is an automated message from " . $appName . ". Please do not reply to this email.";
     }
 
     /**
