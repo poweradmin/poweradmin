@@ -3,10 +3,12 @@
 /config/settings.php
 /scripts
 /templates/*
-/templates/default/custom
+/templates/default/custom/*
 !/templates/default
 !/templates/emails
-/templates/emails/custom/
+/templates/emails/custom/*
+!/templates/emails/custom/README.md
+!/templates/default/custom/README.md
 
 # OS generated files
 .DS_Store
