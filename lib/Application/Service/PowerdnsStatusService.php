@@ -98,7 +98,7 @@ class PowerdnsStatusService
                         $metricsUrl = "{$parsedUrl['scheme']}://{$parsedUrl['host']}:{$port}/metrics";
 
                         // Validate URL before fetching to prevent path traversal
-                        if (filter_var($metricsUrl, FILTER_VALIDATE_URL) !== false) {
+                        if ($this->isSecureUrl($metricsUrl)) {
                             // Fetch metrics in Prometheus format
                             $rawMetrics = @file_get_contents($metricsUrl);
                             if ($rawMetrics !== false) {
@@ -419,5 +419,21 @@ class PowerdnsStatusService
         }
 
         return $categories;
+    }
+
+    /**
+     * Validates that a URL uses only secure HTTP/HTTPS schemes
+     *
+     * @param string $url The URL to validate
+     * @return bool True if URL is valid and uses HTTP/HTTPS scheme
+     */
+    private function isSecureUrl(string $url): bool
+    {
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            return false;
+        }
+
+        $parsedUrl = parse_url($url);
+        return isset($parsedUrl['scheme']) && in_array($parsedUrl['scheme'], ['http', 'https'], true);
     }
 }
