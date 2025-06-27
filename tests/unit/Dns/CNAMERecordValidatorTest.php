@@ -41,7 +41,20 @@ class CNAMERecordValidatorTest extends TestCase
     {
         $this->configMock = $this->createMock(ConfigurationManager::class);
         $this->configMock->method('get')
-            ->willReturn('example.com');
+            ->willReturnCallback(function ($section, $key) {
+                // Mock DNS validation settings to their default values
+                if ($section === 'dns') {
+                    switch ($key) {
+                        case 'top_level_tld_check':
+                            return false;
+                        case 'strict_tld_check':
+                            return false;
+                        default:
+                            return 'example.com';
+                    }
+                }
+                return 'example.com';
+            });
 
         $this->dbMock = $this->createMock(PDOCommon::class);
 
@@ -344,5 +357,63 @@ class CNAMERecordValidatorTest extends TestCase
         $result = $method->invoke($this->validator, 'example.com', 'example.com');
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('Empty CNAME records', $result->getFirstError());
+    }
+
+    public function testValidateWithInvalidFqdnTarget()
+    {
+        $content = 'www'; // Invalid: single-label name
+        $name = 'alias.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('CNAME target must be a fully qualified domain name', $result->getFirstError());
+    }
+
+    public function testValidateWithInvalidTldTarget()
+    {
+        $content = 'www.123'; // Invalid: TLD should be letters only
+        $name = 'alias.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('CNAME target must be a fully qualified domain name', $result->getFirstError());
+    }
+
+    public function testValidateWithValidFqdnTarget()
+    {
+        $content = 'www.example.com'; // Valid FQDN
+        $name = 'alias.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    public function testValidateWithRootTargetFqdn()
+    {
+        $content = '.'; // Valid: root zone
+        $name = 'alias.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 }

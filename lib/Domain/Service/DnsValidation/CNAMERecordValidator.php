@@ -119,6 +119,12 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         $contentData = $contentHostnameResult->getData();
         $content = $contentData['hostname'];
 
+        // 5a. Validate that target is a FQDN (RFC 1035 requirement)
+        $fqdnResult = $this->validateTargetFqdn($content);
+        if (!$fqdnResult->isValid()) {
+            return $fqdnResult;
+        }
+
         // 6. Check that zone does not have an empty CNAME RR
         if (!empty($zone)) {
             $emptyResult = $this->validateNotEmptyCnameRR($name, $zone);
@@ -271,6 +277,41 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
         if ($response) {
             return ValidationResult::failure(_('This is not a valid record. There already exists a CNAME with this name.'));
         }
+        return ValidationResult::success(true);
+    }
+
+    /**
+     * Validate that CNAME target is a Fully Qualified Domain Name (FQDN)
+     *
+     * According to RFC 1035, CNAME targets should be FQDNs to ensure proper DNS resolution.
+     * This prevents incomplete domain names like "www" which cannot be resolved.
+     *
+     * @param string $target CNAME target hostname
+     *
+     * @return ValidationResult ValidationResult containing success or error message
+     */
+    private function validateTargetFqdn(string $target): ValidationResult
+    {
+        // Special case: root zone (.) is valid
+        if ($target === '.') {
+            return ValidationResult::success(true);
+        }
+
+        // Split hostname into labels
+        $labels = explode('.', $target);
+        $labelCount = count($labels);
+
+        // FQDN must have at least 2 labels (e.g., "example.com", not single labels)
+        if ($labelCount < 2) {
+            return ValidationResult::failure(_('CNAME target must be a fully qualified domain name (FQDN). Single-label names are not allowed.'));
+        }
+
+        // Check if last label looks like a valid TLD (at least 2 characters, all letters)
+        $tld = end($labels);
+        if (strlen($tld) < 2 || !ctype_alpha($tld)) {
+            return ValidationResult::failure(_('CNAME target must be a fully qualified domain name (FQDN) with a valid top-level domain.'));
+        }
+
         return ValidationResult::success(true);
     }
 }
