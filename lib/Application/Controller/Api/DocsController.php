@@ -78,7 +78,7 @@ class DocsController extends BaseController
     {
         // Get the base URL for API docs
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $host = $this->getValidatedHost();
         $baseUrl = $protocol . '://' . $host;
         $apiJsonUrl = $baseUrl . '/api/docs/json';
 
@@ -153,5 +153,61 @@ class DocsController extends BaseController
     </script>
 </body>
 </html>';
+    }
+
+    /**
+     * Get validated and sanitized host from HTTP_HOST header
+     *
+     * @return string Safe hostname or localhost fallback
+     */
+    private function getValidatedHost(): string
+    {
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+
+        // Remove port number if present for validation
+        $hostOnly = preg_replace('/:\d+$/', '', $host);
+
+        // Validate hostname format
+        if (!$this->isValidHostname($hostOnly)) {
+            return 'localhost';
+        }
+
+        // Return the original host (including port) if validation passed
+        return $host;
+    }
+
+    /**
+     * Validate hostname format
+     *
+     * @param string $hostname The hostname to validate
+     * @return bool True if hostname is valid
+     */
+    private function isValidHostname(string $hostname): bool
+    {
+        // Check for valid hostname format
+        if (!filter_var($hostname, FILTER_VALIDATE_DOMAIN, FILTER_FLAG_HOSTNAME)) {
+            // Fallback validation for IP addresses
+            if (!filter_var($hostname, FILTER_VALIDATE_IP)) {
+                return false;
+            }
+        }
+
+        // Additional security checks
+        if (strlen($hostname) > 253) {
+            return false;
+        }
+
+        // Prevent obviously malicious patterns
+        if (
+            strpos($hostname, '\'') !== false ||
+            strpos($hostname, '"') !== false ||
+            strpos($hostname, '<') !== false ||
+            strpos($hostname, '>') !== false ||
+            strpos($hostname, ';') !== false
+        ) {
+            return false;
+        }
+
+        return true;
     }
 }
