@@ -166,9 +166,13 @@ class DeleteRecordsController extends BaseController
 
         // Check if this was submitted from a zone edit page
         if (isset($_POST['zone_id']) && is_numeric($_POST['zone_id'])) {
-            $redirectPage = 'edit';
-            $messageKey = 'edit';
-            $redirectParams['id'] = $_POST['zone_id'];
+            $zone_id = (int) $_POST['zone_id'];
+            // Validate zone exists
+            if ($dnsRecord->getZoneInfoFromId($zone_id) !== null) {
+                $redirectPage = 'edit';
+                $messageKey = 'edit';
+                $redirectParams['id'] = $zone_id;
+            }
         }
 
         if ($deleted_count > 0) {
@@ -218,9 +222,13 @@ class DeleteRecordsController extends BaseController
 
             // Check if this was submitted from a zone edit page
             if (isset($_POST['zone_id']) && is_numeric($_POST['zone_id'])) {
-                $redirectPage = 'edit';
-                $messageKey = 'edit';
-                $redirectParams['id'] = $_POST['zone_id'];
+                $zone_id = (int) $_POST['zone_id'];
+                // Validate zone exists
+                if ($dnsRecord->getZoneInfoFromId($zone_id) !== null) {
+                    $redirectPage = 'edit';
+                    $messageKey = 'edit';
+                    $redirectParams['id'] = $zone_id;
+                }
             }
 
             $this->setMessage($messageKey, 'error', _('No valid records selected for deletion or you lack permission to delete them.'));
