@@ -228,6 +228,11 @@ class RdapService
             return null;
         }
 
+        $parsedUrl = parse_url($url);
+        if (!isset($parsedUrl['scheme']) || !in_array($parsedUrl['scheme'], ['http', 'https'], true)) {
+            return null;
+        }
+
         $context = stream_context_create($options);
         $response = @file_get_contents($url, false, $context);
 
