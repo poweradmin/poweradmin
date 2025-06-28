@@ -84,9 +84,6 @@ class JsonController extends BaseController
             // Set response headers
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            $response->headers->set('Access-Control-Allow-Origin', '*');
-            $response->headers->set('Access-Control-Allow-Methods', 'GET, OPTIONS');
-            $response->headers->set('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-API-Key');
             $response->setContent($jsonContent);
             $response->send();
         } catch (\Exception $e) {
