@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -41,6 +42,7 @@ class LdapAuthenticator extends LoggingService
     private AuthenticationService $authenticationService;
     private CsrfTokenService $csrfTokenService;
     private LoginAttemptService $loginAttemptService;
+    private UserContextService $userContextService;
     private array $serverParams;
 
     public function __construct(
@@ -51,6 +53,7 @@ class LdapAuthenticator extends LoggingService
         CsrfTokenService $csrfTokenService,
         Logger $logger,
         LoginAttemptService $loginAttemptService,
+        UserContextService $userContextService,
         array $serverParams = []
     ) {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
@@ -62,6 +65,7 @@ class LdapAuthenticator extends LoggingService
         $this->authenticationService = $authService;
         $this->csrfTokenService = $csrfTokenService;
         $this->loginAttemptService = $loginAttemptService;
+        $this->userContextService = $userContextService;
         $this->serverParams = $serverParams ?: $_SERVER;
     }
 
@@ -72,7 +76,7 @@ class LdapAuthenticator extends LoggingService
         // Get the client IP using the IpAddressRetriever
         $ipRetriever = new IpAddressRetriever($this->serverParams);
         $ipAddress = $ipRetriever->getClientIp() ?: '0.0.0.0';
-        $username = $_SESSION["userlogin"] ?? '';
+        $username = $this->userContextService->getLoggedInUsername() ?? '';
 
         // Check if the account is locked
         if ($this->loginAttemptService->isAccountLocked($username, $ipAddress)) {
@@ -92,7 +96,7 @@ class LdapAuthenticator extends LoggingService
         $ldap_debug = $this->configManager->get('ldap', 'debug', false);
         $ldap_user_attribute = $this->configManager->get('ldap', 'user_attribute', 'uid');
 
-        if (!isset($_SESSION["userlogin"]) || !isset($_SESSION["userpwd"])) {
+        if (!$this->userContextService->hasSessionData("userlogin") || !$this->userContextService->hasSessionData("userpwd")) {
             $this->logWarning('Session variables userlogin or userpwd are not set.');
             $sessionEntity = new SessionEntity('', 'danger');
             $this->authenticationService->auth($sessionEntity);
@@ -134,9 +138,13 @@ class LdapAuthenticator extends LoggingService
         }
 
         $attributes = array($ldap_user_attribute, 'dn');
+
+        // Properly escape user input to prevent LDAP injection
+        $escaped_userlogin = ldap_escape($this->userContextService->getLoggedInUsername(), '', LDAP_ESCAPE_FILTER);
+
         $filter = $ldap_search_filter
-            ? "(&($ldap_user_attribute={$_SESSION['userlogin']})$ldap_search_filter)"
-            : "($ldap_user_attribute={$_SESSION['userlogin']})";
+            ? "(&($ldap_user_attribute=$escaped_userlogin)$ldap_search_filter)"
+            : "($ldap_user_attribute=$escaped_userlogin)";
 
         if ($ldap_debug) {
             echo "<div class=\"container\"><pre>";
@@ -175,9 +183,9 @@ class LdapAuthenticator extends LoggingService
         $user_dn = $entries[0]["dn"];
 
         $passwordEncryptionService = new PasswordEncryptionService($session_key);
-        $session_pass = $passwordEncryptionService->decrypt($_SESSION['userpwd']);
+        $session_pass = $passwordEncryptionService->decrypt($this->userContextService->getSessionData('userpwd'));
         if (!@ldap_bind($ldapconn, $user_dn, $session_pass)) {
-            $this->logWarning('LDAP authentication failed for user {username}', ['username' => $_SESSION['userlogin']]);
+            $this->logWarning('LDAP authentication failed for user {username}', ['username' => $username]);
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->logFailedIncorrectPass();
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, false);
@@ -192,12 +200,12 @@ class LdapAuthenticator extends LoggingService
 
         $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
         $stmt->execute([
-            'username' => $_SESSION["userlogin"]
+            'username' => $username
         ]);
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$rowObj) {
-            $this->logWarning('No active LDAP user found with the provided username: {username}', ['username' => $_SESSION["userlogin"]]);
+            $this->logWarning('No active LDAP user found with the provided username: {username}', ['username' => $username]);
             if (isset($_POST["authenticate"])) {
                 $this->ldapUserEventLogger->logFailedUserInactive();
             }
@@ -208,15 +216,15 @@ class LdapAuthenticator extends LoggingService
         }
 
         session_regenerate_id(true);
-        $this->logInfo('Session ID regenerated for user {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logInfo('Session ID regenerated for user {username}', ['username' => $username]);
 
-        $_SESSION['userid'] = $rowObj['id'];
-        $_SESSION['name'] = $rowObj['fullname'];
-        $_SESSION['auth_used'] = 'ldap';
+        $this->userContextService->setSessionData('userid', $rowObj['id']);
+        $this->userContextService->setSessionData('name', $rowObj['fullname']);
+        $this->userContextService->setSessionData('auth_used', 'ldap');
 
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
-            $this->logInfo('CSRF token generated for user {username}', ['username' => $_SESSION["userlogin"]]);
+        if (!$this->userContextService->hasSessionData('csrf_token')) {
+            $this->userContextService->setSessionData('csrf_token', $this->csrfTokenService->generateToken());
+            $this->logInfo('CSRF token generated for user {username}', ['username' => $username]);
         }
 
         if (isset($_POST['authenticate'])) {
@@ -225,6 +233,6 @@ class LdapAuthenticator extends LoggingService
             $this->authenticationService->redirectToIndex();
         }
 
-        $this->logInfo('LDAP authentication process completed successfully for user {username}', ['username' => $_SESSION["userlogin"]]);
+        $this->logInfo('LDAP authentication process completed successfully for user {username}', ['username' => $username]);
     }
 }

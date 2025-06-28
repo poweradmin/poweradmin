@@ -2,6 +2,7 @@
 
 namespace unit;
 
+use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -10,7 +11,7 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 class TableNameServiceEnumTest extends TestCase
 {
     private TableNameService $service;
-    private ConfigurationManager $mockConfig;
+    private ConfigurationManager&MockObject $mockConfig;
 
     protected function setUp(): void
     {

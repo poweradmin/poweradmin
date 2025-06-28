@@ -77,6 +77,7 @@ class SessionAuthenticator extends LoggingService
         $this->loginAttemptService = new LoginAttemptService($connection, $this->configManager);
         $this->recaptchaService = new RecaptchaService($configManager);
 
+        $userContextService = new \Poweradmin\Domain\Service\UserContextService();
         $this->ldapAuthenticator = new LdapAuthenticator(
             $connection,
             $configManager,
@@ -84,7 +85,8 @@ class SessionAuthenticator extends LoggingService
             $this->authService,
             $this->csrfTokenService,
             $this->logger,
-            $this->loginAttemptService
+            $this->loginAttemptService,
+            $userContextService
         );
         $this->sqlAuthenticator = new SqlAuthenticator(
             $connection,

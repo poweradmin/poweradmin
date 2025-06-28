@@ -91,6 +91,7 @@ class BasicAuthenticationMiddleware
         // Create LDAP authenticator only if LDAP is enabled
         if ($this->config->get('ldap', 'enabled', false)) {
             $ldapUserEventLogger = new \Poweradmin\Infrastructure\Logger\LdapUserEventLogger($db);
+            $userContextService = new \Poweradmin\Domain\Service\UserContextService();
             $this->ldapAuthenticator = new LdapAuthenticator(
                 $db,
                 $this->config,
@@ -98,7 +99,8 @@ class BasicAuthenticationMiddleware
                 $authService,
                 $csrfTokenService,
                 $logger,
-                $loginAttemptService
+                $loginAttemptService,
+                $userContextService
             );
         } else {
             $this->ldapAuthenticator = null;
