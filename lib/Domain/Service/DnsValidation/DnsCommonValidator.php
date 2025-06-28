@@ -26,6 +26,8 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
  * Common DNS validation functions shared across record types
@@ -89,8 +91,8 @@ class DnsCommonValidator
      */
     public function validateNonAliasTarget(string $target): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("SELECT id FROM $records_table
 				WHERE name = ? AND TYPE = ?");

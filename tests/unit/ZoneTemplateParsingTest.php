@@ -4,8 +4,8 @@ namespace unit;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Model\ZoneTemplate;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
-use unit\MockConfiguration;
 
 class ZoneTemplateParsingTest extends TestCase
 {
@@ -16,7 +16,22 @@ class ZoneTemplateParsingTest extends TestCase
     protected function setUp(): void
     {
         $this->mockDb = $this->createMock(PDOCommon::class);
-        $this->mockConfig = new MockConfiguration();
+        $this->mockConfig = $this->createMock(ConfigurationManager::class);
+
+        // Configure the mock to return expected values for the DNS settings
+        $this->mockConfig->method('get')
+            ->willReturnMap([
+                ['dns', 'ns1', null, 'ns1.example.com'],
+                ['dns', 'ns2', null, 'ns2.example.com'],
+                ['dns', 'ns3', null, 'ns3.example.com'],
+                ['dns', 'ns4', null, 'ns4.example.com'],
+                ['dns', 'hostmaster', null, 'hostmaster.example.com'],
+                ['dns', 'soa_refresh', null, 28800],
+                ['dns', 'soa_retry', null, 7200],
+                ['dns', 'soa_expire', null, 604800],
+                ['dns', 'soa_minimum', null, 86400],
+                ['database', 'pdns_db_name', null, null],
+            ]);
 
         $this->zoneTemplate = new ZoneTemplate($this->mockDb, $this->mockConfig);
     }

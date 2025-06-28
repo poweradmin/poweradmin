@@ -33,6 +33,8 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
  * Service class for managing domains/zones
@@ -92,9 +94,9 @@ class DomainManager implements DomainManagerInterface
             $dns_ttl = $this->config->get('dns', 'ttl');
             $db_type = $this->config->get('database', 'type');
 
-            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-            $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+            $tableNameService = new TableNameService($this->config);
+            $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
+            $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
             if (
                 ($domain && $owner && $zone_template) ||
@@ -227,9 +229,9 @@ class DomainManager implements DomainManagerInterface
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $id);
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
             $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
@@ -260,9 +262,9 @@ class DomainManager implements DomainManagerInterface
     public function deleteDomains(array $domains): bool
     {
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? "$pdns_db_name.domains" : "domains";
-        $records_table = $pdns_db_name ? "$pdns_db_name.records" : "records";
+        $tableNameService = new TableNameService($this->config);
+        $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         $this->db->beginTransaction();
 
@@ -320,8 +322,8 @@ class DomainManager implements DomainManagerInterface
      */
     public function changeZoneType(string $type, int $id): void
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+        $tableNameService = new TableNameService($this->config);
+        $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
 
         $add = '';
         $params = array(':type' => $type, ':id' => $id);
@@ -349,8 +351,8 @@ class DomainManager implements DomainManagerInterface
     public function changeZoneSlaveMaster(int $zone_id, string $ip_slave_master)
     {
         if ($this->ipAddressValidator->areMultipleValidIPs($ip_slave_master)) {
-            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+            $tableNameService = new TableNameService($this->config);
+            $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
 
             $stmt = $this->db->prepare("UPDATE $domains_table SET master = ? WHERE id = ?");
             $stmt->execute(array($ip_slave_master, $zone_id));
@@ -462,8 +464,8 @@ class DomainManager implements DomainManagerInterface
         $soa_rec = $this->soaRecordManager->getSOARecord($zone_id);
         $this->db->beginTransaction();
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         if ($zone_template_id != 0) {
             if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {

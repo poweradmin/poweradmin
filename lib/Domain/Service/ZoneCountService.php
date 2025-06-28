@@ -27,6 +27,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
  * Zone counting service
@@ -62,7 +63,7 @@ class ZoneCountService
      */
     public function countZones(string $perm, string $letterstart = 'all', string $zone_type = 'forward'): int
     {
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $tables = $domains_table;
         $conditions = [];

@@ -26,6 +26,8 @@ use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 class PdnsUtilProvider implements DnssecProvider
 {
@@ -186,10 +188,10 @@ class PdnsUtilProvider implements DnssecProvider
     public function isZoneSecured(string $zoneName, $config): bool
     {
         // Use our own configuration instance instead of the passed one
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $cryptokeys_table = $pdns_db_name ? $pdns_db_name . '.cryptokeys' : 'cryptokeys';
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-        $domainmetadata_table = $pdns_db_name ? $pdns_db_name . '.domainmetadata' : 'domainmetadata';
+        $tableNameService = new TableNameService($this->config);
+        $cryptokeys_table = $tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
+        $domainmetadata_table = $tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
         $query = $this->db->prepare("SELECT
                   COUNT($cryptokeys_table.id) AS active_keys,

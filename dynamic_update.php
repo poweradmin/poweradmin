@@ -9,14 +9,16 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DynamicDnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 // Main execution code
 $config = ConfigurationManager::getInstance();
 $config->initialize();
 
 $db_type = $config->get('database', 'type');
-$pdns_db_name = $config->get('database', 'pdns_db_name');
-$records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+$tableNameService = new TableNameService($config);
+$records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
 $credentials = [
     'db_host' => $config->get('database', 'host'),

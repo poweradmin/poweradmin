@@ -41,6 +41,8 @@ use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Repository\DomainRepository;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -49,6 +51,7 @@ class ZonesRecordsController extends PublicApiController
     private DbZoneRepository $zoneRepository;
     private RecordRepository $recordRepository;
     private RecordManagerInterface $recordManager;
+    private TableNameService $tableNameService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -56,6 +59,7 @@ class ZonesRecordsController extends PublicApiController
 
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
+        $this->tableNameService = new TableNameService($this->getConfig());
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
@@ -631,9 +635,7 @@ class ZonesRecordsController extends PublicApiController
     private function createRecordDirect(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority): bool
     {
         try {
-            $config = $this->getConfig();
-            $pdns_db_name = $config->get('database', 'pdns_db_name');
-            $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+            $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
             // Basic record validation
             if (empty($name) || empty($type) || empty($content)) {
@@ -685,9 +687,7 @@ class ZonesRecordsController extends PublicApiController
     private function updateSOASerial(int $zoneId): void
     {
         try {
-            $config = $this->getConfig();
-            $pdns_db_name = $config->get('database', 'pdns_db_name');
-            $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+            $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
             // Get current SOA record
             $query = "SELECT content FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'";

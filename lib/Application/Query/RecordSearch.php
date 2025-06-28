@@ -24,6 +24,8 @@ namespace Poweradmin\Application\Query;
 
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 class RecordSearch extends BaseSearch
 {
@@ -100,9 +102,9 @@ class RecordSearch extends BaseSearch
     ): array {
         $offset = ($page - 1) * $iface_rowamount;
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-        $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+        $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
 
         $db_type = $this->config->get('database', 'type');
         $sort_records_by = $sort_records_by === 'name' ? SortHelper::getRecordSortOrder($records_table, $db_type, $record_sort_direction) : "$sort_records_by $record_sort_direction";
@@ -203,9 +205,9 @@ class RecordSearch extends BaseSearch
      */
     public function getFoundRecords(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view, bool $iface_search_group_records): int
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
-        $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
+        $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
         $groupByClause = $iface_search_group_records ? "GROUP BY $records_table.name, $records_table.content" : '';
 
         // Prepare query parameters

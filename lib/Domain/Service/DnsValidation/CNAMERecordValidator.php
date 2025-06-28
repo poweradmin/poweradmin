@@ -26,6 +26,7 @@ use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
  * Validator for CNAME DNS records
@@ -189,7 +190,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameUnique(string $name, int $rid): ValidationResult
     {
-        $records_table = $this->tableNameService->getPdnsTable('records');
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // Check if there are any records with this name
         if ($rid > 0) {
@@ -220,7 +221,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     private function validateCnameName(string $name): ValidationResult
     {
-        $records_table = $this->tableNameService->getPdnsTable('records');
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT id FROM $records_table WHERE content = ? AND (type = ? OR type = ?)";
         $stmt = $this->db->prepare($query);
@@ -261,7 +262,7 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
      */
     public function validateCnameExistence(string $name, int $rid): ValidationResult
     {
-        $records_table = $this->tableNameService->getPdnsTable('records');
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         if ($rid > 0) {
             $query = "SELECT id FROM $records_table WHERE name = ? AND TYPE = 'CNAME' AND id != ?";

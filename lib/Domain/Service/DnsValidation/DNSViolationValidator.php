@@ -26,6 +26,8 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
  * DNS Violation Validator
@@ -123,8 +125,8 @@ class DNSViolationValidator
      */
     private function checkDuplicateCNAME(int $recordId, int $zoneId, string $name): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         // Using native PDO parameter binding for security
         if ($recordId > 0) {
@@ -170,8 +172,8 @@ class DNSViolationValidator
      */
     private function checkCNAMEConflictsWithOtherTypes(int $recordId, int $zoneId, string $name): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         if ($recordId > 0) {
             $query = "SELECT type FROM $records_table
@@ -218,8 +220,8 @@ class DNSViolationValidator
      */
     private function validateConflictsWithCNAME(int $recordId, int $zoneId, string $name): ValidationResult
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         if ($recordId > 0) {
             $query = "SELECT id FROM $records_table

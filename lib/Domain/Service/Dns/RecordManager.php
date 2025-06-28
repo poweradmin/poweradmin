@@ -36,6 +36,8 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
  * Service class for managing DNS records
@@ -157,8 +159,8 @@ class RecordManager implements RecordManagerInterface
 
         $this->db->beginTransaction();
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) VALUES (:zone_id, :name, :type, :content, :ttl, :prio)";
         $stmt = $this->db->prepare($query);
@@ -254,8 +256,8 @@ class RecordManager implements RecordManagerInterface
                 $validatedTtl = $validatedData['ttl'];
                 $validatedPrio = $validatedData['prio'];
 
-                $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-                $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+                $tableNameService = new TableNameService($this->config);
+                $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
                 $stmt = $this->db->prepare("UPDATE $records_table
                 SET name = ?, type = ?, content = ?, ttl = ?, prio = ?, disabled = ?
@@ -301,8 +303,8 @@ class RecordManager implements RecordManagerInterface
                 }
 
                 // Admins and regular zone owners can delete SOA records
-                $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-                $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+                $tableNameService = new TableNameService($this->config);
+                $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
                 $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = ?");
                 $stmt->execute([$rid]);
@@ -312,8 +314,8 @@ class RecordManager implements RecordManagerInterface
                 $this->messageService->addSystemError(_('You do not have the permission to delete NS records.'));
                 return false;
             } else {
-                $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-                $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+                $tableNameService = new TableNameService($this->config);
+                $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
                 $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = ?");
                 $stmt->execute([$rid]);

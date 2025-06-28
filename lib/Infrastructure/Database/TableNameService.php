@@ -33,18 +33,29 @@ class TableNameService
         $this->pdnsDbName = $config->get('database', 'pdns_db_name');
     }
 
-    public function getPdnsTable(string $tableName): string
+    /**
+     * Get table name with prefix using enum (preferred method)
+     *
+     * @param PdnsTable $table Table enum
+     * @return string Full table name with prefix if configured
+     */
+    public function getTable(PdnsTable $table): string
     {
-        $pdnsTables = [
-            'domains', 'records', 'supermasters', 'comments',
-            'domainmetadata', 'cryptokeys', 'tsigkeys'
-        ];
+        return $table->getFullName($this->pdnsDbName);
+    }
 
-        if (!in_array($tableName, $pdnsTables, true)) {
-            throw new \InvalidArgumentException("Table name not allowed for prefixing: $tableName");
-        }
-
-        return $this->pdnsDbName ? $this->pdnsDbName . '.' . $tableName : $tableName;
+    /**
+     * Get multiple table names at once using enums
+     *
+     * @param PdnsTable ...$tables Variable number of table enums
+     * @return array<string> Array of full table names
+     */
+    public function getTables(PdnsTable ...$tables): array
+    {
+        return array_map(
+            fn(PdnsTable $table) => $table->getFullName($this->pdnsDbName),
+            $tables
+        );
     }
 
     public function validateOrderBy(string $column, array $allowedColumns): string

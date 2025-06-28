@@ -1376,6 +1376,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Infrastructure\\Database\\DbCompat' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DbCompat.php',
         'Poweradmin\\Infrastructure\\Database\\PDOCommon' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/PDOCommon.php',
         'Poweradmin\\Infrastructure\\Database\\PDODatabaseConnection' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/PDODatabaseConnection.php',
+        'Poweradmin\\Infrastructure\\Database\\PdnsTable' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/PdnsTable.php',
         'Poweradmin\\Infrastructure\\Database\\TableNameService' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/TableNameService.php',
         'Poweradmin\\Infrastructure\\Logger\\CompositeLegacyLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/CompositeLegacyLogger.php',
         'Poweradmin\\Infrastructure\\Logger\\DbUserLogger' => __DIR__ . '/../..' . '/lib/Infrastructure/Logger/DbUserLogger.php',

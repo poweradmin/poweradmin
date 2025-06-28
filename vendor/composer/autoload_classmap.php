@@ -1118,6 +1118,7 @@ return array(
     'Poweradmin\\Infrastructure\\Database\\DbCompat' => $baseDir . '/lib/Infrastructure/Database/DbCompat.php',
     'Poweradmin\\Infrastructure\\Database\\PDOCommon' => $baseDir . '/lib/Infrastructure/Database/PDOCommon.php',
     'Poweradmin\\Infrastructure\\Database\\PDODatabaseConnection' => $baseDir . '/lib/Infrastructure/Database/PDODatabaseConnection.php',
+    'Poweradmin\\Infrastructure\\Database\\PdnsTable' => $baseDir . '/lib/Infrastructure/Database/PdnsTable.php',
     'Poweradmin\\Infrastructure\\Database\\TableNameService' => $baseDir . '/lib/Infrastructure/Database/TableNameService.php',
     'Poweradmin\\Infrastructure\\Logger\\CompositeLegacyLogger' => $baseDir . '/lib/Infrastructure/Logger/CompositeLegacyLogger.php',
     'Poweradmin\\Infrastructure\\Logger\\DbUserLogger' => $baseDir . '/lib/Infrastructure/Logger/DbUserLogger.php',

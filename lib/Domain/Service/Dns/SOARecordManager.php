@@ -24,6 +24,8 @@ namespace Poweradmin\Domain\Service\Dns;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 /**
  * Service class for managing SOA records
@@ -54,8 +56,8 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function getSOARecord(int $zone_id): string
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("SELECT content FROM $records_table WHERE type = ? AND domain_id = ?");
         $stmt->execute(['SOA', $zone_id]);
@@ -172,8 +174,8 @@ class SOARecordManager implements SOARecordManagerInterface
      */
     public function updateSOARecord(int $domain_id, string $content): bool
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("UPDATE $records_table SET content = ? WHERE domain_id = ? AND type = ?");
         $stmt->execute([$content, $domain_id, 'SOA']);

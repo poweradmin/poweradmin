@@ -24,6 +24,8 @@ namespace Poweradmin\Application\Query;
 
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 class ZoneSearch extends BaseSearch
 {
@@ -109,9 +111,9 @@ class ZoneSearch extends BaseSearch
     ): array {
         $offset = ($page - 1) * $iface_rowamount;
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         $db_type = $this->config->get('database', 'type');
         $sort_zones_by = $sort_zones_by === 'name' ? SortHelper::getZoneSortOrder($domains_table, $db_type, $zone_sort_direction) : "$sort_zones_by $zone_sort_direction";
@@ -185,9 +187,9 @@ class ZoneSearch extends BaseSearch
      */
     public function getFoundZones(array $parameters, mixed $search_string, bool $reverse, mixed $reverse_search_string, string $permission_view): int
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $domains_table = $tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         // Prepare query parameters
         $params = [];

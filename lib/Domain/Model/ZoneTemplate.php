@@ -27,6 +27,8 @@ use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DomainParsingService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 /**
@@ -45,6 +47,7 @@ class ZoneTemplate
     private MessageService $messageService;
     private DnsCommonValidator $dnsCommonValidator;
     private DomainParsingService $domainParsingService;
+    private TableNameService $tableNameService;
 
     public function __construct(PDOCommon $db, ConfigurationInterface $config)
     {
@@ -54,6 +57,7 @@ class ZoneTemplate
         $this->messageService = new MessageService();
         $this->dnsCommonValidator = new DnsCommonValidator($db, $config);
         $this->domainParsingService = new DomainParsingService();
+        $this->tableNameService = new TableNameService($config);
     }
 
     /**
@@ -686,9 +690,8 @@ class ZoneTemplate
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $params = [':zone_templ_id' => $zone_templ_id];
         $sql_add = '';
@@ -738,9 +741,8 @@ class ZoneTemplate
     {
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $params = [':zone_templ_id' => $zone_templ_id];
         $sql_add = '';
@@ -856,8 +858,7 @@ class ZoneTemplate
         }
 
         try {
-            $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-            $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
+            $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
             $placeholders = str_repeat('?,', count($zone_ids) - 1) . '?';
             $stmt = $this->db->prepare("SELECT d.id, d.name, d.type 

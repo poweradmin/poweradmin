@@ -26,6 +26,8 @@ use PDO;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 class DbRecordCommentRepository implements RecordCommentRepositoryInterface
 {
@@ -35,8 +37,8 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
     public function __construct(PDO $connection, ConfigurationManager $config)
     {
         $this->connection = $connection;
-        $pdns_db_name = $config->get('database', 'pdns_db_name');
-        $this->comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
+        $tableNameService = new TableNameService($config);
+        $this->comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
     }
 
     public function add(RecordComment $comment): RecordComment

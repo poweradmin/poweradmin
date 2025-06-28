@@ -27,6 +27,8 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 class ReverseRecordCreator
 {
@@ -109,8 +111,8 @@ class ReverseRecordCreator
             return false;
         }
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         // Look for a PTR record pointing to this name
         $query = "SELECT id, domain_id FROM $records_table 
@@ -160,8 +162,8 @@ class ReverseRecordCreator
         // Determine record type based on IP address format
         $recordType = filter_var($ipAddress, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4) ? RecordType::A : RecordType::AAAA;
 
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         // Remove trailing dot from PTR content if present
         $hostname = rtrim($ptrContent, '.');
@@ -292,8 +294,8 @@ class ReverseRecordCreator
      */
     private function ptrRecordExists(int $zone_id, string $name, string $content): bool
     {
-        $pdns_db_name = $this->config->get('database', 'pdns_db_name');
-        $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
+        $tableNameService = new TableNameService($this->config);
+        $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT COUNT(*) FROM $records_table 
                   WHERE domain_id = :zone_id 

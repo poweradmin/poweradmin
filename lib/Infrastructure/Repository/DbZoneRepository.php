@@ -28,6 +28,7 @@ use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Utility\NaturalSorting;
 use Poweradmin\Infrastructure\Utility\ReverseDomainNaturalSorting;
 use Poweradmin\Infrastructure\Utility\ReverseZoneSorting;
@@ -58,7 +59,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     public function getDistinctStartingLetters(int $userId, bool $viewOthers): array
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT DISTINCT LOWER(" . DbCompat::substr($this->db_type) . "($domains_table.name, 1, 1)) AS letter FROM $domains_table";
 
@@ -112,10 +113,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $sortBy = $this->tableNameService->validateOrderBy($sortBy, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
 
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
-        $records_table = $this->tableNameService->getPdnsTable('records');
-        $cryptokeys_table = $this->tableNameService->getPdnsTable('cryptokeys');
-        $domainmetadata_table = $this->tableNameService->getPdnsTable('domainmetadata');
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
         // Determine what fields to select
         if ($countOnly) {
@@ -286,7 +287,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getDomainNameById(int $zoneId): ?string
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT name FROM $domains_table WHERE id = :id";
         $stmt = $this->db->prepare($query);
@@ -309,10 +310,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function listZones(?int $userId = null, bool $viewOthers = false, array $filters = [], int $offset = 0, int $limit = 100): array
     {
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
-        $records_table = $this->tableNameService->getPdnsTable('records');
-        $cryptokeys_table = $this->tableNameService->getPdnsTable('cryptokeys');
-        $domainmetadata_table = $this->tableNameService->getPdnsTable('domainmetadata');
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
         $query = "SELECT
                 $domains_table.id,
@@ -405,7 +406,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function zoneExists(int $zoneId, ?int $userId = null): bool
     {
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT 1 FROM $domains_table";
 
@@ -436,10 +437,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getZone(int $zoneId): ?array
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
-        $records_table = $this->tableNameService->getPdnsTable('records');
-        $cryptokeys_table = $this->tableNameService->getPdnsTable('cryptokeys');
-        $domainmetadata_table = $this->tableNameService->getPdnsTable('domainmetadata');
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $cryptokeys_table = $this->tableNameService->getTable(PdnsTable::CRYPTOKEYS);
+        $domainmetadata_table = $this->tableNameService->getTable(PdnsTable::DOMAINMETADATA);
 
         // First get the zone details
         $query = "SELECT
@@ -487,7 +488,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getZoneByName(string $zoneName): ?array
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         // First find the zone ID
         $query = "SELECT id FROM $domains_table WHERE name = :name";
@@ -517,8 +518,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
             return [];
         }
 
-        $records_table = $this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records';
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         // Build placeholders for the IN clause
         $placeholders = implode(',', array_fill(0, count($reverseZoneIds), '?'));
@@ -558,7 +559,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function zoneIdExists(int $zoneId): bool
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT 1 FROM $domains_table WHERE id = :id";
         $stmt = $this->db->prepare($query);
@@ -576,7 +577,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getDomainType(int $zoneId): string
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT type FROM $domains_table WHERE id = :id";
         $stmt = $this->db->prepare($query);
@@ -595,7 +596,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getDomainSlaveMaster(int $zoneId): ?string
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT master FROM $domains_table WHERE id = :id";
         $stmt = $this->db->prepare($query);
@@ -729,7 +730,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function getZoneIdByName(string $zoneName): ?int
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT id FROM $domains_table WHERE name = :name";
         $stmt = $this->db->prepare($query);
@@ -752,7 +753,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function createDomain(string $domain, int $owner, string $type, string $slaveMaster = '', string $zoneTemplate = 'none'): bool
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         // Insert into domains table
         $query = "INSERT INTO $domains_table (name, type, master) VALUES (:name, :type, :master)";
@@ -785,8 +786,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function deleteZone(int $zoneId): bool
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
-        $records_table = $this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // Delete records first
         $query = "DELETE FROM $records_table WHERE domain_id = :domain_id";
@@ -817,7 +818,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
      */
     public function updateZone(int $zoneId, array $updates): bool
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $allowedFields = ['name', 'type', 'master'];
         $setClause = [];
@@ -842,8 +843,8 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     public function getAllZones(int $offset, int $limit): array
     {
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
-        $records_table = $this->tableNameService->getPdnsTable('records');
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT d.id, d.name, d.type, d.master,
                          COALESCE(z.owner, 0) as owner,
@@ -865,7 +866,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneCount(): int
     {
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT COUNT(*) FROM $domains_table";
         $stmt = $this->db->query($query);
@@ -875,14 +876,14 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
     public function getZoneById(int $zoneId): ?array
     {
-        $domains_table = $this->pdns_db_name ? $this->pdns_db_name . '.domains' : 'domains';
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $query = "SELECT d.id, d.name, d.type, d.master,
                          COALESCE(z.owner, 0) as owner,
                          COUNT(DISTINCT r.id) as record_count
                   FROM $domains_table d
                   LEFT JOIN zones z ON d.id = z.domain_id
-                  LEFT JOIN " . ($this->pdns_db_name ? $this->pdns_db_name . '.records' : 'records') . " r ON d.id = r.domain_id
+                  LEFT JOIN " . $this->tableNameService->getTable(PdnsTable::RECORDS) . " r ON d.id = r.domain_id
                   WHERE d.id = :id
                   GROUP BY d.id, d.name, d.type, d.master, z.owner";
 

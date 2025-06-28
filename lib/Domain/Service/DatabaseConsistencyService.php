@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 
 class DatabaseConsistencyService
 {
@@ -48,7 +49,7 @@ class DatabaseConsistencyService
      */
     public function checkZonesHaveOwners(): array
     {
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->query("
             SELECT d.id, d.name, z.owner
@@ -88,7 +89,7 @@ class DatabaseConsistencyService
      */
     public function checkSlaveZonesHaveMasters(): array
     {
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->query("
             SELECT d.id, d.name, d.master
@@ -128,8 +129,8 @@ class DatabaseConsistencyService
      */
     public function checkRecordsBelongToZones(): array
     {
-        $records_table = $this->tableNameService->getPdnsTable('records');
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->query("
             SELECT r.id, r.name, r.type, r.content, r.domain_id
@@ -171,8 +172,8 @@ class DatabaseConsistencyService
      */
     public function checkDuplicateSOARecords(): array
     {
-        $records_table = $this->tableNameService->getPdnsTable('records');
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $stmt = $this->db->query("
             SELECT domain_id, COUNT(*) as soa_count
@@ -218,8 +219,8 @@ class DatabaseConsistencyService
      */
     public function checkZonesWithoutSOA(): array
     {
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
-        $records_table = $this->tableNameService->getPdnsTable('records');
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->query("
             SELECT d.id, d.name, d.type
@@ -302,8 +303,8 @@ class DatabaseConsistencyService
      */
     public function deleteSlaveZone(int $zoneId): bool
     {
-        $records_table = $this->tableNameService->getPdnsTable('records');
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
         $this->db->beginTransaction();
         try {
@@ -335,7 +336,7 @@ class DatabaseConsistencyService
      */
     public function deleteOrphanedRecord(int $recordId): bool
     {
-        $records_table = $this->tableNameService->getPdnsTable('records');
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $stmt = $this->db->prepare("DELETE FROM $records_table WHERE id = :id");
         return $stmt->execute(['id' => $recordId]);
@@ -349,7 +350,7 @@ class DatabaseConsistencyService
      */
     public function fixDuplicateSOA(int $zoneId): bool
     {
-        $records_table = $this->tableNameService->getPdnsTable('records');
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $this->db->beginTransaction();
         try {
@@ -385,8 +386,8 @@ class DatabaseConsistencyService
      */
     public function createDefaultSOA(int $zoneId): bool
     {
-        $domains_table = $this->tableNameService->getPdnsTable('domains');
-        $records_table = $this->tableNameService->getPdnsTable('records');
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         // Get zone name
         $stmt = $this->db->prepare("SELECT name FROM $domains_table WHERE id = :id");
