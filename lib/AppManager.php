@@ -107,7 +107,7 @@ class AppManager
         } catch (Error $e) {
             error_log($e->getMessage());
             $messageService = new MessageService();
-            $messageService->displayDirectSystemError('An error occurred while rendering the template: ' . $e->getMessage());
+            $messageService->displayDirectSystemError('An error occurred while rendering the template. Please check the server logs for details.');
         }
     }
 
