@@ -369,8 +369,40 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('TTL must be greater than 0', 400);
             }
 
-            // For API usage, bypass permission checks and insert directly
-            $success = $this->createRecordDirect($zoneId, $name, $type, $content, $ttl, $priority);
+            // Validate the record using the validation service (bypass permission checks for API)
+            $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
+            $domainRepository = new DomainRepository($this->db, $this->getConfig());
+
+            // Get zone name for validation
+            $zoneName = $domainRepository->getDomainNameById($zoneId);
+
+            // Normalize the hostname
+            $hostnameValidator = new \Poweradmin\Domain\Service\DnsValidation\HostnameValidator($this->getConfig());
+            $normalizedName = $hostnameValidator->normalizeRecordName($name, $zoneName);
+
+            // Validate the record
+            $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
+            $dns_ttl = $this->getConfig()->get('dns', 'ttl');
+
+            $validationResult = $validationService->validateRecord(
+                -1,
+                $zoneId,
+                $type,
+                $content,
+                $normalizedName,
+                $priority,
+                $ttl,
+                $dns_hostmaster,
+                (int)$dns_ttl
+            );
+
+            if (!$validationResult->isValid()) {
+                $errorMessage = $validationResult->getFirstError();
+                return $this->returnApiError($errorMessage, 400);
+            }
+
+            // If validation passes, insert directly (API bypasses permission checks)
+            $success = $this->insertRecordDirect($zoneId, $normalizedName, $type, $content, $ttl, $priority);
 
             if (!$success) {
                 return $this->returnApiError('Failed to create record', 500);
@@ -622,25 +654,20 @@ class ZonesRecordsController extends PublicApiController
     }
 
     /**
-     * Create a record directly in the database (bypassing permission checks for API usage)
+     * Insert a validated record directly into the database (API-specific method)
      *
      * @param int $zoneId Zone ID
-     * @param string $name Record name
+     * @param string $name Record name (already normalized)
      * @param string $type Record type
-     * @param string $content Record content
+     * @param string $content Record content (already validated)
      * @param int $ttl TTL value
      * @param int $priority Priority value
      * @return bool True if successful
      */
-    private function createRecordDirect(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority): bool
+    private function insertRecordDirect(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority): bool
     {
         try {
             $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-            // Basic record validation
-            if (empty($name) || empty($type) || empty($content)) {
-                return false;
-            }
 
             // Start transaction
             $this->db->beginTransaction();
@@ -650,12 +677,12 @@ class ZonesRecordsController extends PublicApiController
                       VALUES (:zone_id, :name, :type, :content, :ttl, :prio)";
 
             $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-            $stmt->bindValue(':name', $name, PDO::PARAM_STR);
-            $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-            $stmt->bindValue(':content', $content, PDO::PARAM_STR);
-            $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
-            $stmt->bindValue(':prio', $priority, PDO::PARAM_INT);
+            $stmt->bindValue(':zone_id', $zoneId, \PDO::PARAM_INT);
+            $stmt->bindValue(':name', $name, \PDO::PARAM_STR);
+            $stmt->bindValue(':type', $type, \PDO::PARAM_STR);
+            $stmt->bindValue(':content', $content, \PDO::PARAM_STR);
+            $stmt->bindValue(':ttl', $ttl, \PDO::PARAM_INT);
+            $stmt->bindValue(':prio', $priority, \PDO::PARAM_INT);
 
             $result = $stmt->execute();
 
@@ -673,7 +700,7 @@ class ZonesRecordsController extends PublicApiController
             return true;
         } catch (Exception $e) {
             $this->db->rollBack();
-            error_log('Failed to create record: ' . $e->getMessage());
+            error_log('Failed to insert record: ' . $e->getMessage());
             return false;
         }
     }

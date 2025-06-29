@@ -60,3 +60,6 @@ package-lock.json
 
 # Test plans are versioned but excluded from production packages
 # See tests/plans/ directory
+
+# API test environment files
+.env.api-test
