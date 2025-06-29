@@ -49,23 +49,36 @@ class DnssecController extends BaseController
     {
         if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
+            return;
         }
 
         $zone_id = (int) $_GET['id'];
+
+        // Early permission check - validate DNSSEC access before any operations
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        (UserManager::verifyPermission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
-
-        if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            $this->showError(_("You do not have the permission to view this zone."));
+        // Check view permission first
+        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
+            $this->showError(_("You do not have permission to view this zone."));
+            return;
         }
 
+        // Validate zone existence
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($dnsRecord->zoneIdExists($zone_id) == "0") {
+        if (!$dnsRecord->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
+            return;
         }
+
+        // Check DNSSEC management permission (requires edit access)
+        if ($perm_edit == "none" || ($perm_edit == "own" && !$user_is_zone_owner)) {
+            $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
+            return;
+        }
+
+        (UserManager::verifyPermission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         // Handle unsign zone action
         if (isset($_POST['unsign_zone']) && $perm_edit != "none") {

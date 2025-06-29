@@ -39,7 +39,9 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -51,6 +53,8 @@ class DeleteRecordController extends BaseController
     private LegacyLogger $logger;
     private RecordCommentService $recordCommentService;
     private ReverseRecordCreator $reverseRecordCreator;
+    private UserContextService $userContextService;
+    private PermissionService $permissionService;
 
     public function __construct(array $request)
     {
@@ -67,6 +71,9 @@ class DeleteRecordController extends BaseController
             $this->logger,
             $dnsRecord
         );
+
+        $this->userContextService = new UserContextService();
+        $this->permissionService = new PermissionService($this->getConfig());
     }
 
     public function run(): void
@@ -78,9 +85,21 @@ class DeleteRecordController extends BaseController
         $record_id = htmlspecialchars($_GET['id']);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
+        // Get zone ID from record first
         $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
         if ($zid == null) {
-            $this->showError(_('There is no zone with this ID.'));
+            $this->showError(_('Invalid record ID.'));
+            return;
+        }
+
+        // Early permission check - validate zone access before proceeding
+        $userId = $this->userContextService->getLoggedInUserId();
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zid);
+        $perm_edit = $this->permissionService->getEditPermissionLevel($userId);
+
+        if ($perm_edit !== "all" && !$user_is_zone_owner) {
+            $this->showError(_('You do not have permission to delete records in this zone.'));
+            return;
         }
 
         $domain_id = $dnsRecord->recidToDomid($record_id);

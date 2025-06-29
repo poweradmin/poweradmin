@@ -41,6 +41,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\RecordTypeService;
+use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
@@ -65,24 +66,40 @@ class EditRecordController extends BaseController
 
     public function run(): void
     {
-        $perm_view = Permission::getViewPermission($this->db);
-        $perm_edit = Permission::getEditPermission($this->db);
-
-        $record_id = $_GET['id'];
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
-
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zid);
-
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_type = $dnsRecord->getDomainType($zid);
-
-        if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            $this->showError(_("You do not have the permission to view this record."));
+        // Validate record ID parameter
+        if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
+            $this->showError(_('Invalid record ID.'));
+            return;
         }
 
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
-            $this->showError(_("You do not have the permission to edit this record."));
+        $record_id = (int)$_GET['id'];
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+
+        // Get zone ID from record first
+        $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
+        if ($zid == null) {
+            $this->showError(_('Invalid record ID.'));
+            return;
+        }
+
+        // Early permission check - validate access before further operations
+        $perm_view = Permission::getViewPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zid);
+
+        // Check view permission first
+        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
+            $this->showError(_("You do not have permission to view this record."));
+            return;
+        }
+
+        // Get zone type after permission validation
+        $zone_type = $dnsRecord->getDomainType($zid);
+
+        // Check edit permission for SLAVE zones and ownership
+        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)) {
+            $this->showError(_("You do not have permission to edit this record."));
+            return;
         }
 
         $validationFailed = false;

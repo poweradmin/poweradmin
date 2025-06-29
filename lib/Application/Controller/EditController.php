@@ -165,6 +165,18 @@ class EditController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
         $zone_id = intval(htmlspecialchars($_GET['id']));
+
+        // Early permission check - validate access before data retrieval
+        $userId = $this->userContextService->getLoggedInUserId();
+        $perm_view = $this->permissionService->getViewPermissionLevel($userId);
+        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+
+        if ($perm_view !== "all" && !$user_is_zone_owner) {
+            $this->showError(_('You do not have permission to access this zone.'));
+            return;
+        }
+
+        // Only retrieve zone data after permission validation
         $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
 
         if (isset($_GET['export_csv'])) {
@@ -220,12 +232,9 @@ class EditController extends BaseController
             $this->saveAsTemplate($zone_id);
         }
 
-        $userId = $this->userContextService->getLoggedInUserId();
-        $perm_view = $this->permissionService->getViewPermissionLevel($userId);
+        // Permission levels already retrieved in early check above
         $perm_edit = $this->permissionService->getEditPermissionLevel($userId);
         $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
-
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
 

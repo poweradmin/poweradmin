@@ -158,7 +158,6 @@
     <InvalidScalarArgument>
       <code><![CDATA[$_POST["rid"]]]></code>
       <code><![CDATA[$_POST["rid"]]]></code>
-      <code><![CDATA[$record_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/EditZoneTemplController.php">
