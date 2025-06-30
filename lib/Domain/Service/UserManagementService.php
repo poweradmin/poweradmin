@@ -24,7 +24,6 @@ namespace Poweradmin\Domain\Service;
 
 use Exception;
 use Poweradmin\Domain\Repository\UserRepository;
-use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Model\Pagination;
 
 /**

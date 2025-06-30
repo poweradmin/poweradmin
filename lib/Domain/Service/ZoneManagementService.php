@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Service;
 use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 

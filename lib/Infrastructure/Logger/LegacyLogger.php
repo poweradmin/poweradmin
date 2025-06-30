@@ -24,7 +24,6 @@ namespace Poweradmin\Infrastructure\Logger;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
-use Poweradmin\Infrastructure\Logger\LogType;
 
 class LegacyLogger
 {

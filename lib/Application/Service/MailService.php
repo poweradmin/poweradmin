@@ -25,7 +25,6 @@ namespace Poweradmin\Application\Service;
 use Exception;
 use Poweradmin\Domain\Service\MailService as MailServiceInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Application\Service\EmailTemplateService;
 use Psr\Log\LoggerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;

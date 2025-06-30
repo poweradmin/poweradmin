@@ -26,8 +26,6 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
-use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Application\Service\EmailTemplateService;
 use Psr\Log\LoggerInterface;
 
 class PasswordResetService

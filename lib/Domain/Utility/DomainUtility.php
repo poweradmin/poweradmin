@@ -22,8 +22,6 @@
 
 namespace Poweradmin\Domain\Utility;
 
-use Poweradmin\Domain\Utility\NetworkUtility;
-
 /**
  * Utility class for domain operations
  */
