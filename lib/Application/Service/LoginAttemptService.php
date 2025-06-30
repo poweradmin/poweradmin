@@ -97,7 +97,7 @@ class LoginAttemptService
         $sql = "SELECT COUNT(*) as attempts
             FROM login_attempts
             WHERE user_id = :user_id
-            AND successful = 0
+            AND successful = FALSE
             AND timestamp > :cutoff_time";
 
         $params = [
