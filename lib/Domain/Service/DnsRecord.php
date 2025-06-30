@@ -609,7 +609,7 @@ class DnsRecord
      *
      * @param int $id Domain ID
      *
-     * @return array|bool|void Master server
+     * @return string|null Master server
      */
     public function getDomainSlaveMaster(int $id)
     {
@@ -618,7 +618,6 @@ class DnsRecord
 
     /** Change Zone Type
      *
-     * @param $db
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]
      * @param int $id Zone ID
      *

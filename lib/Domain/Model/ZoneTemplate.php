@@ -603,7 +603,6 @@ class ZoneTemplate
     /**
      * Add a zone template from zone / another template
      *
-     * @param $db
      * @param string $template_name template name
      * @param string $description description
      * @param int $userid user id

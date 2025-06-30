@@ -89,6 +89,9 @@ class EmailTemplateService
      * @param string $password User's password
      * @param string $fullname User's full name
      * @return array ['html' => string, 'text' => string, 'subject' => string]
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function renderNewAccountEmail(string $username, string $password, string $fullname = ''): array
     {
@@ -115,6 +118,9 @@ class EmailTemplateService
      * @param string $resetUrl Password reset URL
      * @param int $expireMinutes Expiration time in minutes
      * @return array ['html' => string, 'text' => string, 'subject' => string]
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function renderPasswordResetEmail(string $name, string $resetUrl, int $expireMinutes): array
     {
@@ -140,6 +146,9 @@ class EmailTemplateService
      * @param string $verificationCode Verification code
      * @param int $expiresAt Expiration timestamp
      * @return array ['html' => string, 'text' => string, 'subject' => string]
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function renderMfaVerificationEmail(string $verificationCode, int $expiresAt): array
     {

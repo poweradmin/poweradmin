@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Model;
 
 use DateTime;
 use JsonSerializable;
+use Random\RandomException;
 
 /**
  * Class ApiKey
@@ -80,6 +81,7 @@ class ApiKey implements JsonSerializable
      * Generate a new random API key with 'pwa_' prefix
      *
      * @return string A random API key string with 'pwa_' prefix
+     * @throws RandomException
      */
     public static function generateSecretKey(): string
     {

@@ -31,6 +31,9 @@ use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
+use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
+use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use PragmaRX\Google2FA\Google2FA;
 
 class MfaService
@@ -144,6 +147,9 @@ class MfaService
      *
      * @param int $length Length of the secret key in bytes (16 is standard)
      * @return string Base32-encoded secret key
+     * @throws IncompatibleWithGoogleAuthenticatorException
+     * @throws InvalidCharactersException
+     * @throws SecretKeyTooShortException
      */
     public function generateSecretKey(int $length = 16): string
     {

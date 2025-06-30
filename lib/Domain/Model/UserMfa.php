@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
+use Random\RandomException;
+
 class UserMfa
 {
     public const TYPE_APP = 'app';
@@ -273,6 +275,7 @@ class UserMfa
      *
      * @param int $length Length of the recovery code in bytes (before hex encoding)
      * @return string The generated recovery code
+     * @throws RandomException
      */
     private function generateRecoveryCode(int $length = 10): string
     {

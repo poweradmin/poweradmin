@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Random\RandomException;
+
 /**
  * Service class for managing form state across requests
  *
@@ -120,6 +122,7 @@ class FormStateService
      *
      * @param string $prefix Optional prefix for the form ID
      * @return string The generated form ID
+     * @throws RandomException
      */
     public function generateFormId(string $prefix = ''): string
     {
