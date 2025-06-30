@@ -44,9 +44,9 @@ class ZoneTemplateSyncService
      */
     public function markTemplateAsModified(int $templateId): void
     {
-        $query = "UPDATE zone_template_sync 
-                  SET needs_sync = 1, 
-                      template_last_modified = NOW() 
+        $query = "UPDATE zone_template_sync
+                  SET needs_sync = TRUE,
+                      template_last_modified = NOW()
                   WHERE zone_templ_id = :template_id";
 
         $stmt = $this->db->prepare($query);
@@ -58,10 +58,10 @@ class ZoneTemplateSyncService
      */
     public function markZoneAsSynced(int $zoneId, int $templateId): void
     {
-        $query = "UPDATE zone_template_sync 
-                  SET needs_sync = 0, 
-                      last_synced = NOW() 
-                  WHERE zone_id = :zone_id 
+        $query = "UPDATE zone_template_sync
+                  SET needs_sync = FALSE,
+                      last_synced = NOW()
+                  WHERE zone_id = :zone_id
                     AND zone_templ_id = :template_id";
 
         $stmt = $this->db->prepare($query);
@@ -81,10 +81,10 @@ class ZoneTemplateSyncService
         }
 
         $placeholders = array_fill(0, count($zoneIds), '?');
-        $query = "UPDATE zone_template_sync 
-                  SET needs_sync = 0, 
-                      last_synced = NOW() 
-                  WHERE zone_id IN (" . implode(',', $placeholders) . ") 
+        $query = "UPDATE zone_template_sync
+                  SET needs_sync = FALSE,
+                      last_synced = NOW()
+                  WHERE zone_id IN (" . implode(',', $placeholders) . ")
                     AND zone_templ_id = ?";
 
         $params = array_merge($zoneIds, [$templateId]);
@@ -97,9 +97,9 @@ class ZoneTemplateSyncService
      */
     public function createSyncRecord(int $zoneId, int $templateId): void
     {
-        $query = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync) 
-                  VALUES (:zone_id, :template_id, 1) 
-                  ON DUPLICATE KEY UPDATE needs_sync = 1";
+        $query = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync)
+                  VALUES (:zone_id, :template_id, 1)
+                  ON DUPLICATE KEY UPDATE needs_sync = TRUE";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute([
@@ -129,10 +129,10 @@ class ZoneTemplateSyncService
      */
     public function getUnsyncedZoneCount(int $templateId): int
     {
-        $query = "SELECT COUNT(*) as count 
-                  FROM zone_template_sync 
-                  WHERE zone_templ_id = :template_id 
-                    AND needs_sync = 1";
+        $query = "SELECT COUNT(*) as count
+                  FROM zone_template_sync
+                  WHERE zone_templ_id = :template_id
+                    AND needs_sync = TRUE";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute(['template_id' => $templateId]);
@@ -149,7 +149,7 @@ class ZoneTemplateSyncService
                     zt.id,
                     zt.name,
                     COUNT(zts.zone_id) as total_zones,
-                    SUM(CASE WHEN zts.needs_sync = 1 THEN 1 ELSE 0 END) as unsynced_zones
+                    SUM(CASE WHEN zts.needs_sync = TRUE THEN 1 ELSE 0 END) as unsynced_zones
                   FROM zone_templ zt
                   LEFT JOIN zone_template_sync zts ON zt.id = zts.zone_templ_id";
 
@@ -192,8 +192,8 @@ class ZoneTemplateSyncService
                   FROM zone_template_sync zts
                   JOIN zones z ON zts.zone_id = z.id
                   JOIN domains d ON z.domain_id = d.id
-                  WHERE zts.zone_templ_id = :template_id 
-                    AND zts.needs_sync = 1
+                  WHERE zts.zone_templ_id = :template_id
+                    AND zts.needs_sync = TRUE
                   ORDER BY d.name";
 
         $stmt = $this->db->prepare($query);
