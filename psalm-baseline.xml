@@ -201,9 +201,6 @@
     </InvalidScalarArgument>
   </file>
   <file src="lib/BaseController.php">
-    <ImplicitToStringCast>
-      <code><![CDATA[$errorMessage]]></code>
-    </ImplicitToStringCast>
     <NoValue>
       <code><![CDATA[$allowedHosts]]></code>
     </NoValue>
