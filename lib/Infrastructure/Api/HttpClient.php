@@ -24,6 +24,7 @@ namespace Poweradmin\Infrastructure\Api;
 
 use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Throwable;
 
 class HttpClient implements ApiClient
 {
@@ -128,7 +129,7 @@ class HttpClient implements ApiClient
         } catch (ApiErrorException $e) {
             // Re-throw API exceptions
             throw $e;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             // Catch any other exceptions and convert to ApiErrorException
             $errorDetails = [
                 'url' => $url,

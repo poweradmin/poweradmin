@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
+use DateTime;
+use InvalidArgumentException;
 use Random\RandomException;
 
 class UserMfa
@@ -36,9 +38,9 @@ class UserMfa
         private ?string $secret,
         private ?string $recoveryCodes,
         private string $type,
-        private ?\DateTime $lastUsedAt,
-        private readonly \DateTime $createdAt,
-        private ?\DateTime $updatedAt,
+        private ?DateTime $lastUsedAt,
+        private readonly DateTime $createdAt,
+        private ?DateTime $updatedAt,
         private ?string $verificationData = null
     ) {
     }
@@ -59,7 +61,7 @@ class UserMfa
             $recoveryCodes,
             $type,
             null,
-            new \DateTime(),
+            new DateTime(),
             null,
             $verificationData
         );
@@ -83,13 +85,13 @@ class UserMfa
     public function enable(): void
     {
         $this->enabled = true;
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     public function disable(): void
     {
         $this->enabled = false;
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     public function getSecret(): ?string
@@ -100,7 +102,7 @@ class UserMfa
     public function setSecret(?string $secret): void
     {
         $this->secret = $secret;
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     public function getRecoveryCodes(): ?string
@@ -120,7 +122,7 @@ class UserMfa
     public function setRecoveryCodes(array $recoveryCodes): void
     {
         $this->recoveryCodes = json_encode($recoveryCodes);
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     /**
@@ -131,7 +133,7 @@ class UserMfa
     public function setVerificationMetadata(array $metadata): void
     {
         $this->recoveryCodes = json_encode($metadata);
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     /**
@@ -142,7 +144,7 @@ class UserMfa
     public function setRecoveryCodesRaw(string $jsonString): void
     {
         $this->recoveryCodes = $jsonString;
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     /**
@@ -177,7 +179,7 @@ class UserMfa
     public function setVerificationData(array $data): void
     {
         $this->verificationData = json_encode($data);
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     /**
@@ -188,7 +190,7 @@ class UserMfa
     public function setVerificationDataRaw(string $jsonString): void
     {
         $this->verificationData = $jsonString;
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
     public function getType(): string
@@ -199,30 +201,30 @@ class UserMfa
     public function setType(string $type): void
     {
         if (!in_array($type, [self::TYPE_APP, self::TYPE_EMAIL])) {
-            throw new \InvalidArgumentException("Invalid MFA type: $type");
+            throw new InvalidArgumentException("Invalid MFA type: $type");
         }
 
         $this->type = $type;
-        $this->updatedAt = new \DateTime();
+        $this->updatedAt = new DateTime();
     }
 
-    public function getLastUsedAt(): ?\DateTime
+    public function getLastUsedAt(): ?DateTime
     {
         return $this->lastUsedAt;
     }
 
     public function updateLastUsed(): void
     {
-        $this->lastUsedAt = new \DateTime();
-        $this->updatedAt = new \DateTime();
+        $this->lastUsedAt = new DateTime();
+        $this->updatedAt = new DateTime();
     }
 
-    public function getCreatedAt(): \DateTime
+    public function getCreatedAt(): DateTime
     {
         return $this->createdAt;
     }
 
-    public function getUpdatedAt(): ?\DateTime
+    public function getUpdatedAt(): ?DateTime
     {
         return $this->updatedAt;
     }

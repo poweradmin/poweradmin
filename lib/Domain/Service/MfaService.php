@@ -26,6 +26,8 @@ use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\ImageRenderer;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
 use BaconQrCode\Writer;
+use Exception;
+use PDOException;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Domain\Model\UserMfa;
@@ -35,6 +37,7 @@ use PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException;
 use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
 use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use PragmaRX\Google2FA\Google2FA;
+use RuntimeException;
 
 class MfaService
 {
@@ -92,7 +95,7 @@ class MfaService
     {
         try {
             return $this->userMfaRepository->findByUserId($userId);
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             // If the table doesn't exist or there's another database error, log the error and return null
             error_log("getUserMfa failed: " . $e->getMessage());
             return null;
@@ -131,7 +134,7 @@ class MfaService
             // The repository's save method will handle duplicate key errors by retrieving
             // the existing record if one was created in the meantime
             return $this->userMfaRepository->save($userMfa);
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             // If the table doesn't exist or there's another database error, log the error and return null
             error_log("getOrCreateUserMfa failed: " . $e->getMessage());
             return null;
@@ -302,7 +305,7 @@ class MfaService
                             error_log("[MfaService] Email code already used for user ID: $userId");
                             return false;
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         error_log("[MfaService] Error processing metadata: " . $e->getMessage());
                     }
                 }
@@ -354,7 +357,7 @@ class MfaService
             }
 
             return $isValid;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log("[MfaService] TOTP verification error: " . $e->getMessage());
             return false;
         }
@@ -408,13 +411,13 @@ class MfaService
         // Check if mail service is enabled
         if (!$this->configManager->get('mail', 'enabled', false)) {
             error_log("[MfaService] Email verification attempted but mail service is disabled for user ID: $userId");
-            throw new \RuntimeException('Email verification is not available because mail service is disabled.');
+            throw new RuntimeException('Email verification is not available because mail service is disabled.');
         }
 
         // Check if email is empty
         if (empty($email)) {
             error_log("[MfaService] Email verification attempted but email is empty for user ID: $userId");
-            throw new \RuntimeException('Email address is required for email verification.');
+            throw new RuntimeException('Email address is required for email verification.');
         }
 
         // Validate mail configuration before proceeding
@@ -423,7 +426,7 @@ class MfaService
             !$this->mailService->isMailConfigurationValid()
         ) {
             error_log("[MfaService] Email verification attempted but mail configuration is invalid for user ID: $userId");
-            throw new \RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
+            throw new RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
         }
 
         $userMfa = $this->getUserMfa($userId);
@@ -483,13 +486,13 @@ class MfaService
         // Check if mail service is enabled
         if (!$this->configManager->get('mail', 'enabled', false)) {
             error_log("[MfaService] Email verification refresh attempted but mail service is disabled for user ID: $userId");
-            throw new \RuntimeException('Email verification is not available because mail service is disabled.');
+            throw new RuntimeException('Email verification is not available because mail service is disabled.');
         }
 
         // Check if email is empty
         if (empty($email)) {
             error_log("[MfaService] Email verification refresh attempted but email is empty for user ID: $userId");
-            throw new \RuntimeException('Email address is required for email verification.');
+            throw new RuntimeException('Email address is required for email verification.');
         }
 
         // Validate mail configuration before proceeding
@@ -498,7 +501,7 @@ class MfaService
             !$this->mailService->isMailConfigurationValid()
         ) {
             error_log("[MfaService] Email verification refresh attempted but mail configuration is invalid for user ID: $userId");
-            throw new \RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
+            throw new RuntimeException('Email verification is not available because mail service is misconfigured or mail server is unreachable.');
         }
 
         $userMfa = $this->getUserMfa($userId);
@@ -527,7 +530,7 @@ class MfaService
                     // Code is still valid
                     $needsRefresh = false;
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 error_log("[MfaService] Error checking verification code status: " . $e->getMessage());
                 $needsRefresh = true;
             }
@@ -537,7 +540,7 @@ class MfaService
             error_log("[MfaService] Generating new email verification code for user $userId");
             try {
                 return $this->sendEmailVerificationCode($userId, $email);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 error_log("[MfaService] Failed to send verification code: " . $e->getMessage());
                 return null;
             }
@@ -554,7 +557,7 @@ class MfaService
         try {
             $userMfa = $this->userMfaRepository->findByUserId($userId);
             return $userMfa && $userMfa->isEnabled();
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             // If the table doesn't exist or there's another database error, assume MFA is disabled
             error_log("MFA check failed: " . $e->getMessage());
             return false;
@@ -569,7 +572,7 @@ class MfaService
         try {
             $userMfa = $this->userMfaRepository->findByUserId($userId);
             return $userMfa ? $userMfa->getType() : null;
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             // If the table doesn't exist or there's another database error, assume null
             error_log("getMfaType failed: " . $e->getMessage());
             return null;
@@ -643,7 +646,7 @@ class MfaService
             // Save the updated user MFA data (for email-based) or just update last used timestamp
             $userMfa->updateLastUsed();
             $this->userMfaRepository->save($userMfa);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             error_log("[MfaService] Error in MFA update: " . $e->getMessage());
         }
     }

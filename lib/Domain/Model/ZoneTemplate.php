@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Model;
 
+use Exception;
 use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DomainParsingService;
@@ -199,7 +200,7 @@ class ZoneTemplate
 
                 $this->db->commit();
                 return true;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->db->rollBack();
                 $this->messageService->addSystemError(_('Error creating zone template: ') . $e->getMessage());
                 return false;
@@ -236,7 +237,7 @@ class ZoneTemplate
             ]);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error adding default SOA record to template: ') . $e->getMessage());
             return false;
         }
@@ -294,7 +295,7 @@ class ZoneTemplate
 
                 $this->db->commit();
                 return true;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->db->rollBack();
                 $this->messageService->addSystemError(_('Error deleting zone template: ') . $e->getMessage());
                 return false;
@@ -319,7 +320,7 @@ class ZoneTemplate
                 $stmt = $this->db->prepare("DELETE FROM zone_templ WHERE owner = :owner");
                 $stmt->execute([':owner' => $userid]);
                 return true;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->messageService->addSystemError(_('Error deleting user zone templates: ') . $e->getMessage());
                 return false;
             }
@@ -529,7 +530,7 @@ class ZoneTemplate
             ]);
 
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error updating zone template record: ') . $e->getMessage());
             return false;
         }
@@ -552,7 +553,7 @@ class ZoneTemplate
                 $stmt = $this->db->prepare("DELETE FROM zone_templ_records WHERE id = :id");
                 $stmt->execute([':id' => $rid]);
                 return true;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->messageService->addSystemError(_('Error deleting zone template record: ') . $e->getMessage());
                 return false;
             }
@@ -575,7 +576,7 @@ class ZoneTemplate
             $result = $stmt->fetchColumn();
 
             return ($result == $userid);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error checking template ownership: ') . $e->getMessage());
             return false;
         }
@@ -669,7 +670,7 @@ class ZoneTemplate
 
                 $this->db->commit();
                 return true;
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->db->rollBack();
                 $this->messageService->addSystemError(_('Error creating zone template: ') . $e->getMessage());
                 return false;
@@ -722,7 +723,7 @@ class ZoneTemplate
                 $zone_list[] = $zone['id'];
             }
             return $zone_list;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error retrieving zones using template: ') . $e->getMessage());
             return [];
         }
@@ -776,7 +777,7 @@ class ZoneTemplate
             $stmt = $this->db->prepare($query);
             $stmt->execute($params);
             return $stmt->fetchAll();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->messageService->addSystemError(_('Failed to get list of zones using template: ') . $e->getMessage());
             return [];
         }
@@ -838,7 +839,7 @@ class ZoneTemplate
             $stmt = $this->db->prepare("UPDATE zones SET zone_templ_id = 0 WHERE domain_id = ?");
             $stmt->execute([$zone_id]);
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error unlinking zone from template: ') . $e->getMessage());
             return false;
         }
@@ -866,7 +867,7 @@ class ZoneTemplate
                                         ORDER BY d.name");
             $stmt->execute($zone_ids);
             return $stmt->fetchAll();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error retrieving zones: ') . $e->getMessage());
             return [];
         }
@@ -885,7 +886,7 @@ class ZoneTemplate
             $stmt = $this->db->prepare("SELECT COUNT(id) FROM zone_templ WHERE name = :name");
             $stmt->execute([':name' => $zone_templ_name]);
             return (bool) $stmt->fetchColumn();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error checking template name existence: ') . $e->getMessage());
             return false;
         }
@@ -908,7 +909,7 @@ class ZoneTemplate
                 ':id' => $zone_templ_id
             ]);
             return (bool) $stmt->fetchColumn();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->messageService->addSystemError(_('Error checking template existence: ') . $e->getMessage());
             return false;
         }

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Exception;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Service\DatabaseConsistencyService;
 
@@ -134,7 +135,7 @@ class DatabaseConsistencyController extends BaseController
             } else {
                 $this->setMessage('database_consistency', 'error', $message);
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->setMessage('database_consistency', 'error', $e->getMessage());
         }
 

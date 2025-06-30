@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Routing;
 
+use Error;
 use Exception;
 
 /**
@@ -85,7 +86,7 @@ class BasicRouter
                 return $this->defaultPage;
             } else {
                 // No page and no default page configured
-                throw new \Error('No page specified and no default page configured');
+                throw new Error('No page specified and no default page configured');
             }
         }
 

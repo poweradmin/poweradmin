@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Exception;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
@@ -225,7 +226,7 @@ class BulkRecordAddController extends BaseController
                 } else {
                     $failed_records[] = $line . " - " . _('Record could not be added.');
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $failed_records[] = $line . " - " . $e->getMessage();
             }
         }

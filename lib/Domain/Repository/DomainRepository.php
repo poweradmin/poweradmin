@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Repository;
 
+use PDO;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\DnsIdnService;
@@ -119,7 +120,7 @@ class DomainRepository implements DomainRepositoryInterface
         $stmt->bindValue(':name', $name);
         $stmt->execute();
 
-        $result = $stmt->fetch(\PDO::FETCH_ASSOC);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ? (int)$result['id'] : null;
     }
 

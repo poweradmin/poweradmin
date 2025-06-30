@@ -32,11 +32,13 @@
 namespace Poweradmin\Application\Controller\Api\V1;
 
 use Exception;
+use Override;
 use PDO;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
@@ -77,7 +79,7 @@ class ZonesRecordsController extends PublicApiController
     /**
      * Handle zone records requests
      */
-    #[\Override]
+    #[Override]
     public function run(): void
     {
         $method = $this->request->getMethod();
@@ -377,7 +379,7 @@ class ZonesRecordsController extends PublicApiController
             $zoneName = $domainRepository->getDomainNameById($zoneId);
 
             // Normalize the hostname
-            $hostnameValidator = new \Poweradmin\Domain\Service\DnsValidation\HostnameValidator($this->getConfig());
+            $hostnameValidator = new HostnameValidator($this->getConfig());
             $normalizedName = $hostnameValidator->normalizeRecordName($name, $zoneName);
 
             // Validate the record
@@ -677,12 +679,12 @@ class ZonesRecordsController extends PublicApiController
                       VALUES (:zone_id, :name, :type, :content, :ttl, :prio)";
 
             $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':zone_id', $zoneId, \PDO::PARAM_INT);
-            $stmt->bindValue(':name', $name, \PDO::PARAM_STR);
-            $stmt->bindValue(':type', $type, \PDO::PARAM_STR);
-            $stmt->bindValue(':content', $content, \PDO::PARAM_STR);
-            $stmt->bindValue(':ttl', $ttl, \PDO::PARAM_INT);
-            $stmt->bindValue(':prio', $priority, \PDO::PARAM_INT);
+            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+            $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+            $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+            $stmt->bindValue(':content', $content, PDO::PARAM_STR);
+            $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
+            $stmt->bindValue(':prio', $priority, PDO::PARAM_INT);
 
             $result = $stmt->execute();
 

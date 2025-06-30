@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use InvalidArgumentException;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Repository\UserPreferenceRepositoryInterface;
 
@@ -59,7 +60,7 @@ class UserPreferenceService
     public function setPreference(int $userId, string $key, ?string $value): void
     {
         if (!UserPreference::isValidKey($key)) {
-            throw new \InvalidArgumentException("Invalid preference key: {$key}");
+            throw new InvalidArgumentException("Invalid preference key: {$key}");
         }
 
         $this->repository->createOrUpdate($userId, $key, $value);
@@ -112,7 +113,7 @@ class UserPreferenceService
     public function setRowsPerPage(int $userId, int $rows): void
     {
         if ($rows < 5 || $rows > 500) {
-            throw new \InvalidArgumentException("Rows per page must be between 5 and 500");
+            throw new InvalidArgumentException("Rows per page must be between 5 and 500");
         }
 
         $this->setPreference($userId, UserPreference::KEY_ROWS_PER_PAGE, (string)$rows);
@@ -126,7 +127,7 @@ class UserPreferenceService
     public function setUiTheme(int $userId, string $theme): void
     {
         if (!in_array($theme, ['light', 'dark'], true)) {
-            throw new \InvalidArgumentException("Invalid theme: {$theme}");
+            throw new InvalidArgumentException("Invalid theme: {$theme}");
         }
 
         $this->setPreference($userId, UserPreference::KEY_UI_THEME, $theme);

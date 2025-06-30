@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
@@ -166,7 +167,7 @@ class BatchReverseRecordCreator
             // Get the reverse zone ID
             $test_zone_rev_id = $this->dnsRecord->getBestMatchingZoneIdFromName($testReverseDomain);
             if ($test_zone_rev_id === -1) {
-                throw new \Exception("No matching reverse zone found for $testReverseDomain");
+                throw new Exception("No matching reverse zone found for $testReverseDomain");
             }
 
             // If we get here, the reverse zone exists, so proceed with creating records
@@ -213,7 +214,7 @@ class BatchReverseRecordCreator
                             $failCount++;
                             $errors[] = "Failed to create PTR record for $ip";
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $failCount++;
                         $errors[] = "Failed to create PTR record for $ip: " . $e->getMessage();
                     }
@@ -292,7 +293,7 @@ class BatchReverseRecordCreator
                                     try {
                                         // Add the A record
                                         $this->dnsRecord->addRecord($forward_domain_id, $hostname, RecordType::A, $ip, $ttl, $prio);
-                                    } catch (\Exception $e) {
+                                    } catch (Exception $e) {
                                         // Don't stop execution for forward record failures
                                         $errors[] = "Failed to create forward A record for $ip: " . $e->getMessage();
                                     }
@@ -306,13 +307,13 @@ class BatchReverseRecordCreator
                             $failCount++;
                             $errors[] = "Failed to create PTR record for $ip";
                         }
-                    } catch (\Exception $e) {
+                    } catch (Exception $e) {
                         $failCount++;
                         $errors[] = "Failed to create PTR record for $ip: " . $e->getMessage();
                     }
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->createErrorResponse('No matching reverse zone found for this network prefix. Please create the reverse zone first.');
         }
 
@@ -446,7 +447,7 @@ class BatchReverseRecordCreator
             // If all methods fail, throw an exception
             if ($test_zone_rev_id === -1) {
                 $error = "No matching reverse zone found for this IPv6 network prefix. Please create the appropriate reverse zone first.";
-                throw new \Exception($error);
+                throw new Exception($error);
             }
 
             // If we get here, the reverse zone exists, so proceed with creating all records
@@ -538,7 +539,7 @@ class BatchReverseRecordCreator
                                 try {
                                     // Add the AAAA record
                                     $this->dnsRecord->addRecord($forward_domain_id, $hostname, RecordType::AAAA, $ip, $ttl, $prio);
-                                } catch (\Exception $e) {
+                                } catch (Exception $e) {
                                     // Don't stop execution for forward record failures
                                     $errors[] = "Failed to create forward AAAA record for $ip: " . $e->getMessage();
                                 }
@@ -552,12 +553,12 @@ class BatchReverseRecordCreator
                         $failCount++;
                         $errors[] = "Failed to create PTR record for $ip";
                     }
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     $failCount++;
                     $errors[] = "Failed to create PTR record for $ip: " . $e->getMessage();
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->createErrorResponse('No matching reverse zone found for this IPv6 network prefix. Please create the reverse zone first.');
         }
 
@@ -603,7 +604,7 @@ class BatchReverseRecordCreator
         }
 
         if ($zone_rev_id === -1) {
-            throw new \Exception("No matching reverse zone found for $content_rev");
+            throw new Exception("No matching reverse zone found for $content_rev");
         }
 
         try {
@@ -632,7 +633,7 @@ class BatchReverseRecordCreator
             } else {
                 return false;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             throw $e;
         }
     }

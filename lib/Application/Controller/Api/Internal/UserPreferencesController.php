@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller\Api\Internal;
 
+use InvalidArgumentException;
 use Poweradmin\Application\Controller\Api\InternalApiController;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Service\UserContextService;
@@ -118,7 +119,7 @@ class UserPreferencesController extends InternalApiController
             ]);
             $response->send();
             exit;
-        } catch (\InvalidArgumentException $e) {
+        } catch (InvalidArgumentException $e) {
             $response = $this->returnJsonResponse(['error' => $e->getMessage()], 400);
             $response->send();
             exit;

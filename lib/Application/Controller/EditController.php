@@ -32,6 +32,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Exception;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\PaginationService;
@@ -873,7 +874,7 @@ class EditController extends BaseController
                 ];
                 return false;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Handle exceptions from the validation process
             $errorMessage = $e->getMessage();
             $fieldWithError = $this->determineFieldWithError($errorMessage);

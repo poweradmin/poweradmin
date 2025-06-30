@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use PDO;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -313,7 +314,7 @@ class SupermasterManager implements SupermasterManagerInterface
 
         $slaveServerIPs = [];
         if ($result) {
-            while ($row = $result->fetch(\PDO::FETCH_ASSOC)) {
+            while ($row = $result->fetch(PDO::FETCH_ASSOC)) {
                 $slaveServerIPs[] = $row['ip'];
             }
         }

@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Database;
 
+use InvalidArgumentException;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 class TableNameService
@@ -61,7 +62,7 @@ class TableNameService
     public function validateOrderBy(string $column, array $allowedColumns): string
     {
         if (!in_array($column, $allowedColumns, true)) {
-            throw new \InvalidArgumentException("Invalid ORDER BY column: $column");
+            throw new InvalidArgumentException("Invalid ORDER BY column: $column");
         }
 
         return $column;
@@ -73,7 +74,7 @@ class TableNameService
         $direction = strtoupper($direction);
 
         if (!in_array($direction, $allowedDirections, true)) {
-            throw new \InvalidArgumentException("Invalid sort direction: $direction");
+            throw new InvalidArgumentException("Invalid sort direction: $direction");
         }
 
         return $direction;
@@ -82,11 +83,11 @@ class TableNameService
     public function validateLimit(int $limit, int $maxLimit = 10000): int
     {
         if ($limit < 0) {
-            throw new \InvalidArgumentException("LIMIT cannot be negative: $limit");
+            throw new InvalidArgumentException("LIMIT cannot be negative: $limit");
         }
 
         if ($limit > $maxLimit) {
-            throw new \InvalidArgumentException("LIMIT too large: $limit (max: $maxLimit)");
+            throw new InvalidArgumentException("LIMIT too large: $limit (max: $maxLimit)");
         }
 
         return $limit;
@@ -95,7 +96,7 @@ class TableNameService
     public function validateOffset(int $offset): int
     {
         if ($offset < 0) {
-            throw new \InvalidArgumentException("OFFSET cannot be negative: $offset");
+            throw new InvalidArgumentException("OFFSET cannot be negative: $offset");
         }
 
         return $offset;

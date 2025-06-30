@@ -22,7 +22,9 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use DateTime;
 use PDO;
+use PDOException;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
 use Poweradmin\Infrastructure\Database\PDOCommon;
@@ -53,7 +55,7 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
             }
 
             return $this->hydrateUserMfa($result);
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             // Log the error and rethrow it to be handled by the calling code
             error_log("DbUserMfaRepository::findByUserId failed: " . $e->getMessage());
 
@@ -83,7 +85,7 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
             }
 
             return $this->hydrateUserMfa($result);
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             // Log the error and rethrow it to be handled by the calling code
             error_log("DbUserMfaRepository::findById failed: " . $e->getMessage());
 
@@ -104,7 +106,7 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
             }
 
             return $this->update($userMfa);
-        } catch (\PDOException $e) {
+        } catch (PDOException $e) {
             // Log the error
             error_log("DbUserMfaRepository::save failed: " . $e->getMessage());
 
@@ -229,9 +231,9 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
             $data['secret'],
             $data['recovery_codes'],
             $data['type'],
-            $data['last_used_at'] ? new \DateTime($data['last_used_at']) : null,
-            new \DateTime($data['created_at']),
-            $data['updated_at'] ? new \DateTime($data['updated_at']) : null,
+            $data['last_used_at'] ? new DateTime($data['last_used_at']) : null,
+            new DateTime($data['created_at']),
+            $data['updated_at'] ? new DateTime($data['updated_at']) : null,
             $data['verification_data'] ?? null
         );
     }

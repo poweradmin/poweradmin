@@ -23,13 +23,20 @@
 namespace Poweradmin\Infrastructure\Service;
 
 use PDO;
+use Poweradmin\Application\Service\CsrfTokenService;
+use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Application\Service\UserAuthenticationService;
+use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserEntity;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
+use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Logger\NullLogHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -68,14 +75,14 @@ class BasicAuthenticationMiddleware
         );
 
         // Create minimal dependencies required for authenticators
-        $userEventLogger = new \Poweradmin\Application\Service\UserEventLogger($db);
-        $csrfTokenService = new \Poweradmin\Application\Service\CsrfTokenService();
+        $userEventLogger = new UserEventLogger($db);
+        $csrfTokenService = new CsrfTokenService();
 
         // Create a simple NullLogHandler and Logger
-        $logHandler = new \Poweradmin\Infrastructure\Logger\NullLogHandler();
-        $logger = new \Poweradmin\Infrastructure\Logger\Logger($logHandler, 'info');
+        $logHandler = new NullLogHandler();
+        $logger = new Logger($logHandler, 'info');
 
-        $loginAttemptService = new \Poweradmin\Application\Service\LoginAttemptService($db, $this->config);
+        $loginAttemptService = new LoginAttemptService($db, $this->config);
 
         // Initialize SQL authenticator with all required dependencies
         $this->sqlAuthenticator = new SqlAuthenticator(
@@ -90,8 +97,8 @@ class BasicAuthenticationMiddleware
 
         // Create LDAP authenticator only if LDAP is enabled
         if ($this->config->get('ldap', 'enabled', false)) {
-            $ldapUserEventLogger = new \Poweradmin\Infrastructure\Logger\LdapUserEventLogger($db);
-            $userContextService = new \Poweradmin\Domain\Service\UserContextService();
+            $ldapUserEventLogger = new LdapUserEventLogger($db);
+            $userContextService = new UserContextService();
             $this->ldapAuthenticator = new LdapAuthenticator(
                 $db,
                 $this->config,

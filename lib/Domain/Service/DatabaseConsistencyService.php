@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Exception;
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
@@ -322,7 +323,7 @@ class DatabaseConsistencyService
 
             $this->db->commit();
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->db->rollBack();
             return false;
         }
@@ -372,7 +373,7 @@ class DatabaseConsistencyService
 
             $this->db->commit();
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->db->rollBack();
             return false;
         }

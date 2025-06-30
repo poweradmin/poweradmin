@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Application\Service;
 
+use Exception;
 use Poweradmin\Domain\Service\DnsIdnService;
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
@@ -94,7 +95,7 @@ class RdapService
                 ) {
                     return $this->rdapServers[$unicodeTld];
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // Conversion failed, continue with regular lookup
             }
         }
@@ -320,7 +321,7 @@ class RdapService
 
             $result['success'] = true;
             $result['data'] = $this->formatRdapResponse($response);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $result['error'] = 'Error: ' . $e->getMessage();
         }
 

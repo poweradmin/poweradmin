@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
+use Exception;
 use Poweradmin\Domain\Service\DnssecProvider;
 use Poweradmin\Domain\Utility\DnssecDataTransformer;
 use Poweradmin\Infrastructure\Api\HttpClient;
@@ -59,7 +60,7 @@ class DnssecProviderFactory
         try {
             $serverInfo = $apiClient->getServerInfo();
             return $serverInfo['version'] ?? '';
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return '';
         }
     }

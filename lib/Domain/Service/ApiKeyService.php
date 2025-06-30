@@ -23,7 +23,10 @@
 namespace Poweradmin\Domain\Service;
 
 use DateTime;
+use Exception;
+use PDO;
 use Poweradmin\Domain\Model\ApiKey;
+use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -92,7 +95,7 @@ class ApiKeyService
         foreach ($apiKeys as $key) {
             if ($key->getCreatedBy() !== null) {
                 // Get creator username using UserEntity
-                $creatorUsername = \Poweradmin\Domain\Model\UserEntity::getUserNameById($this->db, $key->getCreatedBy());
+                $creatorUsername = UserEntity::getUserNameById($this->db, $key->getCreatedBy());
                 $key->setCreatorUsername($creatorUsername);
             } else {
                 $key->setCreatorUsername('');
@@ -121,7 +124,7 @@ class ApiKeyService
         if (UserManager::verifyPermission($this->db, 'user_is_ueberuser') || $apiKey->getCreatedBy() === $userId) {
             // Add creator username
             if ($apiKey->getCreatedBy() !== null) {
-                $creatorUsername = \Poweradmin\Domain\Model\UserEntity::getUserNameById($this->db, $apiKey->getCreatedBy());
+                $creatorUsername = UserEntity::getUserNameById($this->db, $apiKey->getCreatedBy());
                 $apiKey->setCreatorUsername($creatorUsername);
             } else {
                 $apiKey->setCreatorUsername('');
@@ -323,7 +326,7 @@ class ApiKeyService
         try {
             $stmt = $this->db->prepare("SELECT id, name, created_by, disabled, expires_at FROM api_keys WHERE BINARY secret_key = ?");
             $stmt->execute([$secretKey]);
-            $keyData = $stmt->fetch(\PDO::FETCH_ASSOC);
+            $keyData = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($keyData) {
                 // Check if key is disabled
@@ -332,7 +335,7 @@ class ApiKeyService
                 }
 
                 // Check if key is expired
-                if ($keyData['expires_at'] && new \DateTime($keyData['expires_at']) < new \DateTime()) {
+                if ($keyData['expires_at'] && new DateTime($keyData['expires_at']) < new DateTime()) {
                     return false;
                 }
 
@@ -345,7 +348,7 @@ class ApiKeyService
 
                 return true;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Fall through to repository method
         }
 

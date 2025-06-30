@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use DateTime;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -234,7 +235,7 @@ class SOARecordValidator implements DnsRecordValidatorInterface
             $final_soa .= " " . $fields[2];
         } else {
             // Default to current date in YYYYMMDDnn format if no serial provided
-            $today = new \DateTime();
+            $today = new DateTime();
             $default_serial = $today->format('Ymd') . '01';
             $final_soa .= " " . $default_serial;
         }

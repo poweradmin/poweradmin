@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Application\Service;
 
+use InvalidArgumentException;
+
 class EmailPreviewService
 {
     private EmailTemplateService $emailTemplateService;
@@ -130,7 +132,7 @@ class EmailPreviewService
             case 'mfa-verification':
                 return $this->generateMfaVerificationPreview();
             default:
-                throw new \InvalidArgumentException("Unknown template: $templateName");
+                throw new InvalidArgumentException("Unknown template: $templateName");
         }
     }
 

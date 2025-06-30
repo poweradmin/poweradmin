@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Exception;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
@@ -107,7 +108,7 @@ class BatchPtrRecordController extends BaseController
                     // Clear form data on success
                     $formData = [];
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->setMessage('batch_ptr_record', 'error', $e->getMessage());
                 // Keep form data in case of error
             }
@@ -185,7 +186,7 @@ class BatchPtrRecordController extends BaseController
                 $this->setMessage('batch_ptr_record', 'error', $result['message']);
                 return false;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->setMessage('batch_ptr_record', 'error', $e->getMessage());
             return false;
         }

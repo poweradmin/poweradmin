@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Exception;
 use Poweradmin\BaseController;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Poweradmin\Application\Service\EmailPreviewService;
@@ -96,7 +97,7 @@ class EmailPreviewsController extends BaseController
             } else {
                 echo $preview['light'];
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             http_response_code(500);
             if ($this->config->get('misc', 'display_errors', false)) {
                 echo '<h1>Error generating preview</h1><p>' . htmlspecialchars($e->getMessage()) . '</p>';

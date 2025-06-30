@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller\Api\Docs;
 
+use Exception;
 use OpenApi\Generator;
 use Poweradmin\BaseController;
 use Symfony\Component\HttpFoundation\Response;
@@ -65,7 +66,7 @@ class JsonController extends BaseController
             $scanPath = dirname(dirname(__FILE__)) . '/V1';
 
             if (!is_dir($scanPath)) {
-                throw new \Exception("Scan path does not exist: " . $scanPath);
+                throw new Exception("Scan path does not exist: " . $scanPath);
             }
 
             $openapi = Generator::scan([$scanPath], [
@@ -78,7 +79,7 @@ class JsonController extends BaseController
             // Verify we have actual paths
             $decoded = json_decode($jsonContent, true);
             if (empty($decoded['paths'])) {
-                throw new \Exception('No paths found in generated OpenAPI spec');
+                throw new Exception('No paths found in generated OpenAPI spec');
             }
 
             // Set response headers
@@ -86,7 +87,7 @@ class JsonController extends BaseController
             $response->headers->set('Content-Type', 'application/json');
             $response->setContent($jsonContent);
             $response->send();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Log the actual error for debugging
             error_log("OpenAPI generation failed: " . $e->getMessage());
 

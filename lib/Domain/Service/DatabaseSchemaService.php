@@ -22,7 +22,11 @@
 
 namespace Poweradmin\Domain\Service;
 
+use InvalidArgumentException;
 use PDO;
+use PDOException;
+use PDOStatement;
+use RuntimeException;
 
 class DatabaseSchemaService
 {
@@ -68,7 +72,7 @@ class DatabaseSchemaService
     public function createTable(string $name, array $fields, array $options = array()): void
     {
         if (empty($fields)) {
-            throw new \InvalidArgumentException("Cannot create table '$name' with no fields");
+            throw new InvalidArgumentException("Cannot create table '$name' with no fields");
         }
 
         $db_type = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
@@ -121,7 +125,7 @@ class DatabaseSchemaService
         }
 
         if (empty($query_fields)) {
-            throw new \InvalidArgumentException("Cannot create table '$name' - no valid fields processed");
+            throw new InvalidArgumentException("Cannot create table '$name' - no valid fields processed");
         }
 
         $query = "CREATE TABLE $name (" . implode(', ', $query_fields) . ')';
@@ -142,18 +146,18 @@ class DatabaseSchemaService
 
         try {
             $this->db->exec($query);
-        } catch (\PDOException $e) {
-            throw new \RuntimeException("Failed to create table '$name'. SQL: $query. Error: " . $e->getMessage(), 0, $e);
+        } catch (PDOException $e) {
+            throw new RuntimeException("Failed to create table '$name'. SQL: $query. Error: " . $e->getMessage(), 0, $e);
         }
     }
 
     /**
      * Execute multiple prepared statement operations with different parameter sets
      *
-     * @param \PDOStatement $stmt Prepared statement
+     * @param PDOStatement $stmt Prepared statement
      * @param array $params Array of parameter arrays
      */
-    public function executeMultiple(\PDOStatement $stmt, array $params): void
+    public function executeMultiple(PDOStatement $stmt, array $params): void
     {
         foreach ($params as $values) {
             $stmt->execute($values);

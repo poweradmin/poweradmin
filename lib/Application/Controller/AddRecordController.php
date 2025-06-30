@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Exception;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
@@ -187,7 +188,7 @@ class AddRecordController extends BaseController
                 $this->redirect('index.php?page=edit&id=' . $zone_id . '&form_id=' . $formId);
                 return;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Handle exceptions from the validation process
             $errorMessage = $e->getMessage();
             $fieldWithError = $this->determineFieldWithError($errorMessage);

@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use DateTime;
+use Exception;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
@@ -258,9 +260,9 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
 
         // Check time validity - try to parse the timestamps and compare
         try {
-            $expirationTime = \DateTime::createFromFormat('YmdHis', $expiration);
-            $inceptionTime = \DateTime::createFromFormat('YmdHis', $inception);
-            $currentTime = new \DateTime();
+            $expirationTime = DateTime::createFromFormat('YmdHis', $expiration);
+            $inceptionTime = DateTime::createFromFormat('YmdHis', $inception);
+            $currentTime = new DateTime();
 
             if ($expirationTime && $inceptionTime) {
                 // Ensure expiration time is after inception time
@@ -289,7 +291,7 @@ class RRSIGRecordValidator implements DnsRecordValidatorInterface
                     $warnings[] = _('The signature validity period is over 90 days, which is longer than recommended practices. Long validity periods increase vulnerability in case of key compromise.');
                 }
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $warnings[] = _('Could not parse signature timestamps to check validity period.');
         }
 

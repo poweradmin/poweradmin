@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use PDO;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -137,9 +138,9 @@ class DNSViolationValidator
                      AND id != :record_id";
 
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
-            $stmt->bindParam(':zone_id', $zoneId, \PDO::PARAM_INT);
-            $stmt->bindParam(':record_id', $recordId, \PDO::PARAM_INT);
+            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':zone_id', $zoneId, PDO::PARAM_INT);
+            $stmt->bindParam(':record_id', $recordId, PDO::PARAM_INT);
         } else {
             $query = "SELECT COUNT(*) FROM $records_table
                      WHERE name = :name
@@ -147,8 +148,8 @@ class DNSViolationValidator
                      AND domain_id = :zone_id";
 
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
-            $stmt->bindParam(':zone_id', $zoneId, \PDO::PARAM_INT);
+            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':zone_id', $zoneId, PDO::PARAM_INT);
         }
 
         $stmt->execute();
@@ -184,9 +185,9 @@ class DNSViolationValidator
                      LIMIT 1";
 
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
-            $stmt->bindParam(':zone_id', $zoneId, \PDO::PARAM_INT);
-            $stmt->bindParam(':record_id', $recordId, \PDO::PARAM_INT);
+            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':zone_id', $zoneId, PDO::PARAM_INT);
+            $stmt->bindParam(':record_id', $recordId, PDO::PARAM_INT);
             $stmt->execute();
         } else {
             $query = "SELECT type FROM $records_table
@@ -196,8 +197,8 @@ class DNSViolationValidator
                      LIMIT 1";
 
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
-            $stmt->bindParam(':zone_id', $zoneId, \PDO::PARAM_INT);
+            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':zone_id', $zoneId, PDO::PARAM_INT);
             $stmt->execute();
         }
 
@@ -232,9 +233,9 @@ class DNSViolationValidator
                      LIMIT 1";
 
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
-            $stmt->bindParam(':zone_id', $zoneId, \PDO::PARAM_INT);
-            $stmt->bindParam(':record_id', $recordId, \PDO::PARAM_INT);
+            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':zone_id', $zoneId, PDO::PARAM_INT);
+            $stmt->bindParam(':record_id', $recordId, PDO::PARAM_INT);
             $stmt->execute();
         } else {
             $query = "SELECT id FROM $records_table
@@ -244,8 +245,8 @@ class DNSViolationValidator
                      LIMIT 1";
 
             $stmt = $this->db->prepare($query);
-            $stmt->bindParam(':name', $name, \PDO::PARAM_STR);
-            $stmt->bindParam(':zone_id', $zoneId, \PDO::PARAM_INT);
+            $stmt->bindParam(':name', $name, PDO::PARAM_STR);
+            $stmt->bindParam(':zone_id', $zoneId, PDO::PARAM_INT);
             $stmt->execute();
         }
 

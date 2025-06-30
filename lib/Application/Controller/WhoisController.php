@@ -70,7 +70,7 @@ class WhoisController extends BaseController
 
         $this->render('whois.html', [
             'domain' => $domain,
-            'utf8_domain' => preg_match('/^xn--/', $domain) ? DnsIdnService::toUtf8($domain) : $domain,
+            'utf8_domain' => str_starts_with($domain, 'xn--') ? DnsIdnService::toUtf8($domain) : $domain,
             'result' => $result,
             'custom_server' => $this->config->get('whois', 'default_server', '')
         ]);

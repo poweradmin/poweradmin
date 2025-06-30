@@ -2,6 +2,7 @@
 
 namespace Poweradmin\Application\Service;
 
+use Exception;
 use Poweradmin\Domain\Service\DnsIdnService;
 
 /*  Poweradmin, a friendly web-based admin tool for PowerDNS.
@@ -94,7 +95,7 @@ class WhoisService
                 ) {
                     return $this->whoisServers[$unicodeTld];
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // Conversion failed, continue with regular lookup
             }
         }
@@ -299,7 +300,7 @@ class WhoisService
 
             $result['success'] = true;
             $result['data'] = $this->formatWhoisResponse($response);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $result['error'] = 'Error: ' . $e->getMessage();
         }
 

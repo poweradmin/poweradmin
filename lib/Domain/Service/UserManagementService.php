@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service;
 
+use Exception;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Model\Pagination;
@@ -289,7 +290,7 @@ class UserManagementService
                 'message' => 'User created successfully',
                 'user_id' => $userId
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
                 'message' => 'Failed to create user: ' . $e->getMessage()
@@ -369,7 +370,7 @@ class UserManagementService
                 'message' => 'User updated successfully',
                 'user_id' => $userId
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
                 'message' => 'Failed to update user: ' . $e->getMessage()
@@ -453,7 +454,7 @@ class UserManagementService
                 'message' => $message,
                 'zones_affected' => $zoneCount
             ];
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return [
                 'success' => false,
                 'message' => 'Failed to delete user: ' . $e->getMessage()

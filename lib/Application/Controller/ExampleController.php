@@ -63,6 +63,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Exception;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
@@ -190,7 +191,7 @@ class ExampleController extends BaseController
                 // Business logic failure
                 $this->showError(_('Failed to process the request. Please try again.'));
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Log the error for debugging
             error_log('ExampleController error: ' . $e->getMessage());
 

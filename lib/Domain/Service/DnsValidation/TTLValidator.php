@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\DnsValidation;
 
+use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 
 /**
@@ -156,7 +157,7 @@ class TTLValidator
         }
 
         // Record type specific recommendations
-        if ($recordType === 'SOA' || $recordType === \Poweradmin\Domain\Model\RecordType::SOA) {
+        if ($recordType === 'SOA' || $recordType === RecordType::SOA) {
             if ($ttlValue < self::TTL_RECOMMENDED_SOA_MIN) {
                 $warnings[] = sprintf(
                     _('SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour).'),

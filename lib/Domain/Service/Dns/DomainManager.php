@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Service\Dns;
 
+use PDO;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
@@ -104,16 +105,16 @@ class DomainManager implements DomainManagerInterface
                 $type == "SLAVE" && $domain && $owner && $slave_master
             ) {
                 $stmt = $db->prepare("INSERT INTO $domains_table (name, type) VALUES (:domain, :type)");
-                $stmt->bindValue(':domain', $domain, \PDO::PARAM_STR);
-                $stmt->bindValue(':type', $type, \PDO::PARAM_STR);
+                $stmt->bindValue(':domain', $domain, PDO::PARAM_STR);
+                $stmt->bindValue(':type', $type, PDO::PARAM_STR);
                 $stmt->execute();
 
                 $domain_id = $db->lastInsertId();
 
                 $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
-                $stmt->bindValue(':domain_id', $domain_id, \PDO::PARAM_INT);
-                $stmt->bindValue(':owner', $owner, \PDO::PARAM_INT);
-                $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, \PDO::PARAM_INT);
+                $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+                $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
+                $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
                 $stmt->execute();
 
                 // Get the zone ID from the zones table (not the domain ID from domains table)
@@ -129,8 +130,8 @@ class DomainManager implements DomainManagerInterface
 
                 if ($type == "SLAVE") {
                     $stmt = $db->prepare("UPDATE $domains_table SET master = :slave_master WHERE id = :domain_id");
-                    $stmt->bindValue(':slave_master', $slave_master, \PDO::PARAM_STR);
-                    $stmt->bindValue(':domain_id', $domain_id, \PDO::PARAM_INT);
+                    $stmt->bindValue(':slave_master', $slave_master, PDO::PARAM_STR);
+                    $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
                     $stmt->execute();
                     return true;
                 } else {

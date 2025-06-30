@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
+use InvalidArgumentException;
 use Poweradmin\Domain\Model\Pagination;
 use Poweradmin\Domain\Service\UserPreferenceService;
 
@@ -65,7 +66,7 @@ class PaginationService
         if ($userRowsPerPage !== null && $userId !== null && $this->userPreferenceService !== null) {
             try {
                 $this->userPreferenceService->setRowsPerPage($userId, $userRowsPerPage);
-            } catch (\InvalidArgumentException $e) {
+            } catch (InvalidArgumentException $e) {
                 // Invalid value, ignore and continue
             }
         }

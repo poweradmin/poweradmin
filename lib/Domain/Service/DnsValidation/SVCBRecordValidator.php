@@ -266,7 +266,7 @@ class SVCBRecordValidator implements DnsRecordValidatorInterface
 
                 case 'dohpath':
                     // DNS over HTTPS path should start with a slash and contain valid URL path characters
-                    if (!preg_match('#^/#', $value)) {
+                    if (!str_starts_with($value, '/')) {
                         $errors[] = _('DoH path must start with a forward slash (/).');
                     }
                     break;

@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
@@ -98,7 +99,7 @@ class DnssecDeleteKeyController extends BaseController
 
                 // Redirect back to DNSSEC page in either case
                 $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 error_log("DNSSEC key deletion exception: " . $e->getMessage());
                 $this->setMessage('dnssec', 'error', _('An error occurred while deleting the DNSSEC key: ') . $e->getMessage());
                 $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);

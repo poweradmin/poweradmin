@@ -31,6 +31,7 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\PowerdnsStatusService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\UserContextService;
@@ -85,7 +86,7 @@ class IndexController extends BaseController
         $showPdnsStatus = $this->config->get('interface', 'show_pdns_status', false);
 
         if ($pdnsApiEnabled && $showPdnsStatus && $permissions['user_is_ueberuser']) {
-            $statusService = new \Poweradmin\Application\Service\PowerdnsStatusService();
+            $statusService = new PowerdnsStatusService();
             $serverStatus = $statusService->getServerStatus();
             $pdnsServerStatus = [
                 'display' => $serverStatus['display_name'] ?? 'PowerDNS',

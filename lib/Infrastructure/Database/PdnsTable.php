@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Infrastructure\Database;
 
+use InvalidArgumentException;
+
 /**
  * Enum representing all valid PowerDNS table names
  *
@@ -78,13 +80,13 @@ enum PdnsTable: string
      *
      * @param string $tableName Table name string
      * @return self PdnsTable enum
-     * @throws \InvalidArgumentException If table name is invalid
+     * @throws InvalidArgumentException If table name is invalid
      */
     public static function fromString(string $tableName): self
     {
         $table = self::tryFrom($tableName);
         if ($table === null) {
-            throw new \InvalidArgumentException("Table name not allowed for prefixing: $tableName");
+            throw new InvalidArgumentException("Table name not allowed for prefixing: $tableName");
         }
         return $table;
     }
