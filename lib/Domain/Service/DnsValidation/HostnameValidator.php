@@ -207,7 +207,7 @@ class HostnameValidator
      * @param string $needle
      * @param string $haystack
      *
-     * @return true if ends with specified string, otherwise false
+     * @return bool true if ends with specified string, otherwise false
      */
     public static function endsWith(string $needle, string $haystack): bool
     {
