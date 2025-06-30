@@ -31,9 +31,12 @@ use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
+use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\StyleManager;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Validation;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -110,7 +113,7 @@ abstract class BaseController
     protected function isApiRequest(): bool
     {
         $page = $this->request['page'] ?? '';
-        return strpos($page, 'api/') === 0;
+        return str_starts_with($page, 'api/');
     }
 
     /**
@@ -158,7 +161,7 @@ abstract class BaseController
     protected function isInternalApiRoute(): bool
     {
         $page = $this->request['page'] ?? '';
-        return strpos($page, 'api/internal/') === 0;
+        return str_starts_with($page, 'api/internal/');
     }
 
     /**
@@ -171,7 +174,7 @@ abstract class BaseController
         $page = $this->request['page'] ?? '';
 
         // Check if this is an API route
-        if (strpos($page, 'api/') !== 0) {
+        if (!str_starts_with($page, 'api/')) {
             return false;
         }
 
@@ -198,10 +201,10 @@ abstract class BaseController
         }
 
         // Create API key middleware
-        $middleware = new \Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware($this->db, $this->config);
+        $middleware = new ApiKeyAuthenticationMiddleware($this->db, $this->config);
 
         // Create request object from globals
-        $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
+        $request = Request::createFromGlobals();
 
         // Try to authenticate
         $middleware->process($request);
@@ -297,9 +300,9 @@ abstract class BaseController
      * Gets messages for a specific script.
      *
      * @param string $script The script to get messages for.
-     * @return mixed The messages for the script, or null if no messages are set.
+     * @return array|null The messages for the script, or null if no messages are set.
      */
-    public function getMessages(string $script): mixed
+    public function getMessages(string $script): ?array
     {
         return $this->messageService->getMessages($script);
     }
@@ -434,37 +437,6 @@ abstract class BaseController
 
         // Add as system message
         $this->addSystemMessage('error', $error);
-
-        // Render the page with the message
-        $systemMessages = $this->messageService->getMessages('system');
-        $this->renderHeader($systemMessages);
-        $this->renderFooter();
-        exit;
-    }
-
-    /**
-     * Displays the first error from an array of errors.
-     *
-     * @param array $errors The array of errors.
-     */
-    public function showFirstError(array $errors): void
-    {
-        $validationErrors = array_values($errors);
-        $firstError = reset($validationErrors);
-
-        // Check if this request expects JSON
-        if (self::expectsJson()) {
-            header('Content-Type: application/json');
-            http_response_code(400);
-            echo json_encode([
-                'error' => true,
-                'message' => $firstError[0]
-            ]);
-            exit;
-        }
-
-        // Add as system message so it appears in the right place
-        $this->addSystemMessage('error', $firstError[0]);
 
         // Render the page with the message
         $systemMessages = $this->messageService->getMessages('system');
@@ -641,12 +613,12 @@ abstract class BaseController
     }
 
     /**
-     * Validates the request data.
+     * Validates data and returns constraint violations.
      *
      * @param array|null $data Optional data to validate. If not provided, uses $this->request
-     * @return bool True if the request data is valid, false otherwise.
+     * @return ConstraintViolationListInterface
      */
-    public function doValidateRequest(?array $data = null): bool
+    private function validateData(?array $data = null): ConstraintViolationListInterface
     {
         $dataToValidate = $data ?? $this->request;
 
@@ -662,8 +634,19 @@ abstract class BaseController
             'allowExtraFields' => true,
             'allowMissingFields' => true
         ]);
-        $violations = $this->validator->validate($dataToValidate, $collectionConstraint);
 
+        return $this->validator->validate($dataToValidate, $collectionConstraint);
+    }
+
+    /**
+     * Validates the request data.
+     *
+     * @param array|null $data Optional data to validate. If not provided, uses $this->request
+     * @return bool True if the request data is valid, false otherwise.
+     */
+    public function doValidateRequest(?array $data = null): bool
+    {
+        $violations = $this->validateData($data);
         return $violations->count() === 0;
     }
 
@@ -674,25 +657,11 @@ abstract class BaseController
      */
     public function showFirstValidationError(?array $data = null): void
     {
-        $dataToValidate = $data ?? $this->request;
-
-        // Filter input data to remove empty values to prevent type errors
-        foreach ($dataToValidate as $key => $value) {
-            if ($value === '') {
-                unset($dataToValidate[$key]);
-            }
-        }
-
-        $collectionConstraint = new Assert\Collection([
-            'fields' => $this->validationConstraints,
-            'allowExtraFields' => true,
-            'allowMissingFields' => true
-        ]);
-        $violations = $this->validator->validate($dataToValidate, $collectionConstraint);
+        $violations = $this->validateData($data);
 
         if ($violations->count() > 0) {
             $firstViolation = $violations->get(0);
-            $errorMessage = $firstViolation->getMessage();
+            $errorMessage = (string) $firstViolation->getMessage();
             $this->showError($errorMessage);
         }
     }
