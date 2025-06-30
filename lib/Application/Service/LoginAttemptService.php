@@ -58,7 +58,7 @@ class LoginAttemptService
             'user_id' => $userId,
             'ip_address' => $ipAddress,
             'timestamp' => time(),
-            'successful' => $successful ? 1 : 0
+            'successful' => $successful
         ]);
 
         $this->cleanupOldAttempts();
