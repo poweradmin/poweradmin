@@ -81,15 +81,15 @@ class AppManager
         $this->showValidationErrors($validator);
 
         $userContextService = new UserContextService();
-        $iface_lang = $this->configuration->get('interface', 'language', 'en_EN');
+        $interfaceLang = $this->configuration->get('interface', 'language', 'en_EN');
         $userLang = $userContextService->getUserLanguage();
         if ($userLang !== null) {
-            $iface_lang = $userLang;
+            $interfaceLang = $userLang;
         }
 
-        $translator = new Translator($iface_lang);
+        $translator = new Translator($interfaceLang);
         $translator->addLoader('po', new PoFileLoader());
-        $translator->addResource('po', $this->getLocaleFile($iface_lang), $iface_lang);
+        $translator->addResource('po', $this->getLocaleFile($interfaceLang), $interfaceLang);
 
         $this->templateRenderer->addExtension(new TranslationExtension($translator));
     }
@@ -125,14 +125,14 @@ class AppManager
     /**
      * Gets the locale file path for the given interface language.
      *
-     * @param string $iface_lang The interface language
+     * @param string $interfaceLang The interface language
      * @return string The path to the locale file
      */
-    public function getLocaleFile(string $iface_lang): string
+    public function getLocaleFile(string $interfaceLang): string
     {
         $supportedLocales = explode(',', $this->configuration->get('interface', 'enabled_languages', 'en_EN'));
-        if (in_array($iface_lang, $supportedLocales)) {
-            return "locale/$iface_lang/LC_MESSAGES/messages.po";
+        if (in_array($interfaceLang, $supportedLocales)) {
+            return "locale/$interfaceLang/LC_MESSAGES/messages.po";
         }
         return "locale/en_EN/LC_MESSAGES/messages.po";
     }
