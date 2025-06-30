@@ -38,6 +38,9 @@ use PragmaRX\Google2FA\Exceptions\InvalidCharactersException;
 use PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException;
 use PragmaRX\Google2FA\Google2FA;
 use RuntimeException;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class MfaService
 {
@@ -405,6 +408,9 @@ class MfaService
      * @param int $userId The user ID
      * @param string $email The email address to send the code to
      * @return string The generated verification code
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function sendEmailVerificationCode(int $userId, string $email): string
     {

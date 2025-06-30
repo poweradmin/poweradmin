@@ -32,6 +32,7 @@ use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Random\RandomException;
 
 /**
  * Service for managing API keys
@@ -142,6 +143,7 @@ class ApiKeyService
      * @param string $name The name of the API key
      * @param DateTime|null $expiresAt Optional expiration date
      * @return ApiKey|null The created API key, or null if creation failed
+     * @throws RandomException
      */
     public function createApiKey(string $name, ?DateTime $expiresAt = null): ?ApiKey
     {

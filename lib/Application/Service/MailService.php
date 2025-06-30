@@ -27,6 +27,9 @@ use Poweradmin\Domain\Service\MailService as MailServiceInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\EmailTemplateService;
 use Psr\Log\LoggerInterface;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 
 class MailService implements MailServiceInterface
 {
@@ -98,6 +101,9 @@ class MailService implements MailServiceInterface
      * @param string $password User's password
      * @param string $fullname User's full name (optional)
      * @return bool True if email was sent successfully, false otherwise
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      */
     public function sendNewAccountEmail(
         string $to,

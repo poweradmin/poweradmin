@@ -285,6 +285,7 @@ class ApiKey implements JsonSerializable
      * Regenerate the secret key
      *
      * @return string The new secret key
+     * @throws RandomException
      */
     public function regenerateSecretKey(): string
     {
