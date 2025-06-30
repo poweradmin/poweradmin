@@ -46,6 +46,7 @@ use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 
 class DeleteRecordController extends BaseController
 {
@@ -73,7 +74,8 @@ class DeleteRecordController extends BaseController
         );
 
         $this->userContextService = new UserContextService();
-        $this->permissionService = new PermissionService($this->getConfig());
+        $userRepository = new DbUserRepository($this->db);
+        $this->permissionService = new PermissionService($userRepository);
     }
 
     public function run(): void
