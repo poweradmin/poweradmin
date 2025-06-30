@@ -81,7 +81,6 @@ class ApiKey implements JsonSerializable
      * Generate a new random API key with 'pwa_' prefix
      *
      * @return string A random API key string with 'pwa_' prefix
-     * @throws RandomException
      */
     public static function generateSecretKey(): string
     {
@@ -285,7 +284,6 @@ class ApiKey implements JsonSerializable
      * Regenerate the secret key
      *
      * @return string The new secret key
-     * @throws RandomException
      */
     public function regenerateSecretKey(): string
     {

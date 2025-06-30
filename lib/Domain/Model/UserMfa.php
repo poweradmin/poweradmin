@@ -258,7 +258,6 @@ class UserMfa
      * @param int $count Number of recovery codes to generate
      * @param int $length Length of each recovery code in bytes (before hex encoding)
      * @return array The generated recovery codes
-     * @throws RandomException
      */
     public function generateRecoveryCodes(int $count = 10, int $length = 10): array
     {
@@ -278,7 +277,6 @@ class UserMfa
      *
      * @param int $length Length of the recovery code in bytes (before hex encoding)
      * @return string The generated recovery code
-     * @throws RandomException
      */
     private function generateRecoveryCode(int $length = 10): string
     {

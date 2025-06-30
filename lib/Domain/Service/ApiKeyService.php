@@ -143,7 +143,6 @@ class ApiKeyService
      * @param string $name The name of the API key
      * @param DateTime|null $expiresAt Optional expiration date
      * @return ApiKey|null The created API key, or null if creation failed
-     * @throws RandomException
      */
     public function createApiKey(string $name, ?DateTime $expiresAt = null): ?ApiKey
     {

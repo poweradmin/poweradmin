@@ -57,7 +57,6 @@ class MfaSessionManager
      * Marks MFA as completed and sets the user as fully authenticated
      *
      * @return void
-     * @throws RandomException
      */
     public static function setMfaVerified(): void
     {

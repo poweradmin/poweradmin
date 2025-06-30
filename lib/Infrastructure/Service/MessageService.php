@@ -324,7 +324,6 @@ EOF;
      * Generate a unique form token
      *
      * @return string The generated token
-     * @throws RandomException
      */
     public function generateFormToken(): string
     {
