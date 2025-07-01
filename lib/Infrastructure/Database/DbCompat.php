@@ -47,6 +47,30 @@ final class DbCompat
     ];
 
     /**
+     * Mapping of database types to their corresponding current timestamp functions.
+     */
+    private const NOW_FUNCTIONS = [
+        'sqlite' => "datetime('now')",
+        'default' => 'NOW()'
+    ];
+
+    /**
+     * Mapping of database types to their boolean true values.
+     */
+    private const BOOL_TRUE = [
+        'sqlite' => '1',
+        'default' => 'TRUE'
+    ];
+
+    /**
+     * Mapping of database types to their boolean false values.
+     */
+    private const BOOL_FALSE = [
+        'sqlite' => '0',
+        'default' => 'FALSE'
+    ];
+
+    /**
      * Returns the appropriate substring function for the given database type.
      *
      * @param string $db_type The type of database (e.g., "sqlite", "mysql", etc.)
@@ -66,5 +90,38 @@ final class DbCompat
     public static function regexp(string $db_type): string
     {
         return self::REGEXP_FUNCTIONS[$db_type] ?? self::REGEXP_FUNCTIONS['default'];
+    }
+
+    /**
+     * Returns the appropriate current timestamp function for the given database type.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @return string The current timestamp function corresponding to the given database type.
+     */
+    public static function now(string $db_type): string
+    {
+        return self::NOW_FUNCTIONS[$db_type] ?? self::NOW_FUNCTIONS['default'];
+    }
+
+    /**
+     * Returns the appropriate boolean true value for the given database type.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @return string The boolean true value corresponding to the given database type.
+     */
+    public static function boolTrue(string $db_type): string
+    {
+        return self::BOOL_TRUE[$db_type] ?? self::BOOL_TRUE['default'];
+    }
+
+    /**
+     * Returns the appropriate boolean false value for the given database type.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @return string The boolean false value corresponding to the given database type.
+     */
+    public static function boolFalse(string $db_type): string
+    {
+        return self::BOOL_FALSE[$db_type] ?? self::BOOL_FALSE['default'];
     }
 }

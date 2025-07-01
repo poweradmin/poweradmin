@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 /**
  * Service for managing zone template synchronization tracking
@@ -44,9 +45,10 @@ class ZoneTemplateSyncService
      */
     public function markTemplateAsModified(int $templateId): void
     {
+        $db_type = $this->config->get('database', 'type');
         $query = "UPDATE zone_template_sync
-                  SET needs_sync = TRUE,
-                      template_last_modified = NOW()
+                  SET needs_sync = " . DbCompat::boolTrue($db_type) . ",
+                      template_last_modified = " . DbCompat::now($db_type) . "
                   WHERE zone_templ_id = :template_id";
 
         $stmt = $this->db->prepare($query);
@@ -58,17 +60,32 @@ class ZoneTemplateSyncService
      */
     public function markZoneAsSynced(int $zoneId, int $templateId): void
     {
-        $query = "UPDATE zone_template_sync
-                  SET needs_sync = FALSE,
-                      last_synced = NOW()
-                  WHERE zone_id = :zone_id
-                    AND zone_templ_id = :template_id";
+        $db_type = $this->config->get('database', 'type');
 
-        $stmt = $this->db->prepare($query);
+        // Try to update existing record first
+        $updateQuery = "UPDATE zone_template_sync
+                        SET needs_sync = " . DbCompat::boolFalse($db_type) . ",
+                            last_synced = " . DbCompat::now($db_type) . "
+                        WHERE zone_id = :zone_id
+                          AND zone_templ_id = :template_id";
+
+        $stmt = $this->db->prepare($updateQuery);
         $stmt->execute([
             'zone_id' => $zoneId,
             'template_id' => $templateId
         ]);
+
+        // If no rows were affected, insert new record
+        if ($stmt->rowCount() === 0) {
+            $insertQuery = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
+                           VALUES (:zone_id, :template_id, " . DbCompat::boolFalse($db_type) . ", " . DbCompat::now($db_type) . ")";
+
+            $stmt = $this->db->prepare($insertQuery);
+            $stmt->execute([
+                'zone_id' => $zoneId,
+                'template_id' => $templateId
+            ]);
+        }
     }
 
     /**
@@ -80,16 +97,34 @@ class ZoneTemplateSyncService
             return;
         }
 
-        $placeholders = array_fill(0, count($zoneIds), '?');
-        $query = "UPDATE zone_template_sync
-                  SET needs_sync = FALSE,
-                      last_synced = NOW()
-                  WHERE zone_id IN (" . implode(',', $placeholders) . ")
-                    AND zone_templ_id = ?";
+        $db_type = $this->config->get('database', 'type');
 
-        $params = array_merge($zoneIds, [$templateId]);
-        $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
+        // For each zone, use UPSERT pattern to ensure sync record exists
+        foreach ($zoneIds as $zoneId) {
+            // Try to update existing record first
+            $updateQuery = "UPDATE zone_template_sync 
+                            SET needs_sync = " . DbCompat::boolFalse($db_type) . ",
+                                last_synced = " . DbCompat::now($db_type) . " 
+                            WHERE zone_id = :zone_id AND zone_templ_id = :template_id";
+
+            $stmt = $this->db->prepare($updateQuery);
+            $stmt->execute([
+                'zone_id' => $zoneId,
+                'template_id' => $templateId
+            ]);
+
+            // If no rows were affected, insert new record
+            if ($stmt->rowCount() === 0) {
+                $insertQuery = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
+                               VALUES (:zone_id, :template_id, " . DbCompat::boolFalse($db_type) . ", " . DbCompat::now($db_type) . ")";
+
+                $stmt = $this->db->prepare($insertQuery);
+                $stmt->execute([
+                    'zone_id' => $zoneId,
+                    'template_id' => $templateId
+                ]);
+            }
+        }
     }
 
     /**
@@ -97,15 +132,30 @@ class ZoneTemplateSyncService
      */
     public function createSyncRecord(int $zoneId, int $templateId): void
     {
-        $query = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync)
-                  VALUES (:zone_id, :template_id, 1)
-                  ON DUPLICATE KEY UPDATE needs_sync = TRUE";
+        $db_type = $this->config->get('database', 'type');
 
-        $stmt = $this->db->prepare($query);
+        // Try to update existing record first
+        $updateQuery = "UPDATE zone_template_sync 
+                        SET needs_sync = " . DbCompat::boolTrue($db_type) . " 
+                        WHERE zone_id = :zone_id AND zone_templ_id = :template_id";
+
+        $stmt = $this->db->prepare($updateQuery);
         $stmt->execute([
             'zone_id' => $zoneId,
             'template_id' => $templateId
         ]);
+
+        // If no rows were affected, insert new record
+        if ($stmt->rowCount() === 0) {
+            $insertQuery = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync)
+                           VALUES (:zone_id, :template_id, " . DbCompat::boolTrue($db_type) . ")";
+
+            $stmt = $this->db->prepare($insertQuery);
+            $stmt->execute([
+                'zone_id' => $zoneId,
+                'template_id' => $templateId
+            ]);
+        }
     }
 
     /**
@@ -129,10 +179,11 @@ class ZoneTemplateSyncService
      */
     public function getUnsyncedZoneCount(int $templateId): int
     {
+        $db_type = $this->config->get('database', 'type');
         $query = "SELECT COUNT(*) as count
                   FROM zone_template_sync
                   WHERE zone_templ_id = :template_id
-                    AND needs_sync = TRUE";
+                    AND needs_sync = " . DbCompat::boolTrue($db_type);
 
         $stmt = $this->db->prepare($query);
         $stmt->execute(['template_id' => $templateId]);
@@ -145,11 +196,12 @@ class ZoneTemplateSyncService
      */
     public function getTemplateSyncStatus(?int $userId = null): array
     {
+        $db_type = $this->config->get('database', 'type');
         $query = "SELECT 
                     zt.id,
                     zt.name,
                     COUNT(zts.zone_id) as total_zones,
-                    SUM(CASE WHEN zts.needs_sync = TRUE THEN 1 ELSE 0 END) as unsynced_zones
+                    SUM(CASE WHEN zts.needs_sync = " . DbCompat::boolTrue($db_type) . " THEN 1 ELSE 0 END) as unsynced_zones
                   FROM zone_templ zt
                   LEFT JOIN zone_template_sync zts ON zt.id = zts.zone_templ_id";
 
@@ -184,6 +236,7 @@ class ZoneTemplateSyncService
      */
     public function getUnsyncedZones(int $templateId): array
     {
+        $db_type = $this->config->get('database', 'type');
         $query = "SELECT 
                     d.id,
                     d.name,
@@ -193,7 +246,7 @@ class ZoneTemplateSyncService
                   JOIN zones z ON zts.zone_id = z.id
                   JOIN domains d ON z.domain_id = d.id
                   WHERE zts.zone_templ_id = :template_id
-                    AND zts.needs_sync = TRUE
+                    AND zts.needs_sync = " . DbCompat::boolTrue($db_type) . "
                   ORDER BY d.name";
 
         $stmt = $this->db->prepare($query);
@@ -228,12 +281,13 @@ class ZoneTemplateSyncService
      */
     public function initializeSyncRecords(): void
     {
-        // Insert sync records for all existing zone-template relationships
+        // Insert sync records for existing zone-template relationships that don't have them yet
+        $db_type = $this->config->get('database', 'type');
         $query = "INSERT INTO zone_template_sync (zone_id, zone_templ_id, needs_sync, last_synced)
-                  SELECT z.id, z.zone_templ_id, 0, NOW()
+                  SELECT z.id, z.zone_templ_id, " . DbCompat::boolFalse($db_type) . ", " . DbCompat::now($db_type) . "
                   FROM zones z
-                  WHERE z.zone_templ_id > 0
-                  ON DUPLICATE KEY UPDATE zone_id = zone_id";
+                  LEFT JOIN zone_template_sync zts ON z.id = zts.zone_id AND z.zone_templ_id = zts.zone_templ_id
+                  WHERE z.zone_templ_id > 0 AND zts.zone_id IS NULL";
 
         $this->db->exec($query);
     }
