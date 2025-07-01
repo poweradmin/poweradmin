@@ -4,13 +4,17 @@ require_once __DIR__ . '/vendor/autoload.php';
 
 use Poweradmin\Application\Service\DatabaseService;
 use Poweradmin\Application\Service\UserAuthenticationService;
-use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\DynamicDnsAuthenticationService;
 use Poweradmin\Domain\Service\DynamicDnsHelper;
+use Poweradmin\Domain\Service\DynamicDnsUpdateService;
+use Poweradmin\Domain\Service\DynamicDnsValidationService;
+use Poweradmin\Domain\ValueObject\DynamicDnsRequest;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDODatabaseConnection;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Repository\DynamicDnsRepository;
 use Symfony\Component\HttpFoundation\Request;
 
 // Main execution code
@@ -40,130 +44,27 @@ $databaseConnection = new PDODatabaseConnection();
 $databaseService = new DatabaseService($databaseConnection);
 $db = $databaseService->connect($credentials);
 
-if (!isset($_SERVER['HTTP_USER_AGENT']) || empty($_SERVER['HTTP_USER_AGENT'])) {
-    return DynamicDnsHelper::statusExit('badagent');
-}
+// Initialize services
+$dnsRecord = new DnsRecord($db, $config);
+$repository = new DynamicDnsRepository($db, $dnsRecord, $records_table);
 
-// Grab username & password based on HTTP auth, alternatively the query string
-$auth_username = $_SERVER['PHP_AUTH_USER'] ?? $request->get('username');
-$auth_password = $_SERVER['PHP_AUTH_PW'] ?? $request->get('password');
-
-// If we still don't have a username, throw up
-if (!isset($auth_username)) {
-    header('WWW-Authenticate: Basic realm="DNS Update"');
-    header('HTTP/1.0 401 Unauthorized');
-    return DynamicDnsHelper::statusExit('badauth');
-}
-
-$username = $auth_username;
-$hostname = $request->get('hostname', '');
-
-// === Dynamic IP handling starts here ===
-
-$given_ip = $request->get('myip') ?? $request->get('ip', '');
-$given_ip6 = $request->get('myip6') ?? $request->get('ip6', '');
-
-// Handle special case: "whatismyip"
-if ($given_ip === 'whatismyip') {
-    if (DynamicDnsHelper::validIpAddress($_SERVER['REMOTE_ADDR']) === RecordType::A) {
-        $given_ip = $_SERVER['REMOTE_ADDR'];
-    } elseif (DynamicDnsHelper::validIpAddress($_SERVER['REMOTE_ADDR']) === RecordType::AAAA && !$given_ip6) {
-        $given_ip6 = $_SERVER['REMOTE_ADDR'];
-        $given_ip = '';
-    }
-}
-if ($given_ip6 === 'whatismyip') {
-    if (DynamicDnsHelper::validIpAddress($_SERVER['REMOTE_ADDR']) === RecordType::AAAA) {
-        $given_ip6 = $_SERVER['REMOTE_ADDR'];
-    }
-}
-
-// Validate hostname
-if (!strlen($hostname)) {
-    return DynamicDnsHelper::statusExit('notfqdn');
-}
-
-// Validate hostname format and length
-if (strlen($hostname) > 253) {
-    return DynamicDnsHelper::statusExit('notfqdn');
-}
-
-// Basic hostname validation - reject obvious malicious patterns
-if (preg_match('/[<>\'\";\x00-\x1f\x7f-\xff]/', $hostname)) {
-    return DynamicDnsHelper::statusExit('notfqdn');
-}
-
-// Validate hostname format (basic DNS naming rules)
-if (!preg_match('/^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$/', $hostname)) {
-    return DynamicDnsHelper::statusExit('notfqdn');
-}
-
-// Parse and validate comma-separated IP lists
-$dualstack_update = $request->get('dualstack_update') === '1';
-$ip_v4_input = $given_ip;
-$ip_v6_input = $given_ip6;
-
-$ip_v4_list = DynamicDnsHelper::extractValidIps($ip_v4_input, RecordType::A);
-$ip_v6_list = DynamicDnsHelper::extractValidIps($ip_v6_input, RecordType::AAAA);
-
-sort($ip_v4_list);
-sort($ip_v6_list);
-
-// Validate IP input: at least one valid IPv4 or IPv6 address must be present
-if (empty($ip_v4_list) && empty($ip_v6_list)) {
-    return DynamicDnsHelper::statusExit('dnserr');
-}
-
-// Authenticate user and check permissions
-$auth_query = $db->prepare("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items 
-                        WHERE users.username = :username
-                        AND users.active = 1 
-                        AND perm_templ.id = users.perm_templ 
-                        AND perm_templ_items.templ_id = perm_templ.id 
-                        AND perm_items.id = perm_templ_items.perm_id 
-                        AND (
-                            perm_items.name = 'zone_content_edit_own'
-                            OR perm_items.name = 'zone_content_edit_own_as_client'
-                            OR perm_items.name = 'zone_content_edit_others'
-                        )");
-$auth_query->execute([':username' => $username]);
-$user = $auth_query->fetch(PDO::FETCH_ASSOC);
+$validationService = new DynamicDnsValidationService($config);
 
 $userAuthService = new UserAuthenticationService(
     $config->get('security', 'password_encryption'),
     $config->get('security', 'password_cost')
 );
+$authenticationService = new DynamicDnsAuthenticationService($repository, $userAuthService);
 
-if (!$user || !$userAuthService->verifyPassword($auth_password, $user['password'])) {
-    return DynamicDnsHelper::statusExit('badauth2');
-}
+$updateService = new DynamicDnsUpdateService(
+    $validationService,
+    $authenticationService,
+    $repository
+);
 
-$zones_query = $db->prepare('SELECT domain_id FROM zones WHERE owner=:user_id');
-$zones_query->execute([':user_id' => $user['id']]);
-$was_updated = false;
-$no_update_necessary = false;
+// Create request value object and process update
+$dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
+$result = $updateService->processUpdate($dynamicDnsRequest);
 
-while ($zone = $zones_query->fetch()) {
-    $zone_updated = false;
-
-    if ($dualstack_update || !empty($ip_v4_list)) {
-        if (DynamicDnsHelper::syncDnsRecords($db, $records_table, $zone['domain_id'], $hostname, RecordType::A, $ip_v4_list)) {
-            $zone_updated = true;
-            $was_updated = true;
-        }
-    }
-
-    if ($dualstack_update || !empty($ip_v6_list)) {
-        if (DynamicDnsHelper::syncDnsRecords($db, $records_table, $zone['domain_id'], $hostname, RecordType::AAAA, $ip_v6_list)) {
-            $zone_updated = true;
-            $was_updated = true;
-        }
-    }
-
-    if ($zone_updated) {
-        $dnsRecord = new DnsRecord($db, $config);
-        $dnsRecord->updateSOASerial($zone['domain_id']);
-    }
-}
-
-return (($was_updated || $no_update_necessary) ? DynamicDnsHelper::statusExit('good') : DynamicDnsHelper::statusExit('!yours'));
+// Output result and exit
+DynamicDnsHelper::statusExit($result);
