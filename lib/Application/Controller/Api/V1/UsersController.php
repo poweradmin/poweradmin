@@ -88,6 +88,7 @@ class UsersController extends PublicApiController
             'GET' => isset($this->pathParameters['id']) ? $this->getUser() : $this->handleGetRequest(),
             'POST' => $this->createUser(),
             'PUT' => $this->updateUser(),
+            'PATCH' => $this->assignPermissionTemplate(),
             'DELETE' => $this->deleteUser(),
             default => $this->returnApiError('Method not allowed', 405),
         };
@@ -849,6 +850,116 @@ class UsersController extends PublicApiController
             );
         } catch (Exception $e) {
             return $this->returnApiError('Failed to delete user: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Assign permission template to user
+     *
+     * @return JsonResponse The JSON response
+     */
+    #[OA\Patch(
+        path: '/v1/users/{id}',
+        operationId: 'v1AssignPermissionTemplate',
+        description: 'Assigns a permission template to a specific user',
+        summary: 'Assign permission template to user',
+        security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
+        tags: ['users']
+    )]
+    #[OA\Parameter(
+        name: 'id',
+        description: 'User ID',
+        in: 'path',
+        required: true,
+        schema: new OA\Schema(type: 'integer')
+    )]
+    #[OA\RequestBody(
+        description: 'Permission template assignment data',
+        required: true,
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(
+                    property: 'perm_templ',
+                    description: 'Permission template ID to assign to the user',
+                    type: 'integer',
+                    example: 2
+                )
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 200,
+        description: 'Permission template assigned successfully',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', example: 'Permission template assigned successfully'),
+                new OA\Property(
+                    property: 'data',
+                    properties: [
+                        new OA\Property(property: 'user_id', type: 'integer', example: 123),
+                        new OA\Property(property: 'perm_templ', type: 'integer', example: 2)
+                    ]
+                )
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 404,
+        description: 'User not found',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'User not found')
+            ]
+        )
+    )]
+    #[OA\Response(
+        response: 400,
+        description: 'Bad request - invalid permission template ID',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: false),
+                new OA\Property(property: 'message', type: 'string', example: 'Invalid permission template ID')
+            ]
+        )
+    )]
+    private function assignPermissionTemplate(): JsonResponse
+    {
+        try {
+            $userId = (int)$this->pathParameters['id'];
+            $input = json_decode($this->request->getContent(), true);
+
+            if (!$input || !isset($input['perm_templ'])) {
+                return $this->returnApiError('Missing required field: perm_templ', 400);
+            }
+
+            $permTemplId = (int)$input['perm_templ'];
+
+            // Use the domain service to assign permission template
+            $result = $this->userManagementService->assignPermissionTemplate($userId, $permTemplId);
+
+            if (!$result['success']) {
+                $statusCode = $result['message'] === 'User not found' ? 404 : 400;
+                return $this->returnApiError($result['message'], $statusCode);
+            }
+
+            return $this->returnApiResponse(
+                [
+                    'user_id' => $userId,
+                    'perm_templ' => $permTemplId
+                ],
+                true,
+                'Permission template assigned successfully',
+                200,
+                [
+                    'meta' => [
+                        'timestamp' => date('Y-m-d H:i:s')
+                    ]
+                ]
+            );
+        } catch (Exception $e) {
+            return $this->returnApiError('Failed to assign permission template: ' . $e->getMessage(), 500);
         }
     }
 }

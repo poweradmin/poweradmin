@@ -24,7 +24,7 @@ Examples:
 
 This script manages Dynamic DNS test infrastructure:
 - Creates/removes test user with Dynamic DNS permissions
-- Creates/removes test zone (example.com) 
+- Creates/removes test zone (example.com)
 - Creates/removes test DNS records
 - Tests Dynamic DNS functionality
 
@@ -90,6 +90,25 @@ if [[ -n "$EXISTING_USER_ID" && "$EXISTING_USER_ID" != "null" ]]; then
     fi
 fi
 
+# Delete test permission templates if they exist
+echo "  Checking for existing Dynamic DNS permission templates..."
+EXISTING_TEMPLATES=$(curl -s -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission_templates" | \
+    jq -r '.data[] | select(.name == "Dynamic DNS User") | .id')
+if [[ -n "$EXISTING_TEMPLATES" ]]; then
+    while IFS= read -r template_id; do
+        if [[ -n "$template_id" && "$template_id" != "null" ]]; then
+            echo "  Deleting existing permission template ID: $template_id"
+            DELETE_TEMPLATE_RESULT=$(curl -s -w "%{http_code}" -X DELETE -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission_templates/$template_id")
+            DELETE_TEMPLATE_CODE="${DELETE_TEMPLATE_RESULT: -3}"
+            if [[ "$DELETE_TEMPLATE_CODE" == "200" || "$DELETE_TEMPLATE_CODE" == "204" ]]; then
+                echo "  ✓ Permission template deleted successfully"
+            else
+                echo "  ⚠ Permission template deletion failed (HTTP $DELETE_TEMPLATE_CODE)"
+            fi
+        fi
+    done <<< "$EXISTING_TEMPLATES"
+fi
+
 echo "  ✓ Cleanup completed"
 
 # Exit if cleanup mode
@@ -100,15 +119,53 @@ if [[ "$CLEANUP_ONLY" == "cleanup" ]]; then
     exit 0
 fi
 
-# 2. Create user
-echo "2. Creating Dynamic DNS user..."
+# 2. Create Dynamic DNS permission template
+echo "2. Creating Dynamic DNS permission template..."
+TEMPLATE_DATA="{
+    \"name\": \"Dynamic DNS User\",
+    \"descr\": \"Permission template for Dynamic DNS users with zone editing rights\",
+    \"permissions\": [44, 62]
+}"
+
+TEMPLATE_RESPONSE=$(curl -s -w "%{http_code}" -X POST \
+    -H "X-API-Key: $API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "$TEMPLATE_DATA" \
+    "$API_BASE_URL/api/v1/permission_templates")
+TEMPLATE_HTTP_CODE="${TEMPLATE_RESPONSE: -3}"
+TEMPLATE_BODY="${TEMPLATE_RESPONSE%???}"
+
+if [[ "$TEMPLATE_HTTP_CODE" == "201" ]]; then
+    echo "  ✓ Created Dynamic DNS permission template"
+    # Get the newly created template ID
+    DDNS_TEMPLATE_ID=$(curl -s -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission_templates" | \
+        jq -r '.data[] | select(.name == "Dynamic DNS User") | .id' | tail -1)
+elif [[ "$TEMPLATE_HTTP_CODE" == "409" ]]; then
+    echo "  Template already exists, finding existing template..."
+    EXISTING_TEMPLATE=$(curl -s -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission_templates" | \
+        jq -r '.data[] | select(.name == "Dynamic DNS User") | .id')
+    if [[ -n "$EXISTING_TEMPLATE" && "$EXISTING_TEMPLATE" != "null" ]]; then
+        DDNS_TEMPLATE_ID="$EXISTING_TEMPLATE"
+        echo "  ✓ Using existing template ID: $DDNS_TEMPLATE_ID"
+    else
+        echo "  ⚠ Using default template ID 1"
+        DDNS_TEMPLATE_ID=1
+    fi
+else
+    echo "  ⚠ Template creation failed (HTTP $TEMPLATE_HTTP_CODE): $TEMPLATE_BODY"
+    echo "  Using default template ID 1"
+    DDNS_TEMPLATE_ID=1
+fi
+
+# 3. Create user
+echo "3. Creating Dynamic DNS user..."
 USER_DATA="{
     \"username\": \"$USERNAME\",
     \"password\": \"$PASSWORD\",
     \"fullname\": \"Dynamic DNS Test User\",
     \"email\": \"ddns_test@example.com\",
     \"description\": \"User for Dynamic DNS testing\",
-    \"perm_templ\": 1,
+    \"perm_templ\": $DDNS_TEMPLATE_ID,
     \"active\": true
 }"
 
@@ -117,20 +174,37 @@ USER_RESPONSE=$(curl -s -w "%{http_code}" -X POST \
     -H "Content-Type: application/json" \
     -d "$USER_DATA" \
     "$API_BASE_URL/api/v1/users")
-
 USER_HTTP_CODE="${USER_RESPONSE: -3}"
 USER_BODY="${USER_RESPONSE%???}"
 
 if [[ "$USER_HTTP_CODE" == "201" ]]; then
     USER_ID=$(echo "$USER_BODY" | jq -r '.data.user_id // .data.id')
     echo "  ✓ Created user '$USERNAME' with ID: $USER_ID"
+
+    # Assign Dynamic DNS permission template if it was created and is different from what was used
+    if [[ "$DDNS_TEMPLATE_ID" != "1" ]]; then
+        echo "  Assigning Dynamic DNS permission template to user..."
+        ASSIGN_DATA="{\"perm_templ\": $DDNS_TEMPLATE_ID}"
+        ASSIGN_RESPONSE=$(curl -s -w "%{http_code}" -X PATCH \
+            -H "X-API-Key: $API_KEY" \
+            -H "Content-Type: application/json" \
+            -d "$ASSIGN_DATA" \
+            "$API_BASE_URL/api/v1/users/$USER_ID")
+
+        ASSIGN_HTTP_CODE="${ASSIGN_RESPONSE: -3}"
+        if [[ "$ASSIGN_HTTP_CODE" == "200" ]]; then
+            echo "  ✓ Assigned Dynamic DNS permission template"
+        else
+            echo "  ⚠ Permission template assignment failed, but user created with template $DDNS_TEMPLATE_ID"
+        fi
+    fi
 else
     echo "  ✗ User creation failed (HTTP $USER_HTTP_CODE): $USER_BODY"
     exit 1
 fi
 
-# 3. Create zone
-echo "3. Creating test zone..."
+# 4. Create zone
+echo "4. Creating test zone..."
 ZONE_DATA="{
     \"name\": \"example.com\",
     \"type\": \"NATIVE\",
@@ -144,7 +218,6 @@ ZONE_RESPONSE=$(curl -s -w "%{http_code}" -X POST \
     -H "Content-Type: application/json" \
     -d "$ZONE_DATA" \
     "$API_BASE_URL/api/v1/zones")
-
 ZONE_HTTP_CODE="${ZONE_RESPONSE: -3}"
 ZONE_BODY="${ZONE_RESPONSE%???}"
 
@@ -167,8 +240,8 @@ else
     exit 1
 fi
 
-# 4. Create test record
-echo "4. Creating test DNS record..."
+# 5. Create test record
+echo "5. Creating test DNS record..."
 RECORD_DATA="{
     \"name\": \"$HOSTNAME\",
     \"type\": \"A\",
@@ -182,7 +255,6 @@ RECORD_RESPONSE=$(curl -s -w "%{http_code}" -X POST \
     -H "Content-Type: application/json" \
     -d "$RECORD_DATA" \
     "$API_BASE_URL/api/v1/zones/$ZONE_ID/records")
-
 RECORD_HTTP_CODE="${RECORD_RESPONSE: -3}"
 RECORD_BODY="${RECORD_RESPONSE%???}"
 
@@ -195,8 +267,8 @@ else
     RECORD_ID="N/A"
 fi
 
-# 5. Test Dynamic DNS
-echo "5. Testing Dynamic DNS..."
+# 6. Test Dynamic DNS
+echo "6. Testing Dynamic DNS..."
 DDNS_RESPONSE=$(curl -s -H "User-Agent: SetupScript/1.0" \
     -u "$USERNAME:$PASSWORD" \
     "$API_BASE_URL/dynamic_update.php?hostname=$HOSTNAME&myip=192.168.1.200&verbose=1")
@@ -214,7 +286,7 @@ fi
 echo ""
 echo "=== Setup Complete ==="
 echo "User ID: $USER_ID"
-echo "Zone ID: $ZONE_ID" 
+echo "Zone ID: $ZONE_ID"
 echo "Record ID: $RECORD_ID"
 echo ""
 echo "You can now run: ./dynamic_dns_api_test.sh"

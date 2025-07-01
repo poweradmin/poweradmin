@@ -188,6 +188,7 @@ class DbUserRepository implements UserRepository
                 'email' => $row['email'],
                 'description' => $row['description'],
                 'active' => $row['active'],
+                'perm_templ' => $row['perm_templ'],
                 'zone_count' => $row['zone_count']
             ];
         }
@@ -378,5 +379,31 @@ class DbUserRepository implements UserRepository
         $stmt = $this->db->prepare($query);
 
         return $stmt->execute($params);
+    }
+
+    /**
+     * Assign permission template to a user
+     *
+     * @param int $userId User ID
+     * @param int $permTemplId Permission template ID
+     * @return bool True if assignment was successful
+     */
+    public function assignPermissionTemplate(int $userId, int $permTemplId): bool
+    {
+        $stmt = $this->db->prepare("UPDATE users SET perm_templ = :permTemplId WHERE id = :userId");
+        return $stmt->execute([':permTemplId' => $permTemplId, ':userId' => $userId]);
+    }
+
+    /**
+     * Check if a permission template exists
+     *
+     * @param int $permTemplId Permission template ID
+     * @return bool True if the permission template exists
+     */
+    public function permissionTemplateExists(int $permTemplId): bool
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM perm_templ WHERE id = :permTemplId");
+        $stmt->execute([':permTemplId' => $permTemplId]);
+        return (int)$stmt->fetchColumn() > 0;
     }
 }

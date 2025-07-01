@@ -136,8 +136,8 @@ class DynamicDnsHelper
             if (isset($existing[$ip])) {
                 unset($existing[$ip]);
             } else {
-                $insert = $db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio, change_date)
-                    VALUES (:domain_id, :hostname, :type, :ip, 60, NULL, UNIX_TIMESTAMP())");
+                $insert = $db->prepare("INSERT INTO $records_table (domain_id, name, type, content, ttl, prio)
+                    VALUES (:domain_id, :hostname, :type, :ip, 60, NULL)");
                 $insert->execute([
                     ':domain_id' => $domain_id,
                     ':hostname' => $hostname,

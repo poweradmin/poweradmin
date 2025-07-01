@@ -460,4 +460,61 @@ class UserManagementService
             ];
         }
     }
+
+    /**
+     * Assign permission template to a user
+     *
+     * @param int $userId User ID
+     * @param int $permTemplId Permission template ID
+     * @return array Result with success status and message
+     */
+    public function assignPermissionTemplate(int $userId, int $permTemplId): array
+    {
+        // Check if user exists
+        if (!$this->userExists($userId)) {
+            return [
+                'success' => false,
+                'message' => 'User not found'
+            ];
+        }
+
+        // Check if permission template exists
+        if (!$this->permissionTemplateExists($permTemplId)) {
+            return [
+                'success' => false,
+                'message' => 'Permission template not found'
+            ];
+        }
+
+        try {
+            // Assign permission template
+            if (!$this->userRepository->assignPermissionTemplate($userId, $permTemplId)) {
+                return [
+                    'success' => false,
+                    'message' => 'Failed to assign permission template'
+                ];
+            }
+
+            return [
+                'success' => true,
+                'message' => 'Permission template assigned successfully'
+            ];
+        } catch (Exception $e) {
+            return [
+                'success' => false,
+                'message' => 'Failed to assign permission template: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Check if a permission template exists
+     *
+     * @param int $permTemplId Permission template ID
+     * @return bool True if the permission template exists
+     */
+    private function permissionTemplateExists(int $permTemplId): bool
+    {
+        return $this->userRepository->permissionTemplateExists($permTemplId);
+    }
 }

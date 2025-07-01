@@ -71,7 +71,7 @@ class PermissionTemplatesController extends PublicApiController
      * Get list of permission templates
      */
     #[OA\Get(
-        path: '/api/v1/permission-templates',
+        path: '/v1/permission_templates',
         summary: 'Get list of permission templates',
         tags: ['Permission Templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
@@ -116,7 +116,7 @@ class PermissionTemplatesController extends PublicApiController
      * Get specific permission template
      */
     #[OA\Get(
-        path: '/api/v1/permission-templates/{id}',
+        path: '/v1/permission_templates/{id}',
         summary: 'Get specific permission template',
         tags: ['Permission Templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
@@ -188,7 +188,7 @@ class PermissionTemplatesController extends PublicApiController
      * Create new permission template
      */
     #[OA\Post(
-        path: '/api/v1/permission-templates',
+        path: '/v1/permission_templates',
         summary: 'Create new permission template',
         tags: ['Permission Templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
@@ -263,7 +263,7 @@ class PermissionTemplatesController extends PublicApiController
      * Update permission template
      */
     #[OA\Put(
-        path: '/api/v1/permission-templates/{id}',
+        path: '/v1/permission_templates/{id}',
         summary: 'Update permission template',
         tags: ['Permission Templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
@@ -359,7 +359,7 @@ class PermissionTemplatesController extends PublicApiController
      * Delete permission template
      */
     #[OA\Delete(
-        path: '/api/v1/permission-templates/{id}',
+        path: '/v1/permission_templates/{id}',
         summary: 'Delete permission template',
         tags: ['Permission Templates'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],

@@ -172,4 +172,21 @@ interface UserRepository
      * @return bool True if updated successfully, false otherwise
      */
     public function updateUser(int $userId, array $userData): bool;
+
+    /**
+     * Assign permission template to a user
+     *
+     * @param int $userId User ID
+     * @param int $permTemplId Permission template ID
+     * @return bool True if assignment was successful
+     */
+    public function assignPermissionTemplate(int $userId, int $permTemplId): bool;
+
+    /**
+     * Check if a permission template exists
+     *
+     * @param int $permTemplId Permission template ID
+     * @return bool True if the permission template exists
+     */
+    public function permissionTemplateExists(int $permTemplId): bool;
 }

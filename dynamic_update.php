@@ -80,6 +80,21 @@ if (!strlen($hostname)) {
     return DynamicDnsHelper::statusExit('notfqdn');
 }
 
+// Validate hostname format and length
+if (strlen($hostname) > 253) {
+    return DynamicDnsHelper::statusExit('notfqdn');
+}
+
+// Basic hostname validation - reject obvious malicious patterns
+if (preg_match('/[<>\'\";\x00-\x1f\x7f-\xff]/', $hostname)) {
+    return DynamicDnsHelper::statusExit('notfqdn');
+}
+
+// Validate hostname format (basic DNS naming rules)
+if (!preg_match('/^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?)*$/', $hostname)) {
+    return DynamicDnsHelper::statusExit('notfqdn');
+}
+
 // Parse and validate comma-separated IP lists
 $dualstack_update = isset($_REQUEST['dualstack_update']) && $_REQUEST['dualstack_update'] === '1';
 $ip_v4_input = $given_ip;

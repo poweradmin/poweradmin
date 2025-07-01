@@ -17,18 +17,18 @@ load_env_file() {
         while IFS= read -r line || [[ -n "$line" ]]; do
             # Skip empty lines and comments
             [[ -z "$line" || "$line" =~ ^[[:space:]]*# ]] && continue
-            
+
             # Export the variable if it's in KEY=VALUE format
             if [[ "$line" =~ ^[[:space:]]*([a-zA-Z_][a-zA-Z0-9_]*)=(.*)$ ]]; then
                 local key="${BASH_REMATCH[1]}"
                 local value="${BASH_REMATCH[2]}"
-                
+
                 # Remove surrounding quotes if present
                 value="${value#\"}"
                 value="${value%\"}"
                 value="${value#\'}"
                 value="${value%\'}"
-                
+
                 # Only set if not already set (allow command line override)
                 if [[ -z "${!key}" ]]; then
                     export "$key"="$value"
@@ -103,38 +103,38 @@ test_response() {
     local expected_response="$2"
     local curl_args="$3"
     local skip_default_user_agent="${4:-false}"
-    
+
     echo -n "Testing: $test_name... "
-    
+
     # Build curl command with common options
     local curl_cmd="curl -s --max-time $CURL_TIMEOUT"
-    
+
     # Add default User-Agent only if not overridden
     if [[ "$skip_default_user_agent" != "true" && "$curl_args" != *"User-Agent"* ]]; then
         curl_cmd="$curl_cmd -H 'User-Agent: $TEST_USER_AGENT'"
     fi
-    
+
     # Add SSL verification skip if requested
     if [[ "$SKIP_SSL_VERIFY" == "true" ]]; then
         curl_cmd="$curl_cmd -k"
     fi
-    
+
     # Add custom curl args and URL
     curl_cmd="$curl_cmd $curl_args '$DYNAMIC_UPDATE_URL'"
-    
+
     local response
     response=$(eval "$curl_cmd")
     local exit_code=$?
-    
+
     if [ $exit_code -ne 0 ]; then
         print_status "FAIL" "$test_name - cURL failed with exit code $exit_code"
         return 1
     fi
-    
+
     # Clean response of PHP warnings/errors for comparison
     local clean_response
     clean_response=$(echo "$response" | grep -v "^<br" | grep -v "^<b>" | tail -1)
-    
+
     if [ "$clean_response" = "$expected_response" ]; then
         print_status "PASS" "$test_name"
         return 0
@@ -154,7 +154,7 @@ test_with_auth() {
     local params="$3"
     local username="${4:-$TEST_USERNAME}"
     local password="${5:-$TEST_PASSWORD}"
-    
+
     test_response "$test_name" "$expected_response" "-u '$username:$password' -G $params"
 }
 
@@ -163,7 +163,7 @@ test_without_auth() {
     local test_name="$1"
     local expected_response="$2"
     local params="$3"
-    
+
     test_response "$test_name" "$expected_response" "-G $params"
 }
 
@@ -179,7 +179,7 @@ This script tests the dynamic_update.php endpoint with various scenarios.
 Environment Configuration:
 The script loads configuration from environment files in this order:
 1. tests/api/.env.api-test (API test specific)
-2. .env.test (general test environment in project root)  
+2. .env.test (general test environment in project root)
 3. .env.local (local overrides in project root)
 4. .env (general environment in project root)
 
@@ -197,7 +197,7 @@ Supported Environment Variables (Dynamic DNS specific):
 
 Compatibility with existing API test variables:
   API_BASE_URL       Maps to BASE_URL
-  DYNAMIC_DNS_USER   Maps to TEST_USERNAME  
+  DYNAMIC_DNS_USER   Maps to TEST_USERNAME
   DYNAMIC_DNS_PASS   Maps to TEST_PASSWORD
   DYNAMIC_DNS_HOSTNAME Maps to TEST_HOSTNAME
   HTTP_AUTH_USER     Fallback for TEST_USERNAME
@@ -206,11 +206,11 @@ Compatibility with existing API test variables:
 
 Options:
   -h, --help         Show this help message
-  
+
 Setup:
   cp tests/api/.env.api-test.example tests/api/.env.api-test
   # Edit tests/api/.env.api-test with your configuration
-  
+
 Example tests/api/.env.api-test file:
   BASE_URL=https://poweradmin.example.com
   TEST_USERNAME=api_test_user
@@ -281,7 +281,7 @@ test_with_auth "Valid IPv4 Update" "good" "-d 'hostname=$TEST_HOSTNAME&myip=192.
 test_with_auth "Multiple IPv4 Addresses" "good" "-d 'hostname=$TEST_HOSTNAME&myip=192.168.1.101,192.168.1.102'"
 
 # Test 10: IPv4 with Spaces
-test_with_auth "IPv4 with Spaces" "good" "-d 'hostname=$TEST_HOSTNAME&myip= 192.168.1.103 , 192.168.1.104 '"
+test_with_auth "IPv4 with Spaces" "good" "--data-urlencode 'hostname=$TEST_HOSTNAME' --data-urlencode 'myip= 192.168.1.103 , 192.168.1.104 '"
 
 print_status "INFO" "Running IPv6 update tests..."
 
@@ -356,14 +356,14 @@ test_with_auth "POST Method" "good" "-X POST -d 'hostname=$TEST_HOSTNAME&myip=19
 print_status "INFO" "Running security tests..."
 
 # Test 28: SQL Injection Attempt in Hostname
-test_with_auth "SQL Injection Hostname" "!yours" "-G --data-urlencode \"hostname=test.example.com'; DROP TABLE users; --\" -d 'myip=192.168.1.116'"
+test_with_auth "SQL Injection Hostname" "notfqdn" "-G --data-urlencode \"hostname=test.example.com'; DROP TABLE users; --\" -d 'myip=192.168.1.116'"
 
 # Test 29: XSS Attempt in Hostname
-test_with_auth "XSS Attempt Hostname" "!yours" "-G --data-urlencode 'hostname=<script>alert(1)</script>' -d 'myip=192.168.1.117'"
+test_with_auth "XSS Attempt Hostname" "notfqdn" "-G --data-urlencode 'hostname=<script>alert(1)</script>' -d 'myip=192.168.1.117'"
 
 # Test 30: Very Long Hostname
 LONG_HOSTNAME=$(printf 'a%.0s' {1..300})
-test_with_auth "Very Long Hostname" "!yours" "-G --data-urlencode 'hostname=$LONG_HOSTNAME.example.com' -d 'myip=192.168.1.118'"
+test_with_auth "Very Long Hostname" "notfqdn" "-G --data-urlencode 'hostname=$LONG_HOSTNAME.example.com' -d 'myip=192.168.1.118'"
 
 echo ""
 echo "Test Summary"

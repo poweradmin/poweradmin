@@ -68,7 +68,7 @@ class PermissionsController extends PublicApiController
      * Get list of available permissions
      */
     #[OA\Get(
-        path: '/api/v1/permissions',
+        path: '/v1/permissions',
         summary: 'Get list of available permissions',
         tags: ['Permissions'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
