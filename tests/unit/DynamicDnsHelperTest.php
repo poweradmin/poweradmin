@@ -74,7 +74,7 @@ class DynamicDnsHelperTest extends TestCase
 
         foreach ($test_cases as $code => $expected_message) {
             ob_start();
-            $result = DynamicDnsHelper::statusExit($code);
+            $result = DynamicDnsHelper::statusExit((string)$code);
             $output = ob_get_clean();
 
             $this->assertFalse($result, "statusExit should always return false for code: $code");

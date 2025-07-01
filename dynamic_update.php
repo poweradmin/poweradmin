@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * @psalm-var array{hostname?: string, myip?: string, ip?: string, myip6?: string, ip6?: string, username?: string, password?: string, dualstack_update?: string, verbose?: string} $_REQUEST
+ */
+
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Poweradmin\Application\Service\DatabaseService;
@@ -42,7 +46,9 @@ if (!isset($_SERVER['HTTP_USER_AGENT']) || empty($_SERVER['HTTP_USER_AGENT'])) {
 }
 
 // Grab username & password based on HTTP auth, alternatively the query string
+/** @psalm-suppress InvalidArrayOffset */
 $auth_username = $_SERVER['PHP_AUTH_USER'] ?? $_REQUEST['username'] ?? null;
+/** @psalm-suppress InvalidArrayOffset */
 $auth_password = $_SERVER['PHP_AUTH_PW'] ?? $_REQUEST['password'] ?? null;
 
 // If we still don't have a username, throw up
@@ -53,11 +59,14 @@ if (!isset($auth_username)) {
 }
 
 $username = $auth_username;
-$hostname = $_REQUEST['hostname'];
+/** @psalm-suppress InvalidArrayOffset */
+$hostname = $_REQUEST['hostname'] ?? '';
 
 // === Dynamic IP handling starts here ===
 
+/** @psalm-suppress InvalidArrayOffset */
 $given_ip = $_REQUEST['myip'] ?? $_REQUEST['ip'] ?? '';
+/** @psalm-suppress InvalidArrayOffset */
 $given_ip6 = $_REQUEST['myip6'] ?? $_REQUEST['ip6'] ?? '';
 
 // Handle special case: "whatismyip"
@@ -96,7 +105,11 @@ if (!preg_match('/^[a-zA-Z0-9]([a-zA-Z0-9\-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a
 }
 
 // Parse and validate comma-separated IP lists
-$dualstack_update = isset($_REQUEST['dualstack_update']) && $_REQUEST['dualstack_update'] === '1';
+/** @psalm-suppress InvalidArrayOffset */
+$dualstack_update = isset($_REQUEST['dualstack_update']) && (
+    /** @psalm-suppress InvalidArrayOffset */
+    $_REQUEST['dualstack_update'] === '1'
+);
 $ip_v4_input = $given_ip;
 $ip_v6_input = $given_ip6;
 
