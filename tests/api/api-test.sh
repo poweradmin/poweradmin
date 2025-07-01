@@ -917,6 +917,91 @@ test_api_documentation() {
     fi
 }
 
+test_permission_templates() {
+    print_section "Permission Template Tests"
+    
+    # List permission templates
+    api_request "GET" "/permission_templates" "" "200" "List permission templates"
+    validate_json_response "Permission templates list response" "data"
+    
+    # Get specific permission template (if any exist)
+    local template_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data[0].id // empty' 2>/dev/null)
+    if [[ -n "$template_id" ]]; then
+        api_request "GET" "/permission_templates/$template_id" "" "200" "Get specific permission template"
+        validate_json_response "Permission template details response" "data"
+    else
+        print_skip "Get specific permission template - no templates available"
+    fi
+    
+    # Get non-existent permission template
+    api_request "GET" "/permission_templates/99999" "" "404" "Get non-existent permission template"
+    
+    # Create permission template
+    local template_data='{
+        "name": "API Test Template",
+        "descr": "Template created by API test",
+        "permissions": [1, 2]
+    }'
+    
+    if api_request "POST" "/permission_templates" "$template_data" "201" "Create permission template"; then
+        CREATED_TEMPLATE_ID=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.id // .id // empty')
+        
+        # Update the created template
+        if [[ -n "$CREATED_TEMPLATE_ID" ]]; then
+            local update_data='{
+                "name": "Updated API Test Template",
+                "descr": "Updated template description",
+                "permissions": [1, 2, 3]
+            }'
+            api_request "PUT" "/permission_templates/$CREATED_TEMPLATE_ID" "$update_data" "200" "Update permission template"
+            
+            # Delete the created template
+            api_request "DELETE" "/permission_templates/$CREATED_TEMPLATE_ID" "" "200" "Delete permission template"
+        fi
+    else
+        print_skip "Permission template update/delete tests - creation failed"
+    fi
+    
+    # Create template with validation errors
+    local invalid_template='{
+        "name": "",
+        "descr": ""
+    }'
+    api_request "POST" "/permission_templates" "$invalid_template" "400" "Create template with validation errors"
+}
+
+test_permissions() {
+    print_section "Permissions Tests"
+    
+    # List all available permissions
+    api_request "GET" "/permissions" "" "200" "List all permissions"
+    validate_json_response "Permissions list response" "data"
+    
+    # Validate permissions response structure
+    increment_test
+    print_test "Validate permissions response structure"
+    
+    local permissions_count=$(echo "$LAST_RESPONSE_BODY" | jq '.data | length' 2>/dev/null)
+    if [[ "$permissions_count" -gt 0 ]]; then
+        # Check if first permission has required fields
+        local first_perm=$(echo "$LAST_RESPONSE_BODY" | jq '.data[0]' 2>/dev/null)
+        if echo "$first_perm" | jq -e '.id' >/dev/null 2>&1 && \
+           echo "$first_perm" | jq -e '.name' >/dev/null 2>&1 && \
+           echo "$first_perm" | jq -e '.descr' >/dev/null 2>&1; then
+            print_pass "Validate permissions response structure"
+        else
+            print_fail "Validate permissions response structure - missing required fields"
+        fi
+    else
+        print_skip "Validate permissions response structure - no permissions available"
+    fi
+    
+    # Test unsupported methods
+    api_request "POST" "/permissions" '{}' "405" "POST method not allowed for permissions"
+    api_request "PUT" "/permissions/1" '{}' "405" "PUT method not allowed for permissions"
+    api_request "DELETE" "/permissions/1" "" "405" "DELETE method not allowed for permissions"
+}
+
 test_dynamic_dns() {
     print_section "Dynamic DNS Tests"
     
@@ -1020,6 +1105,8 @@ run_all_tests() {
     test_zone_management
     test_zone_records
     test_record_types
+    test_permission_templates
+    test_permissions
     test_security
     test_edge_cases
     test_api_documentation
@@ -1095,6 +1182,12 @@ main() {
             test_zone_records
             test_record_types
             cleanup_test_data
+            generate_report
+            ;;
+        "permissions")
+            load_config
+            test_permission_templates
+            test_permissions
             generate_report
             ;;
         "security")

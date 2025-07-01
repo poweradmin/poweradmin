@@ -855,6 +855,8 @@ return array(
     'Poweradmin\\Application\\Controller\\Api\\Internal\\ZoneController' => $baseDir . '/lib/Application/Controller/Api/Internal/ZoneController.php',
     'Poweradmin\\Application\\Controller\\Api\\KeyValidationController' => $baseDir . '/lib/Application/Controller/Api/KeyValidationController.php',
     'Poweradmin\\Application\\Controller\\Api\\PublicApiController' => $baseDir . '/lib/Application/Controller/Api/PublicApiController.php',
+    'Poweradmin\\Application\\Controller\\Api\\V1\\PermissionTemplatesController' => $baseDir . '/lib/Application/Controller/Api/V1/PermissionTemplatesController.php',
+    'Poweradmin\\Application\\Controller\\Api\\V1\\PermissionsController' => $baseDir . '/lib/Application/Controller/Api/V1/PermissionsController.php',
     'Poweradmin\\Application\\Controller\\Api\\V1\\UsersController' => $baseDir . '/lib/Application/Controller/Api/V1/UsersController.php',
     'Poweradmin\\Application\\Controller\\Api\\V1\\ZonesController' => $baseDir . '/lib/Application/Controller/Api/V1/ZonesController.php',
     'Poweradmin\\Application\\Controller\\Api\\V1\\ZonesRecordsController' => $baseDir . '/lib/Application/Controller/Api/V1/ZonesRecordsController.php',

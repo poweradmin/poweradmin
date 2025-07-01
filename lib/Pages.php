@@ -59,6 +59,8 @@ class Pages
             'api/v1/users',
             'api/v1/zones',
             'api/v1/zones_records',
+            'api/v1/permission_templates',
+            'api/v1/permissions',
             'api_keys',
             'batch_ptr_record',
             'bulk_record_add',

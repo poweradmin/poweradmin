@@ -159,9 +159,9 @@ class DbPermissionTemplateRepository
      *
      * @param int $templ_id Template ID
      *
-     * @return array Template details
+     * @return array|false Template details or false if not found
      */
-    public function getPermissionTemplateDetails(int $templ_id): array
+    public function getPermissionTemplateDetails(int $templ_id): array|false
     {
         $stmt = $this->db->prepare("SELECT * FROM perm_templ WHERE perm_templ.id = :id");
         $stmt->execute([':id' => $templ_id]);
