@@ -175,6 +175,17 @@ class ZoneTemplateSyncService
     }
 
     /**
+     * Remove all sync tracking records for a zone when it's deleted
+     */
+    public function cleanupZoneSyncRecords(int $zoneId): void
+    {
+        $query = "DELETE FROM zone_template_sync WHERE zone_id = :zone_id";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute(['zone_id' => $zoneId]);
+    }
+
+    /**
      * Get count of zones needing sync for a template
      */
     public function getUnsyncedZoneCount(int $templateId): int

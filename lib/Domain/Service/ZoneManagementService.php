@@ -27,6 +27,7 @@ use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**
  * Service for managing DNS zones
@@ -35,7 +36,7 @@ class ZoneManagementService
 {
     private ZoneRepositoryInterface $zoneRepository;
     private ConfigurationManager $config;
-    private object $db;
+    private PDOCommon $db;
 
     public function __construct(
         ZoneRepositoryInterface $zoneRepository,
@@ -167,6 +168,10 @@ class ZoneManagementService
         if (!$this->zoneRepository->zoneIdExists($zoneId)) {
             return ['success' => false, 'message' => 'Zone not found'];
         }
+
+        // Clean up zone template sync records before deletion
+        $syncService = new ZoneTemplateSyncService($this->db, $this->config);
+        $syncService->cleanupZoneSyncRecords($zoneId);
 
         // Delete the zone
         $success = $this->zoneRepository->deleteZone($zoneId);

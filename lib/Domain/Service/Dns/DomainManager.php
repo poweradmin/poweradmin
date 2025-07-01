@@ -235,6 +235,17 @@ class DomainManager implements DomainManagerInterface
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
         if ($perm_edit == "all" || ($perm_edit == "own" && $user_is_zone_owner == "1")) {
+            // Get zone_id before deleting zones record for sync cleanup
+            $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
+            $stmt->execute([':id' => $id]);
+            $zoneId = $stmt->fetchColumn();
+
+            // Clean up zone template sync records if zone exists
+            if ($zoneId) {
+                $syncService = new ZoneTemplateSyncService($this->db, $this->config);
+                $syncService->cleanupZoneSyncRecords($zoneId);
+            }
+
             $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
             $stmt->execute([':id' => $id]);
 
@@ -289,6 +300,17 @@ class DomainManager implements DomainManagerInterface
                         if ($dnssecProvider->isZoneSecured($zone_name, $this->config)) {
                             $dnssecProvider->unsecureZone($zone_name);
                         }
+                    }
+
+                    // Get zone_id before deleting zones record for sync cleanup
+                    $stmt = $this->db->prepare("SELECT id FROM zones WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
+                    $zoneId = $stmt->fetchColumn();
+
+                    // Clean up zone template sync records if zone exists
+                    if ($zoneId) {
+                        $syncService = new ZoneTemplateSyncService($this->db, $this->config);
+                        $syncService->cleanupZoneSyncRecords($zoneId);
                     }
 
                     $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
