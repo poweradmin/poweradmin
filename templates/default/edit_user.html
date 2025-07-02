@@ -27,20 +27,20 @@
                     <input type="hidden" name="number" value="{{ edit_id }}">
 
                     <div class="mb-3">
-                        <label for="username" class="form-label">{% trans %}Username{% endtrans %} *</label>
+                        <label for="username" class="form-label">{% trans %}Username{% endtrans %} <span class="text-danger">*</span></label>
                         <input class="form-control form-control-sm" type="text" id="username" name="username" value="{{ user['username'] }}" required>
                         <div class="invalid-feedback">{% trans %}Provide user name{% endtrans %}</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="fullname" class="form-label">{% trans %}Fullname{% endtrans %} *</label>
+                        <label for="fullname" class="form-label">{% trans %}Fullname{% endtrans %} <span class="text-danger">*</span></label>
                         <input class="form-control form-control-sm" type="text" id="fullname" name="fullname" value="{{ user['fullname'] }}" required>
                         <small class="text-muted">{% trans %}User's full name for identification{% endtrans %}</small>
                         <div class="invalid-feedback">{% trans %}Provide full name{% endtrans %}</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="email" class="form-label">{% trans %}Email address{% endtrans %} *</label>
+                        <label for="email" class="form-label">{% trans %}Email address{% endtrans %} <span class="text-danger">*</span></label>
                         <input class="form-control form-control-sm" type="email" id="email" name="email" value="{{ user['email'] }}" required>
                         <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
                     </div>

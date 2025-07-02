@@ -15,12 +15,12 @@
             <input type="hidden" name="_token" value="{{ login_token }}">
             <input type="hidden" name="query_string" value="{{ query_string }}">
             <div class="mb-3">
-                <label for="username" class="form-label">{% trans %}Username{% endtrans %}</label>
+                <label for="username" class="form-label">{% trans %}Username{% endtrans %} <span class="text-danger">*</span></label>
                 <input type="text" data-testid="username-input" class="form-control" id="username" name="username" required>
                 <div data-testid="username-error" class="invalid-feedback">{% trans %}Please provide a username{% endtrans %}</div>
             </div>
             <div class="mb-3">
-                <label for="password" class="form-label">{% trans %}Password{% endtrans %}</label>
+                <label for="password" class="form-label">{% trans %}Password{% endtrans %} <span class="text-danger">*</span></label>
                 <div class="input-group">
                     <input type="password" data-testid="password-input" class="form-control" id="password" name="password" required>
                     <button class="btn btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
