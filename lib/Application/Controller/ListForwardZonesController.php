@@ -147,7 +147,7 @@ class ListForwardZonesController extends BaseController
         $zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $zoneService = new ZoneService($zoneRepository);
 
-        $userRepository = new DbUserRepository($this->db);
+        $userRepository = new DbUserRepository($this->db, $this->getConfig());
         $userService = new UserService($userRepository);
         $allow_view_others = $userService->canUserViewOthersContent($userId);
 

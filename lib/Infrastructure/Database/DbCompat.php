@@ -82,6 +82,17 @@ final class DbCompat
     ];
 
     /**
+     * Mapping of database types to their string concatenation functions.
+     */
+    private const CONCAT_FUNCTIONS = [
+        'mysql' => 'CONCAT',
+        'mysqli' => 'CONCAT',
+        'sqlite' => '||',
+        'pgsql' => 'CONCAT',
+        'default' => 'CONCAT'
+    ];
+
+    /**
      * Returns the appropriate substring function for the given database type.
      *
      * @param string $db_type The type of database (e.g., "sqlite", "mysql", etc.)
@@ -147,5 +158,25 @@ final class DbCompat
     {
         $template = self::DATE_SUBTRACT_FUNCTIONS[$db_type] ?? self::DATE_SUBTRACT_FUNCTIONS['default'];
         return str_replace(':seconds', (string) $seconds, $template);
+    }
+
+    /**
+     * Returns the appropriate string concatenation function for the given database type.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @param array $values The values to concatenate
+     * @return string The concatenation expression corresponding to the given database type.
+     */
+    public static function concat(string $db_type, array $values): string
+    {
+        $func = self::CONCAT_FUNCTIONS[$db_type] ?? self::CONCAT_FUNCTIONS['default'];
+
+        if ($db_type === 'sqlite') {
+            // SQLite uses || operator for concatenation
+            return implode(' || ', $values);
+        } else {
+            // MySQL, PostgreSQL use CONCAT function
+            return $func . '(' . implode(', ', $values) . ')';
+        }
     }
 }

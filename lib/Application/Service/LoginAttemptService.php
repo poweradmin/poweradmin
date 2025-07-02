@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use PDO;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class LoginAttemptService
@@ -94,10 +95,11 @@ class LoginAttemptService
         $maxAttempts = $this->configManager->get('security', 'account_lockout.lockout_attempts', 5);
         $trackIpAddress = $this->configManager->get('security', 'account_lockout.track_ip_address', true);
 
+        $db_type = $this->configManager->get('database', 'type');
         $sql = "SELECT COUNT(*) as attempts
             FROM login_attempts
             WHERE user_id = :user_id
-            AND successful = FALSE
+            AND successful = " . DbCompat::boolFalse($db_type) . "
             AND timestamp > :cutoff_time";
 
         $params = [

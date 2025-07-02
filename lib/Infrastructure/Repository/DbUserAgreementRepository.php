@@ -23,15 +23,19 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Domain\Repository\UserAgreementRepositoryInterface;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class DbUserAgreementRepository implements UserAgreementRepositoryInterface
 {
     private PDOCommon $db;
+    private ConfigurationManager $config;
 
-    public function __construct(PDOCommon $db)
+    public function __construct(PDOCommon $db, ConfigurationManager $config)
     {
         $this->db = $db;
+        $this->config = $config;
     }
 
     public function hasUserAcceptedAgreement(int $userId, string $version): bool
@@ -56,24 +60,41 @@ class DbUserAgreementRepository implements UserAgreementRepositoryInterface
         string $ipAddress,
         string $userAgent
     ): bool {
-        $stmt = $this->db->prepare(
-            "INSERT INTO user_agreements 
-             (user_id, agreement_version, ip_address, user_agent) 
-             VALUES (:user_id, :version, :ip_address, :user_agent)
-             ON DUPLICATE KEY UPDATE 
-             accepted_at = CURRENT_TIMESTAMP, 
-             ip_address = :ip_address_update, 
-             user_agent = :user_agent_update"
+        $db_type = $this->config->get('database', 'type');
+
+        // Try to update existing record first
+        $updateStmt = $this->db->prepare(
+            "UPDATE user_agreements 
+             SET accepted_at = " . DbCompat::now($db_type) . ",
+                 ip_address = :ip_address,
+                 user_agent = :user_agent
+             WHERE user_id = :user_id AND agreement_version = :version"
         );
 
-        return $stmt->execute([
+        $updateStmt->execute([
             ':user_id' => $userId,
             ':version' => $version,
             ':ip_address' => $ipAddress,
-            ':user_agent' => $userAgent,
-            ':ip_address_update' => $ipAddress,
-            ':user_agent_update' => $userAgent
+            ':user_agent' => $userAgent
         ]);
+
+        // If no rows were affected, insert new record
+        if ($updateStmt->rowCount() === 0) {
+            $insertStmt = $this->db->prepare(
+                "INSERT INTO user_agreements 
+                 (user_id, agreement_version, ip_address, user_agent) 
+                 VALUES (:user_id, :version, :ip_address, :user_agent)"
+            );
+
+            return $insertStmt->execute([
+                ':user_id' => $userId,
+                ':version' => $version,
+                ':ip_address' => $ipAddress,
+                ':user_agent' => $userAgent
+            ]);
+        }
+
+        return true;
     }
 
     public function getUserAgreements(int $userId): array

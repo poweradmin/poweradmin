@@ -26,14 +26,18 @@ use PDO;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Domain\Repository\UserRepository;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 class DbUserRepository implements UserRepository
 {
     private object $db;
+    private ConfigurationManager $config;
 
-    public function __construct($db)
+    public function __construct($db, ConfigurationManager $config)
     {
         $this->db = $db;
+        $this->config = $config;
     }
 
     public function canViewOthersContent(UserId $user): bool

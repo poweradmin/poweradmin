@@ -40,7 +40,7 @@ class MfaSetupController extends BaseController
     {
         parent::__construct($request);
 
-        $userMfaRepository = new DbUserMfaRepository($this->db);
+        $userMfaRepository = new DbUserMfaRepository($this->db, $this->config);
         $mailService = new MailService($this->config);
         $this->mfaService = new MfaService($userMfaRepository, $this->config, $mailService);
         $this->userContextService = new UserContextService();

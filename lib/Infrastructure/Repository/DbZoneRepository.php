@@ -524,6 +524,10 @@ class DbZoneRepository implements ZoneRepositoryInterface
         // Build placeholders for the IN clause
         $placeholders = implode(',', array_fill(0, count($reverseZoneIds), '?'));
 
+        // Get database-compatible concatenation function
+        $db_type = $this->config->get('database', 'type');
+        $concat_expr = DbCompat::concat($db_type, ["'%'", 'd.name']);
+
         // Single optimized query that joins PTR records with forward zones
         $query = "SELECT 
                     r.domain_id AS reverse_domain_id, 
@@ -531,7 +535,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
                     d.name AS forward_domain_name,
                     r.content AS ptr_content
                   FROM $records_table r
-                  JOIN $domains_table d ON r.content LIKE CONCAT('%', d.name)
+                  JOIN $domains_table d ON r.content LIKE $concat_expr
                   WHERE r.domain_id IN ($placeholders)
                     AND r.type = 'PTR'
                     AND d.name NOT LIKE '%.arpa'

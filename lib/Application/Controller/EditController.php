@@ -119,7 +119,7 @@ class EditController extends BaseController
         $this->userContextService = new UserContextService();
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
 
-        $userRepository = new DbUserRepository($this->db);
+        $userRepository = new DbUserRepository($this->db, $this->getConfig());
         $this->permissionService = new PermissionService($userRepository);
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
     }

@@ -68,7 +68,7 @@ class SqlAuthenticator extends LoggingService
         $this->serverParams = $serverParams ?: $_SERVER;
 
         // Initialize MFA service
-        $userMfaRepository = new DbUserMfaRepository($connection);
+        $userMfaRepository = new DbUserMfaRepository($connection, $configManager);
         $mailService = new MailService($configManager);
         $this->mfaService = new MfaService($userMfaRepository, $configManager, $mailService);
     }

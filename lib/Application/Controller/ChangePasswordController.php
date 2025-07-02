@@ -68,7 +68,7 @@ class ChangePasswordController extends BaseController
             $passwordEncryption,
             $passwordEncryptionCost
         );
-        $userRepository = new DbUserRepository($this->db);
+        $userRepository = new DbUserRepository($this->db, $this->config);
         $userContextService = new UserContextService();
         $this->passwordService = new PasswordChangeService($userRepository, $userAuthService, $userContextService);
     }

@@ -71,7 +71,7 @@ class UsersController extends PublicApiController
     {
         parent::__construct($request, $pathParameters);
 
-        $userRepository = new DbUserRepository($this->db);
+        $userRepository = new DbUserRepository($this->db, $this->config);
         $permissionService = new PermissionService($userRepository);
         $this->userManagementService = new UserManagementService($userRepository, $permissionService);
     }

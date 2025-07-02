@@ -46,7 +46,7 @@ $db = $databaseService->connect($credentials);
 
 // Initialize services
 $dnsRecord = new DnsRecord($db, $config);
-$repository = new DynamicDnsRepository($db, $dnsRecord, $records_table);
+$repository = new DynamicDnsRepository($db, $dnsRecord, $records_table, $config);
 
 $validationService = new DynamicDnsValidationService($config);
 

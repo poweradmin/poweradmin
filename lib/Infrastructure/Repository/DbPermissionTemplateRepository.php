@@ -22,15 +22,19 @@
 
 namespace Poweradmin\Infrastructure\Repository;
 
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 class DbPermissionTemplateRepository
 {
     private object $db;
+    private ConfigurationManager $config;
 
-    public function __construct($db)
+    public function __construct($db, ConfigurationManager $config)
     {
         $this->db = $db;
+        $this->config = $config;
     }
 
     /**

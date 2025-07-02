@@ -27,17 +27,21 @@ use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\ValueObject\HostnameValue;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 class DynamicDnsRepository implements DynamicDnsRepositoryInterface
 {
     private PDO $db;
     private DnsRecord $dnsRecord;
     private string $recordsTable;
+    private ConfigurationManager $config;
 
-    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable)
+    public function __construct(PDO $db, DnsRecord $dnsRecord, string $recordsTable, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->dnsRecord = $dnsRecord;
+        $this->config = $config;
         $this->recordsTable = $recordsTable;
     }
 

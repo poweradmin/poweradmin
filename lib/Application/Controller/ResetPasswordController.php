@@ -58,8 +58,8 @@ class ResetPasswordController extends BaseController
 
         // Create PasswordResetService with dependencies
         $configManager = ConfigurationManager::getInstance();
-        $tokenRepository = new DbPasswordResetTokenRepository($this->db);
-        $userRepository = new DbUserRepository($this->db);
+        $tokenRepository = new DbPasswordResetTokenRepository($this->db, $configManager);
+        $userRepository = new DbUserRepository($this->db, $configManager);
         $mailService = new MailService($configManager, null);
         $authService = new UserAuthenticationService(
             $configManager->get('security', 'password_encryption', 'bcrypt'),

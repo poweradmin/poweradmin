@@ -38,7 +38,7 @@ class UserAgreementController extends BaseController
         parent::__construct($request, true);
 
         $this->agreementService = new UserAgreementService(
-            new DbUserAgreementRepository($this->db),
+            new DbUserAgreementRepository($this->db, $this->config),
             $this->config
         );
         $this->userContextService = new UserContextService();

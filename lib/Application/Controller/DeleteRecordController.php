@@ -74,7 +74,7 @@ class DeleteRecordController extends BaseController
         );
 
         $this->userContextService = new UserContextService();
-        $userRepository = new DbUserRepository($this->db);
+        $userRepository = new DbUserRepository($this->db, $this->getConfig());
         $this->permissionService = new PermissionService($userRepository);
     }
 

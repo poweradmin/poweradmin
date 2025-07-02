@@ -43,7 +43,7 @@ class DeletePermTemplController extends BaseController
     {
         parent::__construct($request);
 
-        $this->permissionTemplate = new DbPermissionTemplateRepository($this->db);
+        $this->permissionTemplate = new DbPermissionTemplateRepository($this->db, $this->getConfig());
     }
 
     public function run(): void

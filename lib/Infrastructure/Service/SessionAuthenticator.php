@@ -229,7 +229,7 @@ class SessionAuthenticator extends LoggingService
         }
 
         $agreementService = new UserAgreementService(
-            new DbUserAgreementRepository($this->db),
+            new DbUserAgreementRepository($this->db, $this->configManager),
             $this->configManager
         );
 

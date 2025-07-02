@@ -27,15 +27,19 @@ use PDO;
 use PDOException;
 use Poweradmin\Domain\Model\UserMfa;
 use Poweradmin\Domain\Repository\UserMfaRepositoryInterface;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 
 class DbUserMfaRepository implements UserMfaRepositoryInterface
 {
     private PDOCommon $db;
+    private ConfigurationManager $config;
 
-    public function __construct(PDOCommon $db)
+    public function __construct(PDOCommon $db, ConfigurationManager $config)
     {
         $this->db = $db;
+        $this->config = $config;
     }
 
     public function findByUserId(int $userId): ?UserMfa
