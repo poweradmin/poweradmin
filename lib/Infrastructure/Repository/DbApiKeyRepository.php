@@ -28,6 +28,7 @@ use PDO;
 use Poweradmin\Domain\Model\ApiKey;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**
@@ -269,7 +270,8 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
      */
     public function updateLastUsed(int $id): bool
     {
-        $stmt = $this->db->prepare("UPDATE api_keys SET last_used_at = NOW() WHERE id = :id");
+        $db_type = $this->config->get('database', 'type');
+        $stmt = $this->db->prepare("UPDATE api_keys SET last_used_at = " . DbCompat::now($db_type) . " WHERE id = :id");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
         return $stmt->execute() && $stmt->rowCount() > 0;
@@ -280,7 +282,8 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
      */
     public function disable(int $id): bool
     {
-        $stmt = $this->db->prepare("UPDATE api_keys SET disabled = TRUE WHERE id = :id");
+        $db_type = $this->config->get('database', 'type');
+        $stmt = $this->db->prepare("UPDATE api_keys SET disabled = " . DbCompat::boolTrue($db_type) . " WHERE id = :id");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
         return $stmt->execute() && $stmt->rowCount() > 0;
@@ -291,7 +294,8 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
      */
     public function enable(int $id): bool
     {
-        $stmt = $this->db->prepare("UPDATE api_keys SET disabled = FALSE WHERE id = :id");
+        $db_type = $this->config->get('database', 'type');
+        $stmt = $this->db->prepare("UPDATE api_keys SET disabled = " . DbCompat::boolFalse($db_type) . " WHERE id = :id");
         $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
         return $stmt->execute() && $stmt->rowCount() > 0;
