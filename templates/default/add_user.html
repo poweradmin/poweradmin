@@ -23,9 +23,10 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="fullname" class="form-label">{% trans %}Fullname{% endtrans %}</label>
-                        <input class="form-control form-control-sm" type="text" id="fullname" name="fullname" value="{{ fullname }}">
-                        <small class="text-muted">{% trans %}Optional: User's full name for identification{% endtrans %}</small>
+                        <label for="fullname" class="form-label">{% trans %}Fullname{% endtrans %} *</label>
+                        <input class="form-control form-control-sm" type="text" id="fullname" name="fullname" value="{{ fullname }}" required>
+                        <small class="text-muted">{% trans %}User's full name for identification{% endtrans %}</small>
+                        <div class="invalid-feedback">{% trans %}Provide full name{% endtrans %}</div>
                     </div>
 
                     <div class="mb-3">
