@@ -71,6 +71,17 @@ final class DbCompat
     ];
 
     /**
+     * Mapping of database types to their date subtraction functions.
+     */
+    private const DATE_SUBTRACT_FUNCTIONS = [
+        'mysql' => 'DATE_SUB(NOW(), INTERVAL :seconds SECOND)',
+        'mysqli' => 'DATE_SUB(NOW(), INTERVAL :seconds SECOND)',
+        'sqlite' => "datetime('now', '-:seconds seconds')",
+        'pgsql' => "NOW() - INTERVAL ':seconds seconds'",
+        'default' => 'DATE_SUB(NOW(), INTERVAL :seconds SECOND)'
+    ];
+
+    /**
      * Returns the appropriate substring function for the given database type.
      *
      * @param string $db_type The type of database (e.g., "sqlite", "mysql", etc.)
@@ -123,5 +134,18 @@ final class DbCompat
     public static function boolFalse(string $db_type): string
     {
         return self::BOOL_FALSE[$db_type] ?? self::BOOL_FALSE['default'];
+    }
+
+    /**
+     * Returns the appropriate date subtraction expression for the given database type.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", etc.)
+     * @param int $seconds The number of seconds to subtract from current time
+     * @return string The date subtraction expression corresponding to the given database type.
+     */
+    public static function dateSubtract(string $db_type, int $seconds): string
+    {
+        $template = self::DATE_SUBTRACT_FUNCTIONS[$db_type] ?? self::DATE_SUBTRACT_FUNCTIONS['default'];
+        return str_replace(':seconds', (string) $seconds, $template);
     }
 }

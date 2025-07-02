@@ -23,15 +23,19 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use PDO;
 
 class DbPasswordResetTokenRepository
 {
     private PDOCommon $db;
+    private ConfigurationManager $config;
 
-    public function __construct(PDOCommon $db)
+    public function __construct(PDOCommon $db, ConfigurationManager $config)
     {
         $this->db = $db;
+        $this->config = $config;
     }
 
     /**
@@ -39,8 +43,9 @@ class DbPasswordResetTokenRepository
      */
     public function create(array $data): bool
     {
+        $db_type = $this->config->get('database', 'type');
         $sql = "INSERT INTO password_reset_tokens (email, token, created_at, expires_at, ip_address) 
-                VALUES (:email, :token, NOW(), :expires_at, :ip_address)";
+                VALUES (:email, :token, " . DbCompat::now($db_type) . ", :expires_at, :ip_address)";
 
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
@@ -56,8 +61,9 @@ class DbPasswordResetTokenRepository
      */
     public function findActiveTokens(): array
     {
+        $db_type = $this->config->get('database', 'type');
         $sql = "SELECT * FROM password_reset_tokens 
-                WHERE expires_at > NOW() 
+                WHERE expires_at > " . DbCompat::now($db_type) . " 
                 ORDER BY created_at DESC";
 
         $stmt = $this->db->prepare($sql);
@@ -71,10 +77,11 @@ class DbPasswordResetTokenRepository
      */
     public function findByToken(string $token): ?array
     {
+        $db_type = $this->config->get('database', 'type');
         $sql = "SELECT * FROM password_reset_tokens 
                 WHERE token = :token 
-                AND expires_at > NOW() 
-                AND used = 0 
+                AND expires_at > " . DbCompat::now($db_type) . " 
+                AND used = " . DbCompat::boolFalse($db_type) . " 
                 LIMIT 1";
 
         $stmt = $this->db->prepare($sql);
@@ -89,8 +96,9 @@ class DbPasswordResetTokenRepository
      */
     public function markAsUsed(int $tokenId): bool
     {
+        $db_type = $this->config->get('database', 'type');
         $sql = "UPDATE password_reset_tokens 
-                SET used = 1 
+                SET used = " . DbCompat::boolTrue($db_type) . " 
                 WHERE id = :id";
 
         $stmt = $this->db->prepare($sql);
@@ -102,15 +110,15 @@ class DbPasswordResetTokenRepository
      */
     public function countRecentAttempts(string $email, int $seconds): int
     {
+        $db_type = $this->config->get('database', 'type');
         $sql = "SELECT COUNT(*) 
                 FROM password_reset_tokens 
                 WHERE email = :email 
-                AND created_at > DATE_SUB(NOW(), INTERVAL :seconds SECOND)";
+                AND created_at > " . DbCompat::dateSubtract($db_type, $seconds);
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            ':email' => $email,
-            ':seconds' => $seconds
+            ':email' => $email
         ]);
 
         return (int) $stmt->fetchColumn();
@@ -121,15 +129,15 @@ class DbPasswordResetTokenRepository
      */
     public function countRecentAttemptsByIp(string $ip, int $seconds): int
     {
+        $db_type = $this->config->get('database', 'type');
         $sql = "SELECT COUNT(*) 
                 FROM password_reset_tokens 
                 WHERE ip_address = :ip 
-                AND created_at > DATE_SUB(NOW(), INTERVAL :seconds SECOND)";
+                AND created_at > " . DbCompat::dateSubtract($db_type, $seconds);
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute([
-            ':ip' => $ip,
-            ':seconds' => $seconds
+            ':ip' => $ip
         ]);
 
         return (int) $stmt->fetchColumn();
@@ -167,9 +175,10 @@ class DbPasswordResetTokenRepository
      */
     public function deleteExpired(): int
     {
+        $db_type = $this->config->get('database', 'type');
         $sql = "DELETE FROM password_reset_tokens 
-                WHERE expires_at < NOW() 
-                OR (used = 1 AND created_at < DATE_SUB(NOW(), INTERVAL 7 DAY))";
+                WHERE expires_at < " . DbCompat::now($db_type) . " 
+                OR (used = " . DbCompat::boolTrue($db_type) . " AND created_at < " . DbCompat::dateSubtract($db_type, 604800) . ")";
 
         $stmt = $this->db->prepare($sql);
         $stmt->execute();
