@@ -17,14 +17,14 @@
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="mb-3">
-                        <label for="master_ip" class="form-label">{% trans %}IP address of supermaster{% endtrans %}</label>
+                        <label for="master_ip" class="form-label">{% trans %}IP address of supermaster{% endtrans %} *</label>
                         <input class="form-control form-control-sm" type="text" id="master_ip" name="master_ip" value="{{ master_ip }}" required>
                         <small class="form-text text-muted">{% trans %}Enter the IP address of the master nameserver{% endtrans %}</small>
                         <div class="invalid-feedback">{% trans %}Provide ip address{% endtrans %}</div>
                     </div>
 
                     <div class="mb-3">
-                        <label for="ns_name" class="form-label">{% trans %}Hostname in NS record{% endtrans %}</label>
+                        <label for="ns_name" class="form-label">{% trans %}Hostname in NS record{% endtrans %} *</label>
                         <input class="form-control form-control-sm" type="text" id="ns_name" name="ns_name" value="{{ ns_name }}" required>
                         <small class="form-text text-muted">{% trans %}Enter the hostname as it appears in the NS record{% endtrans %}</small>
                         <div class="invalid-feedback">{% trans %}Provide host name{% endtrans %}</div>

@@ -27,7 +27,7 @@
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="mb-3">
-                        <label for="owner" class="form-label">{% trans %}Owner{% endtrans %}</label>
+                        <label for="owner" class="form-label">{% trans %}Owner{% endtrans %} *</label>
                         <select class="form-select form-select-sm" id="owner" name="owner" required>
                             {% set default_user_set = false %}
                             {% for user in users %}
