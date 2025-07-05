@@ -10,12 +10,16 @@
 return [
     /**
      * Database Settings
+     *
+     * WARNING: Passwords containing single quotes ('), double quotes ("), backslashes (\),
+     * or line breaks will cause configuration file generation to fail during installation.
+     * Use only alphanumeric characters and basic symbols in passwords.
      */
     'database' => [
         'host' => 'localhost',
         'port' => '',
         'user' => 'poweradmin',
-        'password' => 'your_password',
+        'password' => 'your_password',  // AVOID: quotes, backslashes, line breaks
         'name' => 'powerdns',
         'type' => 'mysql',     // Options: 'mysql', 'pgsql', 'sqlite' (mysqli added in 2.1.5, sqlite in 2.1.6)
         'charset' => 'latin1', // or 'utf8' (added in 2.1.8)
@@ -182,7 +186,7 @@ return [
         'host' => 'smtp.example.com',              // SMTP server hostname
         'port' => 587,                             // SMTP server port
         'username' => '',                          // SMTP authentication username
-        'password' => '',                          // SMTP authentication password
+        'password' => '',                          // SMTP password - AVOID: quotes, backslashes, line breaks
         'encryption' => 'tls',                     // Options: 'tls', 'ssl', ''
         'auth' => false,                           // Whether SMTP requires authentication
 
@@ -225,6 +229,10 @@ return [
 
     /**
      * LDAP Settings
+     *
+     * WARNING: LDAP bind passwords containing single quotes ('), double quotes ("),
+     * backslashes (\), or line breaks will cause configuration file generation to fail.
+     * Use only alphanumeric characters and basic symbols in passwords.
      */
     'ldap' => [
         'enabled' => false,                        // Enable LDAP authentication (added in 2.1.7)
@@ -232,7 +240,7 @@ return [
         'uri' => 'ldap://domaincontroller.example.com',  // LDAP server URI (added in 2.1.7)
         'base_dn' => 'ou=users,dc=example,dc=com',      // Base DN where users are stored (added in 2.1.7)
         'bind_dn' => 'cn=admin,dc=example,dc=com',      // Bind DN for LDAP authentication (added in 2.1.7)
-        'bind_password' => 'some_password',             // Bind password for LDAP authentication (added in 2.1.7)
+        'bind_password' => 'some_password',             // AVOID: quotes, backslashes, line breaks
         'user_attribute' => 'uid',                      // User attribute (uid for OpenLDAP, sAMAccountName for Active Directory) (added in 2.1.7)
         'protocol_version' => 3,                        // LDAP protocol version (added in 2.1.7)
         'search_filter' => '',                          // Additional search filter (added in 2.1.7)

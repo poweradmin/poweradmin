@@ -110,6 +110,19 @@ trait DatabaseValidationTrait
             $context->buildViolation('DB password should not be blank.')
                 ->atPath('db_pass')
                 ->addViolation();
+            return;
+        }
+
+        if (!empty($dbPass)) {
+            $problematicChars = ["'", '"', "\\", "\n", "\r"];
+            foreach ($problematicChars as $char) {
+                if (strpos($dbPass, $char) !== false) {
+                    $context->buildViolation('Password contains invalid characters. Avoid single quotes, double quotes, backslashes, and line breaks as they cause configuration file generation to fail.')
+                        ->atPath('db_pass')
+                        ->addViolation();
+                    return;
+                }
+            }
         }
     }
 
