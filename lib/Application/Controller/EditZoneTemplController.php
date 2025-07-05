@@ -220,6 +220,7 @@ class EditZoneTemplController extends BaseController
         $syncService->markZonesAsSynced($zones, $zone_templ_id);
 
         $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
+        $this->redirect("index.php", ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
     }
 
     private function saveTemplateAs(int $zone_templ_id): void

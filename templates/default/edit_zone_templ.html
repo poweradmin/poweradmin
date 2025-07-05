@@ -283,6 +283,12 @@
             // Set up the confirm button to submit the form
             document.getElementById('confirmSubmitWithoutSOA').onclick = function() {
                 modal.hide();
+                // Add the update_zones parameter as a hidden input since button values aren't sent with form.submit()
+                const hiddenInput = document.createElement('input');
+                hiddenInput.type = 'hidden';
+                hiddenInput.name = 'update_zones';
+                hiddenInput.value = '1';
+                form.appendChild(hiddenInput);
                 // Submit the form without the onclick handler to avoid infinite loop
                 form.onsubmit = null;
                 form.submit();
