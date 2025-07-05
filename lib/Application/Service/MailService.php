@@ -169,10 +169,11 @@ class MailService implements MailServiceInterface
         $mailHeaders = array_merge($mailHeaders, $headers);
 
         try {
-            // Open sendmail process
-            $sendmail = popen($sendmailPath, 'w');
+            // Open sendmail process - sanitize the path
+            $sanitizedSendmailPath = escapeshellcmd($sendmailPath);
+            $sendmail = popen($sanitizedSendmailPath, 'w');
             if (!$sendmail) {
-                throw new Exception("Failed to open sendmail process: $sendmailPath");
+                throw new Exception("Failed to open sendmail process: $sanitizedSendmailPath");
             }
 
             // Write headers
