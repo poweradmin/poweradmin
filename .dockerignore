@@ -42,6 +42,7 @@ DONORS.md
 # Node.js
 package.json
 node_modules/
+.nvmrc
 
 # Logs
 logs
@@ -53,3 +54,18 @@ cypress/
 cypress.config.js
 cypress/videos
 cypress/screenshots
+
+# Configuration files
+composer.json
+composer.lock
+phpcs.xml
+phpdoc.dist.xml
+phpmd.xml
+phpstan.neon
+phpunit.xml.dist
+psalm-baseline.xml
+psalm.xml
+.php-cs-fixer.cache
+.php-cs-fixer.php
+nginx.conf.example
+.htaccess
