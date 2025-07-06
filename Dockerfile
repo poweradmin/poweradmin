@@ -32,7 +32,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN mkdir -p /db /app/inc
+RUN mkdir -p /db /app/config
 
 RUN sqlite3 /db/pdns.db < /app/sql/pdns/47/schema.sqlite3.sql
 RUN sqlite3 /db/pdns.db < /app/sql/poweradmin-sqlite-db-structure.sql

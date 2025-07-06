@@ -1,10 +1,13 @@
 # Poweradmin related files
+addons/
+db/
 install/
 
 # Version Control
 .gitignore
 .git
 .github
+.gitattributes
 
 # IDE
 nbproject
