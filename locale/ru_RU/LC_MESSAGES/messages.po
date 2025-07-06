@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-21 12:12+0300\n"
+"POT-Creation-Date: 2025-07-06 07:29+0300\n"
 "PO-Revision-Date: 2025-06-05 21:30+0300\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -27,11 +27,11 @@ msgstr ""
 "\">установщик</a> для его создания или создайте файл config/settings.php "
 "вручную."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:134
+#: lib/Infrastructure/Service/SessionAuthenticator.php:136
 msgid "Invalid CSRF token."
 msgstr "Недействительный токен CSRF."
 
-#: lib/BaseController.php:499
+#: lib/BaseController.php:471
 msgid ""
 "The <a href=\"install/\">install/</a> directory exists, you must remove it "
 "first before proceeding."
@@ -39,7 +39,7 @@ msgstr ""
 "Каталог <a href=\"install/\">install/</a> существует, вы должны удалить его "
 "перед продолжением."
 
-#: lib/BaseController.php:525
+#: lib/BaseController.php:497
 msgid ""
 "Default session encryption key is used, please set it in your configuration "
 "file."
@@ -47,12 +47,12 @@ msgstr ""
 "Используется ключ шифрования сессии по умолчанию, установите его в вашем "
 "конфигурационном файле."
 
-#: lib/BaseController.php:626
+#: lib/BaseController.php:599
 #, php-format
 msgid "The %s field is required."
 msgstr "Поле %s обязательно для заполнения."
 
-#: lib/BaseController.php:634
+#: lib/BaseController.php:607
 #, php-format
 msgid "The %s field must be a number."
 msgstr "Поле %s должно быть числом."
@@ -77,13 +77,13 @@ msgstr "Показать все"
 msgid "No records selected for deletion."
 msgstr "Не выбрано записей для удаления."
 
-#: lib/Application/Controller/DeleteRecordsController.php:176
+#: lib/Application/Controller/DeleteRecordsController.php:180
 msgid ""
 "The record has been deleted successfully. Any corresponding PTR records were "
 "also removed."
 msgstr "Запись успешно удалена. Соответствующие PTR записи также были удалены."
 
-#: lib/Application/Controller/DeleteRecordsController.php:178
+#: lib/Application/Controller/DeleteRecordsController.php:182
 #, php-format
 msgid ""
 "%d records have been deleted successfully. Any corresponding PTR records "
@@ -91,11 +91,11 @@ msgid ""
 msgstr ""
 "%d записи успешно удалены. Соответствующие PTR записи также были удалены."
 
-#: lib/Application/Controller/DeleteRecordsController.php:181
+#: lib/Application/Controller/DeleteRecordsController.php:185
 msgid "No records could be deleted. Please check permissions."
 msgstr "Не удалось удалить записи. Пожалуйста, проверьте разрешения."
 
-#: lib/Application/Controller/DeleteRecordsController.php:226
+#: lib/Application/Controller/DeleteRecordsController.php:234
 msgid ""
 "No valid records selected for deletion or you lack permission to delete them."
 msgstr ""
@@ -106,7 +106,7 @@ msgstr ""
 msgid "Invalid or unexpected input given."
 msgstr "Получены недопустимые или неожиданные данные."
 
-#: lib/Domain/Model/UserManager.php:230
+#: lib/Domain/Model/UserManager.php:229
 msgid "You do not have the permission to delete this user."
 msgstr "У вас нет разрешения на удаление этого пользователя."
 
@@ -126,7 +126,7 @@ msgstr "Функция комментариев зон отключена в к�
 msgid "You do not have the permission to view this comment."
 msgstr "У вас нет разрешения на просмотр этого комментария."
 
-#: lib/Domain/Service/Dns/RecordManager.php:377
+#: lib/Domain/Service/Dns/RecordManager.php:379
 msgid "You do not have the permission to edit this comment."
 msgstr "У вас нет разрешения на редактирование этого комментария."
 
@@ -134,33 +134,39 @@ msgstr "У вас нет разрешения на редактирование 
 msgid "The comment has been updated successfully."
 msgstr "Комментарий успешно обновлён."
 
-#: lib/Application/Controller/DnssecAddKeyController.php:61
-msgid "There is no zone with this ID."
-msgstr "Зона с таким ID не существует."
+#: lib/Application/Controller/EditRecordController.php:81
+#, auto-english-fallback
+msgid "Invalid record ID."
+msgstr "Неверный ID записи."
 
-#: lib/Application/Controller/DeleteRecordController.php:168
+#: lib/Application/Controller/DeleteRecordController.php:103
+#, auto-english-fallback
+msgid "You do not have permission to delete records in this zone."
+msgstr "У вас нет разрешения на удаление записей в этой зоне."
+
+#: lib/Application/Controller/DeleteRecordController.php:189
 msgid ""
 "The record and its corresponding PTR and A/AAAA records have been deleted "
 "successfully."
 msgstr "Запись и соответствующие ей PTR и A/AAAA записи были успешно удалены."
 
-#: lib/Application/Controller/DeleteRecordController.php:170
+#: lib/Application/Controller/DeleteRecordController.php:191
 msgid ""
 "The record and its corresponding PTR record have been deleted successfully."
 msgstr "Запись и соответствующая PTR запись успешно удалены."
 
-#: lib/Application/Controller/DeleteRecordController.php:172
+#: lib/Application/Controller/DeleteRecordController.php:193
 msgid ""
 "The record and its corresponding A/AAAA record have been deleted "
 "successfully."
 msgstr "Запись и соответствующая ей A/AAAA запись были успешно удалены."
 
-#: lib/Application/Controller/DeleteRecordController.php:174
+#: lib/Application/Controller/DeleteRecordController.php:195
 msgid ""
 "The record has been deleted successfully. No matching PTR record was found."
 msgstr "Запись успешно удалена. Соответствующая PTR запись не найдена."
 
-#: lib/Application/Controller/DeleteRecordController.php:176
+#: lib/Application/Controller/DeleteRecordController.php:197
 msgid ""
 "The record has been deleted successfully. No matching A/AAAA record was "
 "found."
@@ -170,7 +176,7 @@ msgstr "Запись была успешно удалена. Соответст�
 msgid "The record has been deleted successfully."
 msgstr "Запись успешно удалена."
 
-#: lib/Application/Controller/DeleteRecordController.php:182
+#: lib/Application/Controller/DeleteRecordController.php:203
 msgid ""
 "The record and its corresponding PTR and A/AAAA records were deleted but the "
 "comment was preserved because similar records exist."
@@ -178,7 +184,7 @@ msgstr ""
 "Запись и соответствующие ей PTR и A/AAAA записи были удалены, но комментарий "
 "сохранен, поскольку существуют похожие записи."
 
-#: lib/Application/Controller/DeleteRecordController.php:184
+#: lib/Application/Controller/DeleteRecordController.php:205
 msgid ""
 "The record and its corresponding PTR record were deleted but the comment was "
 "preserved because similar records exist."
@@ -186,7 +192,7 @@ msgstr ""
 "Запись и соответствующая PTR запись удалены, но комментарий сохранён, "
 "поскольку существуют похожие записи."
 
-#: lib/Application/Controller/DeleteRecordController.php:186
+#: lib/Application/Controller/DeleteRecordController.php:207
 msgid ""
 "The record and its corresponding A/AAAA record were deleted but the comment "
 "was preserved because similar records exist."
@@ -194,7 +200,7 @@ msgstr ""
 "Запись и соответствующая ей A/AAAA запись были удалены, но комментарий "
 "сохранен, поскольку существуют похожие записи."
 
-#: lib/Application/Controller/DeleteRecordController.php:188
+#: lib/Application/Controller/DeleteRecordController.php:209
 msgid ""
 "The record was deleted but the comment was preserved because similar records "
 "exist."
@@ -202,7 +208,7 @@ msgstr ""
 "Запись была удалена, но комментарий сохранен, так как существуют похожие "
 "записи."
 
-#: lib/Domain/Service/Dns/RecordManager.php:230
+#: lib/Domain/Service/Dns/RecordManager.php:232
 msgid "You do not have the permission to edit this record."
 msgstr "У вас нет разрешения на редактирование этой записи."
 
@@ -284,11 +290,11 @@ msgstr ""
 msgid "You do not have the permission to view supermasters."
 msgstr "У вас нет разрешения на просмотр суперсерверов."
 
-#: lib/Application/Controller/ApiKeysController.php:71
+#: lib/Application/Controller/ApiKeysController.php:68
 msgid "The API feature is disabled in the system configuration."
 msgstr "Функция API отключена в конфигурации системы."
 
-#: lib/Application/Controller/ApiKeysController.php:77
+#: lib/Application/Controller/ApiKeysController.php:74
 msgid ""
 "You do not have permission to manage API keys. Only administrators can "
 "access this feature."
@@ -296,73 +302,73 @@ msgstr ""
 "У вас нет разрешения на управление API ключами. Только администраторы могут "
 "получить доступ к этой функции."
 
-#: lib/Application/Controller/ApiKeysController.php:199
+#: lib/Application/Controller/ApiKeysController.php:196
 msgid "API key name is required."
 msgstr "Имя API ключа обязательно."
 
-#: lib/Application/Controller/ApiKeysController.php:209
+#: lib/Application/Controller/ApiKeysController.php:206
 msgid "Invalid expiration date format."
 msgstr "Неверный формат даты истечения."
 
-#: lib/Domain/Service/ApiKeyService.php:275
+#: lib/Domain/Service/ApiKeyService.php:279
 msgid "API key not found or you do not have permission to edit it."
 msgstr "API ключ не найден или у вас нет разрешения на его редактирование."
 
-#: lib/Application/Controller/ApiKeysController.php:218
+#: lib/Application/Controller/ApiKeysController.php:215
 msgid "API key updated successfully."
 msgstr "API ключ успешно обновлён."
 
-#: lib/Application/Controller/ApiKeysController.php:247
+#: lib/Application/Controller/ApiKeysController.php:244
 msgid "API key deleted successfully."
 msgstr "API ключ успешно удалён."
 
-#: lib/Domain/Service/ApiKeyService.php:223
+#: lib/Domain/Service/ApiKeyService.php:227
 msgid "API key not found or you do not have permission to delete it."
 msgstr "API ключ не найден или у вас нет разрешения на его удаление."
 
-#: lib/Application/Controller/ApiKeysController.php:319
+#: lib/Application/Controller/ApiKeysController.php:316
 msgid "disabled"
 msgstr "отключён"
 
-#: lib/Application/Controller/ApiKeysController.php:319
+#: lib/Application/Controller/ApiKeysController.php:316
 msgid "enabled"
 msgstr "включён"
 
-#: lib/Application/Controller/ApiKeysController.php:320
+#: lib/Application/Controller/ApiKeysController.php:317
 #, php-format
 msgid "API key %s successfully."
 msgstr "API ключ успешно %s."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:97
+#: lib/Application/Controller/BatchPtrRecordController.php:98
 msgid "You do not have the permission to add records to this zone."
 msgstr "У вас нет разрешения на добавление записей в эту зону."
 
-#: lib/Application/Controller/BulkRecordAddController.php:104
+#: lib/Application/Controller/BulkRecordAddController.php:105
 msgid "Please provide at least one record."
 msgstr "Пожалуйста, укажите хотя бы одну запись."
 
-#: lib/Application/Controller/BulkRecordAddController.php:132
+#: lib/Application/Controller/BulkRecordAddController.php:133
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "Неверный формат. Ожидается как минимум: имя,тип,содержимое"
 
-#: lib/Application/Controller/BulkRecordAddController.php:180
+#: lib/Application/Controller/BulkRecordAddController.php:181
 msgid "Invalid record type."
 msgstr "Неверный тип записи."
 
-#: lib/Application/Controller/BulkRecordAddController.php:226
+#: lib/Application/Controller/BulkRecordAddController.php:227
 msgid "Record could not be added."
 msgstr "Запись не может быть добавлена."
 
-#: lib/Application/Controller/BulkRecordAddController.php:234
+#: lib/Application/Controller/BulkRecordAddController.php:235
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d запись(и) успешно добавлены."
 
-#: lib/Application/Controller/BulkRecordAddController.php:237
+#: lib/Application/Controller/BulkRecordAddController.php:238
 msgid "Some record(s) could not be added."
 msgstr "Некоторые записи не могут быть добавлены."
 
-#: lib/Application/Controller/BulkRecordAddController.php:270
+#: lib/Application/Controller/BulkRecordAddController.php:271
 msgid "Zone ID is required."
 msgstr "ID зоны обязателен."
 
@@ -374,11 +380,11 @@ msgstr "У вас нет разрешения на редактирование 
 msgid "The permission template has been updated successfully."
 msgstr "Шаблон разрешений успешно обновлён."
 
-#: lib/Application/Controller/SearchController.php:45
+#: lib/Application/Controller/SearchController.php:44
 msgid "You do not have the permission to perform searches."
 msgstr "У вас нет разрешения на выполнение поиска."
 
-#: lib/Domain/Model/UserManager.php:740
+#: lib/Domain/Model/UserManager.php:739
 msgid "You do not have the permission to add a new user."
 msgstr "У вас нет разрешения на добавление нового пользователя."
 
@@ -408,7 +414,7 @@ msgstr "Пароль сгенерирован, но не отображаетс�
 msgid "Please fill in all required fields correctly."
 msgstr "Пожалуйста, правильно заполните все обязательные поля."
 
-#: lib/Domain/Service/Dns/RecordManager.php:323
+#: lib/Domain/Service/Dns/RecordManager.php:325
 msgid "You do not have the permission to delete this record."
 msgstr "У вас нет разрешения на удаление этой записи."
 
@@ -444,51 +450,55 @@ msgstr "Шаблон зоны успешно обновлён."
 msgid "Zones have been updated successfully."
 msgstr "Зоны успешно обновлены."
 
-#: lib/Application/Controller/EditZoneTemplController.php:232
+#: lib/Application/Controller/EditZoneTemplController.php:233
 msgid "You do not have permission to create new zone templates."
 msgstr "У вас нет разрешения на создание новых шаблонов зон."
 
-#: lib/Domain/Model/ZoneTemplate.php:176 lib/Domain/Model/ZoneTemplate.php:800
+#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:802
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "Шаблон зоны с таким именем уже существует, выберите другое имя."
 
-#: lib/Application/Controller/EditZoneTemplController.php:263
+#: lib/Application/Controller/EditZoneTemplController.php:264
 msgid "Please enter a different name when using Save As."
 msgstr "Пожалуйста, введите другое имя при использовании 'Сохранить как'."
 
-#: lib/Application/Controller/EditZoneTemplController.php:287
+#: lib/Application/Controller/EditZoneTemplController.php:288
 msgid "Zone template has been copied successfully."
 msgstr "Шаблон зоны успешно скопирован."
 
-#: lib/Application/Controller/ListTemplateZonesController.php:40
+#: lib/Application/Controller/ListTemplateZonesController.php:39
 msgid "You do not have permission to view zone templates."
 msgstr "У вас нет разрешения на просмотр шаблонов зон."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:54
+#: lib/Application/Controller/UnlinkZonesTemplController.php:52
 msgid "Invalid template ID."
 msgstr "Неверный ID шаблона."
 
-#: lib/Application/Controller/ListTemplateZonesController.php:49
+#: lib/Application/Controller/ListTemplateZonesController.php:48
 msgid "Template does not exist."
 msgstr "Шаблон не существует."
 
-#: lib/Domain/Repository/DomainRepository.php:439
+#: lib/Domain/Repository/DomainRepository.php:441
 msgid "You do not have the permission to view this zone."
 msgstr "У вас нет разрешения на просмотр этой зоны."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:40
+#: lib/Application/Controller/DnssecAddKeyController.php:61
+msgid "There is no zone with this ID."
+msgstr "Зона с таким ID не существует."
+
+#: lib/Application/Controller/UnlinkZonesTemplController.php:38
 msgid "You do not have permission to unlink zones from templates."
 msgstr "У вас нет разрешения на отвязывание зон от шаблонов."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:49
+#: lib/Application/Controller/UnlinkZonesTemplController.php:47
 msgid "No zones selected."
 msgstr "Зоны не выбраны."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:64
+#: lib/Application/Controller/UnlinkZonesTemplController.php:62
 msgid "Invalid request method."
 msgstr "Неверный метод запроса."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:98
+#: lib/Application/Controller/UnlinkZonesTemplController.php:96
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
@@ -496,7 +506,7 @@ msgstr[0] "%d зона была успешно отвязана от шабло�
 msgstr[1] "%d зоны были успешно отвязаны от шаблона."
 msgstr[2] "%d зон были успешно отвязаны от шаблона."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:108
+#: lib/Application/Controller/UnlinkZonesTemplController.php:106
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
@@ -504,15 +514,15 @@ msgstr[0] "%d зона не может быть отвязана."
 msgstr[1] "%d зоны не могут быть отвязаны."
 msgstr[2] "%d зон не могут быть отвязаны."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:118
+#: lib/Application/Controller/UnlinkZonesTemplController.php:116
 msgid "Failed to unlink zones from template."
 msgstr "Не удалось отвязать зоны от шаблона."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:130
+#: lib/Application/Controller/UnlinkZonesTemplController.php:128
 msgid "No valid zones selected."
 msgstr "Не выбраны допустимые зоны."
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:138
+#: lib/Application/Controller/UnlinkZonesTemplController.php:136
 msgid "Template not found."
 msgstr "Шаблон не найден."
 
@@ -520,32 +530,37 @@ msgstr "Шаблон не найден."
 msgid "User agreement accepted successfully."
 msgstr "Пользовательское соглашение успешно принято."
 
-#: lib/Application/Controller/WhoisController.php:61
+#: lib/Application/Controller/WhoisController.php:60
 msgid "WHOIS lookup functionality is disabled."
 msgstr "Функция WHOIS запроса отключена."
 
-#: lib/Application/Controller/WhoisController.php:66
+#: lib/Application/Controller/WhoisController.php:65
 msgid "You do not have permission to perform WHOIS lookups."
 msgstr "У вас нет разрешения на выполнение WHOIS запросов."
 
-#: lib/Application/Controller/WhoisController.php:137
+#: lib/Application/Controller/WhoisController.php:136
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "Не удалось получить WHOIS информацию с сервера %s"
 
-#: lib/Application/Controller/EditController.php:282
+#: lib/Application/Controller/EditController.php:176
+#, auto-english-fallback
+msgid "You do not have permission to access this zone."
+msgstr "У вас нет разрешения на доступ к этой зоне."
+
+#: lib/Application/Controller/EditController.php:292
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC не включен на сервере."
 
-#: lib/Application/Controller/EditController.php:285
+#: lib/Application/Controller/EditController.php:295
 msgid "Zone is already signed with DNSSEC."
 msgstr "Зона уже подписана через DNSSEC."
 
-#: lib/Application/Controller/EditController.php:297
+#: lib/Application/Controller/EditController.php:307
 msgid "Zone has been signed successfully."
 msgstr "Зона успешно подписана."
 
-#: lib/Application/Controller/EditController.php:301
+#: lib/Application/Controller/EditController.php:311
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -553,30 +568,30 @@ msgstr ""
 "Запрос на подписание зоны выполнен успешно, но проверка не удалась. "
 "Проверьте ключи DNSSEC."
 
-#: lib/Application/Controller/EditController.php:305
+#: lib/Application/Controller/EditController.php:315
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr ""
 "Не удалось подписать зону. Проверьте журналы PowerDNS для подробностей."
 
-#: lib/Application/Controller/DnssecController.php:79
+#: lib/Application/Controller/DnssecController.php:92
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "Зона в настоящее время не подписана через DNSSEC."
 
-#: lib/Application/Controller/DnssecController.php:89
+#: lib/Application/Controller/DnssecController.php:102
 msgid "Zone has been unsigned successfully."
 msgstr "Подпись зоны успешно снята."
 
-#: lib/Application/Controller/DnssecController.php:94
+#: lib/Application/Controller/DnssecController.php:107
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr ""
 "Запрос на снятие подписи зоны выполнен успешно, но проверка не удалась."
 
-#: lib/Application/Controller/DnssecController.php:98
+#: lib/Application/Controller/DnssecController.php:111
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Не удалось снять подпись зоны. Проверьте журналы PowerDNS для подробностей."
 
-#: lib/Application/Controller/EditController.php:627
+#: lib/Application/Controller/EditController.php:637
 msgid "Template name can't be an empty string."
 msgstr "Имя шаблона не может быть пустой строкой."
 
@@ -584,39 +599,39 @@ msgstr "Имя шаблона не может быть пустой строко
 msgid "Zone template has been added successfully."
 msgstr "Шаблон зоны успешно добавлен."
 
-#: lib/Application/Controller/EditController.php:647
+#: lib/Application/Controller/EditController.php:657
 msgid "You need to be logged in to export zone data."
 msgstr "Для экспорта данных зоны необходимо войти в систему."
 
-#: lib/Application/Controller/EditController.php:657
+#: lib/Application/Controller/EditController.php:667
 msgid "You do not have permission to export this zone."
 msgstr "У вас нет разрешения на экспорт этой зоны."
 
-#: lib/Application/Controller/EditController.php:681
+#: lib/Application/Controller/EditController.php:691
 msgid "This zone does not have any records to export."
 msgstr "В этой зоне нет записей для экспорта."
 
-#: lib/Application/Controller/EditController.php:781
+#: lib/Application/Controller/EditController.php:791
 msgid "Request has expired, please try again."
 msgstr "Срок действия запроса истек, попробуйте еще раз."
 
-#: lib/Application/Controller/EditController.php:786
+#: lib/Application/Controller/EditController.php:796
 msgid "Zone has been updated successfully."
 msgstr "Зона успешно обновлена."
 
-#: lib/Application/Controller/EditController.php:788
+#: lib/Application/Controller/EditController.php:798
 msgid "Zone did not have any record changes."
 msgstr "В зоне не было изменений записей."
 
-#: lib/Application/Controller/EditController.php:797
+#: lib/Application/Controller/EditController.php:807
 msgid "Zone has not been updated successfully."
 msgstr "Не удалось обновить зону."
 
-#: lib/Application/Controller/EditController.php:825
+#: lib/Application/Controller/EditController.php:835
 msgid "Please provide all required fields."
 msgstr "Пожалуйста, заполните все обязательные поля."
 
-#: lib/Application/Controller/AddRecordController.php:167
+#: lib/Application/Controller/AddRecordController.php:168
 msgid ""
 "This record was not valid and could not be added. It may already exist or "
 "contain invalid data."
@@ -624,24 +639,24 @@ msgstr ""
 "Эта запись недействительна и не может быть добавлена. Возможно, она уже "
 "существует или содержит недопустимые данные."
 
-#: lib/Application/Controller/AddRecordController.php:222
+#: lib/Application/Controller/AddRecordController.php:223
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr ""
 "Запись успешно добавлена. Также была создана соответствующая PTR запись."
 
-#: lib/Application/Controller/AddRecordController.php:226
+#: lib/Application/Controller/AddRecordController.php:227
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "Запись успешно добавлена, но создание PTR записи не удалось: "
 
-#: lib/Application/Controller/AddRecordController.php:230
+#: lib/Application/Controller/AddRecordController.php:231
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "Запись была успешно добавлена, но создание PTR записи не удалось."
 
-#: lib/Application/Controller/AddRecordController.php:234
+#: lib/Application/Controller/AddRecordController.php:235
 msgid "Record successfully added. A matching A record was also created."
 msgstr "Запись успешно добавлена. Также была создана соответствующая A запись."
 
-#: lib/Application/Controller/AddRecordController.php:237
+#: lib/Application/Controller/AddRecordController.php:238
 msgid "The record was successfully added."
 msgstr "Запись была успешно добавлена."
 
@@ -681,25 +696,25 @@ msgstr ""
 "Не удалось отправить код подтверждения на вашу электронную почту. "
 "Используйте код восстановления."
 
-#: lib/Domain/Service/Dns/RecordManager.php:111
+#: lib/Domain/Service/Dns/RecordManager.php:113
 msgid "You do not have the permission to add a record to this zone."
 msgstr "У вас нет разрешения на добавление записи в эту зону."
 
-#: lib/Application/Controller/AddRecordController.php:386
+#: lib/Application/Controller/AddRecordController.php:387
 msgid "No records were provided."
 msgstr "Записи не предоставлены."
 
-#: lib/Application/Controller/AddRecordController.php:424
+#: lib/Application/Controller/AddRecordController.php:425
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d запись(ей) успешно добавлено."
 
-#: lib/Application/Controller/AddRecordController.php:426
+#: lib/Application/Controller/AddRecordController.php:427
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d запись(ей) не удалось добавить."
 
-#: lib/Application/Controller/AddRecordController.php:431
+#: lib/Application/Controller/AddRecordController.php:432
 msgid ""
 "Some records could not be added. They may already exist or contain invalid "
 "data."
@@ -707,7 +722,7 @@ msgstr ""
 "Некоторые записи не удалось добавить. Возможно, они уже существуют или "
 "содержат недопустимые данные."
 
-#: lib/Application/Controller/AddRecordController.php:453
+#: lib/Application/Controller/AddRecordController.php:454
 msgid "Failed to add any records. They may contain invalid data."
 msgstr ""
 "Не удалось добавить ни одной записи. Возможно, они содержат недопустимые "
@@ -725,7 +740,7 @@ msgstr "Зона успешно удалена."
 msgid "Zones have been deleted successfully."
 msgstr "Зоны успешно удалены."
 
-#: lib/Domain/Service/Dns/DomainManager.php:481
+#: lib/Domain/Service/Dns/DomainManager.php:506
 msgid "You do not have the permission to delete a zone."
 msgstr "У вас нет разрешения на удаление зоны."
 
@@ -754,31 +769,31 @@ msgstr ""
 "пользователь базы данных имеет необходимые разрешения для создания и "
 "изменения таблиц."
 
-#: lib/Domain/Service/Dns/DomainManager.php:213
+#: lib/Domain/Service/Dns/DomainManager.php:216
 msgid "You do not have the permission to add a master zone."
 msgstr "У вас нет разрешения на добавление главной зоны."
 
-#: lib/Application/Controller/BulkRegistrationController.php:104
+#: lib/Application/Controller/BulkRegistrationController.php:103
 msgid "There is already a zone with this name."
 msgstr "Зона с таким именем уже существует."
 
-#: lib/Application/Controller/AddZoneMasterController.php:132
+#: lib/Application/Controller/AddZoneMasterController.php:131
 msgid "Zone was created, but securing it with DNSSEC failed."
 msgstr "Зона была создана, но защита её с помощью DNSSEC не удалась."
 
-#: lib/Application/Controller/AddZoneSlaveController.php:128
+#: lib/Application/Controller/AddZoneSlaveController.php:127
 msgid "Zone has been added successfully."
 msgstr "Зона успешно добавлена."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:68
+#: lib/Application/Controller/BatchPtrRecordController.php:69
 msgid "Batch PTR record creation is not enabled."
 msgstr "Пакетное создание PTR записей не включено."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:75
+#: lib/Application/Controller/BatchPtrRecordController.php:76
 msgid "You do not have permission to edit DNS records."
 msgstr "У вас нет разрешения на редактирование DNS записей."
 
-#: lib/Application/Controller/BatchPtrRecordController.php:91
+#: lib/Application/Controller/BatchPtrRecordController.php:92
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "Пакетное создание PTR записей недоступно для обратных зон."
 
@@ -786,7 +801,7 @@ msgstr "Пакетное создание PTR записей недоступн�
 msgid "You do not have the permission to view zone templates."
 msgstr "У вас нет разрешения на просмотр шаблонов зон."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:82
+#: lib/Application/Controller/DnssecDeleteKeyController.php:83
 msgid "Failed to delete DNSSEC key."
 msgstr "Не удалось удалить ключ DNSSEC."
 
@@ -806,23 +821,23 @@ msgstr "Ключ зоны успешно активирован."
 msgid "Failed to activate zone key."
 msgstr "Не удалось активировать ключ зоны."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:93
+#: lib/Application/Controller/DnssecDeleteKeyController.php:94
 msgid "Zone key has been deleted successfully."
 msgstr "Ключ зоны успешно удален."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:96
+#: lib/Application/Controller/DnssecDeleteKeyController.php:97
 msgid "Failed to delete the zone key."
 msgstr "Не удалось удалить ключ зоны."
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:103
+#: lib/Application/Controller/DnssecDeleteKeyController.php:104
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "Произошла ошибка при удалении ключа DNSSEC: "
 
-#: lib/Application/Controller/ListForwardZonesController.php:57
+#: lib/Application/Controller/ListForwardZonesController.php:56
 msgid "You do not have sufficient permissions to view this page."
 msgstr "У вас недостаточно прав для просмотра этой страницы."
 
-#: lib/Application/Controller/ListForwardZonesController.php:112
+#: lib/Application/Controller/ListForwardZonesController.php:111
 msgid "You do not have the permission to see any zones."
 msgstr "У вас нет разрешения на просмотр зон."
 
@@ -834,72 +849,72 @@ msgstr "У вас нет разрешения на добавление шабл
 msgid "The permission template has been added successfully."
 msgstr "Шаблон разрешений успешно добавлен."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:33
+#: lib/Application/Controller/DatabaseConsistencyController.php:34
 msgid "Not available for anonymous users."
 msgstr "Недоступно для анонимных пользователей."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:37
+#: lib/Application/Controller/DatabaseConsistencyController.php:38
 msgid "You do not have the permission to view this page."
 msgstr "У вас нет разрешения на просмотр этой страницы."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:41
+#: lib/Application/Controller/DatabaseConsistencyController.php:42
 msgid "Database consistency checks are disabled."
 msgstr "Проверки целостности базы данных отключены."
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:77
+#: lib/Application/Controller/DatabaseConsistencyController.php:78
 #: templates/default/database_consistency.html:29
 msgid "Database Consistency Check"
 msgstr "Проверка целостности базы данных"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:96
+#: lib/Application/Controller/DatabaseConsistencyController.php:97
 msgid "Zone owner assigned successfully"
 msgstr "Владелец зоны успешно назначен"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:96
+#: lib/Application/Controller/DatabaseConsistencyController.php:97
 msgid "Failed to assign zone owner"
 msgstr "Не удалось назначить владельца зоны"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:103
+#: lib/Application/Controller/DatabaseConsistencyController.php:104
 msgid "Slave zone deleted successfully"
 msgstr "Подчиненная зона успешно удалена"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:103
+#: lib/Application/Controller/DatabaseConsistencyController.php:104
 msgid "Failed to delete slave zone"
 msgstr "Не удалось удалить подчиненную зону"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:110
+#: lib/Application/Controller/DatabaseConsistencyController.php:111
 msgid "Orphaned record deleted successfully"
 msgstr "Потерянная запись успешно удалена"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:110
+#: lib/Application/Controller/DatabaseConsistencyController.php:111
 msgid "Failed to delete orphaned record"
 msgstr "Не удалось удалить потерянную запись"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:117
+#: lib/Application/Controller/DatabaseConsistencyController.php:118
 msgid "Duplicate SOA records fixed successfully"
 msgstr "Дублирующиеся SOA записи успешно исправлены"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:117
+#: lib/Application/Controller/DatabaseConsistencyController.php:118
 msgid "Failed to fix duplicate SOA records"
 msgstr "Не удалось исправить дублирующиеся SOA записи"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:124
+#: lib/Application/Controller/DatabaseConsistencyController.php:125
 msgid "Default SOA record created successfully"
 msgstr "SOA запись по умолчанию успешно создана"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:124
+#: lib/Application/Controller/DatabaseConsistencyController.php:125
 msgid "Failed to create default SOA record"
 msgstr "Не удалось создать SOA запись по умолчанию"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Invalid check type"
 msgstr "Недопустимый тип проверки"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:119
+#: lib/Infrastructure/Service/SessionAuthenticator.php:121
 msgid "You have logged out."
 msgstr "Вы вышли из системы."
 
-#: lib/Domain/Model/ZoneTemplate.php:173 lib/Domain/Model/ZoneTemplate.php:615
+#: lib/Domain/Model/ZoneTemplate.php:178 lib/Domain/Model/ZoneTemplate.php:619
 msgid "You do not have the permission to add a zone template."
 msgstr "У вас нет разрешения на добавление шаблона зоны."
 
@@ -916,19 +931,19 @@ msgstr "У вас нет разрешения на выполнение поис
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "Не удалось получить информацию RDAP с сервера %s"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:59
+#: lib/Application/Controller/AddZoneSlaveController.php:58
 msgid "You do not have the permission to add a slave zone."
 msgstr "У вас нет разрешения на добавление подчиненной зоны."
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:259
+#: lib/Domain/Service/Dns/SupermasterManager.php:263
 msgid "Invalid hostname."
 msgstr "Недопустимое имя хоста."
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:253
+#: lib/Domain/Service/Dns/SupermasterManager.php:257
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "Это недопустимый IPv4 или IPv6 адрес."
 
-#: lib/Domain/Model/ZoneTemplate.php:273 lib/Domain/Model/ZoneTemplate.php:311
+#: lib/Domain/Model/ZoneTemplate.php:278 lib/Domain/Model/ZoneTemplate.php:316
 msgid "You do not have the permission to delete zone templates."
 msgstr "У вас нет разрешения на удаление шаблонов зон."
 
@@ -940,7 +955,7 @@ msgstr "Шаблон зоны успешно удален."
 msgid "You do not have the permission to edit a supermaster."
 msgstr "У вас нет разрешения на редактирование суперсервера."
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:271
+#: lib/Domain/Service/Dns/SupermasterManager.php:275
 msgid "The supermaster you are trying to edit does not exist."
 msgstr "Суперсервер, который вы пытаетесь редактировать, не существует."
 
@@ -972,7 +987,7 @@ msgstr "Пользователь успешно обновлен."
 msgid "The user could not be updated."
 msgstr "Пользователя не удалось обновить."
 
-#: lib/Domain/Model/UserManager.php:395 lib/Domain/Model/UserManager.php:720
+#: lib/Domain/Model/UserManager.php:394 lib/Domain/Model/UserManager.php:719
 msgid "You do not have the permission to edit this user."
 msgstr "У вас нет разрешения на редактирование этого пользователя."
 
@@ -1004,30 +1019,46 @@ msgstr ""
 "Функция PowerDNS API не настроена. Пожалуйста, установите URL API и ключ в "
 "системной конфигурации."
 
-#: lib/Application/Controller/ExampleController.php:113
+#: lib/Application/Controller/ExampleController.php:114
 msgid "You do not have the permission to access this feature."
 msgstr "У вас нет разрешения на доступ к данной функции."
 
-#: lib/Application/Controller/ExampleController.php:187
+#: lib/Application/Controller/ExampleController.php:188
 msgid "Operation completed successfully."
 msgstr "Операция выполнена успешно."
 
-#: lib/Application/Controller/ExampleController.php:191
+#: lib/Application/Controller/ExampleController.php:192
 msgid "Failed to process the request. Please try again."
 msgstr "Не удалось обработать запрос. Пожалуйста, попробуйте еще раз."
 
-#: lib/Application/Controller/ExampleController.php:198
+#: lib/Application/Controller/ExampleController.php:199
 msgid "An unexpected error occurred. Please contact the administrator."
 msgstr ""
 "Произошла непредвиденная ошибка. Пожалуйста, обратитесь к администратору."
 
-#: lib/Application/Controller/EditRecordController.php:82
-msgid "You do not have the permission to view this record."
-msgstr "У вас нет разрешения для просмотра этой записи."
+#: lib/Application/Controller/EditRecordController.php:92
+#, auto-english-fallback
+msgid "You do not have permission to view this record."
+msgstr "У вас нет разрешения на просмотр этой записи."
 
-#: lib/Application/Controller/EditRecordController.php:215
+#: lib/Application/Controller/EditRecordController.php:101
+#, auto-english-fallback
+msgid "You do not have permission to edit this record."
+msgstr "У вас нет разрешения на редактирование этой записи."
+
+#: lib/Application/Controller/EditRecordController.php:231
 msgid "The record has been updated successfully."
 msgstr "Запись была успешно обновлена."
+
+#: lib/Application/Controller/DnssecController.php:64
+#, auto-english-fallback
+msgid "You do not have permission to view this zone."
+msgstr "У вас нет разрешения на просмотр этой зоны."
+
+#: lib/Application/Controller/DnssecController.php:77
+#, auto-english-fallback
+msgid "You do not have permission to manage DNSSEC for this zone."
+msgstr "У вас нет разрешения на управление DNSSEC для этой зоны."
 
 #: lib/Application/Controller/ChangePasswordController.php:78
 msgid ""
@@ -1065,7 +1096,7 @@ msgstr ""
 msgid "Zone key has been added successfully."
 msgstr "Ключ зоны был успешно добавлен."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:346
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:348
 msgid "Failed to add new DNSSEC key."
 msgstr "Не удалось добавить новый ключ DNSSEC."
 
@@ -1097,11 +1128,11 @@ msgstr "Суперсервер не существует."
 msgid "The supermaster has been deleted successfully."
 msgstr "Суперсервер был успешно удален."
 
-#: lib/Application/Controller/BulkRegistrationController.php:119
+#: lib/Application/Controller/BulkRegistrationController.php:118
 msgid "Zones has been added successfully."
 msgstr "Зоны были успешно добавлены."
 
-#: lib/Application/Controller/BulkRegistrationController.php:122
+#: lib/Application/Controller/BulkRegistrationController.php:121
 msgid "Some zone(s) could not be added."
 msgstr "Некоторые зоны не удалось добавить."
 
@@ -1110,19 +1141,19 @@ msgstr "Некоторые зоны не удалось добавить."
 msgid "Page Not Found"
 msgstr "Страница не найдена"
 
-#: lib/Application/Service/LdapAuthenticator.php:80
+#: lib/Application/Service/LdapAuthenticator.php:84
 msgid "Account is temporarily locked. Please try again later."
 msgstr "Учетная запись временно заблокирована. Пожалуйста, попробуйте позже."
 
-#: lib/Application/Service/SqlAuthenticator.php:138
+#: lib/Application/Service/SqlAuthenticator.php:136
 msgid "The user account is disabled."
 msgstr "Учетная запись пользователя отключена."
 
-#: lib/Application/Service/SqlAuthenticator.php:213
+#: lib/Application/Service/SqlAuthenticator.php:211
 msgid "Authentication failed!"
 msgstr "Ошибка аутентификации!"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:188
+#: lib/Infrastructure/Service/SessionAuthenticator.php:190
 msgid "Session expired, please login again."
 msgstr "Сессия истекла, пожалуйста, войдите снова."
 
@@ -1130,50 +1161,50 @@ msgstr "Сессия истекла, пожалуйста, войдите сно
 msgid "Failed to update password"
 msgstr "Не удалось обновить пароль"
 
-#: lib/Application/Service/LdapAuthenticator.php:113
+#: lib/Application/Service/LdapAuthenticator.php:117
 msgid "Failed to connect to LDAP server!"
 msgstr "Не удалось подключиться к серверу LDAP!"
 
-#: lib/Application/Service/LdapAuthenticator.php:129
+#: lib/Application/Service/LdapAuthenticator.php:133
 msgid "Failed to bind to LDAP server!"
 msgstr "Не удалось привязаться к серверу LDAP!"
 
-#: lib/Application/Service/LdapAuthenticator.php:153
+#: lib/Application/Service/LdapAuthenticator.php:161
 msgid "Failed to search LDAP."
 msgstr "Не удалось выполнить поиск в LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:170
+#: lib/Application/Service/LdapAuthenticator.php:178
 msgid "Failed to authenticate against LDAP."
 msgstr "Не удалось выполнить аутентификацию в LDAP."
 
-#: lib/Application/Service/LdapAuthenticator.php:204
+#: lib/Application/Service/LdapAuthenticator.php:212
 msgid "LDAP Authentication failed!"
 msgstr "Ошибка аутентификации LDAP!"
 
-#: lib/Application/Query/RecordSearch.php:167 templates/default/users.html:119
+#: lib/Application/Query/RecordSearch.php:169 templates/default/users.html:119
 #: templates/default/users.html:127
 msgid "Yes"
 msgstr "Да"
 
-#: lib/Application/Query/RecordSearch.php:167 templates/default/users.html:121
+#: lib/Application/Query/RecordSearch.php:169 templates/default/users.html:121
 #: templates/default/users.html:129
 msgid "No"
 msgstr "Нет"
 
-#: lib/Domain/Model/UserManager.php:271
+#: lib/Domain/Model/UserManager.php:270
 msgid "This template is assigned to at least one user."
 msgstr "Этот шаблон назначен как минимум одному пользователю."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:153
+#: lib/Infrastructure/Service/SessionAuthenticator.php:155
 #: templates/default/login.html:109
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "Проверка reCAPTCHA не удалась. Пожалуйста, попробуйте снова."
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:176
+#: lib/Infrastructure/Service/SessionAuthenticator.php:178
 msgid "An empty password is not allowed"
 msgstr "Пустой пароль не допускается"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:50
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:52
 msgid ""
 "Failed to call function exec. Make sure that exec is not listed in "
 "disable_functions at php.ini"
@@ -1181,159 +1212,159 @@ msgstr ""
 "Не удалось вызвать функцию exec. Убедитесь, что exec не указан в "
 "disable_functions в php.ini"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:56
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:58
 msgid "Failed to call pdnssec utility."
 msgstr "Не удалось вызвать утилиту pdnssec."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:150
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:152
 msgid "Failed to secure zone."
 msgstr "Не удалось защитить зону."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:171
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:173
 msgid "Failed to disable DNSSEC."
 msgstr "Не удалось отключить DNSSEC."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:314
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:316
 msgid "Failed to get DNSSEC key details."
 msgstr "Не удалось получить детали ключа DNSSEC."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:269
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:271
 msgid "Failed to active DNSSEC key."
 msgstr "Не удалось активировать ключ DNSSEC."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:291
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:293
 msgid "Failed to deactivate DNSSEC key."
 msgstr "Не удалось деактивировать ключ DNSSEC."
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:370
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:372
 msgid "Failed to remove DNSSEC key."
 msgstr "Не удалось удалить ключ DNSSEC."
 
-#: lib/Domain/Repository/DomainRepository.php:203
+#: lib/Domain/Repository/DomainRepository.php:201
 msgid "This is an invalid zone name."
 msgstr "Это неверное имя зоны."
 
-#: lib/Domain/Model/UserManager.php:752
+#: lib/Domain/Model/UserManager.php:751
 msgid "Enter a valid email address."
 msgstr "Введите действительный адрес электронной почты."
 
-#: lib/Domain/Model/UserManager.php:744
+#: lib/Domain/Model/UserManager.php:743
 msgid "Username exist already, please choose another one."
 msgstr "Имя пользователя уже существует, пожалуйста, выберите другое."
 
-#: lib/Domain/Model/UserManager.php:748
+#: lib/Domain/Model/UserManager.php:747
 msgid "Enter a valid user name."
 msgstr "Введите действительное имя пользователя."
 
-#: lib/Domain/Model/ZoneTemplate.php:200 lib/Domain/Model/ZoneTemplate.php:671
+#: lib/Domain/Model/ZoneTemplate.php:205 lib/Domain/Model/ZoneTemplate.php:675
 msgid "Error creating zone template: "
 msgstr "Ошибка создания шаблона зоны: "
 
-#: lib/Domain/Model/ZoneTemplate.php:236
+#: lib/Domain/Model/ZoneTemplate.php:241
 msgid "Error adding default SOA record to template: "
 msgstr "Ошибка добавления записи SOA по умолчанию в шаблон: "
 
-#: lib/Domain/Model/ZoneTemplate.php:295
+#: lib/Domain/Model/ZoneTemplate.php:300
 msgid "Error deleting zone template: "
 msgstr "Ошибка удаления шаблона зоны: "
 
-#: lib/Domain/Model/ZoneTemplate.php:319
+#: lib/Domain/Model/ZoneTemplate.php:324
 msgid "Error deleting user zone templates: "
 msgstr "Ошибка удаления пользовательских шаблонов зон: "
 
-#: lib/Domain/Model/ZoneTemplate.php:437
+#: lib/Domain/Model/ZoneTemplate.php:442
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "У вас нет разрешения для добавления записи в этот шаблон зоны."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:129
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
 msgstr "Поле содержимого не имеет допустимого значения."
 
-#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:74
+#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:76
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "Приоритет для записей MX/SRV должен быть числом от 0 до 65535."
 
-#: lib/Domain/Model/ZoneTemplate.php:529
+#: lib/Domain/Model/ZoneTemplate.php:534
 msgid "Error updating zone template record: "
 msgstr "Ошибка обновления записи шаблона зоны: "
 
-#: lib/Domain/Model/ZoneTemplate.php:552
+#: lib/Domain/Model/ZoneTemplate.php:557
 msgid "Error deleting zone template record: "
 msgstr "Ошибка удаления записи шаблона зоны: "
 
-#: lib/Domain/Model/ZoneTemplate.php:575
+#: lib/Domain/Model/ZoneTemplate.php:580
 msgid "Error checking template ownership: "
 msgstr "Ошибка проверки владения шаблоном: "
 
-#: lib/Domain/Model/ZoneTemplate.php:724
+#: lib/Domain/Model/ZoneTemplate.php:727
 msgid "Error retrieving zones using template: "
 msgstr "Ошибка получения зон, использующих шаблон: "
 
-#: lib/Domain/Model/ZoneTemplate.php:779
+#: lib/Domain/Model/ZoneTemplate.php:781
 msgid "Failed to get list of zones using template: "
 msgstr "Не удалось получить список зон, использующих шаблон: "
 
-#: lib/Domain/Model/ZoneTemplate.php:797
+#: lib/Domain/Model/ZoneTemplate.php:799
 msgid "You do not have the permission to edit a zone template."
 msgstr "У вас нет разрешения для редактирования шаблона зоны."
 
-#: lib/Domain/Model/ZoneTemplate.php:841
+#: lib/Domain/Model/ZoneTemplate.php:843
 msgid "Error unlinking zone from template: "
 msgstr "Ошибка отвязки зоны от шаблона: "
 
-#: lib/Domain/Model/ZoneTemplate.php:870
+#: lib/Domain/Model/ZoneTemplate.php:871
 msgid "Error retrieving zones: "
 msgstr "Ошибка получения зон: "
 
-#: lib/Domain/Model/ZoneTemplate.php:889
+#: lib/Domain/Model/ZoneTemplate.php:890
 msgid "Error checking template name existence: "
 msgstr "Ошибка проверки существования имени шаблона: "
 
-#: lib/Domain/Model/ZoneTemplate.php:912
+#: lib/Domain/Model/ZoneTemplate.php:913
 msgid "Error checking template existence: "
 msgstr "Ошибка проверки существования шаблона: "
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:80
+#: lib/Domain/Service/DatabaseConsistencyService.php:74
 msgid "All zones have owners"
 msgstr "Все зоны имеют владельцев"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:87
+#: lib/Domain/Service/DatabaseConsistencyService.php:81
 #, php-format
 msgid "%d zones found without owners"
 msgstr "Найдено %d зон без владельцев"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:120
+#: lib/Domain/Service/DatabaseConsistencyService.php:114
 msgid "All slave zones have master IP addresses"
 msgstr "Все подчиненные зоны имеют IP-адреса главного сервера"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:127
+#: lib/Domain/Service/DatabaseConsistencyService.php:121
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "Найдено %d подчиненных зон без IP-адресов главного сервера"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:163
+#: lib/Domain/Service/DatabaseConsistencyService.php:157
 msgid "All records belong to existing zones"
 msgstr "Все записи принадлежат существующим зонам"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:170
+#: lib/Domain/Service/DatabaseConsistencyService.php:164
 #, php-format
 msgid "%d orphaned records found"
 msgstr "Найдено %d осиротевших записей"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:210
+#: lib/Domain/Service/DatabaseConsistencyService.php:204
 msgid "No duplicate SOA records found"
 msgstr "Дублирующиеся записи SOA не найдены"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:217
+#: lib/Domain/Service/DatabaseConsistencyService.php:211
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d зон имеют дублирующиеся записи SOA"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:252
+#: lib/Domain/Service/DatabaseConsistencyService.php:246
 msgid "All zones have SOA records"
 msgstr "Все зоны имеют записи SOA"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:259
+#: lib/Domain/Service/DatabaseConsistencyService.php:253
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "Найдено %d зон без записей SOA"
@@ -1438,7 +1469,7 @@ msgstr ""
 "Когда алгоритм равен 0 (без ключа), поле открытого ключа обычно пустое или "
 "игнорируется."
 
-#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:100
+#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:102
 msgid ""
 "You can not point a NS or MX record to a CNAME record. Remove or rename the "
 "CNAME record first, or take another name."
@@ -2110,7 +2141,7 @@ msgstr ""
 "Алгоритм 7 (RSASHA1-NSEC3-SHA1) использует SHA-1, который больше не "
 "считается безопасным."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
 msgid ""
 "Algorithm 8 (RSA/SHA-256) is currently recommended for DNSSEC deployments."
 msgstr ""
@@ -2153,7 +2184,7 @@ msgstr ""
 "Алгоритм 16 (Ed448) обеспечивает сильную современную безопасность, но может "
 "иметь проблемы совместимости с более старыми валидаторами."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:221
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid ""
 "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/"
 "SHA-256) or later."
@@ -3412,22 +3443,22 @@ msgstr ""
 "Обнаружено пользовательское имя алгоритма. Стандартные имена алгоритмов, "
 "такие как \"hmac-sha256.\", рекомендуются для лучшей совместимости."
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:77
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid ""
 "Invalid value for default TTL. It must be a number between 0 and 2147483647."
 msgstr ""
 "Недопустимое значение для TTL по умолчанию. Оно должно быть числом от 0 до "
 "2147483647."
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:98
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:99
 msgid "Invalid value for TTL field. It must be numeric."
 msgstr "Недопустимое значение для поля TTL. Оно должно быть числовым."
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:105
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:106
 msgid "TTL value cannot be negative. It must be 0 or higher."
 msgstr "Значение TTL не может быть отрицательным. Оно должно быть 0 или выше."
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:110
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:111
 #, php-format
 msgid ""
 "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-"
@@ -3436,7 +3467,7 @@ msgstr ""
 "Значение TTL превышает максимально разрешенное (%d). RFC 2181 ограничивает "
 "его 32-битным целым числом со знаком."
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:143
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
 msgid ""
 "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). "
@@ -3445,7 +3476,7 @@ msgstr ""
 "Значение TTL (%d) ниже рекомендуемого минимума в %d секунд (5 минут). Низкие "
 "значения TTL увеличивают DNS трафик."
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:152
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid ""
 "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High "
@@ -3454,7 +3485,7 @@ msgstr ""
 "Значение TTL (%d) превышает рекомендованный максимум %d секунд (1 неделя). "
 "Высокие значения TTL замедляют обновления DNS."
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:162
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
 msgid ""
 "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
@@ -3795,7 +3826,7 @@ msgstr ""
 "Модификатор \"redirect\" будет проигнорирован при наличии \"all\" (RFC 7208 "
 "раздел 6.1)."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:170
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:180
 msgid ""
 "Invalid value for priority field. CNAME records must have priority value of "
 "0."
@@ -3803,25 +3834,39 @@ msgstr ""
 "Недопустимое значение поля приоритета. CNAME-записи должны иметь значение "
 "приоритета 0."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:199
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:208
 msgid ""
 "This is not a valid CNAME. There already exists a record with this name."
 msgstr "Это не действительный CNAME. Уже существует запись с этим именем."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:225
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:233
 msgid ""
 "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr ""
 "Это не действительный CNAME. Вы присвоили запись MX или NS этой записи?"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:242
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:250
 msgid "Empty CNAME records are not allowed."
 msgstr "Пустые CNAME-записи не разрешены."
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:272
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:279
 msgid ""
 "This is not a valid record. There already exists a CNAME with this name."
 msgstr "Это недопустимая запись. Уже существует CNAME с таким именем."
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
+msgid ""
+"CNAME target must be a fully qualified domain name (FQDN). Single-label "
+"names are not allowed."
+msgstr ""
+"Цель CNAME должна быть полностью квалифицированным доменным именем (FQDN). Односегментные имена не разрешены."
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:313
+msgid ""
+"CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
+"level domain."
+msgstr ""
+"Цель CNAME должна быть полностью квалифицированным доменным именем (FQDN) с допустимым доменом верхнего уровня."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -3933,11 +3978,11 @@ msgstr ""
 msgid "Hostname contains invalid characters."
 msgstr "Имя хоста содержит недопустимые символы."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:139
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:141
 msgid "Priority field for RRSIG records must be 0 or empty"
 msgstr "Поле приоритета для RRSIG-записей должно быть 0 или пустым"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid ""
 "RRSIG records should only be created by your DNS server when signing a zone. "
 "Manual manipulation is not recommended."
@@ -3945,7 +3990,7 @@ msgstr ""
 "RRSIG-записи должны создаваться только вашим DNS-сервером при подписании "
 "зоны. Ручное изменение не рекомендуется."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:144
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:146
 msgid ""
 "Regular key rollovers are recommended security practice: ZSK every 1-3 "
 "months, KSK every 1-2 years."
@@ -3953,15 +3998,15 @@ msgstr ""
 "Регулярная смена ключей является рекомендуемой практикой безопасности: ZSK "
 "каждые 1-3 месяца, KSK каждые 1-2 года."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:167
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
 msgstr "Содержимое RRSIG-записи не может быть пустым."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:172
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:174
 msgid "RRSIG record contains invalid characters."
 msgstr "RRSIG-запись содержит недопустимые символы."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:178
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:180
 msgid ""
 "RRSIG record must contain covered-type, algorithm, labels, original TTL, "
 "expiration, inception, key tag, signer name and signature."
@@ -3969,15 +4014,15 @@ msgstr ""
 "RRSIG-запись должна содержать покрываемый тип, алгоритм, метки, оригинальный "
 "TTL, дату истечения, дату начала, тег ключа, имя подписывающего и подпись."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:186
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
 msgstr "Покрываемый тип RRSIG должен быть допустимым типом DNS-записи."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:191
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:193
 msgid "RRSIG algorithm field must be a numeric value."
 msgstr "Поле алгоритма RRSIG должно содержать числовое значение."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:197
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
 msgid ""
 "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to "
 "cryptographic weaknesses."
@@ -3985,7 +4030,7 @@ msgstr ""
 "Алгоритм 1 (RSA/MD5) устарел и НЕ должен использоваться из-за "
 "криптографических слабостей."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid ""
 "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with "
 "stronger algorithms."
@@ -3993,7 +4038,7 @@ msgstr ""
 "Алгоритм 3 (DSA/SHA1) считается небезопасным и должен быть заменен на более "
 "сильные алгоритмы."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid ""
 "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with "
 "stronger algorithms."
@@ -4001,7 +4046,7 @@ msgstr ""
 "Алгоритм 5 (RSA/SHA-1) считается небезопасным и должен быть заменен на более "
 "сильные алгоритмы."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid ""
 "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered "
 "secure. Consider using RSA/SHA-256 or newer algorithms."
@@ -4010,7 +4055,7 @@ msgstr ""
 "считается безопасным. Рассмотрите использование RSA/SHA-256 или более новых "
 "алгоритмов."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
 msgid ""
 "Algorithm 10 (RSA/SHA-512) provides strong security but may have "
 "interoperability issues with some validators."
@@ -4018,7 +4063,7 @@ msgstr ""
 "Алгоритм 10 (RSA/SHA-512) обеспечивает высокую безопасность, но может иметь "
 "проблемы совместимости с некоторыми валидаторами."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
 msgid ""
 "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller "
 "signatures than RSA."
@@ -4026,7 +4071,7 @@ msgstr ""
 "Алгоритм 13 (ECDSA P-256 с SHA-256) обеспечивает хорошую безопасность с "
 "меньшими подписями, чем RSA."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid ""
 "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with "
 "smaller signatures than RSA."
@@ -4034,7 +4079,7 @@ msgstr ""
 "Алгоритм 14 (ECDSA P-384 с SHA-384) обеспечивает высокую безопасность с "
 "меньшими подписями, чем RSA."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid ""
 "Algorithm 15 (ED25519) offers modern security but may have compatibility "
 "issues with older DNSSEC validators."
@@ -4042,7 +4087,7 @@ msgstr ""
 "Алгоритм 15 (ED25519) предлагает современную безопасность, но может иметь "
 "проблемы совместимости с устаревшими DNSSEC-валидаторами."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
 msgid ""
 "Algorithm 16 (ED448) offers strong modern security but may have "
 "compatibility issues with older DNSSEC validators."
@@ -4050,31 +4095,31 @@ msgstr ""
 "Алгоритм 16 (ED448) предлагает высокую современную безопасность, но может "
 "иметь проблемы совместимости с устаревшими DNSSEC-валидаторами."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:219
 msgid ""
 "Unknown algorithm value. Only algorithms defined in RFCs should be used."
 msgstr ""
 "Неизвестное значение алгоритма. Следует использовать только алгоритмы, "
 "определенные в RFC."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:226
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:228
 msgid "RRSIG labels field must be a numeric value."
 msgstr "Поле меток RRSIG должно содержать числовое значение."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:232
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:234
 msgid "RRSIG labels field must be a reasonable value (0-128)."
 msgstr "Поле меток RRSIG должно содержать разумное значение (0-128)."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:237
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:239
 msgid "RRSIG original TTL field must be a numeric value."
 msgstr "Поле оригинального TTL RRSIG должно содержать числовое значение."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:242
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:244
 msgid "RRSIG original TTL must be a valid positive integer."
 msgstr ""
 "Оригинальный TTL RRSIG должен быть допустимым положительным целым числом."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:246
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid ""
 "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs "
 "are generally preferred for faster recovery in case of key compromise."
@@ -4083,15 +4128,15 @@ msgstr ""
 "предпочтительны более короткие TTL для более быстрого восстановления в "
 "случае компрометации ключа."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:251
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
 msgstr "Дата истечения RRSIG должна быть в формате YYYYMMDDHHmmSS."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:256
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:258
 msgid "RRSIG inception must be in YYYYMMDDHHmmSS format."
 msgstr "Дата начала RRSIG должна быть в формате YYYYMMDDHHmmSS."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:268
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:270
 msgid ""
 "The expiration time must be later than the inception time. This signature "
 "appears to have expired before it became valid."
@@ -4099,7 +4144,7 @@ msgstr ""
 "Время истечения должно быть позже времени начала. Эта подпись, по-видимому, "
 "истекла до того, как стала действительной."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:273
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
 msgid ""
 "CRITICAL: This signature has already expired. It will not be validated by "
 "DNSSEC resolvers."
@@ -4107,7 +4152,7 @@ msgstr ""
 "КРИТИЧНО: Эта подпись уже истекла. Она не будет проверяться DNSSEC-"
 "резолверами."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid ""
 "WARNING: This signature will expire within the next 7 days. Consider "
 "renewing it soon."
@@ -4115,12 +4160,12 @@ msgstr ""
 "ПРЕДУПРЕЖДЕНИЕ: Эта подпись истечет в течение следующих 7 дней. Рассмотрите "
 "возможность обновления в ближайшее время."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid "This signature will expire within the next 30 days. Plan for renewal."
 msgstr ""
 "Эта подпись истечет в течение следующих 30 дней. Запланируйте обновление."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:282
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
 msgid ""
 "WARNING: This signature is not yet valid. It will not be validated by DNSSEC "
 "resolvers until the inception time is reached."
@@ -4128,7 +4173,7 @@ msgstr ""
 "ПРЕДУПРЕЖДЕНИЕ: Эта подпись еще не действительна. Она не будет проверена "
 "DNSSEC резолверами до наступления времени начала действия."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:289
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:291
 msgid ""
 "The signature validity period is over 90 days, which is longer than "
 "recommended practices. Long validity periods increase vulnerability in case "
@@ -4138,36 +4183,36 @@ msgstr ""
 "практики. Длительные периоды действительности увеличивают уязвимость в "
 "случае компрометации ключа."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:295
 msgid "Could not parse signature timestamps to check validity period."
 msgstr ""
 "Не удалось проанализировать временные метки подписи для проверки периода "
 "действительности."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:298
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:300
 msgid "RRSIG key tag field must be a numeric value."
 msgstr "Поле тега ключа RRSIG должно быть числовым значением."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:303
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:305
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
 msgstr "Тег ключа RRSIG должен быть допустимым значением от 0 до 65535."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:308
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:310
 msgid ""
 "RRSIG signer name must be a fully qualified domain name (end with a dot)."
 msgstr ""
 "Имя подписанта RRSIG должно быть полностью квалифицированным доменным именем "
 "(заканчиваться точкой)."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:314
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:316
 msgid "RRSIG signer name must be a valid domain name."
 msgstr "Имя подписанта RRSIG должно быть допустимым доменным именем."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:321
 msgid "RRSIG signature cannot be empty."
 msgstr "Подпись RRSIG не может быть пустой."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:324
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:326
 msgid ""
 "The signature does not appear to be valid base64 encoded data. RRSIG "
 "signatures should be base64 encoded."
@@ -4175,7 +4220,7 @@ msgstr ""
 "Подпись не является действительными данными в кодировке base64. Подписи "
 "RRSIG должны быть закодированы в base64."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:330
 msgid ""
 "RRSIG records are part of DNSSEC and provide cryptographic signatures for "
 "DNS records. They should be managed automatically by the DNS server."
@@ -4183,7 +4228,7 @@ msgstr ""
 "Записи RRSIG являются частью DNSSEC и предоставляют криптографические "
 "подписи для DNS записей. Они должны управляться автоматически DNS сервером."
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:329
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
 msgid ""
 "Remember that RRSIG records must be regenerated before their expiration date "
 "to maintain DNSSEC validation."
@@ -5024,7 +5069,7 @@ msgstr "Указанное имя хоста содержит слишком м�
 msgid "You are using an invalid top level domain."
 msgstr "Вы используете недопустимый домен верхнего уровня."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:103
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid ""
 "SOA validation parameters not set. Call setSOAParams() first or provide them "
 "as arguments."
@@ -5032,35 +5077,35 @@ msgstr ""
 "Параметры проверки SOA не установлены. Сначала вызовите setSOAParams() или "
 "предоставьте их в качестве аргументов."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:114
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:115
 msgid ""
 "Invalid value for name field of SOA record. It should be the name of the "
 "zone."
 msgstr "Недопустимое значение для поля имени записи SOA. Должно быть имя зоны."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:173
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:174
 msgid "SOA record must have between 1 and 7 fields."
 msgstr "Запись SOA должна содержать от 1 до 7 полей."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:180
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:181
 msgid "Invalid primary nameserver in SOA record."
 msgstr "Недопустимый основной сервер имен в записи SOA."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:201
 msgid "Invalid email address in SOA record."
 msgstr "Недопустимый адрес электронной почты в записи SOA."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:211
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:212
 msgid "Serial number must be numeric."
 msgstr "Серийный номер должен быть числовым."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:217
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:218
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
 msgstr ""
 "Серийный номер должен быть 32-битным беззнаковым целым числом (от 0 до "
 "4294967295)."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:230
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:231
 msgid ""
 "Serial number appears to use YYYYMMDDnn format but contains an invalid date. "
 "This is allowed but not recommended."
@@ -5068,7 +5113,7 @@ msgstr ""
 "Серийный номер использует формат YYYYMMDDnn, но содержит недопустимую дату. "
 "Это допустимо, но не рекомендуется."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:244
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:245
 msgid ""
 "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, "
 "retry, expire, minimum)."
@@ -5076,17 +5121,17 @@ msgstr ""
 "Запись SOA должна содержать ровно 7 полей (основной NS, электронная почта, "
 "серийный номер, обновление, повтор, истечение, минимум)."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:264
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
 #, php-format
 msgid "SOA %s field must be numeric."
 msgstr "Поле %s записи SOA должно быть числовым."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:270
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:271
 #, php-format
 msgid "SOA %s field must be a positive integer."
 msgstr "Поле %s записи SOA должно быть положительным целым числом."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:278
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
 msgid ""
 "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is "
@@ -5095,7 +5140,7 @@ msgstr ""
 "Значение %s записи SOA (%d) ниже рекомендуемого RFC 2308 минимума (%d). Это "
 "допустимо, но не рекомендуется."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:287
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:288
 msgid ""
 "SOA retry value should be less than refresh value according to RFC 2308. "
 "This is allowed but not recommended."
@@ -5103,7 +5148,7 @@ msgstr ""
 "Значение retry записи SOA должно быть меньше значения refresh согласно RFC "
 "2308. Это допустимо, но не рекомендуется."
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:295
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:296
 msgid ""
 "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be "
 "excessive according to RFC 2308."
@@ -5163,7 +5208,7 @@ msgstr ""
 "Дублирующийся ключ параметра SVCB: \"%s\". Каждый ключ может появляться "
 "только один раз."
 
-#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:156
+#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid ""
 "Multiple CNAME records with the same name are not allowed. This would create "
 "a DNS violation."
@@ -5171,7 +5216,7 @@ msgstr ""
 "Множественные записи CNAME с одинаковым именем не допускаются. Это создало "
 "бы нарушение DNS."
 
-#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:204
+#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:207
 #, php-format
 msgid ""
 "A CNAME record cannot coexist with other record types for the same name. "
@@ -5180,7 +5225,7 @@ msgstr ""
 "Запись CNAME не может сосуществовать с другими типами записей для того же "
 "имени. Найдена существующая запись %s."
 
-#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:252
+#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:255
 msgid ""
 "This record conflicts with an existing CNAME record with the same name. A "
 "CNAME record cannot coexist with other record types."
@@ -6714,21 +6759,6 @@ msgstr "Обнаружены недействительные символы bas
 msgid "Invalid base64 encoding."
 msgstr "Недействительная кодировка base64."
 
-#: lib/Domain/Service/MfaService.php:454
-msgid "Your verification code"
-msgstr "Ваш код подтверждения"
-
-#: lib/Domain/Service/MfaService.php:456
-#, php-format
-msgid ""
-"Your verification code is: %s\n"
-"\n"
-"This code will expire in 10 minutes at %s."
-msgstr ""
-"Ваш код подтверждения: %s\n"
-"\n"
-"Этот код истечет через 10 минут в %s."
-
 #: lib/Domain/Service/DomainRecordCreator.php:61
 #, php-format
 msgid "There is no managed zone for domain: %s."
@@ -6754,87 +6784,87 @@ msgstr "Не удается найти домен с указанным ID."
 msgid "Unknown record type."
 msgstr "Неизвестный тип записи."
 
-#: lib/Domain/Service/ApiKeyService.php:149
+#: lib/Domain/Service/ApiKeyService.php:153
 msgid "API functionality is disabled."
 msgstr "Функциональность API отключена."
 
-#: lib/Domain/Service/ApiKeyService.php:155
+#: lib/Domain/Service/ApiKeyService.php:159
 msgid "You do not have permission to create API keys."
 msgstr "У вас нет разрешения на создание API ключей."
 
-#: lib/Domain/Service/ApiKeyService.php:162 templates/default/api_keys.html:18
+#: lib/Domain/Service/ApiKeyService.php:166 templates/default/api_keys.html:18
 msgid "You have reached the maximum number of API keys allowed."
 msgstr "Вы достигли максимального количества разрешенных API ключей."
 
-#: lib/Domain/Service/ApiKeyService.php:281
+#: lib/Domain/Service/ApiKeyService.php:285
 msgid "You do not have permission to update API keys."
 msgstr "У вас нет разрешения на обновление API ключей."
 
-#: lib/Domain/Service/ApiKeyService.php:229
+#: lib/Domain/Service/ApiKeyService.php:233
 msgid "You do not have permission to delete API keys."
 msgstr "У вас нет разрешения на удаление API ключей."
 
-#: lib/Domain/Service/ApiKeyService.php:253
+#: lib/Domain/Service/ApiKeyService.php:257
 msgid "You do not have permission to regenerate API keys."
 msgstr "У вас нет разрешения на перегенерацию API ключей."
 
-#: lib/Domain/Service/DatabaseSchemaService.php:51
+#: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "Неизвестный тип базы данных."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:62
+#: lib/Domain/Service/ReverseRecordCreator.php:64
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "Нет соответствующей обратной зоны для: %s."
 
-#: lib/Domain/Service/ReverseRecordCreator.php:70
+#: lib/Domain/Service/ReverseRecordCreator.php:72
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "PTR запись для %s, указывающая на %s, уже существует."
 
-#: lib/Domain/Service/Dns/RecordManager.php:103
+#: lib/Domain/Service/Dns/RecordManager.php:105
 msgid "You do not have the permission to add SOA record."
 msgstr "У вас нет разрешения на добавление SOA записи."
 
-#: lib/Domain/Service/Dns/RecordManager.php:107
+#: lib/Domain/Service/Dns/RecordManager.php:109
 msgid "You do not have the permission to add NS record."
 msgstr "У вас нет разрешения на добавление NS записи."
 
-#: lib/Domain/Service/Dns/RecordManager.php:154
+#: lib/Domain/Service/Dns/RecordManager.php:156
 msgid "A record with this hostname, type, and content already exists."
 msgstr "Запись с таким именем хоста, типом и содержимым уже существует."
 
-#: lib/Domain/Service/Dns/RecordManager.php:214
+#: lib/Domain/Service/Dns/RecordManager.php:216
 msgid "You do not have the permission to edit this SOA record."
 msgstr "У вас нет разрешения на редактирование этой SOA записи."
 
-#: lib/Domain/Service/Dns/RecordManager.php:219
+#: lib/Domain/Service/Dns/RecordManager.php:221
 msgid "You do not have the permission to edit this NS record."
 msgstr "У вас нет разрешения на редактирование этой NS записи."
 
-#: lib/Domain/Service/Dns/RecordManager.php:299
+#: lib/Domain/Service/Dns/RecordManager.php:301
 msgid "You do not have the permission to delete SOA records."
 msgstr "У вас нет разрешения на удаление SOA записей."
 
-#: lib/Domain/Service/Dns/RecordManager.php:312
+#: lib/Domain/Service/Dns/RecordManager.php:314
 msgid "You do not have the permission to delete NS records."
 msgstr "У вас нет разрешения на удаление NS записей."
 
-#: lib/Domain/Service/Dns/DomainManager.php:423
+#: lib/Domain/Service/Dns/DomainManager.php:448
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "Недопустимый аргумент(ы) переданы функции %s %s"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:280
+#: lib/Domain/Service/Dns/SupermasterManager.php:284
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "Уже существует суперсервер с этим IP-адресом и именем хоста."
 
-#: lib/Domain/Service/Dns/DomainManager.php:209
+#: lib/Domain/Service/Dns/DomainManager.php:212
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "Недопустимый аргумент(ы) переданы функции %s"
 
-#: lib/Domain/Service/Dns/DomainManager.php:386
+#: lib/Domain/Service/Dns/DomainManager.php:411
 msgid "The selected user already owns the zone."
 msgstr "Выбранный пользователь уже владеет зоной."
 
@@ -7313,7 +7343,7 @@ msgstr "Введите имя хоста, как оно указано в NS з�
 msgid "Provide host name"
 msgstr "Укажите имя хоста"
 
-#: templates/default/header.html:172
+#: templates/default/header.html:177
 msgid "Account"
 msgstr "Аккаунт"
 
@@ -7513,7 +7543,7 @@ msgstr "Мой Профиль"
 msgid "Edit your account details"
 msgstr "Редактировать детали вашего аккаунта"
 
-#: templates/default/header.html:176
+#: templates/default/header.html:181
 msgid "Edit profile"
 msgstr "Редактировать профиль"
 
@@ -7665,7 +7695,7 @@ msgstr "Просмотр истории активности пользоват�
 msgid "View user logs"
 msgstr "Просмотр журналов пользователей"
 
-#: templates/default/add_user.html:38 install/templates/step4.html.twig:49
+#: templates/default/add_user.html:39 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:67
 msgid "Password"
 msgstr "Пароль"
@@ -7674,7 +7704,7 @@ msgstr "Пароль"
 msgid "Update your account password"
 msgstr "Обновить пароль вашего аккаунта"
 
-#: templates/default/change_password.html:49 templates/default/header.html:180
+#: templates/default/change_password.html:49 templates/default/header.html:185
 msgid "Change password"
 msgstr "Изменить пароль"
 
@@ -7698,7 +7728,7 @@ msgstr "Разрешения"
 msgid "Manage permission templates"
 msgstr "Управление шаблонами разрешений"
 
-#: templates/default/header.html:187
+#: templates/default/header.html:192
 msgid "Logout"
 msgstr "Выйти"
 
@@ -8271,7 +8301,7 @@ msgstr "Подтвердить Пароль"
 msgid "Passwords do not match"
 msgstr "Пароли не совпадают"
 
-#: templates/default/edit_user.html:135 templates/default/add_user.html:132
+#: templates/default/edit_user.html:136 templates/default/add_user.html:133
 msgid "Password Requirements"
 msgstr "Требования к Паролю"
 
@@ -8465,55 +8495,60 @@ msgstr "Укажите имя пользователя"
 msgid "Fullname"
 msgstr "Полное имя"
 
-#: templates/default/edit_user.html:38
+#: templates/default/edit_user.html:38 templates/default/add_user.html:28
 msgid "User's full name for identification"
 msgstr "Полное имя пользователя для идентификации"
 
-#: templates/default/add_user.html:32
+#: templates/default/edit_user.html:39 templates/default/add_user.html:29
+#, auto-english-fallback
+msgid "Provide full name"
+msgstr "Укажите полное имя"
+
+#: templates/default/add_user.html:33
 msgid "Email address"
 msgstr "Адрес электронной почты"
 
-#: templates/default/edit_user.html:44 templates/default/add_user.html:34
+#: templates/default/edit_user.html:45 templates/default/add_user.html:35
 msgid "Provide email"
 msgstr "Укажите электронную почту"
 
-#: templates/default/edit_user.html:54
+#: templates/default/edit_user.html:55
 msgid "Leave empty to keep current password"
 msgstr "Оставьте пустым, чтобы сохранить текущий пароль"
 
-#: templates/default/edit_user.html:59 templates/default/add_user.html:69
+#: templates/default/edit_user.html:60 templates/default/add_user.html:70
 msgid "Permission template"
 msgstr "Шаблон разрешений"
 
-#: templates/default/edit_user.html:69 templates/default/add_user.html:80
+#: templates/default/edit_user.html:70 templates/default/add_user.html:81
 msgid "Select permissions for this user"
 msgstr "Выберите разрешения для этого пользователя"
 
-#: templates/default/edit_user.html:76 templates/default/add_user.html:87
+#: templates/default/edit_user.html:77 templates/default/add_user.html:88
 msgid "Optional information about this user"
 msgstr "Дополнительная информация об этом пользователе"
 
-#: templates/default/add_user.html:93
+#: templates/default/add_user.html:94
 msgid "Enabled"
 msgstr "Включен"
 
-#: templates/default/edit_user.html:96 templates/default/add_user.html:102
+#: templates/default/edit_user.html:97 templates/default/add_user.html:103
 msgid "LDAP Authentication"
 msgstr "LDAP Аутентификация"
 
-#: templates/default/edit_user.html:98 templates/default/add_user.html:104
+#: templates/default/edit_user.html:99 templates/default/add_user.html:105
 msgid "Use external LDAP directory for authentication"
 msgstr "Использовать внешний LDAP каталог для аутентификации"
 
-#: templates/default/edit_user.html:112
+#: templates/default/edit_user.html:113
 msgid "Back to Home"
 msgstr "Вернуться на Главную"
 
-#: templates/default/edit_user.html:116
+#: templates/default/edit_user.html:117
 msgid "Back to Users"
 msgstr "Вернуться к Пользователям"
 
-#: templates/default/edit_user.html:130 templates/default/add_user.html:127
+#: templates/default/edit_user.html:131 templates/default/add_user.html:128
 msgid "Account Information"
 msgstr "Информация об Аккаунте"
 
@@ -8541,36 +8576,36 @@ msgstr "Особых требований к паролю нет"
 msgid "User Permissions"
 msgstr "Разрешения Пользователя"
 
-#: templates/default/edit_user.html:164
+#: templates/default/edit_user.html:165
 msgid "This user has been assigned the permission template"
 msgstr "Этому пользователю был назначен шаблон разрешений"
 
-#: templates/default/edit_user.html:173
+#: templates/default/edit_user.html:174
 msgid "Based on this template, this user has the following permissions"
 msgstr "На основе этого шаблона у пользователя есть следующие разрешения"
 
-#: templates/default/edit_user.html:176
+#: templates/default/edit_user.html:177
 msgid "No permissions are assigned to this template"
 msgstr "Этому шаблону не назначены разрешения"
 
-#: templates/default/edit_user.html:192 templates/default/add_user.html:170
+#: templates/default/edit_user.html:193 templates/default/add_user.html:171
 msgid "User Management Tips"
 msgstr "Советы по Управлению Пользователями"
 
-#: templates/default/edit_user.html:198
+#: templates/default/edit_user.html:199
 msgid "Leave password field empty to keep the current password"
 msgstr "Оставьте поле пароля пустым, чтобы сохранить текущий пароль"
 
-#: templates/default/edit_user.html:199
+#: templates/default/edit_user.html:200
 msgid "Changing permission templates will update user access immediately"
 msgstr "Изменение шаблонов разрешений немедленно обновит доступ пользователя"
 
-#: templates/default/edit_user.html:200 templates/default/add_user.html:178
+#: templates/default/edit_user.html:201 templates/default/add_user.html:179
 msgid "Users can be disabled instead of deleted to preserve their settings"
 msgstr ""
 "Пользователи могут быть отключены вместо удаления для сохранения их настроек"
 
-#: templates/default/edit_user.html:201
+#: templates/default/edit_user.html:202
 msgid "LDAP users cannot have passwords managed through this interface"
 msgstr "Пароли LDAP пользователей нельзя управлять через этот интерфейс"
 
@@ -8834,7 +8869,7 @@ msgid "Host Prefix"
 msgstr "Префикс Хоста"
 
 #: templates/default/batch_ptr_record.html:71
-#: install/templates/step4.html.twig:132
+#: install/templates/step4.html.twig:133
 msgid "Optional"
 msgstr "Необязательно"
 
@@ -9447,35 +9482,31 @@ msgstr "Вы уверены, что хотите удалить оставшую
 msgid "Are you sure you want to delete this item?"
 msgstr "Вы уверены, что хотите удалить этот элемент?"
 
-#: templates/default/add_user.html:13 templates/default/add_user.html:111
+#: templates/default/add_user.html:13 templates/default/add_user.html:112
 msgid "Add User"
 msgstr "Добавить пользователя"
 
-#: templates/default/add_user.html:28
-msgid "Optional: User's full name for identification"
-msgstr "Опционально: Полное имя пользователя для идентификации"
-
-#: templates/default/add_user.html:42 install/templates/step4.html.twig:54
+#: templates/default/add_user.html:43 install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr "Укажите пароль пользователя"
 
-#: templates/default/add_user.html:50
+#: templates/default/add_user.html:51
 msgid "Auto-generate password"
 msgstr "Автогенерировать пароль"
 
-#: templates/default/add_user.html:52
+#: templates/default/add_user.html:53
 msgid "Generate a secure password that meets all requirements"
 msgstr "Сгенерировать защищенный пароль, отвечающий всем требованиям"
 
-#: templates/default/add_user.html:60
+#: templates/default/add_user.html:61
 msgid "Send password by email"
 msgstr "Отправить пароль по электронной почте"
 
-#: templates/default/add_user.html:62
+#: templates/default/add_user.html:63
 msgid "Send login credentials to user's email address"
 msgstr "Отправить учетные данные на электронную почту пользователя"
 
-#: templates/default/add_user.html:161
+#: templates/default/add_user.html:162
 msgid ""
 "When creating a new user, they will receive permissions based on the "
 "selected template. You can modify these permissions later by editing the "
@@ -9484,16 +9515,16 @@ msgstr ""
 "При создании нового пользователя он получит разрешения на основе выбранного "
 "шаблона. Вы можете изменить эти разрешения позже, редактируя пользователя."
 
-#: templates/default/add_user.html:176
+#: templates/default/add_user.html:177
 msgid "Create descriptive usernames that are easy to identify"
 msgstr ""
 "Создавайте описательные имена пользователей, которые легко идентифицировать"
 
-#: templates/default/add_user.html:177
+#: templates/default/add_user.html:178
 msgid "Adding a full name helps with user identification"
 msgstr "Добавление полного имени помогает с идентификацией пользователя"
 
-#: templates/default/add_user.html:179
+#: templates/default/add_user.html:180
 msgid "Auto-generating passwords is recommended for better security"
 msgstr "Автоматическая генерация паролей рекомендуется для лучшей безопасности"
 
@@ -9714,7 +9745,7 @@ msgstr "Включите сочетание букв, цифр и символо
 msgid "Consider using a password manager"
 msgstr "Рассмотрите использование менеджера паролей"
 
-#: templates/default/mfa_verify_email.html:4 templates/default/header.html:184
+#: templates/default/mfa_verify_email.html:4 templates/default/header.html:189
 msgid "Multi-Factor Authentication"
 msgstr "Многофакторная аутентификация"
 
@@ -9821,15 +9852,15 @@ msgstr "Сохранить как"
 msgid "The following placeholders can be used in template records"
 msgstr "Следующие заполнители могут использоваться в записях шаблона"
 
-#: templates/default/edit_zone_templ.html:305
+#: templates/default/edit_zone_templ.html:311
 msgid "Warning: Missing SOA Record"
 msgstr "Предупреждение: Отсутствует SOA запись"
 
-#: templates/default/edit_zone_templ.html:311
+#: templates/default/edit_zone_templ.html:317
 msgid "This zone template does not have an SOA (Start of Authority) record."
 msgstr "Этот шаблон зоны не имеет SOA (Start of Authority) записи."
 
-#: templates/default/edit_zone_templ.html:312
+#: templates/default/edit_zone_templ.html:318
 msgid ""
 "DNS zones typically require an SOA record to function properly, and DNSSEC "
 "signing may fail without one."
@@ -9837,11 +9868,11 @@ msgstr ""
 "DNS зоны обычно требуют SOA запись для правильного функционирования, и "
 "подписание DNSSEC может не работать без неё."
 
-#: templates/default/edit_zone_templ.html:313
+#: templates/default/edit_zone_templ.html:319
 msgid "Do you want to continue without adding an SOA record?"
 msgstr "Хотите ли вы продолжить без добавления SOA записи?"
 
-#: templates/default/edit_zone_templ.html:319
+#: templates/default/edit_zone_templ.html:325
 msgid "Continue Without SOA"
 msgstr "Продолжить без SOA"
 
@@ -10087,15 +10118,11 @@ msgstr "Отключить MFA"
 msgid "Continue to Dashboard"
 msgstr "Перейти к панели управления"
 
-#: templates/default/mfa_recovery_codes.html:92
-msgid "All recovery codes copied to clipboard"
-msgstr "Все коды восстановления скопированы в буфер обмена"
-
-#: templates/default/mfa_recovery_codes.html:101
+#: templates/default/mfa_recovery_codes.html:100
 msgid "Poweradmin MFA Recovery Codes"
 msgstr "Коды восстановления MFA Poweradmin"
 
-#: templates/default/mfa_recovery_codes.html:115
+#: templates/default/mfa_recovery_codes.html:114
 msgid ""
 "Store these codes in a safe place. Each code can be used once to log in if "
 "you lose access to your authenticator device."
@@ -10478,6 +10505,129 @@ msgstr "Этот шаблон в настоящее время использу�
 #: templates/default/delete_zone_templ.html:29
 msgid "zones"
 msgstr "зонами"
+
+#: templates/default/email_previews.html:10 templates/default/header.html:167
+#, auto-english-fallback
+msgid "Email Template Previews"
+msgstr "Предпросмотр шаблонов email"
+
+#: templates/default/email_previews.html:13
+msgid ""
+"Preview how email templates will appear to users in both light and dark "
+"modes. These previews use sample data to demonstrate the email formatting "
+"and styling."
+msgstr ""
+"Предпросмотр того, как шаблоны email будут отображаться пользователям в светлой и темной темах. Эти предпросмотры используют образцы данных для демонстрации форматирования и стилизации email."
+
+#: templates/default/email_previews.html:21
+#, auto-english-fallback
+msgid "Active Email Templates"
+msgstr "Активные шаблоны email"
+
+#: templates/default/email_previews.html:46
+#, auto-english-fallback
+msgid "Custom"
+msgstr "Пользовательские"
+
+#: templates/default/email_previews.html:22
+#, auto-english-fallback
+msgid "Standard"
+msgstr "Стандартные"
+
+#: templates/default/email_previews.html:29
+msgid ""
+"Custom templates are active and override the default templates. These are "
+"the templates currently used when sending emails."
+msgstr ""
+"Пользовательские шаблоны активны и переопределяют стандартные шаблоны. Это шаблоны, которые в настоящее время используются при отправке email."
+
+#: templates/default/email_previews.html:34
+msgid ""
+"Standard templates are active. These are the default templates used when "
+"sending emails."
+msgstr ""
+"Стандартные шаблоны активны. Это шаблоны по умолчанию, используемые при отправке email."
+
+#: templates/default/email_previews.html:54
+#, auto-english-fallback
+msgid "Subject:"
+msgstr "Тема:"
+
+#: templates/default/email_previews.html:60
+#, auto-english-fallback
+msgid "View Light Mode"
+msgstr "Просмотр светлой темы"
+
+#: templates/default/email_previews.html:64
+#, auto-english-fallback
+msgid "View Dark Mode"
+msgstr "Просмотр темной темы"
+
+#: templates/default/email_previews.html:76
+#, auto-english-fallback
+msgid "Template Override Information"
+msgstr "Информация о переопределении шаблонов"
+
+#: templates/default/email_previews.html:77
+msgid ""
+"The following standard templates are currently overridden by custom "
+"templates:"
+msgstr ""
+"Следующие стандартные шаблоны в настоящее время переопределены пользовательскими шаблонами:"
+
+#: templates/default/email_previews.html:80
+#, auto-english-fallback
+msgid "using custom template"
+msgstr "использует пользовательский шаблон"
+
+#: templates/default/email_previews.html:83
+msgid ""
+"To revert to standard templates, remove or rename the custom template files "
+"in <code>templates/emails/custom/</code>."
+msgstr ""
+"Для возврата к стандартным шаблонам удалите или переименуйте пользовательские файлы шаблонов в <code>templates/emails/custom/</code>."
+
+#: templates/default/email_previews.html:87
+#, auto-english-fallback
+msgid "Custom Templates"
+msgstr "Пользовательские шаблоны"
+
+#: templates/default/email_previews.html:88
+msgid ""
+"You can create custom email templates by placing them in <code>templates/"
+"emails/custom/</code> to override these standard templates with your own "
+"designs."
+msgstr ""
+"Вы можете создать пользовательские шаблоны email, поместив их в <code>templates/emails/custom/</code>, чтобы переопределить эти стандартные шаблоны своими собственными дизайнами."
+
+#: templates/default/email_previews.html:93
+#, auto-english-fallback
+msgid "About Email Previews"
+msgstr "О предпросмотре email"
+
+#: templates/default/email_previews.html:95
+#, auto-english-fallback
+msgid "Previews use sample data to demonstrate email appearance"
+msgstr ""
+"Предпросмотры используют образцы данных для демонстрации внешнего вида email"
+
+#: templates/default/email_previews.html:96
+#, auto-english-fallback
+msgid "Light mode is the default appearance for most email clients"
+msgstr ""
+"Светлая тема является внешним видом по умолчанию для большинства почтовых клиентов"
+
+#: templates/default/email_previews.html:97
+msgid ""
+"Dark mode preview shows how emails appear when users have dark mode enabled"
+msgstr ""
+"Предпросмотр темной темы показывает, как отображаются email, когда у пользователей включена темная тема"
+
+#: templates/default/email_previews.html:98
+#, auto-english-fallback
+msgid "These previews reflect the actual templates used in production"
+msgstr ""
+"Эти предпросмотры отражают фактические шаблоны, используемые в производстве"
 
 #: templates/default/pdns_status.html:5 templates/default/pdns_status.html:11
 msgid "PowerDNS Server Status"
@@ -10875,7 +11025,7 @@ msgid ""
 msgstr ""
 "После добавления нового пользователя продолжите эту процедуру установки."
 
-#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:96
+#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:97
 msgid "Note:"
 msgstr "Примечание:"
 
@@ -10887,7 +11037,7 @@ msgstr ""
 "Поскольку вы используете SQLite, нет необходимости создавать нового "
 "пользователя с ограниченными правами."
 
-#: install/templates/step5.html.twig:166 install/templates/step3.html.twig:38
+#: install/templates/step5.html.twig:167 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "Продолжить к шагу"
 
@@ -10972,106 +11122,111 @@ msgstr "Имя пользователя базы данных с правами 
 msgid "Password for this database user."
 msgstr "Пароль для этого пользователя базы данных."
 
-#: install/templates/step4.html.twig:63
+#: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
+#, auto-english-fallback
+msgid "Avoid quotes, backslashes, and line breaks."
+msgstr "Избегайте кавычек, обратных слешей и переносов строк."
+
+#: install/templates/step4.html.twig:64
 msgid "Hostname"
 msgstr "Имя хоста"
 
-#: install/templates/step4.html.twig:66
+#: install/templates/step4.html.twig:67
 msgid "Provide the hostname"
 msgstr "Укажите имя хоста"
 
-#: install/templates/step4.html.twig:69
+#: install/templates/step4.html.twig:70
 msgid "Database server hostname (usually \"localhost\")."
 msgstr "Имя хоста сервера базы данных (обычно \"localhost\")."
 
-#: install/templates/step4.html.twig:74
+#: install/templates/step4.html.twig:75
 msgid "DB Port"
 msgstr "Порт БД"
 
-#: install/templates/step4.html.twig:77
+#: install/templates/step4.html.twig:78
 msgid "Provide database port"
 msgstr "Укажите порт базы данных"
 
-#: install/templates/step4.html.twig:80
+#: install/templates/step4.html.twig:81
 msgid "Database server port."
 msgstr "Порт сервера базы данных."
 
-#: install/templates/step4.html.twig:85
+#: install/templates/step4.html.twig:86
 msgid "Database"
 msgstr "База данных"
 
-#: install/templates/step4.html.twig:88
+#: install/templates/step4.html.twig:89
 msgid "Provide the name of the database"
 msgstr "Укажите имя базы данных"
 
-#: install/templates/step4.html.twig:91
+#: install/templates/step4.html.twig:92
 msgid "Database name (will be used for Poweradmin tables)."
 msgstr "Имя базы данных (будет использовано для таблиц Poweradmin)."
 
-#: install/templates/step4.html.twig:93
+#: install/templates/step4.html.twig:94
 msgid "Full path to SQLite database file"
 msgstr "Полный путь к файлу базы данных SQLite"
 
-#: install/templates/step4.html.twig:96
+#: install/templates/step4.html.twig:97
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr ""
 "Файл должен существовать с доступом на чтение/запись для веб-сервера. "
 "Используйте абсолютный путь."
 
-#: install/templates/step4.html.twig:104
+#: install/templates/step4.html.twig:105
 msgid "DB charset"
 msgstr "Кодировка БД"
 
-#: install/templates/step4.html.twig:199 install/templates/step4.html.twig:207
+#: install/templates/step4.html.twig:200 install/templates/step4.html.twig:208
 msgid "Use default"
 msgstr "Использовать по умолчанию"
 
-#: install/templates/step4.html.twig:111
+#: install/templates/step4.html.twig:112
 msgid "Charset for new tables. Leave empty for database default."
 msgstr ""
 "Кодировка для новых таблиц. Оставьте пустым для значения по умолчанию базы "
 "данных."
 
-#: install/templates/step4.html.twig:116
+#: install/templates/step4.html.twig:117
 msgid "DB collation"
 msgstr "Сопоставление БД"
 
-#: install/templates/step4.html.twig:123
+#: install/templates/step4.html.twig:124
 msgid ""
 "Collation rules for character comparison. Leave empty for database default."
 msgstr ""
 "Правила сравнения символов. Оставьте пустым для значения по умолчанию базы "
 "данных."
 
-#: install/templates/step4.html.twig:132
+#: install/templates/step4.html.twig:133
 msgid "PowerDNS Database"
 msgstr "База данных PowerDNS"
 
-#: install/templates/step4.html.twig:136
+#: install/templates/step4.html.twig:137
 msgid "Database name"
 msgstr "Имя базы данных"
 
-#: install/templates/step4.html.twig:139
+#: install/templates/step4.html.twig:140
 msgid "Leave empty for same database"
 msgstr "Оставьте пустым для той же базы данных"
 
-#: install/templates/step4.html.twig:142
+#: install/templates/step4.html.twig:143
 msgid "MySQL database with PowerDNS tables (if different)."
 msgstr "База данных MySQL с таблицами PowerDNS (если отличается)."
 
-#: install/templates/step4.html.twig:150
+#: install/templates/step4.html.twig:151
 msgid "Poweradmin Account"
 msgstr "Учетная запись Poweradmin"
 
-#: install/templates/step4.html.twig:154
+#: install/templates/step4.html.twig:155
 msgid "Administrator password"
 msgstr "Пароль администратора"
 
-#: install/templates/step4.html.twig:159
+#: install/templates/step4.html.twig:160
 msgid "Provide a password"
 msgstr "Укажите пароль"
 
-#: install/templates/step4.html.twig:164
+#: install/templates/step4.html.twig:165
 msgid "Password for \"admin\" username."
 msgstr "Пароль для имени пользователя \"admin\"."
 
@@ -11167,63 +11322,63 @@ msgstr "Укажите пароль пользователя"
 msgid "The password for this username."
 msgstr "Пароль для этого имени пользователя."
 
-#: install/templates/step5.html.twig:85
+#: install/templates/step5.html.twig:86
 msgid "DNS Settings"
 msgstr "Настройки DNS"
 
-#: install/templates/step5.html.twig:89
+#: install/templates/step5.html.twig:90
 msgid "Hostmaster"
 msgstr "Администратор хоста"
 
-#: install/templates/step5.html.twig:93
+#: install/templates/step5.html.twig:94
 msgid "Provide the DNS hostmaster"
 msgstr "Укажите администратора хоста DNS"
 
-#: install/templates/step5.html.twig:96
+#: install/templates/step5.html.twig:97
 msgid "Default hostmaster for SOA records."
 msgstr "Hostmaster по умолчанию для записей SOA."
 
-#: install/templates/step5.html.twig:101
+#: install/templates/step5.html.twig:102
 msgid "Primary nameserver"
 msgstr "Основной сервер имен"
 
-#: install/templates/step5.html.twig:105
+#: install/templates/step5.html.twig:106
 msgid "Provide the primary nameserver"
 msgstr "Укажите основной сервер имен"
 
-#: install/templates/step5.html.twig:108
+#: install/templates/step5.html.twig:109
 msgid "Primary nameserver for new zones."
 msgstr "Основной сервер имен для новых зон."
 
-#: install/templates/step5.html.twig:113
+#: install/templates/step5.html.twig:114
 msgid "Secondary nameserver"
 msgstr "Вторичный сервер имен"
 
-#: install/templates/step5.html.twig:117
+#: install/templates/step5.html.twig:118
 msgid "Provide the secondary nameserver"
 msgstr "Укажите вторичный сервер имен"
 
-#: install/templates/step5.html.twig:120
+#: install/templates/step5.html.twig:121
 msgid "Secondary nameserver for new zones."
 msgstr "Вторичный сервер имен для новых зон."
 
-#: install/templates/step5.html.twig:126
+#: install/templates/step5.html.twig:127
 msgid "Tertiary Nameserver"
 msgstr "Третичный сервер имен"
 
-#: install/templates/step5.html.twig:126 install/templates/step5.html.twig:139
+#: install/templates/step5.html.twig:127 install/templates/step5.html.twig:140
 msgid "optional"
 msgstr "необязательно"
 
-#: install/templates/step5.html.twig:133
+#: install/templates/step5.html.twig:134
 msgid "Optional tertiary nameserver for new zones."
 msgstr "Дополнительный третичный сервер имен для новых зон."
 
-#: install/templates/step5.html.twig:139
+#: install/templates/step5.html.twig:140
 msgid "Quaternary Nameserver"
 msgstr "Четвертичный сервер имен"
 
-#: install/templates/step5.html.twig:146
+#: install/templates/step5.html.twig:147
 msgid "Optional quaternary nameserver for new zones."
 msgstr "Дополнительный четвертичный сервер имен для новых зон."
 
@@ -11448,5 +11603,29 @@ msgstr ""
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Невозможно подключиться к базе данных PowerDNS \"%s\": %s"
+
+# OBSOLETE: msgid "You do not have the permission to view this record."
+# OBSOLETE: msgstr "У вас нет разрешения для просмотра этой записи."
+
+# OBSOLETE: msgid "Your verification code"
+# OBSOLETE: msgstr "Ваш код подтверждения"
+
+#, auto-english-fallback
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "Your verification code is: %s\n"
+# OBSOLETE: "\n"
+# OBSOLETE: "This code will expire in 10 minutes at %s."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Ваш код подтверждения: %s\n"
+# OBSOLETE: "\n"
+# OBSOLETE: "Этот код истечет через 10 минут в %s."
+
+# OBSOLETE: msgid "Optional: User's full name for identification"
+# OBSOLETE: msgstr "Опционально: Полное имя пользователя для идентификации"
+
+# OBSOLETE: msgid "All recovery codes copied to clipboard"
+# OBSOLETE: msgstr "Все коды восстановления скопированы в буфер обмена"
+
 
 

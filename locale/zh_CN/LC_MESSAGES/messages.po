@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-21 12:12+0300\n"
+"POT-Creation-Date: 2025-07-06 07:29+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -21,24 +21,24 @@ msgstr ""
 msgid "No configuration file found. Please use the <a href=\"install/\">installer</a> to create one, or create a config/settings.php file manually."
 msgstr "找不到配置文件。请使用<a href=\"install/\">安装程序</a>创建一个，或者手动创建 config/settings.php 文件。"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:134
+#: lib/Infrastructure/Service/SessionAuthenticator.php:136
 msgid "Invalid CSRF token."
 msgstr "无效的 CSRF 令牌。"
 
-#: lib/BaseController.php:499
+#: lib/BaseController.php:471
 msgid "The <a href=\"install/\">install/</a> directory exists, you must remove it first before proceeding."
 msgstr "<a href=\"install/\">install/</a> 目录存在，在继续之前必须先删除它。"
 
-#: lib/BaseController.php:525
+#: lib/BaseController.php:497
 msgid "Default session encryption key is used, please set it in your configuration file."
 msgstr "正在使用默认会话加密密钥，请在配置文件中设置。"
 
-#: lib/BaseController.php:626
+#: lib/BaseController.php:599
 #, php-format
 msgid "The %s field is required."
 msgstr "%s 字段是必需的。"
 
-#: lib/BaseController.php:634
+#: lib/BaseController.php:607
 #, php-format
 msgid "The %s field must be a number."
 msgstr "%s 字段必须是数字。"
@@ -63,20 +63,20 @@ msgstr "显示全部"
 msgid "No records selected for deletion."
 msgstr "没有选择要删除的记录。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:176
+#: lib/Application/Controller/DeleteRecordsController.php:180
 msgid "The record has been deleted successfully. Any corresponding PTR records were also removed."
 msgstr "记录已成功删除。相应的 PTR 记录也已删除。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:178
+#: lib/Application/Controller/DeleteRecordsController.php:182
 #, php-format
 msgid "%d records have been deleted successfully. Any corresponding PTR records were also removed."
 msgstr "已成功删除 %d 条记录。相应的 PTR 记录也已删除。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:181
+#: lib/Application/Controller/DeleteRecordsController.php:185
 msgid "No records could be deleted. Please check permissions."
 msgstr "无法删除记录。请检查权限。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:226
+#: lib/Application/Controller/DeleteRecordsController.php:234
 msgid "No valid records selected for deletion or you lack permission to delete them."
 msgstr "没有选择有效的删除记录或您没有删除权限。"
 
@@ -84,7 +84,7 @@ msgstr "没有选择有效的删除记录或您没有删除权限。"
 msgid "Invalid or unexpected input given."
 msgstr "给定的输入无效或异常。"
 
-#: lib/Domain/Model/UserManager.php:230
+#: lib/Domain/Model/UserManager.php:229
 msgid "You do not have the permission to delete this user."
 msgstr "您没有删除此用户的权限。"
 
@@ -104,7 +104,7 @@ msgstr "区域注释功能在配置中已禁用。"
 msgid "You do not have the permission to view this comment."
 msgstr "您没有查看此注释的权限。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:377
+#: lib/Domain/Service/Dns/RecordManager.php:379
 msgid "You do not have the permission to edit this comment."
 msgstr "您没有编辑此注释的权限。"
 
@@ -112,27 +112,31 @@ msgstr "您没有编辑此注释的权限。"
 msgid "The comment has been updated successfully."
 msgstr "注释已成功更新。"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:61
-msgid "There is no zone with this ID."
-msgstr "不存在此 ID 的区域。"
+#: lib/Application/Controller/EditRecordController.php:81
+msgid "Invalid record ID."
+msgstr "无效的记录 ID。"
 
-#: lib/Application/Controller/DeleteRecordController.php:168
+#: lib/Application/Controller/DeleteRecordController.php:103
+msgid "You do not have permission to delete records in this zone."
+msgstr "您没有权限删除此区域中的记录。"
+
+#: lib/Application/Controller/DeleteRecordController.php:189
 msgid "The record and its corresponding PTR and A/AAAA records have been deleted successfully."
 msgstr "记录及其对应的PTR和A/AAAA记录已成功删除。"
 
-#: lib/Application/Controller/DeleteRecordController.php:170
+#: lib/Application/Controller/DeleteRecordController.php:191
 msgid "The record and its corresponding PTR record have been deleted successfully."
 msgstr "记录及其对应的 PTR 记录已成功删除。"
 
-#: lib/Application/Controller/DeleteRecordController.php:172
+#: lib/Application/Controller/DeleteRecordController.php:193
 msgid "The record and its corresponding A/AAAA record have been deleted successfully."
 msgstr "记录及其对应的A/AAAA记录已成功删除。"
 
-#: lib/Application/Controller/DeleteRecordController.php:174
+#: lib/Application/Controller/DeleteRecordController.php:195
 msgid "The record has been deleted successfully. No matching PTR record was found."
 msgstr "记录已成功删除。未找到匹配的 PTR 记录。"
 
-#: lib/Application/Controller/DeleteRecordController.php:176
+#: lib/Application/Controller/DeleteRecordController.php:197
 msgid "The record has been deleted successfully. No matching A/AAAA record was found."
 msgstr "记录已成功删除。未找到匹配的A/AAAA记录。"
 
@@ -140,23 +144,23 @@ msgstr "记录已成功删除。未找到匹配的A/AAAA记录。"
 msgid "The record has been deleted successfully."
 msgstr "记录已成功删除。"
 
-#: lib/Application/Controller/DeleteRecordController.php:182
+#: lib/Application/Controller/DeleteRecordController.php:203
 msgid "The record and its corresponding PTR and A/AAAA records were deleted but the comment was preserved because similar records exist."
 msgstr "记录及其对应的PTR和A/AAAA记录已删除，但因存在相似记录，注释得以保留。"
 
-#: lib/Application/Controller/DeleteRecordController.php:184
+#: lib/Application/Controller/DeleteRecordController.php:205
 msgid "The record and its corresponding PTR record were deleted but the comment was preserved because similar records exist."
 msgstr "记录及其对应的 PTR 记录已删除，但由于存在类似记录，注释被保留。"
 
-#: lib/Application/Controller/DeleteRecordController.php:186
+#: lib/Application/Controller/DeleteRecordController.php:207
 msgid "The record and its corresponding A/AAAA record were deleted but the comment was preserved because similar records exist."
 msgstr "记录及其对应的A/AAAA记录已删除，但因存在相似记录，注释得以保留。"
 
-#: lib/Application/Controller/DeleteRecordController.php:188
+#: lib/Application/Controller/DeleteRecordController.php:209
 msgid "The record was deleted but the comment was preserved because similar records exist."
 msgstr "记录已删除，但由于存在类似记录，注释被保留。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:230
+#: lib/Domain/Service/Dns/RecordManager.php:232
 msgid "You do not have the permission to edit this record."
 msgstr "您没有编辑此记录的权限。"
 
@@ -224,81 +228,81 @@ msgstr "恢复代码已重新生成。请将它们保存在安全的地方。"
 msgid "You do not have the permission to view supermasters."
 msgstr "您没有查看超级主机的权限。"
 
-#: lib/Application/Controller/ApiKeysController.php:71
+#: lib/Application/Controller/ApiKeysController.php:68
 msgid "The API feature is disabled in the system configuration."
 msgstr "API 功能在系统配置中已禁用。"
 
-#: lib/Application/Controller/ApiKeysController.php:77
+#: lib/Application/Controller/ApiKeysController.php:74
 msgid "You do not have permission to manage API keys. Only administrators can access this feature."
 msgstr "您没有管理 API 密钥的权限。只有管理员可以访问此功能。"
 
-#: lib/Application/Controller/ApiKeysController.php:199
+#: lib/Application/Controller/ApiKeysController.php:196
 msgid "API key name is required."
 msgstr "API 密钥名称是必需的。"
 
-#: lib/Application/Controller/ApiKeysController.php:209
+#: lib/Application/Controller/ApiKeysController.php:206
 msgid "Invalid expiration date format."
 msgstr "过期日期格式无效。"
 
-#: lib/Domain/Service/ApiKeyService.php:275
+#: lib/Domain/Service/ApiKeyService.php:279
 msgid "API key not found or you do not have permission to edit it."
 msgstr "找不到 API 密钥或您没有编辑权限。"
 
-#: lib/Application/Controller/ApiKeysController.php:218
+#: lib/Application/Controller/ApiKeysController.php:215
 msgid "API key updated successfully."
 msgstr "API 密钥更新成功。"
 
-#: lib/Application/Controller/ApiKeysController.php:247
+#: lib/Application/Controller/ApiKeysController.php:244
 msgid "API key deleted successfully."
 msgstr "API 密钥删除成功。"
 
-#: lib/Domain/Service/ApiKeyService.php:223
+#: lib/Domain/Service/ApiKeyService.php:227
 msgid "API key not found or you do not have permission to delete it."
 msgstr "找不到 API 密钥或您没有删除权限。"
 
-#: lib/Application/Controller/ApiKeysController.php:319
+#: lib/Application/Controller/ApiKeysController.php:316
 msgid "disabled"
 msgstr "已禁用"
 
-#: lib/Application/Controller/ApiKeysController.php:319
+#: lib/Application/Controller/ApiKeysController.php:316
 msgid "enabled"
 msgstr "已启用"
 
-#: lib/Application/Controller/ApiKeysController.php:320
+#: lib/Application/Controller/ApiKeysController.php:317
 #, php-format
 msgid "API key %s successfully."
 msgstr "API 密钥 %s 成功。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:97
+#: lib/Application/Controller/BatchPtrRecordController.php:98
 msgid "You do not have the permission to add records to this zone."
 msgstr "您没有向此区域添加记录的权限。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:104
+#: lib/Application/Controller/BulkRecordAddController.php:105
 msgid "Please provide at least one record."
 msgstr "请提供至少一条记录。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:132
+#: lib/Application/Controller/BulkRecordAddController.php:133
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "格式无效。至少需要：名称,类型,内容"
 
-#: lib/Application/Controller/BulkRecordAddController.php:180
+#: lib/Application/Controller/BulkRecordAddController.php:181
 msgid "Invalid record type."
 msgstr "记录类型无效。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:226
+#: lib/Application/Controller/BulkRecordAddController.php:227
 msgid "Record could not be added."
 msgstr "无法添加记录。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:234
+#: lib/Application/Controller/BulkRecordAddController.php:235
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "已成功添加 %d 条记录。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:237
+#: lib/Application/Controller/BulkRecordAddController.php:238
 msgid "Some record(s) could not be added."
 msgstr "某些记录无法添加。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:270
+#: lib/Application/Controller/BulkRecordAddController.php:271
 msgid "Zone ID is required."
 msgstr "区域 ID 是必需的。"
 
@@ -310,11 +314,11 @@ msgstr "您没有编辑权限模板的权限。"
 msgid "The permission template has been updated successfully."
 msgstr "权限模板已成功更新。"
 
-#: lib/Application/Controller/SearchController.php:45
+#: lib/Application/Controller/SearchController.php:44
 msgid "You do not have the permission to perform searches."
 msgstr "您没有执行搜索的权限。"
 
-#: lib/Domain/Model/UserManager.php:740
+#: lib/Domain/Model/UserManager.php:739
 msgid "You do not have the permission to add a new user."
 msgstr "您没有添加新用户的权限。"
 
@@ -343,7 +347,7 @@ msgstr "已生成密码，但出于安全原因不显示。"
 msgid "Please fill in all required fields correctly."
 msgstr "请正确填写所有必填字段。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:323
+#: lib/Domain/Service/Dns/RecordManager.php:325
 msgid "You do not have the permission to delete this record."
 msgstr "您没有删除此记录的权限。"
 
@@ -379,73 +383,77 @@ msgstr "区域模板已成功更新。"
 msgid "Zones have been updated successfully."
 msgstr "区域已成功更新。"
 
-#: lib/Application/Controller/EditZoneTemplController.php:232
+#: lib/Application/Controller/EditZoneTemplController.php:233
 msgid "You do not have permission to create new zone templates."
 msgstr "您没有创建新区域模板的权限。"
 
-#: lib/Domain/Model/ZoneTemplate.php:176 lib/Domain/Model/ZoneTemplate.php:800
+#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:802
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "此名称的区域模板已存在，请选择另一个名称。"
 
-#: lib/Application/Controller/EditZoneTemplController.php:263
+#: lib/Application/Controller/EditZoneTemplController.php:264
 msgid "Please enter a different name when using Save As."
 msgstr "使用另存为时请输入不同的名称。"
 
-#: lib/Application/Controller/EditZoneTemplController.php:287
+#: lib/Application/Controller/EditZoneTemplController.php:288
 msgid "Zone template has been copied successfully."
 msgstr "区域模板已成功复制。"
 
-#: lib/Application/Controller/ListTemplateZonesController.php:40
+#: lib/Application/Controller/ListTemplateZonesController.php:39
 msgid "You do not have permission to view zone templates."
 msgstr "您没有查看区域模板的权限。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:54
+#: lib/Application/Controller/UnlinkZonesTemplController.php:52
 msgid "Invalid template ID."
 msgstr "模板 ID 无效。"
 
-#: lib/Application/Controller/ListTemplateZonesController.php:49
+#: lib/Application/Controller/ListTemplateZonesController.php:48
 msgid "Template does not exist."
 msgstr "模板不存在。"
 
-#: lib/Domain/Repository/DomainRepository.php:439
+#: lib/Domain/Repository/DomainRepository.php:441
 msgid "You do not have the permission to view this zone."
 msgstr "您没有查看此区域的权限。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:40
+#: lib/Application/Controller/DnssecAddKeyController.php:61
+msgid "There is no zone with this ID."
+msgstr "不存在此 ID 的区域。"
+
+#: lib/Application/Controller/UnlinkZonesTemplController.php:38
 msgid "You do not have permission to unlink zones from templates."
 msgstr "您没有从模板取消链接区域的权限。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:49
+#: lib/Application/Controller/UnlinkZonesTemplController.php:47
 msgid "No zones selected."
 msgstr "未选择区域。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:64
+#: lib/Application/Controller/UnlinkZonesTemplController.php:62
 msgid "Invalid request method."
 msgstr "请求方法无效。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:98
+#: lib/Application/Controller/UnlinkZonesTemplController.php:96
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
 msgstr[0] "%d 个区域已成功从模板中取消链接。"
 msgstr[1] "%d 个区域已成功从模板中取消链接。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:108
+#: lib/Application/Controller/UnlinkZonesTemplController.php:106
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
 msgstr[0] "%d 个区域无法取消链接。"
 msgstr[1] "%d 个区域无法取消链接。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:118
+#: lib/Application/Controller/UnlinkZonesTemplController.php:116
 msgid "Failed to unlink zones from template."
 msgstr "从模板取消链接区域失败。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:130
+#: lib/Application/Controller/UnlinkZonesTemplController.php:128
 msgid "No valid zones selected."
 msgstr "未选择有效的区域。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:138
+#: lib/Application/Controller/UnlinkZonesTemplController.php:136
 msgid "Template not found."
 msgstr "找不到模板。"
 
@@ -453,56 +461,60 @@ msgstr "找不到模板。"
 msgid "User agreement accepted successfully."
 msgstr "用户协议已成功接受。"
 
-#: lib/Application/Controller/WhoisController.php:61
+#: lib/Application/Controller/WhoisController.php:60
 msgid "WHOIS lookup functionality is disabled."
 msgstr "WHOIS 查询功能已禁用。"
 
-#: lib/Application/Controller/WhoisController.php:66
+#: lib/Application/Controller/WhoisController.php:65
 msgid "You do not have permission to perform WHOIS lookups."
 msgstr "您没有执行 WHOIS 查询的权限。"
 
-#: lib/Application/Controller/WhoisController.php:137
+#: lib/Application/Controller/WhoisController.php:136
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "使用服务器 %s 检索 WHOIS 信息失败"
 
-#: lib/Application/Controller/EditController.php:282
+#: lib/Application/Controller/EditController.php:176
+msgid "You do not have permission to access this zone."
+msgstr "您没有权限访问此区域。"
+
+#: lib/Application/Controller/EditController.php:292
 msgid "DNSSEC is not enabled on the server."
 msgstr "服务器上未启用 DNSSEC。"
 
-#: lib/Application/Controller/EditController.php:285
+#: lib/Application/Controller/EditController.php:295
 msgid "Zone is already signed with DNSSEC."
 msgstr "区域已使用 DNSSEC 签名。"
 
-#: lib/Application/Controller/EditController.php:297
+#: lib/Application/Controller/EditController.php:307
 msgid "Zone has been signed successfully."
 msgstr "区域已成功签名。"
 
-#: lib/Application/Controller/EditController.php:301
+#: lib/Application/Controller/EditController.php:311
 msgid "Zone signing requested successfully, but verification failed. Check DNSSEC keys."
 msgstr "区域签名请求成功，但验证失败。请检查 DNSSEC 密钥。"
 
-#: lib/Application/Controller/EditController.php:305
+#: lib/Application/Controller/EditController.php:315
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr "签名区域失败。请查看 PowerDNS 日志了解详情。"
 
-#: lib/Application/Controller/DnssecController.php:79
+#: lib/Application/Controller/DnssecController.php:92
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "区域当前未使用 DNSSEC 签名。"
 
-#: lib/Application/Controller/DnssecController.php:89
+#: lib/Application/Controller/DnssecController.php:102
 msgid "Zone has been unsigned successfully."
 msgstr "区域已成功取消签名。"
 
-#: lib/Application/Controller/DnssecController.php:94
+#: lib/Application/Controller/DnssecController.php:107
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "区域取消签名请求成功，但验证失败。"
 
-#: lib/Application/Controller/DnssecController.php:98
+#: lib/Application/Controller/DnssecController.php:111
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "取消区域签名失败。请查看 PowerDNS 日志了解详情。"
 
-#: lib/Application/Controller/EditController.php:627
+#: lib/Application/Controller/EditController.php:637
 msgid "Template name can't be an empty string."
 msgstr "模板名称不能为空字符串。"
 
@@ -510,59 +522,59 @@ msgstr "模板名称不能为空字符串。"
 msgid "Zone template has been added successfully."
 msgstr "区域模板已成功添加。"
 
-#: lib/Application/Controller/EditController.php:647
+#: lib/Application/Controller/EditController.php:657
 msgid "You need to be logged in to export zone data."
 msgstr "您需要登录才能导出区域数据。"
 
-#: lib/Application/Controller/EditController.php:657
+#: lib/Application/Controller/EditController.php:667
 msgid "You do not have permission to export this zone."
 msgstr "您没有导出此区域的权限。"
 
-#: lib/Application/Controller/EditController.php:681
+#: lib/Application/Controller/EditController.php:691
 msgid "This zone does not have any records to export."
 msgstr "此区域没有要导出的记录。"
 
-#: lib/Application/Controller/EditController.php:781
+#: lib/Application/Controller/EditController.php:791
 msgid "Request has expired, please try again."
 msgstr "请求已过期，请重试。"
 
-#: lib/Application/Controller/EditController.php:786
+#: lib/Application/Controller/EditController.php:796
 msgid "Zone has been updated successfully."
 msgstr "区域已成功更新。"
 
-#: lib/Application/Controller/EditController.php:788
+#: lib/Application/Controller/EditController.php:798
 msgid "Zone did not have any record changes."
 msgstr "区域没有任何记录更改。"
 
-#: lib/Application/Controller/EditController.php:797
+#: lib/Application/Controller/EditController.php:807
 msgid "Zone has not been updated successfully."
 msgstr "区域更新失败。"
 
-#: lib/Application/Controller/EditController.php:825
+#: lib/Application/Controller/EditController.php:835
 msgid "Please provide all required fields."
 msgstr "请提供所有必填字段。"
 
-#: lib/Application/Controller/AddRecordController.php:167
+#: lib/Application/Controller/AddRecordController.php:168
 msgid "This record was not valid and could not be added. It may already exist or contain invalid data."
 msgstr "此记录无效，无法添加。它可能已存在或包含无效数据。"
 
-#: lib/Application/Controller/AddRecordController.php:222
+#: lib/Application/Controller/AddRecordController.php:223
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "记录添加成功。还创建了匹配的 PTR 记录。"
 
-#: lib/Application/Controller/AddRecordController.php:226
+#: lib/Application/Controller/AddRecordController.php:227
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "记录添加成功，但 PTR 记录创建失败："
 
-#: lib/Application/Controller/AddRecordController.php:230
+#: lib/Application/Controller/AddRecordController.php:231
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "记录添加成功，但 PTR 记录创建失败。"
 
-#: lib/Application/Controller/AddRecordController.php:234
+#: lib/Application/Controller/AddRecordController.php:235
 msgid "Record successfully added. A matching A record was also created."
 msgstr "记录添加成功。还创建了匹配的 A 记录。"
 
-#: lib/Application/Controller/AddRecordController.php:237
+#: lib/Application/Controller/AddRecordController.php:238
 msgid "The record was successfully added."
 msgstr "记录已成功添加。"
 
@@ -594,29 +606,29 @@ msgstr "请改用恢复代码。"
 msgid "Could not send verification code to your email. Please use a recovery code instead."
 msgstr "无法向您的电子邮件发送验证码。请改用恢复代码。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:111
+#: lib/Domain/Service/Dns/RecordManager.php:113
 msgid "You do not have the permission to add a record to this zone."
 msgstr "您没有向此区域添加记录的权限。"
 
-#: lib/Application/Controller/AddRecordController.php:386
+#: lib/Application/Controller/AddRecordController.php:387
 msgid "No records were provided."
 msgstr "未提供记录。"
 
-#: lib/Application/Controller/AddRecordController.php:424
+#: lib/Application/Controller/AddRecordController.php:425
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "已成功添加 %d 条记录。"
 
-#: lib/Application/Controller/AddRecordController.php:426
+#: lib/Application/Controller/AddRecordController.php:427
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d 条记录添加失败。"
 
-#: lib/Application/Controller/AddRecordController.php:431
+#: lib/Application/Controller/AddRecordController.php:432
 msgid "Some records could not be added. They may already exist or contain invalid data."
 msgstr "某些记录无法添加。它们可能已存在或包含无效数据。"
 
-#: lib/Application/Controller/AddRecordController.php:453
+#: lib/Application/Controller/AddRecordController.php:454
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "添加任何记录都失败了。它们可能包含无效数据。"
 
@@ -632,7 +644,7 @@ msgstr "区域已成功删除。"
 msgid "Zones have been deleted successfully."
 msgstr "区域已成功删除。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:481
+#: lib/Domain/Service/Dns/DomainManager.php:506
 msgid "You do not have the permission to delete a zone."
 msgstr "您没有删除区域的权限。"
 
@@ -652,31 +664,31 @@ msgstr "检测到旧的迁移表。请在继续之前删除 `migrations` 表。"
 msgid "Database access check failed. Please ensure the current database user has the necessary permissions to create and alter tables."
 msgstr "数据库访问检查失败。请确保当前数据库用户具有创建和修改表的必要权限。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:213
+#: lib/Domain/Service/Dns/DomainManager.php:216
 msgid "You do not have the permission to add a master zone."
 msgstr "您没有添加主区域的权限。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:104
+#: lib/Application/Controller/BulkRegistrationController.php:103
 msgid "There is already a zone with this name."
 msgstr "已存在同名区域。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:132
+#: lib/Application/Controller/AddZoneMasterController.php:131
 msgid "Zone was created, but securing it with DNSSEC failed."
 msgstr "区域已创建，但使用 DNSSEC 保护失败。"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:128
+#: lib/Application/Controller/AddZoneSlaveController.php:127
 msgid "Zone has been added successfully."
 msgstr "区域已成功添加。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:68
+#: lib/Application/Controller/BatchPtrRecordController.php:69
 msgid "Batch PTR record creation is not enabled."
 msgstr "批量 PTR 记录创建未启用。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:75
+#: lib/Application/Controller/BatchPtrRecordController.php:76
 msgid "You do not have permission to edit DNS records."
 msgstr "您没有编辑 DNS 记录的权限。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:91
+#: lib/Application/Controller/BatchPtrRecordController.php:92
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "反向区域不支持批量 PTR 记录创建。"
 
@@ -684,7 +696,7 @@ msgstr "反向区域不支持批量 PTR 记录创建。"
 msgid "You do not have the permission to view zone templates."
 msgstr "您没有查看区域模板的权限。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:82
+#: lib/Application/Controller/DnssecDeleteKeyController.php:83
 msgid "Failed to delete DNSSEC key."
 msgstr "删除 DNSSEC 密钥失败。"
 
@@ -704,23 +716,23 @@ msgstr "区域密钥已成功激活。"
 msgid "Failed to activate zone key."
 msgstr "激活区域密钥失败。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:93
+#: lib/Application/Controller/DnssecDeleteKeyController.php:94
 msgid "Zone key has been deleted successfully."
 msgstr "区域密钥已成功删除。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:96
+#: lib/Application/Controller/DnssecDeleteKeyController.php:97
 msgid "Failed to delete the zone key."
 msgstr "删除区域密钥失败。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:103
+#: lib/Application/Controller/DnssecDeleteKeyController.php:104
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "删除 DNSSEC 密钥时发生错误："
 
-#: lib/Application/Controller/ListForwardZonesController.php:57
+#: lib/Application/Controller/ListForwardZonesController.php:56
 msgid "You do not have sufficient permissions to view this page."
 msgstr "您没有足够的权限查看此页面。"
 
-#: lib/Application/Controller/ListForwardZonesController.php:112
+#: lib/Application/Controller/ListForwardZonesController.php:111
 msgid "You do not have the permission to see any zones."
 msgstr "您没有查看任何区域的权限。"
 
@@ -732,72 +744,72 @@ msgstr "您没有添加权限模板的权限。"
 msgid "The permission template has been added successfully."
 msgstr "权限模板已成功添加。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:33
+#: lib/Application/Controller/DatabaseConsistencyController.php:34
 msgid "Not available for anonymous users."
 msgstr "匿名用户不可用。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:37
+#: lib/Application/Controller/DatabaseConsistencyController.php:38
 msgid "You do not have the permission to view this page."
 msgstr "您没有查看此页面的权限。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:41
+#: lib/Application/Controller/DatabaseConsistencyController.php:42
 msgid "Database consistency checks are disabled."
 msgstr "数据库一致性检查已禁用。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:77
+#: lib/Application/Controller/DatabaseConsistencyController.php:78
 #: templates/default/database_consistency.html:29
 msgid "Database Consistency Check"
 msgstr "数据库一致性检查"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:96
+#: lib/Application/Controller/DatabaseConsistencyController.php:97
 msgid "Zone owner assigned successfully"
 msgstr "区域所有者分配成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:96
+#: lib/Application/Controller/DatabaseConsistencyController.php:97
 msgid "Failed to assign zone owner"
 msgstr "分配区域所有者失败"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:103
+#: lib/Application/Controller/DatabaseConsistencyController.php:104
 msgid "Slave zone deleted successfully"
 msgstr "从区域删除成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:103
+#: lib/Application/Controller/DatabaseConsistencyController.php:104
 msgid "Failed to delete slave zone"
 msgstr "删除从区域失败"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:110
+#: lib/Application/Controller/DatabaseConsistencyController.php:111
 msgid "Orphaned record deleted successfully"
 msgstr "孤立记录删除成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:110
+#: lib/Application/Controller/DatabaseConsistencyController.php:111
 msgid "Failed to delete orphaned record"
 msgstr "删除孤立记录失败"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:117
+#: lib/Application/Controller/DatabaseConsistencyController.php:118
 msgid "Duplicate SOA records fixed successfully"
 msgstr "重复 SOA 记录修复成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:117
+#: lib/Application/Controller/DatabaseConsistencyController.php:118
 msgid "Failed to fix duplicate SOA records"
 msgstr "修复重复 SOA 记录失败"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:124
+#: lib/Application/Controller/DatabaseConsistencyController.php:125
 msgid "Default SOA record created successfully"
 msgstr "默认 SOA 记录创建成功"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:124
+#: lib/Application/Controller/DatabaseConsistencyController.php:125
 msgid "Failed to create default SOA record"
 msgstr "创建默认 SOA 记录失败"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Invalid check type"
 msgstr "检查类型无效"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:119
+#: lib/Infrastructure/Service/SessionAuthenticator.php:121
 msgid "You have logged out."
 msgstr "您已退出登录。"
 
-#: lib/Domain/Model/ZoneTemplate.php:173 lib/Domain/Model/ZoneTemplate.php:615
+#: lib/Domain/Model/ZoneTemplate.php:178 lib/Domain/Model/ZoneTemplate.php:619
 msgid "You do not have the permission to add a zone template."
 msgstr "您没有添加区域模板的权限。"
 
@@ -814,19 +826,19 @@ msgstr "您没有执行 RDAP 查询的权限。"
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "使用服务器 %s 检索 RDAP 信息失败"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:59
+#: lib/Application/Controller/AddZoneSlaveController.php:58
 msgid "You do not have the permission to add a slave zone."
 msgstr "您没有添加从区域的权限。"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:259
+#: lib/Domain/Service/Dns/SupermasterManager.php:263
 msgid "Invalid hostname."
 msgstr "主机名无效。"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:253
+#: lib/Domain/Service/Dns/SupermasterManager.php:257
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "这不是有效的 IPv4 或 IPv6 地址。"
 
-#: lib/Domain/Model/ZoneTemplate.php:273 lib/Domain/Model/ZoneTemplate.php:311
+#: lib/Domain/Model/ZoneTemplate.php:278 lib/Domain/Model/ZoneTemplate.php:316
 msgid "You do not have the permission to delete zone templates."
 msgstr "您没有删除区域模板的权限。"
 
@@ -838,7 +850,7 @@ msgstr "区域模板已成功删除。"
 msgid "You do not have the permission to edit a supermaster."
 msgstr "您没有编辑超级主机的权限。"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:271
+#: lib/Domain/Service/Dns/SupermasterManager.php:275
 msgid "The supermaster you are trying to edit does not exist."
 msgstr "您尝试编辑的超级主机不存在。"
 
@@ -870,7 +882,7 @@ msgstr "用户已成功更新。"
 msgid "The user could not be updated."
 msgstr "用户无法更新。"
 
-#: lib/Domain/Model/UserManager.php:395 lib/Domain/Model/UserManager.php:720
+#: lib/Domain/Model/UserManager.php:394 lib/Domain/Model/UserManager.php:719
 msgid "You do not have the permission to edit this user."
 msgstr "您没有编辑此用户的权限。"
 
@@ -894,29 +906,41 @@ msgstr "您没有查看 PowerDNS 服务器状态的权限。只有管理员可�
 msgid "The PowerDNS API feature is not configured. Please set the API URL and key in the system configuration."
 msgstr "PowerDNS API 功能未配置。请在系统配置中设置 API URL 和密钥。"
 
-#: lib/Application/Controller/ExampleController.php:113
+#: lib/Application/Controller/ExampleController.php:114
 msgid "You do not have the permission to access this feature."
 msgstr "您无权访问此功能。"
 
-#: lib/Application/Controller/ExampleController.php:187
+#: lib/Application/Controller/ExampleController.php:188
 msgid "Operation completed successfully."
 msgstr "操作已成功完成。"
 
-#: lib/Application/Controller/ExampleController.php:191
+#: lib/Application/Controller/ExampleController.php:192
 msgid "Failed to process the request. Please try again."
 msgstr "请求处理失败。请重试。"
 
-#: lib/Application/Controller/ExampleController.php:198
+#: lib/Application/Controller/ExampleController.php:199
 msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "发生意外错误。请联系管理员。"
 
-#: lib/Application/Controller/EditRecordController.php:82
-msgid "You do not have the permission to view this record."
-msgstr "您没有查看此记录的权限。"
+#: lib/Application/Controller/EditRecordController.php:92
+msgid "You do not have permission to view this record."
+msgstr "您没有权限查看此记录。"
 
-#: lib/Application/Controller/EditRecordController.php:215
+#: lib/Application/Controller/EditRecordController.php:101
+msgid "You do not have permission to edit this record."
+msgstr "您没有权限编辑此记录。"
+
+#: lib/Application/Controller/EditRecordController.php:231
 msgid "The record has been updated successfully."
 msgstr "记录已成功更新。"
+
+#: lib/Application/Controller/DnssecController.php:64
+msgid "You do not have permission to view this zone."
+msgstr "您没有权限查看此区域。"
+
+#: lib/Application/Controller/DnssecController.php:77
+msgid "You do not have permission to manage DNSSEC for this zone."
+msgstr "您没有权限管理此区域的 DNSSEC。"
 
 #: lib/Application/Controller/ChangePasswordController.php:78
 msgid "LDAP users cannot change their password here. Please contact your administrator."
@@ -946,7 +970,7 @@ msgstr "RSA 算法应使用 1024 或 2048 位以确保足够的安全性"
 msgid "Zone key has been added successfully."
 msgstr "区域密钥已成功添加。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:346
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:348
 msgid "Failed to add new DNSSEC key."
 msgstr "添加新 DNSSEC 密钥失败。"
 
@@ -978,11 +1002,11 @@ msgstr "超级主机不存在。"
 msgid "The supermaster has been deleted successfully."
 msgstr "超级主机已成功删除。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:119
+#: lib/Application/Controller/BulkRegistrationController.php:118
 msgid "Zones has been added successfully."
 msgstr "区域已成功添加。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:122
+#: lib/Application/Controller/BulkRegistrationController.php:121
 msgid "Some zone(s) could not be added."
 msgstr "某些区域无法添加。"
 
@@ -991,19 +1015,19 @@ msgstr "某些区域无法添加。"
 msgid "Page Not Found"
 msgstr "页面未找到"
 
-#: lib/Application/Service/LdapAuthenticator.php:80
+#: lib/Application/Service/LdapAuthenticator.php:84
 msgid "Account is temporarily locked. Please try again later."
 msgstr "账户暂时锁定。请稍后重试。"
 
-#: lib/Application/Service/SqlAuthenticator.php:138
+#: lib/Application/Service/SqlAuthenticator.php:136
 msgid "The user account is disabled."
 msgstr "用户账户已禁用。"
 
-#: lib/Application/Service/SqlAuthenticator.php:213
+#: lib/Application/Service/SqlAuthenticator.php:211
 msgid "Authentication failed!"
 msgstr "认证失败！"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:188
+#: lib/Infrastructure/Service/SessionAuthenticator.php:190
 msgid "Session expired, please login again."
 msgstr "会话已过期，请重新登录。"
 
@@ -1011,206 +1035,206 @@ msgstr "会话已过期，请重新登录。"
 msgid "Failed to update password"
 msgstr "更新密码失败"
 
-#: lib/Application/Service/LdapAuthenticator.php:113
+#: lib/Application/Service/LdapAuthenticator.php:117
 msgid "Failed to connect to LDAP server!"
 msgstr "连接到 LDAP 服务器失败！"
 
-#: lib/Application/Service/LdapAuthenticator.php:129
+#: lib/Application/Service/LdapAuthenticator.php:133
 msgid "Failed to bind to LDAP server!"
 msgstr "绑定到 LDAP 服务器失败！"
 
-#: lib/Application/Service/LdapAuthenticator.php:153
+#: lib/Application/Service/LdapAuthenticator.php:161
 msgid "Failed to search LDAP."
 msgstr "搜索 LDAP 失败。"
 
-#: lib/Application/Service/LdapAuthenticator.php:170
+#: lib/Application/Service/LdapAuthenticator.php:178
 msgid "Failed to authenticate against LDAP."
 msgstr "LDAP 认证失败。"
 
-#: lib/Application/Service/LdapAuthenticator.php:204
+#: lib/Application/Service/LdapAuthenticator.php:212
 msgid "LDAP Authentication failed!"
 msgstr "LDAP 认证失败！"
 
-#: lib/Application/Query/RecordSearch.php:167 templates/default/users.html:119
+#: lib/Application/Query/RecordSearch.php:169 templates/default/users.html:119
 #: templates/default/users.html:127
 msgid "Yes"
 msgstr "是"
 
-#: lib/Application/Query/RecordSearch.php:167 templates/default/users.html:121
+#: lib/Application/Query/RecordSearch.php:169 templates/default/users.html:121
 #: templates/default/users.html:129
 msgid "No"
 msgstr "否"
 
-#: lib/Domain/Model/UserManager.php:271
+#: lib/Domain/Model/UserManager.php:270
 msgid "This template is assigned to at least one user."
 msgstr "此模板分配给至少一个用户。"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:153
+#: lib/Infrastructure/Service/SessionAuthenticator.php:155
 #: templates/default/login.html:109
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "reCAPTCHA 验证失败。请重试。"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:176
+#: lib/Infrastructure/Service/SessionAuthenticator.php:178
 msgid "An empty password is not allowed"
 msgstr "不允许空密码"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:50
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:52
 msgid "Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini"
 msgstr "调用 exec 函数失败。请确保 exec 不在 php.ini 的 disable_functions 中列出"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:56
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:58
 msgid "Failed to call pdnssec utility."
 msgstr "调用 pdnssec 工具失败。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:150
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:152
 msgid "Failed to secure zone."
 msgstr "保护区域失败。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:171
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:173
 msgid "Failed to disable DNSSEC."
 msgstr "禁用 DNSSEC 失败。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:314
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:316
 msgid "Failed to get DNSSEC key details."
 msgstr "获取 DNSSEC 密钥详情失败。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:269
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:271
 msgid "Failed to active DNSSEC key."
 msgstr "激活 DNSSEC 密钥失败。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:291
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:293
 msgid "Failed to deactivate DNSSEC key."
 msgstr "停用 DNSSEC 密钥失败。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:370
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:372
 msgid "Failed to remove DNSSEC key."
 msgstr "删除 DNSSEC 密钥失败。"
 
-#: lib/Domain/Repository/DomainRepository.php:203
+#: lib/Domain/Repository/DomainRepository.php:201
 msgid "This is an invalid zone name."
 msgstr "这是无效的区域名称。"
 
-#: lib/Domain/Model/UserManager.php:752
+#: lib/Domain/Model/UserManager.php:751
 msgid "Enter a valid email address."
 msgstr "请输入有效的电子邮件地址。"
 
-#: lib/Domain/Model/UserManager.php:744
+#: lib/Domain/Model/UserManager.php:743
 msgid "Username exist already, please choose another one."
 msgstr "用户名已存在，请选择另一个。"
 
-#: lib/Domain/Model/UserManager.php:748
+#: lib/Domain/Model/UserManager.php:747
 msgid "Enter a valid user name."
 msgstr "请输入有效的用户名。"
 
-#: lib/Domain/Model/ZoneTemplate.php:200 lib/Domain/Model/ZoneTemplate.php:671
+#: lib/Domain/Model/ZoneTemplate.php:205 lib/Domain/Model/ZoneTemplate.php:675
 msgid "Error creating zone template: "
 msgstr "创建区域模板错误："
 
-#: lib/Domain/Model/ZoneTemplate.php:236
+#: lib/Domain/Model/ZoneTemplate.php:241
 msgid "Error adding default SOA record to template: "
 msgstr "向模板添加默认 SOA 记录错误："
 
-#: lib/Domain/Model/ZoneTemplate.php:295
+#: lib/Domain/Model/ZoneTemplate.php:300
 msgid "Error deleting zone template: "
 msgstr "删除区域模板错误："
 
-#: lib/Domain/Model/ZoneTemplate.php:319
+#: lib/Domain/Model/ZoneTemplate.php:324
 msgid "Error deleting user zone templates: "
 msgstr "删除用户区域模板错误："
 
-#: lib/Domain/Model/ZoneTemplate.php:437
+#: lib/Domain/Model/ZoneTemplate.php:442
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "您没有向此区域模板添加记录的权限。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:129
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
 msgstr "您的内容字段没有合法值。"
 
-#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:74
+#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:76
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRV 记录的优先级必须是 0 到 65535 之间的数字。"
 
-#: lib/Domain/Model/ZoneTemplate.php:529
+#: lib/Domain/Model/ZoneTemplate.php:534
 msgid "Error updating zone template record: "
 msgstr "更新区域模板记录错误："
 
-#: lib/Domain/Model/ZoneTemplate.php:552
+#: lib/Domain/Model/ZoneTemplate.php:557
 msgid "Error deleting zone template record: "
 msgstr "删除区域模板记录错误："
 
-#: lib/Domain/Model/ZoneTemplate.php:575
+#: lib/Domain/Model/ZoneTemplate.php:580
 msgid "Error checking template ownership: "
 msgstr "检查模板所有权错误："
 
-#: lib/Domain/Model/ZoneTemplate.php:724
+#: lib/Domain/Model/ZoneTemplate.php:727
 msgid "Error retrieving zones using template: "
 msgstr "检索使用模板的区域错误："
 
-#: lib/Domain/Model/ZoneTemplate.php:779
+#: lib/Domain/Model/ZoneTemplate.php:781
 msgid "Failed to get list of zones using template: "
 msgstr "获取使用模板的区域列表失败："
 
-#: lib/Domain/Model/ZoneTemplate.php:797
+#: lib/Domain/Model/ZoneTemplate.php:799
 msgid "You do not have the permission to edit a zone template."
 msgstr "您没有编辑区域模板的权限。"
 
-#: lib/Domain/Model/ZoneTemplate.php:841
+#: lib/Domain/Model/ZoneTemplate.php:843
 msgid "Error unlinking zone from template: "
 msgstr "从模板取消链接区域错误："
 
-#: lib/Domain/Model/ZoneTemplate.php:870
+#: lib/Domain/Model/ZoneTemplate.php:871
 msgid "Error retrieving zones: "
 msgstr "检索区域错误："
 
-#: lib/Domain/Model/ZoneTemplate.php:889
+#: lib/Domain/Model/ZoneTemplate.php:890
 msgid "Error checking template name existence: "
 msgstr "检查模板名称存在性错误："
 
-#: lib/Domain/Model/ZoneTemplate.php:912
+#: lib/Domain/Model/ZoneTemplate.php:913
 msgid "Error checking template existence: "
 msgstr "检查模板存在性错误："
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:80
+#: lib/Domain/Service/DatabaseConsistencyService.php:74
 msgid "All zones have owners"
 msgstr "所有区域都有所有者"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:87
+#: lib/Domain/Service/DatabaseConsistencyService.php:81
 #, php-format
 msgid "%d zones found without owners"
 msgstr "发现 %d 个没有所有者的区域"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:120
+#: lib/Domain/Service/DatabaseConsistencyService.php:114
 msgid "All slave zones have master IP addresses"
 msgstr "所有从区域都有主 IP 地址"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:127
+#: lib/Domain/Service/DatabaseConsistencyService.php:121
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "发现 %d 个没有主 IP 地址的从区域"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:163
+#: lib/Domain/Service/DatabaseConsistencyService.php:157
 msgid "All records belong to existing zones"
 msgstr "所有记录都属于现有区域"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:170
+#: lib/Domain/Service/DatabaseConsistencyService.php:164
 #, php-format
 msgid "%d orphaned records found"
 msgstr "发现 %d 条孤立记录"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:210
+#: lib/Domain/Service/DatabaseConsistencyService.php:204
 msgid "No duplicate SOA records found"
 msgstr "未发现重复的 SOA 记录"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:217
+#: lib/Domain/Service/DatabaseConsistencyService.php:211
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d 个区域有重复的 SOA 记录"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:252
+#: lib/Domain/Service/DatabaseConsistencyService.php:246
 msgid "All zones have SOA records"
 msgstr "所有区域都有 SOA 记录"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:259
+#: lib/Domain/Service/DatabaseConsistencyService.php:253
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "发现 %d 个没有 SOA 记录的区域"
@@ -1287,7 +1311,7 @@ msgstr "DSA 密钥应遵循 RFC 2536 中定义的格式。"
 msgid "When algorithm is 0 (No key), the public key field is typically empty or ignored."
 msgstr "当算法为 0（无密钥）时，公钥字段通常为空或被忽略。"
 
-#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:100
+#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:102
 msgid "You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name."
 msgstr "您不能将 NS 或 MX 记录指向 CNAME 记录。请先删除或重命名 CNAME 记录，或者使用不同的名称。"
 
@@ -1691,7 +1715,7 @@ msgstr "算法 5（RSA/SHA-1）被认为不安全，应替换为更强的算法�
 msgid "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered secure."
 msgstr "算法 7（RSASHA1-NSEC3-SHA1）使用的 SHA-1 不再被认为是安全的。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
 msgid "Algorithm 8 (RSA/SHA-256) is currently recommended for DNSSEC deployments."
 msgstr "算法 8（RSA/SHA-256）目前被推荐用于 DNSSEC 部署。"
 
@@ -1715,7 +1739,7 @@ msgstr "算法 15（Ed25519）提供现代安全性，但可能与较旧的验�
 msgid "Algorithm 16 (Ed448) offers strong modern security but may have compatibility issues with older validators."
 msgstr "算法 16（Ed448）提供强现代安全性，但可能与较旧的验证器存在兼容性问题。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:221
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/SHA-256) or later."
 msgstr "重要：此算法被认为不安全。请使用算法 8（RSA/SHA-256）或更高版本。"
 
@@ -2506,34 +2530,34 @@ msgstr "检测到旧版算法。建议使用 HMAC-SHA256 或更强算法以获�
 msgid "Custom algorithm name detected. Standard algorithm names like \"hmac-sha256.\" are recommended for better compatibility."
 msgstr "检测到自定义算法名称。建议使用标准算法名称（如 \"hmac-sha256.\"）以获得更好的兼容性。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:77
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid "Invalid value for default TTL. It must be a number between 0 and 2147483647."
 msgstr "默认 TTL 值无效。必须是 0 到 2147483647 之间的数字。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:98
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:99
 msgid "Invalid value for TTL field. It must be numeric."
 msgstr "TTL 字段值无效。必须是数字。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:105
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:106
 msgid "TTL value cannot be negative. It must be 0 or higher."
 msgstr "TTL 值不能为负数。必须为 0 或更高。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:110
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:111
 #, php-format
 msgid "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-bit integer."
 msgstr "TTL 值超过允许的最大值（%d）。RFC 2181 将其限制为有符号的 32 位整数。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:143
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
 msgid "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). Low TTL values increase DNS traffic."
 msgstr "TTL 值（%d）低于推荐的最小值 %d 秒（5 分钟）。低 TTL 值会增加 DNS 流量。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:152
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High TTL values delay DNS updates."
 msgstr "TTL 值（%d）超过推荐的最大值 %d 秒（1 周）。高 TTL 值会延迟 DNS 更新。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:162
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
 msgid "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
 msgstr "SOA 记录 TTL（%d）低于推荐的最小值 %d 秒（1 小时）。"
@@ -2756,25 +2780,33 @@ msgstr "SPF 记录应具有终止的 \"all\" 机制或 \"redirect\" 修饰符（
 msgid "SPF record has both \"all\" mechanism and \"redirect\" modifier. The \"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 Section 6.1)."
 msgstr "SPF 记录同时具有 \"all\" 机制和 \"redirect\" 修饰符。当存在 \"all\" 时，\"redirect\" 修饰符将被忽略（RFC 7208 第 6.1 节）。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:170
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:180
 msgid "Invalid value for priority field. CNAME records must have priority value of 0."
 msgstr "优先级字段值无效。CNAME 记录的优先级值必须为 0。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:199
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:208
 msgid "This is not a valid CNAME. There already exists a record with this name."
 msgstr "这不是有效的 CNAME。已存在此名称的记录。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:225
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:233
 msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr "这不是有效的 CNAME。您是否为记录分配了 MX 或 NS 记录？"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:242
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:250
 msgid "Empty CNAME records are not allowed."
 msgstr "不允许空的 CNAME 记录。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:272
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:279
 msgid "This is not a valid record. There already exists a CNAME with this name."
 msgstr "这不是有效记录。已存在具有此名称的 CNAME。"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
+msgid "CNAME target must be a fully qualified domain name (FQDN). Single-label names are not allowed."
+msgstr "CNAME 目标必须是完全限定域名 (FQDN)。不允许单标签名称。"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:313
+msgid "CNAME target must be a fully qualified domain name (FQDN) with a valid top-level domain."
+msgstr "CNAME 目标必须是带有有效顶级域的完全限定域名 (FQDN)。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -2838,163 +2870,163 @@ msgstr "根据 RFC 4701 的建议，考虑使用 DNSSEC 或 TSIG 认证（RFC 30
 msgid "Hostname contains invalid characters."
 msgstr "主机名包含无效字符。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:139
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:141
 msgid "Priority field for RRSIG records must be 0 or empty"
 msgstr "RRSIG 记录的优先级字段必须为 0 或空"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid "RRSIG records should only be created by your DNS server when signing a zone. Manual manipulation is not recommended."
 msgstr "RRSIG 记录应仅由您的 DNS 服务器在签名区域时创建。不建议手动操作。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:144
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:146
 msgid "Regular key rollovers are recommended security practice: ZSK every 1-3 months, KSK every 1-2 years."
 msgstr "定期密钥轮换是推荐的安全实践：ZSK 每 1-3 个月，KSK 每 1-2 年。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:167
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
 msgstr "RRSIG 记录内容不能为空。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:172
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:174
 msgid "RRSIG record contains invalid characters."
 msgstr "RRSIG 记录包含无效字符。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:178
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:180
 msgid "RRSIG record must contain covered-type, algorithm, labels, original TTL, expiration, inception, key tag, signer name and signature."
 msgstr "RRSIG 记录必须包含覆盖类型、算法、标签、原始 TTL、过期时间、起始时间、密钥标签、签名者名称和签名。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:186
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
 msgstr "RRSIG 覆盖类型必须是有效的 DNS 记录类型。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:191
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:193
 msgid "RRSIG algorithm field must be a numeric value."
 msgstr "RRSIG 算法字段必须是数值。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:197
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
 msgid "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to cryptographic weaknesses."
 msgstr "算法 1（RSA/MD5）已被弃用，由于加密弱点不应使用。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with stronger algorithms."
 msgstr "算法 3（DSA/SHA1）被认为不安全，应替换为更强的算法。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with stronger algorithms."
 msgstr "算法 5（RSA/SHA-1）被认为不安全，应替换为更强的算法。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered secure. Consider using RSA/SHA-256 or newer algorithms."
 msgstr "算法 7（RSASHA1-NSEC3-SHA1）使用的 SHA-1 不再被认为是安全的。考虑使用 RSA/SHA-256 或更新的算法。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
 msgid "Algorithm 10 (RSA/SHA-512) provides strong security but may have interoperability issues with some validators."
 msgstr "算法 10（RSA/SHA-512）提供强安全性，但可能与某些验证器存在互操作性问题。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
 msgid "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller signatures than RSA."
 msgstr "算法 13（ECDSA P-256 与 SHA-256）提供良好的安全性，签名比 RSA 更小。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with smaller signatures than RSA."
 msgstr "算法 14（ECDSA P-384 与 SHA-384）提供强安全性，签名比 RSA 更小。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid "Algorithm 15 (ED25519) offers modern security but may have compatibility issues with older DNSSEC validators."
 msgstr "算法 15（ED25519）提供现代安全性，但可能与较旧的 DNSSEC 验证器存在兼容性问题。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
 msgid "Algorithm 16 (ED448) offers strong modern security but may have compatibility issues with older DNSSEC validators."
 msgstr "算法 16（ED448）提供强现代安全性，但可能与较旧的 DNSSEC 验证器存在兼容性问题。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:219
 msgid "Unknown algorithm value. Only algorithms defined in RFCs should be used."
 msgstr "未知算法值。应仅使用 RFC 中定义的算法。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:226
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:228
 msgid "RRSIG labels field must be a numeric value."
 msgstr "RRSIG 标签字段必须是数值。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:232
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:234
 msgid "RRSIG labels field must be a reasonable value (0-128)."
 msgstr "RRSIG 标签字段必须是合理值（0-128）。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:237
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:239
 msgid "RRSIG original TTL field must be a numeric value."
 msgstr "RRSIG 原始 TTL 字段必须是数值。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:242
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:244
 msgid "RRSIG original TTL must be a valid positive integer."
 msgstr "RRSIG 原始 TTL 必须是有效的正整数。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:246
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs are generally preferred for faster recovery in case of key compromise."
 msgstr "原始 TTL 大于 1 天 (86400)。对于 DNSSEC 记录，通常首选较短的 TTL，以便在密钥泄露时更快恢复。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:251
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
 msgstr "RRSIG 过期时间必须采用 YYYYMMDDHHmmSS 格式。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:256
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:258
 msgid "RRSIG inception must be in YYYYMMDDHHmmSS format."
 msgstr "RRSIG 生效时间必须采用 YYYYMMDDHHmmSS 格式。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:268
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:270
 msgid "The expiration time must be later than the inception time. This signature appears to have expired before it became valid."
 msgstr "过期时间必须晚于生效时间。此签名似乎在生效之前就已过期。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:273
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
 msgid "CRITICAL: This signature has already expired. It will not be validated by DNSSEC resolvers."
 msgstr "严重：此签名已过期。DNSSEC 解析器将不会验证它。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid "WARNING: This signature will expire within the next 7 days. Consider renewing it soon."
 msgstr "警告：此签名将在未来 7 天内过期。请考虑尽快续签。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid "This signature will expire within the next 30 days. Plan for renewal."
 msgstr "此签名将在未来 30 天内过期。请计划续签。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:282
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
 msgid "WARNING: This signature is not yet valid. It will not be validated by DNSSEC resolvers until the inception time is reached."
 msgstr "警告：此签名尚未生效。在达到生效时间之前，DNSSEC 解析器不会验证它。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:289
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:291
 msgid "The signature validity period is over 90 days, which is longer than recommended practices. Long validity periods increase vulnerability in case of key compromise."
 msgstr "签名有效期超过 90 天，这比推荐做法要长。较长的有效期会在密钥泄露情况下增加漏洞。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:295
 msgid "Could not parse signature timestamps to check validity period."
 msgstr "无法解析签名时间戳以检查有效期。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:298
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:300
 msgid "RRSIG key tag field must be a numeric value."
 msgstr "RRSIG 密钥标签字段必须是数值。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:303
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:305
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
 msgstr "RRSIG 密钥标签必须是 0 到 65535 之间的有效值。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:308
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:310
 msgid "RRSIG signer name must be a fully qualified domain name (end with a dot)."
 msgstr "RRSIG 签名者名称必须是完全限定域名（以点结尾）。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:314
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:316
 msgid "RRSIG signer name must be a valid domain name."
 msgstr "RRSIG 签名者名称必须是有效的域名。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:321
 msgid "RRSIG signature cannot be empty."
 msgstr "RRSIG 签名不能为空。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:324
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:326
 msgid "The signature does not appear to be valid base64 encoded data. RRSIG signatures should be base64 encoded."
 msgstr "签名似乎不是有效的 base64 编码数据。RRSIG 签名应该使用 base64 编码。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:330
 msgid "RRSIG records are part of DNSSEC and provide cryptographic signatures for DNS records. They should be managed automatically by the DNS server."
 msgstr "RRSIG 记录是 DNSSEC 的一部分，为 DNS 记录提供加密签名。它们应该由 DNS 服务器自动管理。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:329
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
 msgid "Remember that RRSIG records must be regenerated before their expiration date to maintain DNSSEC validation."
 msgstr "请记住，RRSIG 记录必须在过期日期之前重新生成，以维持 DNSSEC 验证。"
 
@@ -3547,62 +3579,62 @@ msgstr "给定的主机名有太多斜杠。"
 msgid "You are using an invalid top level domain."
 msgstr "您正在使用无效的顶级域。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:103
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid "SOA validation parameters not set. Call setSOAParams() first or provide them as arguments."
 msgstr "SOA 验证参数未设置。请先调用 setSOAParams() 或将它们作为参数提供。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:114
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:115
 msgid "Invalid value for name field of SOA record. It should be the name of the zone."
 msgstr "SOA 记录名称字段的值无效。应该是区域的名称。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:173
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:174
 msgid "SOA record must have between 1 and 7 fields."
 msgstr "SOA 记录必须有 1 到 7 个字段。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:180
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:181
 msgid "Invalid primary nameserver in SOA record."
 msgstr "SOA 记录中的主名称服务器无效。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:201
 msgid "Invalid email address in SOA record."
 msgstr "SOA 记录中的电子邮件地址无效。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:211
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:212
 msgid "Serial number must be numeric."
 msgstr "序列号必须是数字。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:217
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:218
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
 msgstr "序列号必须是 32 位无符号整数（0 到 4294967295）。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:230
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:231
 msgid "Serial number appears to use YYYYMMDDnn format but contains an invalid date. This is allowed but not recommended."
 msgstr "序列号似乎使用 YYYYMMDDnn 格式，但包含无效日期。这是允许的，但不建议。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:244
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:245
 msgid "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, retry, expire, minimum)."
 msgstr "SOA 记录必须恰好有 7 个字段（主 NS、邮箱、序列号、刷新、重试、过期、最小值）。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:264
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
 #, php-format
 msgid "SOA %s field must be numeric."
 msgstr "SOA %s 字段必须是数字。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:270
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:271
 #, php-format
 msgid "SOA %s field must be a positive integer."
 msgstr "SOA %s 字段必须是正整数。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:278
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
 msgid "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is allowed but not recommended."
 msgstr "SOA %s 值 (%d) 低于 RFC 2308 推荐的最小值 (%d)。这是允许的，但不建议。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:287
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:288
 msgid "SOA retry value should be less than refresh value according to RFC 2308. This is allowed but not recommended."
 msgstr "根据 RFC 2308，SOA 重试值应小于刷新值。这是允许的，但不建议。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:295
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:296
 msgid "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be excessive according to RFC 2308."
 msgstr "SOA 最小值（负缓存）值超过 24 小时 (86400)，根据 RFC 2308 这可能过多。"
 
@@ -3644,16 +3676,16 @@ msgstr "未知的 SVCB 参数键：\"%s\"。"
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr "重复的 SVCB 参数键：\"%s\"。每个键只能出现一次。"
 
-#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:156
+#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid "Multiple CNAME records with the same name are not allowed. This would create a DNS violation."
 msgstr "不允许具有相同名称的多个 CNAME 记录。这将产生 DNS 违规。"
 
-#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:204
+#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:207
 #, php-format
 msgid "A CNAME record cannot coexist with other record types for the same name. Found existing %s record."
 msgstr "CNAME 记录不能与同名的其他记录类型共存。发现现有的 %s 记录。"
 
-#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:252
+#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:255
 msgid "This record conflicts with an existing CNAME record with the same name. A CNAME record cannot coexist with other record types."
 msgstr "此记录与同名的现有 CNAME 记录冲突。CNAME 记录不能与其他记录类型共存。"
 
@@ -4628,18 +4660,6 @@ msgstr "检测到无效的 base64 字符。"
 msgid "Invalid base64 encoding."
 msgstr "无效的 base64 编码。"
 
-#: lib/Domain/Service/MfaService.php:454
-msgid "Your verification code"
-msgstr "您的验证码"
-
-#: lib/Domain/Service/MfaService.php:456
-#, php-format
-msgid ""
-"Your verification code is: %s\n"
-"\n"
-"This code will expire in 10 minutes at %s."
-msgstr "您的验证码是：%s\\n\\n此验证码将在 %s 的 10 分钟后过期。"
-
 #: lib/Domain/Service/DomainRecordCreator.php:61
 #, php-format
 msgid "There is no managed zone for domain: %s."
@@ -4665,87 +4685,87 @@ msgstr "无法找到具有给定 ID 的域。"
 msgid "Unknown record type."
 msgstr "未知的记录类型。"
 
-#: lib/Domain/Service/ApiKeyService.php:149
+#: lib/Domain/Service/ApiKeyService.php:153
 msgid "API functionality is disabled."
 msgstr "API 功能已禁用。"
 
-#: lib/Domain/Service/ApiKeyService.php:155
+#: lib/Domain/Service/ApiKeyService.php:159
 msgid "You do not have permission to create API keys."
 msgstr "您没有创建 API 密钥的权限。"
 
-#: lib/Domain/Service/ApiKeyService.php:162 templates/default/api_keys.html:18
+#: lib/Domain/Service/ApiKeyService.php:166 templates/default/api_keys.html:18
 msgid "You have reached the maximum number of API keys allowed."
 msgstr "您已达到允许的 API 密钥的最大数量。"
 
-#: lib/Domain/Service/ApiKeyService.php:281
+#: lib/Domain/Service/ApiKeyService.php:285
 msgid "You do not have permission to update API keys."
 msgstr "您没有更新 API 密钥的权限。"
 
-#: lib/Domain/Service/ApiKeyService.php:229
+#: lib/Domain/Service/ApiKeyService.php:233
 msgid "You do not have permission to delete API keys."
 msgstr "您没有删除 API 密钥的权限。"
 
-#: lib/Domain/Service/ApiKeyService.php:253
+#: lib/Domain/Service/ApiKeyService.php:257
 msgid "You do not have permission to regenerate API keys."
 msgstr "您没有重新生成 API 密钥的权限。"
 
-#: lib/Domain/Service/DatabaseSchemaService.php:51
+#: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "未知的数据库类型。"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:62
+#: lib/Domain/Service/ReverseRecordCreator.php:64
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "%s 没有匹配的反向区域。"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:70
+#: lib/Domain/Service/ReverseRecordCreator.php:72
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "指向 %s 的 %s 的 PTR 记录已存在。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:103
+#: lib/Domain/Service/Dns/RecordManager.php:105
 msgid "You do not have the permission to add SOA record."
 msgstr "您没有添加 SOA 记录的权限。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:107
+#: lib/Domain/Service/Dns/RecordManager.php:109
 msgid "You do not have the permission to add NS record."
 msgstr "您没有添加 NS 记录的权限。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:154
+#: lib/Domain/Service/Dns/RecordManager.php:156
 msgid "A record with this hostname, type, and content already exists."
 msgstr "具有此主机名、类型和内容的记录已存在。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:214
+#: lib/Domain/Service/Dns/RecordManager.php:216
 msgid "You do not have the permission to edit this SOA record."
 msgstr "您没有编辑此 SOA 记录的权限。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:219
+#: lib/Domain/Service/Dns/RecordManager.php:221
 msgid "You do not have the permission to edit this NS record."
 msgstr "您没有编辑此 NS 记录的权限。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:299
+#: lib/Domain/Service/Dns/RecordManager.php:301
 msgid "You do not have the permission to delete SOA records."
 msgstr "您没有删除 SOA 记录的权限。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:312
+#: lib/Domain/Service/Dns/RecordManager.php:314
 msgid "You do not have the permission to delete NS records."
 msgstr "您没有删除 NS 记录的权限。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:423
+#: lib/Domain/Service/Dns/DomainManager.php:448
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "给函数 %s %s 提供了无效参数"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:280
+#: lib/Domain/Service/Dns/SupermasterManager.php:284
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "已存在具有此 IP 地址和主机名的超级主服务器。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:209
+#: lib/Domain/Service/Dns/DomainManager.php:212
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "给函数 %s 提供了无效参数"
 
-#: lib/Domain/Service/Dns/DomainManager.php:386
+#: lib/Domain/Service/Dns/DomainManager.php:411
 msgid "The selected user already owns the zone."
 msgstr "选定的用户已拥有该区域。"
 
@@ -5193,7 +5213,7 @@ msgstr "输入在 NS 记录中显示的主机名"
 msgid "Provide host name"
 msgstr "提供主机名"
 
-#: templates/default/header.html:172
+#: templates/default/header.html:177
 msgid "Account"
 msgstr "账户"
 
@@ -5381,7 +5401,7 @@ msgstr "我的资料"
 msgid "Edit your account details"
 msgstr "编辑您的账户详情"
 
-#: templates/default/header.html:176
+#: templates/default/header.html:181
 msgid "Edit profile"
 msgstr "编辑资料"
 
@@ -5533,7 +5553,7 @@ msgstr "查看用户活动历史"
 msgid "View user logs"
 msgstr "查看用户日志"
 
-#: templates/default/add_user.html:38 install/templates/step4.html.twig:49
+#: templates/default/add_user.html:39 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:67
 msgid "Password"
 msgstr "密码"
@@ -5542,7 +5562,7 @@ msgstr "密码"
 msgid "Update your account password"
 msgstr "更新您的账户密码"
 
-#: templates/default/change_password.html:49 templates/default/header.html:180
+#: templates/default/change_password.html:49 templates/default/header.html:185
 msgid "Change password"
 msgstr "更改密码"
 
@@ -5566,7 +5586,7 @@ msgstr "权限"
 msgid "Manage permission templates"
 msgstr "管理权限模板"
 
-#: templates/default/header.html:187
+#: templates/default/header.html:192
 msgid "Logout"
 msgstr "注销"
 
@@ -6066,7 +6086,7 @@ msgstr "确认密码"
 msgid "Passwords do not match"
 msgstr "密码不匹配"
 
-#: templates/default/edit_user.html:135 templates/default/add_user.html:132
+#: templates/default/edit_user.html:136 templates/default/add_user.html:133
 msgid "Password Requirements"
 msgstr "密码要求"
 
@@ -6252,55 +6272,59 @@ msgstr "提供用户名"
 msgid "Fullname"
 msgstr "全名"
 
-#: templates/default/edit_user.html:38
+#: templates/default/edit_user.html:38 templates/default/add_user.html:28
 msgid "User's full name for identification"
 msgstr "用于识别的用户全名"
 
-#: templates/default/add_user.html:32
+#: templates/default/edit_user.html:39 templates/default/add_user.html:29
+msgid "Provide full name"
+msgstr "请提供全名"
+
+#: templates/default/add_user.html:33
 msgid "Email address"
 msgstr "电子邮件地址"
 
-#: templates/default/edit_user.html:44 templates/default/add_user.html:34
+#: templates/default/edit_user.html:45 templates/default/add_user.html:35
 msgid "Provide email"
 msgstr "提供电子邮件"
 
-#: templates/default/edit_user.html:54
+#: templates/default/edit_user.html:55
 msgid "Leave empty to keep current password"
 msgstr "留空以保持当前密码"
 
-#: templates/default/edit_user.html:59 templates/default/add_user.html:69
+#: templates/default/edit_user.html:60 templates/default/add_user.html:70
 msgid "Permission template"
 msgstr "权限模板"
 
-#: templates/default/edit_user.html:69 templates/default/add_user.html:80
+#: templates/default/edit_user.html:70 templates/default/add_user.html:81
 msgid "Select permissions for this user"
 msgstr "为此用户选择权限"
 
-#: templates/default/edit_user.html:76 templates/default/add_user.html:87
+#: templates/default/edit_user.html:77 templates/default/add_user.html:88
 msgid "Optional information about this user"
 msgstr "关于此用户的可选信息"
 
-#: templates/default/add_user.html:93
+#: templates/default/add_user.html:94
 msgid "Enabled"
 msgstr "已启用"
 
-#: templates/default/edit_user.html:96 templates/default/add_user.html:102
+#: templates/default/edit_user.html:97 templates/default/add_user.html:103
 msgid "LDAP Authentication"
 msgstr "LDAP 身份验证"
 
-#: templates/default/edit_user.html:98 templates/default/add_user.html:104
+#: templates/default/edit_user.html:99 templates/default/add_user.html:105
 msgid "Use external LDAP directory for authentication"
 msgstr "使用外部 LDAP 目录进行身份验证"
 
-#: templates/default/edit_user.html:112
+#: templates/default/edit_user.html:113
 msgid "Back to Home"
 msgstr "返回首页"
 
-#: templates/default/edit_user.html:116
+#: templates/default/edit_user.html:117
 msgid "Back to Users"
 msgstr "返回用户"
 
-#: templates/default/edit_user.html:130 templates/default/add_user.html:127
+#: templates/default/edit_user.html:131 templates/default/add_user.html:128
 msgid "Account Information"
 msgstr "账户信息"
 
@@ -6328,35 +6352,35 @@ msgstr "无特定密码要求"
 msgid "User Permissions"
 msgstr "用户权限"
 
-#: templates/default/edit_user.html:164
+#: templates/default/edit_user.html:165
 msgid "This user has been assigned the permission template"
 msgstr "此用户已分配权限模板"
 
-#: templates/default/edit_user.html:173
+#: templates/default/edit_user.html:174
 msgid "Based on this template, this user has the following permissions"
 msgstr "基于此模板，此用户具有以下权限"
 
-#: templates/default/edit_user.html:176
+#: templates/default/edit_user.html:177
 msgid "No permissions are assigned to this template"
 msgstr "此模板未分配任何权限"
 
-#: templates/default/edit_user.html:192 templates/default/add_user.html:170
+#: templates/default/edit_user.html:193 templates/default/add_user.html:171
 msgid "User Management Tips"
 msgstr "用户管理提示"
 
-#: templates/default/edit_user.html:198
+#: templates/default/edit_user.html:199
 msgid "Leave password field empty to keep the current password"
 msgstr "保留密码字段为空以保持当前密码"
 
-#: templates/default/edit_user.html:199
+#: templates/default/edit_user.html:200
 msgid "Changing permission templates will update user access immediately"
 msgstr "更改权限模板将立即更新用户访问权限"
 
-#: templates/default/edit_user.html:200 templates/default/add_user.html:178
+#: templates/default/edit_user.html:201 templates/default/add_user.html:179
 msgid "Users can be disabled instead of deleted to preserve their settings"
 msgstr "可以禁用用户而不是删除用户以保留其设置"
 
-#: templates/default/edit_user.html:201
+#: templates/default/edit_user.html:202
 msgid "LDAP users cannot have passwords managed through this interface"
 msgstr "LDAP 用户无法通过此界面管理密码"
 
@@ -6589,7 +6613,7 @@ msgid "Host Prefix"
 msgstr "主机前缀"
 
 #: templates/default/batch_ptr_record.html:71
-#: install/templates/step4.html.twig:132
+#: install/templates/step4.html.twig:133
 msgid "Optional"
 msgstr "可选"
 
@@ -7149,47 +7173,43 @@ msgstr "您确定要删除孤立记录"
 msgid "Are you sure you want to delete this item?"
 msgstr "您确定要删除此项目吗？"
 
-#: templates/default/add_user.html:13 templates/default/add_user.html:111
+#: templates/default/add_user.html:13 templates/default/add_user.html:112
 msgid "Add User"
 msgstr "添加用户"
 
-#: templates/default/add_user.html:28
-msgid "Optional: User's full name for identification"
-msgstr "可选：用于识别的用户全名"
-
-#: templates/default/add_user.html:42 install/templates/step4.html.twig:54
+#: templates/default/add_user.html:43 install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr "提供用户密码"
 
-#: templates/default/add_user.html:50
+#: templates/default/add_user.html:51
 msgid "Auto-generate password"
 msgstr "自动生成密码"
 
-#: templates/default/add_user.html:52
+#: templates/default/add_user.html:53
 msgid "Generate a secure password that meets all requirements"
 msgstr "生成符合所有要求的安全密码"
 
-#: templates/default/add_user.html:60
+#: templates/default/add_user.html:61
 msgid "Send password by email"
 msgstr "通过电子邮件发送密码"
 
-#: templates/default/add_user.html:62
+#: templates/default/add_user.html:63
 msgid "Send login credentials to user's email address"
 msgstr "将登录凭据发送到用户的电子邮件地址"
 
-#: templates/default/add_user.html:161
+#: templates/default/add_user.html:162
 msgid "When creating a new user, they will receive permissions based on the selected template. You can modify these permissions later by editing the user."
 msgstr "创建新用户时，他们将根据所选模板获得权限。您可以稍后通过编辑用户来修改这些权限。"
 
-#: templates/default/add_user.html:176
+#: templates/default/add_user.html:177
 msgid "Create descriptive usernames that are easy to identify"
 msgstr "创建易于识别的描述性用户名"
 
-#: templates/default/add_user.html:177
+#: templates/default/add_user.html:178
 msgid "Adding a full name helps with user identification"
 msgstr "添加全名有助于用户识别"
 
-#: templates/default/add_user.html:179
+#: templates/default/add_user.html:180
 msgid "Auto-generating passwords is recommended for better security"
 msgstr "建议自动生成密码以提高安全性"
 
@@ -7385,7 +7405,7 @@ msgstr "包含字母、数字和符号的混合"
 msgid "Consider using a password manager"
 msgstr "考虑使用密码管理器"
 
-#: templates/default/mfa_verify_email.html:4 templates/default/header.html:184
+#: templates/default/mfa_verify_email.html:4 templates/default/header.html:189
 msgid "Multi-Factor Authentication"
 msgstr "多因素身份验证"
 
@@ -7485,23 +7505,23 @@ msgstr "另存为"
 msgid "The following placeholders can be used in template records"
 msgstr "以下占位符可用于模板记录"
 
-#: templates/default/edit_zone_templ.html:305
+#: templates/default/edit_zone_templ.html:311
 msgid "Warning: Missing SOA Record"
 msgstr "警告：缺少 SOA 记录"
 
-#: templates/default/edit_zone_templ.html:311
+#: templates/default/edit_zone_templ.html:317
 msgid "This zone template does not have an SOA (Start of Authority) record."
 msgstr "此区域模板没有 SOA（授权起始）记录。"
 
-#: templates/default/edit_zone_templ.html:312
+#: templates/default/edit_zone_templ.html:318
 msgid "DNS zones typically require an SOA record to function properly, and DNSSEC signing may fail without one."
 msgstr "DNS 区域通常需要 SOA 记录才能正常运行，没有 SOA 记录 DNSSEC 签名可能会失败。"
 
-#: templates/default/edit_zone_templ.html:313
+#: templates/default/edit_zone_templ.html:319
 msgid "Do you want to continue without adding an SOA record?"
 msgstr "您要在不添加 SOA 记录的情况下继续吗？"
 
-#: templates/default/edit_zone_templ.html:319
+#: templates/default/edit_zone_templ.html:325
 msgid "Continue Without SOA"
 msgstr "不使用 SOA 继续"
 
@@ -7725,15 +7745,11 @@ msgstr "禁用 MFA"
 msgid "Continue to Dashboard"
 msgstr "继续到仪表板"
 
-#: templates/default/mfa_recovery_codes.html:92
-msgid "All recovery codes copied to clipboard"
-msgstr "所有恢复码已复制到剪贴板"
-
-#: templates/default/mfa_recovery_codes.html:101
+#: templates/default/mfa_recovery_codes.html:100
 msgid "Poweradmin MFA Recovery Codes"
 msgstr "Poweradmin MFA 恢复码"
 
-#: templates/default/mfa_recovery_codes.html:115
+#: templates/default/mfa_recovery_codes.html:114
 msgid "Store these codes in a safe place. Each code can be used once to log in if you lose access to your authenticator device."
 msgstr "将这些代码存储在安全的地方。如果您无法访问身份验证器设备，每个代码都可以用来登录一次。"
 
@@ -8044,6 +8060,91 @@ msgstr "此模板当前被使用"
 #: templates/default/delete_zone_templ.html:29
 msgid "zones"
 msgstr "个区域"
+
+#: templates/default/email_previews.html:10 templates/default/header.html:167
+msgid "Email Template Previews"
+msgstr "邮件模板预览"
+
+#: templates/default/email_previews.html:13
+msgid "Preview how email templates will appear to users in both light and dark modes. These previews use sample data to demonstrate the email formatting and styling."
+msgstr "预览邮件模板在明暗模式下的显示效果。这些预览使用示例数据来演示邮件格式和样式。"
+
+#: templates/default/email_previews.html:21
+msgid "Active Email Templates"
+msgstr "活动邮件模板"
+
+#: templates/default/email_previews.html:46
+msgid "Custom"
+msgstr "自定义"
+
+#: templates/default/email_previews.html:22
+msgid "Standard"
+msgstr "标准"
+
+#: templates/default/email_previews.html:29
+msgid "Custom templates are active and override the default templates. These are the templates currently used when sending emails."
+msgstr "自定义模板处于活动状态并覆盖默认模板。这些是当前发送邮件时使用的模板。"
+
+#: templates/default/email_previews.html:34
+msgid "Standard templates are active. These are the default templates used when sending emails."
+msgstr "标准模板处于活动状态。这些是发送邮件时使用的默认模板。"
+
+#: templates/default/email_previews.html:54
+msgid "Subject:"
+msgstr "主题："
+
+#: templates/default/email_previews.html:60
+msgid "View Light Mode"
+msgstr "查看明亮模式"
+
+#: templates/default/email_previews.html:64
+msgid "View Dark Mode"
+msgstr "查看暗黑模式"
+
+#: templates/default/email_previews.html:76
+msgid "Template Override Information"
+msgstr "模板覆盖信息"
+
+#: templates/default/email_previews.html:77
+msgid "The following standard templates are currently overridden by custom templates:"
+msgstr "以下标准模板当前被自定义模板覆盖："
+
+#: templates/default/email_previews.html:80
+msgid "using custom template"
+msgstr "使用自定义模板"
+
+#: templates/default/email_previews.html:83
+msgid "To revert to standard templates, remove or rename the custom template files in <code>templates/emails/custom/</code>."
+msgstr "要恢复到标准模板，请删除或重命名 <code>templates/emails/custom/</code> 中的自定义模板文件。"
+
+#: templates/default/email_previews.html:87
+msgid "Custom Templates"
+msgstr "自定义模板"
+
+#: templates/default/email_previews.html:88
+msgid "You can create custom email templates by placing them in <code>templates/emails/custom/</code> to override these standard templates with your own designs."
+msgstr ""
+"您可以通过将自定义邮件模板放置在 <code>templates/emails/custom/</code> 中来覆盖这些标准模板并使用您自己的设计。"
+
+#: templates/default/email_previews.html:93
+msgid "About Email Previews"
+msgstr "关于邮件预览"
+
+#: templates/default/email_previews.html:95
+msgid "Previews use sample data to demonstrate email appearance"
+msgstr "预览使用示例数据演示邮件外观"
+
+#: templates/default/email_previews.html:96
+msgid "Light mode is the default appearance for most email clients"
+msgstr "明亮模式是大多数邮件客户端的默认外观"
+
+#: templates/default/email_previews.html:97
+msgid "Dark mode preview shows how emails appear when users have dark mode enabled"
+msgstr "暗黑模式预览显示用户启用暗黑模式时邮件的显示效果"
+
+#: templates/default/email_previews.html:98
+msgid "These previews reflect the actual templates used in production"
+msgstr "这些预览反映了生产环境中使用的实际模板"
 
 #: templates/default/pdns_status.html:5 templates/default/pdns_status.html:11
 msgid "PowerDNS Server Status"
@@ -8401,7 +8502,7 @@ msgstr "执行以下命令："
 msgid "After you have added the new user, proceed with this installation procedure."
 msgstr "添加新用户后，请继续安装程序。"
 
-#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:96
+#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:97
 msgid "Note:"
 msgstr "注意："
 
@@ -8409,7 +8510,7 @@ msgstr "注意："
 msgid "Since you are using SQLite, there is no need to create a new user with limited rights."
 msgstr "由于您使用的是 SQLite，因此无需创建权限有限的新用户。"
 
-#: install/templates/step5.html.twig:166 install/templates/step3.html.twig:38
+#: install/templates/step5.html.twig:167 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "继续到步骤"
 
@@ -8489,99 +8590,103 @@ msgstr "具有创建表权限的数据库用户名。"
 msgid "Password for this database user."
 msgstr "此数据库用户的密码。"
 
-#: install/templates/step4.html.twig:63
+#: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
+msgid "Avoid quotes, backslashes, and line breaks."
+msgstr "避免使用引号、反斜杠和换行符。"
+
+#: install/templates/step4.html.twig:64
 msgid "Hostname"
 msgstr "主机名"
 
-#: install/templates/step4.html.twig:66
+#: install/templates/step4.html.twig:67
 msgid "Provide the hostname"
 msgstr "提供主机名"
 
-#: install/templates/step4.html.twig:69
+#: install/templates/step4.html.twig:70
 msgid "Database server hostname (usually \"localhost\")."
 msgstr "数据库服务器主机名（通常为 \"localhost\"）。"
 
-#: install/templates/step4.html.twig:74
+#: install/templates/step4.html.twig:75
 msgid "DB Port"
 msgstr "数据库端口"
 
-#: install/templates/step4.html.twig:77
+#: install/templates/step4.html.twig:78
 msgid "Provide database port"
 msgstr "输入数据库端口"
 
-#: install/templates/step4.html.twig:80
+#: install/templates/step4.html.twig:81
 msgid "Database server port."
 msgstr "数据库服务器端口。"
 
-#: install/templates/step4.html.twig:85
+#: install/templates/step4.html.twig:86
 msgid "Database"
 msgstr "数据库"
 
-#: install/templates/step4.html.twig:88
+#: install/templates/step4.html.twig:89
 msgid "Provide the name of the database"
 msgstr "输入数据库名称"
 
-#: install/templates/step4.html.twig:91
+#: install/templates/step4.html.twig:92
 msgid "Database name (will be used for Poweradmin tables)."
 msgstr "数据库名称（将用于Poweradmin表）。"
 
-#: install/templates/step4.html.twig:93
+#: install/templates/step4.html.twig:94
 msgid "Full path to SQLite database file"
 msgstr "SQLite 数据库文件的完整路径"
 
-#: install/templates/step4.html.twig:96
+#: install/templates/step4.html.twig:97
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr "文件必须存在并具有 Web 服务器读/写访问权限。使用绝对路径。"
 
-#: install/templates/step4.html.twig:104
+#: install/templates/step4.html.twig:105
 msgid "DB charset"
 msgstr "数据库字符集"
 
-#: install/templates/step4.html.twig:199 install/templates/step4.html.twig:207
+#: install/templates/step4.html.twig:200 install/templates/step4.html.twig:208
 msgid "Use default"
 msgstr "使用默认值"
 
-#: install/templates/step4.html.twig:111
+#: install/templates/step4.html.twig:112
 msgid "Charset for new tables. Leave empty for database default."
 msgstr "新表的字符集。留空使用数据库默认值。"
 
-#: install/templates/step4.html.twig:116
+#: install/templates/step4.html.twig:117
 msgid "DB collation"
 msgstr "数据库排序规则"
 
-#: install/templates/step4.html.twig:123
+#: install/templates/step4.html.twig:124
 msgid "Collation rules for character comparison. Leave empty for database default."
 msgstr "用于字符比较的排序规则。留空使用数据库默认值。"
 
-#: install/templates/step4.html.twig:132
+#: install/templates/step4.html.twig:133
 msgid "PowerDNS Database"
 msgstr "PowerDNS数据库"
 
-#: install/templates/step4.html.twig:136
+#: install/templates/step4.html.twig:137
 msgid "Database name"
 msgstr "数据库名称"
 
-#: install/templates/step4.html.twig:139
+#: install/templates/step4.html.twig:140
 msgid "Leave empty for same database"
 msgstr "同一数据库请留空"
 
-#: install/templates/step4.html.twig:142
+#: install/templates/step4.html.twig:143
 msgid "MySQL database with PowerDNS tables (if different)."
 msgstr "包含PowerDNS表的MySQL数据库（如果不同）。"
 
-#: install/templates/step4.html.twig:150
+#: install/templates/step4.html.twig:151
 msgid "Poweradmin Account"
 msgstr "Poweradmin账户"
 
-#: install/templates/step4.html.twig:154
+#: install/templates/step4.html.twig:155
 msgid "Administrator password"
 msgstr "管理员密码"
 
-#: install/templates/step4.html.twig:159
+#: install/templates/step4.html.twig:160
 msgid "Provide a password"
 msgstr "提供密码"
 
-#: install/templates/step4.html.twig:164
+#: install/templates/step4.html.twig:165
 msgid "Password for \"admin\" username."
 msgstr "\"admin\"用户名的密码。"
 
@@ -8673,63 +8778,63 @@ msgstr "提供用户密码"
 msgid "The password for this username."
 msgstr "此用户名的密码。"
 
-#: install/templates/step5.html.twig:85
+#: install/templates/step5.html.twig:86
 msgid "DNS Settings"
 msgstr "DNS 设置"
 
-#: install/templates/step5.html.twig:89
+#: install/templates/step5.html.twig:90
 msgid "Hostmaster"
 msgstr "主机管理员"
 
-#: install/templates/step5.html.twig:93
+#: install/templates/step5.html.twig:94
 msgid "Provide the DNS hostmaster"
 msgstr "提供 DNS 主机管理员"
 
-#: install/templates/step5.html.twig:96
+#: install/templates/step5.html.twig:97
 msgid "Default hostmaster for SOA records."
 msgstr "SOA记录的默认主机管理员。"
 
-#: install/templates/step5.html.twig:101
+#: install/templates/step5.html.twig:102
 msgid "Primary nameserver"
 msgstr "主域名服务器"
 
-#: install/templates/step5.html.twig:105
+#: install/templates/step5.html.twig:106
 msgid "Provide the primary nameserver"
 msgstr "提供主域名服务器"
 
-#: install/templates/step5.html.twig:108
+#: install/templates/step5.html.twig:109
 msgid "Primary nameserver for new zones."
 msgstr "新区域的主名称服务器。"
 
-#: install/templates/step5.html.twig:113
+#: install/templates/step5.html.twig:114
 msgid "Secondary nameserver"
 msgstr "辅助域名服务器"
 
-#: install/templates/step5.html.twig:117
+#: install/templates/step5.html.twig:118
 msgid "Provide the secondary nameserver"
 msgstr "提供辅助域名服务器"
 
-#: install/templates/step5.html.twig:120
+#: install/templates/step5.html.twig:121
 msgid "Secondary nameserver for new zones."
 msgstr "新区域的辅助名称服务器。"
 
-#: install/templates/step5.html.twig:126
+#: install/templates/step5.html.twig:127
 msgid "Tertiary Nameserver"
 msgstr "第三域名服务器"
 
-#: install/templates/step5.html.twig:126 install/templates/step5.html.twig:139
+#: install/templates/step5.html.twig:127 install/templates/step5.html.twig:140
 msgid "optional"
 msgstr "可选"
 
-#: install/templates/step5.html.twig:133
+#: install/templates/step5.html.twig:134
 msgid "Optional tertiary nameserver for new zones."
 msgstr "新区域的可选第三名称服务器。"
 
-#: install/templates/step5.html.twig:139
+#: install/templates/step5.html.twig:140
 msgid "Quaternary Nameserver"
 msgstr "第四域名服务器"
 
-#: install/templates/step5.html.twig:146
+#: install/templates/step5.html.twig:147
 msgid "Optional quaternary nameserver for new zones."
 msgstr "新区域的可选第四名称服务器。"
 
@@ -8902,3 +9007,24 @@ msgstr "数据库\"%s\"中缺少PowerDNS表：%s。请确保PowerDNS已正确安
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "无法连接到PowerDNS数据库\"%s\"：%s"
+
+# OBSOLETE: msgid "You do not have the permission to view this record."
+# OBSOLETE: msgstr "您没有查看此记录的权限。"
+
+# OBSOLETE: msgid "Your verification code"
+# OBSOLETE: msgstr "您的验证码"
+
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "Your verification code is: %s\n"
+# OBSOLETE: "\n"
+# OBSOLETE: "This code will expire in 10 minutes at %s."
+# OBSOLETE: msgstr "您的验证码是：%s\\n\\n此验证码将在 %s 的 10 分钟后过期。"
+
+# OBSOLETE: msgid "Optional: User's full name for identification"
+# OBSOLETE: msgstr "可选：用于识别的用户全名"
+
+# OBSOLETE: msgid "All recovery codes copied to clipboard"
+# OBSOLETE: msgstr "所有恢复码已复制到剪贴板"
+
+

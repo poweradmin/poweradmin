@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-06-21 12:12+0300\n"
+"POT-Creation-Date: 2025-07-06 07:29+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -21,24 +21,24 @@ msgstr ""
 msgid "No configuration file found. Please use the <a href=\"install/\">installer</a> to create one, or create a config/settings.php file manually."
 msgstr "設定ファイルが見つかりません。<a href=\"install/\">インストーラー</a>を使用して作成するか、config/settings.phpファイルを手動で作成してください。"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:134
+#: lib/Infrastructure/Service/SessionAuthenticator.php:136
 msgid "Invalid CSRF token."
 msgstr "無効なCSRFトークンです。"
 
-#: lib/BaseController.php:499
+#: lib/BaseController.php:471
 msgid "The <a href=\"install/\">install/</a> directory exists, you must remove it first before proceeding."
 msgstr "<a href=\"install/\">install/</a>ディレクトリが存在します。続行する前に削除する必要があります。first before proceeding."
 
-#: lib/BaseController.php:525
+#: lib/BaseController.php:497
 msgid "Default session encryption key is used, please set it in your configuration file."
 msgstr "デフォルトのセッション暗号化キーが使用されています。設定ファイルで設定してください。"
 
-#: lib/BaseController.php:626
+#: lib/BaseController.php:599
 #, php-format
 msgid "The %s field is required."
 msgstr "%sフィールドは必須です。"
 
-#: lib/BaseController.php:634
+#: lib/BaseController.php:607
 #, php-format
 msgid "The %s field must be a number."
 msgstr "%sフィールドは数値である必要があります。"
@@ -63,20 +63,20 @@ msgstr "すべて表示"
 msgid "No records selected for deletion."
 msgstr "削除するレコードが選択されていません。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:176
+#: lib/Application/Controller/DeleteRecordsController.php:180
 msgid "The record has been deleted successfully. Any corresponding PTR records were also removed."
 msgstr "レコードが正常に削除されました。対応するPTRレコードも削除されました。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:178
+#: lib/Application/Controller/DeleteRecordsController.php:182
 #, php-format
 msgid "%d records have been deleted successfully. Any corresponding PTR records were also removed."
 msgstr "%d件のレコードが正常に削除されました。対応するPTRレコードも削除されました。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:181
+#: lib/Application/Controller/DeleteRecordsController.php:185
 msgid "No records could be deleted. Please check permissions."
 msgstr "レコードを削除できませんでした。権限を確認してください。"
 
-#: lib/Application/Controller/DeleteRecordsController.php:226
+#: lib/Application/Controller/DeleteRecordsController.php:234
 msgid "No valid records selected for deletion or you lack permission to delete them."
 msgstr "削除する有効なレコードが選択されていないか、削除権限がありません。"
 
@@ -84,7 +84,7 @@ msgstr "削除する有効なレコードが選択されていないか、削除
 msgid "Invalid or unexpected input given."
 msgstr "無効または予期しない入力が提供されました。"
 
-#: lib/Domain/Model/UserManager.php:230
+#: lib/Domain/Model/UserManager.php:229
 msgid "You do not have the permission to delete this user."
 msgstr "このユーザーを削除する権限がありません。"
 
@@ -104,7 +104,7 @@ msgstr "ゾーンコメント機能は設定で無効になっています。"
 msgid "You do not have the permission to view this comment."
 msgstr "このコメントを表示する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:377
+#: lib/Domain/Service/Dns/RecordManager.php:379
 msgid "You do not have the permission to edit this comment."
 msgstr "このコメントを編集する権限がありません。"
 
@@ -112,27 +112,31 @@ msgstr "このコメントを編集する権限がありません。"
 msgid "The comment has been updated successfully."
 msgstr "コメントが正常に更新されました。"
 
-#: lib/Application/Controller/DnssecAddKeyController.php:61
-msgid "There is no zone with this ID."
-msgstr "このIDのゾーンは存在しません。"
+#: lib/Application/Controller/EditRecordController.php:81
+msgid "Invalid record ID."
+msgstr "無効なレコードIDです。"
 
-#: lib/Application/Controller/DeleteRecordController.php:168
+#: lib/Application/Controller/DeleteRecordController.php:103
+msgid "You do not have permission to delete records in this zone."
+msgstr "このゾーンのレコードを削除する権限がありません。"
+
+#: lib/Application/Controller/DeleteRecordController.php:189
 msgid "The record and its corresponding PTR and A/AAAA records have been deleted successfully."
 msgstr "レコードと対応するPTRおよびA/AAAAレコードが正常に削除されました。"
 
-#: lib/Application/Controller/DeleteRecordController.php:170
+#: lib/Application/Controller/DeleteRecordController.php:191
 msgid "The record and its corresponding PTR record have been deleted successfully."
 msgstr "レコードと対応するPTRレコードが正常に削除されました。"
 
-#: lib/Application/Controller/DeleteRecordController.php:172
+#: lib/Application/Controller/DeleteRecordController.php:193
 msgid "The record and its corresponding A/AAAA record have been deleted successfully."
 msgstr "レコードと対応するA/AAAAレコードが正常に削除されました。"
 
-#: lib/Application/Controller/DeleteRecordController.php:174
+#: lib/Application/Controller/DeleteRecordController.php:195
 msgid "The record has been deleted successfully. No matching PTR record was found."
 msgstr "レコードが正常に削除されました。一致するPTRレコードは見つかりませんでした。"
 
-#: lib/Application/Controller/DeleteRecordController.php:176
+#: lib/Application/Controller/DeleteRecordController.php:197
 msgid "The record has been deleted successfully. No matching A/AAAA record was found."
 msgstr "レコードが正常に削除されました。対応するA/AAAAレコードは見つかりませんでした。"
 
@@ -140,23 +144,23 @@ msgstr "レコードが正常に削除されました。対応するA/AAAAレコ
 msgid "The record has been deleted successfully."
 msgstr "レコードが正常に削除されました。"
 
-#: lib/Application/Controller/DeleteRecordController.php:182
+#: lib/Application/Controller/DeleteRecordController.php:203
 msgid "The record and its corresponding PTR and A/AAAA records were deleted but the comment was preserved because similar records exist."
 msgstr "レコードと対応するPTRおよびA/AAAAレコードは削除されましたが、類似のレコードが存在するためコメントは保持されました。"
 
-#: lib/Application/Controller/DeleteRecordController.php:184
+#: lib/Application/Controller/DeleteRecordController.php:205
 msgid "The record and its corresponding PTR record were deleted but the comment was preserved because similar records exist."
 msgstr "レコードと対応するPTRレコードは削除されましたが、類似のレコードが存在するためコメントは保持されました。"
 
-#: lib/Application/Controller/DeleteRecordController.php:186
+#: lib/Application/Controller/DeleteRecordController.php:207
 msgid "The record and its corresponding A/AAAA record were deleted but the comment was preserved because similar records exist."
 msgstr "レコードと対応するA/AAAAレコードは削除されましたが、類似のレコードが存在するためコメントは保持されました。"
 
-#: lib/Application/Controller/DeleteRecordController.php:188
+#: lib/Application/Controller/DeleteRecordController.php:209
 msgid "The record was deleted but the comment was preserved because similar records exist."
 msgstr "レコードは削除されましたが、類似のレコードが存在するためコメントは保持されました。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:230
+#: lib/Domain/Service/Dns/RecordManager.php:232
 msgid "You do not have the permission to edit this record."
 msgstr "このレコードを編集する権限がありません。"
 
@@ -224,81 +228,81 @@ msgstr "復旧コードが再生成されました。安全な場所に保存し
 msgid "You do not have the permission to view supermasters."
 msgstr "スーパーマスターを表示する権限がありません。"
 
-#: lib/Application/Controller/ApiKeysController.php:71
+#: lib/Application/Controller/ApiKeysController.php:68
 msgid "The API feature is disabled in the system configuration."
 msgstr "システム設定でAPI機能が無効になっています。"
 
-#: lib/Application/Controller/ApiKeysController.php:77
+#: lib/Application/Controller/ApiKeysController.php:74
 msgid "You do not have permission to manage API keys. Only administrators can access this feature."
 msgstr "APIキーを管理する権限がありません。管理者のみがこの機能にアクセスできます。"
 
-#: lib/Application/Controller/ApiKeysController.php:199
+#: lib/Application/Controller/ApiKeysController.php:196
 msgid "API key name is required."
 msgstr "APIキー名が必要です。"
 
-#: lib/Application/Controller/ApiKeysController.php:209
+#: lib/Application/Controller/ApiKeysController.php:206
 msgid "Invalid expiration date format."
 msgstr "無効な有効期限の形式です。"
 
-#: lib/Domain/Service/ApiKeyService.php:275
+#: lib/Domain/Service/ApiKeyService.php:279
 msgid "API key not found or you do not have permission to edit it."
 msgstr "APIキーが見つからないか、編集する権限がありません。"
 
-#: lib/Application/Controller/ApiKeysController.php:218
+#: lib/Application/Controller/ApiKeysController.php:215
 msgid "API key updated successfully."
 msgstr "APIキーが正常に更新されました。"
 
-#: lib/Application/Controller/ApiKeysController.php:247
+#: lib/Application/Controller/ApiKeysController.php:244
 msgid "API key deleted successfully."
 msgstr "APIキーが正常に削除されました。"
 
-#: lib/Domain/Service/ApiKeyService.php:223
+#: lib/Domain/Service/ApiKeyService.php:227
 msgid "API key not found or you do not have permission to delete it."
 msgstr "APIキーが見つからないか、削除する権限がありません。"
 
-#: lib/Application/Controller/ApiKeysController.php:319
+#: lib/Application/Controller/ApiKeysController.php:316
 msgid "disabled"
 msgstr "無効"
 
-#: lib/Application/Controller/ApiKeysController.php:319
+#: lib/Application/Controller/ApiKeysController.php:316
 msgid "enabled"
 msgstr "有効"
 
-#: lib/Application/Controller/ApiKeysController.php:320
+#: lib/Application/Controller/ApiKeysController.php:317
 #, php-format
 msgid "API key %s successfully."
 msgstr "APIキーが正常に%sされました。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:97
+#: lib/Application/Controller/BatchPtrRecordController.php:98
 msgid "You do not have the permission to add records to this zone."
 msgstr "このゾーンにレコードを追加する権限がありません。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:104
+#: lib/Application/Controller/BulkRecordAddController.php:105
 msgid "Please provide at least one record."
 msgstr "少なくとも1つのレコードを提供してください。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:132
+#: lib/Application/Controller/BulkRecordAddController.php:133
 msgid "Invalid format. Expected at least: name,type,content"
 msgstr "無効な形式です。少なくとも次の形式が必要です：name,type,content"
 
-#: lib/Application/Controller/BulkRecordAddController.php:180
+#: lib/Application/Controller/BulkRecordAddController.php:181
 msgid "Invalid record type."
 msgstr "無効なレコードタイプです。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:226
+#: lib/Application/Controller/BulkRecordAddController.php:227
 msgid "Record could not be added."
 msgstr "レコードを追加できませんでした。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:234
+#: lib/Application/Controller/BulkRecordAddController.php:235
 #, php-format
 msgid "%d record(s) have been added successfully."
 msgstr "%d件のレコードが正常に追加されました。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:237
+#: lib/Application/Controller/BulkRecordAddController.php:238
 msgid "Some record(s) could not be added."
 msgstr "一部のレコードを追加できませんでした。"
 
-#: lib/Application/Controller/BulkRecordAddController.php:270
+#: lib/Application/Controller/BulkRecordAddController.php:271
 msgid "Zone ID is required."
 msgstr "ゾーンIDが必要です。"
 
@@ -310,11 +314,11 @@ msgstr "権限テンプレートを編集する権限がありません。"
 msgid "The permission template has been updated successfully."
 msgstr "権限テンプレートが正常に更新されました。"
 
-#: lib/Application/Controller/SearchController.php:45
+#: lib/Application/Controller/SearchController.php:44
 msgid "You do not have the permission to perform searches."
 msgstr "検索を実行する権限がありません。"
 
-#: lib/Domain/Model/UserManager.php:740
+#: lib/Domain/Model/UserManager.php:739
 msgid "You do not have the permission to add a new user."
 msgstr "新しいユーザーを追加する権限がありません。"
 
@@ -343,7 +347,7 @@ msgstr "パスワードが生成されましたが、セキュリティ上の理
 msgid "Please fill in all required fields correctly."
 msgstr "すべての必須フィールドを正しく入力してください。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:323
+#: lib/Domain/Service/Dns/RecordManager.php:325
 msgid "You do not have the permission to delete this record."
 msgstr "このレコードを削除する権限がありません。"
 
@@ -379,73 +383,77 @@ msgstr "ゾーンテンプレートが正常に更新されました。"
 msgid "Zones have been updated successfully."
 msgstr "ゾーンが正常に更新されました。"
 
-#: lib/Application/Controller/EditZoneTemplController.php:232
+#: lib/Application/Controller/EditZoneTemplController.php:233
 msgid "You do not have permission to create new zone templates."
 msgstr "新しいゾーンテンプレートを作成する権限がありません。"
 
-#: lib/Domain/Model/ZoneTemplate.php:176 lib/Domain/Model/ZoneTemplate.php:800
+#: lib/Domain/Model/ZoneTemplate.php:181 lib/Domain/Model/ZoneTemplate.php:802
 msgid "Zone template with this name already exists, please choose another one."
 msgstr "この名前のゾーンテンプレートは既に存在します。別の名前を選択してください。"
 
-#: lib/Application/Controller/EditZoneTemplController.php:263
+#: lib/Application/Controller/EditZoneTemplController.php:264
 msgid "Please enter a different name when using Save As."
 msgstr "名前を付けて保存を使用する場合は、異なる名前を入力してください。"
 
-#: lib/Application/Controller/EditZoneTemplController.php:287
+#: lib/Application/Controller/EditZoneTemplController.php:288
 msgid "Zone template has been copied successfully."
 msgstr "ゾーンテンプレートが正常にコピーされました。"
 
-#: lib/Application/Controller/ListTemplateZonesController.php:40
+#: lib/Application/Controller/ListTemplateZonesController.php:39
 msgid "You do not have permission to view zone templates."
 msgstr "ゾーンテンプレートを表示する権限がありません。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:54
+#: lib/Application/Controller/UnlinkZonesTemplController.php:52
 msgid "Invalid template ID."
 msgstr "無効なテンプレートIDです。"
 
-#: lib/Application/Controller/ListTemplateZonesController.php:49
+#: lib/Application/Controller/ListTemplateZonesController.php:48
 msgid "Template does not exist."
 msgstr "テンプレートが存在しません。"
 
-#: lib/Domain/Repository/DomainRepository.php:439
+#: lib/Domain/Repository/DomainRepository.php:441
 msgid "You do not have the permission to view this zone."
 msgstr "このゾーンを表示する権限がありません。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:40
+#: lib/Application/Controller/DnssecAddKeyController.php:61
+msgid "There is no zone with this ID."
+msgstr "このIDのゾーンは存在しません。"
+
+#: lib/Application/Controller/UnlinkZonesTemplController.php:38
 msgid "You do not have permission to unlink zones from templates."
 msgstr "テンプレートからゾーンのリンクを解除する権限がありません。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:49
+#: lib/Application/Controller/UnlinkZonesTemplController.php:47
 msgid "No zones selected."
 msgstr "ゾーンが選択されていません。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:64
+#: lib/Application/Controller/UnlinkZonesTemplController.php:62
 msgid "Invalid request method."
 msgstr "無効なリクエストメソッドです。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:98
+#: lib/Application/Controller/UnlinkZonesTemplController.php:96
 #, php-format
 msgid "%d zone has been unlinked from template successfully."
 msgid_plural "%d zones have been unlinked from template successfully."
 msgstr[0] "%d個のゾーンがテンプレートから正常にリンク解除されました。"
 msgstr[1] "%d個のゾーンがテンプレートから正常にリンク解除されました。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:108
+#: lib/Application/Controller/UnlinkZonesTemplController.php:106
 #, php-format
 msgid "%d zone could not be unlinked."
 msgid_plural "%d zones could not be unlinked."
 msgstr[0] "%d個のゾーンをリンク解除できませんでした。"
 msgstr[1] "%d個のゾーンをリンク解除できませんでした。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:118
+#: lib/Application/Controller/UnlinkZonesTemplController.php:116
 msgid "Failed to unlink zones from template."
 msgstr "テンプレートからゾーンのリンク解除ができませんでした。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:130
+#: lib/Application/Controller/UnlinkZonesTemplController.php:128
 msgid "No valid zones selected."
 msgstr "有効なゾーンが選択されていません。"
 
-#: lib/Application/Controller/UnlinkZonesTemplController.php:138
+#: lib/Application/Controller/UnlinkZonesTemplController.php:136
 msgid "Template not found."
 msgstr "テンプレートが見つかりません。"
 
@@ -453,56 +461,60 @@ msgstr "テンプレートが見つかりません。"
 msgid "User agreement accepted successfully."
 msgstr "ユーザー規約が正常に承諾されました。"
 
-#: lib/Application/Controller/WhoisController.php:61
+#: lib/Application/Controller/WhoisController.php:60
 msgid "WHOIS lookup functionality is disabled."
 msgstr "WHOIS検索機能が無効になっています。"
 
-#: lib/Application/Controller/WhoisController.php:66
+#: lib/Application/Controller/WhoisController.php:65
 msgid "You do not have permission to perform WHOIS lookups."
 msgstr "WHOIS検索を実行する権限がありません。"
 
-#: lib/Application/Controller/WhoisController.php:137
+#: lib/Application/Controller/WhoisController.php:136
 #, php-format
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "サーバー %s を使用してWHOIS情報の取得に失敗しました"
 
-#: lib/Application/Controller/EditController.php:282
+#: lib/Application/Controller/EditController.php:176
+msgid "You do not have permission to access this zone."
+msgstr "このゾーンにアクセスする権限がありません。"
+
+#: lib/Application/Controller/EditController.php:292
 msgid "DNSSEC is not enabled on the server."
 msgstr "サーバーでDNSSECが有効になっていません。"
 
-#: lib/Application/Controller/EditController.php:285
+#: lib/Application/Controller/EditController.php:295
 msgid "Zone is already signed with DNSSEC."
 msgstr "ゾーンは既にDNSSECで署名されています。"
 
-#: lib/Application/Controller/EditController.php:297
+#: lib/Application/Controller/EditController.php:307
 msgid "Zone has been signed successfully."
 msgstr "ゾーンが正常に署名されました。"
 
-#: lib/Application/Controller/EditController.php:301
+#: lib/Application/Controller/EditController.php:311
 msgid "Zone signing requested successfully, but verification failed. Check DNSSEC keys."
 msgstr "ゾーン署名の要求は成功しましたが、検証に失敗しました。DNSSECキーを確認してください。"
 
-#: lib/Application/Controller/EditController.php:305
+#: lib/Application/Controller/EditController.php:315
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr "ゾーンの署名に失敗しました。詳細についてはPowerDNSログを確認してください。"
 
-#: lib/Application/Controller/DnssecController.php:79
+#: lib/Application/Controller/DnssecController.php:92
 msgid "Zone is not currently signed with DNSSEC."
 msgstr "ゾーンは現在DNSSECで署名されていません。"
 
-#: lib/Application/Controller/DnssecController.php:89
+#: lib/Application/Controller/DnssecController.php:102
 msgid "Zone has been unsigned successfully."
 msgstr "ゾーンの署名が正常に解除されました。"
 
-#: lib/Application/Controller/DnssecController.php:94
+#: lib/Application/Controller/DnssecController.php:107
 msgid "Zone unsigning requested successfully, but verification failed."
 msgstr "ゾーン署名解除の要求は成功しましたが、検証に失敗しました。"
 
-#: lib/Application/Controller/DnssecController.php:98
+#: lib/Application/Controller/DnssecController.php:111
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "ゾーンの署名解除に失敗しました。詳細についてはPowerDNSログを確認してください。"
 
-#: lib/Application/Controller/EditController.php:627
+#: lib/Application/Controller/EditController.php:637
 msgid "Template name can't be an empty string."
 msgstr "テンプレート名は空の文字列にできません。"
 
@@ -510,59 +522,59 @@ msgstr "テンプレート名は空の文字列にできません。"
 msgid "Zone template has been added successfully."
 msgstr "ゾーンテンプレートが正常に追加されました。"
 
-#: lib/Application/Controller/EditController.php:647
+#: lib/Application/Controller/EditController.php:657
 msgid "You need to be logged in to export zone data."
 msgstr "ゾーンデータをエクスポートするにはログインが必要です。"
 
-#: lib/Application/Controller/EditController.php:657
+#: lib/Application/Controller/EditController.php:667
 msgid "You do not have permission to export this zone."
 msgstr "このゾーンをエクスポートする権限がありません。"
 
-#: lib/Application/Controller/EditController.php:681
+#: lib/Application/Controller/EditController.php:691
 msgid "This zone does not have any records to export."
 msgstr "このゾーンにはエクスポートするレコードがありません。"
 
-#: lib/Application/Controller/EditController.php:781
+#: lib/Application/Controller/EditController.php:791
 msgid "Request has expired, please try again."
 msgstr "リクエストが期限切れです。もう一度お試しください。"
 
-#: lib/Application/Controller/EditController.php:786
+#: lib/Application/Controller/EditController.php:796
 msgid "Zone has been updated successfully."
 msgstr "ゾーンが正常に更新されました。"
 
-#: lib/Application/Controller/EditController.php:788
+#: lib/Application/Controller/EditController.php:798
 msgid "Zone did not have any record changes."
 msgstr "ゾーンにレコードの変更はありませんでした。"
 
-#: lib/Application/Controller/EditController.php:797
+#: lib/Application/Controller/EditController.php:807
 msgid "Zone has not been updated successfully."
 msgstr "ゾーンが正常に更新されませんでした。"
 
-#: lib/Application/Controller/EditController.php:825
+#: lib/Application/Controller/EditController.php:835
 msgid "Please provide all required fields."
 msgstr "すべての必須フィールドを入力してください。"
 
-#: lib/Application/Controller/AddRecordController.php:167
+#: lib/Application/Controller/AddRecordController.php:168
 msgid "This record was not valid and could not be added. It may already exist or contain invalid data."
 msgstr "このレコードは無効で追加できませんでした。既に存在するか、無効なデータが含まれている可能性があります。"
 
-#: lib/Application/Controller/AddRecordController.php:222
+#: lib/Application/Controller/AddRecordController.php:223
 msgid "Record successfully added. A matching PTR record was also created."
 msgstr "レコードが正常に追加されました。一致するPTRレコードも作成されました。"
 
-#: lib/Application/Controller/AddRecordController.php:226
+#: lib/Application/Controller/AddRecordController.php:227
 msgid "Record successfully added, but PTR record creation failed: "
 msgstr "レコードは正常に追加されましたが、PTRレコードの作成に失敗しました："
 
-#: lib/Application/Controller/AddRecordController.php:230
+#: lib/Application/Controller/AddRecordController.php:231
 msgid "The record was successfully added, but PTR record creation failed."
 msgstr "レコードは正常に追加されましたが、PTRレコードの作成に失敗しました。"
 
-#: lib/Application/Controller/AddRecordController.php:234
+#: lib/Application/Controller/AddRecordController.php:235
 msgid "Record successfully added. A matching A record was also created."
 msgstr "レコードが正常に追加されました。一致するAレコードも作成されました。"
 
-#: lib/Application/Controller/AddRecordController.php:237
+#: lib/Application/Controller/AddRecordController.php:238
 msgid "The record was successfully added."
 msgstr "レコードが正常に追加されました。"
 
@@ -594,29 +606,29 @@ msgstr "代わりに復旧コードを使用してください。"
 msgid "Could not send verification code to your email. Please use a recovery code instead."
 msgstr "メールに確認コードを送信できませんでした。代わりに復旧コードを使用してください。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:111
+#: lib/Domain/Service/Dns/RecordManager.php:113
 msgid "You do not have the permission to add a record to this zone."
 msgstr "このゾーンにレコードを追加する権限がありません。"
 
-#: lib/Application/Controller/AddRecordController.php:386
+#: lib/Application/Controller/AddRecordController.php:387
 msgid "No records were provided."
 msgstr "レコードが提供されていません。"
 
-#: lib/Application/Controller/AddRecordController.php:424
+#: lib/Application/Controller/AddRecordController.php:425
 #, php-format
 msgid "%d record(s) were successfully added."
 msgstr "%d件のレコードが正常に追加されました。"
 
-#: lib/Application/Controller/AddRecordController.php:426
+#: lib/Application/Controller/AddRecordController.php:427
 #, php-format
 msgid "%d record(s) failed to be added."
 msgstr "%d件のレコードの追加に失敗しました。"
 
-#: lib/Application/Controller/AddRecordController.php:431
+#: lib/Application/Controller/AddRecordController.php:432
 msgid "Some records could not be added. They may already exist or contain invalid data."
 msgstr "一部のレコードを追加できませんでした。既に存在するか、無効なデータが含まれている可能性があります。"
 
-#: lib/Application/Controller/AddRecordController.php:453
+#: lib/Application/Controller/AddRecordController.php:454
 msgid "Failed to add any records. They may contain invalid data."
 msgstr "レコードの追加に失敗しました。無効なデータが含まれている可能性があります。"
 
@@ -632,7 +644,7 @@ msgstr "ゾーンが正常に削除されました。"
 msgid "Zones have been deleted successfully."
 msgstr "ゾーンが正常に削除されました。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:481
+#: lib/Domain/Service/Dns/DomainManager.php:506
 msgid "You do not have the permission to delete a zone."
 msgstr "ゾーンを削除する権限がありません。"
 
@@ -652,31 +664,31 @@ msgstr "古い移行テーブルが検出されました。続行する前に`mi
 msgid "Database access check failed. Please ensure the current database user has the necessary permissions to create and alter tables."
 msgstr "データベースアクセスチェックに失敗しました。現在のデータベースユーザーがテーブルを作成および変更するために必要な権限を持っていることを確認してください。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:213
+#: lib/Domain/Service/Dns/DomainManager.php:216
 msgid "You do not have the permission to add a master zone."
 msgstr "マスターゾーンを追加する権限がありません。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:104
+#: lib/Application/Controller/BulkRegistrationController.php:103
 msgid "There is already a zone with this name."
 msgstr "この名前のゾーンは既に存在します。"
 
-#: lib/Application/Controller/AddZoneMasterController.php:132
+#: lib/Application/Controller/AddZoneMasterController.php:131
 msgid "Zone was created, but securing it with DNSSEC failed."
 msgstr "ゾーンは作成されましたが、DNSSECでの保護に失敗しました。"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:128
+#: lib/Application/Controller/AddZoneSlaveController.php:127
 msgid "Zone has been added successfully."
 msgstr "ゾーンが正常に追加されました。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:68
+#: lib/Application/Controller/BatchPtrRecordController.php:69
 msgid "Batch PTR record creation is not enabled."
 msgstr "バッチPTRレコード作成が有効になっていません。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:75
+#: lib/Application/Controller/BatchPtrRecordController.php:76
 msgid "You do not have permission to edit DNS records."
 msgstr "DNSレコードを編集する権限がありません。"
 
-#: lib/Application/Controller/BatchPtrRecordController.php:91
+#: lib/Application/Controller/BatchPtrRecordController.php:92
 msgid "Batch PTR record creation is not available for reverse zones."
 msgstr "逆引きゾーンではバッチPTRレコード作成は利用できません。"
 
@@ -684,7 +696,7 @@ msgstr "逆引きゾーンではバッチPTRレコード作成は利用できま
 msgid "You do not have the permission to view zone templates."
 msgstr "ゾーンテンプレートを表示する権限がありません。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:82
+#: lib/Application/Controller/DnssecDeleteKeyController.php:83
 msgid "Failed to delete DNSSEC key."
 msgstr "DNSSECキーの削除に失敗しました。"
 
@@ -704,23 +716,23 @@ msgstr "ゾーンキーが正常に有効化されました。"
 msgid "Failed to activate zone key."
 msgstr "ゾーンキーの有効化に失敗しました。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:93
+#: lib/Application/Controller/DnssecDeleteKeyController.php:94
 msgid "Zone key has been deleted successfully."
 msgstr "ゾーンキーが正常に削除されました。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:96
+#: lib/Application/Controller/DnssecDeleteKeyController.php:97
 msgid "Failed to delete the zone key."
 msgstr "ゾーンキーの削除に失敗しました。"
 
-#: lib/Application/Controller/DnssecDeleteKeyController.php:103
+#: lib/Application/Controller/DnssecDeleteKeyController.php:104
 msgid "An error occurred while deleting the DNSSEC key: "
 msgstr "DNSSECキーの削除中にエラーが発生しました："
 
-#: lib/Application/Controller/ListForwardZonesController.php:57
+#: lib/Application/Controller/ListForwardZonesController.php:56
 msgid "You do not have sufficient permissions to view this page."
 msgstr "このページを表示する十分な権限がありません。"
 
-#: lib/Application/Controller/ListForwardZonesController.php:112
+#: lib/Application/Controller/ListForwardZonesController.php:111
 msgid "You do not have the permission to see any zones."
 msgstr "ゾーンを表示する権限がありません。"
 
@@ -732,72 +744,72 @@ msgstr "権限テンプレートを追加する権限がありません。"
 msgid "The permission template has been added successfully."
 msgstr "権限テンプレートが正常に追加されました。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:33
+#: lib/Application/Controller/DatabaseConsistencyController.php:34
 msgid "Not available for anonymous users."
 msgstr "匿名ユーザーは利用できません。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:37
+#: lib/Application/Controller/DatabaseConsistencyController.php:38
 msgid "You do not have the permission to view this page."
 msgstr "このページを表示する権限がありません。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:41
+#: lib/Application/Controller/DatabaseConsistencyController.php:42
 msgid "Database consistency checks are disabled."
 msgstr "データベース整合性チェックが無効になっています。"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:77
+#: lib/Application/Controller/DatabaseConsistencyController.php:78
 #: templates/default/database_consistency.html:29
 msgid "Database Consistency Check"
 msgstr "データベース整合性チェック"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:96
+#: lib/Application/Controller/DatabaseConsistencyController.php:97
 msgid "Zone owner assigned successfully"
 msgstr "ゾーンオーナーが正常に割り当てられました"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:96
+#: lib/Application/Controller/DatabaseConsistencyController.php:97
 msgid "Failed to assign zone owner"
 msgstr "ゾーンオーナーの割り当てに失敗しました"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:103
+#: lib/Application/Controller/DatabaseConsistencyController.php:104
 msgid "Slave zone deleted successfully"
 msgstr "スレーブゾーンが正常に削除されました"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:103
+#: lib/Application/Controller/DatabaseConsistencyController.php:104
 msgid "Failed to delete slave zone"
 msgstr "スレーブゾーンの削除に失敗しました"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:110
+#: lib/Application/Controller/DatabaseConsistencyController.php:111
 msgid "Orphaned record deleted successfully"
 msgstr "孤立したレコードが正常に削除されました"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:110
+#: lib/Application/Controller/DatabaseConsistencyController.php:111
 msgid "Failed to delete orphaned record"
 msgstr "孤立したレコードの削除に失敗しました"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:117
+#: lib/Application/Controller/DatabaseConsistencyController.php:118
 msgid "Duplicate SOA records fixed successfully"
 msgstr "重複するSOAレコードが正常に修正されました"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:117
+#: lib/Application/Controller/DatabaseConsistencyController.php:118
 msgid "Failed to fix duplicate SOA records"
 msgstr "重複するSOAレコードの修正に失敗しました"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:124
+#: lib/Application/Controller/DatabaseConsistencyController.php:125
 msgid "Default SOA record created successfully"
 msgstr "デフォルトSOAレコードが正常に作成されました"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:124
+#: lib/Application/Controller/DatabaseConsistencyController.php:125
 msgid "Failed to create default SOA record"
 msgstr "デフォルトSOAレコードの作成に失敗しました"
 
-#: lib/Application/Controller/DatabaseConsistencyController.php:129
+#: lib/Application/Controller/DatabaseConsistencyController.php:130
 msgid "Invalid check type"
 msgstr "無効なチェックタイプです"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:119
+#: lib/Infrastructure/Service/SessionAuthenticator.php:121
 msgid "You have logged out."
 msgstr "ログアウトしました。"
 
-#: lib/Domain/Model/ZoneTemplate.php:173 lib/Domain/Model/ZoneTemplate.php:615
+#: lib/Domain/Model/ZoneTemplate.php:178 lib/Domain/Model/ZoneTemplate.php:619
 msgid "You do not have the permission to add a zone template."
 msgstr "ゾーンテンプレートを追加する権限がありません。"
 
@@ -814,19 +826,19 @@ msgstr "RDAP検索を実行する権限がありません。"
 msgid "Failed to retrieve RDAP information using server %s"
 msgstr "サーバー %s を使用してRDAP情報の取得に失敗しました"
 
-#: lib/Application/Controller/AddZoneSlaveController.php:59
+#: lib/Application/Controller/AddZoneSlaveController.php:58
 msgid "You do not have the permission to add a slave zone."
 msgstr "スレーブゾーンを追加する権限がありません。"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:259
+#: lib/Domain/Service/Dns/SupermasterManager.php:263
 msgid "Invalid hostname."
 msgstr "無効なホスト名です。"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:253
+#: lib/Domain/Service/Dns/SupermasterManager.php:257
 msgid "This is not a valid IPv4 or IPv6 address."
 msgstr "これは有効なIPv4またはIPv6アドレスではありません。"
 
-#: lib/Domain/Model/ZoneTemplate.php:273 lib/Domain/Model/ZoneTemplate.php:311
+#: lib/Domain/Model/ZoneTemplate.php:278 lib/Domain/Model/ZoneTemplate.php:316
 msgid "You do not have the permission to delete zone templates."
 msgstr "ゾーンテンプレートを削除する権限がありません。"
 
@@ -838,7 +850,7 @@ msgstr "ゾーンテンプレートが正常に削除されました。"
 msgid "You do not have the permission to edit a supermaster."
 msgstr "スーパーマスターを編集する権限がありません。"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:271
+#: lib/Domain/Service/Dns/SupermasterManager.php:275
 msgid "The supermaster you are trying to edit does not exist."
 msgstr "編集しようとしているスーパーマスターは存在しません。"
 
@@ -870,7 +882,7 @@ msgstr "ユーザーが正常に更新されました。"
 msgid "The user could not be updated."
 msgstr "ユーザーを更新できませんでした。"
 
-#: lib/Domain/Model/UserManager.php:395 lib/Domain/Model/UserManager.php:720
+#: lib/Domain/Model/UserManager.php:394 lib/Domain/Model/UserManager.php:719
 msgid "You do not have the permission to edit this user."
 msgstr "このユーザーを編集する権限がありません。"
 
@@ -894,29 +906,41 @@ msgstr "PowerDNSサーバーステータスを表示する権限がありませ�
 msgid "The PowerDNS API feature is not configured. Please set the API URL and key in the system configuration."
 msgstr "PowerDNS API機能が設定されていません。システム設定でAPIのURLとキーを設定してください。"
 
-#: lib/Application/Controller/ExampleController.php:113
+#: lib/Application/Controller/ExampleController.php:114
 msgid "You do not have the permission to access this feature."
 msgstr "この機能にアクセスする権限がありません。"
 
-#: lib/Application/Controller/ExampleController.php:187
+#: lib/Application/Controller/ExampleController.php:188
 msgid "Operation completed successfully."
 msgstr "操作が正常に完了しました。"
 
-#: lib/Application/Controller/ExampleController.php:191
+#: lib/Application/Controller/ExampleController.php:192
 msgid "Failed to process the request. Please try again."
 msgstr "リクエストの処理に失敗しました。再試行してください。"
 
-#: lib/Application/Controller/ExampleController.php:198
+#: lib/Application/Controller/ExampleController.php:199
 msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "予期しないエラーが発生しました。管理者にお問い合わせください。"
 
-#: lib/Application/Controller/EditRecordController.php:82
-msgid "You do not have the permission to view this record."
+#: lib/Application/Controller/EditRecordController.php:92
+msgid "You do not have permission to view this record."
 msgstr "このレコードを表示する権限がありません。"
 
-#: lib/Application/Controller/EditRecordController.php:215
+#: lib/Application/Controller/EditRecordController.php:101
+msgid "You do not have permission to edit this record."
+msgstr "このレコードを編集する権限がありません。"
+
+#: lib/Application/Controller/EditRecordController.php:231
 msgid "The record has been updated successfully."
 msgstr "レコードが正常に更新されました。"
+
+#: lib/Application/Controller/DnssecController.php:64
+msgid "You do not have permission to view this zone."
+msgstr "このゾーンを表示する権限がありません。"
+
+#: lib/Application/Controller/DnssecController.php:77
+msgid "You do not have permission to manage DNSSEC for this zone."
+msgstr "このゾーンのDNSSECを管理する権限がありません。"
 
 #: lib/Application/Controller/ChangePasswordController.php:78
 msgid "LDAP users cannot change their password here. Please contact your administrator."
@@ -946,7 +970,7 @@ msgstr "RSAアルゴリズムは適切なセキュリティのために1024ま�
 msgid "Zone key has been added successfully."
 msgstr "ゾーンキーが正常に追加されました。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:346
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:348
 msgid "Failed to add new DNSSEC key."
 msgstr "新しいDNSSECキーの追加に失敗しました。"
 
@@ -978,11 +1002,11 @@ msgstr "スーパーマスターが存在しません。"
 msgid "The supermaster has been deleted successfully."
 msgstr "スーパーマスターが正常に削除されました。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:119
+#: lib/Application/Controller/BulkRegistrationController.php:118
 msgid "Zones has been added successfully."
 msgstr "ゾーンが正常に追加されました。"
 
-#: lib/Application/Controller/BulkRegistrationController.php:122
+#: lib/Application/Controller/BulkRegistrationController.php:121
 msgid "Some zone(s) could not be added."
 msgstr "一部のゾーンを追加できませんでした。"
 
@@ -991,19 +1015,19 @@ msgstr "一部のゾーンを追加できませんでした。"
 msgid "Page Not Found"
 msgstr "ページが見つかりません"
 
-#: lib/Application/Service/LdapAuthenticator.php:80
+#: lib/Application/Service/LdapAuthenticator.php:84
 msgid "Account is temporarily locked. Please try again later."
 msgstr "アカウントが一時的にロックされています。後でもう一度お試しください。"
 
-#: lib/Application/Service/SqlAuthenticator.php:138
+#: lib/Application/Service/SqlAuthenticator.php:136
 msgid "The user account is disabled."
 msgstr "ユーザーアカウントが無効です。"
 
-#: lib/Application/Service/SqlAuthenticator.php:213
+#: lib/Application/Service/SqlAuthenticator.php:211
 msgid "Authentication failed!"
 msgstr "認証に失敗しました！"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:188
+#: lib/Infrastructure/Service/SessionAuthenticator.php:190
 msgid "Session expired, please login again."
 msgstr "セッションが期限切れです。再度ログインしてください。"
 
@@ -1011,206 +1035,206 @@ msgstr "セッションが期限切れです。再度ログインしてくださ
 msgid "Failed to update password"
 msgstr "パスワードの更新に失敗しました"
 
-#: lib/Application/Service/LdapAuthenticator.php:113
+#: lib/Application/Service/LdapAuthenticator.php:117
 msgid "Failed to connect to LDAP server!"
 msgstr "LDAPサーバーへの接続に失敗しました！"
 
-#: lib/Application/Service/LdapAuthenticator.php:129
+#: lib/Application/Service/LdapAuthenticator.php:133
 msgid "Failed to bind to LDAP server!"
 msgstr "LDAPサーバーへのバインドに失敗しました！"
 
-#: lib/Application/Service/LdapAuthenticator.php:153
+#: lib/Application/Service/LdapAuthenticator.php:161
 msgid "Failed to search LDAP."
 msgstr "LDAP検索に失敗しました。"
 
-#: lib/Application/Service/LdapAuthenticator.php:170
+#: lib/Application/Service/LdapAuthenticator.php:178
 msgid "Failed to authenticate against LDAP."
 msgstr "LDAPに対する認証に失敗しました。"
 
-#: lib/Application/Service/LdapAuthenticator.php:204
+#: lib/Application/Service/LdapAuthenticator.php:212
 msgid "LDAP Authentication failed!"
 msgstr "LDAP認証に失敗しました！"
 
-#: lib/Application/Query/RecordSearch.php:167 templates/default/users.html:119
+#: lib/Application/Query/RecordSearch.php:169 templates/default/users.html:119
 #: templates/default/users.html:127
 msgid "Yes"
 msgstr "はい"
 
-#: lib/Application/Query/RecordSearch.php:167 templates/default/users.html:121
+#: lib/Application/Query/RecordSearch.php:169 templates/default/users.html:121
 #: templates/default/users.html:129
 msgid "No"
 msgstr "いいえ"
 
-#: lib/Domain/Model/UserManager.php:271
+#: lib/Domain/Model/UserManager.php:270
 msgid "This template is assigned to at least one user."
 msgstr "このテンプレートは少なくとも1人のユーザーに割り当てられています。"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:153
+#: lib/Infrastructure/Service/SessionAuthenticator.php:155
 #: templates/default/login.html:109
 msgid "reCAPTCHA verification failed. Please try again."
 msgstr "reCAPTCHA認証に失敗しました。もう一度お試しください。"
 
-#: lib/Infrastructure/Service/SessionAuthenticator.php:176
+#: lib/Infrastructure/Service/SessionAuthenticator.php:178
 msgid "An empty password is not allowed"
 msgstr "空のパスワードは許可されていません"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:50
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:52
 msgid "Failed to call function exec. Make sure that exec is not listed in disable_functions at php.ini"
 msgstr "関数execの呼び出しに失敗しました。php.iniのdisable_functionsにexecがリストされていないことを確認してください。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:56
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:58
 msgid "Failed to call pdnssec utility."
 msgstr "pdnssecユーティリティの呼び出しに失敗しました。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:150
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:152
 msgid "Failed to secure zone."
 msgstr "ゾーンの保護に失敗しました。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:171
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:173
 msgid "Failed to disable DNSSEC."
 msgstr "DNSSECの無効化に失敗しました。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:314
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:316
 msgid "Failed to get DNSSEC key details."
 msgstr "DNSSECキーの詳細の取得に失敗しました。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:269
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:271
 msgid "Failed to active DNSSEC key."
 msgstr "DNSSECキーの有効化に失敗しました。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:291
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:293
 msgid "Failed to deactivate DNSSEC key."
 msgstr "DNSSECキーの無効化に失敗しました。"
 
-#: lib/Infrastructure/Service/PdnsUtilProvider.php:370
+#: lib/Infrastructure/Service/PdnsUtilProvider.php:372
 msgid "Failed to remove DNSSEC key."
 msgstr "DNSSECキーの削除に失敗しました。"
 
-#: lib/Domain/Repository/DomainRepository.php:203
+#: lib/Domain/Repository/DomainRepository.php:201
 msgid "This is an invalid zone name."
 msgstr "これは無効なゾーン名です。"
 
-#: lib/Domain/Model/UserManager.php:752
+#: lib/Domain/Model/UserManager.php:751
 msgid "Enter a valid email address."
 msgstr "有効なメールアドレスを入力してください。"
 
-#: lib/Domain/Model/UserManager.php:744
+#: lib/Domain/Model/UserManager.php:743
 msgid "Username exist already, please choose another one."
 msgstr "ユーザー名は既に存在します。別のものを選択してください。"
 
-#: lib/Domain/Model/UserManager.php:748
+#: lib/Domain/Model/UserManager.php:747
 msgid "Enter a valid user name."
 msgstr "有効なユーザー名を入力してください。"
 
-#: lib/Domain/Model/ZoneTemplate.php:200 lib/Domain/Model/ZoneTemplate.php:671
+#: lib/Domain/Model/ZoneTemplate.php:205 lib/Domain/Model/ZoneTemplate.php:675
 msgid "Error creating zone template: "
 msgstr "ゾーンテンプレートの作成エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:236
+#: lib/Domain/Model/ZoneTemplate.php:241
 msgid "Error adding default SOA record to template: "
 msgstr "テンプレートへのデフォルトSOAレコード追加エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:295
+#: lib/Domain/Model/ZoneTemplate.php:300
 msgid "Error deleting zone template: "
 msgstr "ゾーンテンプレートの削除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:319
+#: lib/Domain/Model/ZoneTemplate.php:324
 msgid "Error deleting user zone templates: "
 msgstr "ユーザーゾーンテンプレートの削除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:437
+#: lib/Domain/Model/ZoneTemplate.php:442
 msgid "You do not have the permission to add a record to this zone template."
 msgstr "このゾーンテンプレートにレコードを追加する権限がありません。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:129
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:130
 msgid "Your content field doesnt have a legit value."
 msgstr "コンテンツフィールドに有効な値がありません。"
 
-#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:74
+#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:76
 msgid "Priority for MX/SRV records must be a number between 0 and 65535."
 msgstr "MX/SRVレコードの優先度は0から65535の間の数値である必要があります。"
 
-#: lib/Domain/Model/ZoneTemplate.php:529
+#: lib/Domain/Model/ZoneTemplate.php:534
 msgid "Error updating zone template record: "
 msgstr "ゾーンテンプレートレコードの更新エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:552
+#: lib/Domain/Model/ZoneTemplate.php:557
 msgid "Error deleting zone template record: "
 msgstr "ゾーンテンプレートレコードの削除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:575
+#: lib/Domain/Model/ZoneTemplate.php:580
 msgid "Error checking template ownership: "
 msgstr "テンプレート所有権の確認エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:724
+#: lib/Domain/Model/ZoneTemplate.php:727
 msgid "Error retrieving zones using template: "
 msgstr "テンプレートを使用するゾーンの取得エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:779
+#: lib/Domain/Model/ZoneTemplate.php:781
 msgid "Failed to get list of zones using template: "
 msgstr "テンプレートを使用するゾーンのリスト取得に失敗しました："
 
-#: lib/Domain/Model/ZoneTemplate.php:797
+#: lib/Domain/Model/ZoneTemplate.php:799
 msgid "You do not have the permission to edit a zone template."
 msgstr "ゾーンテンプレートを編集する権限がありません。"
 
-#: lib/Domain/Model/ZoneTemplate.php:841
+#: lib/Domain/Model/ZoneTemplate.php:843
 msgid "Error unlinking zone from template: "
 msgstr "テンプレートからのゾーン解除エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:870
+#: lib/Domain/Model/ZoneTemplate.php:871
 msgid "Error retrieving zones: "
 msgstr "ゾーンの取得エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:889
+#: lib/Domain/Model/ZoneTemplate.php:890
 msgid "Error checking template name existence: "
 msgstr "テンプレート名の存在確認エラー："
 
-#: lib/Domain/Model/ZoneTemplate.php:912
+#: lib/Domain/Model/ZoneTemplate.php:913
 msgid "Error checking template existence: "
 msgstr "テンプレートの存在確認エラー："
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:80
+#: lib/Domain/Service/DatabaseConsistencyService.php:74
 msgid "All zones have owners"
 msgstr "すべてのゾーンに所有者がいます"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:87
+#: lib/Domain/Service/DatabaseConsistencyService.php:81
 #, php-format
 msgid "%d zones found without owners"
 msgstr "%d個のゾーンに所有者がいません"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:120
+#: lib/Domain/Service/DatabaseConsistencyService.php:114
 msgid "All slave zones have master IP addresses"
 msgstr "すべてのスレーブゾーンにマスターIPアドレスが設定されています"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:127
+#: lib/Domain/Service/DatabaseConsistencyService.php:121
 #, php-format
 msgid "%d slave zones found without master IP addresses"
 msgstr "%d個のスレーブゾーンにマスターIPアドレスが設定されていません"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:163
+#: lib/Domain/Service/DatabaseConsistencyService.php:157
 msgid "All records belong to existing zones"
 msgstr "すべてのレコードは既存のゾーンに属しています"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:170
+#: lib/Domain/Service/DatabaseConsistencyService.php:164
 #, php-format
 msgid "%d orphaned records found"
 msgstr "%d個の孤立したレコードが見つかりました"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:210
+#: lib/Domain/Service/DatabaseConsistencyService.php:204
 msgid "No duplicate SOA records found"
 msgstr "重複するSOAレコードは見つかりませんでした"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:217
+#: lib/Domain/Service/DatabaseConsistencyService.php:211
 #, php-format
 msgid "%d zones have duplicate SOA records"
 msgstr "%d個のゾーンに重複するSOAレコードがあります"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:252
+#: lib/Domain/Service/DatabaseConsistencyService.php:246
 msgid "All zones have SOA records"
 msgstr "すべてのゾーンにSOAレコードがあります"
 
-#: lib/Domain/Service/DatabaseConsistencyService.php:259
+#: lib/Domain/Service/DatabaseConsistencyService.php:253
 #, php-format
 msgid "%d zones found without SOA records"
 msgstr "%d個のゾーンにSOAレコードがありません"
@@ -1287,7 +1311,7 @@ msgstr "DSAキーはRFC 2536で定義された形式に従う必要がありま�
 msgid "When algorithm is 0 (No key), the public key field is typically empty or ignored."
 msgstr "アルゴリズムが0（キーなし）の場合、公開鍵フィールドは通常空であるか、無視されます。"
 
-#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:100
+#: lib/Domain/Service/DnsValidation/DnsCommonValidator.php:102
 msgid "You can not point a NS or MX record to a CNAME record. Remove or rename the CNAME record first, or take another name."
 msgstr "NSまたはMXレコードをCNAMEレコードに向けることはできません。最初にCNAMEレコードを削除するか名前を変更するか、別の名前を使用してください。"
 
@@ -1691,7 +1715,7 @@ msgstr "アルゴリズム5（RSA/SHA-1）は安全でないと考えられて�
 msgid "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered secure."
 msgstr "アルゴリズム7（RSASHA1-NSEC3-SHA1）はSHA-1を使用しており、これはもはや安全とは考えられていません。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
 msgid "Algorithm 8 (RSA/SHA-256) is currently recommended for DNSSEC deployments."
 msgstr "アルゴリズム8（RSA/SHA-256）は現在DNSSECデプロイメントで推奨されています。"
 
@@ -1715,7 +1739,7 @@ msgstr "アルゴリズム15（Ed25519）は現代的なセキュリティを提
 msgid "Algorithm 16 (Ed448) offers strong modern security but may have compatibility issues with older validators."
 msgstr "アルゴリズム16（Ed448）は強力な現代的セキュリティを提供しますが、古いバリデーターとの互換性の問題がある場合があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:221
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:223
 msgid "CRITICAL: This algorithm is considered insecure. Use algorithm 8 (RSA/SHA-256) or later."
 msgstr "重要：このアルゴリズムは安全でないと考えられています。アルゴリズム8（RSA/SHA-256）以降を使用してください。"
 
@@ -2506,34 +2530,34 @@ msgstr "レガシーアルゴリズムが検出されました。より良いセ
 msgid "Custom algorithm name detected. Standard algorithm names like \"hmac-sha256.\" are recommended for better compatibility."
 msgstr "カスタムアルゴリズム名が検出されました。より良い互換性のために「hmac-sha256.」などの標準アルゴリズム名が推奨されます。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:77
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:78
 msgid "Invalid value for default TTL. It must be a number between 0 and 2147483647."
 msgstr "デフォルトTTLの値が無効です。0から2147483647の間の数値である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:98
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:99
 msgid "Invalid value for TTL field. It must be numeric."
 msgstr "TTLフィールドの値が無効です。数値である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:105
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:106
 msgid "TTL value cannot be negative. It must be 0 or higher."
 msgstr "TTL値は負の値にできません。0以上である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:110
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:111
 #, php-format
 msgid "TTL value exceeds maximum allowed (%d). RFC 2181 limits it to a signed 32-bit integer."
 msgstr "TTL値が許可される最大値（%d）を超えています。RFC 2181により符号付き32ビット整数に制限されています。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:143
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:144
 #, php-format
 msgid "TTL value (%d) is below the recommended minimum of %d seconds (5 minutes). Low TTL values increase DNS traffic."
 msgstr "TTL値（%d）が推奨最小値%d秒（5分）を下回っています。低いTTL値はDNSトラフィックを増加させます。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:152
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:153
 #, php-format
 msgid "TTL value (%d) is above the recommended maximum of %d seconds (1 week). High TTL values delay DNS updates."
 msgstr "TTL値（%d）が推奨最大値%d秒（1週間）を上回っています。高いTTL値はDNS更新を遅延させます。"
 
-#: lib/Domain/Service/DnsValidation/TTLValidator.php:162
+#: lib/Domain/Service/DnsValidation/TTLValidator.php:163
 #, php-format
 msgid "SOA record TTL (%d) is below the recommended minimum of %d seconds (1 hour)."
 msgstr "SOAレコードTTL（%d）が推奨最小値%d秒（1時間）を下回っています。"
@@ -2756,25 +2780,33 @@ msgstr "SPFレコードは終端の「all」メカニズムまたは「redirect�
 msgid "SPF record has both \"all\" mechanism and \"redirect\" modifier. The \"redirect\" modifier will be ignored when \"all\" is present (RFC 7208 Section 6.1)."
 msgstr "SPFレコードに「all」メカニズムと「redirect」修飾子の両方があります。「all」が存在する場合、「redirect」修飾子は無視されます（RFC 7208セクション6.1）。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:170
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:180
 msgid "Invalid value for priority field. CNAME records must have priority value of 0."
 msgstr "優先度フィールドの値が無効です。CNAMEレコードは優先度値0である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:199
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:208
 msgid "This is not a valid CNAME. There already exists a record with this name."
 msgstr "これは有効なCNAMEではありません。この名前のレコードが既に存在します。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:225
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:233
 msgid "This is not a valid CNAME. Did you assign an MX or NS record to the record?"
 msgstr "これは有効なCNAMEではありません。MXまたはNSレコードをこのレコードに割り当てましたか？"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:242
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:250
 msgid "Empty CNAME records are not allowed."
 msgstr "空のCNAMEレコードは許可されていません。"
 
-#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:272
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:279
 msgid "This is not a valid record. There already exists a CNAME with this name."
 msgstr "これは有効なレコードではありません。この名前のCNAMEが既に存在します。"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:307
+msgid "CNAME target must be a fully qualified domain name (FQDN). Single-label names are not allowed."
+msgstr "CNAMEターゲットは完全修飾ドメイン名（FQDN）である必要があります。単一ラベル名は許可されていません。"
+
+#: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:313
+msgid "CNAME target must be a fully qualified domain name (FQDN) with a valid top-level domain."
+msgstr "CNAMEターゲットは有効なトップレベルドメインを持つ完全修飾ドメイン名（FQDN）である必要があります。"
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -2838,163 +2870,163 @@ msgstr "RFC 4701で推奨されているように、安全なDHCID更新のた�
 msgid "Hostname contains invalid characters."
 msgstr "ホスト名に無効な文字が含まれています。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:139
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:141
 msgid "Priority field for RRSIG records must be 0 or empty"
 msgstr "RRSIGレコードの優先度フィールドは0または空である必要があります"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:143
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:145
 msgid "RRSIG records should only be created by your DNS server when signing a zone. Manual manipulation is not recommended."
 msgstr "RRSIGレコードはゾーンに署名する際にDNSサーバーによってのみ作成されるべきです。手動操作は推奨されません。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:144
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:146
 msgid "Regular key rollovers are recommended security practice: ZSK every 1-3 months, KSK every 1-2 years."
 msgstr "定期的なキーロールオーバーは推奨されるセキュリティ慣行です：ZSKは1-3ヶ月ごと、KSKは1-2年ごと。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:167
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:169
 msgid "RRSIG record content cannot be empty."
 msgstr "RRSIGレコードの内容は空にできません。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:172
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:174
 msgid "RRSIG record contains invalid characters."
 msgstr "RRSIGレコードに無効な文字が含まれています。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:178
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:180
 msgid "RRSIG record must contain covered-type, algorithm, labels, original TTL, expiration, inception, key tag, signer name and signature."
 msgstr "RRSIGレコードはカバータイプ、アルゴリズム、ラベル、元のTTL、有効期限、開始時刻、キータグ、署名者名、署名を含む必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:186
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:188
 msgid "RRSIG covered type must be a valid DNS record type."
 msgstr "RRSIGカバータイプは有効なDNSレコードタイプである必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:191
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:193
 msgid "RRSIG algorithm field must be a numeric value."
 msgstr "RRSIGアルゴリズムフィールドは数値である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:197
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
 msgid "Algorithm 1 (RSA/MD5) is deprecated and should NOT be used due to cryptographic weaknesses."
 msgstr "アルゴリズム1（RSA/MD5）は非推奨であり、暗号学的脆弱性のため使用すべきではありません。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:199
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
 msgid "Algorithm 3 (DSA/SHA1) is considered insecure and should be replaced with stronger algorithms."
 msgstr "アルゴリズム3（DSA/SHA1）は安全でないとみなされ、より強力なアルゴリズムに置き換えるべきです。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:201
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
 msgid "Algorithm 5 (RSA/SHA-1) is considered insecure and should be replaced with stronger algorithms."
 msgstr "アルゴリズム5（RSA/SHA-1）は安全でないとみなされ、より強力なアルゴリズムに置き換えるべきです。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:203
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:205
 msgid "Algorithm 7 (RSASHA1-NSEC3-SHA1) uses SHA-1 which is no longer considered secure. Consider using RSA/SHA-256 or newer algorithms."
 msgstr "アルゴリズム7（RSASHA1-NSEC3-SHA1）はもはや安全とみなされないSHA-1を使用しています。RSA/SHA-256またはより新しいアルゴリズムの使用を検討してください。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:207
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
 msgid "Algorithm 10 (RSA/SHA-512) provides strong security but may have interoperability issues with some validators."
 msgstr "アルゴリズム10（RSA/SHA-512）は強力なセキュリティを提供しますが、一部のバリデーターとの相互運用性の問題がある可能性があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:209
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
 msgid "Algorithm 13 (ECDSA P-256 with SHA-256) provides good security with smaller signatures than RSA."
 msgstr "アルゴリズム13（ECDSA P-256 with SHA-256）はRSAよりも小さな署名で良好なセキュリティを提供します。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:211
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
 msgid "Algorithm 14 (ECDSA P-384 with SHA-384) provides strong security with smaller signatures than RSA."
 msgstr "アルゴリズム14（ECDSA P-384 with SHA-384）はRSAよりも小さな署名で強力なセキュリティを提供します。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:213
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
 msgid "Algorithm 15 (ED25519) offers modern security but may have compatibility issues with older DNSSEC validators."
 msgstr "アルゴリズム15（ED25519）は現代的なセキュリティを提供しますが、古いDNSSECバリデーターとの互換性の問題がある可能性があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:215
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
 msgid "Algorithm 16 (ED448) offers strong modern security but may have compatibility issues with older DNSSEC validators."
 msgstr "アルゴリズム16（ED448）は強力な現代的セキュリティを提供しますが、古いDNSSECバリデーターとの互換性の問題がある可能性があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:217
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:219
 msgid "Unknown algorithm value. Only algorithms defined in RFCs should be used."
 msgstr "未知のアルゴリズム値です。RFCで定義されたアルゴリズムのみを使用すべきです。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:226
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:228
 msgid "RRSIG labels field must be a numeric value."
 msgstr "RRSIGラベルフィールドは数値である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:232
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:234
 msgid "RRSIG labels field must be a reasonable value (0-128)."
 msgstr "RRSIGラベルフィールドは妥当な値（0-128）である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:237
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:239
 msgid "RRSIG original TTL field must be a numeric value."
 msgstr "RRSIG元TTLフィールドは数値である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:242
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:244
 msgid "RRSIG original TTL must be a valid positive integer."
 msgstr "RRSIG元TTLは有効な正の整数である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:246
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:248
 msgid "Original TTL is greater than 1 day (86400). For DNSSEC records, shorter TTLs are generally preferred for faster recovery in case of key compromise."
 msgstr "元TTLが1日（86400）を超えています。DNSSECレコードの場合、キー漏洩時の迅速な復旧のために短いTTLが一般的に推奨されます。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:251
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:253
 msgid "RRSIG expiration must be in YYYYMMDDHHmmSS format."
 msgstr "RRSIG有効期限はYYYYMMDDHHmmSS形式である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:256
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:258
 msgid "RRSIG inception must be in YYYYMMDDHHmmSS format."
 msgstr "RRSIG開始時刻はYYYYMMDDHHmmSS形式である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:268
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:270
 msgid "The expiration time must be later than the inception time. This signature appears to have expired before it became valid."
 msgstr "有効期限は開始時刻より後である必要があります。この署名は有効になる前に期限切れになったようです。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:273
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
 msgid "CRITICAL: This signature has already expired. It will not be validated by DNSSEC resolvers."
 msgstr "重要：この署名は既に期限切れです。DNSSECリゾルバーによって検証されません。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:275
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
 msgid "WARNING: This signature will expire within the next 7 days. Consider renewing it soon."
 msgstr "警告：この署名は7日以内に期限切れになります。すぐに更新することを検討してください。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:277
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:279
 msgid "This signature will expire within the next 30 days. Plan for renewal."
 msgstr "この署名は30日以内に期限切れになります。更新を計画してください。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:282
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:284
 msgid "WARNING: This signature is not yet valid. It will not be validated by DNSSEC resolvers until the inception time is reached."
 msgstr "警告：この署名はまだ有効ではありません。開始時刻に達するまでDNSSECリゾルバーによって検証されません。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:289
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:291
 msgid "The signature validity period is over 90 days, which is longer than recommended practices. Long validity periods increase vulnerability in case of key compromise."
 msgstr "署名の有効期間が90日を超えており、推奨される慣行より長くなっています。長い有効期間はキー漏洩時の脆弱性を増加させます。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:293
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:295
 msgid "Could not parse signature timestamps to check validity period."
 msgstr "有効期間を確認するために署名のタイムスタンプを解析できませんでした。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:298
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:300
 msgid "RRSIG key tag field must be a numeric value."
 msgstr "RRSIGキータグフィールドは数値である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:303
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:305
 msgid "RRSIG key tag must be a valid value between 0 and 65535."
 msgstr "RRSIGキータグは0から65535の間の有効な値である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:308
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:310
 msgid "RRSIG signer name must be a fully qualified domain name (end with a dot)."
 msgstr "RRSIG署名者名は完全修飾ドメイン名（ドットで終わる）である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:314
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:316
 msgid "RRSIG signer name must be a valid domain name."
 msgstr "RRSIG署名者名は有効なドメイン名である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:319
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:321
 msgid "RRSIG signature cannot be empty."
 msgstr "RRSIG署名は空にできません。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:324
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:326
 msgid "The signature does not appear to be valid base64 encoded data. RRSIG signatures should be base64 encoded."
 msgstr "署名は有効なbase64エンコードデータではないようです。RRSIG署名はbase64エンコードされている必要があります。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:328
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:330
 msgid "RRSIG records are part of DNSSEC and provide cryptographic signatures for DNS records. They should be managed automatically by the DNS server."
 msgstr "RRSIGレコードはDNSSECの一部であり、DNSレコードの暗号署名を提供します。DNSサーバーによって自動的に管理されるべきです。"
 
-#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:329
+#: lib/Domain/Service/DnsValidation/RRSIGRecordValidator.php:331
 msgid "Remember that RRSIG records must be regenerated before their expiration date to maintain DNSSEC validation."
 msgstr "DNSSEC検証を維持するため、RRSIGレコードは有効期限前に再生成する必要があることを忘れないでください。"
 
@@ -3547,62 +3579,62 @@ msgstr "指定されたホスト名にスラッシュが多すぎます。"
 msgid "You are using an invalid top level domain."
 msgstr "無効なトップレベルドメインを使用しています。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:103
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:104
 msgid "SOA validation parameters not set. Call setSOAParams() first or provide them as arguments."
 msgstr "SOA検証パラメータが設定されていません。最初にsetSOAParams()を呼び出すか、引数として提供してください。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:114
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:115
 msgid "Invalid value for name field of SOA record. It should be the name of the zone."
 msgstr "SOAレコードの名前フィールドの値が無効です。ゾーンの名前である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:173
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:174
 msgid "SOA record must have between 1 and 7 fields."
 msgstr "SOAレコードは1から7のフィールドを持つ必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:180
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:181
 msgid "Invalid primary nameserver in SOA record."
 msgstr "SOAレコードで無効なプライマリネームサーバーです。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:200
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:201
 msgid "Invalid email address in SOA record."
 msgstr "SOAレコードの無効なメールアドレスです。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:211
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:212
 msgid "Serial number must be numeric."
 msgstr "シリアル番号は数値である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:217
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:218
 msgid "Serial number must be a 32-bit unsigned integer (0 to 4294967295)."
 msgstr "シリアル番号は32ビット符号なし整数（0から4294967295）である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:230
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:231
 msgid "Serial number appears to use YYYYMMDDnn format but contains an invalid date. This is allowed but not recommended."
 msgstr "シリアル番号はYYYYMMDDnn形式を使用しているようですが、無効な日付が含まれています。これは許可されていますが推奨されません。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:244
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:245
 msgid "SOA record must have exactly 7 fields (primary NS, email, serial, refresh, retry, expire, minimum)."
 msgstr "SOAレコードは正確に7つのフィールド（プライマリNS、メール、シリアル、リフレッシュ、リトライ、期限切れ、最小値）を持つ必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:264
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:265
 #, php-format
 msgid "SOA %s field must be numeric."
 msgstr "SOA %sフィールドは数値である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:270
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:271
 #, php-format
 msgid "SOA %s field must be a positive integer."
 msgstr "SOA %sフィールドは正の整数である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:278
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:279
 #, php-format
 msgid "SOA %s value (%d) is below the RFC 2308 recommended minimum (%d). This is allowed but not recommended."
 msgstr "SOA %s値（%d）がRFC 2308推奨最小値（%d）を下回っています。これは許可されていますが推奨されません。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:287
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:288
 msgid "SOA retry value should be less than refresh value according to RFC 2308. This is allowed but not recommended."
 msgstr "RFC 2308によると、SOAリトライ値はリフレッシュ値より小さくする必要があります。これは許可されていますが推奨されません。"
 
-#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:295
+#: lib/Domain/Service/DnsValidation/SOARecordValidator.php:296
 msgid "SOA minimum (negative caching) value exceeds 24 hours (86400), which may be excessive according to RFC 2308."
 msgstr "SOA最小値（ネガティブキャッシュ）が24時間（86400）を超えており、RFC 2308によると過度である可能性があります。"
 
@@ -3644,16 +3676,16 @@ msgstr "未知のSVCBパラメータキー：「%s」。"
 msgid "Duplicate SVCB parameter key: \"%s\". Each key can only appear once."
 msgstr "重複するSVCBパラメータキー：「%s」。各キーは一度だけ表示できます。"
 
-#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:156
+#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:159
 msgid "Multiple CNAME records with the same name are not allowed. This would create a DNS violation."
 msgstr "同じ名前の複数のCNAMEレコードは許可されていません。これはDNS違反を引き起こします。"
 
-#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:204
+#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:207
 #, php-format
 msgid "A CNAME record cannot coexist with other record types for the same name. Found existing %s record."
 msgstr "CNAMEレコードは同じ名前の他のレコードタイプと共存できません。既存の%sレコードが見つかりました。"
 
-#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:252
+#: lib/Domain/Service/DnsValidation/DNSViolationValidator.php:255
 msgid "This record conflicts with an existing CNAME record with the same name. A CNAME record cannot coexist with other record types."
 msgstr "このレコードは同じ名前の既存のCNAMEレコードと競合します。CNAMEレコードは他のレコードタイプと共存できません。"
 
@@ -4628,21 +4660,6 @@ msgstr "無効なbase64文字が検出されました。"
 msgid "Invalid base64 encoding."
 msgstr "無効なbase64エンコーディングです。"
 
-#: lib/Domain/Service/MfaService.php:454
-msgid "Your verification code"
-msgstr "あなたの認証コード"
-
-#: lib/Domain/Service/MfaService.php:456
-#, php-format
-msgid ""
-"Your verification code is: %s\n"
-"\n"
-"This code will expire in 10 minutes at %s."
-msgstr ""
-"あなたの認証コードは：%s\n"
-"\n"
-"このコードは%sに10分で期限切れになります。"
-
 #: lib/Domain/Service/DomainRecordCreator.php:61
 #, php-format
 msgid "There is no managed zone for domain: %s."
@@ -4668,87 +4685,87 @@ msgstr "指定されたIDのドメインが見つかりません。"
 msgid "Unknown record type."
 msgstr "不明なレコードタイプです。"
 
-#: lib/Domain/Service/ApiKeyService.php:149
+#: lib/Domain/Service/ApiKeyService.php:153
 msgid "API functionality is disabled."
 msgstr "API機能が無効になっています。"
 
-#: lib/Domain/Service/ApiKeyService.php:155
+#: lib/Domain/Service/ApiKeyService.php:159
 msgid "You do not have permission to create API keys."
 msgstr "APIキーを作成する権限がありません。"
 
-#: lib/Domain/Service/ApiKeyService.php:162 templates/default/api_keys.html:18
+#: lib/Domain/Service/ApiKeyService.php:166 templates/default/api_keys.html:18
 msgid "You have reached the maximum number of API keys allowed."
 msgstr "許可されるAPIキーの最大数に達しています。"
 
-#: lib/Domain/Service/ApiKeyService.php:281
+#: lib/Domain/Service/ApiKeyService.php:285
 msgid "You do not have permission to update API keys."
 msgstr "APIキーを更新する権限がありません。"
 
-#: lib/Domain/Service/ApiKeyService.php:229
+#: lib/Domain/Service/ApiKeyService.php:233
 msgid "You do not have permission to delete API keys."
 msgstr "APIキーを削除する権限がありません。"
 
-#: lib/Domain/Service/ApiKeyService.php:253
+#: lib/Domain/Service/ApiKeyService.php:257
 msgid "You do not have permission to regenerate API keys."
 msgstr "APIキーを再生成する権限がありません。"
 
-#: lib/Domain/Service/DatabaseSchemaService.php:51
+#: lib/Domain/Service/DatabaseSchemaService.php:55
 msgid "Unknown database type."
 msgstr "不明なデータベースタイプです。"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:62
+#: lib/Domain/Service/ReverseRecordCreator.php:64
 #, php-format
 msgid "There is no matching reverse-zone for: %s."
 msgstr "%sに一致する逆引きゾーンがありません。"
 
-#: lib/Domain/Service/ReverseRecordCreator.php:70
+#: lib/Domain/Service/ReverseRecordCreator.php:72
 #, php-format
 msgid "A PTR record for %s pointing to %s already exists."
 msgstr "%sから%sを指すPTRレコードが既に存在します。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:103
+#: lib/Domain/Service/Dns/RecordManager.php:105
 msgid "You do not have the permission to add SOA record."
 msgstr "SOAレコードを追加する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:107
+#: lib/Domain/Service/Dns/RecordManager.php:109
 msgid "You do not have the permission to add NS record."
 msgstr "NSレコードを追加する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:154
+#: lib/Domain/Service/Dns/RecordManager.php:156
 msgid "A record with this hostname, type, and content already exists."
 msgstr "このホスト名、タイプ、内容のレコードが既に存在します。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:214
+#: lib/Domain/Service/Dns/RecordManager.php:216
 msgid "You do not have the permission to edit this SOA record."
 msgstr "このSOAレコードを編集する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:219
+#: lib/Domain/Service/Dns/RecordManager.php:221
 msgid "You do not have the permission to edit this NS record."
 msgstr "このNSレコードを編集する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:299
+#: lib/Domain/Service/Dns/RecordManager.php:301
 msgid "You do not have the permission to delete SOA records."
 msgstr "SOAレコードを削除する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:312
+#: lib/Domain/Service/Dns/RecordManager.php:314
 msgid "You do not have the permission to delete NS records."
 msgstr "NSレコードを削除する権限がありません。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:423
+#: lib/Domain/Service/Dns/DomainManager.php:448
 #, php-format
 msgid "Invalid argument(s) given to function %s %s"
 msgstr "関数%s %sに無効な引数が渡されました"
 
-#: lib/Domain/Service/Dns/SupermasterManager.php:280
+#: lib/Domain/Service/Dns/SupermasterManager.php:284
 msgid "There is already a supermaster with this IP address and hostname."
 msgstr "このIPアドレスとホスト名のスーパーマスターが既に存在します。"
 
-#: lib/Domain/Service/Dns/DomainManager.php:209
+#: lib/Domain/Service/Dns/DomainManager.php:212
 #, php-format
 msgid "Invalid argument(s) given to function %s"
 msgstr "関数%sに無効な引数が渡されました"
 
-#: lib/Domain/Service/Dns/DomainManager.php:386
+#: lib/Domain/Service/Dns/DomainManager.php:411
 msgid "The selected user already owns the zone."
 msgstr "選択されたユーザーは既にゾーンを所有しています。"
 
@@ -5196,7 +5213,7 @@ msgstr "NSレコードに表示されるホスト名を入力してください"
 msgid "Provide host name"
 msgstr "ホスト名を入力してください"
 
-#: templates/default/header.html:172
+#: templates/default/header.html:177
 msgid "Account"
 msgstr "アカウント"
 
@@ -5384,7 +5401,7 @@ msgstr "マイプロフィール"
 msgid "Edit your account details"
 msgstr "アカウントの詳細を編集"
 
-#: templates/default/header.html:176
+#: templates/default/header.html:181
 msgid "Edit profile"
 msgstr "プロフィールを編集"
 
@@ -5536,7 +5553,7 @@ msgstr "ユーザー活動履歴を表示"
 msgid "View user logs"
 msgstr "ユーザーログを表示"
 
-#: templates/default/add_user.html:38 install/templates/step4.html.twig:49
+#: templates/default/add_user.html:39 install/templates/step4.html.twig:49
 #: install/templates/step5.html.twig:67
 msgid "Password"
 msgstr "パスワード"
@@ -5545,7 +5562,7 @@ msgstr "パスワード"
 msgid "Update your account password"
 msgstr "アカウントのパスワードを更新"
 
-#: templates/default/change_password.html:49 templates/default/header.html:180
+#: templates/default/change_password.html:49 templates/default/header.html:185
 msgid "Change password"
 msgstr "パスワードを変更"
 
@@ -5569,7 +5586,7 @@ msgstr "権限"
 msgid "Manage permission templates"
 msgstr "権限テンプレートを管理"
 
-#: templates/default/header.html:187
+#: templates/default/header.html:192
 msgid "Logout"
 msgstr "ログアウト"
 
@@ -6069,7 +6086,7 @@ msgstr "パスワードを確認"
 msgid "Passwords do not match"
 msgstr "パスワードが一致しません"
 
-#: templates/default/edit_user.html:135 templates/default/add_user.html:132
+#: templates/default/edit_user.html:136 templates/default/add_user.html:133
 msgid "Password Requirements"
 msgstr "パスワード要件"
 
@@ -6255,55 +6272,59 @@ msgstr "ユーザー名を入力してください"
 msgid "Fullname"
 msgstr "氏名"
 
-#: templates/default/edit_user.html:38
+#: templates/default/edit_user.html:38 templates/default/add_user.html:28
 msgid "User's full name for identification"
 msgstr "識別用のユーザーの氏名"
 
-#: templates/default/add_user.html:32
+#: templates/default/edit_user.html:39 templates/default/add_user.html:29
+msgid "Provide full name"
+msgstr "フルネームを入力してください"
+
+#: templates/default/add_user.html:33
 msgid "Email address"
 msgstr "メールアドレス"
 
-#: templates/default/edit_user.html:44 templates/default/add_user.html:34
+#: templates/default/edit_user.html:45 templates/default/add_user.html:35
 msgid "Provide email"
 msgstr "メールアドレスを入力してください"
 
-#: templates/default/edit_user.html:54
+#: templates/default/edit_user.html:55
 msgid "Leave empty to keep current password"
 msgstr "現在のパスワードを保持するには空のままにしてください"
 
-#: templates/default/edit_user.html:59 templates/default/add_user.html:69
+#: templates/default/edit_user.html:60 templates/default/add_user.html:70
 msgid "Permission template"
 msgstr "権限テンプレート"
 
-#: templates/default/edit_user.html:69 templates/default/add_user.html:80
+#: templates/default/edit_user.html:70 templates/default/add_user.html:81
 msgid "Select permissions for this user"
 msgstr "このユーザーの権限を選択してください"
 
-#: templates/default/edit_user.html:76 templates/default/add_user.html:87
+#: templates/default/edit_user.html:77 templates/default/add_user.html:88
 msgid "Optional information about this user"
 msgstr "このユーザーに関するオプション情報"
 
-#: templates/default/add_user.html:93
+#: templates/default/add_user.html:94
 msgid "Enabled"
 msgstr "有効"
 
-#: templates/default/edit_user.html:96 templates/default/add_user.html:102
+#: templates/default/edit_user.html:97 templates/default/add_user.html:103
 msgid "LDAP Authentication"
 msgstr "LDAP認証"
 
-#: templates/default/edit_user.html:98 templates/default/add_user.html:104
+#: templates/default/edit_user.html:99 templates/default/add_user.html:105
 msgid "Use external LDAP directory for authentication"
 msgstr "認証に外部LDAPディレクトリを使用"
 
-#: templates/default/edit_user.html:112
+#: templates/default/edit_user.html:113
 msgid "Back to Home"
 msgstr "ホームに戻る"
 
-#: templates/default/edit_user.html:116
+#: templates/default/edit_user.html:117
 msgid "Back to Users"
 msgstr "ユーザーに戻る"
 
-#: templates/default/edit_user.html:130 templates/default/add_user.html:127
+#: templates/default/edit_user.html:131 templates/default/add_user.html:128
 msgid "Account Information"
 msgstr "アカウント情報"
 
@@ -6331,35 +6352,35 @@ msgstr "特定のパスワード要件はありません"
 msgid "User Permissions"
 msgstr "ユーザー権限"
 
-#: templates/default/edit_user.html:164
+#: templates/default/edit_user.html:165
 msgid "This user has been assigned the permission template"
 msgstr "このユーザーには権限テンプレートが割り当てられています"
 
-#: templates/default/edit_user.html:173
+#: templates/default/edit_user.html:174
 msgid "Based on this template, this user has the following permissions"
 msgstr "このテンプレートに基づき、このユーザーには以下の権限があります"
 
-#: templates/default/edit_user.html:176
+#: templates/default/edit_user.html:177
 msgid "No permissions are assigned to this template"
 msgstr "このテンプレートには権限が割り当てられていません"
 
-#: templates/default/edit_user.html:192 templates/default/add_user.html:170
+#: templates/default/edit_user.html:193 templates/default/add_user.html:171
 msgid "User Management Tips"
 msgstr "ユーザー管理のヒント"
 
-#: templates/default/edit_user.html:198
+#: templates/default/edit_user.html:199
 msgid "Leave password field empty to keep the current password"
 msgstr "現在のパスワードを保持するには、パスワードフィールドを空のままにしてください"
 
-#: templates/default/edit_user.html:199
+#: templates/default/edit_user.html:200
 msgid "Changing permission templates will update user access immediately"
 msgstr "権限テンプレートを変更すると、ユーザーアクセスが即座に更新されます"
 
-#: templates/default/edit_user.html:200 templates/default/add_user.html:178
+#: templates/default/edit_user.html:201 templates/default/add_user.html:179
 msgid "Users can be disabled instead of deleted to preserve their settings"
 msgstr "設定を保持するために、ユーザーは削除ではなく無効化できます"
 
-#: templates/default/edit_user.html:201
+#: templates/default/edit_user.html:202
 msgid "LDAP users cannot have passwords managed through this interface"
 msgstr "LDAPユーザーはこのインターフェースでパスワードを管理できません"
 
@@ -6592,7 +6613,7 @@ msgid "Host Prefix"
 msgstr "ホストプレフィックス"
 
 #: templates/default/batch_ptr_record.html:71
-#: install/templates/step4.html.twig:132
+#: install/templates/step4.html.twig:133
 msgid "Optional"
 msgstr "オプション"
 
@@ -7152,47 +7173,43 @@ msgstr "孤立したレコードを削除してもよろしいですか"
 msgid "Are you sure you want to delete this item?"
 msgstr "この項目を削除してもよろしいですか？"
 
-#: templates/default/add_user.html:13 templates/default/add_user.html:111
+#: templates/default/add_user.html:13 templates/default/add_user.html:112
 msgid "Add User"
 msgstr "ユーザーを追加"
 
-#: templates/default/add_user.html:28
-msgid "Optional: User's full name for identification"
-msgstr "任意：識別用のユーザーのフルネーム"
-
-#: templates/default/add_user.html:42 install/templates/step4.html.twig:54
+#: templates/default/add_user.html:43 install/templates/step4.html.twig:54
 msgid "Provide user password"
 msgstr "ユーザーパスワードを提供してください"
 
-#: templates/default/add_user.html:50
+#: templates/default/add_user.html:51
 msgid "Auto-generate password"
 msgstr "パスワードを自動生成"
 
-#: templates/default/add_user.html:52
+#: templates/default/add_user.html:53
 msgid "Generate a secure password that meets all requirements"
 msgstr "すべての要件を満たす安全なパスワードを生成"
 
-#: templates/default/add_user.html:60
+#: templates/default/add_user.html:61
 msgid "Send password by email"
 msgstr "パスワードをメールで送信"
 
-#: templates/default/add_user.html:62
+#: templates/default/add_user.html:63
 msgid "Send login credentials to user's email address"
 msgstr "ログイン認証情報をユーザーのメールアドレスに送信"
 
-#: templates/default/add_user.html:161
+#: templates/default/add_user.html:162
 msgid "When creating a new user, they will receive permissions based on the selected template. You can modify these permissions later by editing the user."
 msgstr "新しいユーザーを作成すると、選択したテンプレートに基づいて権限が付与されます。これらの権限は後でユーザーを編集することで変更できます。"
 
-#: templates/default/add_user.html:176
+#: templates/default/add_user.html:177
 msgid "Create descriptive usernames that are easy to identify"
 msgstr "識別しやすい説明的なユーザー名を作成"
 
-#: templates/default/add_user.html:177
+#: templates/default/add_user.html:178
 msgid "Adding a full name helps with user identification"
 msgstr "フルネームを追加するとユーザーの識別に役立ちます"
 
-#: templates/default/add_user.html:179
+#: templates/default/add_user.html:180
 msgid "Auto-generating passwords is recommended for better security"
 msgstr "より良いセキュリティのためにパスワードの自動生成が推奨されます"
 
@@ -7388,7 +7405,7 @@ msgstr "文字、数字、記号を組み合わせて含める"
 msgid "Consider using a password manager"
 msgstr "パスワードマネージャーの使用を検討"
 
-#: templates/default/mfa_verify_email.html:4 templates/default/header.html:184
+#: templates/default/mfa_verify_email.html:4 templates/default/header.html:189
 msgid "Multi-Factor Authentication"
 msgstr "多要素認証"
 
@@ -7488,23 +7505,23 @@ msgstr "名前を付けて保存"
 msgid "The following placeholders can be used in template records"
 msgstr "テンプレートレコードでは以下のプレースホルダーを使用できます"
 
-#: templates/default/edit_zone_templ.html:305
+#: templates/default/edit_zone_templ.html:311
 msgid "Warning: Missing SOA Record"
 msgstr "警告：SOAレコードが不足"
 
-#: templates/default/edit_zone_templ.html:311
+#: templates/default/edit_zone_templ.html:317
 msgid "This zone template does not have an SOA (Start of Authority) record."
 msgstr "このゾーンテンプレートにはSOA（Start of Authority）レコードがありません。"
 
-#: templates/default/edit_zone_templ.html:312
+#: templates/default/edit_zone_templ.html:318
 msgid "DNS zones typically require an SOA record to function properly, and DNSSEC signing may fail without one."
 msgstr "DNSゾーンは通常、正常に機能するためにSOAレコードが必要であり、SOAレコードがないとDNSSEC署名が失敗する可能性があります。"
 
-#: templates/default/edit_zone_templ.html:313
+#: templates/default/edit_zone_templ.html:319
 msgid "Do you want to continue without adding an SOA record?"
 msgstr "SOAレコードを追加せずに続行しますか？"
 
-#: templates/default/edit_zone_templ.html:319
+#: templates/default/edit_zone_templ.html:325
 msgid "Continue Without SOA"
 msgstr "SOAなしで続行"
 
@@ -7728,15 +7745,11 @@ msgstr "MFAを無効化"
 msgid "Continue to Dashboard"
 msgstr "ダッシュボードに進む"
 
-#: templates/default/mfa_recovery_codes.html:92
-msgid "All recovery codes copied to clipboard"
-msgstr "すべてのリカバリコードがクリップボードにコピーされました"
-
-#: templates/default/mfa_recovery_codes.html:101
+#: templates/default/mfa_recovery_codes.html:100
 msgid "Poweradmin MFA Recovery Codes"
 msgstr "Poweradmin MFAリカバリコード"
 
-#: templates/default/mfa_recovery_codes.html:115
+#: templates/default/mfa_recovery_codes.html:114
 msgid "Store these codes in a safe place. Each code can be used once to log in if you lose access to your authenticator device."
 msgstr "これらのコードを安全な場所に保管してください。認証デバイスへのアクセスを失った場合、各コードは一度だけログインに使用できます。"
 
@@ -8047,6 +8060,93 @@ msgstr "このテンプレートは現在"
 #: templates/default/delete_zone_templ.html:29
 msgid "zones"
 msgstr "のゾーンで使用されています"
+
+#: templates/default/email_previews.html:10 templates/default/header.html:167
+msgid "Email Template Previews"
+msgstr "メールテンプレートプレビュー"
+
+#: templates/default/email_previews.html:13
+msgid "Preview how email templates will appear to users in both light and dark modes. These previews use sample data to demonstrate the email formatting and styling."
+msgstr ""
+"ライトモードとダークモードの両方でメールテンプレートがユーザーにどのように表示されるかをプレビューします。これらのプレビューはサンプルデータを使用してメールのフォーマットとスタイルを実演します。"
+
+#: templates/default/email_previews.html:21
+msgid "Active Email Templates"
+msgstr "アクティブなメールテンプレート"
+
+#: templates/default/email_previews.html:46
+msgid "Custom"
+msgstr "カスタム"
+
+#: templates/default/email_previews.html:22
+msgid "Standard"
+msgstr "標準"
+
+#: templates/default/email_previews.html:29
+msgid "Custom templates are active and override the default templates. These are the templates currently used when sending emails."
+msgstr "カスタムテンプレートがアクティブで、デフォルトテンプレートを上書きします。これらはメール送信時に現在使用されているテンプレートです。"
+
+#: templates/default/email_previews.html:34
+msgid "Standard templates are active. These are the default templates used when sending emails."
+msgstr "標準テンプレートがアクティブです。これらはメール送信時に使用されるデフォルトテンプレートです。"
+
+#: templates/default/email_previews.html:54
+msgid "Subject:"
+msgstr "件名："
+
+#: templates/default/email_previews.html:60
+msgid "View Light Mode"
+msgstr "ライトモードで表示"
+
+#: templates/default/email_previews.html:64
+msgid "View Dark Mode"
+msgstr "ダークモードで表示"
+
+#: templates/default/email_previews.html:76
+msgid "Template Override Information"
+msgstr "テンプレート上書き情報"
+
+#: templates/default/email_previews.html:77
+msgid "The following standard templates are currently overridden by custom templates:"
+msgstr "以下の標準テンプレートは現在カスタムテンプレートによって上書きされています："
+
+#: templates/default/email_previews.html:80
+msgid "using custom template"
+msgstr "カスタムテンプレートを使用"
+
+#: templates/default/email_previews.html:83
+msgid "To revert to standard templates, remove or rename the custom template files in <code>templates/emails/custom/</code>."
+msgstr ""
+"標準テンプレートに戻すには、<code>templates/emails/custom/</code>のカスタムテンプレートファイルを削除または名前変更してください。"
+
+#: templates/default/email_previews.html:87
+msgid "Custom Templates"
+msgstr "カスタムテンプレート"
+
+#: templates/default/email_previews.html:88
+msgid "You can create custom email templates by placing them in <code>templates/emails/custom/</code> to override these standard templates with your own designs."
+msgstr ""
+"<code>templates/emails/custom/</code>に配置することでカスタムメールテンプレートを作成し、これらの標準テンプレートを独自のデザインで上書きできます。"
+
+#: templates/default/email_previews.html:93
+msgid "About Email Previews"
+msgstr "メールプレビューについて"
+
+#: templates/default/email_previews.html:95
+msgid "Previews use sample data to demonstrate email appearance"
+msgstr "プレビューはサンプルデータを使用してメールの外観を実演します"
+
+#: templates/default/email_previews.html:96
+msgid "Light mode is the default appearance for most email clients"
+msgstr "ライトモードはほとんどのメールクライアントのデフォルトの外観です"
+
+#: templates/default/email_previews.html:97
+msgid "Dark mode preview shows how emails appear when users have dark mode enabled"
+msgstr "ダークモードプレビューは、ユーザーがダークモードを有効にしたときのメールの表示を示します"
+
+#: templates/default/email_previews.html:98
+msgid "These previews reflect the actual templates used in production"
+msgstr "これらのプレビューはプロダクションで使用される実際のテンプレートを反映しています"
 
 #: templates/default/pdns_status.html:5 templates/default/pdns_status.html:11
 msgid "PowerDNS Server Status"
@@ -8404,7 +8504,7 @@ msgstr "以下のコマンドを実行してください:"
 msgid "After you have added the new user, proceed with this installation procedure."
 msgstr "新しいユーザーを追加した後、このインストール手順を続行してください。"
 
-#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:96
+#: install/templates/step6.html.twig:38 install/templates/step4.html.twig:97
 msgid "Note:"
 msgstr "注意："
 
@@ -8412,7 +8512,7 @@ msgstr "注意："
 msgid "Since you are using SQLite, there is no need to create a new user with limited rights."
 msgstr "SQLiteを使用しているため、制限された権限を持つ新しいユーザーを作成する必要はありません。"
 
-#: install/templates/step5.html.twig:166 install/templates/step3.html.twig:38
+#: install/templates/step5.html.twig:167 install/templates/step3.html.twig:38
 msgid "Continue to step"
 msgstr "次のステップに進む"
 
@@ -8492,99 +8592,103 @@ msgstr "テーブルを作成する権限を持つデータベースユーザー
 msgid "Password for this database user."
 msgstr "このデータベースユーザーのパスワード。"
 
-#: install/templates/step4.html.twig:63
+#: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
+msgid "Avoid quotes, backslashes, and line breaks."
+msgstr "引用符、バックスラッシュ、改行は使用しないでください。"
+
+#: install/templates/step4.html.twig:64
 msgid "Hostname"
 msgstr "ホスト名"
 
-#: install/templates/step4.html.twig:66
+#: install/templates/step4.html.twig:67
 msgid "Provide the hostname"
 msgstr "ホスト名を提供してください"
 
-#: install/templates/step4.html.twig:69
+#: install/templates/step4.html.twig:70
 msgid "Database server hostname (usually \"localhost\")."
 msgstr "データベースサーバーのホスト名（通常は「localhost」）。"
 
-#: install/templates/step4.html.twig:74
+#: install/templates/step4.html.twig:75
 msgid "DB Port"
 msgstr "DBポート"
 
-#: install/templates/step4.html.twig:77
+#: install/templates/step4.html.twig:78
 msgid "Provide database port"
 msgstr "データベースポートを提供してください"
 
-#: install/templates/step4.html.twig:80
+#: install/templates/step4.html.twig:81
 msgid "Database server port."
 msgstr "データベースサーバーのポート。"
 
-#: install/templates/step4.html.twig:85
+#: install/templates/step4.html.twig:86
 msgid "Database"
 msgstr "データベース"
 
-#: install/templates/step4.html.twig:88
+#: install/templates/step4.html.twig:89
 msgid "Provide the name of the database"
 msgstr "データベースの名前を提供してください"
 
-#: install/templates/step4.html.twig:91
+#: install/templates/step4.html.twig:92
 msgid "Database name (will be used for Poweradmin tables)."
 msgstr "データベース名（Poweradminテーブルに使用されます）。"
 
-#: install/templates/step4.html.twig:93
+#: install/templates/step4.html.twig:94
 msgid "Full path to SQLite database file"
 msgstr "SQLiteデータベースファイルへの完全パス"
 
-#: install/templates/step4.html.twig:96
+#: install/templates/step4.html.twig:97
 msgid "File must exist with web server read/write access. Use absolute path."
 msgstr "ファイルはWebサーバーの読み書きアクセス権で存在する必要があります。絶対パスを使用してください。"
 
-#: install/templates/step4.html.twig:104
+#: install/templates/step4.html.twig:105
 msgid "DB charset"
 msgstr "DB文字セット"
 
-#: install/templates/step4.html.twig:199 install/templates/step4.html.twig:207
+#: install/templates/step4.html.twig:200 install/templates/step4.html.twig:208
 msgid "Use default"
 msgstr "デフォルトを使用"
 
-#: install/templates/step4.html.twig:111
+#: install/templates/step4.html.twig:112
 msgid "Charset for new tables. Leave empty for database default."
 msgstr "新しいテーブルの文字セット。データベースのデフォルトを使用する場合は空のままにしてください。"
 
-#: install/templates/step4.html.twig:116
+#: install/templates/step4.html.twig:117
 msgid "DB collation"
 msgstr "DB照合順序"
 
-#: install/templates/step4.html.twig:123
+#: install/templates/step4.html.twig:124
 msgid "Collation rules for character comparison. Leave empty for database default."
 msgstr "文字比較の照合規則。データベースのデフォルトを使用する場合は空のままにしてください。"
 
-#: install/templates/step4.html.twig:132
+#: install/templates/step4.html.twig:133
 msgid "PowerDNS Database"
 msgstr "PowerDNSデータベース"
 
-#: install/templates/step4.html.twig:136
+#: install/templates/step4.html.twig:137
 msgid "Database name"
 msgstr "データベース名"
 
-#: install/templates/step4.html.twig:139
+#: install/templates/step4.html.twig:140
 msgid "Leave empty for same database"
 msgstr "同じデータベースの場合は空のままにしてください"
 
-#: install/templates/step4.html.twig:142
+#: install/templates/step4.html.twig:143
 msgid "MySQL database with PowerDNS tables (if different)."
 msgstr "PowerDNSテーブルを持つMySQLデータベース（異なる場合）。"
 
-#: install/templates/step4.html.twig:150
+#: install/templates/step4.html.twig:151
 msgid "Poweradmin Account"
 msgstr "Poweradminアカウント"
 
-#: install/templates/step4.html.twig:154
+#: install/templates/step4.html.twig:155
 msgid "Administrator password"
 msgstr "管理者パスワード"
 
-#: install/templates/step4.html.twig:159
+#: install/templates/step4.html.twig:160
 msgid "Provide a password"
 msgstr "パスワードを提供してください"
 
-#: install/templates/step4.html.twig:164
+#: install/templates/step4.html.twig:165
 msgid "Password for \"admin\" username."
 msgstr "\"admin\"ユーザー名のパスワード。"
 
@@ -8676,63 +8780,63 @@ msgstr "ユーザーパスワードを提供してください"
 msgid "The password for this username."
 msgstr "このユーザー名のパスワード。"
 
-#: install/templates/step5.html.twig:85
+#: install/templates/step5.html.twig:86
 msgid "DNS Settings"
 msgstr "DNS設定"
 
-#: install/templates/step5.html.twig:89
+#: install/templates/step5.html.twig:90
 msgid "Hostmaster"
 msgstr "ホストマスター"
 
-#: install/templates/step5.html.twig:93
+#: install/templates/step5.html.twig:94
 msgid "Provide the DNS hostmaster"
 msgstr "DNSホストマスターを提供してください"
 
-#: install/templates/step5.html.twig:96
+#: install/templates/step5.html.twig:97
 msgid "Default hostmaster for SOA records."
 msgstr "SOAレコードのデフォルトホストマスター。"
 
-#: install/templates/step5.html.twig:101
+#: install/templates/step5.html.twig:102
 msgid "Primary nameserver"
 msgstr "プライマリネームサーバー"
 
-#: install/templates/step5.html.twig:105
+#: install/templates/step5.html.twig:106
 msgid "Provide the primary nameserver"
 msgstr "プライマリネームサーバーを提供してください"
 
-#: install/templates/step5.html.twig:108
+#: install/templates/step5.html.twig:109
 msgid "Primary nameserver for new zones."
 msgstr "新しいゾーンのプライマリネームサーバー。"
 
-#: install/templates/step5.html.twig:113
+#: install/templates/step5.html.twig:114
 msgid "Secondary nameserver"
 msgstr "セカンダリネームサーバー"
 
-#: install/templates/step5.html.twig:117
+#: install/templates/step5.html.twig:118
 msgid "Provide the secondary nameserver"
 msgstr "セカンダリネームサーバーを提供してください"
 
-#: install/templates/step5.html.twig:120
+#: install/templates/step5.html.twig:121
 msgid "Secondary nameserver for new zones."
 msgstr "新しいゾーンのセカンダリネームサーバー。"
 
-#: install/templates/step5.html.twig:126
+#: install/templates/step5.html.twig:127
 msgid "Tertiary Nameserver"
 msgstr "第三ネームサーバー"
 
-#: install/templates/step5.html.twig:126 install/templates/step5.html.twig:139
+#: install/templates/step5.html.twig:127 install/templates/step5.html.twig:140
 msgid "optional"
 msgstr "任意"
 
-#: install/templates/step5.html.twig:133
+#: install/templates/step5.html.twig:134
 msgid "Optional tertiary nameserver for new zones."
 msgstr "新しいゾーンのオプションのターシャリネームサーバー。"
 
-#: install/templates/step5.html.twig:139
+#: install/templates/step5.html.twig:140
 msgid "Quaternary Nameserver"
 msgstr "第四ネームサーバー"
 
-#: install/templates/step5.html.twig:146
+#: install/templates/step5.html.twig:147
 msgid "Optional quaternary nameserver for new zones."
 msgstr "新しいゾーンのオプションのクォーターナリネームサーバー。"
 
@@ -8905,3 +9009,27 @@ msgstr "データベース\"%s\"にPowerDNSテーブルがありません: %s。
 #, php-format
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNSデータベース\"%s\"に接続できません: %s"
+
+# OBSOLETE: msgid "You do not have the permission to view this record."
+# OBSOLETE: msgstr "このレコードを表示する権限がありません。"
+
+# OBSOLETE: msgid "Your verification code"
+# OBSOLETE: msgstr "あなたの認証コード"
+
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "Your verification code is: %s\n"
+# OBSOLETE: "\n"
+# OBSOLETE: "This code will expire in 10 minutes at %s."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "あなたの認証コードは：%s\n"
+# OBSOLETE: "\n"
+# OBSOLETE: "このコードは%sに10分で期限切れになります。"
+
+# OBSOLETE: msgid "Optional: User's full name for identification"
+# OBSOLETE: msgstr "任意：識別用のユーザーのフルネーム"
+
+# OBSOLETE: msgid "All recovery codes copied to clipboard"
+# OBSOLETE: msgstr "すべてのリカバリコードがクリップボードにコピーされました"
+
+
