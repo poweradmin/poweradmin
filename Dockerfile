@@ -10,14 +10,17 @@
 # Open your browser and navigate to "localhost", then log in using the provided username and password
 # admin / testadmin
 
-FROM php:8.4.8RC1-cli-alpine
+FROM php:8.4-cli-alpine
 
 RUN apk add --no-cache --virtual .build-deps \
-    icu-data-full \
-    gettext \
     gettext-dev \
-    libintl \
     postgresql-dev \
+    icu-dev \
+    && apk add --no-cache \
+    icu-data-full \
+    icu-libs \
+    gettext \
+    libintl \
     sqlite \
     && docker-php-ext-install -j$(nproc) \
     gettext \
@@ -26,6 +29,7 @@ RUN apk add --no-cache --virtual .build-deps \
     pdo \
     pdo_mysql \
     pdo_pgsql \
+    && apk del .build-deps \
     && rm -rf /var/cache/apk/*
 
 WORKDIR /app
@@ -49,14 +53,14 @@ RUN echo '        "type" => "sqlite",' >> /app/config/settings.php
 RUN echo '        "file" => "/db/pdns.db",' >> /app/config/settings.php
 RUN echo '    ],' >> /app/config/settings.php
 
-# Generate random session key
-RUN php -r 'echo bin2hex(random_bytes(32));' > /tmp/session_key.txt
-RUN echo '    "security" => [' >> /app/config/settings.php
-RUN echo '        "session_key" => "'"$(cat /tmp/session_key.txt)"'",' >> /app/config/settings.php
-RUN echo '    ],' >> /app/config/settings.php
-RUN echo '];' >> /app/config/settings.php
-
-RUN chown -R www-data:www-data /db /app \
+# Generate random session key and complete config
+RUN php -r 'echo bin2hex(random_bytes(32));' > /tmp/session_key.txt \
+    && echo '    "security" => [' >> /app/config/settings.php \
+    && echo '        "session_key" => "'"$(cat /tmp/session_key.txt)"'",' >> /app/config/settings.php \
+    && echo '    ],' >> /app/config/settings.php \
+    && echo '];' >> /app/config/settings.php \
+    && rm /tmp/session_key.txt \
+    && chown -R www-data:www-data /db /app \
     && chmod -R 755 /db /app
 
 USER www-data
