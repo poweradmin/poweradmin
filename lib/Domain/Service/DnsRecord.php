@@ -625,6 +625,7 @@ class DnsRecord
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "get_supermaster_info_from_ip", "No or no valid ipv4 or ipv6 address given."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
+            return [];
         }
     }
 
@@ -817,12 +818,14 @@ class DnsRecord
                         $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "add_domain", "could not create zone"));
                         $errorPresenter = new ErrorPresenter();
                         $errorPresenter->present($error);
+                        return false;
                     }
                 }
             } else {
                 $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s'), "add_domain"));
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
+                return false;
             }
         } else {
             $error = new ErrorMessage(_("You do not have the permission to add a master zone."));
@@ -860,6 +863,7 @@ class DnsRecord
             $error = new ErrorMessage(_("You do not have the permission to delete a zone."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
+            return false;
         }
     }
 
@@ -913,6 +917,7 @@ class DnsRecord
                 $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "add_owner_to_zone", "$zone_id / $user_id"));
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
+                return false;
             }
         } else {
             return false;
@@ -942,6 +947,7 @@ class DnsRecord
                 $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "delete_owner_from_zone", "$zone_id / $user_id"));
                 $errorPresenter = new ErrorPresenter();
                 $errorPresenter->present($error);
+                return false;
             }
         } else {
             return false;
@@ -1014,6 +1020,7 @@ class DnsRecord
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "get_zone_id_from_name", "Not a valid domainname: $zname"));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
+            return false;
         }
     }
 
@@ -1030,6 +1037,7 @@ class DnsRecord
             $error = new ErrorMessage(_("You do not have the permission to view this zone."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
+            return [];
         } else {
             $pdns_db_name = $this->config->get('pdns_db_name');
             $domains_table = $pdns_db_name ? $pdns_db_name . '.domains' : 'domains';
@@ -1155,6 +1163,7 @@ class DnsRecord
             $error = new ErrorMessage(_('This is an invalid zone name.'));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
+            return false;
         }
     }
 
@@ -1201,6 +1210,7 @@ class DnsRecord
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
+            return false;
         }
     }
 
@@ -1226,6 +1236,7 @@ class DnsRecord
             $error = new ErrorMessage(sprintf(_('Invalid argument(s) given to function %s %s'), "supermaster_exists", "No or no valid IPv4 or IPv6 address given."));
             $errorPresenter = new ErrorPresenter();
             $errorPresenter->present($error);
+            return false;
         }
     }
 
