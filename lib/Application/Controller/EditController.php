@@ -65,7 +65,7 @@ class EditController extends BaseController
 
     public function run(): void
     {
-        $iface_rowamount = $this->config('iface_rowamount');
+        $iface_rowamount = $this->getRowsPerPage();
         $iface_show_id = $this->config('iface_edit_show_id');
         $iface_edit_add_record_top = $this->config('iface_edit_add_record_top');
         $iface_edit_save_changes_top = $this->config('iface_edit_save_changes_top');
@@ -259,20 +259,45 @@ class EditController extends BaseController
             'iface_edit_save_changes_top' => $iface_edit_save_changes_top,
             'iface_record_comments' => $iface_record_comments,
             'serial' => DnsRecord::get_soa_serial($soa_record),
+            'current_rows_per_page' => $iface_rowamount,
             'file_version' => time()
         ]);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage, int $id): string
+    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, int $id): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
 
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $presenter = new PaginationPresenter($pagination, 'index.php?page=edit&start={PageNumber}', $id);
+
+        $urlPattern = 'index.php?page=edit&start={PageNumber}';
+        if (isset($_SESSION['rows_per_page'])) {
+            $urlPattern .= '&rows_per_page=' . $_SESSION['rows_per_page'];
+        }
+
+        $presenter = new PaginationPresenter($pagination, $urlPattern, $id);
 
         return $presenter->present();
+    }
+
+    public function getRowsPerPage(): int
+    {
+        $defaultRowAmount = $this->config('iface_rowamount');
+        $allowedValues = [10, 25, 50, 100];
+
+        $rowAmount = $defaultRowAmount;
+
+        foreach ([$_GET, $_POST, $_SESSION] as $source) {
+            if (isset($source['rows_per_page']) && in_array((int)$source['rows_per_page'], $allowedValues)) {
+                $rowAmount = (int)$source['rows_per_page'];
+                $_SESSION['rows_per_page'] = $rowAmount;
+                break;
+            }
+        }
+
+        return $rowAmount;
     }
 
     public function getSortBy(string $name, array $allowedValues): string
