@@ -63,7 +63,8 @@ class DynamicDnsUpdateService
 
             $updateResult = $this->updateUserZones($user, $hostname, $ipList, $request->isDualstackUpdate());
 
-            return $updateResult['wasUpdated'] ? 'good' : '!yours';
+            // Return 'good' if update was successful OR if the requested IPs already match existing records
+            return $updateResult['wasUpdated'] || $updateResult['hasValidRecords'] ? 'good' : '!yours';
         } catch (\Exception $e) {
             return 'dnserr';
         }
@@ -73,21 +74,32 @@ class DynamicDnsUpdateService
     {
         $userZones = $this->authService->getUserZones($user);
         $wasUpdated = false;
+        $hasValidRecords = false;
 
         foreach ($userZones as $zoneId) {
             $zoneUpdated = false;
 
+            // For dualstack updates, always process both record types (even if no IPs provided)
+            // This allows clearing records when switching from dual-stack to single-stack
             if ($dualstackUpdate || $ipList->hasIpv4Addresses()) {
-                if ($this->syncDnsRecords($zoneId, $hostname, RecordType::A, $ipList->getSortedIpv4Addresses())) {
+                $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::A, $ipList->getSortedIpv4Addresses());
+                if ($syncResult['wasUpdated']) {
                     $zoneUpdated = true;
                     $wasUpdated = true;
+                }
+                if ($syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0) {
+                    $hasValidRecords = true;
                 }
             }
 
             if ($dualstackUpdate || $ipList->hasIpv6Addresses()) {
-                if ($this->syncDnsRecords($zoneId, $hostname, RecordType::AAAA, $ipList->getSortedIpv6Addresses())) {
+                $syncResult = $this->syncDnsRecords($zoneId, $hostname, RecordType::AAAA, $ipList->getSortedIpv6Addresses());
+                if ($syncResult['wasUpdated']) {
                     $zoneUpdated = true;
                     $wasUpdated = true;
+                }
+                if ($syncResult['hasExistingRecords'] || $syncResult['finalIpCount'] > 0) {
+                    $hasValidRecords = true;
                 }
             }
 
@@ -96,34 +108,41 @@ class DynamicDnsUpdateService
             }
         }
 
-        return ['wasUpdated' => $wasUpdated];
+        return [
+            'wasUpdated' => $wasUpdated,
+            'hasValidRecords' => $hasValidRecords
+        ];
     }
 
-    private function syncDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType, array $newIps): bool
+    private function syncDnsRecords(int $zoneId, HostnameValue $hostname, string $recordType, array $newIps): array
     {
-        if (empty($newIps)) {
-            return false;
-        }
-
         $existing = $this->repository->getDnsRecords($zoneId, $hostname, $recordType);
+        $wasUpdated = false;
+        $hasExistingRecords = !empty($existing);
 
-        $zoneUpdated = false;
-
+        // Add new records
         foreach ($newIps as $ip) {
             if (isset($existing[$ip])) {
+                // IP already exists, remove from existing list (don't delete)
                 unset($existing[$ip]);
             } else {
+                // IP doesn't exist, add new record
                 $this->repository->insertDnsRecord($zoneId, $hostname, $recordType, $ip);
-                $zoneUpdated = true;
+                $wasUpdated = true;
             }
         }
 
+        // Delete records that are no longer needed
         foreach ($existing as $recordId) {
             $this->repository->deleteDnsRecord($recordId);
-            $zoneUpdated = true;
+            $wasUpdated = true;
         }
 
-        return $zoneUpdated;
+        return [
+            'wasUpdated' => $wasUpdated,
+            'hasExistingRecords' => $hasExistingRecords,
+            'finalIpCount' => count($newIps)
+        ];
     }
 
 

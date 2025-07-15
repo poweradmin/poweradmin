@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\ValueObject;
 
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use Symfony\Component\HttpFoundation\Request;
 
 class DynamicDnsRequest
@@ -47,12 +49,18 @@ class DynamicDnsRequest
         $dualstackUpdate = $request->get('dualstack_update') === '1';
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
-        if ($ipv4 === 'whatismyip') {
-            $ipv4 = $_SERVER['REMOTE_ADDR'] ?? '';
-        }
+        if ($ipv4 === 'whatismyip' || $ipv6 === 'whatismyip') {
+            $ipRetriever = new IpAddressRetriever($_SERVER);
+            $clientIp = $ipRetriever->getClientIp();
+            $ipValidator = new IPAddressValidator();
 
-        if ($ipv6 === 'whatismyip') {
-            $ipv6 = $_SERVER['REMOTE_ADDR'] ?? '';
+            if ($ipv4 === 'whatismyip') {
+                $ipv4 = $ipValidator->isValidIPv4($clientIp) ? $clientIp : '';
+            }
+
+            if ($ipv6 === 'whatismyip') {
+                $ipv6 = $ipValidator->isValidIPv6($clientIp) ? $clientIp : '';
+            }
         }
 
         return new self(

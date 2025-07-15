@@ -64,7 +64,7 @@ class DynamicDnsRequestTest extends TestCase
         $this->assertFalse($dynamicDnsRequest->isDualstackUpdate());
     }
 
-    public function testFromHttpRequestWithWhatIsMyIp(): void
+    public function testFromHttpRequestWithWhatIsMyIpv4(): void
     {
         $_SERVER['REMOTE_ADDR'] = '203.0.113.1';
         $_SERVER['HTTP_USER_AGENT'] = 'TestAgent/1.0';
@@ -80,7 +80,44 @@ class DynamicDnsRequestTest extends TestCase
         $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
 
         $this->assertEquals('203.0.113.1', $dynamicDnsRequest->getIpv4());
-        $this->assertEquals('203.0.113.1', $dynamicDnsRequest->getIpv6());
+        $this->assertEquals('', $dynamicDnsRequest->getIpv6()); // IPv6 should be empty when IPv4 is provided
+    }
+
+    public function testFromHttpRequestWithWhatIsMyIpv6(): void
+    {
+        $_SERVER['REMOTE_ADDR'] = '2001:db8::1';
+        $_SERVER['HTTP_USER_AGENT'] = 'TestAgent/1.0';
+
+        $request = new Request([
+            'username' => 'testuser',
+            'password' => 'testpass',
+            'hostname' => 'test.example.com',
+            'myip' => 'whatismyip',
+            'myip6' => 'whatismyip'
+        ]);
+
+        $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
+
+        $this->assertEquals('', $dynamicDnsRequest->getIpv4()); // IPv4 should be empty when IPv6 is provided
+        $this->assertEquals('2001:db8::1', $dynamicDnsRequest->getIpv6());
+    }
+
+    public function testFromHttpRequestWithWhatIsMyIpFromProxy(): void
+    {
+        $_SERVER['HTTP_X_FORWARDED_FOR'] = '198.51.100.1,203.0.113.1';
+        $_SERVER['REMOTE_ADDR'] = '10.0.0.1';
+        $_SERVER['HTTP_USER_AGENT'] = 'TestAgent/1.0';
+
+        $request = new Request([
+            'username' => 'testuser',
+            'password' => 'testpass',
+            'hostname' => 'test.example.com',
+            'myip' => 'whatismyip'
+        ]);
+
+        $dynamicDnsRequest = DynamicDnsRequest::fromHttpRequest($request);
+
+        $this->assertEquals('198.51.100.1', $dynamicDnsRequest->getIpv4()); // Should use first IP from X-Forwarded-For
     }
 
     public function testHasUsername(): void
