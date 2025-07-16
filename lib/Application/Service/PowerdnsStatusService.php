@@ -42,7 +42,7 @@ class PowerdnsStatusService
         $config = ConfigurationManager::getInstance();
         $this->apiUrl = $config->get('pdns_api', 'url', '');
         $this->apiKey = $config->get('pdns_api', 'key', '');
-        $this->displayName = $config->get('pdns_api', 'display_name', '');
+        $this->displayName = $this->sanitizeDisplayName($config->get('pdns_api', 'display_name', 'PowerDNS'));
         $this->serverName = $config->get('pdns_api', 'server_name', 'localhost');
         $this->apiEnabled = !empty($this->apiUrl) && !empty($this->apiKey);
 
@@ -435,5 +435,34 @@ class PowerdnsStatusService
 
         $parsedUrl = parse_url($url);
         return isset($parsedUrl['scheme']) && in_array($parsedUrl['scheme'], ['http', 'https'], true);
+    }
+
+    /**
+     * Sanitize display name and provide fallback to default value
+     *
+     * @param mixed $displayName The display name from configuration
+     * @return string Sanitized display name
+     */
+    private function sanitizeDisplayName($displayName): string
+    {
+        // Handle null, false, or non-string values
+        if (!is_string($displayName)) {
+            return 'PowerDNS';
+        }
+
+        // Trim whitespace
+        $displayName = trim($displayName);
+
+        // Fallback to default if empty
+        if (empty($displayName)) {
+            return 'PowerDNS';
+        }
+
+        // Limit length to prevent UI issues
+        if (strlen($displayName) > 50) {
+            $displayName = substr($displayName, 0, 47) . '...';
+        }
+
+        return $displayName;
     }
 }
