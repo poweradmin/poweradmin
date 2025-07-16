@@ -328,6 +328,8 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'BaconQrCode\\Writer' => __DIR__ . '/..' . '/bacon/bacon-qr-code/src/Writer.php',
         'Cake\\Chronos\\Chronos' => __DIR__ . '/..' . '/cakephp/chronos/src/Chronos.php',
         'Cake\\Chronos\\ChronosDate' => __DIR__ . '/..' . '/cakephp/chronos/src/ChronosDate.php',
+        'Cake\\Chronos\\ChronosDatePeriod' => __DIR__ . '/..' . '/cakephp/chronos/src/ChronosDatePeriod.php',
+        'Cake\\Chronos\\ChronosPeriod' => __DIR__ . '/..' . '/cakephp/chronos/src/ChronosPeriod.php',
         'Cake\\Chronos\\ChronosTime' => __DIR__ . '/..' . '/cakephp/chronos/src/ChronosTime.php',
         'Cake\\Chronos\\ClockFactory' => __DIR__ . '/..' . '/cakephp/chronos/src/ClockFactory.php',
         'Cake\\Chronos\\DifferenceFormatter' => __DIR__ . '/..' . '/cakephp/chronos/src/DifferenceFormatter.php',

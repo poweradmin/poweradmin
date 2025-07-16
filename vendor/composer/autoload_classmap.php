@@ -70,6 +70,8 @@ return array(
     'BaconQrCode\\Writer' => $vendorDir . '/bacon/bacon-qr-code/src/Writer.php',
     'Cake\\Chronos\\Chronos' => $vendorDir . '/cakephp/chronos/src/Chronos.php',
     'Cake\\Chronos\\ChronosDate' => $vendorDir . '/cakephp/chronos/src/ChronosDate.php',
+    'Cake\\Chronos\\ChronosDatePeriod' => $vendorDir . '/cakephp/chronos/src/ChronosDatePeriod.php',
+    'Cake\\Chronos\\ChronosPeriod' => $vendorDir . '/cakephp/chronos/src/ChronosPeriod.php',
     'Cake\\Chronos\\ChronosTime' => $vendorDir . '/cakephp/chronos/src/ChronosTime.php',
     'Cake\\Chronos\\ClockFactory' => $vendorDir . '/cakephp/chronos/src/ClockFactory.php',
     'Cake\\Chronos\\DifferenceFormatter' => $vendorDir . '/cakephp/chronos/src/DifferenceFormatter.php',

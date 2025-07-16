@@ -41,8 +41,8 @@ use Stringable;
  * @property-read int $age does a diffInYears() with default parameters
  * @property-read int<1, 4> $quarter the quarter of this instance, 1 - 4
  * @property-read int<1, 2> $half the half of the year, with 1 for months Jan...Jun and 2 for Jul...Dec.
- * @psalm-immutable
- * @psalm-consistent-constructor
+ * @immutable
+ * @phpstan-consistent-constructor
  */
 class ChronosDate implements Stringable
 {
@@ -113,7 +113,7 @@ class ChronosDate implements Stringable
      */
     public function __construct(
         ChronosDate|DateTimeInterface|string $time = 'now',
-        DateTimeZone|string|null $timezone = null
+        DateTimeZone|string|null $timezone = null,
     ) {
         $this->native = $this->createNative($time, $timezone);
     }
@@ -127,7 +127,7 @@ class ChronosDate implements Stringable
      */
     protected function createNative(
         ChronosDate|DateTimeInterface|string $time,
-        DateTimeZone|string|null $timezone
+        DateTimeZone|string|null $timezone,
     ): DateTimeImmutable {
         if (!is_string($time)) {
             return new DateTimeImmutable($time->format('Y-m-d 00:00:00'));
@@ -354,10 +354,11 @@ class ChronosDate implements Stringable
         }
 
         $new = clone $this;
-        $new->native = $new->native->modify($modifier);
-        if ($new->native === false) {
+        $native = $new->native->modify($modifier);
+        if ($native === false) {
             throw new InvalidArgumentException(sprintf('Unable to modify date using `%s`', $modifier));
         }
+        $new->native = $native;
 
         if ($new->format('H:i:s') !== '00:00:00') {
             $new->native = $new->native->setTime(0, 0, 0);
@@ -1425,7 +1426,7 @@ class ChronosDate implements Stringable
         callable $callback,
         ?ChronosDate $other = null,
         bool $absolute = true,
-        int $options = 0
+        int $options = 0,
     ): int {
         $start = $this;
         $end = $other ?? new ChronosDate(Chronos::now());
@@ -1518,7 +1519,7 @@ class ChronosDate implements Stringable
         callable $callback,
         ?ChronosDate $other = null,
         bool $absolute = true,
-        int $options = 0
+        int $options = 0,
     ): int {
         return $this->diffFiltered(new DateInterval('P1D'), $callback, $other, $absolute, $options);
     }
