@@ -1,11 +1,7 @@
 name: Docker Build and Push
 
 on:
-  push:
-    branches: [ "master" ]
-    tags: [ "v*" ]
-  pull_request:
-    branches: [ "master" ]
+  workflow_dispatch: # Manual trigger only
 
 env:
   REGISTRY: docker.io
