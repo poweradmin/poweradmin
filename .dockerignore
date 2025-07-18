@@ -35,8 +35,6 @@ tools
 # Misc
 **/.DS_Store
 .devcontainer
-phpcs.xml
-phpdoc.dist.xml
 scripts
 transifex.yml
 # Keep README.md but exclude other markdown files
@@ -65,7 +63,6 @@ phpcs.xml
 phpdoc.dist.xml
 phpmd.xml
 phpstan.neon
-phpunit.xml.dist
 psalm-baseline.xml
 psalm.xml
 .php-cs-fixer.cache
