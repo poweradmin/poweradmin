@@ -7,11 +7,19 @@
 #   Alternatively, you can run the program with a current folder mounted:
 #   docker run -d --name poweradmin -p 80:80 -v $(pwd):/app poweradmin
 #
+# Docker Secrets Support:
+#   Use environment variables with __FILE suffix to read from files:
+#   docker run -d --name poweradmin -p 80:80 \
+#     -e DB_PASS__FILE=/run/secrets/db_password \
+#     -v /path/to/secret:/run/secrets/db_password:ro \
+#     poweradmin
+#
 # Open your browser and navigate to "localhost", then log in using the provided username and password
 # admin / testadmin
 
 FROM dunglas/frankenphp:latest-alpine
 
+# Install required packages and PHP extensions
 RUN apk add --no-cache --virtual .build-deps \
     gettext-dev \
     postgresql-dev \
@@ -22,6 +30,8 @@ RUN apk add --no-cache --virtual .build-deps \
     gettext \
     libintl \
     sqlite \
+    openssl \
+    bash \
     && install-php-extensions \
     gettext \
     intl \
@@ -33,16 +43,15 @@ RUN apk add --no-cache --virtual .build-deps \
 
 WORKDIR /app
 
+# Copy application files
 COPY . .
 
+# Copy and set permissions for entrypoint script
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Create necessary directories
 RUN mkdir -p /db /app/config
-
-RUN sqlite3 /db/pdns.db < /app/sql/pdns/47/schema.sqlite3.sql
-RUN sqlite3 /db/pdns.db < /app/sql/poweradmin-sqlite-db-structure.sql
-RUN rm -rf /app/sql
-
-# Create config directory if it doesn't exist
-RUN mkdir -p /app/config
 
 # Set default database environment variables
 ENV DB_TYPE=sqlite
@@ -102,117 +111,8 @@ ENV PA_TIMEZONE=UTC
 # Set config override behavior
 ENV PA_CONFIG_PATH=""
 
-# Create config generator script and generate settings.php
-RUN cat > /tmp/generate-config.php << 'EOF'
-<?php
-$sessionKey = bin2hex(random_bytes(32));
-
-$config = [
-    'database' => [
-        'type' => $_ENV['DB_TYPE'] ?? 'sqlite',
-        'host' => ($_ENV['DB_TYPE'] !== 'sqlite' && !empty($_ENV['DB_HOST'])) ? $_ENV['DB_HOST'] : '',
-        'user' => ($_ENV['DB_TYPE'] !== 'sqlite' && !empty($_ENV['DB_USER'])) ? $_ENV['DB_USER'] : '',
-        'password' => ($_ENV['DB_TYPE'] !== 'sqlite' && !empty($_ENV['DB_PASS'])) ? $_ENV['DB_PASS'] : '',
-        'name' => ($_ENV['DB_TYPE'] !== 'sqlite' && !empty($_ENV['DB_NAME'])) ? $_ENV['DB_NAME'] : '',
-        'file' => ($_ENV['DB_TYPE'] === 'sqlite' && !empty($_ENV['DB_FILE'])) ? $_ENV['DB_FILE'] : '',
-    ],
-    'dns' => [
-        'hostmaster' => $_ENV['DNS_HOSTMASTER'] ?? 'hostmaster.example.com',
-        'ns1' => $_ENV['DNS_NS1'] ?? 'ns1.example.com',
-        'ns2' => $_ENV['DNS_NS2'] ?? 'ns2.example.com',
-        'ns3' => $_ENV['DNS_NS3'] ?? '',
-        'ns4' => $_ENV['DNS_NS4'] ?? '',
-    ],
-    'security' => [
-        'session_key' => $sessionKey,
-        'recaptcha' => [
-            'enabled' => filter_var($_ENV['PA_RECAPTCHA_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
-            'site_key' => $_ENV['PA_RECAPTCHA_SITE_KEY'] ?? '',
-            'secret_key' => $_ENV['PA_RECAPTCHA_SECRET_KEY'] ?? '',
-        ],
-    ],
-    'mail' => [
-        'enabled' => filter_var($_ENV['PA_MAIL_ENABLED'] ?? 'true', FILTER_VALIDATE_BOOLEAN),
-        'transport' => $_ENV['PA_MAIL_TRANSPORT'] ?? 'php',
-        'host' => $_ENV['PA_SMTP_HOST'] ?? '',
-        'port' => (int)($_ENV['PA_SMTP_PORT'] ?? '587'),
-        'username' => $_ENV['PA_SMTP_USER'] ?? '',
-        'password' => $_ENV['PA_SMTP_PASSWORD'] ?? '',
-        'encryption' => $_ENV['PA_SMTP_ENCRYPTION'] ?? 'tls',
-        'from' => $_ENV['PA_MAIL_FROM'] ?? '',
-        'from_name' => $_ENV['PA_MAIL_FROM_NAME'] ?? '',
-    ],
-    'interface' => [
-        'title' => $_ENV['PA_APP_TITLE'] ?? 'Poweradmin',
-        'language' => $_ENV['PA_DEFAULT_LANGUAGE'] ?? 'en_EN',
-    ],
-    'api' => [
-        'enabled' => filter_var($_ENV['PA_API_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
-        'basic_auth_enabled' => filter_var($_ENV['PA_API_BASIC_AUTH_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
-        'docs_enabled' => filter_var($_ENV['PA_API_DOCS_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
-    ],
-    'pdns_api' => [
-        'url' => $_ENV['PA_PDNS_API_URL'] ?? '',
-        'key' => $_ENV['PA_PDNS_API_KEY'] ?? '',
-        'server_name' => $_ENV['PA_PDNS_SERVER_NAME'] ?? 'localhost',
-    ],
-    'ldap' => [
-        'enabled' => filter_var($_ENV['PA_LDAP_ENABLED'] ?? 'false', FILTER_VALIDATE_BOOLEAN),
-        'uri' => $_ENV['PA_LDAP_URI'] ?? '',
-        'base_dn' => $_ENV['PA_LDAP_BASE_DN'] ?? '',
-        'bind_dn' => $_ENV['PA_LDAP_BIND_DN'] ?? '',
-        'bind_password' => $_ENV['PA_LDAP_BIND_PASSWORD'] ?? '',
-    ],
-    'misc' => [
-        'timezone' => $_ENV['PA_TIMEZONE'] ?? 'UTC',
-    ],
-];
-
-file_put_contents('/app/config/settings.php', "<?php\n\nreturn " . var_export($config, true) . ";\n");
-chmod('/app/config/settings.php', 0644);
-EOF
-
-# Create entrypoint script for hybrid config management
-RUN cat > /usr/local/bin/docker-entrypoint.sh << 'EOF'
-#!/bin/sh
-set -e
-
-echo "Poweradmin Docker Container Starting..."
-
-# Configuration Priority:
-# 1. PA_CONFIG_PATH (custom config file) - highest priority
-# 2. Individual environment variables (fallback)
-
-if [ -n "${PA_CONFIG_PATH}" ] && [ -f "${PA_CONFIG_PATH}" ]; then
-    echo "Using custom configuration from: ${PA_CONFIG_PATH}"
-    cp "${PA_CONFIG_PATH}" /app/config/settings.php
-    chmod 644 /app/config/settings.php
-    chown www-data:www-data /app/config/settings.php
-elif [ -f "/app/config/settings.php" ]; then
-    echo "Using existing settings.php (generated from environment variables)"
-else
-    echo "No custom config found. Generating settings.php from environment variables..."
-    php /usr/local/bin/generate-config.php
-fi
-
-echo "Configuration loaded successfully"
-
-# Execute the command
-exec "$@"
-EOF
-
-# Move config generator to permanent location and set permissions
-RUN mv /tmp/generate-config.php /usr/local/bin/generate-config.php \
-    && chmod +x /usr/local/bin/docker-entrypoint.sh \
-    && chmod +x /usr/local/bin/generate-config.php
-
-# Generate initial config from current environment (build-time defaults)
-RUN php /usr/local/bin/generate-config.php \
-    && chown -R www-data:www-data /db /app \
-    && chmod -R 755 /db /app
-
 # Create Caddyfile for FrankenPHP
-RUN cat > /etc/caddy/Caddyfile << 'EOF'
+COPY <<EOF /etc/caddy/Caddyfile
 {
     frankenphp
     admin off
@@ -331,6 +231,9 @@ RUN cat > /etc/caddy/Caddyfile << 'EOF'
     php_server
 }
 EOF
+
+# Set proper ownership for www-data user
+RUN chown -R www-data:www-data /app /db
 
 USER www-data
 
