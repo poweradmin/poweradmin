@@ -1,6 +1,6 @@
 # Docker Secrets Support for Poweradmin
 
-This document explains how to use Docker secrets with the refactored Poweradmin Docker container.
+This document explains how to use Docker secrets with the Poweradmin Docker container.
 
 ## Overview
 
