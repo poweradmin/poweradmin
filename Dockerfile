@@ -53,64 +53,6 @@ RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 # Create necessary directories
 RUN mkdir -p /db /app/config
 
-# Set default database environment variables
-ENV DB_TYPE=sqlite
-ENV DB_HOST=""
-ENV DB_USER=""
-ENV DB_PASS=""
-ENV DB_NAME=""
-ENV DB_FILE=/db/pdns.db
-
-# Set default DNS nameserver environment variables
-ENV DNS_NS1=ns1.example.com
-ENV DNS_NS2=ns2.example.com
-ENV DNS_NS3=""
-ENV DNS_NS4=""
-ENV DNS_HOSTMASTER=hostmaster.example.com
-
-# Set default reCAPTCHA environment variables
-ENV PA_RECAPTCHA_ENABLED=false
-ENV PA_RECAPTCHA_SITE_KEY=""
-ENV PA_RECAPTCHA_SECRET_KEY=""
-
-# Set default mail configuration environment variables
-ENV PA_MAIL_ENABLED=true
-ENV PA_MAIL_TRANSPORT=php
-ENV PA_SMTP_HOST=""
-ENV PA_SMTP_PORT=587
-ENV PA_SMTP_USER=""
-ENV PA_SMTP_PASSWORD=""
-ENV PA_SMTP_ENCRYPTION=tls
-ENV PA_MAIL_FROM=""
-ENV PA_MAIL_FROM_NAME=""
-
-# Set default interface environment variables
-ENV PA_APP_TITLE=Poweradmin
-ENV PA_DEFAULT_LANGUAGE=en_EN
-
-# Set default API configuration environment variables
-ENV PA_API_ENABLED=false
-ENV PA_API_BASIC_AUTH_ENABLED=false
-ENV PA_API_DOCS_ENABLED=false
-
-# Set default PowerDNS API environment variables
-ENV PA_PDNS_API_URL=""
-ENV PA_PDNS_API_KEY=""
-ENV PA_PDNS_SERVER_NAME=localhost
-
-# Set default LDAP environment variables
-ENV PA_LDAP_ENABLED=false
-ENV PA_LDAP_URI=""
-ENV PA_LDAP_BASE_DN=""
-ENV PA_LDAP_BIND_DN=""
-ENV PA_LDAP_BIND_PASSWORD=""
-
-# Set default miscellaneous environment variables
-ENV PA_TIMEZONE=UTC
-
-# Set config override behavior
-ENV PA_CONFIG_PATH=""
-
 # Create Caddyfile for FrankenPHP
 COPY <<EOF /etc/caddy/Caddyfile
 {
