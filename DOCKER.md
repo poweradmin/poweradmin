@@ -2,6 +2,43 @@
 
 This guide covers deploying Poweradmin using Docker with FrankenPHP and various database configurations.
 
+## Quick Start
+
+```bash
+# Basic deployment with SQLite (default)
+docker run -d --name poweradmin -p 80:80 poweradmin
+
+# With external MySQL database
+docker run -d --name poweradmin -p 80:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql-server \
+  -e DB_USER=poweradmin \
+  -e DB_PASS=password \
+  -e DB_NAME=poweradmin \
+  poweradmin
+```
+
+## Security with Docker Secrets
+
+For production deployments, use Docker secrets to securely manage sensitive configuration values. See [DOCKER-SECRETS.md](DOCKER-SECRETS.md) for detailed information on:
+
+- Using environment variables with `__FILE` suffix
+- Docker Compose with secrets
+- Docker Swarm deployment
+- Security best practices
+
+Example with secrets:
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql-server \
+  -e DB_USER=poweradmin \
+  -e DB_PASS__FILE=/run/secrets/db_password \
+  -e DB_NAME=poweradmin \
+  -v /path/to/secret:/run/secrets/db_password:ro \
+  poweradmin
+```
+
 ## Architecture
 
 Poweradmin Docker image is based on [FrankenPHP](https://frankenphp.dev/), a modern application server for PHP that provides:
@@ -174,16 +211,16 @@ services:
       - DB_USER=poweradmin
       - DB_PASS=password
       - DB_NAME=poweradmin
-      
+
       # DNS Configuration
       - DNS_NS1=ns1.yourdomain.com
       - DNS_NS2=ns2.yourdomain.com
       - DNS_HOSTMASTER=hostmaster.yourdomain.com
-      
+
       # Interface Configuration
       - PA_APP_TITLE=My DNS Admin
       - PA_DEFAULT_LANGUAGE=en_EN
-      
+
       # Mail Configuration (SMTP)
       - PA_MAIL_ENABLED=true
       - PA_MAIL_TRANSPORT=smtp
@@ -194,20 +231,20 @@ services:
       - PA_SMTP_ENCRYPTION=tls
       - PA_MAIL_FROM=noreply@yourdomain.com
       - PA_MAIL_FROM_NAME=DNS Admin
-      
+
       # API Configuration
       - PA_API_ENABLED=true
       - PA_API_DOCS_ENABLED=true
-      
+
       # Security Configuration
       - PA_RECAPTCHA_ENABLED=true
       - PA_RECAPTCHA_SITE_KEY=your-recaptcha-site-key
       - PA_RECAPTCHA_SECRET_KEY=your-recaptcha-secret-key
-      
+
       # PowerDNS API Integration
       - PA_PDNS_API_URL=http://powerdns:8081
       - PA_PDNS_API_KEY=your-pdns-api-key
-      
+
       # Miscellaneous
       - PA_TIMEZONE=America/New_York
     depends_on:
@@ -477,6 +514,19 @@ View container logs for debugging:
 docker logs poweradmin
 ```
 
+For more detailed debug information, enable debug logging:
+```bash
+docker run -e DEBUG=true [other options] poweradmin
+```
+
+This will show detailed information about:
+- Database validation steps and file checks
+- DNS configuration validation with actual values
+- Individual validation function progress
+- Configuration loading process
+
+**Note**: By default, only a single "Configuration validation completed successfully" message is shown when all validations pass. Debug mode provides step-by-step details for troubleshooting.
+
 ### Container Shell Access
 
 Access the container for debugging:
@@ -484,10 +534,80 @@ Access the container for debugging:
 docker exec -it poweradmin /bin/sh
 ```
 
+## Admin User Creation
+
+The container can automatically create an initial admin user during startup. This is useful for first-time deployments and eliminates the need for manual database manipulation.
+
+### Environment Variables
+
+- **PA_CREATE_ADMIN**: Set to `1`, `true`, or `yes` to enable admin user creation
+- **PA_ADMIN_USERNAME**: Admin username (default: `admin`)
+- **PA_ADMIN_PASSWORD**: Admin password (default: `admin`)
+- **PA_ADMIN_EMAIL**: Admin email (default: `admin@example.com`)
+- **PA_ADMIN_FULLNAME**: Admin full name (default: `Administrator`)
+
+### Examples
+
+Basic admin user creation:
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e PA_CREATE_ADMIN=1 \
+  poweradmin
+```
+
+Custom admin user:
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -v poweradmin-db:/db \
+  -e PA_CREATE_ADMIN=1 \
+  -e PA_ADMIN_USERNAME=admin \
+  -e PA_ADMIN_PASSWORD=secure_password \
+  -e PA_ADMIN_EMAIL=admin@yourdomain.com \
+  -e PA_ADMIN_FULLNAME="System Administrator" \
+  poweradmin
+```
+
+With Docker secrets:
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -v poweradmin-db:/db \
+  -e PA_CREATE_ADMIN=1 \
+  -e PA_ADMIN_USERNAME=admin \
+  -e PA_ADMIN_PASSWORD__FILE=/run/secrets/admin_password \
+  -e PA_ADMIN_EMAIL=admin@yourdomain.com \
+  -v /path/to/admin_password:/run/secrets/admin_password:ro \
+  poweradmin
+```
+
+### Behavior
+
+- The admin user will only be created if it doesn't already exist in the database
+- On subsequent container restarts with the same database, the creation will be skipped
+- Works with all supported database types (SQLite, MySQL, PostgreSQL)
+- Admin users are created with full administrative permissions (permission template 1)
+- If admin user creation fails, the container will exit with an error
+
+### Supported Database Types
+
+The admin user creation works with:
+- **SQLite**: Default configuration, no additional setup required
+- **MySQL**: Requires proper database connection configuration
+- **PostgreSQL**: Requires proper database connection configuration
+
 ## Access
 
-Once running, access Poweradmin at `http://localhost` using:
-- Username: `admin`
-- Password: `testadmin`
+Once running, access Poweradmin at `http://localhost`.
+
+### Default Credentials
+
+If you enabled admin user creation with `PA_CREATE_ADMIN=1`, use:
+- Username: Value of `PA_ADMIN_USERNAME` (default: `admin`)
+- Password: Value of `PA_ADMIN_PASSWORD` (default: `admin`)
+
+**For production deployments, always change the default password!**
+
+### Manual Setup
+
+If you didn't use the automated admin user creation, you'll need to create an admin user manually by accessing the database directly or through the web interface installation process.
 
 The application will automatically redirect to the login page and all static assets (CSS, JavaScript, images) will load correctly through FrankenPHP's optimized serving.

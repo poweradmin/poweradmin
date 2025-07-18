@@ -1,0 +1,93 @@
+name: Docker Image Publish
+
+on:
+  push:
+    branches:
+      - master
+    tags:
+      - 'v*'
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Specific version to build (leave empty for all versions)'
+        required: false
+        type: string
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IMAGE_NAME: poweradmin
+
+jobs:
+  get-versions:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set-matrix.outputs.matrix }}
+      release_version: ${{ steps.version.outputs.release_version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get version from tag
+        id: version
+        shell: bash
+        run: |
+          if [[ $GITHUB_REF == refs/tags/* ]]; then
+            echo "release_version=${GITHUB_REF#refs/tags/v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "release_version=edge" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Set matrix
+        id: set-matrix
+        shell: bash
+        run: |
+          echo "matrix={}" >> "$GITHUB_OUTPUT"
+
+  build-push:
+    needs: get-versions
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+    permissions:
+      packages: write
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prepare tags
+        id: prep
+        shell: bash
+        run: |
+          IMAGE_ID=ghcr.io/${{ github.repository_owner }}/$IMAGE_NAME
+          IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+          FULL_VERSION=${{ needs.get-versions.outputs.release_version }}
+          echo "tags=${IMAGE_ID}:${FULL_VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          file: ./Dockerfile
+          push: true
+          tags: ${{ steps.prep.outputs.tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      - name: Job Summary
+        run: |
+          echo "### Build Complete 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "- Image: ${{ steps.prep.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Release Version: ${{ needs.get-versions.outputs.release_version }}" >> $GITHUB_STEP_SUMMARY
