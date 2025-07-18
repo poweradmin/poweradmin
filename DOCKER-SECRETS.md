@@ -4,7 +4,7 @@ This document explains how to use Docker secrets with the Poweradmin Docker cont
 
 ## Overview
 
-The Poweradmin Docker container now supports Docker secrets for secure handling of sensitive configuration values. Any environment variable can be provided via a file by appending `__FILE` to the variable name.
+The Poweradmin Docker container supports Docker secrets for secure handling of sensitive configuration values. Any environment variable can be provided via a file by appending `__FILE` to the variable name.
 
 ## How Docker Secrets Work
 
