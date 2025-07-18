@@ -77,7 +77,7 @@ jobs:
           echo "tags=${IMAGE_ID}:${FULL_VERSION}" >> "$GITHUB_OUTPUT"
 
       - name: Build and push
-        uses: docker/build-push-action@v5
+        uses: docker/build-push-action@v6
         with:
           context: .
           file: ./Dockerfile
