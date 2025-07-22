@@ -43,6 +43,7 @@ RUN apk add --no-cache --virtual .build-deps \
     bash \
     postgresql15-client \
     postgresql15-dev \
+    libpq \
     && install-php-extensions \
     gettext \
     intl \
