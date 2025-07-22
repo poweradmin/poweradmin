@@ -69,3 +69,4 @@ psalm.xml
 .php-cs-fixer.php
 nginx.conf.example
 .htaccess
+.hadolint.yaml
