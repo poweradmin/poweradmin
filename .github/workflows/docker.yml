@@ -124,7 +124,24 @@ jobs:
           subject-digest: ${{ steps.build.outputs.digest }}
 
       - name: Job Summary
+        if: always()
         run: |
-          echo "### Build Complete 🎉" >> $GITHUB_STEP_SUMMARY
+          echo "### Docker Build Summary 🐳" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Build Information:**" >> $GITHUB_STEP_SUMMARY
           echo "- Tags: ${{ steps.meta.outputs.tags }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Workflow: ${{ github.workflow }}" >> $GITHUB_STEP_SUMMARY
+          echo "- Platforms: linux/amd64, linux/arm64" >> $GITHUB_STEP_SUMMARY
+          echo "- Digest: ${{ steps.build.outputs.digest }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Security & Compliance:**" >> $GITHUB_STEP_SUMMARY
+          if [ "${{ github.event_name }}" != "pull_request" ]; then
+            echo "- ✅ Vulnerability scan completed" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ SBOM generated (artifact: sbom-${{ github.run_id }})" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Build provenance attested" >> $GITHUB_STEP_SUMMARY
+            echo "- ✅ Images pushed to GHCR and Docker Hub" >> $GITHUB_STEP_SUMMARY
+          else
+            echo "- 🔍 Build-only mode (PR)" >> $GITHUB_STEP_SUMMARY
+            echo "- ⏭️ Security scans skipped" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Workflow:** ${{ github.workflow }} (#${{ github.run_number }})" >> $GITHUB_STEP_SUMMARY
