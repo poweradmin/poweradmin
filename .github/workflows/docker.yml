@@ -120,6 +120,21 @@ jobs:
         with:
           sarif_file: 'trivy-results.sarif'
 
+      - name: Generate SBOM
+        if: github.event_name != 'pull_request'
+        uses: anchore/sbom-action@v0
+        with:
+          image: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          format: spdx-json
+          output-file: sbom.spdx.json
+
+      - name: Upload SBOM as artifact
+        if: github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom-${{ github.run_id }}
+          path: sbom.spdx.json
+
       - name: Job Summary
         run: |
           echo "### Build Complete 🎉" >> $GITHUB_STEP_SUMMARY
