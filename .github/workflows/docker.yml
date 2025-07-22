@@ -30,6 +30,8 @@ jobs:
       packages: write
       security-events: write
       actions: read
+      id-token: write
+      attestations: write
 
     steps:
       - uses: actions/checkout@v4
@@ -113,6 +115,13 @@ jobs:
         with:
           name: sbom-${{ github.run_id }}
           path: sbom.spdx.json
+
+      - name: Attest build provenance
+        if: github.event_name != 'pull_request' && success()
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-name: ${{ fromJSON(steps.meta.outputs.json).tags[0] }}
+          subject-digest: ${{ steps.build.outputs.digest }}
 
       - name: Job Summary
         run: |
