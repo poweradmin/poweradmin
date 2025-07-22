@@ -58,7 +58,7 @@ COPY . .
 # Copy and set permissions for entrypoint script, create directories
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
-    && mkdir -p /db /app/config
+    && mkdir -p /db /app/config /data/caddy/locks /config/caddy
 
 # Create Caddyfile for FrankenPHP
 COPY <<EOF /etc/caddy/Caddyfile
@@ -182,7 +182,7 @@ COPY <<EOF /etc/caddy/Caddyfile
 EOF
 
 # Set proper ownership for www-data user
-RUN chown -R www-data:www-data /app /db
+RUN chown -R www-data:www-data /app /db /data/caddy /config/caddy
 
 USER www-data
 
