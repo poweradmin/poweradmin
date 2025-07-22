@@ -14,8 +14,17 @@
 #     -v /path/to/secret:/run/secrets/db_password:ro \
 #     poweradmin
 #
-# Open your browser and navigate to "localhost", then log in using the provided username and password
-# admin / testadmin
+# Admin User Creation:
+#   By default, no admin user is created for security reasons.
+#   To create an admin user, set PA_CREATE_ADMIN=1:
+#   docker run -d --name poweradmin -p 80:80 \
+#     -e PA_CREATE_ADMIN=1 \
+#     poweradmin
+#
+# Open your browser and navigate to "localhost", then log in using the default credentials:
+# Username: admin
+# Password: testadmin
+# (Override with PA_ADMIN_USERNAME and PA_ADMIN_PASSWORD environment variables)
 
 FROM dunglas/frankenphp:latest-alpine
 

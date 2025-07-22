@@ -602,7 +602,7 @@ Once running, access Poweradmin at `http://localhost`.
 
 If you enabled admin user creation with `PA_CREATE_ADMIN=1`, use:
 - Username: Value of `PA_ADMIN_USERNAME` (default: `admin`)
-- Password: Value of `PA_ADMIN_PASSWORD` (default: `admin`)
+- Password: Value of `PA_ADMIN_PASSWORD` (default: `testadmin`)
 
 **For production deployments, always change the default password!**
 

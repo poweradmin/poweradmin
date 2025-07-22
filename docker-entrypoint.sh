@@ -174,7 +174,7 @@ create_admin_user() {
     fi
 
     local admin_username="${PA_ADMIN_USERNAME:-admin}"
-    local admin_password="${PA_ADMIN_PASSWORD:-admin}"
+    local admin_password="${PA_ADMIN_PASSWORD:-testadmin}"
     local admin_email="${PA_ADMIN_EMAIL:-admin@example.com}"
     local admin_fullname="${PA_ADMIN_FULLNAME:-Administrator}"
 
