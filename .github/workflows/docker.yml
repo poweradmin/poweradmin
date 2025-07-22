@@ -55,8 +55,10 @@ jobs:
     strategy:
       fail-fast: false
     permissions:
-      packages: write
       contents: read
+      packages: write
+      security-events: write
+      actions: read
 
     steps:
       - uses: actions/checkout@v4
