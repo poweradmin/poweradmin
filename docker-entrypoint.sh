@@ -42,7 +42,7 @@ process_secret_files() {
 
 # Initialize SQLite database if it doesn't exist
 init_sqlite_db() {
-    if [ "${DB_TYPE}" = "sqlite" ] && [ ! -f "${DB_FILE:-/db/pdns.db}" ]; then
+    if [ "${DB_TYPE:-sqlite}" = "sqlite" ] && [ ! -f "${DB_FILE:-/db/pdns.db}" ]; then
         local db_file="${DB_FILE:-/db/pdns.db}"
         log "Initializing SQLite database at ${db_file}..."
 

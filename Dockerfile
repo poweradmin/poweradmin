@@ -5,7 +5,7 @@
 #   docker run -d --name poweradmin -p 80:80 poweradmin
 #
 # Default configuration:
-#   - Database: SQLite (stored in /db/pdns.db)
+#   - Database: SQLite (defaults to sqlite if DB_TYPE not specified)
 #   - DNS servers: ns1.example.com, ns2.example.com
 #   - Hostmaster: hostmaster@example.com
 #
