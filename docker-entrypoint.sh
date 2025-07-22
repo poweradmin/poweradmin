@@ -110,16 +110,16 @@ validate_dns_config() {
     debug_log "DNS_NS2='${DNS_NS2}'"
     debug_log "DNS_HOSTMASTER='${DNS_HOSTMASTER}'"
     [ -z "${DNS_NS1}" ] && {
-        log "ERROR: DNS_NS1 (primary nameserver) is required"
-        exit 1
+        log "WARNING: DNS_NS1 not set, using default: ns1.example.com"
+        DNS_NS1="ns1.example.com"
     }
     [ -z "${DNS_NS2}" ] && {
-        log "ERROR: DNS_NS2 (secondary nameserver) is required"
-        exit 1
+        log "WARNING: DNS_NS2 not set, using default: ns2.example.com"
+        DNS_NS2="ns2.example.com"
     }
     [ -z "${DNS_HOSTMASTER}" ] && {
-        log "ERROR: DNS_HOSTMASTER is required"
-        exit 1
+        log "WARNING: DNS_HOSTMASTER not set, using default: hostmaster@example.com"
+        DNS_HOSTMASTER="hostmaster@example.com"
     }
     debug_log "DNS validation completed"
 }
