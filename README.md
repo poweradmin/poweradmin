@@ -63,7 +63,6 @@ For detailed installation instructions, please visit [the official documentation
 docker run -d \
   --name poweradmin \
   -p 8080:80 \
-  -e DB_TYPE=sqlite \
   -e PA_CREATE_ADMIN=1 \
   edmondas/poweradmin:latest
 ```
