@@ -4,8 +4,9 @@
 #   docker build --no-cache -t poweradmin .
 #   docker run -d --name poweradmin -p 80:80 poweradmin
 #
+# Required configuration:
+#   - DB_TYPE environment variable (sqlite, mysql, pgsql)
 # Default configuration:
-#   - Database: SQLite (defaults to sqlite if DB_TYPE not specified)
 #   - DNS servers: ns1.example.com, ns2.example.com
 #   - Hostmaster: hostmaster@example.com
 #

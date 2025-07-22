@@ -42,7 +42,7 @@ process_secret_files() {
 
 # Initialize SQLite database if it doesn't exist
 init_sqlite_db() {
-    if [ "${DB_TYPE:-sqlite}" = "sqlite" ] && [ ! -f "${DB_FILE:-/db/pdns.db}" ]; then
+    if [ "${DB_TYPE}" = "sqlite" ] && [ ! -f "${DB_FILE:-/db/pdns.db}" ]; then
         local db_file="${DB_FILE:-/db/pdns.db}"
         log "Initializing SQLite database at ${db_file}..."
 
@@ -69,8 +69,12 @@ init_sqlite_db() {
 
 # Validate required database configuration
 validate_database_config() {
-    debug_log "Starting database validation with DB_TYPE=${DB_TYPE:-sqlite}"
-    case "${DB_TYPE:-sqlite}" in
+    [ -z "${DB_TYPE}" ] && {
+        log "ERROR: DB_TYPE environment variable is required. Supported types: sqlite, mysql, pgsql"
+        exit 1
+    }
+    debug_log "Starting database validation with DB_TYPE=${DB_TYPE}"
+    case "${DB_TYPE}" in
         "sqlite")
             local db_file="${DB_FILE:-/db/pdns.db}"
             debug_log "Checking SQLite database file: ${db_file}"
@@ -195,7 +199,7 @@ create_admin_user() {
     debug_log "Generated password hash for admin user"
 
     # Database-specific user creation
-    case "${DB_TYPE:-sqlite}" in
+    case "${DB_TYPE}" in
         "sqlite")
             local db_file="${DB_FILE:-/db/pdns.db}"
             debug_log "Creating admin user in SQLite database: ${db_file}"
@@ -274,7 +278,7 @@ generate_config() {
 
 return [
     'database' => [
-        'type' => '${DB_TYPE:-sqlite}',
+        'type' => '${DB_TYPE}',
         'host' => '${DB_HOST:-}',
         'user' => '${DB_USER:-}',
         'password' => '${DB_PASS:-}',
@@ -344,8 +348,8 @@ EOF
 # Print configuration summary (with redacted secrets)
 print_config_summary() {
     log "=== Poweradmin Configuration Summary ==="
-    log "Database Type: ${DB_TYPE:-sqlite}"
-    if [ "${DB_TYPE:-sqlite}" != "sqlite" ]; then
+    log "Database Type: ${DB_TYPE}"
+    if [ "${DB_TYPE}" != "sqlite" ]; then
         log "Database Host: ${DB_HOST:-}"
         log "Database Name: ${DB_NAME:-}"
         log "Database User: ${DB_USER:-}"

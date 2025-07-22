@@ -63,12 +63,13 @@ For detailed installation instructions, please visit [the official documentation
 docker run -d \
   --name poweradmin \
   -p 8080:80 \
+  -e DB_TYPE=sqlite \
   -e PA_CREATE_ADMIN=1 \
   edmondas/poweradmin:latest
 ```
 
 **Important**: 
-- SQLite database is used by default for easy setup
+- DB_TYPE environment variable is required (sqlite, mysql, pgsql)
 - No admin user is created by default for security reasons. Use `-e PA_CREATE_ADMIN=1` to create an admin user with credentials `admin/testadmin`
 
 * **Docker Hub**: `edmondas/poweradmin`
