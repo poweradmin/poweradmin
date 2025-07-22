@@ -31,7 +31,7 @@ FROM dunglas/frankenphp:latest-alpine
 # Install required packages and PHP extensions
 RUN apk add --no-cache --virtual .build-deps \
     gettext-dev \
-    postgresql-dev \
+    postgresql15-dev \
     icu-dev \
     && apk add --no-cache \
     icu-data-full \
@@ -41,8 +41,7 @@ RUN apk add --no-cache --virtual .build-deps \
     sqlite \
     openssl \
     bash \
-    postgresql-client \
-    libpq \
+    postgresql15-client \
     && install-php-extensions \
     gettext \
     intl \
