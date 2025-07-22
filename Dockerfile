@@ -4,6 +4,11 @@
 #   docker build --no-cache -t poweradmin .
 #   docker run -d --name poweradmin -p 80:80 poweradmin
 #
+# Default configuration:
+#   - Database: SQLite (stored in /db/pdns.db)
+#   - DNS servers: ns1.example.com, ns2.example.com
+#   - Hostmaster: hostmaster@example.com
+#
 #   Alternatively, you can run the program with a current folder mounted:
 #   docker run -d --name poweradmin -p 80:80 -v $(pwd):/app poweradmin
 #

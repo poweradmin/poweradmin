@@ -67,7 +67,9 @@ docker run -d \
   edmondas/poweradmin:latest
 ```
 
-**Important**: By default, no admin user is created for security reasons. Use `-e PA_CREATE_ADMIN=1` to create an admin user with credentials `admin/testadmin`.
+**Important**: 
+- SQLite database is used by default for easy setup
+- No admin user is created by default for security reasons. Use `-e PA_CREATE_ADMIN=1` to create an admin user with credentials `admin/testadmin`
 
 * **Docker Hub**: `edmondas/poweradmin`
 * **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`
