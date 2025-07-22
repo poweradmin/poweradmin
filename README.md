@@ -49,10 +49,30 @@ This project is licensed under the GNU General Public License v3.0. See the LICE
 
 For detailed installation instructions, please visit [the official documentation](https://docs.poweradmin.org/installation/).
 
+### Traditional Installation
+
 * **Recommended method - via releases**:
     * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
 * **For specific needs - via Git**:
     * ⚠️ **Warning**: The master branch (4.0.x) is used for development and may be unstable. For production use, stick with the stable 3.9.x release.
+
+### Docker Deployment
+
+🐳 **Quick Start with Docker**:
+```bash
+docker run -d \
+  --name poweradmin \
+  -p 8080:80 \
+  -e DB_TYPE=sqlite \
+  edmondas/poweradmin:latest
+```
+
+* **Docker Hub**: `edmondas/poweradmin`
+* **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`
+* **Full documentation**: [DOCKER.md](DOCKER.md)
+* **Security with Docker Secrets**: [DOCKER-SECRETS.md](DOCKER-SECRETS.md)
+
+Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets integration, FrankenPHP for enhanced performance.
 
 ## Screenshots
 
