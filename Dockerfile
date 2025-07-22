@@ -41,6 +41,8 @@ RUN apk add --no-cache --virtual .build-deps \
     sqlite \
     openssl \
     bash \
+    postgresql-client \
+    libpq \
     && install-php-extensions \
     gettext \
     intl \
