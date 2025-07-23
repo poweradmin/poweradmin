@@ -106,6 +106,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `DB_PASS` | Database password (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_NAME` | Database name (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_FILE` | SQLite database file path (unused for MySQL/PostgreSQL) | `/db/pdns.db` | No |
+| `PDNS_VERSION` | PowerDNS schema version to use (45, 46, 47, 48, 49) | `49` | No |
 
 ### DNS Nameserver Configuration
 

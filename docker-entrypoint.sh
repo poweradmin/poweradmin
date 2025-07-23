@@ -44,16 +44,18 @@ process_secret_files() {
 init_sqlite_db() {
     if [ "${DB_TYPE}" = "sqlite" ] && [ ! -f "${DB_FILE:-/db/pdns.db}" ]; then
         local db_file="${DB_FILE:-/db/pdns.db}"
+        local pdns_version="${PDNS_VERSION:-49}"
         log "Initializing SQLite database at ${db_file}..."
 
         # Create database directory if it doesn't exist
         mkdir -p "$(dirname "${db_file}")"
 
         # Initialize PowerDNS schema
-        if [ -f "/app/sql/pdns/47/schema.sqlite3.sql" ]; then
-            sqlite3 "${db_file}" < /app/sql/pdns/47/schema.sqlite3.sql
+        if [ -f "/app/sql/pdns/${pdns_version}/schema.sqlite3.sql" ]; then
+            log "Using PowerDNS version ${pdns_version} schema"
+            sqlite3 "${db_file}" < /app/sql/pdns/${pdns_version}/schema.sqlite3.sql
         else
-            log "WARNING: PowerDNS schema file not found, database may not be properly initialized"
+            log "WARNING: PowerDNS schema file for version ${pdns_version} not found, database may not be properly initialized"
         fi
 
         # Initialize Poweradmin schema
@@ -355,6 +357,7 @@ print_config_summary() {
         log "Database User: ${DB_USER:-}"
     else
         log "Database File: ${DB_FILE:-/db/pdns.db}"
+        log "PowerDNS Schema Version: ${PDNS_VERSION:-49}"
     fi
     log "DNS NS1: ${DNS_NS1:-ns1.example.com}"
     log "DNS NS2: ${DNS_NS2:-ns2.example.com}"
