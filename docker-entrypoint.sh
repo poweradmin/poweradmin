@@ -40,6 +40,11 @@ process_secret_files() {
     done
 }
 
+# Escape single quotes for SQL by replacing ' with ''
+escape_sql() {
+    printf '%s' "$1" | sed "s/'/''/g"
+}
+
 # Initialize SQLite database if it doesn't exist
 init_sqlite_db() {
     if [ "${DB_TYPE}" = "sqlite" ] && [ ! -f "${DB_FILE:-/db/pdns.db}" ]; then
@@ -216,7 +221,7 @@ create_admin_user() {
 
             # Check if user already exists
             local user_exists
-            user_exists=$(sqlite3 "${db_file}" "SELECT COUNT(*) FROM users WHERE username='${admin_username}';")
+            user_exists=$(sqlite3 "${db_file}" "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
 
             if [ "${user_exists}" -gt 0 ]; then
                 log "Admin user '${admin_username}' already exists, skipping creation"
@@ -224,7 +229,7 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            sqlite3 "${db_file}" "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('${admin_username}', '${password_hash}', '${admin_fullname}', '${admin_email}', 'System Administrator', 1, 1, 0);"
+            sqlite3 "${db_file}" "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"
             ;;
 
         "mysql")
@@ -232,7 +237,7 @@ create_admin_user() {
 
             # Check if user already exists
             local user_exists
-            user_exists=$(mysql -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='${admin_username}';")
+            user_exists=$(mysql -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -sNe "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
 
             if [ "${user_exists}" -gt 0 ]; then
                 log "Admin user '${admin_username}' already exists, skipping creation"
@@ -240,7 +245,7 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            mysql -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('${admin_username}', '${password_hash}', '${admin_fullname}', '${admin_email}', 'System Administrator', 1, 1, 0);"
+            mysql -h"${DB_HOST}" -u"${DB_USER}" -p"${DB_PASS}" "${DB_NAME}" -e "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"
             ;;
 
         "pgsql")
@@ -248,7 +253,7 @@ create_admin_user() {
 
             # Check if user already exists
             local user_exists
-            user_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -tAc "SELECT COUNT(*) FROM users WHERE username='${admin_username}';")
+            user_exists=$(PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -tAc "SELECT COUNT(*) FROM users WHERE username='$(escape_sql "${admin_username}")';")
 
             if [ "${user_exists}" -gt 0 ]; then
                 log "Admin user '${admin_username}' already exists, skipping creation"
@@ -256,7 +261,7 @@ create_admin_user() {
             fi
 
             # Insert admin user
-            PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -c "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('${admin_username}', '${password_hash}', '${admin_fullname}', '${admin_email}', 'System Administrator', 1, 1, 0);"
+            PGPASSWORD="${DB_PASS}" psql -h "${DB_HOST}" -U "${DB_USER}" -d "${DB_NAME}" -c "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('$(escape_sql "${admin_username}")', '$(escape_sql "${password_hash}")', '$(escape_sql "${admin_fullname}")', '$(escape_sql "${admin_email}")', 'System Administrator', 1, 1, 0);"
             ;;
     esac
 
