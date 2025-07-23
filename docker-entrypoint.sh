@@ -270,8 +270,6 @@ create_admin_user() {
             log "Username: ${admin_username}"
             log "Password: ${admin_password}"
             log "=========================================="
-            log "Please save these credentials securely!"
-            log "=========================================="
         fi
     else
         log "ERROR: Failed to create admin user '${admin_username}'"
@@ -399,19 +397,6 @@ print_config_summary() {
     log "Timezone: ${PA_TIMEZONE:-UTC}"
     log "======================================="
     
-    # Display admin credentials again at the end if they were generated
-    if [ "${ADMIN_PASSWORD_GENERATED}" = "true" ] && [ -n "${ADMIN_USERNAME}" ] && [ -n "${ADMIN_PASSWORD}" ]; then
-        log ""
-        log "=========================================="
-        log "ADMIN CREDENTIALS (Generated)"
-        log "=========================================="
-        log "URL: http://localhost/"
-        log "Username: ${ADMIN_USERNAME}"
-        log "Password: ${ADMIN_PASSWORD}"
-        log "=========================================="
-        log "⚠️  SAVE THESE CREDENTIALS NOW!"
-        log "=========================================="
-    fi
 }
 
 # Set up proper file permissions
