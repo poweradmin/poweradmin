@@ -199,12 +199,9 @@ create_admin_user() {
 
     debug_log "Creating admin user: ${admin_username}"
 
-    # Generate password hash using PHP
+    # Generate password hash using PHP (secure method with proper argument passing)
     local password_hash
-    local temp_php_file="/tmp/hash_password.php"
-    echo "<?php echo password_hash('${admin_password}', PASSWORD_DEFAULT);" > "${temp_php_file}"
-    password_hash=$(php -d error_reporting=0 -d display_startup_errors=0 "${temp_php_file}" 2>/dev/null)
-    rm -f "${temp_php_file}"
+    password_hash=$(php -r "echo password_hash(\$argv[1], PASSWORD_DEFAULT);" -- "${admin_password}" 2>/dev/null)
 
     if [ $? -ne 0 ] || [ -z "${password_hash}" ]; then
         log "ERROR: Failed to generate password hash for admin user"
