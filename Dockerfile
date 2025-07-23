@@ -27,10 +27,16 @@
 #     -e PA_CREATE_ADMIN=1 \
 #     poweradmin
 #
-# Open your browser and navigate to "localhost", then log in using the default credentials:
-# Username: admin
-# Password: testadmin
-# (Override with PA_ADMIN_USERNAME and PA_ADMIN_PASSWORD environment variables)
+#   When PA_CREATE_ADMIN=1 is set:
+#   - A secure random password will be generated automatically
+#   - The credentials will be displayed prominently in the container logs
+#   - Default username: admin (override with PA_ADMIN_USERNAME)
+#   
+#   To specify your own password:
+#   docker run -d --name poweradmin -p 80:80 \
+#     -e PA_CREATE_ADMIN=1 \
+#     -e PA_ADMIN_PASSWORD=your-secure-password \
+#     poweradmin
 
 FROM dunglas/frankenphp:latest-alpine
 

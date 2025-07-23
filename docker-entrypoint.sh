@@ -180,9 +180,17 @@ create_admin_user() {
     fi
 
     local admin_username="${PA_ADMIN_USERNAME:-admin}"
-    local admin_password="${PA_ADMIN_PASSWORD:-testadmin}"
+    local admin_password="${PA_ADMIN_PASSWORD:-}"
     local admin_email="${PA_ADMIN_EMAIL:-admin@example.com}"
     local admin_fullname="${PA_ADMIN_FULLNAME:-Administrator}"
+    local password_generated="false"
+
+    # Generate secure random password if not provided
+    if [ -z "${admin_password}" ]; then
+        admin_password=$(openssl rand -base64 16 | tr -d "=+/" | cut -c1-16)
+        password_generated="true"
+        log "Generated secure random password for admin user"
+    fi
 
     debug_log "Creating admin user: ${admin_username}"
 
@@ -254,10 +262,26 @@ create_admin_user() {
 
     if [ $? -eq 0 ]; then
         log "Admin user '${admin_username}' created successfully"
+        
+        # Display credentials prominently if password was generated
+        if [ "${password_generated}" = "true" ]; then
+            log "=========================================="
+            log "IMPORTANT: Admin credentials"
+            log "Username: ${admin_username}"
+            log "Password: ${admin_password}"
+            log "=========================================="
+            log "Please save these credentials securely!"
+            log "=========================================="
+        fi
     else
         log "ERROR: Failed to create admin user '${admin_username}'"
         exit 1
     fi
+    
+    # Export for use in print_config_summary
+    export ADMIN_PASSWORD_GENERATED="${password_generated}"
+    export ADMIN_USERNAME="${admin_username}"
+    export ADMIN_PASSWORD="${admin_password}"
 }
 
 # Generate configuration file from environment variables
@@ -374,6 +398,20 @@ print_config_summary() {
     fi
     log "Timezone: ${PA_TIMEZONE:-UTC}"
     log "======================================="
+    
+    # Display admin credentials again at the end if they were generated
+    if [ "${ADMIN_PASSWORD_GENERATED}" = "true" ] && [ -n "${ADMIN_USERNAME}" ] && [ -n "${ADMIN_PASSWORD}" ]; then
+        log ""
+        log "=========================================="
+        log "ADMIN CREDENTIALS (Generated)"
+        log "=========================================="
+        log "URL: http://localhost/"
+        log "Username: ${ADMIN_USERNAME}"
+        log "Password: ${ADMIN_PASSWORD}"
+        log "=========================================="
+        log "⚠️  SAVE THESE CREDENTIALS NOW!"
+        log "=========================================="
+    fi
 }
 
 # Set up proper file permissions
