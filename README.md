@@ -70,7 +70,7 @@ docker run -d \
 
 **Important**: 
 - DB_TYPE environment variable is required (sqlite, mysql, pgsql)
-- No admin user is created by default for security reasons. Use `-e PA_CREATE_ADMIN=1` to create an admin user with credentials `admin/testadmin`
+- No admin user is created by default for security reasons. Use `-e PA_CREATE_ADMIN=1` to create an admin user (a secure password will be auto-generated and shown in logs)
 
 * **Docker Hub**: `edmondas/poweradmin`
 * **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`

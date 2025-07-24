@@ -601,11 +601,11 @@ Once running, access Poweradmin at `http://localhost`.
 
 ### Default Credentials
 
-If you enabled admin user creation with `PA_CREATE_ADMIN=1`, use:
+If you enabled admin user creation with `PA_CREATE_ADMIN=1`:
 - Username: Value of `PA_ADMIN_USERNAME` (default: `admin`)
-- Password: Value of `PA_ADMIN_PASSWORD` (default: `testadmin`)
+- Password: A secure password is auto-generated and displayed in the container logs (unless you set `PA_ADMIN_PASSWORD` explicitly)
 
-**For production deployments, always change the default password!**
+**Important**: Check the container logs for the generated password when using `PA_CREATE_ADMIN=1`.
 
 ### Manual Setup
 
