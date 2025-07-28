@@ -53,6 +53,8 @@ RUN apk add --no-cache --virtual .build-deps \
     sqlite \
     openssl \
     bash \
+    mariadb-client \
+    mariadb-connector-c \
     postgresql15-client \
     postgresql15-dev \
     libpq \
