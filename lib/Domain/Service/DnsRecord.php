@@ -1412,8 +1412,10 @@ class DnsRecord
             }
         }
 
+        $originalSqlMode = DbCompat::handleSqlMode($this->db, $db_type);
         $result = $this->db->query($query);
         $this->db->setLimit(0);
+        DbCompat::restoreSqlMode($this->db, $db_type, $originalSqlMode);
 
         $ret = array();
         while ($r = $result->fetch()) {

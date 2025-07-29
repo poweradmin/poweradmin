@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Query;
 
 use Poweradmin\AppConfiguration;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 abstract class BaseSearch
 {
@@ -79,19 +80,7 @@ abstract class BaseSearch
      */
     protected function handleSqlMode(): string
     {
-        $originalSqlMode = '';
-
-        if ($this->db_type === 'mysql') {
-            $originalSqlMode = $this->db->queryOne("SELECT @@GLOBAL.sql_mode");
-
-            if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
-                $newSqlMode = str_replace('ONLY_FULL_GROUP_BY,', '', $originalSqlMode);
-                $this->db->exec("SET SESSION sql_mode = '$newSqlMode'");
-            } else {
-                $originalSqlMode = '';
-            }
-        }
-        return $originalSqlMode;
+        return DbCompat::handleSqlMode($this->db, $this->db_type);
     }
 
     /**
@@ -102,8 +91,6 @@ abstract class BaseSearch
      */
     protected function restoreSqlMode(string $originalSqlMode): void
     {
-        if ($this->db_type === 'mysql' && $originalSqlMode !== '') {
-            $this->db->exec("SET SESSION sql_mode = '$originalSqlMode'");
-        }
+        DbCompat::restoreSqlMode($this->db, $this->db_type, $originalSqlMode);
     }
 }
