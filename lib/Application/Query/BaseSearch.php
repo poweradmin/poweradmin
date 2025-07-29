@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Query;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 
 abstract class BaseSearch
 {
@@ -83,21 +84,7 @@ abstract class BaseSearch
      */
     protected function handleSqlMode(): string
     {
-        $originalSqlMode = '';
-
-        if ($this->db_type === 'mysql') {
-            $stmt = $this->db->query("SELECT @@GLOBAL.sql_mode");
-            $result = $stmt->fetch();
-            $originalSqlMode = $result[0] ?? '';
-
-            if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
-                $newSqlMode = str_replace('ONLY_FULL_GROUP_BY,', '', $originalSqlMode);
-                $this->db->exec("SET SESSION sql_mode = '$newSqlMode'");
-            } else {
-                $originalSqlMode = '';
-            }
-        }
-        return $originalSqlMode;
+        return DbCompat::handleSqlMode($this->db, $this->db_type);
     }
 
     /**
@@ -108,8 +95,6 @@ abstract class BaseSearch
      */
     protected function restoreSqlMode(string $originalSqlMode): void
     {
-        if ($this->db_type === 'mysql' && $originalSqlMode !== '') {
-            $this->db->exec("SET SESSION sql_mode = '$originalSqlMode'");
-        }
+        DbCompat::restoreSqlMode($this->db, $this->db_type, $originalSqlMode);
     }
 }

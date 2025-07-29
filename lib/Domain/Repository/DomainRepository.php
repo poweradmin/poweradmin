@@ -270,6 +270,9 @@ class DomainRepository implements DomainRepositoryInterface
         // When zones have multiple owners, the JOIN creates duplicate rows which breaks pagination
         // Solution: First get distinct domains with LIMIT, then join for owner details
         if ($letterstart != 'all' && $rowamount < Constants::DEFAULT_MAX_ROWS) {
+            // Handle MySQL ONLY_FULL_GROUP_BY mode
+            $originalSqlMode = DbCompat::handleSqlMode($this->db, $db_type);
+
             // Step 1: Get paginated list of unique domain IDs
             // For PostgreSQL compatibility with complex sorting, we need a simpler approach
             if ($db_type == 'pgsql' && $sortby == "$domains_table.name") {
@@ -297,9 +300,23 @@ class DomainRepository implements DomainRepositoryInterface
                 $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
                 $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
             } else {
-                // For MySQL and non-complex sorts
-                $id_query = "SELECT DISTINCT $domains_table.id
-                            FROM $domains_table";
+                // For MySQL and non-complex sorts - fix DISTINCT + ORDER BY compatibility issue
+                if ($db_type === 'mysql' && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
+                    // For MySQL with complex sorts that can't be used with DISTINCT, use simple name sorting
+                    $id_query = "SELECT DISTINCT $domains_table.id, $domains_table.name
+                                FROM $domains_table";
+                } else {
+                    // Include sort columns in SELECT for DISTINCT compatibility
+                    $select_columns = "$domains_table.id";
+                    if (strpos($sql_sortby, "$domains_table.name") !== false) {
+                        $select_columns .= ", $domains_table.name";
+                    } elseif (strpos($sql_sortby, "$domains_table.type") !== false) {
+                        $select_columns .= ", $domains_table.type";
+                    }
+
+                    $id_query = "SELECT DISTINCT $select_columns
+                                FROM $domains_table";
+                }
 
                 if ($perm == "own") {
                     $id_query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
@@ -317,8 +334,11 @@ class DomainRepository implements DomainRepositoryInterface
                     $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
                 }
 
-                // Apply sorting to the ID query
-                if (strpos($sql_sortby, 'users.username') === false && strpos($sql_sortby, 'COUNT(') === false) {
+                // Apply sorting to the ID query with MySQL compatibility
+                if ($db_type === 'mysql' && (strpos($sql_sortby, 'users.username') !== false || strpos($sql_sortby, 'COUNT(') !== false)) {
+                    // For complex sorts that can't work with DISTINCT in MySQL, use simple name sorting
+                    $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
+                } elseif (strpos($sql_sortby, 'users.username') === false && strpos($sql_sortby, 'COUNT(') === false) {
                     $id_query .= " ORDER BY " . $sql_sortby;
                 } else {
                     // For complex sorts, use simple name sorting for the ID query
@@ -359,7 +379,13 @@ class DomainRepository implements DomainRepositoryInterface
             } else {
                 $result = $this->db->query($query);
             }
+
+            // Restore SQL mode
+            DbCompat::restoreSqlMode($this->db, $db_type, $originalSqlMode);
         } else {
+            // Handle MySQL ONLY_FULL_GROUP_BY mode for unpaginated queries
+            $originalSqlMode = DbCompat::handleSqlMode($this->db, $db_type);
+
             // Original query for unpaginated results or 'all' letter filter
             $query = "SELECT $domains_table.id,
                             $domains_table.name,
@@ -391,6 +417,9 @@ class DomainRepository implements DomainRepositoryInterface
             } else {
                 $result = $this->db->query($query);
             }
+
+            // Restore SQL mode
+            DbCompat::restoreSqlMode($this->db, $db_type, $originalSqlMode);
         }
 
         $ret = array();

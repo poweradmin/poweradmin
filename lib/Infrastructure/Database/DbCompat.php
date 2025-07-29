@@ -179,4 +179,45 @@ final class DbCompat
             return $func . '(' . implode(', ', $values) . ')';
         }
     }
+
+    /**
+     * Handles SQL mode for MySQL database connection by disabling 'ONLY_FULL_GROUP_BY' if needed.
+     *
+     * @param object $db The database connection object
+     * @param string $db_type The database type
+     * @return string The original SQL mode if modified, or an empty string if no change was needed or not using MySQL.
+     */
+    public static function handleSqlMode(object $db, string $db_type): string
+    {
+        $originalSqlMode = '';
+
+        if ($db_type === 'mysql') {
+            $stmt = $db->query("SELECT @@GLOBAL.sql_mode");
+            $result = $stmt->fetch();
+            $originalSqlMode = $result[0] ?? '';
+
+            if (str_contains($originalSqlMode, 'ONLY_FULL_GROUP_BY')) {
+                $newSqlMode = str_replace('ONLY_FULL_GROUP_BY,', '', $originalSqlMode);
+                $db->exec("SET SESSION sql_mode = '$newSqlMode'");
+            } else {
+                $originalSqlMode = '';
+            }
+        }
+        return $originalSqlMode;
+    }
+
+    /**
+     * Restores the original SQL mode for the MySQL database connection if needed.
+     *
+     * @param object $db The database connection object
+     * @param string $db_type The database type
+     * @param string $originalSqlMode The original SQL mode to be restored.
+     * @return void
+     */
+    public static function restoreSqlMode(object $db, string $db_type, string $originalSqlMode): void
+    {
+        if ($db_type === 'mysql' && $originalSqlMode !== '') {
+            $db->exec("SET SESSION sql_mode = '$originalSqlMode'");
+        }
+    }
 }
