@@ -167,6 +167,11 @@
                             <i class="bi bi-envelope-fill me-2"></i>{% trans %}Email Template Previews{% endtrans %}
                         </a></li>
                         {% endif %}
+                        {% if api_docs_enabled %}
+                        <li><a class="dropdown-item" href="/api/docs" target="_blank">
+                            <i class="bi bi-book me-2"></i>{% trans %}API Documentation{% endtrans %}
+                        </a></li>
+                        {% endif %}
                     </ul>
                 </li>
                 {% endif %}
