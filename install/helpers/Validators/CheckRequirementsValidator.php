@@ -45,6 +45,7 @@ class CheckRequirementsValidator extends BaseValidator
         'filter',
         'tokenizer',
         'pdo',
+        'xml',
     ];
 
     /**

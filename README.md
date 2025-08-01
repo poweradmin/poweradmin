@@ -35,7 +35,7 @@ This project is licensed under the GNU General Public License v3.0. See the LICE
 ## Requirements
 
 * PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
-* PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
+* PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, xml, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
 * MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
 * PowerDNS authoritative server 4.0.0+
 
