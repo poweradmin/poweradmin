@@ -1,10 +1,7 @@
 name: Feature Request
 description: Suggest a new feature or enhancement for Poweradmin
 title: "[Feature]: "
-labels: ["enhancement"]
-projects: ["poweradmin/1"]
-assignees:
-  - edmondas
+type: feature
 body:
   - type: markdown
     attributes:
