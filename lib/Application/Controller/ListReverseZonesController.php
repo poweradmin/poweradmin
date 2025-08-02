@@ -170,7 +170,16 @@ class ListReverseZonesController extends BaseController
             'iface_zonelist_template' => $iface_zonelist_template,
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
             'pdnssec_use' => $pdnssec_use,
-            'pagination' => $this->createAndPresentPagination($count_all_reverse_zones, $iface_rowamount),
+            'pagination' => $this->createAndPresentPagination(
+                $this->zoneService->countReverseZones(
+                    $perm_view,
+                    $this->userContextService->getLoggedInUserId(),
+                    $reverse_zone_type,  // Use current filter instead of 'all'
+                    $zone_sort_by,
+                    $zone_sort_direction
+                ),
+                $iface_rowamount
+            ),
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),
             'perm_edit' => $perm_edit,
             'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
