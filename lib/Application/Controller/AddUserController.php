@@ -170,7 +170,7 @@ class AddUserController extends BaseController
             'use_ldap_checked' => $use_ldap_checked,
             'user_edit_templ_perm' => $user_edit_templ_perm,
             'user_templates' => $user_templates,
-            'ldap_use' => $this->config->get('auth', 'ldap_enabled', false),
+            'ldap_use' => $this->config->get('ldap', 'enabled', false),
             'password_policy' => $policyConfig,
             'mail_enabled' => $mail_enabled,
         ]);
