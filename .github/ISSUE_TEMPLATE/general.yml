@@ -1,0 +1,52 @@
+name: General Issue
+description: For questions, discussions, or issues that don't fit other categories
+title: ""
+labels: ["question"]
+projects: ["poweradmin/1"]
+assignees:
+  - edmondas
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template for questions, discussions, documentation issues, or anything that doesn't fit the bug report or feature request categories.
+        
+        **Note:** For open-ended discussions, you can also use [GitHub Discussions](https://github.com/poweradmin/poweradmin/discussions).
+
+  - type: dropdown
+    id: issue-type
+    attributes:
+      label: Issue Type
+      description: What type of issue is this?
+      options:
+        - Question / Help Needed
+        - Documentation Issue
+        - Installation / Setup Help
+        - Configuration Question
+        - Discussion / Feedback
+        - Security Concern
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Describe your question, issue, or discussion topic
+      placeholder: |
+        Please provide as much detail as possible about what you need help with or want to discuss.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: |
+        Any additional information that might be helpful:
+        - Your environment (if relevant)
+        - What you've already tried
+        - Links to documentation you've checked
+        - Screenshots or examples
+        - Related issues or discussions

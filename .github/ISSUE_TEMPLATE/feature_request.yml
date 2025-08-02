@@ -1,0 +1,43 @@
+name: Feature Request
+description: Suggest a new feature or enhancement for Poweradmin
+title: "[Feature]: "
+labels: ["enhancement"]
+projects: ["poweradmin/1"]
+assignees:
+  - edmondas
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a new feature! Please provide as much detail as possible to help us understand your request.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem are you trying to solve?
+      description: Describe the current limitation or pain point.
+      placeholder: |
+        Example: "Managing custom themes is difficult because I have to manually reapply CSS changes after every update."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: What would you like implemented?
+      description: Describe your proposed solution.
+      placeholder: |
+        Example: "Add support for custom theme extension stylesheets that load automatically and survive updates."
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-context
+    attributes:
+      label: Additional context (optional)
+      description: |
+        Any other details that might help:
+        - How you would use this feature
+        - Technical implementation ideas
+        - Screenshots or mockups
+        - Similar features in other tools

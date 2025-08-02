@@ -1,0 +1,74 @@
+name: Bug Report
+description: File a bug report to help us improve Poweradmin
+title: "[Bug]: "
+labels: ["bug"]
+projects: ["poweradmin/1"]
+assignees:
+  - edmondas
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report! Please provide as much detail as possible to help us reproduce and fix the issue.
+
+  - type: textarea
+    id: problem-description
+    attributes:
+      label: Describe the problem
+      description: What's wrong and what should happen instead?
+      placeholder: |
+        Tell us what you see and what you expected to see.
+        Example: "When I click 'Add Zone', I get an error message instead of the zone creation form."
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps-to-reproduce
+    attributes:
+      label: Steps to reproduce
+      description: How can we reproduce this issue?
+      placeholder: |
+        1. Go to '...'
+        2. Click on '....'
+        3. See error
+    validations:
+      required: true
+
+  - type: input
+    id: poweradmin-version
+    attributes:
+      label: Poweradmin version
+      description: What version of Poweradmin are you running?
+      placeholder: "e.g., 4.1.0, 3.9.x, master branch, commit hash"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: database
+    attributes:
+      label: Database
+      description: What database are you using?
+      options:
+        - MySQL
+        - MariaDB
+        - PostgreSQL
+        - SQLite
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional information (optional)
+      description: |
+        Anything else that might help us fix this:
+        - Error messages or logs
+        - Screenshots
+        - Your environment (PHP version, OS, web server, PowerDNS version)
+        - Workarounds you've tried
+      placeholder: |
+        Example:
+        Error: "Class not found" in /var/log/apache2/error.log
+        Environment: PHP 8.2, Ubuntu 22.04, Apache 2.4
+        PowerDNS: 4.8.1 (for API-related issues)
