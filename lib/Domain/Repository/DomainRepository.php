@@ -216,7 +216,7 @@ class DomainRepository implements DomainRepositoryInterface
      *
      * @return array array of zone details [id,name,type,count_records] (empty array if none found)
      */
-    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC'): array
+    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $excludeReverse = false): array
     {
         // Validate sort parameters
         $allowedSortColumns = ['name', 'type', 'count_records'];
@@ -253,6 +253,11 @@ class DomainRepository implements DomainRepositoryInterface
                 $params[':letterstart'] = $letterstart;
             } elseif ($letterstart == 1) {
                 $sql_add .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+            }
+
+            // Add reverse zone filtering
+            if ($excludeReverse) {
+                $sql_add .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
             }
         }
 
@@ -296,6 +301,11 @@ class DomainRepository implements DomainRepositoryInterface
                     $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
                 }
 
+                // Add reverse zone filtering
+                if ($excludeReverse) {
+                    $id_query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
+                }
+
                 // Use simple name sorting for the subquery, complex sorting will be applied to main query
                 $id_query .= " ORDER BY $domains_table.name " . $sortDirection;
                 $id_query .= " LIMIT " . intval($rowamount) . " OFFSET " . intval($rowstart);
@@ -332,6 +342,11 @@ class DomainRepository implements DomainRepositoryInterface
                     $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) = :letterstart";
                 } elseif ($letterstart == 1) {
                     $id_query .= " AND " . DbCompat::substr($db_type) . "($domains_table.name,1,1) " . DbCompat::regexp($db_type) . " '[0-9]'";
+                }
+
+                // Add reverse zone filtering
+                if ($excludeReverse) {
+                    $id_query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa' AND $domains_table.name NOT LIKE '%.ip6.arpa'";
                 }
 
                 // Apply sorting to the ID query with MySQL compatibility
