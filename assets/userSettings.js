@@ -83,9 +83,6 @@ const UserSettings = (function() {
      * @param {string} pageType - Type of page (zones, edit, search_zones, search_records)
      */
     function applyRowsPerPageSetting(rowsPerPage, pageType = 'zones') {
-        // Save to database
-        saveToDatabase('rows_per_page', rowsPerPage);
-        
         // Get current URL and parse it
         const url = new URL(window.location.href);
         
