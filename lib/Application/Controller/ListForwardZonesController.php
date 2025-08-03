@@ -102,23 +102,17 @@ class ListForwardZonesController extends BaseController
 
         $domainRepository = new DomainRepository($this->db, $this->getConfig());
         if ($count_zones_view <= $iface_rowamount || $letter_start == 'all') {
-            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], 'all', $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction);
+            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], 'all', $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction, true);
         } else {
-            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction);
+            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction, true);
         }
 
         if ($perm_view == 'none') {
             $this->showError(_('You do not have the permission to see any zones.'));
         }
 
-        // Filter out the reverse zones
-        $forward_zones = array_filter($zones, function ($zone) {
-            $name = $zone['name'] ?? '';
-            return !(str_contains($name, 'in-addr.arpa') || str_contains($name, 'ip6.arpa'));
-        });
-
         $this->render('list_forward_zones.html', [
-            'zones' => $forward_zones,
+            'zones' => $zones,
             'count_zones_all_letterstart' => $count_zones_all_letterstart,
             'count_zones_view' => $count_zones_view,
             'count_zones_edit' => $count_zones_edit,
