@@ -82,54 +82,28 @@ class DbUserPreferenceRepository implements UserPreferenceRepositoryInterface
 
     public function createOrUpdate(int $userId, string $key, ?string $value): void
     {
-        if ($this->db_type === 'mysql') {
+        $existing = $this->findByUserIdAndKey($userId, $key);
+
+        if ($existing) {
             $stmt = $this->db->prepare(
-                "INSERT INTO user_preferences (user_id, preference_key, preference_value) 
-                 VALUES (:user_id, :key, :value) 
-                 ON DUPLICATE KEY UPDATE preference_value = :value2"
+                "UPDATE user_preferences SET preference_value = :value 
+                 WHERE user_id = :user_id AND preference_key = :key"
             );
             $stmt->execute([
-                'user_id' => $userId,
-                'key' => $key,
                 'value' => $value,
-                'value2' => $value
-            ]);
-        } elseif ($this->db_type === 'pgsql') {
-            $stmt = $this->db->prepare(
-                "INSERT INTO user_preferences (user_id, preference_key, preference_value) 
-                 VALUES (:user_id, :key, :value) 
-                 ON CONFLICT (user_id, preference_key) 
-                 DO UPDATE SET preference_value = :value2"
-            );
-            $stmt->execute([
                 'user_id' => $userId,
-                'key' => $key,
-                'value' => $value,
-                'value2' => $value
+                'key' => $key
             ]);
         } else {
-            $existing = $this->findByUserIdAndKey($userId, $key);
-            if ($existing) {
-                $stmt = $this->db->prepare(
-                    "UPDATE user_preferences SET preference_value = :value 
-                     WHERE user_id = :user_id AND preference_key = :key"
-                );
-                $stmt->execute([
-                    'value' => $value,
-                    'user_id' => $userId,
-                    'key' => $key
-                ]);
-            } else {
-                $stmt = $this->db->prepare(
-                    "INSERT INTO user_preferences (user_id, preference_key, preference_value) 
-                     VALUES (:user_id, :key, :value)"
-                );
-                $stmt->execute([
-                    'user_id' => $userId,
-                    'key' => $key,
-                    'value' => $value
-                ]);
-            }
+            $stmt = $this->db->prepare(
+                "INSERT INTO user_preferences (user_id, preference_key, preference_value) 
+                 VALUES (:user_id, :key, :value)"
+            );
+            $stmt->execute([
+                'user_id' => $userId,
+                'key' => $key,
+                'value' => $value
+            ]);
         }
     }
 
