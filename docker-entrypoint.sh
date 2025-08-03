@@ -374,29 +374,36 @@ EOF
 # Print configuration summary (with redacted secrets)
 print_config_summary() {
     log "=== Poweradmin Configuration Summary ==="
-    log "Database Type: ${DB_TYPE}"
-    if [ "${DB_TYPE}" != "sqlite" ]; then
-        log "Database Host: ${DB_HOST:-}"
-        log "Database Name: ${DB_NAME:-}"
-        log "Database User: ${DB_USER:-}"
+    
+    if [ -n "${PA_CONFIG_PATH}" ] && [ -f "${CONFIG_FILE}" ]; then
+        log "Configuration: Custom configuration file loaded from ${PA_CONFIG_PATH}"
+        log "Configuration details are managed by the custom config file."
     else
-        log "Database File: ${DB_FILE:-/db/pdns.db}"
-        log "PowerDNS Schema Version: ${PDNS_VERSION:-49}"
+        log "Database Type: ${DB_TYPE}"
+        if [ "${DB_TYPE}" != "sqlite" ]; then
+            log "Database Host: ${DB_HOST:-}"
+            log "Database Name: ${DB_NAME:-}"
+            log "Database User: ${DB_USER:-}"
+        else
+            log "Database File: ${DB_FILE:-/db/pdns.db}"
+            log "PowerDNS Schema Version: ${PDNS_VERSION:-49}"
+        fi
+        log "DNS NS1: ${DNS_NS1:-ns1.example.com}"
+        log "DNS NS2: ${DNS_NS2:-ns2.example.com}"
+        log "DNS Hostmaster: ${DNS_HOSTMASTER:-hostmaster.example.com}"
+        log "App Title: ${PA_APP_TITLE:-Poweradmin}"
+        log "Default Language: ${PA_DEFAULT_LANGUAGE:-en_EN}"
+        log "Mail Enabled: ${PA_MAIL_ENABLED:-true}"
+        log "API Enabled: ${PA_API_ENABLED:-false}"
+        log "LDAP Enabled: ${PA_LDAP_ENABLED:-false}"
+        log "Timezone: ${PA_TIMEZONE:-UTC}"
     fi
-    log "DNS NS1: ${DNS_NS1:-ns1.example.com}"
-    log "DNS NS2: ${DNS_NS2:-ns2.example.com}"
-    log "DNS Hostmaster: ${DNS_HOSTMASTER:-hostmaster.example.com}"
-    log "App Title: ${PA_APP_TITLE:-Poweradmin}"
-    log "Default Language: ${PA_DEFAULT_LANGUAGE:-en_EN}"
-    log "Mail Enabled: ${PA_MAIL_ENABLED:-true}"
-    log "API Enabled: ${PA_API_ENABLED:-false}"
-    log "LDAP Enabled: ${PA_LDAP_ENABLED:-false}"
+    
     log "Admin User Creation: ${PA_CREATE_ADMIN:-false}"
     if [ "${PA_CREATE_ADMIN:-false}" = "true" ]; then
         log "Admin Username: ${PA_ADMIN_USERNAME:-admin}"
         log "Admin Email: ${PA_ADMIN_EMAIL:-admin@example.com}"
     fi
-    log "Timezone: ${PA_TIMEZONE:-UTC}"
     log "======================================="
     
 }

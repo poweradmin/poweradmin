@@ -426,11 +426,11 @@ docker run -d --name poweradmin -p 80:80 \
 
 ### Custom Configuration File
 
-For advanced configurations, you can mount your own `settings.php` file:
+Mount your own `settings.php` file for complete configuration control. Custom config files override all environment variables.
 
 ```bash
-# Create custom configuration file
-cat > /host/custom-settings.php << 'EOF'
+# Create custom configuration
+cat > ./custom-settings.php << 'EOF'
 <?php
 return [
     'database' => [
@@ -447,15 +447,19 @@ return [
     ],
     'security' => [
         'session_key' => 'your-secure-64-character-session-key-here',
-        'password_encryption' => 'argon2id',
+    ],
+    'dns' => [
+        'hostmaster' => 'hostmaster@yourdomain.com',
+        'ns1' => 'ns1.yourdomain.com',
+        'ns2' => 'ns2.yourdomain.com',
     ],
     // ... any other custom settings
 ];
 EOF
 
-# Run container with custom config
+# Run with custom config
 docker run -d --name poweradmin -p 80:80 \
-  -v /host/custom-settings.php:/config/custom.php \
+  -v $(pwd)/custom-settings.php:/config/custom.php:ro \
   -e PA_CONFIG_PATH=/config/custom.php \
   poweradmin
 ```
