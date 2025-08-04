@@ -77,6 +77,26 @@ docker run -d --name poweradmin -p 80:80 \
   poweradmin
 ```
 
+### MySQL with Separate PowerDNS Database
+
+To use separate databases for Poweradmin and PowerDNS data (**MySQL only**):
+
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql-server \
+  -e DB_USER=poweradmin \
+  -e DB_PASS=password \
+  -e DB_NAME=poweradmin \
+  -e PA_PDNS_DB_NAME=pdns \
+  -e DNS_NS1=ns1.yourdomain.com \
+  -e DNS_NS2=ns2.yourdomain.com \
+  -e DNS_HOSTMASTER=hostmaster.yourdomain.com \
+  poweradmin
+```
+
+**Note**: The `PA_PDNS_DB_NAME` setting allows Poweradmin to connect to a separate MySQL database where PowerDNS stores its DNS records, while keeping Poweradmin's user and configuration data in its own database. This is useful when you have an existing PowerDNS installation with its own database.
+
 ### PostgreSQL Configuration
 
 To use PostgreSQL as the database backend:
@@ -106,6 +126,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `DB_PASS` | Database password (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_NAME` | Database name (unused for SQLite) | Empty | Yes for MySQL/PostgreSQL |
 | `DB_FILE` | SQLite database file path (unused for MySQL/PostgreSQL) | `/db/pdns.db` | No |
+| `PA_PDNS_DB_NAME` | Separate PowerDNS database name (**MySQL only**) | Empty | No |
 | `PDNS_VERSION` | PowerDNS schema version to use (45, 46, 47, 48, 49) | `49` | No |
 
 ### DNS Nameserver Configuration
