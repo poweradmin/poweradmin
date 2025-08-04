@@ -310,6 +310,7 @@ return [
         'password' => '${DB_PASS:-}',
         'name' => '${DB_NAME:-}',
         'file' => '${DB_FILE:-/db/pdns.db}',
+        'pdns_db_name' => '${PA_PDNS_DB_NAME:-}',
     ],
     'dns' => [
         'hostmaster' => '${DNS_HOSTMASTER:-hostmaster.example.com}',
