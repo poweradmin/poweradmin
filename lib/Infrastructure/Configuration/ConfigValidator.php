@@ -37,7 +37,6 @@ class ConfigValidator
     {
         $this->errors = [];
 
-        $this->validateIfaceIndex();
         $this->validateIfaceRowAmount();
         $this->validateIfaceLang();
         $this->validateSyslogUse();
@@ -71,7 +70,7 @@ class ConfigValidator
     {
         $syslogEnabled = $this->getSetting('logging', 'syslog_enabled');
         if (!is_bool($syslogEnabled)) {
-            $this->errors['syslog_use'] = 'syslog_enabled must be a boolean value (unquoted true or false)';
+            $this->errors['logging.syslog_enabled'] = 'syslog_enabled must be a boolean value (unquoted true or false)';
         }
     }
 
@@ -79,7 +78,7 @@ class ConfigValidator
     {
         $syslogIdent = $this->getSetting('logging', 'syslog_identity');
         if (!is_string($syslogIdent) || empty($syslogIdent)) {
-            $this->errors['syslog_ident'] = 'syslog_identity must be a non-empty string';
+            $this->errors['logging.syslog_identity'] = 'syslog_identity must be a non-empty string';
         }
     }
 
@@ -100,7 +99,7 @@ class ConfigValidator
         $syslogFacility = $this->getSetting('logging', 'syslog_facility');
         if (!in_array($syslogFacility, $validFacilities)) {
             $validFacilitiesList = implode(', ', array_keys($validFacilities));
-            $this->errors['syslog_facility'] = "syslog_facility must be an unquoted value and one of the following values: $validFacilitiesList";
+            $this->errors['logging.syslog_facility'] = "syslog_facility must be an unquoted value and one of the following values: $validFacilitiesList";
         }
     }
 
@@ -108,37 +107,31 @@ class ConfigValidator
     {
         $rowsPerPage = $this->getSetting('interface', 'rows_per_page');
         if (!is_int($rowsPerPage) || $rowsPerPage <= 0) {
-            $this->errors['iface_rowamount'] = 'rows_per_page must be a positive integer';
+            $this->errors['interface.rows_per_page'] = 'rows_per_page must be a positive integer';
         }
-    }
-
-    private function validateIfaceIndex(): void
-    {
-        // index_display setting removed, no longer needed
-        return;
     }
 
     private function validateIfaceLang(): void
     {
         $language = $this->getSetting('interface', 'language');
         if (!is_string($language) || empty($language)) {
-            $this->errors['iface_lang'] = 'language must be a non-empty string';
+            $this->errors['interface.language'] = 'language must be a non-empty string';
         }
 
         $enabledLanguages = $this->getSetting('interface', 'enabled_languages');
         if (empty($enabledLanguages)) {
-            $this->errors['iface_enabled_languages'] = 'enabled_languages must be a non-empty string and contain a list of languages separated by commas';
+            $this->errors['interface.enabled_languages'] = 'enabled_languages must be a non-empty string and contain a list of languages separated by commas';
             return;
         }
 
-        $enabledLanguagesArray = explode(',', $enabledLanguages);
+        $enabledLanguagesArray = array_map('trim', explode(',', $enabledLanguages));
         if (!in_array($language, $enabledLanguagesArray)) {
-            $this->errors['iface_lang'] = 'language must be one of the enabled languages';
+            $this->errors['interface.language'] = 'language must be one of the enabled languages';
         }
 
         foreach ($enabledLanguagesArray as $lang) {
             if (!is_string($lang) || empty($lang)) {
-                $this->errors['iface_enabled_languages'] = 'enabled_languages must be a non-empty string and contain a list of languages separated by commas';
+                $this->errors['interface.enabled_languages'] = 'enabled_languages must be a non-empty string and contain a list of languages separated by commas';
                 break;
             }
         }
