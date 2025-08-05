@@ -2,11 +2,18 @@
 
 This guide covers deploying Poweradmin using Docker with FrankenPHP and various database configurations.
 
+## Official Docker Images
+
+Poweradmin official Docker images are available at:
+
+- **Docker Hub**: `edmondas/poweradmin`
+- **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`
+
 ## Quick Start
 
 ```bash
 # Basic deployment with SQLite (default)
-docker run -d --name poweradmin -p 80:80 poweradmin
+docker run -d --name poweradmin -p 80:80 edmondas/poweradmin
 
 # With external MySQL database
 docker run -d --name poweradmin -p 80:80 \
@@ -15,7 +22,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e DB_USER=poweradmin \
   -e DB_PASS=password \
   -e DB_NAME=poweradmin \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 ## Security with Docker Secrets
@@ -36,7 +43,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e DB_PASS__FILE=/run/secrets/db_password \
   -e DB_NAME=poweradmin \
   -v /path/to/secret:/run/secrets/db_password:ro \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 ## Architecture
@@ -57,7 +64,7 @@ Poweradmin's Docker image supports multiple database types through environment v
 The default configuration uses SQLite with no additional setup required:
 
 ```bash
-docker run -d --name poweradmin -p 80:80 poweradmin
+docker run -d --name poweradmin -p 80:80 edmondas/poweradmin
 ```
 
 ### MySQL Configuration
@@ -74,7 +81,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e DNS_NS1=ns1.yourdomain.com \
   -e DNS_NS2=ns2.yourdomain.com \
   -e DNS_HOSTMASTER=hostmaster.yourdomain.com \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 ### MySQL with Separate PowerDNS Database
@@ -92,7 +99,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e DNS_NS1=ns1.yourdomain.com \
   -e DNS_NS2=ns2.yourdomain.com \
   -e DNS_HOSTMASTER=hostmaster.yourdomain.com \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 **Note**: The `PA_PDNS_DB_NAME` setting allows Poweradmin to connect to a separate MySQL database where PowerDNS stores its DNS records, while keeping Poweradmin's user and configuration data in its own database. This is useful when you have an existing PowerDNS installation with its own database.
@@ -111,7 +118,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e DNS_NS1=ns1.yourdomain.com \
   -e DNS_NS2=ns2.yourdomain.com \
   -e DNS_HOSTMASTER=hostmaster.yourdomain.com \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 ## Environment Variables
@@ -213,7 +220,7 @@ docker run -d --name poweradmin -p 80:80 \
 version: '3.8'
 services:
   poweradmin:
-    image: poweradmin
+    image: edmondas/poweradmin
     ports:
       - "80:80"
 ```
@@ -223,7 +230,7 @@ services:
 version: '3.8'
 services:
   poweradmin:
-    image: poweradmin
+    image: edmondas/poweradmin
     ports:
       - "80:80"
     environment:
@@ -291,7 +298,7 @@ volumes:
 version: '3.8'
 services:
   poweradmin:
-    image: poweradmin
+    image: edmondas/poweradmin
     ports:
       - "80:80"
     environment:
@@ -352,6 +359,8 @@ To build the Docker image locally:
 
 ```bash
 docker build --no-cache -t poweradmin .
+
+**Note**: For production use, it's recommended to use the official images from Docker Hub (`edmondas/poweradmin`) or GitHub Container Registry (`ghcr.io/poweradmin/poweradmin`) instead of building locally.
 ```
 
 ### Build Process
@@ -414,7 +423,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e PA_RECAPTCHA_SECRET_KEY=your_secret_key \
   -e PA_API_ENABLED=true \
   -e PA_TIMEZONE=America/New_York \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 ### Development Environment with API
@@ -425,7 +434,7 @@ docker run -d --name poweradmin-dev -p 8080:80 \
   -e PA_API_ENABLED=true \
   -e PA_API_DOCS_ENABLED=true \
   -e PA_MAIL_ENABLED=false \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 ### LDAP Integration Example
@@ -442,7 +451,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e PA_LDAP_BASE_DN="ou=users,dc=example,dc=com" \
   -e PA_LDAP_BIND_DN="cn=admin,dc=example,dc=com" \
   -e PA_LDAP_BIND_PASSWORD=ldap_password \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 ### Custom Configuration File
@@ -482,7 +491,7 @@ EOF
 docker run -d --name poweradmin -p 80:80 \
   -v $(pwd)/custom-settings.php:/config/custom.php:ro \
   -e PA_CONFIG_PATH=/config/custom.php \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 ### Docker Compose with Custom Config
@@ -491,7 +500,7 @@ docker run -d --name poweradmin -p 80:80 \
 version: '3.8'
 services:
   poweradmin:
-    image: poweradmin
+    image: edmondas/poweradmin
     ports:
       - "80:80"
     environment:
@@ -542,7 +551,7 @@ docker logs poweradmin
 
 For more detailed debug information, enable debug logging:
 ```bash
-docker run -e DEBUG=true [other options] poweradmin
+docker run -e DEBUG=true [other options] edmondas/poweradmin
 ```
 
 This will show detailed information about:
@@ -578,7 +587,7 @@ Basic admin user creation:
 ```bash
 docker run -d --name poweradmin -p 80:80 \
   -e PA_CREATE_ADMIN=1 \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 Custom admin user:
@@ -590,7 +599,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e PA_ADMIN_PASSWORD=secure_password \
   -e PA_ADMIN_EMAIL=admin@yourdomain.com \
   -e PA_ADMIN_FULLNAME="System Administrator" \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 With Docker secrets:
@@ -602,7 +611,7 @@ docker run -d --name poweradmin -p 80:80 \
   -e PA_ADMIN_PASSWORD__FILE=/run/secrets/admin_password \
   -e PA_ADMIN_EMAIL=admin@yourdomain.com \
   -v /path/to/admin_password:/run/secrets/admin_password:ro \
-  poweradmin
+  edmondas/poweradmin
 ```
 
 ### Behavior
