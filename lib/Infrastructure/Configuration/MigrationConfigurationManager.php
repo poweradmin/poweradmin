@@ -52,14 +52,22 @@ class MigrationConfigurationManager
         // We intentionally don't include 'mail' as it's new in 4.0.0
         // and we want to use defaults for new features
 
-        // Database settings
-        foreach (['db_host', 'db_port', 'db_user', 'db_pass', 'db_name', 'db_type', 'db_charset', 'db_file', 'db_debug'] as $key) {
-            if (isset($legacyConfig[$key])) {
-                $newKey = str_replace('db_', '', $key);
-                if ($newKey === 'pass') {
-                    $newKey = 'password';
-                }
-                $newConfig['database'][$newKey] = $legacyConfig[$key];
+        // Database settings with type conversion
+        $databaseMapping = [
+            'db_host' => ['key' => 'host', 'type' => 'string'],
+            'db_port' => ['key' => 'port', 'type' => 'int'],
+            'db_user' => ['key' => 'user', 'type' => 'string'],
+            'db_pass' => ['key' => 'password', 'type' => 'string'],
+            'db_name' => ['key' => 'name', 'type' => 'string'],
+            'db_type' => ['key' => 'type', 'type' => 'string'],
+            'db_charset' => ['key' => 'charset', 'type' => 'string'],
+            'db_file' => ['key' => 'file', 'type' => 'string'],
+            'db_debug' => ['key' => 'debug', 'type' => 'bool'],
+        ];
+
+        foreach ($databaseMapping as $oldKey => $config) {
+            if (array_key_exists($oldKey, $legacyConfig)) {
+                $newConfig['database'][$config['key']] = $this->convertType($legacyConfig[$oldKey], $config['type']);
             }
         }
 
@@ -68,46 +76,50 @@ class MigrationConfigurationManager
             $newConfig['database']['pdns_db_name'] = $legacyConfig['pdns_db_name'];
         }
 
-        // Security settings
-        foreach (['session_key', 'password_encryption', 'password_encryption_cost', 'login_token_validation', 'global_token_validation'] as $key) {
-            if (isset($legacyConfig[$key])) {
-                $newKey = $key;
-                if ($key === 'password_encryption_cost') {
-                    $newKey = 'password_cost';
-                }
-                $newConfig['security'][$newKey] = $legacyConfig[$key];
+        // Security settings with type conversion
+        $securityMapping = [
+            'session_key' => ['key' => 'session_key', 'type' => 'string'],
+            'password_encryption' => ['key' => 'password_encryption', 'type' => 'string'],
+            'password_encryption_cost' => ['key' => 'password_cost', 'type' => 'int'],
+            'login_token_validation' => ['key' => 'login_token_validation', 'type' => 'bool'],
+            'global_token_validation' => ['key' => 'global_token_validation', 'type' => 'bool'],
+        ];
+
+        foreach ($securityMapping as $oldKey => $config) {
+            if (array_key_exists($oldKey, $legacyConfig)) {
+                $newConfig['security'][$config['key']] = $this->convertType($legacyConfig[$oldKey], $config['type']);
             }
         }
 
         // We're not setting password_policy and account_lockout defaults
         // as they are new in 4.0.0 and we want to use the defaults from settings.defaults.php
 
-        // Interface settings mapping
+        // Interface settings mapping with type conversion
         $interfaceMapping = [
-            'iface_lang' => 'language',
-            'iface_enabled_languages' => 'enabled_languages',
-            'iface_style' => 'style',  // Changed from 'theme' to 'style'
-            'iface_templates' => 'theme_base_path',  // Updated mapping
-            'iface_title' => 'title',
-            'iface_expire' => 'session_timeout',
-            'iface_rowamount' => 'rows_per_page',
-            'iface_zonelist_serial' => 'display_serial_in_zone_list',
-            'iface_zonelist_template' => 'display_template_in_zone_list',
-            'iface_edit_show_id' => 'show_record_id',
-            'iface_edit_add_record_top' => 'position_record_form_top',
-            'iface_edit_save_changes_top' => 'position_save_button_top',
-            'iface_zone_comments' => 'show_zone_comments',
-            'iface_record_comments' => 'show_record_comments',
-            'iface_search_group_records' => 'search_group_records',
-            'iface_add_reverse_record' => 'add_reverse_record',
-            'iface_add_domain_record' => 'add_domain_record',
-            'iface_migrations_show' => 'show_migrations',
+            'iface_lang' => ['key' => 'language', 'type' => 'string'],
+            'iface_enabled_languages' => ['key' => 'enabled_languages', 'type' => 'string'],
+            'iface_style' => ['key' => 'style', 'type' => 'string'],
+            'iface_templates' => ['key' => 'theme_base_path', 'type' => 'string'],
+            'iface_title' => ['key' => 'title', 'type' => 'string'],
+            'iface_expire' => ['key' => 'session_timeout', 'type' => 'int'],
+            'iface_rowamount' => ['key' => 'rows_per_page', 'type' => 'int'],
+            'iface_zonelist_serial' => ['key' => 'display_serial_in_zone_list', 'type' => 'bool'],
+            'iface_zonelist_template' => ['key' => 'display_template_in_zone_list', 'type' => 'bool'],
+            'iface_edit_show_id' => ['key' => 'show_record_id', 'type' => 'bool'],
+            'iface_edit_add_record_top' => ['key' => 'position_record_form_top', 'type' => 'bool'],
+            'iface_edit_save_changes_top' => ['key' => 'position_save_button_top', 'type' => 'bool'],
+            'iface_zone_comments' => ['key' => 'show_zone_comments', 'type' => 'bool'],
+            'iface_record_comments' => ['key' => 'show_record_comments', 'type' => 'bool'],
+            'iface_search_group_records' => ['key' => 'search_group_records', 'type' => 'bool'],
+            'iface_add_reverse_record' => ['key' => 'add_reverse_record', 'type' => 'bool'],
+            'iface_add_domain_record' => ['key' => 'add_domain_record', 'type' => 'bool'],
+            'iface_migrations_show' => ['key' => 'show_migrations', 'type' => 'bool'],
         ];
 
-        // Process interface settings
-        foreach ($interfaceMapping as $oldKey => $newKey) {
-            if (isset($legacyConfig[$oldKey])) {
-                $newConfig['interface'][$newKey] = $legacyConfig[$oldKey];
+        // Process interface settings with type conversion
+        foreach ($interfaceMapping as $oldKey => $config) {
+            if (array_key_exists($oldKey, $legacyConfig)) {
+                $newConfig['interface'][$config['key']] = $this->convertType($legacyConfig[$oldKey], $config['type']);
             }
         }
 
@@ -125,11 +137,23 @@ class MigrationConfigurationManager
             $newConfig['interface']['theme'] = 'default';
         }
 
-        // DNS settings
-        foreach (['dns_hostmaster', 'dns_ns1', 'dns_ns2', 'dns_ns3', 'dns_ns4', 'dns_ttl', 'dns_strict_tld_check', 'dns_top_level_tld_check', 'dns_third_level_check', 'dns_txt_auto_quote'] as $key) {
-            if (isset($legacyConfig[$key])) {
-                $newKey = str_replace('dns_', '', $key);
-                $newConfig['dns'][$newKey] = $legacyConfig[$key];
+        // DNS settings with type conversion
+        $dnsMapping = [
+            'dns_hostmaster' => ['key' => 'hostmaster', 'type' => 'string'],
+            'dns_ns1' => ['key' => 'ns1', 'type' => 'string'],
+            'dns_ns2' => ['key' => 'ns2', 'type' => 'string'],
+            'dns_ns3' => ['key' => 'ns3', 'type' => 'string'],
+            'dns_ns4' => ['key' => 'ns4', 'type' => 'string'],
+            'dns_ttl' => ['key' => 'ttl', 'type' => 'int'],
+            'dns_strict_tld_check' => ['key' => 'strict_tld_check', 'type' => 'bool'],
+            'dns_top_level_tld_check' => ['key' => 'top_level_tld_check', 'type' => 'bool'],
+            'dns_third_level_check' => ['key' => 'third_level_check', 'type' => 'bool'],
+            'dns_txt_auto_quote' => ['key' => 'txt_auto_quote', 'type' => 'bool'],
+        ];
+
+        foreach ($dnsMapping as $oldKey => $config) {
+            if (array_key_exists($oldKey, $legacyConfig)) {
+                $newConfig['dns'][$config['key']] = $this->convertType($legacyConfig[$oldKey], $config['type']);
             }
         }
 
@@ -185,24 +209,20 @@ class MigrationConfigurationManager
             $newConfig['pdns_api']['key'] = $legacyConfig['pdns_api_key'];
         }
 
-        // Logging settings
-        if (isset($legacyConfig['logger_type'])) {
-            $newConfig['logging']['type'] = $legacyConfig['logger_type'];
-        }
-        if (isset($legacyConfig['logger_level'])) {
-            $newConfig['logging']['level'] = $legacyConfig['logger_level'];
-        }
-        if (isset($legacyConfig['dblog_use'])) {
-            $newConfig['logging']['database_enabled'] = $legacyConfig['dblog_use'];
-        }
-        if (isset($legacyConfig['syslog_use'])) {
-            $newConfig['logging']['syslog_enabled'] = $legacyConfig['syslog_use'];
-        }
-        if (isset($legacyConfig['syslog_ident'])) {
-            $newConfig['logging']['syslog_identity'] = $legacyConfig['syslog_ident'];
-        }
-        if (isset($legacyConfig['syslog_facility'])) {
-            $newConfig['logging']['syslog_facility'] = $legacyConfig['syslog_facility'];
+        // Logging settings with type conversion
+        $loggingMapping = [
+            'logger_type' => ['key' => 'type', 'type' => 'string'],
+            'logger_level' => ['key' => 'level', 'type' => 'string'],
+            'dblog_use' => ['key' => 'database_enabled', 'type' => 'bool'],
+            'syslog_use' => ['key' => 'syslog_enabled', 'type' => 'bool'],
+            'syslog_ident' => ['key' => 'syslog_identity', 'type' => 'string'],
+            'syslog_facility' => ['key' => 'syslog_facility', 'type' => 'int'],
+        ];
+
+        foreach ($loggingMapping as $oldKey => $config) {
+            if (array_key_exists($oldKey, $legacyConfig)) {
+                $newConfig['logging'][$config['key']] = $this->convertType($legacyConfig[$oldKey], $config['type']);
+            }
         }
 
         // LDAP settings
@@ -276,5 +296,46 @@ class MigrationConfigurationManager
         }
 
         return $config;
+    }
+
+    /**
+     * Convert value to specified type
+     */
+    private function convertType(mixed $value, string $type): mixed
+    {
+        return match ($type) {
+            'bool' => $this->convertToBool($value),
+            'int' => (int) $value,
+            'string' => (string) $value,
+            default => $value,
+        };
+    }
+
+    /**
+     * Convert various boolean representations to actual boolean
+     */
+    private function convertToBool(mixed $value): bool
+    {
+        if (is_bool($value)) {
+            return $value;
+        }
+
+        if (is_string($value)) {
+            $trimmedValue = strtolower(trim($value));
+            if (in_array($trimmedValue, ['true', '1', 'yes', 'on'], true)) {
+                return true;
+            }
+            if (in_array($trimmedValue, ['false', '0', 'no', 'off', ''], true)) {
+                return false;
+            }
+            // For any other string, return true (non-empty string is truthy)
+            return !empty($trimmedValue);
+        }
+
+        if (is_numeric($value)) {
+            return (bool) $value;
+        }
+
+        return (bool) $value;
     }
 }
