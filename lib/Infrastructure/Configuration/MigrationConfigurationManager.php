@@ -306,9 +306,26 @@ class MigrationConfigurationManager
         return match ($type) {
             'bool' => $this->convertToBool($value),
             'int' => (int) $value,
-            'string' => (string) $value,
+            'string' => $this->convertToString($value),
             default => $value,
         };
+    }
+
+    /**
+     * Convert various types to string safely
+     */
+    private function convertToString(mixed $value): string
+    {
+        if (is_string($value)) {
+            return $value;
+        }
+
+        if (is_array($value) || is_object($value)) {
+            // For arrays/objects, return empty string instead of triggering warning
+            return '';
+        }
+
+        return (string) $value;
     }
 
     /**

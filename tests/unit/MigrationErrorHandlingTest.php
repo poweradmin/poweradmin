@@ -101,9 +101,9 @@ class MigrationErrorHandlingTest extends TestCase
 
         $result = $this->migrationManager->migrateWithCustomMapping($tempFile);
 
-        // Should still process but with type conversion
-        $this->assertIsString($result['database']['host']); // Array converted to string "Array"
-        $this->assertEquals('Array', $result['database']['host']);
+        // Should still process but with type conversion (arrays become empty strings to avoid warnings)
+        $this->assertIsString($result['database']['host']); // Array converted to string safely
+        $this->assertEquals('', $result['database']['host']);
         $this->assertIsInt($result['interface']['rows_per_page']); // Should be 0 (PHP int cast of non-numeric string)
         $this->assertEquals(0, $result['interface']['rows_per_page']);
         $this->assertIsBool($result['logging']['syslog_enabled']); // Should convert to true (non-empty string)
@@ -308,8 +308,7 @@ class MigrationErrorHandlingTest extends TestCase
 
         foreach ($variables as $name => $value) {
             if (is_string($value)) {
-                $escapedValue = addslashes($value);
-                $content .= "\$$name = '$escapedValue';\n";
+                $content .= "\$$name = " . var_export($value, true) . ";\n";
             } elseif (is_bool($value)) {
                 $content .= "\$$name = " . ($value ? 'true' : 'false') . ";\n";
             } elseif (is_int($value)) {
