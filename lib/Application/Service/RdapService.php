@@ -213,6 +213,11 @@ class RdapService
      */
     private function httpRequest(string $url): ?string
     {
+        // Validate URL against known RDAP servers to prevent path traversal
+        if (!$this->isValidRdapUrl($url)) {
+            return null;
+        }
+
         $options = [
             'http' => [
                 'method' => 'GET',
@@ -220,24 +225,44 @@ class RdapService
                     'User-Agent: Poweradmin RDAP Client',
                     'Accept: application/rdap+json'
                 ],
-                'timeout' => $this->requestTimeout
+                'timeout' => $this->requestTimeout,
+                'follow_location' => 0 // Disable redirects for security
             ]
         ];
-
-        // Validate URL before fetching to prevent path traversal
-        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
-            return null;
-        }
-
-        $parsedUrl = parse_url($url);
-        if (!isset($parsedUrl['scheme']) || !in_array($parsedUrl['scheme'], ['http', 'https'], true)) {
-            return null;
-        }
 
         $context = stream_context_create($options);
         $response = @file_get_contents($url, false, $context);
 
         return $response !== false ? $response : null;
+    }
+
+    /**
+     * Validate RDAP URL to prevent path traversal
+     *
+     * @param string $url The URL to validate
+     * @return bool True if URL is safe for RDAP requests
+     */
+    private function isValidRdapUrl(string $url): bool
+    {
+        // Basic URL validation
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            return false;
+        }
+
+        $parsedUrl = parse_url($url);
+        if (
+            !isset($parsedUrl['scheme'], $parsedUrl['host']) ||
+            !in_array($parsedUrl['scheme'], ['http', 'https'], true)
+        ) {
+            return false;
+        }
+
+        // Reject URLs with path traversal sequences
+        if (strpos($url, '..') !== false || strpos($url, '\\') !== false) {
+            return false;
+        }
+
+        return true;
     }
 
     /**
