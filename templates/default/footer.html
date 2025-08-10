@@ -76,13 +76,10 @@
     }
 
     function initializeStyle() {
+        // Stylesheet is already loaded correctly from header, just set icon and body class
         document.body.classList.add(currentStyle);
         styleIcon.classList.add(currentStyle === 'light' ? 'bi-moon' : 'bi-sun');
-        styleStylesheet.href = `{{ theme_base_path }}/{{ theme }}/style/${currentStyle}.css?time={{ file_version }}`;
-        // Update custom stylesheet if it exists
-        if (customStylesheet) {
-            customStylesheet.href = `{{ theme_base_path }}/{{ theme }}/style/custom_${currentStyle}.css?time={{ file_version }}`;
-        }
+        // Note: stylesheets are already loaded correctly from header script
     }
 
     styleSwitcher.addEventListener('click', () => {
