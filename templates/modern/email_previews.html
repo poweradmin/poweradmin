@@ -29,7 +29,7 @@
             {% trans %}Custom templates are active and override the default templates. These are the templates currently used when sending emails.{% endtrans %}
         </div>
         {% else %}
-        <div class="alert alert-primary">
+        <div class="alert alert-primary py-1 mb-2">
             <i class="bi bi-info-circle me-2"></i>
             {% trans %}Standard templates are active. These are the default templates used when sending emails.{% endtrans %}
         </div>
@@ -60,8 +60,8 @@
                                 <i class="bi bi-sun me-2 text-{% if using_custom %}success{% else %}primary{% endif %}"></i>{% trans %}View Light Mode{% endtrans %}
                             </a>
                             <a href="index.php?page=email_previews&template={{ template_key }}&mode=dark{% if using_custom %}&custom=true{% endif %}" 
-                               class="btn btn-outline-dark btn-sm" target="_blank">
-                                <i class="bi bi-moon me-2 text-dark"></i>{% trans %}View Dark Mode{% endtrans %}
+                               class="btn btn-outline-secondary btn-sm" target="_blank">
+                                <i class="bi bi-moon me-2"></i>{% trans %}View Dark Mode{% endtrans %}
                             </a>
                         </div>
                     </div>

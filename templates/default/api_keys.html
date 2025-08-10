@@ -38,7 +38,7 @@
                     {% for key in api_keys %}
                     <tr class="{% if key.isDisabled or key.hasExpired %}table-secondary{% endif %}">
                         <td>
-                            <strong>{{ key.name }}</strong>
+                            {{ key.name }}
                         </td>
                         <td>
                             {% if key.getCreatorUsername() %}{{ key.getCreatorUsername() }}{% else %}<span class="text-muted">{% trans %}Unknown{% endtrans %}</span>{% endif %}

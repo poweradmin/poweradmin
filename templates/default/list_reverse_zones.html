@@ -33,13 +33,13 @@
         <div class="mb-3">
             <div class="btn-group" role="group" aria-label="{% trans %}Reverse Zone Types{% endtrans %}">
                 <a href="index.php?page=list_reverse_zones&reverse_type=all" class="btn {{ reverse_zone_type == 'all' ? 'btn-secondary' : 'btn-outline-secondary' }}">
-                    {% trans %}All{% endtrans %} <span class="badge bg-light text-dark">{{ count_all_reverse_zones }}</span>
+                    {% trans %}All{% endtrans %} <span class="badge bg-secondary text-white">{{ count_all_reverse_zones }}</span>
                 </a>
                 <a href="index.php?page=list_reverse_zones&reverse_type=ipv4" class="btn {{ reverse_zone_type == 'ipv4' ? 'btn-secondary' : 'btn-outline-secondary' }}">
-                    {% trans %}IPv4{% endtrans %} <span class="badge bg-light text-dark">{{ count_ipv4_zones }}</span>
+                    {% trans %}IPv4{% endtrans %} <span class="badge bg-secondary text-white">{{ count_ipv4_zones }}</span>
                 </a>
                 <a href="index.php?page=list_reverse_zones&reverse_type=ipv6" class="btn {{ reverse_zone_type == 'ipv6' ? 'btn-secondary' : 'btn-outline-secondary' }}">
-                    {% trans %}IPv6{% endtrans %} <span class="badge bg-light text-dark">{{ count_ipv6_zones }}</span>
+                    {% trans %}IPv6{% endtrans %} <span class="badge bg-secondary text-white">{{ count_ipv6_zones }}</span>
                 </a>
             </div>
         </div>

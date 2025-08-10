@@ -627,10 +627,6 @@ input[type=number]::-webkit-outer-spin-button {
     color: #f8d7da !important;
 }
 
-.text-danger {
-    color: #e0e0e0 !important;
-}
-
 .alert-success {
     background-color: #0f5132 !important;
     border-color: #0a3622 !important;

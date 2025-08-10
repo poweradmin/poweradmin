@@ -46,9 +46,9 @@
                                     <input type="hidden" name="zone_id[]" value="{{ zone['id'] }}">
                                     <td>
                                         {% if zone['idn_zone_name'] %}
-                                        <strong>{{ zone['idn_zone_name'] }}</strong> <small class="text-muted">({{ zone['name'] }})</small>
+                                        {{ zone['idn_zone_name'] }} <small class="text-muted">({{ zone['name'] }})</small>
                                         {% else %}
-                                        <strong>{{ zone['name'] }}</strong>
+                                        {{ zone['name'] }}
                                         {% endif %}
                                     </td>
                                     <td>{{ zone['owner'] }}</td>
