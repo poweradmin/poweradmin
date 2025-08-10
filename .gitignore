@@ -5,6 +5,7 @@
 /templates/*
 /templates/default/custom/*
 !/templates/default
+!/templates/modern
 !/templates/emails
 /templates/emails/custom/*
 !/templates/emails/custom/README.md

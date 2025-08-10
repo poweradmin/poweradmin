@@ -1,0 +1,81 @@
+/*
+ * Custom Light Theme Extensions - EXAMPLE FILE
+ * 
+ * HOW TO USE:
+ * 1. Copy this file to: custom_light.css (remove .example extension)
+ * 2. Modify the styles below to match your preferences
+ * 3. The file will be automatically loaded when using Light theme
+ * 4. Your customizations will survive all Poweradmin updates
+ * 
+ * TIPS:
+ * - Use "!important" to ensure your styles override base theme
+ * - Remove examples you don't need
+ * - Add your own CSS rules for complete customization
+ * - Test with both light and dark themes if you use theme switching
+ */
+
+/* EXAMPLE: Custom header with green company branding */
+header {
+    border-bottom: 3px solid #28a745 !important;
+    background: linear-gradient(90deg, rgba(40, 167, 69, 0.1), transparent);
+}
+
+/* EXAMPLE: Brand/logo styling */
+header .fs-4 {
+    color: #28a745 !important;
+    font-weight: bold;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* EXAMPLE: Active navigation highlighting */
+.nav-link.text-primary {
+    background-color: rgba(40, 167, 69, 0.1);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.nav-link.text-primary:hover {
+    background-color: rgba(40, 167, 69, 0.2);
+}
+
+/* EXAMPLE: Primary button customization */
+.btn-primary {
+    background-color: #28a745;
+    border-color: #28a745;
+}
+
+.btn-primary:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+/* EXAMPLE: Table row styling */
+.table-striped > tbody > tr:nth-of-type(odd) > td {
+    background-color: rgba(40, 167, 69, 0.05);
+}
+
+/* EXAMPLE: Footer accent */
+footer {
+    border-top: 2px solid #28a745;
+    background: linear-gradient(90deg, rgba(40, 167, 69, 0.05), transparent);
+}
+
+/* EXAMPLE: Success alert customization */
+.alert-success {
+    border-left: 4px solid #28a745;
+}
+
+/* EXAMPLE: Custom theme indicator (remove for production) */
+body::before {
+    content: "Custom Light Theme Active";
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(40, 167, 69, 0.8);
+    color: white;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    z-index: 1000;
+    pointer-events: none;
+}

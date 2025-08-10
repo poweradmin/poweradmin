@@ -1,0 +1,41 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+        {% if is_reverse_zone %}
+        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        {% else %}
+        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        {% endif %}
+    </li>
+        <li class="breadcrumb-item">
+            {% if idn_zone_name %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            {% else %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ zone_name }}</a>
+            {% endif %}
+        </li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit comment{% endtrans %}</li>
+    </ol>
+</nav>
+
+{% if idn_zone_name %}
+<h5 class="mb-3">{% trans %}Edit comment in zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name }})</h5>
+{% else %}
+<h5 class="mb-3">{% trans %}Edit comment in zone{% endtrans %} "{{ zone_name }}"</h5>
+{% endif %}
+
+<form method="post" action="index.php?page=edit_comment&id={{ zone_id }}">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    <div>
+        <label for="floatingTextarea"></label>
+        <textarea class="form-control form-control-sm" rows="10" name="comment"
+                  id="floatingTextarea" {% if disabled %}disabled{% endif %}>{{ comment }}</textarea>
+    </div>
+    <div class="pt-3">
+        {% if not disabled %}
+        <input type="submit" name="commit" value="{% trans %}Update{% endtrans %}" class="btn btn-primary btn-sm">
+        <input type="reset" name="reset" value="{% trans %}Reset{% endtrans %}" class="btn btn-secondary btn-sm">
+        {% endif %}
+    </div>
+</form>

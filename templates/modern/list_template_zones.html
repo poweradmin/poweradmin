@@ -1,0 +1,174 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zone_templ">{% trans %}Zone templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Zones using template{% endtrans %} "{{ template.name }}"</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-globe me-2"></i>{% trans %}Zones using template{% endtrans %} "{{ template.name }}"</strong>
+    </div>
+    <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center pb-3">
+            <div class="text-secondary">{% trans %}Total number of zones:{% endtrans %} {{ total_zones }}</div>
+
+            <div class="d-flex align-items-center">
+                <label for="rows-per-page" class="me-2 text-secondary">{% trans %}Rows per page:{% endtrans %}</label>
+                <select id="rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="changeRowsPerPage(this.value)">
+                    <option value="10" {{ iface_rowamount == 10 ? 'selected' : '' }}>10</option>
+                    <option value="20" {{ iface_rowamount == 20 ? 'selected' : '' }}>20</option>
+                    <option value="50" {{ iface_rowamount == 50 ? 'selected' : '' }}>50</option>
+                    <option value="100" {{ iface_rowamount == 100 ? 'selected' : '' }}>100</option>
+                </select>
+
+                <script>
+                    function changeRowsPerPage(value) {
+                        // Store user preference using the UserSettings module
+                        UserSettings.saveSetting('rows_per_page', value);
+
+                        // Build the new URL with the rows_per_page parameter
+                        const urlParams = new URLSearchParams(window.location.search);
+                        urlParams.set('rows_per_page', value);
+
+                        // Preserve the template ID
+                        const templateId = urlParams.get('id');
+                        if (templateId) {
+                            urlParams.set('id', templateId);
+                        }
+
+                        // Reset pagination to first page when changing rows per page
+                        if (urlParams.has('start')) {
+                            urlParams.set('start', 1);
+                        }
+
+                        // Redirect to the new URL
+                        window.location.href = window.location.pathname + '?' + urlParams.toString();
+                    }
+
+                </script>
+            </div>
+        </div>
+
+        <form method="post" action="index.php?page=unlink_zones_templ" id="unlink-zones-form">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            <input type="hidden" name="template_id" value="{{ template.id }}">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-sm mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th><input class="form-check-input" type="checkbox" id="select-all"></th>
+                        <th>{% trans %}Domain name{% endtrans %}</th>
+                        <th>{% trans %}Type{% endtrans %}</th>
+                        <th>{% trans %}Records{% endtrans %}</th>
+                        <th>{% trans %}Owner{% endtrans %}</th>
+                        <th>{% trans %}Comment{% endtrans %}</th>
+                        <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                    </tr>
+                    </thead>
+
+                    <tbody>
+                    {% if not zones %}
+                    <tr>
+                        <td colspan="7" class="text-center py-3">{% trans %}No domains using this template{% endtrans %}</td>
+                    </tr>
+                    {% endif %}
+                    {% for zone in zones %}
+                    <tr>
+                        <td><input class="form-check-input zone-checkbox" type="checkbox" name="zone_ids[]" value="{{ zone.id }}"></td>
+                        <td>{{ zone.name }}</td>
+                    <td>
+                        <span class="badge {% if zone.type == 'MASTER' %}bg-primary{% elseif zone.type == 'SLAVE' %}bg-secondary{% else %}bg-light text-dark{% endif %}">
+                            {{ zone.type }}
+                        </span>
+                    </td>
+                    <td>{{ zone.count_records|default(0) }}</td>
+                    <td>
+                        {% if zone.owner_fullname %}
+                        {{ zone.owner_fullname }}
+                        {% elseif zone.owner_name %}
+                        {{ zone.owner_name }}
+                        {% else %}
+                        -
+                        {% endif %}
+                    </td>
+                    <td>{{ zone.comment }}</td>
+                    <td class="text-end">
+                        <div class="gap-2">
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="index.php?page=edit&id={{ zone.id }}">
+                                <i class="bi bi-pencil-square text-primary"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </form>
+
+        {% if pagination %}
+        <div class="py-3">
+            {{ pagination | raw }}
+        </div>
+        {% endif %}
+    </div>
+    <div class="card-footer py-3">
+        <div class="d-flex justify-content-between">
+            <div>
+                <a class="btn btn-secondary btn-sm" href="index.php?page=list_zone_templ">
+                    <i class="bi bi-arrow-left me-1 text-white"></i>{% trans %}Back to templates{% endtrans %}
+                </a>
+            </div>
+            {% if zones %}
+            <div>
+                <button type="submit" name="commit" form="unlink-zones-form" class="btn btn-danger btn-sm" id="bulk-unlink-btn" disabled>
+                    <i class="bi bi-link-45deg me-1 text-white"></i>{% trans %}Unlink selected zones{% endtrans %}
+                </button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const selectAll = document.getElementById('select-all');
+    const checkboxes = document.querySelectorAll('.zone-checkbox');
+    const bulkUnlinkBtn = document.getElementById('bulk-unlink-btn');
+    
+    // Handle select all checkbox
+    selectAll.addEventListener('change', function() {
+        checkboxes.forEach(checkbox => {
+            checkbox.checked = this.checked;
+        });
+        updateBulkUnlinkButton();
+    });
+    
+    // Handle individual checkboxes
+    checkboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            updateSelectAllCheckbox();
+            updateBulkUnlinkButton();
+        });
+    });
+    
+    function updateSelectAllCheckbox() {
+        const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+        const someChecked = Array.from(checkboxes).some(cb => cb.checked);
+        
+        selectAll.checked = allChecked;
+        selectAll.indeterminate = someChecked && !allChecked;
+    }
+    
+    function updateBulkUnlinkButton() {
+        const anyChecked = Array.from(checkboxes).some(cb => cb.checked);
+        if (bulkUnlinkBtn) {
+            bulkUnlinkBtn.disabled = !anyChecked;
+        }
+    }
+});
+</script>

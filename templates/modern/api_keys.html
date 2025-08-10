@@ -1,0 +1,100 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}API Keys{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-key-fill me-2"></i>{% trans %}API Keys Management{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <p>{% trans %}API keys allow external applications to access the Poweradmin API. Each key is linked to your user account and inherits your permissions.{% endtrans %}</p>
+        
+        {% if not can_add_more %}
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {% trans %}You have reached the maximum number of API keys allowed.{% endtrans %} ({{ max_keys_per_user }})
+        </div>
+        {% endif %}
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            {% if api_keys|length > 0 %}
+            <table class="table table-striped table-hover table-sm mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>{% trans %}Name{% endtrans %}</th>
+                        <th>{% trans %}Created by{% endtrans %}</th>
+                        <th>{% trans %}Status{% endtrans %}</th>
+                        <th>{% trans %}Created at{% endtrans %}</th>
+                        <th>{% trans %}Last used{% endtrans %}</th>
+                        <th>{% trans %}Expires at{% endtrans %}</th>
+                        <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for key in api_keys %}
+                    <tr class="{% if key.isDisabled or key.hasExpired %}table-secondary{% endif %}">
+                        <td>
+                            <strong>{{ key.name }}</strong>
+                        </td>
+                        <td>
+                            {% if key.getCreatorUsername() %}{{ key.getCreatorUsername() }}{% else %}<span class="text-muted">{% trans %}Unknown{% endtrans %}</span>{% endif %}
+                        </td>
+                        <td>
+                            {% if key.isDisabled %}
+                                <span class="badge bg-danger">{% trans %}Disabled{% endtrans %}</span>
+                            {% elseif key.hasExpired %}
+                                <span class="badge bg-danger">{% trans %}Expired{% endtrans %}</span>
+                            {% else %}
+                                <span class="badge bg-success">{% trans %}Active{% endtrans %}</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ key.createdAt|date('Y-m-d H:i') }}</td>
+                        <td>{% if key.lastUsedAt %}{{ key.lastUsedAt|date('Y-m-d H:i') }}{% else %}<span class="text-muted">{% trans %}Never{% endtrans %}</span>{% endif %}</td>
+                        <td>{% if key.expiresAt %}{{ key.expiresAt|date('Y-m-d H:i') }}{% else %}<span class="text-muted">{% trans %}Never{% endtrans %}</span>{% endif %}</td>
+                        <td class="text-end">
+                            <div class="gap-2">
+                                <a class="btn btn-sm btn-outline-secondary" href="index.php?page=api_keys&amp;action=regenerate&amp;id={{ key.id }}" title="{% trans %}Regenerate{% endtrans %}">
+                                    <i class="bi bi-arrow-repeat text-secondary"></i> <span class="d-none d-md-inline">{% trans %}Regenerate{% endtrans %}</span>
+                                </a>
+                                {% if key.isDisabled %}
+                                    <a class="btn btn-sm btn-outline-secondary" href="index.php?page=api_keys&amp;action=toggle&amp;id={{ key.id }}&amp;disable=0" title="{% trans %}Enable{% endtrans %}">
+                                        <i class="bi bi-check-circle text-secondary"></i> <span class="d-none d-md-inline">{% trans %}Enable{% endtrans %}</span>
+                                    </a>
+                                {% else %}
+                                    <a class="btn btn-sm btn-outline-secondary" href="index.php?page=api_keys&amp;action=toggle&amp;id={{ key.id }}&amp;disable=1" title="{% trans %}Disable{% endtrans %}">
+                                        <i class="bi bi-slash-circle text-secondary"></i> <span class="d-none d-md-inline">{% trans %}Disable{% endtrans %}</span>
+                                    </a>
+                                {% endif %}
+                                <a class="btn btn-sm btn-outline-primary" href="index.php?page=api_keys&amp;action=edit&amp;id={{ key.id }}" title="{% trans %}Edit{% endtrans %}">
+                                    <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline">{% trans %}Edit{% endtrans %}</span>
+                                </a>
+                                <a class="btn btn-sm btn-outline-danger" href="index.php?page=api_keys&amp;action=delete&amp;id={{ key.id }}" title="{% trans %}Delete{% endtrans %}">
+                                    <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline">{% trans %}Delete{% endtrans %}</span>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="text-center py-4">
+                <i class="bi bi-key text-muted mb-3" style="font-size: 2rem;"></i>
+                <p class="mb-0">{% trans %}No API keys found.{% endtrans %}</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% if can_add_more %}
+    <div class="card-footer py-3">
+        <a class="btn btn-primary btn-sm" href="index.php?page=api_keys&amp;action=add">
+            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add new API key{% endtrans %}
+        </a>
+    </div>
+    {% endif %}
+</div>
+

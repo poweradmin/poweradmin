@@ -1,0 +1,148 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+        {% if is_reverse_zone %}
+        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        {% else %}
+        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        {% endif %}
+    </li>
+        <li class="breadcrumb-item">
+            {% if idn_zone_name %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            {% else %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ domain_name }}</a>
+            {% endif %}
+        </li>
+        <li class="breadcrumb-item">
+            <a href="index.php?page=dnssec&id={{ zone_id }}">{% trans %}DNSSEC{% endtrans %}</a>
+        </li>
+        <li class="breadcrumb-item" aria-current="page">
+            {% if key_info[5] %}
+            {% trans %}Deactivate key{% endtrans %}
+            {% else %}
+            {% trans %}Activate key{% endtrans %}
+            {% endif %}
+        </li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong>
+            {% if key_info[5] %}
+            <i class="bi bi-pause-circle me-2 text-warning"></i>{% trans %}Deactivate DNSSEC Key{% endtrans %}
+            {% else %}
+            <i class="bi bi-play-circle me-2 text-success"></i>{% trans %}Activate DNSSEC Key{% endtrans %}
+            {% endif %}
+        </strong>
+    </div>
+            <div class="card-body">
+                {% if key_info[5] %}
+                <div class="alert alert-warning bg-warning bg-opacity-10">
+                    <h5 class="alert-heading text-warning"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
+                    <p>{% trans %}You are about to deactivate a DNSSEC key (ID{% endtrans %}: <strong>{{ key_info[0] }}</strong>)</p>
+                    <p>{% trans %}Deactivating an active key will affect the security of your zone and may cause validation failures.{% endtrans %}</p>
+                    <p class="mb-0">{% trans %}Are you sure you want to proceed?{% endtrans %}</p>
+                </div>
+                {% else %}
+                <div class="alert alert-info bg-info bg-opacity-10">
+                    <h5 class="alert-heading text-info"><i class="bi bi-info-circle-fill me-2"></i>{% trans %}Information{% endtrans %}</h5>
+                    <p>{% trans %}You are about to activate a DNSSEC key (ID{% endtrans %}: <strong>{{ key_info[0] }}</strong>)</p>
+                    <p>{% trans %}Activating this key will make it part of the active DNSSEC signing chain for this zone.{% endtrans %}</p>
+                    <p class="mb-0">{% trans %}Are you sure you want to proceed?{% endtrans %}</p>
+                </div>
+                {% endif %}
+                
+                <div class="card mb-4">
+                    <div class="card-header py-2">
+                        <strong>{% trans %}Key Details{% endtrans %}</strong>
+                    </div>
+                    <div class="card-body">
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <p class="mb-0"><strong>{% trans %}Domain{% endtrans %}:</strong></p>
+                            </div>
+                            <div class="col-md-9">
+                                <p class="mb-0">
+                                    {% if idn_zone_name %}
+                                    {{ idn_zone_name }} <span class="text-muted">({{ domain_name }})</span>
+                                    {% else %}
+                                    {{ domain_name }}
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <p class="mb-0"><strong>{% trans %}Key ID{% endtrans %}:</strong></p>
+                            </div>
+                            <div class="col-md-9">
+                                <p class="mb-0">{{ key_info[0] }}</p>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <p class="mb-0"><strong>{% trans %}Type{% endtrans %}:</strong></p>
+                            </div>
+                            <div class="col-md-9">
+                                <p class="mb-0"><span class="badge bg-secondary">{{ key_info[1] }}</span></p>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <p class="mb-0"><strong>{% trans %}Tag{% endtrans %}:</strong></p>
+                            </div>
+                            <div class="col-md-9">
+                                <p class="mb-0">{{ key_info[2] }}</p>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <p class="mb-0"><strong>{% trans %}Algorithm{% endtrans %}:</strong></p>
+                            </div>
+                            <div class="col-md-9">
+                                <p class="mb-0">{{ algorithms[key_info[3]] }}</p>
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                <p class="mb-0"><strong>{% trans %}Bits{% endtrans %}:</strong></p>
+                            </div>
+                            <div class="col-md-9">
+                                <p class="mb-0">{{ key_info[4] }}</p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3">
+                                <p class="mb-0"><strong>{% trans %}Status{% endtrans %}:</strong></p>
+                            </div>
+                            <div class="col-md-9">
+                                <p class="mb-0">
+                                    {% if key_info[5] %}
+                                    <span class="badge bg-success">{% trans %}Active{% endtrans %}</span>
+                                    {% else %}
+                                    <span class="badge bg-warning text-dark">{% trans %}Inactive{% endtrans %}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                
+                <div class="d-flex gap-2">
+                    <a href="index.php?page=dnssec_edit_key&id={{ zone_id }}&key_id={{ key_id }}&confirm=1" class="btn btn-sm {% if key_info[5] %}btn-warning{% else %}btn-success{% endif %}">
+                        {% if key_info[5] %}
+                        <i class="bi bi-pause-circle text-white me-1"></i>{% trans %}Deactivate key{% endtrans %}
+                        {% else %}
+                        <i class="bi bi-play-circle text-white me-1"></i>{% trans %}Activate key{% endtrans %}
+                        {% endif %}
+                    </a>
+                    <a href="index.php?page=dnssec&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                        <i class="bi bi-x-circle text-white me-1"></i>{% trans %}Cancel{% endtrans %}
+                    </a>
+                </div>
+            </div>
+</div>

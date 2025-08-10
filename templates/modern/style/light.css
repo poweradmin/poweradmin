@@ -1,0 +1,364 @@
+/* Light theme - Sidebar Layout */
+:root {
+    --border-color: rgb(222, 226, 230);
+    --text-muted: rgb(108, 117, 125);
+    --bg-light: rgb(248, 249, 250);
+    --primary-blue: #0d6efd;
+    --input-border: #ced4da;
+    --sidebar-width: 280px;
+    --sidebar-bg: #f8f9fa;
+    --sidebar-border: #e9ecef;
+}
+
+/* Base layout - Sidebar Layout */
+body {
+    background-image: linear-gradient(180deg, #eee, #fff 100px, #fff);
+    min-height: 100vh;
+}
+
+/* Only apply sidebar background when sidebar is present */
+body:has(.sidebar) {
+    background-color: #f8f9fa;
+}
+
+/* Sidebar styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--sidebar-width);
+    z-index: 1000;
+    background-color: var(--sidebar-bg) !important;
+    border-right: 1px solid var(--sidebar-border) !important;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    background-color: white;
+}
+
+.sidebar-header a {
+    color: #212529;
+    font-weight: 600;
+}
+
+.sidebar-header a:hover {
+    color: var(--primary-blue);
+}
+
+.sidebar-content {
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+/* Navigation styles */
+.nav-section-header {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.5rem 0.75rem;
+    margin-top: 1rem;
+}
+
+.nav-link {
+    color: #6c757d;
+    border-radius: 0.375rem;
+    margin-bottom: 0.25rem;
+    padding: 0.625rem 0.75rem;
+    transition: all 0.15s ease-in-out;
+}
+
+.nav-link:hover {
+    background-color: rgba(13, 110, 253, 0.1);
+    color: var(--primary-blue);
+}
+
+.nav-link.active {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.nav-link-sm {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Main content area - only applies when sidebar exists */
+.main-content {
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    background-color: #ffffff;
+}
+
+/* For pages without sidebar (non-logged-in users) */
+body:not(:has(.sidebar)) .container {
+    max-width: 1200px;
+}
+
+body:not(:has(.sidebar)) main.container {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Top bar */
+.top-bar {
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+/* Mobile responsive */
+@media (max-width: 767.98px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        max-width: 300px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1050;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .sidebar.show,
+    .sidebar #sidebarContent.show {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .sidebar-content {
+        padding-top: 1rem;
+    }
+    
+    /* Mobile overlay */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.5);
+        z-index: 1040;
+    }
+    
+    .sidebar-overlay.show {
+        display: block;
+    }
+    
+    /* Hide the regular sidebar header button on mobile */
+    .sidebar .sidebar-toggle {
+        display: none;
+    }
+    
+    /* Make sure the top bar burger button is visible */
+    .top-bar .sidebar-toggle {
+        display: inline-block;
+    }
+}
+
+/* Header styles */
+header {
+    border-bottom: 1px solid var(--border-color);
+}
+
+header a {
+    color: #000000;
+}
+
+header a:hover, header a:focus {
+    color: #000000;
+}
+
+/* Footer styles */
+footer {
+    background-color: var(--bg-light);
+    border-top: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-color);
+}
+
+footer a, footer a:hover, footer a:focus {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+/* Card components */
+.card i {
+    color: var(--text-muted);
+}
+
+/* Login form specific styles */
+.login-card {
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+.card-header {
+    padding: 1.25rem;
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.card-header h5 {
+    font-weight: 600;
+    color: #495057;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+}
+
+/* Form validation styles */
+.form-control.is-valid, .was-validated .form-control:valid {
+    border-color: inherit !important;
+    background-image: inherit !important;
+}
+
+.form-check-input.is-valid, .was-validated .form-check-input:valid {
+    border-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+.form-check-input.is-valid:checked, .was-validated .form-check-input:valid:checked {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue) !important;
+}
+
+.form-select.is-valid, .was-validated .form-select:valid {
+    border-color: var(--input-border);
+}
+
+/* Navigation components */
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    list-style: none;
+    background-color: var(--bg-light);
+    border-radius: 0.25rem;
+}
+
+/* Table styles */
+.table > thead > tr > th {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.table td {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+/* Add record form tables have reduced padding */
+.add-record-form th,
+.add-record-form td {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+}
+
+.table > thead > tr > th a {
+    color: inherit;
+    background-color: transparent;
+    border: none;
+}
+
+.table > thead > tr > th a:hover,
+.table > thead > tr > th a:focus {
+    color: var(--primary-blue);
+    background-color: transparent;
+}
+
+/* Search results action buttons */
+.btn-outline-primary:hover .text-primary,
+.btn-outline-danger:hover .text-danger,
+.btn-outline-secondary:hover .text-secondary {
+    color: #fff !important;
+}
+
+/* Input styling utilities */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+.alert .btn-close {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px; /* Adjust as needed for spacing */
+}
+
+.alert-dismissible {
+    position: relative;
+    padding-right: 3rem; /* Provide enough space for the button */
+}
+
+/* Smaller close button for modals */
+.btn-close-sm {
+    padding: 0.25rem;
+    font-size: 0.875rem;
+    width: 0.5em;
+    height: 0.5em;
+    opacity: 0.75;
+}
+
+/* Accordion styles */
+.accordion-button:not(.collapsed) {
+    color: var(--bs-body-color);
+    background-color: var(--bs-card-cap-bg);
+}
+
+.accordion-button::after {
+    filter: none;
+}
+
+.accordion-button:focus {
+    border-color: transparent;
+    box-shadow: none;
+}
+
+.permission-table thead {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+/* Code output styling for light mode */
+.code-output {
+    background-color: #f8f9fa;
+    color: #212529;
+    border: none;
+}
+
+/* RDAP and WHOIS results styling */
+.rdap-results pre, .whois-results pre {
+    font-size: 0.75rem !important;
+}
+
+/* Style switcher button - fix size to prevent growing */
+#style-switcher {
+    width: 2rem !important;
+    height: 2rem !important;
+    min-width: 2rem !important;
+    min-height: 2rem !important;
+    max-width: 2rem !important;
+    max-height: 2rem !important;
+    flex-shrink: 0 !important;
+    padding: 0.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}

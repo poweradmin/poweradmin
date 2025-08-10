@@ -1,0 +1,283 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+        {% if is_reverse_zone %}
+        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        {% else %}
+        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        {% endif %}
+    </li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_zone_templ">{% trans %}Zone templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=edit_zone_templ&id={{ zone_templ_id }}">{{ templ_details['name'] }}</a>
+        </li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit record{% endtrans %}</li>
+    </ol>
+</nav>
+
+{% if zones_linked_count > 0 %}
+<div class="alert alert-info alert-dismissible fade show mb-3 py-2 small" role="alert">
+    <i class="bi bi-info-circle-fill me-2"></i>
+    <strong>{% trans %}Reminder{% endtrans %}:</strong> 
+    {% trans %}After editing this record, remember to update the zones using this template by clicking "Update zones" on the template page.{% endtrans %}
+    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6">
+        <!-- Edit Record Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-pencil-square me-2"></i>{% trans %}Edit record in zone template{% endtrans %}: "{{ templ_details['name'] }}"</strong>
+            </div>
+            <div class="card-body">
+                <p class="small text-muted mb-3">{% trans %}Modify the record for this zone template{% endtrans %}</p>
+
+                <form class="needs-validation" method="post" id="edit-zone-templ-record-form"
+                      action="index.php?page=edit_zone_templ_record&zone_templ_id={{ zone_templ_id }}&id={{ record_id }}" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="rid" value="{{ record_id }}">
+                    <input type="hidden" name="zid" value="{{ zone_templ_id }}">
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">{% trans %}Name{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="text" id="name" name="name" value="{{ record['name'] }}" required>
+                        <div class="invalid-feedback">{% trans %}Provide a name for your record{% endtrans %}</div>
+                        <small class="text-muted">{% trans %}Example: [ZONE] for the zone itself, or subdomain.[ZONE] for a subdomain{% endtrans %}</small>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="type" class="form-label">{% trans %}Type{% endtrans %}</label>
+                                <select class="form-select form-select-sm" id="type" name="type">
+                                    {% set found_selected_type = false %}
+                                    {% for type_available in record_types %}
+                                    {% if type_available == record["type"] %}
+                                    {% set add = " SELECTED" %}
+                                    {% set found_selected_type = true %}
+                                    {% else %}
+                                    {% set add = "" %}
+                                    {% endif %}
+                                    <option {{ add }} value="{{ type_available }}">{{ type_available }}</option>
+                                    {% endfor %}
+
+                                    {% if not found_selected_type %}
+                                    <option selected value="{{ record['type'] }}">{{ record['type'] }}</option>
+                                    {% endif %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="prio" class="form-label">{% trans %}Priority{% endtrans %}</label>
+                                <input class="form-control form-control-sm" type="number" id="prio" name="prio" value="{{ record['prio'] }}" min="0" max="65535" pattern="[0-9]*" readonly>
+                                <div class="invalid-feedback">{% trans %}Valid range: 0-65535{% endtrans %}</div>
+                                <small class="text-muted">{% trans %}Only for MX, SRV, KX, NAPTR{% endtrans %}</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="mb-3">
+                                <label for="ttl" class="form-label">{% trans %}TTL{% endtrans %}</label>
+                                <input class="form-control form-control-sm" type="number" id="ttl" name="ttl" value="{{ record['ttl'] }}" min="0" max="2147483647" pattern="[0-9]*" required>
+                                <div class="invalid-feedback">{% trans %}Valid range: 0-2147483647{% endtrans %}</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="content" class="form-label">{% trans %}Content{% endtrans %}</label>
+                        <input class="form-control form-control-sm" type="text" id="content" name="content" value="{{ record['content'] }}" required>
+                        <div class="invalid-feedback">{% trans %}Provide content for your zone record{% endtrans %}</div>
+                        <div id="cnameRootWarning" class="alert alert-warning mt-1 py-1 px-2 small" style="display: none;">
+                            <i class="bi bi-exclamation-triangle-fill me-1"></i>{% trans %}Warning: CNAME records at the domain root (zone apex) are not recommended and may cause issues. SOA and NS records are required at the domain root and cannot coexist with CNAME.{% endtrans %}
+                        </div>
+                        <div id="soaHelper" class="alert alert-info mt-1 py-1 px-2 small" style="display: none;">
+                            <i class="bi bi-info-circle-fill me-1"></i>{% trans %}Tip: For SOA records, use <code>[ZONE]</code> as the name and <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code> as the content. SOA records are required for proper DNS zone functionality.{% endtrans %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <button type="submit" class="btn btn-primary btn-sm" name="commit">
+                            <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update record{% endtrans %}
+                        </button>
+                        <button type="reset" class="btn btn-secondary btn-sm" name="reset">
+                            <i class="bi bi-arrow-clockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
+                        </button>
+                        <a href="index.php?page=edit_zone_templ&id={{ zone_templ_id }}" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <!-- Template Placeholders Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Template Placeholders{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-sm mb-0">
+                        <thead class="table-light">
+                        <tr>
+                            <th>{% trans %}Placeholder{% endtrans %}</th>
+                            <th>{% trans %}Description{% endtrans %}</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td><code>[ZONE]</code></td>
+                            <td>{% trans %}Substituted with current zone name{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[DOMAIN]</code></td>
+                            <td>{% trans %}Substituted with domain name without TLD{% endtrans %} (e.g., example from example.net)</td>
+                        </tr>
+                        <tr>
+                            <td><code>[TLD]</code></td>
+                            <td>{% trans %}Substituted with top-level domain{% endtrans %} (e.g., net from example.net)</td>
+                        </tr>
+                        <tr>
+                            <td><code>[SERIAL]</code></td>
+                            <td>{% trans %}Substituted with current date and 2 numbers{% endtrans %} (YYYYMMDD + 00)</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS1]</code></td>
+                            <td>{% trans %}Substituted with 1st name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS2]</code></td>
+                            <td>{% trans %}Substituted with 2nd name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS3]</code></td>
+                            <td>{% trans %}Substituted with 3rd name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[NS4]</code></td>
+                            <td>{% trans %}Substituted with 4th name server{% endtrans %}</td>
+                        </tr>
+                        <tr>
+                            <td><code>[HOSTMASTER]</code></td>
+                            <td>{% trans %}Substituted with hostmaster{% endtrans %}</td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Common Record Examples Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-lightbulb me-2"></i>{% trans %}Example Records{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <h6 class="mb-1">{% trans %}Name Examples{% endtrans %}:</h6>
+                        <ul class="small ps-4 mb-2">
+                            <li>{% trans %}For a subdomain: <code>subdomain.[ZONE]</code>{% endtrans %}</li>
+                            <li>{% trans %}For a wildcard record: <code>*.[ZONE]</code>{% endtrans %}</li>
+                            <li>{% trans %}For the domain itself: <code>[ZONE]</code>{% endtrans %}</li>
+                        </ul>
+                        
+                        <h6 class="mb-1">{% trans %}Content Examples{% endtrans %}:</h6>
+                        <ul class="small ps-4 mb-0">
+                            <li>{% trans %}SOA: <code>[NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400</code>{% endtrans %}</li>
+                            <li>{% trans %}MX for Microsoft 365: <code>[DOMAIN]-[TLD].mail.protection.outlook.com</code>{% endtrans %}</li>
+                            <li>{% trans %}A record: <code>192.0.2.10</code>{% endtrans %}</li>
+                            <li>{% trans %}CNAME: <code>target.[ZONE]</code> or <code>example.com.</code>{% endtrans %}</li>
+                            <li>{% trans %}TXT for SPF: <code>v=spf1 mx ip4:192.0.2.0/24 -all</code>{% endtrans %}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Record types that support priority
+    const RECORD_TYPES_WITH_PRIORITY = ['MX', 'SRV', 'KX', 'NAPTR'];
+    
+    // Function to check if a record type supports priority
+    function supportsPriority(recordType) {
+        return RECORD_TYPES_WITH_PRIORITY.includes(recordType);
+    }
+    
+    // Function to update priority field state based on record type
+    function updatePriorityFieldState() {
+        const typeSelect = document.getElementById('type');
+        const priorityInput = document.getElementById('prio');
+        
+        if (!typeSelect || !priorityInput) return;
+        
+        const recordType = typeSelect.value;
+        
+        if (supportsPriority(recordType)) {
+            priorityInput.removeAttribute('readonly');
+            priorityInput.classList.remove('bg-dark-subtle');
+            priorityInput.setAttribute('tabindex', '0');
+        } else {
+            priorityInput.setAttribute('readonly', 'readonly');
+            priorityInput.classList.add('bg-dark-subtle');
+            priorityInput.value = '0';
+            priorityInput.setAttribute('tabindex', '-1');
+        }
+    }
+    
+    // Check if CNAME is being used at domain root in template
+    function checkCnameRootWarning() {
+        const typeSelect = document.getElementById('type');
+        const nameField = document.getElementById('name');
+        const warningDiv = document.getElementById('cnameRootWarning');
+        
+        if (!typeSelect || !nameField || !warningDiv) return;
+        
+        const isType = typeSelect.value === 'CNAME';
+        const name = nameField.value.trim();
+        const isAtRoot = (name === "" || name === "[ZONE]" || name === "@");
+        
+        warningDiv.style.display = (isType && isAtRoot) ? 'block' : 'none';
+    }
+    
+    // Show helpful information for SOA records
+    function checkSOAHelper() {
+        const typeSelect = document.getElementById('type');
+        const soaHelperDiv = document.getElementById('soaHelper');
+        
+        if (!typeSelect || !soaHelperDiv) return;
+        
+        const isSOA = typeSelect.value === 'SOA';
+        soaHelperDiv.style.display = isSOA ? 'block' : 'none';
+    }
+    
+    // Set up event listeners
+    document.addEventListener('DOMContentLoaded', function() {
+        const typeSelect = document.getElementById('type');
+        const nameField = document.getElementById('name');
+        
+        if (typeSelect) {
+            typeSelect.addEventListener('change', function() {
+                checkCnameRootWarning();
+                checkSOAHelper();
+                updatePriorityFieldState();
+            });
+        }
+        
+        if (nameField) {
+            nameField.addEventListener('input', checkCnameRootWarning);
+        }
+        
+        // Initial checks
+        checkCnameRootWarning();
+        checkSOAHelper();
+        updatePriorityFieldState();
+    });
+</script>

@@ -1,0 +1,117 @@
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-md-6 col-lg-4">
+      <div class="card shadow-sm">
+        <div class="card-header py-3">
+          <strong><i class="bi bi-lock me-2"></i>{% trans %}Two-Factor Authentication{% endtrans %}</strong>
+        </div>
+        <div class="card-body">
+          {% if msg %}
+          <div class="alert alert-{{ type }} bg-{{ type }} bg-opacity-10 py-2 border border-{{ type }} small" role="alert">
+            <i class="bi bi-{% if type == 'danger' %}exclamation-triangle{% elseif type == 'warning' %}exclamation-circle{% elseif type == 'success' %}check-circle{% else %}info-circle{% endif %}-fill me-2 text-{{ type }}"></i>
+            <span class="text-{{ type }}">{{ msg }}</span>
+          </div>
+          {% endif %}
+          
+          <form method="post" action="index.php?page=mfa_verify" class="needs-validation" novalidate>
+            <input type="hidden" name="mfa_token" value="{{ mfa_token }}">
+            <input type="hidden" name="username" value="{{ username }}">
+            
+            <div class="mb-3">
+              <label for="mfa_code" class="form-label">{% trans %}Enter verification code{% endtrans %}</label>
+              <input type="text" class="form-control" id="mfa_code" name="mfa_code" 
+                     autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" 
+                     minlength="6" maxlength="8" autofocus required>
+              <div class="valid-feedback">
+                {% trans %}Looks good!{% endtrans %}
+              </div>
+              <div class="invalid-feedback">
+                {% trans %}Please enter a valid verification code.{% endtrans %}
+              </div>
+              <div class="form-text">
+                {% if mfa_type == 'app' %}
+                {% trans %}Enter the code from your authenticator app{% endtrans %}
+                {% else %}
+                {% trans %}Enter the 6-digit code sent to your email{% endtrans %}
+                {% endif %}
+              </div>
+            </div>
+            
+            <div class="d-grid gap-2">
+              <button type="submit" name="verify_mfa" class="btn btn-sm btn-primary">{% trans %}Verify{% endtrans %}</button>
+              <a href="index.php?page=mfa_verify&logout=1" class="btn btn-sm btn-outline-secondary">{% trans %}Cancel{% endtrans %}</a>
+            </div>
+          </form>
+          
+          <script>
+          // Bootstrap validation script
+          (function() {
+            'use strict';
+            
+            // Fetch all forms to which we want to apply validation
+            var forms = document.querySelectorAll('.needs-validation');
+            
+            // Loop over them and prevent submission if not valid
+            Array.prototype.slice.call(forms).forEach(function(form) {
+              form.addEventListener('submit', function(event) {
+                if (!form.checkValidity()) {
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+                
+                form.classList.add('was-validated');
+              }, false);
+            });
+          })();
+          </script>
+          
+          <hr class="my-4">
+          
+          <div class="text-center">
+            <a href="#" data-bs-toggle="modal" data-bs-target="#recoveryCodeModal">
+              {% trans %}Use a recovery code{% endtrans %}
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Recovery Code Modal -->
+<div class="modal fade" id="recoveryCodeModal" tabindex="-1" aria-labelledby="recoveryCodeModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="recoveryCodeModalLabel">{% trans %}Use Recovery Code{% endtrans %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form method="post" action="index.php?page=mfa_verify" class="needs-validation" novalidate>
+          <input type="hidden" name="mfa_token" value="{{ mfa_token }}">
+          <input type="hidden" name="username" value="{{ username }}">
+          
+          <div class="mb-3">
+            <label for="recovery_code" class="form-label">{% trans %}Recovery Code{% endtrans %}</label>
+            <input type="text" class="form-control" id="recovery_code" name="mfa_code" 
+                   minlength="20" maxlength="20" autocomplete="off" required>
+            <div class="valid-feedback">
+              {% trans %}Looks good!{% endtrans %}
+            </div>
+            <div class="invalid-feedback">
+              {% trans %}Please enter a valid recovery code.{% endtrans %}
+            </div>
+            <div class="form-text">
+              {% trans %}Enter one of your recovery codes. Note that each code can only be used once.{% endtrans %}
+            </div>
+          </div>
+          
+          <div class="d-grid gap-2">
+            <button type="submit" name="verify_mfa" class="btn btn-sm btn-primary">{% trans %}Verify{% endtrans %}</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+

@@ -1,0 +1,127 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=api_keys">{% trans %}API Keys{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}Edit API Key{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-7">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-pencil-square me-2 text-primary"></i>{% trans %}Edit API Key{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=api_keys&amp;action=edit&amp;id={{ api_key.id }}" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    
+                    <div class="mb-3">
+                        <label for="name" class="form-label">{% trans %}Name{% endtrans %} <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" id="name" name="name" required maxlength="255" value="{{ api_key.name }}">
+                        <div class="invalid-feedback">{% trans %}Please provide a name for this API key{% endtrans %}</div>
+                        <div class="form-text">{% trans %}A descriptive name to help you identify this key{% endtrans %}</div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label for="expires_at" class="form-label">{% trans %}Expires at{% endtrans %}</label>
+                        <input type="date" class="form-control" id="expires_at" name="expires_at" value="{% if api_key.expiresAt %}{{ api_key.expiresAt|date('Y-m-d') }}{% endif %}">
+                        <div class="form-text">{% trans %}Leave empty for a key that never expires{% endtrans %}</div>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="disabled" name="disabled" {% if api_key.isDisabled %}checked{% endif %}>
+                            <label class="form-check-label" for="disabled">{% trans %}Disable this API key{% endtrans %}</label>
+                        </div>
+                        <div class="form-text">{% trans %}Disabled keys cannot be used for authentication{% endtrans %}</div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between">
+                        <div class="d-flex gap-2">
+                            <button type="submit" class="btn btn-primary btn-sm">
+                                <i class="bi bi-save me-1 text-white"></i>{% trans %}Update API Key{% endtrans %}
+                            </button>
+                            <a href="index.php?page=api_keys" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-lg-5">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}API Key Information{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-striped mb-0">
+                        <tbody>
+                            <tr>
+                                <th style="width: 40%">{% trans %}Created at{% endtrans %}</th>
+                                <td>{{ api_key.createdAt|date('Y-m-d H:i:s') }}</td>
+                            </tr>
+                            <tr>
+                                <th>{% trans %}Last used{% endtrans %}</th>
+                                <td>{% if api_key.lastUsedAt %}{{ api_key.lastUsedAt|date('Y-m-d H:i:s') }}{% else %}<span class="text-muted">{% trans %}Never{% endtrans %}</span>{% endif %}</td>
+                            </tr>
+                            <tr>
+                                <th>{% trans %}Status{% endtrans %}</th>
+                                <td>
+                                    {% if api_key.isDisabled %}
+                                        <span class="badge bg-danger">{% trans %}Disabled{% endtrans %}</span>
+                                    {% elseif api_key.hasExpired %}
+                                        <span class="badge bg-danger">{% trans %}Expired{% endtrans %}</span>
+                                    {% else %}
+                                        <span class="badge bg-success">{% trans %}Active{% endtrans %}</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-gear me-2"></i>{% trans %}Additional Actions{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="d-grid gap-2">
+                    <a href="index.php?page=api_keys&amp;action=regenerate&amp;id={{ api_key.id }}" class="btn btn-outline-secondary btn-sm text-start">
+                        <i class="bi bi-arrow-repeat me-2 text-secondary"></i>{% trans %}Regenerate API Key{% endtrans %}
+                        <div class="small text-muted ms-4">{% trans %}Creates a new key, invalidating the old one{% endtrans %}</div>
+                    </a>
+                    <a href="index.php?page=api_keys&amp;action=delete&amp;id={{ api_key.id }}" class="btn btn-outline-danger btn-sm text-start">
+                        <i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete API Key{% endtrans %}
+                        <div class="small text-muted ms-4">{% trans %}Permanently removes this key{% endtrans %}</div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Enable Bootstrap form validation
+document.addEventListener('DOMContentLoaded', function() {
+    const forms = document.querySelectorAll('.needs-validation');
+    
+    Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+            
+            form.classList.add('was-validated');
+        }, false);
+    });
+});
+</script>

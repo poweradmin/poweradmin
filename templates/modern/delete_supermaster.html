@@ -1,0 +1,54 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_supermasters">{% trans %}Supermasters{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Delete supermaster{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete Supermaster{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-danger bg-danger bg-opacity-10">
+            <h5 class="alert-heading text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
+            <p>{% trans %}You are about to delete the supermaster{% endtrans %}: <strong>"{{ master_ip }}"</strong></p>
+            <p class="mb-0">{% trans %}This action cannot be undone. Are you sure you want to proceed?{% endtrans %}</p>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header py-2">
+                <strong>{% trans %}Supermaster Details{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Hostname in NS record{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">{{ info['ns_name'] }}</p>
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Account{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">{{ info['account'] }}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-4">
+            <a href="index.php?page=delete_supermaster&master_ip={{ master_ip }}&ns_name={{ info['ns_name'] }}&confirm=1" class="btn btn-danger btn-sm">
+                <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this supermaster{% endtrans %}
+            </a>
+            <a href="index.php?page=list_supermasters" class="btn btn-secondary btn-sm">
+                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this supermaster{% endtrans %}
+            </a>
+        </div>
+    </div>
+</div>

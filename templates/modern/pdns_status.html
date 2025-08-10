@@ -1,0 +1,506 @@
+
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}PowerDNS Server Status{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <strong><i class="bi bi-server me-2"></i>{% trans %}PowerDNS Server Status{% endtrans %}</strong>
+        {% if server_status.running %}
+        <form method="POST" action="index.php?page=pdns_status&action=refresh">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+            <button type="submit" class="btn btn-primary btn-sm">
+                <i class="bi bi-arrow-clockwise me-1 text-white"></i>{% trans %}Refresh Status{% endtrans %}
+            </button>
+        </form>
+        {% endif %}
+    </div>
+    <div class="card-body">
+        {% if not pdns_api_enabled %}
+        <div class="alert alert-warning">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {% trans %}PowerDNS API is not configured. Please configure the PowerDNS API URL and key in your settings.{% endtrans %}
+        </div>
+        {% else %}
+
+        {% if server_status.running %}
+        <div class="d-flex align-items-center mb-3">
+            <div class="bg-success rounded-circle" style="width: 16px; height: 16px;"></div>
+            <span class="ms-2 fw-bold">{% trans %}Server Running{% endtrans %}</span>
+        </div>
+        {% else %}
+        <div class="d-flex align-items-center mb-3">
+            <div class="bg-danger rounded-circle" style="width: 16px; height: 16px;"></div>
+            <span class="ms-2 fw-bold">{% trans %}Server Not Running{% endtrans %}</span>
+        </div>
+        {% if server_status.error %}
+        <div class="alert alert-danger">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            {{ server_status.error }}
+        </div>
+        {% endif %}
+        {% endif %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card h-100 mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">{% trans %}Server Information{% endtrans %}</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if server_status.running %}
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <th scope="row">{% trans %}PDNS Server{% endtrans %}</th>
+                                    <td>{{ server_status.display_name }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{% trans %}Server Name{% endtrans %}</th>
+                                    <td>{{ server_status.server_name }}</td>
+                                </tr>
+                                {% if server_status.id is defined and server_status.id != server_status.server_name %}
+                                <tr>
+                                    <th scope="row">{% trans %}Server ID{% endtrans %}</th>
+                                    <td>{{ server_status.id }}</td>
+                                </tr>
+                                {% endif %}
+                                <tr>
+                                    <th scope="row">{% trans %}PowerDNS Version{% endtrans %}</th>
+                                    <td>{{ server_status.version }}</td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">{% trans %}Daemon Type{% endtrans %}</th>
+                                    <td>{{ server_status.daemon_type }}</td>
+                                </tr>
+                                {% if server_status.uptime is defined %}
+                                <tr>
+                                    <th scope="row">{% trans %}Uptime{% endtrans %}</th>
+                                    <td>{{ server_status.uptime }}</td>
+                                </tr>
+                                {% endif %}
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="text-center py-4">
+                            <i class="bi bi-server text-muted mb-3" style="font-size: 2rem;"></i>
+                            <p class="mb-0">{% trans %}Server information is not available.{% endtrans %}</p>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            {% if slave_status|length > 0 %}
+            <div class="col-md-6">
+                <div class="card h-100 mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">{% trans %}Slave Servers{% endtrans %} (Supermasters)</h5>
+                    </div>
+                    <div class="card-body">
+                        <p class="small text-muted mb-3">{% trans %}Showing connectivity status for DNS servers listed in the supermasters table.{% endtrans %}</p>
+                        {% if slave_status.error is defined %}
+                        <div class="alert alert-danger">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                            {{ slave_status.error }}
+                        </div>
+                        {% else %}
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th scope="col">{% trans %}Server IP{% endtrans %}</th>
+                                    <th scope="col">{% trans %}Status{% endtrans %}</th>
+                                    <th scope="col">{% trans %}Last Checked{% endtrans %}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for ip, info in slave_status %}
+                                <tr>
+                                    <td>{{ ip }}</td>
+                                    <td>
+                                        {% if info.status == 'ok' %}
+                                        <span class="badge bg-success">{% trans %}OK{% endtrans %}</span>
+                                        {% elseif info.status == 'unreachable' %}
+                                        <span class="badge bg-danger">{% trans %}Unreachable{% endtrans %}</span>
+                                        {% else %}
+                                        <span class="badge bg-danger">{% trans %}Error{% endtrans %}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>{{ info.lastChecked }}</td>
+                                </tr>
+                                {% if info.error is defined %}
+                                <tr>
+                                    <td colspan="3">
+                                        <div class="small text-danger">
+                                            <i class="bi bi-info-circle me-1"></i>{{ info.error }}
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+        
+        {% if server_status.running and server_status.metrics is defined %}
+        <div class="my-4"></div>
+        
+        <div class="row">
+            <div class="col-12">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5 class="mb-0">{% trans %}Server Statistics{% endtrans %}</h5>
+                    </div>
+                    <div class="card-body">
+                        <!-- Server Health Dashboard -->
+                        <div class="row mb-4">
+                            <!-- Status Overview Card -->
+                            <div class="col-md-4">
+                                <div class="card h-100 shadow-sm {% if server_status.running %}border-success{% else %}border-danger{% endif %}">
+                                    <div class="card-header bg-transparent">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h5 class="mb-0">{% trans %}Server Health{% endtrans %}</h5>
+                                            {% if server_status.running %}
+                                            <span class="badge bg-success rounded-pill">{% trans %}Online{% endtrans %}</span>
+                                            {% else %}
+                                            <span class="badge bg-danger rounded-pill">{% trans %}Offline{% endtrans %}</span>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <i class="bi bi-clock-history text-primary me-2"></i>
+                                            <div>
+                                                <div class="small text-muted">{% trans %}Uptime{% endtrans %}</div>
+                                                <div class="fw-bold">
+                                                    {% if server_status.formatted_uptime is defined %}
+                                                    {{ server_status.formatted_uptime }}
+                                                    {% elseif server_status.uptime is defined %}
+                                                    {{ server_status.uptime }}
+                                                    {% else %}
+                                                    {% trans %}Unknown{% endtrans %}
+                                                    {% endif %}
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex align-items-center mb-3">
+                                            <i class="bi bi-speedometer text-primary me-2"></i>
+                                            <div>
+                                                <div class="small text-muted">{% trans %}Latency{% endtrans %}</div>
+                                                <div class="fw-bold">
+                                                    {{ server_status.metrics['latency'] ?? '0' }}ms
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="d-flex align-items-center">
+                                            <i class="bi bi-cpu text-primary me-2"></i>
+                                            <div>
+                                                <div class="small text-muted">{% trans %}CPU Usage{% endtrans %}</div>
+                                                <div class="fw-bold">
+                                                    User: {{ server_status.metrics['pdns_auth_user_msec'] ?? server_status.metrics['user-msec'] ?? '0' }}ms / 
+                                                    Sys: {{ server_status.metrics['pdns_auth_sys_msec'] ?? server_status.metrics['sys-msec'] ?? '0' }}ms
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Query Stats Card -->
+                            <div class="col-md-8">
+                                <div class="card h-100 shadow-sm">
+                                    <div class="card-header bg-transparent">
+                                        <h5 class="mb-0">{% trans %}Query Statistics{% endtrans %}</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                                                        <div class="progress-bar bg-primary" role="progressbar" style="width: 100%"></div>
+                                                    </div>
+                                                    <div class="text-end" style="min-width: 100px;">
+                                                        {% set udp_queries = server_status.metrics['udp-queries'] ?? server_status.metrics['pdns_auth_udp_queries'] ?? 0 %}
+                                                        {% if udp_queries > 1000000 %}
+                                                            {{ (udp_queries / 1000000)|round(2) }}M
+                                                        {% elseif udp_queries > 1000 %}
+                                                            {{ (udp_queries / 1000)|round(2) }}K
+                                                        {% else %}
+                                                            {{ udp_queries }}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <div class="small text-muted mb-3">{% trans %}UDP Queries{% endtrans %}</div>
+                                                
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                                                        <div class="progress-bar bg-info" role="progressbar" style="width: 100%"></div>
+                                                    </div>
+                                                    <div class="text-end" style="min-width: 100px;">
+                                                        {% set tcp_queries = server_status.metrics['tcp-queries'] ?? server_status.metrics['pdns_auth_tcp_queries'] ?? 0 %}
+                                                        {% if tcp_queries > 1000000 %}
+                                                            {{ (tcp_queries / 1000000)|round(2) }}M
+                                                        {% elseif tcp_queries > 1000 %}
+                                                            {{ (tcp_queries / 1000)|round(2) }}K
+                                                        {% else %}
+                                                            {{ tcp_queries }}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <div class="small text-muted">{% trans %}TCP Queries{% endtrans %}</div>
+                                            </div>
+                                            
+                                            <div class="col-md-6">
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                                                        <div class="progress-bar bg-success" role="progressbar" style="width: 100%"></div>
+                                                    </div>
+                                                    <div class="text-end" style="min-width: 100px;">
+                                                        {% set cache_hits = server_status.metrics['packetcache-hit'] ?? 0 %}
+                                                        {% if cache_hits > 1000000 %}
+                                                            {{ (cache_hits / 1000000)|round(2) }}M
+                                                        {% elseif cache_hits > 1000 %}
+                                                            {{ (cache_hits / 1000)|round(2) }}K
+                                                        {% else %}
+                                                            {{ cache_hits }}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <div class="small text-muted mb-3">{% trans %}Cache Hits{% endtrans %}</div>
+                                                
+                                                <div class="d-flex align-items-center mb-3">
+                                                    <div class="progress flex-grow-1 me-2" style="height: 10px;">
+                                                        <div class="progress-bar bg-warning" role="progressbar" style="width: 100%"></div>
+                                                    </div>
+                                                    <div class="text-end" style="min-width: 100px;">
+                                                        {% set cache_misses = server_status.metrics['packetcache-miss'] ?? 0 %}
+                                                        {% if cache_misses > 1000000 %}
+                                                            {{ (cache_misses / 1000000)|round(2) }}M
+                                                        {% elseif cache_misses > 1000 %}
+                                                            {{ (cache_misses / 1000)|round(2) }}K
+                                                        {% else %}
+                                                            {{ cache_misses }}
+                                                        {% endif %}
+                                                    </div>
+                                                </div>
+                                                <div class="small text-muted">{% trans %}Cache Misses{% endtrans %}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Metrics Navigator -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-header bg-light">
+                                <ul class="nav nav-tabs card-header-tabs" id="metricsTab" role="tablist">
+                                    {% set first_tab = true %}
+                                    {% if server_status.metric_categories is defined %}
+                                        {% for category_key, category in server_status.metric_categories %}
+                                            {% if category.metrics|length > 0 %}
+                                                <li class="nav-item" role="presentation">
+                                                    <button class="nav-link {% if first_tab %}active{% endif %}" 
+                                                            id="{{ category_key }}-tab" 
+                                                            data-bs-toggle="tab" 
+                                                            data-bs-target="#{{ category_key }}" 
+                                                            type="button" 
+                                                            role="tab" 
+                                                            aria-controls="{{ category_key }}" 
+                                                            aria-selected="{% if first_tab %}true{% else %}false{% endif %}">
+                                                        {{ category.title }}
+                                                    </button>
+                                                </li>
+                                                {% set first_tab = false %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% endif %}
+                                    <li class="nav-item ms-auto">
+                                        <div class="d-flex">
+                                            <button class="btn btn-sm btn-outline-secondary me-2" id="viewToggle">
+                                                <i class="bi bi-grid-3x3 text-secondary"></i> {% trans %}Toggle View{% endtrans %}
+                                            </button>
+                                            <form method="POST" action="index.php?page=pdns_status&action=refresh">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
+                                                <button type="submit" class="btn btn-sm btn-primary">
+                                                    <i class="bi bi-arrow-clockwise me-1 text-white"></i>{% trans %}Refresh{% endtrans %}
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="card-body pb-0">
+                                <div class="tab-content" id="metricsTabContent">
+                                    {% set first_tab = true %}
+                                    {% if server_status.metric_categories is defined %}
+                                        {% for category_key, category in server_status.metric_categories %}
+                                            {% if category.metrics|length > 0 %}
+                                                <div class="tab-pane fade {% if first_tab %}show active{% endif %}" 
+                                                     id="{{ category_key }}" 
+                                                     role="tabpanel" 
+                                                     aria-labelledby="{{ category_key }}-tab">
+                                                    
+                                                    <!-- Card View (default) -->
+                                                    <div class="metrics-card-view">
+                                                        <div class="row row-cols-1 row-cols-md-4 g-3 mb-4">
+                                                            {% for metric_name, metric_value in category.metrics %}
+                                                                <div class="col">
+                                                                    <div class="card border-{% if category.color == 'light' %}secondary{% else %}{{ category.color }}{% endif %} h-100">
+                                                                        <div class="card-body p-3">
+                                                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                                                <span class="small text-muted text-truncate">{{ metric_name }}</span>
+                                                                                {% if server_status.metric_info is defined and server_status.metric_info[metric_name] is defined %}
+                                                                                    <span class="badge bg-light text-secondary rounded-pill" 
+                                                                                          data-bs-toggle="tooltip" 
+                                                                                          data-bs-placement="top" 
+                                                                                          title="{{ server_status.metric_info[metric_name].description }}">
+                                                                                        <i class="bi bi-info-circle"></i>
+                                                                                    </span>
+                                                                                {% endif %}
+                                                                            </div>
+                                                                            <h4 class="mb-0 text-{% if category.color == 'light' %}dark{% else %}{{ category.color }}{% endif %}">
+                                                                                {% if metric_name == 'uptime' and server_status.formatted_uptime is defined %}
+                                                                                    {{ server_status.formatted_uptime }}
+                                                                                {% else %}
+                                                                                    {% if metric_value is not iterable %}
+                                                                                        {% if metric_value > 1000000 %}
+                                                                                            {{ (metric_value / 1000000)|round(2) }}M
+                                                                                        {% elseif metric_value > 1000 %}
+                                                                                            {{ (metric_value / 1000)|round(2) }}K
+                                                                                        {% else %}
+                                                                                            {{ metric_value }}
+                                                                                        {% endif %}
+                                                                                    {% else %}
+                                                                                        [Array]
+                                                                                    {% endif %}
+                                                                                {% endif %}
+                                                                                
+                                                                                {% if metric_name ends with 'bytes' or metric_name ends with '_bytes' %}
+                                                                                    {% trans %}Bytes{% endtrans %}
+                                                                                {% endif %}
+                                                                            </h4>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            {% endfor %}
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <!-- Table View (hidden by default) -->
+                                                    <div class="metrics-table-view d-none mb-4">
+                                                        <div class="table-responsive">
+                                                            <table class="table table-sm table-hover">
+                                                                <thead>
+                                                                    <tr>
+                                                                        <th>{% trans %}Metric{% endtrans %}</th>
+                                                                        <th>{% trans %}Value{% endtrans %}</th>
+                                                                        <th>{% trans %}Description{% endtrans %}</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                                    {% for metric_name, metric_value in category.metrics %}
+                                                                        <tr>
+                                                                            <td class="fw-medium">{{ metric_name }}</td>
+                                                                            <td>
+                                                                                {% if metric_name == 'uptime' and server_status.formatted_uptime is defined %}
+                                                                                    {{ server_status.formatted_uptime }}
+                                                                                {% else %}
+                                                                                    {% if metric_value is not iterable %}
+                                                                                        {% if metric_value > 1000000 %}
+                                                                                            {{ (metric_value / 1000000)|round(2) }}M
+                                                                                        {% elseif metric_value > 1000 %}
+                                                                                            {{ (metric_value / 1000)|round(2) }}K
+                                                                                        {% else %}
+                                                                                            {{ metric_value }}
+                                                                                        {% endif %}
+                                                                                    {% else %}
+                                                                                        [Array]
+                                                                                    {% endif %}
+                                                                                {% endif %}
+                                                                                
+                                                                                {% if metric_name ends with 'bytes' or metric_name ends with '_bytes' %}
+                                                                                    {% trans %}Bytes{% endtrans %}
+                                                                                {% endif %}
+                                                                            </td>
+                                                                            <td class="text-muted small">
+                                                                                {% if server_status.metric_info is defined and server_status.metric_info[metric_name] is defined %}
+                                                                                    {{ server_status.metric_info[metric_name].description }}
+                                                                                {% else %}
+                                                                                    -
+                                                                                {% endif %}
+                                                                            </td>
+                                                                        </tr>
+                                                                    {% endfor %}
+                                                                </tbody>
+                                                            </table>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                {% set first_tab = false %}
+                                            {% endif %}
+                                        {% endfor %}
+                                    {% else %}
+                                        <!-- Fallback if no categories available -->
+                                        <div class="alert alert-info">
+                                            <i class="bi bi-info-circle me-2"></i>
+                                            {% trans %}No detailed metrics available.{% endtrans %}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- JavaScript for Toggle View -->
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                const viewToggleBtn = document.getElementById('viewToggle');
+                                if (viewToggleBtn) {
+                                    viewToggleBtn.addEventListener('click', function() {
+                                        const cardViews = document.querySelectorAll('.metrics-card-view');
+                                        const tableViews = document.querySelectorAll('.metrics-table-view');
+                                        
+                                        cardViews.forEach(view => {
+                                            view.classList.toggle('d-none');
+                                        });
+                                        
+                                        tableViews.forEach(view => {
+                                            view.classList.toggle('d-none');
+                                        });
+                                        
+                                        // Update button icon
+                                        const icon = viewToggleBtn.querySelector('i');
+                                        if (icon.classList.contains('bi-grid-3x3')) {
+                                            icon.classList.replace('bi-grid-3x3', 'bi-list');
+                                        } else {
+                                            icon.classList.replace('bi-list', 'bi-grid-3x3');
+                                        }
+                                    });
+                                }
+                                
+                                // Initialize tooltips
+                                const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                                tooltipTriggerList.map(function (tooltipTriggerEl) {
+                                    return new bootstrap.Tooltip(tooltipTriggerEl);
+                                });
+                            });
+                        </script>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,68 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+        {% if is_reverse_zone %}
+        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        {% else %}
+        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        {% endif %}
+    </li>
+        <li class="breadcrumb-item">
+            {% if idn_zone_name %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            {% else %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ domain_name }}</a>
+            {% endif %}
+        </li>
+        <li class="breadcrumb-item">
+            <a href="index.php?page=dnssec&id={{ zone_id }}">{% trans %}DNSSEC{% endtrans %}</a>
+        </li>
+        <li class="breadcrumb-item" aria-current="page">
+            {% trans %}DS and DNS keys{% endtrans %}
+        </li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <strong>
+                    <i class="bi bi-key me-2"></i>
+                    {% if idn_zone_name %}
+                    {% trans %}DNSSEC public records for zone{% endtrans %} "{{ idn_zone_name }}" ({{ domain_name }})
+                    {% else %}
+                    {% trans %}DNSSEC public records for zone{% endtrans %} "{{ domain_name }}"
+                    {% endif %}
+                </strong>
+                <div>
+                    <a href="index.php?page=dnssec&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                        <i class="bi bi-arrow-left text-white me-1"></i>{% trans %}Back to DNSSEC keys{% endtrans %}
+                    </a>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2 mb-3"><i class="bi bi-key-fill me-2"></i>{% trans %}DNSKEY Records{% endtrans %}</h5>
+                    <div class="bg-light p-3 rounded">
+                        <pre class="mb-0">{% for record in dnskey_records %}{{ record }}
+{% endfor %}</pre>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <h5 class="border-bottom pb-2 mb-3"><i class="bi bi-shield-check me-2"></i>{% trans %}DS Records{% endtrans %}</h5>
+                    <div class="bg-light p-3 rounded">
+                        <pre class="mb-0">{% for record in ds_records %}{{ record }}
+{% endfor %}</pre>
+                    </div>
+                    <p class="text-muted mt-2 small">
+                        <i class="bi bi-info-circle me-1"></i>
+                        {% trans %}DS records should be added to the parent zone to establish the chain of trust.{% endtrans %}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

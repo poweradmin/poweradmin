@@ -1,0 +1,127 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+        {% if is_reverse_zone %}
+        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        {% else %}
+        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        {% endif %}
+    </li>
+        <li class="breadcrumb-item">
+            {% if idn_zone_name %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            {% else %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ zone_name }}</a>
+            {% endif %}
+        </li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Bulk add records{% endtrans %}</li>
+    </ol>
+</nav>
+
+{% if message %}
+<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Bulk Add Records{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=bulk_record_add&id={{ zone_id }}" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+                    <div class="mb-3">
+                        <label for="records" class="form-label">
+                            {% trans %}Records{% endtrans %}
+                            {% if display_hostname_only %}
+                            <small class="text-muted">(.{{ zone_name }})</small>
+                            {% endif %}
+                        </label>
+                        <textarea class="form-control form-control-sm" id="records" name="records" rows="15" required>{% if failed_records %}{{ failed_records | join('\n') }}{% endif %}</textarea>
+                        <div class="invalid-feedback">{% trans %}Provide at least one record{% endtrans %}</div>
+                        <small class="form-text text-muted">{% trans %}Format: name,type,content,priority,ttl,comment (one record per line){% endtrans %}</small>
+                        <small class="form-text text-muted d-block">{% trans %}Example: www,A,192.168.1.1,0,3600,web server{% endtrans %}</small>
+                        <small class="form-text text-muted d-block">{{ 'Priority and TTL are optional (defaults: priority=0, ttl=' | trans }}{{ default_ttl }})</small>
+                        <small class="form-text text-muted d-block">{% trans %}Comment is optional{% endtrans %}</small>
+                        {% if display_hostname_only %}
+                        <small class="form-text text-warning d-block"><i class="bi bi-info-circle"></i> {% trans %}Enter hostnames only - the zone name will be added automatically{% endtrans %}</small>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm" name="submit">
+                                <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add Records{% endtrans %}
+                            </button>
+                            <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Instructions{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-file-text text-primary me-2"></i>{% trans %}Input Format{% endtrans %}</h6>
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}Enter one record per line using CSV format{% endtrans %}</li>
+                            <li>{% trans %}Required fields: name, type, content{% endtrans %}</li>
+                            <li>{% trans %}Optional fields: priority, ttl, comment{% endtrans %}</li>
+                            <li>{% trans %}Records are validated before creation{% endtrans %}</li>
+                        </ul>
+                    </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-shield-check text-success me-2"></i>{% trans %}Best Practices{% endtrans %}</h6>
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}For CNAME, MX, SRV records, make sure content ends with a dot (.){% endtrans %}</li>
+                            <li>{% trans %}Use @ for records at the zone apex (root domain){% endtrans %}</li>
+                            <li>{% trans %}Quote TXT record values that contain spaces{% endtrans %}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-code-square me-2"></i>{% trans %}Record Type Examples{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-globe text-info me-2"></i>{% trans %}Common Records{% endtrans %}</h6>
+                        <ul class="mb-0 ps-4 small">
+                            <li><code>www,A,192.168.1.1</code></li>
+                            <li><code>www,AAAA,2001:db8::1</code></li>
+                            <li><code>www2,CNAME,www.example.com.</code></li>
+                            <li><code>@,MX,mail.example.com.,10</code></li>
+                        </ul>
+                    </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-shield-lock text-warning me-2"></i>{% trans %}Advanced Records{% endtrans %}</h6>
+                        <ul class="mb-0 ps-4 small">
+                            <li><code>_acme,TXT,"verification=12345"</code></li>
+                            <li><code>@,TXT,"v=spf1 mx a ip4:192.168.0.0/24 ~all"</code></li>
+                            <li><code>_sip._tcp,SRV,sip.example.com.,0,5060,3600</code></li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>

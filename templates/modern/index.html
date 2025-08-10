@@ -1,0 +1,80 @@
+<!-- Quick Stats Row - For future DNS statistics visualization -->
+<div class="row">
+    {% if permissions['user_is_ueberuser'] and pdns_api_enabled and show_pdns_status %}
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm {% if pdns_server_status is defined %}{% if pdns_server_status.running %}border-success{% else %}border-danger{% endif %}{% endif %}">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}PowerDNS Server{% endtrans %}</h6>
+                        <p class="card-text">
+                            {% if pdns_server_status is defined and pdns_server_status.running %}
+                                <span class="badge bg-success">{% trans %}Online{% endtrans %}</span> v{{ pdns_server_status.version }}
+                            {% else %}
+                                <span class="badge bg-danger">{% trans %}Offline{% endtrans %}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-server display-4 text-muted"></i>
+                    </div>
+                </div>
+                <a href="index.php?page=pdns_status" class="btn btn-sm btn-outline-primary" data-testid="pdns-status-link">
+                    {% trans %}View Details{% endtrans %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Placeholder for DNS Zone Statistics -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}Zone Statistics{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Total zones and records managed{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-bar-chart display-4 text-muted"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Placeholder for Recent Activity -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}Recent Activity{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Latest zone and record changes{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-activity display-4 text-muted"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Placeholder for System Health -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}System Health{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Service status and performance{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-heart-pulse display-4 text-muted"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

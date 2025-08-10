@@ -1,0 +1,130 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+        {% if is_reverse_zone %}
+        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        {% else %}
+        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        {% endif %}
+    </li>
+        <li class="breadcrumb-item">
+            {% if idn_zone_name %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            {% else %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ domain_name }}</a>
+            {% endif %}
+        </li>
+        <li class="breadcrumb-item">
+            <a href="index.php?page=dnssec&id={{ zone_id }}">{% trans %}DNSSEC{% endtrans %}</a>
+        </li>
+        <li class="breadcrumb-item" aria-current="page">
+            {% trans %}Delete key{% endtrans %}
+        </li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete DNSSEC Key{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-danger bg-danger bg-opacity-10">
+            <h5 class="alert-heading text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
+            
+            {% if key_info[5] %}
+            <p>{% trans %}You are about to delete an active DNSSEC key (ID{% endtrans %}: <strong>{{ key_info[0] }}</strong>)</p>
+            <p>{% trans %}Deleting an active key will affect the security of your zone and may cause validation failures.{% endtrans %}</p>
+            {% else %}
+            <p>{% trans %}You are about to delete a DNSSEC key (ID{% endtrans %}: <strong>{{ key_info[0] }}</strong>)</p>
+            {% endif %}
+            
+            <p class="mb-0">{% trans %}This action cannot be undone. Are you sure you want to proceed?{% endtrans %}</p>
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header py-2">
+                <strong>{% trans %}Key Details{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Domain{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">
+                            {% if idn_zone_name %}
+                            {{ idn_zone_name }} <span class="text-muted">({{ domain_name }})</span>
+                            {% else %}
+                            {{ domain_name }}
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Key ID{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">{{ key_info[0] }}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Type{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0"><span class="badge bg-secondary">{{ key_info[1] }}</span></p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Tag{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">{{ key_info[2] }}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Algorithm{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">{{ algorithms[key_info[3]] }}</p>
+                    </div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Bits{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">{{ key_info[4] }}</p>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <p class="mb-0"><strong>{% trans %}Status{% endtrans %}:</strong></p>
+                    </div>
+                    <div class="col-md-9">
+                        <p class="mb-0">
+                            {% if key_info[5] %}
+                            <span class="badge bg-success">{% trans %}Active{% endtrans %}</span>
+                            {% else %}
+                            <span class="badge bg-warning text-dark">{% trans %}Inactive{% endtrans %}</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="d-flex gap-2">
+            <a href="index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ key_id }}&confirm=1" class="btn btn-danger btn-sm">
+                <i class="bi bi-trash text-white me-1"></i>{% trans %}Delete key{% endtrans %}
+            </a>
+            <a href="index.php?page=dnssec&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-x-circle text-white me-1"></i>{% trans %}Cancel{% endtrans %}
+            </a>
+        </div>
+    </div>
+</div>

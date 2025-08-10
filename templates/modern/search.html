@@ -1,0 +1,630 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Search{% endtrans %}</li>
+    </ol>
+</nav>
+
+{% if message %}
+<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% endif %}
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-2">
+        <strong><i class="bi bi-search me-2"></i>{% trans %}DNS Search{% endtrans %}</strong>
+    </div>
+    <div class="card-body py-2">
+        <form class="needs-validation" name="search_form" action="index.php?page=search" method="POST" onsubmit="checkQueryChange(this);" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            <input type="hidden" name="zone_sort_by" value="{{ zone_sort_by }}">
+            <input type="hidden" name="record_sort_by" value="{{ record_sort_by }}">
+            <input type="hidden" name="zones_page" value="{{ zones_page }}">
+            <input type="hidden" name="records_page" value="{{ records_page }}">
+            <input type="hidden" name="zone_sort_by_direction" value="{{ zone_sort_direction }}">
+            <input type="hidden" name="record_sort_by_direction" value="{{ record_sort_direction }}">
+            <input type="hidden" id="zones_rows_per_page_input" name="zones_rows_per_page" value="{{ zone_rowamount }}">
+            <input type="hidden" id="records_rows_per_page_input" name="records_rows_per_page" value="{{ record_rowamount }}">
+
+            <!-- Main search query with all options inline -->
+            <div class="row g-2 mb-2">
+                <div class="col-md-8">
+                    <div class="input-group input-group-sm has-validation">
+                        <span class="input-group-text bg-light"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control form-control-sm" id="query" name="query" value="{{ query }}" 
+                               placeholder="{% trans %}Enter domain name, hostname or IP (e.g., example.com type:txt content:spf){% endtrans %}" required>
+                        <button type="submit" class="btn btn-sm btn-primary" name="do_search">{% trans %}Search{% endtrans %}</button>
+                        <a href="javascript:void(0)" onclick="clearSearch()" class="btn btn-sm btn-outline-secondary">
+                            <i class="bi bi-x-circle text-secondary"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Search scope compact view -->
+                <div class="col-md-4">
+                    <div class="d-flex flex-wrap justify-content-end gap-3 h-100 align-items-center">
+                        <div class="form-check form-check-inline mb-0">
+                            <input type="checkbox" class="form-check-input" name="zones" id="zones_check"
+                                   value="true" {% if search_by_zones %}checked{% endif %}>
+                            <label class="form-check-label" for="zones_check">
+                                <i class="bi bi-globe2 me-1"></i>{% trans %}Zones{% endtrans %}
+                            </label>
+                        </div>
+                        
+                        <div class="form-check form-check-inline mb-0">
+                            <input type="checkbox" class="form-check-input" name="records" id="records_check"
+                                   value="true" {% if search_by_records %}checked{% endif %}
+                                   onchange="updateSearchSections()">
+                            <label class="form-check-label" for="records_check">
+                                <i class="bi bi-list-columns me-1"></i>{% trans %}Records{% endtrans %}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Search options -->
+            <div class="mb-2" id="advancedSearchOptions">
+                <div class="card card-body py-2 border">
+                    <div class="row g-2">
+                        <!-- Search options in first row -->
+                        <div class="col-md-6">
+                            <div class="d-flex flex-wrap gap-3">
+                                <div class="form-check form-check-inline mb-0">
+                                    <input type="checkbox" class="form-check-input" name="wildcard" id="wildcard_check"
+                                           value="true" {% if search_by_wildcard %}checked{% endif %}>
+                                    <label class="form-check-label small" for="wildcard_check">
+                                        {% trans %}Wildcards{% endtrans %}
+                                    </label>
+                                </div>
+                                
+                                <div class="form-check form-check-inline mb-0">
+                                    <input type="checkbox" class="form-check-input" name="reverse" id="reverse_check"
+                                           value="true" {% if search_by_reverse %}checked{% endif %}>
+                                    <label class="form-check-label small" for="reverse_check">
+                                        {% trans %}Reverse{% endtrans %}
+                                    </label>
+                                </div>
+                                
+                                {% if iface_zone_comments or iface_record_comments %}
+                                <div class="form-check form-check-inline mb-0">
+                                    <input type="checkbox" class="form-check-input" name="comments" id="comments_check"
+                                           value="true" {% if search_by_comments %}checked{% endif %}>
+                                    <label class="form-check-label small" for="comments_check">
+                                        {% trans %}Comments{% endtrans %}
+                                    </label>
+                                </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <!-- Record filter fields are hidden but kept to maintain form structure -->
+                        <input type="hidden" name="type_filter" id="type_filter" value="{{ type_filter }}">
+                        <input type="hidden" name="content_filter" id="content_filter" value="{{ content_filter }}">
+                        
+                        <!-- Help text in a separate row -->
+                        <div class="col-12 mt-1">
+                            <div class="form-text small text-muted">
+                                <i class="bi bi-info-circle me-1"></i>
+                                {% trans %}Filter syntax: type:txt content:spf. Wildcard adds % to search. Reverse converts IPs to PTR format (e.g., 192.168.1.1 to 1.1.168.192.in-addr.arpa){% endtrans %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% if has_zones %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-globe2 me-2"></i>{% trans %}Zones found{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_zones }}</span></span>
+        {% if total_zones > zone_rowamount %}
+        <div class="d-flex align-items-center">
+            <label for="zones-rows-per-page" class="me-2 text-secondary small mb-0">{% trans %}Rows per page:{% endtrans %}</label>
+            <select id="zones-rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="do_search_with_zones_rows_per_page(this.value)">
+                <option value="10" {{ zone_rowamount == 10 ? 'selected' : '' }}>10</option>
+                <option value="20" {{ zone_rowamount == 20 ? 'selected' : '' }}>20</option>
+                <option value="50" {{ zone_rowamount == 50 ? 'selected' : '' }}>50</option>
+                <option value="100" {{ zone_rowamount == 100 ? 'selected' : '' }}>100</option>
+            </select>
+        </div>
+        {% endif %}
+    </div>
+    <div class="card-body p-0">
+        <form method="post" action="index.php?page=delete_domains">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-sm mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>
+                            {% if edit_permission == 'all' or edit_permission == 'own' or edit_permission == 'own_as_client' %}
+                            <input type="checkbox" class="form-check-input" id="select_search_zones" onClick="toggleSearchZoneCheckboxes()"/>
+                            {% endif %}
+                        </th>
+                        <th>
+                            <a href="javascript:zone_sort_by('name');" class="d-flex align-items-center text-decoration-none">
+                                <span class="me-2">{% trans %}Name{% endtrans %}</span>
+                                {% if zone_sort_by == 'name' %}
+                                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="javascript:zone_sort_by('type');" class="d-flex align-items-center text-decoration-none">
+                                <span class="me-2">{% trans %}Type{% endtrans %}</span>
+                                {% if zone_sort_by == 'type' %}
+                                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="javascript:zone_sort_by('count_records');" class="d-flex align-items-center text-decoration-none">
+                                <span class="me-2">{% trans %}Records{% endtrans %}</span>
+                                {% if zone_sort_by == 'count_records' %}
+                                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="javascript:zone_sort_by('fullname');" class="d-flex align-items-center text-decoration-none">
+                                <span class="me-2">{% trans %}Owner{% endtrans %}</span>
+                                {% if zone_sort_by == 'fullname' %}
+                                    <i class="bi bi-arrow-{{ zone_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        {% if iface_zone_comments %}
+                        <th>
+                            {% trans %}Comment{% endtrans %}
+                        </th>
+                        {% endif %}
+                        <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for zone in found_zones %}
+                    <tr>
+                        <td>
+                            {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
+                            <input class="form-check-input" type="checkbox" name="zone_id[]" value="{{ zone['id'] }}">
+                            {% endif %}
+                        </td>
+                        <td>{{ zone['name'] }}</td>
+                        <td><span class="badge bg-light text-dark">{{ zone['type'] }}</span></td>
+                        <td><span class="badge bg-secondary">{{ zone['count_records'] }}</span></td>
+                        <td>{{ zone['fullname'] }}</td>
+                        {% if iface_zone_comments %}
+                            <td>{{ zone['comment'] }}</td>
+                        {% endif %}
+                        <td class="text-end">
+                            <div class="gap-2">
+                                {% if perm_is_godlike and whois_enabled %}
+                                <a class="btn btn-sm btn-outline-secondary"
+                                href="index.php?page=whois&zone_id={{ zone['id'] }}" data-testid="whois-zone-{{ zone['id'] }}">
+                                    <i class="bi bi-search-heart text-secondary"></i>
+                                </a>
+                                {% endif %}
+                                {% if perm_is_godlike and rdap_enabled %}
+                                <a class="btn btn-sm btn-outline-secondary"
+                                href="index.php?page=rdap&zone_id={{ zone['id'] }}" data-testid="rdap-zone-{{ zone['id'] }}">
+                                    <i class="bi bi-search text-secondary"></i>
+                                </a>
+                                {% endif %}
+                                {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
+                                <a class="btn btn-sm btn-outline-primary"
+                                href="index.php?page=edit&id={{ zone['id'] }}">
+                                    <i class="bi bi-pencil-square text-primary"></i>
+                                </a>
+                                <a class="btn btn-sm btn-outline-danger"
+                                href="index.php?page=delete_domain&id={{ zone['id'] }}">
+                                    <i class="bi bi-trash text-danger"></i>
+                                </a>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if total_zones > zone_rowamount %}
+            {% set max_visible_pages = 9 %}
+            {% set total_zone_pages = (total_zones / zone_rowamount) | round(0, 'ceil') %}
+            {% set half_visible_pages = max_visible_pages // 2 %}
+            {% set zones_start_page = (zones_page - half_visible_pages) > 0 ? (zones_page - half_visible_pages) : 1 %}
+            {% set zones_end_page = min(zones_start_page + max_visible_pages - 1, total_zone_pages) %}
+            <div class="card-footer py-2">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm justify-content-center mb-0">
+                        {% if zones_page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page - 1 }})" aria-label="Previous">
+                                <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% if zones_page > half_visible_pages + 1 %}
+                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page(1)">1</a></li>
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
+                        {% endif %}
+
+                        {% for i in zones_start_page..zones_end_page %}
+                        {% if i == zones_page %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ i }})">{{ i }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if total_zone_pages > zones_end_page %}
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
+                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_zones_page({{ total_zone_pages }})">{{ total_zone_pages }}</a></li>
+                        {% endif %}
+
+                        {% if zones_page < total_zone_pages %}
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:do_search_with_zones_page({{ zones_page + 1 }})" aria-label="Next">
+                                <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+            {% if edit_permission == 'all' or edit_permission == 'own' or edit_permission == 'own_as_client' %}
+            {% if total_zones > 0 %}
+            <div class="card-footer py-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <button type="submit" name="commit" class="btn btn-danger btn-sm" id="delete-zones-button" disabled
+                            onclick="return confirm('{% trans %}Are you sure you want to delete the selected zones? This action cannot be undone.{% endtrans %}')">
+                        <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete zone(s){% endtrans %}
+                    </button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" 
+                            onclick="document.getElementById('select_search_zones').click()">
+                        <i class="bi bi-check-all me-1 text-secondary"></i>{% trans %}Toggle all{% endtrans %}
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% if has_records %}
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <span><i class="bi bi-list-columns me-2"></i>{% trans %}Records found{% endtrans %} <span class="badge bg-secondary ms-2">{{ total_records }}</span></span>
+        {% if total_records > record_rowamount %}
+        <div class="d-flex align-items-center">
+            <label for="records-rows-per-page" class="me-2 text-secondary small mb-0">{% trans %}Rows per page:{% endtrans %}</label>
+            <select id="records-rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="do_search_with_records_rows_per_page(this.value)">
+                <option value="10" {{ record_rowamount == 10 ? 'selected' : '' }}>10</option>
+                <option value="20" {{ record_rowamount == 20 ? 'selected' : '' }}>20</option>
+                <option value="50" {{ record_rowamount == 50 ? 'selected' : '' }}>50</option>
+                <option value="100" {{ record_rowamount == 100 ? 'selected' : '' }}>100</option>
+            </select>
+        </div>
+        {% endif %}
+    </div>
+    <div class="card-body p-0">
+        <form method="post" action="index.php?page=delete_records">
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-sm mb-0">
+                    <thead class="table-light">
+                    <tr>
+                        <th>
+                            {% if edit_permission == 'all' or edit_permission == 'own' or edit_permission == 'own_as_client' %}
+                            <input type="checkbox" class="form-check-input" id="select_records" onClick="toggleRecordCheckboxes()"/>
+                            {% endif %}
+                        </th>
+                        <th>
+                            <a href="javascript:record_sort_by('name');" class="d-flex align-items-center text-decoration-none">
+                                <span class="me-2">{% trans %}Name{% endtrans %}</span>
+                                {% if record_sort_by == 'name' %}
+                                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="javascript:record_sort_by('type');" class="d-flex align-items-center text-decoration-none">
+                                <span class="me-2">{% trans %}Type{% endtrans %}</span>
+                                {% if record_sort_by == 'type' %}
+                                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="javascript:record_sort_by('prio');" class="d-flex align-items-center text-decoration-none">
+                                <span class="me-2">{% trans %}Priority{% endtrans %}</span>
+                                {% if record_sort_by == 'prio' %}
+                                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="javascript:record_sort_by('content');" class="d-flex align-items-center text-decoration-none">
+                                <span class="me-2">{% trans %}Content{% endtrans %}</span>
+                                {% if record_sort_by == 'content' %}
+                                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="javascript:record_sort_by('ttl');" class="d-flex align-items-center text-decoration-none">
+                                <span class="me-2">{% trans %}TTL{% endtrans %}</span>
+                                {% if record_sort_by == 'ttl' %}
+                                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        <th>
+                            <a href="javascript:record_sort_by('disabled');" class="d-flex align-items-center text-decoration-none">
+                                <span class="me-2">{% trans %}Disabled{% endtrans %}</span>
+                                {% if record_sort_by == 'disabled' %}
+                                    <i class="bi bi-arrow-{{ record_sort_direction == 'ASC' ? 'down' : 'up' }} text-primary"></i>
+                                {% endif %}
+                            </a>
+                        </th>
+                        {% if iface_record_comments %}
+                        <th>
+                            {% trans %}Comment{% endtrans %}
+                        </th>
+                        {% endif %}
+                        <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for record in found_records %}
+                    <tr>
+                        <td>
+                            {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
+                            <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ record['id'] }}">
+                            {% endif %}
+                        </td>
+                        <td>{{ record['name'] }}</td>
+                        <td><span class="badge {% if record['type'] == 'A' %}bg-primary{% elseif record['type'] == 'AAAA' %}bg-info{% elseif record['type'] == 'CNAME' %}bg-success{% elseif record['type'] == 'MX' %}bg-warning{% elseif record['type'] == 'TXT' %}bg-secondary{% elseif record['type'] == 'PTR' %}bg-danger{% elseif record['type'] == 'SOA' %}bg-dark{% elseif record['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ record['type'] }}</span></td>
+                        <td>{{ record['prio'] }}</td>
+                        <td><code class="text-break">{{ record['content'] }}</code></td>
+                        <td>{{ record['ttl'] }}</td>
+                        <td>{{ record['disabled'] }}</td>
+                        {% if iface_record_comments %}
+                            <td>{{ record['comment'] }}</td>
+                        {% endif %}
+                        <td class="text-end">
+                            {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
+                            <div class="gap-2">
+                                <a class="btn btn-sm btn-outline-primary"
+                                href="index.php?page=edit_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
+                                    <i class="bi bi-pencil-square text-primary"></i>
+                                </a>
+                                <a class="btn btn-sm btn-outline-danger"
+                                href="index.php?page=delete_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
+                                    <i class="bi bi-trash text-danger"></i>
+                                </a>
+                            </div>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            {% if total_records > record_rowamount %}
+            {% set max_visible_pages = 9 %}
+            {% set total_records_pages = (total_records / record_rowamount) | round(0, 'ceil') %}
+            {% set half_visible_pages = max_visible_pages // 2 %}
+            {% set records_start_page = (records_page - half_visible_pages) > 0 ? (records_page - half_visible_pages) : 1 %}
+            {% set records_end_page = min(records_start_page + max_visible_pages - 1, total_records_pages) %}
+            <div class="card-footer py-2">
+                <nav aria-label="Page navigation">
+                    <ul class="pagination pagination-sm justify-content-center mb-0">
+                        {% if records_page > 1 %}
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:do_search_with_records_page({{ records_page - 1 }})" aria-label="Previous">
+                                <span aria-hidden="true"><i class="bi bi-chevron-left"></i></span>
+                            </a>
+                        </li>
+                        {% endif %}
+
+                        {% if records_page > half_visible_pages + 1 %}
+                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page(1)">1</a></li>
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
+                        {% endif %}
+
+                        {% for i in records_start_page..records_end_page %}
+                        {% if i == records_page %}
+                        <li class="page-item active"><span class="page-link">{{ i }}</span></li>
+                        {% else %}
+                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ i }})">{{ i }}</a></li>
+                        {% endif %}
+                        {% endfor %}
+
+                        {% if total_records_pages > records_end_page %}
+                        <li class="page-item disabled"><a class="page-link" href="#" tabindex="-1">...</a></li>
+                        <li class="page-item"><a class="page-link" href="javascript:do_search_with_records_page({{ total_records_pages }})">{{ total_records_pages }}</a></li>
+                        {% endif %}
+
+                        {% if records_page < total_records_pages %}
+                        <li class="page-item">
+                            <a class="page-link" href="javascript:do_search_with_records_page({{ records_page + 1 }})" aria-label="Next">
+                                <span aria-hidden="true"><i class="bi bi-chevron-right"></i></span>
+                            </a>
+                        </li>
+                        {% endif %}
+                    </ul>
+                </nav>
+            </div>
+            {% endif %}
+
+            {% if edit_permission == 'all' or edit_permission == 'own' or edit_permission == 'own_as_client' %}
+            {% if total_records > 0 %}
+            <div class="card-footer py-3 d-flex justify-content-between align-items-center">
+                <div>
+                    <button type="submit" name="commit" class="btn btn-danger btn-sm" id="delete-records-button" disabled 
+                            onclick="return confirm('{% trans %}Are you sure you want to delete the selected records? This action cannot be undone.{% endtrans %}')">
+                        <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
+                    </button>
+                </div>
+                <div>
+                    <button type="button" class="btn btn-sm btn-outline-secondary" 
+                            onclick="document.getElementById('select_records').click()">
+                        <i class="bi bi-check-all me-1 text-secondary"></i>{% trans %}Toggle all{% endtrans %}
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% endif %}
+
+{% if query is not empty and (not has_records and not has_zones) %}
+<div class="card shadow-sm mb-4">
+    <div class="card-body text-center py-5">
+        <i class="bi bi-search fs-1 text-muted mb-3"></i>
+        <h5>{% trans %}No results found{% endtrans %}</h5>
+        <p class="text-muted mb-0">{% trans %}Try different search terms or filters{% endtrans %}</p>
+    </div>
+</div>
+{% endif %}
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Initialize tooltips
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+            new bootstrap.Tooltip(tooltipTriggerEl);
+        });
+        
+
+        queryState.setPreviousQuery(document.search_form.query.value);
+
+        // Handle zone selection checkboxes
+        const zoneCheckboxes = document.getElementsByName('zone_id[]');
+        for (let i = 0; i < zoneCheckboxes.length; i++) {
+            zoneCheckboxes[i].addEventListener('change', function() {
+                updateDeleteButtonState('delete-zones-button', zoneCheckboxes);
+            });
+        }
+
+        // Handle record selection checkboxes
+        const recordCheckboxes = document.getElementsByName('record_id[]');
+        for (let i = 0; i < recordCheckboxes.length; i++) {
+            recordCheckboxes[i].addEventListener('change', function() {
+                updateDeleteButtonState('delete-records-button', recordCheckboxes);
+                updateMasterCheckboxState('select_records', recordCheckboxes);
+            });
+        }
+
+        // Initialize delete button states
+        updateDeleteButtonState('delete-zones-button', zoneCheckboxes);
+        updateDeleteButtonState('delete-records-button', recordCheckboxes);
+        
+        // Enhanced checkbox selection
+        document.getElementById('select_records')?.addEventListener('change', function() {
+            toggleAllCheckboxes(this, recordCheckboxes);
+            updateDeleteButtonState('delete-records-button', recordCheckboxes);
+        });
+        
+        document.getElementById('select_search_zones')?.addEventListener('change', function() {
+            toggleAllCheckboxes(this, zoneCheckboxes);
+            updateDeleteButtonState('delete-zones-button', zoneCheckboxes);
+        });
+    });
+    
+    function toggleAllCheckboxes(masterCheckbox, checkboxes) {
+        const isChecked = masterCheckbox.checked;
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (!checkboxes[i].disabled) {
+                checkboxes[i].checked = isChecked;
+            }
+        }
+    }
+    
+    function updateMasterCheckboxState(masterCheckboxId, checkboxes) {
+        const masterCheckbox = document.getElementById(masterCheckboxId);
+        if (!masterCheckbox) return;
+        
+        let allChecked = true;
+        let allUnchecked = true;
+        
+        for (let i = 0; i < checkboxes.length; i++) {
+            if (!checkboxes[i].disabled) {
+                if (checkboxes[i].checked) {
+                    allUnchecked = false;
+                } else {
+                    allChecked = false;
+                }
+            }
+        }
+        
+        if (allChecked) {
+            masterCheckbox.checked = true;
+            masterCheckbox.indeterminate = false;
+        } else if (allUnchecked) {
+            masterCheckbox.checked = false;
+            masterCheckbox.indeterminate = false;
+        } else {
+            masterCheckbox.indeterminate = true;
+        }
+    }
+    
+    function toggleSearchZoneCheckboxes() {
+        const masterCheckbox = document.getElementById('select_search_zones');
+        const checkboxes = document.getElementsByName('zone_id[]');
+        toggleAllCheckboxes(masterCheckbox, checkboxes);
+        updateDeleteButtonState('delete-zones-button', checkboxes);
+    }
+    
+    function toggleRecordCheckboxes() {
+        const masterCheckbox = document.getElementById('select_records');
+        const checkboxes = document.getElementsByName('record_id[]');
+        toggleAllCheckboxes(masterCheckbox, checkboxes);
+        updateDeleteButtonState('delete-records-button', checkboxes);
+    }
+    
+    function updateSearchSections() {
+        const showRecordFilters = document.getElementById('records_check').checked;
+        
+        // If hiding filters, reset them and clear any type/content directives from search box
+        if (!showRecordFilters) {
+            document.getElementById('type_filter').value = '';
+            document.getElementById('content_filter').value = '';
+            
+            // Clean up search query by removing type/content filters
+            const queryInput = document.getElementById('query');
+            if (queryInput.value) {
+                queryInput.value = queryInput.value.replace(/\btype:\s*[^\s]+\b/gi, '').replace(/\bcontent:\s*[^\s]+\b/gi, '').trim();
+            }
+        }
+    }
+    
+    function clearSearch() {
+        // Clear the search query
+        document.getElementById('query').value = '';
+        
+        // Reset select boxes and filters
+        if (document.getElementById('type_filter')) {
+            document.getElementById('type_filter').value = '';
+        }
+        if (document.getElementById('content_filter')) {
+            document.getElementById('content_filter').value = '';
+        }
+        
+        // Submit the form to refresh the page
+        document.search_form.submit();
+    }
+    
+</script>

@@ -1,0 +1,136 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+        {% if is_reverse_zone %}
+        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        {% else %}
+        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        {% endif %}
+    </li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Bulk registration{% endtrans %}</li>
+    </ol>
+</nav>
+
+{% if message %}
+<div class="alert alert-{{ message.type }}">{{ message.content }}</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=bulk_registration" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+                    <div class="mb-3">
+                        <label for="owner" class="form-label">{% trans %}Owner{% endtrans %} <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm" id="owner" name="owner" required>
+                            {% set default_user_set = false %}
+                            {% for user in users %}
+                                {% if user['id'] == userid %}
+                                    <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
+                                    {% set default_user_set = true %}
+                                {% elseif perm_view_others %}
+                                    <option value="{{ user['id'] }}">{{ user['fullname'] }}</option>
+                                {% endif %}
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">{% trans %}Please select an owner{% endtrans %}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dom_type" class="form-label">{% trans %}Zone Type{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="dom_type" name="dom_type">
+                            {% for type in available_zone_types %}
+                            {% if type == iface_zone_type_default %}
+                            {% set selected = 'selected' %}
+                            {% else %}
+                            {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ type }}" {{ selected }}>{{ type | lower }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="zone_template" class="form-label">{% trans %}Template{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="zone_template" name="zone_template">
+                            <option value="none">none</option>
+                            {% for zone_template in zone_templates %}
+                            <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="domains" class="form-label">{% trans %}Domains{% endtrans %}</label>
+                        <textarea class="form-control form-control-sm" id="domains" name="domains" rows="10" required>{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
+                        <div class="invalid-feedback">{% trans %}Provide a domain name(s){% endtrans %}</div>
+                        <small class="form-text text-muted">{% trans %}Type one domain per line{% endtrans %}</small>
+                    </div>
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" class="btn btn-sm btn-primary" name="submit">
+                                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add Zones{% endtrans %}
+                            </button>
+                            <a href="index.php?page=list_forward_zones" class="btn btn-sm btn-secondary">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About Bulk Registration{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-card-list text-primary me-2"></i>{% trans %}Instructions{% endtrans %}</h6>
+                        <p class="small mb-1">{% trans %}This tool allows you to create multiple DNS zones at once.{% endtrans %}</p>
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}Enter one domain name per line in the Domains field{% endtrans %}</li>
+                            <li>{% trans %}Select a zone template to apply standard records to all zones{% endtrans %}</li>
+                            <li>{% trans %}The chosen owner will have full access to all created zones{% endtrans %}</li>
+                        </ul>
+                    </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-gear text-success me-2"></i>{% trans %}How It Works{% endtrans %}</h6>
+                        <p class="small mb-0">{% trans %}The system will attempt to create each zone with the same settings. Failed domains will be displayed so you can correct any issues and try again.{% endtrans %}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}Tips & Recommendations{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}Use NATIVE zone type for most standard setups{% endtrans %}</li>
+                            <li>{% trans %}Create a template first if you need standard records for all zones{% endtrans %}</li>
+                            <li>{% trans %}You can copy and paste a list of domains from a spreadsheet{% endtrans %}</li>
+                            <li>{% trans %}Make sure the domain names follow valid DNS naming conventions{% endtrans %}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>

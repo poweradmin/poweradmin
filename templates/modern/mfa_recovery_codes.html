@@ -1,0 +1,126 @@
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="index.php?page=mfa_setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
+    <li class="breadcrumb-item" aria-current="page">{% trans %}Recovery Codes{% endtrans %}</li>
+  </ol>
+</nav>
+
+<div class="container-fluid">
+  <div class="row justify-content-center">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header py-3">
+          <small><strong><i class="bi bi-check-circle me-2"></i>{% trans %}MFA Setup Complete{% endtrans %}</strong></small>
+        </div>
+        <div class="card-body">
+          <div class="alert alert-success mb-4">
+            <small class="alert-heading fw-bold">{% trans %}Multi-Factor Authentication is now enabled{% endtrans %}</small>
+            <p class="small">{% trans %}Your account is now protected with multi-factor authentication.{% endtrans %}</p>
+            
+            {% if mfa_type == 'app' %}
+              <p class="small"><strong>{% trans %}Authentication method:{% endtrans %}</strong> {% trans %}Authenticator app{% endtrans %}</p>
+            {% else %}
+              <p class="small"><strong>{% trans %}Authentication method:{% endtrans %}</strong> {% trans %}Email verification{% endtrans %}</p>
+            {% endif %}
+          </div>
+          
+          <div class="alert alert-warning mb-4">
+            <small class="alert-heading fw-bold">{% trans %}Save Your Recovery Codes{% endtrans %}</small>
+            <p class="small">{% trans %}Recovery codes can be used to access your account if you lose access to your authenticator device. Each code can only be used once.{% endtrans %}</p>
+            <p class="small fw-bold">{% trans %}Store these codes in a safe place!{% endtrans %}</p>
+          </div>
+          
+          <div class="card mb-4">
+            <div class="card-header py-2">
+              <small><strong><i class="bi bi-key me-2"></i>{% trans %}Recovery Codes{% endtrans %}</strong></small>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                {% for code in recovery_codes %}
+                  <div class="col-md-6 mb-2">
+                    <code class="fs-6">{{ code }}</code>
+                  </div>
+                {% endfor %}
+              </div>
+            </div>
+            <div class="card-footer">
+              <button class="btn btn-sm btn-outline-secondary" onclick="printRecoveryCodes()">
+                <i class="bi bi-printer text-secondary"></i> {% trans %}Print{% endtrans %}
+              </button>
+              <button class="btn btn-sm btn-outline-secondary" onclick="copyAllCodes()">
+                <i class="bi bi-clipboard text-secondary"></i> {% trans %}Copy all{% endtrans %}
+              </button>
+              <button class="btn btn-sm btn-outline-secondary" id="download-btn" onclick="downloadCodes()">
+                <i class="bi bi-download text-secondary"></i> {% trans %}Download{% endtrans %}
+              </button>
+            </div>
+          </div>
+          
+          <div class="d-flex gap-2 justify-content-between">
+            <div>
+              <a href="index.php?page=mfa_setup" class="btn btn-sm btn-outline-secondary">{% trans %}Back to MFA Settings{% endtrans %}</a>
+            </div>
+            <div>
+              <form method="post" action="index.php?page=mfa_setup" class="d-inline-block me-2">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <button type="submit" name="disable_mfa" class="btn btn-sm btn-outline-danger">
+                  {% trans %}Disable MFA{% endtrans %}
+                </button>
+              </form>
+              <a href="index.php" class="btn btn-sm btn-primary">{% trans %}Continue to Dashboard{% endtrans %}</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  function copyAllCodes() {
+    var codes = [{% for code in recovery_codes %}"{{ code }}"{% if not loop.last %}, {% endif %}{% endfor %}];
+    var text = codes.join("\n");
+    
+    var tempElement = document.createElement('textarea');
+    tempElement.value = text;
+    document.body.appendChild(tempElement);
+    tempElement.select();
+    document.execCommand('copy');
+    document.body.removeChild(tempElement);
+    
+  }
+  
+  function printRecoveryCodes() {
+    var printContents = document.querySelector('.card-body .row').innerHTML;
+    var originalContents = document.body.innerHTML;
+    
+    document.body.innerHTML = 
+      '<div style="padding: 20px;">' +
+      '<h2>{% trans %}Poweradmin MFA Recovery Codes{% endtrans %}</h2>' +
+      '<p>{% trans %}Store these codes in a safe place. Each code can be used once to log in if you lose access to your authenticator device.{% endtrans %}</p>' +
+      '<div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; font-family: monospace; font-size: 14px;">' + 
+      printContents + 
+      '</div>' +
+      '</div>';
+    
+    window.print();
+    document.body.innerHTML = originalContents;
+  }
+  
+  function downloadCodes() {
+    var codes = [{% for code in recovery_codes %}"{{ code }}"{% if not loop.last %}, {% endif %}{% endfor %}];
+    var text = "Poweradmin MFA Recovery Codes\n\n";
+    text += "{% trans %}Store these codes in a safe place. Each code can be used once to log in if you lose access to your authenticator device.{% endtrans %}\n\n";
+    
+    codes.forEach(function(code) {
+      text += code + "\n";
+    });
+    
+    var blob = new Blob([text], { type: 'text/plain' });
+    var link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = 'poweradmin-recovery-codes.txt';
+    link.click();
+  }
+</script>

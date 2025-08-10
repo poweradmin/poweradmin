@@ -1,0 +1,138 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+        {% if is_reverse_zone %}
+        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        {% else %}
+        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        {% endif %}
+    </li>
+        <li class="breadcrumb-item"><a href="index.php?page=edit&id={{ zone_id }}">
+            {% if idn_zone_name %}
+            {{ idn_zone_name }}
+            {% else %}
+            {{ zone_name }}
+            {% endif %}
+        </a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Delete Record{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete Record{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-warning py-1 mb-2 small">
+            <i class="bi bi-exclamation-triangle-fill me-1"></i>
+            {% if idn_zone_name %}
+            {% trans %}You are about to delete a record in zone{% endtrans %} <strong>"{{ idn_zone_name }}" ({{ zone_name }})</strong>.
+            {% else %}
+            {% trans %}You are about to delete a record in zone{% endtrans %} <strong>"{{ zone_name }}"</strong>.
+            {% endif %}
+            {% trans %}This action cannot be undone.{% endtrans %}
+        </div>
+
+        <div class="card mb-4">
+            <div class="card-header py-2">
+                <strong>{% trans %}Record Details{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>{% trans %}Name{% endtrans %}</th>
+                                <th>{% trans %}Type{% endtrans %}</th>
+                                <th>{% trans %}Content{% endtrans %}</th>
+                                {% if record_info['prio'] %}
+                                <th>{% trans %}Priority{% endtrans %}</th>
+                                {% endif %}
+                                <th>{% trans %}TTL{% endtrans %}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{ record_info['name'] }}</td>
+                                <td><span class="badge bg-secondary">{{ record_info['type'] }}</span></td>
+                                <td>{{ record_info['content'] }}</td>
+                                {% if record_info['prio'] %}
+                                <td>{{ record_info['prio'] }}</td>
+                                {% endif %}
+                                <td>{{ record_info['ttl'] }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        {% if (record_info['type'] == 'NS' and record_info['name'] == zone_name) or record_info['type'] == 'SOA' %}
+        <div class="alert alert-warning bg-warning bg-opacity-10">
+            <h5 class="alert-heading text-warning"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Important Note{% endtrans %}</h5>
+            <p class="mb-0">{% trans %}You are trying to delete a record that is needed for this zone to work.{% endtrans %}</p>
+        </div>
+        {% endif %}
+
+        {% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="delete_ptr" name="delete_ptr" checked
+                   onclick="updateDeleteLink(this.checked)">
+            <label class="form-check-label" for="delete_ptr">
+                {% trans %}Also delete corresponding PTR record (if exists){% endtrans %}
+            </label>
+        </div>
+        {% endif %}
+
+        {% if record_info['type'] == 'PTR' %}
+        <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" id="delete_forward" name="delete_forward" checked
+                   onclick="updateDeleteLinkForward(this.checked)">
+            <label class="form-check-label" for="delete_forward">
+                {% trans %}Also delete corresponding A/AAAA record (if exists){% endtrans %}
+            </label>
+        </div>
+        {% endif %}
+
+        <div class="mt-4">
+            <a href="index.php?page=delete_record&id={{ record_id }}&confirm=1{% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}&delete_ptr=1{% endif %}{% if record_info['type'] == 'PTR' %}&delete_forward=1{% endif %}"
+               id="delete_link" class="btn btn-danger btn-sm">
+                <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this record{% endtrans %}
+            </a>
+            <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this record{% endtrans %}
+            </a>
+        </div>
+
+        {% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}
+        <script>
+            function updateDeleteLink(checked) {
+                const deleteLink = document.getElementById('delete_link');
+                const baseUrl = 'index.php?page=delete_record&id={{ record_id }}&confirm=1';
+
+                if (checked) {
+                    deleteLink.href = baseUrl + '&delete_ptr=1';
+                } else {
+                    deleteLink.href = baseUrl + '&delete_ptr=0';
+                }
+            }
+        </script>
+        {% endif %}
+
+        {% if record_info['type'] == 'PTR' %}
+        <script>
+            function updateDeleteLinkForward(checked) {
+                const deleteLink = document.getElementById('delete_link');
+                const baseUrl = 'index.php?page=delete_record&id={{ record_id }}&confirm=1';
+
+                if (checked) {
+                    deleteLink.href = baseUrl + '&delete_forward=1';
+                } else {
+                    deleteLink.href = baseUrl + '&delete_forward=0';
+                }
+            }
+        </script>
+        {% endif %}
+    </div>
+</div>

@@ -1,0 +1,17 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Migrations{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <strong><i class="bi bi-database-gear me-2"></i>{% trans %}Migrations{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <div class="border p-3 rounded">
+            <pre class="mb-0 text-wrap code-output">{{ output }}</pre>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,284 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=users">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Add user{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-person-plus me-2"></i>{% trans %}Add User{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=add_user" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label">{% trans %}Username{% endtrans %} <span class="text-danger">*</span></label>
+                        <input class="form-control form-control-sm" type="text" id="username" name="username" value="{{ username }}" required>
+                        <div class="invalid-feedback">{% trans %}Provide user name{% endtrans %}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="fullname" class="form-label">{% trans %}Fullname{% endtrans %} <span class="text-danger">*</span></label>
+                        <input class="form-control form-control-sm" type="text" id="fullname" name="fullname" value="{{ fullname }}" required>
+                        <small class="text-muted">{% trans %}User's full name for identification{% endtrans %}</small>
+                        <div class="invalid-feedback">{% trans %}Provide full name{% endtrans %}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="email" class="form-label">{% trans %}Email address{% endtrans %} <span class="text-danger">*</span></label>
+                        <input class="form-control form-control-sm" type="email" id="email" name="email" value="{{ email }}" required>
+                        <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="password" class="form-label">{% trans %}Password{% endtrans %} <span class="text-danger">*</span></label>
+                        <div class="input-group input-group-sm">
+                            <input class="form-control form-control-sm" type="password" id="password" name="password" value="" {% if not ldap_use %}required{% endif %}>
+                            <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill text-secondary" id="eye"></i></button>
+                            {% if not ldap_use %}<div class="invalid-feedback">{% trans %}Provide user password{% endtrans %}</div>{% endif %}
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check d-flex align-items-center gap-2">
+                            <input class="form-check-input" id="auto_generate" type="checkbox" name="auto_generate_password" value="1"
+                                   onclick="togglePasswordField(); disablePasswordField(); toggleEmailOption();">
+                            <label class="form-check-label" for="auto_generate">{% trans %}Auto-generate password{% endtrans %}</label>
+                            <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right"
+                               title="{% trans %}Generate a secure password that meets all requirements{% endtrans %}"></i>
+                        </div>
+                    </div>
+
+                    {% if mail_enabled %}
+                    <div class="mb-3" id="send_email_row" style="display: none;">
+                        <div class="form-check d-flex align-items-center gap-2">
+                            <input class="form-check-input" id="send_email" type="checkbox" name="send_email" value="1" checked>
+                            <label class="form-check-label" for="send_email">{% trans %}Send password by email{% endtrans %}</label>
+                            <i class="bi bi-info-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="right"
+                               title="{% trans %}Send login credentials to user's email address{% endtrans %}"></i>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if user_edit_templ_perm %}
+                    <div class="mb-3">
+                        <label for="perm_templ" class="form-label">{% trans %}Permission template{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="perm_templ" name="perm_templ">
+                            {% for template in user_templates %}
+                            {% if perm_templ == template['id'] %}
+                            {% set selected = 'selected' %}
+                            {% else %}
+                            {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ template['id'] }}" {{ selected }}>{{ template['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">{% trans %}Select permissions for this user{% endtrans %}</small>
+                    </div>
+                    {% endif %}
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">{% trans %}Description{% endtrans %}</label>
+                        <textarea class="form-control form-control-sm" id="description" rows="3" name="descr">{{ description }}</textarea>
+                        <small class="text-muted">{% trans %}Optional information about this user{% endtrans %}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="active" name="active" value="1" {{ active_checked }}>
+                            <label class="form-check-label" for="active">{% trans %}Enabled{% endtrans %}</label>
+                        </div>
+                    </div>
+
+                    {% if ldap_use %}
+                    <div class="mb-3">
+                        <div class="form-check">
+                            <input class="form-check-input" id="ldap" type="checkbox" name="use_ldap" value="1"
+                                   onclick="disablePasswordField()" {{ use_ldap_checked }}>
+                            <label class="form-check-label" for="ldap">{% trans %}LDAP Authentication{% endtrans %}</label>
+                        </div>
+                        <small class="text-muted">{% trans %}Use external LDAP directory for authentication{% endtrans %}</small>
+                    </div>
+                    {% endif %}
+
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <button type="submit" class="btn btn-primary btn-sm" name="commit">
+                                <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add User{% endtrans %}
+                            </button>
+                            <a href="index.php?page=users" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                        </div>
+                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Account Information{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item border-bottom">
+                        <h6 class="mb-1"><i class="bi bi-shield-lock text-primary me-2"></i>{% trans %}Password Requirements{% endtrans %}</h6>
+                        <ul class="mb-0 ps-4 small">
+                            {% if password_policy.enabled %}
+                                {% if password_policy.min_length %}
+                                <li>{% trans %}Minimum length{% endtrans %}: {{ password_policy.min_length }} {% trans %}characters{% endtrans %}</li>
+                                {% endif %}
+                                {% if password_policy.require_uppercase %}
+                                <li>{% trans %}Must contain uppercase letters{% endtrans %}</li>
+                                {% endif %}
+                                {% if password_policy.require_lowercase %}
+                                <li>{% trans %}Must contain lowercase letters{% endtrans %}</li>
+                                {% endif %}
+                                {% if password_policy.require_numbers %}
+                                <li>{% trans %}Must contain numbers{% endtrans %}</li>
+                                {% endif %}
+                                {% if password_policy.require_special %}
+                                <li>
+                                    {% trans %}Must contain special characters{% endtrans %}
+                                    <span class="text-muted">({{ password_policy.special_characters }})</span>
+                                </li>
+                                {% endif %}
+                            {% else %}
+                                <li>{% trans %}No specific password requirements{% endtrans %}</li>
+                            {% endif %}
+                        </ul>
+                    </div>
+                    <div class="list-group-item">
+                        <h6 class="mb-1"><i class="bi bi-key text-warning me-2"></i>{% trans %}User Permissions{% endtrans %}</h6>
+                        <p class="small mb-0">
+                            {% trans %}When creating a new user, they will receive permissions based on the selected template. You can modify these permissions later by editing the user.{% endtrans %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}User Management Tips{% endtrans %}</strong>
+            </div>
+            <div class="card-body p-0">
+                <div class="list-group list-group-flush">
+                    <div class="list-group-item">
+                        <ul class="mb-0 ps-4 small">
+                            <li>{% trans %}Create descriptive usernames that are easy to identify{% endtrans %}</li>
+                            <li>{% trans %}Adding a full name helps with user identification{% endtrans %}</li>
+                            <li>{% trans %}Users can be disabled instead of deleted to preserve their settings{% endtrans %}</li>
+                            <li>{% trans %}Auto-generating passwords is recommended for better security{% endtrans %}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+function togglePasswordField() {
+    const autoGenerateCheckbox = document.getElementById('auto_generate');
+    const passwordField = document.getElementById('password');
+    const ldapCheckbox = document.getElementById('ldap');
+
+    // If auto-generate is checked
+    if (autoGenerateCheckbox.checked) {
+        // Disable password field
+        passwordField.disabled = true;
+        passwordField.required = false;
+
+        // If LDAP checkbox exists, uncheck it
+        if (ldapCheckbox) {
+            ldapCheckbox.checked = false;
+        }
+    } else {
+        // If LDAP is not checked, enable password field
+        if (!ldapCheckbox || !ldapCheckbox.checked) {
+            passwordField.disabled = false;
+            passwordField.required = true;
+        }
+    }
+}
+
+function toggleEmailOption() {
+    const autoGenerateCheckbox = document.getElementById('auto_generate');
+    const sendEmailRow = document.getElementById('send_email_row');
+
+    // Only proceed if mail is enabled and the row exists
+    if (sendEmailRow) {
+        if (autoGenerateCheckbox.checked) {
+            sendEmailRow.style.display = ''; // Show the row
+        } else {
+            sendEmailRow.style.display = 'none'; // Hide the row
+        }
+    }
+}
+
+// Ensure LDAP and auto-generate checkboxes interact properly
+function disablePasswordField() {
+    const ldapCheckbox = document.getElementById('ldap');
+    const autoGenerateCheckbox = document.getElementById('auto_generate');
+    const passwordField = document.getElementById('password');
+
+    if (ldapCheckbox && ldapCheckbox.checked) {
+        // When LDAP is checked, disable password field and auto-generate
+        passwordField.disabled = true;
+        passwordField.required = false;
+
+        if (autoGenerateCheckbox) {
+            // Uncheck auto-generate checkbox
+            autoGenerateCheckbox.checked = false;
+            autoGenerateCheckbox.disabled = true;
+        }
+    } else {
+        // When LDAP is unchecked
+        if (autoGenerateCheckbox && autoGenerateCheckbox.checked) {
+            // If auto-generate is checked, disable password field
+            passwordField.disabled = true;
+            passwordField.required = false;
+        } else {
+            // Otherwise enable password field
+            passwordField.disabled = false;
+            passwordField.required = true;
+        }
+
+        if (autoGenerateCheckbox) {
+            autoGenerateCheckbox.disabled = false;
+        }
+    }
+}
+
+// Initialize fields on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle initial state
+    const ldapCheckbox = document.getElementById('ldap');
+    if (ldapCheckbox) {
+        disablePasswordField();
+    }
+
+    const autoGenerateCheckbox = document.getElementById('auto_generate');
+    if (autoGenerateCheckbox) {
+        togglePasswordField();
+        toggleEmailOption();
+    }
+
+    // Initialize Bootstrap tooltips
+    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl, {
+            container: 'body'
+        });
+    });
+});
+</script>

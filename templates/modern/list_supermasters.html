@@ -1,0 +1,62 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Supermasters{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-server me-2"></i>{% trans %}Supermasters{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        {% if supermasters %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-sm">
+                <thead class="table-light">
+                    <tr>
+                        <th>{% trans %}IP address of supermaster{% endtrans %}</th>
+                        <th>{% trans %}Hostname in NS record{% endtrans %}</th>
+                        <th>{% trans %}Account{% endtrans %}</th>
+                        {% if perm_sm_edit %}
+                        <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                        {% endif %}
+                    </tr>
+                </thead>
+                <tbody>
+                {% for server in supermasters %}
+                    <tr>
+                        <td>{{ server['master_ip'] }}</td>
+                        <td>{{ server['ns_name'] }}</td>
+                        <td>{{ server['account'] }}</td>
+                        {% if perm_sm_edit %}
+                        <td class="text-end">
+                            <a class="btn btn-outline-primary btn-sm me-2" href="index.php?page=edit_supermaster&master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
+                                <i class="bi bi-pencil-square text-primary me-1"></i><span class="text-primary">{% trans %}Edit{% endtrans %}</span>
+                            </a>
+                            <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_supermaster&master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
+                                <i class="bi bi-trash text-danger me-1"></i><span class="text-danger">{% trans %}Delete{% endtrans %}</span>
+                            </a>
+                        </td>
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="text-center py-4">
+            <i class="bi bi-server fs-1 text-muted mb-2"></i>
+            <p class="text-muted mb-0">{% trans %}There are no supermasters to show in this listing.{% endtrans %}</p>
+        </div>
+        {% endif %}
+
+        {% if perm_sm_add %}
+        <div class="mt-4">
+            <a class="btn btn-primary btn-sm" href="index.php?page=add_supermaster">
+                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add supermaster{% endtrans %}
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>

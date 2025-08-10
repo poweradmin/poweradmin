@@ -1,0 +1,147 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Zone templates{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-file-earmark-text me-2"></i>{% trans %}Zone templates for{% endtrans %} "{{ user_name }}"</strong>
+    </div>
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-sm mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>{% trans %}In use{% endtrans%}</th>
+                    <th>{% trans %}Template name{% endtrans %}</th>
+                    <th>{% trans %}Description{% endtrans %}</th>
+                    <th>{% trans %}Owner{% endtrans %}</th>
+                    <th>{% trans %}Type{% endtrans %}</th>
+                    <th>{% trans %}Zones linked{% endtrans %}</th>
+                    <th>{% trans %}Sync Status{% endtrans %}</th>
+                    <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {% if not zone_templates %}
+                <tr>
+                    <td colspan="8" class="text-center py-3">{% trans %}No results found{% endtrans %}</td>
+                </tr>
+                {% endif %}
+                {% for template in zone_templates %}
+                <tr>
+                    <td>
+                        {% if template['zones_linked'] == '0' %}
+                        <i class="bi bi-circle"></i>
+                        {% else %}
+                        <i class="bi bi-check-circle"></i>
+                        {% endif %}
+                    </td>
+                    <td>{{ template['name'] }}</td>
+                    <td>
+                        {% if template['descr'] %}
+                            {% if template['descr']|length > 30 %}
+                                <span>{{ template['descr']|slice(0, 30) }}...</span>
+                                <i class="bi bi-info-circle text-secondary ms-1" 
+                                   data-bs-toggle="tooltip" 
+                                   data-bs-placement="top" 
+                                   title="{{ template['descr'] }}"></i>
+                            {% else %}
+                                {{ template['descr'] }}
+                            {% endif %}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if template['creator_fullname'] %}
+                            {{ template['creator_fullname'] }}
+                        {% elseif template['creator_username'] %}
+                            {{ template['creator_username'] }}
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if template['owner'] != 0 %}
+                        <span class="badge bg-secondary text-white">{% trans %}private{% endtrans %}</span>
+                        {% else %}
+                        <span class="badge bg-warning text-dark">{% trans %}global{% endtrans %}</span>
+                        {% endif %}
+                    </td>
+                    <td><span class="badge {% if template['zones_linked'] == '0' %}bg-warning{% else %}bg-secondary{% endif %}">{{ template['zones_linked'] }}</span></td>
+                    <td>
+                        {% set template_sync = sync_status[template['id']] %}
+                        {% if template_sync and template_sync.total_zones > 0 %}
+                            {% if template_sync.unsynced_zones > 0 %}
+                                <span class="badge bg-warning text-dark" title="{% trans %}Zones need updating{% endtrans %}">
+                                    <i class="bi bi-exclamation-triangle-fill"></i> {{ template_sync.unsynced_zones }}/{{ template_sync.total_zones }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-success" title="{% trans %}All zones are synchronized{% endtrans %}">
+                                    <i class="bi bi-check-circle-fill text-white"></i> {% trans %}Synced{% endtrans %}
+                                </span>
+                            {% endif %}
+                        {% else %}
+                            <span class="badge bg-light text-secondary">-</span>
+                        {% endif %}
+                    </td>
+                    {% if (perm_zone_templ_edit and template['owner'] != 0) or perm_is_godlike %}
+                    <td class="text-end">
+                        <div class="gap-2">
+                            <a class="btn btn-sm btn-outline-secondary {% if template['zones_linked'] == '0' %}disabled{% endif %}"
+                               href="{% if template['zones_linked'] != '0' %}index.php?page=list_template_zones&id={{ template['id'] }}{% else %}#{% endif %}"
+                               data-bs-toggle="tooltip"
+                               data-bs-placement="top"
+                               title="{% if template['zones_linked'] == '0' %}{% trans %}No zones are using this template{% endtrans %}{% else %}{% trans %}View zones using this template{% endtrans %}{% endif %}"
+                               {% if template['zones_linked'] == '0' %}tabindex="-1" aria-disabled="true"{% endif %}>
+                                <i class="bi bi-list text-secondary"></i>
+                            </a>
+                            <a class="btn btn-sm btn-outline-primary"
+                               href="index.php?page=edit_zone_templ&id={{ template['id'] }}">
+                                <i class="bi bi-pencil-square text-primary"></i>
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger"
+                               href="index.php?page=delete_zone_templ&id={{ template['id'] }}">
+                                <i class="bi bi-trash text-danger"></i>
+                            </a>
+                        </div>
+                    </td>
+                    {% else %}
+                    <td class="text-end">&nbsp;</td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="card-footer py-3">
+        {% if perm_zone_templ_add or perm_is_godlike %}
+        <a class="btn btn-primary btn-sm" href="index.php?page=add_zone_templ">
+            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone template{% endtrans %}
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<div class="mt-3">
+    <div class="text-muted small">
+        <strong><i class="bi bi-info-circle me-1"></i>{% trans %}Template Behavior:{% endtrans %}</strong>
+        {% trans %}Changing a zone's template overwrites template-based records but preserves manual additions. Template modifications don't automatically update zones - use "Update Zones" button when editing templates to apply changes.{% endtrans %}
+    </div>
+</div>
+
+<script>
+    // Initialize Bootstrap tooltips
+    document.addEventListener('DOMContentLoaded', function() {
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    });
+</script>

@@ -1,0 +1,196 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item">
+        {% if is_reverse_zone %}
+        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        {% else %}
+        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        {% endif %}
+    </li>
+        <li class="breadcrumb-item">
+            {% if idn_zone_name %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            {% else %}
+            <a href="index.php?page=edit&id={{ zone_id }}">{{ domain_name }}</a>
+            {% endif %}
+        </li>
+        <li class="breadcrumb-item">
+            <a href="index.php?page=dnssec&id={{ zone_id }}">{% trans %}DNSSEC{% endtrans %}</a>
+        </li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Add key{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong>
+                    <i class="bi bi-key me-2"></i>
+                    {% if idn_zone_name %}
+                    {% trans %}Add key for zone{% endtrans %} "{{ idn_zone_name }}" ({{ domain_name }})
+                    {% else %}
+                    {% trans %}Add key for zone{% endtrans %} "{{ domain_name }}"
+                    {% endif %}
+                </strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="index.php?page=dnssec_add_key&id={{ zone_id }}" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    
+                    <div class="mb-3">
+                        <label for="key_type" class="form-label">{% trans %}Key type{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="key_type" name="key_type" required>
+                            <option value=""></option>
+                            <option value="csk" {{ key_type == 'csk' ? 'selected' : '' }}>CSK</option>
+                            <option value="ksk" {{ key_type == 'ksk' ? 'selected' : '' }}>KSK</option>
+                            <option value="zsk" {{ key_type == 'zsk' ? 'selected' : '' }}>ZSK</option>
+                        </select>
+                        <div class="invalid-feedback">{% trans %}Select key type{% endtrans %}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="algorithm" class="form-label">{% trans %}Algorithm{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="algorithm" name="algorithm" required>
+                            <option value=""></option>
+                            {% for alg, name in algorithm_names %}
+                            <option value="{{ alg }}" {{ algorithm == alg ? 'selected' : '' }}>{{ name }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="invalid-feedback">{% trans %}Select algorithm{% endtrans %}</div>
+                        <div id="algorithm-help" class="form-text"></div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="bits" class="form-label">{% trans %}Bits in length{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="bits" name="bits" required>
+                            <option value=""></option>
+                            <option value="2048" {{ bits == '2048' ? 'selected' : '' }} data-algorithms="rsasha1,rsasha1-nsec3-sha1,rsasha256,rsasha512">2048</option>
+                            <option value="1024" {{ bits == '1024' ? 'selected' : '' }} data-algorithms="rsasha1,rsasha1-nsec3-sha1,rsasha256,rsasha512">1024</option>
+                            <option value="768" {{ bits == '768' ? 'selected' : '' }} data-algorithms="rsasha1,rsasha1-nsec3-sha1,rsasha256,rsasha512">768</option>
+                            <option value="384" {{ bits == '384' ? 'selected' : '' }} data-algorithms="ecdsa384">384</option>
+                            <option value="256" {{ bits == '256' ? 'selected' : '' }} data-algorithms="ecdsa256,ed25519">256</option>
+                        </select>
+                        <div class="invalid-feedback">{% trans %}Select bits length{% endtrans %}</div>
+                        <div id="bit-warning" class="form-text text-danger"></div>
+                    </div>
+
+                    <div>
+                        <button type="submit" id="submit-button" name="submit" class="btn btn-primary btn-sm">
+                            <i class="bi bi-plus-circle text-white me-1"></i>{% trans %}Add key{% endtrans %}
+                        </button>
+                    </div>
+                    
+                    <script>
+                    document.addEventListener('DOMContentLoaded', function() {
+                        const algorithmSelect = document.getElementById('algorithm');
+                        const bitsSelect = document.getElementById('bits');
+                        const bitWarning = document.getElementById('bit-warning');
+                        const algorithmHelp = document.getElementById('algorithm-help');
+                        const submitButton = document.getElementById('submit-button');
+                        
+                        // Mapping of algorithms to recommended bit sizes
+                        const algorithmBitsMap = {
+                            'ecdsa256': ['256'],
+                            'ecdsa384': ['384'],
+                            'ed25519': ['256'],
+                            'ed448': ['456'], // Not in our dropdown
+                            'rsasha1': ['1024', '2048'],
+                            'rsasha1-nsec3-sha1': ['1024', '2048'],
+                            'rsasha256': ['1024', '2048'],
+                            'rsasha512': ['1024', '2048']
+                        };
+                        
+                        // Algorithm friendly names
+                        const algorithmNames = {
+                            'ecdsa256': 'ECDSA P-256',
+                            'ecdsa384': 'ECDSA P-384',
+                            'ed25519': 'ED25519',
+                            'ed448': 'ED448',
+                            'rsasha1': 'RSASHA1',
+                            'rsasha1-nsec3-sha1': 'RSASHA1-NSEC3-SHA1',
+                            'rsasha256': 'RSASHA256',
+                            'rsasha512': 'RSASHA512'
+                        };
+                        
+                        // Function to update bit options and validation
+                        function updateValidation() {
+                            const selectedAlgorithm = algorithmSelect.value;
+                            
+                            // Reset warnings
+                            bitWarning.textContent = '';
+                            submitButton.disabled = false;
+                            
+                            if (!selectedAlgorithm) {
+                                return;
+                            }
+                            
+                            // Show recommendation for the selected algorithm
+                            const validBits = algorithmBitsMap[selectedAlgorithm] || [];
+                            if (validBits.length > 0) {
+                                algorithmHelp.textContent = `{% trans %}Recommended bits for{% endtrans %} ${algorithmNames[selectedAlgorithm]}: ${validBits.join(' or ')}`;
+                            } else {
+                                algorithmHelp.textContent = '';
+                            }
+                            
+                            // Check if current bits are valid for the selected algorithm
+                            const selectedBits = bitsSelect.value;
+                            if (selectedBits && selectedAlgorithm && validBits.indexOf(selectedBits) === -1) {
+                                bitWarning.textContent = `{% trans %}Warning:{% endtrans %} ${selectedBits} {% trans %}bits is not recommended for{% endtrans %} ${algorithmNames[selectedAlgorithm]}`;
+                                
+                                // Disable submit if the combination is completely invalid
+                                if (
+                                    (selectedAlgorithm === 'ecdsa256' && selectedBits !== '256') ||
+                                    (selectedAlgorithm === 'ecdsa384' && selectedBits !== '384') ||
+                                    (selectedAlgorithm === 'ed25519' && selectedBits !== '256')
+                                ) {
+                                    submitButton.disabled = true;
+                                }
+                            }
+                            
+                            // Filter bit options
+                            Array.from(bitsSelect.options).forEach(option => {
+                                if (!option.value) return; // Skip empty option
+                                
+                                const isValid = !validBits.length || validBits.includes(option.value);
+                                option.classList.toggle('text-muted', !isValid);
+                            });
+                        }
+                        
+                        // Initial validation on page load
+                        updateValidation();
+                        
+                        // Add event listeners
+                        algorithmSelect.addEventListener('change', updateValidation);
+                        bitsSelect.addEventListener('change', updateValidation);
+                    });
+                    </script>
+                </form>
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About DNSSEC Key Types{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <h6>{% trans %}Key Types Explained{% endtrans %}</h6>
+                    <ul class="list-unstyled">
+                        <li><strong>CSK</strong> - {% trans %}Combined Signing Key - serves as both KSK and ZSK (recommended for PowerDNS 4.0+){% endtrans %}</li>
+                        <li><strong>KSK</strong> - {% trans %}Key Signing Key - signs the DNSKEY records in the zone{% endtrans %}</li>
+                        <li><strong>ZSK</strong> - {% trans %}Zone Signing Key - signs all other records in the zone{% endtrans %}</li>
+                    </ul>
+                </div>
+
+                <div class="mb-3">
+                    <h6>{% trans %}Recommended Settings{% endtrans %}</h6>
+                    <p>{% trans %}For modern deployments, ECDSA (algorithm 13, ECDSAP256SHA256) with 256 bits provides strong security with better performance.{% endtrans %}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

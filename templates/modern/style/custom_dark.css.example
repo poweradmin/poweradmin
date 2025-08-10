@@ -1,0 +1,102 @@
+/*
+ * Custom Dark Theme Extensions - EXAMPLE FILE
+ * 
+ * HOW TO USE:
+ * 1. Copy this file to: custom_dark.css (remove .example extension)
+ * 2. Modify the styles below to match your preferences
+ * 3. The file will be automatically loaded when using Dark theme
+ * 4. Your customizations will survive all Poweradmin updates
+ * 
+ * TIPS:
+ * - Use "!important" to ensure your styles override base theme
+ * - Remove examples you don't need
+ * - Add your own CSS rules for complete customization
+ * - Dark themes work well with accent colors and subtle glows
+ */
+
+/* EXAMPLE: Custom header with purple company branding */
+header {
+    border-bottom: 3px solid #6f42c1 !important;
+    background: linear-gradient(90deg, rgba(111, 66, 193, 0.2), transparent);
+}
+
+/* EXAMPLE: Brand/logo styling with glow effect */
+header .fs-4 {
+    color: #a78bfa !important;
+    font-weight: bold;
+    text-shadow: 1px 1px 3px rgba(111, 66, 193, 0.5);
+}
+
+/* EXAMPLE: Active navigation with hover effects */
+.nav-link.text-primary {
+    background-color: rgba(111, 66, 193, 0.2);
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.nav-link.text-primary:hover {
+    background-color: rgba(111, 66, 193, 0.3);
+    box-shadow: 0 0 10px rgba(111, 66, 193, 0.3);
+}
+
+/* EXAMPLE: Primary button with glow effect */
+.btn-primary {
+    background-color: #6f42c1;
+    border-color: #6f42c1;
+    box-shadow: 0 0 15px rgba(111, 66, 193, 0.3);
+}
+
+.btn-primary:hover {
+    background-color: #5a36a3;
+    border-color: #512d92;
+    box-shadow: 0 0 20px rgba(111, 66, 193, 0.5);
+}
+
+/* EXAMPLE: Table row styling with accent */
+.table-striped > tbody > tr:nth-of-type(odd) > td {
+    background-color: rgba(111, 66, 193, 0.1);
+}
+
+/* EXAMPLE: Footer with subtle accent */
+footer {
+    border-top: 2px solid #6f42c1;
+    background: linear-gradient(90deg, rgba(111, 66, 193, 0.1), transparent);
+}
+
+/* EXAMPLE: Alert styling customization */
+.alert-success {
+    border-left: 4px solid #6f42c1;
+    background-color: rgba(111, 66, 193, 0.1);
+}
+
+/* EXAMPLE: Card styling with glow effects */
+.card {
+    border: 1px solid rgba(111, 66, 193, 0.3);
+    box-shadow: 0 0 15px rgba(111, 66, 193, 0.1);
+}
+
+.card:hover {
+    box-shadow: 0 0 25px rgba(111, 66, 193, 0.2);
+}
+
+/* EXAMPLE: Form controls with accent color */
+.form-control:focus {
+    border-color: #6f42c1;
+    box-shadow: 0 0 0 0.2rem rgba(111, 66, 193, 0.25);
+}
+
+/* EXAMPLE: Custom theme indicator (remove for production) */
+body::before {
+    content: "Custom Dark Theme Active";
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    background: rgba(111, 66, 193, 0.9);
+    color: #f8f9fa;
+    padding: 2px 8px;
+    border-radius: 3px;
+    font-size: 10px;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: 0 0 10px rgba(111, 66, 193, 0.5);
+}

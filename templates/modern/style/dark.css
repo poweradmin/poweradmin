@@ -1,0 +1,798 @@
+/* Dark theme - Sidebar Layout */
+:root {
+    --bg-dark: #181a1c;
+    --bg-dark-accent: #212529;
+    --bg-dark-secondary: #242424;
+    --bg-dark-hover: #343a40;
+    --bg-dark-striped-odd: #2c3031;
+    --text-light: #f8f9fa;
+    --text-muted: #6c757d;
+    --text-secondary: #b7b7b8;
+    --border-dark: #373b3e;
+    --primary-blue: #0d6efd;
+    --input-border: #495057;
+    --card-shadow: rgba(0, 0, 0, 0.5);
+    --sidebar-width: 280px;
+    --sidebar-bg: #212529;
+    --sidebar-border: #373b3e;
+}
+
+/* Base layout - Sidebar Layout */
+body {
+    color: var(--text-light);
+    background-color: var(--bg-dark);
+    min-height: 100vh;
+}
+
+/* Sidebar styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    width: var(--sidebar-width);
+    z-index: 1000;
+    background-color: var(--sidebar-bg) !important;
+    border-right: 1px solid var(--sidebar-border) !important;
+    overflow-y: auto;
+}
+
+.sidebar-header {
+    background-color: var(--bg-dark-secondary);
+    border-bottom-color: var(--sidebar-border) !important;
+}
+
+.sidebar-header a {
+    color: var(--text-light);
+    font-weight: 600;
+}
+
+.sidebar-header a:hover {
+    color: var(--primary-blue);
+}
+
+.sidebar-content {
+    max-height: calc(100vh - 80px);
+    overflow-y: auto;
+}
+
+/* Navigation styles */
+.nav-section-header {
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 0.5rem 0.75rem;
+    margin-top: 1rem;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    border-radius: 0.375rem;
+    margin-bottom: 0.25rem;
+    padding: 0.625rem 0.75rem;
+    transition: all 0.15s ease-in-out;
+}
+
+.nav-link:hover {
+    background-color: var(--bg-dark-hover);
+    color: var(--text-light);
+}
+
+.nav-link.active {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+.nav-link-sm {
+    font-size: 0.875rem;
+    padding: 0.5rem 0.75rem;
+}
+
+/* Main content area - only applies when sidebar exists */
+.main-content {
+    margin-left: var(--sidebar-width);
+    min-height: 100vh;
+    background-color: var(--bg-dark);
+}
+
+/* For pages without sidebar (non-logged-in users) */
+body:not(:has(.sidebar)) .container {
+    max-width: 1200px;
+}
+
+body:not(:has(.sidebar)) main.container {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* Top bar */
+.top-bar {
+    background-color: var(--bg-dark-secondary) !important;
+    border-bottom: 1px solid var(--border-dark) !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+}
+
+.top-bar h1 {
+    color: var(--text-light);
+}
+
+.top-bar .text-muted {
+    color: var(--text-secondary) !important;
+}
+
+/* Mobile responsive */
+@media (max-width: 767.98px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        width: 100vw;
+        max-width: 300px;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease-in-out;
+        z-index: 1050;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .sidebar.show,
+    .sidebar #sidebarContent.show {
+        transform: translateX(0);
+    }
+    
+    .main-content {
+        margin-left: 0;
+        width: 100%;
+    }
+    
+    .sidebar-content {
+        padding-top: 1rem;
+    }
+    
+    /* Mobile overlay */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background-color: rgba(0, 0, 0, 0.7);
+        z-index: 1040;
+    }
+    
+    .sidebar-overlay.show {
+        display: block;
+    }
+    
+    /* Hide the regular sidebar header button on mobile */
+    .sidebar .sidebar-toggle {
+        display: none;
+    }
+    
+    /* Make sure the top bar burger button is visible */
+    .top-bar .sidebar-toggle {
+        display: inline-block;
+    }
+}
+
+/* Add smooth transitions for better UX */
+.btn, .form-control, .form-select, .card, .list-group-item, .nav-link, .dropdown-item, .page-link {
+    transition: all 0.15s ease-in-out;
+}
+
+/* Header styles */
+header {
+    background-color: var(--bg-dark-secondary);
+    border-bottom: 1px solid var(--border-dark);
+}
+
+header a {
+    color: var(--text-light);
+}
+
+header a:hover, header a:focus {
+    color: var(--text-light);
+}
+
+/* Footer styles */
+footer {
+    background-color: var(--bg-dark-secondary);
+    border-top: 1px solid var(--border-dark);
+    border-bottom: 1px solid var(--border-dark);
+}
+
+footer a, footer a:hover, footer a:focus {
+    color: var(--text-muted);
+    text-decoration: none;
+}
+
+/* Link styles */
+a {
+    color: var(--text-muted);
+}
+
+a:hover, a:focus {
+    color: var(--text-light);
+}
+
+/* Form controls */
+.form-control, .form-control:valid, .form-select {
+    background-color: var(--bg-dark-accent);
+    color: var(--text-light);
+    border-color: var(--input-border);
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--bg-dark-accent);
+    border-color: var(--primary-blue);
+    color: var(--text-light);
+    box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.input-group .form-control:not(:first-child) {
+    border-left-color: var(--border-dark);
+}
+
+/* Make form labels visible */
+label, .form-label {
+    color: var(--text-light) !important;
+}
+
+/* Improve form text visibility in dark theme */
+.form-text, small.text-muted, .text-muted, span.text-muted, label span.text-muted,
+.form-label .text-muted, .form-control-sm, small {
+    color: #a7acb1 !important;
+}
+
+/* List group components */
+.list-group-item {
+    color: var(--text-muted);
+    background-color: var(--bg-dark-accent);
+}
+
+.list-group-item:hover, .list-group-item:focus {
+    color: var(--text-light);
+    background-color: var(--bg-dark-hover);
+}
+
+/* Table styles */
+.table {
+    color: var(--text-light) !important;
+    background-color: var(--bg-dark-accent);
+}
+
+/* Ensure Template Placeholders table rows have correct coloring in dark mode */
+.card-body .table:not(.table-striped) tbody tr,
+.card-body .table:not(.table-striped) tbody tr > td,
+.card-body .table:not(.table-striped) tbody tr > th {
+    color: var(--text-light) !important;
+    background-color: var(--bg-dark-accent) !important;
+}
+
+/* Override bootstrap table-light in dark mode */
+.table-light,
+.table-light > td,
+.table-light > th,
+tr.table-light,
+thead.table-light,
+tbody.table-light,
+tfoot.table-light {
+    background-color: var(--bg-dark-secondary) !important;
+    color: var(--text-light) !important;
+}
+
+.table, .table th, .table td, .table tr {
+    border-color: var(--border-dark) !important;
+}
+
+.table > thead > tr > th {
+    color: var(--text-muted);
+    background-color: var(--bg-dark-secondary);
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+/* Add record form tables have reduced padding */
+.add-record-form th,
+.add-record-form td {
+    padding-left: 0.25rem !important;
+    padding-right: 0.25rem !important;
+}
+
+.table > thead > tr > th a {
+    color: var(--text-muted);
+    background-color: transparent;
+    border: none;
+}
+
+.table > thead > tr > th a:hover,
+.table > thead > tr > th a:focus {
+    color: var(--text-light);
+    background-color: transparent;
+}
+
+/* Table footer styling for dark mode */
+.table tfoot tr,
+tfoot tr,
+table tfoot tr,
+#recordsTable tfoot tr,
+.table-striped tfoot tr {
+    background-color: var(--bg-dark-secondary) !important;
+    color: var(--text-light) !important;
+}
+
+.table tfoot tr td,
+tfoot tr td,
+table tfoot tr td,
+#recordsTable tfoot tr td,
+.table-striped tfoot tr td {
+    background-color: var(--bg-dark-secondary) !important;
+    border-color: var(--border-dark) !important;
+}
+
+.table td {
+    color: var(--text-light) !important;
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+}
+
+.table-hover > tbody > tr:hover > * {
+    color: var(--text-light) !important;
+    background-color: var(--bg-dark-hover) !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+    background-color: var(--bg-dark-striped-odd);
+    color: var(--text-light) !important;
+}
+
+.table-striped > tbody > tr:nth-of-type(even) > * {
+    background-color: var(--bg-dark-secondary);
+    color: var(--text-light) !important;
+}
+
+/* Dropdown components */
+.dropdown-menu {
+    background-color: var(--bg-dark-striped-odd);
+}
+
+.dropdown-item {
+    color: var(--text-secondary);
+}
+
+.dropdown-item:hover, .dropdown-item:focus {
+    color: var(--text-light);
+    background-color: var(--bg-dark-hover);
+}
+
+/* Navigation components */
+.nav a:hover, .nav a:focus {
+    color: var(--text-light) !important;
+}
+
+/* Pagination components */
+.pagination .page-link {
+    color: var(--text-secondary);
+    background: var(--bg-dark-striped-odd);
+    border-color: var(--border-dark);
+}
+
+.pagination .page-link:hover, .pagination .page-link:focus {
+    color: var(--text-light);
+    background-color: var(--bg-dark-hover);
+}
+
+.page-item.active .page-link {
+    border-color: var(--text-secondary);
+    color: var(--text-light);
+    background-color: var(--bg-dark-hover);
+}
+
+/* Card components */
+.card {
+    background-color: var(--bg-dark-accent);
+    border: 1px solid var(--border-dark) !important;
+    color: var(--text-light);
+    box-shadow: 0 0.5rem 1rem var(--card-shadow);
+}
+
+/* Login form specific styles */
+.login-card {
+    max-width: 380px;
+    margin: 0 auto;
+}
+
+/* Other form cards can be wider */
+.form-card {
+    max-width: 700px;
+}
+
+.card-header {
+    padding: 1.25rem;
+    background-color: var(--bg-dark-secondary) !important;
+    border-bottom: 1px solid var(--border-dark) !important;
+}
+
+.card-header h5 {
+    font-weight: 600;
+    color: var(--text-light);
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+}
+
+.btn-primary:hover, .btn-secondary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(108, 117, 125, 0.3);
+}
+
+/* Search icon in dark mode */
+.input-group-text {
+    background-color: var(--bg-dark-secondary) !important;
+    border-color: var(--border-dark) !important;
+}
+
+.input-group-text .bi-search {
+    color: var(--text-light) !important;
+}
+
+/* Button styles for dark mode */
+.btn-outline-primary {
+    border-color: #0d6efd !important;
+    color: #0d6efd !important;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0d6efd !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-primary:hover i,
+.btn-outline-primary:hover .text-primary {
+    color: #ffffff !important;
+}
+
+.btn-outline-secondary {
+    border-color: #6c757d !important;
+    color: #6c757d !important;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #6c757d !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-secondary:hover i,
+.btn-outline-secondary:hover .text-secondary {
+    color: #ffffff !important;
+}
+
+.btn-outline-danger {
+    border-color: #dc3545 !important;
+    color: #dc3545 !important;
+}
+
+.btn-outline-danger:hover {
+    background-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+.btn-outline-danger:hover i,
+.btn-outline-danger:hover .text-danger {
+    color: #ffffff !important;
+}
+
+.btn-danger {
+    background-color: #dc3545 !important;
+    border-color: #dc3545 !important;
+    color: #ffffff !important;
+}
+
+.btn-danger:hover {
+    background-color: #bb2d3b !important;
+    border-color: #b02a37 !important;
+    color: #ffffff !important;
+}
+
+.btn-success {
+    background-color: #198754 !important;
+    border-color: #198754 !important;
+    color: #ffffff !important;
+}
+
+.btn-success:hover {
+    background-color: #157347 !important;
+    border-color: #146c43 !important;
+    color: #ffffff !important;
+}
+
+.btn-warning {
+    background-color: #ffc107 !important;
+    border-color: #ffc107 !important;
+    color: #000000 !important;
+}
+
+.btn-warning:hover {
+    background-color: #ffca2c !important;
+    border-color: #ffc720 !important;
+    color: #000000 !important;
+}
+
+.btn-info {
+    background-color: #0dcaf0 !important;
+    border-color: #0dcaf0 !important;
+    color: #000000 !important;
+}
+
+.btn-info:hover {
+    background-color: #31d2f2 !important;
+    border-color: #25cff2 !important;
+    color: #000000 !important;
+}
+
+
+.card .small.text-muted,
+.card .small,
+.card p.small,
+.card-body p.small {
+    color: #a7acb1 !important;
+}
+
+.card i {
+    color: inherit;
+}
+
+.card-title, .card-text, .card-header, .card-header strong {
+    color: var(--text-light) !important;
+}
+
+/* Make all text in cards more visible */
+.card-text.text-muted,
+.card p,
+.card li,
+.card small,
+.card .card-body p,
+.card .card-body li,
+.card .card-body small {
+    color: #a7acb1 !important;
+}
+
+/* Code output styling for dark mode */
+.code-output {
+    background-color: var(--bg-dark-secondary);
+    color: #d1d5db;
+    border: none;
+}
+
+.card a {
+    color: var(--text-secondary);
+    background: var(--bg-dark-striped-odd);
+    border-color: var(--border-dark);
+}
+
+.card a:hover, .card a:focus {
+    color: var(--text-light);
+    background-color: var(--bg-dark-hover);
+}
+
+/* Form validation styles */
+.form-control.is-valid, .was-validated .form-control:valid {
+    border-color: inherit !important;
+    background-image: inherit !important;
+}
+
+.form-check-input.is-valid, .was-validated .form-check-input:valid {
+    border-color: rgba(0, 0, 0, 0.25) !important;
+}
+
+.form-check-input.is-valid:checked, .was-validated .form-check-input:valid:checked {
+    background-color: var(--primary-blue);
+    border-color: var(--primary-blue) !important;
+}
+
+.form-select.is-valid, .was-validated .form-select:valid {
+    border-color: var(--input-border);
+}
+
+/* Ensure feedback text is visible */
+.invalid-feedback {
+    color: #ea868f !important;
+}
+
+/* Ensure placeholder text is visible */
+::placeholder {
+    color: #8e959d !important;
+    opacity: 1;
+}
+
+/* Breadcrumb styles */
+.breadcrumb {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 0.75rem 1rem;
+    margin-bottom: 1rem;
+    list-style: none;
+    background-color: var(--bg-dark-secondary);
+    border-radius: 0.25rem;
+}
+
+.breadcrumb-item {
+    color: var(--text-light);
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    color: var(--text-muted) !important;
+}
+
+.breadcrumb-item.active {
+    color: var(--text-muted);
+}
+
+.breadcrumb-item a {
+    color: var(--text-secondary);
+}
+
+.breadcrumb-item a:hover {
+    color: var(--text-light);
+}
+
+/* Input styling utilities */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* Modal components */
+.modal-header, .modal-footer {
+    background-color: var(--bg-dark-secondary) !important;
+}
+
+.modal-header .modal-title {
+    color: var(--text-light);
+    font-size: 1rem;
+}
+
+.modal-header .btn-close, .modal-footer .btn-close {
+    background-color: var(--text-secondary);
+}
+
+/* Fix close button for dark theme */
+.btn-close {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
+/* Smaller close button for modals */
+.btn-close-sm {
+    padding: 0.25rem;
+    font-size: 0.875rem;
+    width: 0.5em;
+    height: 0.5em;
+    opacity: 0.75;
+}
+
+.modal-body {
+    background-color: var(--bg-dark);
+    color: var(--text-light);
+}
+
+/* Log details in modal */
+.modal-body .log-details {
+    color: #b7b7b8; /* Softer light color, same as --text-secondary */
+}
+
+/* Accordion styling for dark mode */
+.accordion-item {
+    background-color: var(--bg-dark-accent);
+    border-color: var(--border-dark);
+}
+
+.accordion-button {
+    background-color: var(--bg-dark-secondary);
+    color: var(--text-light);
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: var(--bg-dark-hover);
+    color: var(--text-light);
+}
+
+.accordion-button:hover {
+    background-color: var(--bg-dark-hover);
+}
+
+/* Fix visibility of accordion toggle icon in dark mode */
+.accordion-button::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23f8f9fa'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.accordion-button:not(.collapsed)::after {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23f8f9fa'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+}
+
+.accordion .table {
+    --bs-table-striped-bg: var(--bg-dark-striped-odd);
+}
+
+/* Alert close button alignment */
+.alert .btn-close {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    right: 10px; /* Adjust as needed for spacing */
+}
+
+.alert-dismissible {
+    position: relative;
+    padding-right: 3rem; /* Provide enough space for the button */
+}
+
+/* RDAP and WHOIS results styling */
+.rdap-results, .whois-results {
+    background-color: var(--bg-dark-secondary) !important;
+    border: 1px solid var(--border-dark);
+    border-radius: 0.25rem;
+}
+
+.rdap-results pre, .whois-results pre {
+    color: var(--text-light) !important;
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    font-size: 0.75rem !important;
+}
+
+/* Style switcher button - fix size to prevent growing */
+#style-switcher {
+    width: 2rem !important;
+    height: 2rem !important;
+    min-width: 2rem !important;
+    min-height: 2rem !important;
+    max-width: 2rem !important;
+    max-height: 2rem !important;
+    flex-shrink: 0 !important;
+    padding: 0.25rem !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}
+
+/* Override bg-light class in dark mode */
+.bg-light {
+    background-color: var(--bg-dark-secondary) !important;
+}
+
+/* Fix alert text colors in dark mode */
+.alert p.small,
+.alert .small {
+    color: inherit !important;
+}
+
+/* Alert variants for dark mode */
+.alert-warning {
+    background-color: #856404 !important;
+    border-color: #b58900 !important;
+    color: #fff3cd !important;
+}
+
+.alert-danger {
+    background-color: #842029 !important;
+    border-color: #b02a37 !important;
+    color: #f8d7da !important;
+}
+
+.alert-success {
+    background-color: #0f5132 !important;
+    border-color: #0a3622 !important;
+    color: #d1e7dd !important;
+}
+
+.alert-info {
+    background-color: #055160 !important;
+    border-color: #087990 !important;
+    color: #b6effb !important;
+}

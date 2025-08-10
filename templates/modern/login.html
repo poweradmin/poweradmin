@@ -1,0 +1,121 @@
+{% if msg %}
+<div data-testid="session-error" class="alert alert-{{ type }} bg-{{ type }} bg-opacity-10 py-2 border border-{{ type }} small alert-dismissible fade show" role="alert">
+    <i class="bi bi-{% if type == 'danger' %}exclamation-triangle{% elseif type == 'warning' %}exclamation-circle{% elseif type == 'success' %}check-circle{% else %}info-circle{% endif %}-fill me-2 text-{{ type }}"></i>
+    <span class="text-{{ type }}">{{ msg }}</span>
+    <button type="button" class="btn-close btn-close-sm" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endif %}
+
+<div class="card shadow-sm login-card">
+    <div class="card-header">
+        <h5 class="mb-0">{% trans %}Log in{% endtrans %}</h5>
+    </div>
+    <div class="card-body p-4">
+        <form class="needs-validation" method="post" action="index.php" novalidate>
+            <input type="hidden" name="_token" value="{{ login_token }}">
+            <input type="hidden" name="query_string" value="{{ query_string }}">
+            <div class="mb-3">
+                <label for="username" class="form-label">{% trans %}Username{% endtrans %} <span class="text-danger">*</span></label>
+                <input type="text" data-testid="username-input" class="form-control" id="username" name="username" required>
+                <div data-testid="username-error" class="invalid-feedback">{% trans %}Please provide a username{% endtrans %}</div>
+            </div>
+            <div class="mb-3">
+                <label for="password" class="form-label">{% trans %}Password{% endtrans %} <span class="text-danger">*</span></label>
+                <div class="input-group">
+                    <input type="password" data-testid="password-input" class="form-control" id="password" name="password" required>
+                    <button class="btn btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
+                    <div data-testid="password-error" class="invalid-feedback">{% trans %}Please provide a password{% endtrans %}</div>
+                </div>
+            </div>
+            {% if show_language_selector %}
+            <div class="mb-3">
+                <label for="language" class="form-label">{% trans %}Language{% endtrans %}</label>
+                <select class="form-select" id="language" name="userlang">
+                    {{ locale_options | raw }}
+                </select>
+            </div>
+            {% endif %}
+            {% if recaptcha_enabled %}
+                {% if recaptcha_version == 'v2' %}
+                <div class="mb-3">
+                    <div class="g-recaptcha" data-sitekey="{{ recaptcha_site_key }}"></div>
+                </div>
+                {% else %}
+                <input type="hidden" name="g-recaptcha-response" id="g-recaptcha-response">
+                {% endif %}
+            {% endif %}
+            <div class="d-grid">
+                <button type="submit" data-testid="login-button" name="authenticate" class="btn btn-secondary">{% trans %}Log in{% endtrans %}</button>
+            </div>
+            {% if password_reset_enabled %}
+            <div class="text-center mt-3">
+                <a href="index.php?page=forgot_password" class="text-decoration-none">{% trans %}Forgot your password?{% endtrans %}</a>
+            </div>
+            {% endif %}
+            {% if recaptcha_enabled %}
+            <div class="text-center mt-2">
+                <small class="text-muted">
+                    This site is protected by reCAPTCHA and the Google
+                    <a href="https://policies.google.com/privacy" target="_blank">Privacy Policy</a> and
+                    <a href="https://policies.google.com/terms" target="_blank">Terms of Service</a> apply.
+                </small>
+            </div>
+            {% endif %}
+        </form>
+    </div>
+</div>
+{% if recaptcha_enabled %}
+    {% if recaptcha_version == 'v2' %}
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+    {% else %}
+    <script src="https://www.google.com/recaptcha/api.js?render={{ recaptcha_site_key }}"></script>
+    <script type="text/javascript">
+        document.addEventListener('DOMContentLoaded', function() {
+            var form = document.querySelector('form');
+            var submitButton = document.querySelector('button[name="authenticate"]');
+            var isSubmitting = false;
+            
+            // Check if grecaptcha is loaded
+            if (typeof grecaptcha === 'undefined') {
+                console.error('reCAPTCHA failed to load. Check your site key and domain configuration.');
+                return;
+            }
+            
+            form.addEventListener('submit', function(e) {
+                if (isSubmitting) {
+                    return;
+                }
+                
+                e.preventDefault();
+                isSubmitting = true;
+                submitButton.disabled = true;
+                
+                grecaptcha.ready(function() {
+                    grecaptcha.execute('{{ recaptcha_site_key }}', {action: 'login'}).then(function(token) {
+                        document.getElementById('g-recaptcha-response').value = token;
+                        
+                        // Add the authenticate parameter that would normally come from the submit button
+                        var authenticateInput = document.createElement('input');
+                        authenticateInput.type = 'hidden';
+                        authenticateInput.name = 'authenticate';
+                        authenticateInput.value = '1';
+                        form.appendChild(authenticateInput);
+                        
+                        form.submit();
+                    }).catch(function(error) {
+                        console.error('reCAPTCHA error:', error);
+                        isSubmitting = false;
+                        submitButton.disabled = false;
+                        alert('{% trans %}reCAPTCHA verification failed. Please try again.{% endtrans %}');
+                    });
+                });
+            });
+        });
+    </script>
+    {% endif %}
+{% endif %}
+<script type="text/javascript">
+    <!--
+    document.getElementById('username').focus();
+    //-->
+</script>
