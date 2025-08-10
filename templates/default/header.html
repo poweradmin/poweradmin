@@ -8,6 +8,9 @@
     <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="vendor/twbs/bootstrap-icons/font/bootstrap-icons.css">
     <link id="theme-stylesheet" rel="stylesheet" href="{{ theme_base_path }}/{{ theme }}/style/{{ iface_style }}.css?time={{ file_version }}" type="text/css">
+    {% if custom_theme_exists %}
+    <link id="custom-theme-stylesheet" rel="stylesheet" href="{{ theme_base_path }}/{{ theme }}/style/custom_{{ iface_style }}.css?time={{ file_version }}" type="text/css">
+    {% endif %}
     <script type="text/javascript" src="assets/helper.js?time={{ file_version }}"></script>
     <script type="text/javascript" src="assets/userSettings.js?time={{ file_version }}"></script>
 </head>

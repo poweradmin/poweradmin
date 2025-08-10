@@ -461,6 +461,11 @@ abstract class BaseController
         $theme = $this->config->get('interface', 'theme', 'default');
         $styleManager = new StyleManager($style, $themeBasePath, $theme);
 
+        // Check for custom theme stylesheets
+        $customLightExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_light.css');
+        $customDarkExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_dark.css');
+        $customThemeExists = file_exists($themeBasePath . '/' . $theme . '/style/custom_' . $styleManager->getSelectedStyle() . '.css');
+
         $vars = [
             'iface_title' => $this->config->get('interface', 'title'),
             'iface_style' => $styleManager->getSelectedStyle(),
@@ -468,6 +473,9 @@ abstract class BaseController
             'theme_base_path' => $themeBasePath,
             'file_version' => time(),
             'custom_header' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/' . $this->config->get('interface', 'theme', 'default') . '/custom/header.html'),
+            'custom_light_exists' => $customLightExists,
+            'custom_dark_exists' => $customDarkExists,
+            'custom_theme_exists' => $customThemeExists,
             'install_error' => file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
         ];
 

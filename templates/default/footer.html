@@ -67,6 +67,7 @@
     const styleSwitcher = document.getElementById('style-switcher');
     const styleIcon = document.getElementById('style-icon');
     const styleStylesheet = document.getElementById('theme-stylesheet');
+    const customStylesheet = document.getElementById('custom-theme-stylesheet');
     const ifaceStyle = '{{ iface_style }}';
 
     let currentStyle = localStorage.getItem('style');
@@ -78,6 +79,10 @@
         document.body.classList.add(currentStyle);
         styleIcon.classList.add(currentStyle === 'light' ? 'bi-moon' : 'bi-sun');
         styleStylesheet.href = `{{ theme_base_path }}/{{ theme }}/style/${currentStyle}.css?time={{ file_version }}`;
+        // Update custom stylesheet if it exists
+        if (customStylesheet) {
+            customStylesheet.href = `{{ theme_base_path }}/{{ theme }}/style/custom_${currentStyle}.css?time={{ file_version }}`;
+        }
     }
 
     styleSwitcher.addEventListener('click', () => {
@@ -85,6 +90,10 @@
         document.body.classList.replace(currentStyle, newStyle);
         styleIcon.classList.replace(currentStyle === 'light' ? 'bi-moon' : 'bi-sun', newStyle === 'light' ? 'bi-moon' : 'bi-sun');
         styleStylesheet.href = `{{ theme_base_path }}/{{ theme }}/style/${newStyle}.css?time={{ file_version }}`;
+        // Update custom stylesheet if it exists
+        if (customStylesheet) {
+            customStylesheet.href = `{{ theme_base_path }}/{{ theme }}/style/custom_${newStyle}.css?time={{ file_version }}`;
+        }
         localStorage.setItem('style', newStyle);
         currentStyle = newStyle;
     });
