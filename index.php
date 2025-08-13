@@ -20,55 +20,21 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Application\Controller\NotFoundController;
 use Poweradmin\Application\Routing\BasicRouter;
-use Poweradmin\Domain\Service\MfaSessionManager;
+use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Pages;
 
 require __DIR__ . '/vendor/autoload.php';
 
-// Initialize the TopLevelDomain class
+require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
 require_once __DIR__ . '/lib/Domain/Model/TopLevelDomainInit.php';
 
 $configManager = ConfigurationManager::getInstance();
 $configManager->initialize();
 
-/**
- * Initialize secure session configuration
- */
-function initializeSession(): void
-{
-    if (!function_exists('session_start')) {
-        require_once __DIR__ . '/lib/Infrastructure/Service/MessageService.php';
-        (new MessageService())->displayDirectSystemError("You have to install the PHP session extension!");
-    }
-
-    $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-    session_set_cookie_params([
-        'secure' => $secure,
-        'httponly' => true,
-    ]);
-
-    session_start();
-}
-
 initializeSession();
-
-/**
- * Send JSON error response
- */
-function sendJsonError(string $message, ?string $file = null, ?int $line = null, ?array $trace = null): void
-{
-    header('Content-Type: application/json');
-    echo json_encode([
-        'error' => true,
-        'message' => $message,
-        'file' => $file,
-        'line' => $line,
-        'trace' => $trace
-    ]);
-}
 
 $router = new BasicRouter($_REQUEST);
 
@@ -79,8 +45,7 @@ $router->setPages(Pages::getPages());
 require_once __DIR__ . '/lib/BaseController.php';
 
 try {
-    // Use BaseController's expectsJson method to determine if this expects JSON
-    $expectsJson = \Poweradmin\BaseController::expectsJson();
+    $expectsJson = BaseController::expectsJson();
 
     // For API requests, suppress display errors but still log them
     if ($expectsJson) {
@@ -95,8 +60,7 @@ try {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
 
-    // Use BaseController's expectsJson method
-    $expectsJson = \Poweradmin\BaseController::expectsJson();
+    $expectsJson = BaseController::expectsJson();
 
     // Check if this is a controller not found error
     if (str_contains($e->getMessage(), 'Class') && str_contains($e->getMessage(), 'not found')) {
@@ -104,7 +68,7 @@ try {
         http_response_code(404);
 
         try {
-            $notFoundController = new \Poweradmin\Application\Controller\NotFoundController($_REQUEST);
+            $notFoundController = new NotFoundController($_REQUEST);
             $notFoundController->run();
         } catch (Exception $notFoundError) {
             // Fallback error handling
