@@ -173,67 +173,74 @@ class ConfigurationManagerTest extends TestCase
         $this->assertEquals([1, 2, 3], $config->get('complex', 'array'), 'Should return array value correctly.');
     }
 
-    public function testConvertLegacyConfig()
+    public function testNewConfigOnlyBehavior()
     {
-        // Create a legacy configuration array
-        $legacyConfig = [
-            'db_host' => 'localhost',
-            'db_port' => '3306',
-            'db_user' => 'testuser',
-            'db_pass' => 'testpass',
-            'db_name' => 'testdb',
-            'pdns_db_name' => 'pdnsdb',
-            'session_key' => 'testsecret',
-            'password_encryption' => 'bcrypt',
-            'password_encryption_cost' => 10,
-            'iface_lang' => 'en_EN',
-            'iface_style' => 'ignite',
-            'dns_hostmaster' => 'hostmaster@example.com',
-            'dns_ns1' => 'ns1.example.com',
-            'dns_ttl' => 86400,
-            'dns_soa' => '28800 7200 604800 86400',
-            'pdnssec_use' => true,
-            'syslog_use' => true
+        // Test that ConfigurationManager works correctly with only new-style configuration
+        $testSettings = [
+            'database' => [
+                'host' => 'localhost',
+                'port' => '3306',
+                'user' => 'testuser',
+                'password' => 'testpass',
+                'name' => 'testdb',
+                'pdns_db_name' => 'pdnsdb'
+            ],
+            'security' => [
+                'session_key' => 'testsecret',
+                'password_encryption' => 'bcrypt',
+                'password_cost' => 10
+            ],
+            'interface' => [
+                'language' => 'en_EN',
+                'theme' => 'ignite'
+            ],
+            'dns' => [
+                'hostmaster' => 'hostmaster@example.com',
+                'ns1' => 'ns1.example.com',
+                'ttl' => 86400,
+                'soa_refresh' => 28800,
+                'soa_retry' => 7200,
+                'soa_expire' => 604800,
+                'soa_minimum' => 86400
+            ],
+            'dnssec' => [
+                'enabled' => true
+            ],
+            'logging' => [
+                'syslog_enabled' => true
+            ]
         ];
 
-        // Create a ConfigurationManager instance
+        // Mock the configuration manager with new-style settings
+        $this->mockConfigurationManager($testSettings);
         $config = ConfigurationManager::getInstance();
 
-        // Use reflection to access the private method
-        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
-        $method = $reflectionClass->getMethod('convertLegacyConfig');
-        $method->setAccessible(true);
+        // Verify all values are accessible correctly
+        $this->assertEquals('localhost', $config->get('database', 'host'));
+        $this->assertEquals('3306', $config->get('database', 'port'));
+        $this->assertEquals('testuser', $config->get('database', 'user'));
+        $this->assertEquals('testpass', $config->get('database', 'password'));
+        $this->assertEquals('testdb', $config->get('database', 'name'));
+        $this->assertEquals('pdnsdb', $config->get('database', 'pdns_db_name'));
 
-        // Call the private method
-        $newConfig = $method->invoke($config, $legacyConfig);
+        $this->assertEquals('testsecret', $config->get('security', 'session_key'));
+        $this->assertEquals('bcrypt', $config->get('security', 'password_encryption'));
+        $this->assertEquals(10, $config->get('security', 'password_cost'));
 
-        // Verify conversion to new format
-        $this->assertEquals('localhost', $newConfig['database']['host']);
-        $this->assertEquals('3306', $newConfig['database']['port']);
-        $this->assertEquals('testuser', $newConfig['database']['user']);
-        $this->assertEquals('testpass', $newConfig['database']['password']);
-        $this->assertEquals('testdb', $newConfig['database']['name']);
-        $this->assertEquals('pdnsdb', $newConfig['database']['pdns_db_name']);
+        $this->assertEquals('en_EN', $config->get('interface', 'language'));
+        $this->assertEquals('ignite', $config->get('interface', 'theme'));
 
-        $this->assertEquals('testsecret', $newConfig['security']['session_key']);
-        $this->assertEquals('bcrypt', $newConfig['security']['password_encryption']);
-        $this->assertEquals(10, $newConfig['security']['password_cost']);
+        $this->assertEquals('hostmaster@example.com', $config->get('dns', 'hostmaster'));
+        $this->assertEquals('ns1.example.com', $config->get('dns', 'ns1'));
+        $this->assertEquals(86400, $config->get('dns', 'ttl'));
 
-        $this->assertEquals('en_EN', $newConfig['interface']['language']);
-        $this->assertEquals('ignite', $newConfig['interface']['theme']);
+        $this->assertEquals(28800, $config->get('dns', 'soa_refresh'));
+        $this->assertEquals(7200, $config->get('dns', 'soa_retry'));
+        $this->assertEquals(604800, $config->get('dns', 'soa_expire'));
+        $this->assertEquals(86400, $config->get('dns', 'soa_minimum'));
 
-        $this->assertEquals('hostmaster@example.com', $newConfig['dns']['hostmaster']);
-        $this->assertEquals('ns1.example.com', $newConfig['dns']['ns1']);
-        $this->assertEquals(86400, $newConfig['dns']['ttl']);
-
-        // Check that SOA values were properly parsed
-        $this->assertEquals(28800, $newConfig['dns']['soa_refresh']);
-        $this->assertEquals(7200, $newConfig['dns']['soa_retry']);
-        $this->assertEquals(604800, $newConfig['dns']['soa_expire']);
-        $this->assertEquals(86400, $newConfig['dns']['soa_minimum']);
-
-        $this->assertTrue($newConfig['dnssec']['enabled']);
-        $this->assertTrue($newConfig['logging']['syslog_enabled']);
+        $this->assertTrue($config->get('dnssec', 'enabled'));
+        $this->assertTrue($config->get('logging', 'syslog_enabled'));
     }
 
     /**

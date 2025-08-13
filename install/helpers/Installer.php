@@ -44,11 +44,9 @@ class Installer
     private InstallStepHandler $installStepHandler;
     private CsrfTokenService $csrfTokenService;
     private InstallSecurityService $securityService;
-    private string $localConfigFile;
     private string $defaultConfigFile;
     private string $newConfigFile;
     private string $installConfigFile;
-    private const OLD_CONFIG_FILE_PATH = '/inc/config.inc.php'; // Legacy format
     private const DEFAULT_CONFIG_FILE_PATH = '/config/settings.defaults.php'; // Default settings
     private const NEW_CONFIG_FILE_PATH = '/config/settings.php'; // New format
     private const INSTALL_CONFIG_PATH = '/config.php';
@@ -56,7 +54,6 @@ class Installer
 
     public function __construct(Request $request)
     {
-        $this->localConfigFile = dirname(__DIR__, 2) . self::OLD_CONFIG_FILE_PATH;
         $this->newConfigFile = dirname(__DIR__, 2) . self::NEW_CONFIG_FILE_PATH;
         $this->defaultConfigFile = dirname(__DIR__, 2) . self::DEFAULT_CONFIG_FILE_PATH;
         $this->installConfigFile = dirname(__DIR__) . self::INSTALL_CONFIG_PATH;

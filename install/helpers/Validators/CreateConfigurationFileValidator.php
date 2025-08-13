@@ -47,11 +47,10 @@ class CreateConfigurationFileValidator extends BaseValidator
 
         $errors = ValidationErrorHelper::formatErrors($violations);
 
-        // Check if either configuration file exists (new format is preferred)
-        $newConfigExists = file_exists(dirname(__DIR__, 3) . '/config/settings.php');
-        $oldConfigExists = file_exists(dirname(__DIR__, 3) . '/inc/config.inc.php');
+        // Check if configuration file exists
+        $configExists = file_exists(dirname(__DIR__, 3) . '/config/settings.php');
 
-        if (!$newConfigExists && !$oldConfigExists) {
+        if (!$configExists) {
             $errors['configuration'] = _('No configuration file found. Please create the config/settings.php file before proceeding.');
         }
 

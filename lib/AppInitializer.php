@@ -70,13 +70,7 @@ class AppInitializer
      */
     private function checkConfigurationFile(): void
     {
-        // Check for new-style configuration file (preferred)
-        $newConfigExists = file_exists('config/settings.php');
-
-        // Check for old-style configuration file (deprecated)
-        $oldConfigExists = file_exists('inc/config.inc.php');
-
-        if (!$newConfigExists && !$oldConfigExists) {
+        if (!file_exists('config/settings.php')) {
             $messageService = new MessageService();
             $messageService->displayHtmlError(
                 _('No configuration file found. Please use the <a href="install/">installer</a> to create one, or create a config/settings.php file manually.')
