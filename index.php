@@ -34,27 +34,52 @@ require_once __DIR__ . '/lib/Domain/Model/TopLevelDomainInit.php';
 $configManager = ConfigurationManager::getInstance();
 $configManager->initialize();
 
-if (!function_exists('session_start')) {
-    require_once __DIR__ . '/lib/Infrastructure/Service/MessageService.php';
-    (new MessageService())->displayDirectSystemError("You have to install the PHP session extension!");
+/**
+ * Initialize secure session configuration
+ */
+function initializeSession(): void
+{
+    if (!function_exists('session_start')) {
+        require_once __DIR__ . '/lib/Infrastructure/Service/MessageService.php';
+        (new MessageService())->displayDirectSystemError("You have to install the PHP session extension!");
+    }
+
+    $secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
+    session_set_cookie_params([
+        'secure' => $secure,
+        'httponly' => true,
+    ]);
+
+    session_start();
 }
 
-$secure = !empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off';
-session_set_cookie_params([
-    'secure' => $secure,
-    'httponly' => true,
-]);
+initializeSession();
 
-session_start();
+/**
+ * Send JSON error response
+ */
+function sendJsonError(string $message, ?string $file = null, ?int $line = null, ?array $trace = null): void
+{
+    header('Content-Type: application/json');
+    echo json_encode([
+        'error' => true,
+        'message' => $message,
+        'file' => $file,
+        'line' => $line,
+        'trace' => $trace
+    ]);
+}
 
 $router = new BasicRouter($_REQUEST);
 
 $router->setDefaultPage('index');
 $router->setPages(Pages::getPages());
 
+// Load BaseController for error handling
+require_once __DIR__ . '/lib/BaseController.php';
+
 try {
     // Use BaseController's expectsJson method to determine if this expects JSON
-    require_once __DIR__ . '/lib/BaseController.php';
     $expectsJson = \Poweradmin\BaseController::expectsJson();
 
     // For API requests, suppress display errors but still log them
@@ -71,7 +96,6 @@ try {
     error_log($e->getTraceAsString());
 
     // Use BaseController's expectsJson method
-    require_once __DIR__ . '/lib/BaseController.php';
     $expectsJson = \Poweradmin\BaseController::expectsJson();
 
     // Check if this is a controller not found error
@@ -87,11 +111,7 @@ try {
             error_log('Error in NotFoundController: ' . $notFoundError->getMessage());
 
             if ($expectsJson) {
-                header('Content-Type: application/json');
-                echo json_encode([
-                    'error' => true,
-                    'message' => 'Page not found'
-                ]);
+                sendJsonError('Page not found');
             } else {
                 echo 'Page not found.';
             }
@@ -99,14 +119,13 @@ try {
     } elseif ($expectsJson || $configManager->get('misc', 'display_errors', false)) {
         // For JSON requests, always return JSON error
         if ($expectsJson) {
-            header('Content-Type: application/json');
-            echo json_encode([
-                'error' => true,
-                'message' => $e->getMessage(),
-                'file' => $configManager->get('misc', 'display_errors', false) ? $e->getFile() : null,
-                'line' => $configManager->get('misc', 'display_errors', false) ? $e->getLine() : null,
-                'trace' => $configManager->get('misc', 'display_errors', false) ? explode("\n", $e->getTraceAsString()) : null
-            ]);
+            $showDebug = $configManager->get('misc', 'display_errors', false);
+            sendJsonError(
+                $e->getMessage(),
+                $showDebug ? $e->getFile() : null,
+                $showDebug ? $e->getLine() : null,
+                $showDebug ? explode("\n", $e->getTraceAsString()) : null
+            );
         } else {
             // For HTML requests with display_errors enabled, show detailed error
             echo '<pre>';
