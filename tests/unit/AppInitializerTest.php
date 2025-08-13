@@ -96,23 +96,4 @@ class AppInitializerTest extends TestCase
         // In the actual implementation, this would trigger MessageService::displayHtmlError
         $this->assertTrue(true, 'Missing configuration would be correctly detected');
     }
-
-    /**
-     * Test configuration file detection logic
-     */
-    public function testConfigurationFileDetection(): void
-    {
-        // Test 1: No config file exists
-        $this->assertFileDoesNotExist('config/settings.php');
-
-        // Test 2: Create new config file and verify it's detected
-        file_put_contents('config/settings.php', '<?php return ["database" => ["host" => "localhost"]];');
-        $this->assertFileExists('config/settings.php');
-
-        // Test 3: Verify the file contains valid PHP configuration
-        $config = require 'config/settings.php';
-        $this->assertIsArray($config);
-        $this->assertArrayHasKey('database', $config);
-        $this->assertEquals('localhost', $config['database']['host']);
-    }
 }

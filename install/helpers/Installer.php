@@ -74,7 +74,7 @@ class Installer
         $rawStep = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
         $currentStep = $this->stepValidator->getCurrentStep($rawStep);
 
-        if (file_exists($this->localConfigFile) || file_exists($this->newConfigFile)) {
+        if (file_exists($this->newConfigFile)) {
             // Only allow viewing the final step if installation is complete
             if ($currentStep !== InstallationSteps::STEP_INSTALLATION_COMPLETE) {
                 echo 'There is already a configuration file in place, so the installation will be skipped.';
