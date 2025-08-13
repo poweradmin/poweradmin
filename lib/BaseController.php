@@ -71,7 +71,7 @@ abstract class BaseController
      */
     public function __construct(array $request, bool $authenticate = true)
     {
-        $this->app = AppFactory::create();
+        $this->app = new AppManager();
 
         $this->init = new AppInitializer($authenticate);
         $this->db = $this->init->getDb();

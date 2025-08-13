@@ -835,7 +835,6 @@ return array(
     'PoweradminInstall\\Validators\\SetupAccountAndNameServersValidator' => $baseDir . '/install/helpers/Validators/SetupAccountAndNameServersValidator.php',
     'PoweradminInstall\\Validators\\UserPasswordValidationTrait' => $baseDir . '/install/helpers/Validators/UserPasswordValidationTrait.php',
     'PoweradminInstall\\Validators\\ValidationErrorHelper' => $baseDir . '/install/helpers/Validators/ValidationErrorHelper.php',
-    'Poweradmin\\AppFactory' => $baseDir . '/lib/AppFactory.php',
     'Poweradmin\\AppInitializer' => $baseDir . '/lib/AppInitializer.php',
     'Poweradmin\\AppManager' => $baseDir . '/lib/AppManager.php',
     'Poweradmin\\Application\\Controller\\AddPermTemplController' => $baseDir . '/lib/Application/Controller/AddPermTemplController.php',
