@@ -82,6 +82,8 @@
 
     "tests": "phpunit --testsuite unit",
     "tests:integration": "phpunit --testsuite integration",
+    "tests:functional": "phpunit --testsuite functional",
+    "tests:all": "phpunit",
 
     "check:all": "phpcs --standard=phpcs.xml addons config db index.php install lib tests tools dynamic_update.php",
     "format:all": "phpcbf --standard=phpcs.xml addons config db index.php install lib tests tools dynamic_update.php",
