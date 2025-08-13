@@ -41,17 +41,11 @@ $router = new BasicRouter($_REQUEST);
 $router->setDefaultPage('index');
 $router->setPages(Pages::getPages());
 
-// Load BaseController for error handling
-require_once __DIR__ . '/lib/BaseController.php';
-
 try {
     $expectsJson = BaseController::expectsJson();
 
-    // For API requests, suppress display errors but still log them
     if ($expectsJson) {
-        // Disable displaying errors in output for API responses
         ini_set('display_errors', 0);
-        // But still log them for debugging
         error_reporting(E_ALL);
     }
 
@@ -62,16 +56,13 @@ try {
 
     $expectsJson = BaseController::expectsJson();
 
-    // Check if this is a controller not found error
     if (str_contains($e->getMessage(), 'Class') && str_contains($e->getMessage(), 'not found')) {
-        // Set 404 status and use NotFoundController
         http_response_code(404);
 
         try {
             $notFoundController = new NotFoundController($_REQUEST);
             $notFoundController->run();
         } catch (Exception $notFoundError) {
-            // Fallback error handling
             error_log('Error in NotFoundController: ' . $notFoundError->getMessage());
 
             if ($expectsJson) {
@@ -81,7 +72,6 @@ try {
             }
         }
     } elseif ($expectsJson || $configManager->get('misc', 'display_errors', false)) {
-        // For JSON requests, always return JSON error
         if ($expectsJson) {
             $showDebug = $configManager->get('misc', 'display_errors', false);
             sendJsonError(
@@ -91,16 +81,9 @@ try {
                 $showDebug ? explode("\n", $e->getTraceAsString()) : null
             );
         } else {
-            // For HTML requests with display_errors enabled, show detailed error
-            echo '<pre>';
-            echo 'Error: ' . htmlspecialchars($e->getMessage()) . "\n";
-            echo 'File: ' . htmlspecialchars($e->getFile()) . "\n";
-            echo 'Line: ' . $e->getLine() . "\n";
-            echo 'Trace: ' . "\n" . htmlspecialchars($e->getTraceAsString());
-            echo '</pre>';
+            displayHtmlError($e);
         }
     } else {
-        // For HTML requests without display_errors, show generic message
         echo 'An error occurred while processing the request.';
     }
 }
