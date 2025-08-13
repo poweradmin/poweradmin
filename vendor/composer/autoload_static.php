@@ -1383,7 +1383,6 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Infrastructure\\Configuration\\ConfigurationManager' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/ConfigurationManager.php',
         'Poweradmin\\Infrastructure\\Configuration\\ConfigurationRegistry' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/ConfigurationRegistry.php',
         'Poweradmin\\Infrastructure\\Configuration\\FakeConfiguration' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/FakeConfiguration.php',
-        'Poweradmin\\Infrastructure\\Configuration\\MigrationConfigurationManager' => __DIR__ . '/../..' . '/lib/Infrastructure/Configuration/MigrationConfigurationManager.php',
         'Poweradmin\\Infrastructure\\Database\\DbCompat' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/DbCompat.php',
         'Poweradmin\\Infrastructure\\Database\\PDOCommon' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/PDOCommon.php',
         'Poweradmin\\Infrastructure\\Database\\PDODatabaseConnection' => __DIR__ . '/../..' . '/lib/Infrastructure/Database/PDODatabaseConnection.php',
