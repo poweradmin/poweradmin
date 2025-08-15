@@ -13,6 +13,7 @@ namespace Symfony\Component\Serializer\Normalizer;
 
 use Symfony\Component\PropertyAccess\Exception\UninitializedPropertyException;
 use Symfony\Component\PropertyInfo\PropertyTypeExtractorInterface;
+use Symfony\Component\Serializer\Exception\LogicException;
 use Symfony\Component\Serializer\Mapping\ClassDiscriminatorResolverInterface;
 use Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactoryInterface;
 use Symfony\Component\Serializer\NameConverter\NameConverterInterface;
@@ -180,7 +181,7 @@ class PropertyNormalizer extends AbstractObjectNormalizer
                 || ($reflectionProperty->isProtected() && !\array_key_exists("\0*\0{$reflectionProperty->name}", $propertyValues))
                 || ($reflectionProperty->isPrivate() && !\array_key_exists("\0{$reflectionProperty->class}\0{$reflectionProperty->name}", $propertyValues))
             ) {
-                throw new UninitializedPropertyException(sprintf('The property "%s::$%s" is not initialized.', $object::class, $reflectionProperty->name));
+                throw new UninitializedPropertyException(\sprintf('The property "%s::$%s" is not initialized.', $object::class, $reflectionProperty->name));
             }
         }
 
@@ -202,7 +203,22 @@ class PropertyNormalizer extends AbstractObjectNormalizer
             return;
         }
 
-        $reflectionProperty->setValue($object, $value);
+        if (!$reflectionProperty->isReadOnly()) {
+            $reflectionProperty->setValue($object, $value);
+
+            return;
+        }
+
+        if (!$reflectionProperty->isInitialized($object)) {
+            $declaringClass = $reflectionProperty->getDeclaringClass();
+            $declaringClass->getProperty($reflectionProperty->getName())->setValue($object, $value);
+
+            return;
+        }
+
+        if ($reflectionProperty->getValue($object) !== $value) {
+            throw new LogicException(\sprintf('Attempting to change readonly property "%s"::$%s.', $object::class, $reflectionProperty->getName()));
+        }
     }
 
     /**
