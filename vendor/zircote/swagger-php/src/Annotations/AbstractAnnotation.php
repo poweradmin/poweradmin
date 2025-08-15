@@ -381,9 +381,20 @@ abstract class AbstractAnnotation implements \JsonSerializable
                 $data->minimum = $data->exclusiveMinimum;
                 $data->exclusiveMinimum = true;
             }
+
             if (isset($data->exclusiveMaximum) && is_numeric($data->exclusiveMaximum)) {
                 $data->maximum = $data->exclusiveMaximum;
                 $data->exclusiveMaximum = true;
+            }
+
+            if (isset($data->type) && is_array($data->type)) {
+                if (in_array('null', $data->type)) {
+                    $data->nullable = true;
+                    $data->type = array_filter($data->type, fn ($v): bool => $v !== 'null');
+                    if (1 === count($data->type)) {
+                        $data->type = array_pop($data->type);
+                    }
+                }
             }
         }
 
@@ -434,7 +445,7 @@ abstract class AbstractAnnotation implements \JsonSerializable
      * @param string $ref     Current ref path?
      * @param object $context a free-form context contains
      */
-    public function validate(array $stack = [], array $skip = [], string $ref = '', $context = null): bool
+    public function validate(array $stack = [], array $skip = [], string $ref = '', ?object $context = null): bool
     {
         if (in_array($this, $skip, true)) {
             return true;
@@ -792,6 +803,6 @@ abstract class AbstractAnnotation implements \JsonSerializable
             }
         }
 
-        return array_filter($combined, fn ($value) => !Generator::isDefault($value) && $value !== null);
+        return array_filter($combined, fn ($value): bool => !Generator::isDefault($value) && $value !== null);
     }
 }
