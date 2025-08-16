@@ -88,8 +88,8 @@ class SortHelperIntegrationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->mysqlConnection = new PDO('mysql:host=127.0.0.1;dbname=pdns', 'pdns', 'poweradmin');
-        $this->pgsqlConnection = new PDO('pgsql:host=127.0.0.1;dbname=pdns', 'pdns', 'poweradmin');
+        $this->mysqlConnection = new PDO('mysql:host=127.0.0.1;port=3307;dbname=pdns', 'pdns', 'poweradmin');
+        $this->pgsqlConnection = new PDO('pgsql:host=127.0.0.1;port=5433;dbname=pdns', 'pdns', 'poweradmin');
         $this->sqliteConnection = new PDO('sqlite::memory:');
     }
 

@@ -70,17 +70,34 @@ class NaturalSortingIntegrationTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->mysqlConnection = new PDO('mysql:host=127.0.0.1;dbname=pdns', 'pdns', 'poweradmin');
-        $this->pgsqlConnection = new PDO('pgsql:host=127.0.0.1;dbname=pdns', 'pdns', 'poweradmin');
+        // Use test database ports to avoid conflicts with production databases
+        try {
+            $this->mysqlConnection = new PDO('mysql:host=127.0.0.1;port=3307;dbname=pdns', 'pdns', 'poweradmin');
+        } catch (PDOException $e) {
+            $this->mysqlConnection = null;
+        }
+
+        try {
+            $this->pgsqlConnection = new PDO('pgsql:host=127.0.0.1;port=5433;dbname=pdns', 'pdns', 'poweradmin');
+        } catch (PDOException $e) {
+            $this->pgsqlConnection = null;
+        }
+
         $this->sqliteConnection = new PDO('sqlite::memory:');
         $this->naturalSorting = new NaturalSorting();
     }
 
     protected function tearDown(): void
     {
-        $this->mysqlConnection->exec("DROP TABLE IF EXISTS test_table");
-        $this->pgsqlConnection->exec("DROP TABLE IF EXISTS test_table");
-        $this->sqliteConnection->exec("DROP TABLE IF EXISTS test_table");
+        if ($this->mysqlConnection) {
+            $this->mysqlConnection->exec("DROP TABLE IF EXISTS test_table");
+        }
+        if ($this->pgsqlConnection) {
+            $this->pgsqlConnection->exec("DROP TABLE IF EXISTS test_table");
+        }
+        if ($this->sqliteConnection) {
+            $this->sqliteConnection->exec("DROP TABLE IF EXISTS test_table");
+        }
     }
 
     public function testGetNaturalSortOrderMySQLExample()
@@ -238,7 +255,7 @@ class NaturalSortingIntegrationTest extends TestCase
         }
 
         // Get the natural sort query
-        $query = "SELECT * FROM $table ORDER BY " . $this->naturalSorting->$sortMethod($table, $dbType, $direction);
+        $query = "SELECT * FROM $table ORDER BY " . $this->naturalSorting->$sortMethod('name', $dbType, $direction);
         $stmt = $connection->query($query);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
