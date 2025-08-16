@@ -27,54 +27,245 @@
     </div>
     {% endif %}
 
-    <!-- Placeholder for DNS Zone Statistics -->
+    {% if permissions['zone_master_add'] %}
+    <!-- Add Master Zone -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card h-100 shadow-sm">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h6 class="card-title">{% trans %}Zone Statistics{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Total zones and records managed{% endtrans %}</p>
+                        <h6 class="card-title">{% trans %}Master Zone{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Create new master zone{% endtrans %}</p>
                     </div>
                     <div class="align-self-center">
-                        <i class="bi bi-bar-chart display-4 text-muted"></i>
+                        <i class="bi bi-plus-circle display-4 text-muted"></i>
                     </div>
                 </div>
+                <a href="index.php?page=add_zone_master" class="btn btn-sm btn-outline-primary mt-2" data-testid="add-master-zone-link">
+                    {% trans %}Add Master Zone{% endtrans %}
+                </a>
             </div>
         </div>
     </div>
+    {% endif %}
 
-    <!-- Placeholder for Recent Activity -->
+    {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
+    <!-- Forward Zones -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card h-100 shadow-sm">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h6 class="card-title">{% trans %}Recent Activity{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Latest zone and record changes{% endtrans %}</p>
+                        <h6 class="card-title">{% trans %}Forward Zones{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Manage forward DNS zones{% endtrans %}</p>
                     </div>
                     <div class="align-self-center">
-                        <i class="bi bi-activity display-4 text-muted"></i>
+                        <i class="bi bi-diagram-3 display-4 text-muted"></i>
                     </div>
                 </div>
+                <a href="index.php?page=list_forward_zones" class="btn btn-sm btn-outline-primary mt-2" data-testid="list-forward-zones-link">
+                    {% trans %}List Forward Zones{% endtrans %}
+                </a>
             </div>
         </div>
     </div>
+    {% endif %}
 
-    <!-- Placeholder for System Health -->
+    {% if permissions['search'] %}
+    <!-- Search -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card h-100 shadow-sm">
             <div class="card-body">
                 <div class="d-flex justify-content-between">
                     <div>
-                        <h6 class="card-title">{% trans %}System Health{% endtrans %}</h6>
-                        <p class="card-text text-muted">{% trans %}Service status and performance{% endtrans %}</p>
+                        <h6 class="card-title">{% trans %}Search{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Find zones and records{% endtrans %}</p>
                     </div>
                     <div class="align-self-center">
-                        <i class="bi bi-heart-pulse display-4 text-muted"></i>
+                        <i class="bi bi-search display-4 text-muted"></i>
                     </div>
                 </div>
+                <a href="index.php?page=search" class="btn btn-sm btn-outline-primary mt-2" data-testid="search-link">
+                    {% trans %}Search Zones{% endtrans %}
+                </a>
             </div>
         </div>
     </div>
+    {% endif %}
+
+    {% if permissions['zone_content_view_own'] or permissions['zone_content_view_others'] %}
+    <!-- Reverse Zones -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}Reverse Zones{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Manage reverse DNS zones{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-arrow-left-right display-4 text-muted"></i>
+                    </div>
+                </div>
+                <a href="index.php?page=list_reverse_zones" class="btn btn-sm btn-outline-primary mt-2" data-testid="list-reverse-zones-link">
+                    {% trans %}List Reverse Zones{% endtrans %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if permissions['zone_slave_add'] %}
+    <!-- Add Slave Zone -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}Slave Zone{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Add new slave zone{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-plus-circle-dotted display-4 text-muted"></i>
+                    </div>
+                </div>
+                <a href="index.php?page=add_zone_slave" class="btn btn-sm btn-outline-primary mt-2" data-testid="add-slave-zone-link">
+                    {% trans %}Add Slave Zone{% endtrans %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if permissions['zone_master_add'] %}
+    <!-- Zone Templates -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}Templates{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Manage zone templates{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-files display-4 text-muted"></i>
+                    </div>
+                </div>
+                <a href="index.php?page=list_zone_templ" class="btn btn-sm btn-outline-primary mt-2" data-testid="list-zone-templates-link">
+                    {% trans %}List Zone Templates{% endtrans %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if permissions['zone_master_add'] %}
+    <!-- Bulk Registration -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}Bulk Registration{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Register multiple domains at once{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-collection display-4 text-muted"></i>
+                    </div>
+                </div>
+                <a href="index.php?page=bulk_registration" class="btn btn-sm btn-outline-primary mt-2" data-testid="bulk-registration-link">
+                    {% trans %}Bulk Domain Registration{% endtrans %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if permissions['user_view_others'] or permissions['user_edit_others'] or permissions['user_add_new'] or permissions['user_is_ueberuser'] %}
+    <!-- Users -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}Users{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Manage system users and access{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-people display-4 text-muted"></i>
+                    </div>
+                </div>
+                <a href="index.php?page=users" class="btn btn-sm btn-outline-primary mt-2" data-testid="user-administration-link">
+                    {% trans %}User Administration{% endtrans %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if auth_used != "ldap" %}
+    <!-- Change Password -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}Password{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Update your account password{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-key display-4 text-muted"></i>
+                    </div>
+                </div>
+                <a href="index.php?page=change_password" class="btn btn-sm btn-outline-primary mt-2" data-testid="change-password-link">
+                    {% trans %}Change Password{% endtrans %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if (not whois_restrict_to_admin or permissions['user_is_ueberuser']) and whois_enabled %}
+    <!-- WHOIS Lookup -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}WHOIS{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Lookup domain WHOIS information{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-search-heart display-4 text-muted"></i>
+                    </div>
+                </div>
+                <a href="index.php?page=whois" class="btn btn-sm btn-outline-primary mt-2" data-testid="whois-link">
+                    {% trans %}WHOIS Lookup{% endtrans %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {% if iface_add_reverse_record and (permissions['zone_content_edit_own'] or permissions['zone_content_edit_others']) %}
+    <!-- PTR Records -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}PTR Records{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Manage reverse DNS records{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-arrow-repeat display-4 text-muted"></i>
+                    </div>
+                </div>
+                <a href="index.php?page=batch_ptr_record" class="btn btn-sm btn-outline-primary mt-2" data-testid="batch-ptr-records-link">
+                    {% trans %}Batch PTR Records{% endtrans %}
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
 </div>
