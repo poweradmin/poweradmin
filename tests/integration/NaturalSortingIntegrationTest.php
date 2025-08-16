@@ -3,6 +3,7 @@
 namespace integration;
 
 use PDO;
+use PDOException;
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Utility\NaturalSorting;
 
@@ -11,8 +12,8 @@ use Poweradmin\Infrastructure\Utility\NaturalSorting;
  */
 class NaturalSortingIntegrationTest extends TestCase
 {
-    private PDO $mysqlConnection;
-    private PDO $pgsqlConnection;
+    private ?PDO $mysqlConnection;
+    private ?PDO $pgsqlConnection;
     private PDO $sqliteConnection;
     private NaturalSorting $naturalSorting;
 
