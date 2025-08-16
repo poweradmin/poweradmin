@@ -1,6 +1,5 @@
 # Poweradmin related files
 addons/
-db/
 install/
 
 # Version Control
@@ -30,7 +29,6 @@ Dockerfile
 # phpDocumentor
 docs
 .phive
-tools
 
 # Misc
 **/.DS_Store

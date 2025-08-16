@@ -30,7 +30,6 @@ Thumbs.db
 # phpDocumentor
 /docs
 /.phive
-/tools/phpDocumentor
 
 # PHPUnit
 /.phpunit.cache
