@@ -23,14 +23,6 @@ CREATE TABLE "public"."log_zones" (
 ) WITH (oids = false);
 
 
-CREATE TABLE "public"."migrations" (
-                                       "version" bigint NOT NULL,
-                                       "migration_name" character varying(100),
-                                       "start_time" timestamp,
-                                       "end_time" timestamp,
-                                       "breakpoint" boolean NOT NULL DEFAULT false,
-                                       CONSTRAINT "migrations_pkey" PRIMARY KEY ("version")
-) WITH (oids = false);
 
 
 CREATE SEQUENCE perm_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;

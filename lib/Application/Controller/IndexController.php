@@ -105,7 +105,6 @@ class IndexController extends BaseController
             'auth_used' => $this->userContextService->getAuthMethod() ?? '',
             'permissions' => $permissions,
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
-            'migrations_show' => $this->config->get('interface', 'show_migrations', false),
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),
             'whois_enabled' => $this->config->get('whois', 'enabled', false),
             'rdap_enabled' => $this->config->get('rdap', 'enabled', false),

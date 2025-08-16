@@ -469,59 +469,6 @@ class DatabaseStructureHelper
                 )
             ),
             array(
-                'table_name' => 'migrations',
-                'options' => array('type' => 'innodb'),
-                'fields' => array(
-                    'version' => array
-                    (
-                        'notnull' => 1,
-                        'type' => 'bigint',
-                        'name' => 'version',
-                        'table' => 'migrations',
-                        'flags' => 'primary_keynot_null'
-                    ),
-                    'migration_name' => array
-                    (
-                        'notnull' => 0,
-                        'length' => 100,
-                        'fixed' => 0,
-                        'default' => null,
-                        'type' => 'text',
-                        'name' => 'migration_name',
-                        'table' => 'migrations',
-                        'flags' => ''
-                    ),
-                    'start_time' => array
-                    (
-                        'notnull' => 0,
-                        'default' => null,
-                        'type' => 'timestamp',
-                        'name' => 'start_time',
-                        'table' => 'migrations',
-                        'flags' => ''
-                    ),
-                    'end_time' => array
-                    (
-                        'notnull' => 0,
-                        'default' => null,
-                        'type' => 'timestamp',
-                        'name' => 'end_time',
-                        'table' => 'migrations',
-                        'flags' => ''
-                    ),
-                    'breakpoint' => array
-                    (
-                        'notnull' => 1,
-                        'length' => 1,
-                        'default' => 0,
-                        'type' => 'boolean',
-                        'name' => 'breakpoint',
-                        'table' => 'migrations',
-                        'flags' => 'not_null'
-                    )
-                )
-            ),
-            array(
                 'table_name' => 'log_zones',
                 'options' => array('type' => 'innodb'),
                 'fields' => array(

@@ -174,35 +174,4 @@ class DatabaseSchemaService
         $query = "DROP TABLE $name";
         $this->db->exec($query);
     }
-
-    /**
-     * Check if the old migrations table with 'apply_time' column exists
-     */
-    public function hasOldMigrationsTable(): bool
-    {
-        $db_type = $this->db->getAttribute(PDO::ATTR_DRIVER_NAME);
-
-        switch ($db_type) {
-            case 'mysql':
-                $query = $this->db->query("SHOW COLUMNS FROM `migrations` LIKE 'apply_time'");
-                break;
-            case 'pgsql':
-                $query = $this->db->query("SELECT column_name FROM information_schema.columns WHERE table_name='migrations' AND column_name='apply_time'");
-                break;
-            case 'sqlite':
-                $query = $this->db->query("PRAGMA table_info(migrations)");
-                $columns = $query->fetchAll();
-                foreach ($columns as $column) {
-                    if ($column['name'] === 'apply_time') {
-                        return true;
-                    }
-                }
-                return false;
-            default:
-                return false;
-        }
-
-        $result = $query->fetch();
-        return (bool)$result;
-    }
 }

@@ -6,13 +6,6 @@ CREATE TABLE log_users (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, cr
 CREATE TABLE log_zones (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL, zone_id integer);
 
 
-CREATE TABLE migrations (
-    version INTEGER PRIMARY KEY,
-    migration_name VARCHAR(100) NULL,
-    start_time TIMESTAMP NULL,
-    end_time TIMESTAMP NULL,
-    breakpoint BOOLEAN NOT NULL DEFAULT 0
-);
 
 
 CREATE TABLE perm_items (id integer PRIMARY KEY, name VARCHAR(64) NOT NULL, descr VARCHAR(1024) NOT NULL);

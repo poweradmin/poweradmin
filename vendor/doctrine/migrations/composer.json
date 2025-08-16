@@ -1,0 +1,81 @@
+{
+    "name": "doctrine/migrations",
+    "description": "PHP Doctrine Migrations project offer additional functionality on top of the database abstraction layer (DBAL) for versioning your database schema and easily deploying changes to it. It is a very easy to use and a powerful tool.",
+    "license": "MIT",
+    "type": "library",
+    "keywords": [
+        "database",
+        "migrations",
+        "dbal"
+    ],
+    "authors": [
+        {
+            "name": "Benjamin Eberlei",
+            "email": "kontakt@beberlei.de"
+        },
+        {
+            "name": "Jonathan Wage",
+            "email": "jonwage@gmail.com"
+        },
+        {
+            "name": "Michael Simonson",
+            "email": "contact@mikesimonson.com"
+        }
+    ],
+    "homepage": "https://www.doctrine-project.org/projects/migrations.html",
+    "require": {
+        "php": "^8.1",
+        "composer-runtime-api": "^2",
+        "doctrine/dbal": "^3.6 || ^4",
+        "doctrine/deprecations": "^0.5.3 || ^1",
+        "doctrine/event-manager": "^1.2 || ^2.0",
+        "psr/log": "^1.1.3 || ^2 || ^3",
+        "symfony/console": "^5.4 || ^6.0 || ^7.0",
+        "symfony/stopwatch": "^5.4 || ^6.0 || ^7.0",
+        "symfony/var-exporter": "^6.2 || ^7.0"
+    },
+    "require-dev": {
+        "ext-pdo_sqlite": "*",
+        "doctrine/coding-standard": "^13",
+        "doctrine/orm": "^2.13 || ^3",
+        "doctrine/persistence": "^2 || ^3 || ^4",
+        "doctrine/sql-formatter": "^1.0",
+        "fig/log-test": "^1",
+        "phpstan/phpstan": "^2",
+        "phpstan/phpstan-deprecation-rules": "^2",
+        "phpstan/phpstan-phpunit": "^2",
+        "phpstan/phpstan-strict-rules": "^2",
+        "phpstan/phpstan-symfony": "^2",
+        "phpunit/phpunit": "^10.3 || ^11.0 || ^12.0",
+        "symfony/cache": "^5.4 || ^6.0 || ^7.0",
+        "symfony/process": "^5.4 || ^6.0 || ^7.0",
+        "symfony/yaml": "^5.4 || ^6.0 || ^7.0"
+    },
+    "conflict": {
+        "doctrine/orm": "<2.12 || >=4"
+    },
+    "suggest": {
+        "doctrine/sql-formatter": "Allows to generate formatted SQL with the diff command.",
+        "symfony/yaml": "Allows the use of yaml for migration configuration files."
+    },
+    "autoload": {
+        "psr-4": {
+            "Doctrine\\Migrations\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Doctrine\\Migrations\\Tests\\": "tests"
+        }
+    },
+    "bin": [
+        "bin/doctrine-migrations"
+    ],
+    "config": {
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "sort-packages": true
+    }
+}

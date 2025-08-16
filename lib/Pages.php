@@ -105,7 +105,6 @@ class Pages
             'unlink_zones_templ',
             'mfa_verify',
             'mfa_setup',
-            'migrations',
             'reset_password',
             'search',
             'user_agreement',
