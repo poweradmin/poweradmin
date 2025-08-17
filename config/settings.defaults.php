@@ -106,6 +106,7 @@ return [
         'theme' => 'default',                 // Theme name to use (default, custom, etc.) (added in 4.0.0)
         'style' => 'light',                   // UI Style options: 'light', 'dark' (added in 4.0.0)
         'theme_base_path' => 'templates',     // Base path for theme templates (added in 4.0.0)
+        'base_url_prefix' => '',              // Base URL prefix for deployments (default: '', subdirectory example: '/poweradmin') (added in 4.1.0)
 
         // UI Element Settings
         'show_record_id' => true,             // Show record ID column in edit mode (added in 3.9.0)

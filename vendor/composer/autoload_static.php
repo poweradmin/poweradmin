@@ -833,6 +833,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Application\\Controller\\RdapController' => __DIR__ . '/../..' . '/lib/Application/Controller/RdapController.php',
         'Poweradmin\\Application\\Controller\\ResetPasswordController' => __DIR__ . '/../..' . '/lib/Application/Controller/ResetPasswordController.php',
         'Poweradmin\\Application\\Controller\\SearchController' => __DIR__ . '/../..' . '/lib/Application/Controller/SearchController.php',
+        'Poweradmin\\Application\\Controller\\StaticAssetController' => __DIR__ . '/../..' . '/lib/Application/Controller/StaticAssetController.php',
         'Poweradmin\\Application\\Controller\\UnlinkZonesTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/UnlinkZonesTemplController.php',
         'Poweradmin\\Application\\Controller\\UserAgreementController' => __DIR__ . '/../..' . '/lib/Application/Controller/UserAgreementController.php',
         'Poweradmin\\Application\\Controller\\UsersController' => __DIR__ . '/../..' . '/lib/Application/Controller/UsersController.php',

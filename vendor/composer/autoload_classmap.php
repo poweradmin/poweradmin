@@ -623,6 +623,7 @@ return array(
     'Poweradmin\\Application\\Controller\\RdapController' => $baseDir . '/lib/Application/Controller/RdapController.php',
     'Poweradmin\\Application\\Controller\\ResetPasswordController' => $baseDir . '/lib/Application/Controller/ResetPasswordController.php',
     'Poweradmin\\Application\\Controller\\SearchController' => $baseDir . '/lib/Application/Controller/SearchController.php',
+    'Poweradmin\\Application\\Controller\\StaticAssetController' => $baseDir . '/lib/Application/Controller/StaticAssetController.php',
     'Poweradmin\\Application\\Controller\\UnlinkZonesTemplController' => $baseDir . '/lib/Application/Controller/UnlinkZonesTemplController.php',
     'Poweradmin\\Application\\Controller\\UserAgreementController' => $baseDir . '/lib/Application/Controller/UserAgreementController.php',
     'Poweradmin\\Application\\Controller\\UsersController' => $baseDir . '/lib/Application/Controller/UsersController.php',

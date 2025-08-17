@@ -5,8 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>{{ iface_title }}</title>
     <!-- CSS only -->
-    <link href="vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="vendor/twbs/bootstrap-icons/font/bootstrap-icons.css">
+    <link href="{{ base_url_prefix }}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ base_url_prefix }}/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css">
     <script>
         // Determine correct theme before loading stylesheets to prevent FOUC
         const savedTheme = localStorage.getItem('style');
@@ -14,13 +14,13 @@
         const correctTheme = (savedTheme === 'light' || savedTheme === 'dark') ? savedTheme : serverTheme;
         
         // Load the correct stylesheet immediately
-        document.write('<link id="theme-stylesheet" rel="stylesheet" href="{{ theme_base_path }}/{{ theme }}/style/' + correctTheme + '.css?time={{ file_version }}" type="text/css">');
+        document.write('<link id="theme-stylesheet" rel="stylesheet" href="{{ base_url_prefix }}/{{ theme_base_path }}/{{ theme }}/style/' + correctTheme + '.css?time={{ file_version }}" type="text/css">');
         {% if custom_theme_exists %}
-        document.write('<link id="custom-theme-stylesheet" rel="stylesheet" href="{{ theme_base_path }}/{{ theme }}/style/custom_' + correctTheme + '.css?time={{ file_version }}" type="text/css">');
+        document.write('<link id="custom-theme-stylesheet" rel="stylesheet" href="{{ base_url_prefix }}/{{ theme_base_path }}/{{ theme }}/style/custom_' + correctTheme + '.css?time={{ file_version }}" type="text/css">');
         {% endif %}
     </script>
-    <script type="text/javascript" src="assets/helper.js?time={{ file_version }}"></script>
-    <script type="text/javascript" src="assets/userSettings.js?time={{ file_version }}"></script>
+    <script type="text/javascript" src="{{ base_url_prefix }}/assets/helper.js?time={{ file_version }}"></script>
+    <script type="text/javascript" src="{{ base_url_prefix }}/assets/userSettings.js?time={{ file_version }}"></script>
 </head>
 <body>
 
@@ -30,7 +30,7 @@
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-start">
             <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none">
-                <img class="me-2" src="assets/logo.png" height="32">
+                <img class="me-2" src="{{ base_url_prefix }}/assets/logo.png" height="32">
                 <span class="fs-4">{{ iface_title }}</span>
             </a>
             <!-- No navigation menu intentionally -->
@@ -47,7 +47,7 @@
                 {% if custom_header %}
                 {% include ('custom/header.html') %}
                 {% else %}
-                <img class="me-2" src="assets/logo.png" height="32">
+                <img class="me-2" src="{{ base_url_prefix }}/assets/logo.png" height="32">
                 <span class="fs-4">{{ iface_title }}</span>
                 {% endif %}
             </a>

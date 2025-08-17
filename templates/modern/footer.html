@@ -35,7 +35,7 @@
 {% if display_stats %}
 {{ display_stats | raw }}
 {% endif %}
-<script src="vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="{{ base_url_prefix }}/vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 
 <script>
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
@@ -84,10 +84,10 @@
         const newStyle = currentStyle === 'light' ? 'dark' : 'light';
         document.body.classList.replace(currentStyle, newStyle);
         styleIcon.classList.replace(currentStyle === 'light' ? 'bi-moon' : 'bi-sun', newStyle === 'light' ? 'bi-moon' : 'bi-sun');
-        styleStylesheet.href = `{{ theme_base_path }}/{{ theme }}/style/${newStyle}.css?time={{ file_version }}`;
+        styleStylesheet.href = `{{ base_url_prefix }}/{{ theme_base_path }}/{{ theme }}/style/${newStyle}.css?time={{ file_version }}`;
         // Update custom stylesheet if it exists
         if (customStylesheet) {
-            customStylesheet.href = `{{ theme_base_path }}/{{ theme }}/style/custom_${newStyle}.css?time={{ file_version }}`;
+            customStylesheet.href = `{{ base_url_prefix }}/{{ theme_base_path }}/{{ theme }}/style/custom_${newStyle}.css?time={{ file_version }}`;
         }
         localStorage.setItem('style', newStyle);
         currentStyle = newStyle;

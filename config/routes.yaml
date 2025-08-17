@@ -295,3 +295,10 @@ api_internal_user_preferences:
 api_internal_zone:
   path: /api/internal/zone
   controller: Poweradmin\Application\Controller\Api\Internal\ZoneController::run
+
+# Static Assets
+static_assets:
+  path: /{path}
+  controller: Poweradmin\Application\Controller\StaticAssetController::run
+  requirements:
+    path: '.+\.(css|js|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$'

@@ -480,6 +480,7 @@ abstract class BaseController
             'iface_style' => $styleManager->getSelectedStyle(),
             'theme' => $theme,
             'theme_base_path' => $themeBasePath,
+            'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
             'file_version' => time(),
             'custom_header' => file_exists($this->config->get('interface', 'theme_base_path', 'templates') . '/' . $this->config->get('interface', 'theme', 'default') . '/custom/header.html'),
             'custom_light_exists' => $customLightExists,
@@ -565,6 +566,7 @@ abstract class BaseController
             'iface_style' => $selected_style,
             'theme' => $theme,
             'theme_base_path' => $themeBasePath,
+            'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
         ]);
     }
 
