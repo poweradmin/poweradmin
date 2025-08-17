@@ -57,6 +57,16 @@ class DocsController extends BaseController
      */
     public function run(): void
     {
+        // Check if API documentation is enabled
+        if (!$this->config->get('api', 'docs_enabled')) {
+            $response = new Response();
+            $response->setStatusCode(404);
+            $response->headers->set('Content-Type', 'text/html');
+            $response->setContent('<html><body><h1>404 Not Found</h1><p>API documentation is disabled.</p></body></html>');
+            $response->send();
+            exit;
+        }
+
         // Generate Swagger UI HTML
         $html = $this->generateSwaggerUI();
 

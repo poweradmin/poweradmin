@@ -59,6 +59,20 @@ class JsonController extends BaseController
      */
     public function run(): void
     {
+        // Check if API documentation is enabled
+        if (!$this->config->get('api', 'docs_enabled')) {
+            $response = new Response();
+            $response->setStatusCode(404);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode([
+                'error' => 'Not Found',
+                'message' => 'API documentation is disabled',
+                'status' => 404
+            ]));
+            $response->send();
+            exit;
+        }
+
         try {
             // Generate OpenAPI specification from annotations
             // Current path: /lib/Application/Controller/Api/Docs/JsonController.php
