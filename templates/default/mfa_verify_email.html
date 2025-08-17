@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-    <li class="breadcrumb-item"><a href="index.php?page=mfa_setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="/mfa/setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
     <li class="breadcrumb-item" aria-current="page">{% trans %}Email Verification{% endtrans %}</li>
   </ol>
 </nav>
@@ -17,7 +17,7 @@
           <p class="small">{% trans %}A verification code has been sent to your email address.{% endtrans %} <strong>{{ email }}</strong></p>
           <p class="small mb-4">{% trans %}Please enter the 6-digit code to verify and enable Multi-Factor Authentication.{% endtrans %}</p>
           
-          <form method="post" action="index.php?page=mfa_setup" class="needs-validation" novalidate>
+          <form method="post" action="/mfa/setup" class="needs-validation" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             
             <div class="mb-3">
@@ -36,7 +36,7 @@
             </div>
             
             <div class="d-flex justify-content-between">
-              <a href="index.php?page=mfa_setup" class="btn btn-sm btn-outline-secondary">{% trans %}Cancel{% endtrans %}</a>
+              <a href="/mfa/setup" class="btn btn-sm btn-outline-secondary">{% trans %}Cancel{% endtrans %}</a>
               <button type="submit" name="verify_email" class="btn btn-sm btn-primary">{% trans %}Verify and Enable MFA{% endtrans %}</button>
             </div>
           </form>

@@ -12,7 +12,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
-                <form id="deleteConfirmForm" method="post" action="index.php?page=database_consistency" style="display: inline;">
+                <form id="deleteConfirmForm" method="post" action="/tools/database-consistency" style="display: inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <input type="hidden" name="check_type" id="deleteCheckType" value="">
                     <input type="hidden" name="action" value="delete">
@@ -25,7 +25,7 @@
 </div>
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Database Consistency Check{% endtrans %}</li>
     </ol>
 </nav>
@@ -69,7 +69,7 @@
                                         <td>{{ zone.name }}</td>
                                         <td>{{ zone.owner|default('(none)') }}</td>
                                         <td>
-                                            <form method="post" action="index.php?page=database_consistency" style="display: inline;">
+                                            <form method="post" action="/tools/database-consistency" style="display: inline;">
                                                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                                                 <input type="hidden" name="check_type" value="zones_without_owners">
                                                 <input type="hidden" name="action" value="fix">
@@ -219,7 +219,7 @@
                                         <td>{{ zone.zone_name }}</td>
                                         <td><span class="badge bg-danger">{{ zone.soa_count }}</span></td>
                                         <td>
-                                            <form method="post" action="index.php?page=database_consistency" style="display: inline;">
+                                            <form method="post" action="/tools/database-consistency" style="display: inline;">
                                                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                                                 <input type="hidden" name="check_type" value="duplicate_soa">
                                                 <input type="hidden" name="action" value="fix">
@@ -268,7 +268,7 @@
                                         <td>{{ zone.name }}</td>
                                         <td><span class="badge bg-secondary">{{ zone.type }}</span></td>
                                         <td>
-                                            <form method="post" action="index.php?page=database_consistency" style="display: inline;">
+                                            <form method="post" action="/tools/database-consistency" style="display: inline;">
                                                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                                                 <input type="hidden" name="check_type" value="zones_without_soa">
                                                 <input type="hidden" name="action" value="fix">

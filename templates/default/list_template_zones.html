@@ -1,8 +1,8 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=list_zone_templ">{% trans %}Zone templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Zones using template{% endtrans %} "{{ template.name }}"</li>
     </ol>
 </nav>
@@ -119,7 +119,7 @@
     <div class="card-footer py-3">
         <div class="d-flex justify-content-between">
             <div>
-                <a class="btn btn-secondary btn-sm" href="index.php?page=list_zone_templ">
+                <a class="btn btn-secondary btn-sm" href="/zones/templates">
                     <i class="bi bi-arrow-left me-1 text-white"></i>{% trans %}Back to templates{% endtrans %}
                 </a>
             </div>

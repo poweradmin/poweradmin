@@ -13,7 +13,7 @@
           </div>
           {% endif %}
           
-          <form method="post" action="index.php?page=mfa_verify" class="needs-validation" novalidate>
+          <form method="post" action="/mfa/verify" class="needs-validation" novalidate>
             <input type="hidden" name="mfa_token" value="{{ mfa_token }}">
             <input type="hidden" name="username" value="{{ username }}">
             
@@ -87,7 +87,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="post" action="index.php?page=mfa_verify" class="needs-validation" novalidate>
+        <form method="post" action="/mfa/verify" class="needs-validation" novalidate>
           <input type="hidden" name="mfa_token" value="{{ mfa_token }}">
           <input type="hidden" name="username" value="{{ username }}">
           

@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Zone templates{% endtrans %}</li>
     </ol>
 </nav>
@@ -122,7 +122,7 @@
     </div>
     <div class="card-footer py-3">
         {% if perm_zone_templ_add or perm_is_godlike %}
-        <a class="btn btn-primary btn-sm" href="index.php?page=add_zone_templ">
+        <a class="btn btn-primary btn-sm" href="/zones/templates/add">
             <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone template{% endtrans %}
         </a>
         {% endif %}

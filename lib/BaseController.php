@@ -99,7 +99,7 @@ abstract class BaseController
                 // Ensure session is written before redirecting
                 session_write_close();
 
-                header("Location: index.php?page=mfa_verify");
+                header("Location: /mfa/verify");
                 exit;
             }
         }
@@ -278,9 +278,18 @@ abstract class BaseController
      * @param string $script The script to redirect to.
      * @param array $args The arguments to pass to the script.
      */
-    public function redirect(string $script, array $args = []): void
+    public function redirect(string $url, array $args = []): void
     {
-        $url = $this->buildUrl($script, $args);
+        // Clean URL implementation - all URLs should start with '/'
+        if (!str_starts_with($url, '/')) {
+            throw new \InvalidArgumentException("URL must start with '/'. Got: $url");
+        }
+
+        // Add query parameters if provided
+        if (!empty($args)) {
+            $url .= '?' . http_build_query($args);
+        }
+
         $this->sendRedirect($url);
     }
 

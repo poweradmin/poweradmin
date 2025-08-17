@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-    <li class="breadcrumb-item"><a href="index.php?page=mfa_setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="/mfa/setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
     <li class="breadcrumb-item" aria-current="page">{% trans %}Recovery Codes{% endtrans %}</li>
   </ol>
 </nav>
@@ -59,16 +59,16 @@
           
           <div class="d-flex gap-2 justify-content-between">
             <div>
-              <a href="index.php?page=mfa_setup" class="btn btn-sm btn-outline-secondary">{% trans %}Back to MFA Settings{% endtrans %}</a>
+              <a href="/mfa/setup" class="btn btn-sm btn-outline-secondary">{% trans %}Back to MFA Settings{% endtrans %}</a>
             </div>
             <div>
-              <form method="post" action="index.php?page=mfa_setup" class="d-inline-block me-2">
+              <form method="post" action="/mfa/setup" class="d-inline-block me-2">
                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                 <button type="submit" name="disable_mfa" class="btn btn-sm btn-outline-danger">
                   {% trans %}Disable MFA{% endtrans %}
                 </button>
               </form>
-              <a href="index.php" class="btn btn-sm btn-primary">{% trans %}Continue to Dashboard{% endtrans %}</a>
+              <a href="/" class="btn btn-sm btn-primary">{% trans %}Continue to Dashboard{% endtrans %}</a>
             </div>
           </div>
         </div>

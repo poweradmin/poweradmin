@@ -11,7 +11,7 @@
         <h5 class="mb-0">{% trans %}Log in{% endtrans %}</h5>
     </div>
     <div class="card-body p-4">
-        <form class="needs-validation" method="post" action="index.php" novalidate>
+        <form class="needs-validation" method="post" action="/login" novalidate>
             <input type="hidden" name="_token" value="{{ login_token }}">
             <input type="hidden" name="query_string" value="{{ query_string }}">
             <div class="mb-3">

@@ -238,7 +238,7 @@ class ResetPasswordController extends BaseController
 
             // Set success message and redirect to login
             $this->setMessage('login', 'success', 'Your password has been successfully reset. You can now log in with your new password.');
-            $this->redirect('index.php', ['page' => 'login']);
+            $this->redirect('/login');
             return;
         } else {
             $this->logger->error('Password reset failed at final step', [

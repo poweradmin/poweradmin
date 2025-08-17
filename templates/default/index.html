@@ -45,7 +45,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}My Profile{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Edit your account details{% endtrans %}</p>
-                <a href="index.php?page=edit_user&id={{ user_id }}" class="btn btn-light btn-sm mt-2" data-testid="edit-profile-link">
+                <a href="/users/{{ user_id }}/edit" class="btn btn-light btn-sm mt-2" data-testid="edit-profile-link">
                     <span class="d-none d-lg-inline">{% trans %}Edit profile{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Profile{% endtrans %}</span>
                 </a>
@@ -62,7 +62,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Search{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Find zones and records{% endtrans %}</p>
-                <a href="index.php?page=search" class="btn btn-light btn-sm mt-2" data-testid="search-link">
+                <a href="/search" class="btn btn-light btn-sm mt-2" data-testid="search-link">
                     <span class="d-none d-lg-inline">{% trans %}Search zones{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Search{% endtrans %}</span>
                 </a>
@@ -79,7 +79,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Forward Zones{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Manage forward DNS zones{% endtrans %}</p>
-                <a href="index.php?page=list_forward_zones" class="btn btn-light btn-sm mt-2" data-testid="list-forward-zones-link">
+                <a href="/zones/forward" class="btn btn-light btn-sm mt-2" data-testid="list-forward-zones-link">
                     <span class="d-none d-lg-inline">{% trans %}List forward zones{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Forward Zones{% endtrans %}</span>
                 </a>
@@ -97,7 +97,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Reverse Zones{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Manage reverse DNS zones{% endtrans %}</p>
-                <a href="index.php?page=list_reverse_zones" class="btn btn-light btn-sm mt-2" data-testid="list-reverse-zones-link">
+                <a href="/zones/reverse" class="btn btn-light btn-sm mt-2" data-testid="list-reverse-zones-link">
                     <span class="d-none d-lg-inline">{% trans %}List reverse zones{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Reverse Zones{% endtrans %}</span>
                 </a>
@@ -115,7 +115,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Templates{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Manage zone templates{% endtrans %}</p>
-                <a href="index.php?page=list_zone_templ" class="btn btn-light btn-sm mt-2" data-testid="list-zone-templates-link">
+                <a href="/zones/templates" class="btn btn-light btn-sm mt-2" data-testid="list-zone-templates-link">
                     <span class="d-none d-lg-inline">{% trans %}List zone templates{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Templates{% endtrans %}</span>
                 </a>
@@ -149,7 +149,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Master Zone{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Create new master zone{% endtrans %}</p>
-                <a href="index.php?page=add_zone_master" class="btn btn-light btn-sm mt-2" data-testid="add-master-zone-link">
+                <a href="/zones/add/master" class="btn btn-light btn-sm mt-2" data-testid="add-master-zone-link">
                     <span class="d-none d-lg-inline">{% trans %}Add master zone{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Add Master{% endtrans %}</span>
                 </a>
@@ -166,7 +166,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Slave Zone{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Add new slave zone{% endtrans %}</p>
-                <a href="index.php?page=add_zone_slave" class="btn btn-light btn-sm mt-2" data-testid="add-slave-zone-link">
+                <a href="/zones/add/slave" class="btn btn-light btn-sm mt-2" data-testid="add-slave-zone-link">
                     <span class="d-none d-lg-inline">{% trans %}Add slave zone{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Add Slave{% endtrans %}</span>
                 </a>
@@ -200,7 +200,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Bulk Registration{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Register multiple domains at once{% endtrans %}</p>
-                <a href="index.php?page=bulk_registration" class="btn btn-light btn-sm mt-2" data-testid="bulk-registration-link">
+                <a href="/zones/bulk-registration" class="btn btn-light btn-sm mt-2" data-testid="bulk-registration-link">
                     <span class="d-none d-lg-inline">{% trans %}Bulk domain registration{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Registration{% endtrans %}</span>
                 </a>
@@ -217,7 +217,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}PTR Records{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Manage reverse DNS records{% endtrans %}</p>
-                <a href="index.php?page=batch_ptr_record" class="btn btn-light btn-sm mt-2" data-testid="batch-ptr-records-link">
+                <a href="/zones/batch-ptr" class="btn btn-light btn-sm mt-2" data-testid="batch-ptr-records-link">
                     <span class="d-none d-lg-inline">{% trans %}Batch PTR Records{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}PTR Records{% endtrans %}</span>
                 </a>
@@ -234,7 +234,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Zone Logs{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}View zone change history{% endtrans %}</p>
-                <a href="index.php?page=list_log_zones" class="btn btn-light btn-sm mt-2" data-testid="zone-logs-link">
+                <a href="/zones/logs" class="btn btn-light btn-sm mt-2" data-testid="zone-logs-link">
                     <span class="d-none d-lg-inline">{% trans %}View zone logs{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Zone Logs{% endtrans %}</span>
                 </a>
@@ -252,7 +252,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}User Logs{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}View user activity history{% endtrans %}</p>
-                <a href="index.php?page=list_log_users" class="btn btn-light btn-sm mt-2" data-testid="user-logs-link">
+                <a href="/users/logs" class="btn btn-light btn-sm mt-2" data-testid="user-logs-link">
                     <span class="d-none d-lg-inline">{% trans %}View user logs{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}User Logs{% endtrans %}</span>
                 </a>
@@ -270,7 +270,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Password{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Update your account password{% endtrans %}</p>
-                <a href="index.php?page=change_password" class="btn btn-light btn-sm mt-2" data-testid="change-password-link">
+                <a href="/password/change" class="btn btn-light btn-sm mt-2" data-testid="change-password-link">
                     <span class="d-none d-lg-inline">{% trans %}Change password{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Password{% endtrans %}</span>
                 </a>
@@ -287,7 +287,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Users{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Manage system users and access{% endtrans %}</p>
-                <a href="index.php?page=users" class="btn btn-light btn-sm mt-2" data-testid="user-administration-link">
+                <a href="/users" class="btn btn-light btn-sm mt-2" data-testid="user-administration-link">
                     <span class="d-none d-lg-inline">{% trans %}User administration{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Users{% endtrans %}</span>
                 </a>
@@ -304,7 +304,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Permissions{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Manage permission templates{% endtrans %}</p>
-                <a href="index.php?page=list_perm_templ" class="btn btn-light btn-sm mt-2" data-testid="list-permission-templates-link">
+                <a href="/permissions/templates" class="btn btn-light btn-sm mt-2" data-testid="list-permission-templates-link">
                     <span class="d-none d-lg-inline">{% trans %}Permissions{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Permissions{% endtrans %}</span>
                 </a>
@@ -320,7 +320,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Logout{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}End your session{% endtrans %}</p>
-                <a href="index.php?page=logout" class="btn btn-light btn-sm mt-2" data-testid="logout-link">
+                <a href="/logout" class="btn btn-light btn-sm mt-2" data-testid="logout-link">
                     <span>{% trans %}Logout{% endtrans %}</span>
                 </a>
             </div>
@@ -335,7 +335,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}WHOIS{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Lookup domain WHOIS information{% endtrans %}</p>
-                <a href="index.php?page=whois" class="btn btn-light btn-sm mt-2" data-testid="whois-link">
+                <a href="/whois" class="btn btn-light btn-sm mt-2" data-testid="whois-link">
                     <span class="d-none d-lg-inline">{% trans %}WHOIS Lookup{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}WHOIS{% endtrans %}</span>
                 </a>
@@ -352,7 +352,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}RDAP{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Lookup domain RDAP information{% endtrans %}</p>
-                <a href="index.php?page=rdap" class="btn btn-light btn-sm mt-2" data-testid="rdap-link">
+                <a href="/rdap" class="btn btn-light btn-sm mt-2" data-testid="rdap-link">
                     <span class="d-none d-lg-inline">{% trans %}RDAP Lookup{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}RDAP{% endtrans %}</span>
                 </a>
@@ -369,7 +369,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}API Keys{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Manage API access keys{% endtrans %}</p>
-                <a href="index.php?page=api_keys" class="btn btn-light btn-sm mt-2" data-testid="api-keys-link">
+                <a href="/api/keys" class="btn btn-light btn-sm mt-2" data-testid="api-keys-link">
                     <span class="d-none d-lg-inline">{% trans %}Manage API Keys{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}API Keys{% endtrans %}</span>
                 </a>
@@ -386,7 +386,7 @@
             <div class="card-body d-flex flex-column justify-content-between">
                 <h6 class="card-title text-center text-truncate d-none d-md-block">{% trans %}Database Consistency{% endtrans %}</h6>
                 <p class="card-text small text-muted text-center d-none d-lg-block">{% trans %}Check database integrity{% endtrans %}</p>
-                <a href="index.php?page=database_consistency" class="btn btn-light btn-sm mt-2" data-testid="database-consistency-link">
+                <a href="/tools/database-consistency" class="btn btn-light btn-sm mt-2" data-testid="database-consistency-link">
                     <span class="d-none d-lg-inline">{% trans %}Check Database{% endtrans %}</span>
                     <span class="d-lg-none">{% trans %}Check DB{% endtrans %}</span>
                 </a>

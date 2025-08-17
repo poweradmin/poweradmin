@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item">{% trans %}Zones{% endtrans %}</li>
         <li class="breadcrumb-item active" aria-current="page">{% trans %}Reverse Zones{% endtrans %}</li>
     </ol>
@@ -10,18 +10,18 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <strong><i class="bi bi-diagram-3 me-2"></i>{% trans %}Reverse Zones{% endtrans %}</strong>
-            <a href="index.php?page=list_forward_zones" class="btn btn-sm btn-outline-secondary ms-3">
+            <a href="/zones/forward" class="btn btn-sm btn-outline-secondary ms-3">
                 <i class="bi bi-arrow-left me-1 text-secondary"></i>{% trans %}Forward Zones{% endtrans %}
             </a>
         </div>
         <div>
             {% if perm_zone_master_add %}
-            <a href="index.php?page=add_zone_master" class="btn btn-primary btn-sm">
+            <a href="/zones/add/master" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add master zone{% endtrans %}
             </a>
             {% endif %}
             {% if perm_zone_slave_add %}
-            <a href="index.php?page=add_zone_slave" class="btn btn-secondary btn-sm">
+            <a href="/zones/add/slave" class="btn btn-secondary btn-sm">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add slave zone{% endtrans %}
             </a>
             {% endif %}
@@ -224,7 +224,7 @@
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 {% if perm_edit == "all" or (perm_edit == "own" and user_is_zone_owner) %}
-                                <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_domain&id={{ zone['id'] }}" data-testid="delete-zone-{{ zone['id'] }}">
+                                <a class="btn btn-outline-danger btn-sm" href="/zones/{{ zone['id'] }}/delete" data-testid="delete-zone-{{ zone['id'] }}">
                                     <i class="bi bi-trash text-danger"></i>
                                 </a>
                                 {% endif %}

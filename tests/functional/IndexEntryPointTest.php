@@ -152,16 +152,22 @@ class IndexEntryPointTest extends TestCase
      */
     public function testRouterIntegration(): void
     {
-        // Test that BasicRouter class exists and is loadable
+        // Test that SymfonyRouter class exists and is loadable
         $this->assertTrue(
-            class_exists('Poweradmin\Application\Routing\BasicRouter'),
-            'BasicRouter should be available'
+            class_exists('Poweradmin\Application\Routing\SymfonyRouter'),
+            'SymfonyRouter should be available'
         );
 
-        // Test router instantiation with empty request
-        $_REQUEST = [];
-        $router = new \Poweradmin\Application\Routing\BasicRouter($_REQUEST);
-        $this->assertInstanceOf('Poweradmin\Application\Routing\BasicRouter', $router);
+        // Set up minimal $_SERVER variables for SymfonyRouter
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['SERVER_NAME'] = 'localhost';
+        $_SERVER['SERVER_PORT'] = '80';
+        $_SERVER['HTTPS'] = '';
+        $_SERVER['REQUEST_URI'] = '/';
+
+        // Test router instantiation
+        $router = new \Poweradmin\Application\Routing\SymfonyRouter();
+        $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
     }
 
     /**
@@ -211,7 +217,7 @@ class IndexEntryPointTest extends TestCase
     public function testAutoloadingIntegration(): void
     {
         $requiredClasses = [
-            'Poweradmin\Application\Routing\BasicRouter',
+            'Poweradmin\Application\Routing\SymfonyRouter',
             'Poweradmin\Infrastructure\Configuration\ConfigurationManager',
             'Poweradmin\Pages',
             'Poweradmin\BaseController',
@@ -232,21 +238,27 @@ class IndexEntryPointTest extends TestCase
     public function testRequestProcessingFlow(): void
     {
         // Set up a test request
-        $_REQUEST = ['page' => 'dashboard'];
-        $_SERVER['REQUEST_URI'] = '/dashboard';
+        $_SERVER['REQUEST_URI'] = '/';
         $_SERVER['HTTP_ACCEPT'] = 'text/html';
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['SERVER_NAME'] = 'localhost';
+        $_SERVER['SERVER_PORT'] = '80';
+        $_SERVER['HTTPS'] = '';
 
         // Test BaseController JSON detection
         $expectsJson = \Poweradmin\BaseController::expectsJson();
-        $this->assertFalse($expectsJson, 'Dashboard request should not expect JSON');
+        $this->assertFalse($expectsJson, 'Home page request should not expect JSON');
 
         // Test router setup
-        $router = new \Poweradmin\Application\Routing\BasicRouter($_REQUEST);
-        $router->setDefaultPage('index');
-        $router->setPages(\Poweradmin\Pages::getPages());
+        $router = new \Poweradmin\Application\Routing\SymfonyRouter();
 
         // Verify router is properly configured
-        $this->assertInstanceOf('Poweradmin\Application\Routing\BasicRouter', $router);
+        $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
+
+        // Test route matching
+        $routeInfo = $router->match();
+        $this->assertIsArray($routeInfo);
+        $this->assertArrayHasKey('controller', $routeInfo);
     }
 
     /**
@@ -256,9 +268,16 @@ class IndexEntryPointTest extends TestCase
     {
         $memoryBefore = memory_get_usage();
 
+        // Set up minimal $_SERVER for SymfonyRouter
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['SERVER_NAME'] = 'localhost';
+        $_SERVER['SERVER_PORT'] = '80';
+        $_SERVER['HTTPS'] = '';
+        $_SERVER['REQUEST_URI'] = '/';
+
         // Simulate key initialization steps
         \Poweradmin\Infrastructure\Configuration\ConfigurationManager::getInstance();
-        $router = new \Poweradmin\Application\Routing\BasicRouter([]);
+        $router = new \Poweradmin\Application\Routing\SymfonyRouter();
         $pages = \Poweradmin\Pages::getPages();
         \Poweradmin\BaseController::expectsJson();
 
@@ -351,9 +370,17 @@ class IndexEntryPointTest extends TestCase
             ['page' => 'zones', 'action' => 'edit'],
         ];
 
+        // Set up $_SERVER for SymfonyRouter
+        $_SERVER['REQUEST_METHOD'] = 'GET';
+        $_SERVER['SERVER_NAME'] = 'localhost';
+        $_SERVER['SERVER_PORT'] = '80';
+        $_SERVER['HTTPS'] = '';
+
         foreach ($testRequests as $request) {
-            $router = new \Poweradmin\Application\Routing\BasicRouter($request);
-            $this->assertInstanceOf('Poweradmin\Application\Routing\BasicRouter', $router);
+            // SymfonyRouter doesn't take request in constructor, uses $_SERVER
+            $_SERVER['REQUEST_URI'] = $request['page'] ?? '/';
+            $router = new \Poweradmin\Application\Routing\SymfonyRouter();
+            $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
         }
 
         // BaseController JSON detection

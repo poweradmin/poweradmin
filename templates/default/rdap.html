@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}RDAP Lookup{% endtrans %}</li>
     </ol>
 </nav>
@@ -11,7 +11,7 @@
     </div>
 
     <div class="card-body">
-        <form method="post" action="index.php?page=rdap">
+        <form method="post" action="/rdap">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             
             <div class="row mb-3">

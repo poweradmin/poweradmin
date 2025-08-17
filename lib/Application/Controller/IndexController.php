@@ -50,7 +50,7 @@ class IndexController extends BaseController
     {
         // Check if user is logged in; if not, redirect to login page
         if (!$this->userContextService->isAuthenticated()) {
-            $this->redirect('index.php', ['page' => 'login']);
+            $this->redirect('/login');
             return;
         }
 

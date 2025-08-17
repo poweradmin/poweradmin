@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Search{% endtrans %}</li>
     </ol>
 </nav>
@@ -14,7 +14,7 @@
         <strong><i class="bi bi-search me-2"></i>{% trans %}DNS Search{% endtrans %}</strong>
     </div>
     <div class="card-body py-2">
-        <form class="needs-validation" name="search_form" action="index.php?page=search" method="POST" onsubmit="checkQueryChange(this);" novalidate>
+        <form class="needs-validation" name="search_form" action="/search" method="POST" onsubmit="checkQueryChange(this);" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="zone_sort_by" value="{{ zone_sort_by }}">
             <input type="hidden" name="record_sort_by" value="{{ record_sort_by }}">
@@ -217,7 +217,7 @@
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 <a class="btn btn-sm btn-outline-danger"
-                                href="index.php?page=delete_domain&id={{ zone['id'] }}">
+                                href="/zones/{{ zone['id'] }}/delete">
                                     <i class="bi bi-trash text-danger"></i>
                                 </a>
                                 {% endif %}

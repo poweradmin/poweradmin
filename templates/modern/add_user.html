@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=users">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/users">{% trans %}Users{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Add user{% endtrans %}</li>
     </ol>
 </nav>
@@ -13,7 +13,7 @@
                 <strong><i class="bi bi-person-plus me-2"></i>{% trans %}Add User{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="index.php?page=add_user" novalidate>
+                <form class="needs-validation" method="post" action="/users/add" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     
                     <div class="mb-3">
@@ -111,7 +111,7 @@
                             <button type="submit" class="btn btn-primary btn-sm" name="commit">
                                 <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add User{% endtrans %}
                             </button>
-                            <a href="index.php?page=users" class="btn btn-secondary btn-sm">
+                            <a href="/users" class="btn btn-secondary btn-sm">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                             </a>
                         </div>

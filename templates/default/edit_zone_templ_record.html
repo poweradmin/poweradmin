@@ -1,14 +1,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item">
         {% if is_reverse_zone %}
-        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        <a href="/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
         {% else %}
-        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
-        <li class="breadcrumb-item"><a href="index.php?page=list_zone_templ">{% trans %}Zone templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=edit_zone_templ&id={{ zone_templ_id }}">{{ templ_details['name'] }}</a>
         </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Edit record{% endtrans %}</li>

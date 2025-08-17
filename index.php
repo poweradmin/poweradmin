@@ -20,70 +20,78 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-use Poweradmin\Application\Controller\NotFoundController;
-use Poweradmin\Application\Routing\BasicRouter;
-use Poweradmin\BaseController;
+use Poweradmin\Application\Routing\SymfonyRouter;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Pages;
 
 require __DIR__ . '/vendor/autoload.php';
-
 require_once __DIR__ . '/lib/Application/Helpers/StartupHelpers.php';
 require_once __DIR__ . '/lib/Domain/Model/TopLevelDomainInit.php';
 
+// Initialize configuration
 $configManager = ConfigurationManager::getInstance();
 $configManager->initialize();
 
+// Initialize session
 initializeSession();
 
-$router = new BasicRouter($_REQUEST);
-
-$router->setDefaultPage('index');
-$router->setPages(Pages::getPages());
+// Create and process routes
+$router = new SymfonyRouter();
 
 try {
-    $expectsJson = BaseController::expectsJson();
-
-    if ($expectsJson) {
-        ini_set('display_errors', 0);
-        error_reporting(E_ALL);
-    }
-
+    // Process the request
     $router->process();
 } catch (Exception $e) {
     error_log($e->getMessage());
     error_log($e->getTraceAsString());
 
-    $expectsJson = BaseController::expectsJson();
+    // Check if request expects JSON response
+    $expectsJson = (
+        str_contains($_SERVER['REQUEST_URI'] ?? '', '/api/') ||
+        str_contains($_SERVER['HTTP_ACCEPT'] ?? '', 'application/json') ||
+        (isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+         strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest')
+    );
 
-    if (str_contains($e->getMessage(), 'Class') && str_contains($e->getMessage(), 'not found')) {
-        http_response_code(404);
+    if ($expectsJson) {
+        header('Content-Type: application/json');
 
-        try {
-            $notFoundController = new NotFoundController($_REQUEST);
-            $notFoundController->run();
-        } catch (Exception $notFoundError) {
-            error_log('Error in NotFoundController: ' . $notFoundError->getMessage());
-
-            if ($expectsJson) {
-                sendJsonError('Page not found');
-            } else {
-                echo 'Page not found.';
-            }
-        }
-    } elseif ($expectsJson || $configManager->get('misc', 'display_errors', false)) {
-        if ($expectsJson) {
-            $showDebug = $configManager->get('misc', 'display_errors', false);
-            sendJsonError(
-                $e->getMessage(),
-                $showDebug ? $e->getFile() : null,
-                $showDebug ? $e->getLine() : null,
-                $showDebug ? explode("\n", $e->getTraceAsString()) : null
-            );
+        if ($e->getCode() === 404 || str_contains($e->getMessage(), 'not found')) {
+            http_response_code(404);
+            echo json_encode([
+                'error' => true,
+                'message' => 'Endpoint not found'
+            ]);
+        } elseif ($e->getCode() === 405) {
+            http_response_code(405);
+            echo json_encode([
+                'error' => true,
+                'message' => 'Method not allowed'
+            ]);
         } else {
-            displayHtmlError($e);
+            http_response_code(500);
+            $showDebug = $configManager->get('misc', 'display_errors', false);
+            echo json_encode([
+                'error' => true,
+                'message' => $showDebug ? $e->getMessage() : 'Internal server error',
+                'file' => $showDebug ? $e->getFile() : null,
+                'line' => $showDebug ? $e->getLine() : null,
+                'trace' => $showDebug ? explode("\n", $e->getTraceAsString()) : null
+            ]);
         }
     } else {
-        echo 'An error occurred while processing the request.';
+        // HTML error response
+        if ($e->getCode() === 404 || str_contains($e->getMessage(), 'not found')) {
+            http_response_code(404);
+            try {
+                $notFoundController = new \Poweradmin\Application\Controller\NotFoundController([]);
+                $notFoundController->run();
+            } catch (Exception $notFoundError) {
+                echo 'Page not found.';
+            }
+        } elseif ($configManager->get('misc', 'display_errors', false)) {
+            displayHtmlError($e);
+        } else {
+            echo 'An error occurred while processing the request.';
+        }
     }
 }

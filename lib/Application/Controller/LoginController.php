@@ -36,7 +36,9 @@ class LoginController extends BaseController
 
     public function __construct(array $request)
     {
-        parent::__construct($request, false);
+        // Only authenticate on POST requests (when form is submitted)
+        $authenticate = $_SERVER['REQUEST_METHOD'] === 'POST';
+        parent::__construct($request, $authenticate);
 
         $this->localeService = new LocaleService();
         $this->localePresenter = new LocalePresenter();
@@ -45,6 +47,12 @@ class LoginController extends BaseController
 
     public function run(): void
     {
+        // If user is already authenticated, redirect to index
+        if (isset($_SESSION['userid'])) {
+            $this->redirect('/');
+            return;
+        }
+
         $localesData = $this->getLocalesData();
         $preparedLocales = $this->localeService->prepareLocales($localesData, $this->config->get('interface', 'language', 'en_EN'));
 

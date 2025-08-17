@@ -1,0 +1,297 @@
+# Poweradmin Routes Configuration
+
+# Home and Authentication
+home:
+  path: /
+  controller: Poweradmin\Application\Controller\IndexController::run
+
+login:
+  path: /login
+  controller: Poweradmin\Application\Controller\LoginController::run
+  methods: [GET, POST]
+
+logout:
+  path: /logout
+  controller: Poweradmin\Application\Controller\LogoutController::run
+
+# Multi-Factor Authentication
+mfa_setup:
+  path: /mfa/setup
+  controller: Poweradmin\Application\Controller\MfaSetupController::run
+  methods: [GET, POST]
+
+mfa_verify:
+  path: /mfa/verify
+  controller: Poweradmin\Application\Controller\MfaVerifyController::run
+  methods: [GET, POST]
+
+# User Agreement
+user_agreement:
+  path: /user-agreement
+  controller: Poweradmin\Application\Controller\UserAgreementController::run
+  methods: [GET, POST]
+
+# User Management
+users:
+  path: /users
+  controller: Poweradmin\Application\Controller\UsersController::run
+
+user_add:
+  path: /users/add
+  controller: Poweradmin\Application\Controller\AddUserController::run
+  methods: [GET, POST]
+
+user_edit:
+  path: /users/{id}/edit
+  controller: Poweradmin\Application\Controller\EditUserController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+user_delete:
+  path: /users/{id}/delete
+  controller: Poweradmin\Application\Controller\DeleteUserController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+# Password Management
+change_password:
+  path: /password/change
+  controller: Poweradmin\Application\Controller\ChangePasswordController::run
+  methods: [GET, POST]
+
+reset_password:
+  path: /password/reset
+  controller: Poweradmin\Application\Controller\ResetPasswordController::run
+  methods: [GET, POST]
+
+# Zone Management
+zones_forward:
+  path: /zones/forward
+  controller: Poweradmin\Application\Controller\ListForwardZonesController::run
+
+zones_reverse:
+  path: /zones/reverse
+  controller: Poweradmin\Application\Controller\ListReverseZonesController::run
+
+zones_template:
+  path: /zones/template
+  controller: Poweradmin\Application\Controller\ListTemplateZonesController::run
+
+zone_add_master:
+  path: /zones/add/master
+  controller: Poweradmin\Application\Controller\AddZoneMasterController::run
+  methods: [GET, POST]
+
+zone_add_slave:
+  path: /zones/add/slave
+  controller: Poweradmin\Application\Controller\AddZoneSlaveController::run
+  methods: [GET, POST]
+
+zone_edit:
+  path: /zones/{id}/edit
+  controller: Poweradmin\Application\Controller\EditController::run
+  requirements:
+    id: '\d+'
+
+zone_delete:
+  path: /zones/{id}/delete
+  controller: Poweradmin\Application\Controller\DeleteDomainController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+bulk_registration:
+  path: /zones/bulk-registration
+  controller: Poweradmin\Application\Controller\BulkRegistrationController::run
+  methods: [GET, POST]
+
+batch_ptr:
+  path: /zones/batch-ptr
+  controller: Poweradmin\Application\Controller\BatchPtrRecordController::run
+  methods: [GET, POST]
+
+zones_logs:
+  path: /zones/logs
+  controller: Poweradmin\Application\Controller\ListLogZonesController::run
+
+zones_templates:
+  path: /zones/templates
+  controller: Poweradmin\Application\Controller\ListZoneTemplController::run
+
+zone_template_add:
+  path: /zones/templates/add
+  controller: Poweradmin\Application\Controller\AddZoneTemplController::run
+  methods: [GET, POST]
+
+# Record Management
+record_add:
+  path: /zones/{zone_id}/records/add
+  controller: Poweradmin\Application\Controller\AddRecordController::run
+  requirements:
+    zone_id: '\d+'
+  methods: [GET, POST]
+
+record_edit:
+  path: /zones/{zone_id}/records/{id}/edit
+  controller: Poweradmin\Application\Controller\EditRecordController::run
+  requirements:
+    zone_id: '\d+'
+    id: '\d+'
+  methods: [GET, POST]
+
+record_delete:
+  path: /zones/{zone_id}/records/{id}/delete
+  controller: Poweradmin\Application\Controller\DeleteRecordController::run
+  requirements:
+    zone_id: '\d+'
+    id: '\d+'
+  methods: [GET, POST]
+
+# Permission Templates
+list_perm_templ:
+  path: /permissions/templates
+  controller: Poweradmin\Application\Controller\ListPermTemplController::run
+
+add_perm_templ:
+  path: /permissions/templates/add
+  controller: Poweradmin\Application\Controller\AddPermTemplController::run
+  methods: [GET, POST]
+
+edit_perm_templ:
+  path: /permissions/templates/{id}/edit
+  controller: Poweradmin\Application\Controller\EditPermTemplController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+# User Logs
+users_logs:
+  path: /users/logs
+  controller: Poweradmin\Application\Controller\ListLogUsersController::run
+
+# DNSSEC Management
+dnssec:
+  path: /zones/{id}/dnssec
+  controller: Poweradmin\Application\Controller\DnssecController::run
+  requirements:
+    id: '\d+'
+
+dnssec_add_key:
+  path: /zones/{id}/dnssec/keys/add
+  controller: Poweradmin\Application\Controller\DnssecAddKeyController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+dnssec_edit_key:
+  path: /zones/{zone_id}/dnssec/keys/{key_id}/edit
+  controller: Poweradmin\Application\Controller\DnssecEditKeyController::run
+  requirements:
+    zone_id: '\d+'
+    key_id: '\d+'
+  methods: [GET, POST]
+
+# Search
+search:
+  path: /search
+  controller: Poweradmin\Application\Controller\SearchController::run
+  methods: [GET, POST]
+
+# Utilities
+whois:
+  path: /whois
+  controller: Poweradmin\Application\Controller\WhoisController::run
+
+rdap:
+  path: /rdap
+  controller: Poweradmin\Application\Controller\RdapController::run
+
+# Tools
+api_keys:
+  path: /api/keys
+  controller: Poweradmin\Application\Controller\ApiKeysController::run
+  methods: [GET, POST]
+
+database_consistency:
+  path: /tools/database-consistency
+  controller: Poweradmin\Application\Controller\DatabaseConsistencyController::run
+
+email_previews:
+  path: /tools/email-previews
+  controller: Poweradmin\Application\Controller\EmailPreviewsController::run
+
+# API v1 Routes - RESTful
+api_v1_zones:
+  path: /api/v1/zones
+  controller: Poweradmin\Application\Controller\Api\V1\ZonesController
+  methods: [GET, POST]
+
+api_v1_zone:
+  path: /api/v1/zones/{id}
+  controller: Poweradmin\Application\Controller\Api\V1\ZonesController
+  requirements:
+    id: '\d+'
+  methods: [GET, PUT, DELETE]
+
+api_v1_zone_records:
+  path: /api/v1/zones/{id}/records
+  controller: Poweradmin\Application\Controller\Api\V1\ZonesRecordsController
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_v1_zone_record:
+  path: /api/v1/zones/{zone_id}/records/{record_id}
+  controller: Poweradmin\Application\Controller\Api\V1\ZonesRecordsController
+  requirements:
+    zone_id: '\d+'
+    record_id: '\d+'
+  methods: [GET, PUT, DELETE]
+
+api_v1_users:
+  path: /api/v1/users
+  controller: Poweradmin\Application\Controller\Api\V1\UsersController
+  methods: [GET, POST]
+
+api_v1_user:
+  path: /api/v1/users/{id}
+  controller: Poweradmin\Application\Controller\Api\V1\UsersController
+  requirements:
+    id: '\d+'
+  methods: [GET, PUT, DELETE]
+
+api_v1_permission_templates:
+  path: /api/v1/permission-templates
+  controller: Poweradmin\Application\Controller\Api\V1\PermissionTemplatesController
+  methods: [GET, POST]
+
+api_v1_permission_template:
+  path: /api/v1/permission-templates/{id}
+  controller: Poweradmin\Application\Controller\Api\V1\PermissionTemplatesController
+  requirements:
+    id: '\d+'
+  methods: [GET, PUT, DELETE]
+
+# API Documentation
+api_docs:
+  path: /api/docs
+  controller: Poweradmin\Application\Controller\Api\DocsController::run
+
+api_docs_json:
+  path: /api/docs/json
+  controller: Poweradmin\Application\Controller\Api\Docs\JsonController::run
+
+# Internal API Routes
+api_internal_validation:
+  path: /api/internal/validation
+  controller: Poweradmin\Application\Controller\Api\Internal\ValidationController::run
+
+api_internal_user_preferences:
+  path: /api/internal/user-preferences
+  controller: Poweradmin\Application\Controller\Api\Internal\UserPreferencesController::run
+
+api_internal_zone:
+  path: /api/internal/zone
+  controller: Poweradmin\Application\Controller\Api\Internal\ZoneController::run

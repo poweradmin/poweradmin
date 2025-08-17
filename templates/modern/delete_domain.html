@@ -1,11 +1,11 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item">
         {% if is_reverse_zone %}
-        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        <a href="/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
         {% else %}
-        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
         <li class="breadcrumb-item"><a href="index.php?page=edit&id={{ zone_id }}">
@@ -69,13 +69,13 @@
         {% endif %}
 
         <div class="mt-4">
-            <a href="index.php?page=delete_domain&id={{ zone_id }}&confirm=1" class="btn btn-danger btn-sm" data-testid="confirm-delete-zone">
+            <a href="/zones/{{ zone_id }}&confirm=1/delete" class="btn btn-danger btn-sm" data-testid="confirm-delete-zone">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this zone{% endtrans %}
             </a>
             {% if is_reverse_zone %}
-            <a href="index.php?page=list_reverse_zones" class="btn btn-secondary btn-sm" data-testid="cancel-delete-zone">
+            <a href="/zones/reverse" class="btn btn-secondary btn-sm" data-testid="cancel-delete-zone">
             {% else %}
-            <a href="index.php?page=list_forward_zones" class="btn btn-secondary btn-sm" data-testid="cancel-delete-zone">
+            <a href="/zones/forward" class="btn btn-secondary btn-sm" data-testid="cancel-delete-zone">
             {% endif %}
                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this zone{% endtrans %}
             </a>

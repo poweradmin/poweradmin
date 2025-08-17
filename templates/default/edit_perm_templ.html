@@ -1,8 +1,8 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=users">{% trans %}Users{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=list_perm_templ">{% trans %}Permission templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/users">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/permissions/templates">{% trans %}Permission templates{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Edit{% endtrans %}</li>
     </ol>
 </nav>
@@ -37,7 +37,7 @@
                             <button type="submit" class="btn btn-primary btn-sm" name="commit">
                                 <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update{% endtrans %}
                             </button>
-                            <a href="index.php?page=list_perm_templ" class="btn btn-secondary btn-sm">
+                            <a href="/permissions/templates" class="btn btn-secondary btn-sm">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                             </a>
                         </div>

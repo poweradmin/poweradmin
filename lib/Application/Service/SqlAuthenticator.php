@@ -183,7 +183,7 @@ class SqlAuthenticator extends LoggingService
                 }
 
                 // Redirect to MFA verification page
-                header("Location: index.php?page=mfa_verify", true, 302);
+                header("Location: /mfa/verify", true, 302);
                 exit;
             }
         } else {

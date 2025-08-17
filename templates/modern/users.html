@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Users{% endtrans %}</li>
     </ol>
 </nav>
@@ -9,13 +9,13 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-people me-2"></i>{% trans %}User Administration{% endtrans %}</strong>
         {% if perm_add_new %}
-        <a href="index.php?page=add_user" class="btn btn-primary btn-sm">
+        <a href="/users/add" class="btn btn-primary btn-sm">
             <i class="bi bi-person-plus-fill me-1 text-white"></i>{% trans %}Add user{% endtrans %}
         </a>
         {% endif %}
     </div>
     <div class="card-body p-0">
-        <form method="post" action="index.php?page=users" id="user-form">
+        <form method="post" action="/users" id="user-form">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">
@@ -96,11 +96,11 @@
                         <td class="text-end">
                             <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
                             <div class="gap-2">
-                                <a class="btn btn-sm btn-outline-primary" href="index.php?page=edit_user&id={{ user_uid }}">
+                                <a class="btn btn-sm btn-outline-primary" href="/users/{{ user_uid }}/edit">
                                     <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
                                 </a>
                                 {% if user['uid'] != session_userid %}
-                                <a class="btn btn-sm btn-outline-danger" href="index.php?page=delete_user&id={{ user['uid'] }}">
+                                <a class="btn btn-sm btn-outline-danger" href="/users/{{ user['uid'] }}/delete">
                                     <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
                                 </a>
                                 {% endif %}

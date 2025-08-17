@@ -56,6 +56,7 @@ class SessionAuthenticator extends LoggingService
     private SqlAuthenticator $sqlAuthenticator;
     private LoginAttemptService $loginAttemptService;
     private RecaptchaService $recaptchaService;
+    private RedirectService $redirectService;
 
     public function __construct(PDOCommon $connection, ConfigurationManager $configManager)
     {
@@ -67,8 +68,8 @@ class SessionAuthenticator extends LoggingService
         $this->configManager = $configManager;
 
         $sessionService = new SessionService();
-        $redirectService = new RedirectService();
-        $this->authService = new AuthenticationService($sessionService, $redirectService);
+        $this->redirectService = new RedirectService();
+        $this->authService = new AuthenticationService($sessionService, $this->redirectService);
         $this->csrfTokenService = new CsrfTokenService();
 
         $this->userEventLogger = new UserEventLogger($connection);
@@ -116,14 +117,7 @@ class SessionAuthenticator extends LoggingService
         $login_token_validation = $this->configManager->get('security', 'login_token_validation', true);
         $global_token_validation = $this->configManager->get('security', 'global_token_validation', true);
 
-        if (isset($_SESSION['userid']) && isset($_SERVER["QUERY_STRING"]) && $_SERVER["QUERY_STRING"] == "logout") {
-            $this->logInfo('User {userid} requested logout', ['userid' => $_SESSION['userid']]);
-            $sessionEntity = new SessionEntity(_('You have logged out.'), 'success');
-            $this->authService->logout($sessionEntity);
-
-            $this->logDebug('Logout process completed for user {userid}', ['userid' => $_SESSION['userid']]);
-            return;
-        }
+        // Logout is now handled by LogoutController via /logout route
 
         $login_token = $_POST['_token'] ?? '';
         if (
@@ -238,8 +232,7 @@ class SessionAuthenticator extends LoggingService
             $this->logInfo('User agreement required for user {userid}', ['userid' => $userId]);
 
             // Redirect to agreement page - user will be sent to index after acceptance
-            header('Location: index.php?page=user_agreement');
-            exit;
+            $this->redirectService->redirectTo('/user-agreement');
         }
     }
 

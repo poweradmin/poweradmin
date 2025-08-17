@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=users">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/users">{% trans %}Users{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}User logs{% endtrans %}</li>
     </ol>
 </nav>
@@ -22,7 +22,7 @@
                         <button for="name" type="submit" class="btn btn-primary btn-sm">
                             <i class="bi bi-search me-1 text-white"></i> {% trans %}Search{% endtrans %}
                         </button>
-                        <a href="index.php?page=list_log_users" class="btn btn-secondary btn-sm" role="button">
+                        <a href="/users/logs" class="btn btn-secondary btn-sm" role="button">
                             <i class="bi bi-eraser me-1 text-white"></i> {% trans %}Clear{% endtrans %}
                         </a>
                     </div>

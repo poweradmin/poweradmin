@@ -1,11 +1,11 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item">
         {% if is_reverse_zone %}
-        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        <a href="/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
         {% else %}
-        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Bulk registration{% endtrans %}</li>
@@ -23,7 +23,7 @@
                 <strong><i class="bi bi-collection me-2"></i>{% trans %}Bulk Registration{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="index.php?page=bulk_registration" novalidate>
+                <form class="needs-validation" method="post" action="/zones/bulk-registration" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="mb-3">
@@ -78,7 +78,7 @@
                             <button type="submit" class="btn btn-sm btn-primary" name="submit">
                                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add Zones{% endtrans %}
                             </button>
-                            <a href="index.php?page=list_forward_zones" class="btn btn-sm btn-secondary">
+                            <a href="/zones/forward" class="btn btn-sm btn-secondary">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                             </a>
                         </div>

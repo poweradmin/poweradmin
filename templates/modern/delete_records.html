@@ -1,17 +1,17 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
         {% if zone_id %}
         <li class="breadcrumb-item">
         {% if is_reverse_zone %}
-        <a href="index.php?page=list_reverse_zones">{% trans %}Reverse Zones{% endtrans %}</a>
+        <a href="/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
         {% else %}
-        <a href="index.php?page=list_forward_zones">{% trans %}Forward Zones{% endtrans %}</a>
+        <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
         <li class="breadcrumb-item"><a href="index.php?page=edit&id={{ zone_id }}">{% trans %}Edit zone{% endtrans %}</a></li>
         {% else %}
-        <li class="breadcrumb-item"><a href="index.php?page=search">{% trans %}Search{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/search">{% trans %}Search{% endtrans %}</a></li>
         {% endif %}
         <li class="breadcrumb-item active" aria-current="page">{% trans %}Delete records{% endtrans %}</li>
     </ol>
@@ -86,7 +86,7 @@
             {% if zone_id %}
             <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-secondary btn-sm ms-2">
             {% else %}
-            <a href="index.php?page=search" class="btn btn-secondary btn-sm ms-2">
+            <a href="/search" class="btn btn-secondary btn-sm ms-2">
             {% endif %}
                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
             </a>

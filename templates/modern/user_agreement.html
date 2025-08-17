@@ -21,7 +21,7 @@
                 {% endif %}
             </div>
             
-            <form method="post" action="index.php?page=user_agreement" class="needs-validation" novalidate>
+            <form method="post" action="/user-agreement" class="needs-validation" novalidate>
                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                 <input type="hidden" name="agreement_version" value="{{ agreement_version }}">
                 
@@ -36,7 +36,7 @@
                 </div>
                 
                 <div class="d-flex justify-content-between">
-                    <a href="index.php?page=logout" class="btn btn-outline-secondary btn-sm">
+                    <a href="/logout" class="btn btn-outline-secondary btn-sm">
                         <i class="bi bi-x-circle me-1 text-secondary"></i>
                         {% trans %}Decline & Logout{% endtrans %}
                     </a>

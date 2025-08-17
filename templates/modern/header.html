@@ -42,7 +42,7 @@
 <header class="mb-4">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none" href="index.php">
+            <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none" href="/">
                 {% if custom_header %}
                 {% include ('custom/header.html') %}
                 {% else %}
@@ -63,7 +63,7 @@
     <!-- Left Sidebar -->
     <nav class="sidebar bg-light border-end" id="sidebarNav">
         <div class="sidebar-header p-3 border-bottom d-flex align-items-center justify-content-between">
-            <a href="index.php" class="d-flex align-items-center text-decoration-none">
+            <a href="/" class="d-flex align-items-center text-decoration-none">
                 {% if custom_header %}
                 {% include ('custom/header.html') %}
                 {% else %}
@@ -82,7 +82,7 @@
                 <ul class="nav nav-pills flex-column mb-auto">
                     <!-- Dashboard -->
                     <li class="nav-item mb-2">
-                        <a href="index.php" class="nav-link {{ current_page == 'index' ? 'active' : '' }}">
+                        <a href="/" class="nav-link {{ current_page == 'index' ? 'active' : '' }}">
                             <i class="bi bi-speedometer2 me-2"></i>Dashboard
                         </a>
                     </li>
@@ -90,7 +90,7 @@
                     {% if perm_search %}
                     <!-- Search -->
                     <li class="nav-item mb-2">
-                        <a href="index.php?page=search" class="nav-link {{ current_page == 'search' ? 'active' : '' }}">
+                        <a href="/search" class="nav-link {{ current_page == 'search' ? 'active' : '' }}">
                             <i class="bi bi-search me-2"></i>{% trans %}Search{% endtrans %}
                         </a>
                     </li>
@@ -105,47 +105,47 @@
                         <ul class="nav nav-pills flex-column ms-3">
                             {% if perm_view_zone_own or perm_view_zone_other %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="index.php?page=list_forward_zones">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="/zones/forward">
                                     <i class="bi bi-arrow-right me-2"></i>{% trans %}Forward zones{% endtrans %}
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="index.php?page=list_reverse_zones">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="/zones/reverse">
                                     <i class="bi bi-arrow-left me-2"></i>{% trans %}Reverse zones{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_zone_master_add %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_master' ? 'active' : '' }}" href="index.php?page=add_zone_master">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_master' ? 'active' : '' }}" href="/zones/add/master">
                                     <i class="bi bi-plus-circle me-2"></i>{% trans %}Add master zone{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_zone_slave_add %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_slave' ? 'active' : '' }}" href="index.php?page=add_zone_slave">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_slave' ? 'active' : '' }}" href="/zones/add/slave">
                                     <i class="bi bi-plus-circle-dotted me-2"></i>{% trans %}Add slave zone{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_zone_master_add %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'bulk_registration' ? 'active' : '' }}" href="index.php?page=bulk_registration">
+                                <a class="nav-link nav-link-sm {{ current_page == 'bulk_registration' ? 'active' : '' }}" href="/zones/bulk-registration">
                                     <i class="bi bi-collection me-2"></i>{% trans %}Bulk registration{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if iface_add_reverse_record and (perm_view_zone_own or perm_view_zone_other) %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'batch_ptr_record' ? 'active' : '' }}" href="index.php?page=batch_ptr_record">
+                                <a class="nav-link nav-link-sm {{ current_page == 'batch_ptr_record' ? 'active' : '' }}" href="/zones/batch-ptr">
                                     <i class="bi bi-arrow-repeat me-2"></i>{% trans %}Batch PTR Records{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_is_godlike and dblog_use == true %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="index.php?page=list_log_zones">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="/zones/logs">
                                     <i class="bi bi-list-ul me-2"></i>{% trans %}Zone logs{% endtrans %}
                                 </a>
                             </li>
@@ -162,32 +162,32 @@
                         </div>
                         <ul class="nav nav-pills flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'users' ? 'active' : '' }}" href="index.php?page=users">
+                                <a class="nav-link nav-link-sm {{ current_page == 'users' ? 'active' : '' }}" href="/users">
                                     <i class="bi bi-person-lines-fill me-2"></i>{% trans %}User administration{% endtrans %}
                                 </a>
                             </li>
                             {% if perm_add_new %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'add_user' ? 'active' : '' }}" href="index.php?page=add_user">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_user' ? 'active' : '' }}" href="/users/add">
                                     <i class="bi bi-person-plus me-2"></i>{% trans %}Add user{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_templ_perm_edit %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_perm_templ' ? 'active' : '' }}" href="index.php?page=list_perm_templ">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_perm_templ' ? 'active' : '' }}" href="/permissions/templates">
                                     <i class="bi bi-person-lock me-2"></i>{% trans %}List permission templates{% endtrans %}
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'add_perm_templ' ? 'active' : '' }}" href="index.php?page=add_perm_templ">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_perm_templ' ? 'active' : '' }}" href="/permissions/templates/add">
                                     <i class="bi bi-person-plus-fill me-2"></i>{% trans %}Add permission template{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_is_godlike and dblog_use == true %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_log_users' ? 'active' : '' }}" href="index.php?page=list_log_users">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_log_users' ? 'active' : '' }}" href="/users/logs">
                                     <i class="bi bi-journal-text me-2"></i>{% trans %}User logs{% endtrans %}
                                 </a>
                             </li>
@@ -204,13 +204,13 @@
                         </div>
                         <ul class="nav nav-pills flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_zone_templ' ? 'active' : '' }}" href="index.php?page=list_zone_templ">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_zone_templ' ? 'active' : '' }}" href="/zones/templates">
                                     <i class="bi bi-list me-2"></i>{% trans %}List zone templates{% endtrans %}
                                 </a>
                             </li>
                             {% if perm_zone_templ_add %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_templ' ? 'active' : '' }}" href="index.php?page=add_zone_templ">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_templ' ? 'active' : '' }}" href="/zones/templates/add">
                                     <i class="bi bi-plus me-2"></i>{% trans %}Add zone template{% endtrans %}
                                 </a>
                             </li>
@@ -228,35 +228,35 @@
                         <ul class="nav nav-pills flex-column ms-3">
                             {% if (not whois_restrict_to_admin or perm_is_godlike) and whois_enabled %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'whois' ? 'active' : '' }}" href="index.php?page=whois">
+                                <a class="nav-link nav-link-sm {{ current_page == 'whois' ? 'active' : '' }}" href="/whois">
                                     <i class="bi bi-search-heart me-2"></i>{% trans %}WHOIS{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if (not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'rdap' ? 'active' : '' }}" href="index.php?page=rdap">
+                                <a class="nav-link nav-link-sm {{ current_page == 'rdap' ? 'active' : '' }}" href="/rdap">
                                     <i class="bi bi-search-heart-fill me-2"></i>{% trans %}RDAP{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_is_godlike and api_enabled %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'api_keys' ? 'active' : '' }}" href="index.php?page=api_keys">
+                                <a class="nav-link nav-link-sm {{ current_page == 'api_keys' ? 'active' : '' }}" href="/api/keys">
                                     <i class="bi bi-key-fill me-2"></i>{% trans %}API Keys{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_is_godlike and enable_consistency_checks %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'database_consistency' ? 'active' : '' }}" href="index.php?page=database_consistency">
+                                <a class="nav-link nav-link-sm {{ current_page == 'database_consistency' ? 'active' : '' }}" href="/tools/database-consistency">
                                     <i class="bi bi-database-check me-2"></i>{% trans %}Database Consistency{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_is_godlike and email_previews_enabled %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'email_previews' ? 'active' : '' }}" href="index.php?page=email_previews">
+                                <a class="nav-link nav-link-sm {{ current_page == 'email_previews' ? 'active' : '' }}" href="/tools/email-previews">
                                     <i class="bi bi-envelope-fill me-2"></i>{% trans %}Email Template Previews{% endtrans %}
                                 </a>
                             </li>
@@ -280,27 +280,27 @@
                         <ul class="nav nav-pills flex-column ms-3">
                             {% if perm_edit_own %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'edit_user' and request.id == session_userid ? 'active' : '' }}" href="index.php?page=edit_user&id={{ session_userid }}">
+                                <a class="nav-link nav-link-sm {{ current_page == 'edit_user' and request.id == session_userid ? 'active' : '' }}" href="/users/{{ session_userid }}/edit">
                                     <i class="bi bi-person-gear me-2"></i>{% trans %}Edit profile{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if auth_used %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'change_password' ? 'active' : '' }}" href="index.php?page=change_password">
+                                <a class="nav-link nav-link-sm {{ current_page == 'change_password' ? 'active' : '' }}" href="/password/change">
                                     <i class="bi bi-key me-2"></i>{% trans %}Change password{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if mfa_enabled %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'mfa_setup' ? 'active' : '' }}" href="index.php?page=mfa_setup">
+                                <a class="nav-link nav-link-sm {{ current_page == 'mfa_setup' ? 'active' : '' }}" href="/mfa/setup">
                                     <i class="bi bi-shield-lock me-2"></i>{% trans %}Multi-Factor Authentication{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'logout' ? 'active' : '' }}" href="index.php?page=logout">
+                                <a class="nav-link nav-link-sm {{ current_page == 'logout' ? 'active' : '' }}" href="/logout">
                                     <i class="bi bi-box-arrow-right me-2"></i>{% trans %}Logout{% endtrans %}
                                 </a>
                             </li>
@@ -335,7 +335,7 @@
                 <div class="d-flex align-items-center">
                     <i class="bi bi-person-circle me-2"></i>
                     <span class="me-3">{{ user_name }}</span>
-                    <a href="index.php?page=logout" class="btn btn-outline-secondary btn-sm">
+                    <a href="/logout" class="btn btn-outline-secondary btn-sm">
                         <i class="bi bi-box-arrow-right me-1"></i>{% trans %}Logout{% endtrans %}
                     </a>
                 </div>
@@ -346,7 +346,7 @@
         <header class="mb-4">
             <div class="container">
                 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                    <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none" href="index.php">
+                    <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none" href="/">
                         {% if custom_header %}
                         {% include ('custom/header.html') %}
                         {% else %}

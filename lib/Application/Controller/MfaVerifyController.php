@@ -63,28 +63,26 @@ class MfaVerifyController extends BaseController
             if (isset($_GET['logout'])) {
                 session_regenerate_id(true);
                 session_unset();
-                header("Location: index.php?page=login");
+                header("Location: /login");
             } else {
                 // Otherwise just mark as authenticated
                 $this->userContextService->setSessionData('authenticated', true);
                 session_regenerate_id(true);
-                header("Location: index.php");
+                header("Location: /");
             }
             exit;
         }
 
         // Check if we have the necessary session data
         if (!$this->userContextService->getLoggedInUsername() || !$this->userContextService->getLoggedInUserId() || !$this->userContextService->hasSessionData('mfa_required')) {
-            header("Location: index.php");
-            exit;
+            $this->redirect('/');
         }
 
         // If the user is already fully authenticated (MFA passed), redirect to index
         // Use our centralized MFA session manager to check state
         if (!MfaSessionManager::isMfaRequired()) {
-            error_log("MFA not required according to MfaSessionManager, redirecting to index.php");
-            header("Location: index.php");
-            exit;
+            error_log("MFA not required according to MfaSessionManager, redirecting to /");
+            $this->redirect('/');
         }
 
         // Make verification more robust by just checking for the code
@@ -180,7 +178,7 @@ class MfaVerifyController extends BaseController
             // Send redirect with proper cache headers
             header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
             header('Pragma: no-cache');
-            header("Location: index.php", true, 302);
+            header("Location: /", true, 302);
             exit;
         } else {
             // MFA verification failed

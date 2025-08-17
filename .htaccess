@@ -1,4 +1,5 @@
 # Poweradmin URL Rewriting Rules
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
@@ -11,39 +12,8 @@
     RewriteCond %{REQUEST_FILENAME} -d
     RewriteRule ^ - [L]
 
-    # API Documentation specific rewrite rules
-    RewriteRule ^api/docs/json$ index.php?page=api/docs/json [QSA,L]
-    RewriteRule ^api/docs$ index.php?page=api/docs [QSA,L]
-
-    # RESTful API routes
-    # User verification endpoint
-    RewriteRule ^api/v1/user/verify$ index.php?page=api/v1/user_verify [QSA,L]
-
-    # Users individual user routes (must come before collection route)
-    RewriteRule ^api/v1/users/([0-9]+)/?$ index.php?page=api/v1/users/$1 [QSA,L]
-    
-    # Users collection route
-    RewriteRule ^api/v1/users/?$ index.php?page=api/v1/users [QSA,L]
-
-    # Zones individual zone routes (must come before collection route)
-    RewriteRule ^api/v1/zones/([0-9]+)/?$ index.php?page=api/v1/zones/$1 [QSA,L]
-    
-    # Zones collection route
-    RewriteRule ^api/v1/zones/?$ index.php?page=api/v1/zones [QSA,L]
-
-    # Zone records individual record routes
-    RewriteRule ^api/v1/zones/([0-9]+)/records/([0-9]+)/?$ index.php?page=api/v1/zones_records/$1/$2 [QSA,L]
-    
-    # Zone records collection routes
-    RewriteRule ^api/v1/zones/([0-9]+)/records/?$ index.php?page=api/v1/zones_records/$1 [QSA,L]
-
-    # Rewrite API base paths (fallback)
-    RewriteRule ^api(/(.*))?$ index.php?page=api/$2 [QSA,L]
-
-    # Handle general page routing if not caught by API rules
-    RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteCond %{REQUEST_FILENAME} !-d
-    RewriteRule ^(.*)$ index.php?page=$1 [QSA,L]
+    # Single catch-all rule - let Symfony Router handle all routing
+    RewriteRule ^(.*)$ index.php [QSA,L]
 </IfModule>
 
 # Protect the .htaccess file
@@ -79,7 +49,7 @@ AddDefaultCharset UTF-8
 </Files>
 
 # Security: Deny access to sensitive file types
-<Files ~ "\.(sql|md|log)$">
+<Files ~ "\.(sql|md|log|yaml|yml)$">
     Order Allow,Deny
     Deny from all
 </Files>

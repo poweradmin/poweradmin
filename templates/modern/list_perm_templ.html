@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=users">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/users">{% trans %}Users{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Permission templates{% endtrans %}</li>
     </ol>
 </nav>
@@ -49,7 +49,7 @@
     </div>
     {% if templ_perm_add %}
     <div class="card-footer py-3">
-        <a class="btn btn-primary btn-sm" href="index.php?page=add_perm_templ">
+        <a class="btn btn-primary btn-sm" href="/permissions/templates/add">
             <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add permission template{% endtrans %}
         </a>
     </div>
