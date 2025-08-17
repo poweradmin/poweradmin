@@ -201,140 +201,27 @@ class UsersController extends PublicApiController
     }
 
     /**
-     * Handle GET requests - either list users or filter by username/email
+     * Handle GET requests - list users with optional filtering
      *
      * @return JsonResponse The JSON response
      */
     private function handleGetRequest(): JsonResponse
     {
-        // Check for optional filter parameters
-        $username = $this->request->query->get('username');
-        $email = $this->request->query->get('email');
-
-        // If filter parameters are provided, return filtered list
-        if ($username || $email) {
-            return $this->getFilteredUsers($username, $email);
-        }
-
-        // Default behavior: list all users
+        // listUsers now handles both listing and filtering
         return $this->listUsers();
     }
 
-    /**
-     * Get filtered users by username or email
-     *
-     * @param string|null $username Username to filter by
-     * @param string|null $email Email to filter by
-     * @return JsonResponse The JSON response
-     */
-    #[OA\Get(
-        path: '/v1/users',
-        operationId: 'v1GetFilteredUsers',
-        description: 'Filter users list by username or email. Returns a list format similar to the regular users list but only for the matching user.',
-        summary: 'Get users filtered by username or email',
-        security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
-        tags: ['users']
-    )]
-    #[OA\Parameter(
-        name: 'username',
-        description: 'Filter by username (optional)',
-        in: 'query',
-        required: false,
-        schema: new OA\Schema(type: 'string')
-    )]
-    #[OA\Parameter(
-        name: 'email',
-        description: 'Filter by email (optional)',
-        in: 'query',
-        required: false,
-        schema: new OA\Schema(type: 'string')
-    )]
-    #[OA\Response(
-        response: 200,
-        description: 'Filtered users list',
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: 'success', type: 'boolean', example: true),
-                new OA\Property(property: 'message', type: 'string', example: 'Users retrieved successfully'),
-                new OA\Property(
-                    property: 'data',
-                    type: 'array',
-                    items: new OA\Items(
-                        properties: [
-                            new OA\Property(property: 'user_id', type: 'integer', example: 1),
-                            new OA\Property(property: 'username', type: 'string', example: 'johndoe'),
-                            new OA\Property(property: 'fullname', type: 'string', example: 'John Doe'),
-                            new OA\Property(property: 'email', type: 'string', example: 'john@example.com'),
-                            new OA\Property(property: 'description', type: 'string', example: 'User description'),
-                            new OA\Property(property: 'active', type: 'boolean', example: true),
-                            new OA\Property(property: 'zone_count', type: 'integer', example: 5),
-                            new OA\Property(property: 'is_admin', type: 'boolean', example: false)
-                        ],
-                        type: 'object'
-                    )
-                ),
-                new OA\Property(
-                    property: 'pagination',
-                    properties: [
-                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
-                        new OA\Property(property: 'per_page', type: 'integer', example: 50),
-                        new OA\Property(property: 'total', type: 'integer', example: 1),
-                        new OA\Property(property: 'last_page', type: 'integer', example: 1)
-                    ],
-                    type: 'object'
-                ),
-                new OA\Property(
-                    property: 'meta',
-                    properties: [
-                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
-                    ],
-                    type: 'object'
-                )
-            ]
-        )
-    )]
-    private function getFilteredUsers(?string $username, ?string $email): JsonResponse
-    {
-        try {
-            $users = [];
-
-            if ($username) {
-                $user = $this->userManagementService->getUserByUsername($username);
-                if ($user) {
-                    $users[] = $user;
-                }
-            } elseif ($email) {
-                $user = $this->userManagementService->getUserByEmail($email);
-                if ($user) {
-                    $users[] = $user;
-                }
-            }
-
-            return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, [
-                'pagination' => [
-                    'current_page' => 1,
-                    'per_page' => 50,
-                    'total' => count($users),
-                    'last_page' => 1
-                ],
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to retrieve filtered users: ' . $e->getMessage(), 500);
-        }
-    }
 
     /**
-     * List all users
+     * List all users with optional filtering
      *
      * @return JsonResponse The JSON response
      */
     #[OA\Get(
         path: '/v1/users',
         operationId: 'v1ListUsers',
-        summary: 'List all users',
+        description: 'Get a list of users. Can optionally filter by username or email.',
+        summary: 'List all users with optional filtering',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['users']
     )]
@@ -349,6 +236,20 @@ class UsersController extends PublicApiController
         description: 'Number of users per page',
         in: 'query',
         schema: new OA\Schema(type: 'integer', default: 25)
+    )]
+    #[OA\Parameter(
+        name: 'username',
+        description: 'Filter by username (optional)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string')
+    )]
+    #[OA\Parameter(
+        name: 'email',
+        description: 'Filter by email (optional)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string')
     )]
     #[OA\Response(
         response: 200,
@@ -394,7 +295,40 @@ class UsersController extends PublicApiController
             $page = max(1, (int)$this->request->query->get('page', 1));
             $perPage = min(100, max(1, (int)$this->request->query->get('per_page', 25)));
 
-            // Create pagination object
+            // Get filter parameters
+            $username = $this->request->query->get('username');
+            $email = $this->request->query->get('email');
+
+            // Handle filtering
+            if ($username || $email) {
+                $users = [];
+
+                if ($username) {
+                    $user = $this->userManagementService->getUserByUsername($username);
+                    if ($user) {
+                        $users[] = $user;
+                    }
+                } elseif ($email) {
+                    $user = $this->userManagementService->getUserByEmail($email);
+                    if ($user) {
+                        $users[] = $user;
+                    }
+                }
+
+                return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, [
+                    'pagination' => [
+                        'current_page' => 1,
+                        'per_page' => count($users),
+                        'total' => count($users),
+                        'last_page' => 1
+                    ],
+                    'meta' => [
+                        'timestamp' => date('Y-m-d H:i:s')
+                    ]
+                ]);
+            }
+
+            // Create pagination object for general listing
             $pagination = new Pagination(0, $perPage, $page); // We'll set total items after getting the result
 
             // Use the domain service to get users list
