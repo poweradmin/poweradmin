@@ -273,10 +273,10 @@ abstract class BaseController
     }
 
     /**
-     * Redirects to a specified script with optional arguments.
+     * Redirects to a specified URL with optional arguments.
      *
-     * @param string $script The script to redirect to.
-     * @param array $args The arguments to pass to the script.
+     * @param string $url The URL to redirect to.
+     * @param array $args The arguments to pass as query parameters.
      */
     public function redirect(string $url, array $args = []): void
     {

@@ -83,7 +83,7 @@ class SymfonyRouterTest extends TestCase
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesController', $routeInfo['controller']);
-        $this->assertEquals('index', $routeInfo['method']); // GET method maps to index
+        $this->assertEquals('run', $routeInfo['method']); // API routes use run method
         $this->assertEquals('api_v1_zones', $routeInfo['route']);
     }
 
@@ -95,7 +95,7 @@ class SymfonyRouterTest extends TestCase
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesController', $routeInfo['controller']);
-        $this->assertEquals('index', $routeInfo['method']);
+        $this->assertEquals('run', $routeInfo['method']);
         $this->assertEquals(['id' => '123'], $routeInfo['parameters']);
         $this->assertEquals('api_v1_zone', $routeInfo['route']);
     }
@@ -132,7 +132,7 @@ class SymfonyRouterTest extends TestCase
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
 
-        $this->assertEquals('index', $routeInfo['method']);
+        $this->assertEquals('run', $routeInfo['method']);
     }
 
     public function testHttpMethodMappingPost(): void
@@ -143,7 +143,7 @@ class SymfonyRouterTest extends TestCase
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
 
-        $this->assertEquals('create', $routeInfo['method']);
+        $this->assertEquals('run', $routeInfo['method']);
     }
 
     public function testHttpMethodMappingPut(): void
@@ -154,7 +154,7 @@ class SymfonyRouterTest extends TestCase
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
 
-        $this->assertEquals('update', $routeInfo['method']);
+        $this->assertEquals('run', $routeInfo['method']);
     }
 
     public function testHttpMethodMappingDelete(): void
@@ -165,7 +165,7 @@ class SymfonyRouterTest extends TestCase
         $router = new SymfonyRouter();
         $routeInfo = $router->match();
 
-        $this->assertEquals('delete', $routeInfo['method']);
+        $this->assertEquals('run', $routeInfo['method']);
     }
 
     public function testNonExistentRoute(): void
