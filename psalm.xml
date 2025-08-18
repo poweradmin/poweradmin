@@ -37,7 +37,6 @@
                 <referencedMethod name="PHPUnit\Framework\MockObject\MockObject::with" />
                 <referencedMethod name="PHPUnit\Framework\MockObject\MockObject::returnValue" />
                 <referencedMethod name="PHPUnit\Framework\MockObject\MockObject::will" />
-                <referencedMethod name="Poweradmin\Infrastructure\Service\PdnsUtilProvider::callPdnssec" />
             </errorLevel>
         </UndefinedMethod>
         <InternalMethod>

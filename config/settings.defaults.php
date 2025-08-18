@@ -200,7 +200,6 @@ return [
     'dnssec' => [
         'enabled' => false,                        // Enable DNSSEC functionality (added in 2.1.7)
         'debug' => false,                          // Enable DNSSEC debug logging (added in 2.1.9)
-        'command' => '/usr/bin/pdnsutil',          // Path to pdnsutil command (added in 2.1.7, will be deprecated)
     ],
 
     /**

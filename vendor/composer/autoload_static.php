@@ -1083,7 +1083,6 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Poweradmin\\Infrastructure\\Service\\DnsServiceFactory' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/DnsServiceFactory.php',
         'Poweradmin\\Infrastructure\\Service\\HttpPaginationParameters' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/HttpPaginationParameters.php',
         'Poweradmin\\Infrastructure\\Service\\MessageService' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/MessageService.php',
-        'Poweradmin\\Infrastructure\\Service\\PdnsUtilProvider' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/PdnsUtilProvider.php',
         'Poweradmin\\Infrastructure\\Service\\RedirectService' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/RedirectService.php',
         'Poweradmin\\Infrastructure\\Service\\SessionAuthenticator' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/SessionAuthenticator.php',
         'Poweradmin\\Infrastructure\\Service\\StyleManager' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/StyleManager.php',
