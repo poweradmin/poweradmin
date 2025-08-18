@@ -69,9 +69,12 @@ class ApiKeysController extends BaseController
             return;
         }
 
-        // Only allow ueberuser to manage API keys for now
-        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
-            $this->showError(_('You do not have permission to manage API keys. Only administrators can access this feature.'));
+        // Allow ueberuser or users with api_manage_keys permission to manage API keys
+        if (
+            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
+            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+        ) {
+            $this->showError(_('You do not have permission to manage API keys.'));
             return;
         }
 

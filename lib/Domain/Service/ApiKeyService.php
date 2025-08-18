@@ -155,7 +155,10 @@ class ApiKeyService
         }
 
         // Check if user has permission to create API keys
-        if (!UserManager::verifyPermission($this->db, 'api_manage_keys')) {
+        if (
+            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
+            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+        ) {
             $this->messageService->addSystemError(_('You do not have permission to create API keys.'));
             return null;
         }
@@ -200,7 +203,10 @@ class ApiKeyService
         }
 
         // Check if user has permission to update API keys
-        if (!UserManager::verifyPermission($this->db, 'api_manage_keys')) {
+        if (
+            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
+            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+        ) {
             $this->messageService->addSystemError(_('You do not have permission to update API keys.'));
             return null;
         }
@@ -229,7 +235,10 @@ class ApiKeyService
         }
 
         // Check if user has permission to delete API keys
-        if (!UserManager::verifyPermission($this->db, 'api_manage_keys')) {
+        if (
+            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
+            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+        ) {
             $this->messageService->addSystemError(_('You do not have permission to delete API keys.'));
             return false;
         }
@@ -253,7 +262,10 @@ class ApiKeyService
         }
 
         // Check if user has permission to update API keys
-        if (!UserManager::verifyPermission($this->db, 'api_manage_keys')) {
+        if (
+            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
+            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+        ) {
             $this->messageService->addSystemError(_('You do not have permission to regenerate API keys.'));
             return null;
         }
@@ -281,7 +293,10 @@ class ApiKeyService
         }
 
         // Check if user has permission to update API keys
-        if (!UserManager::verifyPermission($this->db, 'api_manage_keys')) {
+        if (
+            !UserManager::verifyPermission($this->db, 'user_is_ueberuser') &&
+            !UserManager::verifyPermission($this->db, 'api_manage_keys')
+        ) {
             $this->messageService->addSystemError(_('You do not have permission to update API keys.'));
             return null;
         }

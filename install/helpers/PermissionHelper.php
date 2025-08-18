@@ -56,6 +56,7 @@ class PermissionHelper
             [62, 'zone_content_edit_own_as_client', 'User is allowed to edit record, but not SOA and NS.'],
             [63, 'zone_templ_add', 'User is allowed to add new zone templates.'],
             [64, 'zone_templ_edit', 'User is allowed to edit existing zone templates.'],
+            [65, 'api_manage_keys', 'User is allowed to create and manage API keys.'],
         ];
     }
 }

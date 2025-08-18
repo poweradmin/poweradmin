@@ -78,6 +78,7 @@ class IndexController extends BaseController
             'user_edit_own',
             'user_edit_others',
             'user_add_new',
+            'api_manage_keys',
         ]);
 
         // Check PowerDNS server status if API is enabled and user is admin

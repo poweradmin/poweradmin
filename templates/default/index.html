@@ -360,7 +360,7 @@
         </div>
     </div>
     {% endif %}
-    {% if permissions['user_is_ueberuser'] and api_enabled %}
+    {% if (permissions['user_is_ueberuser'] or permissions['api_manage_keys']) and api_enabled %}
     <div class="col mb-1 card-item">
         <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">
