@@ -446,7 +446,10 @@ class RecordRepository implements RecordRepositoryInterface
         $records = [];
 
         while ($record = $stmt->fetch()) {
-            $records[] = $record;
+            if($record['type'] != "")
+            {
+                $records[] = $record;
+            }
         }
 
         return $records;
