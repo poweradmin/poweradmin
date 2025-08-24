@@ -1,0 +1,79 @@
+:80 {
+    # Set the root directory
+    root * /app
+
+    # Enable access logs
+    log {
+        output stdout
+        format console
+        level INFO
+    }
+
+    # Security: Deny access to sensitive directories
+    @denied path /config* /lib* /tests* /tools* /vendor*
+    @bootstrap path /vendor/twbs/bootstrap* /vendor/twbs/bootstrap-icons*
+    
+    # Allow Bootstrap files (override general vendor blocking)
+    handle @bootstrap {
+        file_server
+    }
+    
+    # Block sensitive directories
+    handle @denied {
+        respond "Forbidden" 403
+    }
+
+    # Security: Deny access to hidden files and sensitive file types
+    @hidden path .* *.sql *.md *.log *.yaml *.yml
+    handle @hidden {
+        respond "Forbidden" 403
+    }
+
+    # Static assets with caching
+    @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
+    handle @static {
+        header Cache-Control "public, max-age=31536000"
+        file_server
+    }
+
+    # API endpoints with CORS
+    @api path /api*
+    handle @api {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
+        header Access-Control-Max-Age "3600"
+        
+        # Handle preflight OPTIONS requests
+        handle_path /api* {
+            method OPTIONS
+            respond "" 204
+        }
+        
+        # Try to serve the file directly, otherwise pass to PHP
+        try_files {path} {path}/ /index.php?{query}
+        php_fastcgi app:9000
+    }
+
+    # Handle PHP files
+    handle *.php {
+        php_fastcgi app:9000 {
+            read_timeout 180s
+        }
+    }
+
+    # Clean URL routing - let Symfony Router handle all routing
+    # This mimics the Apache/Nginx try_files behavior
+    try_files {path} {path}/ /index.php?{query}
+
+    # Final fallback to index.php for clean URLs
+    handle {
+        rewrite * /index.php?{query}
+        php_fastcgi app:9000 {
+            read_timeout 180s
+        }
+    }
+
+    # Enable file server for static content
+    file_server
+}
