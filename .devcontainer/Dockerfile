@@ -15,6 +15,8 @@ RUN echo "error_reporting = E_ALL" >> /usr/local/etc/php/conf.d/error_reporting.
 
 RUN sed -i '/^#.* cs_CZ.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* de_DE.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
+  && sed -i '/^#.* en_US.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
+  && sed -i '/^#.* es_ES.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* fr_FR.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* it_IT.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* ja_JP.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
@@ -22,6 +24,7 @@ RUN sed -i '/^#.* cs_CZ.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* nb_NO.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* nl_NL.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* pl_PL.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
+  && sed -i '/^#.* pt_PT.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* ru_RU.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* tr_TR.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
   && sed -i '/^#.* zh_CN.UTF-8 UTF-8/s/^# //' /etc/locale.gen \
