@@ -16,7 +16,7 @@ docker-compose up -d
 - **Caddy**: http://localhost:3002
 
 ### Services
-- **Adminer** (DB management): http://localhost:8090
+- **Adminer** (DB management): http://localhost:8080
 - **LDAP Admin**: https://localhost:8443
 - **PowerDNS API**: http://localhost:8081
 
@@ -36,6 +36,6 @@ docker-compose up -d
 
 ## Database Access
 
-Use Adminer at http://localhost:8090 or connect directly:
+Use Adminer at http://localhost:8080 or connect directly:
 - **MySQL**: user: `pdns`, pass: `poweradmin`, db: `pdns`
 - **PostgreSQL**: user: `pdns`, pass: `poweradmin`, db: `pdns`

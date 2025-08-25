@@ -45,17 +45,6 @@ services:
     networks:
       - test-network
 
-  adminer-test:
-    image: adminer:4.8.1
-    container_name: poweradmin-adminer-test
-    ports:
-      - "8091:8080"
-    networks:
-      - test-network
-    depends_on:
-      - mysql-test
-      - postgresql-test
-
 volumes:
   mysql_test_data:
   postgresql_test_data:

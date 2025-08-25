@@ -101,7 +101,7 @@ services:
     networks:
       - internal
     ports:
-      - "8090:8080"
+      - "8080:8080"
     volumes:
       - sqlite_data:/data
       - ./adminer/login-password-less.php:/var/www/html/plugins-enabled/login-password-less.php
