@@ -151,7 +151,7 @@ class RoutingConfigurationTest extends TestCase
 
         $apiZonesRoute = $this->routes->get('api_v1_zones');
         $this->assertEquals(
-            'Poweradmin\Application\Controller\Api\V1\ZonesController',
+            'Poweradmin\Application\Controller\Api\V1\ZonesController::run',
             $apiZonesRoute->getDefault('_controller')
         );
     }

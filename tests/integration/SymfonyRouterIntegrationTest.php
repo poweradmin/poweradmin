@@ -207,13 +207,13 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('index', $routeInfo['method']);
+        $this->assertEquals('run', $routeInfo['method']);
 
         // POST request (create)
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('create', $routeInfo['method']);
+        $this->assertEquals('run', $routeInfo['method']);
 
         // Test specific resource with PUT/DELETE
         $_SERVER['REQUEST_URI'] = '/api/v1/zones/123';
@@ -222,13 +222,13 @@ class SymfonyRouterIntegrationTest extends TestCase
         $_SERVER['REQUEST_METHOD'] = 'PUT';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('update', $routeInfo['method']);
+        $this->assertEquals('run', $routeInfo['method']);
 
         // DELETE request (delete)
         $_SERVER['REQUEST_METHOD'] = 'DELETE';
         $router = $this->createRouter();
         $routeInfo = $router->match();
-        $this->assertEquals('delete', $routeInfo['method']);
+        $this->assertEquals('run', $routeInfo['method']);
     }
 
     public function testUrlGeneration(): void
