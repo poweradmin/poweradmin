@@ -31,7 +31,7 @@
 #   - A secure random password will be generated automatically
 #   - The credentials will be displayed prominently in the container logs
 #   - Default username: admin (override with PA_ADMIN_USERNAME)
-#   
+#
 #   To specify your own password:
 #   docker run -d --name poweradmin -p 80:80 \
 #     -e PA_CREATE_ADMIN=1 \
@@ -89,109 +89,54 @@ COPY <<EOF /etc/caddy/Caddyfile
     root * /app
     encode gzip
 
-    # Handle root path - serve index.php directly
-    @root path /
-    rewrite @root /index.php
+    # Security: Deny access to sensitive directories
+    @denied path /config* /lib* /tests* /tools* /vendor*
+    @bootstrap path /vendor/twbs/bootstrap* /vendor/twbs/bootstrap-icons*
 
-    # API Documentation specific rewrite rules
-    @api_docs_json path /api/docs/json
-    rewrite @api_docs_json /index.php?page=api/docs/json
-
-    @api_docs path /api/docs
-    rewrite @api_docs /index.php?page=api/docs
-
-    # RESTful API routes
-    # User verification endpoint
-    @api_user_verify path /api/v1/user/verify
-    rewrite @api_user_verify /index.php?page=api/v1/user_verify
-
-    # Users individual user routes (must come before collection route)
-    @api_users_individual path_regexp users ^/api/v1/users/([0-9]+)/?$
-    rewrite @api_users_individual /index.php?page=api/v1/users/{re.users.1}
-
-    # Users collection route
-    @api_users_collection path_regexp ^/api/v1/users/?$
-    rewrite @api_users_collection /index.php?page=api/v1/users
-
-    # Zones individual zone routes (must come before collection route)
-    @api_zones_individual path_regexp zones ^/api/v1/zones/([0-9]+)/?$
-    rewrite @api_zones_individual /index.php?page=api/v1/zones/{re.zones.1}
-
-    # Zones collection route
-    @api_zones_collection path_regexp ^/api/v1/zones/?$
-    rewrite @api_zones_collection /index.php?page=api/v1/zones
-
-    # Zone records individual record routes
-    @api_zone_records_individual path_regexp zone_records ^/api/v1/zones/([0-9]+)/records/([0-9]+)/?$
-    rewrite @api_zone_records_individual /index.php?page=api/v1/zones_records/{re.zone_records.1}/{re.zone_records.2}
-
-    # Zone records collection routes
-    @api_zone_records_collection path_regexp zone_records_col ^/api/v1/zones/([0-9]+)/records/?$
-    rewrite @api_zone_records_collection /index.php?page=api/v1/zones_records/{re.zone_records_col.1}
-
-    # Rewrite API base paths (fallback)
-    @api_fallback path_regexp api_fall ^/api(/(.*))?$
-    rewrite @api_fallback /index.php?page=api/{re.api_fall.2}
-
-    # Enable CORS for API endpoints
-    @api path /api/*
-    header @api {
-        Access-Control-Allow-Origin "*"
-        Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-        Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
-        Access-Control-Max-Age "3600"
+    # Allow Bootstrap files (override general vendor blocking)
+    handle @bootstrap {
+        file_server
     }
 
-    # Handle OPTIONS pre-flight requests
-    @options method OPTIONS
-    respond @options 204
+    # Block sensitive directories
+    handle @denied {
+        respond "Forbidden" 403
+    }
 
-    # Static assets first - before any restrictions
+    # Security: Deny access to hidden files and sensitive file types
+    @hidden path .* *.sql *.md *.log *.yaml *.yml
+    handle @hidden {
+        respond "Forbidden" 403
+    }
+
+    # Static assets with caching
     @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
-    file_server @static
-
-    # Allow access to Bootstrap CSS/JS and Bootstrap Icons
-    @bootstrap path /vendor/twbs/bootstrap/* /vendor/twbs/bootstrap-icons/*
-    file_server @bootstrap
-
-    # Allow access to assets directory
-    @assets path /assets/*
-    file_server @assets
-
-    # Deny access to sensitive directories (except Bootstrap and assets)
-    @sensitive {
-        path /config/* /lib/* /tests/* /tools/* /vendor/* /.*
-        not path /vendor/twbs/bootstrap/*
-        not path /vendor/twbs/bootstrap-icons/*
-        not path /assets/*
+    handle @static {
+        header Cache-Control "public, max-age=31536000"
+        file_server
     }
-    respond @sensitive 403
 
-    # Deny access to sensitive file types
-    @sensitive_files path *.sql *.md *.log
-    respond @sensitive_files 403
+    # API endpoints with CORS
+    @api path /api*
+    handle @api {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
+        header Access-Control-Max-Age "3600"
 
-    # Handle general page routing for non-files
-    @not_file {
-        not file
-        not path /
-        not path /assets/*
-        not path /vendor/twbs/bootstrap/*
-        not path /vendor/twbs/bootstrap-icons/*
-        not path *.js
-        not path *.css
-        not path *.png
-        not path *.jpg
-        not path *.jpeg
-        not path *.gif
-        not path *.ico
-        not path *.svg
-        not path *.woff
-        not path *.woff2
-        not path *.ttf
-        not path *.eot
+        # Handle preflight OPTIONS requests
+        handle_path /api* {
+            method OPTIONS
+            respond "" 204
+        }
+
+        # Let Symfony Router handle all API routing
+        rewrite * /index.php{uri}
+        php_server
     }
-    rewrite @not_file /index.php?page={path}
+
+    # Clean URL routing - let Symfony Router handle all routing
+    try_files {path} {path}/ /index.php{uri}
 
     # PHP handling with FrankenPHP
     php_server
