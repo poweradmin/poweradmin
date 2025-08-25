@@ -56,7 +56,8 @@
     }
 
     # Handle PHP files
-    handle *.php {
+    @php path *.php
+    handle @php {
         php_fastcgi app:9000 {
             read_timeout 180s
         }
