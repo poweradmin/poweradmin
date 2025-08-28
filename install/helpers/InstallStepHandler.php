@@ -83,6 +83,7 @@ class InstallStepHandler
             'filter' => extension_loaded('filter'),
             'tokenizer' => extension_loaded('tokenizer'),
             'pdo' => extension_loaded('pdo'),
+            'xml' => extension_loaded('xml'),
         ];
 
         // Database extensions
