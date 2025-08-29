@@ -740,6 +740,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'PoweradminInstall\\Installer' => __DIR__ . '/../..' . '/install/helpers/Installer.php',
         'PoweradminInstall\\LocaleHandler' => __DIR__ . '/../..' . '/install/helpers/LocaleHandler.php',
         'PoweradminInstall\\PermissionHelper' => __DIR__ . '/../..' . '/install/helpers/PermissionHelper.php',
+        'PoweradminInstall\\SessionUtils' => __DIR__ . '/../..' . '/install/helpers/SessionUtils.php',
         'PoweradminInstall\\StepValidator' => __DIR__ . '/../..' . '/install/helpers/StepValidator.php',
         'PoweradminInstall\\SystemRequirements' => __DIR__ . '/../..' . '/install/helpers/SystemRequirements.php',
         'PoweradminInstall\\TwigEnvironmentInitializer' => __DIR__ . '/../..' . '/install/helpers/TwigEnvironmentInitializer.php',

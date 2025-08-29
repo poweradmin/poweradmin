@@ -530,6 +530,7 @@ return array(
     'PoweradminInstall\\Installer' => $baseDir . '/install/helpers/Installer.php',
     'PoweradminInstall\\LocaleHandler' => $baseDir . '/install/helpers/LocaleHandler.php',
     'PoweradminInstall\\PermissionHelper' => $baseDir . '/install/helpers/PermissionHelper.php',
+    'PoweradminInstall\\SessionUtils' => $baseDir . '/install/helpers/SessionUtils.php',
     'PoweradminInstall\\StepValidator' => $baseDir . '/install/helpers/StepValidator.php',
     'PoweradminInstall\\SystemRequirements' => $baseDir . '/install/helpers/SystemRequirements.php',
     'PoweradminInstall\\TwigEnvironmentInitializer' => $baseDir . '/install/helpers/TwigEnvironmentInitializer.php',

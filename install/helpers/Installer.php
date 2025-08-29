@@ -74,6 +74,12 @@ class Installer
         $rawStep = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
         $currentStep = $this->stepValidator->getCurrentStep($rawStep);
 
+        // Clear any stale error messages only when starting fresh or forced back to step 1
+        if ($currentStep === InstallationSteps::STEP_CHOOSE_LANGUAGE && !$this->request->get('step')) {
+            // First load of installer (no step parameter provided)
+            SessionUtils::clearMessages();
+        }
+
         if (file_exists($this->newConfigFile)) {
             // Only allow viewing the final step if installation is complete
             if ($currentStep !== InstallationSteps::STEP_INSTALLATION_COMPLETE) {
@@ -93,6 +99,8 @@ class Installer
         if ($this->hasLanguageError($errors)) {
             echo 'Please select a language to proceed with the installation.';
             $currentStep = InstallationSteps::STEP_CHOOSE_LANGUAGE;
+            // Clear messages when forced back to step 1 due to language error
+            SessionUtils::clearMessages();
         }
 
         // If there are errors, go back to the previous step

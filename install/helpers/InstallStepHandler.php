@@ -367,6 +367,9 @@ class InstallStepHandler
 
     public function step8InstallationComplete(): void
     {
+        // Clear installation messages now that installation is complete
+        SessionUtils::clearMessages();
+
         $this->renderTemplate('step8.html.twig', array(
             'current_step' => InstallationSteps::STEP_INSTALLATION_COMPLETE,
         ));
