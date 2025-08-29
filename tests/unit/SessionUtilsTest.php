@@ -46,13 +46,15 @@ class SessionUtilsTest extends TestCase
         SessionUtils::clearMessages();
 
         // Assert that only messages were cleared
-        $this->assertArrayNotHasKey('messages', $_SESSION);
+        /** @var array<string, mixed> $session */
+        $session = $_SESSION;
+        $this->assertArrayNotHasKey('messages', $session);
 
         // Assert that non-message session data was preserved
-        $this->assertArrayHasKey('form_data', $_SESSION);
-        $this->assertArrayHasKey('install_token', $_SESSION);
-        $this->assertArrayHasKey('user_id', $_SESSION);
-        $this->assertArrayHasKey('authenticated', $_SESSION);
+        $this->assertArrayHasKey('form_data', $session);
+        $this->assertArrayHasKey('install_token', $session);
+        $this->assertArrayHasKey('user_id', $session);
+        $this->assertArrayHasKey('authenticated', $session);
         $this->assertEquals('test-token', $_SESSION['install_token']);
         $this->assertEquals(123, $_SESSION['user_id']);
         $this->assertTrue($_SESSION['authenticated']);
@@ -70,11 +72,13 @@ class SessionUtilsTest extends TestCase
         SessionUtils::clearMessages();
 
         // Assert only messages were cleared
-        $this->assertArrayNotHasKey('messages', $_SESSION);
+        /** @var array<string, mixed> $session */
+        $session = $_SESSION;
+        $this->assertArrayNotHasKey('messages', $session);
 
         // Assert other data was preserved
-        $this->assertArrayHasKey('install_token', $_SESSION);
-        $this->assertArrayHasKey('user_id', $_SESSION);
+        $this->assertArrayHasKey('install_token', $session);
+        $this->assertArrayHasKey('user_id', $session);
         $this->assertEquals('test-token', $_SESSION['install_token']);
         $this->assertEquals(456, $_SESSION['user_id']);
     }
