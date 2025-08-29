@@ -44,7 +44,9 @@
     "twig/twig": "^3.21.1",
     "pragmarx/google2fa": "^8.0.3",
     "bacon/bacon-qr-code": "^3.0.1",
-    "zircote/swagger-php": "^5.1.4"
+    "zircote/swagger-php": "^5.1.4",
+    "league/oauth2-client": "^2.8",
+    "symfony/security-bundle": "^6.4"
   },
   "suggest": {
     "ext-ldap": "For LDAP support"

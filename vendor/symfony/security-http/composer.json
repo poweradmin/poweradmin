@@ -1,0 +1,55 @@
+{
+    "name": "symfony/security-http",
+    "type": "library",
+    "description": "Symfony Security Component - HTTP Integration",
+    "keywords": [],
+    "homepage": "https://symfony.com",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        },
+        {
+            "name": "Symfony Community",
+            "homepage": "https://symfony.com/contributors"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "symfony/deprecation-contracts": "^2.5|^3",
+        "symfony/http-foundation": "^6.2|^7.0",
+        "symfony/http-kernel": "^6.3|^7.0",
+        "symfony/polyfill-mbstring": "~1.0",
+        "symfony/property-access": "^5.4|^6.0|^7.0",
+        "symfony/security-core": "^6.4|^7.0",
+        "symfony/service-contracts": "^2.5|^3"
+    },
+    "require-dev": {
+        "symfony/cache": "^5.4|^6.0|^7.0",
+        "symfony/clock": "^6.3|^7.0",
+        "symfony/expression-language": "^5.4|^6.0|^7.0",
+        "symfony/http-client-contracts": "^3.0",
+        "symfony/rate-limiter": "^5.4|^6.0|^7.0",
+        "symfony/routing": "^5.4|^6.0|^7.0",
+        "symfony/security-csrf": "^5.4|^6.0|^7.0",
+        "symfony/translation": "^5.4|^6.0|^7.0",
+        "psr/log": "^1|^2|^3",
+        "web-token/jwt-checker": "^3.1",
+        "web-token/jwt-signature-algorithm-ecdsa": "^3.1"
+    },
+    "conflict": {
+        "symfony/clock": "<6.3",
+        "symfony/event-dispatcher": "<5.4.9|>=6,<6.0.9",
+        "symfony/http-client-contracts": "<3.0",
+        "symfony/security-bundle": "<5.4",
+        "symfony/security-csrf": "<5.4"
+    },
+    "autoload": {
+        "psr-4": { "Symfony\\Component\\Security\\Http\\": "" },
+        "exclude-from-classmap": [
+            "/Tests/"
+        ]
+    },
+    "minimum-stability": "dev"
+}

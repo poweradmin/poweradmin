@@ -14,6 +14,17 @@ logout:
   path: /logout
   controller: Poweradmin\Application\Controller\LogoutController::run
 
+# OIDC Authentication
+oidc_login:
+  path: /oidc/login
+  controller: Poweradmin\Application\Controller\OidcLoginController::run
+  methods: [GET]
+
+oidc_callback:
+  path: /oidc/callback
+  controller: Poweradmin\Application\Controller\OidcCallbackController::run
+  methods: [GET]
+
 # Multi-Factor Authentication
 mfa_setup:
   path: /mfa/setup

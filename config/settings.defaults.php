@@ -303,4 +303,141 @@ return [
         'current_version' => '1.0',                    // Current agreement version
         'require_on_version_change' => true,           // Require re-acceptance when version changes
     ],
+
+    /**
+     * OIDC (OpenID Connect) Authentication Settings
+     */
+    'oidc' => [
+        'enabled' => false,                            // Enable OIDC authentication
+        'auto_provision' => true,                      // Automatically create user accounts from OIDC
+        'link_by_email' => true,                       // Link OIDC accounts to existing users by email
+        'sync_user_info' => true,                      // Sync user information (name, email) from OIDC provider
+        'default_permission_template' => 'Administrator',  // Default permission template for new OIDC users
+
+        // Permission template mapping for automatic role assignment
+        // Maps OIDC groups to existing permission template names
+        // Note: Users can only have one permission template assigned
+        'permission_template_mapping' => [
+            'poweradmin-admins' => 'Administrator',    // Map this OIDC group to Administrator permission template
+            'dns-operators' => 'DNS Operator',         // Example: DNS operations template (if exists)
+            'dns-viewers' => 'Read Only',              // Example: Read-only template (if exists)
+        ],
+
+        // Provider configurations
+        'providers' => [
+            // Example Azure AD configuration
+            /*
+            'azure' => [
+                'name' => 'Microsoft Azure AD',
+                'display_name' => 'Sign in with Microsoft',
+                'client_id' => '',                     // Application (client) ID from Azure
+                'client_secret' => '',                 // Client secret from Azure
+                'tenant' => 'common',                  // Tenant ID or 'common' for multi-tenant
+                'auto_discovery' => true,
+                'metadata_url' => 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid_configuration',
+                'scopes' => 'openid profile email',
+                'user_mapping' => [
+                    'username' => 'preferred_username',
+                    'email' => 'email',
+                    'first_name' => 'given_name',
+                    'last_name' => 'family_name',
+                    'display_name' => 'name',
+                    'groups' => 'groups',
+                ],
+            ],
+            */
+
+            // Example Keycloak configuration
+            /*
+            'keycloak' => [
+                'name' => 'Keycloak',
+                'display_name' => 'Sign in with Keycloak',
+                'client_id' => '',                     // Client ID from Keycloak
+                'client_secret' => '',                 // Client secret from Keycloak
+                'base_url' => 'https://keycloak.example.com',
+                'realm' => 'master',                   // Keycloak realm name
+                'auto_discovery' => true,
+                'metadata_url' => '{base_url}/auth/realms/{realm}/.well-known/openid_configuration',
+                'scopes' => 'openid profile email',
+                'user_mapping' => [
+                    'username' => 'preferred_username',
+                    'email' => 'email',
+                    'first_name' => 'given_name',
+                    'last_name' => 'family_name',
+                    'display_name' => 'name',
+                    'groups' => 'groups',
+                ],
+            ],
+            */
+
+            // Example Okta configuration
+            /*
+            'okta' => [
+                'name' => 'Okta',
+                'display_name' => 'Sign in with Okta',
+                'client_id' => '',                     // Client ID from Okta
+                'client_secret' => '',                 // Client secret from Okta
+                'domain' => 'your-org.okta.com',      // Your Okta domain
+                'auto_discovery' => true,
+                'metadata_url' => 'https://{domain}/.well-known/openid_configuration',
+                'scopes' => 'openid profile email groups',
+                'user_mapping' => [
+                    'username' => 'preferred_username',
+                    'email' => 'email',
+                    'first_name' => 'given_name',
+                    'last_name' => 'family_name',
+                    'display_name' => 'name',
+                    'groups' => 'groups',
+                ],
+            ],
+            */
+
+            // Example Authentik configuration
+            /*
+            'authentik' => [
+                'name' => 'Authentik',
+                'display_name' => 'Sign in with Authentik',
+                'client_id' => '',                     // Client ID from Authentik
+                'client_secret' => '',                 // Client secret from Authentik
+                'base_url' => 'https://authentik.example.com',
+                'application_slug' => 'poweradmin',    // Application slug in Authentik
+                'auto_discovery' => true,
+                'metadata_url' => '{base_url}/application/o/{application_slug}/.well-known/openid_configuration',
+                'scopes' => 'openid profile email',
+                'user_mapping' => [
+                    'username' => 'preferred_username',
+                    'email' => 'email',
+                    'first_name' => 'given_name',
+                    'last_name' => 'family_name',
+                    'display_name' => 'name',
+                    'groups' => 'groups',
+                ],
+            ],
+            */
+
+            // Generic OIDC provider configuration
+            /*
+            'generic' => [
+                'name' => 'Generic OIDC',
+                'display_name' => 'Sign in with OIDC',
+                'client_id' => '',
+                'client_secret' => '',
+                'auto_discovery' => false,             // Set to false for manual endpoint configuration
+                'authorize_url' => '',                 // Authorization endpoint URL
+                'token_url' => '',                     // Token endpoint URL
+                'userinfo_url' => '',                  // UserInfo endpoint URL
+                'logout_url' => '',                    // Logout endpoint URL (optional)
+                'scopes' => 'openid profile email',
+                'user_mapping' => [
+                    'username' => 'preferred_username',
+                    'email' => 'email',
+                    'first_name' => 'given_name',
+                    'last_name' => 'family_name',
+                    'display_name' => 'name',
+                    'groups' => 'groups',
+                ],
+            ],
+            */
+        ],
+    ],
 ];

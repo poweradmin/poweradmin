@@ -50,7 +50,7 @@ abstract class BaseController
     private AppManager $app;
     private AppInitializer $init;
     protected PDOCommon $db;
-    private array $request;
+    protected array $request;
     private ValidatorInterface $validator;
     private array $validationConstraints = [];
     private CsrfTokenService $csrfTokenService;

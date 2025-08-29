@@ -1089,6 +1089,94 @@ class DatabaseStructureHelper
                     'idx_password_reset_tokens_email' => array('email'),
                     'idx_password_reset_tokens_expires' => array('expires_at')
                 )
+            ),
+            array(
+                'table_name' => 'oidc_user_links',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'autoincrement' => 1,
+                        'name' => 'id',
+                        'table' => 'oidc_user_links',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'user_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'user_id',
+                        'table' => 'oidc_user_links',
+                        'flags' => 'not_null'
+                    ),
+                    'provider_id' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'length' => 50,
+                        'fixed' => 0,
+                        'name' => 'provider_id',
+                        'table' => 'oidc_user_links',
+                        'flags' => 'not_null'
+                    ),
+                    'oidc_subject' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'name' => 'oidc_subject',
+                        'table' => 'oidc_user_links',
+                        'flags' => 'not_null'
+                    ),
+                    'username' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'name' => 'username',
+                        'table' => 'oidc_user_links',
+                        'flags' => 'not_null'
+                    ),
+                    'email' => array(
+                        'type' => 'text',
+                        'notnull' => 0,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'name' => 'email',
+                        'table' => 'oidc_user_links',
+                        'flags' => ''
+                    ),
+                    'created_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'created_at',
+                        'table' => 'oidc_user_links',
+                        'flags' => 'not_null'
+                    ),
+                    'updated_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'updated_at',
+                        'table' => 'oidc_user_links',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'unique_user_provider' => array('user_id', 'provider_id'),
+                    'unique_subject_provider' => array('oidc_subject', 'provider_id'),
+                    'idx_oidc_provider_id' => array('provider_id'),
+                    'idx_oidc_subject' => array('oidc_subject')
+                ),
+                'foreign_keys' => array(
+                    'fk_oidc_user_links_users' => array(
+                        'table' => 'users',
+                        'fields' => array('user_id' => 'id'),
+                        'ondelete' => 'CASCADE'
+                    )
+                )
             )
         );
     }

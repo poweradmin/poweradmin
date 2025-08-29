@@ -25,7 +25,12 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Presenter\LocalePresenter;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LocaleService;
+use Poweradmin\Application\Service\OidcConfigurationService;
+use Poweradmin\Application\Service\OidcService;
+use Poweradmin\Application\Service\OidcUserProvisioningService;
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Utility\LanguageCode;
 
 class LoginController extends BaseController
@@ -33,6 +38,7 @@ class LoginController extends BaseController
     private LocaleService $localeService;
     private LocalePresenter $localePresenter;
     private CsrfTokenService $csrfTokenService;
+    private OidcService $oidcService;
 
     public function __construct(array $request)
     {
@@ -43,6 +49,20 @@ class LoginController extends BaseController
         $this->localeService = new LocaleService();
         $this->localePresenter = new LocalePresenter();
         $this->csrfTokenService = new CsrfTokenService();
+
+        // Initialize OIDC service
+        $logHandler = LoggerHandlerFactory::create($this->config->getAll());
+        $logLevel = $this->config->get('logging', 'level', 'info');
+        $logger = new Logger($logHandler, $logLevel);
+
+        $oidcConfigService = new OidcConfigurationService($this->config, $logger);
+        $oidcProvisioningService = new OidcUserProvisioningService($this->db, $this->config, $logger);
+        $this->oidcService = new OidcService(
+            $this->config,
+            $oidcConfigService,
+            $oidcProvisioningService,
+            $logger
+        );
     }
 
     public function run(): void
@@ -51,6 +71,23 @@ class LoginController extends BaseController
         if (isset($_SESSION['userid'])) {
             $this->redirect('/');
             return;
+        }
+
+        // Handle OIDC authentication request with proper validation
+        $provider = $this->request['provider'] ?? null;
+        if (!empty($provider) && $this->oidcService->isEnabled()) {
+            // Validate provider parameter
+            if (!$this->validateOidcProvider($provider)) {
+                $this->setMessage('login', 'danger', _('Invalid authentication provider'));
+            } else {
+                try {
+                    $authUrl = $this->oidcService->initiateAuthFlow($provider);
+                    $this->redirect($authUrl);
+                    return;
+                } catch (\Exception $e) {
+                    $this->setMessage('login', 'danger', _('Authentication failed: ') . $e->getMessage());
+                }
+            }
         }
 
         $localesData = $this->getLocalesData();
@@ -81,6 +118,14 @@ class LoginController extends BaseController
         $loginToken = $this->csrfTokenService->generateToken();
         $_SESSION['login_token'] = $loginToken;
 
+        // Get available OIDC providers
+        $oidcProviders = [];
+        $oidcEnabled = false;
+        if ($this->oidcService->isEnabled()) {
+            $oidcEnabled = true;
+            $oidcProviders = $this->oidcService->getAvailableProviders();
+        }
+
         $this->render('login.html', [
             'login_token' => $loginToken,
             'query_string' => $_SERVER['QUERY_STRING'] ?? '',
@@ -92,6 +137,8 @@ class LoginController extends BaseController
             'recaptcha_site_key' => $this->config->get('security', 'recaptcha.site_key', ''),
             'recaptcha_version' => $this->config->get('security', 'recaptcha.version', 'v2'),
             'password_reset_enabled' => $this->config->get('security', 'password_reset.enabled', false),
+            'oidc_enabled' => $oidcEnabled,
+            'oidc_providers' => $oidcProviders,
         ]);
     }
 
@@ -106,5 +153,17 @@ class LoginController extends BaseController
         asort($localesData);
 
         return $localesData;
+    }
+
+    private function validateOidcProvider(string $provider): bool
+    {
+        // Sanitize provider ID - only allow alphanumeric characters and underscores
+        if (!preg_match('/^[a-zA-Z0-9_]+$/', $provider)) {
+            return false;
+        }
+
+        // Check if provider is actually available
+        $availableProviders = $this->oidcService->getAvailableProviders();
+        return isset($availableProviders[$provider]);
     }
 }

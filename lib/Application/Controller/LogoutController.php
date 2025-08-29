@@ -22,10 +22,13 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
 
 class LogoutController extends BaseController
@@ -43,7 +46,82 @@ class LogoutController extends BaseController
 
     public function run(): void
     {
+        // Check if user was authenticated via OIDC
+        $oidcAuthenticated = $_SESSION['oidc_authenticated'] ?? false;
+        $oidcProviderId = $_SESSION['oidc_provider'] ?? null;
+
+        if ($oidcAuthenticated && $oidcProviderId) {
+            $this->performOidcLogout($oidcProviderId);
+        } else {
+            $this->performStandardLogout();
+        }
+    }
+
+    private function performOidcLogout(string $providerId): void
+    {
+        try {
+            // Initialize OIDC configuration service
+            $logHandler = LoggerHandlerFactory::create($this->config->getAll());
+            $logLevel = $this->config->get('logging', 'level', 'info');
+            $logger = new Logger($logHandler, $logLevel);
+            $oidcConfigService = new OidcConfigurationService($this->config, $logger);
+
+            // Get provider configuration
+            $providerConfig = $oidcConfigService->getProviderConfig($providerId);
+
+            if ($providerConfig && !empty($providerConfig['logout_url'])) {
+                // Build logout URL with redirect parameter
+                $logoutUrl = $providerConfig['logout_url'];
+                $returnUrl = $this->getBaseUrl() . '/login';
+
+                // Add return URL parameter if supported
+                if (strpos($logoutUrl, '?') !== false) {
+                    $logoutUrl .= '&redirect_uri=' . urlencode($returnUrl);
+                } else {
+                    $logoutUrl .= '?redirect_uri=' . urlencode($returnUrl);
+                }
+
+                // Clear local session first
+                $this->clearSession();
+
+                // Redirect to OIDC provider logout
+                header('Location: ' . $logoutUrl);
+                exit;
+            }
+        } catch (\Exception $e) {
+            // Log error but continue with standard logout
+            error_log('OIDC logout error: ' . $e->getMessage());
+        }
+
+        // Fallback to standard logout if OIDC logout fails
+        $this->performStandardLogout();
+    }
+
+    private function performStandardLogout(): void
+    {
         $sessionEntity = new SessionEntity(_('You have logged out.'), 'success');
         $this->authService->logout($sessionEntity);
+    }
+
+    private function clearSession(): void
+    {
+        // Clear OIDC-specific session data
+        unset(
+            $_SESSION['oidc_authenticated'],
+            $_SESSION['oidc_provider'],
+            $_SESSION['oidc_state']
+        );
+
+        // Clear standard session data
+        session_destroy();
+    }
+
+    private function getBaseUrl(): string
+    {
+        $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+        $basePrefix = $this->config->get('interface', 'base_url_prefix', '');
+
+        return $scheme . '://' . $host . $basePrefix;
     }
 }

@@ -47,6 +47,22 @@
             <div class="d-grid">
                 <button type="submit" data-testid="login-button" name="authenticate" class="btn btn-secondary">{% trans %}Log in{% endtrans %}</button>
             </div>
+            {% if oidc_enabled and oidc_providers %}
+            <div class="mt-3">
+                <div class="text-center mb-2">
+                    <small class="text-muted">{% trans %}Or sign in with{% endtrans %}</small>
+                </div>
+                {% for provider in oidc_providers %}
+                <div class="d-grid mb-2">
+                    <a href="/oidc/login?provider={{ provider.id }}" 
+                       class="btn btn-outline-primary btn-sm"
+                       data-testid="oidc-login-{{ provider.id }}">
+                        <i class="bi bi-shield-lock me-2"></i>{{ provider.display_name }}
+                    </a>
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
             {% if password_reset_enabled %}
             <div class="text-center mt-3">
                 <a href="index.php?page=forgot_password" class="text-decoration-none">{% trans %}Forgot your password?{% endtrans %}</a>
