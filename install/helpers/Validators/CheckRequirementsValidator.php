@@ -23,6 +23,7 @@
 namespace PoweradminInstall\Validators;
 
 use PoweradminInstall\InstallationSteps;
+use PoweradminInstall\SystemRequirements;
 use Symfony\Component\Validator\Constraints as Assert;
 
 /**
@@ -30,39 +31,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class CheckRequirementsValidator extends BaseValidator
 {
-    /**
-     * Minimum PHP version required for Poweradmin
-     */
-    private const MIN_PHP_VERSION = '8.1.0';
-
-    /**
-     * Required PHP extensions
-     */
-    private const REQUIRED_EXTENSIONS = [
-        'intl',
-        'gettext',
-        'openssl',
-        'filter',
-        'tokenizer',
-        'pdo',
-        'xml',
-    ];
-
-    /**
-     * Database extensions (at least one must be installed)
-     */
-    private const DATABASE_EXTENSIONS = [
-        'pdo-mysql',
-        'pdo-pgsql',
-        'pdo-sqlite',
-    ];
-
-    /**
-     * Optional extensions
-     */
-    private const OPTIONAL_EXTENSIONS = [
-        'ldap',
-    ];
 
     /**
      * Check requirements and validate the step
@@ -95,37 +63,17 @@ class CheckRequirementsValidator extends BaseValidator
     {
         // Check PHP version
         $phpVersion = PHP_VERSION;
-        $phpVersionOk = version_compare($phpVersion, self::MIN_PHP_VERSION, '>=');
+        $phpVersionOk = SystemRequirements::isPhpVersionSupported();
 
-        // Check required extensions
-        $requiredExtensions = [];
-        foreach (self::REQUIRED_EXTENSIONS as $extension) {
-            $extensionName = $this->getExtensionName($extension);
-            $requiredExtensions[$extension] = extension_loaded($extensionName);
-        }
-
-        // Check database extensions
-        $databaseExtensions = [];
-        $dbExtensionOk = false;
-        foreach (self::DATABASE_EXTENSIONS as $extension) {
-            $extensionName = $this->getExtensionName($extension);
-            $isLoaded = extension_loaded($extensionName);
-            $databaseExtensions[$extension] = $isLoaded;
-            if ($isLoaded) {
-                $dbExtensionOk = true;
-            }
-        }
-
-        // Check optional extensions
-        $optionalExtensions = [];
-        foreach (self::OPTIONAL_EXTENSIONS as $extension) {
-            $extensionName = $this->getExtensionName($extension);
-            $optionalExtensions[$extension] = extension_loaded($extensionName);
-        }
+        // Get extension statuses from centralized requirements
+        $requiredExtensions = SystemRequirements::getRequiredExtensionsStatus();
+        $databaseExtensions = SystemRequirements::getDatabaseExtensionsStatus();
+        $optionalExtensions = SystemRequirements::getOptionalExtensionsStatus();
 
         // Check if all required components are available
-        $requiredExtensionsOk = !in_array(false, $requiredExtensions, true);
-        $requirementsOk = $phpVersionOk && $requiredExtensionsOk && $dbExtensionOk;
+        $requiredExtensionsOk = SystemRequirements::areRequiredExtensionsLoaded();
+        $dbExtensionOk = SystemRequirements::isDatabaseExtensionLoaded();
+        $requirementsOk = SystemRequirements::areAllRequirementsMet();
 
         // Prepare template data
         $templateData = [
@@ -143,23 +91,5 @@ class CheckRequirementsValidator extends BaseValidator
             'success' => true,
             'template_data' => $templateData,
         ];
-    }
-
-    /**
-     * Get the actual extension name from the friendly name
-     *
-     * @param string $extension The extension friendly name
-     * @return string The actual extension name
-     */
-    private function getExtensionName(string $extension): string
-    {
-        // Map friendly names to actual extension names
-        $extensionMap = [
-            'pdo-mysql' => 'pdo_mysql',
-            'pdo-pgsql' => 'pdo_pgsql',
-            'pdo-sqlite' => 'pdo_sqlite',
-        ];
-
-        return $extensionMap[$extension] ?? $extension;
     }
 }

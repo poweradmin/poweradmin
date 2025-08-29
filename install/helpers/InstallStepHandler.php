@@ -73,35 +73,17 @@ class InstallStepHandler
     {
         // PHP version check
         $phpVersion = PHP_VERSION;
-        $phpVersionOk = version_compare($phpVersion, '8.1.0', '>=');
+        $phpVersionOk = SystemRequirements::isPhpVersionSupported();
 
-        // Required PHP extensions
-        $requiredExtensions = [
-            'intl' => extension_loaded('intl'),
-            'gettext' => extension_loaded('gettext'),
-            'openssl' => extension_loaded('openssl'),
-            'filter' => extension_loaded('filter'),
-            'tokenizer' => extension_loaded('tokenizer'),
-            'pdo' => extension_loaded('pdo'),
-            'xml' => extension_loaded('xml'),
-        ];
-
-        // Database extensions
-        $databaseExtensions = [
-            'pdo-mysql' => extension_loaded('pdo_mysql'),
-            'pdo-pgsql' => extension_loaded('pdo_pgsql'),
-            'pdo-sqlite' => extension_loaded('pdo_sqlite'),
-        ];
-        $dbExtensionOk = in_array(true, $databaseExtensions, true);
-
-        // Optional extensions
-        $optionalExtensions = [
-            'ldap' => extension_loaded('ldap'),
-        ];
+        // Get extension statuses from centralized requirements
+        $requiredExtensions = SystemRequirements::getRequiredExtensionsStatus();
+        $databaseExtensions = SystemRequirements::getDatabaseExtensionsStatus();
+        $optionalExtensions = SystemRequirements::getOptionalExtensionsStatus();
 
         // Check if all required components are available
-        $requiredExtensionsOk = !in_array(false, $requiredExtensions, true);
-        $requirementsOk = $phpVersionOk && $requiredExtensionsOk && $dbExtensionOk;
+        $requiredExtensionsOk = SystemRequirements::areRequiredExtensionsLoaded();
+        $dbExtensionOk = SystemRequirements::isDatabaseExtensionLoaded();
+        $requirementsOk = SystemRequirements::areAllRequirementsMet();
 
         $this->renderTemplate('step2.html.twig', [
             'current_step' => $this->currentStep,

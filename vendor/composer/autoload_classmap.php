@@ -531,6 +531,7 @@ return array(
     'PoweradminInstall\\LocaleHandler' => $baseDir . '/install/helpers/LocaleHandler.php',
     'PoweradminInstall\\PermissionHelper' => $baseDir . '/install/helpers/PermissionHelper.php',
     'PoweradminInstall\\StepValidator' => $baseDir . '/install/helpers/StepValidator.php',
+    'PoweradminInstall\\SystemRequirements' => $baseDir . '/install/helpers/SystemRequirements.php',
     'PoweradminInstall\\TwigEnvironmentInitializer' => $baseDir . '/install/helpers/TwigEnvironmentInitializer.php',
     'PoweradminInstall\\Validators\\AbstractStepValidator' => $baseDir . '/install/helpers/Validators/AbstractStepValidator.php',
     'PoweradminInstall\\Validators\\BaseValidator' => $baseDir . '/install/helpers/Validators/BaseValidator.php',
