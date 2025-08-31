@@ -41,7 +41,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class EditUserController extends BaseController
 {
-    private Request $request;
+    protected Request $request;
     private PasswordPolicyService $policyService;
 
     private readonly UserContextService $userContextService;

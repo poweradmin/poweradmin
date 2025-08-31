@@ -48,7 +48,7 @@ class ChangePasswordController extends BaseController
 {
     private AuthenticationService $authService;
     private PasswordPolicyService $policyService;
-    private Request $request;
+    protected Request $request;
     private PasswordChangeService $passwordService;
     public function __construct(array $request)
     {

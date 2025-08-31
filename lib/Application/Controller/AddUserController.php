@@ -45,7 +45,7 @@ class AddUserController extends BaseController
     private PasswordPolicyService $passwordPolicyService;
     private PasswordGenerationService $passwordGenerationService;
     private MailService $mailService;
-    private Request $request;
+    protected Request $request;
 
 
     public function __construct(array $request)

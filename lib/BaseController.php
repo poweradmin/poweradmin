@@ -50,7 +50,7 @@ abstract class BaseController
     private AppManager $app;
     private AppInitializer $init;
     protected PDOCommon $db;
-    protected array $request;
+    protected array $requestData;
     private ValidatorInterface $validator;
     private array $validationConstraints = [];
     private CsrfTokenService $csrfTokenService;
@@ -76,7 +76,7 @@ abstract class BaseController
         $this->init = new AppInitializer($authenticate);
         $this->db = $this->init->getDb();
 
-        $this->request = $request;
+        $this->requestData = $request;
         $this->validator = Validation::createValidator();
 
         $this->config = ConfigurationManager::getInstance();
@@ -112,7 +112,7 @@ abstract class BaseController
      */
     protected function isApiRequest(): bool
     {
-        $page = $this->request['page'] ?? '';
+        $page = $this->requestData['page'] ?? '';
         return str_starts_with($page, 'api/');
     }
 
@@ -160,7 +160,7 @@ abstract class BaseController
      */
     protected function isInternalApiRoute(): bool
     {
-        $page = $this->request['page'] ?? '';
+        $page = $this->requestData['page'] ?? '';
         return str_starts_with($page, 'api/internal/');
     }
 
@@ -171,7 +171,7 @@ abstract class BaseController
      */
     protected function isPublicApiRoute(): bool
     {
-        $page = $this->request['page'] ?? '';
+        $page = $this->requestData['page'] ?? '';
 
         // Check if this is an API route
         if (!str_starts_with($page, 'api/')) {
@@ -516,7 +516,7 @@ abstract class BaseController
                 'session_key_error' => $perm_is_godlike && $session_key == 'p0w3r4dm1n' ? _('Default session encryption key is used, please set it in your configuration file.') : false,
                 'auth_used' => $this->userContextService->getAuthMethod() !== "ldap",
                 'session_userid' => $this->userContextService->getLoggedInUserId() ?? 0,
-                'request' => $this->request,
+                'request' => $this->requestData,
                 'dblog_use' => $dblog_use,
                 'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
                 'whois_enabled' => $this->config->get('whois', 'enabled', false),
@@ -537,7 +537,7 @@ abstract class BaseController
         }
 
         // Add the current page to the header variables
-        $currentPage = $this->request['page'] ?? 'index';
+        $currentPage = $this->requestData['page'] ?? 'index';
         $vars['current_page'] = $currentPage;
 
         $this->app->render('header.html', $vars);
@@ -577,7 +577,7 @@ abstract class BaseController
      */
     public function getRequest(): array
     {
-        return $this->request;
+        return $this->requestData;
     }
 
     /**
@@ -588,11 +588,11 @@ abstract class BaseController
      */
     public function getSafeRequestValue(string $key): string
     {
-        if (!array_key_exists($key, $this->request)) {
+        if (!array_key_exists($key, $this->requestData)) {
             return '';
         }
 
-        return htmlspecialchars($this->request[$key], ENT_QUOTES);
+        return htmlspecialchars($this->requestData[$key], ENT_QUOTES);
     }
 
     /**
@@ -636,12 +636,12 @@ abstract class BaseController
     /**
      * Validates data and returns constraint violations.
      *
-     * @param array|null $data Optional data to validate. If not provided, uses $this->request
+     * @param array|null $data Optional data to validate. If not provided, uses $this->requestData
      * @return ConstraintViolationListInterface
      */
     private function validateData(?array $data = null): ConstraintViolationListInterface
     {
-        $dataToValidate = $data ?? $this->request;
+        $dataToValidate = $data ?? $this->requestData;
 
         // Filter input data to remove empty values to prevent type errors
         foreach ($dataToValidate as $key => $value) {
@@ -662,7 +662,7 @@ abstract class BaseController
     /**
      * Validates the request data.
      *
-     * @param array|null $data Optional data to validate. If not provided, uses $this->request
+     * @param array|null $data Optional data to validate. If not provided, uses $this->requestData
      * @return bool True if the request data is valid, false otherwise.
      */
     public function doValidateRequest(?array $data = null): bool
@@ -674,7 +674,7 @@ abstract class BaseController
     /**
      * Displays the first validation error.
      *
-     * @param array|null $data Optional data to validate. If not provided, uses $this->request
+     * @param array|null $data Optional data to validate. If not provided, uses $this->requestData
      */
     public function showFirstValidationError(?array $data = null): void
     {
