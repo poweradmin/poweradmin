@@ -67,12 +67,12 @@ class EditRecordController extends BaseController
     public function run(): void
     {
         // Validate record ID parameter
-        if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
+        $record_id = $this->getSafeRequestValue('id');
+        if (!$record_id || !Validator::isNumber($record_id)) {
             $this->showError(_('Invalid record ID.'));
             return;
         }
-
-        $record_id = (int)$_GET['id'];
+        $record_id = (int)$record_id;
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         // Get zone ID from record first

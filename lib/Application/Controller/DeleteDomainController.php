@@ -69,11 +69,11 @@ class DeleteDomainController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_GET)) {
-            $this->showFirstValidationError($_GET);
+        if (!$this->doValidateRequest($this->getRequest())) {
+            $this->showFirstValidationError($this->getRequest());
         }
 
-        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = $this->getSafeRequestValue('id');
 
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);

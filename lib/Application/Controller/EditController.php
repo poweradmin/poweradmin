@@ -162,10 +162,11 @@ class EditController extends BaseController
         $record_sort_by = $this->getSortBy('record_sort_by', ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled']);
         $sort_direction = $this->getSortDirection('sort_direction');
 
-        if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
+        $zone_id = $this->getSafeRequestValue('id');
+        if (!$zone_id || !Validator::isNumber($zone_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $zone_id = intval(htmlspecialchars($_GET['id']));
+        $zone_id = (int)$zone_id;
 
         // Early permission check - validate access before data retrieval
         $userId = $this->userContextService->getLoggedInUserId();

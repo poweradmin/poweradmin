@@ -47,12 +47,13 @@ class DnssecController extends BaseController
 
     public function run(): void
     {
-        if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
+        $zone_id = $this->getSafeRequestValue('id');
+        if (!$zone_id || !Validator::isNumber($zone_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
             return;
         }
 
-        $zone_id = (int) $_GET['id'];
+        $zone_id = (int) $zone_id;
 
         // Early permission check - validate DNSSEC access before any operations
         $perm_view = Permission::getViewPermission($this->db);

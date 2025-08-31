@@ -45,11 +45,10 @@ class DeleteUserController extends BaseController
         $perm_edit_others = UserManager::verifyPermission($this->db, 'user_edit_others');
         $perm_is_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
 
-        if (!(isset($_GET['id']) && Validator::isNumber($_GET['id']))) {
+        $uid = $this->getSafeRequestValue('id');
+        if (!$uid || !Validator::isNumber($uid)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-
-        $uid = htmlspecialchars($_GET['id']);
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

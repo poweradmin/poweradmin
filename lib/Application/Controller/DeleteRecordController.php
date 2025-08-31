@@ -80,11 +80,11 @@ class DeleteRecordController extends BaseController
 
     public function run(): void
     {
-        if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
+        $record_id = $this->getSafeRequestValue('id');
+        if (!$record_id || !Validator::isNumber($record_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
+            return;
         }
-
-        $record_id = htmlspecialchars($_GET['id']);
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         // Get zone ID from record first

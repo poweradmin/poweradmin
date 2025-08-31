@@ -45,9 +45,10 @@ class DnssecAddKeyController extends BaseController
 
     public function run(): void
     {
-        $zone_id = "-1";
-        if (isset($_GET['id']) && Validator::isNumber($_GET['id'])) {
-            $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = $this->getSafeRequestValue('id');
+        if (!$zone_id || !Validator::isNumber($zone_id)) {
+            $this->showError(_('Invalid or unexpected input given.'));
+            return;
         }
 
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);

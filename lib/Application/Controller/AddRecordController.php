@@ -102,7 +102,7 @@ class AddRecordController extends BaseController
         $this->checkId();
 
         $perm_edit = Permission::getEditPermission($this->db);
-        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = $this->getSafeRequestValue('zone_id');
         $zone_type = $this->dnsRecord->getDomainType($zone_id);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
@@ -149,7 +149,7 @@ class AddRecordController extends BaseController
         $prio = isset($_POST['prio']) && $_POST['prio'] !== '' ? (int)$_POST['prio'] : 0;
         $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config->get('dns', 'ttl', 3600);
         $comment = $_POST['comment'] ?? '';
-        $zone_id = (int)$_GET['id'];
+        $zone_id = (int)$this->getSafeRequestValue('zone_id');
 
         // Restore full record name if using hostname-only display
         $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
@@ -244,7 +244,7 @@ class AddRecordController extends BaseController
 
     private function showForm(): void
     {
-        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = $this->getSafeRequestValue('zone_id');
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
         $isReverseZone = DnsHelper::isReverseZone($zone_name);
 
@@ -378,7 +378,7 @@ class AddRecordController extends BaseController
 
     private function addMultipleRecords(): void
     {
-        $zone_id = (int)$_GET['id'];
+        $zone_id = (int)$this->getSafeRequestValue('zone_id');
         $records = $_POST['records'] ?? [];
         $successCount = 0;
         $failureCount = 0;

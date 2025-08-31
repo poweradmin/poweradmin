@@ -44,15 +44,18 @@ class DnssecEditKeyController extends BaseController
 
     public function run(): void
     {
-        $zone_id = "-1";
-        if (isset($_GET['id']) && Validator::isNumber($_GET['id'])) {
-            $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = $this->getSafeRequestValue('zone_id');
+        if (!$zone_id || !Validator::isNumber($zone_id)) {
+            $this->showError(_('Invalid zone ID.'));
+            return;
         }
 
-        $key_id = "-1";
-        if (isset($_GET['key_id']) && Validator::isNumber($_GET['key_id'])) {
-            $key_id = (int)$_GET['key_id'];
+        $key_id = $this->getSafeRequestValue('key_id');
+        if (!$key_id || !Validator::isNumber($key_id)) {
+            $this->showError(_('Invalid key ID.'));
+            return;
         }
+        $key_id = (int)$key_id;
 
         $confirm = "-1";
         if (isset($_GET['confirm']) && Validator::isNumber($_GET['confirm'])) {

@@ -140,7 +140,9 @@ class SymfonyRouter
             $controller = new $controllerClass($parameters);
         } else {
             // Web controllers maintain current request structure for compatibility
-            $controller = new $controllerClass($_REQUEST);
+            // but merge route parameters into the request data
+            $requestData = array_merge($_REQUEST, $parameters);
+            $controller = new $controllerClass($requestData);
         }
 
         // Check if method exists

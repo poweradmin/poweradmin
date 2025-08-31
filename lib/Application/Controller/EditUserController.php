@@ -57,10 +57,11 @@ class EditUserController extends BaseController
 
     public function run(): void
     {
-        $editId = $this->request->getQueryParam('id');
+        $editId = $this->getSafeRequestValue('id');
         if (!is_numeric($editId)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
+        $editId = (int)$editId;
 
         $this->checkEditPermissions($editId);
 
