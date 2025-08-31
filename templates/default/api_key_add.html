@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/api/keys">{% trans %}API Keys{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/settings/api-keys">{% trans %}API Keys{% endtrans %}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{% trans %}Add API Key{% endtrans %}</li>
     </ol>
 </nav>
@@ -34,7 +34,7 @@
                             <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="bi bi-key me-1 text-white"></i>{% trans %}Create API Key{% endtrans %}
                             </button>
-                            <a href="/api/keys" class="btn btn-outline-secondary btn-sm">{% trans %}Cancel{% endtrans %}</a>
+                            <a href="/settings/api-keys" class="btn btn-outline-secondary btn-sm">{% trans %}Cancel{% endtrans %}</a>
                         </div>
                         <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
                     </div>

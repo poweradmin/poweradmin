@@ -219,9 +219,9 @@ rdap:
   path: /rdap
   controller: Poweradmin\Application\Controller\RdapController::run
 
-# Tools
+# Settings
 api_keys:
-  path: /api/keys
+  path: /settings/api-keys
   controller: Poweradmin\Application\Controller\ApiKeysController::run
   methods: [GET, POST]
 

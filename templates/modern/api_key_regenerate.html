@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/api/keys">{% trans %}API Keys{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/settings/api-keys">{% trans %}API Keys{% endtrans %}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{% trans %}Regenerate API Key{% endtrans %}</li>
     </ol>
 </nav>
@@ -70,7 +70,7 @@
                 <button type="submit" class="btn btn-warning btn-sm">
                     <i class="bi bi-arrow-repeat me-1 text-white"></i>{% trans %}Yes, regenerate this API key{% endtrans %}
                 </button>
-                <a href="/api/keys" class="btn btn-secondary btn-sm">
+                <a href="/settings/api-keys" class="btn btn-secondary btn-sm">
                     <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep current key{% endtrans %}
                 </a>
             </div>

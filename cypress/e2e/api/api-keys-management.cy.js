@@ -9,19 +9,19 @@ describe('API Keys Management', () => {
 
   it('should access API keys page', () => {
     // Navigate to API keys page
-    cy.visit('/api/keys');
-    cy.url().should('include', '/api/keys');
+    cy.visit('/settings/api-keys');
+    cy.url().should('include', '/settings/api-keys');
   });
 
   it('should list existing API keys', () => {
-    cy.visit('/api/keys');
+    cy.visit('/settings/api-keys');
     
     // Should show API keys table or list
     cy.get('table, .table, [class*="api"], [class*="key"]').should('be.visible');
   });
 
   it('should create a new API key', () => {
-    cy.visit('/api/keys');
+    cy.visit('/settings/api-keys');
     
     // Look for create/add button
     cy.get('body').then(($body) => {
@@ -45,14 +45,14 @@ describe('API Keys Management', () => {
   });
 
   it('should show API key after creation', () => {
-    cy.visit('/api/keys');
+    cy.visit('/settings/api-keys');
     
     // Should show the test API key we created
     cy.contains('Test API Key').should('be.visible');
   });
 
   it('should delete an API key', () => {
-    cy.visit('/api/keys');
+    cy.visit('/settings/api-keys');
     
     // Find the test API key and delete it
     cy.contains('tr', 'Test API Key').within(() => {
@@ -71,7 +71,7 @@ describe('API Keys Management', () => {
   });
 
   it('should validate API key creation form', () => {
-    cy.visit('/api/keys');
+    cy.visit('/settings/api-keys');
     
     // Try to create API key without required fields
     cy.get('body').then(($body) => {

@@ -216,7 +216,7 @@ class ApiKeysController extends BaseController
 
             if ($apiKey !== null) {
                 $this->messageService->addMessage('api_keys', 'success', _('API key updated successfully.'));
-                $this->redirect('index.php?page=api_keys');
+                $this->redirect('/settings/api-keys');
                 return;
             }
 
@@ -247,7 +247,7 @@ class ApiKeysController extends BaseController
                 $this->messageService->addMessage('api_keys', 'success', _('API key deleted successfully.'));
             }
 
-            $this->redirect('index.php?page=api_keys');
+            $this->redirect('/settings/api-keys');
             return;
         }
 
@@ -320,6 +320,6 @@ class ApiKeysController extends BaseController
             $this->messageService->addMessage('api_keys', 'success', sprintf(_('API key %s successfully.'), $status));
         }
 
-        $this->redirect('index.php?page=api_keys');
+        $this->redirect('/settings/api-keys');
     }
 }
