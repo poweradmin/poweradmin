@@ -2,7 +2,7 @@ import users from '../../fixtures/users.json';
 
 describe('Record Management', () => {
   beforeEach(() => {
-    cy.visit('/index.php?page=login');
+    cy.visit('/login');
     cy.login(users.validUser.username, users.validUser.password);
     
     // Set up a test zone if it doesn't exist already

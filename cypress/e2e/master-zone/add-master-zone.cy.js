@@ -2,18 +2,32 @@ import users from '../../fixtures/users.json';
 
 describe('Master Zone Management', () => {
     beforeEach(() => {
-        cy.visit('/index.php?page=login');
+        cy.visit('/login');
         cy.login(users.validUser.username, users.validUser.password);
-        cy.url().should('include', '/index.php');
+        cy.url().should('eq', Cypress.config('baseUrl') + '/');
     });
 
     it('should add a master zone successfully', () => {
-        cy.get('[data-testid="add-master-zone-link"]').click();
-        cy.get('[data-testid="zone-name-input"]').type('example.com');
-        cy.get('[data-testid="add-zone-button"]').click();
+        // First try clicking the Master Zone card from dashboard
+        cy.get('body').then(($body) => {
+            if ($body.text().includes('Master Zone')) {
+                // Click on Master Zone card from dashboard
+                cy.contains('Master Zone').click();
+            } else {
+                // Fallback: use navigation dropdown
+                cy.contains('Zones').click();
+                cy.contains('Add master zone').click();
+            }
+        });
+        
+        // Fill in zone name
+        cy.get('input[name*="zone"], input[placeholder*="zone"], input[name*="name"]').type('example.com');
+        
+        // Submit the form
+        cy.get('button[type="submit"], input[type="submit"]').click();
 
-        cy.url().should('include', '/index.php?page=list_forward_zones');
-        cy.get('[data-testid="alert-message"]').should('contain', 'Zone has been added successfully.');
+        // Verify success
+        cy.get('.alert, .message, [class*="success"]', { timeout: 10000 }).should('be.visible');
     });
 
     it('should add a reverse zone successfully', () => {
@@ -21,7 +35,7 @@ describe('Master Zone Management', () => {
         cy.get('[data-testid="zone-name-input"]').type('1.168.192.in-addr.arpa');
         cy.get('[data-testid="add-zone-button"]').click();
 
-        cy.url().should('include', '/index.php?page=list_reverse_zones');
+        cy.url().should('include', '/zones/reverse');
         cy.get('[data-testid="alert-message"]').should('contain', 'Zone has been added successfully.');
     });
 

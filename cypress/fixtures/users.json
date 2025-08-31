@@ -1,7 +1,7 @@
 {
   "validUser": {
     "username": "admin",
-    "password": "uberuser"
+    "password": "Admin123!"
   },
   "invalidUser": {
     "username": "invaliduser",

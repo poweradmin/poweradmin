@@ -2,13 +2,13 @@ import users from '../../fixtures/users.json';
 
 describe('Zone Template Management', () => {
   beforeEach(() => {
-    cy.visit('/index.php?page=login');
+    cy.visit('/login');
     cy.login(users.validUser.username, users.validUser.password);
   });
 
   it('should list zone templates', () => {
     cy.get('[data-testid="zone-templ-link"]').click();
-    cy.url().should('include', '/index.php?page=list_zone_templ');
+    cy.url().should('include', '/zones/templates');
     cy.get('[data-testid="zone-templates-table"]').should('be.visible');
   });
 

@@ -2,17 +2,17 @@ import users from '../../fixtures/users.json';
 
 describe('Login Authentication', () => {
     beforeEach(() => {
-        cy.visit('/index.php?page=login');
+        cy.visit('/login');
     });
 
     it('should redirect to dashboard on successful login', () => {
         cy.login(users.validUser.username, users.validUser.password);
-        cy.url().should('include', '/index.php?page=index');
+        cy.url().should('eq', Cypress.config('baseUrl') + '/');
     });
 
     it('should remain on login page for invalid credentials', () => {
         cy.login(users.invalidUser.username, users.invalidUser.password);
-        cy.url().should('include', '/index.php?page=login');
+        cy.url().should('include', '/login');
     });
 
     it('should display error message for invalid login', () => {
