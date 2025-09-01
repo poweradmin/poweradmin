@@ -13,7 +13,7 @@
                 <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add API Key{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="index.php?page=api_keys&amp;action=add" novalidate>
+                <form class="needs-validation" method="post" action="/settings/api-keys/add" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     
                     <div class="mb-3">

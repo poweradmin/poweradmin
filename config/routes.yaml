@@ -219,11 +219,44 @@ rdap:
   path: /rdap
   controller: Poweradmin\Application\Controller\RdapController::run
 
-# Settings
-api_keys:
+# API Keys Management
+api_keys_list:
   path: /settings/api-keys
   controller: Poweradmin\Application\Controller\ApiKeysController::run
+  methods: [GET]
+
+api_keys_add:
+  path: /settings/api-keys/add
+  controller: Poweradmin\Application\Controller\ApiKeysController::run
   methods: [GET, POST]
+
+api_keys_edit:
+  path: /settings/api-keys/{id}/edit
+  controller: Poweradmin\Application\Controller\ApiKeysController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_keys_delete:
+  path: /settings/api-keys/{id}/delete
+  controller: Poweradmin\Application\Controller\ApiKeysController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_keys_regenerate:
+  path: /settings/api-keys/{id}/regenerate
+  controller: Poweradmin\Application\Controller\ApiKeysController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_keys_toggle:
+  path: /settings/api-keys/{id}/toggle
+  controller: Poweradmin\Application\Controller\ApiKeysController::run
+  requirements:
+    id: '\d+'
+  methods: [POST]
 
 database_consistency:
   path: /tools/database-consistency

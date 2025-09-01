@@ -78,8 +78,25 @@ class ApiKeysController extends BaseController
             return;
         }
 
-        // Process the action
-        $action = $this->getSafeRequestValue('action') ?: 'list';
+        // Determine action from route name or fallback to query parameter for backward compatibility
+        $routeName = $this->getSafeRequestValue('_route');
+        $action = $this->getActionFromRoute($routeName) ?: $this->getSafeRequestValue('action', 'list');
+
+        // Special handling for API keys paths if route name detection fails
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+        if (empty($action) || $action === 'list') {
+            if (str_contains($requestUri, '/settings/api-keys/add')) {
+                $action = 'add';
+            } elseif (preg_match('#/settings/api-keys/(\d+)/delete#', $requestUri)) {
+                $action = 'delete';
+            } elseif (preg_match('#/settings/api-keys/(\d+)/edit#', $requestUri)) {
+                $action = 'edit';
+            } elseif (preg_match('#/settings/api-keys/(\d+)/regenerate#', $requestUri)) {
+                $action = 'regenerate';
+            } elseif (preg_match('#/settings/api-keys/(\d+)/toggle#', $requestUri)) {
+                $action = 'toggle';
+            }
+        }
 
         switch ($action) {
             case 'list':
@@ -104,6 +121,22 @@ class ApiKeysController extends BaseController
                 $this->listApiKeys();
                 break;
         }
+    }
+
+    /**
+     * Map route name to action
+     */
+    private function getActionFromRoute(?string $routeName): ?string
+    {
+        return match ($routeName) {
+            'api_keys_list' => 'list',
+            'api_keys_add' => 'add',
+            'api_keys_edit' => 'edit',
+            'api_keys_delete' => 'delete',
+            'api_keys_regenerate' => 'regenerate',
+            'api_keys_toggle' => 'toggle',
+            default => null,
+        };
     }
 
     /**
