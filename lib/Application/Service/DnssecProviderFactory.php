@@ -32,6 +32,7 @@ use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\CompositeLegacyLogger;
 use Poweradmin\Infrastructure\Logger\SyslogLegacyLogger;
 use Poweradmin\Infrastructure\Service\DnsSecApiProvider;
+use Poweradmin\Infrastructure\Service\NullDnssecProvider;
 
 class DnssecProviderFactory
 {
@@ -97,10 +98,7 @@ class DnssecProviderFactory
         $pdnsApiKey = $config->get('pdns_api', 'key');
 
         if (!$pdnsApiUrl || !$pdnsApiKey) {
-            throw new Exception(
-                'PowerDNS API configuration is required for DNSSEC operations. ' .
-                'Please configure pdns_api.url and pdns_api.key in your settings.'
-            );
+            return new NullDnssecProvider();
         }
 
         $httpClient = new HttpClient($pdnsApiUrl, $pdnsApiKey);

@@ -1320,6 +1320,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Infrastructure\\Service\\DnsServiceFactory' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/DnsServiceFactory.php',
         'Poweradmin\\Infrastructure\\Service\\HttpPaginationParameters' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/HttpPaginationParameters.php',
         'Poweradmin\\Infrastructure\\Service\\MessageService' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/MessageService.php',
+        'Poweradmin\\Infrastructure\\Service\\NullDnssecProvider' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/NullDnssecProvider.php',
         'Poweradmin\\Infrastructure\\Service\\RedirectService' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/RedirectService.php',
         'Poweradmin\\Infrastructure\\Service\\SessionAuthenticator' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/SessionAuthenticator.php',
         'Poweradmin\\Infrastructure\\Service\\StyleManager' => __DIR__ . '/../..' . '/lib/Infrastructure/Service/StyleManager.php',

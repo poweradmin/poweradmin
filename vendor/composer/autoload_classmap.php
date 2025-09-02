@@ -994,6 +994,7 @@ return array(
     'Poweradmin\\Infrastructure\\Service\\DnsServiceFactory' => $baseDir . '/lib/Infrastructure/Service/DnsServiceFactory.php',
     'Poweradmin\\Infrastructure\\Service\\HttpPaginationParameters' => $baseDir . '/lib/Infrastructure/Service/HttpPaginationParameters.php',
     'Poweradmin\\Infrastructure\\Service\\MessageService' => $baseDir . '/lib/Infrastructure/Service/MessageService.php',
+    'Poweradmin\\Infrastructure\\Service\\NullDnssecProvider' => $baseDir . '/lib/Infrastructure/Service/NullDnssecProvider.php',
     'Poweradmin\\Infrastructure\\Service\\RedirectService' => $baseDir . '/lib/Infrastructure/Service/RedirectService.php',
     'Poweradmin\\Infrastructure\\Service\\SessionAuthenticator' => $baseDir . '/lib/Infrastructure/Service/SessionAuthenticator.php',
     'Poweradmin\\Infrastructure\\Service\\StyleManager' => $baseDir . '/lib/Infrastructure/Service/StyleManager.php',
