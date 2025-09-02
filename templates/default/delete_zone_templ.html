@@ -31,7 +31,7 @@
         {% endif %}
 
         <div class="mt-4">
-            <a href="index.php?page=delete_zone_templ&id={{ zone_templ_id }}&confirm=1" class="btn btn-danger btn-sm">
+            <a href="/zones/templates/{{ zone_templ_id }}/delete?confirm=1" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this template{% endtrans %}
             </a>
             <a href="/zones/templates" class="btn btn-secondary btn-sm">

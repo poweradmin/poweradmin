@@ -15,7 +15,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
-                <form method="post" action="index.php?page=dnssec&id={{ zone_id }}" class="d-inline">
+                <form method="post" action="/zones/{{ zone_id }}/dnssec" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <button type="submit" name="unsign_zone" class="btn btn-danger">
                         <i class="bi bi-shield-x text-white me-1"></i>{% trans %}Unsign Zone{% endtrans %}
@@ -38,9 +38,9 @@
     </li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
             {% else %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ domain_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ domain_name }}</a>
             {% endif %}
         </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}DNSSEC{% endtrans %}</li>
@@ -58,10 +58,10 @@
             {% endif %}
         </strong>
         <div>
-            <a href="index.php?page=dnssec_add_key&id={{ zone_id }}" class="btn btn-primary btn-sm">
+            <a href="/zones/{{ zone_id }}/dnssec/keys/add" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle text-white me-1"></i>{% trans %}Add new key{% endtrans %}
             </a>
-            <a href="index.php?page=dnssec_ds_dnskey&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+            <a href="/zones/{{ zone_id }}/dnssec/ds" class="btn btn-secondary btn-sm">
                 <i class="bi bi-key text-white me-1"></i>{% trans %}Show DS and DNSKEY{% endtrans %}
             </a>
             {% if perm_edit != "none" %}
@@ -116,10 +116,10 @@
                         </td>
                         <td class="text-end">
                             <div class="gap-2">
-                                <a class="btn btn-sm btn-outline-primary" href="index.php?page=dnssec_edit_key&id={{ zone_id }}&key_id={{ item[0] }}" title="{% if item[5] %}{% trans %}Deactivate this key{% endtrans %}{% else %}{% trans %}Activate this key{% endtrans %}{% endif %}">
+                                <a class="btn btn-sm btn-outline-primary" href="/zones/{{ zone_id }}/dnssec/keys/{{ item[0] }}/edit" title="{% if item[5] %}{% trans %}Deactivate this key{% endtrans %}{% else %}{% trans %}Activate this key{% endtrans %}{% endif %}">
                                     <i class="bi bi-{{ button_icon }} text-primary"></i> <span class="d-none d-md-inline text-primary">{% if item[5] %}{% trans %}Deactivate{% endtrans %}{% else %}{% trans %}Activate{% endtrans %}{% endif %}</span>
                                 </a>
-                                <a class="btn btn-sm btn-outline-danger" href="index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ item[0] }}">
+                                <a class="btn btn-sm btn-outline-danger" href="/zones/{{ zone_id }}/dnssec/keys/{{ item[0] }}/delete">
                                     <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
                                 </a>
                             </div>

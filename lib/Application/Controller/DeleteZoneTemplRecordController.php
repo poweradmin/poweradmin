@@ -71,10 +71,10 @@ class DeleteZoneTemplRecordController extends BaseController
                 $syncService->markTemplateAsModified($zone_templ_id);
 
                 $this->setMessage('edit_zone_templ', 'success', _('The record has been deleted successfully.'));
-                $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
+                $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
             } else {
                 $this->setMessage('edit_zone_templ', 'error', _('The record could not be deleted.'));
-                $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
+                $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
             }
         }
 

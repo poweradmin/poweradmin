@@ -10,13 +10,13 @@
     </li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
             {% else %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ domain_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ domain_name }}</a>
             {% endif %}
         </li>
         <li class="breadcrumb-item">
-            <a href="index.php?page=dnssec&id={{ zone_id }}">{% trans %}DNSSEC{% endtrans %}</a>
+            <a href="/zones/{{ zone_id }}/dnssec">{% trans %}DNSSEC{% endtrans %}</a>
         </li>
         <li class="breadcrumb-item" aria-current="page">
             {% trans %}DS and DNS keys{% endtrans %}
@@ -37,7 +37,7 @@
                     {% endif %}
                 </strong>
                 <div>
-                    <a href="index.php?page=dnssec&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                    <a href="/zones/{{ zone_id }}/dnssec" class="btn btn-secondary btn-sm">
                         <i class="bi bi-arrow-left text-white me-1"></i>{% trans %}Back to DNSSEC keys{% endtrans %}
                     </a>
                 </div>

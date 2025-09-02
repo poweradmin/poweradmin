@@ -104,7 +104,7 @@ class ListLogUsersController extends BaseController
 
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $presenter = new PaginationPresenter($pagination, 'index.php?page=list_log_users&start={PageNumber}');
+        $presenter = new PaginationPresenter($pagination, '/users/logs?start={PageNumber}');
 
         return $presenter->present();
     }

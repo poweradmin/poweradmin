@@ -122,10 +122,10 @@ class AddZoneSlaveController extends BaseController
                 // Check if the zone is a reverse zone and redirect accordingly
                 if (DnsHelper::isReverseZone($zone)) {
                     $this->setMessage('list_reverse_zones', 'success', _('Zone has been added successfully.'));
-                    $this->redirect('index.php', ['page' => 'list_reverse_zones']);
+                    $this->redirect('/zones/reverse');
                 } else {
                     $this->setMessage('list_forward_zones', 'success', _('Zone has been added successfully.'));
-                    $this->redirect('index.php', ['page' => 'list_forward_zones']);
+                    $this->redirect('/zones/forward');
                 }
             }
         }

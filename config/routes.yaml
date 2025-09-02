@@ -118,6 +118,11 @@ bulk_registration:
   controller: Poweradmin\Application\Controller\BulkRegistrationController::run
   methods: [GET, POST]
 
+delete_domains:
+  path: /zones/delete
+  controller: Poweradmin\Application\Controller\DeleteDomainsController::run
+  methods: [GET, POST]
+
 batch_ptr:
   path: /zones/batch-ptr
   controller: Poweradmin\Application\Controller\BatchPtrRecordController::run
@@ -134,6 +139,43 @@ zones_templates:
 zone_template_add:
   path: /zones/templates/add
   controller: Poweradmin\Application\Controller\AddZoneTemplController::run
+  methods: [GET, POST]
+
+zone_template_edit:
+  path: /zones/templates/{id}/edit
+  controller: Poweradmin\Application\Controller\EditZoneTemplController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+zone_template_delete:
+  path: /zones/templates/{id}/delete
+  controller: Poweradmin\Application\Controller\DeleteZoneTemplController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+zone_template_record_add:
+  path: /zones/templates/{id}/records/add
+  controller: Poweradmin\Application\Controller\AddZoneTemplRecordController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+zone_template_record_edit:
+  path: /zones/templates/{template_id}/records/{id}/edit
+  controller: Poweradmin\Application\Controller\EditZoneTemplRecordController::run
+  requirements:
+    template_id: '\d+'
+    id: '\d+'
+  methods: [GET, POST]
+
+zone_template_record_delete:
+  path: /zones/templates/{template_id}/records/{id}/delete
+  controller: Poweradmin\Application\Controller\DeleteZoneTemplRecordController::run
+  requirements:
+    template_id: '\d+'
+    id: '\d+'
   methods: [GET, POST]
 
 # Record Management
@@ -177,6 +219,13 @@ edit_perm_templ:
     id: '\d+'
   methods: [GET, POST]
 
+delete_perm_templ:
+  path: /permissions/templates/{id}/delete
+  controller: Poweradmin\Application\Controller\DeletePermTemplController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
 # User Logs
 users_logs:
   path: /users/logs
@@ -203,6 +252,20 @@ dnssec_edit_key:
     zone_id: '\d+'
     key_id: '\d+'
   methods: [GET, POST]
+
+dnssec_delete_key:
+  path: /zones/{zone_id}/dnssec/keys/{key_id}/delete
+  controller: Poweradmin\Application\Controller\DnssecDeleteKeyController::run
+  requirements:
+    zone_id: '\d+'
+    key_id: '\d+'
+  methods: [GET, POST]
+
+dnssec_ds_dnskey:
+  path: /zones/{id}/dnssec/ds-dnskey
+  controller: Poweradmin\Application\Controller\DnssecDsDnskeyController::run
+  requirements:
+    id: '\d+'
 
 # Search
 search:
@@ -265,6 +328,35 @@ database_consistency:
 email_previews:
   path: /tools/email-previews
   controller: Poweradmin\Application\Controller\EmailPreviewsController::run
+
+pdns_status:
+  path: /tools/pdns-status
+  controller: Poweradmin\Application\Controller\PdnsStatusController::run
+  methods: [GET, POST]
+
+# Supermaster Management
+list_supermasters:
+  path: /supermasters
+  controller: Poweradmin\Application\Controller\ListSupermastersController::run
+
+add_supermaster:
+  path: /supermasters/add
+  controller: Poweradmin\Application\Controller\AddSupermasterController::run
+  methods: [GET, POST]
+
+edit_supermaster:
+  path: /supermasters/{id}/edit
+  controller: Poweradmin\Application\Controller\EditSupermasterController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+delete_supermaster:
+  path: /supermasters/{id}/delete
+  controller: Poweradmin\Application\Controller\DeleteSupermasterController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
 
 # API v1 Routes - RESTful
 api_v1_zones:
@@ -339,6 +431,78 @@ api_internal_user_preferences:
 api_internal_zone:
   path: /api/internal/zone
   controller: Poweradmin\Application\Controller\Api\Internal\ZoneController::run
+
+# Additional Zone Management Routes
+bulk_record_add:
+  path: /zones/{id}/records/bulk
+  controller: Poweradmin\Application\Controller\BulkRecordAddController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+edit_comment:
+  path: /zones/{id}/comment/edit
+  controller: Poweradmin\Application\Controller\EditCommentController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+delete_records:
+  path: /zones/records/delete
+  controller: Poweradmin\Application\Controller\DeleteRecordsController::run
+  methods: [GET, POST]
+
+# Zone Template Routes
+list_template_zones:
+  path: /zones/templates/{id}/zones
+  controller: Poweradmin\Application\Controller\ListTemplateZonesController::run
+  requirements:
+    id: '\d+'
+
+unlink_zones_templ:
+  path: /zones/templates/unlink
+  controller: Poweradmin\Application\Controller\UnlinkZonesTemplController::run
+  methods: [GET, POST]
+
+# Authentication Routes  
+reset_password_token:
+  path: /auth/reset-password/{token}
+  controller: Poweradmin\Application\Controller\ResetPasswordController::run
+  requirements:
+    token: '[a-zA-Z0-9]+'
+  methods: [GET, POST]
+
+mfa_verify_token:
+  path: /auth/mfa/verify/{token}
+  controller: Poweradmin\Application\Controller\MfaVerifyController::run
+  requirements:
+    token: '[a-zA-Z0-9]+'
+  methods: [GET, POST]
+
+# DNSSEC Key Management
+dnssec_key_toggle:
+  path: /zones/{zone_id}/dnssec/keys/{key_id}/toggle
+  controller: Poweradmin\Application\Controller\DnssecEditKeyController::run
+  requirements:
+    zone_id: '\d+'
+    key_id: '\d+'
+
+# Zone Template Record Management  
+edit_zone_templ_record:
+  path: /zones/templates/{zone_templ_id}/records/{id}/edit
+  controller: Poweradmin\Application\Controller\EditZoneTemplRecordController::run
+  requirements:
+    zone_templ_id: '\d+'
+    id: '\d+'
+  methods: [GET, POST]
+
+delete_zone_templ_record:
+  path: /zones/templates/{zone_templ_id}/records/{id}/delete
+  controller: Poweradmin\Application\Controller\DeleteZoneTemplRecordController::run
+  requirements:
+    zone_templ_id: '\d+'
+    id: '\d+'
+  methods: [GET, POST]
 
 # Static Assets
 static_assets:

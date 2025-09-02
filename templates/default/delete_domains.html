@@ -27,7 +27,7 @@
                 <strong>{% trans %}Zones to Delete{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form method="post" action="index.php?page=delete_domains">
+                <form method="post" action="/zones/delete">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="table-responsive">

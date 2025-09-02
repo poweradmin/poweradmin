@@ -80,11 +80,11 @@ class ApiKeysController extends BaseController
 
         // Determine action from route name or fallback to query parameter for backward compatibility
         $routeName = $this->getSafeRequestValue('_route');
-        $action = $this->getActionFromRoute($routeName) ?: $this->getSafeRequestValue('action', 'list');
+        $action = $this->getActionFromRoute($routeName) ?: ($this->getSafeRequestValue('action') ?: 'list');
 
         // Special handling for API keys paths if route name detection fails
         $requestUri = $_SERVER['REQUEST_URI'] ?? '';
-        if (empty($action) || $action === 'list') {
+        if ($action === 'list') {
             if (str_contains($requestUri, '/settings/api-keys/add')) {
                 $action = 'add';
             } elseif (preg_match('#/settings/api-keys/(\d+)/delete#', $requestUri)) {

@@ -185,7 +185,7 @@ class AddRecordController extends BaseController
                 ];
                 $this->formStateService->saveFormData($formId, $formData);
 
-                $this->redirect('index.php?page=edit&id=' . $zone_id . '&form_id=' . $formId);
+                $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
                 return;
             }
         } catch (Exception $e) {
@@ -207,7 +207,7 @@ class AddRecordController extends BaseController
             ];
             $this->formStateService->saveFormData($formId, $formData);
 
-            $this->redirect('index.php?page=edit&id=' . $zone_id . '&form_id=' . $formId);
+            $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
             return;
         }
 
@@ -239,7 +239,7 @@ class AddRecordController extends BaseController
         }
 
         // Redirect back to zone edit page
-        $this->redirect('index.php?page=edit&id=' . $zone_id);
+        $this->redirect('/zones/' . $zone_id . '/edit');
     }
 
     private function showForm(): void
@@ -382,10 +382,11 @@ class AddRecordController extends BaseController
         $records = $_POST['records'] ?? [];
         $successCount = 0;
         $failureCount = 0;
+        $formId = $this->formStateService->generateFormId('add_record');
 
         if (empty($records)) {
             $this->setMessage('edit', 'error', _('No records were provided.'));
-            $this->redirect('index.php?page=edit&id=' . $zone_id);
+            $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
             return;
         }
 
@@ -442,7 +443,7 @@ class AddRecordController extends BaseController
                 $this->formStateService->saveFormData($formId, $formData);
 
                 // Redirect with form_id to show errors
-                $this->redirect('index.php?page=edit&id=' . $zone_id . '&form_id=' . $formId);
+                $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
                 return;
             } else {
                 $this->setMessage('edit', 'success', $message);
@@ -464,11 +465,11 @@ class AddRecordController extends BaseController
             $this->formStateService->saveFormData($formId, $formData);
 
             // Redirect with form_id to show errors
-            $this->redirect('index.php?page=edit&id=' . $zone_id . '&form_id=' . $formId);
+            $this->redirect('/zones/' . $zone_id . '/edit?form_id=' . $formId);
             return;
         }
 
         // Redirect back to zone edit page
-        $this->redirect('index.php?page=edit&id=' . $zone_id);
+        $this->redirect('/zones/' . $zone_id . '/edit');
     }
 }

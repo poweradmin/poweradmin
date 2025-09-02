@@ -11,9 +11,9 @@
         {% if has_zone_id %}
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
             {% else %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ zone_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ zone_name }}</a>
             {% endif %}
         </li>
         {% endif %}
@@ -32,7 +32,7 @@
                 <strong><i class="bi bi-arrow-left-right me-2"></i>{% trans %}Batch PTR Records{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="index.php?page=batch_ptr_record{% if has_zone_id %}&id={{ zone_id }}{% endif %}" novalidate>
+                <form class="needs-validation" method="post" action="/zones/batch-ptr{% if has_zone_id %}&id={{ zone_id }}{% endif %}" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="mb-3">
@@ -112,7 +112,7 @@
                                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Create PTR Records{% endtrans %}
                             </button>
                             {% if has_zone_id %}
-                            <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-sm btn-secondary">
+                            <a href="/zones/{{ zone_id }}/edit" class="btn btn-sm btn-secondary">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                             </a>
                             {% else %}

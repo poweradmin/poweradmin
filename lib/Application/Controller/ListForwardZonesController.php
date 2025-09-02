@@ -159,7 +159,7 @@ class ListForwardZonesController extends BaseController
 
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $presenter = new PaginationPresenter($pagination, 'index.php?page=list_forward_zones&start={PageNumber}');
+        $presenter = new PaginationPresenter($pagination, '/zones/forward?start={PageNumber}');
 
         return $presenter->present();
     }

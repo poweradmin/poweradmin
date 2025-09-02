@@ -52,7 +52,7 @@
             </div>
         </div>
 
-        <form method="post" action="index.php?page=unlink_zones_templ" id="unlink-zones-form">
+        <form method="post" action="/zones/templates/unlink" id="unlink-zones-form">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="template_id" value="{{ template.id }}">
             <div class="table-responsive">
@@ -98,7 +98,7 @@
                     <td class="text-end">
                         <div class="gap-2">
                             <a class="btn btn-sm btn-outline-primary"
-                               href="index.php?page=edit&id={{ zone.id }}">
+                               href="/zones/{{ zone.id }}/edit">
                                 <i class="bi bi-pencil-square text-primary"></i>
                             </a>
                         </div>

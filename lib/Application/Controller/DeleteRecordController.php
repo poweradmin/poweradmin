@@ -210,7 +210,7 @@ class DeleteRecordController extends BaseController
                     }
                 }
 
-                $this->redirect('index.php', ['page' => 'edit', 'id' => $zid]);
+                $this->redirect('/zones/' . $zid . '/edit');
             }
         }
 

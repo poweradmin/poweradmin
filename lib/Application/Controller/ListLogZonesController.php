@@ -104,7 +104,7 @@ class ListLogZonesController extends BaseController
 
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $presenter = new PaginationPresenter($pagination, 'index.php?page=list_log_zones&start={PageNumber}');
+        $presenter = new PaginationPresenter($pagination, '/zones/logs?start={PageNumber}');
 
         return $presenter->present();
     }

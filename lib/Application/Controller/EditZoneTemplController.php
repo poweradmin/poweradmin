@@ -147,7 +147,7 @@ class EditZoneTemplController extends BaseController
 
         $paginationService = new PaginationService();
         $pagination = $paginationService->createPagination($totalItems, $itemsPerPage, $currentPage);
-        $presenter = new PaginationPresenter($pagination, 'index.php?page=edit_zone_templ&start={PageNumber}', $id);
+        $presenter = new PaginationPresenter($pagination, '/zones/templates/' . $id . '/edit?start={PageNumber}', $id);
 
         return $presenter->present();
     }

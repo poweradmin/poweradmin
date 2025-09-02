@@ -9,7 +9,7 @@
         <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
-        <li class="breadcrumb-item"><a href="index.php?page=edit&id={{ zone_id }}">{% trans %}Edit zone{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/zones/{{ zone_id }}/edit">{% trans %}Edit zone{% endtrans %}</a></li>
         {% else %}
         <li class="breadcrumb-item"><a href="/search">{% trans %}Search{% endtrans %}</a></li>
         {% endif %}
@@ -54,7 +54,7 @@
             </table>
         </div>
 
-        <form method="post" action="index.php?page=delete_records">
+        <form method="post" action="/zones/records/delete">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             {% if zone_id %}
             <input type="hidden" name="zone_id" value="{{ zone_id }}">
@@ -84,7 +84,7 @@
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete these records{% endtrans %}
             </button>
             {% if zone_id %}
-            <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-secondary btn-sm ms-2">
+            <a href="/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm ms-2">
             {% else %}
             <a href="/search" class="btn btn-secondary btn-sm ms-2">
             {% endif %}

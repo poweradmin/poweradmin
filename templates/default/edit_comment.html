@@ -10,9 +10,9 @@
     </li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
             {% else %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ zone_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ zone_name }}</a>
             {% endif %}
         </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Edit comment{% endtrans %}</li>
@@ -25,7 +25,7 @@
 <h5 class="mb-3">{% trans %}Edit comment in zone{% endtrans %} "{{ zone_name }}"</h5>
 {% endif %}
 
-<form method="post" action="index.php?page=edit_comment&id={{ zone_id }}">
+<form method="post" action="/zones/{{ zone_id }}/comment/edit">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <div>
         <label for="floatingTextarea"></label>

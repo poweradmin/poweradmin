@@ -8,7 +8,7 @@
         <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
-        <li class="breadcrumb-item"><a href="index.php?page=edit&id={{ zone_id }}">
+        <li class="breadcrumb-item"><a href="/zones/{{ zone_id }}/edit">
             {% if idn_zone_name %}
             {{ idn_zone_name }}
             {% else %}

@@ -32,13 +32,13 @@
         <!-- Reverse Zone Type Filter as Button Group -->
         <div class="mb-3">
             <div class="btn-group" role="group" aria-label="{% trans %}Reverse Zone Types{% endtrans %}">
-                <a href="index.php?page=list_reverse_zones&reverse_type=all" class="btn {{ reverse_zone_type == 'all' ? 'btn-secondary' : 'btn-outline-secondary' }}">
+                <a href="/zones/reverse&reverse_type=all" class="btn {{ reverse_zone_type == 'all' ? 'btn-secondary' : 'btn-outline-secondary' }}">
                     {% trans %}All{% endtrans %} <span class="badge bg-secondary text-white">{{ count_all_reverse_zones }}</span>
                 </a>
-                <a href="index.php?page=list_reverse_zones&reverse_type=ipv4" class="btn {{ reverse_zone_type == 'ipv4' ? 'btn-secondary' : 'btn-outline-secondary' }}">
+                <a href="/zones/reverse&reverse_type=ipv4" class="btn {{ reverse_zone_type == 'ipv4' ? 'btn-secondary' : 'btn-outline-secondary' }}">
                     {% trans %}IPv4{% endtrans %} <span class="badge bg-secondary text-white">{{ count_ipv4_zones }}</span>
                 </a>
-                <a href="index.php?page=list_reverse_zones&reverse_type=ipv6" class="btn {{ reverse_zone_type == 'ipv6' ? 'btn-secondary' : 'btn-outline-secondary' }}">
+                <a href="/zones/reverse&reverse_type=ipv6" class="btn {{ reverse_zone_type == 'ipv6' ? 'btn-secondary' : 'btn-outline-secondary' }}">
                     {% trans %}IPv6{% endtrans %} <span class="badge bg-secondary text-white">{{ count_ipv6_zones }}</span>
                 </a>
             </div>
@@ -85,7 +85,7 @@
 
         <!-- Alphabetical pagination removed as it's not relevant for reverse zones -->
 
-        <form method="post" action="index.php?page=delete_domains" id="delete-zones-form">
+        <form method="post" action="/zones/delete" id="delete-zones-form">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">
@@ -98,24 +98,24 @@
                             <input type="checkbox" class="form-check-input" id="select_zones" onClick="toggleZoneCheckboxes()"/>
                         </th>
                         <th>
-                            <a href="index.php?page=list_reverse_zones&zone_sort_by=name&zone_sort_by_direction={{ zone_sort_by == 'name' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}&reverse_type={{ reverse_zone_type }}">
+                            <a href="/zones/reverse&zone_sort_by=name&zone_sort_by_direction={{ zone_sort_by == 'name' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}&reverse_type={{ reverse_zone_type }}">
                                 {% trans %}Name{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'name' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
                         <th>
-                            <a href="index.php?page=list_reverse_zones&zone_sort_by=type&zone_sort_by_direction={{ zone_sort_by == 'type' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}&reverse_type={{ reverse_zone_type }}">
+                            <a href="/zones/reverse&zone_sort_by=type&zone_sort_by_direction={{ zone_sort_by == 'type' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}&reverse_type={{ reverse_zone_type }}">
                                 {% trans %}Type{% endtrans %}</a>
                             {{ zone_sort_by == 'type' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
                         <th>
-                            <a href="index.php?page=list_reverse_zones&zone_sort_by=count_records&zone_sort_by_direction={{ zone_sort_by == 'count_records' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}&reverse_type={{ reverse_zone_type }}">
+                            <a href="/zones/reverse&zone_sort_by=count_records&zone_sort_by_direction={{ zone_sort_by == 'count_records' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}&reverse_type={{ reverse_zone_type }}">
                                 {% trans %}Records{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'count_records' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
                         <th>
-                            <a href="index.php?page=list_reverse_zones&zone_sort_by=owner&zone_sort_by_direction={{ zone_sort_by == 'owner' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}&reverse_type={{ reverse_zone_type }}">
+                            <a href="/zones/reverse&zone_sort_by=owner&zone_sort_by_direction={{ zone_sort_by == 'owner' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}&reverse_type={{ reverse_zone_type }}">
                                 {% trans %}Owner{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'owner' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
@@ -178,7 +178,7 @@
                             {% if associated_forward_zones[zone.id] is defined and associated_forward_zones[zone.id]|length > 0 %}
                                 {% for forward in associated_forward_zones[zone.id] %}
                                     <span class="badge text-dark">
-                                        <a href="index.php?page=edit&id={{ forward.id }}" class="text-decoration-none">
+                                        <a href="/zones/{{ forward.id }}/edit" class="text-decoration-none">
                                             {{ forward.name }} 
                                             <span class="badge bg-primary text-white">{{ forward.ptr_records }}</span>
                                         </a>
@@ -209,18 +209,18 @@
                         <td class="text-end">
                             <div class="gap-2">
                                 {% if perm_is_godlike and whois_enabled %}
-                                <a class="btn btn-outline-secondary btn-sm" href="index.php?page=whois&zone_id={{ zone['id'] }}" data-testid="whois-zone-{{ zone['id'] }}">
+                                <a class="btn btn-outline-secondary btn-sm" href="/zones/{{ zone['id'] }}/whois" data-testid="whois-zone-{{ zone['id'] }}">
                                     <i class="bi bi-search-heart text-secondary"></i>
                                     <span class="d-none d-md-inline">{% trans %}WHOIS{% endtrans %}</span>
                                 </a>
                                 {% endif %}
                                 {% if perm_is_godlike and rdap_enabled %}
-                                <a class="btn btn-outline-secondary btn-sm" href="index.php?page=rdap&zone_id={{ zone['id'] }}" data-testid="rdap-zone-{{ zone['id'] }}">
+                                <a class="btn btn-outline-secondary btn-sm" href="/zones/{{ zone['id'] }}/rdap" data-testid="rdap-zone-{{ zone['id'] }}">
                                     <i class="bi bi-search text-secondary"></i>
                                     <span class="d-none d-md-inline">{% trans %}RDAP{% endtrans %}</span>
                                 </a>
                                 {% endif %}
-                                <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit&id={{ zone['id'] }}" data-testid="edit-zone-{{ zone['id'] }}">
+                                <a class="btn btn-outline-primary btn-sm" href="/zones/{{ zone['id'] }}/edit" data-testid="edit-zone-{{ zone['id'] }}">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 {% if perm_edit == "all" or (perm_edit == "own" and user_is_zone_owner) %}

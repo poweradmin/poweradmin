@@ -10,9 +10,9 @@
     </li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
             {% else %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ zone_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ zone_name }}</a>
             {% endif %}
         </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Bulk add records{% endtrans %}</li>
@@ -30,7 +30,7 @@
                 <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Bulk Add Records{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="index.php?page=bulk_record_add&id={{ zone_id }}" novalidate>
+                <form class="needs-validation" method="post" action="/zones/{{ zone_id }}/records/bulk" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="mb-3">
@@ -56,7 +56,7 @@
                             <button type="submit" class="btn btn-primary btn-sm" name="submit">
                                 <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add Records{% endtrans %}
                             </button>
-                            <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                            <a href="/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                             </a>
                         </div>

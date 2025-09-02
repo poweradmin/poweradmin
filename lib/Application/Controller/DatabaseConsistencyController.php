@@ -139,6 +139,6 @@ class DatabaseConsistencyController extends BaseController
             $this->setMessage('database_consistency', 'error', $e->getMessage());
         }
 
-        $this->redirect('index.php', ['page' => 'database_consistency']);
+        $this->redirect('/tools/database-consistency');
     }
 }

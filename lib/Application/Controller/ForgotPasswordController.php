@@ -110,7 +110,7 @@ class ForgotPasswordController extends BaseController
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $redirectService = new RedirectService();
-            $redirectService->redirectTo('index.php');
+            $redirectService->redirectTo('/');
             return;
         }
 

@@ -9,7 +9,7 @@
         {% endif %}
     </li>
         <li class="breadcrumb-item"><a href="/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=edit_zone_templ&id={{ zone_templ_id }}">{{ templ_details['name'] }}</a></li>
+        <li class="breadcrumb-item"><a href="/zones/templates/{{ zone_templ_id }}/edit">{{ templ_details['name'] }}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Delete record{% endtrans %}</li>
     </ol>
 </nav>
@@ -55,10 +55,10 @@
         </div>
 
         <div class="mt-4">
-            <a href="index.php?page=delete_zone_templ_record&id={{ record_id }}&zone_templ_id={{ zone_templ_id }}&confirm=1" class="btn btn-danger btn-sm">
+            <a href="/zones/templates/{{ zone_templ_id }}/records/{{ record_id }}/delete?confirm=1" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this record{% endtrans %}
             </a>
-            <a href="index.php?page=edit_zone_templ&id={{ zone_templ_id }}" class="btn btn-secondary btn-sm">
+            <a href="/zones/templates/{{ zone_templ_id }}/edit" class="btn btn-secondary btn-sm">
                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this record{% endtrans %}
             </a>
         </div>

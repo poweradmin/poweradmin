@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=list_supermasters">{% trans %}Supermasters{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/supermasters">{% trans %}Supermasters{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Delete supermaster{% endtrans %}</li>
     </ol>
 </nav>
@@ -46,7 +46,7 @@
             <a href="index.php?page=delete_supermaster&master_ip={{ master_ip }}&ns_name={{ info['ns_name'] }}&confirm=1" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this supermaster{% endtrans %}
             </a>
-            <a href="index.php?page=list_supermasters" class="btn btn-secondary btn-sm">
+            <a href="/supermasters" class="btn btn-secondary btn-sm">
                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this supermaster{% endtrans %}
             </a>
         </div>

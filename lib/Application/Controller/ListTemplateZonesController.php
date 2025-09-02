@@ -86,7 +86,7 @@ class ListTemplateZonesController extends BaseController
         if ($totalZones > $itemsPerPage) {
             $presenter = new PaginationPresenter(
                 $pagination,
-                'index.php?page=list_template_zones&id=' . $zone_templ_id . '&start={PageNumber}'
+                '/zones/template?id=' . $zone_templ_id . '&start={PageNumber}'
             );
             $paginationHtml = $presenter->present();
         }

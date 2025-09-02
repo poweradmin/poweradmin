@@ -102,7 +102,7 @@ class DnssecController extends BaseController
                         $dnsRecord->updateSOASerial($zone_id);
                         $this->setMessage('dnssec', 'success', _('Zone has been unsigned successfully.'));
                         // Redirect to edit page since DNSSEC is no longer relevant
-                        $this->redirect('index.php?page=edit&id=' . $zone_id);
+                        $this->redirect('/zones/' . $zone_id . '/edit');
                         return;
                     } else {
                         $this->setMessage('dnssec', 'warning', _('Zone unsigning requested successfully, but verification failed.'));

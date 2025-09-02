@@ -25,7 +25,7 @@
         {% endif %}
 
         <div class="mt-4">
-            <a href="index.php?page=delete_perm_templ&id={{ perm_templ_id }}&confirm=1" class="btn btn-danger btn-sm">
+            <a href="/permissions/templates/{{ perm_templ_id }}/delete?confirm=1" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this template{% endtrans %}
             </a>
             <a href="/permissions/templates" class="btn btn-secondary btn-sm">

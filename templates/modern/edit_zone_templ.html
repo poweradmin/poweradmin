@@ -37,7 +37,7 @@
         {% if records is empty %}
         <div class="p-4 text-center">
             <p class="text-secondary mb-4">{% trans %}This zone template does not have any records yet.{% endtrans %}</p>
-            <a class="btn btn-primary btn-sm" href="index.php?page=add_zone_templ_record&id={{zone_templ_id}}">
+            <a class="btn btn-primary btn-sm" href="/zones/templates/{{zone_templ_id}}/records/add">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
             </a>
         </div>
@@ -48,11 +48,11 @@
                 <table class="table table-striped table-hover table-sm mb-0">
                     <thead class="table-light">
                     <tr>
-                        <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&record_sort_by=name" class="text-decoration-none">{% trans %}Name{% endtrans %}</a></th>
-                        <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&record_sort_by=type" class="text-decoration-none">{% trans %}Type{% endtrans %}</a></th>
-                        <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&record_sort_by=content" class="text-decoration-none">{% trans %}Content{% endtrans %}</a></th>
-                        <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&record_sort_by=prio" class="text-decoration-none">{% trans %}Priority{% endtrans %}</a></th>
-                        <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&record_sort_by=ttl" class="text-decoration-none">{% trans %}TTL{% endtrans %}</a></th>
+                        <th><a href="/zones/templates/{{ zone_templ_id }}/edit?record_sort_by=name" class="text-decoration-none">{% trans %}Name{% endtrans %}</a></th>
+                        <th><a href="/zones/templates/{{ zone_templ_id }}/edit?record_sort_by=type" class="text-decoration-none">{% trans %}Type{% endtrans %}</a></th>
+                        <th><a href="/zones/templates/{{ zone_templ_id }}/edit?record_sort_by=content" class="text-decoration-none">{% trans %}Content{% endtrans %}</a></th>
+                        <th><a href="/zones/templates/{{ zone_templ_id }}/edit?record_sort_by=prio" class="text-decoration-none">{% trans %}Priority{% endtrans %}</a></th>
+                        <th><a href="/zones/templates/{{ zone_templ_id }}/edit?record_sort_by=ttl" class="text-decoration-none">{% trans %}TTL{% endtrans %}</a></th>
                         <th class="text-end">{% trans %}Actions{% endtrans %}</th>
                     </tr>
                     </thead>
@@ -72,11 +72,11 @@
                             <input type="hidden" name="record[{{record['id']}}][rid]" value="{{record['id']}}">
                             <div class="gap-2">
                                 <a class="btn btn-sm btn-outline-primary"
-                                   href="index.php?page=edit_zone_templ_record&id={{record['id']}}&zone_templ_id={{zone_templ_id}}">
+                                   href="/zones/templates/{{ zone_templ_id }}/records/{{ record['id'] }}/edit">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 <a class="btn btn-sm btn-outline-danger"
-                                   href="index.php?page=delete_zone_templ_record&id={{record['id']}}&zone_templ_id={{zone_templ_id}}">
+                                   href="/zones/templates/{{ zone_templ_id }}/records/{{ record['id'] }}/delete">
                                     <i class="bi bi-trash text-danger"></i>
                                 </a>
                             </div>
@@ -93,13 +93,13 @@
     <div class="card-footer py-3">
         <div class="d-flex justify-content-between mb-2">
             <div>
-                <a class="btn btn-primary btn-sm" href="index.php?page=add_zone_templ_record&id={{zone_templ_id}}">
+                <a class="btn btn-primary btn-sm" href="/zones/templates/{{zone_templ_id}}/records/add">
                     <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
                 </a>
             </div>
             <div>
                 <a class="btn btn-outline-secondary btn-sm {% if zones_linked_count == 0 %}disabled{% endif %}" 
-                   href="{% if zones_linked_count > 0 %}index.php?page=list_template_zones&id={{zone_templ_id}}{% else %}#{% endif %}"
+                   href="{% if zones_linked_count > 0 %}/zones/templates/{{ zone_templ_id }}/zones{% else %}#{% endif %}"
                    {% if zones_linked_count == 0 %}title="{% trans %}No zones are using this template{% endtrans %}" tabindex="-1" aria-disabled="true"{% endif %}>
                     <i class="bi bi-list me-1 text-secondary"></i>{% trans %}View zones{% endtrans %}
                 </a>

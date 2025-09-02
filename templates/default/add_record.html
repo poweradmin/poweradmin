@@ -10,9 +10,9 @@
     </li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ idn_zone_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
             {% else %}
-            <a href="index.php?page=edit&id={{ zone_id }}">{{ zone_name }}</a>
+            <a href="/zones/{{ zone_id }}/edit">{{ zone_name }}</a>
             {% endif %}
         </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Add record{% endtrans %}</li>
@@ -142,7 +142,7 @@
                     <i class="bi bi-plus-circle me-1 text-white"></i>
                     <span>{% trans %}Add records{% endtrans %}</span>
                 </button>
-                <a href="index.php?page=edit&id={{ zone_id }}" class="btn btn-secondary btn-sm">
+                <a href="/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
                     <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                 </a>
             </div>

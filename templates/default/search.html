@@ -131,7 +131,7 @@
         {% endif %}
     </div>
     <div class="card-body p-0">
-        <form method="post" action="index.php?page=delete_domains">
+        <form method="post" action="/zones/delete">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">
@@ -201,19 +201,19 @@
                             <div class="gap-2">
                                 {% if perm_is_godlike and whois_enabled %}
                                 <a class="btn btn-sm btn-outline-secondary"
-                                href="index.php?page=whois&zone_id={{ zone['id'] }}" data-testid="whois-zone-{{ zone['id'] }}">
+                                href="/zones/{{ zone['id'] }}/whois" data-testid="whois-zone-{{ zone['id'] }}">
                                     <i class="bi bi-search-heart text-secondary"></i>
                                 </a>
                                 {% endif %}
                                 {% if perm_is_godlike and rdap_enabled %}
                                 <a class="btn btn-sm btn-outline-secondary"
-                                href="index.php?page=rdap&zone_id={{ zone['id'] }}" data-testid="rdap-zone-{{ zone['id'] }}">
+                                href="/zones/{{ zone['id'] }}/rdap" data-testid="rdap-zone-{{ zone['id'] }}">
                                     <i class="bi bi-search text-secondary"></i>
                                 </a>
                                 {% endif %}
                                 {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
                                 <a class="btn btn-sm btn-outline-primary"
-                                href="index.php?page=edit&id={{ zone['id'] }}">
+                                href="/zones/{{ zone['id'] }}/edit">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 <a class="btn btn-sm btn-outline-danger"
@@ -316,7 +316,7 @@
         {% endif %}
     </div>
     <div class="card-body p-0">
-        <form method="post" action="index.php?page=delete_records">
+        <form method="post" action="/zones/records/delete">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">

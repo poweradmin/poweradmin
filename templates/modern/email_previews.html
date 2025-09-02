@@ -55,11 +55,11 @@
                         </p>
                         
                         <div class="d-grid gap-2">
-                            <a href="index.php?page=email_previews&template={{ template_key }}&mode=light{% if using_custom %}&custom=true{% endif %}" 
+                            <a href="/email-previews&template={{ template_key }}&mode=light{% if using_custom %}&custom=true{% endif %}" 
                                class="btn btn-outline-{% if using_custom %}success{% else %}primary{% endif %} btn-sm" target="_blank">
                                 <i class="bi bi-sun me-2 text-{% if using_custom %}success{% else %}primary{% endif %}"></i>{% trans %}View Light Mode{% endtrans %}
                             </a>
-                            <a href="index.php?page=email_previews&template={{ template_key }}&mode=dark{% if using_custom %}&custom=true{% endif %}" 
+                            <a href="/email-previews&template={{ template_key }}&mode=dark{% if using_custom %}&custom=true{% endif %}" 
                                class="btn btn-outline-secondary btn-sm" target="_blank">
                                 <i class="bi bi-moon me-2"></i>{% trans %}View Dark Mode{% endtrans %}
                             </a>

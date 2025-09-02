@@ -67,7 +67,7 @@ class AddPermTemplController extends BaseController
 
         $this->permissionTemplate->addPermissionTemplate($this->getRequest());
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been added successfully.'));
-        $this->redirect('index.php', ['page' => 'list_perm_templ']);
+        $this->redirect('/permissions/templates');
     }
 
     private function showForm(): void

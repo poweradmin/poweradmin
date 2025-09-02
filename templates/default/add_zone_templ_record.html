@@ -9,7 +9,7 @@
         {% endif %}
     </li>
         <li class="breadcrumb-item"><a href="/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=edit_zone_templ&id={{ zone_templ_id }}">{{ templ_name }}</a></li>
+        <li class="breadcrumb-item"><a href="/zones/templates/{{ zone_templ_id }}/edit">{{ templ_name }}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Add record{% endtrans %}</li>
     </ol>
 </nav>
@@ -88,7 +88,7 @@
                         <button type="submit" class="btn btn-primary btn-sm" name="commit">
                             <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
                         </button>
-                        <a href="index.php?page=edit_zone_templ&id={{ zone_templ_id }}" class="btn btn-secondary btn-sm">
+                        <a href="/zones/templates/{{ zone_templ_id }}/edit" class="btn btn-secondary btn-sm">
                             <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                         </a>
                     </div>

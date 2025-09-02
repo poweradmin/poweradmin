@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="index.php?page=list_supermasters">{% trans %}Supermasters{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="/supermasters">{% trans %}Supermasters{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Edit supermaster{% endtrans %}</li>
     </ol>
 </nav>
@@ -13,7 +13,7 @@
                 <strong><i class="bi bi-server me-2"></i>{% trans %}Edit Supermaster{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="index.php?page=edit_supermaster&master_ip={{ old_master_ip }}&ns_name={{ old_ns_name }}" novalidate>
+                <form class="needs-validation" method="post" action="/supermasters/{{ old_master_ip }}/{{ old_ns_name }}/edit" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="mb-3">
@@ -69,7 +69,7 @@
                             <button type="submit" name="submit" class="btn btn-sm btn-primary">
                                 <i class="bi bi-save me-1 text-white"></i>{% trans %}Save changes{% endtrans %}
                             </button>
-                            <a href="index.php?page=list_supermasters" class="btn btn-sm btn-secondary">
+                            <a href="/supermasters" class="btn btn-sm btn-secondary">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                             </a>
                         </div>
