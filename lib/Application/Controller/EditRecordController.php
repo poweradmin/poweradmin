@@ -213,12 +213,14 @@ class EditRecordController extends BaseController
             $_SESSION['userlogin']
         );
 
-        $this->commentSyncService->updateRelatedRecordComments(
-            $dnsRecord,
-            $new_record_info,
-            $_POST['comment'] ?? '',
-            $_SESSION['userlogin']
-        );
+        if ($this->config->get('misc', 'record_comments_sync')) {
+            $this->commentSyncService->updateRelatedRecordComments(
+                $dnsRecord,
+                $new_record_info,
+                $_POST['comment'] ?? '',
+                $_SESSION['userlogin']
+            );
+        }
 
         if ($this->config->get('dnssec', 'enabled', false)) {
             $zone_name = $dnsRecord->getDomainNameById($zid);

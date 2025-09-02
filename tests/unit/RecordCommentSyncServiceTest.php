@@ -101,4 +101,45 @@ class RecordCommentSyncServiceTest extends TestCase
         $service = new RecordCommentSyncService($commentServiceMock);
         $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'PTR', 'content' => 'ptr.example.com'], 'Updated comment', 'user');
     }
+
+    public function testUpdateRelatedRecordCommentsSkipsWhenPtrContentDomainNotFound()
+    {
+        $dnsRecordMock = $this->createMock(DnsRecord::class);
+        $dnsRecordMock->method('getDomainIdByName')->willReturn(null);
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->never())
+            ->method('updateComment');
+
+        $service = new RecordCommentSyncService($commentServiceMock);
+        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user');
+    }
+
+    public function testUpdateRelatedRecordCommentsSkipsWhenPtrZoneNotFound()
+    {
+        $dnsRecordMock = $this->createMock(DnsRecord::class);
+        $dnsRecordMock->method('getBestMatchingZoneIdFromName')->willReturn(-1);
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->never())
+            ->method('updateComment');
+
+        $service = new RecordCommentSyncService($commentServiceMock);
+        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'A', 'content' => '192.0.2.1'], 'Updated comment', 'user');
+    }
+
+    public function testUpdateRelatedRecordCommentsWithEmptyDomainName()
+    {
+        $dnsRecordMock = $this->createMock(DnsRecord::class);
+        $dnsRecordMock->method('getDomainIdByName')
+            ->with('')
+            ->willReturn(null);
+
+        $commentServiceMock = $this->createMock(RecordCommentService::class);
+        $commentServiceMock->expects($this->never())
+            ->method('updateComment');
+
+        $service = new RecordCommentSyncService($commentServiceMock);
+        $service->updateRelatedRecordComments($dnsRecordMock, ['type' => 'PTR', 'content' => 'localhost'], 'Updated comment', 'user');
+    }
 }

@@ -605,12 +605,14 @@ class EditController extends BaseController
                                     $this->userContextService->getLoggedInUsername()
                                 );
 
-                                $this->commentSyncService->updateRelatedRecordComments(
-                                    $this->dnsRecord,
-                                    $record,
-                                    $record['comment'] ?? '',
-                                    $this->userContextService->getLoggedInUsername()
-                                );
+                                if ($this->config->get('misc', 'record_comments_sync')) {
+                                    $this->commentSyncService->updateRelatedRecordComments(
+                                        $this->dnsRecord,
+                                        $record,
+                                        $record['comment'] ?? '',
+                                        $this->userContextService->getLoggedInUsername()
+                                    );
+                                }
 
                                 $updatedRecordComments[$recordKey] = true;
                             }

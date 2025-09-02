@@ -156,7 +156,7 @@ class RecordManagerService
     {
         $domainName = DnsHelper::getRegisteredDomain($content);
         $contentDomainId = $this->dnsRecord->getDomainIdByName($domainName);
-        if ($contentDomainId !== false) {
+        if ($contentDomainId !== null) {
             $this->commentSyncService->syncCommentsForDomainRecord(
                 $contentDomainId,
                 $ptrZoneId,

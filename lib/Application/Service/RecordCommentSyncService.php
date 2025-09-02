@@ -96,7 +96,7 @@ class RecordCommentSyncService
         } elseif ($newRecordInfo['type'] === RecordType::PTR) {
             $domainName = DnsHelper::getRegisteredDomain($newRecordInfo['content']);
             $contentDomainId = $dnsRecord->getDomainIdByName($domainName);
-            if ($contentDomainId !== false) {
+            if ($contentDomainId !== null) {
                 $this->updateARecordComment($contentDomainId, $newRecordInfo['content'], $newRecordInfo['content'], $comment, $userLogin);
             }
         }
