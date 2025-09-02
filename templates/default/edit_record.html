@@ -34,7 +34,7 @@
     <div class="card-body">
         <p class="small text-muted mb-3">{% trans %}Modify DNS record properties{% endtrans %}</p>
 
-        <form class="needs-validation" method="post" action="/records/{{ record_id }}/edit" novalidate>
+        <form class="needs-validation" method="post" action="/zones/{{ zid }}/records/{{ record_id }}/edit" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
 
             <div class="table-responsive">

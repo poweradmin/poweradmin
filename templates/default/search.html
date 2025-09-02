@@ -404,11 +404,11 @@
                             {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
                             <div class="gap-2">
                                 <a class="btn btn-sm btn-outline-primary"
-                                href="index.php?page=edit_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
+                                href="/zones/{{ record['domain_id'] }}/records/{{ record['id'] }}/edit">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 <a class="btn btn-sm btn-outline-danger"
-                                href="index.php?page=delete_record&domain={{ record['domain_id'] }}&id={{ record['id'] }}">
+                                href="/zones/{{ record['domain_id'] }}/records/{{ record['id'] }}/delete">
                                     <i class="bi bi-trash text-danger"></i>
                                 </a>
                             </div>

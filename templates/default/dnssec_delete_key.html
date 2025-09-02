@@ -119,7 +119,7 @@
         </div>
 
         <div class="d-flex gap-2">
-            <a href="index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ key_id }}&confirm=1" class="btn btn-danger btn-sm">
+            <a href="/zones/{{ zone_id }}/dnssec/keys/{{ key_id }}/delete?confirm=1" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash text-white me-1"></i>{% trans %}Delete key{% endtrans %}
             </a>
             <a href="/zones/{{ zone_id }}/dnssec" class="btn btn-secondary btn-sm">

@@ -96,7 +96,7 @@
         {% endif %}
 
         <div class="mt-4">
-            <a href="index.php?page=delete_record&id={{ record_id }}&confirm=1{% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}&delete_ptr=1{% endif %}{% if record_info['type'] == 'PTR' %}&delete_forward=1{% endif %}"
+            <a href="/zones/{{ zone_id }}/records/{{ record_id }}/delete?confirm=1{% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}&delete_ptr=1{% endif %}{% if record_info['type'] == 'PTR' %}&delete_forward=1{% endif %}"
                id="delete_link" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this record{% endtrans %}
             </a>
@@ -109,7 +109,7 @@
         <script>
             function updateDeleteLink(checked) {
                 const deleteLink = document.getElementById('delete_link');
-                const baseUrl = '/records/{{ record_id }}/delete?confirm=1';
+                const baseUrl = '/zones/{{ zone_id }}/records/{{ record_id }}/delete?confirm=1';
 
                 if (checked) {
                     deleteLink.href = baseUrl + '&delete_ptr=1';
@@ -124,7 +124,7 @@
         <script>
             function updateDeleteLinkForward(checked) {
                 const deleteLink = document.getElementById('delete_link');
-                const baseUrl = '/records/{{ record_id }}/delete?confirm=1';
+                const baseUrl = '/zones/{{ zone_id }}/records/{{ record_id }}/delete?confirm=1';
 
                 if (checked) {
                     deleteLink.href = baseUrl + '&delete_forward=1';

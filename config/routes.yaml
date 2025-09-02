@@ -345,17 +345,13 @@ add_supermaster:
   methods: [GET, POST]
 
 edit_supermaster:
-  path: /supermasters/{id}/edit
+  path: /supermasters/edit
   controller: Poweradmin\Application\Controller\EditSupermasterController::run
-  requirements:
-    id: '\d+'
   methods: [GET, POST]
 
 delete_supermaster:
-  path: /supermasters/{id}/delete
+  path: /supermasters/delete
   controller: Poweradmin\Application\Controller\DeleteSupermasterController::run
-  requirements:
-    id: '\d+'
   methods: [GET, POST]
 
 # API v1 Routes - RESTful
