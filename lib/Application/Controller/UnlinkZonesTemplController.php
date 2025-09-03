@@ -116,7 +116,7 @@ class UnlinkZonesTemplController extends BaseController
             $this->setMessage('list_template_zones', 'error', _('Failed to unlink zones from template.'));
         }
 
-        $this->redirect('index.php', ['page' => 'list_template_zones', 'id' => $template_id]);
+        $this->redirect('/zones/templates/' . $template_id . '/zones');
     }
 
     private function showConfirmation(array $zone_ids, int $template_id): void

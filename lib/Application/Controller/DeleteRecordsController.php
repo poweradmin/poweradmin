@@ -70,7 +70,7 @@ class DeleteRecordsController extends BaseController
         $record_ids = $_POST['record_id'] ?? null;
         if (!$record_ids) {
             $this->setMessage('search', 'error', _('No records selected for deletion.'));
-            $this->redirect('index.php', ['page' => 'search']);
+            $this->redirect('/search');
             return;
         }
 
@@ -185,7 +185,8 @@ class DeleteRecordsController extends BaseController
             $this->setMessage($messageKey, 'error', _('No records could be deleted. Please check permissions.'));
         }
 
-        $this->redirect('index.php', array_merge(['page' => $redirectPage], $redirectParams));
+        $route = $this->buildModernRoute($redirectPage, $redirectParams);
+        $this->redirect($route);
     }
 
     public function showRecords($record_ids): void
@@ -232,7 +233,8 @@ class DeleteRecordsController extends BaseController
             }
 
             $this->setMessage($messageKey, 'error', _('No valid records selected for deletion or you lack permission to delete them.'));
-            $this->redirect('index.php', array_merge(['page' => $redirectPage], $redirectParams));
+            $route = $this->buildModernRoute($redirectPage, $redirectParams);
+            $this->redirect($route);
             return;
         }
 
@@ -241,5 +243,17 @@ class DeleteRecordsController extends BaseController
             'total_records' => count($records),
             'zone_id' => $_POST['zone_id'] ?? null
         ]);
+    }
+
+    private function buildModernRoute(string $page, array $params = []): string
+    {
+        switch ($page) {
+            case 'search':
+                return '/search';
+            case 'edit':
+                return '/zones/' . ($params['id'] ?? '') . '/edit';
+            default:
+                return '/';
+        }
     }
 }

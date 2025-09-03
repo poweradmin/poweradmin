@@ -231,7 +231,7 @@ class EditRecordController extends BaseController
         }
 
         $this->setMessage('edit', 'success', _('The record has been updated successfully.'));
-        $this->redirect('index.php', ['page' => 'edit', 'id' => $zid]);
+        $this->redirect('/zones/' . $zid . '/edit');
 
         return true;
     }

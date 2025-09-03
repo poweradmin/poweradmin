@@ -84,13 +84,13 @@ class EditSupermasterController extends BaseController
 
         if (!$dnsRecord->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('The supermaster you are trying to edit does not exist.'));
-            $this->redirect('index.php', ['page' => 'list_supermasters']);
+            $this->redirect('/supermasters');
             return;
         }
 
         if ($dnsRecord->updateSupermaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account)) {
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been updated successfully.'));
-            $this->redirect('index.php', ['page' => 'list_supermasters']);
+            $this->redirect('/supermasters');
         } else {
             $this->showEditSuperMaster($old_master_ip, $old_ns_name, $new_master_ip, $new_ns_name, $account);
         }
@@ -102,7 +102,7 @@ class EditSupermasterController extends BaseController
 
         if (!$dnsRecord->supermasterIpNameExists($old_master_ip, $old_ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('The supermaster you are trying to edit does not exist.'));
-            $this->redirect('index.php', ['page' => 'list_supermasters']);
+            $this->redirect('/supermasters');
             return;
         }
 

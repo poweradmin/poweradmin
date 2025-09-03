@@ -233,7 +233,7 @@ class BulkRecordAddController extends BaseController
 
         if (!$failed_records) {
             $this->setMessage('edit', 'success', sprintf(_('%d record(s) have been added successfully.'), $success_count));
-            $this->redirect('index.php', ['page' => 'edit', 'id' => $zone_id]);
+            $this->redirect('/zones/' . $zone_id . '/edit');
         } else {
             $this->setMessage('bulk_record_add', 'warn', _('Some record(s) could not be added.'));
             $this->showBulkRecordAdditionForm($failed_records);

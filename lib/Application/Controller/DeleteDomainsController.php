@@ -68,7 +68,8 @@ class DeleteDomainsController extends BaseController
             }
 
             $this->setMessage($return_page, 'error', _('No zone selected for deletion.'));
-            $this->redirect('index.php', ['page' => $return_page]);
+            $route = $return_page === 'list_reverse_zones' ? '/zones/reverse' : '/zones/forward';
+            $this->redirect($route);
             return;
         }
 
@@ -116,7 +117,8 @@ class DeleteDomainsController extends BaseController
             } else {
                 $this->setMessage($return_page, 'success', _('Zones have been deleted successfully.'));
             }
-            $this->redirect('index.php', ['page' => $return_page]);
+            $route = $return_page === 'list_reverse_zones' ? '/zones/reverse' : '/zones/forward';
+            $this->redirect($route);
         }
     }
 

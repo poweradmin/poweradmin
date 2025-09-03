@@ -84,7 +84,7 @@ class AddZoneTemplController extends BaseController
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
         if ($zoneTemplate->addZoneTempl($_POST, $_SESSION['userid'])) {
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been added successfully.'));
-            $this->redirect('index.php', ['page' => 'list_zone_templ']);
+            $this->redirect('/zones/templates');
         } else {
             $this->render('add_zone_templ.html', [
                 'user_name' => UserManager::getFullnameFromUserId($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],

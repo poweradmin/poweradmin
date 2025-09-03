@@ -136,7 +136,7 @@ class AddUserController extends BaseController
             }
 
             $this->setMessage('users', 'success', $successMessage);
-            $this->redirect('index.php', ['page' => 'users']);
+            $this->redirect('/users');
         } else {
             $this->renderAddUserForm($policyConfig);
         }

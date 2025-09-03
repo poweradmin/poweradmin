@@ -124,7 +124,7 @@ class AddZoneTemplRecordController extends BaseController
             $syncService->markTemplateAsModified($zone_templ_id);
 
             $this->setMessage('edit_zone_templ', 'success', 'The record was successfully added.');
-            $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
+            $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
         } else {
             $this->showAddZoneTemplRecord();
         }

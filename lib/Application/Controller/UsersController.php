@@ -47,7 +47,7 @@ class UsersController extends BaseController
         // If user doesn't have permissions to view/edit others, redirect to home
         if (!$canViewOthers && !$canEditOthers) {
             $this->setMessage('index', 'error', _('You do not have permission to view the users list.'));
-            $this->redirect('index.php');
+            $this->redirect('/');
             return;
         }
 

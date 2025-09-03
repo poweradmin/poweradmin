@@ -47,7 +47,7 @@ class UserAgreementController extends BaseController
     public function run(): void
     {
         if (!$this->agreementService->isEnabled()) {
-            $this->redirect('index.php');
+            $this->redirect('/');
         }
 
         if ($this->isPost()) {
@@ -95,7 +95,7 @@ class UserAgreementController extends BaseController
 
         if ($this->agreementService->recordAgreementAcceptance($userId, $ipAddress, $userAgent)) {
             $this->setMessage('index', 'success', _('User agreement accepted successfully.'));
-            $this->redirect('index.php');
+            $this->redirect('/');
         } else {
             $this->setMessage('user_agreement', 'danger', 'Failed to record agreement acceptance. Please try again.');
             $this->showAgreementForm();

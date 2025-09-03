@@ -143,7 +143,7 @@ class EditZoneTemplRecordController extends BaseController
             $syncService->markTemplateAsModified($zone_templ_id);
 
             $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));
-            $this->redirect('index.php', ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
+            $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
         }
     }
 }

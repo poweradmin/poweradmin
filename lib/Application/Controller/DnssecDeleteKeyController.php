@@ -98,11 +98,11 @@ class DnssecDeleteKeyController extends BaseController
                 }
 
                 // Redirect back to DNSSEC page in either case
-                $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
+                $this->redirect('/zones/' . $zone_id . '/dnssec');
             } catch (Exception $e) {
                 error_log("DNSSEC key deletion exception: " . $e->getMessage());
                 $this->setMessage('dnssec', 'error', _('An error occurred while deleting the DNSSEC key: ') . $e->getMessage());
-                $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
+                $this->redirect('/zones/' . $zone_id . '/dnssec');
             }
         }
 

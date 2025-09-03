@@ -72,7 +72,7 @@ class EditPermTemplController extends BaseController
 
         $this->permissionTemplate->updatePermissionTemplateDetails($this->getRequest());
         $this->setMessage('list_perm_templ', 'success', _('The permission template has been updated successfully.'));
-        $this->redirect('index.php', ['page' => 'list_perm_templ']);
+        $this->redirect('/permissions/templates');
     }
 
     private function showForm(): void

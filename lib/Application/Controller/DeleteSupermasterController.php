@@ -78,22 +78,22 @@ class DeleteSupermasterController extends BaseController
 
         if ($master_ip === false) {
             $this->setMessage('list_supermasters', 'error', _('Invalid IP address.'));
-            $this->redirect('index.php', ['page' => 'list_supermasters']);
+            $this->redirect('/supermasters');
         }
 
         if (empty($ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('Invalid NS name.'));
-            $this->redirect('index.php', ['page' => 'list_supermasters']);
+            $this->redirect('/supermasters');
         }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         if (!$dnsRecord->supermasterIpNameExists($master_ip, $ns_name)) {
             $this->setMessage('list_supermasters', 'error', _('Super master does not exist.'));
-            $this->redirect('index.php', ['page' => 'list_supermasters']);
+            $this->redirect('/supermasters');
         }
         if ($dnsRecord->deleteSupermaster($master_ip, $ns_name)) {
             $this->setMessage('list_supermasters', 'success', _('The supermaster has been deleted successfully.'));
-            $this->redirect('index.php', ['page' => 'list_supermasters']);
+            $this->redirect('/supermasters');
         }
     }
 

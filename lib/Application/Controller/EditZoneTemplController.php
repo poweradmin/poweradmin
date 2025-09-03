@@ -201,7 +201,7 @@ class EditZoneTemplController extends BaseController
         $userId = $this->userContext->getLoggedInUserId();
         $zoneTemplate->editZoneTempl($_POST, $zone_templ_id, $userId);
         $this->setMessage('list_zone_templ', 'success', _('Zone template has been updated successfully.'));
-        $this->redirect('index.php', ['page' => 'list_zone_templ']);
+        $this->redirect('/zones/templates');
     }
 
     public function updateZoneRecords(int $zone_templ_id): void
@@ -220,7 +220,7 @@ class EditZoneTemplController extends BaseController
         $syncService->markZonesAsSynced($zones, $zone_templ_id);
 
         $this->setMessage('edit_zone_templ', 'success', _('Zones have been updated successfully.'));
-        $this->redirect("index.php", ['page' => 'edit_zone_templ', 'id' => $zone_templ_id]);
+        $this->redirect('/zones/templates/' . $zone_templ_id . '/edit');
     }
 
     private function saveTemplateAs(int $zone_templ_id): void
@@ -286,7 +286,7 @@ class EditZoneTemplController extends BaseController
 
         if ($success) {
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been copied successfully.'));
-            $this->redirect('index.php', ['page' => 'list_zone_templ']);
+            $this->redirect('/zones/templates');
         }
     }
 }

@@ -93,14 +93,14 @@ class DnssecEditKeyController extends BaseController
                 } else {
                     $this->setMessage('dnssec', 'error', _('Failed to deactivate zone key.'));
                 }
-                $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
+                $this->redirect('/zones/' . $zone_id . '/dnssec');
             } else {
                 if ($dnssecProvider->activateZoneKey($domain_name, $key_id)) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been successfully activated.'));
                 } else {
                     $this->setMessage('dnssec', 'error', _('Failed to activate zone key.'));
                 }
-                $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
+                $this->redirect('/zones/' . $zone_id . '/dnssec');
             }
             return;
         }

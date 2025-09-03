@@ -142,7 +142,7 @@ class DnssecAddKeyController extends BaseController
                     try {
                         if ($dnssecProvider->addZoneKey($domain_name, $key_type, $bits, $algorithm)) {
                             $this->setMessage('dnssec', 'success', _('Zone key has been added successfully.'));
-                            $this->redirect('index.php', ['page' => 'dnssec', 'id' => $zone_id]);
+                            $this->redirect('/zones/' . $zone_id . '/dnssec');
                         } else {
                             error_log("Failed to add DNSSEC key: domain=$domain_name, key_type=$key_type, bits=$bits, algorithm=$algorithm");
                             $this->setMessage('dnssec_add_key', 'error', _('Failed to add new DNSSEC key.'));

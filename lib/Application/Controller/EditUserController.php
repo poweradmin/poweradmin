@@ -110,11 +110,11 @@ class EditUserController extends BaseController
             if ($isOwnProfile && !$canViewAllUsers && !$canEditAllUsers) {
                 // Limited user edited their own profile - redirect to home
                 $this->setMessage('index', 'success', _('Your profile has been updated successfully.'));
-                $this->redirect('index.php');
+                $this->redirect('/');
             } else {
                 // User with admin permissions - redirect to users list
                 $this->setMessage('users', 'success', _('The user has been updated successfully.'));
-                $this->redirect('index.php', ['page' => 'users']);
+                $this->redirect('/users');
             }
         } else {
             $this->setMessage('edit_user', 'error', _('The user could not be updated.'));
