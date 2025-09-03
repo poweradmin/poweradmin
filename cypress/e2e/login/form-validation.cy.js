@@ -2,7 +2,7 @@ import users from '../../fixtures/users.json';
 
 describe('Login Form Validation', () => {
     beforeEach(() => {
-        cy.visit('/index.php?page=login');
+        cy.visit('/login');
     });
 
     it('should show error for empty fields', () => {

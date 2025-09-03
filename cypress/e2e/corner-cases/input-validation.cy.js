@@ -2,7 +2,7 @@ import users from '../../fixtures/users.json';
 
 describe('Input Validation Edge Cases', () => {
   beforeEach(() => {
-    cy.visit('/index.php?page=login');
+    cy.visit('/login');
     cy.login(users.validUser.username, users.validUser.password);
   });
 

@@ -2,7 +2,7 @@ import users from '../../fixtures/users.json';
 
 describe('Error Handling and Edge Cases', () => {
   beforeEach(() => {
-    cy.visit('/index.php?page=login');
+    cy.visit('/login');
     cy.login(users.validUser.username, users.validUser.password);
   });
 
@@ -12,10 +12,10 @@ describe('Error Handling and Edge Cases', () => {
       cy.clearCookies();
       
       // Try to access a protected page
-      cy.visit('/index.php?page=list_forward_zones');
+      cy.visit('/zones/forward');
       
       // Should redirect to login
-      cy.url().should('include', '/index.php?page=login');
+      cy.url().should('include', '/login');
       cy.get('[data-testid="session-error"]').should('be.visible');
     });
 
@@ -44,7 +44,7 @@ describe('Error Handling and Edge Cases', () => {
       cy.get('[data-testid="add-zone-button"]').dblclick();
       
       // Check we end up on the correct page
-      cy.url().should('include', '/index.php?page=list_forward_zones');
+      cy.url().should('include', '/zones/forward');
       
       // Clean up
       cy.contains('tr', 'concurrent-test.com').within(() => {
@@ -60,7 +60,7 @@ describe('Error Handling and Edge Cases', () => {
       cy.get('[data-testid="list-zones-link"]').click();
       
       // Try to access an invalid page number
-      cy.visit('/index.php?page=list_forward_zones&letter=all&start=9999');
+      cy.visit('/zones/forward?letter=all&start=9999');
       
       // Should show first page or error message
       cy.get('[data-testid="zones-table"]').should('be.visible');
@@ -86,7 +86,7 @@ describe('Error Handling and Edge Cases', () => {
       cy.go('forward');
       
       // Should be on forward zones list
-      cy.url().should('include', '/index.php?page=list_forward_zones');
+      cy.url().should('include', '/zones/forward');
       
       // Clean up
       cy.contains('tr', 'navigation-test.com').within(() => {
@@ -99,7 +99,7 @@ describe('Error Handling and Edge Cases', () => {
   context('Direct URL Access', () => {
     it('should handle direct access to edit pages with invalid IDs', () => {
       // Try to access a non-existent record
-      cy.visit('/index.php?page=edit_record&id=999999999');
+      cy.visit('/zones/1/records/999999999/edit');
       
       // Should show error or redirect
       cy.get('[data-testid="error-message"]').should('be.visible');
@@ -110,10 +110,10 @@ describe('Error Handling and Edge Cases', () => {
       cy.get('[data-testid="logout-link"]').click();
       
       // Try to access admin page directly
-      cy.visit('/index.php?page=users');
+      cy.visit('/users');
       
       // Should redirect to login
-      cy.url().should('include', '/index.php?page=login');
+      cy.url().should('include', '/login');
     });
   });
 
