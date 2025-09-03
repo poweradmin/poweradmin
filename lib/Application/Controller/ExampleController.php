@@ -23,37 +23,46 @@
 /**
  * POWERADMIN CONTROLLER SKELETON
  *
- * This is an example controller demonstrating the standard Poweradmin controller pattern.
+ * This is an example controller demonstrating the standard Poweradmin controller pattern
+ * using the modern Symfony routing system.
  *
  * == HOW TO ENABLE THIS PAGE ==
  *
- * 1. Add your page identifier to lib/Pages.php in the getPages() method array:
- *    Example: Add 'example' to the array in Pages::getPages()
+ * 1. Add a route definition to config/routes.yaml:
+ *    ```yaml
+ *    example:
+ *      path: /example
+ *      controller: Poweradmin\Application\Controller\ExampleController::run
+ *      methods: [GET, POST]
+ *    ```
  *
- * 2. Create a corresponding template file in templates/default/:
- *    Example: Create templates/default/example.html
+ * 2. Create a corresponding template file in both template themes:
+ *    - templates/default/example.html
+ *    - templates/modern/example.html
  *
- * 3. Access your page via: index.php?page=example
+ * 3. Access your page via: http://localhost/example
  *
  * == CONTROLLER REQUIREMENTS ==
  *
  * - Must extend BaseController
  * - Must implement run() method
  * - Must use proper namespace: Poweradmin\Application\Controller
- * - Class name must follow pattern: {PageName}Controller
+ * - Class name must follow pattern: {Feature}Controller
  * - Should use dependency injection for services
  * - Should validate permissions before performing actions
  * - Should validate CSRF tokens for POST requests
  * - Should use proper error handling and user feedback
+ * - Should use Symfony Validator for input validation
  *
  * == COMMON PATTERNS ==
  *
  * - Check permissions with: $this->checkPermission('permission_name', 'Error message')
  * - Validate CSRF for POST: $this->validateCsrfToken()
  * - Show errors with: $this->showError('Error message')
- * - Redirect with: $this->redirect('index.php', ['page' => 'target'])
+ * - Redirect with: $this->redirect('/target-url')
  * - Render template with: $this->render('template.html', $params)
  * - Get safe input with: $this->getSafeRequestValue('field_name')
+ * - Set validation constraints with: $this->setValidationConstraints($constraints)
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -68,6 +77,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Service\MessageService;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * ExampleController demonstrates standard Poweradmin controller implementation
@@ -167,15 +177,24 @@ class ExampleController extends BaseController
         $exampleField = $this->getSafeRequestValue('example_field');
         $numericField = $this->getSafeRequestValue('numeric_field');
 
-        // Example: Set validation rules
-        $this->setRequestRules([
-            'required' => ['example_field'],
-            'integer' => ['numeric_field']
-        ]);
+        // Example: Set Symfony validation constraints
+        $constraints = [
+            'example_field' => [
+                new Assert\NotBlank(),
+                new Assert\Length(['min' => 3, 'max' => 100])
+            ],
+            'numeric_field' => [
+                new Assert\NotBlank(),
+                new Assert\Type('integer'),
+                new Assert\Range(['min' => 1, 'max' => 1000])
+            ]
+        ];
+
+        $this->setValidationConstraints($constraints);
 
         // Validate the request
-        if (!$this->doValidateRequest()) {
-            $this->showFirstValidationError();
+        if (!$this->doValidateRequest($_POST)) {
+            $this->showFirstValidationError($_POST);
             return;
         }
 
@@ -186,7 +205,7 @@ class ExampleController extends BaseController
             if ($success) {
                 // Success: Set success message and redirect
                 $this->setMessage('example', 'success', _('Operation completed successfully.'));
-                $this->redirect('index.php', ['page' => 'example']);
+                $this->redirect('/example');
             } else {
                 // Business logic failure
                 $this->showError(_('Failed to process the request. Please try again.'));

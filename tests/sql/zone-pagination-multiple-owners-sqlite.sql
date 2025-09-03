@@ -155,7 +155,7 @@ ORDER BY d.name;
 -- Test Instructions:
 -- 1. Execute this SQL in your SQLite database
 -- 2. Set $iface_rowamount = 50 in config/settings.php
--- 3. Navigate to index.php?page=list_zones&letter=s
+-- 3. Navigate to /zones/forward?letter=s
 -- 4. Without fix: See ~47 domains on page 1, ~45 on page 2, missing domains
 -- 5. With fix: See exactly 50 domains on page 1, 46 on page 2
 -- 6. Check that all domains with multiple owners display correctly
