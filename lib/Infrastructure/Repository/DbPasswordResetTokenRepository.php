@@ -44,8 +44,8 @@ class DbPasswordResetTokenRepository
     public function create(array $data): bool
     {
         $db_type = $this->config->get('database', 'type');
-        $sql = "INSERT INTO password_reset_tokens (email, token, created_at, expires_at, ip_address) 
-                VALUES (:email, :token, " . DbCompat::now($db_type) . ", :expires_at, :ip_address)";
+        $sql = "INSERT INTO password_reset_tokens (email, token, created_at, expires_at, ip_address, used) 
+                VALUES (:email, :token, " . DbCompat::now($db_type) . ", :expires_at, :ip_address, " . DbCompat::boolFalse($db_type) . ")";
 
         $stmt = $this->db->prepare($sql);
         return $stmt->execute([
