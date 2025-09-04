@@ -141,6 +141,7 @@ class ResetPasswordController extends BaseController
                 'user_agent' => $this->userAgentService->getUserAgent(),
                 'browser' => $this->userAgentService->getBrowserInfo(),
                 'is_bot' => $this->userAgentService->isBot(),
+                'token_received' => $this->token,
                 'token_length' => strlen($this->token),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
