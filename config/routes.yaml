@@ -72,6 +72,11 @@ change_password:
   controller: Poweradmin\Application\Controller\ChangePasswordController::run
   methods: [GET, POST]
 
+forgot_password:
+  path: /password/forgot
+  controller: Poweradmin\Application\Controller\ForgotPasswordController::run
+  methods: [GET, POST]
+
 reset_password:
   path: /password/reset
   controller: Poweradmin\Application\Controller\ResetPasswordController::run

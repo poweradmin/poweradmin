@@ -199,7 +199,7 @@ class PasswordResetService
         $basePath = dirname($_SERVER['SCRIPT_NAME'] ?? '');
         $basePath = rtrim($basePath, '/');
 
-        return "$protocol://$host$basePath/auth/reset-password/" . urlencode($token);
+        return "$protocol://$host$basePath/password/reset?token=" . urlencode($token);
     }
 
     /**
