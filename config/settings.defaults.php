@@ -180,7 +180,7 @@ return [
         'from' => 'poweradmin@example.com',         // Default "from" address
         'from_name' => '',                          // Default "from" name
         'return_path' => 'poweradmin@example.com',  // Default "Return-Path" address
-        'transport' => 'php',                       // Transport method: smtp, sendmail, or php
+        'transport' => 'php',                       // Transport method: smtp, sendmail, php, or logger
 
         // SMTP settings
         'host' => 'smtp.example.com',              // SMTP server hostname
@@ -192,6 +192,10 @@ return [
 
         // Sendmail settings
         'sendmail_path' => '/usr/sbin/sendmail -bs', // Path to sendmail binary
+
+        // Logger settings (for development/debugging)
+        // When transport is set to 'logger', emails are logged to error_log and application logs
+        // instead of being sent. This is useful for development and debugging password reset tokens.
     ],
 
     /**

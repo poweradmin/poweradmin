@@ -82,6 +82,8 @@ class MailService implements MailServiceInterface
                     return $this->sendSmtp($to, $subject, $body, $plainBody, $headers, $boundary);
                 case 'sendmail':
                     return $this->sendSendmail($to, $subject, $body, $plainBody, $headers, $boundary);
+                case 'logger':
+                    return $this->sendLogger($to, $subject, $body, $plainBody, $headers, $boundary);
                 case 'php':
                 default:
                     return $this->sendPhpMail($to, $subject, $body, $plainBody, $headers, $boundary);
@@ -308,6 +310,67 @@ class MailService implements MailServiceInterface
     }
 
     /**
+     * Send mail via Logger (for development/debugging)
+     *
+     * This transport logs the email content instead of actually sending it.
+     * Useful for development and debugging password reset tokens.
+     */
+    private function sendLogger(
+        string $to,
+        string $subject,
+        string $body,
+        string $plainBody,
+        array $headers,
+        string $boundary
+    ): bool {
+        $fromEmail = $this->config->get('mail', 'from', 'poweradmin@example.com');
+        $fromName = $this->config->get('mail', 'from_name', '');
+
+        // Set up email headers
+        $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $boundary);
+        $mailHeaders = array_merge($mailHeaders, $headers);
+
+        // Create a complete email representation for logging
+        $emailMessage = "===== EMAIL DEBUG LOG =====\n";
+        $emailMessage .= "To: $to\n";
+        $emailMessage .= "From: " . (empty($fromName) ? $fromEmail : "$fromName <$fromEmail>") . "\n";
+        $emailMessage .= "Subject: $subject\n";
+
+        // Add all headers
+        foreach ($mailHeaders as $name => $value) {
+            $emailMessage .= "$name: $value\n";
+        }
+
+        $emailMessage .= "\n--- EMAIL BODY ---\n";
+
+        // Include both HTML and plain text if available
+        if (!empty($plainBody)) {
+            $emailMessage .= "--- PLAIN TEXT VERSION ---\n";
+            $emailMessage .= $plainBody . "\n\n";
+            $emailMessage .= "--- HTML VERSION ---\n";
+        }
+
+        $emailMessage .= $body . "\n";
+        $emailMessage .= "===== END EMAIL LOG =====\n";
+
+        // Log the email to error_log (visible in Docker logs)
+        error_log("[POWERADMIN MAILER] " . $emailMessage);
+
+        // Also log via the application logger if available
+        if ($this->logger !== null) {
+            $this->logger->info('Email sent via logger transport', [
+                'to' => $to,
+                'subject' => $subject,
+                'from' => $fromEmail,
+                'email_content' => $emailMessage
+            ]);
+        }
+
+        // Always return true since this is just logging
+        return true;
+    }
+
+    /**
      * Verify that we can connect to the mail server
      * This tests basic connectivity before attempting to send mail
      *
@@ -378,6 +441,11 @@ class MailService implements MailServiceInterface
                 return false;
             }
 
+            return true;
+        }
+
+        // Logger transport is always available (just logs emails)
+        if ($transportType === 'logger') {
             return true;
         }
 
