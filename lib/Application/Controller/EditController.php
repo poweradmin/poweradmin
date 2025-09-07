@@ -167,6 +167,9 @@ class EditController extends BaseController
         }
         $zone_id = intval(htmlspecialchars($_GET['id']));
 
+        // Clear session-based form data if zone has changed to prevent persistence across zones
+        $this->clearFormDataOnZoneChange($zone_id);
+
         // Early permission check - validate access before data retrieval
         $userId = $this->userContextService->getLoggedInUserId();
         $perm_view = $this->permissionService->getViewPermissionLevel($userId);
@@ -1045,5 +1048,25 @@ class EditController extends BaseController
 
         // Default to content field as that's the most common error source
         return 'content';
+    }
+
+    /**
+     * Clear form data from session if zone has changed
+     *
+     * @param int $currentZoneId The current zone ID being viewed
+     * @return void
+     */
+    private function clearFormDataOnZoneChange(int $currentZoneId): void
+    {
+        // Check if we have a previously stored zone ID in session for form data
+        if (isset($_SESSION['add_record_zone_id']) && $_SESSION['add_record_zone_id'] != $currentZoneId) {
+            // Zone has changed, clear the form data and error information
+            unset($_SESSION['add_record_last_data']);
+            unset($_SESSION['add_record_error']);
+            unset($_SESSION['add_record_zone_id']);
+        }
+
+        // Store the current zone ID for future comparisons
+        $_SESSION['add_record_zone_id'] = $currentZoneId;
     }
 }
