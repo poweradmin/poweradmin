@@ -272,6 +272,8 @@ class RecordManager implements RecordManagerInterface
                     $record['rid']
                 ]);
                 return true;
+            } else {
+                $this->messageService->addSystemError($validationResult->getFirstError());
             }
         }
         return false;
