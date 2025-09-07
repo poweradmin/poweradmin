@@ -154,10 +154,10 @@ validate_mail_config() {
 validate_api_config() {
     local api_enabled=$(echo "${PA_API_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     if [ "$api_enabled" = "true" ] && [ -n "${PA_PDNS_API_URL}" ]; then
-        [ -z "${PA_PDNS_API_KEY}" ] && {
+        if [ -z "${PA_PDNS_API_KEY}" ]; then
             log "ERROR: PA_PDNS_API_KEY is required when PowerDNS API URL is specified"
             exit 1
-        }
+        fi
     fi
 }
 
