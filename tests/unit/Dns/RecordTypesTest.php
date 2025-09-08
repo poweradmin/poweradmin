@@ -283,54 +283,54 @@ class RecordTypesTest extends BaseDnsTest
         $validator = new SRVRecordValidator($configMock);
 
         // Valid SRV records
-        $result1 = $validator->validate('10 20 5060 sip.example.com', '_sip._tcp.example.com', 0, 3600, 3600);
+        $result1 = $validator->validate('20 5060 sip.example.com', '_sip._tcp.example.com', 10, 3600, 3600);
         $this->assertTrue($result1->isValid());
 
-        $result2 = $validator->validate('0 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600);
+        $result2 = $validator->validate('5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600);
         $this->assertTrue($result2->isValid());
 
-        $result3 = $validator->validate('30 0 443 secure.example.com', '_https._tcp.example.com', 0, 3600, 3600);
+        $result3 = $validator->validate('0 443 secure.example.com', '_https._tcp.example.com', 30, 3600, 3600);
         $this->assertTrue($result3->isValid());
 
-        $result4 = $validator->validate('1 10 9 server.example.com', '_submission._tcp.example.com', 0, 3600, 3600);
+        $result4 = $validator->validate('10 9 server.example.com', '_submission._tcp.example.com', 1, 3600, 3600);
         $this->assertTrue($result4->isValid());
 
         // Invalid SRV records
         // Invalid name format
-        $result5 = $validator->validate('0 5 80 web.example.com', 'invalid.example.com', 0, 3600, 3600);
+        $result5 = $validator->validate('5 80 web.example.com', 'invalid.example.com', 0, 3600, 3600);
         $this->assertFalse($result5->isValid());
 
-        $result6 = $validator->validate('0 5 80 web.example.com', '_invalid_tcp.example.com', 0, 3600, 3600);
+        $result6 = $validator->validate('5 80 web.example.com', '_invalid_tcp.example.com', 0, 3600, 3600);
         $this->assertFalse($result6->isValid());
 
         // Invalid content format
-        $result7 = $validator->validate('invalid 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Invalid priority
+        $result7 = $validator->validate('invalid 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Invalid weight
         $this->assertFalse($result7->isValid());
 
-        $result8 = $validator->validate('0 invalid 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Invalid weight
+        $result8 = $validator->validate('invalid 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Invalid weight
         $this->assertFalse($result8->isValid());
 
-        $result9 = $validator->validate('0 5 invalid web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Invalid port
+        $result9 = $validator->validate('5 invalid web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Invalid port
         $this->assertFalse($result9->isValid());
 
-        $result10 = $validator->validate('0 5 80 @invalid@', '_http._tcp.example.com', 0, 3600, 3600); // Invalid target
+        $result10 = $validator->validate('5 80 @invalid@', '_http._tcp.example.com', 0, 3600, 3600); // Invalid target
         $this->assertFalse($result10->isValid());
 
         // Out of range values
-        $result11 = $validator->validate('65536 5 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Priority too high
+        $result11 = $validator->validate('65536 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Weight too high
         $this->assertFalse($result11->isValid());
 
-        $result12 = $validator->validate('0 65536 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Weight too high
+        $result12 = $validator->validate('65536 80 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Weight too high
         $this->assertFalse($result12->isValid());
 
-        $result13 = $validator->validate('0 5 65536 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Port too high
+        $result13 = $validator->validate('5 65536 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Port too high
         $this->assertFalse($result13->isValid());
 
         // Wrong number of fields
-        $result14 = $validator->validate('0 5 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Missing port
+        $result14 = $validator->validate('5 web.example.com', '_http._tcp.example.com', 0, 3600, 3600); // Missing port
         $this->assertFalse($result14->isValid());
 
-        $result15 = $validator->validate('0 5 80 web.example.com extra', '_http._tcp.example.com', 0, 3600, 3600); // Extra field
+        $result15 = $validator->validate('5 80 web.example.com extra', '_http._tcp.example.com', 0, 3600, 3600); // Extra field
         $this->assertFalse($result15->isValid());
     }
 

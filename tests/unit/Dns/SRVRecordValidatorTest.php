@@ -30,7 +30,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithValidData()
     {
-        $content = '10 20 5060 sip.example.com';
+        $content = '20 5060 sip.example.com';
         $name = '_sip._tcp.example.com';
         $prio = 10;
         $ttl = 3600;
@@ -51,7 +51,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithWellKnownService()
     {
-        $content = '10 20 80 server.example.com';
+        $content = '20 80 server.example.com';
         $name = '_http._tcp.example.com';
         $prio = 10;
         $ttl = 3600;
@@ -69,7 +69,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithWellKnownServiceAndNonStandardPort()
     {
-        $content = '10 20 8080 server.example.com';
+        $content = '20 8080 server.example.com';
         $name = '_http._tcp.example.com';
         $prio = 10;
         $ttl = 3600;
@@ -90,7 +90,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidSrvName()
     {
-        $content = '10 20 5060 sip.example.com';
+        $content = '20 5060 sip.example.com';
         $name = 'invalid.example.com'; // Missing _service._protocol format
         $prio = 10;
         $ttl = 3600;
@@ -107,7 +107,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidSrvNameService()
     {
-        $content = '10 20 5060 sip.example.com';
+        $content = '20 5060 sip.example.com';
         $name = 'sip._tcp.example.com'; // Missing _ prefix for service
         $prio = 10;
         $ttl = 3600;
@@ -124,7 +124,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidSrvNameProtocol()
     {
-        $content = '10 20 5060 sip.example.com';
+        $content = '20 5060 sip.example.com';
         $name = '_sip.tcp.example.com'; // Missing _ prefix for protocol
         $prio = 10;
         $ttl = 3600;
@@ -141,7 +141,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithNonStandardProtocol()
     {
-        $content = '10 20 5060 sip.example.com';
+        $content = '20 5060 sip.example.com';
         $name = '_sip._customproto.example.com'; // Non-standard protocol
         $prio = 10;
         $ttl = 3600;
@@ -191,7 +191,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidContent()
     {
-        $content = '10 20 sip.example.com'; // Missing port field
+        $content = '20 sip.example.com'; // Missing port field
         $name = '_sip._tcp.example.com';
         $prio = 10;
         $ttl = 3600;
@@ -200,15 +200,15 @@ class SRVRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('priority, weight, port and target', $result->getFirstError());
+        $this->assertStringContainsString('weight, port and target', $result->getFirstError());
     }
 
     /**
-     * Test validation with non-numeric priority in content
+     * Test validation with non-numeric weight in content
      */
     public function testValidateWithInvalidContentPriority()
     {
-        $content = 'invalid 20 5060 sip.example.com'; // Non-numeric priority
+        $content = 'invalid 5060 sip.example.com'; // Non-numeric weight
         $name = '_sip._tcp.example.com';
         $prio = 10;
         $ttl = 3600;
@@ -217,7 +217,7 @@ class SRVRecordValidatorTest extends TestCase
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
         $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('priority field', $result->getFirstError());
+        $this->assertStringContainsString('weight field', $result->getFirstError());
     }
 
     /**
@@ -225,7 +225,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidContentWeight()
     {
-        $content = '10 invalid 5060 sip.example.com'; // Non-numeric weight
+        $content = 'invalid 5060 sip.example.com'; // Non-numeric weight
         $name = '_sip._tcp.example.com';
         $prio = 10;
         $ttl = 3600;
@@ -242,7 +242,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidContentPort()
     {
-        $content = '10 20 invalid sip.example.com'; // Non-numeric port
+        $content = '20 invalid sip.example.com'; // Non-numeric port
         $name = '_sip._tcp.example.com';
         $prio = 10;
         $ttl = 3600;
@@ -259,7 +259,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithOutOfRangePort()
     {
-        $content = '10 20 70000 sip.example.com'; // Port > 65535
+        $content = '20 70000 sip.example.com'; // Port > 65535
         $name = '_sip._tcp.example.com';
         $prio = 10;
         $ttl = 3600;
@@ -276,7 +276,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidContentTarget()
     {
-        $content = '10 20 5060 -invalid-.example.com'; // Invalid hostname
+        $content = '20 5060 -invalid-.example.com'; // Invalid hostname
         $name = '_sip._tcp.example.com';
         $prio = 10;
         $ttl = 3600;
@@ -293,7 +293,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidTTL()
     {
-        $content = '10 20 5060 sip.example.com';
+        $content = '20 5060 sip.example.com';
         $name = '_sip._tcp.example.com';
         $prio = 10;
         $ttl = -1; // Invalid TTL
@@ -310,7 +310,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithInvalidPriority()
     {
-        $content = '10 20 5060 sip.example.com';
+        $content = '20 5060 sip.example.com';
         $name = '_sip._tcp.example.com';
         $prio = 'invalid'; // Invalid priority
         $ttl = 3600;
@@ -327,7 +327,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithEmptyPriority()
     {
-        $content = '10 20 5060 sip.example.com';
+        $content = '20 5060 sip.example.com';
         $name = '_sip._tcp.example.com';
         $prio = ''; // Empty priority should use value from SRV content
         $ttl = 3600;
@@ -345,7 +345,7 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithDefaultTTL()
     {
-        $content = '10 20 5060 sip.example.com';
+        $content = '20 5060 sip.example.com';
         $name = '_sip._tcp.example.com';
         $prio = 10;
         $ttl = ''; // Empty TTL should use default
@@ -365,20 +365,20 @@ class SRVRecordValidatorTest extends TestCase
     {
         // Test cases for different well-known services with correct ports
         $testCases = [
-            ['_ldap._tcp.example.com', '0 0 389 ldap.example.com'],
-            ['_kerberos._tcp.example.com', '0 0 88 krb.example.com'],
-            ['_xmpp-server._tcp.example.com', '0 0 5269 xmpp.example.com'],
-            ['_imap._tcp.example.com', '0 0 143 mail.example.com'],
-            ['_submission._tcp.example.com', '0 0 587 mail.example.com'],
-            ['_imaps._tcp.example.com', '0 0 993 mail.example.com'],
-            ['_pop3._tcp.example.com', '0 0 110 mail.example.com'],
-            ['_pop3s._tcp.example.com', '0 0 995 mail.example.com'],
-            ['_jabber._tcp.example.com', '0 0 5222 xmpp.example.com'],
-            ['_minecraft._tcp.example.com', '0 0 25565 mc.example.com']
+            ['_ldap._tcp.example.com', '0 389 ldap.example.com'],
+            ['_kerberos._tcp.example.com', '0 88 krb.example.com'],
+            ['_xmpp-server._tcp.example.com', '0 5269 xmpp.example.com'],
+            ['_imap._tcp.example.com', '0 143 mail.example.com'],
+            ['_submission._tcp.example.com', '0 587 mail.example.com'],
+            ['_imaps._tcp.example.com', '0 993 mail.example.com'],
+            ['_pop3._tcp.example.com', '0 110 mail.example.com'],
+            ['_pop3s._tcp.example.com', '0 995 mail.example.com'],
+            ['_jabber._tcp.example.com', '0 5222 xmpp.example.com'],
+            ['_minecraft._tcp.example.com', '0 25565 mc.example.com']
         ];
 
         foreach ($testCases as [$name, $content]) {
-            $result = $this->validator->validate($content, $name, '', 3600, 86400);
+            $result = $this->validator->validate($content, $name, 0, 3600, 86400);
             $this->assertTrue($result->isValid(), "Service $name should be valid with correct port");
 
             // Some services might have warnings about protocols or other issues,
@@ -391,9 +391,8 @@ class SRVRecordValidatorTest extends TestCase
      */
     public function testValidateWithMismatchedPriorityValues()
     {
-        // In the SRV validator implementation, we're not generating warnings for mismatched
-        // priority values between record param and content, so we'll just test validity
-        $content = '20 20 5060 sip.example.com'; // Priority 20 in content
+        // Test 4-field content (should be rejected in new format)
+        $content = '20 20 5060 sip.example.com'; // 4 fields (should be rejected)
         $name = '_sip._tcp.example.com';
         $prio = '10'; // Priority 10 in record parameters
         $ttl = 3600;
@@ -401,17 +400,9 @@ class SRVRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        // Validator picks one of the priorities - should be valid
-        $this->assertTrue($result->isValid());
-
-        // Check that the content priority matches what's in the data
-        $data = $result->getData();
-        $contentData = isset($data['contentData']) ? $data['contentData'] : null;
-
-        if ($contentData !== null && isset($contentData['priority'])) {
-            // If content data is preserved, we should have a valid priority
-            $this->assertIsInt($contentData['priority']);
-        }
+        // 4-field content should be rejected
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('weight, port and target', $result->getFirstError());
     }
 
     /**
@@ -449,13 +440,12 @@ class SRVRecordValidatorTest extends TestCase
         $method->setAccessible(true);
 
         // Test valid content
-        $validResult = $method->invoke($this->validator, '10 20 5060 sip.example.com', '_sip._tcp.example.com');
+        $validResult = $method->invoke($this->validator, '20 5060 sip.example.com', '_sip._tcp.example.com');
         $this->assertTrue($validResult->isValid());
 
         // Check for expected structure with more details
         $data = $validResult->getData();
-        $this->assertEquals('10 20 5060 sip.example.com', $data['content']);
-        $this->assertArrayHasKey('priority', $data);
+        $this->assertEquals('20 5060 sip.example.com', $data['content']);
         $this->assertArrayHasKey('weight', $data);
         $this->assertArrayHasKey('port', $data);
         $this->assertArrayHasKey('target', $data);
