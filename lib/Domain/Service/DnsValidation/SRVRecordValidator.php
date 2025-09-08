@@ -116,13 +116,9 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
         }
         $validatedPrio = $prioResult->getData();
 
-        // Check if priority in record param matches priority in content
-        if (isset($contentData['priority']) && $validatedPrio != $contentData['priority']) {
-            $warnings[] = sprintf(
-                _('Priority value in record parameter (%d) does not match priority in content (%d).'),
-                $validatedPrio,
-                $contentData['priority']
-            );
+        // Add priority warning if it's 0 (unusual but valid)
+        if ($validatedPrio === 0) {
+            $warnings[] = _('Priority 0 is valid but unusual. Typically SRV records start at priority 10 or higher.');
         }
 
         // Validate TTL
@@ -307,14 +303,17 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
     {
         $fields = preg_split("/\s+/", trim($content));
 
-        // Check if we have exactly 4 fields for an SRV record content
-        // Format should be: <priority> <weight> <port> <target>
-        if (count($fields) != 4) {
-            return ValidationResult::failure(_('SRV record content must have priority, weight, port and target (4 fields).'));
+        // Check if we have exactly 3 fields for SRV record content
+        // Format should be: <weight> <port> <target> (priority is in separate field)
+        if (count($fields) != 3) {
+            return ValidationResult::failure(_('SRV record content must have weight, port and target (3 fields). Priority should be in the priority field.'));
         }
 
-        // Extract the fields
-        [$priority, $weight, $port, $target] = $fields;
+        // Extract the fields (no priority in content for PowerDNS)
+        [$weight, $port, $target] = $fields;
+
+        // Priority will be validated separately in the main validate() method
+        $priority = 0; // Placeholder for validation logic
 
         // Extract service and protocol from the name
         $nameParts = explode('.', $name, 3);
@@ -326,10 +325,6 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
             $protocol = strtolower($nameParts[1]);
         }
 
-        // Validate priority (0-65535)
-        if (!is_numeric($priority) || (int)$priority < 0 || (int)$priority > 65535) {
-            return ValidationResult::failure(_('Invalid value for the priority field of the SRV record. Must be 0-65535.'));
-        }
 
         // Validate weight (0-65535)
         if (!is_numeric($weight) || (int)$weight < 0 || (int)$weight > 65535) {
@@ -374,10 +369,6 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
 
         // Additional RFC 2782 validation rules
         // - Weight of 0 means no server selection preference (after priority)
-        // - Priority of 0 is fine, but unusual (typically starts at 10 or higher)
-        if ((int)$priority === 0) {
-            $warnings[] = _('Priority 0 is valid but unusual. Typically SRV records start at priority 10 or higher.');
-        }
 
         // Target of "." has special meaning - "no service is available at this domain"
         if ($target === "." && ((int)$port !== 0 || (int)$weight !== 0)) {
@@ -385,7 +376,6 @@ class SRVRecordValidator implements DnsRecordValidatorInterface
         }
 
         return ValidationResult::success(['content' => join(' ', $fields),
-            'priority' => (int)$priority,
             'weight' => (int)$weight,
             'port' => (int)$port,
             'target' => $target], $warnings);

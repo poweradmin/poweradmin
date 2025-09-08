@@ -42,7 +42,7 @@ class SrvValidationTest extends TestCase
     #[\PHPUnit\Framework\Attributes\DataProvider('srvNameProvider')]
     public function testIsValidSrvName(string $name, bool $expected)
     {
-        $result = $this->validator->validate('10 20 5060 sip.example.com', $name, 0, 3600, 86400);
+        $result = $this->validator->validate('20 5060 sip.example.com', $name, 10, 3600, 86400);
 
         if ($expected) {
             $this->assertTrue($result->isValid());
@@ -62,19 +62,18 @@ class SrvValidationTest extends TestCase
     public static function srvContentProvider(): array
     {
         return [
-            'valid basic SRV content' => ['10 20 5060 sip.example.com', '_sip._tcp.example.com', true],
-            'valid with zero priority and weight' => ['0 0 443 example.com', '_https._tcp.example.com', true],
-            'valid with dot as target' => ['0 0 443 .', '_https._tcp.example.com', true],
-            'valid with max values' => ['65535 65535 65535 example.com', '_sip._tcp.example.com', true],
-            'invalid: priority not a number' => ['a 20 5060 sip.example.com', '_sip._tcp.example.com', false],
-            'invalid: weight not a number' => ['10 b 5060 sip.example.com', '_sip._tcp.example.com', false],
-            'invalid: port not a number' => ['10 20 port sip.example.com', '_sip._tcp.example.com', false],
-            'invalid: invalid hostname' => ['10 20 5060 @invalid!hostname', '_sip._tcp.example.com', false],
-            'invalid: priority too high' => ['70000 20 5060 sip.example.com', '_sip._tcp.example.com', false],
-            'invalid: weight too high' => ['10 70000 5060 sip.example.com', '_sip._tcp.example.com', false],
-            'invalid: port too high' => ['10 20 70000 sip.example.com', '_sip._tcp.example.com', false],
-            'invalid: too few fields' => ['10 20 example.com', '_sip._tcp.example.com', false],
-            'invalid: empty target' => ['10 20 5060 ', '_sip._tcp.example.com', false]
+            'valid basic SRV content' => ['20 5060 sip.example.com', '_sip._tcp.example.com', true],
+            'valid with zero weight' => ['0 443 example.com', '_https._tcp.example.com', true],
+            'valid with dot as target' => ['0 443 .', '_https._tcp.example.com', true],
+            'valid with max values' => ['65535 65535 example.com', '_sip._tcp.example.com', true],
+            'invalid: weight not a number' => ['b 5060 sip.example.com', '_sip._tcp.example.com', false],
+            'invalid: port not a number' => ['20 port sip.example.com', '_sip._tcp.example.com', false],
+            'invalid: invalid hostname' => ['20 5060 @invalid!hostname', '_sip._tcp.example.com', false],
+            'invalid: weight too high' => ['70000 5060 sip.example.com', '_sip._tcp.example.com', false],
+            'invalid: port too high' => ['20 70000 sip.example.com', '_sip._tcp.example.com', false],
+            'invalid: too few fields' => ['20 example.com', '_sip._tcp.example.com', false],
+            'invalid: too many fields (4 fields not allowed)' => ['10 20 5060 sip.example.com', '_sip._tcp.example.com', false],
+            'invalid: empty target' => ['20 5060 ', '_sip._tcp.example.com', false]
         ];
     }
 
@@ -97,7 +96,7 @@ class SrvValidationTest extends TestCase
 
     public function testValidateWithCustomPriority()
     {
-        $content = "20 10 5060 sip.example.com";
+        $content = "10 5060 sip.example.com";
         $name = "_sip._tcp.example.com";
         $prio = 20;
         $ttl = 3600;
@@ -116,7 +115,7 @@ class SrvValidationTest extends TestCase
 
     public function testValidateWithDefaultPriority()
     {
-        $content = "10 10 5060 sip.example.com";
+        $content = "10 5060 sip.example.com";
         $name = "_sip._tcp.example.com";
         $prio = "";  // Empty priority should default to 10
         $ttl = 3600;
@@ -132,7 +131,7 @@ class SrvValidationTest extends TestCase
 
     public function testValidateWithInvalidPriority()
     {
-        $content = "10 10 5060 sip.example.com";
+        $content = "10 5060 sip.example.com";
         $name = "_sip._tcp.example.com";
         $prio = 70000;  // Priority too high
         $ttl = 3600;
@@ -146,7 +145,7 @@ class SrvValidationTest extends TestCase
 
     public function testValidateWithDefaultTTL()
     {
-        $content = "10 10 5060 sip.example.com";
+        $content = "10 5060 sip.example.com";
         $name = "_sip._tcp.example.com";
         $prio = 10;
         $ttl = "";  // Empty TTL should use default
