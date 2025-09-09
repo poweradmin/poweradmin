@@ -264,7 +264,7 @@ create_admin_user() {
 
     if [ $? -eq 0 ]; then
         log "Admin user '${admin_username}' created successfully"
-        
+
         # Display credentials prominently if password was generated
         if [ "${password_generated}" = "true" ]; then
             log "=========================================="
@@ -277,7 +277,7 @@ create_admin_user() {
         log "ERROR: Failed to create admin user '${admin_username}'"
         exit 1
     fi
-    
+
     # Export for use in print_config_summary
     export ADMIN_PASSWORD_GENERATED="${password_generated}"
     export ADMIN_USERNAME="${admin_username}"
@@ -298,6 +298,22 @@ generate_config() {
     local api_basic_auth_enabled=$(echo "${PA_API_BASIC_AUTH_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local api_docs_enabled=$(echo "${PA_API_DOCS_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local ldap_enabled=$(echo "${PA_LDAP_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+
+    # Convert interface boolean values to lowercase
+    local show_record_id=$(echo "${PA_SHOW_RECORD_ID:-true}" | tr '[:upper:]' '[:lower:]')
+    local position_record_form_top=$(echo "${PA_POSITION_RECORD_FORM_TOP:-true}" | tr '[:upper:]' '[:lower:]')
+    local position_save_button_top=$(echo "${PA_POSITION_SAVE_BUTTON_TOP:-false}" | tr '[:upper:]' '[:lower:]')
+    local show_zone_comments=$(echo "${PA_SHOW_ZONE_COMMENTS:-true}" | tr '[:upper:]' '[:lower:]')
+    local show_record_comments=$(echo "${PA_SHOW_RECORD_COMMENTS:-false}" | tr '[:upper:]' '[:lower:]')
+    local display_serial_in_zone_list=$(echo "${PA_DISPLAY_SERIAL_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
+    local display_template_in_zone_list=$(echo "${PA_DISPLAY_TEMPLATE_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
+    local display_fullname_in_zone_list=$(echo "${PA_DISPLAY_FULLNAME_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
+    local search_group_records=$(echo "${PA_SEARCH_GROUP_RECORDS:-false}" | tr '[:upper:]' '[:lower:]')
+    local show_pdns_status=$(echo "${PA_SHOW_PDNS_STATUS:-false}" | tr '[:upper:]' '[:lower:]')
+    local add_reverse_record=$(echo "${PA_ADD_REVERSE_RECORD:-true}" | tr '[:upper:]' '[:lower:]')
+    local add_domain_record=$(echo "${PA_ADD_DOMAIN_RECORD:-true}" | tr '[:upper:]' '[:lower:]')
+    local display_hostname_only=$(echo "${PA_DISPLAY_HOSTNAME_ONLY:-false}" | tr '[:upper:]' '[:lower:]')
+    local enable_consistency_checks=$(echo "${PA_ENABLE_CONSISTENCY_CHECKS:-false}" | tr '[:upper:]' '[:lower:]')
 
     cat > "${CONFIG_FILE}" << EOF
 <?php
@@ -341,6 +357,28 @@ return [
     'interface' => [
         'title' => '${PA_APP_TITLE:-Poweradmin}',
         'language' => '${PA_DEFAULT_LANGUAGE:-en_EN}',
+        'enabled_languages' => '${PA_ENABLED_LANGUAGES:-cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN}',
+        'session_timeout' => ${PA_SESSION_TIMEOUT:-1800},
+        'rows_per_page' => ${PA_ROWS_PER_PAGE:-10},
+        'theme' => '${PA_THEME:-default}',
+        'style' => '${PA_STYLE:-light}',
+        'theme_base_path' => '${PA_THEME_BASE_PATH:-templates}',
+        'base_url_prefix' => '${PA_BASE_URL_PREFIX:-}',
+        'show_record_id' => ${show_record_id},
+        'position_record_form_top' => ${position_record_form_top},
+        'position_save_button_top' => ${position_save_button_top},
+        'show_zone_comments' => ${show_zone_comments},
+        'show_record_comments' => ${show_record_comments},
+        'display_serial_in_zone_list' => ${display_serial_in_zone_list},
+        'display_template_in_zone_list' => ${display_template_in_zone_list},
+        'display_fullname_in_zone_list' => ${display_fullname_in_zone_list},
+        'search_group_records' => ${search_group_records},
+        'reverse_zone_sort' => '${PA_REVERSE_ZONE_SORT:-natural}',
+        'show_pdns_status' => ${show_pdns_status},
+        'add_reverse_record' => ${add_reverse_record},
+        'add_domain_record' => ${add_domain_record},
+        'display_hostname_only' => ${display_hostname_only},
+        'enable_consistency_checks' => ${enable_consistency_checks},
     ],
     'api' => [
         'enabled' => ${api_enabled},
@@ -375,7 +413,7 @@ EOF
 # Print configuration summary (with redacted secrets)
 print_config_summary() {
     log "=== Poweradmin Configuration Summary ==="
-    
+
     if [ -n "${PA_CONFIG_PATH}" ] && [ -f "${CONFIG_FILE}" ]; then
         log "Configuration: Custom configuration file loaded from ${PA_CONFIG_PATH}"
         log "Configuration details are managed by the custom config file."
@@ -399,14 +437,14 @@ print_config_summary() {
         log "LDAP Enabled: ${PA_LDAP_ENABLED:-false}"
         log "Timezone: ${PA_TIMEZONE:-UTC}"
     fi
-    
+
     log "Admin User Creation: ${PA_CREATE_ADMIN:-false}"
     if [ "${PA_CREATE_ADMIN:-false}" = "true" ]; then
         log "Admin Username: ${PA_ADMIN_USERNAME:-admin}"
         log "Admin Email: ${PA_ADMIN_EMAIL:-admin@example.com}"
     fi
     log "======================================="
-    
+
 }
 
 # Set up proper file permissions
