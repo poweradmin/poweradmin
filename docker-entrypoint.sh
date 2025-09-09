@@ -14,7 +14,7 @@ debug_log() {
     fi
 }
 
-# Process Docker secrets - converts *__FILE environment variables to regu    local oidc_azure_auto_discovery=$(echo "${PA_OIDC_AZURE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')bles
+# Process Docker secrets - converts *__FILE environment variables regular variables
 process_secret_files() {
     for VAR_NAME in $(env | grep '^[^=]\+__FILE=.\+' | sed -r 's/^([^=]*)__FILE=.*/\1/g'); do
         VAR_NAME_FILE="${VAR_NAME}__FILE"
