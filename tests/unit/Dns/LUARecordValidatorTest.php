@@ -389,4 +389,298 @@ class LUARecordValidatorTest extends TestCase
         }
         $this->assertTrue($foundUnbalancedQuotesWarning, 'Warning about unbalanced quotes not found');
     }
+
+    /**
+     * Test validation with ifportup function (PowerDNS documentation example)
+     */
+    public function testValidateWithIfPortUpFunction(): void
+    {
+        $luaScript = 'ifportup(443, {\'192.0.2.1\', \'192.0.2.2\'})';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($luaScript, $data['content']);
+    }
+
+    /**
+     * Test validation with ifportup function with nested arrays
+     */
+    public function testValidateWithIfPortUpNestedArrays(): void
+    {
+        $luaScript = 'ifportup(443, {{\'192.0.2.1\', \'192.0.2.2\'}, {\'192.0.3.1\'}})';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with ifportup and selector option
+     */
+    public function testValidateWithIfPortUpSelector(): void
+    {
+        $luaScript = 'ifportup(443, {\'192.0.2.1\', \'192.0.2.2\', \'198.51.100.1\'}, {selector=\'pickclosest\'})';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with ifurlup function
+     */
+    public function testValidateWithIfUrlUpFunction(): void
+    {
+        $luaScript = 'ifurlup(\'https://www.example.com/\', {{\'192.0.2.1\', \'192.0.2.2\'}, {\'198.51.100.1\'}}, {stringmatch=\'Example\'})';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with view function
+     */
+    public function testValidateWithViewFunction(): void
+    {
+        $luaScript = 'view({{\'192.168.0.0/16\'}, {\'192.168.1.54\'}}, {{\'0.0.0.0/0\'}, {\'192.0.2.1\'}})';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with pickwhashed function
+     */
+    public function testValidateWithPickWHashedFunction(): void
+    {
+        $luaScript = 'pickwhashed({{15, "192.0.2.1"}, {100, "198.51.100.5"}})';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with pickchashed function
+     */
+    public function testValidateWithPickCHashedFunction(): void
+    {
+        $luaScript = 'pickchashed({{15, "192.0.2.1"}, {100, "198.51.100.5"}})';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with picknamehashed function
+     */
+    public function testValidateWithPickNameHashedFunction(): void
+    {
+        $luaScript = 'picknamehashed({{15, "192.0.2.1"}, {100, "198.51.100.5"}})';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with createReverse function
+     */
+    public function testValidateWithCreateReverseFunction(): void
+    {
+        $luaScript = 'createReverse(\'%1%.%2%.%3%.%4%.static.example.com\')';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with dblookup function (issue #770 case)
+     */
+    public function testValidateWithDbLookupFunction(): void
+    {
+        $luaScript = 'dblookup(\'www1.example.com\', pdns.A)';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with dblookup in ifurlup context
+     */
+    public function testValidateWithDbLookupInIfUrlUp(): void
+    {
+        $luaScript = 'ifurlup(\'https://www.example.com/\', {dblookup(\'www1.example.com\', pdns.A), dblookup(\'www2.example.com\', pdns.A)})';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with explicit return mode using qname
+     */
+    public function testValidateWithExplicitReturnQName(): void
+    {
+        $luaScript = ';return \'Got a TXT query for \' .. qname:toString() .. \'; First label is: \' .. qname:getRawLabels()[1]';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with continent function in explicit return mode
+     */
+    public function testValidateWithContinentFunction(): void
+    {
+        $luaScript = ';if continent(\'EU\') then return {\'192.0.2.1\',\'192.0.2.2\',\'198.51.100.1\'} else return \'192.0.2.2\' end';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with country function in explicit return mode
+     */
+    public function testValidateWithCountryFunction(): void
+    {
+        $luaScript = ';if country(\'US\') then return {\'192.0.2.1\',\'192.0.2.2\',\'198.51.100.1\'} else return \'192.0.2.2\' end';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+    }
+
+    /**
+     * Test validation with record type prefix followed by dblookup (issue #770 format)
+     */
+    public function testValidateWithRecordTypePrefixAndDbLookup(): void
+    {
+        $luaScript = 'AAAA "dblookup(\'testmachine.dyn6.test.lan\', pdns.AAAA)"';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($luaScript, $data['content']);
+    }
+
+    /**
+     * Test validation with A record type prefix
+     */
+    public function testValidateWithARecordTypePrefix(): void
+    {
+        $luaScript = 'A "dblookup(\'testmachine.dyn4.test.lan\', pdns.A)"';
+
+        $result = $this->validator->validate(
+            $luaScript,
+            'lua.example.com',
+            '',
+            3600,
+            86400
+        );
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($luaScript, $data['content']);
+    }
 }
