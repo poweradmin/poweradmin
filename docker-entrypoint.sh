@@ -315,6 +315,28 @@ generate_config() {
     local display_hostname_only=$(echo "${PA_DISPLAY_HOSTNAME_ONLY:-false}" | tr '[:upper:]' '[:lower:]')
     local enable_consistency_checks=$(echo "${PA_ENABLE_CONSISTENCY_CHECKS:-false}" | tr '[:upper:]' '[:lower:]')
 
+    # Convert DNS boolean values to lowercase
+    local dns_strict_tld_check=$(echo "${PA_DNS_STRICT_TLD_CHECK:-false}" | tr '[:upper:]' '[:lower:]')
+    local dns_top_level_tld_check=$(echo "${PA_DNS_TOP_LEVEL_TLD_CHECK:-false}" | tr '[:upper:]' '[:lower:]')
+    local dns_third_level_check=$(echo "${PA_DNS_THIRD_LEVEL_CHECK:-false}" | tr '[:upper:]' '[:lower:]')
+    local dns_txt_auto_quote=$(echo "${PA_DNS_TXT_AUTO_QUOTE:-false}" | tr '[:upper:]' '[:lower:]')
+    local dns_prevent_duplicate_ptr=$(echo "${PA_DNS_PREVENT_DUPLICATE_PTR:-true}" | tr '[:upper:]' '[:lower:]')
+
+    # Convert DNSSEC boolean values to lowercase
+    local dnssec_enabled=$(echo "${PA_DNSSEC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local dnssec_debug=$(echo "${PA_DNSSEC_DEBUG:-false}" | tr '[:upper:]' '[:lower:]')
+
+    # Process DNS record types - convert comma-separated values to PHP array format or null
+    local domain_record_types="null"
+    if [ -n "${PA_DNS_DOMAIN_RECORD_TYPES}" ]; then
+        domain_record_types="['$(echo "${PA_DNS_DOMAIN_RECORD_TYPES}" | sed "s/,/','/g")']"
+    fi
+
+    local reverse_record_types="null"
+    if [ -n "${PA_DNS_REVERSE_RECORD_TYPES}" ]; then
+        reverse_record_types="['$(echo "${PA_DNS_REVERSE_RECORD_TYPES}" | sed "s/,/','/g")']"
+    fi
+
     cat > "${CONFIG_FILE}" << EOF
 <?php
 
@@ -334,6 +356,23 @@ return [
         'ns2' => '${DNS_NS2:-ns2.example.com}',
         'ns3' => '${DNS_NS3:-}',
         'ns4' => '${DNS_NS4:-}',
+        'ttl' => ${PA_DNS_TTL:-86400},
+        'soa_refresh' => ${PA_DNS_SOA_REFRESH:-28800},
+        'soa_retry' => ${PA_DNS_SOA_RETRY:-7200},
+        'soa_expire' => ${PA_DNS_SOA_EXPIRE:-604800},
+        'soa_minimum' => ${PA_DNS_SOA_MINIMUM:-86400},
+        'zone_type_default' => '${PA_DNS_ZONE_TYPE_DEFAULT:-MASTER}',
+        'strict_tld_check' => ${dns_strict_tld_check},
+        'top_level_tld_check' => ${dns_top_level_tld_check},
+        'third_level_check' => ${dns_third_level_check},
+        'txt_auto_quote' => ${dns_txt_auto_quote},
+        'prevent_duplicate_ptr' => ${dns_prevent_duplicate_ptr},
+        'domain_record_types' => ${domain_record_types},
+        'reverse_record_types' => ${reverse_record_types},
+    ],
+    'dnssec' => [
+        'enabled' => ${dnssec_enabled},
+        'debug' => ${dnssec_debug},
     ],
     'security' => [
         'session_key' => '${session_key}',
