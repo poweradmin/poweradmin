@@ -584,9 +584,6 @@ docker run -d --name poweradmin -p 80:80 \
   -e PA_OIDC_AZURE_CLIENT_ID=your-azure-client-id \
   -e PA_OIDC_AZURE_CLIENT_SECRET=your-azure-client-secret \
   -e PA_OIDC_AZURE_TENANT=your-tenant-id \
-  -e PA_OIDC_ADMIN_GROUP="DNS-Administrators" \
-  -e PA_OIDC_OPERATOR_GROUP="DNS-Operators" \
-  -e PA_OIDC_VIEWER_GROUP="DNS-Viewers" \
   edmondas/poweradmin
 ```
 
