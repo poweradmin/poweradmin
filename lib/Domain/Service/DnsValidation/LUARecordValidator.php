@@ -203,11 +203,22 @@ class LUARecordValidator implements DnsRecordValidatorInterface
             }
         } else {
             // In implicit return mode, we should have a valid function call structure
-            // Common pattern is either a direct function call or a Lua function definition
+            // Common patterns:
+            // 1. Direct function call: functionname(...)
+            // 2. Function definition: function name(...) ... end
+            // 3. Record type prefix: RECORDTYPE "function(...)" or RECORDTYPE function(...)
             $validPattern = false;
 
+            // Check for record type prefix (A, AAAA, CNAME, etc.) followed by function call
+            // Pattern: RECORDTYPE "function(...)" or RECORDTYPE function(...)
+            // Be specific about common DNS record types to avoid false matches
+            if (preg_match('/^(A|AAAA|CNAME|MX|NS|PTR|SOA|SRV|TXT|CAA|DS|DNSKEY|NSEC|NSEC3|RRSIG|TLSA|URI|LOC|HINFO|RP|AFSDB|ISDN|RT|X25|PX|GPOS|NAPTR|KX|CERT|DNAME|SINK|OPT|APL|SSHFP|IPSECKEY|DHCID|NSEC3PARAM|HIP|CDS|CDNSKEY|OPENPGPKEY|CSYNC|ZONEMD|SVCB|HTTPS)\s+["\']?[a-zA-Z_][a-zA-Z0-9_]*\s*\(/', $trimmedContent)) {
+                $validPattern = true;
+            }
+
             // Direct function call: functionname(...) - check for function name followed by open parenthesis
-            if (preg_match('/^[a-zA-Z_][a-zA-Z0-9_]*\s*\(/i', $trimmedContent)) {
+            // But exclude 'function' keyword as that should be handled by the function definition check
+            if (preg_match('/^(?!function\s)[a-zA-Z_][a-zA-Z0-9_]*\s*\(/i', $trimmedContent)) {
                 $validPattern = true;
             }
 
