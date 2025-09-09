@@ -14,7 +14,7 @@ debug_log() {
     fi
 }
 
-# Process Docker secrets - converts *__FILE environment variables to regular variables
+# Process Docker secrets - converts *__FILE environment variables to regu    local oidc_azure_auto_discovery=$(echo "${PA_OIDC_AZURE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')bles
 process_secret_files() {
     for VAR_NAME in $(env | grep '^[^=]\+__FILE=.\+' | sed -r 's/^([^=]*)__FILE=.*/\1/g'); do
         VAR_NAME_FILE="${VAR_NAME}__FILE"
@@ -326,6 +326,19 @@ generate_config() {
     local dnssec_enabled=$(echo "${PA_DNSSEC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local dnssec_debug=$(echo "${PA_DNSSEC_DEBUG:-false}" | tr '[:upper:]' '[:lower:]')
 
+    # Convert OIDC boolean values to lowercase
+    local oidc_enabled=$(echo "${PA_OIDC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local oidc_auto_provision=$(echo "${PA_OIDC_AUTO_PROVISION:-true}" | tr '[:upper:]' '[:lower:]')
+    local oidc_link_by_email=$(echo "${PA_OIDC_LINK_BY_EMAIL:-true}" | tr '[:upper:]' '[:lower:]')
+    local oidc_sync_user_info=$(echo "${PA_OIDC_SYNC_USER_INFO:-true}" | tr '[:upper:]' '[:lower:]')
+    local oidc_azure_enabled=$(echo "${PA_OIDC_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local oidc_azure_auto_discovery=$(echo "${PA_OIDC_AZURE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')
+
+    # Convert MFA boolean values to lowercase
+    local mfa_enabled=$(echo "${PA_MFA_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local mfa_app_enabled=$(echo "${PA_MFA_APP_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
+    local mfa_email_enabled=$(echo "${PA_MFA_EMAIL_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
+
     # Process DNS record types - convert comma-separated values to PHP array format or null
     local domain_record_types="null"
     if [ -n "${PA_DNS_DOMAIN_RECORD_TYPES}" ]; then
@@ -376,6 +389,13 @@ return [
     ],
     'security' => [
         'session_key' => '${session_key}',
+        'mfa' => [
+            'enabled' => ${mfa_enabled},
+            'app_enabled' => ${mfa_app_enabled},
+            'email_enabled' => ${mfa_email_enabled},
+            'recovery_codes' => ${PA_MFA_RECOVERY_CODES:-8},
+            'recovery_code_length' => ${PA_MFA_RECOVERY_CODE_LENGTH:-10},
+        ],
         'recaptcha' => [
             'enabled' => ${recaptcha_enabled},
             'site_key' => '${PA_RECAPTCHA_SITE_KEY:-}',
@@ -438,6 +458,47 @@ return [
     ],
     'misc' => [
         'timezone' => '${PA_TIMEZONE:-UTC}',
+    ],
+    'oidc' => [
+        'enabled' => ${oidc_enabled},
+        'auto_provision' => ${oidc_auto_provision},
+        'link_by_email' => ${oidc_link_by_email},
+        'sync_user_info' => ${oidc_sync_user_info},
+        'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Administrator}',
+        'permission_template_mapping' => [
+            'poweradmin-admins' => 'Administrator',
+            'dns-operators' => 'DNS Operator',
+            'dns-viewers' => 'Read Only',
+        ],
+        'providers' => [
+EOF
+
+    # Add Azure configuration if enabled
+    if [ "${oidc_azure_enabled}" = "true" ]; then
+        cat >> "${CONFIG_FILE}" << 'EOF'
+            'azure' => [
+                'name' => 'Microsoft Azure AD',
+                'display_name' => 'Sign in with Microsoft',
+                'client_id' => '${PA_OIDC_AZURE_CLIENT_ID:-}',
+                'client_secret' => '${PA_OIDC_AZURE_CLIENT_SECRET:-}',
+                'tenant' => '${PA_OIDC_AZURE_TENANT:-common}',
+                'auto_discovery' => ${oidc_azure_auto_discovery},
+                'metadata_url' => '${PA_OIDC_AZURE_METADATA_URL:-https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid_configuration}',
+                'scopes' => 'openid profile email',
+                'user_mapping' => [
+                    'username' => 'preferred_username',
+                    'email' => 'email',
+                    'first_name' => 'given_name',
+                    'last_name' => 'family_name',
+                    'display_name' => 'name',
+                    'groups' => 'groups',
+                ],
+            ],
+EOF
+    fi
+
+    cat >> "${CONFIG_FILE}" << 'EOF'
+        ],
     ],
 ];
 EOF
