@@ -26,6 +26,9 @@ use Exception;
 use Poweradmin\Domain\Service\MailService as MailServiceInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Mailer\Mailer;
+use Symfony\Component\Mailer\Transport;
+use Symfony\Component\Mime\Email;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
@@ -200,10 +203,7 @@ class MailService implements MailServiceInterface
     }
 
     /**
-     * Send mail via SMTP
-     *
-     * Note: This is a simplified implementation. In a production environment,
-     * you might want to use a library like PHPMailer or Symfony Mailer instead.
+     * Send mail via SMTP using Symfony Mailer
      */
     private function sendSmtp(
         string $to,
@@ -213,98 +213,42 @@ class MailService implements MailServiceInterface
         array $headers,
         string $boundary
     ): bool {
-        $host = $this->config->get('mail', 'host', 'localhost');
-        $port = $this->config->get('mail', 'port', 25);
-        $encryption = $this->config->get('mail', 'encryption', '');
-        $fromEmail = $this->config->get('mail', 'from', 'poweradmin@example.com');
-        $fromName = $this->config->get('mail', 'from_name', '');
-
-        // Set prefix for encrypted connections
-        $prefix = '';
-        if ($encryption === 'ssl') {
-            $prefix = 'ssl://';
-        } elseif ($encryption === 'tls') {
-            $prefix = 'tls://';
-        }
-
-        // First, verify the connection to the mail server
-        if (!$this->canConnectToMailServer($prefix . $host, $port)) {
-            $this->logError("Cannot connect to mail server at {$prefix}{$host}:{$port}. Mail service may be misconfigured.");
-            return false;
-        }
-
         try {
-            // Connect to SMTP server with error suppression to avoid generating warnings
-            $socket = @fsockopen($prefix . $host, $port, $errno, $errstr, 30);
-            if (!$socket) {
-                throw new Exception("SMTP connection failed: $errstr ($errno)");
+            $transport = Transport::fromDsn($this->buildSmtpDsn());
+            $mailer = new Mailer($transport);
+
+            $fromEmail = $this->config->get('mail', 'from', 'poweradmin@example.com');
+            $fromName = $this->config->get('mail', 'from_name', '');
+
+            $email = (new Email())
+                ->to($to)
+                ->subject($subject)
+                ->html($body);
+
+            // Set from address with optional name
+            if (!empty($fromName)) {
+                $email->from(new \Symfony\Component\Mime\Address($fromEmail, $fromName));
+            } else {
+                $email->from($fromEmail);
             }
 
-            // Set timeout for socket operations
-            stream_set_timeout($socket, 30);
-
-            // Read server greeting
-            $this->readSmtpResponse($socket);
-
-            // Say hello
-            $this->sendSmtpCommand($socket, "EHLO " . gethostname());
-
-            // Start TLS if needed and not already using SSL
-            if ($encryption === 'tls' && $prefix !== 'ssl://') {
-                $this->sendSmtpCommand($socket, "STARTTLS");
-                stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
-                $this->sendSmtpCommand($socket, "EHLO " . gethostname());
+            // Add plain text version if provided
+            if (!empty($plainBody)) {
+                $email->text($plainBody);
             }
 
-            // Authenticate if required
-            if ($this->config->get('mail', 'auth', false)) {
-                $username = $this->config->get('mail', 'username', '');
-                $password = $this->config->get('mail', 'password', '');
-
-                $this->sendSmtpCommand($socket, "AUTH LOGIN");
-                $this->sendSmtpCommand($socket, base64_encode($username));
-                $this->sendSmtpCommand($socket, base64_encode($password));
+            // Add custom headers (excluding problematic ones)
+            foreach ($headers as $name => $value) {
+                // Skip headers that could cause SMTP protocol issues
+                if (!in_array(strtolower($name), ['x-mailer', 'mime-version', 'content-type'])) {
+                    $email->getHeaders()->addTextHeader($name, $value);
+                }
             }
 
-            // Set sender
-            $this->sendSmtpCommand($socket, "MAIL FROM:<$fromEmail>");
-
-            // Set recipient
-            $this->sendSmtpCommand($socket, "RCPT TO:<$to>");
-
-            // Start data
-            $this->sendSmtpCommand($socket, "DATA");
-
-            // Set up email headers
-            $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $boundary);
-            $mailHeaders = array_merge($mailHeaders, $headers);
-
-            // Send headers
-            fputs($socket, "To: $to\r\n");
-            fputs($socket, "Subject: $subject\r\n");
-            foreach ($mailHeaders as $name => $value) {
-                fputs($socket, "$name: $value\r\n");
-            }
-            fputs($socket, "\r\n");
-
-            // Send message body
-            fputs($socket, $this->getMessageBody($body, $plainBody, $boundary));
-
-            // End data
-            $this->sendSmtpCommand($socket, "\r\n.");
-
-            // Quit
-            fputs($socket, "QUIT\r\n");
-
-            // Close connection
-            fclose($socket);
-
+            $mailer->send($email);
             return true;
         } catch (Exception $e) {
-            $this->logError('SMTP error: ' . $e->getMessage());
-            if (isset($socket) && is_resource($socket)) {
-                fclose($socket);
-            }
+            $this->logError('Symfony Mailer SMTP error: ' . $e->getMessage());
             return false;
         }
     }
@@ -454,34 +398,47 @@ class MailService implements MailServiceInterface
     }
 
     /**
-     * Send an SMTP command and check the response
+     * Build SMTP DSN for Symfony Mailer
      */
-    private function sendSmtpCommand($socket, string $command): void
+    private function buildSmtpDsn(): string
     {
-        fputs($socket, $command . "\r\n");
-        $response = $this->readSmtpResponse($socket);
+        $host = $this->config->get('mail', 'host', 'localhost');
+        $port = $this->config->get('mail', 'port', 25);
+        $encryption = $this->config->get('mail', 'encryption', '');
+        $username = $this->config->get('mail', 'username', '');
+        $password = $this->config->get('mail', 'password', '');
+        $auth = $this->config->get('mail', 'auth', false);
 
-        // Check if the response code indicates an error
-        $responseCode = substr($response, 0, 3);
-        if ($responseCode[0] === '4' || $responseCode[0] === '5') {
-            throw new Exception("SMTP error: $response");
+        // Build DSN based on encryption type
+        $scheme = 'smtp';
+        if ($encryption === 'ssl') {
+            $scheme = 'smtps';
         }
-    }
 
-    /**
-     * Read an SMTP response
-     */
-    private function readSmtpResponse($socket): string
-    {
-        $response = '';
-        while ($line = fgets($socket, 515)) {
-            $response .= $line;
-            // If the 4th character is a space, this is the last line of the response
-            if (isset($line[3]) && $line[3] === ' ') {
-                break;
+        $dsn = $scheme . '://';
+
+        // Add authentication if configured
+        if ($auth && !empty($username)) {
+            $dsn .= urlencode($username);
+            if (!empty($password)) {
+                $dsn .= ':' . urlencode($password);
             }
+            $dsn .= '@';
         }
-        return $response;
+
+        $dsn .= $host . ':' . $port;
+
+        // Add encryption parameters
+        $options = [];
+        if ($encryption === 'tls') {
+            $options['encryption'] = 'tls';
+        }
+
+        if (!empty($options)) {
+            $dsn .= '?' . http_build_query($options);
+        }
+
+        return $dsn;
     }
 
     /**
