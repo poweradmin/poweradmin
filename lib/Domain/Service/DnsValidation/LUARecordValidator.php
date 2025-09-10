@@ -212,7 +212,10 @@ class LUARecordValidator implements DnsRecordValidatorInterface
             // Check for record type prefix (A, AAAA, CNAME, etc.) followed by function call
             // Pattern: RECORDTYPE "function(...)" or RECORDTYPE function(...)
             // Be specific about common DNS record types to avoid false matches
-            if (preg_match('/^(A|AAAA|CNAME|MX|NS|PTR|SOA|SRV|TXT|CAA|DS|DNSKEY|NSEC|NSEC3|RRSIG|TLSA|URI|LOC|HINFO|RP|AFSDB|ISDN|RT|X25|PX|GPOS|NAPTR|KX|CERT|DNAME|SINK|OPT|APL|SSHFP|IPSECKEY|DHCID|NSEC3PARAM|HIP|CDS|CDNSKEY|OPENPGPKEY|CSYNC|ZONEMD|SVCB|HTTPS)\s+["\']?[a-zA-Z_][a-zA-Z0-9_]*\s*\(/', $trimmedContent)) {
+            $recordTypes = 'A|AAAA|CNAME|MX|NS|PTR|SOA|SRV|TXT|CAA|DS|DNSKEY|NSEC|NSEC3|RRSIG|TLSA|URI|LOC|HINFO|' .
+                          'RP|AFSDB|ISDN|RT|X25|PX|GPOS|NAPTR|KX|CERT|DNAME|SINK|OPT|APL|SSHFP|IPSECKEY|DHCID|' .
+                          'NSEC3PARAM|HIP|CDS|CDNSKEY|OPENPGPKEY|CSYNC|ZONEMD|SVCB|HTTPS';
+            if (preg_match('/^(' . $recordTypes . ')\s+["\']?[a-zA-Z_][a-zA-Z0-9_]*\s*\(/', $trimmedContent)) {
                 $validPattern = true;
             }
 
