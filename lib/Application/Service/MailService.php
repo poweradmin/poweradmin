@@ -245,12 +245,18 @@ class MailService implements MailServiceInterface
             $this->readSmtpResponse($socket);
 
             // Say hello
-            $this->sendSmtpCommand($socket, "EHLO " . gethostname());
+            $ehloResponse = $this->sendSmtpCommand($socket, "EHLO " . gethostname());
 
             // Start TLS if needed and not already using SSL
             if ($encryption === 'tls' && $prefix !== 'ssl://') {
                 $this->sendSmtpCommand($socket, "STARTTLS");
-                stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT);
+
+                // Enable TLS encryption
+                if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
+                    throw new Exception("Failed to enable TLS encryption");
+                }
+
+                // Re-send EHLO after TLS handshake
                 $this->sendSmtpCommand($socket, "EHLO " . gethostname());
             }
 
@@ -277,7 +283,7 @@ class MailService implements MailServiceInterface
             $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $boundary);
             $mailHeaders = array_merge($mailHeaders, $headers);
 
-            // Send headers
+            // Send email content
             fputs($socket, "To: $to\r\n");
             fputs($socket, "Subject: $subject\r\n");
             foreach ($mailHeaders as $name => $value) {
@@ -289,7 +295,7 @@ class MailService implements MailServiceInterface
             fputs($socket, $this->getMessageBody($body, $plainBody, $boundary));
 
             // End data
-            $this->sendSmtpCommand($socket, "\r\n.");
+            fputs($socket, "\r\n.\r\n");
 
             // Quit
             fputs($socket, "QUIT\r\n");
@@ -388,16 +394,23 @@ class MailService implements MailServiceInterface
     /**
      * Send an SMTP command and check the response
      */
-    private function sendSmtpCommand($socket, string $command): void
+    private function sendSmtpCommand($socket, string $command): string
     {
+        // Redact sensitive authentication data
+        $logCommand = (strpos($command, 'AUTH LOGIN') === 0 || ctype_print($command) === false)
+            ? 'AUTH LOGIN [credentials]'
+            : $command;
+
         fputs($socket, $command . "\r\n");
         $response = $this->readSmtpResponse($socket);
 
         // Check if the response code indicates an error
         $responseCode = substr($response, 0, 3);
         if ($responseCode[0] === '4' || $responseCode[0] === '5') {
-            throw new Exception("SMTP error: $response");
+            throw new Exception("SMTP error for command '$logCommand': $response");
         }
+
+        return $response;
     }
 
     /**
@@ -406,14 +419,30 @@ class MailService implements MailServiceInterface
     private function readSmtpResponse($socket): string
     {
         $response = '';
-        while ($line = fgets($socket, 515)) {
+        // Maximum number of lines to read from SMTP response to prevent infinite loops
+        // and protect against malicious or malformed server responses
+        $maxLines = 50;
+        $lineCount = 0;
+
+        while ($line = fgets($socket, 515) && $lineCount < $maxLines) {
             $response .= $line;
-            // If the 4th character is a space, this is the last line of the response
+            $lineCount++;
+
+            // Check for end of multi-line response
             if (isset($line[3]) && $line[3] === ' ') {
                 break;
             }
         }
-        return $response;
+
+        if ($lineCount >= $maxLines) {
+            throw new Exception("SMTP response exceeded maximum lines ($maxLines)");
+        }
+
+        if (empty($response)) {
+            throw new Exception("Empty SMTP response received");
+        }
+
+        return trim($response);
     }
 
     /**
