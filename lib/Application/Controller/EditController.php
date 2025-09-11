@@ -801,7 +801,7 @@ class EditController extends BaseController
                 if ($one_record_changed) {
                     $this->setMessage('edit', 'success', _('Zone has been updated successfully.'));
                 } else {
-                    $this->setMessage('edit', 'warn', (_('Zone did not have any record changes.')));
+                    $this->setMessage('edit', 'info', (_('Zone saved successfully. No record changes were made, but SOA serial was incremented.')));
                 }
 
                 if ($this->config->get('dnssec', 'enabled', false)) {
