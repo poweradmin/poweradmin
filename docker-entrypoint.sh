@@ -264,7 +264,7 @@ create_admin_user() {
 
     if [ $? -eq 0 ]; then
         log "Admin user '${admin_username}' created successfully"
-        
+
         # Display credentials prominently if password was generated
         if [ "${password_generated}" = "true" ]; then
             log "=========================================="
@@ -277,7 +277,7 @@ create_admin_user() {
         log "ERROR: Failed to create admin user '${admin_username}'"
         exit 1
     fi
-    
+
     # Export for use in print_config_summary
     export ADMIN_PASSWORD_GENERATED="${password_generated}"
     export ADMIN_USERNAME="${admin_username}"
@@ -299,6 +299,57 @@ generate_config() {
     local api_docs_enabled=$(echo "${PA_API_DOCS_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local ldap_enabled=$(echo "${PA_LDAP_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
 
+    # Convert interface boolean values to lowercase
+    local show_record_id=$(echo "${PA_SHOW_RECORD_ID:-true}" | tr '[:upper:]' '[:lower:]')
+    local position_record_form_top=$(echo "${PA_POSITION_RECORD_FORM_TOP:-true}" | tr '[:upper:]' '[:lower:]')
+    local position_save_button_top=$(echo "${PA_POSITION_SAVE_BUTTON_TOP:-false}" | tr '[:upper:]' '[:lower:]')
+    local show_zone_comments=$(echo "${PA_SHOW_ZONE_COMMENTS:-true}" | tr '[:upper:]' '[:lower:]')
+    local show_record_comments=$(echo "${PA_SHOW_RECORD_COMMENTS:-false}" | tr '[:upper:]' '[:lower:]')
+    local display_serial_in_zone_list=$(echo "${PA_DISPLAY_SERIAL_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
+    local display_template_in_zone_list=$(echo "${PA_DISPLAY_TEMPLATE_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
+    local display_fullname_in_zone_list=$(echo "${PA_DISPLAY_FULLNAME_IN_ZONE_LIST:-false}" | tr '[:upper:]' '[:lower:]')
+    local search_group_records=$(echo "${PA_SEARCH_GROUP_RECORDS:-false}" | tr '[:upper:]' '[:lower:]')
+    local show_pdns_status=$(echo "${PA_SHOW_PDNS_STATUS:-false}" | tr '[:upper:]' '[:lower:]')
+    local add_reverse_record=$(echo "${PA_ADD_REVERSE_RECORD:-true}" | tr '[:upper:]' '[:lower:]')
+    local add_domain_record=$(echo "${PA_ADD_DOMAIN_RECORD:-true}" | tr '[:upper:]' '[:lower:]')
+    local display_hostname_only=$(echo "${PA_DISPLAY_HOSTNAME_ONLY:-false}" | tr '[:upper:]' '[:lower:]')
+    local enable_consistency_checks=$(echo "${PA_ENABLE_CONSISTENCY_CHECKS:-false}" | tr '[:upper:]' '[:lower:]')
+
+    # Convert DNS boolean values to lowercase
+    local dns_strict_tld_check=$(echo "${PA_DNS_STRICT_TLD_CHECK:-false}" | tr '[:upper:]' '[:lower:]')
+    local dns_top_level_tld_check=$(echo "${PA_DNS_TOP_LEVEL_TLD_CHECK:-false}" | tr '[:upper:]' '[:lower:]')
+    local dns_third_level_check=$(echo "${PA_DNS_THIRD_LEVEL_CHECK:-false}" | tr '[:upper:]' '[:lower:]')
+    local dns_txt_auto_quote=$(echo "${PA_DNS_TXT_AUTO_QUOTE:-false}" | tr '[:upper:]' '[:lower:]')
+    local dns_prevent_duplicate_ptr=$(echo "${PA_DNS_PREVENT_DUPLICATE_PTR:-true}" | tr '[:upper:]' '[:lower:]')
+
+    # Convert DNSSEC boolean values to lowercase
+    local dnssec_enabled=$(echo "${PA_DNSSEC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local dnssec_debug=$(echo "${PA_DNSSEC_DEBUG:-false}" | tr '[:upper:]' '[:lower:]')
+
+    # Convert OIDC boolean values to lowercase
+    local oidc_enabled=$(echo "${PA_OIDC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local oidc_auto_provision=$(echo "${PA_OIDC_AUTO_PROVISION:-true}" | tr '[:upper:]' '[:lower:]')
+    local oidc_link_by_email=$(echo "${PA_OIDC_LINK_BY_EMAIL:-true}" | tr '[:upper:]' '[:lower:]')
+    local oidc_sync_user_info=$(echo "${PA_OIDC_SYNC_USER_INFO:-true}" | tr '[:upper:]' '[:lower:]')
+    local oidc_azure_enabled=$(echo "${PA_OIDC_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local oidc_azure_auto_discovery=$(echo "${PA_OIDC_AZURE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')
+
+    # Convert MFA boolean values to lowercase
+    local mfa_enabled=$(echo "${PA_MFA_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local mfa_app_enabled=$(echo "${PA_MFA_APP_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
+    local mfa_email_enabled=$(echo "${PA_MFA_EMAIL_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
+
+    # Process DNS record types - convert comma-separated values to PHP array format or null
+    local domain_record_types="null"
+    if [ -n "${PA_DNS_DOMAIN_RECORD_TYPES}" ]; then
+        domain_record_types="['$(echo "${PA_DNS_DOMAIN_RECORD_TYPES}" | sed "s/,/','/g")']"
+    fi
+
+    local reverse_record_types="null"
+    if [ -n "${PA_DNS_REVERSE_RECORD_TYPES}" ]; then
+        reverse_record_types="['$(echo "${PA_DNS_REVERSE_RECORD_TYPES}" | sed "s/,/','/g")']"
+    fi
+
     cat > "${CONFIG_FILE}" << EOF
 <?php
 
@@ -318,9 +369,33 @@ return [
         'ns2' => '${DNS_NS2:-ns2.example.com}',
         'ns3' => '${DNS_NS3:-}',
         'ns4' => '${DNS_NS4:-}',
+        'ttl' => ${PA_DNS_TTL:-86400},
+        'soa_refresh' => ${PA_DNS_SOA_REFRESH:-28800},
+        'soa_retry' => ${PA_DNS_SOA_RETRY:-7200},
+        'soa_expire' => ${PA_DNS_SOA_EXPIRE:-604800},
+        'soa_minimum' => ${PA_DNS_SOA_MINIMUM:-86400},
+        'zone_type_default' => '${PA_DNS_ZONE_TYPE_DEFAULT:-MASTER}',
+        'strict_tld_check' => ${dns_strict_tld_check},
+        'top_level_tld_check' => ${dns_top_level_tld_check},
+        'third_level_check' => ${dns_third_level_check},
+        'txt_auto_quote' => ${dns_txt_auto_quote},
+        'prevent_duplicate_ptr' => ${dns_prevent_duplicate_ptr},
+        'domain_record_types' => ${domain_record_types},
+        'reverse_record_types' => ${reverse_record_types},
+    ],
+    'dnssec' => [
+        'enabled' => ${dnssec_enabled},
+        'debug' => ${dnssec_debug},
     ],
     'security' => [
         'session_key' => '${session_key}',
+        'mfa' => [
+            'enabled' => ${mfa_enabled},
+            'app_enabled' => ${mfa_app_enabled},
+            'email_enabled' => ${mfa_email_enabled},
+            'recovery_codes' => ${PA_MFA_RECOVERY_CODES:-8},
+            'recovery_code_length' => ${PA_MFA_RECOVERY_CODE_LENGTH:-10},
+        ],
         'recaptcha' => [
             'enabled' => ${recaptcha_enabled},
             'site_key' => '${PA_RECAPTCHA_SITE_KEY:-}',
@@ -341,6 +416,28 @@ return [
     'interface' => [
         'title' => '${PA_APP_TITLE:-Poweradmin}',
         'language' => '${PA_DEFAULT_LANGUAGE:-en_EN}',
+        'enabled_languages' => '${PA_ENABLED_LANGUAGES:-cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN}',
+        'session_timeout' => ${PA_SESSION_TIMEOUT:-1800},
+        'rows_per_page' => ${PA_ROWS_PER_PAGE:-10},
+        'theme' => '${PA_THEME:-default}',
+        'style' => '${PA_STYLE:-light}',
+        'theme_base_path' => '${PA_THEME_BASE_PATH:-templates}',
+        'base_url_prefix' => '${PA_BASE_URL_PREFIX:-}',
+        'show_record_id' => ${show_record_id},
+        'position_record_form_top' => ${position_record_form_top},
+        'position_save_button_top' => ${position_save_button_top},
+        'show_zone_comments' => ${show_zone_comments},
+        'show_record_comments' => ${show_record_comments},
+        'display_serial_in_zone_list' => ${display_serial_in_zone_list},
+        'display_template_in_zone_list' => ${display_template_in_zone_list},
+        'display_fullname_in_zone_list' => ${display_fullname_in_zone_list},
+        'search_group_records' => ${search_group_records},
+        'reverse_zone_sort' => '${PA_REVERSE_ZONE_SORT:-natural}',
+        'show_pdns_status' => ${show_pdns_status},
+        'add_reverse_record' => ${add_reverse_record},
+        'add_domain_record' => ${add_domain_record},
+        'display_hostname_only' => ${display_hostname_only},
+        'enable_consistency_checks' => ${enable_consistency_checks},
     ],
     'api' => [
         'enabled' => ${api_enabled},
@@ -362,6 +459,47 @@ return [
     'misc' => [
         'timezone' => '${PA_TIMEZONE:-UTC}',
     ],
+    'oidc' => [
+        'enabled' => ${oidc_enabled},
+        'auto_provision' => ${oidc_auto_provision},
+        'link_by_email' => ${oidc_link_by_email},
+        'sync_user_info' => ${oidc_sync_user_info},
+        'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Administrator}',
+        'permission_template_mapping' => [
+            'poweradmin-admins' => 'Administrator',
+            'dns-operators' => 'DNS Operator',
+            'dns-viewers' => 'Read Only',
+        ],
+        'providers' => [
+EOF
+
+    # Add Azure configuration if enabled
+    if [ "${oidc_azure_enabled}" = "true" ]; then
+        cat >> "${CONFIG_FILE}" << 'EOF'
+            'azure' => [
+                'name' => 'Microsoft Azure AD',
+                'display_name' => 'Sign in with Microsoft',
+                'client_id' => '${PA_OIDC_AZURE_CLIENT_ID:-}',
+                'client_secret' => '${PA_OIDC_AZURE_CLIENT_SECRET:-}',
+                'tenant' => '${PA_OIDC_AZURE_TENANT:-common}',
+                'auto_discovery' => ${oidc_azure_auto_discovery},
+                'metadata_url' => '${PA_OIDC_AZURE_METADATA_URL:-https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid_configuration}',
+                'scopes' => 'openid profile email',
+                'user_mapping' => [
+                    'username' => 'preferred_username',
+                    'email' => 'email',
+                    'first_name' => 'given_name',
+                    'last_name' => 'family_name',
+                    'display_name' => 'name',
+                    'groups' => 'groups',
+                ],
+            ],
+EOF
+    fi
+
+    cat >> "${CONFIG_FILE}" << 'EOF'
+        ],
+    ],
 ];
 EOF
 
@@ -375,7 +513,7 @@ EOF
 # Print configuration summary (with redacted secrets)
 print_config_summary() {
     log "=== Poweradmin Configuration Summary ==="
-    
+
     if [ -n "${PA_CONFIG_PATH}" ] && [ -f "${CONFIG_FILE}" ]; then
         log "Configuration: Custom configuration file loaded from ${PA_CONFIG_PATH}"
         log "Configuration details are managed by the custom config file."
@@ -399,14 +537,14 @@ print_config_summary() {
         log "LDAP Enabled: ${PA_LDAP_ENABLED:-false}"
         log "Timezone: ${PA_TIMEZONE:-UTC}"
     fi
-    
+
     log "Admin User Creation: ${PA_CREATE_ADMIN:-false}"
     if [ "${PA_CREATE_ADMIN:-false}" = "true" ]; then
         log "Admin Username: ${PA_ADMIN_USERNAME:-admin}"
         log "Admin Email: ${PA_ADMIN_EMAIL:-admin@example.com}"
     fi
     log "======================================="
-    
+
 }
 
 # Set up proper file permissions

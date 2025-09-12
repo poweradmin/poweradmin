@@ -104,6 +104,8 @@ docker run -d --name poweradmin -p 80:80 \
 
 **Note**: The `PA_PDNS_DB_NAME` setting allows Poweradmin to connect to a separate MySQL database where PowerDNS stores its DNS records, while keeping Poweradmin's user and configuration data in its own database. This is useful when you have an existing PowerDNS installation with its own database.
 
+**Important**: When using `PA_PDNS_DB_NAME`, both databases must be on the same MySQL server and accessible with the same credentials (`DB_HOST`, `DB_USER`, `DB_PASS`). Poweradmin will use the same connection details to access both the Poweradmin database (`DB_NAME`) for user management and the PowerDNS database (`PA_PDNS_DB_NAME`) for DNS records. The database user must have appropriate permissions on both databases.
+
 ### PostgreSQL Configuration
 
 To use PostgreSQL as the database backend:
@@ -136,7 +138,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_PDNS_DB_NAME` | Separate PowerDNS database name (**MySQL only**) | Empty | No |
 | `PDNS_VERSION` | PowerDNS schema version to use (45, 46, 47, 48, 49) | `49` | No |
 
-### DNS Nameserver Configuration
+### DNS Configuration
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
@@ -146,10 +148,64 @@ docker run -d --name poweradmin -p 80:80 \
 | `DNS_NS4` | Fourth DNS nameserver (optional) | Empty | No |
 | `DNS_HOSTMASTER` | DNS hostmaster email | `hostmaster.example.com` | Yes |
 
+### DNS Zone Settings
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_DNS_TTL` | Default TTL for new records (seconds) | `86400` | No |
+| `PA_DNS_SOA_REFRESH` | SOA refresh interval (seconds) | `28800` | No |
+| `PA_DNS_SOA_RETRY` | SOA retry interval (seconds) | `7200` | No |
+| `PA_DNS_SOA_EXPIRE` | SOA expire time (seconds) | `604800` | No |
+| `PA_DNS_SOA_MINIMUM` | SOA minimum TTL (seconds) | `86400` | No |
+| `PA_DNS_ZONE_TYPE_DEFAULT` | Default zone type: `MASTER` or `NATIVE` | `MASTER` | No |
+
+### DNS Validation Settings
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_DNS_STRICT_TLD_CHECK` | Enable strict TLD validation | `false` | No |
+| `PA_DNS_TOP_LEVEL_TLD_CHECK` | Prevent top-level domain creation | `false` | No |
+| `PA_DNS_THIRD_LEVEL_CHECK` | Prevent third-level domain creation | `false` | No |
+| `PA_DNS_TXT_AUTO_QUOTE` | Automatically quote TXT records | `false` | No |
+| `PA_DNS_PREVENT_DUPLICATE_PTR` | Prevent duplicate PTR records in batch operations | `true` | No |
+
+### DNS Record Types
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_DNS_DOMAIN_RECORD_TYPES` | Comma-separated list of allowed domain zone record types | All defaults | No |
+| `PA_DNS_REVERSE_RECORD_TYPES` | Comma-separated list of allowed reverse zone record types | All defaults | No |
+
+**Examples:**
+- `PA_DNS_DOMAIN_RECORD_TYPES=A,AAAA,CNAME,MX,TXT`
+- `PA_DNS_REVERSE_RECORD_TYPES=PTR,NS,SOA,TXT`
+
+### DNSSEC Configuration
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_DNSSEC_ENABLED` | Enable DNSSEC functionality | `false` | No |
+| `PA_DNSSEC_DEBUG` | Enable DNSSEC debug logging | `false` | No |
+
 ### Security Configuration
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
+| `PA_SESSION_KEY` | Custom session key (recommended for production) | Auto-generated | No |
+
+
+### Multi-Factor Authentication (MFA)
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_MFA_ENABLED` | Enable MFA functionality | `false` | No |
+| `PA_MFA_APP_ENABLED` | Enable authenticator app option | `true` | No |
+| `PA_MFA_EMAIL_ENABLED` | Enable email verification option | `true` | No |
+| `PA_MFA_RECOVERY_CODES` | Number of recovery codes to generate | `8` | No |
+| `PA_MFA_RECOVERY_CODE_LENGTH` | Length of recovery codes | `10` | No |
+
+### Recaptcha
+
 | `PA_RECAPTCHA_ENABLED` | Enable reCAPTCHA on login form | `false` | No |
 | `PA_RECAPTCHA_SITE_KEY` | reCAPTCHA site key (public key) | Empty | No |
 | `PA_RECAPTCHA_SECRET_KEY` | reCAPTCHA secret key (private key) | Empty | No |
@@ -174,6 +230,33 @@ docker run -d --name poweradmin -p 80:80 \
 |----------|-------------|---------|----------|
 | `PA_APP_TITLE` | Application title displayed in browser | `Poweradmin` | No |
 | `PA_DEFAULT_LANGUAGE` | Default interface language | `en_EN` | No |
+| `PA_ENABLED_LANGUAGES` | Comma-separated list of enabled languages | `cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN` | No |
+| `PA_SESSION_TIMEOUT` | Session timeout in seconds | `1800` | No |
+| `PA_ROWS_PER_PAGE` | Number of rows per page | `10` | No |
+| `PA_THEME` | Theme name to use | `default` | No |
+| `PA_STYLE` | UI style: `light` or `dark` | `light` | No |
+| `PA_THEME_BASE_PATH` | Base path for theme templates | `templates` | No |
+| `PA_BASE_URL_PREFIX` | Base URL prefix for subdirectory deployments | Empty | No |
+
+### Interface UI Elements
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_SHOW_RECORD_ID` | Show record ID column in edit mode | `true` | No |
+| `PA_POSITION_RECORD_FORM_TOP` | Position add record form at the top | `true` | No |
+| `PA_POSITION_SAVE_BUTTON_TOP` | Position save button at the top | `false` | No |
+| `PA_SHOW_ZONE_COMMENTS` | Show zone comments | `true` | No |
+| `PA_SHOW_RECORD_COMMENTS` | Show record comments | `false` | No |
+| `PA_DISPLAY_SERIAL_IN_ZONE_LIST` | Display serial in zone list | `false` | No |
+| `PA_DISPLAY_TEMPLATE_IN_ZONE_LIST` | Display template in zone list | `false` | No |
+| `PA_DISPLAY_FULLNAME_IN_ZONE_LIST` | Show user's full name in zone lists | `false` | No |
+| `PA_SEARCH_GROUP_RECORDS` | Group records in search results | `false` | No |
+| `PA_REVERSE_ZONE_SORT` | Reverse zone sorting: `natural` or `hierarchical` | `natural` | No |
+| `PA_SHOW_PDNS_STATUS` | Show PowerDNS status page | `false` | No |
+| `PA_ADD_REVERSE_RECORD` | Enable PTR record checkbox | `true` | No |
+| `PA_ADD_DOMAIN_RECORD` | Enable A/AAAA record checkbox | `true` | No |
+| `PA_DISPLAY_HOSTNAME_ONLY` | Display only hostname in zone edit | `false` | No |
+| `PA_ENABLE_CONSISTENCY_CHECKS` | Enable consistency checks page | `false` | No |
 
 ### API Configuration
 
@@ -200,6 +283,39 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_LDAP_BASE_DN` | Base DN where users are stored | Empty | No |
 | `PA_LDAP_BIND_DN` | Bind DN for LDAP authentication | Empty | No |
 | `PA_LDAP_BIND_PASSWORD` | LDAP bind password | Empty | No |
+
+### OIDC (OpenID Connect) Authentication
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_OIDC_ENABLED` | Enable OIDC authentication | `false` | No |
+| `PA_OIDC_AUTO_PROVISION` | Automatically create user accounts from OIDC | `true` | No |
+| `PA_OIDC_LINK_BY_EMAIL` | Link OIDC accounts to existing users by email | `true` | No |
+| `PA_OIDC_SYNC_USER_INFO` | Sync user information from OIDC provider | `true` | No |
+| `PA_OIDC_DEFAULT_PERMISSION_TEMPLATE` | Default permission template for new OIDC users | `Administrator` | No |
+
+### OIDC Azure AD Provider
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_OIDC_AZURE_ENABLED` | Enable Azure AD provider | `false` | No |
+| `PA_OIDC_AZURE_NAME` | Provider name | `Microsoft Azure AD` | No |
+| `PA_OIDC_AZURE_DISPLAY_NAME` | Display name for login button | `Sign in with Microsoft` | No |
+| `PA_OIDC_AZURE_CLIENT_ID` | Application (client) ID from Azure | Empty | Yes if Azure enabled |
+| `PA_OIDC_AZURE_CLIENT_SECRET` | Client secret from Azure | Empty | Yes if Azure enabled |
+| `PA_OIDC_AZURE_TENANT` | Tenant ID or 'common' for multi-tenant | `common` | No |
+| `PA_OIDC_AZURE_AUTO_DISCOVERY` | Use auto-discovery | `true` | No |
+| `PA_OIDC_AZURE_METADATA_URL` | Metadata URL for discovery | Azure's standard URL | No |
+
+### Admin User Creation
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_CREATE_ADMIN` | Create initial admin user (true/false/1/yes) | `false` | No |
+| `PA_ADMIN_USERNAME` | Admin username | `admin` | No |
+| `PA_ADMIN_PASSWORD` | Admin password (auto-generated if not set) | Auto-generated | No |
+| `PA_ADMIN_EMAIL` | Admin email address | `admin@example.com` | No |
+| `PA_ADMIN_FULLNAME` | Admin full name | `Administrator` | No |
 
 ### Miscellaneous Settings
 
@@ -451,6 +567,71 @@ docker run -d --name poweradmin -p 80:80 \
   -e PA_LDAP_BASE_DN="ou=users,dc=example,dc=com" \
   -e PA_LDAP_BIND_DN="cn=admin,dc=example,dc=com" \
   -e PA_LDAP_BIND_PASSWORD=ldap_password \
+  edmondas/poweradmin
+```
+
+### OIDC Azure AD Integration Example
+
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql.example.com \
+  -e DB_USER=poweradmin \
+  -e DB_PASS=secure_password \
+  -e DB_NAME=poweradmin \
+  -e PA_OIDC_ENABLED=true \
+  -e PA_OIDC_AZURE_ENABLED=true \
+  -e PA_OIDC_AZURE_CLIENT_ID=your-azure-client-id \
+  -e PA_OIDC_AZURE_CLIENT_SECRET=your-azure-client-secret \
+  -e PA_OIDC_AZURE_TENANT=your-tenant-id \
+  edmondas/poweradmin
+```
+
+### Multi-Factor Authentication Example
+
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e DB_TYPE=sqlite \
+  -e PA_MFA_ENABLED=true \
+  -e PA_MFA_APP_ENABLED=true \
+  -e PA_MFA_EMAIL_ENABLED=true \
+  -e PA_MFA_RECOVERY_CODES=10 \
+  -e PA_MFA_RECOVERY_CODE_LENGTH=12 \
+  -e PA_MAIL_ENABLED=true \
+  -e PA_MAIL_TRANSPORT=smtp \
+  -e PA_SMTP_HOST=smtp.gmail.com \
+  -e PA_SMTP_PORT=587 \
+  -e PA_SMTP_USER=your-email@gmail.com \
+  -e PA_SMTP_PASSWORD=your-app-password \
+  -e PA_SMTP_ENCRYPTION=tls \
+  -e PA_MAIL_FROM=noreply@yourdomain.com \
+  edmondas/poweradmin
+```
+
+### Advanced DNS Configuration Example
+
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql.example.com \
+  -e DB_USER=poweradmin \
+  -e DB_PASS=secure_password \
+  -e DB_NAME=poweradmin \
+  -e DNS_NS1=ns1.yourdomain.com \
+  -e DNS_NS2=ns2.yourdomain.com \
+  -e DNS_HOSTMASTER=hostmaster@yourdomain.com \
+  -e PA_DNS_TTL=3600 \
+  -e PA_DNS_SOA_REFRESH=14400 \
+  -e PA_DNS_SOA_RETRY=3600 \
+  -e PA_DNS_SOA_EXPIRE=1209600 \
+  -e PA_DNS_SOA_MINIMUM=3600 \
+  -e PA_DNS_ZONE_TYPE_DEFAULT=NATIVE \
+  -e PA_DNS_STRICT_TLD_CHECK=true \
+  -e PA_DNS_TOP_LEVEL_TLD_CHECK=true \
+  -e PA_DNS_DOMAIN_RECORD_TYPES=A,AAAA,CNAME,MX,TXT,SRV,CAA \
+  -e PA_DNS_REVERSE_RECORD_TYPES=PTR,NS,SOA,TXT \
+  -e PA_DNSSEC_ENABLED=true \
+  -e PA_DNSSEC_DEBUG=false \
   edmondas/poweradmin
 ```
 
