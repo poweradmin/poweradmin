@@ -184,15 +184,15 @@ class SPFRecordValidator implements DnsRecordValidatorInterface
             $qualifier = $term['qualifier'] ?? '+'; // Default qualifier is "+"
             $value = $term['value'];
 
-            // Check for duplicate directives (RFC 7208 Section 4.6.1)
+            // Check for duplicate directives that are not allowed to be duplicated
+            // RFC 7208 allows multiple instances of most mechanisms (include, ip4, ip6, a, mx, etc.)
+            // Only 'all' mechanism should typically appear once (but it's not an error, just inefficient)
             if ($type !== 'modifier') {
-                if (isset($seenDirectives[$type])) {
-                    $errors[] = sprintf(_('Duplicate %s mechanism found. Each mechanism type should appear at most once.'), $type);
-                }
-                $seenDirectives[$type] = true;
-
-                // Track 'all' mechanism
+                // Track 'all' mechanism - multiple 'all' mechanisms are allowed but inefficient
                 if ($type === 'all') {
+                    if ($hasAll) {
+                        $warnings[] = _('Multiple "all" mechanisms found. Only the first one will be effective.');
+                    }
                     $hasAll = true;
                 }
             } else {
