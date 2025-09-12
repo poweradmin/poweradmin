@@ -249,4 +249,40 @@ class SPFRecordValidatorTest extends TestCase
         $data = $result->getData();
         $this->assertArrayNotHasKey('warnings', $data, "Warnings should not be in data array");
     }
+
+    public function testValidateMultipleIncludeSpf()
+    {
+        $content = 'v=spf1 include:_spf.google.com include:amazonses.com ~all';
+        $name = 'example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('"' . $content . '"', $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
+    }
+
+    public function testValidateMultipleIp4Spf()
+    {
+        $content = 'v=spf1 a mx ip4:1.1.1.1 ip4:2.2.2.2 ip4:3.3.3.3 ~all';
+        $name = 'example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals('"' . $content . '"', $data['content']);
+        $this->assertEquals($name, $data['name']);
+        $this->assertEquals(0, $data['prio']);
+        $this->assertEquals(3600, $data['ttl']);
+    }
 }
