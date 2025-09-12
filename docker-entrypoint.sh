@@ -475,7 +475,7 @@ EOF
 
     # Add Azure configuration if enabled
     if [ "${oidc_azure_enabled}" = "true" ]; then
-        cat >> "${CONFIG_FILE}" << 'EOF'
+        cat >> "${CONFIG_FILE}" << EOF
             'azure' => [
                 'name' => 'Microsoft Azure AD',
                 'display_name' => 'Sign in with Microsoft',
@@ -497,7 +497,7 @@ EOF
 EOF
     fi
 
-    cat >> "${CONFIG_FILE}" << 'EOF'
+    cat >> "${CONFIG_FILE}" << EOF
         ],
     ],
 ];
