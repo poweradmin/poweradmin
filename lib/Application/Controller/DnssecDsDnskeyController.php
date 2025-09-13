@@ -39,6 +39,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 class DnssecDsDnskeyController extends BaseController
 {
@@ -47,14 +48,13 @@ class DnssecDsDnskeyController extends BaseController
     {
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
 
-        $zone_id = "-1";
-        if (isset($_GET['id']) && Validator::isNumber($_GET['id'])) {
-            $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = $this->getSafeRequestValue('id');
+        if (!$zone_id || !Validator::isNumber($zone_id)) {
+            $this->showError(_('Invalid or unexpected input given.'));
+            return;
         }
 
-        if ($zone_id == "-1") {
-            $this->showError(_('Invalid or unexpected input given.'));
-        }
+        $zone_id = (int) $zone_id;
 
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
@@ -74,7 +74,7 @@ class DnssecDsDnskeyController extends BaseController
         $this->showKeys($zone_id, $pdnssec_use);
     }
 
-    public function showKeys(string $zone_id, $pdnssec_use): void
+    public function showKeys(int $zone_id, $pdnssec_use): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
@@ -103,6 +103,7 @@ class DnssecDsDnskeyController extends BaseController
             'record_count' => $record_count,
             'zone_id' => $zone_id,
             'zone_template_id' => $zone_template_id,
+            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
         ]);
     }
 }
