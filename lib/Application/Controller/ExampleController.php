@@ -28,7 +28,7 @@
  *
  * == HOW TO ENABLE THIS PAGE ==
  *
- * 1. Add a route definition to config/routes.yaml:
+ * 1. Add a route definition to lib/Application/Config/routes.yaml:
  *    ```yaml
  *    example:
  *      path: /example

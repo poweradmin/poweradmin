@@ -18,7 +18,7 @@ class RoutingConfigurationTest extends TestCase
     {
         parent::setUp();
 
-        $configDir = __DIR__ . '/../../config';
+        $configDir = __DIR__ . '/../../lib/Application/Config';
         $fileLocator = new FileLocator([$configDir]);
         $loader = new YamlFileLoader($fileLocator);
 
@@ -27,7 +27,7 @@ class RoutingConfigurationTest extends TestCase
 
     public function testRoutesFileExists(): void
     {
-        $this->assertFileExists(__DIR__ . '/../../config/routes.yaml');
+        $this->assertFileExists(__DIR__ . '/../../lib/Application/Config/routes.yaml');
     }
 
     public function testRoutesFileIsValid(): void

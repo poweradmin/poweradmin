@@ -58,7 +58,7 @@ class SymfonyRouter
      */
     private function initializeRouter(): void
     {
-        $configDir = __DIR__ . '/../../../config';
+        $configDir = __DIR__ . '/../Config';
         $fileLocator = new FileLocator([$configDir]);
         $loader = new YamlFileLoader($fileLocator);
 
