@@ -39,21 +39,26 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 class DnssecDeleteKeyController extends BaseController
 {
 
     public function run(): void
     {
-        $zone_id = "-1";
-        if (isset($_GET['id']) && Validator::isNumber($_GET['id'])) {
-            $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = $this->getSafeRequestValue('zone_id');
+        if (!$zone_id || !Validator::isNumber($zone_id)) {
+            $this->showError(_('Invalid zone ID.'));
+            return;
         }
+        $zone_id = (int) $zone_id;
 
-        $key_id = -1;
-        if (isset($_GET['key_id']) && Validator::isNumber($_GET['key_id'])) {
-            $key_id = (int)$_GET['key_id'];
+        $key_id = $this->getSafeRequestValue('key_id');
+        if (!$key_id || !Validator::isNumber($key_id)) {
+            $this->showError(_('Invalid key ID.'));
+            return;
         }
+        $key_id = (int) $key_id;
 
         $confirm = "-1";
         if (isset($_GET['confirm']) && Validator::isNumber($_GET['confirm'])) {
@@ -62,16 +67,8 @@ class DnssecDeleteKeyController extends BaseController
 
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        if ($zone_id == "-1") {
-            $this->showError(_('Invalid or unexpected input given.'));
-        }
-
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $domain_name = $dnsRecord->getDomainNameById($zone_id);
-
-        if ($key_id === -1) {
-            $this->showError(_('Invalid or unexpected input given.'));
-        }
 
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
@@ -109,7 +106,7 @@ class DnssecDeleteKeyController extends BaseController
         $this->showKeyInfo($domain_name, $key_id, $zone_id);
     }
 
-    public function showKeyInfo($domain_name, $key_id, string $zone_id): void
+    public function showKeyInfo($domain_name, $key_id, int $zone_id): void
     {
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
         $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
@@ -127,6 +124,7 @@ class DnssecDeleteKeyController extends BaseController
             'key_info' => $key_info,
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'zone_id' => $zone_id,
+            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
         ]);
     }
 }

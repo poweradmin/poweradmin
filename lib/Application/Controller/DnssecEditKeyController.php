@@ -38,6 +38,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 class DnssecEditKeyController extends BaseController
 {
@@ -86,6 +87,28 @@ class DnssecEditKeyController extends BaseController
 
         $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
+        // Check if this is the toggle route - perform action immediately
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+        $isToggleRoute = str_contains($requestUri, '/toggle');
+
+        if ($isToggleRoute) {
+            if ($key_info[5]) {
+                if ($dnssecProvider->deactivateZoneKey($domain_name, $key_id)) {
+                    $this->setMessage('dnssec', 'success', _('Zone key has been successfully deactivated.'));
+                } else {
+                    $this->setMessage('dnssec', 'error', _('Failed to deactivate zone key.'));
+                }
+            } else {
+                if ($dnssecProvider->activateZoneKey($domain_name, $key_id)) {
+                    $this->setMessage('dnssec', 'success', _('Zone key has been successfully activated.'));
+                } else {
+                    $this->setMessage('dnssec', 'error', _('Failed to activate zone key.'));
+                }
+            }
+            $this->redirect('/zones/' . $zone_id . '/dnssec');
+            return;
+        }
+
         if ($confirm == '1') {
             if ($key_info[5]) {
                 if ($dnssecProvider->deactivateZoneKey($domain_name, $key_id)) {
@@ -119,6 +142,7 @@ class DnssecEditKeyController extends BaseController
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'user_is_zone_owner' => $user_is_zone_owner,
             'zone_id' => $zone_id,
+            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
         ]);
     }
 }
