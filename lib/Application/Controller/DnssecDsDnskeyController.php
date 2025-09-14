@@ -56,20 +56,24 @@ class DnssecDsDnskeyController extends BaseController
 
         $zone_id = (int) $zone_id;
 
+        // Early permission check - validate DNSSEC access before any operations
+        $perm_view = Permission::getViewPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        (UserManager::verifyPermission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
-
-        $perm_view = Permission::getViewPermission($this->db);
-
-        if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
-            $this->showError(_("You do not have the permission to view this zone."));
+        // Check view permission first
+        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
+            $this->showError(_("You do not have permission to view this zone."));
+            return;
         }
 
+        // Validate zone existence
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($dnsRecord->zoneIdExists($zone_id) == "0") {
+        if (!$dnsRecord->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
+            return;
         }
+
+        (UserManager::verifyPermission($this->db, 'user_view_others')) ? $perm_view_others = "1" : $perm_view_others = "0";
 
         $this->showKeys($zone_id, $pdnssec_use);
     }

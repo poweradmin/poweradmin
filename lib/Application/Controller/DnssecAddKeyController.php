@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Exception;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithmName;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -51,15 +52,28 @@ class DnssecAddKeyController extends BaseController
             return;
         }
 
+        // Early permission check - validate DNSSEC access before any operations
+        $perm_view = Permission::getViewPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        if ($user_is_zone_owner == "0") {
-            $this->showError(_("You do not have the permission to view this zone."));
+        // Check view permission first
+        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
+            $this->showError(_("You do not have permission to view this zone."));
+            return;
         }
 
+        // Validate zone existence
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        if ($dnsRecord->zoneIdExists($zone_id) == "0") {
+        if (!$dnsRecord->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
+            return;
+        }
+
+        // Check DNSSEC management permission (requires edit access)
+        if ($perm_edit == "none" || ($perm_edit == "own" && !$user_is_zone_owner)) {
+            $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
+            return;
         }
 
         $key_type = "";

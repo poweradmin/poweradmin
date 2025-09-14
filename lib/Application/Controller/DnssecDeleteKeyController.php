@@ -35,6 +35,7 @@ use Exception;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\DnssecAlgorithm;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
@@ -65,19 +66,36 @@ class DnssecDeleteKeyController extends BaseController
             $confirm = (string)$_GET['confirm']; // Convert to string for consistent comparison
         }
 
+        // Early permission check - validate DNSSEC access before any operations
+        $perm_view = Permission::getViewPermission($this->db);
+        $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $domain_name = $dnsRecord->getDomainNameById($zone_id);
+        // Check view permission first
+        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
+            $this->showError(_("You do not have permission to view this zone."));
+            return;
+        }
 
+        // Validate zone existence
+        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+        if (!$dnsRecord->zoneIdExists($zone_id)) {
+            $this->showError(_('There is no zone with this ID.'));
+            return;
+        }
+
+        // Check DNSSEC management permission (requires edit access)
+        if ($perm_edit == "none" || ($perm_edit == "own" && !$user_is_zone_owner)) {
+            $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
+            return;
+        }
+
+        $domain_name = $dnsRecord->getDomainNameById($zone_id);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
         if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
-        }
-
-        if ($user_is_zone_owner != "1") {
-            $this->showError(_('Failed to delete DNSSEC key.'));
+            return;
         }
 
         if ($confirm == '1') {
