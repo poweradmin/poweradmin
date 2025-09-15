@@ -36,6 +36,8 @@ body:has(.sidebar) {
 
 .sidebar-header {
     background-color: white;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    min-height: 65px;
 }
 
 .sidebar-header a {
@@ -126,6 +128,7 @@ body:not(:has(.sidebar)) main.container {
 /* Top bar */
 .top-bar {
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    min-height: 65px;
 }
 
 /* Mobile responsive */

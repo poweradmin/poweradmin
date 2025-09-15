@@ -40,6 +40,8 @@ body {
 .sidebar-header {
     background-color: var(--bg-dark-secondary);
     border-bottom-color: var(--sidebar-border) !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    min-height: 65px;
 }
 
 .sidebar-header a {
@@ -132,6 +134,7 @@ body:not(:has(.sidebar)) main.container {
     background-color: var(--bg-dark-secondary) !important;
     border-bottom: 1px solid var(--border-dark) !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.3);
+    min-height: 65px;
 }
 
 .top-bar h1 {
