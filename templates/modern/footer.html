@@ -1,22 +1,9 @@
 </main>
 <footer class="footer py-3">
     <div class="container">
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                {% if custom_footer %}
-                {% include ('custom/footer.html') %}
-                {% else %}
-                <a href="https://www.poweradmin.org/">a complete(r) <strong>Poweradmin</strong>
-                    {% if version %}
-                    v{{ version }}
-                    {% endif %}
-                </a>
-                {% endif %}
-            </div>
-            {% if show_style_switcher %}
-            <button class="btn btn-outline-secondary btn-sm" id="style-switcher">
-                <i class="bi" id="style-icon"></i>
-            </button>
+        <div class="d-flex justify-content-center align-items-center">
+            {% if custom_footer %}
+            {% include ('custom/footer.html') %}
             {% endif %}
         </div>
     </div>
@@ -62,38 +49,41 @@
     const alertList = document.querySelectorAll('.alert')
     const alerts = [...alertList].map(element => new bootstrap.Alert(element))
 
+    // Theme switcher functionality (only if element exists)
     const styleSwitcher = document.getElementById('style-switcher');
-    const styleIcon = document.getElementById('style-icon');
-    const styleStylesheet = document.getElementById('theme-stylesheet');
-    const customStylesheet = document.getElementById('custom-theme-stylesheet');
-    const ifaceStyle = '{{ iface_style }}';
+    if (styleSwitcher) {
+        const styleIcon = document.getElementById('style-icon');
+        const styleStylesheet = document.getElementById('theme-stylesheet');
+        const customStylesheet = document.getElementById('custom-theme-stylesheet');
+        const ifaceStyle = '{{ iface_style }}';
 
-    let currentStyle = localStorage.getItem('style');
-    if (currentStyle !== 'light' && currentStyle !== 'dark') {
-        currentStyle = ifaceStyle || 'light';
-    }
-
-    function initializeStyle() {
-        // Stylesheet is already loaded correctly from header, just set icon and body class
-        document.body.classList.add(currentStyle);
-        styleIcon.classList.add(currentStyle === 'light' ? 'bi-moon' : 'bi-sun');
-        // Note: stylesheets are already loaded correctly from header script
-    }
-
-    styleSwitcher.addEventListener('click', () => {
-        const newStyle = currentStyle === 'light' ? 'dark' : 'light';
-        document.body.classList.replace(currentStyle, newStyle);
-        styleIcon.classList.replace(currentStyle === 'light' ? 'bi-moon' : 'bi-sun', newStyle === 'light' ? 'bi-moon' : 'bi-sun');
-        styleStylesheet.href = `{{ base_url_prefix }}/{{ theme_base_path }}/{{ theme }}/style/${newStyle}.css?time={{ file_version }}`;
-        // Update custom stylesheet if it exists
-        if (customStylesheet) {
-            customStylesheet.href = `{{ base_url_prefix }}/{{ theme_base_path }}/{{ theme }}/style/custom_${newStyle}.css?time={{ file_version }}`;
+        let currentStyle = localStorage.getItem('style');
+        if (currentStyle !== 'light' && currentStyle !== 'dark') {
+            currentStyle = ifaceStyle || 'light';
         }
-        localStorage.setItem('style', newStyle);
-        currentStyle = newStyle;
-    });
 
-    initializeStyle();
+        function initializeStyle() {
+            // Stylesheet is already loaded correctly from header, just set icon and body class
+            document.body.classList.add(currentStyle);
+            styleIcon.classList.add(currentStyle === 'light' ? 'bi-moon' : 'bi-sun');
+            // Note: stylesheets are already loaded correctly from header script
+        }
+
+        styleSwitcher.addEventListener('click', () => {
+            const newStyle = currentStyle === 'light' ? 'dark' : 'light';
+            document.body.classList.replace(currentStyle, newStyle);
+            styleIcon.classList.replace(currentStyle === 'light' ? 'bi-moon' : 'bi-sun', newStyle === 'light' ? 'bi-moon' : 'bi-sun');
+            styleStylesheet.href = `{{ base_url_prefix }}/{{ theme_base_path }}/{{ theme }}/style/${newStyle}.css?time={{ file_version }}`;
+            // Update custom stylesheet if it exists
+            if (customStylesheet) {
+                customStylesheet.href = `{{ base_url_prefix }}/{{ theme_base_path }}/{{ theme }}/style/custom_${newStyle}.css?time={{ file_version }}`;
+            }
+            localStorage.setItem('style', newStyle);
+            currentStyle = newStyle;
+        });
+
+        initializeStyle();
+    }
 
     // Mobile sidebar toggle functionality
     document.addEventListener('DOMContentLoaded', function() {

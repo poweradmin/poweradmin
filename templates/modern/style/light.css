@@ -50,6 +50,26 @@ body:has(.sidebar) {
 .sidebar-content {
     max-height: calc(100vh - 80px);
     overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Sidebar version display */
+.sidebar-version {
+    padding: 0.75rem;
+    text-align: center;
+    border-top: 1px solid var(--sidebar-border);
+    margin-top: auto;
+}
+
+.sidebar-version a {
+    color: var(--text-muted) !important;
+    text-decoration: none;
+    font-size: 0.75rem;
+}
+
+.sidebar-version a:hover {
+    color: var(--primary-blue) !important;
 }
 
 /* Navigation styles */

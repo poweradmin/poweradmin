@@ -34,6 +34,7 @@ use Poweradmin\Infrastructure\Repository\DbUserPreferenceRepository;
 use Poweradmin\Infrastructure\Service\ApiKeyAuthenticationMiddleware;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Service\StyleManager;
+use Poweradmin\Version;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationListInterface;
@@ -487,6 +488,8 @@ abstract class BaseController
             'custom_dark_exists' => $customDarkExists,
             'custom_theme_exists' => $customThemeExists,
             'install_error' => file_exists('install') ? _('The <a href="install/">install/</a> directory exists, you must remove it first before proceeding.') : false,
+            'version' => Version::VERSION,
+            'show_style_switcher' => true,
         ];
 
         $dblog_use = $this->config->get('logging', 'database_enabled');

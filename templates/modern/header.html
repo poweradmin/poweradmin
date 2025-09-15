@@ -307,6 +307,15 @@
                         </ul>
                     </li>
                 </ul>
+
+                <!-- Version info at bottom of sidebar -->
+                <div class="sidebar-version mt-auto pt-3 border-top">
+                    <small class="text-muted">
+                        <a href="https://www.poweradmin.org/" class="text-decoration-none text-muted">
+                            Poweradmin v{{ version }}
+                        </a>
+                    </small>
+                </div>
             </div>
         </div>
     </nav>
@@ -335,6 +344,9 @@
                 <div class="d-flex align-items-center">
                     <i class="bi bi-person-circle me-2"></i>
                     <span class="me-3">{{ user_name }}</span>
+                    <button class="btn btn-outline-secondary btn-sm me-2" id="style-switcher">
+                        <i class="bi" id="style-icon"></i>
+                    </button>
                     <a href="/logout" class="btn btn-outline-secondary btn-sm">
                         <i class="bi bi-box-arrow-right me-1"></i>{% trans %}Logout{% endtrans %}
                     </a>
