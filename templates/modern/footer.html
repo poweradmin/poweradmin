@@ -1,14 +1,27 @@
 </main>
 <footer class="footer py-3">
     <div class="container">
-        <div class="d-flex justify-content-center align-items-center">
-            {% if custom_footer %}
-            {% include ('custom/footer.html') %}
-            {% elseif not user_logged_in %}
-            <!-- Default branding for non-authenticated users -->
-            <a href="https://www.poweradmin.org/" class="text-decoration-none">
-                a complete(r) <strong>Poweradmin</strong>
-            </a>
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                {% if custom_footer %}
+                {% include ('custom/footer.html') %}
+                {% elseif not user_logged_in %}
+                <!-- Default branding for non-authenticated users -->
+                <a href="https://www.poweradmin.org/">a complete(r) <strong>Poweradmin</strong>
+                    {% if version %}
+                    v{{ version }}
+                    {% endif %}
+                </a>
+                {% endif %}
+            </div>
+            {% if not user_logged_in %}
+            <div>
+                {% if show_style_switcher %}
+                <button class="btn btn-outline-secondary btn-sm" id="style-switcher">
+                    <i class="bi" id="style-icon"></i>
+                </button>
+                {% endif %}
+            </div>
             {% endif %}
         </div>
     </div>
