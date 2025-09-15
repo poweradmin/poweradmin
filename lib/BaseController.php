@@ -570,6 +570,7 @@ abstract class BaseController
             'theme' => $theme,
             'theme_base_path' => $themeBasePath,
             'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
+            'user_logged_in' => $this->userContextService->isAuthenticated(),
         ]);
     }
 

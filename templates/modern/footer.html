@@ -4,6 +4,11 @@
         <div class="d-flex justify-content-center align-items-center">
             {% if custom_footer %}
             {% include ('custom/footer.html') %}
+            {% elseif not user_logged_in %}
+            <!-- Default branding for non-authenticated users -->
+            <a href="https://www.poweradmin.org/" class="text-decoration-none">
+                a complete(r) <strong>Poweradmin</strong>
+            </a>
             {% endif %}
         </div>
     </div>
