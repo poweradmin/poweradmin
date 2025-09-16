@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-07-06 07:29+0300\n"
+"POT-Creation-Date: 2025-09-16 18:15+0300\n"
 "PO-Revision-Date: 2025-05-30 17:37+0300\n"
 "Last-Translator: Automatically generated\n"
 "Language-Team: none\n"
@@ -126,7 +126,7 @@ msgstr "Zone comments feature is disabled in configuration."
 msgid "You do not have the permission to view this comment."
 msgstr "You do not have the permission to view this comment."
 
-#: lib/Domain/Service/Dns/RecordManager.php:379
+#: lib/Domain/Service/Dns/RecordManager.php:381
 msgid "You do not have the permission to edit this comment."
 msgstr "You do not have the permission to edit this comment."
 
@@ -418,7 +418,7 @@ msgstr "A password was generated but is not displayed for security reasons."
 msgid "Please fill in all required fields correctly."
 msgstr "Please fill in all required fields correctly."
 
-#: lib/Domain/Service/Dns/RecordManager.php:325
+#: lib/Domain/Service/Dns/RecordManager.php:327
 msgid "You do not have the permission to delete this record."
 msgstr "You do not have the permission to delete this record."
 
@@ -483,7 +483,7 @@ msgstr "Invalid template ID."
 msgid "Template does not exist."
 msgstr "Template does not exist."
 
-#: lib/Domain/Repository/DomainRepository.php:441
+#: lib/Domain/Repository/DomainRepository.php:485
 msgid "You do not have the permission to view this zone."
 msgstr "You do not have the permission to view this zone."
 
@@ -546,23 +546,23 @@ msgstr "You do not have permission to perform WHOIS lookups."
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "Failed to retrieve WHOIS information using server %s"
 
-#: lib/Application/Controller/EditController.php:176
+#: lib/Application/Controller/EditController.php:179
 msgid "You do not have permission to access this zone."
 msgstr "You do not have permission to access this zone."
 
-#: lib/Application/Controller/EditController.php:292
+#: lib/Application/Controller/EditController.php:295
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC is not enabled on the server."
 
-#: lib/Application/Controller/EditController.php:295
+#: lib/Application/Controller/EditController.php:298
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zone is already signed with DNSSEC."
 
-#: lib/Application/Controller/EditController.php:307
+#: lib/Application/Controller/EditController.php:310
 msgid "Zone has been signed successfully."
 msgstr "Zone has been signed successfully."
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:314
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -570,7 +570,7 @@ msgstr ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:318
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr "Failed to sign zone. Check PowerDNS logs for details."
 
@@ -590,7 +590,7 @@ msgstr "Zone unsigning requested successfully, but verification failed."
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Failed to unsign zone. Check PowerDNS logs for details."
 
-#: lib/Application/Controller/EditController.php:637
+#: lib/Application/Controller/EditController.php:642
 msgid "Template name can't be an empty string."
 msgstr "Template name can't be an empty string."
 
@@ -598,35 +598,35 @@ msgstr "Template name can't be an empty string."
 msgid "Zone template has been added successfully."
 msgstr "Zone template has been added successfully."
 
-#: lib/Application/Controller/EditController.php:657
+#: lib/Application/Controller/EditController.php:662
 msgid "You need to be logged in to export zone data."
 msgstr "You need to be logged in to export zone data."
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:672
 msgid "You do not have permission to export this zone."
 msgstr "You do not have permission to export this zone."
 
-#: lib/Application/Controller/EditController.php:691
+#: lib/Application/Controller/EditController.php:696
 msgid "This zone does not have any records to export."
 msgstr "This zone does not have any records to export."
 
-#: lib/Application/Controller/EditController.php:791
+#: lib/Application/Controller/EditController.php:796
 msgid "Request has expired, please try again."
 msgstr "Request has expired, please try again."
 
-#: lib/Application/Controller/EditController.php:796
+#: lib/Application/Controller/EditController.php:801
 msgid "Zone has been updated successfully."
 msgstr "Zone has been updated successfully."
 
-#: lib/Application/Controller/EditController.php:798
+#: lib/Application/Controller/EditController.php:803
 msgid "Zone did not have any record changes."
 msgstr "Zone did not have any record changes."
 
-#: lib/Application/Controller/EditController.php:807
+#: lib/Application/Controller/EditController.php:812
 msgid "Zone has not been updated successfully."
 msgstr "Zone has not been updated successfully."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:840
 msgid "Please provide all required fields."
 msgstr "Please provide all required fields."
 
@@ -1038,7 +1038,7 @@ msgstr "You do not have permission to view this record."
 msgid "You do not have permission to edit this record."
 msgstr "You do not have permission to edit this record."
 
-#: lib/Application/Controller/EditRecordController.php:231
+#: lib/Application/Controller/EditRecordController.php:233
 msgid "The record has been updated successfully."
 msgstr "The record has been updated successfully."
 
@@ -3635,12 +3635,11 @@ msgid ""
 msgstr ""
 "SPF record exceeds 255 character limit. Split across multiple TXT records."
 
-#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:190
-#, php-format
+#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
-"Duplicate %s mechanism found. Each mechanism type should appear at most once."
+"Multiple \"all\" mechanisms found. Only the first one will be effective."
 msgstr ""
-"Duplicate %s mechanism found. Each mechanism type should appear at most once."
+"Multiple \"all\" mechanisms found. Only the first one will be effective."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -4897,7 +4896,7 @@ msgstr "CAA property value exceeds maximum length of 512 characters."
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "CAA property value cannot contain NUL (0) characters."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:241
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
 msgstr "The hostname is too long."
 
@@ -5495,7 +5494,7 @@ msgstr ""
 "LUA record in explicit return mode (starts with semicolon) must contain at "
 "least one \"return\" statement."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
@@ -5503,7 +5502,7 @@ msgstr ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:228
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
@@ -6064,20 +6063,19 @@ msgstr ""
 "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or "
 "255.255.255.255)."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:122
-#, php-format
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
-"Priority value in record parameter (%d) does not match priority in content "
-"(%d)."
+"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
+"or higher."
 msgstr ""
-"Priority value in record parameter (%d) does not match priority in content "
-"(%d)."
+"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
+"or higher."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:249
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
 msgstr "SRV record name must be in format _service._protocol.domain"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:258
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
@@ -6085,7 +6083,7 @@ msgstr ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
@@ -6093,7 +6091,7 @@ msgstr ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:272
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
@@ -6102,7 +6100,7 @@ msgstr ""
 "Service name \"%s\" is not in the list of well-known services. This is "
 "allowed but unusual."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:280
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
@@ -6111,31 +6109,27 @@ msgstr ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
 "are _tcp and _udp."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:288
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
 msgstr "Invalid domain name in SRV record."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
-"SRV record content must have priority, weight, port and target (4 fields)."
+"SRV record content must have weight, port and target (3 fields). Priority "
+"should be in the priority field."
 msgstr ""
-"SRV record content must have priority, weight, port and target (4 fields)."
+"SRV record content must have weight, port and target (3 fields). Priority "
+"should be in the priority field."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
-msgid ""
-"Invalid value for the priority field of the SRV record. Must be 0-65535."
-msgstr ""
-"Invalid value for the priority field of the SRV record. Must be 0-65535."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
 msgstr "Invalid value for the weight field of the SRV record. Must be 0-65535."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:341
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
 msgstr "Invalid value for the port field of the SRV record. Must be 1-65535."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:350
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
@@ -6144,27 +6138,19 @@ msgstr ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
 "but unusual."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:360
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
 msgstr "SRV target cannot be empty."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:379
-msgid ""
-"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
-"or higher."
-msgstr ""
-"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
-"or higher."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:384
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:375
 msgid "When target is \".\" (no service), port and weight should both be 0."
 msgstr "When target is \".\" (no service), port and weight should both be 0."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:410
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:400
 msgid "Invalid SRV target."
 msgstr "Invalid SRV target."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:433
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:423
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "Invalid value for the priority field of the SRV record."
 
@@ -6666,11 +6652,11 @@ msgstr "You do not have the permission to edit this SOA record."
 msgid "You do not have the permission to edit this NS record."
 msgstr "You do not have the permission to edit this NS record."
 
-#: lib/Domain/Service/Dns/RecordManager.php:301
+#: lib/Domain/Service/Dns/RecordManager.php:303
 msgid "You do not have the permission to delete SOA records."
 msgstr "You do not have the permission to delete SOA records."
 
-#: lib/Domain/Service/Dns/RecordManager.php:314
+#: lib/Domain/Service/Dns/RecordManager.php:316
 msgid "You do not have the permission to delete NS records."
 msgstr "You do not have the permission to delete NS records."
 
@@ -11378,29 +11364,30 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Cannot connect to PowerDNS database \"%s\": %s"
 
-# OBSOLETE: msgid "You do not have the permission to view this record."
-# OBSOLETE: msgstr "You do not have the permission to view this record."
-
-# OBSOLETE: msgid "Your verification code"
-# OBSOLETE: msgstr "Your verification code"
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
+# OBSOLETE: "once."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
+# OBSOLETE: "once."
 
 #, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "Your verification code is: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "This code will expire in 10 minutes at %s."
+# OBSOLETE: "Priority value in record parameter (%d) does not match priority in "
+# OBSOLETE: "content (%d)."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Your verification code is: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "This code will expire in 10 minutes at %s."
+# OBSOLETE: "Priority value in record parameter (%d) does not match priority in "
+# OBSOLETE: "content (%d)."
 
-# OBSOLETE: msgid "Optional: User's full name for identification"
-# OBSOLETE: msgstr "Optional: User's full name for identification"
+# OBSOLETE: msgid ""
+# OBSOLETE: "SRV record content must have priority, weight, port and target (4 fields)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "SRV record content must have priority, weight, port and target (4 fields)."
 
-# OBSOLETE: msgid "All recovery codes copied to clipboard"
-# OBSOLETE: msgstr "All recovery codes copied to clipboard"
-
-# OBSOLETE: msgid "Check Again"
-# OBSOLETE: msgstr "Check Again"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Invalid value for the priority field of the SRV record. Must be 0-65535."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Invalid value for the priority field of the SRV record. Must be 0-65535."
 
 

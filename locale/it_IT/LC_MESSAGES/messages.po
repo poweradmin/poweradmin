@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-07-06 07:29+0300\n"
+"POT-Creation-Date: 2025-09-16 18:15+0300\n"
 "PO-Revision-Date: 2025-06-02 20:30+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Italian\n"
@@ -128,7 +128,7 @@ msgstr "La funzionalità commenti di zona è disabilitata nella configurazione."
 msgid "You do not have the permission to view this comment."
 msgstr "Non si dispone del permesso di visualizzare questo commento."
 
-#: lib/Domain/Service/Dns/RecordManager.php:379
+#: lib/Domain/Service/Dns/RecordManager.php:381
 msgid "You do not have the permission to edit this comment."
 msgstr "Non si dispone del permesso di modificare questo commento."
 
@@ -137,12 +137,10 @@ msgid "The comment has been updated successfully."
 msgstr "Il commento è stato aggiornato con successo."
 
 #: lib/Application/Controller/EditRecordController.php:81
-#, auto-english-fallback
 msgid "Invalid record ID."
 msgstr "ID record non valido."
 
 #: lib/Application/Controller/DeleteRecordController.php:103
-#, auto-english-fallback
 msgid "You do not have permission to delete records in this zone."
 msgstr "Non hai il permesso di eliminare i record in questa zona."
 
@@ -425,7 +423,7 @@ msgstr ""
 msgid "Please fill in all required fields correctly."
 msgstr "Compilare correttamente tutti i campi obbligatori."
 
-#: lib/Domain/Service/Dns/RecordManager.php:325
+#: lib/Domain/Service/Dns/RecordManager.php:327
 msgid "You do not have the permission to delete this record."
 msgstr "Non si dispone del permesso di eliminare questo record."
 
@@ -489,7 +487,7 @@ msgstr "ID template non valido."
 msgid "Template does not exist."
 msgstr "Il template non esiste."
 
-#: lib/Domain/Repository/DomainRepository.php:441
+#: lib/Domain/Repository/DomainRepository.php:485
 msgid "You do not have the permission to view this zone."
 msgstr "Non si dispone del permesso di visualizzare questa zona."
 
@@ -552,24 +550,23 @@ msgstr "Non si dispone del permesso di eseguire ricerche WHOIS."
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "Impossibile recuperare le informazioni WHOIS utilizzando il server %s"
 
-#: lib/Application/Controller/EditController.php:176
-#, auto-english-fallback
+#: lib/Application/Controller/EditController.php:179
 msgid "You do not have permission to access this zone."
 msgstr "Non hai il permesso di accedere a questa zona."
 
-#: lib/Application/Controller/EditController.php:292
+#: lib/Application/Controller/EditController.php:295
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC non è abilitato sul server."
 
-#: lib/Application/Controller/EditController.php:295
+#: lib/Application/Controller/EditController.php:298
 msgid "Zone is already signed with DNSSEC."
 msgstr "La zona è già firmata con DNSSEC."
 
-#: lib/Application/Controller/EditController.php:307
+#: lib/Application/Controller/EditController.php:310
 msgid "Zone has been signed successfully."
 msgstr "La zona è stata firmata con successo."
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:314
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -577,7 +574,7 @@ msgstr ""
 "Richiesta di firma della zona completata con successo, ma la verifica è "
 "fallita. Controllare le chiavi DNSSEC."
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:318
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr ""
 "Impossibile firmare la zona. Controllare i log di PowerDNS per i dettagli."
@@ -602,7 +599,7 @@ msgstr ""
 "Impossibile rimuovere la firma dalla zona. Controllare i log di PowerDNS per "
 "i dettagli."
 
-#: lib/Application/Controller/EditController.php:637
+#: lib/Application/Controller/EditController.php:642
 msgid "Template name can't be an empty string."
 msgstr "Il nome del template non può essere una stringa vuota."
 
@@ -610,35 +607,35 @@ msgstr "Il nome del template non può essere una stringa vuota."
 msgid "Zone template has been added successfully."
 msgstr "Il template di zona è stato aggiunto con successo."
 
-#: lib/Application/Controller/EditController.php:657
+#: lib/Application/Controller/EditController.php:662
 msgid "You need to be logged in to export zone data."
 msgstr "È necessario essere autenticati per esportare i dati della zona."
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:672
 msgid "You do not have permission to export this zone."
 msgstr "Non si dispone del permesso di esportare questa zona."
 
-#: lib/Application/Controller/EditController.php:691
+#: lib/Application/Controller/EditController.php:696
 msgid "This zone does not have any records to export."
 msgstr "Questa zona non ha record da esportare."
 
-#: lib/Application/Controller/EditController.php:791
+#: lib/Application/Controller/EditController.php:796
 msgid "Request has expired, please try again."
 msgstr "La richiesta è scaduta, riprovare."
 
-#: lib/Application/Controller/EditController.php:796
+#: lib/Application/Controller/EditController.php:801
 msgid "Zone has been updated successfully."
 msgstr "La zona è stata aggiornata con successo."
 
-#: lib/Application/Controller/EditController.php:798
+#: lib/Application/Controller/EditController.php:803
 msgid "Zone did not have any record changes."
 msgstr "La zona non ha avuto modifiche ai record."
 
-#: lib/Application/Controller/EditController.php:807
+#: lib/Application/Controller/EditController.php:812
 msgid "Zone has not been updated successfully."
 msgstr "La zona non è stata aggiornata con successo."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:840
 msgid "Please provide all required fields."
 msgstr "Fornire tutti i campi obbligatori."
 
@@ -1054,26 +1051,22 @@ msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "Si è verificato un errore imprevisto. Contatta l'amministratore."
 
 #: lib/Application/Controller/EditRecordController.php:92
-#, auto-english-fallback
 msgid "You do not have permission to view this record."
 msgstr "Non hai il permesso di visualizzare questo record."
 
 #: lib/Application/Controller/EditRecordController.php:101
-#, auto-english-fallback
 msgid "You do not have permission to edit this record."
 msgstr "Non hai il permesso di modificare questo record."
 
-#: lib/Application/Controller/EditRecordController.php:231
+#: lib/Application/Controller/EditRecordController.php:233
 msgid "The record has been updated successfully."
 msgstr "Il record è stato aggiornato con successo."
 
 #: lib/Application/Controller/DnssecController.php:64
-#, auto-english-fallback
 msgid "You do not have permission to view this zone."
 msgstr "Non hai il permesso di visualizzare questa zona."
 
 #: lib/Application/Controller/DnssecController.php:77
-#, auto-english-fallback
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Non hai il permesso di gestire DNSSEC per questa zona."
 
@@ -3782,13 +3775,10 @@ msgid ""
 msgstr ""
 "Il record SPF supera il limite di 255 caratteri. Dividi su più record TXT."
 
-#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:190
-#, php-format
+#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
-"Duplicate %s mechanism found. Each mechanism type should appear at most once."
-msgstr ""
-"Trovato meccanismo %s duplicato. Ogni tipo di meccanismo deve apparire al "
-"massimo una volta."
+"Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgstr "Trovati più meccanismi \"all\". Solo il primo sarà effettivo."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -3904,14 +3894,16 @@ msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
 msgstr ""
-"Il target CNAME deve essere un nome di dominio completamente qualificato (FQDN). I nomi a singola etichetta non sono consentiti."
+"Il target CNAME deve essere un nome di dominio completamente qualificato "
+"(FQDN). I nomi a singola etichetta non sono consentiti."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:313
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
 msgstr ""
-"Il target CNAME deve essere un nome di dominio completamente qualificato (FQDN) con un dominio di primo livello valido."
+"Il target CNAME deve essere un nome di dominio completamente qualificato "
+"(FQDN) con un dominio di primo livello valido."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -5087,7 +5079,7 @@ msgstr ""
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "Il valore della proprietà CAA non può contenere caratteri NUL (0)."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:241
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
 msgstr "Il nome host è troppo lungo."
 
@@ -5709,7 +5701,7 @@ msgstr ""
 "Il record LUA in modalità di ritorno esplicito (inizia con punto e virgola) "
 "deve contenere almeno un'istruzione \"return\"."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
@@ -5718,7 +5710,7 @@ msgstr ""
 "di funzione valida o definizione di funzione con le parole chiave "
 "\"function\" ed \"end\"."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:228
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
@@ -6300,21 +6292,20 @@ msgstr ""
 "Il localizzatore L32 non può usare indirizzi broadcast o non specificati "
 "(0.0.0.0 o 255.255.255.255)."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:122
-#, php-format
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
-"Priority value in record parameter (%d) does not match priority in content "
-"(%d)."
+"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
+"or higher."
 msgstr ""
-"Il valore di priorità nel parametro record (%d) non corrisponde alla "
-"priorità nel contenuto (%d)."
+"La priorità 0 è valida ma inusuale. Tipicamente i record SRV iniziano con "
+"priorità 10 o superiore."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:249
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
 msgstr ""
 "Il nome del record SRV deve essere nel formato _servizio._protocollo.dominio"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:258
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
@@ -6322,7 +6313,7 @@ msgstr ""
 "Valore servizio non valido nel record SRV. Il nome del servizio deve "
 "iniziare con un underscore seguito da caratteri alfanumerici."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
@@ -6330,7 +6321,7 @@ msgstr ""
 "Valore protocollo non valido nel record SRV. Il protocollo deve iniziare con "
 "un underscore seguito da caratteri alfanumerici."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:272
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
@@ -6339,7 +6330,7 @@ msgstr ""
 "Il nome del servizio \"%s\" non è nell'elenco dei servizi ben noti. Questo è "
 "consentito ma inusuale."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:280
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
@@ -6348,34 +6339,28 @@ msgstr ""
 "Il protocollo \"%s\" non è nell'elenco dei protocolli ben noti. I protocolli "
 "comuni sono _tcp e _udp."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:288
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
 msgstr "Nome di dominio non valido nel record SRV."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
-"SRV record content must have priority, weight, port and target (4 fields)."
+"SRV record content must have weight, port and target (3 fields). Priority "
+"should be in the priority field."
 msgstr ""
-"Il contenuto del record SRV deve avere priorità, peso, porta e destinazione "
-"(4 campi)."
+"Il contenuto del record SRV deve avere peso, porta e destinazione (3 campi). La priorità deve essere nel campo priorità."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
-msgid ""
-"Invalid value for the priority field of the SRV record. Must be 0-65535."
-msgstr ""
-"Valore non valido per il campo priorità del record SRV. Deve essere 0-65535."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
 msgstr ""
 "Valore non valido per il campo peso del record SRV. Deve essere 0-65535."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:341
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
 msgstr ""
 "Valore non valido per il campo porta del record SRV. Deve essere 1-65535."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:350
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
@@ -6384,29 +6369,21 @@ msgstr ""
 "La porta %d differisce dalla porta standard %d per il servizio %s. Questo è "
 "consentito ma inusuale."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:360
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
 msgstr "La destinazione SRV non può essere vuota."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:379
-msgid ""
-"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
-"or higher."
-msgstr ""
-"La priorità 0 è valida ma inusuale. Tipicamente i record SRV iniziano con "
-"priorità 10 o superiore."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:384
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:375
 msgid "When target is \".\" (no service), port and weight should both be 0."
 msgstr ""
 "Quando la destinazione è \".\" (nessun servizio), porta e peso dovrebbero "
 "essere entrambi 0."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:410
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:400
 msgid "Invalid SRV target."
 msgstr "Destinazione SRV non valida."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:433
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:423
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "Valore non valido per il campo priorità del record SRV."
 
@@ -6918,11 +6895,11 @@ msgstr "Non si dispone del permesso di modificare questo record SOA."
 msgid "You do not have the permission to edit this NS record."
 msgstr "Non si dispone del permesso di modificare questo record NS."
 
-#: lib/Domain/Service/Dns/RecordManager.php:301
+#: lib/Domain/Service/Dns/RecordManager.php:303
 msgid "You do not have the permission to delete SOA records."
 msgstr "Non si dispone del permesso di eliminare record SOA."
 
-#: lib/Domain/Service/Dns/RecordManager.php:314
+#: lib/Domain/Service/Dns/RecordManager.php:316
 msgid "You do not have the permission to delete NS records."
 msgstr "Non si dispone del permesso di eliminare record NS."
 
@@ -8578,7 +8555,6 @@ msgid "User's full name for identification"
 msgstr "Nome completo dell'utente per identificazione"
 
 #: templates/default/edit_user.html:39 templates/default/add_user.html:29
-#, auto-english-fallback
 msgid "Provide full name"
 msgstr "Fornisci nome completo"
 
@@ -10605,7 +10581,6 @@ msgid "zones"
 msgstr "zone"
 
 #: templates/default/email_previews.html:10 templates/default/header.html:167
-#, auto-english-fallback
 msgid "Email Template Previews"
 msgstr "Anteprime dei modelli email"
 
@@ -10615,20 +10590,19 @@ msgid ""
 "modes. These previews use sample data to demonstrate the email formatting "
 "and styling."
 msgstr ""
-"Anteprima di come i modelli email appariranno agli utenti sia in modalità chiara che scura. Queste anteprime utilizzano dati di esempio per dimostrare la formattazione e lo stile delle email."
+"Anteprima di come i modelli email appariranno agli utenti sia in modalità "
+"chiara che scura. Queste anteprime utilizzano dati di esempio per dimostrare "
+"la formattazione e lo stile delle email."
 
 #: templates/default/email_previews.html:21
-#, auto-english-fallback
 msgid "Active Email Templates"
 msgstr "Modelli email attivi"
 
 #: templates/default/email_previews.html:46
-#, auto-english-fallback
 msgid "Custom"
 msgstr "Personalizzato"
 
 #: templates/default/email_previews.html:22
-#, auto-english-fallback
 msgid "Standard"
 msgstr "Standard"
 
@@ -10637,32 +10611,30 @@ msgid ""
 "Custom templates are active and override the default templates. These are "
 "the templates currently used when sending emails."
 msgstr ""
-"I modelli personalizzati sono attivi e sostituiscono i modelli predefiniti. Questi sono i modelli attualmente utilizzati quando si inviano email."
+"I modelli personalizzati sono attivi e sostituiscono i modelli predefiniti. "
+"Questi sono i modelli attualmente utilizzati quando si inviano email."
 
 #: templates/default/email_previews.html:34
 msgid ""
 "Standard templates are active. These are the default templates used when "
 "sending emails."
 msgstr ""
-"I modelli standard sono attivi. Questi sono i modelli predefiniti utilizzati quando si inviano email."
+"I modelli standard sono attivi. Questi sono i modelli predefiniti utilizzati "
+"quando si inviano email."
 
 #: templates/default/email_previews.html:54
-#, auto-english-fallback
 msgid "Subject:"
 msgstr "Oggetto:"
 
 #: templates/default/email_previews.html:60
-#, auto-english-fallback
 msgid "View Light Mode"
 msgstr "Visualizza modalità chiara"
 
 #: templates/default/email_previews.html:64
-#, auto-english-fallback
 msgid "View Dark Mode"
 msgstr "Visualizza modalità scura"
 
 #: templates/default/email_previews.html:76
-#, auto-english-fallback
 msgid "Template Override Information"
 msgstr "Informazioni sulla sostituzione dei modelli"
 
@@ -10671,10 +10643,10 @@ msgid ""
 "The following standard templates are currently overridden by custom "
 "templates:"
 msgstr ""
-"I seguenti modelli standard sono attualmente sostituiti da modelli personalizzati:"
+"I seguenti modelli standard sono attualmente sostituiti da modelli "
+"personalizzati:"
 
 #: templates/default/email_previews.html:80
-#, auto-english-fallback
 msgid "using custom template"
 msgstr "utilizzando modello personalizzato"
 
@@ -10683,10 +10655,10 @@ msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
 msgstr ""
-"Per tornare ai modelli standard, rimuovi o rinomina i file dei modelli personalizzati in <code>templates/emails/custom/</code>."
+"Per tornare ai modelli standard, rimuovi o rinomina i file dei modelli "
+"personalizzati in <code>templates/emails/custom/</code>."
 
 #: templates/default/email_previews.html:87
-#, auto-english-fallback
 msgid "Custom Templates"
 msgstr "Modelli personalizzati"
 
@@ -10696,33 +10668,33 @@ msgid ""
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
 msgstr ""
-"Puoi creare modelli email personalizzati posizionandoli in <code>templates/emails/custom/</code> per sostituire questi modelli standard con i tuoi design."
+"Puoi creare modelli email personalizzati posizionandoli in <code>templates/"
+"emails/custom/</code> per sostituire questi modelli standard con i tuoi "
+"design."
 
 #: templates/default/email_previews.html:93
-#, auto-english-fallback
 msgid "About Email Previews"
 msgstr "Informazioni sulle anteprime email"
 
 #: templates/default/email_previews.html:95
-#, auto-english-fallback
 msgid "Previews use sample data to demonstrate email appearance"
 msgstr ""
 "Le anteprime utilizzano dati di esempio per dimostrare l'aspetto delle email"
 
 #: templates/default/email_previews.html:96
-#, auto-english-fallback
 msgid "Light mode is the default appearance for most email clients"
 msgstr ""
-"La modalità chiara è l'aspetto predefinito per la maggior parte dei client email"
+"La modalità chiara è l'aspetto predefinito per la maggior parte dei client "
+"email"
 
 #: templates/default/email_previews.html:97
 msgid ""
 "Dark mode preview shows how emails appear when users have dark mode enabled"
 msgstr ""
-"L'anteprima in modalità scura mostra come appaiono le email quando gli utenti hanno abilitato la modalità scura"
+"L'anteprima in modalità scura mostra come appaiono le email quando gli "
+"utenti hanno abilitato la modalità scura"
 
 #: templates/default/email_previews.html:98
-#, auto-english-fallback
 msgid "These previews reflect the actual templates used in production"
 msgstr ""
 "Queste anteprime riflettono i modelli effettivi utilizzati in produzione"
@@ -11224,7 +11196,6 @@ msgid "Password for this database user."
 msgstr "Password per questo utente del database."
 
 #: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
-#, auto-english-fallback
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Evita virgolette, barre inverse e interruzioni di riga."
 
@@ -11708,28 +11679,37 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Impossibile connettersi al database PowerDNS \"%s\": %s"
 
-# OBSOLETE: msgid "You do not have the permission to view this record."
-# OBSOLETE: msgstr "Non si dispone del permesso di visualizzare questo record."
-
-# OBSOLETE: msgid "Your verification code"
-# OBSOLETE: msgstr "Il tuo codice di verifica"
+#, auto-english-fallback
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
+# OBSOLETE: "once."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Trovato meccanismo %s duplicato. Ogni tipo di meccanismo deve apparire al "
+# OBSOLETE: "massimo una volta."
 
 #, auto-english-fallback
 #, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "Your verification code is: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "This code will expire in 10 minutes at %s."
+# OBSOLETE: "Priority value in record parameter (%d) does not match priority in "
+# OBSOLETE: "content (%d)."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Il tuo codice di verifica è: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "Questo codice scadrà in 10 minuti alle %s."
+# OBSOLETE: "Il valore di priorità nel parametro record (%d) non corrisponde alla "
+# OBSOLETE: "priorità nel contenuto (%d)."
 
-# OBSOLETE: msgid "Optional: User's full name for identification"
-# OBSOLETE: msgstr "Opzionale: Nome completo dell'utente per identificazione"
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "SRV record content must have priority, weight, port and target (4 fields)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Il contenuto del record SRV deve avere priorità, peso, porta e "
+# OBSOLETE: "destinazione (4 campi)."
 
-# OBSOLETE: msgid "All recovery codes copied to clipboard"
-# OBSOLETE: msgstr "Tutti i codici di recupero copiati negli appunti"
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Invalid value for the priority field of the SRV record. Must be 0-65535."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Valore non valido per il campo priorità del record SRV. Deve essere "
+# OBSOLETE: "0-65535."
 
 
 

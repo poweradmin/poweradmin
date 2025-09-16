@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-07-06 07:29+0300\n"
+"POT-Creation-Date: 2025-09-16 18:15+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -127,7 +127,7 @@ msgstr "Zonų komentaru funkcija išjungta konfiguracijoje."
 msgid "You do not have the permission to view this comment."
 msgstr "Neturite leidimo peržiūrėti šį komentaarą."
 
-#: lib/Domain/Service/Dns/RecordManager.php:379
+#: lib/Domain/Service/Dns/RecordManager.php:381
 msgid "You do not have the permission to edit this comment."
 msgstr "Neturite leidimo redaguoti šį komentaarą."
 
@@ -136,12 +136,10 @@ msgid "The comment has been updated successfully."
 msgstr "Komentaras sėkmingai atnaujintas."
 
 #: lib/Application/Controller/EditRecordController.php:81
-#, auto-english-fallback
 msgid "Invalid record ID."
 msgstr "Neteisingas įrašo ID."
 
 #: lib/Application/Controller/DeleteRecordController.php:103
-#, auto-english-fallback
 msgid "You do not have permission to delete records in this zone."
 msgstr "Jūs neturite leidimo trinti įrašų šioje zonoje."
 
@@ -411,7 +409,7 @@ msgstr "Slaptažodis buvo sugeneruotas, bet saugumo sumetimais nerodomas."
 msgid "Please fill in all required fields correctly."
 msgstr "Prašome teisingai užpildyti visus privalomus laukus."
 
-#: lib/Domain/Service/Dns/RecordManager.php:325
+#: lib/Domain/Service/Dns/RecordManager.php:327
 msgid "You do not have the permission to delete this record."
 msgstr "Neturite leidimo ištrinti šio įrašo."
 
@@ -475,7 +473,7 @@ msgstr "Neteisingas šablono ID."
 msgid "Template does not exist."
 msgstr "Šablonas neegzistuoja."
 
-#: lib/Domain/Repository/DomainRepository.php:441
+#: lib/Domain/Repository/DomainRepository.php:485
 msgid "You do not have the permission to view this zone."
 msgstr "Neturite leidimo peržiūrėti šios zonos."
 
@@ -540,24 +538,23 @@ msgstr "Neturite leidimo atlikti WHOIS paieškas."
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "Nepavyko gauti WHOIS informacijos naudojant serverį %s"
 
-#: lib/Application/Controller/EditController.php:176
-#, auto-english-fallback
+#: lib/Application/Controller/EditController.php:179
 msgid "You do not have permission to access this zone."
 msgstr "Jūs neturite leidimo prisijungti prie šios zonos."
 
-#: lib/Application/Controller/EditController.php:292
+#: lib/Application/Controller/EditController.php:295
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC neįjungtas serveryje."
 
-#: lib/Application/Controller/EditController.php:295
+#: lib/Application/Controller/EditController.php:298
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zona jau pasirašyta su DNSSEC."
 
-#: lib/Application/Controller/EditController.php:307
+#: lib/Application/Controller/EditController.php:310
 msgid "Zone has been signed successfully."
 msgstr "Zona sėkmingai pasirašyta."
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:314
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -565,7 +562,7 @@ msgstr ""
 "Zonos pasirašymo užklausa sėkminga, bet patikrinimas nepavyko. Patikrinkite "
 "DNSSEC raktus."
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:318
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr ""
 "Nepavyko pasirašyti zonos. Patikrinkite PowerDNS žurnalus dėl išsamesnės "
@@ -589,7 +586,7 @@ msgstr ""
 "Nepavyko atšaukti zonos. Patikrinkite PowerDNS žurnalus dėl išsamesnės "
 "informacijos."
 
-#: lib/Application/Controller/EditController.php:637
+#: lib/Application/Controller/EditController.php:642
 msgid "Template name can't be an empty string."
 msgstr "Šablono pavadinimas negali būti tuščias."
 
@@ -597,35 +594,35 @@ msgstr "Šablono pavadinimas negali būti tuščias."
 msgid "Zone template has been added successfully."
 msgstr "Zonos šablonas sėkmingai pridėtas."
 
-#: lib/Application/Controller/EditController.php:657
+#: lib/Application/Controller/EditController.php:662
 msgid "You need to be logged in to export zone data."
 msgstr "Turite būti prisijungę, kad galėtumėte eksportuoti zonos duomenis."
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:672
 msgid "You do not have permission to export this zone."
 msgstr "Neturite leidimo eksportuoti šios zonos."
 
-#: lib/Application/Controller/EditController.php:691
+#: lib/Application/Controller/EditController.php:696
 msgid "This zone does not have any records to export."
 msgstr "Šioje zonoje nėra įrašų eksportavimui."
 
-#: lib/Application/Controller/EditController.php:791
+#: lib/Application/Controller/EditController.php:796
 msgid "Request has expired, please try again."
 msgstr "Užklausa pasibaigė, bandykite dar kartą."
 
-#: lib/Application/Controller/EditController.php:796
+#: lib/Application/Controller/EditController.php:801
 msgid "Zone has been updated successfully."
 msgstr "Zona sėkmingai atnaujinta."
 
-#: lib/Application/Controller/EditController.php:798
+#: lib/Application/Controller/EditController.php:803
 msgid "Zone did not have any record changes."
 msgstr "Zonoje nebuvo jokių įrašų pakeitimų."
 
-#: lib/Application/Controller/EditController.php:807
+#: lib/Application/Controller/EditController.php:812
 msgid "Zone has not been updated successfully."
 msgstr "Zona nesėkmingai atnaujinta."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:840
 msgid "Please provide all required fields."
 msgstr "Prašome pateikti visus privalomus laukus."
 
@@ -1030,26 +1027,22 @@ msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "Įvyko netikėta klaida. Susisiekite su administratoriumi."
 
 #: lib/Application/Controller/EditRecordController.php:92
-#, auto-english-fallback
 msgid "You do not have permission to view this record."
 msgstr "Jūs neturite leidimo peržiūrėti šio įrašo."
 
 #: lib/Application/Controller/EditRecordController.php:101
-#, auto-english-fallback
 msgid "You do not have permission to edit this record."
 msgstr "Jūs neturite leidimo redaguoti šio įrašo."
 
-#: lib/Application/Controller/EditRecordController.php:231
+#: lib/Application/Controller/EditRecordController.php:233
 msgid "The record has been updated successfully."
 msgstr "Įrašas sėkmingai atnaujintas."
 
 #: lib/Application/Controller/DnssecController.php:64
-#, auto-english-fallback
 msgid "You do not have permission to view this zone."
 msgstr "Jūs neturite leidimo peržiūrėti šios zonos."
 
 #: lib/Application/Controller/DnssecController.php:77
-#, auto-english-fallback
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Jūs neturite leidimo valdyti DNSSEC šiai zonai."
 
@@ -3695,13 +3688,10 @@ msgid ""
 msgstr ""
 "SPF įrašas viršija 255 simbolių limitą. Padalinkite per kelis TXT įrašus."
 
-#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:190
-#, php-format
+#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
-"Duplicate %s mechanism found. Each mechanism type should appear at most once."
-msgstr ""
-"Rastas dubliuojamas %s mechanizmas. Kiekvienas mechanizmo tipas turėtų "
-"pasirodyti daugiausiai vieną kartą."
+"Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgstr "Rasti keli \"all\" mechanizmai. Tik pirmasis bus veiksmingas."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -3815,14 +3805,16 @@ msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
 msgstr ""
-"CNAME objektas turi būti visas domeno vardas (FQDN). Vienos etiketės vardai nėra leidžiami."
+"CNAME objektas turi būti visas domeno vardas (FQDN). Vienos etiketės vardai "
+"nėra leidžiami."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:313
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
 msgstr ""
-"CNAME objektas turi būti visas domeno vardas (FQDN) su galiojusiu aukščiausio lygio domenu."
+"CNAME objektas turi būti visas domeno vardas (FQDN) su galiojusiu "
+"aukščiausio lygio domenu."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -4968,7 +4960,7 @@ msgstr "CAA savybės reikšmė viršija maksimalų 512 simbolių ilgį."
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "CAA savybės reikšmė negali turėti NUL (0) simbolių."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:241
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
 msgstr "Hostname per ilgas."
 
@@ -5572,7 +5564,7 @@ msgstr ""
 "LUA įrašas aiškiame grąžinimo režime (prasideda kabliataškiu) turi turėti "
 "bent vieną \"return\" teiginį."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
@@ -5581,7 +5573,7 @@ msgstr ""
 "iškvietimas ar funkcijos apibrėžimas su \"function\" ir \"end\" "
 "raktažodžiais."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:228
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
@@ -6153,19 +6145,19 @@ msgstr ""
 "L32 lokatorius negali naudoti transliuojamų ar nenurodytų adresų (0.0.0.0 ar "
 "255.255.255.255)."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:122
-#, php-format
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
-"Priority value in record parameter (%d) does not match priority in content "
-"(%d)."
+"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
+"or higher."
 msgstr ""
-"Prioriteto reikšmė įrašo parametre (%d) neatitinka prioriteto turinyje (%d)."
+"Prioritetas 0 teisingas, bet neįprastas. Paprastai SRV įrašai prasideda nuo "
+"prioriteto 10 ar aukštesnio."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:249
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
 msgstr "SRV įrašo vardas turi būti formatu _service._protocol.domain"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:258
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
@@ -6173,7 +6165,7 @@ msgstr ""
 "Neteisinga paslaugos reikšmė SRV įraše. Paslaugos vardas turi prasidėti "
 "pabraukimu, po kurio seka raidiniai skaitiniai simboliai."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
@@ -6181,7 +6173,7 @@ msgstr ""
 "Neteisinga protokolo reikšmė SRV įraše. Protokolas turi prasidėti "
 "pabraukimu, po kurio seka raidiniai skaitiniai simboliai."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:272
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
@@ -6190,7 +6182,7 @@ msgstr ""
 "Paslaugos vardas \"%s\" nėra žinomų paslaugų sąraše. Tai leidžiama, bet "
 "neįprasta."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:280
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
@@ -6199,31 +6191,26 @@ msgstr ""
 "Protokolas \"%s\" nėra žinomų protokolų sąraše. Įprasti protokolai yra _tcp "
 "ir _udp."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:288
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
 msgstr "Neteisingas domeno vardas SRV įraše."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
-"SRV record content must have priority, weight, port and target (4 fields)."
+"SRV record content must have weight, port and target (3 fields). Priority "
+"should be in the priority field."
 msgstr ""
-"SRV įrašo turinys turi turėti prioritetą, svorį, prievadą ir tikslą (4 "
-"laukus)."
+"SRV įrašo turinys turi turėti svorį, prievadą ir taikinį (3 laukai). Prioritetas turi būti prioriteto lauke."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
-msgid ""
-"Invalid value for the priority field of the SRV record. Must be 0-65535."
-msgstr "Neteisinga SRV įrašo prioriteto lauko reikšmė. Turi būti 0-65535."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
 msgstr "Neteisinga SRV įrašo svorio lauko reikšmė. Turi būti 0-65535."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:341
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
 msgstr "Neteisinga SRV įrašo prievado lauko reikšmė. Turi būti 1-65535."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:350
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
@@ -6232,28 +6219,20 @@ msgstr ""
 "Prievadas %d skiriasi nuo standartinio prievado %d %s paslaugai. Tai "
 "leidžiama, bet neįprasta."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:360
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
 msgstr "SRV tikslas negali būti tuščias."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:379
-msgid ""
-"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
-"or higher."
-msgstr ""
-"Prioritetas 0 teisingas, bet neįprastas. Paprastai SRV įrašai prasideda nuo "
-"prioriteto 10 ar aukštesnio."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:384
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:375
 msgid "When target is \".\" (no service), port and weight should both be 0."
 msgstr ""
 "Kai tikslas yra \".\" (nėra paslaugos), prievadas ir svoris turėtų būti 0."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:410
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:400
 msgid "Invalid SRV target."
 msgstr "Neteisingas SRV tikslas."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:433
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:423
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "Neteisinga SRV įrašo prioriteto lauko reikšmė."
 
@@ -6756,11 +6735,11 @@ msgstr "Neturite leidimo redaguoti šio SOA įrašo."
 msgid "You do not have the permission to edit this NS record."
 msgstr "Neturite leidimo redaguoti šio NS įrašo."
 
-#: lib/Domain/Service/Dns/RecordManager.php:301
+#: lib/Domain/Service/Dns/RecordManager.php:303
 msgid "You do not have the permission to delete SOA records."
 msgstr "Neturite leidimo šalinti SOA įrašų."
 
-#: lib/Domain/Service/Dns/RecordManager.php:314
+#: lib/Domain/Service/Dns/RecordManager.php:316
 msgid "You do not have the permission to delete NS records."
 msgstr "Neturite leidimo šalinti NS įrašų."
 
@@ -8400,7 +8379,6 @@ msgid "User's full name for identification"
 msgstr "Naudotojo pilnas vardas identifikavimui"
 
 #: templates/default/edit_user.html:39 templates/default/add_user.html:29
-#, auto-english-fallback
 msgid "Provide full name"
 msgstr "Nurodykite pilną vardą"
 
@@ -10399,7 +10377,6 @@ msgid "zones"
 msgstr "zonų"
 
 #: templates/default/email_previews.html:10 templates/default/header.html:167
-#, auto-english-fallback
 msgid "Email Template Previews"
 msgstr "El. pašto šablonų peržiūros"
 
@@ -10409,20 +10386,19 @@ msgid ""
 "modes. These previews use sample data to demonstrate the email formatting "
 "and styling."
 msgstr ""
-"Peržiūrėkite, kaip el. pašto šablonai atrodys naudotojams tiek šviesiajame, tiek tamsiajame režimuose. Šios peržiūros naudoja pavyzdinius duomenis, kad pademonstruotų el. pašto formatavimą ir stilių."
+"Peržiūrėkite, kaip el. pašto šablonai atrodys naudotojams tiek šviesiajame, "
+"tiek tamsiajame režimuose. Šios peržiūros naudoja pavyzdinius duomenis, kad "
+"pademonstruotų el. pašto formatavimą ir stilių."
 
 #: templates/default/email_previews.html:21
-#, auto-english-fallback
 msgid "Active Email Templates"
 msgstr "Aktyvus el. pašto šablonai"
 
 #: templates/default/email_previews.html:46
-#, auto-english-fallback
 msgid "Custom"
 msgstr "Pasirinktinis"
 
 #: templates/default/email_previews.html:22
-#, auto-english-fallback
 msgid "Standard"
 msgstr "Standartinis"
 
@@ -10431,32 +10407,30 @@ msgid ""
 "Custom templates are active and override the default templates. These are "
 "the templates currently used when sending emails."
 msgstr ""
-"Pasirinktiniai šablonai yra aktyvus ir perrrašo numatytuosius šablonus. Tai šablonai, kurie šiuo metu naudojami siųsti el. paštą."
+"Pasirinktiniai šablonai yra aktyvus ir perrrašo numatytuosius šablonus. Tai "
+"šablonai, kurie šiuo metu naudojami siųsti el. paštą."
 
 #: templates/default/email_previews.html:34
 msgid ""
 "Standard templates are active. These are the default templates used when "
 "sending emails."
 msgstr ""
-"Standartiniai šablonai yra aktyvus. Tai numatytieji šablonai, naudojami siųsti el. paštą."
+"Standartiniai šablonai yra aktyvus. Tai numatytieji šablonai, naudojami "
+"siųsti el. paštą."
 
 #: templates/default/email_previews.html:54
-#, auto-english-fallback
 msgid "Subject:"
 msgstr "Tema:"
 
 #: templates/default/email_previews.html:60
-#, auto-english-fallback
 msgid "View Light Mode"
 msgstr "Peržiūrėti šviesųjį režimą"
 
 #: templates/default/email_previews.html:64
-#, auto-english-fallback
 msgid "View Dark Mode"
 msgstr "Peržiūrėti tamsųjį režimą"
 
 #: templates/default/email_previews.html:76
-#, auto-english-fallback
 msgid "Template Override Information"
 msgstr "Šablonų perrašymo informacija"
 
@@ -10468,7 +10442,6 @@ msgstr ""
 "Šie standartiniai šablonai šiuo metu yra perrašyti pasirinktinių šablonų:"
 
 #: templates/default/email_previews.html:80
-#, auto-english-fallback
 msgid "using custom template"
 msgstr "naudoja pasirinktinių šabloną"
 
@@ -10477,10 +10450,10 @@ msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
 msgstr ""
-"Kad grįžtumėte prie standartinių šablonų, pašalinkite arba pervadinkkite pasirinktinių šablonų failus <code>templates/emails/custom/</code>."
+"Kad grįžtumėte prie standartinių šablonų, pašalinkite arba pervadinkkite "
+"pasirinktinių šablonų failus <code>templates/emails/custom/</code>."
 
 #: templates/default/email_previews.html:87
-#, auto-english-fallback
 msgid "Custom Templates"
 msgstr "Pasirinktiniai šablonai"
 
@@ -10490,21 +10463,20 @@ msgid ""
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
 msgstr ""
-"Galite sukurti pasirinktiniai el. pašto šablonus patalpinant juos <code>templates/emails/custom/</code>, kad perrašytumėte šiuos standartinius šablonus savo dizainu."
+"Galite sukurti pasirinktiniai el. pašto šablonus patalpinant juos "
+"<code>templates/emails/custom/</code>, kad perrašytumėte šiuos standartinius "
+"šablonus savo dizainu."
 
 #: templates/default/email_previews.html:93
-#, auto-english-fallback
 msgid "About Email Previews"
 msgstr "Apie el. pašto peržiūras"
 
 #: templates/default/email_previews.html:95
-#, auto-english-fallback
 msgid "Previews use sample data to demonstrate email appearance"
 msgstr ""
 "Peržiūros naudoja pavyzdinius duomenis, kad pademonstruotų el. pašto išvaizdą"
 
 #: templates/default/email_previews.html:96
-#, auto-english-fallback
 msgid "Light mode is the default appearance for most email clients"
 msgstr "Šviesusis režimas yra numatytoji išvaizda daugumui el. pašto klientų"
 
@@ -10512,10 +10484,10 @@ msgstr "Šviesusis režimas yra numatytoji išvaizda daugumui el. pašto klient�
 msgid ""
 "Dark mode preview shows how emails appear when users have dark mode enabled"
 msgstr ""
-"Tamsiojo režimo peržiūra rodo, kaip el. paštai atrodo, kai naudotojai įjungę tamsųjį režimą"
+"Tamsiojo režimo peržiūra rodo, kaip el. paštai atrodo, kai naudotojai įjungę "
+"tamsųjį režimą"
 
 #: templates/default/email_previews.html:98
-#, auto-english-fallback
 msgid "These previews reflect the actual templates used in production"
 msgstr "Šios peržiūros atspindi tikruosius šablonus, naudojamus produkcijoje"
 
@@ -11012,7 +10984,6 @@ msgid "Password for this database user."
 msgstr "Šio duomenų bazės vartotojo slaptažodis."
 
 #: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
-#, auto-english-fallback
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Venkkite kabučių, atgalinų brūkšnių ir eilutės lūžių."
 
@@ -11496,28 +11467,34 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nepavyksta prisijungti prie PowerDNS duomenų bazės \"%s\": %s"
 
-# OBSOLETE: msgid "You do not have the permission to view this record."
-# OBSOLETE: msgstr "Neturite leidimo peržiūrėti šio įrašo."
-
-# OBSOLETE: msgid "Your verification code"
-# OBSOLETE: msgstr "Jūsų patvirtinimo kodas"
+#, auto-english-fallback
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
+# OBSOLETE: "once."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Rastas dubliuojamas %s mechanizmas. Kiekvienas mechanizmo tipas turėtų "
+# OBSOLETE: "pasirodyti daugiausiai vieną kartą."
 
 #, auto-english-fallback
 #, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "Your verification code is: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "This code will expire in 10 minutes at %s."
+# OBSOLETE: "Priority value in record parameter (%d) does not match priority in "
+# OBSOLETE: "content (%d)."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Jūsų patvirtinimo kodas yra: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "Šis kodas baigs galioti po 10 minučių %s."
+# OBSOLETE: "Prioriteto reikšmė įrašo parametre (%d) neatitinka prioriteto turinyje "
+# OBSOLETE: "(%d)."
 
-# OBSOLETE: msgid "Optional: User's full name for identification"
-# OBSOLETE: msgstr "Neprivaloma: naudotojo pilnas vardas identifikavimui"
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "SRV record content must have priority, weight, port and target (4 fields)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "SRV įrašo turinys turi turėti prioritetą, svorį, prievadą ir tikslą (4 "
+# OBSOLETE: "laukus)."
 
-# OBSOLETE: msgid "All recovery codes copied to clipboard"
-# OBSOLETE: msgstr "Visi atkūrimo kodai nukopijuoti į iškarpinę"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Invalid value for the priority field of the SRV record. Must be 0-65535."
+# OBSOLETE: msgstr "Neteisinga SRV įrašo prioriteto lauko reikšmė. Turi būti 0-65535."
 
 
 

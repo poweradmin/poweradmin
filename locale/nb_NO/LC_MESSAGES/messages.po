@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-07-06 07:29+0300\n"
+"POT-Creation-Date: 2025-09-16 18:15+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -127,7 +127,7 @@ msgstr "Sonekommentarer er deaktivert i konfigurasjonen."
 msgid "You do not have the permission to view this comment."
 msgstr "Du har ikke tillatelse til å se denne kommentaren."
 
-#: lib/Domain/Service/Dns/RecordManager.php:379
+#: lib/Domain/Service/Dns/RecordManager.php:381
 msgid "You do not have the permission to edit this comment."
 msgstr "Du har ikke tillatelse til å redigere denne kommentaren."
 
@@ -136,12 +136,10 @@ msgid "The comment has been updated successfully."
 msgstr "Kommentaren har blitt oppdatert."
 
 #: lib/Application/Controller/EditRecordController.php:81
-#, auto-english-fallback
 msgid "Invalid record ID."
 msgstr "Ugyldig post-ID."
 
 #: lib/Application/Controller/DeleteRecordController.php:103
-#, auto-english-fallback
 msgid "You do not have permission to delete records in this zone."
 msgstr "Du har ikke tillatelse til å slette poster i denne sonen."
 
@@ -415,7 +413,7 @@ msgstr "Et passord ble generert, men vises ikke av sikkerhetshensyn."
 msgid "Please fill in all required fields correctly."
 msgstr "Vennligst fyll inn alle påkrevde felt korrekt."
 
-#: lib/Domain/Service/Dns/RecordManager.php:325
+#: lib/Domain/Service/Dns/RecordManager.php:327
 msgid "You do not have the permission to delete this record."
 msgstr "Du har ikke tillatelse til å slette denne posten."
 
@@ -479,7 +477,7 @@ msgstr "Ugyldig mal-ID."
 msgid "Template does not exist."
 msgstr "Mal eksisterer ikke."
 
-#: lib/Domain/Repository/DomainRepository.php:441
+#: lib/Domain/Repository/DomainRepository.php:485
 msgid "You do not have the permission to view this zone."
 msgstr "Du har ikke tillatelse til å se denne sonen."
 
@@ -542,31 +540,30 @@ msgstr "Du har ikke tillatelse til å utføre WHOIS-oppslag."
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "Kunne ikke hente WHOIS-informasjon fra server %s"
 
-#: lib/Application/Controller/EditController.php:176
-#, auto-english-fallback
+#: lib/Application/Controller/EditController.php:179
 msgid "You do not have permission to access this zone."
 msgstr "Du har ikke tillatelse til å få tilgang til denne sonen."
 
-#: lib/Application/Controller/EditController.php:292
+#: lib/Application/Controller/EditController.php:295
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC er ikke aktivert på serveren."
 
-#: lib/Application/Controller/EditController.php:295
+#: lib/Application/Controller/EditController.php:298
 msgid "Zone is already signed with DNSSEC."
 msgstr "Sonen er allerede signert med DNSSEC."
 
-#: lib/Application/Controller/EditController.php:307
+#: lib/Application/Controller/EditController.php:310
 msgid "Zone has been signed successfully."
 msgstr "Sonen har blitt signert."
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:314
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
 msgstr ""
 "Sone-signering forespurt, men verifisering mislyktes. Sjekk DNSSEC-nøkler."
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:318
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr "Kunne ikke signere sone. Sjekk PowerDNS-logger for detaljer."
 
@@ -586,7 +583,7 @@ msgstr "Sone-usignering forespurt, men verifisering mislyktes."
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Kunne ikke usignere sone. Sjekk PowerDNS-logger for detaljer."
 
-#: lib/Application/Controller/EditController.php:637
+#: lib/Application/Controller/EditController.php:642
 msgid "Template name can't be an empty string."
 msgstr "Malnavn kan ikke være tomt."
 
@@ -594,35 +591,35 @@ msgstr "Malnavn kan ikke være tomt."
 msgid "Zone template has been added successfully."
 msgstr "Sonemal har blitt lagt til."
 
-#: lib/Application/Controller/EditController.php:657
+#: lib/Application/Controller/EditController.php:662
 msgid "You need to be logged in to export zone data."
 msgstr "Du må være innlogget for å eksportere sonedata."
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:672
 msgid "You do not have permission to export this zone."
 msgstr "Du har ikke tillatelse til å eksportere denne sonen."
 
-#: lib/Application/Controller/EditController.php:691
+#: lib/Application/Controller/EditController.php:696
 msgid "This zone does not have any records to export."
 msgstr "Denne sonen har ingen poster å eksportere."
 
-#: lib/Application/Controller/EditController.php:791
+#: lib/Application/Controller/EditController.php:796
 msgid "Request has expired, please try again."
 msgstr "Forespørselen har utløpt, vennligst prøv igjen."
 
-#: lib/Application/Controller/EditController.php:796
+#: lib/Application/Controller/EditController.php:801
 msgid "Zone has been updated successfully."
 msgstr "Sonen har blitt oppdatert."
 
-#: lib/Application/Controller/EditController.php:798
+#: lib/Application/Controller/EditController.php:803
 msgid "Zone did not have any record changes."
 msgstr "Sonen hadde ingen postendringer."
 
-#: lib/Application/Controller/EditController.php:807
+#: lib/Application/Controller/EditController.php:812
 msgid "Zone has not been updated successfully."
 msgstr "Sonen har ikke blitt oppdatert."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:840
 msgid "Please provide all required fields."
 msgstr "Vennligst oppgi alle påkrevde felt."
 
@@ -1029,26 +1026,22 @@ msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "En uventet feil oppstod. Kontakt administratoren."
 
 #: lib/Application/Controller/EditRecordController.php:92
-#, auto-english-fallback
 msgid "You do not have permission to view this record."
 msgstr "Du har ikke tillatelse til å se denne posten."
 
 #: lib/Application/Controller/EditRecordController.php:101
-#, auto-english-fallback
 msgid "You do not have permission to edit this record."
 msgstr "Du har ikke tillatelse til å redigere denne posten."
 
-#: lib/Application/Controller/EditRecordController.php:231
+#: lib/Application/Controller/EditRecordController.php:233
 msgid "The record has been updated successfully."
 msgstr "Posten har blitt oppdatert."
 
 #: lib/Application/Controller/DnssecController.php:64
-#, auto-english-fallback
 msgid "You do not have permission to view this zone."
 msgstr "Du har ikke tillatelse til å se denne sonen."
 
 #: lib/Application/Controller/DnssecController.php:77
-#, auto-english-fallback
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Du har ikke tillatelse til å administrere DNSSEC for denne sonen."
 
@@ -3638,13 +3631,10 @@ msgid ""
 "SPF record exceeds 255 character limit. Split across multiple TXT records."
 msgstr "SPF post overskrider 255 tegn grense. Del opp i flere TXT poster."
 
-#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:190
-#, php-format
+#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
-"Duplicate %s mechanism found. Each mechanism type should appear at most once."
-msgstr ""
-"Duplikat %s mekanisme funnet. Hver mekanisme-type bør kun forekomme "
-"maksimalt én gang."
+"Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgstr "Flere \"all\"-mekanismer funnet. Bare den første vil være effektiv."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -3762,14 +3752,16 @@ msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
 msgstr ""
-"CNAME-mål må være et fullstendig kvalifisert domenenavn (FQDN). Enkelt-etikett navn er ikke tillatt."
+"CNAME-mål må være et fullstendig kvalifisert domenenavn (FQDN). Enkelt-"
+"etikett navn er ikke tillatt."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:313
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
 msgstr ""
-"CNAME-mål må være et fullstendig kvalifisert domenenavn (FQDN) med et gyldig toppnivådomene."
+"CNAME-mål må være et fullstendig kvalifisert domenenavn (FQDN) med et gyldig "
+"toppnivådomene."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -4912,7 +4904,7 @@ msgstr "CAA-egenskapsverdi overstiger maksimal lengde på 512 tegn."
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "CAA-egenskapsverdi kan ikke inneholde NUL (0) tegn."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:241
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
 msgstr "Vertsnavnet er for langt."
 
@@ -5508,7 +5500,7 @@ msgstr ""
 "LUA-post i eksplisitt return-modus (starter med semikolon) må inneholde "
 "minst én \"return\"-setning."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
@@ -5516,7 +5508,7 @@ msgstr ""
 "LUA-post i implisitt return-modus bør være et gyldig funksjonskall eller "
 "funksjonsdefinisjon med \"function\" og \"end\" nøkkelord."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:228
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
@@ -6070,20 +6062,19 @@ msgstr ""
 "L32-lokator kan ikke bruke broadcast eller uspesifiserte adresser (0.0.0.0 "
 "eller 255.255.255.255)."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:122
-#, php-format
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
-"Priority value in record parameter (%d) does not match priority in content "
-"(%d)."
+"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
+"or higher."
 msgstr ""
-"Prioritetsverdi i postparameter (%d) stemmer ikke overens med prioritet i "
-"innhold (%d)."
+"Prioritet 0 er gyldig men uvanlig. Vanligvis starter SRV-poster ved "
+"prioritet 10 eller høyere."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:249
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
 msgstr "SRV-postnavn må være i formatet _tjeneste._protokoll.domene"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:258
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
@@ -6091,7 +6082,7 @@ msgstr ""
 "Ugyldig tjenesteverdi i SRV-post. Tjenestenavn må starte med understrek "
 "fulgt av alfanumeriske tegn."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
@@ -6099,7 +6090,7 @@ msgstr ""
 "Ugyldig protokollverdi i SRV-post. Protokoll må starte med understrek fulgt "
 "av alfanumeriske tegn."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:272
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
@@ -6108,7 +6099,7 @@ msgstr ""
 "Tjenestenavn \"%s\" er ikke i listen over velkjente tjenester. Dette er "
 "tillatt men uvanlig."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:280
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
@@ -6117,29 +6108,26 @@ msgstr ""
 "Protokoll \"%s\" er ikke i listen over velkjente protokoller. Vanlige "
 "protokoller er _tcp og _udp."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:288
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
 msgstr "Ugyldig domenenavn i SRV-post."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
-"SRV record content must have priority, weight, port and target (4 fields)."
-msgstr "SRV-postinnhold må ha prioritet, vekt, port og mål (4 felt)."
+"SRV record content must have weight, port and target (3 fields). Priority "
+"should be in the priority field."
+msgstr ""
+"SRV-postinnhold må ha vekt, port og mål (3 felt). Prioritet skal være i prioritetsfeltet."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
-msgid ""
-"Invalid value for the priority field of the SRV record. Must be 0-65535."
-msgstr "Ugyldig verdi for prioritetsfeltet i SRV-posten. Må være 0-65535."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
 msgstr "Ugyldig verdi for vektfeltet i SRV-posten. Må være 0-65535."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:341
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
 msgstr "Ugyldig verdi for portfeltet i SRV-posten. Må være 1-65535."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:350
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
@@ -6148,27 +6136,19 @@ msgstr ""
 "Port %d avviker fra standardport %d for %s-tjeneste. Dette er tillatt men "
 "uvanlig."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:360
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
 msgstr "SRV-mål kan ikke være tomt."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:379
-msgid ""
-"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
-"or higher."
-msgstr ""
-"Prioritet 0 er gyldig men uvanlig. Vanligvis starter SRV-poster ved "
-"prioritet 10 eller høyere."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:384
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:375
 msgid "When target is \".\" (no service), port and weight should both be 0."
 msgstr "Når målet er \".\" (ingen tjeneste), bør både port og vekt være 0."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:410
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:400
 msgid "Invalid SRV target."
 msgstr "Ugyldig SRV-mål."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:433
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:423
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "Ugyldig verdi for prioritetsfeltet i SRV-posten."
 
@@ -6670,11 +6650,11 @@ msgstr "Du har ikke tillatelse til å redigere denne SOA-oppføringen."
 msgid "You do not have the permission to edit this NS record."
 msgstr "Du har ikke tillatelse til å redigere denne NS-oppføringen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:301
+#: lib/Domain/Service/Dns/RecordManager.php:303
 msgid "You do not have the permission to delete SOA records."
 msgstr "Du har ikke tillatelse til å slette SOA-oppføringer."
 
-#: lib/Domain/Service/Dns/RecordManager.php:314
+#: lib/Domain/Service/Dns/RecordManager.php:316
 msgid "You do not have the permission to delete NS records."
 msgstr "Du har ikke tillatelse til å slette NS-oppføringer."
 
@@ -8319,7 +8299,6 @@ msgid "User's full name for identification"
 msgstr "Brukerens fulle navn for identifikasjon"
 
 #: templates/default/edit_user.html:39 templates/default/add_user.html:29
-#, auto-english-fallback
 msgid "Provide full name"
 msgstr "Oppgi fullt navn"
 
@@ -10318,7 +10297,6 @@ msgid "zones"
 msgstr "soner"
 
 #: templates/default/email_previews.html:10 templates/default/header.html:167
-#, auto-english-fallback
 msgid "Email Template Previews"
 msgstr "E-postmal forhåndsvisninger"
 
@@ -10328,20 +10306,19 @@ msgid ""
 "modes. These previews use sample data to demonstrate the email formatting "
 "and styling."
 msgstr ""
-"Forhåndsvis hvordan e-postmaler vil vises for brukere i både lys og mørk modus. Disse forhåndsvisningene bruker eksempeldata for å demonstrere e-postformatering og styling."
+"Forhåndsvis hvordan e-postmaler vil vises for brukere i både lys og mørk "
+"modus. Disse forhåndsvisningene bruker eksempeldata for å demonstrere e-"
+"postformatering og styling."
 
 #: templates/default/email_previews.html:21
-#, auto-english-fallback
 msgid "Active Email Templates"
 msgstr "Aktive e-postmaler"
 
 #: templates/default/email_previews.html:46
-#, auto-english-fallback
 msgid "Custom"
 msgstr "Tilpasset"
 
 #: templates/default/email_previews.html:22
-#, auto-english-fallback
 msgid "Standard"
 msgstr "Standard"
 
@@ -10350,32 +10327,30 @@ msgid ""
 "Custom templates are active and override the default templates. These are "
 "the templates currently used when sending emails."
 msgstr ""
-"Tilpassede maler er aktive og overstyrer standardmalene. Dette er malene som nå brukes når e-post sendes."
+"Tilpassede maler er aktive og overstyrer standardmalene. Dette er malene som "
+"nå brukes når e-post sendes."
 
 #: templates/default/email_previews.html:34
 msgid ""
 "Standard templates are active. These are the default templates used when "
 "sending emails."
 msgstr ""
-"Standardmaler er aktive. Dette er standardmalene som brukes når e-post sendes."
+"Standardmaler er aktive. Dette er standardmalene som brukes når e-post "
+"sendes."
 
 #: templates/default/email_previews.html:54
-#, auto-english-fallback
 msgid "Subject:"
 msgstr "Emne:"
 
 #: templates/default/email_previews.html:60
-#, auto-english-fallback
 msgid "View Light Mode"
 msgstr "Vis lys modus"
 
 #: templates/default/email_previews.html:64
-#, auto-english-fallback
 msgid "View Dark Mode"
 msgstr "Vis mørk modus"
 
 #: templates/default/email_previews.html:76
-#, auto-english-fallback
 msgid "Template Override Information"
 msgstr "Maloverstyr informasjon"
 
@@ -10387,7 +10362,6 @@ msgstr ""
 "Følgende standardmaler er for øyeblikket overstyrt av tilpassede maler:"
 
 #: templates/default/email_previews.html:80
-#, auto-english-fallback
 msgid "using custom template"
 msgstr "bruker tilpasset mal"
 
@@ -10396,10 +10370,10 @@ msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
 msgstr ""
-"For å gå tilbake til standardmaler, fjern eller gi nytt navn til de tilpassede malfilene i <code>templates/emails/custom/</code>."
+"For å gå tilbake til standardmaler, fjern eller gi nytt navn til de "
+"tilpassede malfilene i <code>templates/emails/custom/</code>."
 
 #: templates/default/email_previews.html:87
-#, auto-english-fallback
 msgid "Custom Templates"
 msgstr "Tilpassede maler"
 
@@ -10409,21 +10383,20 @@ msgid ""
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
 msgstr ""
-"Du kan lage tilpassede e-postmaler ved å plassere dem i <code>templates/emails/custom/</code> for å overstyre disse standardmalene med dine egne design."
+"Du kan lage tilpassede e-postmaler ved å plassere dem i <code>templates/"
+"emails/custom/</code> for å overstyre disse standardmalene med dine egne "
+"design."
 
 #: templates/default/email_previews.html:93
-#, auto-english-fallback
 msgid "About Email Previews"
 msgstr "Om e-post forhåndsvisninger"
 
 #: templates/default/email_previews.html:95
-#, auto-english-fallback
 msgid "Previews use sample data to demonstrate email appearance"
 msgstr ""
 "Forhåndsvisninger bruker eksempeldata for å demonstrere e-postens utseende"
 
 #: templates/default/email_previews.html:96
-#, auto-english-fallback
 msgid "Light mode is the default appearance for most email clients"
 msgstr "Lys modus er standardutseende for de fleste e-postklienter"
 
@@ -10431,13 +10404,14 @@ msgstr "Lys modus er standardutseende for de fleste e-postklienter"
 msgid ""
 "Dark mode preview shows how emails appear when users have dark mode enabled"
 msgstr ""
-"Mørk modus forhåndsvisning viser hvordan e-poster ser ut når brukere har mørk modus aktivert"
+"Mørk modus forhåndsvisning viser hvordan e-poster ser ut når brukere har "
+"mørk modus aktivert"
 
 #: templates/default/email_previews.html:98
-#, auto-english-fallback
 msgid "These previews reflect the actual templates used in production"
 msgstr ""
-"Disse forhåndsvisningene gjenspeiler de faktiske malene som brukes i produksjon"
+"Disse forhåndsvisningene gjenspeiler de faktiske malene som brukes i "
+"produksjon"
 
 #: templates/default/pdns_status.html:5 templates/default/pdns_status.html:11
 msgid "PowerDNS Server Status"
@@ -10933,7 +10907,6 @@ msgid "Password for this database user."
 msgstr "Passord for denne databasebrukeren."
 
 #: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
-#, auto-english-fallback
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Unngå anførselstegn, backslash og linjeskift."
 
@@ -11407,28 +11380,31 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan ikke koble til PowerDNS-database \"%s\": %s"
 
-# OBSOLETE: msgid "You do not have the permission to view this record."
-# OBSOLETE: msgstr "Du har ikke tillatelse til å se denne posten."
-
-# OBSOLETE: msgid "Your verification code"
-# OBSOLETE: msgstr "Din bekreftelseskode"
+#, auto-english-fallback
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
+# OBSOLETE: "once."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Duplikat %s mekanisme funnet. Hver mekanisme-type bør kun forekomme "
+# OBSOLETE: "maksimalt én gang."
 
 #, auto-english-fallback
 #, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "Your verification code is: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "This code will expire in 10 minutes at %s."
+# OBSOLETE: "Priority value in record parameter (%d) does not match priority in "
+# OBSOLETE: "content (%d)."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Din bekreftelseskode er: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "Denne koden utløper om 10 minutter kl. %s."
+# OBSOLETE: "Prioritetsverdi i postparameter (%d) stemmer ikke overens med prioritet i "
+# OBSOLETE: "innhold (%d)."
 
-# OBSOLETE: msgid "Optional: User's full name for identification"
-# OBSOLETE: msgstr "Valgfritt: Brukerens fulle navn for identifikasjon"
+# OBSOLETE: msgid ""
+# OBSOLETE: "SRV record content must have priority, weight, port and target (4 fields)."
+# OBSOLETE: msgstr "SRV-postinnhold må ha prioritet, vekt, port og mål (4 felt)."
 
-# OBSOLETE: msgid "All recovery codes copied to clipboard"
-# OBSOLETE: msgstr "Alle gjenopprettingskoder kopiert til utklippstavle"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Invalid value for the priority field of the SRV record. Must be 0-65535."
+# OBSOLETE: msgstr "Ugyldig verdi for prioritetsfeltet i SRV-posten. Må være 0-65535."
 
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-07-06 07:29+0300\n"
+"POT-Creation-Date: 2025-09-16 18:15+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -104,7 +104,7 @@ msgstr "ゾーンコメント機能は設定で無効になっています。"
 msgid "You do not have the permission to view this comment."
 msgstr "このコメントを表示する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:379
+#: lib/Domain/Service/Dns/RecordManager.php:381
 msgid "You do not have the permission to edit this comment."
 msgstr "このコメントを編集する権限がありません。"
 
@@ -347,7 +347,7 @@ msgstr "パスワードが生成されましたが、セキュリティ上の理
 msgid "Please fill in all required fields correctly."
 msgstr "すべての必須フィールドを正しく入力してください。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:325
+#: lib/Domain/Service/Dns/RecordManager.php:327
 msgid "You do not have the permission to delete this record."
 msgstr "このレコードを削除する権限がありません。"
 
@@ -411,7 +411,7 @@ msgstr "無効なテンプレートIDです。"
 msgid "Template does not exist."
 msgstr "テンプレートが存在しません。"
 
-#: lib/Domain/Repository/DomainRepository.php:441
+#: lib/Domain/Repository/DomainRepository.php:485
 msgid "You do not have the permission to view this zone."
 msgstr "このゾーンを表示する権限がありません。"
 
@@ -474,27 +474,27 @@ msgstr "WHOIS検索を実行する権限がありません。"
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "サーバー %s を使用してWHOIS情報の取得に失敗しました"
 
-#: lib/Application/Controller/EditController.php:176
+#: lib/Application/Controller/EditController.php:179
 msgid "You do not have permission to access this zone."
 msgstr "このゾーンにアクセスする権限がありません。"
 
-#: lib/Application/Controller/EditController.php:292
+#: lib/Application/Controller/EditController.php:295
 msgid "DNSSEC is not enabled on the server."
 msgstr "サーバーでDNSSECが有効になっていません。"
 
-#: lib/Application/Controller/EditController.php:295
+#: lib/Application/Controller/EditController.php:298
 msgid "Zone is already signed with DNSSEC."
 msgstr "ゾーンは既にDNSSECで署名されています。"
 
-#: lib/Application/Controller/EditController.php:307
+#: lib/Application/Controller/EditController.php:310
 msgid "Zone has been signed successfully."
 msgstr "ゾーンが正常に署名されました。"
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:314
 msgid "Zone signing requested successfully, but verification failed. Check DNSSEC keys."
 msgstr "ゾーン署名の要求は成功しましたが、検証に失敗しました。DNSSECキーを確認してください。"
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:318
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr "ゾーンの署名に失敗しました。詳細についてはPowerDNSログを確認してください。"
 
@@ -514,7 +514,7 @@ msgstr "ゾーン署名解除の要求は成功しましたが、検証に失敗
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "ゾーンの署名解除に失敗しました。詳細についてはPowerDNSログを確認してください。"
 
-#: lib/Application/Controller/EditController.php:637
+#: lib/Application/Controller/EditController.php:642
 msgid "Template name can't be an empty string."
 msgstr "テンプレート名は空の文字列にできません。"
 
@@ -522,35 +522,35 @@ msgstr "テンプレート名は空の文字列にできません。"
 msgid "Zone template has been added successfully."
 msgstr "ゾーンテンプレートが正常に追加されました。"
 
-#: lib/Application/Controller/EditController.php:657
+#: lib/Application/Controller/EditController.php:662
 msgid "You need to be logged in to export zone data."
 msgstr "ゾーンデータをエクスポートするにはログインが必要です。"
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:672
 msgid "You do not have permission to export this zone."
 msgstr "このゾーンをエクスポートする権限がありません。"
 
-#: lib/Application/Controller/EditController.php:691
+#: lib/Application/Controller/EditController.php:696
 msgid "This zone does not have any records to export."
 msgstr "このゾーンにはエクスポートするレコードがありません。"
 
-#: lib/Application/Controller/EditController.php:791
+#: lib/Application/Controller/EditController.php:796
 msgid "Request has expired, please try again."
 msgstr "リクエストが期限切れです。もう一度お試しください。"
 
-#: lib/Application/Controller/EditController.php:796
+#: lib/Application/Controller/EditController.php:801
 msgid "Zone has been updated successfully."
 msgstr "ゾーンが正常に更新されました。"
 
-#: lib/Application/Controller/EditController.php:798
+#: lib/Application/Controller/EditController.php:803
 msgid "Zone did not have any record changes."
 msgstr "ゾーンにレコードの変更はありませんでした。"
 
-#: lib/Application/Controller/EditController.php:807
+#: lib/Application/Controller/EditController.php:812
 msgid "Zone has not been updated successfully."
 msgstr "ゾーンが正常に更新されませんでした。"
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:840
 msgid "Please provide all required fields."
 msgstr "すべての必須フィールドを入力してください。"
 
@@ -930,7 +930,7 @@ msgstr "このレコードを表示する権限がありません。"
 msgid "You do not have permission to edit this record."
 msgstr "このレコードを編集する権限がありません。"
 
-#: lib/Application/Controller/EditRecordController.php:231
+#: lib/Application/Controller/EditRecordController.php:233
 msgid "The record has been updated successfully."
 msgstr "レコードが正常に更新されました。"
 
@@ -2714,10 +2714,9 @@ msgstr "SPFレコードは「v=spf1」で始まる必要があります"
 msgid "SPF record exceeds 255 character limit. Split across multiple TXT records."
 msgstr "SPFレコードが255文字制限を超えています。複数のTXTレコードに分割してください。"
 
-#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:190
-#, php-format
-msgid "Duplicate %s mechanism found. Each mechanism type should appear at most once."
-msgstr "重複する%sメカニズムが見つかりました。各メカニズムタイプは最大1回まで表示されるべきです。"
+#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
+msgid "Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgstr "複数の「all」メカニズムが見つかりました。最初のもののみが有効になります。"
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -3551,7 +3550,7 @@ msgstr "CAAプロパティ値が最大長512文字を超えています。"
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "CAAプロパティ値はNUL（0）文字を含むことはできません。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:241
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
 msgstr "ホスト名が長すぎます。"
 
@@ -3933,11 +3932,11 @@ msgstr "LUAレコードに波括弧の不一致があります。構文を確認
 msgid "LUA record in explicit return mode (starts with semicolon) must contain at least one \"return\" statement."
 msgstr "明示的リターンモード（セミコロンで開始）のLUAレコードは少なくとも1つの「return」文を含む必要があります。"
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
 msgid "LUA record in implicit return mode should be a valid function call or function definition with \"function\" and \"end\" keywords."
 msgstr "暗黙的リターンモードのLUAレコードは、「function」と「end」キーワードを持つ有効な関数呼び出しまたは関数定義である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:228
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
 msgid "LUA record contains potentially dangerous system access functions. These are likely to be blocked by PowerDNS security restrictions."
 msgstr "LUAレコードに潜在的に危険なシステムアクセス関数が含まれています。これらはPowerDNSセキュリティ制限によってブロックされる可能性があります。"
 
@@ -4315,75 +4314,66 @@ msgstr "L32ロケータは完全に指定されたIPv4アドレスである必�
 msgid "L32 locator cannot use broadcast or unspecified addresses (0.0.0.0 or 255.255.255.255)."
 msgstr "L32ロケータはブロードキャストまたは未指定アドレス（0.0.0.0または255.255.255.255）を使用できません。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:122
-#, php-format
-msgid "Priority value in record parameter (%d) does not match priority in content (%d)."
-msgstr "レコードパラメータの優先度値（%d）が内容の優先度（%d）と一致しません。"
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
+msgid "Priority 0 is valid but unusual. Typically SRV records start at priority 10 or higher."
+msgstr "優先度0は有効ですが異常です。通常、SRVレコードは優先度10以上から始まります。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:249
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
 msgstr "SRVレコード名は_service._protocol.domain形式である必要があります"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:258
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid "Invalid service value in SRV record. Service name must start with an underscore followed by alphanumeric characters."
 msgstr "SRVレコードのサービス値が無効です。サービス名はアンダースコアで始まり、その後に英数字が続く必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid "Invalid protocol value in SRV record. Protocol must start with an underscore followed by alphanumeric characters."
 msgstr "SRVレコードのプロトコル値が無効です。プロトコルはアンダースコアで始まり、その後に英数字が続く必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:272
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
 msgid "Service name \"%s\" is not in the list of well-known services. This is allowed but unusual."
 msgstr "サービス名「%s」は既知のサービスリストにありません。これは許可されていますが異常です。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:280
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid "Protocol \"%s\" is not in the list of well-known protocols. Common protocols are _tcp and _udp."
 msgstr "プロトコル「%s」は既知のプロトコルリストにありません。一般的なプロトコルは_tcpと_udpです。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:288
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
 msgstr "SRVレコードのドメイン名が無効です。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:313
-msgid "SRV record content must have priority, weight, port and target (4 fields)."
-msgstr "SRVレコードの内容には優先度、重み、ポート、ターゲット（4つのフィールド）が必要です。"
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
+msgid "SRV record content must have weight, port and target (3 fields). Priority should be in the priority field."
+msgstr "SRVレコードの内容には重み、ポート、ターゲット（3つのフィールド）が必要です。優先度は優先度フィールドに入力してください。"
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
-msgid "Invalid value for the priority field of the SRV record. Must be 0-65535."
-msgstr "SRVレコードの優先度フィールドの値が無効です。0-65535である必要があります。"
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
 msgstr "SRVレコードの重みフィールドの値が無効です。0-65535である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:341
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
 msgstr "SRVレコードのポートフィールドの値が無効です。1-65535である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:350
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
 msgid "Port %d differs from the standard port %d for %s service. This is allowed but unusual."
 msgstr "ポート%dは%sサービスの標準ポート%dと異なります。これは許可されていますが異常です。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:360
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
 msgstr "SRVターゲットは空にできません。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:379
-msgid "Priority 0 is valid but unusual. Typically SRV records start at priority 10 or higher."
-msgstr "優先度0は有効ですが異常です。通常、SRVレコードは優先度10以上から始まります。"
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:384
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:375
 msgid "When target is \".\" (no service), port and weight should both be 0."
 msgstr "ターゲットが「.」（サービスなし）の場合、ポートと重みの両方が0である必要があります。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:410
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:400
 msgid "Invalid SRV target."
 msgstr "無効なSRVターゲットです。"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:433
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:423
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "SRVレコードの優先度フィールドの値が無効です。"
 
@@ -4743,11 +4733,11 @@ msgstr "このSOAレコードを編集する権限がありません。"
 msgid "You do not have the permission to edit this NS record."
 msgstr "このNSレコードを編集する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:301
+#: lib/Domain/Service/Dns/RecordManager.php:303
 msgid "You do not have the permission to delete SOA records."
 msgstr "SOAレコードを削除する権限がありません。"
 
-#: lib/Domain/Service/Dns/RecordManager.php:314
+#: lib/Domain/Service/Dns/RecordManager.php:316
 msgid "You do not have the permission to delete NS records."
 msgstr "NSレコードを削除する権限がありません。"
 
@@ -8067,8 +8057,7 @@ msgstr "メールテンプレートプレビュー"
 
 #: templates/default/email_previews.html:13
 msgid "Preview how email templates will appear to users in both light and dark modes. These previews use sample data to demonstrate the email formatting and styling."
-msgstr ""
-"ライトモードとダークモードの両方でメールテンプレートがユーザーにどのように表示されるかをプレビューします。これらのプレビューはサンプルデータを使用してメールのフォーマットとスタイルを実演します。"
+msgstr "ライトモードとダークモードの両方でメールテンプレートがユーザーにどのように表示されるかをプレビューします。これらのプレビューはサンプルデータを使用してメールのフォーマットとスタイルを実演します。"
 
 #: templates/default/email_previews.html:21
 msgid "Active Email Templates"
@@ -8116,8 +8105,7 @@ msgstr "カスタムテンプレートを使用"
 
 #: templates/default/email_previews.html:83
 msgid "To revert to standard templates, remove or rename the custom template files in <code>templates/emails/custom/</code>."
-msgstr ""
-"標準テンプレートに戻すには、<code>templates/emails/custom/</code>のカスタムテンプレートファイルを削除または名前変更してください。"
+msgstr "標準テンプレートに戻すには、<code>templates/emails/custom/</code>のカスタムテンプレートファイルを削除または名前変更してください。"
 
 #: templates/default/email_previews.html:87
 msgid "Custom Templates"
@@ -8125,8 +8113,7 @@ msgstr "カスタムテンプレート"
 
 #: templates/default/email_previews.html:88
 msgid "You can create custom email templates by placing them in <code>templates/emails/custom/</code> to override these standard templates with your own designs."
-msgstr ""
-"<code>templates/emails/custom/</code>に配置することでカスタムメールテンプレートを作成し、これらの標準テンプレートを独自のデザインで上書きできます。"
+msgstr "<code>templates/emails/custom/</code>に配置することでカスタムメールテンプレートを作成し、これらの標準テンプレートを独自のデザインで上書きできます。"
 
 #: templates/default/email_previews.html:93
 msgid "About Email Previews"
@@ -9010,26 +8997,18 @@ msgstr "データベース\"%s\"にPowerDNSテーブルがありません: %s。
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "PowerDNSデータベース\"%s\"に接続できません: %s"
 
-# OBSOLETE: msgid "You do not have the permission to view this record."
-# OBSOLETE: msgstr "このレコードを表示する権限がありません。"
-
-# OBSOLETE: msgid "Your verification code"
-# OBSOLETE: msgstr "あなたの認証コード"
+#, php-format
+# OBSOLETE: msgid "Duplicate %s mechanism found. Each mechanism type should appear at most once."
+# OBSOLETE: msgstr "重複する%sメカニズムが見つかりました。各メカニズムタイプは最大1回まで表示されるべきです。"
 
 #, php-format
-# OBSOLETE: msgid ""
-# OBSOLETE: "Your verification code is: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "This code will expire in 10 minutes at %s."
-# OBSOLETE: msgstr ""
-# OBSOLETE: "あなたの認証コードは：%s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "このコードは%sに10分で期限切れになります。"
+# OBSOLETE: msgid "Priority value in record parameter (%d) does not match priority in content (%d)."
+# OBSOLETE: msgstr "レコードパラメータの優先度値（%d）が内容の優先度（%d）と一致しません。"
 
-# OBSOLETE: msgid "Optional: User's full name for identification"
-# OBSOLETE: msgstr "任意：識別用のユーザーのフルネーム"
+# OBSOLETE: msgid "SRV record content must have priority, weight, port and target (4 fields)."
+# OBSOLETE: msgstr "SRVレコードの内容には優先度、重み、ポート、ターゲット（4つのフィールド）が必要です。"
 
-# OBSOLETE: msgid "All recovery codes copied to clipboard"
-# OBSOLETE: msgstr "すべてのリカバリコードがクリップボードにコピーされました"
+# OBSOLETE: msgid "Invalid value for the priority field of the SRV record. Must be 0-65535."
+# OBSOLETE: msgstr "SRVレコードの優先度フィールドの値が無効です。0-65535である必要があります。"
 
 

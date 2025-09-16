@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-07-06 07:29+0300\n"
+"POT-Creation-Date: 2025-09-16 18:15+0300\n"
 "PO-Revision-Date: 2025-06-08 12:20+0200\n"
 "Last-Translator: Michael Roehrkasten\n"
 "Language-Team: none\n"
@@ -128,7 +128,7 @@ msgstr "Zone opmerkingen functie is uitgeschakeld in de configuratie."
 msgid "You do not have the permission to view this comment."
 msgstr "U hebt geen toestemming om deze opmerking te bekijken."
 
-#: lib/Domain/Service/Dns/RecordManager.php:379
+#: lib/Domain/Service/Dns/RecordManager.php:381
 msgid "You do not have the permission to edit this comment."
 msgstr "U hebt geen toestemming om deze opmerking te bewerken."
 
@@ -137,12 +137,10 @@ msgid "The comment has been updated successfully."
 msgstr "De opmerking is succesvol bijgewerkt."
 
 #: lib/Application/Controller/EditRecordController.php:81
-#, auto-english-fallback
 msgid "Invalid record ID."
 msgstr "Ongeldig record ID."
 
 #: lib/Application/Controller/DeleteRecordController.php:103
-#, auto-english-fallback
 msgid "You do not have permission to delete records in this zone."
 msgstr "U heeft geen toestemming om records in deze zone te verwijderen."
 
@@ -423,7 +421,7 @@ msgstr ""
 msgid "Please fill in all required fields correctly."
 msgstr "Vul alle verplichte velden correct in."
 
-#: lib/Domain/Service/Dns/RecordManager.php:325
+#: lib/Domain/Service/Dns/RecordManager.php:327
 msgid "You do not have the permission to delete this record."
 msgstr "U hebt geen toestemming om dit record te verwijderen."
 
@@ -487,7 +485,7 @@ msgstr "Ongeldig sjabloon-ID."
 msgid "Template does not exist."
 msgstr "Sjabloon bestaat niet."
 
-#: lib/Domain/Repository/DomainRepository.php:441
+#: lib/Domain/Repository/DomainRepository.php:485
 msgid "You do not have the permission to view this zone."
 msgstr "U hebt geen toestemming om deze zone te bekijken."
 
@@ -550,24 +548,23 @@ msgstr "U hebt geen toestemming om WHOIS-opzoekingen uit te voeren."
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "Kan WHOIS-informatie niet ophalen met server %s"
 
-#: lib/Application/Controller/EditController.php:176
-#, auto-english-fallback
+#: lib/Application/Controller/EditController.php:179
 msgid "You do not have permission to access this zone."
 msgstr "U heeft geen toestemming om deze zone te benaderen."
 
-#: lib/Application/Controller/EditController.php:292
+#: lib/Application/Controller/EditController.php:295
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC is niet ingeschakeld op de server."
 
-#: lib/Application/Controller/EditController.php:295
+#: lib/Application/Controller/EditController.php:298
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zone is al ondertekend met DNSSEC."
 
-#: lib/Application/Controller/EditController.php:307
+#: lib/Application/Controller/EditController.php:310
 msgid "Zone has been signed successfully."
 msgstr "Zone is succesvol ondertekend."
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:314
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -575,7 +572,7 @@ msgstr ""
 "Zone-ondertekening succesvol aangevraagd, maar verificatie mislukt. "
 "Controleer DNSSEC-sleutels."
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:318
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr "Kan zone niet ondertekenen. Controleer PowerDNS-logs voor details."
 
@@ -597,7 +594,7 @@ msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr ""
 "Kan zone-ondertekening niet opheffen. Controleer PowerDNS-logs voor details."
 
-#: lib/Application/Controller/EditController.php:637
+#: lib/Application/Controller/EditController.php:642
 msgid "Template name can't be an empty string."
 msgstr "Sjabloonnaam mag geen lege string zijn."
 
@@ -605,35 +602,35 @@ msgstr "Sjabloonnaam mag geen lege string zijn."
 msgid "Zone template has been added successfully."
 msgstr "Zonesjabloon is succesvol toegevoegd."
 
-#: lib/Application/Controller/EditController.php:657
+#: lib/Application/Controller/EditController.php:662
 msgid "You need to be logged in to export zone data."
 msgstr "U moet ingelogd zijn om zonegegevens te exporteren."
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:672
 msgid "You do not have permission to export this zone."
 msgstr "U hebt geen toestemming om deze zone te exporteren."
 
-#: lib/Application/Controller/EditController.php:691
+#: lib/Application/Controller/EditController.php:696
 msgid "This zone does not have any records to export."
 msgstr "Deze zone heeft geen records om te exporteren."
 
-#: lib/Application/Controller/EditController.php:791
+#: lib/Application/Controller/EditController.php:796
 msgid "Request has expired, please try again."
 msgstr "Verzoek is verlopen, probeer het opnieuw."
 
-#: lib/Application/Controller/EditController.php:796
+#: lib/Application/Controller/EditController.php:801
 msgid "Zone has been updated successfully."
 msgstr "Zone is succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditController.php:798
+#: lib/Application/Controller/EditController.php:803
 msgid "Zone did not have any record changes."
 msgstr "Zone had geen recordwijzigingen."
 
-#: lib/Application/Controller/EditController.php:807
+#: lib/Application/Controller/EditController.php:812
 msgid "Zone has not been updated successfully."
 msgstr "Zone is niet succesvol bijgewerkt."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:840
 msgid "Please provide all required fields."
 msgstr "Geef alle verplichte velden op."
 
@@ -1043,26 +1040,22 @@ msgstr ""
 "Er is een onverwachte fout opgetreden. Neem contact op met de beheerder."
 
 #: lib/Application/Controller/EditRecordController.php:92
-#, auto-english-fallback
 msgid "You do not have permission to view this record."
 msgstr "U heeft geen toestemming om dit record te bekijken."
 
 #: lib/Application/Controller/EditRecordController.php:101
-#, auto-english-fallback
 msgid "You do not have permission to edit this record."
 msgstr "U heeft geen toestemming om dit record te bewerken."
 
-#: lib/Application/Controller/EditRecordController.php:231
+#: lib/Application/Controller/EditRecordController.php:233
 msgid "The record has been updated successfully."
 msgstr "Het record is succesvol bijgewerkt."
 
 #: lib/Application/Controller/DnssecController.php:64
-#, auto-english-fallback
 msgid "You do not have permission to view this zone."
 msgstr "U heeft geen toestemming om deze zone te bekijken."
 
 #: lib/Application/Controller/DnssecController.php:77
-#, auto-english-fallback
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "U heeft geen toestemming om DNSSEC voor deze zone te beheren."
 
@@ -3724,13 +3717,11 @@ msgstr ""
 "SPF record overschrijdt 255 karakter limiet. Verdeel over meerdere TXT "
 "records."
 
-#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:190
-#, php-format
+#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
-"Duplicate %s mechanism found. Each mechanism type should appear at most once."
+"Multiple \"all\" mechanisms found. Only the first one will be effective."
 msgstr ""
-"Dubbel %s mechanisme gevonden. Elk mechanisme type mag hoogstens één keer "
-"voorkomen."
+"Meerdere \"all\"-mechanismen gevonden. Alleen de eerste zal effectief zijn."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -3846,14 +3837,16 @@ msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
 msgstr ""
-"CNAME doel moet een volledig gekwalificeerde domeinnaam (FQDN) zijn. Enkele-label namen zijn niet toegestaan."
+"CNAME doel moet een volledig gekwalificeerde domeinnaam (FQDN) zijn. Enkele-"
+"label namen zijn niet toegestaan."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:313
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
 msgstr ""
-"CNAME doel moet een volledig gekwalificeerde domeinnaam (FQDN) zijn met een geldig topniveaudomein."
+"CNAME doel moet een volledig gekwalificeerde domeinnaam (FQDN) zijn met een "
+"geldig topniveaudomein."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -5019,7 +5012,7 @@ msgstr ""
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "CAA eigenschap waarde kan geen NUL (0) karakters bevatten."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:241
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
 msgstr "De hostnaam is te lang."
 
@@ -5627,7 +5620,7 @@ msgstr ""
 "LUA record in expliciete return modus (begint met puntkomma) moet minstens "
 "één \"return\" statement bevatten."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
@@ -5635,7 +5628,7 @@ msgstr ""
 "LUA record in impliciete return modus moet een geldige functieaanroep of "
 "functiedefinitie zijn met \"function\" en \"end\" trefwoorden."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:228
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
@@ -6209,20 +6202,19 @@ msgstr ""
 "L32 locator kan geen broadcast of unspecified adressen gebruiken (0.0.0.0 of "
 "255.255.255.255)."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:122
-#, php-format
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
-"Priority value in record parameter (%d) does not match priority in content "
-"(%d)."
+"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
+"or higher."
 msgstr ""
-"Prioriteitswaarde in record parameter (%d) komt niet overeen met prioriteit "
-"in inhoud (%d)."
+"Prioriteit 0 is geldig maar ongewoon. Doorgaans beginnen SRV records bij "
+"prioriteit 10 of hoger."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:249
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
 msgstr "SRV record naam moet in formaat _service._protocol.domein zijn"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:258
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
@@ -6230,7 +6222,7 @@ msgstr ""
 "Ongeldige service waarde in SRV record. Service naam moet beginnen met een "
 "underscore gevolgd door alfanumerieke karakters."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
@@ -6238,7 +6230,7 @@ msgstr ""
 "Ongeldige protocol waarde in SRV record. Protocol moet beginnen met een "
 "underscore gevolgd door alfanumerieke karakters."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:272
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
@@ -6247,7 +6239,7 @@ msgstr ""
 "Service naam \"%s\" staat niet in de lijst van bekende services. Dit is "
 "toegestaan maar ongewoon."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:280
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
@@ -6256,34 +6248,28 @@ msgstr ""
 "Protocol \"%s\" staat niet in de lijst van bekende protocollen. "
 "Veelgebruikte protocollen zijn _tcp en _udp."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:288
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
 msgstr "Ongeldige domeinnaam in SRV record."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
-"SRV record content must have priority, weight, port and target (4 fields)."
+"SRV record content must have weight, port and target (3 fields). Priority "
+"should be in the priority field."
 msgstr ""
-"SRV record inhoud moet prioriteit, gewicht, poort en doel hebben (4 velden)."
+"SRV-record inhoud moet gewicht, poort en doel (3 velden) hebben. Prioriteit moet in het prioriteitsveld staan."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
-msgid ""
-"Invalid value for the priority field of the SRV record. Must be 0-65535."
-msgstr ""
-"Ongeldige waarde voor het prioriteitsveld van het SRV record. Moet 0-65535 "
-"zijn."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
 msgstr ""
 "Ongeldige waarde voor het gewichtsveld van het SRV record. Moet 0-65535 zijn."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:341
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
 msgstr ""
 "Ongeldige waarde voor het poortveld van het SRV record. Moet 1-65535 zijn."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:350
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
@@ -6292,29 +6278,21 @@ msgstr ""
 "Poort %d verschilt van de standaardpoort %d voor %s service. Dit is "
 "toegestaan maar ongewoon."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:360
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
 msgstr "SRV doel kan niet leeg zijn."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:379
-msgid ""
-"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
-"or higher."
-msgstr ""
-"Prioriteit 0 is geldig maar ongewoon. Doorgaans beginnen SRV records bij "
-"prioriteit 10 of hoger."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:384
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:375
 msgid "When target is \".\" (no service), port and weight should both be 0."
 msgstr ""
 "Wanneer het doel \".\" is (geen service), moeten poort en gewicht beide 0 "
 "zijn."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:410
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:400
 msgid "Invalid SRV target."
 msgstr "Ongeldig SRV doel."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:433
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:423
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "Ongeldige waarde voor het prioriteitsveld van het SRV record."
 
@@ -6821,11 +6799,11 @@ msgstr "U hebt geen toestemming om dit SOA record te bewerken."
 msgid "You do not have the permission to edit this NS record."
 msgstr "U hebt geen toestemming om dit NS record te bewerken."
 
-#: lib/Domain/Service/Dns/RecordManager.php:301
+#: lib/Domain/Service/Dns/RecordManager.php:303
 msgid "You do not have the permission to delete SOA records."
 msgstr "U hebt geen toestemming om SOA records te verwijderen."
 
-#: lib/Domain/Service/Dns/RecordManager.php:314
+#: lib/Domain/Service/Dns/RecordManager.php:316
 msgid "You do not have the permission to delete NS records."
 msgstr "U hebt geen toestemming om NS records te verwijderen."
 
@@ -8485,7 +8463,6 @@ msgid "User's full name for identification"
 msgstr "Volledige naam van gebruiker voor identificatie"
 
 #: templates/default/edit_user.html:39 templates/default/add_user.html:29
-#, auto-english-fallback
 msgid "Provide full name"
 msgstr "Volledige naam opgeven"
 
@@ -10515,7 +10492,6 @@ msgid "zones"
 msgstr "zones"
 
 #: templates/default/email_previews.html:10 templates/default/header.html:167
-#, auto-english-fallback
 msgid "Email Template Previews"
 msgstr "E-mail sjabloon voorvertoningen"
 
@@ -10525,20 +10501,19 @@ msgid ""
 "modes. These previews use sample data to demonstrate the email formatting "
 "and styling."
 msgstr ""
-"Bekijk hoe e-mail sjablonen zullen verschijnen voor gebruikers in zowel lichte als donkere modi. Deze voorvertoningen gebruiken voorbeeldgegevens om de e-mailopmaak en styling te demonstreren."
+"Bekijk hoe e-mail sjablonen zullen verschijnen voor gebruikers in zowel "
+"lichte als donkere modi. Deze voorvertoningen gebruiken voorbeeldgegevens om "
+"de e-mailopmaak en styling te demonstreren."
 
 #: templates/default/email_previews.html:21
-#, auto-english-fallback
 msgid "Active Email Templates"
 msgstr "Actieve e-mail sjablonen"
 
 #: templates/default/email_previews.html:46
-#, auto-english-fallback
 msgid "Custom"
 msgstr "Aangepast"
 
 #: templates/default/email_previews.html:22
-#, auto-english-fallback
 msgid "Standard"
 msgstr "Standaard"
 
@@ -10547,32 +10522,31 @@ msgid ""
 "Custom templates are active and override the default templates. These are "
 "the templates currently used when sending emails."
 msgstr ""
-"Aangepaste sjablonen zijn actief en overschrijven de standaardsjablonen. Dit zijn de sjablonen die momenteel worden gebruikt bij het verzenden van e-mails."
+"Aangepaste sjablonen zijn actief en overschrijven de standaardsjablonen. Dit "
+"zijn de sjablonen die momenteel worden gebruikt bij het verzenden van e-"
+"mails."
 
 #: templates/default/email_previews.html:34
 msgid ""
 "Standard templates are active. These are the default templates used when "
 "sending emails."
 msgstr ""
-"Standaardsjablonen zijn actief. Dit zijn de standaardsjablonen die worden gebruikt bij het verzenden van e-mails."
+"Standaardsjablonen zijn actief. Dit zijn de standaardsjablonen die worden "
+"gebruikt bij het verzenden van e-mails."
 
 #: templates/default/email_previews.html:54
-#, auto-english-fallback
 msgid "Subject:"
 msgstr "Onderwerp:"
 
 #: templates/default/email_previews.html:60
-#, auto-english-fallback
 msgid "View Light Mode"
 msgstr "Bekijk lichte modus"
 
 #: templates/default/email_previews.html:64
-#, auto-english-fallback
 msgid "View Dark Mode"
 msgstr "Bekijk donkere modus"
 
 #: templates/default/email_previews.html:76
-#, auto-english-fallback
 msgid "Template Override Information"
 msgstr "Sjabloon overschrijvingsinformatie"
 
@@ -10581,10 +10555,10 @@ msgid ""
 "The following standard templates are currently overridden by custom "
 "templates:"
 msgstr ""
-"De volgende standaardsjablonen worden momenteel overschreven door aangepaste sjablonen:"
+"De volgende standaardsjablonen worden momenteel overschreven door aangepaste "
+"sjablonen:"
 
 #: templates/default/email_previews.html:80
-#, auto-english-fallback
 msgid "using custom template"
 msgstr "gebruikt aangepast sjabloon"
 
@@ -10593,10 +10567,10 @@ msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
 msgstr ""
-"Om terug te keren naar standaardsjablonen, verwijder of hernoem de aangepaste sjabloonbestanden in <code>templates/emails/custom/</code>."
+"Om terug te keren naar standaardsjablonen, verwijder of hernoem de "
+"aangepaste sjabloonbestanden in <code>templates/emails/custom/</code>."
 
 #: templates/default/email_previews.html:87
-#, auto-english-fallback
 msgid "Custom Templates"
 msgstr "Aangepaste sjablonen"
 
@@ -10606,21 +10580,20 @@ msgid ""
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
 msgstr ""
-"U kunt aangepaste e-mailsjablonen maken door ze te plaatsen in <code>templates/emails/custom/</code> om deze standaardsjablonen te overschrijven met uw eigen ontwerpen."
+"U kunt aangepaste e-mailsjablonen maken door ze te plaatsen in "
+"<code>templates/emails/custom/</code> om deze standaardsjablonen te "
+"overschrijven met uw eigen ontwerpen."
 
 #: templates/default/email_previews.html:93
-#, auto-english-fallback
 msgid "About Email Previews"
 msgstr "Over e-mail voorvertoningen"
 
 #: templates/default/email_previews.html:95
-#, auto-english-fallback
 msgid "Previews use sample data to demonstrate email appearance"
 msgstr ""
 "Voorvertoningen gebruiken voorbeeldgegevens om e-mailweergave te demonstreren"
 
 #: templates/default/email_previews.html:96
-#, auto-english-fallback
 msgid "Light mode is the default appearance for most email clients"
 msgstr "Lichte modus is de standaardweergave voor de meeste e-mailclients"
 
@@ -10628,13 +10601,14 @@ msgstr "Lichte modus is de standaardweergave voor de meeste e-mailclients"
 msgid ""
 "Dark mode preview shows how emails appear when users have dark mode enabled"
 msgstr ""
-"Donkere modus voorvertoning toont hoe e-mails verschijnen wanneer gebruikers donkere modus hebben ingeschakeld"
+"Donkere modus voorvertoning toont hoe e-mails verschijnen wanneer gebruikers "
+"donkere modus hebben ingeschakeld"
 
 #: templates/default/email_previews.html:98
-#, auto-english-fallback
 msgid "These previews reflect the actual templates used in production"
 msgstr ""
-"Deze voorvertoningen weerspiegelen de werkelijke sjablonen die in productie worden gebruikt"
+"Deze voorvertoningen weerspiegelen de werkelijke sjablonen die in productie "
+"worden gebruikt"
 
 #: templates/default/pdns_status.html:5 templates/default/pdns_status.html:11
 msgid "PowerDNS Server Status"
@@ -11133,7 +11107,6 @@ msgid "Password for this database user."
 msgstr "Wachtwoord voor deze databasegebruiker."
 
 #: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
-#, auto-english-fallback
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Vermijd aanhalingstekens, backslashes en regeleinden."
 
@@ -11617,28 +11590,37 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Kan geen verbinding maken met PowerDNS-database \"%s\": %s"
 
-# OBSOLETE: msgid "You do not have the permission to view this record."
-# OBSOLETE: msgstr "U hebt geen toestemming om dit record te bekijken."
-
-# OBSOLETE: msgid "Your verification code"
-# OBSOLETE: msgstr "Uw verificatiecode"
+#, auto-english-fallback
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
+# OBSOLETE: "once."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Dubbel %s mechanisme gevonden. Elk mechanisme type mag hoogstens één keer "
+# OBSOLETE: "voorkomen."
 
 #, auto-english-fallback
 #, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "Your verification code is: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "This code will expire in 10 minutes at %s."
+# OBSOLETE: "Priority value in record parameter (%d) does not match priority in "
+# OBSOLETE: "content (%d)."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Uw verificatiecode is: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "Deze code verloopt over 10 minuten om %s."
+# OBSOLETE: "Prioriteitswaarde in record parameter (%d) komt niet overeen met "
+# OBSOLETE: "prioriteit in inhoud (%d)."
 
-# OBSOLETE: msgid "Optional: User's full name for identification"
-# OBSOLETE: msgstr "Optioneel: Volledige naam van gebruiker voor identificatie"
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "SRV record content must have priority, weight, port and target (4 fields)."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "SRV record inhoud moet prioriteit, gewicht, poort en doel hebben (4 "
+# OBSOLETE: "velden)."
 
-# OBSOLETE: msgid "All recovery codes copied to clipboard"
-# OBSOLETE: msgstr "Alle herstelcodes gekopieerd naar klembord"
+#, auto-english-fallback
+# OBSOLETE: msgid ""
+# OBSOLETE: "Invalid value for the priority field of the SRV record. Must be 0-65535."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Ongeldige waarde voor het prioriteitsveld van het SRV record. Moet "
+# OBSOLETE: "0-65535 zijn."
 
 
 

@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Poweradmin 4.0.0\n"
 "Report-Msgid-Bugs-To: edmondas@girkantas.lt\n"
-"POT-Creation-Date: 2025-07-06 07:29+0300\n"
+"POT-Creation-Date: 2025-09-16 18:15+0300\n"
 "PO-Revision-Date: 2025-06-02 07:22+0000\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: Czech <cs@li.org>\n"
@@ -127,7 +127,7 @@ msgstr "Funkce komentářů zón je v konfiguraci zakázána."
 msgid "You do not have the permission to view this comment."
 msgstr "Nemáte oprávnění zobrazit tento komentář."
 
-#: lib/Domain/Service/Dns/RecordManager.php:379
+#: lib/Domain/Service/Dns/RecordManager.php:381
 msgid "You do not have the permission to edit this comment."
 msgstr "Nemáte oprávnění upravit tento komentář."
 
@@ -136,12 +136,10 @@ msgid "The comment has been updated successfully."
 msgstr "Komentář byl úspěšně aktualizován."
 
 #: lib/Application/Controller/EditRecordController.php:81
-#, auto-english-fallback
 msgid "Invalid record ID."
 msgstr "Neplatné ID záznamu."
 
 #: lib/Application/Controller/DeleteRecordController.php:103
-#, auto-english-fallback
 msgid "You do not have permission to delete records in this zone."
 msgstr "Nemáte oprávnění mazat záznamy v této zóně."
 
@@ -414,7 +412,7 @@ msgstr "Heslo bylo vygenerováno, ale ze bezpečnostních důvodů není zobraze
 msgid "Please fill in all required fields correctly."
 msgstr "Vyplňte prosím všechna povinná pole správně."
 
-#: lib/Domain/Service/Dns/RecordManager.php:325
+#: lib/Domain/Service/Dns/RecordManager.php:327
 msgid "You do not have the permission to delete this record."
 msgstr "Nemáte oprávnění smazat tento záznam."
 
@@ -478,7 +476,7 @@ msgstr "Neplatné ID šablony."
 msgid "Template does not exist."
 msgstr "Šablona neexistuje."
 
-#: lib/Domain/Repository/DomainRepository.php:441
+#: lib/Domain/Repository/DomainRepository.php:485
 msgid "You do not have the permission to view this zone."
 msgstr "Nemáte oprávnění zobrazit tuto zónu."
 
@@ -543,24 +541,23 @@ msgstr "Nemáte oprávnění provádět WHOIS vyhledávání."
 msgid "Failed to retrieve WHOIS information using server %s"
 msgstr "Nepodařilo se získat WHOIS informace pomocí serveru %s"
 
-#: lib/Application/Controller/EditController.php:176
-#, auto-english-fallback
+#: lib/Application/Controller/EditController.php:179
 msgid "You do not have permission to access this zone."
 msgstr "Nemáte oprávnění přistupovat k této zóně."
 
-#: lib/Application/Controller/EditController.php:292
+#: lib/Application/Controller/EditController.php:295
 msgid "DNSSEC is not enabled on the server."
 msgstr "DNSSEC není na serveru povoleno."
 
-#: lib/Application/Controller/EditController.php:295
+#: lib/Application/Controller/EditController.php:298
 msgid "Zone is already signed with DNSSEC."
 msgstr "Zóna je již podepsána pomocí DNSSEC."
 
-#: lib/Application/Controller/EditController.php:307
+#: lib/Application/Controller/EditController.php:310
 msgid "Zone has been signed successfully."
 msgstr "Zóna byla úspěšně podepsána."
 
-#: lib/Application/Controller/EditController.php:311
+#: lib/Application/Controller/EditController.php:314
 msgid ""
 "Zone signing requested successfully, but verification failed. Check DNSSEC "
 "keys."
@@ -568,7 +565,7 @@ msgstr ""
 "Podepsání zóny bylo úspěšně požadováno, ale ověření selhalo. Zkontrolujte "
 "DNSSEC klíče."
 
-#: lib/Application/Controller/EditController.php:315
+#: lib/Application/Controller/EditController.php:318
 msgid "Failed to sign zone. Check PowerDNS logs for details."
 msgstr "Nepodařilo se podepsat zónu. Zkontrolujte logy PowerDNS pro detaily."
 
@@ -588,7 +585,7 @@ msgstr "Odpodepsání zóny bylo úspěšně požadováno, ale ověření selhal
 msgid "Failed to unsign zone. Check PowerDNS logs for details."
 msgstr "Nepodařilo se odpodepsat zónu. Zkontrolujte logy PowerDNS pro detaily."
 
-#: lib/Application/Controller/EditController.php:637
+#: lib/Application/Controller/EditController.php:642
 msgid "Template name can't be an empty string."
 msgstr "Název šablony nemůže být prázdný řetězec."
 
@@ -596,35 +593,35 @@ msgstr "Název šablony nemůže být prázdný řetězec."
 msgid "Zone template has been added successfully."
 msgstr "Šablona zóny byla úspěšně přidána."
 
-#: lib/Application/Controller/EditController.php:657
+#: lib/Application/Controller/EditController.php:662
 msgid "You need to be logged in to export zone data."
 msgstr "Musíte být přihlášeni pro export dat zóny."
 
-#: lib/Application/Controller/EditController.php:667
+#: lib/Application/Controller/EditController.php:672
 msgid "You do not have permission to export this zone."
 msgstr "Nemáte oprávnění exportovat tuto zónu."
 
-#: lib/Application/Controller/EditController.php:691
+#: lib/Application/Controller/EditController.php:696
 msgid "This zone does not have any records to export."
 msgstr "Tato zóna nemá žádné záznamy k exportu."
 
-#: lib/Application/Controller/EditController.php:791
+#: lib/Application/Controller/EditController.php:796
 msgid "Request has expired, please try again."
 msgstr "Požadavek vypršel, zkuste to znovu."
 
-#: lib/Application/Controller/EditController.php:796
+#: lib/Application/Controller/EditController.php:801
 msgid "Zone has been updated successfully."
 msgstr "Zóna byla úspěšně aktualizována."
 
-#: lib/Application/Controller/EditController.php:798
+#: lib/Application/Controller/EditController.php:803
 msgid "Zone did not have any record changes."
 msgstr "Zóna neměla žádné změny záznamů."
 
-#: lib/Application/Controller/EditController.php:807
+#: lib/Application/Controller/EditController.php:812
 msgid "Zone has not been updated successfully."
 msgstr "Zóna nebyla úspěšně aktualizována."
 
-#: lib/Application/Controller/EditController.php:835
+#: lib/Application/Controller/EditController.php:840
 msgid "Please provide all required fields."
 msgstr "Zadejte prosím všechna povinná pole."
 
@@ -1029,26 +1026,22 @@ msgid "An unexpected error occurred. Please contact the administrator."
 msgstr "Došlo k neočekávané chybě. Obraťte se prosím na administrátora."
 
 #: lib/Application/Controller/EditRecordController.php:92
-#, auto-english-fallback
 msgid "You do not have permission to view this record."
 msgstr "Nemáte oprávnění zobrazit tento záznam."
 
 #: lib/Application/Controller/EditRecordController.php:101
-#, auto-english-fallback
 msgid "You do not have permission to edit this record."
 msgstr "Nemáte oprávnění upravit tento záznam."
 
-#: lib/Application/Controller/EditRecordController.php:231
+#: lib/Application/Controller/EditRecordController.php:233
 msgid "The record has been updated successfully."
 msgstr "Záznam byl úspěšně aktualizován."
 
 #: lib/Application/Controller/DnssecController.php:64
-#, auto-english-fallback
 msgid "You do not have permission to view this zone."
 msgstr "Nemáte oprávnění zobrazit tuto zónu."
 
 #: lib/Application/Controller/DnssecController.php:77
-#, auto-english-fallback
 msgid "You do not have permission to manage DNSSEC for this zone."
 msgstr "Nemáte oprávnění spravovat DNSSEC pro tuto zónu."
 
@@ -3658,13 +3651,10 @@ msgid ""
 "SPF record exceeds 255 character limit. Split across multiple TXT records."
 msgstr "SPF záznam překračuje limit 255 znaků. Rozdělte na více TXT záznamů."
 
-#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:190
-#, php-format
+#: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:194
 msgid ""
-"Duplicate %s mechanism found. Each mechanism type should appear at most once."
-msgstr ""
-"Nalezen duplicitní mechanismus %s. Každý typ mechanismu by se měl objevit "
-"nejvýše jednou."
+"Multiple \"all\" mechanisms found. Only the first one will be effective."
+msgstr "Nalezeno více mechanismů \"all\". Pouze první bude účinný."
 
 #: lib/Domain/Service/DnsValidation/SPFRecordValidator.php:204
 #, php-format
@@ -3779,14 +3769,16 @@ msgid ""
 "CNAME target must be a fully qualified domain name (FQDN). Single-label "
 "names are not allowed."
 msgstr ""
-"Cíl CNAME musí být plně kvalifikované doménové jméno (FQDN). Názvy s jednou značkou nejsou povoleny."
+"Cíl CNAME musí být plně kvalifikované doménové jméno (FQDN). Názvy s jednou "
+"značkou nejsou povoleny."
 
 #: lib/Domain/Service/DnsValidation/CNAMERecordValidator.php:313
 msgid ""
 "CNAME target must be a fully qualified domain name (FQDN) with a valid top-"
 "level domain."
 msgstr ""
-"Cíl CNAME musí být plně kvalifikované doménové jméno (FQDN) s platnou doménou najvyšší úrovně."
+"Cíl CNAME musí být plně kvalifikované doménové jméno (FQDN) s platnou "
+"doménou najvyšší úrovně."
 
 #: lib/Domain/Service/DnsValidation/DHCIDRecordValidator.php:88
 msgid "Invalid characters in DHCID record content."
@@ -4922,7 +4914,7 @@ msgstr "Hodnota CAA vlastnosti překračuje maximální délku 512 znaků."
 msgid "CAA property value cannot contain NUL (0) characters."
 msgstr "Hodnota CAA vlastnosti nemůže obsahovat NUL (0) znaky."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:241
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:237
 msgid "The hostname is too long."
 msgstr "Hostname je příliš dlouhý."
 
@@ -5521,7 +5513,7 @@ msgstr ""
 "LUA záznam v explicitním return režimu (začíná středníkem) musí obsahovat "
 "alespoň jeden \"return\" příkaz."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:222
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:236
 msgid ""
 "LUA record in implicit return mode should be a valid function call or "
 "function definition with \"function\" and \"end\" keywords."
@@ -5529,7 +5521,7 @@ msgstr ""
 "LUA záznam v implicitním return režimu by měl být platné volání funkce nebo "
 "definice funkce s klíčovými slovy \"function\" a \"end\"."
 
-#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:228
+#: lib/Domain/Service/DnsValidation/LUARecordValidator.php:242
 msgid ""
 "LUA record contains potentially dangerous system access functions. These are "
 "likely to be blocked by PowerDNS security restrictions."
@@ -6088,20 +6080,19 @@ msgstr ""
 "L32 lokátor nemůže používat broadcast nebo nespecifikované adresy (0.0.0.0 "
 "nebo 255.255.255.255)."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:122
-#, php-format
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:121
 msgid ""
-"Priority value in record parameter (%d) does not match priority in content "
-"(%d)."
+"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
+"or higher."
 msgstr ""
-"Hodnota priority v parametru záznamu (%d) se neshoduje s prioritou v obsahu "
-"(%d)."
+"Priorita 0 je platná, ale neobvyklá. Typicky SRV záznamy začínají prioritou "
+"10 nebo vyšší."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:249
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:245
 msgid "SRV record name must be in format _service._protocol.domain"
 msgstr "Název SRV záznamu musí být ve formátu _služba._protokol.doména"
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:258
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:254
 msgid ""
 "Invalid service value in SRV record. Service name must start with an "
 "underscore followed by alphanumeric characters."
@@ -6109,7 +6100,7 @@ msgstr ""
 "Neplatná hodnota služby v SRV záznamu. Název služby musí začínat podtržítkem "
 "následovaným alfanumerickými znaky."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:263
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:259
 msgid ""
 "Invalid protocol value in SRV record. Protocol must start with an underscore "
 "followed by alphanumeric characters."
@@ -6117,7 +6108,7 @@ msgstr ""
 "Neplatná hodnota protokolu v SRV záznamu. Protokol musí začínat podtržítkem "
 "následovaným alfanumerickými znaky."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:272
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:268
 #, php-format
 msgid ""
 "Service name \"%s\" is not in the list of well-known services. This is "
@@ -6126,7 +6117,7 @@ msgstr ""
 "Název služby \"%s\" není v seznamu známých služeb. Toto je povoleno, ale "
 "neobvyklé."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:280
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:276
 #, php-format
 msgid ""
 "Protocol \"%s\" is not in the list of well-known protocols. Common protocols "
@@ -6135,29 +6126,26 @@ msgstr ""
 "Protokol \"%s\" není v seznamu známých protokolů. Běžné protokoly jsou _tcp "
 "a _udp."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:288
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:284
 msgid "Invalid domain name in SRV record."
 msgstr "Neplatné doménové jméno v SRV záznamu."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:313
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:309
 msgid ""
-"SRV record content must have priority, weight, port and target (4 fields)."
-msgstr "Obsah SRV záznamu musí mít prioritu, váhu, port a cíl (4 pole)."
+"SRV record content must have weight, port and target (3 fields). Priority "
+"should be in the priority field."
+msgstr ""
+"Obsah SRV záznamu musí obsahovat váhu, port a cíl (3 pole). Priorita by měla být v poli priority."
 
 #: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:331
-msgid ""
-"Invalid value for the priority field of the SRV record. Must be 0-65535."
-msgstr "Neplatná hodnota pole priority SRV záznamu. Musí být 0-65535."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the weight field of the SRV record. Must be 0-65535."
 msgstr "Neplatná hodnota pole váhy SRV záznamu. Musí být 0-65535."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:341
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:336
 msgid "Invalid value for the port field of the SRV record. Must be 1-65535."
 msgstr "Neplatná hodnota pole portu SRV záznamu. Musí být 1-65535."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:350
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:345
 #, php-format
 msgid ""
 "Port %d differs from the standard port %d for %s service. This is allowed "
@@ -6166,27 +6154,19 @@ msgstr ""
 "Port %d se liší od standardního portu %d pro službu %s. Toto je povoleno, "
 "ale neobvyklé."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:360
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:355
 msgid "SRV target cannot be empty."
 msgstr "Cíl SRV nemůže být prázdný."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:379
-msgid ""
-"Priority 0 is valid but unusual. Typically SRV records start at priority 10 "
-"or higher."
-msgstr ""
-"Priorita 0 je platná, ale neobvyklá. Typicky SRV záznamy začínají prioritou "
-"10 nebo vyšší."
-
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:384
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:375
 msgid "When target is \".\" (no service), port and weight should both be 0."
 msgstr "Když je cíl \".\" (žádná služba), port i váha by měly být 0."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:410
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:400
 msgid "Invalid SRV target."
 msgstr "Neplatný cíl SRV."
 
-#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:433
+#: lib/Domain/Service/DnsValidation/SRVRecordValidator.php:423
 msgid "Invalid value for the priority field of the SRV record."
 msgstr "Neplatná hodnota pole priority SRV záznamu."
 
@@ -6688,11 +6668,11 @@ msgstr "Nemáte oprávnění upravit tento SOA záznam."
 msgid "You do not have the permission to edit this NS record."
 msgstr "Nemáte oprávnění upravit tento NS záznam."
 
-#: lib/Domain/Service/Dns/RecordManager.php:301
+#: lib/Domain/Service/Dns/RecordManager.php:303
 msgid "You do not have the permission to delete SOA records."
 msgstr "Nemáte oprávnění mazat SOA záznamy."
 
-#: lib/Domain/Service/Dns/RecordManager.php:314
+#: lib/Domain/Service/Dns/RecordManager.php:316
 msgid "You do not have the permission to delete NS records."
 msgstr "Nemáte oprávnění mazat NS záznamy."
 
@@ -8330,7 +8310,6 @@ msgid "User's full name for identification"
 msgstr "Celé jméno uživatele pro identifikaci"
 
 #: templates/default/edit_user.html:39 templates/default/add_user.html:29
-#, auto-english-fallback
 msgid "Provide full name"
 msgstr "Zadejte plné jméno"
 
@@ -10320,7 +10299,6 @@ msgid "zones"
 msgstr "zónami"
 
 #: templates/default/email_previews.html:10 templates/default/header.html:167
-#, auto-english-fallback
 msgid "Email Template Previews"
 msgstr "Náhledy emailových šablon"
 
@@ -10330,20 +10308,19 @@ msgid ""
 "modes. These previews use sample data to demonstrate the email formatting "
 "and styling."
 msgstr ""
-"Náhled toho, jak se emailové šablony zobrazí uživatelům v světlém i tmavém režimu. Tyto náhledy používají vzorková data k demonstraci formátování a stylování emailu."
+"Náhled toho, jak se emailové šablony zobrazí uživatelům v světlém i tmavém "
+"režimu. Tyto náhledy používají vzorková data k demonstraci formátování a "
+"stylování emailu."
 
 #: templates/default/email_previews.html:21
-#, auto-english-fallback
 msgid "Active Email Templates"
 msgstr "Aktivní emailové šablony"
 
 #: templates/default/email_previews.html:46
-#, auto-english-fallback
 msgid "Custom"
 msgstr "Vlastní"
 
 #: templates/default/email_previews.html:22
-#, auto-english-fallback
 msgid "Standard"
 msgstr "Standardní"
 
@@ -10352,32 +10329,30 @@ msgid ""
 "Custom templates are active and override the default templates. These are "
 "the templates currently used when sending emails."
 msgstr ""
-"Vlastní šablony jsou aktivní a přepisují výchozí šablony. Tyto šablony se aktuálně používají při odesílání emailů."
+"Vlastní šablony jsou aktivní a přepisují výchozí šablony. Tyto šablony se "
+"aktuálně používají při odesílání emailů."
 
 #: templates/default/email_previews.html:34
 msgid ""
 "Standard templates are active. These are the default templates used when "
 "sending emails."
 msgstr ""
-"Standardní šablony jsou aktivní. Tyto šablony se používají jako výchozí při odesílání emailů."
+"Standardní šablony jsou aktivní. Tyto šablony se používají jako výchozí při "
+"odesílání emailů."
 
 #: templates/default/email_previews.html:54
-#, auto-english-fallback
 msgid "Subject:"
 msgstr "Předmět:"
 
 #: templates/default/email_previews.html:60
-#, auto-english-fallback
 msgid "View Light Mode"
 msgstr "Zobrazit světlý režim"
 
 #: templates/default/email_previews.html:64
-#, auto-english-fallback
 msgid "View Dark Mode"
 msgstr "Zobrazit tmavý režim"
 
 #: templates/default/email_previews.html:76
-#, auto-english-fallback
 msgid "Template Override Information"
 msgstr "Informace o přepsání šablon"
 
@@ -10389,7 +10364,6 @@ msgstr ""
 "Následující standardní šablony jsou aktuálně přepsány vlastními šablonami:"
 
 #: templates/default/email_previews.html:80
-#, auto-english-fallback
 msgid "using custom template"
 msgstr "používá vlastní šablonu"
 
@@ -10398,10 +10372,10 @@ msgid ""
 "To revert to standard templates, remove or rename the custom template files "
 "in <code>templates/emails/custom/</code>."
 msgstr ""
-"Chcete-li se vrátit ke standardním šablonám, odstraňte nebo přejmenujte soubory vlastních šablon v <code>templates/emails/custom/</code>."
+"Chcete-li se vrátit ke standardním šablonám, odstraňte nebo přejmenujte "
+"soubory vlastních šablon v <code>templates/emails/custom/</code>."
 
 #: templates/default/email_previews.html:87
-#, auto-english-fallback
 msgid "Custom Templates"
 msgstr "Vlastní šablony"
 
@@ -10411,20 +10385,19 @@ msgid ""
 "emails/custom/</code> to override these standard templates with your own "
 "designs."
 msgstr ""
-"Můžete vytvořit vlastní emailové šablony jejich umístěním do <code>templates/emails/custom/</code> a tím přepsat tyto standardní šablony vlastním designem."
+"Můžete vytvořit vlastní emailové šablony jejich umístěním do <code>templates/"
+"emails/custom/</code> a tím přepsat tyto standardní šablony vlastním "
+"designem."
 
 #: templates/default/email_previews.html:93
-#, auto-english-fallback
 msgid "About Email Previews"
 msgstr "O náhledech emailů"
 
 #: templates/default/email_previews.html:95
-#, auto-english-fallback
 msgid "Previews use sample data to demonstrate email appearance"
 msgstr "Náhledy používají vzorková data k demonstraci vzhledu emailu"
 
 #: templates/default/email_previews.html:96
-#, auto-english-fallback
 msgid "Light mode is the default appearance for most email clients"
 msgstr "Světlý režim je výchozí vzhled pro většinu emailových klientů"
 
@@ -10432,10 +10405,10 @@ msgstr "Světlý režim je výchozí vzhled pro většinu emailových klientů"
 msgid ""
 "Dark mode preview shows how emails appear when users have dark mode enabled"
 msgstr ""
-"Náhled tmavého režimu ukazuje, jak se emaily zobrazují, když mají uživatelé zapnutý tmavý režim"
+"Náhled tmavého režimu ukazuje, jak se emaily zobrazují, když mají uživatelé "
+"zapnutý tmavý režim"
 
 #: templates/default/email_previews.html:98
-#, auto-english-fallback
 msgid "These previews reflect the actual templates used in production"
 msgstr "Tyto náhledy odráží skutečné šablony používané v produkci"
 
@@ -10931,7 +10904,6 @@ msgid "Password for this database user."
 msgstr "Heslo pro tohoto uživatele databáze."
 
 #: install/templates/step4.html.twig:59 install/templates/step5.html.twig:77
-#, auto-english-fallback
 msgid "Avoid quotes, backslashes, and line breaks."
 msgstr "Vyhíbejte se uvozovkám, zpětným lomítkům a zalomením řádků."
 
@@ -11409,28 +11381,31 @@ msgstr ""
 msgid "Cannot connect to PowerDNS database \"%s\": %s"
 msgstr "Nelze se připojit k databázi PowerDNS \"%s\": %s"
 
-# OBSOLETE: msgid "You do not have the permission to view this record."
-# OBSOLETE: msgstr "Nemáte oprávnění zobrazit tento záznam."
-
-# OBSOLETE: msgid "Your verification code"
-# OBSOLETE: msgstr "Váš ověřovací kód"
+#, auto-english-fallback
+#, php-format
+# OBSOLETE: msgid ""
+# OBSOLETE: "Duplicate %s mechanism found. Each mechanism type should appear at most "
+# OBSOLETE: "once."
+# OBSOLETE: msgstr ""
+# OBSOLETE: "Nalezen duplicitní mechanismus %s. Každý typ mechanismu by se měl objevit "
+# OBSOLETE: "nejvýše jednou."
 
 #, auto-english-fallback
 #, php-format
 # OBSOLETE: msgid ""
-# OBSOLETE: "Your verification code is: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "This code will expire in 10 minutes at %s."
+# OBSOLETE: "Priority value in record parameter (%d) does not match priority in "
+# OBSOLETE: "content (%d)."
 # OBSOLETE: msgstr ""
-# OBSOLETE: "Váš ověřovací kód je: %s\n"
-# OBSOLETE: "\n"
-# OBSOLETE: "Tento kód vyprší za 10 minut v %s."
+# OBSOLETE: "Hodnota priority v parametru záznamu (%d) se neshoduje s prioritou v "
+# OBSOLETE: "obsahu (%d)."
 
-# OBSOLETE: msgid "Optional: User's full name for identification"
-# OBSOLETE: msgstr "Volitelné: Celé jméno uživatele pro identifikaci"
+# OBSOLETE: msgid ""
+# OBSOLETE: "SRV record content must have priority, weight, port and target (4 fields)."
+# OBSOLETE: msgstr "Obsah SRV záznamu musí mít prioritu, váhu, port a cíl (4 pole)."
 
-# OBSOLETE: msgid "All recovery codes copied to clipboard"
-# OBSOLETE: msgstr "Všechny záložní kódy zkopírovány do schránky"
+# OBSOLETE: msgid ""
+# OBSOLETE: "Invalid value for the priority field of the SRV record. Must be 0-65535."
+# OBSOLETE: msgstr "Neplatná hodnota pole priority SRV záznamu. Musí být 0-65535."
 
 
 
