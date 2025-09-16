@@ -82,14 +82,14 @@ body:has(.sidebar) {
     text-transform: uppercase;
     letter-spacing: 0.5px;
     padding: 0.5rem 0.75rem;
-    margin-top: 1rem;
+    margin-top: 0.5rem;
 }
 
 .nav-link {
     color: #6c757d;
     border-radius: 0.375rem;
-    margin-bottom: 0.25rem;
-    padding: 0.625rem 0.75rem;
+    margin-bottom: 0;
+    padding: 0.5rem 0.75rem;
     transition: all 0.15s ease-in-out;
 }
 

@@ -81,7 +81,7 @@
             <div class="sidebar-content p-3">
                 <ul class="nav nav-pills flex-column mb-auto">
                     <!-- Dashboard -->
-                    <li class="nav-item mb-2">
+                    <li class="nav-item">
                         <a href="/" class="nav-link {{ current_page == 'index' ? 'active' : '' }}">
                             <i class="bi bi-speedometer2 me-2"></i>Dashboard
                         </a>
@@ -89,7 +89,7 @@
 
                     {% if perm_search %}
                     <!-- Search -->
-                    <li class="nav-item mb-2">
+                    <li class="nav-item">
                         <a href="/search" class="nav-link {{ current_page == 'search' ? 'active' : '' }}">
                             <i class="bi bi-search me-2"></i>{% trans %}Search{% endtrans %}
                         </a>
@@ -98,7 +98,7 @@
 
                     {% if perm_view_zone_own or perm_view_zone_other or perm_zone_master_add or perm_zone_slave_add %}
                     <!-- Zones Section -->
-                    <li class="nav-item mb-2">
+                    <li class="nav-item">
                         <div class="nav-section-header">
                             <i class="bi bi-diagram-3 me-2"></i>{% trans %}Zones{% endtrans %}
                         </div>
@@ -156,7 +156,7 @@
 
                     {% if perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike %}
                     <!-- Users Section -->
-                    <li class="nav-item mb-2">
+                    <li class="nav-item">
                         <div class="nav-section-header">
                             <i class="bi bi-people me-2"></i>{% trans %}Users{% endtrans %}
                         </div>
@@ -198,7 +198,7 @@
 
                     {% if perm_zone_master_add %}
                     <!-- Templates -->
-                    <li class="nav-item mb-2">
+                    <li class="nav-item">
                         <div class="nav-section-header">
                             <i class="bi bi-files me-2"></i>{% trans %}Templates{% endtrans %}
                         </div>
@@ -221,7 +221,7 @@
 
                     {% if ((not whois_restrict_to_admin or perm_is_godlike) and whois_enabled) or ((not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled) or (perm_is_godlike and api_enabled) or (perm_is_godlike and enable_consistency_checks) or (perm_is_godlike and email_previews_enabled) %}
                     <!-- Tools Section -->
-                    <li class="nav-item mb-2">
+                    <li class="nav-item">
                         <div class="nav-section-header">
                             <i class="bi bi-tools me-2"></i>{% trans %}Tools{% endtrans %}
                         </div>
@@ -273,7 +273,7 @@
                     {% endif %}
 
                     <!-- Account Section -->
-                    <li class="nav-item mb-2">
+                    <li class="nav-item">
                         <div class="nav-section-header">
                             <i class="bi bi-person-circle me-2"></i>{% trans %}Account{% endtrans %}
                         </div>
