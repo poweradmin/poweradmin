@@ -411,6 +411,11 @@ api_v1_permission_template:
     id: '\d+'
   methods: [GET, PUT, DELETE]
 
+api_v1_permissions:
+  path: /api/v1/permissions
+  controller: Poweradmin\Application\Controller\Api\V1\PermissionsController::run
+  methods: [GET]
+
 # API Documentation
 api_docs:
   path: /api/docs
