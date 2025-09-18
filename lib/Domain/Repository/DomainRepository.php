@@ -219,7 +219,7 @@ class DomainRepository implements DomainRepositoryInterface
     public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $excludeReverse = false): array
     {
         // Validate sort parameters
-        $allowedSortColumns = ['name', 'type', 'count_records'];
+        $allowedSortColumns = ['name', 'type', 'count_records', 'owner'];
         $sortby = $this->tableNameService->validateOrderBy($sortby, $allowedSortColumns);
         $sortDirection = $this->tableNameService->validateDirection($sortDirection);
 
