@@ -56,7 +56,7 @@ class PermissionsController extends PublicApiController
         $method = $this->request->getMethod();
 
         $response = match ($method) {
-            'GET' => $this->listPermissions(),
+            'GET' => isset($this->pathParameters['id']) ? $this->getPermission() : $this->listPermissions(),
             default => $this->returnApiError('Method not allowed', 405),
         };
 
@@ -106,6 +106,31 @@ class PermissionsController extends PublicApiController
             return $this->returnApiResponse($permissions);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to fetch permissions: ' . $e->getMessage(), 500);
+        }
+    }
+
+    /**
+     * Get a specific permission by ID
+     */
+    private function getPermission(): JsonResponse
+    {
+        try {
+            $permissionId = (int)($this->pathParameters['id'] ?? 0);
+            if ($permissionId <= 0) {
+                return $this->returnApiError('Valid permission ID is required', 400);
+            }
+
+            // Get all permissions and find the one with matching ID
+            $permissions = $this->permissionTemplateRepository->getPermissionsByTemplateId(0);
+            $permission = array_filter($permissions, fn($p) => (int)$p['id'] === $permissionId);
+
+            if (empty($permission)) {
+                return $this->returnApiError('Permission not found', 404);
+            }
+
+            return $this->returnApiResponse(array_values($permission)[0]);
+        } catch (Exception $e) {
+            return $this->returnApiError('Failed to fetch permission: ' . $e->getMessage(), 500);
         }
     }
 }

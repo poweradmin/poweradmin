@@ -120,7 +120,7 @@ class SymfonyRouterTest extends TestCase
         $routeInfo = $router->match();
 
         $this->assertEquals('Poweradmin\Application\Controller\Api\V1\ZonesRecordsController', $routeInfo['controller']);
-        $this->assertEquals(['zone_id' => '123', 'record_id' => '456'], $routeInfo['parameters']);
+        $this->assertEquals(['id' => '123', 'record_id' => '456'], $routeInfo['parameters']);
         $this->assertEquals('api_v1_zone_record', $routeInfo['route']);
     }
 
@@ -216,7 +216,7 @@ class SymfonyRouterTest extends TestCase
         $url = $router->generateUrl('user_edit', ['id' => 123]);
         $this->assertEquals('/users/123/edit', $url);
 
-        $url = $router->generateUrl('api_v1_zone_record', ['zone_id' => 456, 'record_id' => 789]);
+        $url = $router->generateUrl('api_v1_zone_record', ['id' => 456, 'record_id' => 789]);
         $this->assertEquals('/api/v1/zones/456/records/789', $url);
     }
 

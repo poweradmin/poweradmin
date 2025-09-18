@@ -380,10 +380,10 @@ api_v1_zone_records:
   methods: [GET, POST]
 
 api_v1_zone_record:
-  path: /api/v1/zones/{zone_id}/records/{record_id}
+  path: /api/v1/zones/{id}/records/{record_id}
   controller: Poweradmin\Application\Controller\Api\V1\ZonesRecordsController::run
   requirements:
-    zone_id: '\d+'
+    id: '\d+'
     record_id: '\d+'
   methods: [GET, PUT, DELETE]
 
@@ -414,6 +414,13 @@ api_v1_permission_template:
 api_v1_permissions:
   path: /api/v1/permissions
   controller: Poweradmin\Application\Controller\Api\V1\PermissionsController::run
+  methods: [GET]
+
+api_v1_permission:
+  path: /api/v1/permissions/{id}
+  controller: Poweradmin\Application\Controller\Api\V1\PermissionsController::run
+  requirements:
+    id: '\d+'
   methods: [GET]
 
 # API Documentation

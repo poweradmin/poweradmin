@@ -1127,7 +1127,6 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Controller\\Api\\Internal\\UserPreferencesController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/Internal/UserPreferencesController.php',
         'Poweradmin\\Application\\Controller\\Api\\Internal\\ValidationController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/Internal/ValidationController.php',
         'Poweradmin\\Application\\Controller\\Api\\Internal\\ZoneController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/Internal/ZoneController.php',
-        'Poweradmin\\Application\\Controller\\Api\\KeyValidationController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/KeyValidationController.php',
         'Poweradmin\\Application\\Controller\\Api\\PublicApiController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/PublicApiController.php',
         'Poweradmin\\Application\\Controller\\Api\\V1\\PermissionTemplatesController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V1/PermissionTemplatesController.php',
         'Poweradmin\\Application\\Controller\\Api\\V1\\PermissionsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V1/PermissionsController.php',

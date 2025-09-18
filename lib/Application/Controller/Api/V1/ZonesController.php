@@ -177,17 +177,7 @@ class ZonesController extends PublicApiController
                 ];
             }, $zones);
 
-            return $this->returnApiResponse($formattedZones, true, 'Zones retrieved successfully', 200, [
-                'pagination' => [
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'total' => $totalCount,
-                    'last_page' => ceil($totalCount / $perPage)
-                ],
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
+            return $this->returnApiResponse($formattedZones, true, 'Zones retrieved successfully', 200);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to retrieve zones: ' . $e->getMessage(), 500);
         }
@@ -255,11 +245,7 @@ class ZonesController extends PublicApiController
                 'created_at' => $zone['created_at'] ?? null
             ];
 
-            return $this->returnApiResponse($formattedZone, true, 'Zone retrieved successfully', 200, [
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
+            return $this->returnApiResponse($formattedZone, true, 'Zone retrieved successfully', 200);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to retrieve zone: ' . $e->getMessage(), 500);
         }
@@ -418,12 +404,7 @@ class ZonesController extends PublicApiController
                 ['zone_id' => $result['zone_id']],
                 true,
                 $result['message'] ?? 'Zone created successfully',
-                201,
-                [
-                    'meta' => [
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]
-                ]
+                201
             );
         } catch (Exception $e) {
             return $this->returnApiError('Failed to create zone: ' . $e->getMessage(), 500);
@@ -562,13 +543,7 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
-            return $this->returnApiResponse(null, true, 'Zone updated successfully', 200, [
-                'meta' => [
-                    'zone_id' => $zoneId,
-                    'updated_fields' => array_keys($updates),
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
+            return $this->returnApiResponse(null, true, 'Zone updated successfully', 200);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to update zone: ' . $e->getMessage(), 500);
         }
@@ -635,12 +610,7 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
-            return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204, [
-                'meta' => [
-                    'zone_id' => $zoneId,
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
+            return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to delete zone: ' . $e->getMessage(), 500);
         }

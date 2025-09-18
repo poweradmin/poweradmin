@@ -315,17 +315,7 @@ class UsersController extends PublicApiController
                     }
                 }
 
-                return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, [
-                    'pagination' => [
-                        'current_page' => 1,
-                        'per_page' => count($users),
-                        'total' => count($users),
-                        'last_page' => 1
-                    ],
-                    'meta' => [
-                        'timestamp' => date('Y-m-d H:i:s')
-                    ]
-                ]);
+                return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200);
             }
 
             // Create pagination object for general listing
@@ -336,17 +326,7 @@ class UsersController extends PublicApiController
             $users = $result['data'];
             $totalCount = $result['total_count'];
 
-            return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, [
-                'pagination' => [
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'total' => $totalCount,
-                    'last_page' => ceil($totalCount / $perPage)
-                ],
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
+            return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to retrieve users: ' . $e->getMessage(), 500);
         }

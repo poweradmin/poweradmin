@@ -772,7 +772,6 @@ return array(
     'Poweradmin\\Application\\Controller\\Api\\Internal\\UserPreferencesController' => $baseDir . '/lib/Application/Controller/Api/Internal/UserPreferencesController.php',
     'Poweradmin\\Application\\Controller\\Api\\Internal\\ValidationController' => $baseDir . '/lib/Application/Controller/Api/Internal/ValidationController.php',
     'Poweradmin\\Application\\Controller\\Api\\Internal\\ZoneController' => $baseDir . '/lib/Application/Controller/Api/Internal/ZoneController.php',
-    'Poweradmin\\Application\\Controller\\Api\\KeyValidationController' => $baseDir . '/lib/Application/Controller/Api/KeyValidationController.php',
     'Poweradmin\\Application\\Controller\\Api\\PublicApiController' => $baseDir . '/lib/Application/Controller/Api/PublicApiController.php',
     'Poweradmin\\Application\\Controller\\Api\\V1\\PermissionTemplatesController' => $baseDir . '/lib/Application/Controller/Api/V1/PermissionTemplatesController.php',
     'Poweradmin\\Application\\Controller\\Api\\V1\\PermissionsController' => $baseDir . '/lib/Application/Controller/Api/V1/PermissionsController.php',

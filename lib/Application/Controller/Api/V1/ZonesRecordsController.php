@@ -85,7 +85,7 @@ class ZonesRecordsController extends PublicApiController
         $method = $this->request->getMethod();
 
         $response = match ($method) {
-            'GET' => isset($this->pathParameters['sub_id']) ? $this->getRecord() : $this->listRecords(),
+            'GET' => isset($this->pathParameters['record_id']) ? $this->getRecord() : $this->listRecords(),
             'POST' => $this->createRecord(),
             'PUT' => $this->updateRecord(),
             'DELETE' => $this->deleteRecord(),
@@ -173,13 +173,7 @@ class ZonesRecordsController extends PublicApiController
                 ];
             }, $records);
 
-            return $this->returnApiResponse($formattedRecords, true, 'Records retrieved successfully', 200, [
-                'zone_id' => $zoneId,
-                'zone_name' => $zone['name'],
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
+            return $this->returnApiResponse($formattedRecords, true, 'Records retrieved successfully', 200);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to retrieve records: ' . $e->getMessage(), 500);
         }
@@ -223,7 +217,7 @@ class ZonesRecordsController extends PublicApiController
     {
         try {
             $zoneId = $this->pathParameters['id'];
-            $recordId = $this->pathParameters['sub_id'];
+            $recordId = $this->pathParameters['record_id'];
 
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
@@ -246,13 +240,7 @@ class ZonesRecordsController extends PublicApiController
                 'priority' => isset($record['prio']) ? (int)$record['prio'] : null
             ];
 
-            return $this->returnApiResponse($formattedRecord, true, 'Record retrieved successfully', 200, [
-                'zone_id' => $zoneId,
-                'zone_name' => $zone['name'],
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
+            return $this->returnApiResponse($formattedRecord, true, 'Record retrieved successfully', 200);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to retrieve record: ' . $e->getMessage(), 500);
         }
@@ -429,13 +417,7 @@ class ZonesRecordsController extends PublicApiController
                 'priority' => $priority
             ];
 
-            return $this->returnApiResponse($responseData, true, 'Record created successfully', 201, [
-                'zone_id' => $zoneId,
-                'zone_name' => $zone['name'],
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
+            return $this->returnApiResponse($responseData, true, 'Record created successfully', 201);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to create record: ' . $e->getMessage(), 500);
         }
@@ -506,7 +488,7 @@ class ZonesRecordsController extends PublicApiController
     {
         try {
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
-            $recordId = (int)($this->pathParameters['sub_id'] ?? 0);
+            $recordId = (int)($this->pathParameters['record_id'] ?? 0);
 
             if ($zoneId <= 0 || $recordId <= 0) {
                 return $this->returnApiError('Valid zone ID and record ID are required', 400);
@@ -537,7 +519,8 @@ class ZonesRecordsController extends PublicApiController
                 'type' => isset($input['type']) ? strtoupper(trim($input['type'])) : $existingRecord['type'],
                 'content' => $input['content'] ?? $existingRecord['content'],
                 'ttl' => isset($input['ttl']) ? (int)$input['ttl'] : (int)$existingRecord['ttl'],
-                'prio' => isset($input['priority']) ? (int)$input['priority'] : (int)($existingRecord['prio'] ?? 0)
+                'prio' => isset($input['priority']) ? (int)$input['priority'] : (int)($existingRecord['prio'] ?? 0),
+                'disabled' => isset($input['disabled']) ? (int)$input['disabled'] : (int)($existingRecord['disabled'] ?? 0)
             ];
 
             // Validate TTL
@@ -552,14 +535,7 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Failed to update record', 500);
             }
 
-            return $this->returnApiResponse(null, true, 'Record updated successfully', 200, [
-                'zone_id' => $zoneId,
-                'record_id' => $recordId,
-                'zone_name' => $zone['name'],
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
+            return $this->returnApiResponse(null, true, 'Record updated successfully', 200);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to update record: ' . $e->getMessage(), 500);
         }
@@ -617,7 +593,7 @@ class ZonesRecordsController extends PublicApiController
     {
         try {
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
-            $recordId = (int)($this->pathParameters['sub_id'] ?? 0);
+            $recordId = (int)($this->pathParameters['record_id'] ?? 0);
 
             if ($zoneId <= 0 || $recordId <= 0) {
                 return $this->returnApiError('Valid zone ID and record ID are required', 400);
@@ -642,14 +618,7 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Failed to delete record', 500);
             }
 
-            return $this->returnApiResponse(null, true, 'Record deleted successfully', 204, [
-                'zone_id' => $zoneId,
-                'record_id' => $recordId,
-                'zone_name' => $zone['name'],
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
+            return $this->returnApiResponse(null, true, 'Record deleted successfully', 204);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to delete record: ' . $e->getMessage(), 500);
         }
