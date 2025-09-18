@@ -137,7 +137,8 @@ class SymfonyRouter
         // Create controller instance
         if ($this->isApiRoute()) {
             // API controllers get clean parameter injection
-            $controller = new $controllerClass($parameters);
+            // Pass $_REQUEST as first parameter and route parameters as second
+            $controller = new $controllerClass($_REQUEST, $parameters);
         } else {
             // Web controllers maintain current request structure for compatibility
             // but merge route parameters into the request data

@@ -92,13 +92,13 @@ fi
 
 # Delete test permission templates if they exist
 echo "  Checking for existing Dynamic DNS permission templates..."
-EXISTING_TEMPLATES=$(curl -s -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission_templates" | \
+EXISTING_TEMPLATES=$(curl -s -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission-templates" | \
     jq -r '.data[] | select(.name == "Dynamic DNS User") | .id')
 if [[ -n "$EXISTING_TEMPLATES" ]]; then
     while IFS= read -r template_id; do
         if [[ -n "$template_id" && "$template_id" != "null" ]]; then
             echo "  Deleting existing permission template ID: $template_id"
-            DELETE_TEMPLATE_RESULT=$(curl -s -w "%{http_code}" -X DELETE -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission_templates/$template_id")
+            DELETE_TEMPLATE_RESULT=$(curl -s -w "%{http_code}" -X DELETE -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission-templates/$template_id")
             DELETE_TEMPLATE_CODE="${DELETE_TEMPLATE_RESULT: -3}"
             if [[ "$DELETE_TEMPLATE_CODE" == "200" || "$DELETE_TEMPLATE_CODE" == "204" ]]; then
                 echo "  ✓ Permission template deleted successfully"
@@ -131,18 +131,18 @@ TEMPLATE_RESPONSE=$(curl -s -w "%{http_code}" -X POST \
     -H "X-API-Key: $API_KEY" \
     -H "Content-Type: application/json" \
     -d "$TEMPLATE_DATA" \
-    "$API_BASE_URL/api/v1/permission_templates")
+    "$API_BASE_URL/api/v1/permission-templates")
 TEMPLATE_HTTP_CODE="${TEMPLATE_RESPONSE: -3}"
 TEMPLATE_BODY="${TEMPLATE_RESPONSE%???}"
 
 if [[ "$TEMPLATE_HTTP_CODE" == "201" ]]; then
     echo "  ✓ Created Dynamic DNS permission template"
     # Get the newly created template ID
-    DDNS_TEMPLATE_ID=$(curl -s -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission_templates" | \
+    DDNS_TEMPLATE_ID=$(curl -s -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission-templates" | \
         jq -r '.data[] | select(.name == "Dynamic DNS User") | .id' | tail -1)
 elif [[ "$TEMPLATE_HTTP_CODE" == "409" ]]; then
     echo "  Template already exists, finding existing template..."
-    EXISTING_TEMPLATE=$(curl -s -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission_templates" | \
+    EXISTING_TEMPLATE=$(curl -s -H "X-API-Key: $API_KEY" "$API_BASE_URL/api/v1/permission-templates" | \
         jq -r '.data[] | select(.name == "Dynamic DNS User") | .id')
     if [[ -n "$EXISTING_TEMPLATE" && "$EXISTING_TEMPLATE" != "null" ]]; then
         DDNS_TEMPLATE_ID="$EXISTING_TEMPLATE"

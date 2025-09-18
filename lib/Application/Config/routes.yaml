@@ -397,7 +397,7 @@ api_v1_user:
   controller: Poweradmin\Application\Controller\Api\V1\UsersController::run
   requirements:
     id: '\d+'
-  methods: [GET, PUT, DELETE]
+  methods: [GET, PUT, PATCH, DELETE]
 
 api_v1_permission_templates:
   path: /api/v1/permission-templates

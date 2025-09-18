@@ -417,7 +417,7 @@ class ZonesController extends PublicApiController
             return $this->returnApiResponse(
                 ['zone_id' => $result['zone_id']],
                 true,
-                $result['message'],
+                $result['message'] ?? 'Zone created successfully',
                 201,
                 [
                     'meta' => [
