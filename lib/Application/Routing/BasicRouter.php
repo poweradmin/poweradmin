@@ -131,7 +131,7 @@ class BasicRouter
             for ($i = 0; $i < count($parts) - 1; $i++) {
                 // Use proper capitalization for API version segments (v1, v2, etc.)
                 if (strtolower($parts[$i]) === 'api' && isset($parts[$i + 1]) && preg_match('/^v\d+$/i', $parts[$i + 1])) {
-                    $namespace .= '\\' . ucfirst($parts[$i]) . '\\' . strtolower($parts[$i + 1]);
+                    $namespace .= '\\' . ucfirst($parts[$i]) . '\\' . strtoupper($parts[$i + 1]);
                     $i++; // Skip the next part as we've already processed it
                 } else {
                     $namespace .= '\\' . ucfirst($parts[$i]);

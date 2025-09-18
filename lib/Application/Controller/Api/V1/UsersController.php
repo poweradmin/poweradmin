@@ -87,9 +87,9 @@ class UsersController extends PublicApiController
         $response = match ($method) {
             'GET' => isset($this->pathParameters['id']) ? $this->getUser() : $this->handleGetRequest(),
             'POST' => $this->createUser(),
-            'PUT' => $this->updateUser(),
-            'PATCH' => $this->assignPermissionTemplate(),
-            'DELETE' => $this->deleteUser(),
+            'PUT' => isset($this->pathParameters['id']) ? $this->updateUser() : $this->returnApiError('Method not allowed', 405),
+            'PATCH' => isset($this->pathParameters['id']) ? $this->assignPermissionTemplate() : $this->returnApiError('Method not allowed', 405),
+            'DELETE' => isset($this->pathParameters['id']) ? $this->deleteUser() : $this->returnApiError('Method not allowed', 405),
             default => $this->returnApiError('Method not allowed', 405),
         };
 

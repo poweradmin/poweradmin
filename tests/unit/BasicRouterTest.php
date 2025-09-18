@@ -90,7 +90,7 @@ class BasicRouterTest extends TestCase
         $router = new BasicRouter(['page' => 'api/v1/user/verify']);
 
         $this->assertEquals('api/v1/user_verify', $router->getPageName());
-        $this->assertEquals('\Poweradmin\Application\Controller\Api\v1\UserVerifyController', $router->getControllerClassName('api/v1/user_verify'));
+        $this->assertEquals('\Poweradmin\Application\Controller\Api\V1\UserVerifyController', $router->getControllerClassName('api/v1/user_verify'));
     }
 
     public function testRestfulApiV1UsersRoute(): void
@@ -98,7 +98,7 @@ class BasicRouterTest extends TestCase
         $router = new BasicRouter(['page' => 'api/v1/users']);
 
         $this->assertEquals('api/v1/users', $router->getPageName());
-        $this->assertEquals('\Poweradmin\Application\Controller\Api\v1\UsersController', $router->getControllerClassName('api/v1/users'));
+        $this->assertEquals('\Poweradmin\Application\Controller\Api\V1\UsersController', $router->getControllerClassName('api/v1/users'));
     }
 
     public function testRestfulApiV1UsersWithIdRoute(): void
@@ -116,7 +116,7 @@ class BasicRouterTest extends TestCase
         $router = new BasicRouter(['page' => 'api/v1/zones']);
 
         $this->assertEquals('api/v1/zones', $router->getPageName());
-        $this->assertEquals('\Poweradmin\Application\Controller\Api\v1\ZonesController', $router->getControllerClassName('api/v1/zones'));
+        $this->assertEquals('\Poweradmin\Application\Controller\Api\V1\ZonesController', $router->getControllerClassName('api/v1/zones'));
     }
 
     public function testRestfulApiV1ZonesWithIdRoute(): void
@@ -137,7 +137,7 @@ class BasicRouterTest extends TestCase
         $this->assertEquals([
             'id' => 123
         ], $router->getPathParameters());
-        $this->assertEquals('\Poweradmin\Application\Controller\Api\v1\ZonesRecordsController', $router->getControllerClassName('api/v1/zones_records'));
+        $this->assertEquals('\Poweradmin\Application\Controller\Api\V1\ZonesRecordsController', $router->getControllerClassName('api/v1/zones_records'));
     }
 
     public function testRestfulApiV1ZoneRecordsWithIdRoute(): void

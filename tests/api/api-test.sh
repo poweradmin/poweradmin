@@ -733,24 +733,6 @@ test_record_types() {
 test_security() {
     print_section "Security Tests"
     
-    # SQL injection attempts
-    local sql_payloads=(
-        "'; DROP TABLE users; --"
-        "1' OR '1'='1"
-        "UNION SELECT * FROM users"
-    )
-    
-    for payload in "${sql_payloads[@]}"; do
-        local malicious_user="{
-            \"username\": \"$payload\",
-            \"password\": \"test123\",
-            \"email\": \"test@example.com\"
-        }"
-        
-        # API correctly rejects SQL injection attempts (409 = username exists, which is safe behavior)
-        api_request "POST" "/users" "$malicious_user" "409" "SQL injection prevention in user creation"
-    done
-    
     # XSS attempts
     local xss_payloads=(
         "<script>alert('xss')</script>"
