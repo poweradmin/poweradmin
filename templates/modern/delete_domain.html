@@ -69,7 +69,7 @@
         {% endif %}
 
         <div class="mt-4">
-            <a href="/zones/{{ zone_id }}&confirm=1/delete" class="btn btn-danger btn-sm" data-testid="confirm-delete-zone">
+            <a href="/zones/{{ zone_id }}/delete?confirm=1" class="btn btn-danger btn-sm" data-testid="confirm-delete-zone">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this zone{% endtrans %}
             </a>
             {% if is_reverse_zone %}
