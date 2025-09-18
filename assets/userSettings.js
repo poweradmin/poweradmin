@@ -23,7 +23,7 @@
  */
 const UserSettings = (function() {
     // API endpoint for user preferences
-    const API_ENDPOINT = '/api/internal/user_preferences';
+    const API_ENDPOINT = '/api/internal/user-preferences';
     
     /**
      * Save a preference to database
