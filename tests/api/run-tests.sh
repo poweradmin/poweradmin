@@ -9,7 +9,6 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 API_TEST_SCRIPT="$SCRIPT_DIR/api-test.sh"
-LOAD_TEST_SCRIPT="$SCRIPT_DIR/api-load-test.sh"
 CONFIG_FILE="$SCRIPT_DIR/.env.api-test"
 CONFIG_EXAMPLE="$SCRIPT_DIR/.env.api-test.example"
 
@@ -28,7 +27,6 @@ usage() {
     echo "Commands:"
     echo "  setup              Setup test configuration"
     echo "  test [SUITE]       Run API tests"
-    echo "  load [TYPE]        Run load tests"
     echo "  check              Check test prerequisites"
     echo "  clean              Clean up test data"
     echo ""
@@ -40,13 +38,6 @@ usage() {
     echo "  records            Record management tests"
     echo "  security           Security tests"
     echo "  performance        Performance tests"
-    echo ""
-    echo "Load Test Types:"
-    echo "  all                Run all load tests (default)"
-    echo "  auth               Authentication load test"
-    echo "  zones              Zone creation load test"
-    echo "  rate-limit         Rate limiting test"
-    echo "  memory             Memory leak test"
     echo ""
     echo "Examples:"
     echo "  $0 setup"
@@ -230,18 +221,6 @@ run_api_tests() {
     "$API_TEST_SCRIPT" "$suite"
 }
 
-run_load_tests() {
-    local test_type="${1:-all}"
-    
-    echo -e "${BLUE}Running load tests: $test_type${NC}"
-    echo ""
-    
-    if [[ ! -x "$LOAD_TEST_SCRIPT" ]]; then
-        chmod +x "$LOAD_TEST_SCRIPT"
-    fi
-    
-    "$LOAD_TEST_SCRIPT" "$test_type"
-}
 
 check_prerequisites() {
     echo -e "${BLUE}Checking prerequisites...${NC}"
@@ -320,12 +299,6 @@ main() {
                 exit 1
             fi
             run_api_tests "${2:-all}"
-            ;;
-        "load")
-            if ! check_prerequisites; then
-                exit 1
-            fi
-            run_load_tests "${2:-all}"
             ;;
         "check")
             check_prerequisites
