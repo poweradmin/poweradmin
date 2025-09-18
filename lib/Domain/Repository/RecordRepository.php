@@ -372,7 +372,7 @@ class RecordRepository implements RecordRepositoryInterface
         string $content_filter = ''
     ): array {
         // Validate sort parameters
-        $allowedSortColumns = ['name', 'type', 'content', 'ttl', 'prio'];
+        $allowedSortColumns = ['id', 'name', 'type', 'content', 'ttl', 'prio', 'disabled'];
         $sort_by = $this->tableNameService->validateOrderBy($sort_by, $allowedSortColumns);
         $sort_direction = $this->tableNameService->validateDirection($sort_direction);
 
