@@ -1,0 +1,101 @@
+# Caddy configuration for Poweradmin
+# This configuration is used in the production Docker image and provides
+# comprehensive security, API support, and performance optimizations.
+#
+# Usage:
+# 1. Copy this file to your desired location (e.g., /etc/caddy/Caddyfile)
+# 2. Adjust the following settings for your environment:
+#    - server_name: Set to your domain name (replace :80 with your-domain.com)
+#    - root: Set to your Poweradmin installation path (default: /srv/www)
+#    - php_fastcgi: Adjust PHP-FPM socket/TCP configuration as needed
+#
+# For HTTPS, replace :80 with your domain name and Caddy will automatically
+# obtain and manage SSL certificates via Let's Encrypt.
+
+:80 {
+    # Set this path to your Poweradmin installation directory
+    root * /srv/www
+
+    # Enable access logs
+    log {
+        output file /var/log/caddy/poweradmin.log {
+            roll_size 100mb
+            roll_keep 5
+            roll_keep_for 720h
+        }
+        format console
+        level INFO
+    }
+
+    # Enable gzip compression
+    encode gzip
+
+    # Security: Deny access to sensitive directories
+    @denied path /config* /lib* /tests* /tools* /vendor*
+    @bootstrap path /vendor/twbs/bootstrap* /vendor/twbs/bootstrap-icons*
+
+    # Allow Bootstrap files (override general vendor blocking)
+    handle @bootstrap {
+        file_server
+    }
+
+    # Block sensitive directories (excluding bootstrap)
+    handle @denied {
+        respond "Forbidden" 403
+    }
+
+    # Security: Deny access to hidden files and sensitive file types
+    @hidden path .* *.sql *.md *.log *.yaml *.yml
+    handle @hidden {
+        respond "Forbidden" 403
+    }
+
+    # Static assets with caching
+    @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
+    handle @static {
+        header Cache-Control "public, max-age=31536000"
+        file_server
+    }
+
+    # Handle OPTIONS preflight requests for CORS
+    @options method OPTIONS
+    handle @options {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
+        header Access-Control-Max-Age "3600"
+        respond "" 204
+    }
+
+    # API endpoints with CORS
+    @api path /api*
+    handle @api {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
+        header Access-Control-Max-Age "3600"
+
+        # Forward all API requests to index.php with proper query handling
+        rewrite * /index.php{uri}
+        php_fastcgi unix//run/php/php-fpm.sock {
+            read_timeout 180s
+            env HTTP_AUTHORIZATION {http.request.header.Authorization}
+        }
+    }
+
+    # DDNS update endpoints (for dynamic DNS functionality)
+    rewrite /update /dynamic_update.php
+    rewrite /nic/update /dynamic_update.php
+
+    # Clean URL routing - let Symfony Router handle all routing
+    try_files {path} {path}/ /index.php{uri}
+
+    # PHP handling
+    php_fastcgi unix//run/php/php-fpm.sock {
+        read_timeout 180s
+        env HTTP_AUTHORIZATION {http.request.header.Authorization}
+    }
+
+    # Enable file server for static content
+    file_server
+}
