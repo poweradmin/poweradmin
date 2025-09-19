@@ -98,7 +98,7 @@ COPY <<EOF /etc/caddy/Caddyfile
         file_server
     }
 
-    # Block sensitive directories
+    # Block sensitive directories (excluding bootstrap)
     handle @denied {
         respond "Forbidden" 403
     }
@@ -116,6 +116,16 @@ COPY <<EOF /etc/caddy/Caddyfile
         file_server
     }
 
+    # Handle OPTIONS preflight requests for CORS
+    @options method OPTIONS
+    handle @options {
+        header Access-Control-Allow-Origin "*"
+        header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+        header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
+        header Access-Control-Max-Age "3600"
+        respond "" 204
+    }
+
     # API endpoints with CORS
     @api path /api*
     handle @api {
@@ -124,22 +134,20 @@ COPY <<EOF /etc/caddy/Caddyfile
         header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
         header Access-Control-Max-Age "3600"
 
-        # Handle preflight OPTIONS requests
-        handle_path /api* {
-            method OPTIONS
-            respond "" 204
-        }
-
-        # Let Symfony Router handle all API routing
+        # Forward all API requests to index.php with proper query handling
         rewrite * /index.php{uri}
-        php_server
+        php_server {
+            env HTTP_AUTHORIZATION {http.request.header.Authorization}
+        }
     }
 
     # Clean URL routing - let Symfony Router handle all routing
     try_files {path} {path}/ /index.php{uri}
 
     # PHP handling with FrankenPHP
-    php_server
+    php_server {
+        env HTTP_AUTHORIZATION {http.request.header.Authorization}
+    }
 }
 EOF
 
