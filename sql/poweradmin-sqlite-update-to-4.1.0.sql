@@ -32,6 +32,31 @@ CREATE INDEX IF NOT EXISTS idx_prt_expires ON password_reset_tokens(expires_at);
 INSERT INTO perm_items (id, name, descr) VALUES
 (65, 'api_manage_keys', 'User is allowed to create and manage API keys.');
 
+-- Add authentication method column to users table
+-- SQLite doesn't support ALTER COLUMN with constraints, so we need to recreate the table
+CREATE TABLE users_new (
+    id INTEGER PRIMARY KEY,
+    username VARCHAR(64) NOT NULL,
+    password VARCHAR(128) NOT NULL,
+    fullname VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    description VARCHAR(1024) NOT NULL,
+    perm_templ INTEGER NOT NULL,
+    active INTEGER NOT NULL,
+    use_ldap INTEGER NOT NULL,
+    auth_method VARCHAR(20) NOT NULL DEFAULT 'sql'
+);
+
+-- Copy existing data
+INSERT INTO users_new (id, username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method)
+SELECT id, username, password, fullname, email, description, perm_templ, active, use_ldap,
+       CASE WHEN use_ldap = 1 THEN 'ldap' ELSE 'sql' END as auth_method
+FROM users;
+
+-- Drop old table and rename new one
+DROP TABLE users;
+ALTER TABLE users_new RENAME TO users;
+
 -- Add OIDC user links table for OpenID Connect authentication
 CREATE TABLE IF NOT EXISTS oidc_user_links (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
