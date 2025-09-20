@@ -128,10 +128,13 @@ class OidcService extends LoggingService
             $codeChallenge = $this->generateCodeChallenge($codeVerifier);
             $this->setSessionValue('oidc_code_verifier', $codeVerifier);
 
+            $scopes = $config['scopes'] ?? 'openid profile email';
+
             $authUrl = $provider->getAuthorizationUrl([
                 'state' => $state,
                 'code_challenge' => $codeChallenge,
                 'code_challenge_method' => 'S256',
+                'scope' => $scopes,
             ]);
 
             $this->logInfo('Generated OIDC authorization URL for provider: {provider}', ['provider' => $providerId]);
@@ -262,7 +265,6 @@ class OidcService extends LoggingService
             'urlAuthorize' => $config['authorize_url'],
             'urlAccessToken' => $config['token_url'],
             'urlResourceOwnerDetails' => $config['userinfo_url'],
-            'scopes' => explode(' ', $config['scopes'] ?? 'openid profile email'),
         ]);
     }
 
