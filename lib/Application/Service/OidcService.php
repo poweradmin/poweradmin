@@ -213,8 +213,33 @@ class OidcService extends LoggingService
             // Get user information
             $userInfo = $this->getUserInfo($provider, $token, $providerId);
 
+            // DEBUG: Log raw data from Azure to see all available fields
+            $this->logInfo('OIDC Raw User Data from Azure: {rawdata}', [
+                'rawdata' => $userInfo->getRawData()
+            ]);
+
+            // DEBUG: Log user info details
+            $this->logInfo('OIDC User Info received: {userinfo}', [
+                'userinfo' => [
+                    'username' => $userInfo->getUsername(),
+                    'email' => $userInfo->getEmail(),
+                    'display_name' => $userInfo->getDisplayName(),
+                    'subject' => $userInfo->getSubject(),
+                    'groups' => $userInfo->getGroups(),
+                    'provider' => $userInfo->getProviderId(),
+                    'is_valid' => $userInfo->isValid()
+                ]
+            ]);
+
             // Provision or update user
             $userId = $this->userProvisioningService->provisionUser($userInfo, $providerId);
+
+            // DEBUG: Log provisioning result
+            if ($userId) {
+                $this->logInfo('User provisioning successful, user ID: {userId}', ['userId' => $userId]);
+            } else {
+                $this->logError('User provisioning failed - returned null');
+            }
 
             if ($userId) {
                 $this->logInfo('Successfully authenticated OIDC user: {username}', ['username' => $userInfo->getUsername()]);
@@ -284,7 +309,7 @@ class OidcService extends LoggingService
             displayName: $userData[$mapping['display_name'] ?? 'name'] ?? '',
             groups: $userData[$mapping['groups'] ?? 'groups'] ?? [],
             providerId: $providerId,
-            subject: $userData['sub'] ?? '',
+            subject: $userData[$mapping['subject'] ?? 'sub'] ?? '',
             rawData: $userData
         );
     }

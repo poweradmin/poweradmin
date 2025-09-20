@@ -54,8 +54,16 @@ class OidcUserProvisioningService extends LoggingService
 
     public function provisionUser(OidcUserInfo $userInfo, string $providerId): ?int
     {
+        $this->logInfo('Starting user provisioning for OIDC user: {username}', ['username' => $userInfo->getUsername()]);
+
         if (!$userInfo->isValid()) {
-            $this->logWarning('Invalid OIDC user info provided for provisioning');
+            $this->logWarning('Invalid OIDC user info provided for provisioning: {details}', [
+                'details' => [
+                    'username' => $userInfo->getUsername(),
+                    'email' => $userInfo->getEmail(),
+                    'subject' => $userInfo->getSubject()
+                ]
+            ]);
             return null;
         }
 
@@ -103,16 +111,32 @@ class OidcUserProvisioningService extends LoggingService
     private function findUserByOidcSubject(string $subject, string $providerId): ?int
     {
         try {
+            $this->logInfo('Looking for existing user by OIDC subject: {subject} and provider: {provider}', [
+                'subject' => $subject,
+                'provider' => $providerId
+            ]);
+
             $stmt = $this->db->prepare("
-                SELECT user_id FROM oidc_user_links 
+                SELECT user_id FROM oidc_user_links
                 WHERE oidc_subject = ? AND provider_id = ?
             ");
             $stmt->execute([$subject, $providerId]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            if ($result) {
+                $this->logInfo('Found existing user by OIDC subject, user ID: {userId}', ['userId' => $result['user_id']]);
+            } else {
+                $this->logInfo('No existing user found by OIDC subject');
+            }
+
             return $result ? (int)$result['user_id'] : null;
         } catch (\Exception $e) {
-            $this->logError('Error finding user by OIDC subject: {error}', ['error' => $e->getMessage()]);
+            $this->logError('Error finding user by OIDC subject (table may not exist): {error}', ['error' => $e->getMessage()]);
+
+            // Try to create the table if it doesn't exist
+            $this->logInfo('Attempting to create oidc_user_links table...');
+            $this->createOidcUserLinksTable();
+
             return null;
         }
     }
@@ -268,34 +292,58 @@ class OidcUserProvisioningService extends LoggingService
 
     private function determinePermissionTemplate(array $groups): ?int
     {
+        $this->logInfo('Determining permission template for groups: {groups}', ['groups' => $groups]);
+
         $permissionTemplateMapping = $this->configManager->get('oidc', 'permission_template_mapping', []);
+        $this->logInfo('Available permission template mappings: {mappings}', ['mappings' => $permissionTemplateMapping]);
 
         // Check if user's OIDC groups match any configured mappings
         foreach ($permissionTemplateMapping as $groupName => $templateName) {
             if (in_array($groupName, $groups, true)) {
                 $templateId = $this->findPermissionTemplateByName($templateName);
                 if ($templateId) {
-                    $this->logInfo('Mapped OIDC group {group} to permission template: {template}', [
+                    $this->logInfo('Mapped OIDC group {group} to permission template: {template} (ID: {id})', [
                         'group' => $groupName,
-                        'template' => $templateName
+                        'template' => $templateName,
+                        'id' => $templateId
                     ]);
                     return $templateId;
+                } else {
+                    $this->logWarning('Permission template {template} not found for group {group}', [
+                        'template' => $templateName,
+                        'group' => $groupName
+                    ]);
                 }
             }
         }
 
         // Fall back to default permission template
         $defaultTemplateName = $this->configManager->get('oidc', 'default_permission_template', 'Administrator');
+        $this->logInfo('Falling back to default permission template: {template}', ['template' => $defaultTemplateName]);
+
         $defaultTemplateId = $this->findPermissionTemplateByName($defaultTemplateName);
 
         if ($defaultTemplateId) {
-            $this->logInfo('Using default permission template: {template}', ['template' => $defaultTemplateName]);
+            $this->logInfo('Using default permission template: {template} (ID: {id})', [
+                'template' => $defaultTemplateName,
+                'id' => $defaultTemplateId
+            ]);
             return $defaultTemplateId;
+        } else {
+            $this->logError('Default permission template {template} not found in database!', ['template' => $defaultTemplateName]);
         }
 
         // Final fallback: find any available template (should not happen in normal operation)
         $this->logWarning('Default permission template not found, using first available template');
-        return $this->findFirstAvailablePermissionTemplate();
+        $fallbackId = $this->findFirstAvailablePermissionTemplate();
+
+        if ($fallbackId) {
+            $this->logInfo('Using fallback permission template ID: {id}', ['id' => $fallbackId]);
+        } else {
+            $this->logError('No permission templates found in database at all!');
+        }
+
+        return $fallbackId;
     }
 
     private function findPermissionTemplateByName(string $templateName): ?int
