@@ -312,19 +312,21 @@ return [
      * OIDC (OpenID Connect) Authentication Settings
      */
     'oidc' => [
-        'enabled' => false,                            // Enable OIDC authentication
-        'auto_provision' => true,                      // Automatically create user accounts from OIDC
-        'link_by_email' => true,                       // Link OIDC accounts to existing users by email
-        'sync_user_info' => true,                      // Sync user information (name, email) from OIDC provider
-        'default_permission_template' => 'Administrator',  // Default permission template for new OIDC users
+        'enabled' => false,                   // Enable OIDC authentication
+        'auto_provision' => true,             // Automatically create user accounts from OIDC
+        'link_by_email' => true,              // Link OIDC accounts to existing users by email
+        'sync_user_info' => true,             // Sync user information (name, email) from OIDC provider
+        'default_permission_template' => '',  // Default permission template for new OIDC users
 
         // Permission template mapping for automatic role assignment
         // Maps OIDC groups to existing permission template names
         // Note: Users can only have one permission template assigned
+        // Configure your actual group mappings in config/settings.php
         'permission_template_mapping' => [
-            'poweradmin-admins' => 'Administrator',    // Map this OIDC group to Administrator permission template
-            'dns-operators' => 'DNS Operator',         // Example: DNS operations template (if exists)
-            'dns-viewers' => 'Read Only',              // Example: Read-only template (if exists)
+            // Examples (configure your actual mappings in settings.php):
+            // 'poweradmin-admins' => 'Administrator',    // Map this OIDC group to Administrator permission template
+            // 'dns-operators' => 'DNS Operator',         // Example: DNS operations template (if exists)
+            // 'dns-viewers' => 'Read Only',              // Example: Read-only template (if exists)
         ],
 
         // Provider configurations

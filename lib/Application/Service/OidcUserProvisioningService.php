@@ -54,8 +54,16 @@ class OidcUserProvisioningService extends LoggingService
 
     public function provisionUser(OidcUserInfo $userInfo, string $providerId): ?int
     {
+        $this->logInfo('Starting user provisioning for OIDC user: {username}', ['username' => $userInfo->getUsername()]);
+
         if (!$userInfo->isValid()) {
-            $this->logWarning('Invalid OIDC user info provided for provisioning');
+            $this->logWarning('Invalid OIDC user info provided for provisioning: {details}', [
+                'details' => [
+                    'username' => $userInfo->getUsername(),
+                    'email' => $userInfo->getEmail(),
+                    'subject' => $userInfo->getSubject()
+                ]
+            ]);
             return null;
         }
 
@@ -103,16 +111,32 @@ class OidcUserProvisioningService extends LoggingService
     private function findUserByOidcSubject(string $subject, string $providerId): ?int
     {
         try {
+            $this->logInfo('Looking for existing user by OIDC subject: {subject} and provider: {provider}', [
+                'subject' => $subject,
+                'provider' => $providerId
+            ]);
+
             $stmt = $this->db->prepare("
-                SELECT user_id FROM oidc_user_links 
+                SELECT user_id FROM oidc_user_links
                 WHERE oidc_subject = ? AND provider_id = ?
             ");
             $stmt->execute([$subject, $providerId]);
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+            if ($result) {
+                $this->logInfo('Found existing user by OIDC subject, user ID: {userId}', ['userId' => $result['user_id']]);
+            } else {
+                $this->logInfo('No existing user found by OIDC subject');
+            }
+
             return $result ? (int)$result['user_id'] : null;
         } catch (\Exception $e) {
-            $this->logError('Error finding user by OIDC subject: {error}', ['error' => $e->getMessage()]);
+            $this->logError('Error finding user by OIDC subject (table may not exist): {error}', ['error' => $e->getMessage()]);
+
+            // Try to create the table if it doesn't exist
+            $this->logInfo('Attempting to create oidc_user_links table...');
+            $this->createOidcUserLinksTable();
+
             return null;
         }
     }
@@ -139,13 +163,33 @@ class OidcUserProvisioningService extends LoggingService
             // Determine permission template based on groups
             $permissionTemplateId = $this->determinePermissionTemplate($userInfo->getGroups());
 
+            if (!$permissionTemplateId) {
+                $this->logError('No permission template ID determined for user: {username}', ['username' => $userInfo->getUsername()]);
+                return null;
+            }
+
+            $this->logInfo('Permission template ID determined: {templateId}', ['templateId' => $permissionTemplateId]);
+
             // Generate a unique username if needed
             $username = $this->ensureUniqueUsername($userInfo->getUsername());
+            $this->logInfo('Final username for creation: {username}', ['username' => $username]);
+
+            // Log all the data that will be inserted
+            $userData = [
+                'username' => $username,
+                'password' => '',
+                'fullname' => $userInfo->getDisplayName() ?: $userInfo->getFullName(),
+                'email' => $userInfo->getEmail(),
+                'description' => 'Created via OIDC from ' . $providerId,
+                'active' => 1,
+                'perm_templ' => $permissionTemplateId
+            ];
+            $this->logInfo('User data to be inserted: {userData}', ['userData' => $userData]);
 
             // Create user
             $stmt = $this->db->prepare("
-                INSERT INTO users (username, password, fullname, email, description, active, perm_templ)
-                VALUES (?, ?, ?, ?, ?, ?, ?)
+                INSERT INTO users (username, password, fullname, email, description, active, perm_templ, use_ldap, auth_method)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             ");
 
             $success = $stmt->execute([
@@ -155,16 +199,22 @@ class OidcUserProvisioningService extends LoggingService
                 $userInfo->getEmail(),
                 'Created via OIDC from ' . $providerId,
                 1, // Active
-                $permissionTemplateId
+                $permissionTemplateId,
+                0,  // use_ldap = 0 for OIDC users
+                'oidc'  // auth_method = 'oidc'
             ]);
 
             if (!$success) {
-                throw new \RuntimeException('Failed to insert user');
+                $errorInfo = $stmt->errorInfo();
+                $this->logError('Database INSERT failed. PDO Error: {error}', ['error' => $errorInfo]);
+                throw new \RuntimeException('Failed to insert user. PDO Error: ' . implode(' - ', $errorInfo));
             }
 
             $userId = (int)$this->db->lastInsertId();
+            $this->logInfo('User INSERT successful, new user ID: {userId}', ['userId' => $userId]);
 
             // Link OIDC identity to user
+            $this->logInfo('Linking OIDC identity to user ID: {userId}', ['userId' => $userId]);
             $this->linkOidcToExistingUser($userId, $userInfo, $providerId);
 
             $this->logInfo('Successfully created new user: {username} with ID: {id}', [
@@ -174,7 +224,10 @@ class OidcUserProvisioningService extends LoggingService
 
             return $userId;
         } catch (\Exception $e) {
-            $this->logError('Error creating new OIDC user: {error}', ['error' => $e->getMessage()]);
+            $this->logError('Error creating new OIDC user: {error}. Stack trace: {trace}', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return null;
         }
     }
@@ -203,6 +256,11 @@ class OidcUserProvisioningService extends LoggingService
             if ($newPermissionTemplateId) {
                 $updateFields[] = 'perm_templ = ?';
                 $updateValues[] = $newPermissionTemplateId;
+            } else {
+                $this->logWarning('No permission template mapping found for existing user groups - keeping current permissions unchanged', [
+                    'groups' => $userInfo->getGroups(),
+                    'userId' => $userId
+                ]);
             }
 
             if (!empty($updateFields)) {
@@ -268,34 +326,89 @@ class OidcUserProvisioningService extends LoggingService
 
     private function determinePermissionTemplate(array $groups): ?int
     {
+        $this->logInfo('Determining permission template for groups: {groups}', ['groups' => $groups]);
+
         $permissionTemplateMapping = $this->configManager->get('oidc', 'permission_template_mapping', []);
+        $this->logInfo('Available permission template mappings: {mappings}', ['mappings' => $permissionTemplateMapping]);
 
         // Check if user's OIDC groups match any configured mappings
         foreach ($permissionTemplateMapping as $groupName => $templateName) {
+            $this->logInfo('Checking if group {groupName} is in user groups', ['groupName' => $groupName]);
             if (in_array($groupName, $groups, true)) {
+                $this->logInfo('Found matching group: {group}', ['group' => $groupName]);
                 $templateId = $this->findPermissionTemplateByName($templateName);
                 if ($templateId) {
-                    $this->logInfo('Mapped OIDC group {group} to permission template: {template}', [
+                    $this->logInfo('Mapped OIDC group {group} to permission template: {template} (ID: {id})', [
                         'group' => $groupName,
-                        'template' => $templateName
+                        'template' => $templateName,
+                        'id' => $templateId
                     ]);
                     return $templateId;
+                } else {
+                    $this->logWarning('Permission template {template} not found for group {group}', [
+                        'template' => $templateName,
+                        'group' => $groupName
+                    ]);
                 }
             }
         }
 
+        $this->logInfo('No matching groups found, proceeding to default template');
+
         // Fall back to default permission template
-        $defaultTemplateName = $this->configManager->get('oidc', 'default_permission_template', 'Administrator');
+        $defaultTemplateName = $this->configManager->get('oidc', 'default_permission_template', '');
+
+        if (empty($defaultTemplateName)) {
+            $this->logError('No default permission template configured and user has no matching groups. User provisioning failed.');
+            return null;
+        }
+
+        $this->logInfo('Falling back to default permission template: {template}', ['template' => $defaultTemplateName]);
+
         $defaultTemplateId = $this->findPermissionTemplateByName($defaultTemplateName);
 
         if ($defaultTemplateId) {
-            $this->logInfo('Using default permission template: {template}', ['template' => $defaultTemplateName]);
+            $this->logInfo('Using default permission template: {template} (ID: {id})', [
+                'template' => $defaultTemplateName,
+                'id' => $defaultTemplateId
+            ]);
             return $defaultTemplateId;
+        } else {
+            $this->logError('Default permission template {template} not found in database!', ['template' => $defaultTemplateName]);
         }
 
         // Final fallback: find any available template (should not happen in normal operation)
         $this->logWarning('Default permission template not found, using first available template');
-        return $this->findFirstAvailablePermissionTemplate();
+        $fallbackId = $this->findFirstAvailablePermissionTemplate();
+
+        if ($fallbackId) {
+            $this->logInfo('Using fallback permission template ID: {id}', ['id' => $fallbackId]);
+        } else {
+            $this->logError('No permission templates found in database at all!');
+        }
+
+        return $fallbackId;
+    }
+
+    /**
+     * Get the database username for a user ID
+     * Used to set correct session username when linking existing users
+     */
+    public function getDatabaseUsername(int $userId): ?string
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT username FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result ? $result['username'] : null;
+        } catch (\Exception $e) {
+            $this->logError('Error getting database username for user ID {userId}: {error}', [
+                'userId' => $userId,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
     }
 
     private function findPermissionTemplateByName(string $templateName): ?int

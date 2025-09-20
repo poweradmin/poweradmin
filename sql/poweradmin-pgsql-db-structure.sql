@@ -103,6 +103,7 @@ CREATE TABLE "public"."users" (
                                   "perm_templ" integer,
                                   "active" integer,
                                   "use_ldap" integer,
+                                  "auth_method" character varying(20) DEFAULT 'sql' NOT NULL,
                                   CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 

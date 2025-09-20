@@ -6,6 +6,12 @@ ALTER TABLE password_reset_tokens ALTER COLUMN used SET DEFAULT FALSE;
 INSERT INTO perm_items (id, name, descr) VALUES
 (65, 'api_manage_keys', 'User is allowed to create and manage API keys.');
 
+-- Add authentication method column to users table
+ALTER TABLE users ADD COLUMN auth_method VARCHAR(20) NOT NULL DEFAULT 'sql';
+
+-- Update existing LDAP users to use 'ldap' auth method
+UPDATE users SET auth_method = 'ldap' WHERE use_ldap = 1;
+
 -- Add OIDC user links table for OpenID Connect authentication
 CREATE TABLE IF NOT EXISTS oidc_user_links (
     id SERIAL PRIMARY KEY,

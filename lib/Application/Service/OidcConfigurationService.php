@@ -366,8 +366,15 @@ class OidcConfigurationService extends LoggingService
         $errors = [];
         $mapping = $this->configManager->get('oidc', 'permission_template_mapping', []);
 
+        // Empty mapping is allowed - will use default_permission_template fallback
         if (empty($mapping)) {
-            $errors[] = 'No OIDC permission template mapping configured';
+            // Check if default template exists before claiming it will be used
+            $defaultTemplate = $this->configManager->get('oidc', 'default_permission_template', '');
+            if (empty($defaultTemplate)) {
+                $this->logWarning('No permission template mapping configured and no default_permission_template defined');
+            } else {
+                $this->logWarning('No permission template mapping configured, will use default_permission_template for all users');
+            }
             return $errors;
         }
 
@@ -379,12 +386,6 @@ class OidcConfigurationService extends LoggingService
             if (!is_string($group) || !is_string($template)) {
                 $errors[] = "Invalid mapping: group and template names must be strings";
             }
-        }
-
-        // Validate default permission template
-        $defaultTemplate = $this->configManager->get('oidc', 'default_permission_template', '');
-        if (empty($defaultTemplate)) {
-            $errors[] = 'Default permission template not configured';
         }
 
         return $errors;
