@@ -234,13 +234,17 @@ class MfaVerifyController extends BaseController
             }
         }
 
+        // Get recovery code length for template validation
+        $recoveryCodeLength = (int)$this->config->get('security', 'mfa.recovery_code_length', 10);
+
         // Use the standard render - the template will hide navigation based on the current_page
         $this->render('mfa_verify.html', [
             'username' => $username,
             'mfa_token' => $mfaToken,
             'mfa_type' => $mfaType,
             'msg' => $message,
-            'type' => $type
+            'type' => $type,
+            'recovery_code_length' => $recoveryCodeLength
         ]);
     }
 }
