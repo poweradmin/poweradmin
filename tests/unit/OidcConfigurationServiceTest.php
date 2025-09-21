@@ -54,10 +54,10 @@ class OidcConfigurationServiceTest extends TestCase
         ];
 
         $this->configManager
+            ->expects($this->once())
             ->method('get')
-            ->willReturnMap([
-                ['oidc', 'providers', [], ['azure' => $providerConfig]],
-            ]);
+            ->with('oidc', 'providers', [])
+            ->willReturn(['azure' => $providerConfig]);
 
         $result = $this->service->getProviderConfig('azure');
 
@@ -96,10 +96,10 @@ class OidcConfigurationServiceTest extends TestCase
         ];
 
         $this->configManager
+            ->expects($this->once())
             ->method('get')
-            ->willReturnMap([
-                ['oidc', 'providers', [], ['keycloak' => $providerConfig]],
-            ]);
+            ->with('oidc', 'providers', [])
+            ->willReturn(['keycloak' => $providerConfig]);
 
         $result = $this->service->getProviderConfig('keycloak');
 
@@ -131,10 +131,10 @@ class OidcConfigurationServiceTest extends TestCase
         ];
 
         $this->configManager
+            ->expects($this->once())
             ->method('get')
-            ->willReturnMap([
-                ['oidc', 'providers', [], ['okta' => $providerConfig]],
-            ]);
+            ->with('oidc', 'providers', [])
+            ->willReturn(['okta' => $providerConfig]);
 
         $result = $this->service->getProviderConfig('okta');
 
@@ -160,10 +160,10 @@ class OidcConfigurationServiceTest extends TestCase
         ];
 
         $this->configManager
+            ->expects($this->once())
             ->method('get')
-            ->willReturnMap([
-                ['oidc', 'providers', [], ['azure' => $providerConfig]],
-            ]);
+            ->with('oidc', 'providers', [])
+            ->willReturn(['azure' => $providerConfig]);
 
         $result = $this->service->getProviderConfig('azure');
 
@@ -191,10 +191,10 @@ class OidcConfigurationServiceTest extends TestCase
         ];
 
         $this->configManager
+            ->expects($this->once())
             ->method('get')
-            ->willReturnMap([
-                ['oidc', 'providers', [], ['azure' => $providerConfig]],
-            ]);
+            ->with('oidc', 'providers', [])
+            ->willReturn(['azure' => $providerConfig]);
 
         $result = $this->service->getProviderConfig('azure');
 
@@ -241,10 +241,10 @@ class OidcConfigurationServiceTest extends TestCase
         ];
 
         $this->configManager
+            ->expects($this->once())
             ->method('get')
-            ->willReturnMap([
-                ['oidc', 'providers', [], ['authentik' => $providerConfig]],
-            ]);
+            ->with('oidc', 'providers', [])
+            ->willReturn(['authentik' => $providerConfig]);
 
         $result = $this->service->getProviderConfig('authentik');
 
@@ -284,10 +284,10 @@ class OidcConfigurationServiceTest extends TestCase
         ];
 
         $this->configManager
+            ->expects($this->once())
             ->method('get')
-            ->willReturnMap([
-                ['oidc', 'providers', [], ['azure' => $providerConfig]],
-            ]);
+            ->with('oidc', 'providers', [])
+            ->willReturn(['azure' => $providerConfig]);
 
         $result = $this->service->getProviderConfig('azure');
 
