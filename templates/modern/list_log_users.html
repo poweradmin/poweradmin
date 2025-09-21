@@ -11,8 +11,7 @@
         <strong><i class="bi bi-journal-text me-2"></i>{% trans %}User Activity Logs{% endtrans %}</strong>
     </div>
     <div class="card-body">
-        <form method="GET">
-            <input type="hidden" name="page" value="list_log_users">
+        <form method="GET" action="/users/logs">
             <div class="row mb-4">
                 <div class="col-md-6">
                     <div class="input-group">
