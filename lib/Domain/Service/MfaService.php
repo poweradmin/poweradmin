@@ -215,7 +215,7 @@ class MfaService
         if (empty($userMfa->getRecoveryCodesAsArray())) {
             // Get configuration values for recovery codes
             $codeCount = (int)$this->configManager->get('security', 'mfa.recovery_codes', 10);
-            $codeLength = (int)$this->configManager->get('security', 'mfa.recovery_code_length', 20);
+            $codeLength = (int)$this->configManager->get('security', 'mfa.recovery_code_length', 10);
 
             // Convert length from character length to byte length (divide by 2 since hex encoding doubles length)
             $byteLength = (int)ceil($codeLength / 2);
