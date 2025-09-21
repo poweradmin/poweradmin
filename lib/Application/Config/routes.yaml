@@ -495,10 +495,11 @@ mfa_verify_token:
 # DNSSEC Key Management
 dnssec_key_toggle:
   path: /zones/{zone_id}/dnssec/keys/{key_id}/toggle
-  controller: Poweradmin\Application\Controller\DnssecEditKeyController::run
+  controller: Poweradmin\Application\Controller\DnssecToggleKeyController::run
   requirements:
     zone_id: '\d+'
     key_id: '\d+'
+  methods: [GET, POST]
 
 # Zone Template Record Management  
 edit_zone_templ_record:

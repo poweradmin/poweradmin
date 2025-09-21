@@ -51,6 +51,9 @@ class OidcConfigurationService extends LoggingService
 
             $config = $providers[$providerId];
 
+            // Process URL templates before validation
+            $config = $this->processUrlTemplates($config);
+
             // Validate required fields before processing
             if (empty($config['client_id']) || empty($config['client_secret'])) {
                 $this->logError('Missing required OIDC configuration for provider: {provider}', ['provider' => $providerId]);
@@ -118,7 +121,7 @@ class OidcConfigurationService extends LoggingService
                 ]
             ]);
 
-            $metadata = file_get_contents($metadataUrl, false, $context);
+            $metadata = @file_get_contents($metadataUrl, false, $context);
 
             if ($metadata === false) {
                 throw new \RuntimeException("Failed to fetch metadata from: {$metadataUrl}");
@@ -154,6 +157,47 @@ class OidcConfigurationService extends LoggingService
         }
     }
 
+    private function processUrlTemplates(array $config): array
+    {
+        // Define which configuration keys should have URL template processing
+        $urlFields = [
+            'metadata_url',
+            'authorize_url',
+            'token_url',
+            'userinfo_url',
+            'logout_url'
+        ];
+
+        foreach ($urlFields as $field) {
+            if (isset($config[$field]) && is_string($config[$field])) {
+                $config[$field] = $this->replaceUrlPlaceholders($config[$field], $config);
+            }
+        }
+
+        return $config;
+    }
+
+    private function replaceUrlPlaceholders(string $url, array $config): string
+    {
+        // Define mappings for common OIDC provider placeholders
+        $placeholders = [
+            '{tenant}' => $config['tenant'] ?? '',
+            '{base_url}' => $config['base_url'] ?? '',
+            '{realm}' => $config['realm'] ?? '',
+            '{domain}' => $config['domain'] ?? '',
+            '{application_slug}' => $config['application_slug'] ?? '',
+        ];
+
+        // Replace placeholders with actual values
+        foreach ($placeholders as $placeholder => $value) {
+            if (!empty($value)) {
+                $url = str_replace($placeholder, $value, $url);
+            }
+        }
+
+        return $url;
+    }
+
     private function validateProviderConfig(array $config): bool
     {
         $required = ['client_id', 'client_secret', 'authorize_url', 'token_url', 'userinfo_url'];
@@ -167,207 +211,20 @@ class OidcConfigurationService extends LoggingService
         return true;
     }
 
-    public function getProviderDisplayName(string $providerId): string
-    {
-        $config = $this->getProviderConfig($providerId);
-        return $config['display_name'] ?? $config['name'] ?? ucfirst($providerId);
-    }
-
-    public function isProviderEnabled(string $providerId): bool
-    {
-        $config = $this->getProviderConfig($providerId);
-        return $config !== null;
-    }
-
-    /**
-     * Get predefined provider configurations (Azure AD, Keycloak, Okta, Ping, Authentik, etc.)
-     */
-    public function getProviderTemplate(string $providerType): array
-    {
-        $templates = [
-            'azure' => [
-                'name' => 'Microsoft Azure AD',
-                'display_name' => 'Sign in with Microsoft',
-                'auto_discovery' => true,
-                'metadata_url' => 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid_configuration',
-                'scopes' => 'openid profile email',
-                'user_mapping' => [
-                    'username' => 'preferred_username',
-                    'email' => 'email',
-                    'first_name' => 'given_name',
-                    'last_name' => 'family_name',
-                    'display_name' => 'name',
-                    'groups' => 'groups',
-                ]
-            ],
-            'keycloak' => [
-                'name' => 'Keycloak',
-                'display_name' => 'Sign in with Keycloak',
-                'auto_discovery' => true,
-                'metadata_url' => '{base_url}/auth/realms/{realm}/.well-known/openid_configuration',
-                'scopes' => 'openid profile email',
-                'user_mapping' => [
-                    'username' => 'preferred_username',
-                    'email' => 'email',
-                    'first_name' => 'given_name',
-                    'last_name' => 'family_name',
-                    'display_name' => 'name',
-                    'groups' => 'groups',
-                ]
-            ],
-            'okta' => [
-                'name' => 'Okta',
-                'display_name' => 'Sign in with Okta',
-                'auto_discovery' => true,
-                'metadata_url' => 'https://{domain}/.well-known/openid_configuration',
-                'scopes' => 'openid profile email groups',
-                'user_mapping' => [
-                    'username' => 'preferred_username',
-                    'email' => 'email',
-                    'first_name' => 'given_name',
-                    'last_name' => 'family_name',
-                    'display_name' => 'name',
-                    'groups' => 'groups',
-                ],
-                'additional_params' => [
-                    'prompt' => 'select_account'
-                ]
-            ],
-            'ping' => [
-                'name' => 'Ping Identity',
-                'display_name' => 'Sign in with PingIdentity',
-                'auto_discovery' => true,
-                'metadata_url' => 'https://{domain}/.well-known/openid_configuration',
-                'scopes' => 'openid profile email',
-                'user_mapping' => [
-                    'username' => 'sub',
-                    'email' => 'email',
-                    'first_name' => 'given_name',
-                    'last_name' => 'family_name',
-                    'display_name' => 'name',
-                    'groups' => 'memberOf',
-                ]
-            ],
-            'authentik' => [
-                'name' => 'Authentik (goauthentik)',
-                'display_name' => 'Sign in with Authentik',
-                'auto_discovery' => true,
-                'metadata_url' => '{base_url}/application/o/{application_slug}/.well-known/openid_configuration',
-                'scopes' => 'openid profile email',
-                'user_mapping' => [
-                    'username' => 'preferred_username',
-                    'email' => 'email',
-                    'first_name' => 'given_name',
-                    'last_name' => 'family_name',
-                    'display_name' => 'name',
-                    'groups' => 'groups',
-                ]
-            ],
-            'google' => [
-                'name' => 'Google',
-                'display_name' => 'Sign in with Google',
-                'auto_discovery' => true,
-                'metadata_url' => 'https://accounts.google.com/.well-known/openid_configuration',
-                'scopes' => 'openid profile email',
-                'user_mapping' => [
-                    'username' => 'email',
-                    'email' => 'email',
-                    'first_name' => 'given_name',
-                    'last_name' => 'family_name',
-                    'display_name' => 'name',
-                    'groups' => 'groups',
-                ]
-            ],
-            'auth0' => [
-                'name' => 'Auth0',
-                'display_name' => 'Sign in with Auth0',
-                'auto_discovery' => true,
-                'metadata_url' => 'https://{domain}/.well-known/openid_configuration',
-                'scopes' => 'openid profile email',
-                'user_mapping' => [
-                    'username' => 'nickname',
-                    'email' => 'email',
-                    'first_name' => 'given_name',
-                    'last_name' => 'family_name',
-                    'display_name' => 'name',
-                    'groups' => 'https://schemas.auth0.com/groups',
-                ]
-            ],
-            'generic' => [
-                'name' => 'Generic OIDC',
-                'display_name' => 'Sign in with OIDC',
-                'auto_discovery' => false,
-                'scopes' => 'openid profile email',
-                'user_mapping' => [
-                    'username' => 'preferred_username',
-                    'email' => 'email',
-                    'first_name' => 'given_name',
-                    'last_name' => 'family_name',
-                    'display_name' => 'name',
-                    'groups' => 'groups',
-                ]
-            ]
-        ];
-
-        return $templates[$providerType] ?? $templates['generic'];
-    }
-
-    /**
-     * Get available provider types with descriptions
-     */
-    public function getAvailableProviderTypes(): array
-    {
-        return [
-            'azure' => [
-                'name' => 'Microsoft Azure AD',
-                'description' => 'Microsoft Azure Active Directory / Entra ID',
-                'requires' => ['tenant']
-            ],
-            'keycloak' => [
-                'name' => 'Keycloak',
-                'description' => 'Red Hat Keycloak identity and access management',
-                'requires' => ['base_url', 'realm']
-            ],
-            'okta' => [
-                'name' => 'Okta',
-                'description' => 'Okta identity management platform',
-                'requires' => ['domain']
-            ],
-            'ping' => [
-                'name' => 'Ping Identity',
-                'description' => 'Ping Identity access management',
-                'requires' => ['domain']
-            ],
-            'authentik' => [
-                'name' => 'Authentik',
-                'description' => 'goauthentik.io - Open-source identity provider',
-                'requires' => ['base_url', 'application_slug']
-            ],
-            'google' => [
-                'name' => 'Google',
-                'description' => 'Google identity platform',
-                'requires' => []
-            ],
-            'auth0' => [
-                'name' => 'Auth0',
-                'description' => 'Auth0 identity platform',
-                'requires' => ['domain']
-            ],
-            'generic' => [
-                'name' => 'Generic OIDC',
-                'description' => 'Generic OpenID Connect provider',
-                'requires' => ['authorize_url', 'token_url', 'userinfo_url']
-            ]
-        ];
-    }
-
     public function validatePermissionTemplateMapping(): array
     {
         $errors = [];
         $mapping = $this->configManager->get('oidc', 'permission_template_mapping', []);
 
+        // Empty mapping is allowed - will use default_permission_template fallback
         if (empty($mapping)) {
-            $errors[] = 'No OIDC permission template mapping configured';
+            // Check if default template exists before claiming it will be used
+            $defaultTemplate = $this->configManager->get('oidc', 'default_permission_template', '');
+            if (empty($defaultTemplate)) {
+                $this->logWarning('No permission template mapping configured and no default_permission_template defined');
+            } else {
+                $this->logWarning('No permission template mapping configured, will use default_permission_template for all users');
+            }
             return $errors;
         }
 
@@ -379,12 +236,6 @@ class OidcConfigurationService extends LoggingService
             if (!is_string($group) || !is_string($template)) {
                 $errors[] = "Invalid mapping: group and template names must be strings";
             }
-        }
-
-        // Validate default permission template
-        $defaultTemplate = $this->configManager->get('oidc', 'default_permission_template', '');
-        if (empty($defaultTemplate)) {
-            $errors[] = 'Default permission template not configured';
         }
 
         return $errors;

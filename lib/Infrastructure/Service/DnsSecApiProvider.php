@@ -160,7 +160,9 @@ class DnsSecApiProvider implements DnssecProvider
         $zone = new Zone($zoneName);
         $keys = $this->client->getZoneKeys($zone);
         foreach ($keys as $key) {
-            if ($key->getId() === $keyId) {
+            // Use loose comparison (==) instead of strict (===) to handle potential
+            // type mismatches between PowerDNS API responses and PHP type casting
+            if ($key->getId() == $keyId) {
                 return true;
             }
         }
@@ -172,7 +174,9 @@ class DnsSecApiProvider implements DnssecProvider
         $zone = new Zone($zoneName);
         $keys = $this->client->getZoneKeys($zone);
         foreach ($keys as $key) {
-            if ($key->getId() === $keyId) {
+            // Use loose comparison (==) instead of strict (===) to handle potential
+            // type mismatches between PowerDNS API responses and PHP type casting
+            if ($key->getId() == $keyId) {
                 return $this->transformer->transformKey($key);
             }
         }

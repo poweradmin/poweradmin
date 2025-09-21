@@ -78,7 +78,7 @@ class OidcService extends LoggingService
         // Validate OIDC configuration first
         $configErrors = $this->oidcConfigurationService->validatePermissionTemplateMapping();
         if (!empty($configErrors)) {
-            $this->logError('OIDC configuration validation failed: {errors}', ['errors' => implode(', ', $configErrors)]);
+            $this->logError('Configuration validation failed: {errors}', ['errors' => implode(', ', $configErrors)]);
             return [];
         }
 
@@ -109,7 +109,7 @@ class OidcService extends LoggingService
                 $this->logError('Cannot initiate OIDC flow - configuration errors: {errors}', [
                     'errors' => implode(', ', $configErrors)
                 ]);
-                throw new \RuntimeException('OIDC configuration validation failed: ' . implode(', ', $configErrors));
+                throw new \RuntimeException('Configuration validation failed: ' . implode(', ', $configErrors));
             }
 
             $provider = $this->createProvider($providerId);
@@ -128,13 +128,18 @@ class OidcService extends LoggingService
             $codeChallenge = $this->generateCodeChallenge($codeVerifier);
             $this->setSessionValue('oidc_code_verifier', $codeVerifier);
 
+            // Get provider configuration for scopes
+            $config = $this->oidcConfigurationService->getProviderConfig($providerId);
+            $scopes = $config['scopes'] ?? 'openid profile email';
+
             $authUrl = $provider->getAuthorizationUrl([
                 'state' => $state,
                 'code_challenge' => $codeChallenge,
                 'code_challenge_method' => 'S256',
+                'scope' => $scopes,
             ]);
 
-            $this->logInfo('Generated OIDC authorization URL for provider: {provider}', ['provider' => $providerId]);
+            $this->logInfo('Generated OIDC authorization URL: {url}', ['url' => $authUrl]);
 
             return $authUrl;
         } catch (\Exception $e) {
@@ -205,29 +210,65 @@ class OidcService extends LoggingService
                 $tokenParams['code_verifier'] = $codeVerifier;
             }
 
-            $token = $provider->getAccessToken('authorization_code', $tokenParams);
+            try {
+                $token = $provider->getAccessToken('authorization_code', $tokenParams);
+            } catch (\Exception $e) {
+                $this->logError('OIDC authentication error: {error}', ['error' => $e->getMessage()]);
+                throw $e;
+            }
 
             // Get user information
             $userInfo = $this->getUserInfo($provider, $token, $providerId);
 
+            // Log raw data to see all available fields
+            $this->logInfo('OIDC Raw User Data: {rawdata}', [
+                'rawdata' => $userInfo->getRawData()
+            ]);
+
+            // Log user info details
+            $this->logInfo('OIDC User Info received: {userinfo}', [
+                'userinfo' => [
+                    'username' => $userInfo->getUsername(),
+                    'email' => $userInfo->getEmail(),
+                    'display_name' => $userInfo->getDisplayName(),
+                    'subject' => $userInfo->getSubject(),
+                    'groups' => $userInfo->getGroups(),
+                    'provider' => $userInfo->getProviderId(),
+                    'is_valid' => $userInfo->isValid()
+                ]
+            ]);
+
             // Provision or update user
             $userId = $this->userProvisioningService->provisionUser($userInfo, $providerId);
+
+            // Log provisioning result
+            if ($userId) {
+                $this->logInfo('User provisioning successful, user ID: {userId}', ['userId' => $userId]);
+            } else {
+                $this->logError('User provisioning failed - returned null');
+            }
 
             if ($userId) {
                 $this->logInfo('Successfully authenticated OIDC user: {username}', ['username' => $userInfo->getUsername()]);
 
+                // Get the actual database username (important for existing users linked by email)
+                $databaseUsername = $this->userProvisioningService->getDatabaseUsername($userId);
+                if (!$databaseUsername) {
+                    $this->logError('Could not get database username for user ID: {userId}', ['userId' => $userId]);
+                    $databaseUsername = $userInfo->getUsername(); // Fallback to OIDC username
+                }
+
+                $this->logInfo('Using database username for session: {username}', ['username' => $databaseUsername]);
+
                 // Set up session following existing patterns
                 $this->setSessionValue('userid', $userId);
-                $this->setSessionValue('userlogin', $userInfo->getUsername());
+                $this->setSessionValue('userlogin', $databaseUsername);  // Use database username, not OIDC username
                 $this->setSessionValue('userfullname', $userInfo->getDisplayName());
                 $this->setSessionValue('useremail', $userInfo->getEmail());
-                $this->setSessionValue('oidc_authenticated', true);
-                $this->setSessionValue('oidc_provider', $providerId);
-                $this->setSessionValue('auth_used', 'oidc');
+                $this->setSessionValue('auth_method_used', 'oidc');  // Track how THIS session was created
 
                 // Clean up temporary session data
                 $this->unsetSessionValue('oidc_state');
-                $this->unsetSessionValue('oidc_provider');
                 $this->unsetSessionValue('oidc_code_verifier');
 
                 $this->authenticationService->redirectToIndex();
@@ -242,9 +283,8 @@ class OidcService extends LoggingService
             $this->authenticationService->auth($sessionEntity);
         }
 
-        // Clean up session data
+        // Clean up session data (in error cases only)
         $this->unsetSessionValue('oidc_state');
-        $this->unsetSessionValue('oidc_provider');
         $this->unsetSessionValue('oidc_code_verifier');
     }
 
@@ -262,7 +302,6 @@ class OidcService extends LoggingService
             'urlAuthorize' => $config['authorize_url'],
             'urlAccessToken' => $config['token_url'],
             'urlResourceOwnerDetails' => $config['userinfo_url'],
-            'scopes' => explode(' ', $config['scopes'] ?? 'openid profile email'),
         ]);
     }
 
@@ -282,18 +321,48 @@ class OidcService extends LoggingService
             displayName: $userData[$mapping['display_name'] ?? 'name'] ?? '',
             groups: $userData[$mapping['groups'] ?? 'groups'] ?? [],
             providerId: $providerId,
-            subject: $userData['sub'] ?? '',
+            subject: $userData[$mapping['subject'] ?? 'sub'] ?? '',
             rawData: $userData
         );
     }
 
     private function getCallbackUrl(): string
     {
-        $scheme = $this->request->getServerParam('REQUEST_SCHEME', 'https');
+        $scheme = $this->detectScheme();
         $host = $this->request->getServerParam('HTTP_HOST', 'localhost');
         $basePrefix = $this->configManager->get('interface', 'base_url_prefix', '');
 
         return $scheme . '://' . $host . $basePrefix . '/oidc/callback';
+    }
+
+    private function detectScheme(): string
+    {
+        // Check for reverse proxy headers first (common in Docker/Kubernetes environments)
+        $forwardedProto = $this->request->getServerParam('HTTP_X_FORWARDED_PROTO');
+        if ($forwardedProto) {
+            return strtolower($forwardedProto) === 'https' ? 'https' : 'http';
+        }
+
+        // Alternative header format
+        $forwardedSsl = $this->request->getServerParam('HTTP_X_FORWARDED_SSL');
+        if ($forwardedSsl && strtolower($forwardedSsl) === 'on') {
+            return 'https';
+        }
+
+        // Check standard HTTPS indicator
+        $https = $this->request->getServerParam('HTTPS');
+        if ($https && strtolower($https) !== 'off') {
+            return 'https';
+        }
+
+        // Check for secure port
+        $port = $this->request->getServerParam('SERVER_PORT');
+        if ($port && (int)$port === 443) {
+            return 'https';
+        }
+
+        // Fall back to REQUEST_SCHEME or default to https for security
+        return $this->request->getServerParam('REQUEST_SCHEME', 'https');
     }
 
     private function isProviderEnabled(string $providerId, array $config): bool

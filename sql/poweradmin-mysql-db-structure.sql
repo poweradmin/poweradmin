@@ -35,6 +35,7 @@ CREATE TABLE `users` (
                          `perm_templ` int(11) NOT NULL,
                          `active` int(1) NOT NULL,
                          `use_ldap` int(1) NOT NULL,
+                         `auth_method` varchar(20) NOT NULL DEFAULT 'sql',
                          PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 

@@ -7,6 +7,7 @@
     "app:9000",
     "mysql:3306",
     "pgsql:5432",
+    "keycloak:8080",
     "adminer:8090",
     "dns:1053",
     "dns:8081",
@@ -21,6 +22,9 @@
     },
     "pgsql:5432": {
       "label": "PostgreSQL"
+    },
+    "keycloak:8080": {
+      "label": "Keycloak"
     },
     "adminer:8090": {
       "label": "Adminer"

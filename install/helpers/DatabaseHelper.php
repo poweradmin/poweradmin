@@ -216,7 +216,10 @@ class DatabaseHelper
             $config->get('security', 'password_encryption'),
             $config->get('security', 'password_cost')
         );
-        $user_query = $this->db->prepare("INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0)");
+        $user_query = $this->db->prepare(
+            "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method) " .
+            "VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0, 'sql')"
+        );
         $user_query->execute(array($userAuthService->hashPassword($pa_pass), $permTemplId));
     }
 

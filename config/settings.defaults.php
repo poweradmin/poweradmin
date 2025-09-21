@@ -312,19 +312,21 @@ return [
      * OIDC (OpenID Connect) Authentication Settings
      */
     'oidc' => [
-        'enabled' => false,                            // Enable OIDC authentication
-        'auto_provision' => true,                      // Automatically create user accounts from OIDC
-        'link_by_email' => true,                       // Link OIDC accounts to existing users by email
-        'sync_user_info' => true,                      // Sync user information (name, email) from OIDC provider
-        'default_permission_template' => 'Administrator',  // Default permission template for new OIDC users
+        'enabled' => false,                   // Enable OIDC authentication
+        'auto_provision' => true,             // Automatically create user accounts from OIDC
+        'link_by_email' => true,              // Link OIDC accounts to existing users by email
+        'sync_user_info' => true,             // Sync user information (name, email) from OIDC provider
+        'default_permission_template' => '',  // Default permission template for new OIDC users
 
         // Permission template mapping for automatic role assignment
         // Maps OIDC groups to existing permission template names
         // Note: Users can only have one permission template assigned
+        // Configure your actual group mappings in config/settings.php
         'permission_template_mapping' => [
-            'poweradmin-admins' => 'Administrator',    // Map this OIDC group to Administrator permission template
-            'dns-operators' => 'DNS Operator',         // Example: DNS operations template (if exists)
-            'dns-viewers' => 'Read Only',              // Example: Read-only template (if exists)
+            // Examples (configure your actual mappings in settings.php):
+            // 'poweradmin-admins' => 'Administrator',    // Map this OIDC group to Administrator permission template
+            // 'dns-operators' => 'DNS Operator',         // Example: DNS operations template (if exists)
+            // 'dns-viewers' => 'Read Only',              // Example: Read-only template (if exists)
         ],
 
         // Provider configurations
@@ -338,15 +340,16 @@ return [
                 'client_secret' => '',                 // Client secret from Azure
                 'tenant' => 'common',                  // Tenant ID or 'common' for multi-tenant
                 'auto_discovery' => true,
-                'metadata_url' => 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid_configuration',
+                'metadata_url' => 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
-                    'username' => 'preferred_username',
+                    'username' => 'email',
                     'email' => 'email',
                     'first_name' => 'given_name',
                     'last_name' => 'family_name',
                     'display_name' => 'name',
                     'groups' => 'groups',
+                    'subject' => 'sub',
                 ],
             ],
             */
@@ -361,7 +364,7 @@ return [
                 'base_url' => 'https://keycloak.example.com',
                 'realm' => 'master',                   // Keycloak realm name
                 'auto_discovery' => true,
-                'metadata_url' => '{base_url}/auth/realms/{realm}/.well-known/openid_configuration',
+                'metadata_url' => '{base_url}/auth/realms/{realm}/.well-known/openid-configuration',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'preferred_username',
@@ -383,7 +386,7 @@ return [
                 'client_secret' => '',                 // Client secret from Okta
                 'domain' => 'your-org.okta.com',      // Your Okta domain
                 'auto_discovery' => true,
-                'metadata_url' => 'https://{domain}/.well-known/openid_configuration',
+                'metadata_url' => 'https://{domain}/.well-known/openid-configuration',
                 'scopes' => 'openid profile email groups',
                 'user_mapping' => [
                     'username' => 'preferred_username',
@@ -406,7 +409,7 @@ return [
                 'base_url' => 'https://authentik.example.com',
                 'application_slug' => 'poweradmin',    // Application slug in Authentik
                 'auto_discovery' => true,
-                'metadata_url' => '{base_url}/application/o/{application_slug}/.well-known/openid_configuration',
+                'metadata_url' => '{base_url}/application/o/{application_slug}/.well-known/openid-configuration',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'preferred_username',

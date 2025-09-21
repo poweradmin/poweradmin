@@ -21,7 +21,7 @@
  */
 
 /**
- * Script that handles zone deletion
+ * Controller that handles DNSSEC key toggle (activate/deactivate) operations
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -33,17 +33,13 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\DnssecAlgorithm;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
-use Poweradmin\Domain\Utility\DnsHelper;
 
-class DnssecEditKeyController extends BaseController
+class DnssecToggleKeyController extends BaseController
 {
-
     public function run(): void
     {
         $zone_id = $this->getSafeRequestValue('zone_id');
@@ -58,21 +54,14 @@ class DnssecEditKeyController extends BaseController
             $this->showError(_('Invalid key ID.'));
             return;
         }
-        $key_id = (int)$key_id;
+        $key_id = (int) $key_id;
 
-        $confirm = "-1";
-        if (isset($_GET['confirm']) && Validator::isNumber($_GET['confirm'])) {
-            $confirm = $_GET['confirm'];
-        }
-
-        // Early permission check - validate DNSSEC access before any operations
-        $perm_view = Permission::getViewPermission($this->db);
+        // Validate permissions
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        // Check view permission first
-        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
-            $this->showError(_("You do not have permission to view this zone."));
+        if ($perm_edit == "none" || ($perm_edit == "own" && !$user_is_zone_owner)) {
+            $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
             return;
         }
 
@@ -83,43 +72,50 @@ class DnssecEditKeyController extends BaseController
             return;
         }
 
-        // Check DNSSEC management permission (requires edit access)
-        if ($perm_edit == "none" || ($perm_edit == "own" && !$user_is_zone_owner)) {
-            $this->showError(_("You do not have permission to manage DNSSEC for this zone."));
-            return;
-        }
-
         $domain_name = $dnsRecord->getDomainNameById($zone_id);
         $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
-        if (!$dnssecProvider->keyExists($domain_name, $key_id)) {
-            $this->showError(_('Invalid or unexpected input given.'));
+        // Check if DNSSEC is available
+        if (!$dnssecProvider->isDnssecEnabled()) {
+            $this->showError(_('DNSSEC functionality is not available. Please check PowerDNS API configuration.'));
             return;
         }
 
-        $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
+        // Get current key information
+        try {
+            $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
-        // Validate that we got valid key information
-        if (empty($key_info) || !isset($key_info[5])) {
-            $this->showError(_('DNSSEC key not found or no longer exists.'));
-            return;
+            if (empty($key_info) || !isset($key_info[5])) {
+                $this->showError(_('DNSSEC key not found or no longer exists.'));
+                return;
+            }
+
+            $is_active = $key_info[5];
+            $action = $is_active ? 'deactivate' : 'activate';
+            $result = false;
+
+            // Perform the toggle operation
+            if ($is_active) {
+                $result = $dnssecProvider->deactivateZoneKey($domain_name, $key_id);
+                $success_message = _('Zone key has been successfully deactivated.');
+                $error_message = _('Failed to deactivate zone key.');
+            } else {
+                $result = $dnssecProvider->activateZoneKey($domain_name, $key_id);
+                $success_message = _('Zone key has been successfully activated.');
+                $error_message = _('Failed to activate zone key.');
+            }
+
+            // Set appropriate message and redirect
+            if ($result) {
+                $this->setMessage('dnssec', 'success', $success_message);
+            } else {
+                $this->setMessage('dnssec', 'error', $error_message);
+            }
+        } catch (\Exception $e) {
+            error_log("DNSSEC key toggle failed for zone $domain_name, key $key_id: " . $e->getMessage());
+            $this->setMessage('dnssec', 'error', _('An error occurred while toggling the DNSSEC key. Please try again.'));
         }
 
-        if (str_starts_with($domain_name, "xn--")) {
-            $idn_zone_name = DnsIdnService::toUtf8($domain_name);
-        } else {
-            $idn_zone_name = "";
-        }
-
-        $this->render('dnssec_edit_key.html', [
-            'domain_name' => $domain_name,
-            'idn_zone_name' => $idn_zone_name,
-            'key_id' => $key_id,
-            'key_info' => $dnssecProvider->getZoneKey($domain_name, $key_id),
-            'algorithms' => DnssecAlgorithm::ALGORITHMS,
-            'user_is_zone_owner' => $user_is_zone_owner,
-            'zone_id' => $zone_id,
-            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
-        ]);
+        $this->redirect('/zones/' . $zone_id . '/dnssec');
     }
 }

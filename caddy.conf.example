@@ -1,13 +1,34 @@
+# Caddy configuration for Poweradmin
+# This configuration is used in the production Docker image and provides
+# comprehensive security, API support, and performance optimizations.
+#
+# Usage:
+# 1. Copy this file to your desired location (e.g., /etc/caddy/Caddyfile)
+# 2. Adjust the following settings for your environment:
+#    - server_name: Set to your domain name (replace :80 with your-domain.com)
+#    - root: Set to your Poweradmin installation path (default: /srv/www)
+#    - php_fastcgi: Adjust PHP-FPM socket/TCP configuration as needed
+#
+# For HTTPS, replace :80 with your domain name and Caddy will automatically
+# obtain and manage SSL certificates via Let's Encrypt.
+
 :80 {
-    # Set the root directory
-    root * /app
+    # Set this path to your Poweradmin installation directory
+    root * /srv/www
 
     # Enable access logs
     log {
-        output stdout
+        output file /var/log/caddy/poweradmin.log {
+            roll_size 100mb
+            roll_keep 5
+            roll_keep_for 720h
+        }
         format console
         level INFO
     }
+
+    # Enable gzip compression
+    encode gzip
 
     # Security: Deny access to sensitive directories
     @denied path /config* /lib* /tests* /tools* /vendor*
@@ -56,16 +77,21 @@
 
         # Forward all API requests to index.php with proper query handling
         rewrite * /index.php{uri}
-        php_fastcgi app:9000 {
+        php_fastcgi unix//run/php/php-fpm.sock {
             read_timeout 180s
             env HTTP_AUTHORIZATION {http.request.header.Authorization}
         }
     }
 
-    # Handle all other requests - Clean URL routing
-    # Let Symfony Router handle all routing through index.php
+    # DDNS update endpoints (for dynamic DNS functionality)
+    rewrite /update /dynamic_update.php
+    rewrite /nic/update /dynamic_update.php
+
+    # Clean URL routing - let Symfony Router handle all routing
     try_files {path} {path}/ /index.php{uri}
-    php_fastcgi app:9000 {
+
+    # PHP handling
+    php_fastcgi unix//run/php/php-fpm.sock {
         read_timeout 180s
         env HTTP_AUTHORIZATION {http.request.header.Authorization}
     }

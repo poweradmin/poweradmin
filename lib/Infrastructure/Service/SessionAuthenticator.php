@@ -192,12 +192,28 @@ class SessionAuthenticator extends LoggingService
         $_SESSION["lastmod"] = time();
         $this->logDebug('Session timestamp updated for user {username}', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
 
-        if ($ldap_use && $this->userUsesLDAP()) {
-            $this->logInfo('User {username} uses LDAP for authentication', ['username' => $_SESSION["userlogin"]]);
-            $this->ldapAuthenticator->authenticate();
-        } else {
-            $this->logInfo('User {username} uses SQL for authentication', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
-            $this->sqlAuthenticator->authenticate();
+        $authMethod = $this->getUserAuthMethod();
+
+        switch ($authMethod) {
+            case 'oidc':
+                $this->logInfo('User {username} uses OIDC for authentication - skipping password verification', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+                // OIDC users are already authenticated, no need to verify password
+                break;
+            case 'ldap':
+                if ($ldap_use) {
+                    $this->logInfo('User {username} uses LDAP for authentication', ['username' => $_SESSION["userlogin"]]);
+                    $this->ldapAuthenticator->authenticate();
+                } else {
+                    $this->logWarning('User {username} configured for LDAP but LDAP is disabled', ['username' => $_SESSION["userlogin"]]);
+                    $sessionEntity = new SessionEntity(_('LDAP authentication is disabled'), 'danger');
+                    $this->authService->logout($sessionEntity);
+                }
+                break;
+            case 'sql':
+            default:
+                $this->logInfo('User {username} uses SQL for authentication', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+                $this->sqlAuthenticator->authenticate();
+                break;
         }
 
         // Check for user agreement requirements after successful authentication
@@ -236,24 +252,46 @@ class SessionAuthenticator extends LoggingService
         }
     }
 
-    private function userUsesLDAP(): bool
+    private function getUserAuthMethod(): string
     {
         if (!isset($_SESSION["userlogin"])) {
             $this->logDebug('No user login found in session');
-            return false;
+            return 'sql'; // Default to SQL if no user logged in
         }
 
-        $stmt = $this->db->prepare("SELECT id FROM users WHERE username = :username AND use_ldap = 1");
+        // First check how the current session was created
+        if (isset($_SESSION["auth_method_used"])) {
+            $sessionAuthMethod = $_SESSION["auth_method_used"];
+            $this->logDebug('Using session auth method for user {username}: {authMethod}', [
+                'username' => $_SESSION["userlogin"],
+                'authMethod' => $sessionAuthMethod
+            ]);
+            return $sessionAuthMethod;
+        }
+
+        // Fall back to database auth_method (for existing SQL/LDAP sessions)
+        $stmt = $this->db->prepare("SELECT auth_method FROM users WHERE username = :username");
         $stmt->execute([
             'username' => $_SESSION["userlogin"]
         ]);
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $this->logDebug('Checked LDAP usage for user {username}', ['username' => $_SESSION["userlogin"]]);
+        if ($rowObj === false) {
+            $this->logWarning('User {username} not found in database', ['username' => $_SESSION["userlogin"]]);
+            return 'sql'; // Default to SQL if user not found
+        }
 
-        $ldapUsage = $rowObj !== false;
-        $this->logDebug('LDAP usage for user {username}: {ldapUsage}', ['username' => $_SESSION["userlogin"], 'ldapUsage' => $ldapUsage]);
+        $authMethod = $rowObj['auth_method'] ?? 'sql';
+        $this->logDebug('Using database auth method for user {username}: {authMethod}', [
+            'username' => $_SESSION["userlogin"],
+            'authMethod' => $authMethod
+        ]);
 
-        return $ldapUsage;
+        return $authMethod;
+    }
+
+    private function userUsesLDAP(): bool
+    {
+        return $this->getUserAuthMethod() === 'ldap';
     }
 }

@@ -1152,6 +1152,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Controller\\DnssecDeleteKeyController' => __DIR__ . '/../..' . '/lib/Application/Controller/DnssecDeleteKeyController.php',
         'Poweradmin\\Application\\Controller\\DnssecDsDnskeyController' => __DIR__ . '/../..' . '/lib/Application/Controller/DnssecDsDnskeyController.php',
         'Poweradmin\\Application\\Controller\\DnssecEditKeyController' => __DIR__ . '/../..' . '/lib/Application/Controller/DnssecEditKeyController.php',
+        'Poweradmin\\Application\\Controller\\DnssecToggleKeyController' => __DIR__ . '/../..' . '/lib/Application/Controller/DnssecToggleKeyController.php',
         'Poweradmin\\Application\\Controller\\EditCommentController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditCommentController.php',
         'Poweradmin\\Application\\Controller\\EditController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditController.php',
         'Poweradmin\\Application\\Controller\\EditPermTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/EditPermTemplController.php',

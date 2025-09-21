@@ -797,6 +797,7 @@ return array(
     'Poweradmin\\Application\\Controller\\DnssecDeleteKeyController' => $baseDir . '/lib/Application/Controller/DnssecDeleteKeyController.php',
     'Poweradmin\\Application\\Controller\\DnssecDsDnskeyController' => $baseDir . '/lib/Application/Controller/DnssecDsDnskeyController.php',
     'Poweradmin\\Application\\Controller\\DnssecEditKeyController' => $baseDir . '/lib/Application/Controller/DnssecEditKeyController.php',
+    'Poweradmin\\Application\\Controller\\DnssecToggleKeyController' => $baseDir . '/lib/Application/Controller/DnssecToggleKeyController.php',
     'Poweradmin\\Application\\Controller\\EditCommentController' => $baseDir . '/lib/Application/Controller/EditCommentController.php',
     'Poweradmin\\Application\\Controller\\EditController' => $baseDir . '/lib/Application/Controller/EditController.php',
     'Poweradmin\\Application\\Controller\\EditPermTemplController' => $baseDir . '/lib/Application/Controller/EditPermTemplController.php',

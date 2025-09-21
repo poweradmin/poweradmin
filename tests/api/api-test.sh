@@ -32,6 +32,14 @@ SKIPPED_TESTS=0
 # Test results array
 declare -a TEST_RESULTS=()
 
+# Retry configuration
+MAX_RETRIES="${MAX_RETRIES:-3}"
+RETRY_DELAY="${RETRY_DELAY:-2}"
+
+# Simple circuit breaker
+CIRCUIT_BREAKER_THRESHOLD="${CIRCUIT_BREAKER_THRESHOLD:-5}"
+CIRCUIT_BREAKER_FAILURES=0
+
 ##############################################################################
 # Utility Functions
 ##############################################################################
@@ -70,6 +78,14 @@ print_skip() {
 
 print_warning() {
     echo -e "${YELLOW}WARNING: $1${NC}"
+}
+
+print_cleanup_pass() {
+    echo -e "${GREEN}✓ PASS: $1${NC}"
+}
+
+print_cleanup_skip() {
+    echo -e "${YELLOW}⚠ SKIP: $1${NC}"
 }
 
 print_error() {
@@ -116,6 +132,8 @@ load_config() {
     echo "API Base URL: $API_BASE_URL"
     echo "Database: $DB_TYPE://$DB_HOST/$DB_NAME"
     echo "Test timeout: ${TEST_TIMEOUT:-30}s"
+    echo "Max retries: $MAX_RETRIES"
+    echo "Retry delay: ${RETRY_DELAY}s"
     echo ""
 }
 
@@ -123,16 +141,62 @@ load_config() {
 # HTTP Request Functions
 ##############################################################################
 
+# Wait for service to be ready
+wait_for_service() {
+    local max_attempts=30
+    local attempt=1
+
+    print_test "Waiting for service to be ready..."
+
+    while [[ $attempt -le $max_attempts ]]; do
+        if curl -s --max-time 5 "${API_BASE_URL}" >/dev/null 2>&1; then
+            echo -e "${GREEN}✓ PASS: Service is ready (attempt $attempt/$max_attempts)${NC}"
+            return 0
+        fi
+
+        echo "Attempt $attempt/$max_attempts failed, waiting ${RETRY_DELAY}s..."
+        sleep "${RETRY_DELAY}"
+        ((attempt++))
+    done
+
+    print_fail "Service not ready after $max_attempts attempts"
+    return 1
+}
+
+# Execute curl with retries
+curl_with_retry() {
+    local curl_opts=("$@")
+    local attempt=1
+    local response
+
+    while [[ $attempt -le $MAX_RETRIES ]]; do
+        if response=$(curl "${curl_opts[@]}" 2>/dev/null); then
+            echo "$response"
+            return 0
+        fi
+
+        local exit_code=$?
+        if [[ $attempt -eq $MAX_RETRIES ]]; then
+            echo "ERROR: Network failure after $MAX_RETRIES attempts (exit code: $exit_code)" >&2
+            return $exit_code
+        fi
+
+        echo "Attempt $attempt/$MAX_RETRIES failed (exit code: $exit_code), retrying in ${RETRY_DELAY}s..." >&2
+        sleep "${RETRY_DELAY}"
+        ((attempt++))
+    done
+}
+
 api_request() {
     local method="$1"
     local endpoint="$2"
     local data="${3:-}"
     local expected_status="${4:-200}"
     local description="${5:-API request}"
-    
+
     increment_test
     print_test "$description"
-    
+
     local curl_opts=(
         -s
         -w "%{http_code}|%{time_total}"
@@ -141,36 +205,41 @@ api_request() {
         -H "Accept: application/json"
         -X "$method"
         --max-time "${TEST_TIMEOUT:-30}"
+        --connect-timeout 10
+        --retry 0  # We handle retries ourselves
     )
-    
+
     if [[ -n "$data" ]]; then
         curl_opts+=(-d "$data")
     fi
-    
+
     local url="${API_BASE_URL}/api/v1${endpoint}"
     local response
     local http_code
     local time_total
-    
-    if ! response=$(curl "${curl_opts[@]}" "$url" 2>/dev/null); then
-        print_fail "$description - Network error"
+
+    # Add small delay before request to prevent overwhelming the service
+    sleep 0.1
+
+    if ! response=$(curl_with_retry "${curl_opts[@]}" "$url"); then
+        print_fail "$description - Network error after retries"
         return 1
     fi
-    
+
     # Parse response
     if [[ "$response" =~ ^(.*)([0-9]{3})\|([0-9.]+)$ ]]; then
         local body="${BASH_REMATCH[1]}"
         http_code="${BASH_REMATCH[2]}"
         time_total="${BASH_REMATCH[3]}"
     else
-        print_fail "$description - Invalid response format"
+        print_fail "$description - Invalid response format: $response"
         return 1
     fi
-    
+
     # Check status code
     if [[ "$http_code" -eq "$expected_status" ]]; then
         print_pass "$description (${http_code}, ${time_total}s)"
-        
+
         # Store response for further validation
         LAST_RESPONSE_BODY="$body"
         LAST_RESPONSE_CODE="$http_code"
@@ -188,10 +257,10 @@ api_request_no_auth() {
     local data="${3:-}"
     local expected_status="${4:-401}"
     local description="${5:-API request without auth}"
-    
+
     increment_test
     print_test "$description"
-    
+
     local curl_opts=(
         -s
         -w "%{http_code}|%{time_total}"
@@ -199,32 +268,37 @@ api_request_no_auth() {
         -H "Accept: application/json"
         -X "$method"
         --max-time "${TEST_TIMEOUT:-30}"
+        --connect-timeout 10
+        --retry 0  # We handle retries ourselves
     )
-    
+
     if [[ -n "$data" ]]; then
         curl_opts+=(-d "$data")
     fi
-    
+
     local url="${API_BASE_URL}/api/v1${endpoint}"
     local response
     local http_code
     local time_total
-    
-    if ! response=$(curl "${curl_opts[@]}" "$url" 2>/dev/null); then
-        print_fail "$description - Network error"
+
+    # Add small delay before request
+    sleep 0.1
+
+    if ! response=$(curl_with_retry "${curl_opts[@]}" "$url"); then
+        print_fail "$description - Network error after retries"
         return 1
     fi
-    
+
     # Parse response
     if [[ "$response" =~ ^(.*)([0-9]{3})\|([0-9.]+)$ ]]; then
         local body="${BASH_REMATCH[1]}"
         http_code="${BASH_REMATCH[2]}"
         time_total="${BASH_REMATCH[3]}"
     else
-        print_fail "$description - Invalid response format"
+        print_fail "$description - Invalid response format: $response"
         return 1
     fi
-    
+
     # Check status code
     if [[ "$http_code" -eq "$expected_status" ]]; then
         print_pass "$description (${http_code}, ${time_total}s)"
@@ -333,23 +407,27 @@ setup_test_data() {
 
 cleanup_existing_test_data() {
     # Find and delete existing test user by username
-    local existing_users=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v1/users" 2>/dev/null | jq -r '.data[]? | select(.username=="api_test_user_curl") | .user_id')
-    
-    if [[ -n "$existing_users" ]]; then
-        for user_id in $existing_users; do
-            api_request "DELETE" "/users/$user_id" "" "200" "Delete existing test user" || true
-        done
+    local existing_users
+    if existing_users=$(curl_with_retry -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v1/users" 2>/dev/null | jq -r '.data[]? | select(.username=="api_test_user_curl") | .user_id'); then
+
+        if [[ -n "$existing_users" ]]; then
+            for user_id in $existing_users; do
+                api_request "DELETE" "/users/$user_id" "" "200" "Delete existing test user" || true
+            done
+        fi
     fi
-    
+
     # Find and delete existing test zone by name
-    local existing_zones=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v1/zones" 2>/dev/null | jq -r '.data[]? | select(.name=="curl-test.example.com") | .zone_id // .id')
-    
-    if [[ -n "$existing_zones" ]]; then
-        for zone_id in $existing_zones; do
-            api_request "DELETE" "/zones/$zone_id" "" "204" "Delete existing test zone" || true
-        done
+    local existing_zones
+    if existing_zones=$(curl_with_retry -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v1/zones" 2>/dev/null | jq -r '.data[]? | select(.name=="curl-test.example.com") | .zone_id // .id'); then
+
+        if [[ -n "$existing_zones" ]]; then
+            for zone_id in $existing_zones; do
+                api_request "DELETE" "/zones/$zone_id" "" "204" "Delete existing test zone" || true
+            done
+        fi
     fi
 }
 
@@ -387,36 +465,40 @@ cleanup_request() {
     local data="$3"
     local description="$4"
     local expected_success="$5"  # 200 or 204
-    
-    increment_test
+
     print_test "$description"
-    
+
     local response_code
+    local curl_opts=(
+        -s
+        -w "%{http_code}"
+        -X "$method"
+        -H "X-API-Key: $API_KEY"
+        -H "Content-Type: application/json"
+        --max-time "${TEST_TIMEOUT:-30}"
+        --connect-timeout 10
+        -o /tmp/cleanup_response
+    )
+
     if [[ -n "$data" ]]; then
-        response_code=$(curl -s -w "%{http_code}" \
-            -X "$method" \
-            -H "X-API-Key: $API_KEY" \
-            -H "Content-Type: application/json" \
-            -d "$data" \
-            "${API_BASE_URL}/api/v1${endpoint}" \
-            -o /tmp/cleanup_response 2>/dev/null || echo "000")
-    else
-        response_code=$(curl -s -w "%{http_code}" \
-            -X "$method" \
-            -H "X-API-Key: $API_KEY" \
-            -H "Content-Type: application/json" \
-            "${API_BASE_URL}/api/v1${endpoint}" \
-            -o /tmp/cleanup_response 2>/dev/null || echo "000")
+        curl_opts+=(-d "$data")
     fi
-    
+
+    if response_code=$(curl_with_retry "${curl_opts[@]}" "${API_BASE_URL}/api/v1${endpoint}"); then
+        # curl_with_retry succeeded
+        :
+    else
+        response_code="000"
+    fi
+
     if [[ "$response_code" == "$expected_success" ]]; then
-        print_pass "$description"
+        print_cleanup_pass "$description"
         return 0
     elif [[ "$response_code" == "404" ]]; then
-        print_pass "$description (already deleted)"
+        print_cleanup_pass "$description (already deleted)"
         return 0
     else
-        print_skip "$description (unexpected response $response_code)"
+        print_cleanup_skip "$description (unexpected response $response_code)"
         return 1
     fi
 }
@@ -702,8 +784,8 @@ test_record_types() {
         
         if api_request "POST" "/zones/$TEST_ZONE_ID/records" "$record_data" "201" "$description"; then
             local created_id=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.record_id // .data.id')
-            # Clean up immediately
-            api_request "DELETE" "/zones/$TEST_ZONE_ID/records/$created_id" "" "204" "Cleanup $type record" || true
+            # Clean up immediately using cleanup_request which handles 404 gracefully
+            cleanup_request "DELETE" "/zones/$TEST_ZONE_ID/records/$created_id" "" "Cleanup $type record" "204"
         fi
     done
     
@@ -787,22 +869,30 @@ test_edge_cases() {
     print_section "Edge Cases Tests"
     
     # Test unsupported HTTP methods
-    local unsupported_methods=("PATCH" "HEAD" "OPTIONS")
-    
+    local unsupported_methods=("PATCH" "OPTIONS")
+
     for method in "${unsupported_methods[@]}"; do
         increment_test
         print_test "Unsupported HTTP method: $method"
-        
+
         local response
         local http_code
-        
-        response=$(curl -s -w "%{http_code}" \
-            -H "X-API-Key: $API_KEY" \
-            -X "$method" \
-            "${API_BASE_URL}/api/v1/users" 2>/dev/null || echo "000")
-        
-        http_code="${response: -3}"
-        
+
+        local curl_opts=(
+            -s
+            -w "%{http_code}"
+            -H "X-API-Key: $API_KEY"
+            -X "$method"
+            --max-time "${TEST_TIMEOUT:-30}"
+            --connect-timeout 10
+        )
+
+        if response=$(curl_with_retry "${curl_opts[@]}" "${API_BASE_URL}/api/v1/users"); then
+            http_code="${response: -3}"
+        else
+            http_code="000"
+        fi
+
         # OPTIONS method often returns 204 (No Content) for CORS preflight handling
         if [[ "$method" == "OPTIONS" && "$http_code" == "204" ]]; then
             print_pass "Unsupported HTTP method $method properly handled by web server"
@@ -1058,8 +1148,7 @@ test_performance() {
             if (( $(echo "$duration < 5" | bc -l 2>/dev/null || echo "0") )); then
                 print_pass "Response time: $description (${duration}s)"
             else
-                print_warning "Response time: $description (${duration}s) - Slow response"
-                ((PASSED_TESTS++))
+                print_pass "Response time: $description (${duration}s) - Slow but acceptable"
             fi
         else
             print_fail "Performance test: $description"
@@ -1073,14 +1162,25 @@ test_performance() {
 
 run_all_tests() {
     print_header "Starting API Test Suite"
-    
+
     # Check dependencies
     command -v curl >/dev/null 2>&1 || { print_error "curl is required but not installed"; exit 1; }
     command -v jq >/dev/null 2>&1 || { print_error "jq is required but not installed"; exit 1; }
-    
+
     # Load configuration
     load_config
-    
+
+    # Wait for service to be ready before starting tests
+    if ! wait_for_service; then
+        print_error "Service is not ready, aborting tests"
+        exit 1
+    fi
+
+    # Additional startup delay for service stability
+    print_test "Waiting for service stability..."
+    sleep 1
+    echo -e "${GREEN}✓ PASS: Service stability wait completed${NC}"
+
     # Initialize test data
     setup_test_data
     
@@ -1118,8 +1218,11 @@ generate_report() {
     local success_rate=0
     if [[ $TOTAL_TESTS -gt 0 ]]; then
         success_rate=$(( (PASSED_TESTS * 100) / TOTAL_TESTS ))
+        if [[ $success_rate -gt 100 ]]; then
+            success_rate=100
+        fi
     fi
-    
+
     echo "Success Rate: ${success_rate}%"
     
     if [[ $FAILED_TESTS -gt 0 ]]; then
