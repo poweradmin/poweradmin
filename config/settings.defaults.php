@@ -364,7 +364,7 @@ return [
                 'base_url' => 'https://keycloak.example.com',
                 'realm' => 'master',                   // Keycloak realm name
                 'auto_discovery' => true,
-                'metadata_url' => '{base_url}/auth/realms/{realm}/.well-known/openid_configuration',
+                'metadata_url' => '{base_url}/auth/realms/{realm}/.well-known/openid-configuration',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'preferred_username',
@@ -386,7 +386,7 @@ return [
                 'client_secret' => '',                 // Client secret from Okta
                 'domain' => 'your-org.okta.com',      // Your Okta domain
                 'auto_discovery' => true,
-                'metadata_url' => 'https://{domain}/.well-known/openid_configuration',
+                'metadata_url' => 'https://{domain}/.well-known/openid-configuration',
                 'scopes' => 'openid profile email groups',
                 'user_mapping' => [
                     'username' => 'preferred_username',
@@ -409,7 +409,7 @@ return [
                 'base_url' => 'https://authentik.example.com',
                 'application_slug' => 'poweradmin',    // Application slug in Authentik
                 'auto_discovery' => true,
-                'metadata_url' => '{base_url}/application/o/{application_slug}/.well-known/openid_configuration',
+                'metadata_url' => '{base_url}/application/o/{application_slug}/.well-known/openid-configuration',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'preferred_username',

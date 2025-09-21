@@ -483,7 +483,7 @@ EOF
                 'client_secret' => '${PA_OIDC_AZURE_CLIENT_SECRET:-}',
                 'tenant' => '${PA_OIDC_AZURE_TENANT:-common}',
                 'auto_discovery' => ${oidc_azure_auto_discovery},
-                'metadata_url' => '${PA_OIDC_AZURE_METADATA_URL:-https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid_configuration}',
+                'metadata_url' => '${PA_OIDC_AZURE_METADATA_URL:-https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration}',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'preferred_username',

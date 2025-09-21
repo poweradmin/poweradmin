@@ -139,7 +139,7 @@ class OidcService extends LoggingService
                 'scope' => $scopes,
             ]);
 
-            $this->logInfo('Generated OIDC authorization URL for provider: {provider}', ['provider' => $providerId]);
+            $this->logInfo('Generated OIDC authorization URL: {url}', ['url' => $authUrl]);
 
             return $authUrl;
         } catch (\Exception $e) {
@@ -210,17 +210,22 @@ class OidcService extends LoggingService
                 $tokenParams['code_verifier'] = $codeVerifier;
             }
 
-            $token = $provider->getAccessToken('authorization_code', $tokenParams);
+            try {
+                $token = $provider->getAccessToken('authorization_code', $tokenParams);
+            } catch (\Exception $e) {
+                $this->logError('OIDC authentication error: {error}', ['error' => $e->getMessage()]);
+                throw $e;
+            }
 
             // Get user information
             $userInfo = $this->getUserInfo($provider, $token, $providerId);
 
-            // DEBUG: Log raw data to see all available fields
+            // Log raw data to see all available fields
             $this->logInfo('OIDC Raw User Data: {rawdata}', [
                 'rawdata' => $userInfo->getRawData()
             ]);
 
-            // DEBUG: Log user info details
+            // Log user info details
             $this->logInfo('OIDC User Info received: {userinfo}', [
                 'userinfo' => [
                     'username' => $userInfo->getUsername(),
@@ -236,7 +241,7 @@ class OidcService extends LoggingService
             // Provision or update user
             $userId = $this->userProvisioningService->provisionUser($userInfo, $providerId);
 
-            // DEBUG: Log provisioning result
+            // Log provisioning result
             if ($userId) {
                 $this->logInfo('User provisioning successful, user ID: {userId}', ['userId' => $userId]);
             } else {
