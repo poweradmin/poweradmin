@@ -51,6 +51,9 @@ class OidcConfigurationService extends LoggingService
 
             $config = $providers[$providerId];
 
+            // Process URL templates before validation
+            $config = $this->processUrlTemplates($config);
+
             // Validate required fields before processing
             if (empty($config['client_id']) || empty($config['client_secret'])) {
                 $this->logError('Missing required OIDC configuration for provider: {provider}', ['provider' => $providerId]);
@@ -152,6 +155,47 @@ class OidcConfigurationService extends LoggingService
             ]);
             return $config;
         }
+    }
+
+    private function processUrlTemplates(array $config): array
+    {
+        // Define which configuration keys should have URL template processing
+        $urlFields = [
+            'metadata_url',
+            'authorize_url',
+            'token_url',
+            'userinfo_url',
+            'logout_url'
+        ];
+
+        foreach ($urlFields as $field) {
+            if (isset($config[$field]) && is_string($config[$field])) {
+                $config[$field] = $this->replaceUrlPlaceholders($config[$field], $config);
+            }
+        }
+
+        return $config;
+    }
+
+    private function replaceUrlPlaceholders(string $url, array $config): string
+    {
+        // Define mappings for common OIDC provider placeholders
+        $placeholders = [
+            '{tenant}' => $config['tenant'] ?? '',
+            '{base_url}' => $config['base_url'] ?? '',
+            '{realm}' => $config['realm'] ?? '',
+            '{domain}' => $config['domain'] ?? '',
+            '{application_slug}' => $config['application_slug'] ?? '',
+        ];
+
+        // Replace placeholders with actual values
+        foreach ($placeholders as $placeholder => $value) {
+            if (!empty($value)) {
+                $url = str_replace($placeholder, $value, $url);
+            }
+        }
+
+        return $url;
     }
 
     private function validateProviderConfig(array $config): bool
