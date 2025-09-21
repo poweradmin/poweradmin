@@ -323,11 +323,41 @@ class OidcService extends LoggingService
 
     private function getCallbackUrl(): string
     {
-        $scheme = $this->request->getServerParam('REQUEST_SCHEME', 'https');
+        $scheme = $this->detectScheme();
         $host = $this->request->getServerParam('HTTP_HOST', 'localhost');
         $basePrefix = $this->configManager->get('interface', 'base_url_prefix', '');
 
         return $scheme . '://' . $host . $basePrefix . '/oidc/callback';
+    }
+
+    private function detectScheme(): string
+    {
+        // Check for reverse proxy headers first (common in Docker/Kubernetes environments)
+        $forwardedProto = $this->request->getServerParam('HTTP_X_FORWARDED_PROTO');
+        if ($forwardedProto) {
+            return strtolower($forwardedProto) === 'https' ? 'https' : 'http';
+        }
+
+        // Alternative header format
+        $forwardedSsl = $this->request->getServerParam('HTTP_X_FORWARDED_SSL');
+        if ($forwardedSsl && strtolower($forwardedSsl) === 'on') {
+            return 'https';
+        }
+
+        // Check standard HTTPS indicator
+        $https = $this->request->getServerParam('HTTPS');
+        if ($https && strtolower($https) !== 'off') {
+            return 'https';
+        }
+
+        // Check for secure port
+        $port = $this->request->getServerParam('SERVER_PORT');
+        if ($port && (int)$port === 443) {
+            return 'https';
+        }
+
+        // Fall back to REQUEST_SCHEME or default to https for security
+        return $this->request->getServerParam('REQUEST_SCHEME', 'https');
     }
 
     private function isProviderEnabled(string $providerId, array $config): bool
