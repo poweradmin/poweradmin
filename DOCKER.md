@@ -292,7 +292,6 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_OIDC_AUTO_PROVISION` | Automatically create user accounts from OIDC | `true` | No |
 | `PA_OIDC_LINK_BY_EMAIL` | Link OIDC accounts to existing users by email | `true` | No |
 | `PA_OIDC_SYNC_USER_INFO` | Sync user information from OIDC provider | `true` | No |
-| `PA_OIDC_DEFAULT_PERMISSION_TEMPLATE` | Default permission template for new OIDC users | `Administrator` | No |
 
 ### OIDC Azure AD Provider
 
@@ -303,9 +302,21 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_OIDC_AZURE_DISPLAY_NAME` | Display name for login button | `Sign in with Microsoft` | No |
 | `PA_OIDC_AZURE_CLIENT_ID` | Application (client) ID from Azure | Empty | Yes if Azure enabled |
 | `PA_OIDC_AZURE_CLIENT_SECRET` | Client secret from Azure | Empty | Yes if Azure enabled |
-| `PA_OIDC_AZURE_TENANT` | Tenant ID or 'common' for multi-tenant | `common` | No |
+| `PA_OIDC_AZURE_TENANT` | Tenant ID, domain, or 'common' for multi-tenant | `common` | No |
 | `PA_OIDC_AZURE_AUTO_DISCOVERY` | Use auto-discovery | `true` | No |
-| `PA_OIDC_AZURE_METADATA_URL` | Metadata URL for discovery | Azure's standard URL | No |
+| `PA_OIDC_AZURE_METADATA_URL` | Custom metadata URL (auto-generated if not provided) | `https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid_configuration` | No |
+
+**Azure AD Configuration Notes:**
+
+- **Tenant ID Format**: Use your Azure tenant ID (GUID), custom domain (e.g., `contoso.onmicrosoft.com`), or `common` for multi-tenant applications
+- **Metadata URL**: Automatically constructed as `https://login.microsoftonline.com/{PA_OIDC_AZURE_TENANT}/v2.0/.well-known/openid_configuration` if not explicitly provided
+- **Scopes**: The container automatically requests `openid profile email` scopes from Azure AD v2.0 endpoint
+- **App Registration**: Ensure your Azure app registration has the correct redirect URI and API permissions (`openid`, `profile`, `email`)
+
+**Example Tenant Values:**
+- Tenant ID: `12345678-1234-1234-1234-123456789012`
+- Custom domain: `contoso.onmicrosoft.com`
+- Multi-tenant: `common`
 
 ### Admin User Creation
 
