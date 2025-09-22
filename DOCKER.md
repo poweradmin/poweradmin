@@ -315,11 +315,17 @@ docker run -d --name poweradmin -p 80:80 \
 - **Metadata URL**: Automatically constructed as `https://login.microsoftonline.com/{PA_OIDC_AZURE_TENANT}/v2.0/.well-known/openid-configuration` if not explicitly provided
 - **Scopes**: The container automatically requests `openid profile email` scopes from Azure AD v2.0 endpoint
 - **App Registration**: Ensure your Azure app registration has the correct redirect URI and API permissions (`openid`, `profile`, `email`)
+- **Redirect URI**: Set the redirect URI in your Azure app registration to match your Poweradmin deployment (e.g., `https://poweradmin.yourdomain.com/oidc/callback`)
 
 **Example Tenant Values:**
 - Tenant ID: `12345678-1234-1234-1234-123456789012`
 - Custom domain: `contoso.onmicrosoft.com`
 - Multi-tenant: `common`
+
+**Example Redirect URIs:**
+- Production: `https://poweradmin.yourdomain.com/oidc/callback`
+- Development: `http://localhost:8080/oidc/callback`
+- Subdirectory: `https://yourdomain.com/poweradmin/oidc/callback`
 
 ### Admin User Creation
 
