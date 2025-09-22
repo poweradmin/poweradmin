@@ -304,12 +304,12 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_OIDC_AZURE_CLIENT_SECRET` | Client secret from Azure | Empty | Yes if Azure enabled |
 | `PA_OIDC_AZURE_TENANT` | Tenant ID, domain, or 'common' for multi-tenant | `common` | No |
 | `PA_OIDC_AZURE_AUTO_DISCOVERY` | Use auto-discovery | `true` | No |
-| `PA_OIDC_AZURE_METADATA_URL` | Custom metadata URL (auto-generated if not provided) | `https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid_configuration` | No |
+| `PA_OIDC_AZURE_METADATA_URL` | Custom metadata URL (auto-generated if not provided) | `https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration` | No |
 
 **Azure AD Configuration Notes:**
 
 - **Tenant ID Format**: Use your Azure tenant ID (GUID), custom domain (e.g., `contoso.onmicrosoft.com`), or `common` for multi-tenant applications
-- **Metadata URL**: Automatically constructed as `https://login.microsoftonline.com/{PA_OIDC_AZURE_TENANT}/v2.0/.well-known/openid_configuration` if not explicitly provided
+- **Metadata URL**: Automatically constructed as `https://login.microsoftonline.com/{PA_OIDC_AZURE_TENANT}/v2.0/.well-known/openid-configuration` if not explicitly provided
 - **Scopes**: The container automatically requests `openid profile email` scopes from Azure AD v2.0 endpoint
 - **App Registration**: Ensure your Azure app registration has the correct redirect URI and API permissions (`openid`, `profile`, `email`)
 
