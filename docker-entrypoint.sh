@@ -464,7 +464,7 @@ return [
         'auto_provision' => ${oidc_auto_provision},
         'link_by_email' => ${oidc_link_by_email},
         'sync_user_info' => ${oidc_sync_user_info},
-        'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Administrator}',
+        'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-}',
         'providers' => [
 EOF
 
