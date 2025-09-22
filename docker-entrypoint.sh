@@ -473,7 +473,7 @@ EOF
         # Build the metadata URL with the actual tenant value
         local azure_metadata_url="${PA_OIDC_AZURE_METADATA_URL:-}"
         if [ -z "${azure_metadata_url}" ]; then
-            azure_metadata_url="https://login.microsoftonline.com/${PA_OIDC_AZURE_TENANT:-common}/v2.0/.well-known/openid_configuration"
+            azure_metadata_url="https://login.microsoftonline.com/${PA_OIDC_AZURE_TENANT:-common}/v2.0/.well-known/openid-configuration"
         fi
 
         cat >> "${CONFIG_FILE}" << EOF
