@@ -292,6 +292,9 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_OIDC_AUTO_PROVISION` | Automatically create user accounts from OIDC | `true` | No |
 | `PA_OIDC_LINK_BY_EMAIL` | Link OIDC accounts to existing users by email | `true` | No |
 | `PA_OIDC_SYNC_USER_INFO` | Sync user information from OIDC provider | `true` | No |
+| `PA_OIDC_DEFAULT_PERMISSION_TEMPLATE` | Default permission template for new OIDC users | `Administrator` | No |
+
+
 
 ### OIDC Azure AD Provider
 
