@@ -333,6 +333,8 @@ generate_config() {
     local oidc_sync_user_info=$(echo "${PA_OIDC_SYNC_USER_INFO:-true}" | tr '[:upper:]' '[:lower:]')
     local oidc_azure_enabled=$(echo "${PA_OIDC_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local oidc_azure_auto_discovery=$(echo "${PA_OIDC_AZURE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')
+    local oidc_google_enabled=$(echo "${PA_OIDC_GOOGLE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local oidc_google_auto_discovery=$(echo "${PA_OIDC_GOOGLE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')
 
     # Convert MFA boolean values to lowercase
     local mfa_enabled=$(echo "${PA_MFA_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
@@ -494,6 +496,30 @@ EOF
                     'display_name' => 'name',
                     'groups' => 'groups',
                     'subject' => 'sub',
+                ],
+            ],
+EOF
+    fi
+
+    # Add Google configuration if enabled
+    if [ "${oidc_google_enabled}" = "true" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'google' => [
+                'name' => 'Google',
+                'display_name' => 'Sign in with Google',
+                'client_id' => '${PA_OIDC_GOOGLE_CLIENT_ID:-}',
+                'client_secret' => '${PA_OIDC_GOOGLE_CLIENT_SECRET:-}',
+                'tenant' => '${PA_OIDC_GOOGLE_TENANT:-common}',
+                'auto_discovery' => ${oidc_google_auto_discovery},
+                'metadata_url' => '${PA_OIDC_GOOGLE_METADATA_URL:-https://accounts.google.com/.well-known/openid-configuration}',
+                'scopes' => 'openid profile email',
+                'user_mapping' => [
+                    'username' => 'email',
+                    'email' => 'email',
+                    'first_name' => 'given_name',
+                    'last_name' => 'family_name',
+                    'display_name' => 'name',
+                    'groups' => 'groups',
                 ],
             ],
 EOF

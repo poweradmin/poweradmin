@@ -327,6 +327,19 @@ docker run -d --name poweradmin -p 80:80 \
 - Development: `http://localhost:8080/oidc/callback`
 - Subdirectory: `https://yourdomain.com/poweradmin/oidc/callback`
 
+### OIDC Google OAuth Provider
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_OIDC_GOOGLE_ENABLED` | Enable Google OAuth provider | `false` | No |
+| `PA_OIDC_GOOGLE_NAME` | Provider name | `Google` | No |
+| `PA_OIDC_GOOGLE_DISPLAY_NAME` | Display name for login button | `Sign in with Google` | No |
+| `PA_OIDC_GOOGLE_CLIENT_ID` | Application (client) ID from Google | Empty | Yes if Google enabled |
+| `PA_OIDC_GOOGLE_CLIENT_SECRET` | Client secret from Google | Empty | Yes if Google enabled |
+| `PA_OIDC_GOOGLE_TENANT` | Tenant ID or 'common' for multi-tenant | `common` | No |
+| `PA_OIDC_GOOGLE_AUTO_DISCOVERY` | Use auto-discovery | `true` | No |
+| `PA_OIDC_GOOGLE_METADATA_URL` | Metadata URL for discovery | Google's standard URL | No |
+
 ### Admin User Creation
 
 | Variable | Description | Default | Required |
@@ -604,6 +617,23 @@ docker run -d --name poweradmin -p 80:80 \
   -e PA_OIDC_AZURE_CLIENT_ID=your-azure-client-id \
   -e PA_OIDC_AZURE_CLIENT_SECRET=your-azure-client-secret \
   -e PA_OIDC_AZURE_TENANT=your-tenant-id \
+  edmondas/poweradmin
+```
+
+### OIDC Google OAuth Integration Example
+
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql.example.com \
+  -e DB_USER=poweradmin \
+  -e DB_PASS=secure_password \
+  -e DB_NAME=poweradmin \
+  -e PA_OIDC_ENABLED=true \
+  -e PA_OIDC_GOOGLE_ENABLED=true \
+  -e PA_OIDC_GOOGLE_CLIENT_ID=your-google-client-id \
+  -e PA_OIDC_GOOGLE_CLIENT_SECRET=your-google-client-secret \
+  -e PA_OIDC_GOOGLE_TENANT=your-tenant-id \
   edmondas/poweradmin
 ```
 
