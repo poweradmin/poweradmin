@@ -464,34 +464,36 @@ return [
         'auto_provision' => ${oidc_auto_provision},
         'link_by_email' => ${oidc_link_by_email},
         'sync_user_info' => ${oidc_sync_user_info},
-        'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-Administrator}',
-        'permission_template_mapping' => [
-            'poweradmin-admins' => 'Administrator',
-            'dns-operators' => 'DNS Operator',
-            'dns-viewers' => 'Read Only',
-        ],
+        'default_permission_template' => '${PA_OIDC_DEFAULT_PERMISSION_TEMPLATE:-}',
         'providers' => [
 EOF
 
     # Add Azure configuration if enabled
     if [ "${oidc_azure_enabled}" = "true" ]; then
+        # Build the metadata URL with the actual tenant value
+        local azure_metadata_url="${PA_OIDC_AZURE_METADATA_URL:-}"
+        if [ -z "${azure_metadata_url}" ]; then
+            azure_metadata_url="https://login.microsoftonline.com/${PA_OIDC_AZURE_TENANT:-common}/v2.0/.well-known/openid-configuration"
+        fi
+
         cat >> "${CONFIG_FILE}" << EOF
             'azure' => [
-                'name' => 'Microsoft Azure AD',
-                'display_name' => 'Sign in with Microsoft',
+                'name' => '${PA_OIDC_AZURE_NAME:-Microsoft Azure AD}',
+                'display_name' => '${PA_OIDC_AZURE_DISPLAY_NAME:-Sign in with Microsoft}',
                 'client_id' => '${PA_OIDC_AZURE_CLIENT_ID:-}',
                 'client_secret' => '${PA_OIDC_AZURE_CLIENT_SECRET:-}',
                 'tenant' => '${PA_OIDC_AZURE_TENANT:-common}',
                 'auto_discovery' => ${oidc_azure_auto_discovery},
-                'metadata_url' => '${PA_OIDC_AZURE_METADATA_URL:-https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration}',
+                'metadata_url' => '${azure_metadata_url}',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
-                    'username' => 'preferred_username',
+                    'username' => 'email',
                     'email' => 'email',
                     'first_name' => 'given_name',
                     'last_name' => 'family_name',
                     'display_name' => 'name',
                     'groups' => 'groups',
+                    'subject' => 'sub',
                 ],
             ],
 EOF
