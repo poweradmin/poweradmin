@@ -387,7 +387,7 @@ return [
                 'realm' => 'master',                   // Keycloak realm name
                 'auto_discovery' => true,
                 'metadata_url' => '{base_url}/realms/{realm}/.well-known/openid-configuration',
-                'scopes' => 'openid profile email',
+                'scopes' => 'openid profile email groups',
                 'user_mapping' => [
                     'username' => 'preferred_username',
                     'email' => 'email',

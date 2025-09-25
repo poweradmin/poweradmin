@@ -81,7 +81,27 @@ The initialization script creates:
 - Test users with group assignments
 - Group mapper for claims
 
-### OIDC Provider Configuration
+### Docker Network Configuration
+
+**Important**: For proper OIDC functionality in Docker environments, Keycloak needs to be accessible from both:
+- **Host browser** (for user authentication redirects)
+- **Poweradmin container** (for token exchange and user info requests)
+
+**Recommended approach**: Use your machine's network IP address instead of `localhost` or container hostnames.
+
+#### Finding Your Network IP
+```bash
+# Linux
+ip addr show | grep 192.168
+
+# macOS
+ifconfig | grep "inet 192.168"
+
+# Windows
+ipconfig | findstr 192.168
+```
+
+#### OIDC Provider Configuration
 Located in `config/settings.php`:
 ```php
 'keycloak' => [
@@ -89,11 +109,19 @@ Located in `config/settings.php`:
     'display_name' => 'Sign in with Keycloak',
     'client_id' => 'poweradmin',
     'client_secret' => '', // Set from Keycloak setup
-    'metadata_url' => 'http://localhost:8080/realms/poweradmin/.well-known/openid-configuration',
+    'base_url' => 'http://192.168.1.254:8080', // Use your network IP
+    'realm' => 'poweradmin',
+    'auto_discovery' => true,
+    'metadata_url' => 'http://192.168.1.254:8080/realms/poweradmin/.well-known/openid-configuration',
     'scopes' => 'openid profile email groups',
     // ... user mapping configuration
 ]
 ```
+
+**Why network IP works:**
+- Browser can access Keycloak for authentication
+- Docker containers can reach Keycloak for API calls
+- Consistent URL across all OIDC endpoints
 
 ### Permission Template Mapping
 ```php
@@ -138,6 +166,7 @@ Poweradmin logs OIDC authentication details when debug logging is enabled:
    - Verify redirect URIs in Keycloak client settings
    - Check Poweradmin logs for detailed error messages
    - Ensure groups are properly mapped in user claims
+   - For Docker networking issues, see "Docker Network Configuration" section above
 
 ### Manual Keycloak Configuration
 
