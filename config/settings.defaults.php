@@ -354,6 +354,28 @@ return [
             ],
             */
 
+            // Example Google configuration
+            /*
+            'google' => [
+                'name' => 'Google',
+                'display_name' => 'Sign in with Google',
+                'client_id' => '',                     // Client ID from Google Cloud Console
+                'client_secret' => '',                 // Client secret from Google Cloud Console
+                'auto_discovery' => true,
+                'metadata_url' => 'https://accounts.google.com/.well-known/openid-configuration',
+                'scopes' => 'openid profile email',
+                'user_mapping' => [
+                    'username' => 'email',
+                    'email' => 'email',
+                    'first_name' => 'given_name',
+                    'last_name' => 'family_name',
+                    'display_name' => 'name',
+                    'groups' => 'groups',
+                    'subject' => 'sub',
+                ],
+            ],
+            */
+
             // Example Keycloak configuration
             /*
             'keycloak' => [
@@ -364,7 +386,7 @@ return [
                 'base_url' => 'https://keycloak.example.com',
                 'realm' => 'master',                   // Keycloak realm name
                 'auto_discovery' => true,
-                'metadata_url' => '{base_url}/auth/realms/{realm}/.well-known/openid-configuration',
+                'metadata_url' => '{base_url}/realms/{realm}/.well-known/openid-configuration',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'preferred_username',
@@ -395,6 +417,7 @@ return [
                     'last_name' => 'family_name',
                     'display_name' => 'name',
                     'groups' => 'groups',
+                    'subject' => 'sub',
                 ],
             ],
             */
