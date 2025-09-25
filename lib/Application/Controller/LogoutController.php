@@ -47,10 +47,10 @@ class LogoutController extends BaseController
     public function run(): void
     {
         // Check if user was authenticated via OIDC
-        $oidcAuthenticated = $_SESSION['oidc_authenticated'] ?? false;
+        $authMethod = $_SESSION['auth_method_used'] ?? null;
         $oidcProviderId = $_SESSION['oidc_provider'] ?? null;
 
-        if ($oidcAuthenticated && $oidcProviderId) {
+        if ($authMethod === 'oidc' && $oidcProviderId) {
             $this->performOidcLogout($oidcProviderId);
         } else {
             $this->performStandardLogout();
@@ -70,15 +70,20 @@ class LogoutController extends BaseController
             $providerConfig = $oidcConfigService->getProviderConfig($providerId);
 
             if ($providerConfig && !empty($providerConfig['logout_url'])) {
-                // Build logout URL with redirect parameter
+                // Build logout URL with provider-specific parameters
                 $logoutUrl = $providerConfig['logout_url'];
                 $returnUrl = $this->getBaseUrl() . '/login';
 
-                // Add return URL parameter if supported
-                if (strpos($logoutUrl, '?') !== false) {
-                    $logoutUrl .= '&redirect_uri=' . urlencode($returnUrl);
-                } else {
-                    $logoutUrl .= '?redirect_uri=' . urlencode($returnUrl);
+                // Determine parameter name based on provider
+                $paramName = $this->getLogoutParameterName($logoutUrl, $providerConfig);
+
+                // Build logout URL
+                $separator = strpos($logoutUrl, '?') !== false ? '&' : '?';
+                $logoutUrl .= $separator . $paramName . '=' . urlencode($returnUrl);
+
+                // Add client_id if required by provider
+                if ($this->requiresClientIdInLogout($providerConfig)) {
+                    $logoutUrl .= '&client_id=' . urlencode($providerConfig['client_id']);
                 }
 
                 // Clear local session first
@@ -103,13 +108,37 @@ class LogoutController extends BaseController
         $this->authService->logout($sessionEntity);
     }
 
+    private function getLogoutParameterName(string $logoutUrl, array $config): string
+    {
+        // Auth0 uses 'returnTo', others use 'redirect_uri'
+        if (strpos($logoutUrl, 'auth0.com') !== false) {
+            return 'returnTo';
+        }
+
+        // Azure AD uses 'post_logout_redirect_uri'
+        if (strpos($logoutUrl, 'microsoftonline.com') !== false) {
+            return 'post_logout_redirect_uri';
+        }
+
+        // Default OIDC standard
+        return 'redirect_uri';
+    }
+
+    private function requiresClientIdInLogout(array $config): bool
+    {
+        // Some providers require client_id in logout requests
+        $provider = strtolower($config['name'] ?? '');
+        return in_array($provider, ['keycloak', 'authentik']);
+    }
+
     private function clearSession(): void
     {
         // Clear OIDC-specific session data
         unset(
             $_SESSION['oidc_authenticated'],
             $_SESSION['oidc_provider'],
-            $_SESSION['oidc_state']
+            $_SESSION['oidc_state'],
+            $_SESSION['auth_method_used']
         );
 
         // Clear standard session data

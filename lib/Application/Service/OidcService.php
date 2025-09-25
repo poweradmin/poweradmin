@@ -267,6 +267,10 @@ class OidcService extends LoggingService
                 $this->setSessionValue('useremail', $userInfo->getEmail());
                 $this->setSessionValue('auth_method_used', 'oidc');  // Track how THIS session was created
 
+                // Set OIDC-specific session variables for logout detection
+                $this->setSessionValue('oidc_authenticated', true);  // For logout detection
+                $this->setSessionValue('oidc_provider', $providerId);  // Preserve provider for logout
+
                 // Clean up temporary session data
                 $this->unsetSessionValue('oidc_state');
                 $this->unsetSessionValue('oidc_code_verifier');

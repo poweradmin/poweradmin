@@ -341,6 +341,7 @@ return [
                 'tenant' => 'common',                  // Tenant ID or 'common' for multi-tenant
                 'auto_discovery' => true,
                 'metadata_url' => 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration',
+                'logout_url' => 'https://login.microsoftonline.com/{tenant}/oauth2/v2.0/logout',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'email',
@@ -363,6 +364,7 @@ return [
                 'client_secret' => '',                 // Client secret from Google Cloud Console
                 'auto_discovery' => true,
                 'metadata_url' => 'https://accounts.google.com/.well-known/openid-configuration',
+                'logout_url' => 'https://accounts.google.com/logout',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'email',
@@ -387,6 +389,7 @@ return [
                 'realm' => 'master',                   // Keycloak realm name
                 'auto_discovery' => true,
                 'metadata_url' => '{base_url}/realms/{realm}/.well-known/openid-configuration',
+                'logout_url' => '{base_url}/realms/{realm}/protocol/openid-connect/logout',
                 'scopes' => 'openid profile email groups',
                 'user_mapping' => [
                     'username' => 'preferred_username',
@@ -409,6 +412,7 @@ return [
                 'domain' => 'your-org.okta.com',      // Your Okta domain
                 'auto_discovery' => true,
                 'metadata_url' => 'https://{domain}/.well-known/openid-configuration',
+                'logout_url' => 'https://{domain}/oauth2/v1/logout',
                 'scopes' => 'openid profile email groups',
                 'user_mapping' => [
                     'username' => 'preferred_username',
@@ -433,6 +437,7 @@ return [
                 'application_slug' => 'poweradmin',    // Application slug in Authentik
                 'auto_discovery' => true,
                 'metadata_url' => '{base_url}/application/o/{application_slug}/.well-known/openid-configuration',
+                'logout_url' => '{base_url}/application/o/{application_slug}/end-session/',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'preferred_username',
@@ -441,6 +446,30 @@ return [
                     'last_name' => 'family_name',
                     'display_name' => 'name',
                     'groups' => 'groups',
+                ],
+            ],
+            */
+
+            // Example Auth0 configuration
+            /*
+            'auth0' => [
+                'name' => 'Auth0',
+                'display_name' => 'Sign in with Auth0',
+                'client_id' => '',                     // Client ID from Auth0
+                'client_secret' => '',                 // Client secret from Auth0
+                'domain' => 'your-domain.auth0.com',  // Your Auth0 domain
+                'auto_discovery' => true,
+                'metadata_url' => 'https://{domain}/.well-known/openid-configuration',
+                'logout_url' => 'https://{domain}/v2/logout',
+                'scopes' => 'openid profile email',
+                'user_mapping' => [
+                    'username' => 'nickname',
+                    'email' => 'email',
+                    'first_name' => 'given_name',
+                    'last_name' => 'family_name',
+                    'display_name' => 'name',
+                    'groups' => 'groups',
+                    'subject' => 'sub',
                 ],
             ],
             */
