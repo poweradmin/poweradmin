@@ -109,10 +109,10 @@ Located in `config/settings.php`:
     'display_name' => 'Sign in with Keycloak',
     'client_id' => 'poweradmin',
     'client_secret' => '', // Set from Keycloak setup
-    'base_url' => 'http://192.168.1.254:8080', // Use your network IP
+    'base_url' => 'http://192.168.1.100:8080', // Use your network IP
     'realm' => 'poweradmin',
     'auto_discovery' => true,
-    'metadata_url' => 'http://192.168.1.254:8080/realms/poweradmin/.well-known/openid-configuration',
+    'metadata_url' => 'http://192.168.1.100:8080/realms/poweradmin/.well-known/openid-configuration',
     'scopes' => 'openid profile email groups',
     // ... user mapping configuration
 ]
