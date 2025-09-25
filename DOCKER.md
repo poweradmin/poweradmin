@@ -307,12 +307,11 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_OIDC_AZURE_CLIENT_SECRET` | Client secret from Azure | Empty | Yes if Azure enabled |
 | `PA_OIDC_AZURE_TENANT` | Tenant ID, domain, or 'common' for multi-tenant | `common` | No |
 | `PA_OIDC_AZURE_AUTO_DISCOVERY` | Use auto-discovery | `true` | No |
-| `PA_OIDC_AZURE_METADATA_URL` | Custom metadata URL (auto-generated if not provided) | `https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration` | No |
 
 **Azure AD Configuration Notes:**
 
 - **Tenant ID Format**: Use your Azure tenant ID (GUID), custom domain (e.g., `contoso.onmicrosoft.com`), or `common` for multi-tenant applications
-- **Metadata URL**: Automatically constructed as `https://login.microsoftonline.com/{PA_OIDC_AZURE_TENANT}/v2.0/.well-known/openid-configuration` if not explicitly provided
+- **Metadata URL**: Uses standard Azure AD v2.0 endpoint `https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration`
 - **Scopes**: The container automatically requests `openid profile email` scopes from Azure AD v2.0 endpoint
 - **App Registration**: Ensure your Azure app registration has the correct redirect URI and API permissions (`openid`, `profile`, `email`)
 - **Redirect URI**: Set the redirect URI in your Azure app registration to match your Poweradmin deployment (e.g., `https://poweradmin.yourdomain.com/oidc/callback`)
@@ -334,11 +333,16 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_OIDC_GOOGLE_ENABLED` | Enable Google OAuth provider | `false` | No |
 | `PA_OIDC_GOOGLE_NAME` | Provider name | `Google` | No |
 | `PA_OIDC_GOOGLE_DISPLAY_NAME` | Display name for login button | `Sign in with Google` | No |
-| `PA_OIDC_GOOGLE_CLIENT_ID` | Application (client) ID from Google | Empty | Yes if Google enabled |
-| `PA_OIDC_GOOGLE_CLIENT_SECRET` | Client secret from Google | Empty | Yes if Google enabled |
-| `PA_OIDC_GOOGLE_TENANT` | Tenant ID or 'common' for multi-tenant | `common` | No |
+| `PA_OIDC_GOOGLE_CLIENT_ID` | Client ID from Google Cloud Console | Empty | Yes if Google enabled |
+| `PA_OIDC_GOOGLE_CLIENT_SECRET` | Client secret from Google Cloud Console | Empty | Yes if Google enabled |
 | `PA_OIDC_GOOGLE_AUTO_DISCOVERY` | Use auto-discovery | `true` | No |
-| `PA_OIDC_GOOGLE_METADATA_URL` | Metadata URL for discovery | Google's standard URL | No |
+
+**Google OAuth Configuration Notes:**
+
+- **Client Credentials**: Obtain from Google Cloud Console OAuth 2.0 credentials
+- **Metadata URL**: Uses standard Google discovery endpoint `https://accounts.google.com/.well-known/openid-configuration`
+- **Scopes**: Automatically requests `openid profile email` scopes
+- **Redirect URI**: Set the authorized redirect URI in Google Cloud Console to match your deployment (e.g., `https://poweradmin.yourdomain.com/oidc/callback`)
 
 ### Admin User Creation
 
@@ -633,7 +637,6 @@ docker run -d --name poweradmin -p 80:80 \
   -e PA_OIDC_GOOGLE_ENABLED=true \
   -e PA_OIDC_GOOGLE_CLIENT_ID=your-google-client-id \
   -e PA_OIDC_GOOGLE_CLIENT_SECRET=your-google-client-secret \
-  -e PA_OIDC_GOOGLE_TENANT=your-tenant-id \
   edmondas/poweradmin
 ```
 

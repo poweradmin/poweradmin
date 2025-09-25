@@ -472,12 +472,6 @@ EOF
 
     # Add Azure configuration if enabled
     if [ "${oidc_azure_enabled}" = "true" ]; then
-        # Build the metadata URL with the actual tenant value
-        local azure_metadata_url="${PA_OIDC_AZURE_METADATA_URL:-}"
-        if [ -z "${azure_metadata_url}" ]; then
-            azure_metadata_url="https://login.microsoftonline.com/${PA_OIDC_AZURE_TENANT:-common}/v2.0/.well-known/openid-configuration"
-        fi
-
         cat >> "${CONFIG_FILE}" << EOF
             'azure' => [
                 'name' => '${PA_OIDC_AZURE_NAME:-Microsoft Azure AD}',
@@ -486,7 +480,7 @@ EOF
                 'client_secret' => '${PA_OIDC_AZURE_CLIENT_SECRET:-}',
                 'tenant' => '${PA_OIDC_AZURE_TENANT:-common}',
                 'auto_discovery' => ${oidc_azure_auto_discovery},
-                'metadata_url' => '${azure_metadata_url}',
+                'metadata_url' => 'https://login.microsoftonline.com/{tenant}/v2.0/.well-known/openid-configuration',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'email',
@@ -505,13 +499,12 @@ EOF
     if [ "${oidc_google_enabled}" = "true" ]; then
         cat >> "${CONFIG_FILE}" << EOF
             'google' => [
-                'name' => 'Google',
-                'display_name' => 'Sign in with Google',
+                'name' => '${PA_OIDC_GOOGLE_NAME:-Google}',
+                'display_name' => '${PA_OIDC_GOOGLE_DISPLAY_NAME:-Sign in with Google}',
                 'client_id' => '${PA_OIDC_GOOGLE_CLIENT_ID:-}',
                 'client_secret' => '${PA_OIDC_GOOGLE_CLIENT_SECRET:-}',
-                'tenant' => '${PA_OIDC_GOOGLE_TENANT:-common}',
                 'auto_discovery' => ${oidc_google_auto_discovery},
-                'metadata_url' => '${PA_OIDC_GOOGLE_METADATA_URL:-https://accounts.google.com/.well-known/openid-configuration}',
+                'metadata_url' => 'https://accounts.google.com/.well-known/openid-configuration',
                 'scopes' => 'openid profile email',
                 'user_mapping' => [
                     'username' => 'email',
