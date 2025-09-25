@@ -310,6 +310,11 @@ footer a, footer a:hover, footer a:focus {
     color: #fff !important;
 }
 
+/* Ensure icons stay white when outline button is hovered */
+.btn-outline-primary:hover i {
+    color: #fff !important;
+}
+
 /* Input styling utilities */
 input[type=number]::-webkit-inner-spin-button,
 input[type=number]::-webkit-outer-spin-button {
