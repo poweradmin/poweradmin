@@ -179,7 +179,7 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
 
         $params = [
             'user_id' => $userMfa->getUserId(),
-            'enabled' => $userMfa->isEnabled() ? 1 : 0,
+            'enabled' => DbCompat::boolValue($userMfa->isEnabled()),
             'secret' => $userMfa->getSecret(),
             'recovery_codes' => $userMfa->getRecoveryCodes(),
             'type' => $userMfa->getType(),
@@ -212,7 +212,7 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
 
         $params = [
             'id' => $userMfa->getId(),
-            'enabled' => $userMfa->isEnabled() ? 1 : 0,
+            'enabled' => DbCompat::boolValue($userMfa->isEnabled()),
             'secret' => $userMfa->getSecret(),
             'recovery_codes' => $userMfa->getRecoveryCodes(),
             'type' => $userMfa->getType(),

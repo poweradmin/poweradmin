@@ -59,7 +59,7 @@ class LoginAttemptService
             'user_id' => $userId,
             'ip_address' => $ipAddress,
             'timestamp' => time(),
-            'successful' => $successful
+            'successful' => DbCompat::boolValue($successful)
         ]);
 
         $this->cleanupOldAttempts();

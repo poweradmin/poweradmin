@@ -207,6 +207,17 @@ final class DbCompat
     }
 
     /**
+     * Converts a PHP boolean value to the appropriate integer for database storage.
+     *
+     * @param bool $value The boolean value to convert
+     * @return int 1 for true, 0 for false
+     */
+    public static function boolValue(bool $value): int
+    {
+        return $value ? 1 : 0;
+    }
+
+    /**
      * Restores the original SQL mode for the MySQL database connection if needed.
      *
      * @param object $db The database connection object

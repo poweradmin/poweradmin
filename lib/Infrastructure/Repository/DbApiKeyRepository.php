@@ -241,7 +241,7 @@ class DbApiKeyRepository implements ApiKeyRepositoryInterface
         $stmt->bindValue(':createdBy', $apiKey->getCreatedBy(), $apiKey->getCreatedBy() !== null ? PDO::PARAM_INT : PDO::PARAM_NULL);
         $stmt->bindValue(':createdAt', $apiKey->getCreatedAt()->format('Y-m-d H:i:s'));
         $stmt->bindValue(':lastUsedAt', $apiKey->getLastUsedAt() ? $apiKey->getLastUsedAt()->format('Y-m-d H:i:s') : null);
-        $stmt->bindValue(':disabled', $apiKey->isDisabled(), PDO::PARAM_BOOL);
+        $stmt->bindValue(':disabled', DbCompat::boolValue($apiKey->isDisabled()));
         $stmt->bindValue(':expiresAt', $apiKey->getExpiresAt() ? $apiKey->getExpiresAt()->format('Y-m-d H:i:s') : null);
 
         $stmt->execute();
