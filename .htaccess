@@ -39,7 +39,7 @@ AddDefaultCharset UTF-8
     # Allow Bootstrap files before general vendor blocking
     RewriteCond %{REQUEST_URI} !^/vendor/twbs/(bootstrap|bootstrap-icons)/
     # Block access to sensitive directories
-    RewriteRule ^(config|lib|tests|tools|vendor)/ - [F,L]
+    RewriteRule ^(config|lib|tests|vendor)/ - [F,L]
 </IfModule>
 
 # Security: Deny access to hidden files and directories

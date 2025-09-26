@@ -60,7 +60,7 @@ server {
         allow all;
     }
 
-    location ~ /(config|lib|tests|tools|vendor)/ {
+    location ~ /(config|lib|tests|vendor)/ {
         deny all;
     }
 

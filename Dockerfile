@@ -90,7 +90,7 @@ COPY <<EOF /etc/caddy/Caddyfile
     encode gzip
 
     # Security: Deny access to sensitive directories
-    @denied path /config* /lib* /tests* /tools* /vendor*
+    @denied path /config* /lib* /tests* /vendor*
     @bootstrap path /vendor/twbs/bootstrap* /vendor/twbs/bootstrap-icons*
 
     # Allow Bootstrap files (override general vendor blocking)
