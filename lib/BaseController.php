@@ -250,6 +250,10 @@ abstract class BaseController
         $this->showMessage($template);
 
         // Render main template
+        // Ensure CSRF token exists, generate one if missing
+        if (!isset($_SESSION['csrf_token']) || $_SESSION['csrf_token'] === '') {
+            $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
+        }
         $params['csrf_token'] = $this->csrfTokenService->getToken();
         $this->app->render($template, $params);
         $this->renderFooter();

@@ -25,6 +25,7 @@ namespace Poweradmin\Application\Service;
 use League\OAuth2\Client\Provider\GenericProvider;
 use League\OAuth2\Client\Token\AccessToken;
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\SessionService;
@@ -42,6 +43,7 @@ class OidcService extends LoggingService
     private OidcConfigurationService $oidcConfigurationService;
     private OidcUserProvisioningService $userProvisioningService;
     private Request $request;
+    private CsrfTokenService $csrfTokenService;
 
     public function __construct(
         ConfigurationManager $configManager,
@@ -62,6 +64,7 @@ class OidcService extends LoggingService
         $this->sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authenticationService = new AuthenticationService($this->sessionService, $redirectService);
+        $this->csrfTokenService = new CsrfTokenService();
     }
 
     public function isEnabled(): bool
@@ -270,6 +273,13 @@ class OidcService extends LoggingService
                 // Set OIDC-specific session variables for logout detection
                 $this->setSessionValue('oidc_authenticated', true);  // For logout detection
                 $this->setSessionValue('oidc_provider', $providerId);  // Preserve provider for logout
+
+                // Ensure a CSRF token exists for subsequent requests
+                $existingToken = $this->getSessionValue('csrf_token', '');
+                if (!is_string($existingToken) || $existingToken === '') {
+                    $this->setSessionValue('csrf_token', $this->csrfTokenService->generateToken());
+                    $this->logInfo('CSRF token generated for OIDC session.');
+                }
 
                 // Clean up temporary session data
                 $this->unsetSessionValue('oidc_state');
