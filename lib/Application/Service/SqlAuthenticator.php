@@ -153,10 +153,8 @@ class SqlAuthenticator extends LoggingService
         $_SESSION['email'] = $rowObj['email'];
         $_SESSION['auth_used'] = 'internal';
 
-        if (!isset($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token'] = $this->csrfTokenService->generateToken();
-            $this->logInfo('CSRF token generated for user {username}', ['username' => $_SESSION["userlogin"]]);
-        }
+        $this->csrfTokenService->ensureTokenExists();
+        $this->logInfo('CSRF token ensured for user {username}', ['username' => $_SESSION["userlogin"]]);
 
         // Check if MFA is globally enabled
         $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);

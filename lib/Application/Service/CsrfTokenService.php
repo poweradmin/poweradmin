@@ -46,4 +46,11 @@ class CsrfTokenService
         }
         return hash_equals($_SESSION[$session_var], $token);
     }
+
+    public function ensureTokenExists(string $session_var = 'csrf_token'): void
+    {
+        if (!isset($_SESSION[$session_var]) || $_SESSION[$session_var] === '') {
+            $_SESSION[$session_var] = $this->generateToken();
+        }
+    }
 }

@@ -275,11 +275,8 @@ class OidcService extends LoggingService
                 $this->setSessionValue('oidc_provider', $providerId);  // Preserve provider for logout
 
                 // Ensure a CSRF token exists for subsequent requests
-                $existingToken = $this->getSessionValue('csrf_token', '');
-                if (!is_string($existingToken) || $existingToken === '') {
-                    $this->setSessionValue('csrf_token', $this->csrfTokenService->generateToken());
-                    $this->logInfo('CSRF token generated for OIDC session.');
-                }
+                $this->csrfTokenService->ensureTokenExists();
+                $this->logInfo('CSRF token ensured for OIDC session.');
 
                 // Clean up temporary session data
                 $this->unsetSessionValue('oidc_state');
