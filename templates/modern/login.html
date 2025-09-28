@@ -47,20 +47,33 @@
             <div class="d-grid">
                 <button type="submit" data-testid="login-button" name="authenticate" class="btn btn-secondary">{% trans %}Log in{% endtrans %}</button>
             </div>
-            {% if oidc_enabled and oidc_providers %}
+            {% if (oidc_enabled and oidc_providers) or (saml_enabled and saml_providers) %}
             <div class="mt-3">
                 <div class="text-center mb-2">
                     <small class="text-muted">{% trans %}Or sign in with{% endtrans %}</small>
                 </div>
-                {% for provider in oidc_providers %}
-                <div class="d-grid mb-2">
-                    <a href="/oidc/login?provider={{ provider.id }}" 
-                       class="btn btn-outline-primary btn-sm"
-                       data-testid="oidc-login-{{ provider.id }}">
-                        <i class="bi bi-shield-lock me-2"></i>{{ provider.display_name }}
-                    </a>
-                </div>
-                {% endfor %}
+                {% if oidc_enabled and oidc_providers %}
+                    {% for provider in oidc_providers %}
+                    <div class="d-grid mb-2">
+                        <a href="/oidc/login?provider={{ provider.id }}"
+                           class="btn btn-outline-primary btn-sm"
+                           data-testid="oidc-login-{{ provider.id }}">
+                            <i class="bi bi-shield-lock me-2"></i>{{ provider.display_name }} (OIDC)
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% endif %}
+                {% if saml_enabled and saml_providers %}
+                    {% for provider in saml_providers %}
+                    <div class="d-grid mb-2">
+                        <a href="/saml/login?provider={{ provider.id }}"
+                           class="btn btn-outline-success btn-sm"
+                           data-testid="saml-login-{{ provider.id }}">
+                            <i class="bi bi-key me-2"></i>{{ provider.display_name }} (SAML)
+                        </a>
+                    </div>
+                    {% endfor %}
+                {% endif %}
             </div>
             {% endif %}
             {% if password_reset_enabled %}

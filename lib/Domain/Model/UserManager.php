@@ -28,6 +28,7 @@ use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
+use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 class UserManager
@@ -242,6 +243,10 @@ class UserManager
             $stmt = $this->db->prepare("DELETE FROM zones WHERE owner = :uid");
             $stmt->execute([':uid' => $uid]);
 
+            // Clean up external authentication links
+            $stmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE user_id = :uid");
+            $stmt->execute([':uid' => $uid]);
+
             $stmt = $this->db->prepare("DELETE FROM users WHERE id = :uid");
             $stmt->execute([':uid' => $uid]);
 
@@ -350,7 +355,7 @@ class UserManager
                 $query .= ", perm_templ = :perm_templ";
             }
 
-            $query .= ", description = :description, active = :active, use_ldap = :use_ldap";
+            $query .= ", description = :description, active = :active, use_ldap = :use_ldap, auth_method = :auth_method";
 
             $edit_own_perm = self::verifyPermission($this->db, 'user_edit_own');
             $passwd_edit_others_perm = self::verifyPermission($this->db, 'user_passwd_edit_others');
@@ -377,6 +382,7 @@ class UserManager
             $stmt->bindValue(':description', $description, PDO::PARAM_STR);
             $stmt->bindValue(':active', $active, PDO::PARAM_INT);
             $stmt->bindValue(':use_ldap', $i_use_ldap ?: 0, PDO::PARAM_INT);
+            $stmt->bindValue(':auth_method', $i_use_ldap ? 'ldap' : 'sql', PDO::PARAM_STR);
             $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
             if (self::verifyPermission($this->db, 'user_edit_templ_perm')) {
@@ -506,7 +512,8 @@ class UserManager
         fullname,
         email,
         description AS descr,
-        active,";
+        active,
+        auth_method,";
 
         if ($ldap_use) {
             $query .= "use_ldap,";
@@ -540,6 +547,7 @@ class UserManager
                 "descr" => $user['descr'],
                 "active" => $user['active'],
                 "use_ldap" => $user['use_ldap'] ?? 0,
+                "auth_type" => $user['auth_method'] ?? 'sql',
                 "tpl_id" => $user['tpl_id'],
                 "tpl_name" => $user['tpl_name'],
                 "tpl_descr" => $user['tpl_descr']
@@ -676,7 +684,7 @@ class UserManager
 
             // If the user is allowed to change the use_ldap flag, set it.
             if ($perm_is_godlike == "1") {
-                $query .= ", use_ldap = :use_ldap";
+                $query .= ", use_ldap = :use_ldap, auth_method = :auth_method";
             }
 
             $passwd_edit_others_perm = self::verifyPermission($this->db, 'user_passwd_edit_others');
@@ -705,6 +713,7 @@ class UserManager
             }
             if ($perm_is_godlike == "1") {
                 $stmt->bindValue(':use_ldap', $use_ldap, PDO::PARAM_INT);
+                $stmt->bindValue(':auth_method', $use_ldap ? 'ldap' : 'sql', PDO::PARAM_STR);
             }
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
                 // Use password_hash directly as the PasswordEncryptionService is for session keys
@@ -758,9 +767,11 @@ class UserManager
 
         if ($ldap_use && isset($details['use_ldap']) && $details['use_ldap'] == 1) {
             $use_ldap = 1;
+            $auth_method = 'ldap';
             $password_hash = 'LDAP_USER';
         } else {
             $use_ldap = 0;
+            $auth_method = 'sql';
             $config = ConfigurationManager::getInstance();
             $config->initialize();
             $userAuthService = new UserAuthenticationService(
@@ -770,7 +781,7 @@ class UserManager
             $password_hash = $userAuthService->hashPassword($details['password']);
         }
 
-        $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES (:username, :password, :fullname, :email, :description, :perm_templ, :active, :use_ldap)";
+        $query = "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method) VALUES (:username, :password, :fullname, :email, :description, :perm_templ, :active, :use_ldap, :auth_method)";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':username', $details['username']);
@@ -788,6 +799,7 @@ class UserManager
 
         $stmt->bindValue(':active', $active, PDO::PARAM_INT);
         $stmt->bindValue(':use_ldap', $use_ldap, PDO::PARAM_INT);
+        $stmt->bindValue(':auth_method', $auth_method);
         $stmt->execute();
 
         return true;

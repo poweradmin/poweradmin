@@ -25,7 +25,7 @@ namespace Poweradmin\Domain\ValueObject;
 /**
  * Value object representing OIDC user information
  */
-class OidcUserInfo
+class OidcUserInfo implements UserInfoInterface
 {
     private string $username;
     private string $email;

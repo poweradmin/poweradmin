@@ -25,7 +25,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\OidcConfigurationService;
 use Poweradmin\Application\Service\OidcService;
-use Poweradmin\Application\Service\OidcUserProvisioningService;
+use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
@@ -53,7 +53,7 @@ class OidcLoginController extends BaseController
         $logger = new Logger($logHandler, $logLevel);
 
         $oidcConfigService = new OidcConfigurationService($this->config, $logger);
-        $oidcProvisioningService = new OidcUserProvisioningService($this->db, $this->config, $logger);
+        $oidcProvisioningService = new UserProvisioningService($this->db, $this->config, $logger);
 
         $this->oidcService = new OidcService(
             $this->config,

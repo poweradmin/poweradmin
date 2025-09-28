@@ -26,7 +26,9 @@ class RedirectService
 {
     public function redirectTo(string $url): void
     {
-        header("Location: $url");
+        if (!headers_sent()) {
+            header("Location: $url");
+        }
         exit;
     }
 }

@@ -220,8 +220,80 @@ class DbUserRepository implements UserRepository
      */
     public function deleteUser(int $userId): bool
     {
-        $stmt = $this->db->prepare("DELETE FROM users WHERE id = :userId");
-        return $stmt->execute([':userId' => $userId]);
+        try {
+            // Start transaction to ensure atomicity
+            $this->db->beginTransaction();
+
+            // Delete related OIDC/SAML authentication links first
+            $this->cleanupExternalAuthLinks($userId);
+
+            // Delete user preferences
+            $stmt = $this->db->prepare("DELETE FROM user_preferences WHERE user_id = :userId");
+            $stmt->execute([':userId' => $userId]);
+
+            // Delete MFA settings
+            $stmt = $this->db->prepare("DELETE FROM user_mfa WHERE user_id = :userId");
+            $stmt->execute([':userId' => $userId]);
+
+            // Delete login attempts
+            $stmt = $this->db->prepare("DELETE FROM login_attempts WHERE user_id = :userId");
+            $stmt->execute([':userId' => $userId]);
+
+            // Finally delete the user
+            $stmt = $this->db->prepare("DELETE FROM users WHERE id = :userId");
+            $result = $stmt->execute([':userId' => $userId]);
+
+            if ($result) {
+                $this->db->commit();
+                return true;
+            } else {
+                $this->db->rollback();
+                return false;
+            }
+        } catch (\Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
+    }
+
+    /**
+     * Clean up external authentication links for a user
+     *
+     * This method removes all OIDC and SAML authentication links associated with a user.
+     * It's called during user deletion to ensure referential integrity.
+     *
+     * @param int $userId User ID
+     * @return void
+     */
+    private function cleanupExternalAuthLinks(int $userId): void
+    {
+        // Clean up OIDC links
+        $stmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE user_id = :userId");
+        $stmt->execute([':userId' => $userId]);
+
+        // Clean up SAML links if the table exists
+        // Use database-agnostic approach: try the DELETE and catch table not found errors
+        try {
+            $stmt = $this->db->prepare("DELETE FROM saml_user_links WHERE user_id = :userId");
+            $stmt->execute([':userId' => $userId]);
+        } catch (\Exception $e) {
+            // saml_user_links table doesn't exist yet - this is expected until SAML user linking is fully implemented
+            // We silently ignore table-not-found errors but would still throw for other SQL errors
+            $errorMessage = $e->getMessage();
+            $isTableNotFound = (
+                strpos($errorMessage, 'saml_user_links') !== false && (
+                    strpos($errorMessage, "doesn't exist") !== false ||
+                    strpos($errorMessage, 'does not exist') !== false ||
+                    strpos($errorMessage, 'no such table') !== false ||
+                    strpos($errorMessage, 'Unknown table') !== false
+                )
+            );
+
+            if (!$isTableNotFound) {
+                // Re-throw if it's not a table-not-found error
+                throw $e;
+            }
+        }
     }
 
     /**

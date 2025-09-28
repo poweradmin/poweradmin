@@ -196,7 +196,7 @@
                         <li><a class="dropdown-item {{ current_page == 'edit_user' and request.id == session_userid ? 'active' : '' }}"
                                href="/users/{{ session_userid }}/edit">{% trans %}Edit profile{% endtrans %}</a></li>
                         {% endif %}
-                        {% if auth_used %}
+                        {% if can_change_password %}
                         <li><a class="dropdown-item {{ current_page == 'change_password' ? 'active' : '' }}"
                                href="/password/change">{% trans %}Change password{% endtrans %}</a></li>
                         {% endif %}

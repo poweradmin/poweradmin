@@ -101,9 +101,13 @@ class IndexController extends BaseController
                         !$permissions['user_view_others'] &&
                         !$permissions['user_edit_others'];
 
+        // Determine if user can change password (internal auth only, not ldap/oidc/saml)
+        $canChangePassword = !in_array($this->userContextService->getAuthMethod(), ['ldap', 'oidc', 'saml']);
+
         $this->render("index.html", [
             'user_name' => $this->userContextService->getDisplayName(),
             'auth_used' => $this->userContextService->getAuthMethod() ?? '',
+            'can_change_password' => $canChangePassword,
             'permissions' => $permissions,
             'dblog_use' => $this->config->get('logging', 'database_enabled', false),
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),

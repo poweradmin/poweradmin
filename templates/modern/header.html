@@ -285,7 +285,7 @@
                                 </a>
                             </li>
                             {% endif %}
-                            {% if auth_used %}
+                            {% if can_change_password %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'change_password' ? 'active' : '' }}" href="/password/change">
                                     <i class="bi bi-key me-2"></i>{% trans %}Change password{% endtrans %}

@@ -499,4 +499,172 @@ return [
             */
         ],
     ],
+
+    /**
+     * SAML (Security Assertion Markup Language) Authentication Settings
+     */
+    'saml' => [
+        'enabled' => false,                   // Enable SAML authentication
+        'auto_provision' => true,             // Automatically create user accounts from SAML
+        'link_by_email' => true,              // Link SAML accounts to existing users by email
+        'sync_user_info' => true,             // Sync user information (name, email) from SAML provider
+        'default_permission_template' => '',  // Default permission template for new SAML users
+
+        // Permission template mapping for automatic role assignment
+        // Maps SAML groups/roles to existing permission template names
+        // Note: Users can only have one permission template assigned
+        // Configure your actual group mappings in config/settings.php
+        'permission_template_mapping' => [
+            // Examples (configure your actual mappings in settings.php):
+            // 'poweradmin-admins' => 'Administrator',    // Map this SAML group to Administrator permission template
+            // 'dns-operators' => 'DNS Operator',         // Example: DNS operations template (if exists)
+            // 'dns-viewers' => 'Read Only',              // Example: Read-only template (if exists)
+        ],
+
+        // Service Provider (SP) Settings - Your PowerAdmin instance
+        'sp' => [
+            'entity_id' => '',                // SP Entity ID (usually your PowerAdmin URL)
+            'assertion_consumer_service_url' => '', // ACS URL (leave empty for auto-generation)
+            'single_logout_service_url' => '',      // SLO URL (leave empty for auto-generation)
+            'name_id_format' => 'urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress',
+            'x509cert' => '',                // SP X.509 Certificate (optional, for signing requests)
+            'private_key' => '',             // SP Private Key (optional, for signing requests)
+        ],
+
+        // Provider configurations
+        'providers' => [
+            // Example Azure AD SAML configuration
+            /*
+            'azure' => [
+                'name' => 'Microsoft Azure AD',
+                'display_name' => 'Sign in with Microsoft (SAML)',
+                'entity_id' => 'https://sts.windows.net/{tenant-id}/',
+                'sso_url' => 'https://login.microsoftonline.com/{tenant-id}/saml2',
+                'slo_url' => 'https://login.microsoftonline.com/{tenant-id}/saml2',
+                'x509cert' => '',             // IdP X.509 Certificate (required)
+                'x509cert_multi' => [         // Multiple certificates for rollover (optional)
+                    'signing' => [],
+                    'encryption' => []
+                ],
+                'user_mapping' => [
+                    'username' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+                    'email' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+                    'first_name' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
+                    'last_name' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
+                    'display_name' => 'http://schemas.microsoft.com/identity/claims/displayname',
+                    'groups' => 'http://schemas.microsoft.com/ws/2008/06/identity/claims/groups',
+                ],
+            ],
+            */
+
+            // Example Okta SAML configuration
+            /*
+            'okta' => [
+                'name' => 'Okta',
+                'display_name' => 'Sign in with Okta (SAML)',
+                'entity_id' => 'http://www.okta.com/{app-id}',
+                'sso_url' => 'https://{domain}.okta.com/app/{app-name}/{app-id}/sso/saml',
+                'slo_url' => 'https://{domain}.okta.com/app/{app-name}/{app-id}/slo/saml',
+                'x509cert' => '',             // Okta X.509 Certificate
+                'user_mapping' => [
+                    'username' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+                    'email' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+                    'first_name' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
+                    'last_name' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
+                    'display_name' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+                    'groups' => 'http://schemas.xmlsoap.org/claims/Group',
+                ],
+            ],
+            */
+
+            // Example Auth0 SAML configuration
+            /*
+            'auth0' => [
+                'name' => 'Auth0',
+                'display_name' => 'Sign in with Auth0 (SAML)',
+                'entity_id' => 'urn:auth0:{tenant}:{connection}',
+                'sso_url' => 'https://{tenant}.auth0.com/samlp/{client-id}',
+                'slo_url' => 'https://{tenant}.auth0.com/samlp/{client-id}/logout',
+                'x509cert' => '',             // Auth0 X.509 Certificate
+                'user_mapping' => [
+                    'username' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier',
+                    'email' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress',
+                    'first_name' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname',
+                    'last_name' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname',
+                    'display_name' => 'http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name',
+                    'groups' => 'http://schemas.auth0.com/roles',
+                ],
+            ],
+            */
+
+            // Example Keycloak SAML configuration
+            /*
+            'keycloak' => [
+                'name' => 'Keycloak',
+                'display_name' => 'Sign in with Keycloak (SAML)',
+                'entity_id' => 'https://keycloak.example.com/realms/{realm}',
+                'sso_url' => 'https://keycloak.example.com/realms/{realm}/protocol/saml',
+                'slo_url' => 'https://keycloak.example.com/realms/{realm}/protocol/saml',
+                'x509cert' => '',             // Keycloak X.509 Certificate
+                'user_mapping' => [
+                    'username' => 'username',
+                    'email' => 'email',
+                    'first_name' => 'firstName',
+                    'last_name' => 'lastName',
+                    'display_name' => 'name',
+                    'groups' => 'groups',
+                ],
+            ],
+            */
+
+            // Generic SAML provider configuration template
+            // Copy and modify this template for your SAML Identity Provider
+            /*
+            'generic_saml' => [
+                'enabled' => false,                // Set to true to enable this provider
+                'name' => 'Generic SAML IdP',      // Internal provider name
+                'display_name' => 'Sign in with SAML', // Text shown on login button
+
+                // Identity Provider settings (get these from your IdP metadata)
+                'entity_id' => 'https://your-idp.example.com/metadata',
+                'sso_url' => 'https://your-idp.example.com/sso',
+                'slo_url' => 'https://your-idp.example.com/slo',
+                'x509cert' => '',              // Required: IdP X.509 Certificate (without headers/footers)
+
+                // Attribute mapping - map SAML attributes to Poweradmin user fields
+                'user_mapping' => [
+                    'username' => 'uid',               // SAML attribute for username
+                    'email' => 'email',                // SAML attribute for email
+                    'first_name' => 'firstName',       // SAML attribute for first name
+                    'last_name' => 'lastName',         // SAML attribute for last name
+                    'display_name' => 'displayName',   // SAML attribute for display name
+                    'groups' => 'groups',              // SAML attribute for groups/roles
+                ],
+
+                // Security settings (recommended for production)
+                'security' => [
+                    'nameIdEncrypted' => false,        // Whether NameID should be encrypted
+                    'authnRequestsSigned' => false,    // Whether to sign authentication requests
+                    'logoutRequestSigned' => false,    // Whether to sign logout requests
+                    'logoutResponseSigned' => false,   // Whether to sign logout responses
+                    'signMetadata' => false,           // Whether to sign SP metadata
+                    'wantAssertionsSigned' => true,    // Require signed assertions from IdP
+                    'wantNameId' => true,              // Require NameID in assertions
+                    'wantAssertionsEncrypted' => false, // Require encrypted assertions
+                    'wantNameIdEncrypted' => false,    // Require encrypted NameID
+                    'requestedAuthnContext' => true,   // Request specific authentication context
+                    'signatureAlgorithm' => 'http://www.w3.org/2001/04/xmldsig-more#rsa-sha256',
+                    'digestAlgorithm' => 'http://www.w3.org/2001/04/xmlenc#sha256',
+                ],
+
+                // Advanced settings (optional)
+                'settings' => [
+                    'compress_requests' => true,       // Compress SAML requests
+                    'compress_responses' => true,      // Compress SAML responses
+                    'allow_single_label_domains' => false, // Allow single-label domains
+                ],
+            ],
+            */
+        ],
+    ],
 ];

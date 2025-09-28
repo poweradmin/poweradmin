@@ -255,3 +255,20 @@ CREATE TABLE `oidc_user_links` (
   KEY `idx_oidc_subject` (`oidc_subject`),
   CONSTRAINT `fk_oidc_user_links_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `saml_user_links` (
+  `id` INT(11) NOT NULL AUTO_INCREMENT,
+  `user_id` INT(11) NOT NULL,
+  `provider_id` VARCHAR(50) NOT NULL,
+  `saml_subject` VARCHAR(255) NOT NULL,
+  `username` VARCHAR(255) NOT NULL,
+  `email` VARCHAR(255) DEFAULT NULL,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_user_provider` (`user_id`, `provider_id`),
+  UNIQUE KEY `unique_subject_provider` (`saml_subject`, `provider_id`),
+  KEY `idx_provider_id` (`provider_id`),
+  KEY `idx_saml_subject` (`saml_subject`),
+  CONSTRAINT `fk_saml_user_links_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

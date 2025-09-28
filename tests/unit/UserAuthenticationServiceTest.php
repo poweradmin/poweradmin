@@ -30,10 +30,9 @@ class UserAuthenticationServiceTest extends TestCase
         $len = 10;
         $salt = $this->userAuthService->generateSalt($len);
         $valid_characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890@#$%^*()_-!';
-        $valid_characters_array = str_split($valid_characters);
 
         for ($i = 0; $i < $len; $i++) {
-            $this->assertContains($salt[$i], $valid_characters_array, 'Generated salt should only contain valid characters');
+            $this->assertTrue(str_contains($valid_characters, $salt[$i]), 'Generated salt should only contain valid characters');
         }
     }
 

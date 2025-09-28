@@ -59,9 +59,11 @@ class SessionService
             unset($_SESSION['userpwd']);
         }
 
-        // Regenerate session ID and unset all variables
-        session_regenerate_id(true);
-        session_unset();
+        // Regenerate session ID and unset all variables only if session is active
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            session_regenerate_id(true);
+            session_unset();
+        }
     }
 
     public function setSessionData(SessionEntity $sessionEntity): void

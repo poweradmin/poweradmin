@@ -25,6 +25,27 @@ oidc_callback:
   controller: Poweradmin\Application\Controller\OidcCallbackController::run
   methods: [GET]
 
+# SAML Authentication
+saml_login:
+  path: /saml/login
+  controller: Poweradmin\Application\Controller\SamlLoginController::run
+  methods: [GET]
+
+saml_acs:
+  path: /saml/acs
+  controller: Poweradmin\Application\Controller\SamlCallbackController::run
+  methods: [POST]
+
+saml_sls:
+  path: /saml/sls
+  controller: Poweradmin\Application\Controller\SamlCallbackController::run
+  methods: [GET, POST]
+
+saml_metadata:
+  path: /saml/metadata
+  controller: Poweradmin\Application\Controller\SamlMetadataController::run
+  methods: [GET]
+
 # Multi-Factor Authentication
 mfa_setup:
   path: /mfa/setup

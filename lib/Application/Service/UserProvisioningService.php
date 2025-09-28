@@ -25,14 +25,26 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
+use Poweradmin\Domain\ValueObject\SamlUserInfo;
+use Poweradmin\Domain\ValueObject\UserInfoInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use ReflectionClass;
 
-class OidcUserProvisioningService extends LoggingService
+/**
+ * User provisioning service for external authentication providers
+ * Supports both OIDC and SAML user provisioning and linking
+ */
+class UserProvisioningService extends LoggingService
 {
+    // Authentication method constants
+    public const AUTH_METHOD_SQL = 'sql';
+    public const AUTH_METHOD_LDAP = 'ldap';
+    public const AUTH_METHOD_OIDC = 'oidc';
+    public const AUTH_METHOD_SAML = 'saml';
+
     private PDOCommon $db;
     private ConfigurationManager $configManager;
     private UserManager $userManager;
@@ -52,9 +64,14 @@ class OidcUserProvisioningService extends LoggingService
         $this->userRepository = new DbUserRepository($connection, $configManager);
     }
 
-    public function provisionUser(OidcUserInfo $userInfo, string $providerId): ?int
+    public function provisionUser(UserInfoInterface $userInfo, string $providerId): ?int
     {
-        $this->logInfo('Starting user provisioning for OIDC user: {username}', ['username' => $userInfo->getUsername()]);
+        // Determine auth method from the actual UserInfo type being used
+        $authMethod = $this->determineAuthMethodFromUserInfo($userInfo);
+        $this->logInfo('Starting user provisioning for {method} user: {username}', [
+            'method' => strtoupper($authMethod),
+            'username' => $userInfo->getUsername()
+        ]);
 
         if (!$userInfo->isValid()) {
             $this->logWarning('Invalid OIDC user info provided for provisioning: {details}', [
@@ -68,30 +85,40 @@ class OidcUserProvisioningService extends LoggingService
         }
 
         try {
-            // First, try to find existing user by OIDC subject
-            $existingUserId = $this->findUserByOidcSubject($userInfo->getSubject(), $providerId);
+            // First, try to find existing user by subject
+            $existingUserId = $authMethod === self::AUTH_METHOD_SAML
+                ? $this->findUserBySamlSubject($userInfo->getSubject(), $providerId)
+                : $this->findUserByOidcSubject($userInfo->getSubject(), $providerId);
 
             if ($existingUserId) {
-                $this->logInfo('Found existing user by OIDC subject: {subject}', ['subject' => $userInfo->getSubject()]);
-                $this->updateExistingUser($existingUserId, $userInfo);
+                $this->logInfo('Found existing user by {method} subject: {subject}', [
+                    'method' => strtoupper($authMethod),
+                    'subject' => $userInfo->getSubject()
+                ]);
+                $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
                 return $existingUserId;
             }
 
             // Try to find by email if email linking is enabled
-            if ($this->configManager->get('oidc', 'link_by_email', true) && !empty($userInfo->getEmail())) {
+            $authConfig = $this->getAuthMethodConfig($authMethod);
+            if (($authConfig['link_by_email'] ?? true) && !empty($userInfo->getEmail())) {
                 $existingUserId = $this->findUserByEmail($userInfo->getEmail());
 
                 if ($existingUserId) {
                     $this->logInfo('Found existing user by email: {email}', ['email' => $userInfo->getEmail()]);
-                    $this->linkOidcToExistingUser($existingUserId, $userInfo, $providerId);
-                    $this->updateExistingUser($existingUserId, $userInfo);
+                    if ($authMethod === self::AUTH_METHOD_SAML) {
+                        $this->linkSamlToExistingUser($existingUserId, $userInfo, $providerId);
+                    } else {
+                        $this->linkOidcToExistingUser($existingUserId, $userInfo, $providerId);
+                    }
+                    $this->updateExistingUser($existingUserId, $userInfo, $authMethod);
                     return $existingUserId;
                 }
             }
 
             // Create new user if auto-provisioning is enabled
-            if ($this->configManager->get('oidc', 'auto_provision', true)) {
-                return $this->createNewUser($userInfo, $providerId);
+            if ($authConfig['auto_provision'] ?? true) {
+                return $this->createNewUser($userInfo, $providerId, $authMethod);
             }
 
             $this->logWarning(
@@ -132,11 +159,6 @@ class OidcUserProvisioningService extends LoggingService
             return $result ? (int)$result['user_id'] : null;
         } catch (\Exception $e) {
             $this->logError('Error finding user by OIDC subject (table may not exist): {error}', ['error' => $e->getMessage()]);
-
-            // Try to create the table if it doesn't exist
-            $this->logInfo('Attempting to create oidc_user_links table...');
-            $this->createOidcUserLinksTable();
-
             return null;
         }
     }
@@ -155,13 +177,16 @@ class OidcUserProvisioningService extends LoggingService
         }
     }
 
-    private function createNewUser(OidcUserInfo $userInfo, string $providerId): ?int
+    private function createNewUser(UserInfoInterface $userInfo, string $providerId, string $authMethod = self::AUTH_METHOD_OIDC): ?int
     {
         try {
-            $this->logInfo('Creating new user from OIDC: {username}', ['username' => $userInfo->getUsername()]);
+            $this->logInfo('Creating new user from {method}: {username}', [
+                'method' => strtoupper($authMethod),
+                'username' => $userInfo->getUsername()
+            ]);
 
             // Determine permission template based on groups
-            $permissionTemplateId = $this->determinePermissionTemplate($userInfo->getGroups());
+            $permissionTemplateId = $this->determinePermissionTemplate($userInfo->getGroups(), $authMethod);
 
             if (!$permissionTemplateId) {
                 $this->logError('No permission template ID determined for user: {username}', ['username' => $userInfo->getUsername()]);
@@ -180,7 +205,7 @@ class OidcUserProvisioningService extends LoggingService
                 'password' => '',
                 'fullname' => $userInfo->getDisplayName() ?: $userInfo->getFullName(),
                 'email' => $userInfo->getEmail(),
-                'description' => 'Created via OIDC from ' . $providerId,
+                'description' => 'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
                 'active' => 1,
                 'perm_templ' => $permissionTemplateId
             ];
@@ -194,14 +219,14 @@ class OidcUserProvisioningService extends LoggingService
 
             $success = $stmt->execute([
                 $username,
-                '', // No password for OIDC users
+                '', // No password for external auth users
                 $userInfo->getDisplayName() ?: $userInfo->getFullName(),
                 $userInfo->getEmail(),
-                'Created via OIDC from ' . $providerId,
+                'Created via ' . strtoupper($authMethod) . ' from ' . $providerId,
                 1, // Active
                 $permissionTemplateId,
-                0,  // use_ldap = 0 for OIDC users
-                'oidc'  // auth_method = 'oidc'
+                0,  // use_ldap = 0 for external auth users
+                $authMethod  // auth_method (oidc, saml, etc.)
             ]);
 
             if (!$success) {
@@ -213,9 +238,13 @@ class OidcUserProvisioningService extends LoggingService
             $userId = (int)$this->db->lastInsertId();
             $this->logInfo('User INSERT successful, new user ID: {userId}', ['userId' => $userId]);
 
-            // Link OIDC identity to user
-            $this->logInfo('Linking OIDC identity to user ID: {userId}', ['userId' => $userId]);
-            $this->linkOidcToExistingUser($userId, $userInfo, $providerId);
+            // Link identity to user
+            $this->logInfo('Linking {method} identity to user ID: {userId}', ['method' => strtoupper($authMethod), 'userId' => $userId]);
+            if ($authMethod === self::AUTH_METHOD_SAML) {
+                $this->linkSamlToExistingUser($userId, $userInfo, $providerId);
+            } else {
+                $this->linkOidcToExistingUser($userId, $userInfo, $providerId);
+            }
 
             $this->logInfo('Successfully created new user: {username} with ID: {id}', [
                 'username' => $username,
@@ -232,14 +261,15 @@ class OidcUserProvisioningService extends LoggingService
         }
     }
 
-    private function updateExistingUser(int $userId, OidcUserInfo $userInfo): void
+    private function updateExistingUser(int $userId, UserInfoInterface $userInfo, string $authMethod = self::AUTH_METHOD_OIDC): void
     {
         try {
             $updateFields = [];
             $updateValues = [];
 
             // Update user information if configured to sync
-            if ($this->configManager->get('oidc', 'sync_user_info', true)) {
+            $authConfig = $this->getAuthMethodConfig($authMethod);
+            if ($authConfig['sync_user_info'] ?? true) {
                 if (!empty($userInfo->getDisplayName())) {
                     $updateFields[] = 'fullname = ?';
                     $updateValues[] = $userInfo->getDisplayName();
@@ -251,8 +281,26 @@ class OidcUserProvisioningService extends LoggingService
                 }
             }
 
+            // Only update auth_method if it's safe to do so (prevent overwriting LDAP/other methods)
+            $currentAuthMethod = $this->getCurrentUserAuthMethod($userId);
+            if ($this->shouldUpdateAuthMethod($currentAuthMethod, $authMethod)) {
+                $updateFields[] = 'auth_method = ?';
+                $updateValues[] = $authMethod;
+                $this->logInfo('Updating auth_method from {old} to {new} for user {userId}', [
+                    'old' => $currentAuthMethod,
+                    'new' => $authMethod,
+                    'userId' => $userId
+                ]);
+            } else {
+                $this->logInfo('Preserving existing auth_method {current} for user {userId} (not overwriting with {new})', [
+                    'current' => $currentAuthMethod,
+                    'new' => $authMethod,
+                    'userId' => $userId
+                ]);
+            }
+
             // Update permission template based on current groups
-            $newPermissionTemplateId = $this->determinePermissionTemplate($userInfo->getGroups());
+            $newPermissionTemplateId = $this->determinePermissionTemplate($userInfo->getGroups(), $authMethod);
             if ($newPermissionTemplateId) {
                 $updateFields[] = 'perm_templ = ?';
                 $updateValues[] = $newPermissionTemplateId;
@@ -278,7 +326,7 @@ class OidcUserProvisioningService extends LoggingService
         }
     }
 
-    private function linkOidcToExistingUser(int $userId, OidcUserInfo $userInfo, string $providerId): void
+    private function linkOidcToExistingUser(int $userId, UserInfoInterface $userInfo, string $providerId): void
     {
         try {
             // Check if link already exists
@@ -318,20 +366,95 @@ class OidcUserProvisioningService extends LoggingService
                 ]);
             }
 
-            $this->logInfo('Linked OIDC identity to user ID: {id}', ['id' => $userId]);
+            $this->logInfo('Linked external identity to user ID: {id}', ['id' => $userId]);
         } catch (\Exception $e) {
-            $this->logError('Error linking OIDC identity: {error}', ['error' => $e->getMessage()]);
+            $this->logError('Error linking external identity: {error}', ['error' => $e->getMessage()]);
         }
     }
 
-    private function determinePermissionTemplate(array $groups): ?int
+    private function findUserBySamlSubject(string $subject, string $providerId): ?int
+    {
+        try {
+            $this->logInfo('Looking for existing user by SAML subject: {subject} and provider: {provider}', [
+                'subject' => $subject,
+                'provider' => $providerId
+            ]);
+
+            $stmt = $this->db->prepare("
+                SELECT user_id FROM saml_user_links
+                WHERE saml_subject = ? AND provider_id = ?
+            ");
+            $stmt->execute([$subject, $providerId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($result) {
+                $this->logInfo('Found existing user by SAML subject, user ID: {userId}', ['userId' => $result['user_id']]);
+            } else {
+                $this->logInfo('No existing user found by SAML subject');
+            }
+
+            return $result ? (int)$result['user_id'] : null;
+        } catch (\Exception $e) {
+            $this->logError('Error finding user by SAML subject (table may not exist): {error}', ['error' => $e->getMessage()]);
+            return null;
+        }
+    }
+
+    private function linkSamlToExistingUser(int $userId, UserInfoInterface $userInfo, string $providerId): void
+    {
+        try {
+            // Check if link already exists
+            $stmt = $this->db->prepare("
+                SELECT id FROM saml_user_links
+                WHERE user_id = ? AND provider_id = ?
+            ");
+            $stmt->execute([$userId, $providerId]);
+
+            if ($stmt->fetch()) {
+                // Update existing link
+                $stmt = $this->db->prepare("
+                    UPDATE saml_user_links
+                    SET saml_subject = ?, username = ?, email = ?, updated_at = CURRENT_TIMESTAMP
+                    WHERE user_id = ? AND provider_id = ?
+                ");
+                $stmt->execute([
+                    $userInfo->getSubject(),
+                    $userInfo->getUsername(),
+                    $userInfo->getEmail(),
+                    $userId,
+                    $providerId
+                ]);
+            } else {
+                // Create new link
+                $stmt = $this->db->prepare("
+                    INSERT INTO saml_user_links
+                    (user_id, provider_id, saml_subject, username, email, created_at, updated_at)
+                    VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+                ");
+                $stmt->execute([
+                    $userId,
+                    $providerId,
+                    $userInfo->getSubject(),
+                    $userInfo->getUsername(),
+                    $userInfo->getEmail()
+                ]);
+            }
+
+            $this->logInfo('Linked SAML identity to user ID: {id}', ['id' => $userId]);
+        } catch (\Exception $e) {
+            $this->logError('Error linking SAML identity: {error}', ['error' => $e->getMessage()]);
+        }
+    }
+
+
+    private function determinePermissionTemplate(array $groups, string $authMethod = self::AUTH_METHOD_OIDC): ?int
     {
         $this->logInfo('Determining permission template for groups: {groups}', ['groups' => $groups]);
 
-        $permissionTemplateMapping = $this->configManager->get('oidc', 'permission_template_mapping', []);
+        $permissionTemplateMapping = $this->configManager->get($authMethod, 'permission_template_mapping', []);
         $this->logInfo('Available permission template mappings: {mappings}', ['mappings' => $permissionTemplateMapping]);
 
-        // Check if user's OIDC groups match any configured mappings
+        // Check if user's groups match any configured mappings
         foreach ($permissionTemplateMapping as $groupName => $templateName) {
             $this->logInfo('Checking if group {groupName} is in user groups', ['groupName' => $groupName]);
             if (in_array($groupName, $groups, true)) {
@@ -356,7 +479,7 @@ class OidcUserProvisioningService extends LoggingService
         $this->logInfo('No matching groups found, proceeding to default template');
 
         // Fall back to default permission template
-        $defaultTemplateName = $this->configManager->get('oidc', 'default_permission_template', '');
+        $defaultTemplateName = $this->configManager->get($authMethod, 'default_permission_template', '');
 
         if (empty($defaultTemplateName)) {
             $this->logError('No default permission template configured and user has no matching groups. User provisioning failed.');
@@ -470,27 +593,147 @@ class OidcUserProvisioningService extends LoggingService
         }
     }
 
-    public function createOidcUserLinksTable(): void
+
+    /**
+     * Determine authentication method from the UserInfo type being used
+     * This prevents ambiguity when OIDC and SAML providers have the same provider ID
+     */
+    private function determineAuthMethodFromUserInfo(UserInfoInterface $userInfo): string
+    {
+        if ($userInfo instanceof SamlUserInfo) {
+            return self::AUTH_METHOD_SAML;
+        }
+        if ($userInfo instanceof OidcUserInfo) {
+            return self::AUTH_METHOD_OIDC;
+        }
+
+        // Fallback to OIDC for backward compatibility with unknown types
+        return self::AUTH_METHOD_OIDC;
+    }
+
+    /**
+     * Get configuration settings based on auth method
+     */
+    private function getAuthMethodConfig(string $authMethod): array
+    {
+        return $this->configManager->getGroup($authMethod);
+    }
+
+    /**
+     * Get the current auth_method for a user
+     */
+    private function getCurrentUserAuthMethod(int $userId): ?string
     {
         try {
-            $sql = "CREATE TABLE IF NOT EXISTS oidc_user_links (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT NOT NULL,
-                provider_id VARCHAR(50) NOT NULL,
-                oidc_subject VARCHAR(255) NOT NULL,
-                username VARCHAR(255) NOT NULL,
-                email VARCHAR(255),
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                UNIQUE KEY unique_user_provider (user_id, provider_id),
-                UNIQUE KEY unique_subject_provider (oidc_subject, provider_id),
-                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-            )";
+            $stmt = $this->db->prepare("SELECT auth_method FROM users WHERE id = ?");
+            $stmt->execute([$userId]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            $this->db->exec($sql);
-            $this->logInfo('Created or verified oidc_user_links table');
+            return $result ? $result['auth_method'] : null;
         } catch (\Exception $e) {
-            $this->logError('Error creating oidc_user_links table: {error}', ['error' => $e->getMessage()]);
+            $this->logError('Error getting current auth method for user {userId}: {error}', [
+                'userId' => $userId,
+                'error' => $e->getMessage()
+            ]);
+            return null;
+        }
+    }
+
+    /**
+     * Determine if we should update the auth_method field
+     * Only update if:
+     * - Current method is AUTH_METHOD_SQL (safe to convert to external auth)
+     * - Current method is null/empty (new user or unset)
+     * - Current method matches the new method (refreshing same auth type)
+     * - Transitioning between SAML and OIDC (both external SSO methods)
+     */
+    private function shouldUpdateAuthMethod(?string $currentAuthMethod, string $newAuthMethod): bool
+    {
+        // If no current auth method, it's safe to set
+        if (empty($currentAuthMethod)) {
+            return true;
+        }
+
+        // Safe to convert from SQL auth to external auth
+        if ($currentAuthMethod === self::AUTH_METHOD_SQL) {
+            return true;
+        }
+
+        // Safe to refresh the same auth method
+        if ($currentAuthMethod === $newAuthMethod) {
+            return true;
+        }
+
+        // Allow transitions between SAML and OIDC (both external SSO methods)
+        $externalSsoMethods = [self::AUTH_METHOD_SAML, self::AUTH_METHOD_OIDC];
+        if (
+            in_array($currentAuthMethod, $externalSsoMethods, true) &&
+            in_array($newAuthMethod, $externalSsoMethods, true)
+        ) {
+            return true;
+        }
+
+        // Don't overwrite LDAP or other auth methods
+        return false;
+    }
+
+    /**
+     * Clean up orphaned external authentication links
+     * This method finds and removes OIDC/SAML links that point to non-existent users
+     *
+     * @return array Array with counts of cleaned up links
+     */
+    public function cleanupOrphanedAuthLinks(): array
+    {
+        try {
+            $cleanupCount = 0;
+
+            // Find orphaned OIDC links
+            $stmt = $this->db->prepare("
+                SELECT oul.id, oul.user_id, oul.provider_id, oul.username
+                FROM oidc_user_links oul
+                LEFT JOIN users u ON oul.user_id = u.id
+                WHERE u.id IS NULL
+            ");
+            $stmt->execute();
+            $orphanedLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (!empty($orphanedLinks)) {
+                $this->logInfo('Found {count} orphaned external auth links to clean up', ['count' => count($orphanedLinks)]);
+
+                foreach ($orphanedLinks as $link) {
+                    $this->logInfo('Cleaning up orphaned link: user_id={user_id}, provider={provider}, username={username}', [
+                        'user_id' => $link['user_id'],
+                        'provider' => $link['provider_id'],
+                        'username' => $link['username']
+                    ]);
+                }
+
+                // Delete all orphaned links
+                $stmt = $this->db->prepare("
+                    DELETE FROM oidc_user_links
+                    WHERE user_id NOT IN (SELECT id FROM users)
+                ");
+                $stmt->execute();
+                $cleanupCount = $stmt->rowCount();
+
+                $this->logInfo('Successfully cleaned up {count} orphaned external auth links', ['count' => $cleanupCount]);
+            } else {
+                $this->logInfo('No orphaned external auth links found');
+            }
+
+            return [
+                'success' => true,
+                'cleaned_up_count' => $cleanupCount,
+                'orphaned_links' => $orphanedLinks
+            ];
+        } catch (\Exception $e) {
+            $this->logError('Error cleaning up orphaned auth links: {error}', ['error' => $e->getMessage()]);
+            return [
+                'success' => false,
+                'error' => $e->getMessage(),
+                'cleaned_up_count' => 0
+            ];
         }
     }
 }

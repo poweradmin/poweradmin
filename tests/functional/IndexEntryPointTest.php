@@ -4,7 +4,16 @@ declare(strict_types=1);
 
 namespace Poweradmin\Tests\Functional;
 
+use ErrorException;
+use Exception;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
+use Poweradmin\Application\Routing\SymfonyRouter;
+use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Pages;
+use ReflectionMethod;
+use RuntimeException;
 
 /**
  * Functional tests for index.php entry point
@@ -96,7 +105,7 @@ class IndexEntryPointTest extends TestCase
         $this->assertTrue($decoded['error']);
 
         // Test HTML error output
-        $testException = new \Exception("Test web error");
+        $testException = new Exception("Test web error");
         ob_start();
         displayHtmlError($testException);
         $htmlOutput = ob_get_clean();
@@ -111,7 +120,7 @@ class IndexEntryPointTest extends TestCase
     public function testErrorHandlingSecurity(): void
     {
         // Test XSS protection in HTML errors
-        $xssException = new \Exception("<script>alert('xss')</script>");
+        $xssException = new Exception("<script>alert('xss')</script>");
         ob_start();
         displayHtmlError($xssException);
         $output = ob_get_clean();
@@ -142,8 +151,8 @@ class IndexEntryPointTest extends TestCase
         );
 
         // Test that the singleton pattern works
-        $config1 = \Poweradmin\Infrastructure\Configuration\ConfigurationManager::getInstance();
-        $config2 = \Poweradmin\Infrastructure\Configuration\ConfigurationManager::getInstance();
+        $config1 = ConfigurationManager::getInstance();
+        $config2 = ConfigurationManager::getInstance();
         $this->assertSame($config1, $config2, 'ConfigurationManager should be singleton');
     }
 
@@ -166,7 +175,7 @@ class IndexEntryPointTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/';
 
         // Test router instantiation
-        $router = new \Poweradmin\Application\Routing\SymfonyRouter();
+        $router = new SymfonyRouter();
         $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
     }
 
@@ -183,7 +192,7 @@ class IndexEntryPointTest extends TestCase
         );
 
         // Test that getPages returns an array
-        $pages = \Poweradmin\Pages::getPages();
+        $pages = Pages::getPages();
         $this->assertIsArray($pages, 'Pages::getPages() should return an array');
     }
 
@@ -204,7 +213,7 @@ class IndexEntryPointTest extends TestCase
             'BaseController::expectsJson() should be available'
         );
 
-        $reflection = new \ReflectionMethod('Poweradmin\BaseController', 'expectsJson');
+        $reflection = new ReflectionMethod('Poweradmin\BaseController', 'expectsJson');
         $this->assertTrue(
             $reflection->isStatic(),
             'BaseController::expectsJson() should be static'
@@ -246,11 +255,11 @@ class IndexEntryPointTest extends TestCase
         $_SERVER['HTTPS'] = '';
 
         // Test BaseController JSON detection
-        $expectsJson = \Poweradmin\BaseController::expectsJson();
+        $expectsJson = BaseController::expectsJson();
         $this->assertFalse($expectsJson, 'Home page request should not expect JSON');
 
         // Test router setup
-        $router = new \Poweradmin\Application\Routing\SymfonyRouter();
+        $router = new SymfonyRouter();
 
         // Verify router is properly configured
         $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
@@ -276,10 +285,10 @@ class IndexEntryPointTest extends TestCase
         $_SERVER['REQUEST_URI'] = '/';
 
         // Simulate key initialization steps
-        \Poweradmin\Infrastructure\Configuration\ConfigurationManager::getInstance();
-        $router = new \Poweradmin\Application\Routing\SymfonyRouter();
-        $pages = \Poweradmin\Pages::getPages();
-        \Poweradmin\BaseController::expectsJson();
+        ConfigurationManager::getInstance();
+        $router = new SymfonyRouter();
+        $pages = Pages::getPages();
+        BaseController::expectsJson();
 
         $memoryAfter = memory_get_usage();
         $memoryUsed = $memoryAfter - $memoryBefore;
@@ -298,10 +307,10 @@ class IndexEntryPointTest extends TestCase
     public function testErrorHandlingWithDifferentExceptions(): void
     {
         $exceptionTypes = [
-            new \Exception("General exception"),
-            new \RuntimeException("Runtime error"),
-            new \InvalidArgumentException("Invalid argument"),
-            new \ErrorException("PHP error", 0, E_ERROR, __FILE__, __LINE__),
+            new Exception("General exception"),
+            new RuntimeException("Runtime error"),
+            new InvalidArgumentException("Invalid argument"),
+            new ErrorException("PHP error", 0, E_ERROR, __FILE__, __LINE__),
         ];
 
         foreach ($exceptionTypes as $exception) {
@@ -357,7 +366,7 @@ class IndexEntryPointTest extends TestCase
         // Test that all previously working functionality still works
 
         // ConfigurationManager singleton
-        $config = \Poweradmin\Infrastructure\Configuration\ConfigurationManager::getInstance();
+        $config = ConfigurationManager::getInstance();
         $this->assertInstanceOf(
             'Poweradmin\Infrastructure\Configuration\ConfigurationManager',
             $config
@@ -379,16 +388,16 @@ class IndexEntryPointTest extends TestCase
         foreach ($testRequests as $request) {
             // SymfonyRouter doesn't take request in constructor, uses $_SERVER
             $_SERVER['REQUEST_URI'] = $request['page'] ?? '/';
-            $router = new \Poweradmin\Application\Routing\SymfonyRouter();
+            $router = new SymfonyRouter();
             $this->assertInstanceOf('Poweradmin\Application\Routing\SymfonyRouter', $router);
         }
 
         // BaseController JSON detection
         $_SERVER['REQUEST_URI'] = '/api/test';
-        $this->assertTrue(\Poweradmin\BaseController::expectsJson());
+        $this->assertTrue(BaseController::expectsJson());
 
         $_SERVER['REQUEST_URI'] = '/dashboard';
         $_SERVER['HTTP_ACCEPT'] = 'text/html';
-        $this->assertFalse(\Poweradmin\BaseController::expectsJson());
+        $this->assertFalse(BaseController::expectsJson());
     }
 }

@@ -49,10 +49,14 @@
                         <label for="password" class="form-label">{% trans %}Password{% endtrans %}</label>
                         <div class="input-group input-group-sm">
                             <input class="form-control form-control-sm" type="password" id="password" name="password"
-                                   {% if (not perm_passwd_edit_others and (edit_own_perm and user['uid'] != session_user_id) or use_ldap_checked) %}disabled{% endif %}>
+                                   {% if (not perm_passwd_edit_others and (edit_own_perm and user['uid'] != session_user_id) or is_external_auth) %}disabled{% endif %}>
                             <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill text-secondary" id="eye"></i></button>
                         </div>
+                        {% if is_external_auth %}
+                        <small class="text-muted">{% trans with {'%auth_type%': user['auth_type']|upper} %}Password managed externally via %auth_type% authentication{% endtrans %}</small>
+                        {% else %}
                         <small class="text-muted">{% trans %}Leave empty to keep current password{% endtrans %}</small>
+                        {% endif %}
                     </div>
 
                     {% if edit_templ_perm %}
@@ -199,7 +203,7 @@
                             <li>{% trans %}Leave password field empty to keep the current password{% endtrans %}</li>
                             <li>{% trans %}Changing permission templates will update user access immediately{% endtrans %}</li>
                             <li>{% trans %}Users can be disabled instead of deleted to preserve their settings{% endtrans %}</li>
-                            <li>{% trans %}LDAP users cannot have passwords managed through this interface{% endtrans %}</li>
+                            <li>{% trans %}External authentication users (LDAP, OIDC, SAML) cannot have passwords managed through this interface{% endtrans %}</li>
                         </ul>
                     </div>
                 </div>

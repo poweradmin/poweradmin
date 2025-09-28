@@ -29,6 +29,7 @@ use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\SqlAuthenticator;
 use Poweradmin\Application\Service\RecaptchaService;
+use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\SessionEntity;
@@ -78,7 +79,7 @@ class SessionAuthenticator extends LoggingService
         $this->loginAttemptService = new LoginAttemptService($connection, $this->configManager);
         $this->recaptchaService = new RecaptchaService($configManager);
 
-        $userContextService = new \Poweradmin\Domain\Service\UserContextService();
+        $userContextService = new UserContextService();
         $this->ldapAuthenticator = new LdapAuthenticator(
             $connection,
             $configManager,
@@ -195,11 +196,15 @@ class SessionAuthenticator extends LoggingService
         $authMethod = $this->getUserAuthMethod();
 
         switch ($authMethod) {
-            case 'oidc':
+            case UserProvisioningService::AUTH_METHOD_OIDC:
                 $this->logInfo('User {username} uses OIDC for authentication - skipping password verification', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
                 // OIDC users are already authenticated, no need to verify password
                 break;
-            case 'ldap':
+            case UserProvisioningService::AUTH_METHOD_SAML:
+                $this->logInfo('User {username} uses SAML for authentication - skipping password verification', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
+                // SAML users are already authenticated, no need to verify password
+                break;
+            case UserProvisioningService::AUTH_METHOD_LDAP:
                 if ($ldap_use) {
                     $this->logInfo('User {username} uses LDAP for authentication', ['username' => $_SESSION["userlogin"]]);
                     $this->ldapAuthenticator->authenticate();
@@ -292,6 +297,6 @@ class SessionAuthenticator extends LoggingService
 
     private function userUsesLDAP(): bool
     {
-        return $this->getUserAuthMethod() === 'ldap';
+        return $this->getUserAuthMethod() === UserProvisioningService::AUTH_METHOD_LDAP;
     }
 }

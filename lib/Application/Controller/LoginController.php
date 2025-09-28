@@ -25,9 +25,9 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Presenter\LocalePresenter;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LocaleService;
-use Poweradmin\Application\Service\OidcConfigurationService;
-use Poweradmin\Application\Service\OidcService;
-use Poweradmin\Application\Service\OidcUserProvisioningService;
+use Poweradmin\Application\Service\SamlConfigurationService;
+use Poweradmin\Application\Service\SamlService;
+use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
@@ -38,7 +38,7 @@ class LoginController extends BaseController
     private LocaleService $localeService;
     private LocalePresenter $localePresenter;
     private CsrfTokenService $csrfTokenService;
-    private OidcService $oidcService;
+    private SamlService $samlService;
 
     public function __construct(array $request)
     {
@@ -50,17 +50,18 @@ class LoginController extends BaseController
         $this->localePresenter = new LocalePresenter();
         $this->csrfTokenService = new CsrfTokenService();
 
-        // Initialize OIDC service
+        // Initialize external auth services
         $logHandler = LoggerHandlerFactory::create($this->config->getAll());
         $logLevel = $this->config->get('logging', 'level', 'info');
         $logger = new Logger($logHandler, $logLevel);
 
-        $oidcConfigService = new OidcConfigurationService($this->config, $logger);
-        $oidcProvisioningService = new OidcUserProvisioningService($this->db, $this->config, $logger);
-        $this->oidcService = new OidcService(
+        $samlConfigService = new SamlConfigurationService($this->config, $logger);
+        $userProvisioningService = new UserProvisioningService($this->db, $this->config, $logger);
+
+        $this->samlService = new SamlService(
             $this->config,
-            $oidcConfigService,
-            $oidcProvisioningService,
+            $samlConfigService,
+            $userProvisioningService,
             $logger
         );
     }
@@ -73,22 +74,6 @@ class LoginController extends BaseController
             return;
         }
 
-        // Handle OIDC authentication request with proper validation
-        $provider = $this->request['provider'] ?? null;
-        if (!empty($provider) && $this->oidcService->isEnabled()) {
-            // Validate provider parameter
-            if (!$this->validateOidcProvider($provider)) {
-                $this->setMessage('login', 'danger', _('Invalid authentication provider'));
-            } else {
-                try {
-                    $authUrl = $this->oidcService->initiateAuthFlow($provider);
-                    $this->redirect($authUrl);
-                    return;
-                } catch (\Exception $e) {
-                    $this->setMessage('login', 'danger', _('Authentication failed: ') . $e->getMessage());
-                }
-            }
-        }
 
         $localesData = $this->getLocalesData();
         $preparedLocales = $this->localeService->prepareLocales($localesData, $this->config->get('interface', 'language', 'en_EN'));
@@ -118,12 +103,35 @@ class LoginController extends BaseController
         $loginToken = $this->csrfTokenService->generateToken();
         $_SESSION['login_token'] = $loginToken;
 
-        // Get available OIDC providers
+        // Get available external auth providers
         $oidcProviders = [];
         $oidcEnabled = false;
-        if ($this->oidcService->isEnabled()) {
-            $oidcEnabled = true;
-            $oidcProviders = $this->oidcService->getAvailableProviders();
+
+        // Check OIDC status but don't initialize the service here
+        // OIDC authentication is handled by dedicated OidcLoginController
+        $oidcEnabled = $this->config->get('oidc', 'enabled', false);
+        if ($oidcEnabled) {
+            // For template display purposes, get provider info from config
+            $providersConfig = $this->config->get('oidc', 'providers', []);
+            foreach ($providersConfig as $id => $config) {
+                // Default to enabled if flag not set, or if provider has required credentials
+                $isEnabled = !isset($config['enabled']) || $config['enabled'];
+                $hasCredentials = !empty($config['client_id']) && !empty($config['client_secret']);
+
+                if ($isEnabled && $hasCredentials) {
+                    $oidcProviders[$id] = [
+                        'id' => $id,
+                        'display_name' => $config['display_name'] ?? ucfirst($id)
+                    ];
+                }
+            }
+        }
+
+        $samlProviders = [];
+        $samlEnabled = false;
+        if ($this->samlService->isEnabled()) {
+            $samlEnabled = true;
+            $samlProviders = $this->samlService->getAvailableProviders();
         }
 
         $this->render('login.html', [
@@ -139,6 +147,8 @@ class LoginController extends BaseController
             'password_reset_enabled' => $this->config->get('security', 'password_reset.enabled', false),
             'oidc_enabled' => $oidcEnabled,
             'oidc_providers' => $oidcProviders,
+            'saml_enabled' => $samlEnabled,
+            'saml_providers' => $samlProviders,
         ]);
     }
 
@@ -155,7 +165,8 @@ class LoginController extends BaseController
         return $localesData;
     }
 
-    private function validateOidcProvider(string $provider): bool
+
+    private function validateSamlProvider(string $provider): bool
     {
         // Sanitize provider ID - only allow alphanumeric characters and underscores
         if (!preg_match('/^[a-zA-Z0-9_]+$/', $provider)) {
@@ -163,7 +174,7 @@ class LoginController extends BaseController
         }
 
         // Check if provider is actually available
-        $availableProviders = $this->oidcService->getAvailableProviders();
+        $availableProviders = $this->samlService->getAvailableProviders();
         return isset($availableProviders[$provider]);
     }
 }

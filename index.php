@@ -20,6 +20,7 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Application\Controller\NotFoundController;
 use Poweradmin\Application\Routing\SymfonyRouter;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
@@ -83,7 +84,7 @@ try {
         if ($e->getCode() === 404 || str_contains($e->getMessage(), 'not found')) {
             http_response_code(404);
             try {
-                $notFoundController = new \Poweradmin\Application\Controller\NotFoundController([]);
+                $notFoundController = new NotFoundController([]);
                 $notFoundController->run();
             } catch (Exception $notFoundError) {
                 echo 'Page not found.';

@@ -152,6 +152,14 @@ class EditUserController extends BaseController
             return true;
         }
 
+        // Skip password validation for external auth users
+        $editId = (int)$this->request->getPostParam('number');
+        $user = $this->getUserDetails($editId);
+        $externalAuthMethods = ['ldap', 'oidc', 'saml'];
+        if (in_array($user['auth_type'] ?? 'sql', $externalAuthMethods)) {
+            return true;
+        }
+
         $policyErrors = $this->policyService->validatePassword($password);
         if (!empty($policyErrors)) {
             $this->setMessage('edit_user', 'error', array_shift($policyErrors));
@@ -207,6 +215,10 @@ class EditUserController extends BaseController
         $user = $this->getUserDetails($editId);
         $permissions = $this->getUserPermissions($editId);
 
+        // Check if password changes should be disabled for external auth users
+        $externalAuthMethods = ['ldap', 'oidc', 'saml'];
+        $isExternalAuth = in_array($user['auth_type'] ?? 'sql', $externalAuthMethods);
+
         $this->render('edit_user.html', [
             'edit_id' => $editId,
             'name' => $user['fullname'] ?: $user['username'],
@@ -220,6 +232,7 @@ class EditUserController extends BaseController
             'user_permissions' => UserManager::getPermissionsByTemplateId($this->db, $user['tpl_id']),
             'ldap_use' => $this->config->get('ldap', 'enabled', false) && !$permissions['is_admin'],
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
+            'is_external_auth' => $isExternalAuth,
             'password_policy' => $policyConfig,
         ]);
     }

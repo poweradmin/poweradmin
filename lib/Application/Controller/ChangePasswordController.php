@@ -75,7 +75,19 @@ class ChangePasswordController extends BaseController
 
     public function run(): void
     {
-        $this->checkCondition($_SESSION["auth_used"] == 'ldap', _('LDAP users cannot change their password here. Please contact your administrator.'));
+        // Check for external authentication methods that don't allow password changes
+        $authUsed = $_SESSION["auth_used"] ?? null;
+
+        // Block external authentication users
+        $externalAuthMethods = ['ldap', 'oidc', 'saml'];
+        if (in_array($authUsed, $externalAuthMethods)) {
+            $message = match ($authUsed) {
+                'ldap' => _('LDAP users cannot change their password here. Please contact your administrator.'),
+                'oidc', 'saml' => _('Users authenticated via Single Sign-On cannot change their password here. Please contact your administrator or change your password through your identity provider.'),
+                default => _('External authentication users cannot change their password here. Please contact your administrator.')
+            };
+            $this->checkCondition(true, $message);
+        }
 
         $policyConfig = $this->policyService->getPolicyConfig();
 

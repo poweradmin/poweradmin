@@ -306,12 +306,14 @@ footer a, footer a:hover, footer a:focus {
 /* Search results action buttons */
 .btn-outline-primary:hover .text-primary,
 .btn-outline-danger:hover .text-danger,
-.btn-outline-secondary:hover .text-secondary {
+.btn-outline-secondary:hover .text-secondary,
+.btn-outline-success:hover .text-success {
     color: #fff !important;
 }
 
 /* Ensure icons stay white when outline button is hovered */
-.btn-outline-primary:hover i {
+.btn-outline-primary:hover i,
+.btn-outline-success:hover i {
     color: #fff !important;
 }
 

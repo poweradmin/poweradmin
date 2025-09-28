@@ -41,14 +41,14 @@ class OidcService extends LoggingService
     private AuthenticationService $authenticationService;
     private SessionService $sessionService;
     private OidcConfigurationService $oidcConfigurationService;
-    private OidcUserProvisioningService $userProvisioningService;
+    private UserProvisioningService $userProvisioningService;
     private Request $request;
     private CsrfTokenService $csrfTokenService;
 
     public function __construct(
         ConfigurationManager $configManager,
         OidcConfigurationService $oidcConfigurationService,
-        OidcUserProvisioningService $userProvisioningService,
+        UserProvisioningService $userProvisioningService,
         Logger $logger,
         ?Request $request = null
     ) {
@@ -268,7 +268,8 @@ class OidcService extends LoggingService
                 $this->setSessionValue('userlogin', $databaseUsername);  // Use database username, not OIDC username
                 $this->setSessionValue('userfullname', $userInfo->getDisplayName());
                 $this->setSessionValue('useremail', $userInfo->getEmail());
-                $this->setSessionValue('auth_method_used', 'oidc');  // Track how THIS session was created
+                $this->setSessionValue('auth_used', 'oidc');  // Track how THIS session was created
+                $this->setSessionValue('auth_method_used', 'oidc');  // Track how THIS session was created (backward compatibility)
 
                 // Set OIDC-specific session variables for logout detection
                 $this->setSessionValue('oidc_authenticated', true);  // For logout detection

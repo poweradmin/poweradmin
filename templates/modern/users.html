@@ -25,6 +25,7 @@
                         <th>{% trans %}Fullname{% endtrans %}</th>
                         <th>{% trans %}Email address{% endtrans %}</th>
                         <th>{% trans %}Template{% endtrans %}</th>
+                        <th class="text-center">{% trans %}Auth Type{% endtrans %}</th>
                         {% if ldap_use %}
                         <th class="text-center">{% trans %}LDAP{% endtrans %}</th>
                         {% endif %}
@@ -72,6 +73,20 @@
                             {% endif %}
                         </td>
 
+                        <td class="text-center">
+                            {% if user['auth_type'] == 'sql' %}
+                                <span class="badge bg-primary">{% trans %}SQL{% endtrans %}</span>
+                            {% elseif user['auth_type'] == 'ldap' %}
+                                <span class="badge bg-info">{% trans %}LDAP{% endtrans %}</span>
+                            {% elseif user['auth_type'] == 'oidc' %}
+                                <span class="badge bg-success">{% trans %}OIDC{% endtrans %}</span>
+                            {% elseif user['auth_type'] == 'saml' %}
+                                <span class="badge bg-warning">{% trans %}SAML{% endtrans %}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ user['auth_type']|upper }}</span>
+                            {% endif %}
+                        </td>
+
                         {% if ldap_use %}
                         {% if permissions['user_is_ueberuser'] %}
                         <td class="text-center">
@@ -113,6 +128,21 @@
                         <td>{{ user['fullname'] }}</td>
                         <td>{{ user['email'] }}</td>
                         <td>{{ user['tpl_name'] }}</td>
+
+                        <td class="text-center">
+                            {% if user['auth_type'] == 'sql' %}
+                                <span class="badge bg-primary">{% trans %}SQL{% endtrans %}</span>
+                            {% elseif user['auth_type'] == 'ldap' %}
+                                <span class="badge bg-info">{% trans %}LDAP{% endtrans %}</span>
+                            {% elseif user['auth_type'] == 'oidc' %}
+                                <span class="badge bg-success">{% trans %}OIDC{% endtrans %}</span>
+                            {% elseif user['auth_type'] == 'saml' %}
+                                <span class="badge bg-warning">{% trans %}SAML{% endtrans %}</span>
+                            {% else %}
+                                <span class="badge bg-secondary">{{ user['auth_type']|upper }}</span>
+                            {% endif %}
+                        </td>
+
                         {% if ldap_use %}
                         <td class="text-center">
                             {% if user['use_ldap'] %}

@@ -22,7 +22,12 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Exception;
+use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\OidcConfigurationService;
+use Poweradmin\Application\Service\SamlConfigurationService;
+use Poweradmin\Application\Service\SamlService;
+use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
@@ -46,12 +51,15 @@ class LogoutController extends BaseController
 
     public function run(): void
     {
-        // Check if user was authenticated via OIDC
+        // Check if user was authenticated via external auth
         $authMethod = $_SESSION['auth_method_used'] ?? null;
         $oidcProviderId = $_SESSION['oidc_provider'] ?? null;
+        $samlProviderId = $_SESSION['saml_provider'] ?? null;
 
         if ($authMethod === 'oidc' && $oidcProviderId) {
             $this->performOidcLogout($oidcProviderId);
+        } elseif ($authMethod === 'saml' && $samlProviderId) {
+            $this->performSamlLogout($samlProviderId);
         } else {
             $this->performStandardLogout();
         }
@@ -93,7 +101,7 @@ class LogoutController extends BaseController
                 header('Location: ' . $logoutUrl);
                 exit;
             }
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Log error but continue with standard logout
             error_log('OIDC logout error: ' . $e->getMessage());
         }
@@ -106,6 +114,47 @@ class LogoutController extends BaseController
     {
         $sessionEntity = new SessionEntity(_('You have logged out.'), 'success');
         $this->authService->logout($sessionEntity);
+    }
+
+    private function performSamlLogout(string $providerId): void
+    {
+        try {
+            // Initialize SAML service for logout
+            $logHandler = LoggerHandlerFactory::create($this->config->getAll());
+            $logLevel = $this->config->get('logging', 'level', 'info');
+            $logger = new Logger($logHandler, $logLevel);
+
+            $samlConfigService = new SamlConfigurationService($this->config, $logger);
+            $userProvisioningService = new UserProvisioningService($this->db, $this->config, $logger);
+            $samlService = new SamlService(
+                $this->config,
+                $samlConfigService,
+                $userProvisioningService,
+                $logger
+            );
+
+            // Initiate SAML Single Logout
+            $logoutUrl = $samlService->initiateSingleLogout($providerId);
+
+            if ($logoutUrl) {
+                // Mark session for clearing after SLO callback
+                $_SESSION['saml_slo_pending'] = true;
+
+                // Clear user data but preserve SAML state for SLO callback
+                $this->clearUserSession();
+
+                // Redirect to IdP logout
+                header('Location: ' . $logoutUrl);
+                exit;
+            } else {
+                // Fallback to standard logout if SAML logout fails
+                $this->performStandardLogout();
+            }
+        } catch (Exception $e) {
+            // Log error and fallback to standard logout
+            error_log('SAML logout error: ' . $e->getMessage());
+            $this->performStandardLogout();
+        }
     }
 
     private function getLogoutParameterName(string $logoutUrl, array $config): string
@@ -137,12 +186,52 @@ class LogoutController extends BaseController
         unset(
             $_SESSION['oidc_authenticated'],
             $_SESSION['oidc_provider'],
-            $_SESSION['oidc_state'],
-            $_SESSION['auth_method_used']
+            $_SESSION['oidc_state']
         );
+
+        // Clear SAML-specific session data
+        unset(
+            $_SESSION['saml_authenticated'],
+            $_SESSION['saml_provider'],
+            $_SESSION['saml_session_index']
+        );
+
+        // Clear general external auth data
+        unset($_SESSION['auth_method_used']);
 
         // Clear standard session data
         session_destroy();
+    }
+
+    private function clearUserSession(): void
+    {
+        // Clear OIDC-specific session data
+        unset(
+            $_SESSION['oidc_authenticated'],
+            $_SESSION['oidc_provider'],
+            $_SESSION['oidc_state']
+        );
+
+        // Clear user session data but preserve SAML state for SLO callback
+        unset(
+            $_SESSION['saml_authenticated'],
+            $_SESSION['saml_session_index']
+        );
+        // Keep $_SESSION['saml_provider'] for SLO callback
+
+        // Clear general external auth data
+        unset($_SESSION['auth_method_used']);
+
+        // Clear user-specific data but keep session alive
+        unset(
+            $_SESSION['userid'],
+            $_SESSION['userlogin'],
+            $_SESSION['userfullname'],
+            $_SESSION['userpasswd'],
+            $_SESSION['useremail'],
+            $_SESSION['usertype'],
+            $_SESSION['userlevel']
+        );
     }
 
     private function getBaseUrl(): string

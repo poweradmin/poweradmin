@@ -24,8 +24,11 @@ namespace unit\Dns;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Domain\Service\DnsValidation\AAAARecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use ReflectionClass;
 
 /**
  * Tests for the AAAARecordValidator
@@ -75,7 +78,7 @@ class AAAARecordValidatorTest extends TestCase
         $mockConfig->method('get')->willReturn(false);
 
         // Direct validation with HostnameValidator
-        $hostnameValidator = new \Poweradmin\Domain\Service\DnsValidation\HostnameValidator($mockConfig);
+        $hostnameValidator = new HostnameValidator($mockConfig);
         $result = $hostnameValidator->validate('host.example.com.');
 
         $this->assertTrue($result->isValid());
@@ -189,11 +192,11 @@ class AAAARecordValidatorTest extends TestCase
         $validAddress = '2001:db8::1234'; // A valid compressed IPv6 that's not a loopback
 
         // Create a mock validator with dependencies
-        $mockIpValidator = $this->createMock(\Poweradmin\Domain\Service\DnsValidation\IPAddressValidator::class);
+        $mockIpValidator = $this->createMock(IPAddressValidator::class);
         $mockIpValidator->method('validateIPv6')
             ->willReturn(ValidationResult::success($validAddress));
 
-        $mockHostValidator = $this->createMock(\Poweradmin\Domain\Service\DnsValidation\HostnameValidator::class);
+        $mockHostValidator = $this->createMock(HostnameValidator::class);
         $mockHostValidator->method('validate')
             ->willReturn(ValidationResult::success(['hostname' => 'host.example.com']));
 
@@ -201,7 +204,7 @@ class AAAARecordValidatorTest extends TestCase
         $validator = new AAAARecordValidator($this->configMock);
 
         // Use reflection to replace the dependencies
-        $reflectionClass = new \ReflectionClass($validator);
+        $reflectionClass = new ReflectionClass($validator);
 
         $ipProperty = $reflectionClass->getProperty('ipAddressValidator');
         $ipProperty->setAccessible(true);

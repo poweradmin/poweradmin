@@ -118,7 +118,12 @@ class DatabaseSchemaService
             }
 
             if (isset($arr['default']) && $arr['default'] != '0') {
-                $line .= ' DEFAULT ' . $arr['default'];
+                // Quote string defaults for text/varchar fields
+                if (in_array($arr['type'], ['text', 'VARCHAR']) && !in_array(strtoupper($arr['default']), ['CURRENT_TIMESTAMP', 'NULL'])) {
+                    $line .= ' DEFAULT ' . $this->db->quote($arr['default']);
+                } else {
+                    $line .= ' DEFAULT ' . $arr['default'];
+                }
             }
 
             $query_fields[] = $line;

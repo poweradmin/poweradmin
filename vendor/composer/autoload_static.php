@@ -72,6 +72,10 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
             'Symfony\\Bundle\\SecurityBundle\\' => 30,
             'Symfony\\Bridge\\Twig\\' => 20,
         ),
+        'R' => 
+        array (
+            'RobRichards\\XMLSecLibs\\' => 23,
+        ),
         'P' => 
         array (
             'Psr\\Log\\' => 8,
@@ -90,6 +94,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'O' => 
         array (
             'OpenApi\\' => 8,
+            'OneLogin\\' => 9,
         ),
         'L' => 
         array (
@@ -273,6 +278,10 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         array (
             0 => __DIR__ . '/..' . '/symfony/twig-bridge',
         ),
+        'RobRichards\\XMLSecLibs\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/robrichards/xmlseclibs/src',
+        ),
         'Psr\\Log\\' => 
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
@@ -325,6 +334,10 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'OpenApi\\' => 
         array (
             0 => __DIR__ . '/..' . '/zircote/swagger-php/src',
+        ),
+        'OneLogin\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/onelogin/php-saml/src',
         ),
         'League\\OAuth2\\Client\\' => 
         array (
@@ -646,6 +659,18 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'League\\OAuth2\\Client\\Tool\\RequestFactory' => __DIR__ . '/..' . '/league/oauth2-client/src/Tool/RequestFactory.php',
         'League\\OAuth2\\Client\\Tool\\RequiredParameterTrait' => __DIR__ . '/..' . '/league/oauth2-client/src/Tool/RequiredParameterTrait.php',
         'Normalizer' => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer/Resources/stubs/Normalizer.php',
+        'OneLogin\\Saml2\\Auth' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/Auth.php',
+        'OneLogin\\Saml2\\AuthnRequest' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/AuthnRequest.php',
+        'OneLogin\\Saml2\\Constants' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/Constants.php',
+        'OneLogin\\Saml2\\Error' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/Error.php',
+        'OneLogin\\Saml2\\IdPMetadataParser' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/IdPMetadataParser.php',
+        'OneLogin\\Saml2\\LogoutRequest' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/LogoutRequest.php',
+        'OneLogin\\Saml2\\LogoutResponse' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/LogoutResponse.php',
+        'OneLogin\\Saml2\\Metadata' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/Metadata.php',
+        'OneLogin\\Saml2\\Response' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/Response.php',
+        'OneLogin\\Saml2\\Settings' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/Settings.php',
+        'OneLogin\\Saml2\\Utils' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/Utils.php',
+        'OneLogin\\Saml2\\ValidationError' => __DIR__ . '/..' . '/onelogin/php-saml/src/Saml2/ValidationError.php',
         'OpenApi\\Analysers\\AnalyserInterface' => __DIR__ . '/..' . '/zircote/swagger-php/src/Analysers/AnalyserInterface.php',
         'OpenApi\\Analysers\\AnnotationFactoryInterface' => __DIR__ . '/..' . '/zircote/swagger-php/src/Analysers/AnnotationFactoryInterface.php',
         'OpenApi\\Analysers\\AttributeAnnotationFactory' => __DIR__ . '/..' . '/zircote/swagger-php/src/Analysers/AttributeAnnotationFactory.php',
@@ -1183,6 +1208,9 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Controller\\PdnsStatusController' => __DIR__ . '/../..' . '/lib/Application/Controller/PdnsStatusController.php',
         'Poweradmin\\Application\\Controller\\RdapController' => __DIR__ . '/../..' . '/lib/Application/Controller/RdapController.php',
         'Poweradmin\\Application\\Controller\\ResetPasswordController' => __DIR__ . '/../..' . '/lib/Application/Controller/ResetPasswordController.php',
+        'Poweradmin\\Application\\Controller\\SamlCallbackController' => __DIR__ . '/../..' . '/lib/Application/Controller/SamlCallbackController.php',
+        'Poweradmin\\Application\\Controller\\SamlLoginController' => __DIR__ . '/../..' . '/lib/Application/Controller/SamlLoginController.php',
+        'Poweradmin\\Application\\Controller\\SamlMetadataController' => __DIR__ . '/../..' . '/lib/Application/Controller/SamlMetadataController.php',
         'Poweradmin\\Application\\Controller\\SearchController' => __DIR__ . '/../..' . '/lib/Application/Controller/SearchController.php',
         'Poweradmin\\Application\\Controller\\StaticAssetController' => __DIR__ . '/../..' . '/lib/Application/Controller/StaticAssetController.php',
         'Poweradmin\\Application\\Controller\\UnlinkZonesTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/UnlinkZonesTemplController.php',
@@ -1210,7 +1238,6 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Service\\MailService' => __DIR__ . '/../..' . '/lib/Application/Service/MailService.php',
         'Poweradmin\\Application\\Service\\OidcConfigurationService' => __DIR__ . '/../..' . '/lib/Application/Service/OidcConfigurationService.php',
         'Poweradmin\\Application\\Service\\OidcService' => __DIR__ . '/../..' . '/lib/Application/Service/OidcService.php',
-        'Poweradmin\\Application\\Service\\OidcUserProvisioningService' => __DIR__ . '/../..' . '/lib/Application/Service/OidcUserProvisioningService.php',
         'Poweradmin\\Application\\Service\\PaginationService' => __DIR__ . '/../..' . '/lib/Application/Service/PaginationService.php',
         'Poweradmin\\Application\\Service\\PasswordChangeService' => __DIR__ . '/../..' . '/lib/Application/Service/PasswordChangeService.php',
         'Poweradmin\\Application\\Service\\PasswordGenerationService' => __DIR__ . '/../..' . '/lib/Application/Service/PasswordGenerationService.php',
@@ -1222,10 +1249,13 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Service\\RecordCommentService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordCommentService.php',
         'Poweradmin\\Application\\Service\\RecordCommentSyncService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordCommentSyncService.php',
         'Poweradmin\\Application\\Service\\RecordManagerService' => __DIR__ . '/../..' . '/lib/Application/Service/RecordManagerService.php',
+        'Poweradmin\\Application\\Service\\SamlConfigurationService' => __DIR__ . '/../..' . '/lib/Application/Service/SamlConfigurationService.php',
+        'Poweradmin\\Application\\Service\\SamlService' => __DIR__ . '/../..' . '/lib/Application/Service/SamlService.php',
         'Poweradmin\\Application\\Service\\SqlAuthenticator' => __DIR__ . '/../..' . '/lib/Application/Service/SqlAuthenticator.php',
         'Poweradmin\\Application\\Service\\StatsDisplayService' => __DIR__ . '/../..' . '/lib/Application/Service/StatsDisplayService.php',
         'Poweradmin\\Application\\Service\\UserAuthenticationService' => __DIR__ . '/../..' . '/lib/Application/Service/UserAuthenticationService.php',
         'Poweradmin\\Application\\Service\\UserEventLogger' => __DIR__ . '/../..' . '/lib/Application/Service/UserEventLogger.php',
+        'Poweradmin\\Application\\Service\\UserProvisioningService' => __DIR__ . '/../..' . '/lib/Application/Service/UserProvisioningService.php',
         'Poweradmin\\Application\\Service\\UserService' => __DIR__ . '/../..' . '/lib/Application/Service/UserService.php',
         'Poweradmin\\Application\\Service\\WhoisService' => __DIR__ . '/../..' . '/lib/Application/Service/WhoisService.php',
         'Poweradmin\\Application\\Service\\ZoneService' => __DIR__ . '/../..' . '/lib/Application/Service/ZoneService.php',
@@ -1395,6 +1425,8 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Domain\\ValueObject\\HostnameValue' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/HostnameValue.php',
         'Poweradmin\\Domain\\ValueObject\\IpAddressList' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/IpAddressList.php',
         'Poweradmin\\Domain\\ValueObject\\OidcUserInfo' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/OidcUserInfo.php',
+        'Poweradmin\\Domain\\ValueObject\\SamlUserInfo' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/SamlUserInfo.php',
+        'Poweradmin\\Domain\\ValueObject\\UserInfoInterface' => __DIR__ . '/../..' . '/lib/Domain/ValueObject/UserInfoInterface.php',
         'Poweradmin\\Infrastructure\\Api\\ApiClient' => __DIR__ . '/../..' . '/lib/Infrastructure/Api/ApiClient.php',
         'Poweradmin\\Infrastructure\\Api\\HttpClient' => __DIR__ . '/../..' . '/lib/Infrastructure/Api/HttpClient.php',
         'Poweradmin\\Infrastructure\\Api\\PowerdnsApiClient' => __DIR__ . '/../..' . '/lib/Infrastructure/Api/PowerdnsApiClient.php',
@@ -1501,6 +1533,10 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Psr\\Log\\LoggerInterface' => __DIR__ . '/..' . '/psr/log/src/LoggerInterface.php',
         'Psr\\Log\\LoggerTrait' => __DIR__ . '/..' . '/psr/log/src/LoggerTrait.php',
         'Psr\\Log\\NullLogger' => __DIR__ . '/..' . '/psr/log/src/NullLogger.php',
+        'RobRichards\\XMLSecLibs\\Utils\\XPath' => __DIR__ . '/..' . '/robrichards/xmlseclibs/src/Utils/XPath.php',
+        'RobRichards\\XMLSecLibs\\XMLSecEnc' => __DIR__ . '/..' . '/robrichards/xmlseclibs/src/XMLSecEnc.php',
+        'RobRichards\\XMLSecLibs\\XMLSecurityDSig' => __DIR__ . '/..' . '/robrichards/xmlseclibs/src/XMLSecurityDSig.php',
+        'RobRichards\\XMLSecLibs\\XMLSecurityKey' => __DIR__ . '/..' . '/robrichards/xmlseclibs/src/XMLSecurityKey.php',
         'SQLite3Exception' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/SQLite3Exception.php',
         'Symfony\\Bridge\\Twig\\AppVariable' => __DIR__ . '/..' . '/symfony/twig-bridge/AppVariable.php',
         'Symfony\\Bridge\\Twig\\Attribute\\Template' => __DIR__ . '/..' . '/symfony/twig-bridge/Attribute/Template.php',
