@@ -397,8 +397,8 @@ class MailService implements MailServiceInterface
     private function sendSmtpCommand($socket, string $command): string
     {
         // Redact sensitive authentication data
-        $logCommand = (strpos($command, 'AUTH LOGIN') === 0 || ctype_print($command) === false)
-            ? 'AUTH LOGIN [credentials]'
+        $logCommand = (strpos($command, 'AUTH LOGIN') === 0 || strpos($command, 'AUTH PLAIN') === 0 || ctype_print($command) === false)
+            ? 'AUTH [credentials]'
             : $command;
 
         fputs($socket, $command . "\r\n");
@@ -424,7 +424,7 @@ class MailService implements MailServiceInterface
         $maxLines = 50;
         $lineCount = 0;
 
-        while ($line = fgets($socket, 515) && $lineCount < $maxLines) {
+        while (($line = fgets($socket, 515)) && $lineCount < $maxLines) {
             $response .= $line;
             $lineCount++;
 
