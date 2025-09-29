@@ -89,6 +89,9 @@ class ChangePasswordController extends BaseController
             $this->checkCondition(true, $message);
         }
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'change_password';
+
         $policyConfig = $this->policyService->getPolicyConfig();
 
         if (!$this->isPost()) {

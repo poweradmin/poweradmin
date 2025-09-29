@@ -65,6 +65,9 @@ class RdapController extends BaseController
             $this->checkPermission('user_is_ueberuser', _('You do not have permission to perform RDAP lookups.'));
         }
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'rdap';
+
         $domain = $this->handleDomainInput();
         $result = $this->performRdapLookup($domain);
 

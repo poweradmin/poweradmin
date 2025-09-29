@@ -76,6 +76,9 @@ class BatchPtrRecordController extends BaseController
             _("You do not have permission to edit DNS records.")
         );
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'batch_ptr_record';
+
         // Check if we have a specific zone_id
         $hasZoneId = isset($_GET['id']) && !empty($_GET['id']);
 

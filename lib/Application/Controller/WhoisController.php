@@ -65,6 +65,9 @@ class WhoisController extends BaseController
             $this->checkPermission('user_is_ueberuser', _('You do not have permission to perform WHOIS lookups.'));
         }
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'whois';
+
         $domain = $this->handleDomainInput();
         $result = $this->performWhoisLookup($domain);
 

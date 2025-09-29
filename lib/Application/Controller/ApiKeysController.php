@@ -78,6 +78,9 @@ class ApiKeysController extends BaseController
             return;
         }
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'api_keys';
+
         // Determine action from route name or fallback to query parameter for backward compatibility
         $routeName = $this->getSafeRequestValue('_route');
         $action = $this->getActionFromRoute($routeName) ?: ($this->getSafeRequestValue('action') ?: 'list');

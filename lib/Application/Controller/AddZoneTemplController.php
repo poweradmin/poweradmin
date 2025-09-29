@@ -47,6 +47,9 @@ class AddZoneTemplController extends BaseController
     {
         $this->checkPermission('zone_templ_add', _("You do not have the permission to add a zone template."));
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'add_zone_templ';
+
         if ($this->isPost()) {
             $this->validateCsrfToken();
             $this->addZoneTemplate();

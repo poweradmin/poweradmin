@@ -56,6 +56,9 @@ class BulkRegistrationController extends BaseController
     {
         $this->checkPermission('zone_master_add', _("You do not have the permission to add a master zone."));
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'bulk_registration';
+
         if ($this->isPost()) {
             $this->validateCsrfToken();
             $this->doBulkRegistration();

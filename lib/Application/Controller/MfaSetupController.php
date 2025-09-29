@@ -55,6 +55,9 @@ class MfaSetupController extends BaseController
             exit;
         }
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'mfa_setup';
+
         // MFA setup forms processing
         if ($this->isPost()) {
             $this->validateCsrfToken();

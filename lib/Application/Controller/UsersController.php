@@ -51,6 +51,9 @@ class UsersController extends BaseController
             return;
         }
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'users';
+
         if ($this->isPost()) {
             $this->validateCsrfToken();
             $this->updateUsers();

@@ -38,6 +38,9 @@ class ListTemplateZonesController extends BaseController
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit || $perm_templ_add), _('You do not have permission to view zone templates.'));
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'list_template_zones';
+
         $zone_templ_id = filter_input(INPUT_GET, 'id', FILTER_VALIDATE_INT);
         if (!$zone_templ_id) {
             $this->showError(_('Invalid template ID.'));

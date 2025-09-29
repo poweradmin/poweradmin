@@ -37,6 +37,9 @@ class DatabaseConsistencyController extends BaseController
 
         $this->checkPermission('user_is_ueberuser', _('You do not have the permission to view this page.'));
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'database_consistency';
+
         // Check if consistency checks are enabled
         if (!$this->config->get('interface', 'enable_consistency_checks', false)) {
             $this->showError(_('Database consistency checks are disabled.'));

@@ -67,6 +67,9 @@ class EditZoneTemplController extends BaseController
 
         $this->checkCondition(!($perm_godlike || $perm_templ_edit && $owner), _("You do not have the permission to edit zone templates."));
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'edit_zone_templ';
+
         $constraints = [
             'id' => [
                 new Assert\NotBlank(),

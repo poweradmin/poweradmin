@@ -54,6 +54,9 @@ class ListLogZonesController extends BaseController
     {
         $this->checkPermission('user_is_ueberuser', 'You do not have the permission to see any logs');
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'list_log_zones';
+
         $this->showListLogZones();
     }
 

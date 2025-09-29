@@ -55,6 +55,9 @@ class ListForwardZonesController extends BaseController
         $permission_check = !($perm_view_zone_own || $perm_view_zone_others);
         $this->checkCondition($permission_check, _('You do not have sufficient permissions to view this page.'));
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'list_forward_zones';
+
         $this->listForwardZones();
     }
 
