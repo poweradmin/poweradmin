@@ -187,7 +187,13 @@
                 </li>
                 {% endif %}
                 <li class="p-1">
-                    <a href="#" class="nav-link text-{{ current_page in ['change_password', 'mfa_setup', 'logout'] or (current_page == 'edit_user' and request.id == session_userid) ? 'primary' : 'secondary' }}"><i class="bi bi-person-circle"></i></a>
+                    <a href="#" class="nav-link text-{{ current_page in ['change_password', 'mfa_setup', 'logout'] or (current_page == 'edit_user' and request.id == session_userid) ? 'primary' : 'secondary' }}">
+                        {% if user_avatar_url %}
+                            <img src="{{ user_avatar_url }}" alt="User Avatar" class="rounded-circle" width="24" height="24" style="object-fit: cover;">
+                        {% else %}
+                            <i class="bi bi-person-circle"></i>
+                        {% endif %}
+                    </a>
                     <a class="text-{{ current_page in ['change_password', 'mfa_setup', 'logout'] or (current_page == 'edit_user' and request.id == session_userid) ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Account{% endtrans %}</a>

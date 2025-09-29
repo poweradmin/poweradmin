@@ -275,6 +275,11 @@ class OidcService extends LoggingService
                 $this->setSessionValue('oidc_authenticated', true);  // For logout detection
                 $this->setSessionValue('oidc_provider', $providerId);  // Preserve provider for logout
 
+                // Store OAuth avatar URL if available
+                if ($userInfo->getAvatarUrl()) {
+                    $this->setSessionValue('oauth_avatar_url', $userInfo->getAvatarUrl());
+                }
+
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();
                 $this->logInfo('CSRF token ensured for OIDC session.');
@@ -334,7 +339,8 @@ class OidcService extends LoggingService
             groups: $userData[$mapping['groups'] ?? 'groups'] ?? [],
             providerId: $providerId,
             subject: $userData[$mapping['subject'] ?? 'sub'] ?? '',
-            rawData: $userData
+            rawData: $userData,
+            avatarUrl: $userData[$mapping['avatar'] ?? 'picture'] ?? null
         );
     }
 

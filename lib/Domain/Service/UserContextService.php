@@ -44,6 +44,17 @@ class UserContextService
         return $_SESSION['auth_used'] ?? null;
     }
 
+    public function getUserEmail(): ?string
+    {
+        // Check both OAuth and regular login email session keys
+        return $_SESSION['useremail'] ?? $_SESSION['email'] ?? null;
+    }
+
+    public function getOAuthAvatarUrl(): ?string
+    {
+        return $_SESSION['oauth_avatar_url'] ?? null;
+    }
+
     public function isAuthenticated(): bool
     {
         $userId = $this->getLoggedInUserId();

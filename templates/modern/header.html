@@ -342,7 +342,11 @@
                     </h1>
                 </div>
                 <div class="d-flex align-items-center">
-                    <i class="bi bi-person-circle me-2"></i>
+                    {% if user_avatar_url %}
+                        <img src="{{ user_avatar_url }}" alt="User Avatar" class="rounded-circle me-2" width="24" height="24" style="object-fit: cover;">
+                    {% else %}
+                        <i class="bi bi-person-circle me-2"></i>
+                    {% endif %}
                     <span class="me-3">{{ user_name }}</span>
                     <button class="btn btn-outline-secondary btn-sm me-2" id="style-switcher">
                         <i class="bi" id="style-icon"></i>

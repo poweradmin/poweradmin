@@ -36,6 +36,7 @@ class OidcUserInfo implements UserInfoInterface
     private string $providerId;
     private string $subject;
     private array $rawData;
+    private ?string $avatarUrl;
 
     public function __construct(
         string $username,
@@ -46,7 +47,8 @@ class OidcUserInfo implements UserInfoInterface
         array $groups = [],
         string $providerId = '',
         string $subject = '',
-        array $rawData = []
+        array $rawData = [],
+        ?string $avatarUrl = null
     ) {
         $this->username = $username;
         $this->email = $email;
@@ -57,6 +59,7 @@ class OidcUserInfo implements UserInfoInterface
         $this->providerId = $providerId;
         $this->subject = $subject;
         $this->rawData = $rawData;
+        $this->avatarUrl = $avatarUrl;
     }
 
     public function getUsername(): string
@@ -112,6 +115,11 @@ class OidcUserInfo implements UserInfoInterface
     public function hasGroup(string $group): bool
     {
         return in_array($group, $this->groups, true);
+    }
+
+    public function getAvatarUrl(): ?string
+    {
+        return $this->avatarUrl;
     }
 
     public function isValid(): bool

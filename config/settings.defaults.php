@@ -126,6 +126,13 @@ return [
         'add_domain_record' => true,          // Enable checkbox to add A/AAAA record from reverse zone view
         'display_hostname_only' => false,     // Display only hostname part in zone edit form (strips zone suffix) (added in 4.0.0)
         'enable_consistency_checks' => false, // Enable database consistency checks page (added in 4.0.0)
+
+        // Avatar Settings
+        'avatar_oauth_enabled' => false,      // Enable OAuth provider avatar images (default: false)
+        'avatar_gravatar_enabled' => false,   // Enable Gravatar integration (default: false)
+        'avatar_priority' => 'oauth',         // Avatar priority when both enabled: 'oauth' or 'gravatar'
+        'avatar_size' => 40,                  // Default avatar size in pixels
+        'avatar_cache_ttl' => 3600,           // Avatar cache TTL in seconds (1 hour)
     ],
 
     /**

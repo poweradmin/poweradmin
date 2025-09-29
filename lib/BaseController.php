@@ -26,6 +26,7 @@ use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\MfaSessionManager;
+use Poweradmin\Domain\Service\UserAvatarService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\UserPreferenceService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -523,6 +524,7 @@ abstract class BaseController
                 'auth_method' => $this->userContextService->getAuthMethod() ?? 'internal',
                 'can_change_password' => !in_array($this->userContextService->getAuthMethod(), ['ldap', 'oidc', 'saml']),
                 'session_userid' => $this->userContextService->getLoggedInUserId() ?? 0,
+                'user_avatar_url' => $this->getUserAvatarUrl(),
                 'request' => $this->requestData,
                 'dblog_use' => $dblog_use,
                 'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', false),
@@ -576,6 +578,17 @@ abstract class BaseController
             'base_url_prefix' => $this->config->get('interface', 'base_url_prefix', ''),
             'user_logged_in' => $this->userContextService->isAuthenticated(),
         ]);
+    }
+
+    /**
+     * Gets the user's avatar URL if avatar functionality is enabled
+     *
+     * @return string|null The avatar URL or null if not available/enabled
+     */
+    private function getUserAvatarUrl(): ?string
+    {
+        $userAvatarService = new UserAvatarService($this->userContextService, $this->config);
+        return $userAvatarService->getCurrentUserAvatarUrl();
     }
 
     /**
