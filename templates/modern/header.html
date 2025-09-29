@@ -285,6 +285,11 @@
                                 </a>
                             </li>
                             {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == 'user_preferences' ? 'active' : '' }}" href="/user/preferences">
+                                    <i class="bi bi-gear me-2"></i>{% trans %}Preferences{% endtrans %}
+                                </a>
+                            </li>
                             {% if can_change_password %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'change_password' ? 'active' : '' }}" href="/password/change">
@@ -338,6 +343,7 @@
                         {% elseif current_page == 'list_reverse_zones' %}{% trans %}Reverse Zones{% endtrans %}
                         {% elseif current_page == 'users' %}{% trans %}Users{% endtrans %}
                         {% elseif current_page == 'list_zone_templ' %}{% trans %}Templates{% endtrans %}
+                        {% elseif current_page == 'user_preferences' %}{% trans %}User Preferences{% endtrans %}
                         {% else %}{{ iface_title }}{% endif %}
                     </h1>
                 </div>

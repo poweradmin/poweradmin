@@ -1215,6 +1215,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Controller\\StaticAssetController' => __DIR__ . '/../..' . '/lib/Application/Controller/StaticAssetController.php',
         'Poweradmin\\Application\\Controller\\UnlinkZonesTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/UnlinkZonesTemplController.php',
         'Poweradmin\\Application\\Controller\\UserAgreementController' => __DIR__ . '/../..' . '/lib/Application/Controller/UserAgreementController.php',
+        'Poweradmin\\Application\\Controller\\UserPreferencesController' => __DIR__ . '/../..' . '/lib/Application/Controller/UserPreferencesController.php',
         'Poweradmin\\Application\\Controller\\UsersController' => __DIR__ . '/../..' . '/lib/Application/Controller/UsersController.php',
         'Poweradmin\\Application\\Controller\\WhoisController' => __DIR__ . '/../..' . '/lib/Application/Controller/WhoisController.php',
         'Poweradmin\\Application\\Http\\Request' => __DIR__ . '/../..' . '/lib/Application/Http/Request.php',

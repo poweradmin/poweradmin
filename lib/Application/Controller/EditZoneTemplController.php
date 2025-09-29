@@ -112,7 +112,9 @@ class EditZoneTemplController extends BaseController
 
     private function showForm(int $zone_templ_id): void
     {
-        $iface_rowamount = $this->config->get('interface', 'rows_per_page', 10);
+        $paginationService = $this->createPaginationService();
+        $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
+        $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $this->getCurrentUserId());
         $row_start = $this->getRowStart($iface_rowamount);
         $record_sort_by = $this->getSortBy('record_sort_by', ['name', 'type', 'content', 'ttl', 'prio']);
         $record_count = ZoneTemplate::countZoneTemplRecords($this->db, $zone_templ_id);

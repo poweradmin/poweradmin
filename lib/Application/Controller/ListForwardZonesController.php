@@ -61,15 +61,17 @@ class ListForwardZonesController extends BaseController
     private function listForwardZones(): void
     {
         $pdnssec_use = $this->config->get('dnssec', 'enabled', false);
-        $iface_zonelist_serial = $this->config->get('interface', 'display_serial_in_zone_list', false);
-        $iface_zonelist_template = $this->config->get('interface', 'display_template_in_zone_list', false);
         $iface_zonelist_fullname = $this->config->get('interface', 'display_fullname_in_zone_list', false);
-        // Get default rows per page from config
-        $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
+
+        // Get user preferences for zone list display
+        $userPreferenceService = $this->createUserPreferenceService();
+        $userId = $this->getCurrentUserId();
+        $iface_zonelist_serial = $userPreferenceService->getShowZoneSerial($userId);
+        $iface_zonelist_template = $userPreferenceService->getShowZoneTemplate($userId);
 
         // Create pagination service and get user preference
         $paginationService = $this->createPaginationService();
-        $userId = $this->getCurrentUserId();
+        $default_rowamount = $this->config->get('interface', 'rows_per_page', 10);
         $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
 
         $row_start = 0;
@@ -102,9 +104,9 @@ class ListForwardZonesController extends BaseController
 
         $domainRepository = new DomainRepository($this->db, $this->getConfig());
         if ($count_zones_view <= $iface_rowamount || $letter_start == 'all') {
-            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], 'all', $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction, true);
+            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], 'all', $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction, true, $iface_zonelist_serial, $iface_zonelist_template);
         } else {
-            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction, true);
+            $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction, true, $iface_zonelist_serial, $iface_zonelist_template);
         }
 
         if ($perm_view == 'none') {

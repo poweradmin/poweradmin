@@ -133,10 +133,14 @@ class EditController extends BaseController
         $paginationService = $this->createPaginationService();
         $userId = $this->getCurrentUserId();
         $iface_rowamount = $paginationService->getUserRowsPerPage($default_rowamount, $userId);
+
+        // Get user preferences for form positioning
+        $userPreferenceService = $this->createUserPreferenceService();
+        $iface_edit_add_record_top = $userPreferenceService->getRecordFormPosition($userId) === 'top';
+        $iface_edit_save_changes_top = $userPreferenceService->getSaveButtonPosition($userId) === 'top';
+
         $configManager = ConfigurationManager::getInstance();
         $iface_show_id = $configManager->get('interface', 'show_record_id', false);
-        $iface_edit_add_record_top = $configManager->get('interface', 'position_record_form_top', false);
-        $iface_edit_save_changes_top = $configManager->get('interface', 'position_save_button_top', false);
         $iface_record_comments = $configManager->get('interface', 'show_record_comments', false);
         $iface_zone_comments = $configManager->get('interface', 'show_zone_comments', true);
 

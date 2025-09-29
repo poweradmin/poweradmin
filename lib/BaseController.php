@@ -359,7 +359,7 @@ abstract class BaseController
     {
         $db_type = $this->config->get('database', 'type');
         $repository = new DbUserPreferenceRepository($this->db, $db_type);
-        return new UserPreferenceService($repository);
+        return new UserPreferenceService($repository, $this->config);
     }
 
     /**

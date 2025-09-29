@@ -103,7 +103,18 @@ interface DomainRepositoryInterface
      *
      * @return array array of zone details [id,name,type,count_records] (empty array if none found)
      */
-    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC'): array;
+    public function getZones(
+        string $perm,
+        int $userid = 0,
+        string $letterstart = 'all',
+        int $rowstart = 0,
+        int $rowamount = Constants::DEFAULT_MAX_ROWS,
+        string $sortby = 'name',
+        string $sortDirection = 'ASC',
+        bool $excludeReverse = false,
+        ?bool $showSerial = null,
+        ?bool $showTemplate = null
+    ): array;
 
     /**
      * Get Zone details from Zone ID

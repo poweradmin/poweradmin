@@ -106,7 +106,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
         int $limit = 25,
         string $sortBy = 'name',
         string $sortDirection = 'ASC',
-        bool $countOnly = false
+        bool $countOnly = false,
+        bool $showSerial = false,
+        bool $showTemplate = false
     ) {
         // Validate sort parameters
         $allowedSortColumns = ['name', 'owner', 'count_records', 'type'];
@@ -263,11 +265,17 @@ class DbZoneRepository implements ZoneRepositoryInterface
                     'users' => []
                 ];
 
-                // Add serial number if configured
-                if ($this->config->get('interface', 'display_serial_in_zone_list')) {
+                // Add serial number if requested
+                if ($showSerial) {
                     // Create RecordRepository to get the serial
                     $recordRepository = new RecordRepository($this->db, $this->config);
                     $zones[$name]['serial'] = $recordRepository->getSerialByZid($row['id']);
+                }
+
+                // Add template information if requested
+                if ($showTemplate) {
+                    // For reverse zones, template info might not be as relevant, but keeping consistency
+                    $zones[$name]['template_name'] = $row['template_name'] ?? '';
                 }
             }
 

@@ -87,6 +87,12 @@ user_delete:
     id: '\d+'
   methods: [GET, POST]
 
+# User Preferences
+user_preferences:
+  path: /user/preferences
+  controller: Poweradmin\Application\Controller\UserPreferencesController::run
+  methods: [GET, POST]
+
 # Password Management
 change_password:
   path: /password/change

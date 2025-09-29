@@ -847,6 +847,7 @@ return array(
     'Poweradmin\\Application\\Controller\\StaticAssetController' => $baseDir . '/lib/Application/Controller/StaticAssetController.php',
     'Poweradmin\\Application\\Controller\\UnlinkZonesTemplController' => $baseDir . '/lib/Application/Controller/UnlinkZonesTemplController.php',
     'Poweradmin\\Application\\Controller\\UserAgreementController' => $baseDir . '/lib/Application/Controller/UserAgreementController.php',
+    'Poweradmin\\Application\\Controller\\UserPreferencesController' => $baseDir . '/lib/Application/Controller/UserPreferencesController.php',
     'Poweradmin\\Application\\Controller\\UsersController' => $baseDir . '/lib/Application/Controller/UsersController.php',
     'Poweradmin\\Application\\Controller\\WhoisController' => $baseDir . '/lib/Application/Controller/WhoisController.php',
     'Poweradmin\\Application\\Http\\Request' => $baseDir . '/lib/Application/Http/Request.php',

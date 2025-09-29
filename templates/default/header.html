@@ -187,14 +187,14 @@
                 </li>
                 {% endif %}
                 <li class="p-1">
-                    <a href="#" class="nav-link text-{{ current_page in ['change_password', 'mfa_setup', 'logout'] or (current_page == 'edit_user' and request.id == session_userid) ? 'primary' : 'secondary' }}">
+                    <a href="#" class="nav-link text-{{ current_page in ['change_password', 'mfa_setup', 'logout', 'user_preferences'] or (current_page == 'edit_user' and request.id == session_userid) ? 'primary' : 'secondary' }}">
                         {% if user_avatar_url %}
                             <img src="{{ user_avatar_url }}" alt="User Avatar" class="rounded-circle" width="24" height="24" style="object-fit: cover;">
                         {% else %}
                             <i class="bi bi-person-circle"></i>
                         {% endif %}
                     </a>
-                    <a class="text-{{ current_page in ['change_password', 'mfa_setup', 'logout'] or (current_page == 'edit_user' and request.id == session_userid) ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a class="text-{{ current_page in ['change_password', 'mfa_setup', 'logout', 'user_preferences'] or (current_page == 'edit_user' and request.id == session_userid) ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Account{% endtrans %}</a>
                     <ul class="dropdown-menu">
@@ -202,6 +202,8 @@
                         <li><a class="dropdown-item {{ current_page == 'edit_user' and request.id == session_userid ? 'active' : '' }}"
                                href="/users/{{ session_userid }}/edit">{% trans %}Edit profile{% endtrans %}</a></li>
                         {% endif %}
+                        <li><a class="dropdown-item {{ current_page == 'user_preferences' ? 'active' : '' }}"
+                               href="/user/preferences"><i class="bi bi-gear me-2"></i>{% trans %}Preferences{% endtrans %}</a></li>
                         {% if can_change_password %}
                         <li><a class="dropdown-item {{ current_page == 'change_password' ? 'active' : '' }}"
                                href="/password/change">{% trans %}Change password{% endtrans %}</a></li>

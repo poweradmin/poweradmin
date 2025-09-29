@@ -72,7 +72,9 @@ interface ZoneRepositoryInterface
         int $limit = 25,
         string $sortBy = 'name',
         string $sortDirection = 'ASC',
-        bool $countOnly = false
+        bool $countOnly = false,
+        bool $showSerial = false,
+        bool $showTemplate = false
     );
 
     /**

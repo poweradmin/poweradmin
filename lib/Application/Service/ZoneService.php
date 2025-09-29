@@ -67,7 +67,9 @@ class ZoneService
         int $offset = 0,
         int $limit = 25,
         string $sortBy = 'name',
-        string $sortDirection = 'ASC'
+        string $sortDirection = 'ASC',
+        bool $showSerial = false,
+        bool $showTemplate = false
     ): array {
         return $this->zoneRepository->getReverseZones(
             $permType,
@@ -76,7 +78,10 @@ class ZoneService
             $offset,
             $limit,
             $sortBy,
-            $sortDirection
+            $sortDirection,
+            false,
+            $showSerial,
+            $showTemplate
         );
     }
 
@@ -105,7 +110,9 @@ class ZoneService
             0,
             $sortBy,
             $sortDirection,
-            true
+            true,
+            false,
+            false
         );
     }
 }

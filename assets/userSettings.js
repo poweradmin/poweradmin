@@ -40,14 +40,18 @@ const UserSettings = (function() {
                 },
                 body: JSON.stringify({ key: key, value: String(value) })
             });
-            
+
             if (!response.ok) {
-                console.error('Failed to save preference to database');
+                const errorData = await response.json().catch(() => ({}));
+                const errorMessage = errorData.error || 'Failed to save preference to database';
+                console.error('Failed to save preference:', errorMessage);
+                throw new Error(errorMessage);
             }
-            
+
             return response.json();
         } catch (error) {
             console.error('Error saving preference:', error);
+            throw error;
         }
     }
     

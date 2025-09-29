@@ -225,6 +225,26 @@
     </div>
     {% endif %}
 
+    <!-- User Preferences -->
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card h-100 shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between">
+                    <div>
+                        <h6 class="card-title">{% trans %}Preferences{% endtrans %}</h6>
+                        <p class="card-text text-muted">{% trans %}Customize your interface settings{% endtrans %}</p>
+                    </div>
+                    <div class="align-self-center">
+                        <i class="bi bi-gear display-4 text-muted"></i>
+                    </div>
+                </div>
+                <a href="/user/preferences" class="btn btn-sm btn-outline-primary mt-2" data-testid="user-preferences-link">
+                    {% trans %}User Preferences{% endtrans %}
+                </a>
+            </div>
+        </div>
+    </div>
+
     {% if (not whois_restrict_to_admin or permissions['user_is_ueberuser']) and whois_enabled %}
     <!-- WHOIS Lookup -->
     <div class="col-xl-3 col-md-6 mb-4">

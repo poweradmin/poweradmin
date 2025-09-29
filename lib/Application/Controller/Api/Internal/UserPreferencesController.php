@@ -40,7 +40,7 @@ class UserPreferencesController extends InternalApiController
 
         $db_type = $this->config->get('database', 'type');
         $repository = new DbUserPreferenceRepository($this->db, $db_type);
-        $this->userPreferenceService = new UserPreferenceService($repository);
+        $this->userPreferenceService = new UserPreferenceService($repository, $this->config);
         $this->userContextService = new UserContextService();
     }
 

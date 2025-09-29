@@ -25,15 +25,22 @@ namespace Poweradmin\Domain\Service;
 use InvalidArgumentException;
 use Poweradmin\Domain\Model\UserPreference;
 use Poweradmin\Domain\Repository\UserPreferenceRepositoryInterface;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 class UserPreferenceService
 {
     private UserPreferenceRepositoryInterface $repository;
+    private ConfigurationInterface $config;
     private array $cache = [];
+    private array $defaultValues = [];
 
-    public function __construct(UserPreferenceRepositoryInterface $repository)
-    {
+    public function __construct(
+        UserPreferenceRepositoryInterface $repository,
+        ConfigurationInterface $config
+    ) {
         $this->repository = $repository;
+        $this->config = $config;
+        $this->initializeDefaults();
     }
 
     public function getPreference(int $userId, string $key): ?string
@@ -47,7 +54,7 @@ class UserPreferenceService
         $preference = $this->repository->findByUserIdAndKey($userId, $key);
 
         if ($preference === null) {
-            $value = UserPreference::getDefaultValue($key);
+            $value = $this->getDefaultValue($key);
         } else {
             $value = $preference->getPreferenceValue();
         }
@@ -74,7 +81,7 @@ class UserPreferenceService
         $preferences = $this->repository->findAllByUserId($userId);
         $result = [];
 
-        foreach (UserPreference::DEFAULT_VALUES as $key => $defaultValue) {
+        foreach ($this->defaultValues as $key => $defaultValue) {
             $result[$key] = $defaultValue;
         }
 
@@ -119,32 +126,50 @@ class UserPreferenceService
         $this->setPreference($userId, UserPreference::KEY_ROWS_PER_PAGE, (string)$rows);
     }
 
-    public function getUiTheme(int $userId): string
+
+
+    public function getShowZoneSerial(int $userId): bool
     {
-        return $this->getPreference($userId, UserPreference::KEY_UI_THEME) ?: 'light';
+        return $this->getPreference($userId, UserPreference::KEY_SHOW_ZONE_SERIAL) === 'true';
     }
 
-    public function setUiTheme(int $userId, string $theme): void
+    public function getShowZoneTemplate(int $userId): bool
     {
-        if (!in_array($theme, ['light', 'dark'], true)) {
-            throw new InvalidArgumentException("Invalid theme: {$theme}");
-        }
-
-        $this->setPreference($userId, UserPreference::KEY_UI_THEME, $theme);
+        return $this->getPreference($userId, UserPreference::KEY_SHOW_ZONE_TEMPLATE) === 'true';
     }
 
-    public function getLanguage(int $userId): string
+    public function getRecordFormPosition(int $userId): string
     {
-        return $this->getPreference($userId, UserPreference::KEY_LANGUAGE) ?: 'en_EN';
+        return $this->getPreference($userId, UserPreference::KEY_RECORD_FORM_POSITION) ?: 'top';
     }
 
-    public function setLanguage(int $userId, string $language): void
+    public function getSaveButtonPosition(int $userId): string
     {
-        $this->setPreference($userId, UserPreference::KEY_LANGUAGE, $language);
+        return $this->getPreference($userId, UserPreference::KEY_SAVE_BUTTON_POSITION) ?: 'bottom';
     }
+
 
     public function clearCache(): void
     {
         $this->cache = [];
+    }
+
+    private function initializeDefaults(): void
+    {
+        $this->defaultValues = [
+            UserPreference::KEY_ROWS_PER_PAGE => (string)$this->config->get('interface', 'rows_per_page', 10),
+            UserPreference::KEY_DEFAULT_TTL => (string)$this->config->get('dns', 'ttl', 86400),
+            UserPreference::KEY_SHOW_ZONE_SERIAL => $this->config->get('interface', 'display_serial_in_zone_list', false) ? 'true' : 'false',
+            UserPreference::KEY_SHOW_ZONE_TEMPLATE => $this->config->get('interface', 'display_template_in_zone_list', false) ? 'true' : 'false',
+            UserPreference::KEY_RECORD_FORM_POSITION => $this->config->get('interface', 'position_record_form_top', true) ? 'top' : 'bottom',
+            UserPreference::KEY_SAVE_BUTTON_POSITION => $this->config->get('interface', 'position_save_button_top', false) ? 'top' : 'bottom',
+            UserPreference::KEY_DEFAULT_ZONE_VIEW => 'standard',
+            UserPreference::KEY_ZONE_SORT_ORDER => 'asc',
+        ];
+    }
+
+    private function getDefaultValue(string $key): ?string
+    {
+        return $this->defaultValues[$key] ?? null;
     }
 }

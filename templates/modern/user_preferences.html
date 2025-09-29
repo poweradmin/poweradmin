@@ -1,0 +1,108 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}User Preferences{% endtrans %}</li>
+    </ol>
+</nav>
+
+<form method="post" id="preferences-form">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+<div class="row g-4">
+    <!-- Left Column -->
+    <div class="col-md-6">
+        <!-- Display Settings Card -->
+        <div class="card shadow-sm mb-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0"><i class="bi bi-display me-2"></i>{% trans %}Display Settings{% endtrans %}</h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-3">
+                    <div class="col-sm-6">
+                        <label for="rows_per_page" class="form-label small">{% trans %}Items per page{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="rows_per_page" name="rows_per_page">
+                            {% for option in available_rows_per_page %}
+                            <option value="{{ option }}" {% if preferences.rows_per_page == option %}selected{% endif %}>{{ option }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Zone Options Card -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h6 class="card-title mb-0"><i class="bi bi-collection me-2"></i>{% trans %}Zone Options{% endtrans %}</h6>
+            </div>
+            <div class="card-body">
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="show_zone_serial" name="show_zone_serial" {% if preferences.show_zone_serial == 'true' %}checked{% endif %}>
+                    <label class="form-check-label" for="show_zone_serial">
+                        <strong>{% trans %}Zone serial numbers{% endtrans %}</strong>
+                        <div class="text-muted small">{% trans %}Display serial numbers in zone lists{% endtrans %}</div>
+                    </label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="show_zone_template" name="show_zone_template" {% if preferences.show_zone_template == 'true' %}checked{% endif %}>
+                    <label class="form-check-label" for="show_zone_template">
+                        <strong>{% trans %}Zone templates{% endtrans %}</strong>
+                        <div class="text-muted small">{% trans %}Display template information in zone lists{% endtrans %}</div>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Right Column -->
+    <div class="col-md-6">
+
+        <!-- Interface Behavior Card -->
+        <div class="card shadow-sm">
+            <div class="card-header">
+                <h6 class="card-title mb-0"><i class="bi bi-sliders me-2"></i>{% trans %}Interface Behavior{% endtrans %}</h6>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 mb-3">
+                    <div class="col-6">
+                        <label for="record_form_position" class="form-label small">{% trans %}Record form{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="record_form_position" name="record_form_position">
+                            {% for value, label in available_positions %}
+                            <option value="{{ value }}" {% if preferences.record_form_position == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="col-6">
+                        <label for="save_button_position" class="form-label small">{% trans %}Save buttons{% endtrans %}</label>
+                        <select class="form-select form-select-sm" id="save_button_position" name="save_button_position">
+                            {% for value, label in available_positions %}
+                            <option value="{{ value }}" {% if preferences.save_button_position == value %}selected{% endif %}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Save Button -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <button type="submit" class="btn btn-primary btn-sm" form="preferences-form">
+                    <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save Preferences{% endtrans %}
+                </button>
+                <a href="/" class="btn btn-secondary btn-sm ms-2">
+                    <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                </a>
+            </div>
+            <small class="text-muted">{% trans %}Changes will be applied after saving{% endtrans %}</small>
+        </div>
+    </div>
+</div>
+</form>

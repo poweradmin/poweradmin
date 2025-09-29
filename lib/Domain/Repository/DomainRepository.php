@@ -216,8 +216,18 @@ class DomainRepository implements DomainRepositoryInterface
      *
      * @return array array of zone details [id,name,type,count_records] (empty array if none found)
      */
-    public function getZones(string $perm, int $userid = 0, string $letterstart = 'all', int $rowstart = 0, int $rowamount = Constants::DEFAULT_MAX_ROWS, string $sortby = 'name', string $sortDirection = 'ASC', bool $excludeReverse = false): array
-    {
+    public function getZones(
+        string $perm,
+        int $userid = 0,
+        string $letterstart = 'all',
+        int $rowstart = 0,
+        int $rowamount = Constants::DEFAULT_MAX_ROWS,
+        string $sortby = 'name',
+        string $sortDirection = 'ASC',
+        bool $excludeReverse = false,
+        ?bool $showSerial = null,
+        ?bool $showTemplate = null
+    ): array {
         // Validate sort parameters
         $allowedSortColumns = ['name', 'type', 'count_records', 'owner'];
         $sortby = $this->tableNameService->validateOrderBy($sortby, $allowedSortColumns);
@@ -226,8 +236,10 @@ class DomainRepository implements DomainRepositoryInterface
         $db_type = $this->config->get('database', 'type');
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
         $iface_zone_comments = $this->config->get('interface', 'show_zone_comments');
-        $iface_zonelist_serial = $this->config->get('interface', 'display_serial_in_zone_list');
-        $iface_zonelist_template = $this->config->get('interface', 'display_template_in_zone_list');
+
+        // Use provided user preferences or fall back to configuration
+        $iface_zonelist_serial = $showSerial ?? $this->config->get('interface', 'display_serial_in_zone_list');
+        $iface_zonelist_template = $showTemplate ?? $this->config->get('interface', 'display_template_in_zone_list');
 
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
