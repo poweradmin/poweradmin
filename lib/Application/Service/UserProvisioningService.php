@@ -151,12 +151,25 @@ class UserProvisioningService extends LoggingService
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($result) {
-                $this->logInfo('Found existing user by OIDC subject, user ID: {userId}', ['userId' => $result['user_id']]);
+                $userId = (int)$result['user_id'];
+
+                // Verify the user actually exists in the users table
+                $userCheckStmt = $this->db->prepare("SELECT id FROM users WHERE id = ?");
+                $userCheckStmt->execute([$userId]);
+                $userExists = $userCheckStmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($userExists) {
+                    $this->logInfo('Found existing user by OIDC subject, user ID: {userId}', ['userId' => $userId]);
+                    return $userId;
+                } else {
+                    $this->logWarning('Found OIDC link for user ID {userId} but user no longer exists, cleaning up orphaned record', ['userId' => $userId]);
+                    $this->cleanupOrphanedOidcLinks($subject, $providerId);
+                }
             } else {
                 $this->logInfo('No existing user found by OIDC subject');
             }
 
-            return $result ? (int)$result['user_id'] : null;
+            return null;
         } catch (\Exception $e) {
             $this->logError('Error finding user by OIDC subject (table may not exist): {error}', ['error' => $e->getMessage()]);
             return null;
@@ -314,7 +327,7 @@ class UserProvisioningService extends LoggingService
             if (!empty($updateFields)) {
                 $updateValues[] = $userId;
                 $stmt = $this->db->prepare("
-                    UPDATE users SET " . implode(', ', $updateFields) . " 
+                    UPDATE users SET " . implode(', ', $updateFields) . "
                     WHERE id = ?
                 ");
                 $stmt->execute($updateValues);
@@ -388,12 +401,25 @@ class UserProvisioningService extends LoggingService
             $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($result) {
-                $this->logInfo('Found existing user by SAML subject, user ID: {userId}', ['userId' => $result['user_id']]);
+                $userId = (int)$result['user_id'];
+
+                // Verify the user actually exists in the users table
+                $userCheckStmt = $this->db->prepare("SELECT id FROM users WHERE id = ?");
+                $userCheckStmt->execute([$userId]);
+                $userExists = $userCheckStmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($userExists) {
+                    $this->logInfo('Found existing user by SAML subject, user ID: {userId}', ['userId' => $userId]);
+                    return $userId;
+                } else {
+                    $this->logWarning('Found SAML link for user ID {userId} but user no longer exists, cleaning up orphaned record', ['userId' => $userId]);
+                    $this->cleanupOrphanedSamlLinks($subject, $providerId);
+                }
             } else {
                 $this->logInfo('No existing user found by SAML subject');
             }
 
-            return $result ? (int)$result['user_id'] : null;
+            return null;
         } catch (\Exception $e) {
             $this->logError('Error finding user by SAML subject (table may not exist): {error}', ['error' => $e->getMessage()]);
             return null;
@@ -731,6 +757,78 @@ class UserProvisioningService extends LoggingService
                 'error' => $e->getMessage(),
                 'cleaned_up_count' => 0
             ];
+        }
+    }
+
+    /**
+     * Clean up orphaned SAML user links that reference non-existent users
+     */
+    private function cleanupOrphanedSamlLinks(string $subject, string $providerId): void
+    {
+        try {
+            $this->logInfo('Checking for orphaned SAML links for subject: {subject}', ['subject' => $subject]);
+
+            // Find orphaned links for this specific subject
+            $stmt = $this->db->prepare("
+                SELECT sul.id, sul.user_id
+                FROM saml_user_links sul
+                LEFT JOIN users u ON sul.user_id = u.id
+                WHERE sul.saml_subject = ? AND sul.provider_id = ? AND u.id IS NULL
+            ");
+            $stmt->execute([$subject, $providerId]);
+            $orphanedLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (!empty($orphanedLinks)) {
+                $this->logWarning('Found {count} orphaned SAML links for subject {subject}, cleaning up...', [
+                    'count' => count($orphanedLinks),
+                    'subject' => $subject
+                ]);
+
+                $linkIds = array_column($orphanedLinks, 'id');
+                $placeholders = str_repeat('?,', count($linkIds) - 1) . '?';
+                $deleteStmt = $this->db->prepare("DELETE FROM saml_user_links WHERE id IN ($placeholders)");
+                $deleteStmt->execute($linkIds);
+
+                $this->logInfo('Successfully cleaned up {count} orphaned SAML links', ['count' => count($orphanedLinks)]);
+            }
+        } catch (\Exception $e) {
+            $this->logError('Error cleaning up orphaned SAML links: {error}', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Clean up orphaned OIDC user links that reference non-existent users
+     */
+    private function cleanupOrphanedOidcLinks(string $subject, string $providerId): void
+    {
+        try {
+            $this->logInfo('Checking for orphaned OIDC links for subject: {subject}', ['subject' => $subject]);
+
+            // Find orphaned links for this specific subject
+            $stmt = $this->db->prepare("
+                SELECT oul.id, oul.user_id
+                FROM oidc_user_links oul
+                LEFT JOIN users u ON oul.user_id = u.id
+                WHERE oul.oidc_subject = ? AND oul.provider_id = ? AND u.id IS NULL
+            ");
+            $stmt->execute([$subject, $providerId]);
+            $orphanedLinks = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            if (!empty($orphanedLinks)) {
+                $this->logWarning('Found {count} orphaned OIDC links for subject {subject}, cleaning up...', [
+                    'count' => count($orphanedLinks),
+                    'subject' => $subject
+                ]);
+
+                $linkIds = array_column($orphanedLinks, 'id');
+                $placeholders = str_repeat('?,', count($linkIds) - 1) . '?';
+                $deleteStmt = $this->db->prepare("DELETE FROM oidc_user_links WHERE id IN ($placeholders)");
+                $deleteStmt->execute($linkIds);
+
+                $this->logInfo('Successfully cleaned up {count} orphaned OIDC links', ['count' => count($orphanedLinks)]);
+            }
+        } catch (\Exception $e) {
+            $this->logError('Error cleaning up orphaned OIDC links: {error}', ['error' => $e->getMessage()]);
         }
     }
 }
