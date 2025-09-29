@@ -34,22 +34,22 @@ class UserProvisioningServiceTest extends TestCase
         $this->assertTrue($result, 'Should update auth method when current method is empty');
     }
 
-    public function testShouldUpdateAuthMethodFromSqlToOidc(): void
+    public function testShouldNotUpdateAuthMethodFromSqlToOidc(): void
     {
         $result = $this->invokeShouldUpdateAuthMethod(
             UserProvisioningService::AUTH_METHOD_SQL,
             UserProvisioningService::AUTH_METHOD_OIDC
         );
-        $this->assertTrue($result, 'Should update auth method from SQL to OIDC');
+        $this->assertFalse($result, 'Should preserve SQL auth method when logging in via OIDC');
     }
 
-    public function testShouldUpdateAuthMethodFromSqlToSaml(): void
+    public function testShouldNotUpdateAuthMethodFromSqlToSaml(): void
     {
         $result = $this->invokeShouldUpdateAuthMethod(
             UserProvisioningService::AUTH_METHOD_SQL,
             UserProvisioningService::AUTH_METHOD_SAML
         );
-        $this->assertTrue($result, 'Should update auth method from SQL to SAML');
+        $this->assertFalse($result, 'Should preserve SQL auth method when logging in via SAML');
     }
 
     public function testShouldUpdateAuthMethodSameMethod(): void
@@ -148,8 +148,6 @@ class UserProvisioningServiceTest extends TestCase
             // Cases that should return true
             ['current' => null, 'new' => UserProvisioningService::AUTH_METHOD_OIDC, 'expected' => true],
             ['current' => '', 'new' => UserProvisioningService::AUTH_METHOD_SAML, 'expected' => true],
-            ['current' => UserProvisioningService::AUTH_METHOD_SQL, 'new' => UserProvisioningService::AUTH_METHOD_OIDC, 'expected' => true],
-            ['current' => UserProvisioningService::AUTH_METHOD_SQL, 'new' => UserProvisioningService::AUTH_METHOD_SAML, 'expected' => true],
             ['current' => UserProvisioningService::AUTH_METHOD_OIDC, 'new' => UserProvisioningService::AUTH_METHOD_OIDC, 'expected' => true],
             ['current' => UserProvisioningService::AUTH_METHOD_SAML, 'new' => UserProvisioningService::AUTH_METHOD_SAML, 'expected' => true],
 
@@ -157,7 +155,9 @@ class UserProvisioningServiceTest extends TestCase
             ['current' => UserProvisioningService::AUTH_METHOD_OIDC, 'new' => UserProvisioningService::AUTH_METHOD_SAML, 'expected' => true],
             ['current' => UserProvisioningService::AUTH_METHOD_SAML, 'new' => UserProvisioningService::AUTH_METHOD_OIDC, 'expected' => true],
 
-            // Cases that should return false
+            // Cases that should return false (preserve existing auth methods)
+            ['current' => UserProvisioningService::AUTH_METHOD_SQL, 'new' => UserProvisioningService::AUTH_METHOD_OIDC, 'expected' => false],
+            ['current' => UserProvisioningService::AUTH_METHOD_SQL, 'new' => UserProvisioningService::AUTH_METHOD_SAML, 'expected' => false],
             ['current' => UserProvisioningService::AUTH_METHOD_LDAP, 'new' => UserProvisioningService::AUTH_METHOD_OIDC, 'expected' => false],
             ['current' => UserProvisioningService::AUTH_METHOD_LDAP, 'new' => UserProvisioningService::AUTH_METHOD_SAML, 'expected' => false],
             ['current' => UserProvisioningService::AUTH_METHOD_OIDC, 'new' => UserProvisioningService::AUTH_METHOD_LDAP, 'expected' => false],

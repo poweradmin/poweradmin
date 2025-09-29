@@ -642,20 +642,17 @@ class UserProvisioningService extends LoggingService
     /**
      * Determine if we should update the auth_method field
      * Only update if:
-     * - Current method is AUTH_METHOD_SQL (safe to convert to external auth)
      * - Current method is null/empty (new user or unset)
      * - Current method matches the new method (refreshing same auth type)
      * - Transitioning between SAML and OIDC (both external SSO methods)
+     *
+     * NOTE: We preserve SQL auth_method to allow users to continue using
+     * SQL authentication even after logging in via external providers.
      */
     private function shouldUpdateAuthMethod(?string $currentAuthMethod, string $newAuthMethod): bool
     {
         // If no current auth method, it's safe to set
         if (empty($currentAuthMethod)) {
-            return true;
-        }
-
-        // Safe to convert from SQL auth to external auth
-        if ($currentAuthMethod === self::AUTH_METHOD_SQL) {
             return true;
         }
 
@@ -673,7 +670,7 @@ class UserProvisioningService extends LoggingService
             return true;
         }
 
-        // Don't overwrite LDAP or other auth methods
+        // Don't overwrite SQL, LDAP or other auth methods to preserve existing login capabilities
         return false;
     }
 
