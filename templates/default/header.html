@@ -68,33 +68,33 @@
                        role="button">{% trans %}Zones{% endtrans %}</a>
                     <ul class="dropdown-menu">
                         {% if perm_view_zone_own or perm_view_zone_other %}
-                        <li><a class="dropdown-item {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="/zones/forward">{% trans %}Forward zones{% endtrans %}</a></li>
-                        <li><a class="dropdown-item {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="/zones/reverse">{% trans %}Reverse zones{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="/zones/forward"><i class="bi bi-arrow-right-circle me-2"></i>{% trans %}Forward zones{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="/zones/reverse"><i class="bi bi-arrow-left-circle me-2"></i>{% trans %}Reverse zones{% endtrans %}</a></li>
                         <li><hr class="dropdown-divider"></li>
                         {% endif %}
                         {% if perm_zone_master_add %}
                         <li><a class="dropdown-item {{ current_page == 'add_zone_master' ? 'active' : '' }}"
-                               href="/zones/add/master">{% trans %}Add master zone{% endtrans %}</a></li>
+                               href="/zones/add/master"><i class="bi bi-plus-circle me-2"></i>{% trans %}Add master zone{% endtrans %}</a></li>
                         {% endif %}
                         {% if perm_zone_slave_add %}
                         <li><a class="dropdown-item {{ current_page == 'add_zone_slave' ? 'active' : '' }}"
-                               href="/zones/add/slave">{% trans %}Add slave zone{% endtrans %}</a></li>
+                               href="/zones/add/slave"><i class="bi bi-plus-circle-dotted me-2"></i>{% trans %}Add slave zone{% endtrans %}</a></li>
                         {% endif %}
                         {% if perm_zone_master_add %}
                         <li><a class="dropdown-item {{ current_page == 'bulk_registration' ? 'active' : '' }}"
-                               href="/zones/bulk-registration">{% trans %}Bulk registration{% endtrans %}</a>
+                               href="/zones/bulk-registration"><i class="bi bi-collection me-2"></i>{% trans %}Bulk registration{% endtrans %}</a>
                         </li>
                         {% endif %}
                         {% if iface_add_reverse_record and (perm_view_zone_own or perm_view_zone_other) %}
                         <li><a class="dropdown-item {{ current_page == 'batch_ptr_record' ? 'active' : '' }}"
-                               href="/zones/batch-ptr">{% trans %}Batch PTR Records{% endtrans %}</a>
+                               href="/zones/batch-ptr"><i class="bi bi-arrow-repeat me-2"></i>{% trans %}Batch PTR Records{% endtrans %}</a>
                         </li>
                         {% endif %}
                         {% if perm_is_godlike and dblog_use == true %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="/zones/logs">{% trans %}Zone logs{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="/zones/logs"><i class="bi bi-journal-text me-2"></i>{% trans %}Zone logs{% endtrans %}</a></li>
                         {% endif %}
                     </ul>
                 </li>
@@ -106,25 +106,25 @@
                        href="#"
                        role="button">{% trans %}Users{% endtrans %}</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item {{ current_page == 'users' ? 'active' : '' }}" href="/users">{% trans %}User administration{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'users' ? 'active' : '' }}" href="/users"><i class="bi bi-people-fill me-2"></i>{% trans %}User administration{% endtrans %}</a></li>
                         {% if perm_add_new %}
-                        <li><a class="dropdown-item {{ current_page == 'add_user' ? 'active' : '' }}" href="/users/add">{% trans %}Add user{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'add_user' ? 'active' : '' }}" href="/users/add"><i class="bi bi-person-plus me-2"></i>{% trans %}Add user{% endtrans %}</a></li>
                         {% endif %}
                         {% if perm_templ_perm_edit %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li><a class="dropdown-item {{ current_page == 'list_perm_templ' ? 'active' : '' }}"
-                               href="/permissions/templates">{% trans %}List permission templates{% endtrans %}</a></li>
+                               href="/permissions/templates"><i class="bi bi-shield-fill-check me-2"></i>{% trans %}List permission templates{% endtrans %}</a></li>
                         <li><a class="dropdown-item {{ current_page == 'add_perm_templ' ? 'active' : '' }}"
-                               href="/permissions/templates/add">{% trans %}Add permission template{% endtrans %}</a></li>
+                               href="/permissions/templates/add"><i class="bi bi-shield-plus me-2"></i>{% trans %}Add permission template{% endtrans %}</a></li>
                         {% endif %}
                         {% if perm_is_godlike and dblog_use == true %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li><a class="dropdown-item {{ current_page == 'list_log_users' ? 'active' : '' }}"
-                               href="/users/logs">{% trans %}User logs{% endtrans %}</a></li>
+                               href="/users/logs"><i class="bi bi-journal-text me-2"></i>{% trans %}User logs{% endtrans %}</a></li>
                         {% endif %}
                     </ul>
                 </li>
@@ -138,10 +138,10 @@
                        role="button">{% trans %}Templates{% endtrans %}</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item {{ current_page == 'list_zone_templ' ? 'active' : '' }}"
-                               href="/zones/templates">{% trans %}List zone templates{% endtrans %}</a></li>
+                               href="/zones/templates"><i class="bi bi-files me-2"></i>{% trans %}List zone templates{% endtrans %}</a></li>
                         {% if perm_zone_templ_add %}
                         <li><a class="dropdown-item {{ current_page == 'add_zone_templ' ? 'active' : '' }}"
-                               href="/zones/templates/add">{% trans %}Add zone template{% endtrans %}</a></li>
+                               href="/zones/templates/add"><i class="bi bi-file-plus me-2"></i>{% trans %}Add zone template{% endtrans %}</a></li>
                         {% endif %}
                     </ul>
                 </li>
@@ -200,20 +200,20 @@
                     <ul class="dropdown-menu">
                         {% if perm_edit_own %}
                         <li><a class="dropdown-item {{ current_page == 'edit_user' and request.id == session_userid ? 'active' : '' }}"
-                               href="/users/{{ session_userid }}/edit">{% trans %}Edit profile{% endtrans %}</a></li>
+                               href="/users/{{ session_userid }}/edit"><i class="bi bi-person-gear me-2"></i>{% trans %}Edit profile{% endtrans %}</a></li>
                         {% endif %}
                         <li><a class="dropdown-item {{ current_page == 'user_preferences' ? 'active' : '' }}"
                                href="/user/preferences"><i class="bi bi-gear me-2"></i>{% trans %}Preferences{% endtrans %}</a></li>
                         {% if can_change_password %}
                         <li><a class="dropdown-item {{ current_page == 'change_password' ? 'active' : '' }}"
-                               href="/password/change">{% trans %}Change password{% endtrans %}</a></li>
+                               href="/password/change"><i class="bi bi-key me-2"></i>{% trans %}Change password{% endtrans %}</a></li>
                         {% endif %}
                         {% if mfa_enabled %}
                         <li><a class="dropdown-item {{ current_page == 'mfa_setup' ? 'active' : '' }}"
-                               href="/mfa/setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
+                               href="/mfa/setup"><i class="bi bi-shield-check me-2"></i>{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
                         {% endif %}
                         <li><a class="dropdown-item {{ current_page == 'logout' ? 'active' : '' }}"
-                               href="/logout">{% trans %}Logout{% endtrans %}</a></li>
+                               href="/logout"><i class="bi bi-box-arrow-right me-2"></i>{% trans %}Logout{% endtrans %}</a></li>
                     </ul>
                 </li>
                 {% endif %}
