@@ -93,11 +93,6 @@ class IPAddressValidator
             return ValidationResult::failure(_('This is not a valid IPv6 address.'));
         }
 
-        // RFC 5952 recommendation - IPv6 addresses should use lowercase for hex digits
-        if ($canonicalForm && preg_match('/[A-F]/', $ipv6)) {
-            return ValidationResult::failure(_('IPv6 address should use lowercase for hexadecimal digits.'));
-        }
-
         // Additional validation for special IPv6 addresses
 
         // IPv4-mapped IPv6 addresses (::ffff:a.b.c.d)
@@ -133,16 +128,10 @@ class IPAddressValidator
             }
         }
 
-        // If canonical form is requested, check RFC 5952 recommendations
+        // If canonical form is requested, return the canonical form.
+        // Otherwise, return the original valid address.
         if ($canonicalForm) {
-            // Convert to canonical form and compare
-            $canonical = $this->canonicalizeIPv6($ipv6);
-            if ($canonical !== $ipv6) {
-                return ValidationResult::failure(sprintf(
-                    _('IPv6 address is not in canonical form (RFC 5952). Canonical form: %s'),
-                    $canonical
-                ));
-            }
+            return ValidationResult::success($this->canonicalizeIPv6($ipv6));
         }
 
         return ValidationResult::success($ipv6);
@@ -250,15 +239,14 @@ class IPAddressValidator
 
             // Handle special cases for beginning and end
             if (empty($before)) {
-                $result = ':' . implode(':', $after);
+                $result = '::' . implode(':', $after);
             } elseif (empty($after)) {
-                $result = implode(':', $before) . ':';
+                $result = implode(':', $before) . '::';
             } else {
                 $result = implode(':', $before) . '::' . implode(':', $after);
             }
 
-            // Ensure :: is used properly
-            return str_replace(':::', '::', $result);
+            return $result;
         }
 
         // No compression needed
