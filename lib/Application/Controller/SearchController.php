@@ -43,6 +43,9 @@ class SearchController extends BaseController
     {
         $this->checkPermission('search', _("You do not have the permission to perform searches."));
 
+        // Set the current page for navigation highlighting
+        $this->requestData['page'] = 'search';
+
         $parameters = [
             'query' => '',
             'zones' => true,
