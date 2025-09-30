@@ -175,6 +175,76 @@ validate_ldap_config() {
     fi
 }
 
+# Validate SAML configuration if enabled
+validate_saml_config() {
+    local saml_enabled=$(echo "${PA_SAML_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    if [ "$saml_enabled" = "true" ]; then
+        # Check if at least one provider is enabled
+        local azure_enabled=$(echo "${PA_SAML_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        local okta_enabled=$(echo "${PA_SAML_OKTA_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        local auth0_enabled=$(echo "${PA_SAML_AUTH0_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        local keycloak_enabled=$(echo "${PA_SAML_KEYCLOAK_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        local generic_enabled=$(echo "${PA_SAML_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+
+        if [ "$azure_enabled" != "true" ] && [ "$okta_enabled" != "true" ] && [ "$auth0_enabled" != "true" ] && [ "$keycloak_enabled" != "true" ] && [ "$generic_enabled" != "true" ]; then
+            log "ERROR: SAML is enabled but no SAML providers are configured. Enable at least one provider (PA_SAML_*_ENABLED=true)"
+            exit 1
+        fi
+
+        # Validate Azure SAML configuration if enabled
+        if [ "$azure_enabled" = "true" ]; then
+            [ -z "${PA_SAML_AZURE_X509_CERT}" ] && {
+                log "ERROR: PA_SAML_AZURE_X509_CERT is required when Azure SAML is enabled"
+                exit 1
+            }
+        fi
+
+        # Validate Okta SAML configuration if enabled
+        if [ "$okta_enabled" = "true" ]; then
+            local required_okta_vars=("PA_SAML_OKTA_ENTITY_ID" "PA_SAML_OKTA_SSO_URL" "PA_SAML_OKTA_X509_CERT")
+            for var in "${required_okta_vars[@]}"; do
+                [ -z "${!var}" ] && {
+                    log "ERROR: ${var} is required when Okta SAML is enabled"
+                    exit 1
+                }
+            done
+        fi
+
+        # Validate Auth0 SAML configuration if enabled
+        if [ "$auth0_enabled" = "true" ]; then
+            local required_auth0_vars=("PA_SAML_AUTH0_ENTITY_ID" "PA_SAML_AUTH0_SSO_URL" "PA_SAML_AUTH0_X509_CERT")
+            for var in "${required_auth0_vars[@]}"; do
+                [ -z "${!var}" ] && {
+                    log "ERROR: ${var} is required when Auth0 SAML is enabled"
+                    exit 1
+                }
+            done
+        fi
+
+        # Validate Keycloak SAML configuration if enabled
+        if [ "$keycloak_enabled" = "true" ]; then
+            local required_keycloak_vars=("PA_SAML_KEYCLOAK_ENTITY_ID" "PA_SAML_KEYCLOAK_SSO_URL" "PA_SAML_KEYCLOAK_X509_CERT")
+            for var in "${required_keycloak_vars[@]}"; do
+                [ -z "${!var}" ] && {
+                    log "ERROR: ${var} is required when Keycloak SAML is enabled"
+                    exit 1
+                }
+            done
+        fi
+
+        # Validate Generic SAML configuration if enabled
+        if [ "$generic_enabled" = "true" ]; then
+            local required_generic_vars=("PA_SAML_GENERIC_ENTITY_ID" "PA_SAML_GENERIC_SSO_URL" "PA_SAML_GENERIC_X509_CERT")
+            for var in "${required_generic_vars[@]}"; do
+                [ -z "${!var}" ] && {
+                    log "ERROR: ${var} is required when Generic SAML is enabled"
+                    exit 1
+                }
+            done
+        fi
+    fi
+}
+
 # Create initial admin user if specified
 create_admin_user() {
     local create_admin=$(echo "${PA_CREATE_ADMIN:-false}" | tr '[:upper:]' '[:lower:]')
@@ -336,6 +406,17 @@ generate_config() {
     local oidc_google_enabled=$(echo "${PA_OIDC_GOOGLE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local oidc_google_auto_discovery=$(echo "${PA_OIDC_GOOGLE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')
 
+    # Convert SAML boolean values to lowercase
+    local saml_enabled=$(echo "${PA_SAML_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local saml_auto_provision=$(echo "${PA_SAML_AUTO_PROVISION:-true}" | tr '[:upper:]' '[:lower:]')
+    local saml_link_by_email=$(echo "${PA_SAML_LINK_BY_EMAIL:-true}" | tr '[:upper:]' '[:lower:]')
+    local saml_sync_user_info=$(echo "${PA_SAML_SYNC_USER_INFO:-true}" | tr '[:upper:]' '[:lower:]')
+    local saml_azure_enabled=$(echo "${PA_SAML_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local saml_okta_enabled=$(echo "${PA_SAML_OKTA_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local saml_auth0_enabled=$(echo "${PA_SAML_AUTH0_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local saml_keycloak_enabled=$(echo "${PA_SAML_KEYCLOAK_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local saml_generic_enabled=$(echo "${PA_SAML_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+
     # Convert MFA boolean values to lowercase
     local mfa_enabled=$(echo "${PA_MFA_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local mfa_app_enabled=$(echo "${PA_MFA_APP_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
@@ -417,6 +498,7 @@ return [
     ],
     'interface' => [
         'title' => '${PA_APP_TITLE:-Poweradmin}',
+        'base_url' => '${PA_BASE_URL:-}',
         'language' => '${PA_DEFAULT_LANGUAGE:-en_EN}',
         'enabled_languages' => '${PA_ENABLED_LANGUAGES:-cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN}',
         'session_timeout' => ${PA_SESSION_TIMEOUT:-1800},
@@ -513,6 +595,177 @@ EOF
                     'last_name' => 'family_name',
                     'display_name' => 'name',
                     'groups' => 'groups',
+                ],
+            ],
+EOF
+    fi
+
+    cat >> "${CONFIG_FILE}" << EOF
+        ],
+    ],
+    'saml' => [
+        'enabled' => ${saml_enabled},
+        'auto_provision' => ${saml_auto_provision},
+        'link_by_email' => ${saml_link_by_email},
+        'sync_user_info' => ${saml_sync_user_info},
+        'default_permission_template' => '${PA_SAML_DEFAULT_PERMISSION_TEMPLATE:-}',
+
+        // Service Provider (SP) Settings - Your PowerAdmin instance
+        'sp' => [
+EOF
+
+    # Add SP settings - use environment variables if set, otherwise auto-generate from PA_BASE_URL
+    if [ -n "${PA_SAML_SP_ENTITY_ID}" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'entity_id' => '${PA_SAML_SP_ENTITY_ID}',
+EOF
+    elif [ -n "${PA_BASE_URL}" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'entity_id' => '${PA_BASE_URL}/saml/metadata',
+EOF
+    fi
+
+    if [ -n "${PA_SAML_SP_ACS_URL}" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'assertion_consumer_service_url' => '${PA_SAML_SP_ACS_URL}',
+EOF
+    elif [ -n "${PA_BASE_URL}" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'assertion_consumer_service_url' => '${PA_BASE_URL}/saml/acs',
+EOF
+    fi
+
+    if [ -n "${PA_SAML_SP_SLS_URL}" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'single_logout_service_url' => '${PA_SAML_SP_SLS_URL}',
+EOF
+    elif [ -n "${PA_BASE_URL}" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'single_logout_service_url' => '${PA_BASE_URL}/saml/sls',
+EOF
+    fi
+
+    # Always include name_id_format, x509cert, and private_key (they have sensible defaults or can be empty)
+    cat >> "${CONFIG_FILE}" << EOF
+            'name_id_format' => '${PA_SAML_SP_NAME_ID_FORMAT:-urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress}',
+            'x509cert' => '${PA_SAML_SP_X509_CERT:-}',
+            'private_key' => '${PA_SAML_SP_PRIVATE_KEY:-}',
+        ],
+
+        // Provider configurations
+        'providers' => [
+EOF
+
+    # Add Azure SAML configuration if enabled
+    if [ "${saml_azure_enabled}" = "true" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'azure' => [
+                'enabled' => true,
+                'name' => '${PA_SAML_AZURE_NAME:-Microsoft Azure AD SAML}',
+                'display_name' => '${PA_SAML_AZURE_DISPLAY_NAME:-Sign in with Microsoft (SAML)}',
+                'entity_id' => '${PA_SAML_AZURE_ENTITY_ID:-https://sts.windows.net/\{tenant\}/}',
+                'sso_url' => '${PA_SAML_AZURE_SSO_URL:-https://login.microsoftonline.com/\{tenant\}/saml2}',
+                'slo_url' => '${PA_SAML_AZURE_SLO_URL:-https://login.microsoftonline.com/\{tenant\}/saml2}',
+                'x509cert' => '${PA_SAML_AZURE_X509_CERT:-}',
+                'user_mapping' => [
+                    'username' => '${PA_SAML_AZURE_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
+                    'email' => '${PA_SAML_AZURE_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
+                    'first_name' => '${PA_SAML_AZURE_FIRST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname}',
+                    'last_name' => '${PA_SAML_AZURE_LAST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname}',
+                    'display_name' => '${PA_SAML_AZURE_DISPLAY_NAME_ATTR:-http://schemas.microsoft.com/identity/claims/displayname}',
+                    'groups' => '${PA_SAML_AZURE_GROUPS_ATTR:-http://schemas.microsoft.com/ws/2008/06/identity/claims/groups}',
+                ],
+            ],
+EOF
+    fi
+
+    # Add Okta SAML configuration if enabled
+    if [ "${saml_okta_enabled}" = "true" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'okta' => [
+                'enabled' => true,
+                'name' => '${PA_SAML_OKTA_NAME:-Okta}',
+                'display_name' => '${PA_SAML_OKTA_DISPLAY_NAME:-Sign in with Okta (SAML)}',
+                'entity_id' => '${PA_SAML_OKTA_ENTITY_ID:-}',
+                'sso_url' => '${PA_SAML_OKTA_SSO_URL:-}',
+                'slo_url' => '${PA_SAML_OKTA_SLO_URL:-}',
+                'x509cert' => '${PA_SAML_OKTA_X509_CERT:-}',
+                'user_mapping' => [
+                    'username' => '${PA_SAML_OKTA_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name}',
+                    'email' => '${PA_SAML_OKTA_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
+                    'first_name' => '${PA_SAML_OKTA_FIRST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname}',
+                    'last_name' => '${PA_SAML_OKTA_LAST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname}',
+                    'display_name' => '${PA_SAML_OKTA_DISPLAY_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/displayname}',
+                    'groups' => '${PA_SAML_OKTA_GROUPS_ATTR:-groups}',
+                ],
+            ],
+EOF
+    fi
+
+    # Add Auth0 SAML configuration if enabled
+    if [ "${saml_auth0_enabled}" = "true" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'auth0' => [
+                'enabled' => true,
+                'name' => '${PA_SAML_AUTH0_NAME:-Auth0}',
+                'display_name' => '${PA_SAML_AUTH0_DISPLAY_NAME:-Sign in with Auth0 (SAML)}',
+                'entity_id' => '${PA_SAML_AUTH0_ENTITY_ID:-}',
+                'sso_url' => '${PA_SAML_AUTH0_SSO_URL:-}',
+                'slo_url' => '${PA_SAML_AUTH0_SLO_URL:-}',
+                'x509cert' => '${PA_SAML_AUTH0_X509_CERT:-}',
+                'user_mapping' => [
+                    'username' => '${PA_SAML_AUTH0_USERNAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier}',
+                    'email' => '${PA_SAML_AUTH0_EMAIL_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress}',
+                    'first_name' => '${PA_SAML_AUTH0_FIRST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname}',
+                    'last_name' => '${PA_SAML_AUTH0_LAST_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname}',
+                    'display_name' => '${PA_SAML_AUTH0_DISPLAY_NAME_ATTR:-http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name}',
+                    'groups' => '${PA_SAML_AUTH0_GROUPS_ATTR:-groups}',
+                ],
+            ],
+EOF
+    fi
+
+    # Add Keycloak SAML configuration if enabled
+    if [ "${saml_keycloak_enabled}" = "true" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'keycloak' => [
+                'enabled' => true,
+                'name' => '${PA_SAML_KEYCLOAK_NAME:-Keycloak}',
+                'display_name' => '${PA_SAML_KEYCLOAK_DISPLAY_NAME:-Sign in with Keycloak (SAML)}',
+                'entity_id' => '${PA_SAML_KEYCLOAK_ENTITY_ID:-}',
+                'sso_url' => '${PA_SAML_KEYCLOAK_SSO_URL:-}',
+                'slo_url' => '${PA_SAML_KEYCLOAK_SLO_URL:-}',
+                'x509cert' => '${PA_SAML_KEYCLOAK_X509_CERT:-}',
+                'user_mapping' => [
+                    'username' => '${PA_SAML_KEYCLOAK_USERNAME_ATTR:-username}',
+                    'email' => '${PA_SAML_KEYCLOAK_EMAIL_ATTR:-email}',
+                    'first_name' => '${PA_SAML_KEYCLOAK_FIRST_NAME_ATTR:-given_name}',
+                    'last_name' => '${PA_SAML_KEYCLOAK_LAST_NAME_ATTR:-family_name}',
+                    'display_name' => '${PA_SAML_KEYCLOAK_DISPLAY_NAME_ATTR:-name}',
+                    'groups' => '${PA_SAML_KEYCLOAK_GROUPS_ATTR:-groups}',
+                ],
+            ],
+EOF
+    fi
+
+    # Add Generic SAML configuration if enabled
+    if [ "${saml_generic_enabled}" = "true" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'generic' => [
+                'enabled' => true,
+                'name' => '${PA_SAML_GENERIC_NAME:-Generic SAML IdP}',
+                'display_name' => '${PA_SAML_GENERIC_DISPLAY_NAME:-Sign in with SAML}',
+                'entity_id' => '${PA_SAML_GENERIC_ENTITY_ID:-}',
+                'sso_url' => '${PA_SAML_GENERIC_SSO_URL:-}',
+                'slo_url' => '${PA_SAML_GENERIC_SLO_URL:-}',
+                'x509cert' => '${PA_SAML_GENERIC_X509_CERT:-}',
+                'user_mapping' => [
+                    'username' => '${PA_SAML_GENERIC_USERNAME_ATTR:-uid}',
+                    'email' => '${PA_SAML_GENERIC_EMAIL_ATTR:-email}',
+                    'first_name' => '${PA_SAML_GENERIC_FIRST_NAME_ATTR:-firstName}',
+                    'last_name' => '${PA_SAML_GENERIC_LAST_NAME_ATTR:-lastName}',
+                    'display_name' => '${PA_SAML_GENERIC_DISPLAY_NAME_ATTR:-displayName}',
+                    'groups' => '${PA_SAML_GENERIC_GROUPS_ATTR:-groups}',
                 ],
             ],
 EOF
@@ -620,6 +873,8 @@ main() {
         debug_log "API validation completed successfully"
         validate_ldap_config
         debug_log "LDAP validation completed successfully"
+        validate_saml_config
+        debug_log "SAML validation completed successfully"
         log "Configuration validation completed successfully"
 
         # Generate configuration

@@ -236,6 +236,7 @@ docker run -d --name poweradmin -p 80:80 \
 | `PA_THEME` | Theme name to use | `default` | No |
 | `PA_STYLE` | UI style: `light` or `dark` | `light` | No |
 | `PA_THEME_BASE_PATH` | Base path for theme templates | `templates` | No |
+| `PA_BASE_URL` | Base URL for SAML auto-generation and interface configuration | Empty | No |
 | `PA_BASE_URL_PREFIX` | Base URL prefix for subdirectory deployments | Empty | No |
 
 ### Interface UI Elements
@@ -343,6 +344,125 @@ docker run -d --name poweradmin -p 80:80 \
 - **Metadata URL**: Uses standard Google discovery endpoint `https://accounts.google.com/.well-known/openid-configuration`
 - **Scopes**: Automatically requests `openid profile email` scopes
 - **Redirect URI**: Set the authorized redirect URI in Google Cloud Console to match your deployment (e.g., `https://poweradmin.yourdomain.com/oidc/callback`)
+
+### SAML (Security Assertion Markup Language) Authentication
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_SAML_ENABLED` | Enable SAML authentication | `false` | No |
+| `PA_SAML_AUTO_PROVISION` | Automatically create user accounts from SAML | `true` | No |
+| `PA_SAML_LINK_BY_EMAIL` | Link SAML accounts to existing users by email | `true` | No |
+| `PA_SAML_SYNC_USER_INFO` | Sync user information from SAML provider | `true` | No |
+| `PA_SAML_DEFAULT_PERMISSION_TEMPLATE` | Default permission template for new SAML users | Empty | No |
+
+### SAML Service Provider (SP) Settings
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_SAML_SP_ENTITY_ID` | SP Entity ID (usually your PowerAdmin URL) | Empty | No (auto-generated if omitted) |
+| `PA_SAML_SP_ACS_URL` | Assertion Consumer Service URL | Empty | No (auto-generated if omitted) |
+| `PA_SAML_SP_SLS_URL` | Single Logout Service URL | Empty | No (auto-generated if omitted) |
+| `PA_SAML_SP_NAME_ID_FORMAT` | NameID format | `urn:oasis:names:tc:SAML:1.1:nameid-format:emailAddress` | No |
+| `PA_SAML_SP_X509_CERT` | SP X.509 Certificate (for signing requests) | Empty | No |
+| `PA_SAML_SP_PRIVATE_KEY` | SP Private Key (for signing requests) | Empty | No |
+
+**SAML Service Provider Configuration Notes:**
+
+- **Auto-generated URLs**: If `PA_SAML_SP_ENTITY_ID`, `PA_SAML_SP_ACS_URL`, or `PA_SAML_SP_SLS_URL` are not set, Poweradmin will automatically generate these URLs based on your deployment URL
+- **Preserve defaults**: Only set these environment variables if you need to override the auto-generated values
+- **Entity ID**: Typically should match your Poweradmin base URL + `/saml/metadata`
+- **ACS URL**: Assertion Consumer Service URL, typically your base URL + `/saml/acs`
+- **SLS URL**: Single Logout Service URL, typically your base URL + `/saml/sls`
+
+### SAML Azure AD Provider
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_SAML_AZURE_ENABLED` | Enable Azure AD SAML provider | `false` | No |
+| `PA_SAML_AZURE_NAME` | Provider name | `Microsoft Azure AD SAML` | No |
+| `PA_SAML_AZURE_DISPLAY_NAME` | Display name for login button | `Sign in with Microsoft (SAML)` | No |
+| `PA_SAML_AZURE_ENTITY_ID` | Azure AD Entity ID | `https://sts.windows.net/{tenant}/` | No |
+| `PA_SAML_AZURE_SSO_URL` | Azure AD SSO URL | `https://login.microsoftonline.com/{tenant}/saml2` | No |
+| `PA_SAML_AZURE_SLO_URL` | Azure AD SLO URL | `https://login.microsoftonline.com/{tenant}/saml2` | No |
+| `PA_SAML_AZURE_X509_CERT` | Azure AD X.509 Certificate | Empty | Yes if Azure SAML enabled |
+| `PA_SAML_AZURE_USERNAME_ATTR` | Username attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
+| `PA_SAML_AZURE_EMAIL_ATTR` | Email attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
+| `PA_SAML_AZURE_FIRST_NAME_ATTR` | First name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` | No |
+| `PA_SAML_AZURE_LAST_NAME_ATTR` | Last name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname` | No |
+| `PA_SAML_AZURE_DISPLAY_NAME_ATTR` | Display name attribute mapping | `http://schemas.microsoft.com/identity/claims/displayname` | No |
+| `PA_SAML_AZURE_GROUPS_ATTR` | Groups attribute mapping | `http://schemas.microsoft.com/ws/2008/06/identity/claims/groups` | No |
+
+### SAML Okta Provider
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_SAML_OKTA_ENABLED` | Enable Okta SAML provider | `false` | No |
+| `PA_SAML_OKTA_NAME` | Provider name | `Okta` | No |
+| `PA_SAML_OKTA_DISPLAY_NAME` | Display name for login button | `Sign in with Okta (SAML)` | No |
+| `PA_SAML_OKTA_ENTITY_ID` | Okta Entity ID | Empty | Yes if Okta SAML enabled |
+| `PA_SAML_OKTA_SSO_URL` | Okta SSO URL | Empty | Yes if Okta SAML enabled |
+| `PA_SAML_OKTA_SLO_URL` | Okta SLO URL | Empty | No |
+| `PA_SAML_OKTA_X509_CERT` | Okta X.509 Certificate | Empty | Yes if Okta SAML enabled |
+| `PA_SAML_OKTA_USERNAME_ATTR` | Username attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name` | No |
+| `PA_SAML_OKTA_EMAIL_ATTR` | Email attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
+| `PA_SAML_OKTA_FIRST_NAME_ATTR` | First name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` | No |
+| `PA_SAML_OKTA_LAST_NAME_ATTR` | Last name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname` | No |
+| `PA_SAML_OKTA_DISPLAY_NAME_ATTR` | Display name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/displayname` | No |
+| `PA_SAML_OKTA_GROUPS_ATTR` | Groups attribute mapping | `groups` | No |
+
+### SAML Auth0 Provider
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_SAML_AUTH0_ENABLED` | Enable Auth0 SAML provider | `false` | No |
+| `PA_SAML_AUTH0_NAME` | Provider name | `Auth0` | No |
+| `PA_SAML_AUTH0_DISPLAY_NAME` | Display name for login button | `Sign in with Auth0 (SAML)` | No |
+| `PA_SAML_AUTH0_ENTITY_ID` | Auth0 Entity ID | Empty | Yes if Auth0 SAML enabled |
+| `PA_SAML_AUTH0_SSO_URL` | Auth0 SSO URL | Empty | Yes if Auth0 SAML enabled |
+| `PA_SAML_AUTH0_SLO_URL` | Auth0 SLO URL | Empty | No |
+| `PA_SAML_AUTH0_X509_CERT` | Auth0 X.509 Certificate | Empty | Yes if Auth0 SAML enabled |
+| `PA_SAML_AUTH0_USERNAME_ATTR` | Username attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier` | No |
+| `PA_SAML_AUTH0_EMAIL_ATTR` | Email attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress` | No |
+| `PA_SAML_AUTH0_FIRST_NAME_ATTR` | First name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/givenname` | No |
+| `PA_SAML_AUTH0_LAST_NAME_ATTR` | Last name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/surname` | No |
+| `PA_SAML_AUTH0_DISPLAY_NAME_ATTR` | Display name attribute mapping | `http://schemas.xmlsoap.org/ws/2005/05/identity/claims/name` | No |
+| `PA_SAML_AUTH0_GROUPS_ATTR` | Groups attribute mapping | `groups` | No |
+
+### SAML Keycloak Provider
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_SAML_KEYCLOAK_ENABLED` | Enable Keycloak SAML provider | `false` | No |
+| `PA_SAML_KEYCLOAK_NAME` | Provider name | `Keycloak` | No |
+| `PA_SAML_KEYCLOAK_DISPLAY_NAME` | Display name for login button | `Sign in with Keycloak (SAML)` | No |
+| `PA_SAML_KEYCLOAK_ENTITY_ID` | Keycloak Entity ID | Empty | Yes if Keycloak SAML enabled |
+| `PA_SAML_KEYCLOAK_SSO_URL` | Keycloak SSO URL | Empty | Yes if Keycloak SAML enabled |
+| `PA_SAML_KEYCLOAK_SLO_URL` | Keycloak SLO URL | Empty | No |
+| `PA_SAML_KEYCLOAK_X509_CERT` | Keycloak X.509 Certificate | Empty | Yes if Keycloak SAML enabled |
+| `PA_SAML_KEYCLOAK_USERNAME_ATTR` | Username attribute mapping | `username` | No |
+| `PA_SAML_KEYCLOAK_EMAIL_ATTR` | Email attribute mapping | `email` | No |
+| `PA_SAML_KEYCLOAK_FIRST_NAME_ATTR` | First name attribute mapping | `given_name` | No |
+| `PA_SAML_KEYCLOAK_LAST_NAME_ATTR` | Last name attribute mapping | `family_name` | No |
+| `PA_SAML_KEYCLOAK_DISPLAY_NAME_ATTR` | Display name attribute mapping | `name` | No |
+| `PA_SAML_KEYCLOAK_GROUPS_ATTR` | Groups attribute mapping | `groups` | No |
+
+### SAML Generic Provider
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `PA_SAML_GENERIC_ENABLED` | Enable Generic SAML provider | `false` | No |
+| `PA_SAML_GENERIC_NAME` | Provider name | `Generic SAML IdP` | No |
+| `PA_SAML_GENERIC_DISPLAY_NAME` | Display name for login button | `Sign in with SAML` | No |
+| `PA_SAML_GENERIC_ENTITY_ID` | Generic SAML Entity ID | Empty | Yes if Generic SAML enabled |
+| `PA_SAML_GENERIC_SSO_URL` | Generic SAML SSO URL | Empty | Yes if Generic SAML enabled |
+| `PA_SAML_GENERIC_SLO_URL` | Generic SAML SLO URL | Empty | No |
+| `PA_SAML_GENERIC_X509_CERT` | Generic SAML X.509 Certificate | Empty | Yes if Generic SAML enabled |
+| `PA_SAML_GENERIC_USERNAME_ATTR` | Username attribute mapping | `uid` | No |
+| `PA_SAML_GENERIC_EMAIL_ATTR` | Email attribute mapping | `email` | No |
+| `PA_SAML_GENERIC_FIRST_NAME_ATTR` | First name attribute mapping | `firstName` | No |
+| `PA_SAML_GENERIC_LAST_NAME_ATTR` | Last name attribute mapping | `lastName` | No |
+| `PA_SAML_GENERIC_DISPLAY_NAME_ATTR` | Display name attribute mapping | `displayName` | No |
+| `PA_SAML_GENERIC_GROUPS_ATTR` | Groups attribute mapping | `groups` | No |
 
 ### Admin User Creation
 
@@ -637,6 +757,74 @@ docker run -d --name poweradmin -p 80:80 \
   -e PA_OIDC_GOOGLE_ENABLED=true \
   -e PA_OIDC_GOOGLE_CLIENT_ID=your-google-client-id \
   -e PA_OIDC_GOOGLE_CLIENT_SECRET=your-google-client-secret \
+  edmondas/poweradmin
+```
+
+### SAML Azure AD Integration Example
+
+```bash
+# Basic example with auto-generated SP URLs
+docker run -d --name poweradmin -p 80:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql.example.com \
+  -e DB_USER=poweradmin \
+  -e DB_PASS=secure_password \
+  -e DB_NAME=poweradmin \
+  -e PA_SAML_ENABLED=true \
+  -e PA_SAML_AZURE_ENABLED=true \
+  -e PA_SAML_AZURE_X509_CERT="your-azure-saml-certificate" \
+  edmondas/poweradmin
+
+# Advanced example with custom SP configuration
+docker run -d --name poweradmin -p 80:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql.example.com \
+  -e DB_USER=poweradmin \
+  -e DB_PASS=secure_password \
+  -e DB_NAME=poweradmin \
+  -e PA_SAML_ENABLED=true \
+  -e PA_SAML_SP_ENTITY_ID=https://poweradmin.yourdomain.com/saml/metadata \
+  -e PA_SAML_SP_ACS_URL=https://poweradmin.yourdomain.com/saml/acs \
+  -e PA_SAML_AZURE_ENABLED=true \
+  -e PA_SAML_AZURE_X509_CERT="your-azure-saml-certificate" \
+  edmondas/poweradmin
+```
+
+### SAML Okta Integration Example
+
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql.example.com \
+  -e DB_USER=poweradmin \
+  -e DB_PASS=secure_password \
+  -e DB_NAME=poweradmin \
+  -e PA_SAML_ENABLED=true \
+  -e PA_SAML_SP_ENTITY_ID=https://poweradmin.yourdomain.com/saml/metadata \
+  -e PA_SAML_OKTA_ENABLED=true \
+  -e PA_SAML_OKTA_ENTITY_ID="http://www.okta.com/{app-id}" \
+  -e PA_SAML_OKTA_SSO_URL="https://{domain}.okta.com/app/{app-name}/{app-id}/sso/saml" \
+  -e PA_SAML_OKTA_X509_CERT="your-okta-saml-certificate" \
+  edmondas/poweradmin
+```
+
+### SAML Generic Provider Integration Example
+
+```bash
+docker run -d --name poweradmin -p 80:80 \
+  -e DB_TYPE=mysql \
+  -e DB_HOST=mysql.example.com \
+  -e DB_USER=poweradmin \
+  -e DB_PASS=secure_password \
+  -e DB_NAME=poweradmin \
+  -e PA_SAML_ENABLED=true \
+  -e PA_SAML_SP_ENTITY_ID=https://poweradmin.yourdomain.com/saml/metadata \
+  -e PA_SAML_GENERIC_ENABLED=true \
+  -e PA_SAML_GENERIC_NAME="My SAML Provider" \
+  -e PA_SAML_GENERIC_DISPLAY_NAME="Sign in with SSO" \
+  -e PA_SAML_GENERIC_ENTITY_ID="https://your-idp.example.com/metadata" \
+  -e PA_SAML_GENERIC_SSO_URL="https://your-idp.example.com/sso" \
+  -e PA_SAML_GENERIC_X509_CERT="your-idp-saml-certificate" \
   edmondas/poweradmin
 ```
 
