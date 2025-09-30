@@ -76,6 +76,11 @@ class RecordRepository implements RecordRepositoryInterface
     /**
      * Count Zone Records for Zone ID
      *
+     * Note: Excludes PowerDNS Empty Non-Terminal (ENT) records.
+     * PowerDNS automatically creates records with NULL/empty type for RFC 8020 compliance
+     * to support DNS hierarchy (e.g., if a.b.c.example.com exists, ENT records are created
+     * for b.c.example.com and c.example.com). These are not user-manageable records.
+     *
      * @param int $zone_id Zone ID
      *
      * @return int Record count
@@ -109,6 +114,10 @@ class RecordRepository implements RecordRepositoryInterface
      * Get a Record from a Record ID
      *
      * Retrieve all fields of the record and send it back to the function caller.
+     *
+     * Note: Excludes PowerDNS Empty Non-Terminal (ENT) records.
+     * PowerDNS automatically creates records with NULL/empty type for RFC 8020 compliance
+     * to support DNS hierarchy. These are not user-manageable records.
      *
      * @param int $id Record ID
      * @return array|null array of record detail, or null if nothing found
@@ -146,6 +155,10 @@ class RecordRepository implements RecordRepositoryInterface
      * Get all records from a domain id.
      *
      * Retrieve all fields of the records and send it back to the function caller.
+     *
+     * Note: Excludes PowerDNS Empty Non-Terminal (ENT) records.
+     * PowerDNS automatically creates records with NULL/empty type for RFC 8020 compliance
+     * to support DNS hierarchy. These are not user-manageable records.
      *
      * @param string $db_type Database type
      * @param int $id Domain ID
@@ -349,6 +362,10 @@ class RecordRepository implements RecordRepositoryInterface
     /**
      * Get filtered records from a domain with search capabilities
      *
+     * Note: Excludes PowerDNS Empty Non-Terminal (ENT) records.
+     * PowerDNS automatically creates records with NULL/empty type for RFC 8020 compliance
+     * to support DNS hierarchy. These are not user-manageable records.
+     *
      * @param int $zone_id The zone ID
      * @param int $row_start Starting row for pagination
      * @param int $row_amount Number of rows per page
@@ -432,7 +449,7 @@ class RecordRepository implements RecordRepositoryInterface
                       AND $records_table.name = c.name AND $records_table.type = c.type";
         }
 
-        // Where clause - filter out records with NULL or empty type
+        // Where clause
         $query .= " WHERE $records_table.domain_id = :zone_id AND $records_table.type IS NOT NULL AND $records_table.type != ''" .
                  $search_condition . $type_condition . $content_condition;
 
@@ -454,6 +471,10 @@ class RecordRepository implements RecordRepositoryInterface
 
     /**
      * Get count of filtered records
+     *
+     * Note: Excludes PowerDNS Empty Non-Terminal (ENT) records.
+     * PowerDNS automatically creates records with NULL/empty type for RFC 8020 compliance
+     * to support DNS hierarchy. These are not user-manageable records.
      *
      * @param int $zone_id The zone ID
      * @param bool $include_comments Whether to include comments in the search
@@ -504,7 +525,7 @@ class RecordRepository implements RecordRepositoryInterface
             $params[':content_filter'] = $content_filter;
         }
 
-        // Create the query - filter out records with NULL or empty type
+        // Create the query
         $query = "SELECT COUNT(*) FROM $records_table WHERE domain_id = :zone_id AND type IS NOT NULL AND type != ''";
 
         // Add filter conditions
