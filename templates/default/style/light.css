@@ -203,6 +203,26 @@ input[type=number]::-webkit-outer-spin-button {
     font-size: 0.75rem !important;
 }
 
+/* Zone log event column - prevent overflow from long entries */
+.log-event-cell {
+    max-width: 500px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+/* Log timestamp column - minimal width to fit content */
+.log-timestamp-cell {
+    width: 1%;
+    white-space: nowrap;
+}
+
+/* Log ID column - minimal width to fit content */
+.log-id-cell {
+    width: 1%;
+    white-space: nowrap;
+}
+
 /* Style switcher button - fix size to prevent growing */
 #style-switcher {
     width: 2rem !important;

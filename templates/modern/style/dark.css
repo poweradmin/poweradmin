@@ -819,3 +819,23 @@ input[type=number]::-webkit-outer-spin-button {
     border-color: #087990 !important;
     color: #b6effb !important;
 }
+
+/* Zone log event column - prevent overflow from long entries */
+.log-event-cell {
+    max-width: 500px;
+    word-break: break-word;
+    overflow-wrap: break-word;
+    white-space: normal;
+}
+
+/* Log timestamp column - minimal width to fit content */
+.log-timestamp-cell {
+    width: 1%;
+    white-space: nowrap;
+}
+
+/* Log ID column - minimal width to fit content */
+.log-id-cell {
+    width: 1%;
+    white-space: nowrap;
+}
