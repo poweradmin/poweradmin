@@ -200,4 +200,32 @@ class IPAddressValidatorTest extends TestCase
         $this->assertFalse($this->validator->isValidIPv6("192.168.1.1"));
         $this->assertFalse($this->validator->isValidIPv6(""));
     }
+
+    public function testValidateIPv6CanonicalForm()
+    {
+        // Not canonical: leading zeros
+        $result = $this->validator->validateIPv6('2001:0db8::1', true);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals('2001:db8::1', $result->getData());
+
+        // Not canonical: uppercase
+        $result = $this->validator->validateIPv6('2001:DB8::1', true);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals('2001:db8::1', $result->getData());
+
+        // Not canonical: needs compression
+        $result = $this->validator->validateIPv6('2001:db8:0:0:0:0:0:1', true);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals('2001:db8::1', $result->getData());
+
+        // Test case for the bug we fixed (starts with zeros)
+        $result = $this->validator->validateIPv6('0:0:0:0:0:0:0:1', true);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals('::1', $result->getData());
+
+        // Correct canonical form
+        $result = $this->validator->validateIPv6('2001:db8::1', true);
+        $this->assertTrue($result->isValid());
+        $this->assertEquals('2001:db8::1', $result->getData());
+    }
 }
