@@ -84,7 +84,7 @@ class RecordRepository implements RecordRepositoryInterface
     {
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        $stmt = $this->db->prepare("SELECT COUNT(id) FROM $records_table WHERE domain_id = :zone_id AND type IS NOT NULL");
+        $stmt = $this->db->prepare("SELECT COUNT(id) FROM $records_table WHERE domain_id = :zone_id AND type IS NOT NULL AND type != ''");
         $stmt->execute([':zone_id' => $zone_id]);
         return $stmt->fetchColumn() ?: 0;
     }
@@ -117,11 +117,11 @@ class RecordRepository implements RecordRepositoryInterface
     {
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-        $stmt = $this->db->prepare("SELECT * FROM $records_table WHERE id = :id AND type IS NOT NULL");
+        $stmt = $this->db->prepare("SELECT * FROM $records_table WHERE id = :id AND type IS NOT NULL AND type != ''");
         $stmt->execute([':id' => $id]);
         $result = $stmt->fetch();
         if ($result) {
-            if ($result["type"] == "" || $result["content"] == "") {
+            if ($result["content"] == "") {
                 return null;
             }
 
@@ -189,7 +189,7 @@ class RecordRepository implements RecordRepositoryInterface
             )" : "NULL") . " AS comment
             FROM $records_table
             WHERE $records_table.domain_id = :domain_id
-            AND $records_table.type IS NOT NULL
+            AND $records_table.type IS NOT NULL AND $records_table.type != ''
             ORDER BY " . $sql_sortby;
 
         if ($rowamount < Constants::DEFAULT_MAX_ROWS) {
@@ -432,8 +432,8 @@ class RecordRepository implements RecordRepositoryInterface
                       AND $records_table.name = c.name AND $records_table.type = c.type";
         }
 
-        // Where clause
-        $query .= " WHERE $records_table.domain_id = :zone_id" .
+        // Where clause - filter out records with NULL or empty type
+        $query .= " WHERE $records_table.domain_id = :zone_id AND $records_table.type IS NOT NULL AND $records_table.type != ''" .
                  $search_condition . $type_condition . $content_condition;
 
         // Sorting and limits
@@ -504,8 +504,8 @@ class RecordRepository implements RecordRepositoryInterface
             $params[':content_filter'] = $content_filter;
         }
 
-        // Create the query
-        $query = "SELECT COUNT(*) FROM $records_table WHERE domain_id = :zone_id";
+        // Create the query - filter out records with NULL or empty type
+        $query = "SELECT COUNT(*) FROM $records_table WHERE domain_id = :zone_id AND type IS NOT NULL AND type != ''";
 
         // Add filter conditions
         $query .= $search_condition . $type_condition . $content_condition;
