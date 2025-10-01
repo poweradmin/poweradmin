@@ -95,8 +95,8 @@ class UserPreferencesController extends BaseController
             $this->messageService->addMessage('user_preferences', 'success', _('Preferences saved successfully.'));
 
             // Redirect to prevent form resubmission and apply changes
-            header('Location: ' . $_SERVER['REQUEST_URI']);
-            exit;
+            $this->redirect('/user/preferences');
+            return;
         } catch (InvalidArgumentException $e) {
             $this->messageService->addMessage('user_preferences', 'error', $e->getMessage());
         } catch (Exception $e) {
