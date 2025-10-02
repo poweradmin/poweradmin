@@ -115,27 +115,27 @@ class BasicAuthenticationMiddleware
     }
 
     /**
-     * Process the request and attempt HTTP Basic Authentication
+     * Get authenticated user ID from Basic Auth credentials (stateless)
      *
      * @param Request $request The HTTP request
-     * @return bool True if authentication succeeded, false otherwise
+     * @return int User ID if authenticated, 0 otherwise
      */
-    public function process(Request $request): bool
+    public function getAuthenticatedUserId(Request $request): int
     {
         // Check if basic auth is enabled
         if (!$this->config->get('api', 'basic_auth_enabled', true)) {
-            return false;
+            return 0;
         }
 
         // Extract credentials from the request
         $credentials = $this->extractCredentials($request);
         if (empty($credentials)) {
-            return false;
+            return 0;
         }
 
         // Try to authenticate with the credentials
         list($username, $password) = $credentials;
-        return $this->authenticate($username, $password);
+        return $this->authenticateAndGetUserId($username, $password);
     }
 
     /**
@@ -193,13 +193,13 @@ class BasicAuthenticationMiddleware
      *
      * @param string $username The username
      * @param string $password The password
-     * @return bool True if authentication succeeded, false otherwise
+     * @return int User ID if authentication succeeded, 0 otherwise
      */
-    private function authenticate(string $username, string $password): bool
+    private function authenticateAndGetUserId(string $username, string $password): int
     {
         // Check if user exists
         if (!UserEntity::exists($this->db, $username)) {
-            return false;
+            return 0;
         }
 
         // Get user ID and auth method
@@ -208,7 +208,7 @@ class BasicAuthenticationMiddleware
         $user = $query->fetch(PDO::FETCH_ASSOC);
 
         if (!$user) {
-            return false;
+            return 0;
         }
 
         // Create User model
@@ -216,20 +216,23 @@ class BasicAuthenticationMiddleware
 
         // Try LDAP authentication first if user is configured for LDAP
         if ($userModel->isLdapUser() && $this->ldapAuthenticator !== null) {
-            // Create specialized authentication method for API authentication
             if ($this->ldapAuthenticatorApiAuth($userModel->getId(), $username, $password)) {
-                $this->setSessionData($userModel->getId(), 'ldap');
-                return true;
+                // Set session for compatibility with legacy code (DomainManager)
+                $_SESSION['userid'] = $userModel->getId();
+                $_SESSION['auth_used'] = 'basic_auth';
+                return $userModel->getId();
             }
         }
 
         // Fall back to SQL authentication
         if ($this->sqlAuthenticatorApiAuth($userModel, $password)) {
-            $this->setSessionData($userModel->getId(), 'sql');
-            return true;
+            // Set session for compatibility with legacy code (DomainManager)
+            $_SESSION['userid'] = $userModel->getId();
+            $_SESSION['auth_used'] = 'basic_auth';
+            return $userModel->getId();
         }
 
-        return false;
+        return 0;
     }
 
     /**
@@ -310,18 +313,5 @@ class BasicAuthenticationMiddleware
         $authenticated = @ldap_bind($ldapConn, $userDn, $password);
 
         return $authenticated;
-    }
-
-    /**
-     * Set session data for the authenticated user
-     *
-     * @param int $userId User ID
-     * @param string $authMethod Authentication method used
-     */
-    private function setSessionData(int $userId, string $authMethod): void
-    {
-        $_SESSION['userid'] = $userId;
-        $_SESSION['auth_used'] = $authMethod;
-        $_SESSION['last_used'] = time();
     }
 }

@@ -103,11 +103,8 @@ abstract class PublicApiController extends AbstractApiController
         // Try Basic auth if API key auth failed and it's enabled
         if (!$authenticated && $config->get('api', 'basic_auth_enabled', true)) {
             $basicAuthMiddleware = new BasicAuthenticationMiddleware($db, $config);
-            $authenticated = $basicAuthMiddleware->process($this->request);
-            // Note: Basic auth still uses session, needs refactoring for full stateless support
-            if ($authenticated) {
-                $this->authenticatedUserId = (int)($_SESSION['userid'] ?? 0);
-            }
+            $this->authenticatedUserId = $basicAuthMiddleware->getAuthenticatedUserId($this->request);
+            $authenticated = ($this->authenticatedUserId > 0);
         }
 
         // If all authentication methods failed, return 401 Unauthorized

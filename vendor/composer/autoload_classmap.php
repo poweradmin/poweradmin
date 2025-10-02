@@ -932,6 +932,7 @@ return array(
     'Poweradmin\\Domain\\Repository\\UserRepository' => $baseDir . '/lib/Domain/Repository/UserRepository.php',
     'Poweradmin\\Domain\\Repository\\ZoneRepositoryInterface' => $baseDir . '/lib/Domain/Repository/ZoneRepositoryInterface.php',
     'Poweradmin\\Domain\\Service\\ApiKeyService' => $baseDir . '/lib/Domain/Service/ApiKeyService.php',
+    'Poweradmin\\Domain\\Service\\ApiPermissionService' => $baseDir . '/lib/Domain/Service/ApiPermissionService.php',
     'Poweradmin\\Domain\\Service\\AuthenticationService' => $baseDir . '/lib/Domain/Service/AuthenticationService.php',
     'Poweradmin\\Domain\\Service\\BatchReverseRecordCreator' => $baseDir . '/lib/Domain/Service/BatchReverseRecordCreator.php',
     'Poweradmin\\Domain\\Service\\DatabaseConnection' => $baseDir . '/lib/Domain/Service/DatabaseConnection.php',

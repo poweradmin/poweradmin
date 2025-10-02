@@ -1300,6 +1300,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Domain\\Repository\\UserRepository' => __DIR__ . '/../..' . '/lib/Domain/Repository/UserRepository.php',
         'Poweradmin\\Domain\\Repository\\ZoneRepositoryInterface' => __DIR__ . '/../..' . '/lib/Domain/Repository/ZoneRepositoryInterface.php',
         'Poweradmin\\Domain\\Service\\ApiKeyService' => __DIR__ . '/../..' . '/lib/Domain/Service/ApiKeyService.php',
+        'Poweradmin\\Domain\\Service\\ApiPermissionService' => __DIR__ . '/../..' . '/lib/Domain/Service/ApiPermissionService.php',
         'Poweradmin\\Domain\\Service\\AuthenticationService' => __DIR__ . '/../..' . '/lib/Domain/Service/AuthenticationService.php',
         'Poweradmin\\Domain\\Service\\BatchReverseRecordCreator' => __DIR__ . '/../..' . '/lib/Domain/Service/BatchReverseRecordCreator.php',
         'Poweradmin\\Domain\\Service\\DatabaseConnection' => __DIR__ . '/../..' . '/lib/Domain/Service/DatabaseConnection.php',

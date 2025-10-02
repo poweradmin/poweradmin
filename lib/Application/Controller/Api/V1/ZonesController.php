@@ -392,8 +392,10 @@ class ZonesController extends PublicApiController
 
             if ($owner !== $userId) {
                 // User wants to create zone for a different owner - check if they have permission
-                if (!$this->permissionService->userHasPermission($userId, 'user_is_ueberuser') &&
-                    !$this->permissionService->userHasPermission($userId, 'zone_content_edit_others')) {
+                if (
+                    !$this->permissionService->userHasPermission($userId, 'user_is_ueberuser') &&
+                    !$this->permissionService->userHasPermission($userId, 'zone_content_edit_others')
+                ) {
                     return $this->returnApiError('You do not have permission to create zones for other users', 403);
                 }
             }
