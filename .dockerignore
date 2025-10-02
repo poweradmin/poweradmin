@@ -61,10 +61,13 @@ phpcs.xml
 phpdoc.dist.xml
 phpmd.xml
 phpstan.neon
+phpunit.xml.dist
 psalm-baseline.xml
 psalm.xml
 .php-cs-fixer.cache
 .php-cs-fixer.php
+.phan
 nginx.conf.example
 .htaccess
 .hadolint.yaml
+transifex.yml

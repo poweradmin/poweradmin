@@ -48,12 +48,17 @@ package-lock.json
 /*.log
 /npm-debug.log*
 
+# Temporary files
+*.diff
+*.patch
+
 # Cypress
 /cypress/videos
 /cypress/screenshots
 
 # PHP tools
 /.php-cs-fixer.cache
+/.phan
 
 # Node.js version manager
 /.nvmrc

@@ -12,7 +12,7 @@
             <property name="absoluteLineLimit" value="0"/>
         </properties>
     </rule>
-    
+
     <!-- Exclude Phinx migration files from namespace requirements -->
     <rule ref="PSR1.Classes.ClassDeclaration.MissingNamespace">
         <exclude-pattern>*/db/migrations/*</exclude-pattern>

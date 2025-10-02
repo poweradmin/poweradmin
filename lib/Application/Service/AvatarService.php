@@ -34,7 +34,7 @@ class AvatarService
         $this->configManager = $configManager;
     }
 
-    public function getAvatarUrl(?string $email, ?string $oauthAvatarUrl = null, int $size = null): ?string
+    public function getAvatarUrl(?string $email, ?string $oauthAvatarUrl = null, ?int $size = null): ?string
     {
         $oauthEnabled = $this->configManager->get('interface', 'avatar_oauth_enabled', false);
         $gravatarEnabled = $this->configManager->get('interface', 'avatar_gravatar_enabled', false);

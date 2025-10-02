@@ -71,7 +71,8 @@
     "phpstan/phpstan": "^2.1",
     "friendsofphp/php-cs-fixer": "^v3.84.0",
     "vimeo/psalm": "^5.26",
-    "phpmd/phpmd": "^2.15"
+    "phpmd/phpmd": "^2.15",
+    "phan/phan": "^5.5"
   },
   "scripts": {
     "docs": "tools/phpDocumentor",
@@ -96,6 +97,17 @@
         "@analyse:phpstan"
     ],
 
+    "compat:8.1": "phan --target-php-version=8.1 --allow-polyfill-parser --no-progress-bar",
+    "compat:8.2": "phan --target-php-version=8.2 --allow-polyfill-parser --no-progress-bar",
+    "compat:8.3": "phan --target-php-version=8.3 --allow-polyfill-parser --no-progress-bar",
+    "compat:8.4": "phan --target-php-version=8.4 --allow-polyfill-parser --no-progress-bar",
+    "compat:all": [
+        "@compat:8.1",
+        "@compat:8.2",
+        "@compat:8.3",
+        "@compat:8.4"
+    ],
+
     "post-create-project-cmd": [
       "rm -rf install/",
       "rm -rf tests/"
@@ -110,19 +122,25 @@
     "exclude": [
       ".devcontainer",
       ".github",
+      ".phan",
       "cypress/",
       "install/",
       "tests",
       "tools/",
       ".dockerignore",
       ".gitignore",
+      ".hadolint.yaml",
+      ".php-cs-fixer.cache",
       ".php-cs-fixer.php",
       "cypress.config.js",
       "DONORS.md",
       "package.json",
       "phpcs.xml",
       "phpdoc.dist.xml",
+      "phpmd.xml",
+      "phpstan.neon",
       "phpunit.xml.dist",
+      "psalm-baseline.xml",
       "psalm.xml",
       "transifex.yml"
     ]
