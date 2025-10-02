@@ -44,6 +44,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 abstract class PublicApiController extends AbstractApiController
 {
     protected array $pathParameters;
+    protected int $authenticatedUserId = 0;
 
     /**
      * PublicApiController constructor
@@ -94,10 +95,19 @@ abstract class PublicApiController extends AbstractApiController
         $apiKeyMiddleware = new ApiKeyAuthenticationMiddleware($db, $config);
         $authenticated = $apiKeyMiddleware->process($this->request);
 
+        // Get authenticated user ID in a stateless way
+        if ($authenticated) {
+            $this->authenticatedUserId = $apiKeyMiddleware->getAuthenticatedUserId($this->request);
+        }
+
         // Try Basic auth if API key auth failed and it's enabled
         if (!$authenticated && $config->get('api', 'basic_auth_enabled', true)) {
             $basicAuthMiddleware = new BasicAuthenticationMiddleware($db, $config);
             $authenticated = $basicAuthMiddleware->process($this->request);
+            // Note: Basic auth still uses session, needs refactoring for full stateless support
+            if ($authenticated) {
+                $this->authenticatedUserId = (int)($_SESSION['userid'] ?? 0);
+            }
         }
 
         // If all authentication methods failed, return 401 Unauthorized
@@ -194,5 +204,15 @@ abstract class PublicApiController extends AbstractApiController
     protected function returnApiError(string $message, int $status = 400, $data = null, array $headers = []): JsonResponse
     {
         return $this->returnApiResponse($data, false, $message, $status, $headers);
+    }
+
+    /**
+     * Get the authenticated user ID (stateless)
+     *
+     * @return int The authenticated user ID or 0 if not authenticated
+     */
+    protected function getAuthenticatedUserId(): int
+    {
+        return $this->authenticatedUserId;
     }
 }

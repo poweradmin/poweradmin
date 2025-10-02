@@ -137,7 +137,7 @@
     </div>
     {% endif %}
 
-    {% if permissions['zone_master_add'] %}
+    {% if permissions['zone_templ_add'] or permissions['zone_templ_edit'] %}
     <!-- Zone Templates -->
     <div class="col-xl-3 col-md-6 mb-4">
         <div class="card h-100 shadow-sm">

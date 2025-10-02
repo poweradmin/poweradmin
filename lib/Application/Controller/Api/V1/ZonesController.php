@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api\V1;
 
 use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
@@ -50,6 +51,7 @@ class ZonesController extends PublicApiController
     private RecordRepository $recordRepository;
     private RecordManagerInterface $recordManager;
     private ZoneManagementService $zoneManagementService;
+    private ApiPermissionService $permissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -57,6 +59,7 @@ class ZonesController extends PublicApiController
 
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
+        $this->permissionService = new ApiPermissionService($this->db);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
@@ -230,12 +233,18 @@ class ZonesController extends PublicApiController
     {
         try {
             $zoneId = $this->pathParameters['id'];
+            $userId = $this->getAuthenticatedUserId();
 
             // Get zone details
             $zone = $this->zoneRepository->getZoneById($zoneId);
 
             if (!$zone) {
                 return $this->returnApiError('Zone not found', 404);
+            }
+
+            // Check if user has permission to view this zone
+            if (!$this->permissionService->canViewZone($userId, $zoneId)) {
+                return $this->returnApiError('You do not have permission to view this zone', 403);
             }
 
             $formattedZone = [
@@ -302,7 +311,7 @@ class ZonesController extends PublicApiController
                 ),
                 new OA\Property(
                     property: 'owner_user_id',
-                    description: 'User ID to assign as zone owner (required)',
+                    description: 'User ID to assign as zone owner (defaults to authenticated user). Specifying different user requires zone_content_edit_others permission.',
                     type: 'integer',
                     example: 1
                 )
@@ -358,6 +367,7 @@ class ZonesController extends PublicApiController
     private function createZone(): JsonResponse
     {
         try {
+            $userId = $this->getAuthenticatedUserId();
             $input = json_decode($this->request->getContent(), true);
 
             if (!$input) {
@@ -371,11 +381,22 @@ class ZonesController extends PublicApiController
             $zoneTemplate = $input['template'] ?? 'none';
             $enableDnssec = $input['enable_dnssec'] ?? false;
 
-            // Require explicit owner for API requests (stateless)
-            if (!isset($input['owner_user_id'])) {
-                return $this->returnApiError('owner_user_id is required for zone creation', 400);
+            // Check if user has permission to create zones
+            if (!$this->permissionService->canCreateZone($userId, $type)) {
+                return $this->returnApiError('You do not have permission to create zones of this type', 403);
             }
-            $owner = (int)$input['owner_user_id'];
+
+            // Default owner to authenticated user if not specified
+            // Allow specifying different owner only if user has zone_content_edit_others permission
+            $owner = (int)($input['owner_user_id'] ?? $userId);
+
+            if ($owner !== $userId) {
+                // User wants to create zone for a different owner - check if they have permission
+                if (!$this->permissionService->userHasPermission($userId, 'user_is_ueberuser') &&
+                    !$this->permissionService->userHasPermission($userId, 'zone_content_edit_others')) {
+                    return $this->returnApiError('You do not have permission to create zones for other users', 403);
+                }
+            }
 
             // Use the zone management service to create zone
             $result = $this->zoneManagementService->createZone(
@@ -493,10 +514,17 @@ class ZonesController extends PublicApiController
     private function updateZone(): JsonResponse
     {
         try {
+            $userId = $this->getAuthenticatedUserId();
+
             // Get zone ID from path parameters
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
             if ($zoneId <= 0) {
                 return $this->returnApiError('Valid zone ID is required', 400);
+            }
+
+            // Check if user has permission to edit this zone
+            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+                return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
             $input = json_decode($this->request->getContent(), true);
@@ -593,10 +621,17 @@ class ZonesController extends PublicApiController
     private function deleteZone(): JsonResponse
     {
         try {
+            $userId = $this->getAuthenticatedUserId();
+
             // Get zone ID from path parameters
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
             if ($zoneId <= 0) {
                 return $this->returnApiError('Valid zone ID is required', 400);
+            }
+
+            // Check if user has permission to delete this zone
+            if (!$this->permissionService->canDeleteZone($userId, $zoneId)) {
+                return $this->returnApiError('You do not have permission to delete this zone', 403);
             }
 
             // Use the zone management service to delete zone

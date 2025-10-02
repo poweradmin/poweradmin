@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller\Api\V1;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -40,11 +41,13 @@ use Exception;
 class PermissionTemplatesController extends PublicApiController
 {
     private DbPermissionTemplateRepository $permissionTemplateRepository;
+    private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
         $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+        $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
     /**
@@ -105,6 +108,17 @@ class PermissionTemplatesController extends PublicApiController
     private function listPermissionTemplates(): JsonResponse
     {
         try {
+            $currentUserId = $this->getAuthenticatedUserId();
+
+            // Check if user has permission to view permission templates
+            // Must match web UI requirement: templ_perm_edit permission
+            $canView = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
+                       $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+
+            if (!$canView) {
+                return $this->returnApiError('You do not have permission to view permission templates', 403);
+            }
+
             $templates = $this->permissionTemplateRepository->listPermissionTemplates();
             return $this->returnApiResponse($templates);
         } catch (Exception $e) {
@@ -169,6 +183,17 @@ class PermissionTemplatesController extends PublicApiController
     private function getPermissionTemplate(): JsonResponse
     {
         try {
+            $currentUserId = $this->getAuthenticatedUserId();
+
+            // Check if user has permission to view permission templates
+            // Must match web UI requirement: templ_perm_edit permission
+            $canView = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
+                       $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+
+            if (!$canView) {
+                return $this->returnApiError('You do not have permission to view permission templates', 403);
+            }
+
             $id = $this->pathParameters['id'];
 
             $template = $this->permissionTemplateRepository->getPermissionTemplateDetails($id);
@@ -229,6 +254,17 @@ class PermissionTemplatesController extends PublicApiController
     private function createPermissionTemplate(): JsonResponse
     {
         try {
+            $currentUserId = $this->getAuthenticatedUserId();
+
+            // Check if user has permission to create permission templates
+            // Must match web UI requirement: templ_perm_add permission
+            $canCreate = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
+                         $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_add');
+
+            if (!$canCreate) {
+                return $this->returnApiError('You do not have permission to create permission templates', 403);
+            }
+
             $data = $this->getJsonInput();
 
             if (
@@ -314,6 +350,17 @@ class PermissionTemplatesController extends PublicApiController
     private function updatePermissionTemplate(): JsonResponse
     {
         try {
+            $currentUserId = $this->getAuthenticatedUserId();
+
+            // Check if user has permission to edit permission templates
+            // Must match web UI requirement: templ_perm_edit permission
+            $canEdit = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
+                       $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+
+            if (!$canEdit) {
+                return $this->returnApiError('You do not have permission to edit permission templates', 403);
+            }
+
             if (!isset($this->pathParameters['id'])) {
                 return $this->returnApiError('Permission template ID is required', 400);
             }
@@ -393,6 +440,17 @@ class PermissionTemplatesController extends PublicApiController
     private function deletePermissionTemplate(): JsonResponse
     {
         try {
+            $currentUserId = $this->getAuthenticatedUserId();
+
+            // Check if user has permission to delete permission templates
+            // Must match web UI requirement: user_edit_templ_perm permission
+            $canDelete = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
+                         $this->apiPermissionService->userHasPermission($currentUserId, 'user_edit_templ_perm');
+
+            if (!$canDelete) {
+                return $this->returnApiError('You do not have permission to delete permission templates', 403);
+            }
+
             if (!isset($this->pathParameters['id'])) {
                 return $this->returnApiError('Permission template ID is required', 400);
             }

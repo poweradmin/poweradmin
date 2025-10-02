@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api\V1;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Model\Pagination;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\PermissionService;
 use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
@@ -66,6 +67,7 @@ use Exception;
 class UsersController extends PublicApiController
 {
     private UserManagementService $userManagementService;
+    private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -74,6 +76,7 @@ class UsersController extends PublicApiController
         $userRepository = new DbUserRepository($this->db, $this->config);
         $permissionService = new PermissionService($userRepository);
         $this->userManagementService = new UserManagementService($userRepository, $permissionService);
+        $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
     /**
@@ -170,10 +173,16 @@ class UsersController extends PublicApiController
     private function getUser(): JsonResponse
     {
         try {
-            $userId = (int)$this->pathParameters['id'];
+            $currentUserId = $this->getAuthenticatedUserId();
+            $targetUserId = (int)$this->pathParameters['id'];
+
+            // Check if user has permission to view this user
+            if (!$this->apiPermissionService->canViewUser($currentUserId, $targetUserId)) {
+                return $this->returnApiError('You do not have permission to view this user', 403);
+            }
 
             // Use the domain service to get user details
-            $userData = $this->userManagementService->getUserById($userId);
+            $userData = $this->userManagementService->getUserById($targetUserId);
 
             if (!$userData) {
                 return $this->returnApiError('User not found', 404, null, [
@@ -291,6 +300,13 @@ class UsersController extends PublicApiController
     private function listUsers(): JsonResponse
     {
         try {
+            $currentUserId = $this->getAuthenticatedUserId();
+
+            // Check if user has permission to list users
+            if (!$this->apiPermissionService->canListUsers($currentUserId)) {
+                return $this->returnApiError('You do not have permission to list users', 403);
+            }
+
             // Get pagination parameters
             $page = max(1, (int)$this->request->query->get('page', 1));
             $perPage = min(100, max(1, (int)$this->request->query->get('per_page', 25)));
@@ -450,6 +466,13 @@ class UsersController extends PublicApiController
     private function createUser(): JsonResponse
     {
         try {
+            $currentUserId = $this->getAuthenticatedUserId();
+
+            // Check if user has permission to create users
+            if (!$this->apiPermissionService->canCreateUser($currentUserId)) {
+                return $this->returnApiError('You do not have permission to create users', 403);
+            }
+
             $input = json_decode($this->request->getContent(), true);
 
             if (!$input) {
@@ -624,7 +647,14 @@ class UsersController extends PublicApiController
     private function updateUser(): JsonResponse
     {
         try {
-            $userId = (int)$this->pathParameters['id'];
+            $currentUserId = $this->getAuthenticatedUserId();
+            $targetUserId = (int)$this->pathParameters['id'];
+
+            // Check if user has permission to edit this user
+            if (!$this->apiPermissionService->canEditUser($currentUserId, $targetUserId)) {
+                return $this->returnApiError('You do not have permission to edit this user', 403);
+            }
+
             $input = json_decode($this->request->getContent(), true);
 
             if (!$input) {
@@ -632,7 +662,7 @@ class UsersController extends PublicApiController
             }
 
             // Use the domain service to update user
-            $result = $this->userManagementService->updateUser($userId, $input);
+            $result = $this->userManagementService->updateUser($targetUserId, $input);
 
             if (!$result['success']) {
                 $statusCode = match ($result['message']) {
@@ -735,14 +765,20 @@ class UsersController extends PublicApiController
     private function deleteUser(): JsonResponse
     {
         try {
-            $userId = (int)$this->pathParameters['id'];
+            $currentUserId = $this->getAuthenticatedUserId();
+            $targetUserId = (int)$this->pathParameters['id'];
+
+            // Check if user has permission to delete this user
+            if (!$this->apiPermissionService->canDeleteUser($currentUserId, $targetUserId)) {
+                return $this->returnApiError('You do not have permission to delete this user', 403);
+            }
 
             // Get request body for zone transfer options
             $requestBody = json_decode($this->request->getContent(), true) ?? [];
             $transferToUserId = isset($requestBody['transfer_to_user_id']) ? (int)$requestBody['transfer_to_user_id'] : null;
 
             // Use the domain service to delete the user
-            $result = $this->userManagementService->deleteUser($userId, $transferToUserId);
+            $result = $this->userManagementService->deleteUser($targetUserId, $transferToUserId);
 
             if (!$result['success']) {
                 $statusCode = $result['message'] === 'User not found' ? 404 : 400;
@@ -841,7 +877,14 @@ class UsersController extends PublicApiController
     private function assignPermissionTemplate(): JsonResponse
     {
         try {
-            $userId = (int)$this->pathParameters['id'];
+            $currentUserId = $this->getAuthenticatedUserId();
+            $targetUserId = (int)$this->pathParameters['id'];
+
+            // Check if user has permission to edit permission templates
+            if (!$this->apiPermissionService->canEditPermissionTemplates($currentUserId)) {
+                return $this->returnApiError('You do not have permission to edit permission templates', 403);
+            }
+
             $input = json_decode($this->request->getContent(), true);
 
             if (!$input || !isset($input['perm_templ'])) {
@@ -851,7 +894,7 @@ class UsersController extends PublicApiController
             $permTemplId = (int)$input['perm_templ'];
 
             // Use the domain service to assign permission template
-            $result = $this->userManagementService->assignPermissionTemplate($userId, $permTemplId);
+            $result = $this->userManagementService->assignPermissionTemplate($targetUserId, $permTemplId);
 
             if (!$result['success']) {
                 $statusCode = $result['message'] === 'User not found' ? 404 : 400;
@@ -860,7 +903,7 @@ class UsersController extends PublicApiController
 
             return $this->returnApiResponse(
                 [
-                    'user_id' => $userId,
+                    'user_id' => $targetUserId,
                     'perm_templ' => $permTemplId
                 ],
                 true,

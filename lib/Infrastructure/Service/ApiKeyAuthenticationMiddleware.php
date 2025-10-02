@@ -82,6 +82,22 @@ class ApiKeyAuthenticationMiddleware
     }
 
     /**
+     * Get authenticated user ID from API key (stateless)
+     *
+     * @param Request $request The HTTP request
+     * @return int User ID or 0 if not authenticated
+     */
+    public function getAuthenticatedUserId(Request $request): int
+    {
+        $apiKey = $this->extractApiKey($request);
+        if (empty($apiKey)) {
+            return 0;
+        }
+
+        return $this->apiKeyService->getUserIdFromApiKey($apiKey);
+    }
+
+    /**
      * Handle anonymous request on API routes that require authentication
      *
      * @return JsonResponse

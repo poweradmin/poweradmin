@@ -129,7 +129,7 @@
                     </ul>
                 </li>
                 {% endif %}
-                {% if perm_zone_master_add %}
+                {% if perm_zone_templ_add or perm_zone_templ_edit %}
                 <li class="p-2">
                     <a href="/zones/templates" class="nav-link text-{{ current_page in ['list_zone_templ', 'add_zone_templ', 'edit_zone_templ', 'list_template_zones'] ? 'primary' : 'secondary' }} text-center"><i
                             class="bi bi-files fs-5"></i></a>

@@ -106,7 +106,7 @@
     </div>
     {% endif %}
 
-    {% if permissions['zone_master_add'] %}
+    {% if permissions['zone_templ_add'] or permissions['zone_templ_edit'] %}
     <div class="col mb-1 card-item">
         <div class="card h-100 shadow-sm">
             <div class="card-header text-center bg-transparent border-0 pt-2">

@@ -35,6 +35,7 @@ use Exception;
 use Override;
 use PDO;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
@@ -54,6 +55,7 @@ class ZonesRecordsController extends PublicApiController
     private RecordRepository $recordRepository;
     private RecordManagerInterface $recordManager;
     private TableNameService $tableNameService;
+    private ApiPermissionService $permissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -62,6 +64,7 @@ class ZonesRecordsController extends PublicApiController
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
         $this->tableNameService = new TableNameService($this->getConfig());
+        $this->permissionService = new ApiPermissionService($this->db);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
@@ -149,6 +152,7 @@ class ZonesRecordsController extends PublicApiController
     private function listRecords(): JsonResponse
     {
         try {
+            $userId = $this->getAuthenticatedUserId();
             $zoneId = $this->pathParameters['id'];
             $recordType = $this->request->query->get('type');
 
@@ -156,6 +160,11 @@ class ZonesRecordsController extends PublicApiController
             $zone = $this->zoneRepository->getZoneById($zoneId);
             if (!$zone) {
                 return $this->returnApiError('Zone not found', 404);
+            }
+
+            // Check if user has permission to view this zone
+            if (!$this->permissionService->canViewZone($userId, $zoneId)) {
+                return $this->returnApiError('You do not have permission to view this zone', 403);
             }
 
             // Get records for the zone
@@ -216,6 +225,7 @@ class ZonesRecordsController extends PublicApiController
     private function getRecord(): JsonResponse
     {
         try {
+            $userId = $this->getAuthenticatedUserId();
             $zoneId = $this->pathParameters['id'];
             $recordId = $this->pathParameters['record_id'];
 
@@ -223,6 +233,11 @@ class ZonesRecordsController extends PublicApiController
             $zone = $this->zoneRepository->getZoneById($zoneId);
             if (!$zone) {
                 return $this->returnApiError('Zone not found', 404);
+            }
+
+            // Check if user has permission to view this zone
+            if (!$this->permissionService->canViewZone($userId, $zoneId)) {
+                return $this->returnApiError('You do not have permission to view this zone', 403);
             }
 
             // Get specific record
@@ -323,6 +338,7 @@ class ZonesRecordsController extends PublicApiController
     private function createRecord(): JsonResponse
     {
         try {
+            $userId = $this->getAuthenticatedUserId();
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
             if ($zoneId <= 0) {
                 return $this->returnApiError('Valid zone ID is required', 400);
@@ -332,6 +348,11 @@ class ZonesRecordsController extends PublicApiController
             $zone = $this->zoneRepository->getZoneById($zoneId);
             if (!$zone) {
                 return $this->returnApiError('Zone not found', 404);
+            }
+
+            // Check if user has permission to edit this zone
+            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+                return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
             $input = json_decode($this->request->getContent(), true);
@@ -359,7 +380,7 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('TTL must be greater than 0', 400);
             }
 
-            // Validate the record using the validation service (bypass permission checks for API)
+            // Validate the record using the validation service
             $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
             $domainRepository = new DomainRepository($this->db, $this->getConfig());
 
@@ -391,7 +412,7 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError($errorMessage, 400);
             }
 
-            // If validation passes, insert directly (API bypasses permission checks)
+            // If validation passes, insert the record
             $success = $this->insertRecordDirect($zoneId, $normalizedName, $type, $content, $ttl, $priority);
 
             if (!$success) {
@@ -487,6 +508,7 @@ class ZonesRecordsController extends PublicApiController
     private function updateRecord(): JsonResponse
     {
         try {
+            $userId = $this->getAuthenticatedUserId();
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
             $recordId = (int)($this->pathParameters['record_id'] ?? 0);
 
@@ -498,6 +520,11 @@ class ZonesRecordsController extends PublicApiController
             $zone = $this->zoneRepository->getZoneById($zoneId);
             if (!$zone) {
                 return $this->returnApiError('Zone not found', 404);
+            }
+
+            // Check if user has permission to edit this zone
+            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+                return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
             // Get existing record
@@ -592,6 +619,7 @@ class ZonesRecordsController extends PublicApiController
     private function deleteRecord(): JsonResponse
     {
         try {
+            $userId = $this->getAuthenticatedUserId();
             $zoneId = (int)($this->pathParameters['id'] ?? 0);
             $recordId = (int)($this->pathParameters['record_id'] ?? 0);
 
@@ -603,6 +631,11 @@ class ZonesRecordsController extends PublicApiController
             $zone = $this->zoneRepository->getZoneById($zoneId);
             if (!$zone) {
                 return $this->returnApiError('Zone not found', 404);
+            }
+
+            // Check if user has permission to edit this zone
+            if (!$this->permissionService->canEditZone($userId, $zoneId)) {
+                return $this->returnApiError('You do not have permission to edit this zone', 403);
             }
 
             // Verify record exists in this zone

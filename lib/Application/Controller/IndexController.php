@@ -74,6 +74,8 @@ class IndexController extends BaseController
             'supermaster_add',
             'user_is_ueberuser',
             'templ_perm_edit',
+            'zone_templ_add',
+            'zone_templ_edit',
             'user_view_others',
             'user_edit_own',
             'user_edit_others',

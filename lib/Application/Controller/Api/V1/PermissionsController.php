@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller\Api\V1;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
@@ -40,11 +41,13 @@ use Exception;
 class PermissionsController extends PublicApiController
 {
     private DbPermissionTemplateRepository $permissionTemplateRepository;
+    private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
         $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+        $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
     /**
@@ -102,6 +105,17 @@ class PermissionsController extends PublicApiController
     private function listPermissions(): JsonResponse
     {
         try {
+            $currentUserId = $this->getAuthenticatedUserId();
+
+            // Check if user has permission to view permissions
+            // Must match web UI requirement: templ_perm_edit permission
+            $canViewPermissions = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
+                                  $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+
+            if (!$canViewPermissions) {
+                return $this->returnApiError('You do not have permission to view permissions', 403);
+            }
+
             $permissions = $this->permissionTemplateRepository->getPermissionsByTemplateId(0);
             return $this->returnApiResponse($permissions);
         } catch (Exception $e) {
@@ -115,6 +129,17 @@ class PermissionsController extends PublicApiController
     private function getPermission(): JsonResponse
     {
         try {
+            $currentUserId = $this->getAuthenticatedUserId();
+
+            // Check if user has permission to view permissions
+            // Must match web UI requirement: templ_perm_edit permission
+            $canViewPermissions = $this->apiPermissionService->userHasPermission($currentUserId, 'user_is_ueberuser') ||
+                                  $this->apiPermissionService->userHasPermission($currentUserId, 'templ_perm_edit');
+
+            if (!$canViewPermissions) {
+                return $this->returnApiError('You do not have permission to view permissions', 403);
+            }
+
             $permissionId = (int)($this->pathParameters['id'] ?? 0);
             if ($permissionId <= 0) {
                 return $this->returnApiError('Valid permission ID is required', 400);
