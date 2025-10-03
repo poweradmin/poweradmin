@@ -11,7 +11,14 @@
 #
 # For HTTPS, replace :80 with your domain name and Caddy will automatically
 # obtain and manage SSL certificates via Let's Encrypt.
+#
+# For subfolder deployment (e.g., /poweradmin):
+# - See the "SUBFOLDER DEPLOYMENT" section at the end of this file
+# - Set 'base_url_prefix' => '/poweradmin' in config/settings.php
 
+# ============================================================================
+# ROOT FOLDER DEPLOYMENT (Default)
+# ============================================================================
 :80 {
     # Set this path to your Poweradmin installation directory
     root * /srv/www
@@ -99,3 +106,109 @@
     # Enable file server for static content
     file_server
 }
+
+# ============================================================================
+# SUBFOLDER DEPLOYMENT (e.g., /poweradmin)
+# ============================================================================
+# Use this configuration when Poweradmin is installed in a subfolder.
+# IMPORTANT: Set 'base_url_prefix' => '/poweradmin' in config/settings.php
+
+# Example: Poweradmin accessible at https://example.com/poweradmin/
+# Uncomment and adjust the configuration below:
+
+# :80 {
+#     root * /srv/www
+#
+#     # Enable access logs
+#     log {
+#         output file /var/log/caddy/poweradmin.log
+#         format console
+#         level INFO
+#     }
+#
+#     # Enable gzip compression
+#     encode gzip
+#
+#     # Handle Poweradmin subfolder
+#     route /poweradmin* {
+#         # Strip /poweradmin prefix for file serving
+#         uri strip_prefix /poweradmin
+#
+#         # Security: Deny access to sensitive directories
+#         @denied path /config* /lib* /tests* /vendor*
+#         @bootstrap path /vendor/twbs/bootstrap* /vendor/twbs/bootstrap-icons*
+#
+#         handle @bootstrap {
+#             file_server {
+#                 root /srv/www/poweradmin
+#             }
+#         }
+#
+#         handle @denied {
+#             respond "Forbidden" 403
+#         }
+#
+#         # Security: Deny access to hidden files and sensitive file types
+#         @hidden path .* *.sql *.md *.log *.yaml *.yml
+#         handle @hidden {
+#             respond "Forbidden" 403
+#         }
+#
+#         # Static assets with caching
+#         @static path *.js *.css *.png *.jpg *.jpeg *.gif *.ico *.svg *.woff *.woff2 *.ttf *.eot
+#         handle @static {
+#             header Cache-Control "public, max-age=31536000"
+#             file_server {
+#                 root /srv/www/poweradmin
+#             }
+#         }
+#
+#         # Handle OPTIONS preflight requests for CORS
+#         @options method OPTIONS
+#         handle @options {
+#             header Access-Control-Allow-Origin "*"
+#             header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+#             header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
+#             header Access-Control-Max-Age "3600"
+#             respond "" 204
+#         }
+#
+#         # API endpoints with CORS
+#         @api path /api*
+#         handle @api {
+#             header Access-Control-Allow-Origin "*"
+#             header Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+#             header Access-Control-Allow-Headers "Content-Type, Authorization, X-API-Key"
+#             header Access-Control-Max-Age "3600"
+#
+#             rewrite * /index.php{uri}
+#             php_fastcgi unix//run/php/php-fpm.sock {
+#                 root /srv/www/poweradmin
+#                 read_timeout 180s
+#                 env HTTP_AUTHORIZATION {http.request.header.Authorization}
+#             }
+#         }
+#
+#         # DDNS update endpoints
+#         rewrite /update /dynamic_update.php
+#         rewrite /nic/update /dynamic_update.php
+#
+#         # Clean URL routing
+#         try_files {path} {path}/ /index.php{uri}
+#
+#         # PHP handling
+#         php_fastcgi unix//run/php/php-fpm.sock {
+#             root /srv/www/poweradmin
+#             read_timeout 180s
+#             env HTTP_AUTHORIZATION {http.request.header.Authorization}
+#         }
+#
+#         # Enable file server
+#         file_server {
+#             root /srv/www/poweradmin
+#         }
+#     }
+#
+#     # Serve other content from root if needed
+#     file_server
+# }

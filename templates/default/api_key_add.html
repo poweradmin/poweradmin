@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/settings/api-keys">{% trans %}API Keys{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/settings/api-keys">{% trans %}API Keys{% endtrans %}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{% trans %}Add API Key{% endtrans %}</li>
     </ol>
 </nav>
@@ -13,7 +13,7 @@
                 <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add API Key{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="/settings/api-keys/add" novalidate>
+                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/settings/api-keys/add" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     
                     <div class="mb-3">
@@ -34,7 +34,7 @@
                             <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="bi bi-key me-1 text-white"></i>{% trans %}Create API Key{% endtrans %}
                             </button>
-                            <a href="/settings/api-keys" class="btn btn-outline-secondary btn-sm">{% trans %}Cancel{% endtrans %}</a>
+                            <a href="{{ base_url_prefix }}/settings/api-keys" class="btn btn-outline-secondary btn-sm">{% trans %}Cancel{% endtrans %}</a>
                         </div>
                         <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
                     </div>

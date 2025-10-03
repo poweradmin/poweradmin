@@ -3,6 +3,12 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
 
+    # Subfolder Deployment Support
+    # For root folder deployment (default): Leave commented or set to /
+    # For subfolder deployment: Uncomment and set to your subfolder path
+    # Example: RewriteBase /poweradmin
+    # RewriteBase /
+
     # Ensure HTTP Authorization header is forwarded
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]

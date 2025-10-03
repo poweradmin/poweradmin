@@ -89,7 +89,8 @@ class DocsController extends BaseController
         // Get the base URL for API docs
         $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
         $host = $this->getValidatedHost();
-        $baseUrl = $protocol . '://' . $host;
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+        $baseUrl = $protocol . '://' . $host . $baseUrlPrefix;
         $apiJsonUrl = $baseUrl . '/api/docs/json';
 
         return '<!DOCTYPE html>

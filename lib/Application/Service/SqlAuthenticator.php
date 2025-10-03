@@ -180,8 +180,10 @@ class SqlAuthenticator extends LoggingService
                     ob_end_clean();
                 }
 
-                // Redirect to MFA verification page
-                header("Location: /mfa/verify", true, 302);
+                // Build redirect URL with base_url_prefix support for subfolder deployments
+                $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
+                $redirectUrl = $baseUrlPrefix . '/mfa/verify';
+                header("Location: $redirectUrl", true, 302);
                 exit;
             }
         } else {

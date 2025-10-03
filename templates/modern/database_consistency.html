@@ -12,7 +12,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans %}Cancel{% endtrans %}</button>
-                <form id="deleteConfirmForm" method="post" action="/tools/database-consistency" style="display: inline;">
+                <form id="deleteConfirmForm" method="post" action="{{ base_url_prefix }}/tools/database-consistency" style="display: inline;">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <input type="hidden" name="check_type" id="deleteCheckType" value="">
                     <input type="hidden" name="action" value="delete">
@@ -25,7 +25,7 @@
 </div>
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Database Consistency Check{% endtrans %}</li>
     </ol>
 </nav>
@@ -69,7 +69,7 @@
                                         <td>{{ zone.name }}</td>
                                         <td>{{ zone.owner|default('(none)') }}</td>
                                         <td>
-                                            <form method="post" action="/tools/database-consistency" style="display: inline;">
+                                            <form method="post" action="{{ base_url_prefix }}/tools/database-consistency" style="display: inline;">
                                                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                                                 <input type="hidden" name="check_type" value="zones_without_owners">
                                                 <input type="hidden" name="action" value="fix">
@@ -78,7 +78,7 @@
                                                     <i class="bi bi-check-circle text-white"></i> {% trans %}Fix{% endtrans %}
                                                 </button>
                                             </form>
-                                            <a href="/zones/{{ zone.id }}/edit" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
+                                            <a href="{{ base_url_prefix }}/zones/{{ zone.id }}/edit" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
                                                 <i class="bi bi-pencil-square text-white"></i> {% trans %}Edit{% endtrans %}
                                             </a>
                                         </td>
@@ -128,7 +128,7 @@
                                                     title="{% trans %}Delete slave zone{% endtrans %}">
                                                 <i class="bi bi-trash text-white"></i> {% trans %}Delete{% endtrans %}
                                             </button>
-                                            <a href="/zones/{{ zone.id }}/edit" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
+                                            <a href="{{ base_url_prefix }}/zones/{{ zone.id }}/edit" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
                                                 <i class="bi bi-pencil-square text-white"></i> {% trans %}Edit{% endtrans %}
                                             </a>
                                         </td>
@@ -219,7 +219,7 @@
                                         <td>{{ zone.zone_name }}</td>
                                         <td><span class="badge bg-danger">{{ zone.soa_count }}</span></td>
                                         <td>
-                                            <form method="post" action="/tools/database-consistency" style="display: inline;">
+                                            <form method="post" action="{{ base_url_prefix }}/tools/database-consistency" style="display: inline;">
                                                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                                                 <input type="hidden" name="check_type" value="duplicate_soa">
                                                 <input type="hidden" name="action" value="fix">
@@ -228,7 +228,7 @@
                                                     <i class="bi bi-check-circle text-white"></i> {% trans %}Fix{% endtrans %}
                                                 </button>
                                             </form>
-                                            <a href="/zones/{{ zone.zone_id }}/edit" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
+                                            <a href="{{ base_url_prefix }}/zones/{{ zone.zone_id }}/edit" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
                                                 <i class="bi bi-pencil-square text-white"></i> {% trans %}Edit{% endtrans %}
                                             </a>
                                         </td>
@@ -268,7 +268,7 @@
                                         <td>{{ zone.name }}</td>
                                         <td><span class="badge bg-secondary">{{ zone.type }}</span></td>
                                         <td>
-                                            <form method="post" action="/tools/database-consistency" style="display: inline;">
+                                            <form method="post" action="{{ base_url_prefix }}/tools/database-consistency" style="display: inline;">
                                                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                                                 <input type="hidden" name="check_type" value="zones_without_soa">
                                                 <input type="hidden" name="action" value="fix">
@@ -277,7 +277,7 @@
                                                     <i class="bi bi-check-circle text-white"></i> {% trans %}Fix{% endtrans %}
                                                 </button>
                                             </form>
-                                            <a href="/zones/{{ zone.id }}/edit" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
+                                            <a href="{{ base_url_prefix }}/zones/{{ zone.id }}/edit" class="btn btn-sm btn-secondary" title="{% trans %}Edit zone{% endtrans %}">
                                                 <i class="bi bi-pencil-square text-white"></i> {% trans %}Edit{% endtrans %}
                                             </a>
                                         </td>

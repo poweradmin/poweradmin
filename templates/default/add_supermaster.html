@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/supermasters">{% trans %}Supermasters{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/supermasters">{% trans %}Supermasters{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Add supermaster{% endtrans %}</li>
     </ol>
 </nav>
@@ -13,7 +13,7 @@
                 <strong><i class="bi bi-server me-2"></i>{% trans %}Add Supermaster{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="/supermasters/add" novalidate>
+                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/supermasters/add" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="mb-3">
@@ -61,7 +61,7 @@
                             <button type="submit" name="submit" class="btn btn-sm btn-primary">
                                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add supermaster{% endtrans %}
                             </button>
-                            <a href="/supermasters" class="btn btn-sm btn-secondary">
+                            <a href="{{ base_url_prefix }}/supermasters" class="btn btn-sm btn-secondary">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                             </a>
                         </div>

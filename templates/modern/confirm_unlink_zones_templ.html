@@ -1,8 +1,8 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/zones/templates/{{ template_id }}/zones">{{ template_name }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/templates/{{ template_id }}/zones">{{ template_name }}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Unlink zones{% endtrans %}</li>
     </ol>
 </nav>
@@ -57,7 +57,7 @@
         </div>
 
         <div class="mt-4">
-            <form method="post" action="/zones/templates/unlink" class="d-inline">
+            <form method="post" action="{{ base_url_prefix }}/zones/templates/unlink" class="d-inline">
                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                 <input type="hidden" name="template_id" value="{{ template_id }}">
                 <input type="hidden" name="confirm" value="1">
@@ -73,7 +73,7 @@
                     {% endif %}
                 </button>
             </form>
-            <a href="/zones/templates/{{ template_id }}/zones" class="btn btn-secondary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/templates/{{ template_id }}/zones" class="btn btn-secondary btn-sm">
                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
             </a>
         </div>

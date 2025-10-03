@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/settings/api-keys">{% trans %}API Keys{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/settings/api-keys">{% trans %}API Keys{% endtrans %}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{% trans %}API Key Created{% endtrans %}</li>
     </ol>
 </nav>
@@ -55,7 +55,7 @@
         </div>
     </div>
     <div class="card-footer py-3">
-        <a href="/settings/api-keys" class="btn btn-primary btn-sm">
+        <a href="{{ base_url_prefix }}/settings/api-keys" class="btn btn-primary btn-sm">
             <i class="bi bi-arrow-left me-1 text-white"></i> {% trans %}Return to API Keys{% endtrans %}
         </a>
     </div>

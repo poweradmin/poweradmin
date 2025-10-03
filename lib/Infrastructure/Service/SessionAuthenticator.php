@@ -253,7 +253,8 @@ class SessionAuthenticator extends LoggingService
             $this->logInfo('User agreement required for user {userid}', ['userid' => $userId]);
 
             // Redirect to agreement page - user will be sent to index after acceptance
-            $this->redirectService->redirectTo('/user-agreement');
+            $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
+            $this->redirectService->redirectTo($baseUrlPrefix . '/user-agreement');
         }
     }
 

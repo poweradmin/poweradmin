@@ -1,14 +1,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item">
         {% if is_reverse_zone %}
-        <a href="/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
+        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
         {% else %}
-        <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
+        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
-        <li class="breadcrumb-item"><a href="/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/templates">{% trans %}Zone templates{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Add template{% endtrans %}</li>
     </ol>
 </nav>
@@ -24,7 +24,7 @@
                 <strong><i class="bi bi-file-earmark-text me-2"></i>{% trans %}Add zone template for{% endtrans %} {{ user_name }}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="/zones/templates/add" novalidate>
+                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/templates/add" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
 
                     <div class="mb-3">
@@ -51,7 +51,7 @@
                             <button type="submit" class="btn btn-primary btn-sm" name="commit">
                                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone template{% endtrans %}
                             </button>
-                            <a href="/zones/templates" class="btn btn-secondary btn-sm">
+                            <a href="{{ base_url_prefix }}/zones/templates" class="btn btn-secondary btn-sm">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                             </a>
                         </div>

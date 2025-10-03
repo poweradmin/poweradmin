@@ -51,7 +51,8 @@ class MfaSetupController extends BaseController
         // Check if MFA is globally enabled
         if (!$this->config->get('security', 'mfa.enabled', false)) {
             $this->addSystemMessage('error', _('MFA is not enabled on this system.'));
-            header("Location: /");
+            $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+            header("Location: $baseUrlPrefix/");
             exit;
         }
 

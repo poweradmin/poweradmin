@@ -65,6 +65,9 @@ return [
      */
     'interface' => [
         'language' => '{{ language }}',
+{% if base_url_prefix is defined and base_url_prefix is not empty %}
+        'base_url_prefix' => '{{ base_url_prefix }}',  // Auto-detected subfolder deployment
+{% endif %}
     ],
 
     /**

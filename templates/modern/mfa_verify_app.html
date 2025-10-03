@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-    <li class="breadcrumb-item"><a href="/mfa/setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/mfa/setup">{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
     <li class="breadcrumb-item" aria-current="page">{% trans %}Set Up Authenticator App{% endtrans %}</li>
   </ol>
 </nav>
@@ -36,7 +36,7 @@
               <h6 class="fs-6">{% trans %}Step 2: Verify Setup{% endtrans %}</h6>
               <p class="small">{% trans %}Enter the 6-digit code from your authenticator app{% endtrans %}</p>
               
-              <form method="post" action="/mfa/setup" class="needs-validation" novalidate>
+              <form method="post" action="{{ base_url_prefix }}/mfa/setup" class="needs-validation" novalidate>
                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                 
                 <div class="mb-3">
@@ -55,7 +55,7 @@
                   <button type="submit" name="verify_app" class="btn btn-sm btn-primary">
                     {% trans %}Verify and Enable MFA{% endtrans %}
                   </button>
-                  <a href="/mfa/setup" class="btn btn-sm btn-outline-secondary">
+                  <a href="{{ base_url_prefix }}/mfa/setup" class="btn btn-sm btn-outline-secondary">
                     {% trans %}Cancel{% endtrans %}
                   </a>
                 </div>

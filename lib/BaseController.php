@@ -101,7 +101,10 @@ abstract class BaseController
                 // Ensure session is written before redirecting
                 session_write_close();
 
-                header("Location: /mfa/verify");
+                // Build redirect URL with base_url_prefix support
+                $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+                $redirectUrl = $baseUrlPrefix . '/mfa/verify';
+                header("Location: $redirectUrl");
                 exit;
             }
         }
@@ -254,6 +257,10 @@ abstract class BaseController
         // Ensure CSRF token exists, generate one if missing
         $this->csrfTokenService->ensureTokenExists();
         $params['csrf_token'] = $this->csrfTokenService->getToken();
+
+        // Add base_url_prefix for subfolder deployment support
+        $params['base_url_prefix'] = $this->config->get('interface', 'base_url_prefix', '');
+
         $this->app->render($template, $params);
         $this->renderFooter();
     }
@@ -278,6 +285,7 @@ abstract class BaseController
 
     /**
      * Redirects to a specified URL with optional arguments.
+     * Automatically prepends base_url_prefix for subfolder deployments.
      *
      * @param string $url The URL to redirect to.
      * @param array $args The arguments to pass as query parameters.
@@ -287,6 +295,12 @@ abstract class BaseController
         // Clean URL implementation - all URLs should start with '/'
         if (!str_starts_with($url, '/')) {
             throw new \InvalidArgumentException("URL must start with '/'. Got: $url");
+        }
+
+        // Prepend base_url_prefix for subfolder deployments
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+        if (!empty($baseUrlPrefix)) {
+            $url = $baseUrlPrefix . $url;
         }
 
         // Add query parameters if provided

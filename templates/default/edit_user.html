@@ -1,15 +1,15 @@
 {% if not (perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike) %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Edit profile{% endtrans %}</li>
     </ol>
 </nav>
 {% else %}
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/users">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/users">{% trans %}Users{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Edit user{% endtrans %}</li>
     </ol>
 </nav>
@@ -113,11 +113,11 @@
                                 <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
                             </button>
                             {% if not (perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike) %}
-                            <a href="/" class="btn btn-outline-secondary btn-sm">
+                            <a href="{{ base_url_prefix }}/" class="btn btn-outline-secondary btn-sm">
                                 <i class="bi bi-arrow-left me-1"></i>{% trans %}Back to Home{% endtrans %}
                             </a>
                             {% else %}
-                            <a href="/users" class="btn btn-outline-secondary btn-sm">
+                            <a href="{{ base_url_prefix }}/users" class="btn btn-outline-secondary btn-sm">
                                 <i class="bi bi-arrow-left me-1"></i>{% trans %}Back to Users{% endtrans %}
                             </a>
                             {% endif %}

@@ -1,7 +1,7 @@
 
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}PowerDNS Server Status{% endtrans %}</li>
     </ol>
 </nav>
@@ -10,7 +10,7 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-server me-2"></i>{% trans %}PowerDNS Server Status{% endtrans %}</strong>
         {% if server_status.running %}
-        <form method="POST" action="/tools/pdns-status?action=refresh">
+        <form method="POST" action="{{ base_url_prefix }}/tools/pdns-status?action=refresh">
             <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
             <button type="submit" class="btn btn-primary btn-sm">
                 <i class="bi bi-arrow-clockwise me-1 text-white"></i>{% trans %}Refresh Status{% endtrans %}
@@ -330,7 +330,7 @@
                                             <button class="btn btn-sm btn-outline-secondary me-2" id="viewToggle">
                                                 <i class="bi bi-grid-3x3 text-secondary"></i> {% trans %}Toggle View{% endtrans %}
                                             </button>
-                                            <form method="POST" action="/tools/pdns-status?action=refresh">
+                                            <form method="POST" action="{{ base_url_prefix }}/tools/pdns-status?action=refresh">
                                                 <input type="hidden" name="csrf_token" value="{{ csrf_token }}">
                                                 <button type="submit" class="btn btn-sm btn-primary">
                                                     <i class="bi bi-arrow-clockwise me-1 text-white"></i>{% trans %}Refresh{% endtrans %}

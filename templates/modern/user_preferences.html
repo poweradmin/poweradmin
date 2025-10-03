@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}User Preferences{% endtrans %}</li>
     </ol>
 </nav>
@@ -97,7 +97,7 @@
                 <button type="submit" class="btn btn-primary btn-sm" form="preferences-form">
                     <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Save Preferences{% endtrans %}
                 </button>
-                <a href="/" class="btn btn-secondary btn-sm ms-2">
+                <a href="{{ base_url_prefix }}/" class="btn btn-secondary btn-sm ms-2">
                     <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                 </a>
             </div>

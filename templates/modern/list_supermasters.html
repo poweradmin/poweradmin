@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Supermasters{% endtrans %}</li>
     </ol>
 </nav>
@@ -31,10 +31,10 @@
                         <td>{{ server['account'] }}</td>
                         {% if perm_sm_edit %}
                         <td class="text-end">
-                            <a class="btn btn-outline-primary btn-sm me-2" href="/supermasters/edit?master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
+                            <a class="btn btn-outline-primary btn-sm me-2" href="{{ base_url_prefix }}/supermasters/edit?master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
                                 <i class="bi bi-pencil-square text-primary me-1"></i><span class="text-primary">{% trans %}Edit{% endtrans %}</span>
                             </a>
-                            <a class="btn btn-outline-danger btn-sm" href="/supermasters/delete?master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
+                            <a class="btn btn-outline-danger btn-sm" href="{{ base_url_prefix }}/supermasters/delete?master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
                                 <i class="bi bi-trash text-danger me-1"></i><span class="text-danger">{% trans %}Delete{% endtrans %}</span>
                             </a>
                         </td>
@@ -53,7 +53,7 @@
 
         {% if perm_sm_add %}
         <div class="mt-4">
-            <a class="btn btn-primary btn-sm" href="/supermasters/add">
+            <a class="btn btn-primary btn-sm" href="{{ base_url_prefix }}/supermasters/add">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add supermaster{% endtrans %}
             </a>
         </div>

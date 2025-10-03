@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/settings/api-keys">{% trans %}API Keys{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/settings/api-keys">{% trans %}API Keys{% endtrans %}</a></li>
         <li class="breadcrumb-item active" aria-current="page">{% trans %}Edit API Key{% endtrans %}</li>
     </ol>
 </nav>
@@ -13,7 +13,7 @@
                 <strong><i class="bi bi-pencil-square me-2 text-primary"></i>{% trans %}Edit API Key{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="/settings/api-keys/{{ api_key.id }}/edit" novalidate>
+                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/settings/api-keys/{{ api_key.id }}/edit" novalidate>
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     
                     <div class="mb-3">
@@ -42,7 +42,7 @@
                             <button type="submit" class="btn btn-primary btn-sm">
                                 <i class="bi bi-save me-1 text-white"></i>{% trans %}Update API Key{% endtrans %}
                             </button>
-                            <a href="/settings/api-keys" class="btn btn-secondary btn-sm">
+                            <a href="{{ base_url_prefix }}/settings/api-keys" class="btn btn-secondary btn-sm">
                                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                             </a>
                         </div>
@@ -94,11 +94,11 @@
             </div>
             <div class="card-body">
                 <div class="d-grid gap-2">
-                    <a href="/settings/api-keys/{{ api_key.id }}/regenerate" class="btn btn-outline-secondary btn-sm text-start">
+                    <a href="{{ base_url_prefix }}/settings/api-keys/{{ api_key.id }}/regenerate" class="btn btn-outline-secondary btn-sm text-start">
                         <i class="bi bi-arrow-repeat me-2 text-secondary"></i>{% trans %}Regenerate API Key{% endtrans %}
                         <div class="small text-muted ms-4">{% trans %}Creates a new key, invalidating the old one{% endtrans %}</div>
                     </a>
-                    <a href="/settings/api-keys/{{ api_key.id }}/delete" class="btn btn-outline-danger btn-sm text-start">
+                    <a href="{{ base_url_prefix }}/settings/api-keys/{{ api_key.id }}/delete" class="btn btn-outline-danger btn-sm text-start">
                         <i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete API Key{% endtrans %}
                         <div class="small text-muted ms-4">{% trans %}Permanently removes this key{% endtrans %}</div>
                     </a>

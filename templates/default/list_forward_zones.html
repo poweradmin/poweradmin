@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item">{% trans %}Zones{% endtrans %}</li>
         <li class="breadcrumb-item active" aria-current="page">{% trans %}Forward Zones{% endtrans %}</li>
     </ol>
@@ -10,18 +10,18 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <div class="d-flex align-items-center">
             <strong><i class="bi bi-diagram-3 me-2"></i>{% trans %}Forward Zones{% endtrans %}</strong>
-            <a href="/zones/reverse" class="btn btn-sm btn-outline-secondary ms-3">
+            <a href="{{ base_url_prefix }}/zones/reverse" class="btn btn-sm btn-outline-secondary ms-3">
                 <i class="bi bi-arrow-right me-1 text-secondary"></i>{% trans %}Reverse Zones{% endtrans %}
             </a>
         </div>
         <div>
             {% if perm_zone_master_add %}
-            <a href="/zones/add/master" class="btn btn-primary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/add/master" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add master zone{% endtrans %}
             </a>
             {% endif %}
             {% if perm_zone_slave_add %}
-            <a href="/zones/add/slave" class="btn btn-secondary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/add/slave" class="btn btn-secondary btn-sm">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add slave zone{% endtrans %}
             </a>
             {% endif %}
@@ -49,7 +49,7 @@
         </div>
         {% endif %}
 
-        <form method="post" action="/zones/delete" id="delete-zones-form">
+        <form method="post" action="{{ base_url_prefix }}/zones/delete" id="delete-zones-form">
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <div class="table-responsive">
                 <table class="table table-striped table-hover table-sm mb-0">
@@ -62,24 +62,24 @@
                             <input type="checkbox" class="form-check-input" id="select_zones" onClick="toggleZoneCheckboxes()"/>
                         </th>
                         <th>
-                            <a href="/zones/forward?zone_sort_by=name&zone_sort_by_direction={{ zone_sort_by == 'name' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="{{ base_url_prefix }}/zones/forward?zone_sort_by=name&zone_sort_by_direction={{ zone_sort_by == 'name' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Name{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'name' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
                         <th>
-                            <a href="/zones/forward?zone_sort_by=type&zone_sort_by_direction={{ zone_sort_by == 'type' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="{{ base_url_prefix }}/zones/forward?zone_sort_by=type&zone_sort_by_direction={{ zone_sort_by == 'type' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Type{% endtrans %}</a>
                             {{ zone_sort_by == 'type' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
                         <th>
-                            <a href="/zones/forward?zone_sort_by=count_records&zone_sort_by_direction={{ zone_sort_by == 'count_records' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="{{ base_url_prefix }}/zones/forward?zone_sort_by=count_records&zone_sort_by_direction={{ zone_sort_by == 'count_records' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Records{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'count_records' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
                         </th>
                         <th>
-                            <a href="/zones/forward?zone_sort_by=owner&zone_sort_by_direction={{ zone_sort_by == 'owner' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="{{ base_url_prefix }}/zones/forward?zone_sort_by=owner&zone_sort_by_direction={{ zone_sort_by == 'owner' and zone_sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Owner{% endtrans %}
                             </a>
                             {{ zone_sort_by == 'owner' ? (zone_sort_direction == 'ASC' ? '<i class="bi bi-arrow-down"></i>' : '<i class="bi bi-arrow-up"></i>') : '' }}
@@ -156,28 +156,28 @@
                         <td class="text-end">
                             <div class="gap-2">
                                 {% if perm_is_godlike and whois_enabled %}
-                                <a class="btn btn-outline-secondary btn-sm" href="/zones/{{ zone['id'] }}/whois" data-testid="whois-zone-{{ zone['id'] }}">
+                                <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/whois" data-testid="whois-zone-{{ zone['id'] }}">
                                     <i class="bi bi-search-heart text-secondary"></i>
                                     <span class="d-none d-md-inline">{% trans %}WHOIS{% endtrans %}</span>
                                 </a>
                                 {% endif %}
                                 {% if perm_is_godlike and rdap_enabled %}
-                                <a class="btn btn-outline-secondary btn-sm" href="/zones/{{ zone['id'] }}/rdap" data-testid="rdap-zone-{{ zone['id'] }}">
+                                <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/rdap" data-testid="rdap-zone-{{ zone['id'] }}">
                                     <i class="bi bi-search text-secondary"></i>
                                     <span class="d-none d-md-inline">{% trans %}RDAP{% endtrans %}</span>
                                 </a>
                                 {% endif %}
                                 {% if perm_zone_master_add %}
-                                <a class="btn btn-outline-secondary btn-sm" href="/zones/batch-ptr?id={{ zone['id'] }}">
+                                <a class="btn btn-outline-secondary btn-sm" href="{{ base_url_prefix }}/zones/batch-ptr?id={{ zone['id'] }}">
                                     <i class="bi bi-arrow-repeat text-secondary"></i>
                                     <span class="d-none d-md-inline">{% trans %}PTR{% endtrans %}</span>
                                 </a>
                                 {% endif %}
-                                <a class="btn btn-outline-primary btn-sm" href="/zones/{{ zone['id'] }}/edit" data-testid="edit-zone-{{ zone['id'] }}">
+                                <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/edit" data-testid="edit-zone-{{ zone['id'] }}">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 {% if perm_edit == "all" or (perm_edit == "own" and user_is_zone_owner) %}
-                                <a class="btn btn-outline-danger btn-sm" href="/zones/{{ zone['id'] }}/delete" data-testid="delete-zone-{{ zone['id'] }}">
+                                <a class="btn btn-outline-danger btn-sm" href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/delete" data-testid="delete-zone-{{ zone['id'] }}">
                                     <i class="bi bi-trash text-danger"></i>
                                 </a>
                                 {% endif %}

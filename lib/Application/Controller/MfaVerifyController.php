@@ -63,12 +63,20 @@ class MfaVerifyController extends BaseController
             if (isset($_GET['logout'])) {
                 session_regenerate_id(true);
                 session_unset();
-                header("Location: /login");
+
+                // Build redirect URL with base_url_prefix support for subfolder deployments
+                $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+                $redirectUrl = $baseUrlPrefix . '/login';
+                header("Location: $redirectUrl");
             } else {
                 // Otherwise just mark as authenticated
                 $this->userContextService->setSessionData('authenticated', true);
                 session_regenerate_id(true);
-                header("Location: /");
+
+                // Build redirect URL with base_url_prefix support for subfolder deployments
+                $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+                $redirectUrl = $baseUrlPrefix . '/';
+                header("Location: $redirectUrl");
             }
             exit;
         }
@@ -178,7 +186,8 @@ class MfaVerifyController extends BaseController
             // Send redirect with proper cache headers
             header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
             header('Pragma: no-cache');
-            header("Location: /", true, 302);
+            $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+            header("Location: " . $baseUrlPrefix . "/", true, 302);
             exit;
         } else {
             // MFA verification failed

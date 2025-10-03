@@ -1,11 +1,11 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item">
         {% if is_reverse_zone %}
-        <a href="/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
+        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
         {% else %}
-        <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
+        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Zone logs{% endtrans %}</li>
@@ -17,7 +17,7 @@
         <strong><i class="bi bi-list-ul me-2"></i>{% trans %}Zone Change Logs{% endtrans %}</strong>
     </div>
     <div class="card-body">
-        <form method="GET" action="/zones/logs">
+        <form method="GET" action="{{ base_url_prefix }}/zones/logs">
             <div class="row mb-4">
                 <div class="col-md-6">
                     <div class="input-group">
@@ -27,7 +27,7 @@
                         <button for="name" type="submit" class="btn btn-primary btn-sm">
                             <i class="bi bi-search me-1 text-white"></i> {% trans %}Search{% endtrans %}
                         </button>
-                        <a href="/zones/logs" class="btn btn-secondary btn-sm" role="button">
+                        <a href="{{ base_url_prefix }}/zones/logs" class="btn btn-secondary btn-sm" role="button">
                             <i class="bi bi-eraser me-1 text-white"></i> {% trans %}Clear{% endtrans %}
                         </a>
                     </div>

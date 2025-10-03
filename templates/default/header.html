@@ -8,6 +8,9 @@
     <link href="{{ base_url_prefix }}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ base_url_prefix }}/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css">
     <script>
+        // Global configuration for subfolder deployment
+        window.BASE_URL_PREFIX = '{{ base_url_prefix }}';
+
         // Determine correct theme before loading stylesheets to prevent FOUC
         const savedTheme = localStorage.getItem('style');
         const serverTheme = '{{ iface_style }}';
@@ -43,7 +46,7 @@
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none"
-               href="/">
+               href="{{ base_url_prefix }}/">
                 {% if custom_header %}
                 {% include ('custom/header.html') %}
                 {% else %}
@@ -56,92 +59,92 @@
                 {% if user_logged_in %}
                 {% if perm_search %}
                 <li class="p-2">
-                    <a href="/search" class="nav-link text-{{ current_page == 'search' ? 'primary' : 'secondary' }}"><i class="bi bi-search fs-5"></i></a>
-                    <a href="/search" class="text-{{ current_page == 'search' ? 'primary' : 'secondary' }} text-decoration-none">{% trans %}Search{% endtrans %}</a>
+                    <a href="{{ base_url_prefix }}/search" class="nav-link text-{{ current_page == 'search' ? 'primary' : 'secondary' }}"><i class="bi bi-search fs-5"></i></a>
+                    <a href="{{ base_url_prefix }}/search" class="text-{{ current_page == 'search' ? 'primary' : 'secondary' }} text-decoration-none">{% trans %}Search{% endtrans %}</a>
                 </li>
                 {% endif %}
                 {% if perm_view_zone_own or perm_view_zone_other or perm_zone_master_add or perm_zone_slave_add %}
                 <li class="p-2">
-                    <a href="/zones/forward" class="nav-link text-{{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] ? 'primary' : 'secondary' }}"><i class="bi bi-diagram-3 fs-5"></i></a>
+                    <a href="{{ base_url_prefix }}/zones/forward" class="nav-link text-{{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] ? 'primary' : 'secondary' }}"><i class="bi bi-diagram-3 fs-5"></i></a>
                     <a class="text-{{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Zones{% endtrans %}</a>
                     <ul class="dropdown-menu">
                         {% if perm_view_zone_own or perm_view_zone_other %}
-                        <li><a class="dropdown-item {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="/zones/forward"><i class="bi bi-arrow-right-circle me-2"></i>{% trans %}Forward zones{% endtrans %}</a></li>
-                        <li><a class="dropdown-item {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="/zones/reverse"><i class="bi bi-arrow-left-circle me-2"></i>{% trans %}Reverse zones{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/forward"><i class="bi bi-arrow-right-circle me-2"></i>{% trans %}Forward zones{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/reverse"><i class="bi bi-arrow-left-circle me-2"></i>{% trans %}Reverse zones{% endtrans %}</a></li>
                         <li><hr class="dropdown-divider"></li>
                         {% endif %}
                         {% if perm_zone_master_add %}
                         <li><a class="dropdown-item {{ current_page == 'add_zone_master' ? 'active' : '' }}"
-                               href="/zones/add/master"><i class="bi bi-plus-circle me-2"></i>{% trans %}Add master zone{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/zones/add/master"><i class="bi bi-plus-circle me-2"></i>{% trans %}Add master zone{% endtrans %}</a></li>
                         {% endif %}
                         {% if perm_zone_slave_add %}
                         <li><a class="dropdown-item {{ current_page == 'add_zone_slave' ? 'active' : '' }}"
-                               href="/zones/add/slave"><i class="bi bi-plus-circle-dotted me-2"></i>{% trans %}Add slave zone{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/zones/add/slave"><i class="bi bi-plus-circle-dotted me-2"></i>{% trans %}Add slave zone{% endtrans %}</a></li>
                         {% endif %}
                         {% if perm_zone_master_add %}
                         <li><a class="dropdown-item {{ current_page == 'bulk_registration' ? 'active' : '' }}"
-                               href="/zones/bulk-registration"><i class="bi bi-collection me-2"></i>{% trans %}Bulk registration{% endtrans %}</a>
+                               href="{{ base_url_prefix }}/zones/bulk-registration"><i class="bi bi-collection me-2"></i>{% trans %}Bulk registration{% endtrans %}</a>
                         </li>
                         {% endif %}
                         {% if iface_add_reverse_record and (perm_view_zone_own or perm_view_zone_other) %}
                         <li><a class="dropdown-item {{ current_page == 'batch_ptr_record' ? 'active' : '' }}"
-                               href="/zones/batch-ptr"><i class="bi bi-arrow-repeat me-2"></i>{% trans %}Batch PTR Records{% endtrans %}</a>
+                               href="{{ base_url_prefix }}/zones/batch-ptr"><i class="bi bi-arrow-repeat me-2"></i>{% trans %}Batch PTR Records{% endtrans %}</a>
                         </li>
                         {% endif %}
                         {% if perm_is_godlike and dblog_use == true %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
-                        <li><a class="dropdown-item {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="/zones/logs"><i class="bi bi-journal-text me-2"></i>{% trans %}Zone logs{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/logs"><i class="bi bi-journal-text me-2"></i>{% trans %}Zone logs{% endtrans %}</a></li>
                         {% endif %}
                     </ul>
                 </li>
                 {% endif %}
                 {% if perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike %}
                 <li class="p-2">
-                    <a href="/users" class="nav-link text-{{ current_page in ['users', 'add_user', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) ? 'primary' : 'secondary' }}"><i class="bi bi-people fs-5"></i></a>
+                    <a href="{{ base_url_prefix }}/users" class="nav-link text-{{ current_page in ['users', 'add_user', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) ? 'primary' : 'secondary' }}"><i class="bi bi-people fs-5"></i></a>
                     <a class="text-{{ current_page in ['users', 'add_user', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Users{% endtrans %}</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item {{ current_page == 'users' ? 'active' : '' }}" href="/users"><i class="bi bi-people-fill me-2"></i>{% trans %}User administration{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users"><i class="bi bi-people-fill me-2"></i>{% trans %}User administration{% endtrans %}</a></li>
                         {% if perm_add_new %}
-                        <li><a class="dropdown-item {{ current_page == 'add_user' ? 'active' : '' }}" href="/users/add"><i class="bi bi-person-plus me-2"></i>{% trans %}Add user{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'add_user' ? 'active' : '' }}" href="{{ base_url_prefix }}/users/add"><i class="bi bi-person-plus me-2"></i>{% trans %}Add user{% endtrans %}</a></li>
                         {% endif %}
                         {% if perm_templ_perm_edit %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li><a class="dropdown-item {{ current_page == 'list_perm_templ' ? 'active' : '' }}"
-                               href="/permissions/templates"><i class="bi bi-shield-fill-check me-2"></i>{% trans %}List permission templates{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/permissions/templates"><i class="bi bi-shield-fill-check me-2"></i>{% trans %}List permission templates{% endtrans %}</a></li>
                         <li><a class="dropdown-item {{ current_page == 'add_perm_templ' ? 'active' : '' }}"
-                               href="/permissions/templates/add"><i class="bi bi-shield-plus me-2"></i>{% trans %}Add permission template{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/permissions/templates/add"><i class="bi bi-shield-plus me-2"></i>{% trans %}Add permission template{% endtrans %}</a></li>
                         {% endif %}
                         {% if perm_is_godlike and dblog_use == true %}
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li><a class="dropdown-item {{ current_page == 'list_log_users' ? 'active' : '' }}"
-                               href="/users/logs"><i class="bi bi-journal-text me-2"></i>{% trans %}User logs{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/users/logs"><i class="bi bi-journal-text me-2"></i>{% trans %}User logs{% endtrans %}</a></li>
                         {% endif %}
                     </ul>
                 </li>
                 {% endif %}
                 {% if perm_zone_templ_add or perm_zone_templ_edit %}
                 <li class="p-2">
-                    <a href="/zones/templates" class="nav-link text-{{ current_page in ['list_zone_templ', 'add_zone_templ', 'edit_zone_templ', 'list_template_zones'] ? 'primary' : 'secondary' }} text-center"><i
+                    <a href="{{ base_url_prefix }}/zones/templates" class="nav-link text-{{ current_page in ['list_zone_templ', 'add_zone_templ', 'edit_zone_templ', 'list_template_zones'] ? 'primary' : 'secondary' }} text-center"><i
                             class="bi bi-files fs-5"></i></a>
                     <a class="text-{{ current_page in ['list_zone_templ', 'add_zone_templ', 'edit_zone_templ', 'list_template_zones'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Templates{% endtrans %}</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item {{ current_page == 'list_zone_templ' ? 'active' : '' }}"
-                               href="/zones/templates"><i class="bi bi-files me-2"></i>{% trans %}List zone templates{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/zones/templates"><i class="bi bi-files me-2"></i>{% trans %}List zone templates{% endtrans %}</a></li>
                         {% if perm_zone_templ_add %}
                         <li><a class="dropdown-item {{ current_page == 'add_zone_templ' ? 'active' : '' }}"
-                               href="/zones/templates/add"><i class="bi bi-file-plus me-2"></i>{% trans %}Add zone template{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/zones/templates/add"><i class="bi bi-file-plus me-2"></i>{% trans %}Add zone template{% endtrans %}</a></li>
                         {% endif %}
                     </ul>
                 </li>
@@ -154,32 +157,32 @@
                         role="button">{% trans %}Tools{% endtrans %}</a>
                     <ul class="dropdown-menu">
                         {% if (not whois_restrict_to_admin or perm_is_godlike) and whois_enabled %}
-                        <li><a class="dropdown-item {{ current_page == 'whois' ? 'active' : '' }}" href="/whois">
+                        <li><a class="dropdown-item {{ current_page == 'whois' ? 'active' : '' }}" href="{{ base_url_prefix }}/whois">
                             <i class="bi bi-search-heart me-2"></i>{% trans %}WHOIS{% endtrans %}
                         </a></li>
                         {% endif %}
                         {% if (not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled %}
-                        <li><a class="dropdown-item {{ current_page == 'rdap' ? 'active' : '' }}" href="/rdap">
+                        <li><a class="dropdown-item {{ current_page == 'rdap' ? 'active' : '' }}" href="{{ base_url_prefix }}/rdap">
                             <i class="bi bi-search-heart-fill me-2"></i>{% trans %}RDAP{% endtrans %}
                         </a></li>
                         {% endif %}
                         {% if perm_is_godlike and api_enabled %}
-                        <li><a class="dropdown-item {{ current_page == 'api_keys' ? 'active' : '' }}" href="/settings/api-keys">
+                        <li><a class="dropdown-item {{ current_page == 'api_keys' ? 'active' : '' }}" href="{{ base_url_prefix }}/settings/api-keys">
                             <i class="bi bi-key-fill me-2"></i>{% trans %}API Keys{% endtrans %}
                         </a></li>
                         {% endif %}
                         {% if perm_is_godlike and enable_consistency_checks %}
-                        <li><a class="dropdown-item {{ current_page == 'database_consistency' ? 'active' : '' }}" href="/tools/database-consistency">
+                        <li><a class="dropdown-item {{ current_page == 'database_consistency' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/database-consistency">
                             <i class="bi bi-database-check me-2"></i>{% trans %}Database Consistency{% endtrans %}
                         </a></li>
                         {% endif %}
                         {% if perm_is_godlike and email_previews_enabled %}
-                        <li><a class="dropdown-item {{ current_page == 'email_previews' ? 'active' : '' }}" href="/tools/email-previews">
+                        <li><a class="dropdown-item {{ current_page == 'email_previews' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/email-previews">
                             <i class="bi bi-envelope-fill me-2"></i>{% trans %}Email Template Previews{% endtrans %}
                         </a></li>
                         {% endif %}
                         {% if api_docs_enabled %}
-                        <li><a class="dropdown-item" href="/api/docs" target="_blank">
+                        <li><a class="dropdown-item" href="{{ base_url_prefix }}/api/docs" target="_blank">
                             <i class="bi bi-book me-2"></i>{% trans %}API Documentation{% endtrans %}
                         </a></li>
                         {% endif %}
@@ -200,20 +203,20 @@
                     <ul class="dropdown-menu">
                         {% if perm_edit_own %}
                         <li><a class="dropdown-item {{ current_page == 'edit_user' and request.id == session_userid ? 'active' : '' }}"
-                               href="/users/{{ session_userid }}/edit"><i class="bi bi-person-gear me-2"></i>{% trans %}Edit profile{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/users/{{ session_userid }}/edit"><i class="bi bi-person-gear me-2"></i>{% trans %}Edit profile{% endtrans %}</a></li>
                         {% endif %}
                         <li><a class="dropdown-item {{ current_page == 'user_preferences' ? 'active' : '' }}"
-                               href="/user/preferences"><i class="bi bi-gear me-2"></i>{% trans %}Preferences{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/user/preferences"><i class="bi bi-gear me-2"></i>{% trans %}Preferences{% endtrans %}</a></li>
                         {% if can_change_password %}
                         <li><a class="dropdown-item {{ current_page == 'change_password' ? 'active' : '' }}"
-                               href="/password/change"><i class="bi bi-key me-2"></i>{% trans %}Change password{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/password/change"><i class="bi bi-key me-2"></i>{% trans %}Change password{% endtrans %}</a></li>
                         {% endif %}
                         {% if mfa_enabled %}
                         <li><a class="dropdown-item {{ current_page == 'mfa_setup' ? 'active' : '' }}"
-                               href="/mfa/setup"><i class="bi bi-shield-check me-2"></i>{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/mfa/setup"><i class="bi bi-shield-check me-2"></i>{% trans %}Multi-Factor Authentication{% endtrans %}</a></li>
                         {% endif %}
                         <li><a class="dropdown-item {{ current_page == 'logout' ? 'active' : '' }}"
-                               href="/logout"><i class="bi bi-box-arrow-right me-2"></i>{% trans %}Logout{% endtrans %}</a></li>
+                               href="{{ base_url_prefix }}/logout"><i class="bi bi-box-arrow-right me-2"></i>{% trans %}Logout{% endtrans %}</a></li>
                     </ul>
                 </li>
                 {% endif %}

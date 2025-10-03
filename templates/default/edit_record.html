@@ -1,14 +1,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item">
         {% if is_reverse_zone %}
-        <a href="/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
+        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
         {% else %}
-        <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
+        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
-        <li class="breadcrumb-item"><a href="/zones/{{ zid }}/edit">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zid }}/edit">
             {% if idn_zone_name %}
             {{ idn_zone_name }}
             {% else %}
@@ -34,7 +34,7 @@
     <div class="card-body">
         <p class="small text-muted mb-3">{% trans %}Modify DNS record properties{% endtrans %}</p>
 
-        <form class="needs-validation" method="post" action="/zones/{{ zid }}/records/{{ record_id }}/edit" novalidate>
+        <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zid }}/records/{{ record_id }}/edit" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
 
             <div class="table-responsive">
@@ -130,7 +130,7 @@
                 <button class="btn btn-secondary btn-sm" type="reset" name="reset">
                     <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
                 </button>
-                <a href="/zones/{{ zid }}/edit" class="btn btn-outline-secondary btn-sm">
+                <a href="{{ base_url_prefix }}/zones/{{ zid }}/edit" class="btn btn-outline-secondary btn-sm">
                     <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
                 </a>
             </div>

@@ -1,14 +1,14 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item">
         {% if is_reverse_zone %}
-        <a href="/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
+        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
         {% else %}
-        <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
+        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
-        <li class="breadcrumb-item"><a href="/zones/{{ zone_id }}/edit">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">
             {% if idn_zone_name %}
             {{ idn_zone_name }}
             {% else %}
@@ -96,11 +96,11 @@
         {% endif %}
 
         <div class="mt-4">
-            <a href="/zones/{{ zone_id }}/records/{{ record_id }}/delete?confirm=1{% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}&delete_ptr=1{% endif %}{% if record_info['type'] == 'PTR' %}&delete_forward=1{% endif %}"
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ record_id }}/delete?confirm=1{% if record_info['type'] == 'A' or record_info['type'] == 'AAAA' %}&delete_ptr=1{% endif %}{% if record_info['type'] == 'PTR' %}&delete_forward=1{% endif %}"
                id="delete_link" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this record{% endtrans %}
             </a>
-            <a href="/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this record{% endtrans %}
             </a>
         </div>

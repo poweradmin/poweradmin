@@ -1,8 +1,8 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/users">{% trans %}Users{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/permissions/templates">{% trans %}Permission templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/users">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/permissions/templates">{% trans %}Permission templates{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Delete{% endtrans %}</li>
     </ol>
 </nav>
@@ -25,10 +25,10 @@
         {% endif %}
 
         <div class="mt-4">
-            <a href="/permissions/templates/{{ perm_templ_id }}/delete?confirm=1" class="btn btn-danger btn-sm">
+            <a href="{{ base_url_prefix }}/permissions/templates/{{ perm_templ_id }}/delete?confirm=1" class="btn btn-danger btn-sm">
                 <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this template{% endtrans %}
             </a>
-            <a href="/permissions/templates" class="btn btn-secondary btn-sm">
+            <a href="{{ base_url_prefix }}/permissions/templates" class="btn btn-secondary btn-sm">
                 <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this template{% endtrans %}
             </a>
         </div>

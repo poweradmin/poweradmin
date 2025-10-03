@@ -116,7 +116,8 @@ class ResetPasswordController extends BaseController
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             $redirectService = new RedirectService();
-            $redirectService->redirectTo('/');
+            $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+            $redirectService->redirectTo($baseUrlPrefix . '/');
             return;
         }
 

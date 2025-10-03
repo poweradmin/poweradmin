@@ -1,18 +1,18 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item">
         {% if is_reverse_zone %}
-        <a href="/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
+        <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
         {% else %}
-        <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
+        <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
         {% endif %}
     </li>
         <li class="breadcrumb-item">
             {% if idn_zone_name %}
-            <a href="/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ idn_zone_name }}</a>
             {% else %}
-            <a href="/zones/{{ zone_id }}/edit">{{ zone_name }}</a>
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a>
             {% endif %}
         </li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Edit comment{% endtrans %}</li>
@@ -25,7 +25,7 @@
 <h5 class="mb-3">{% trans %}Edit comment in zone{% endtrans %} "{{ zone_name }}"</h5>
 {% endif %}
 
-<form method="post" action="/zones/{{ zone_id }}/comment/edit">
+<form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/comment/edit">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <div>
         <label for="floatingTextarea"></label>

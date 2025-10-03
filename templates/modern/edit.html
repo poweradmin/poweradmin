@@ -1,11 +1,11 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item">
             {% if is_reverse_zone %}
-            <a href="/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
+            <a href="{{ base_url_prefix }}/zones/reverse">{% trans %}Reverse Zones{% endtrans %}</a>
             {% else %}
-            <a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
+            <a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a>
             {% endif %}
         </li>
         <li class="breadcrumb-item">
@@ -24,10 +24,10 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
         <div>
-            <a href="/zones/{{ zone_id }}/records/add" class="btn btn-primary btn-sm me-1">
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/add" class="btn btn-primary btn-sm me-1">
                 <i class="bi bi-table me-1 text-white"></i>{% trans %}Multi-record mode{% endtrans %}
             </a>
-            <a href="/zones/{{ zone_id }}/records/bulk" class="btn btn-secondary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-secondary btn-sm">
                 <i class="bi bi-file-earmark-text me-1 text-white"></i>{% trans %}Bulk add{% endtrans %}
             </a>
         </div>
@@ -51,7 +51,7 @@
             {% endif %}
         </div>
         {% endif %}
-        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="/zones/{{ zone_id }}/edit" novalidate>
+        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
@@ -186,22 +186,22 @@
                 <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
             </button>
             {% endif %}
-            <a href="/zones/{{ zone_id }}/edit?export_csv=1" class="btn btn-secondary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?export_csv=1" class="btn btn-secondary btn-sm">
                 <i class="bi bi-file-earmark-spreadsheet me-1 text-white"></i>{% trans %}CSV{% endtrans %}
             </a>
             {% if not is_reverse_zone and perm_edit != "none" %}
-            <a href="/zones/batch-ptr?id={{ zone_id }}" class="btn btn-secondary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/batch-ptr?id={{ zone_id }}" class="btn btn-secondary btn-sm">
                 <i class="bi bi-arrow-repeat me-1 text-white"></i>{% trans %}PTR{% endtrans %}
             </a>
             {% endif %}
             {% if perm_is_godlike and whois_enabled %}
-            <a href="/zones/{{ zone_id }}/whois" class="btn btn-secondary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/whois" class="btn btn-secondary btn-sm">
                 <i class="bi bi-search-heart me-1 text-white"></i>{% trans %}WHOIS{% endtrans %}
             </a>
             {% endif %}
             {% if pdnssec_use %}
             {% if is_secured %}
-            <a href="/zones/{{ zone_id }}/dnssec" class="btn btn-secondary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec" class="btn btn-secondary btn-sm">
                 <i class="bi bi-shield-lock me-1 text-white"></i>{% trans %}DNSSEC{% endtrans %}
             </a>
             {% else %}
@@ -225,7 +225,7 @@
                 <div class="d-flex align-items-center py-2 px-3 bg-light border rounded mb-3">
                     <i class="bi bi-info-circle me-2 text-info"></i>
                     <small>{% trans %}No records match your filter criteria.{% endtrans %}</small>
-                    <a href="/zones/{{ zone_id }}/edit" class="btn btn-outline-secondary btn-sm ms-auto">
+                    <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-outline-secondary btn-sm ms-auto">
                         <i class="bi bi-x-circle me-1 text-secondary"></i>{% trans %}Clear{% endtrans %}
                     </a>
                 </div>
@@ -239,7 +239,7 @@
 
         <!-- Record filtering section (single line) -->
         <div class="mb-3">
-            <form id="record-filter-form" method="get" action="/zones/{{ zone_id }}/edit">
+            <form id="record-filter-form" method="get" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">
                 
                 <div class="d-flex align-items-center py-2 px-3 {% if search_term or record_type_filter or content_filter %}border-primary{% endif %} border rounded">
                     <div class="me-2">
@@ -275,11 +275,11 @@
                             <i class="bi bi-funnel-fill me-1 text-white"></i>{% trans %}Apply{% endtrans %}
                         </button>
                         {% if search_term or record_type_filter or content_filter %}
-                            <a href="/zones/{{ zone_id }}/edit" class="btn btn-outline-primary btn-sm">
+                            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-outline-primary btn-sm">
                                 <i class="bi bi-x-circle me-1 text-primary"></i>{% trans %}Clear{% endtrans %}
                             </a>
                         {% else %}
-                            <a href="/zones/{{ zone_id }}/edit" class="btn btn-outline-secondary btn-sm disabled">
+                            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-outline-secondary btn-sm disabled">
                                 <i class="bi bi-x-circle me-1 text-secondary"></i>{% trans %}Clear{% endtrans %}
                             </a>
                         {% endif %}
@@ -291,7 +291,7 @@
         <!-- Records control section -->
         <div class="mb-3 d-flex justify-content-between align-items-center">
             <div>
-                <form id="delete-records-form" method="post" action="/zones/records/delete" class="d-inline">
+                <form id="delete-records-form" method="post" action="{{ base_url_prefix }}/zones/records/delete" class="d-inline">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <input type="hidden" name="zone_id" value="{{ zone_id }}">
                     <button type="submit" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
@@ -331,7 +331,7 @@
                         </th>
                         {% if iface_edit_show_id %}
                         <th>
-                            <a href="/zones/{{ zone_id }}/edit?record_sort_by=id&sort_direction={{ record_sort_by == 'id' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?record_sort_by=id&sort_direction={{ record_sort_by == 'id' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Id{% endtrans %}
                             </a>
                             {% if record_sort_by == 'id' %}
@@ -340,7 +340,7 @@
                         </th>
                         {% endif %}
                         <th>
-                            <a href="/zones/{{ zone_id }}/edit?record_sort_by=name&sort_direction={{ record_sort_by == 'name' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?record_sort_by=name&sort_direction={{ record_sort_by == 'name' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Name{% endtrans %}
                             </a>
                             {% if record_sort_by == 'name' %}
@@ -348,7 +348,7 @@
                             {% endif %}
                         </th>
                         <th>
-                            <a href="/zones/{{ zone_id }}/edit?record_sort_by=type&sort_direction={{ record_sort_by == 'type' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?record_sort_by=type&sort_direction={{ record_sort_by == 'type' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Type{% endtrans %}
                             </a>
                             {% if record_sort_by == 'type' %}
@@ -356,7 +356,7 @@
                             {% endif %}
                         </th>
                         <th>
-                            <a href="/zones/{{ zone_id }}/edit?record_sort_by=content&sort_direction={{ record_sort_by == 'content' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?record_sort_by=content&sort_direction={{ record_sort_by == 'content' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Content{% endtrans %}
                             </a>
                             {% if record_sort_by == 'content' %}
@@ -364,7 +364,7 @@
                             {% endif %}
                         </th>
                         <th>
-                            <a href="/zones/{{ zone_id }}/edit?record_sort_by=prio&sort_direction={{ record_sort_by == 'prio' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?record_sort_by=prio&sort_direction={{ record_sort_by == 'prio' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Priority{% endtrans %}
                             </a>
                             {% if record_sort_by == 'prio' %}
@@ -372,7 +372,7 @@
                             {% endif %}
                         </th>
                         <th>
-                            <a href="/zones/{{ zone_id }}/edit?record_sort_by=ttl&sort_direction={{ record_sort_by == 'ttl' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?record_sort_by=ttl&sort_direction={{ record_sort_by == 'ttl' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}TTL{% endtrans %}
                             </a>
                             {% if record_sort_by == 'ttl' %}
@@ -383,7 +383,7 @@
                         <th>{% trans %}Comment{% endtrans %}</th>
                         {% endif %}
                         <th>
-                            <a href="/zones/{{ zone_id }}/edit?record_sort_by=disabled&sort_direction={{ record_sort_by == 'disabled' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
+                            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?record_sort_by=disabled&sort_direction={{ record_sort_by == 'disabled' and sort_direction == 'ASC' ? 'DESC' : 'ASC' }}">
                                 {% trans %}Disabled{% endtrans %}
                             </a>
                             {% if record_sort_by == 'disabled' %}
@@ -454,9 +454,9 @@
             {% else %}
             <td class="{{ iface_record_comments ? 'col-sm-1' : 'col-sm-2' }} text-end">
                 <div class="gap-2">
-                    <a class="btn btn-outline-primary btn-sm" href="/zones/{{ zone_id }}/records/{{ r['id'] }}/edit">
+                    <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ r['id'] }}/edit">
                         <i class="bi bi-pencil-square text-primary"></i></a>
-                    <a class="btn btn-outline-danger btn-sm" href="/zones/{{ zone_id }}/records/{{ r['id'] }}/delete">
+                    <a class="btn btn-outline-danger btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ r['id'] }}/delete">
                         <i class="bi bi-trash text-danger"></i></a>
                 </div>
             </td>
@@ -479,7 +479,7 @@
             </td>
             <td colspan="2">
                 {% if perm_edit != "none" %}
-                <a class="btn btn-outline-primary btn-sm" href="/zones/{{ zone_id }}/comment/edit">
+                <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/comment/edit">
                     <i class="bi bi-pencil-square text-primary"></i> {% trans %}Edit comment{% endtrans %}</a>
                 {% endif %}
             </td>
@@ -515,10 +515,10 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
         <div>
-            <a href="/zones/{{ zone_id }}/records/add" class="btn btn-primary btn-sm me-1">
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/add" class="btn btn-primary btn-sm me-1">
                 <i class="bi bi-table me-1 text-white"></i>{% trans %}Multi-record mode{% endtrans %}
             </a>
-            <a href="/zones/{{ zone_id }}/records/bulk" class="btn btn-secondary btn-sm">
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-secondary btn-sm">
                 <i class="bi bi-file-earmark-text me-1 text-white"></i>{% trans %}Bulk add{% endtrans %}
             </a>
         </div>
@@ -542,7 +542,7 @@
             {% endif %}
         </div>
         {% endif %}
-        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="/zones/{{ zone_id }}/edit" novalidate>
+        <form class="{{ form_data and form_data.error ? 'was-validated' : 'needs-validation' }}" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
             <input type="hidden" name="domain" value="{{ zone_id }}">
             <input type="hidden" name="form_token" value="{{ form_token }}">
@@ -714,7 +714,7 @@
                             {{ owner["username"] }}
                             {% endif %}
 
-                            <form method="post" action="/zones/{{ zone_id }}/edit" class="d-inline">
+                            <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                                 <input type="hidden" name="delete_owner" value="{{ owner['id'] }}">
                                 <button type="submit" class="btn btn-outline-danger btn-sm" name="co">
@@ -739,7 +739,7 @@
                 {% endif %}
 
                 {% if meta_edit %}
-                <form method="post" action="/zones/{{ zone_id }}/edit" class="mb-4">
+                <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="mb-4">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <input type="hidden" name="domain" value="{{ zone_id }}">
                     <div class="input-group">
@@ -768,7 +768,7 @@
 
                 <h6 class="card-subtitle mb-2 text-muted">{% trans %}Type{% endtrans %}</h6>
                 {% if meta_edit %}
-                <form action="/zones/{{ zone_id }}/edit" method="post" class="mb-4">
+                <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post" class="mb-4">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <input type="hidden" name="domain" value="{{ zone_id }}">
                     <div class="input-group">
@@ -793,7 +793,7 @@
                 {% if domain_type == "SLAVE" %}
                 <h6 class="card-subtitle mb-2 text-muted">{% trans %}IP address of master NS{% endtrans %}</h6>
                 {% if meta_edit %}
-                <form action="/zones/{{ zone_id }}/edit" method="post" class="mb-4">
+                <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post" class="mb-4">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <input type="hidden" name="domain" value="{{ zone_id }}">
                     <div class="input-group">
@@ -810,7 +810,7 @@
 
                 <h6 class="card-subtitle mb-2 text-muted">{% trans %}Template{% endtrans %}</h6>
                 {% if meta_edit %}
-                <form action="/zones/{{ zone_id }}/edit" method="post">
+                <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
                     <div class="input-group">

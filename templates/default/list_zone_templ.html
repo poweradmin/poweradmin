@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/zones/forward">{% trans %}Forward Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Forward Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Zone templates{% endtrans %}</li>
     </ol>
 </nav>
@@ -102,11 +102,11 @@
                                 <i class="bi bi-list text-secondary"></i>
                             </a>
                             <a class="btn btn-sm btn-outline-primary"
-                               href="/zones/templates/{{ template['id'] }}/edit">
+                               href="{{ base_url_prefix }}/zones/templates/{{ template['id'] }}/edit">
                                 <i class="bi bi-pencil-square text-primary"></i>
                             </a>
                             <a class="btn btn-sm btn-outline-danger"
-                               href="/zones/templates/{{ template['id'] }}/delete">
+                               href="{{ base_url_prefix }}/zones/templates/{{ template['id'] }}/delete">
                                 <i class="bi bi-trash text-danger"></i>
                             </a>
                         </div>
@@ -122,7 +122,7 @@
     </div>
     <div class="card-footer py-3">
         {% if perm_zone_templ_add or perm_is_godlike %}
-        <a class="btn btn-primary btn-sm" href="/zones/templates/add">
+        <a class="btn btn-primary btn-sm" href="{{ base_url_prefix }}/zones/templates/add">
             <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone template{% endtrans %}
         </a>
         {% endif %}

@@ -13,7 +13,7 @@
           </div>
           {% endif %}
           
-          <form method="post" action="/mfa/verify" class="needs-validation" novalidate>
+          <form method="post" action="{{ base_url_prefix }}/mfa/verify" class="needs-validation" novalidate>
             <input type="hidden" name="mfa_token" value="{{ mfa_token }}">
             <input type="hidden" name="username" value="{{ username }}">
             
@@ -39,7 +39,7 @@
             
             <div class="d-grid gap-2">
               <button type="submit" name="verify_mfa" class="btn btn-sm btn-primary">{% trans %}Verify{% endtrans %}</button>
-              <a href="/auth/mfa/verify?logout=1" class="btn btn-sm btn-outline-secondary">{% trans %}Cancel{% endtrans %}</a>
+              <a href="{{ base_url_prefix }}/auth/mfa/verify?logout=1" class="btn btn-sm btn-outline-secondary">{% trans %}Cancel{% endtrans %}</a>
             </div>
           </form>
           
@@ -87,7 +87,7 @@
         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
       </div>
       <div class="modal-body">
-        <form method="post" action="/mfa/verify" class="needs-validation" novalidate>
+        <form method="post" action="{{ base_url_prefix }}/mfa/verify" class="needs-validation" novalidate>
           <input type="hidden" name="mfa_token" value="{{ mfa_token }}">
           <input type="hidden" name="username" value="{{ username }}">
           

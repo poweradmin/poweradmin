@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
-        <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="/users">{% trans %}Users{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/users">{% trans %}Users{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}User logs{% endtrans %}</li>
     </ol>
 </nav>
@@ -11,7 +11,7 @@
         <strong><i class="bi bi-journal-text me-2"></i>{% trans %}User Activity Logs{% endtrans %}</strong>
     </div>
     <div class="card-body">
-        <form method="GET" action="/users/logs">
+        <form method="GET" action="{{ base_url_prefix }}/users/logs">
             <div class="row mb-4">
                 <div class="col-md-6">
                     <div class="input-group">
@@ -21,7 +21,7 @@
                         <button for="name" type="submit" class="btn btn-primary btn-sm">
                             <i class="bi bi-search me-1 text-white"></i> {% trans %}Search{% endtrans %}
                         </button>
-                        <a href="/users/logs" class="btn btn-secondary btn-sm" role="button">
+                        <a href="{{ base_url_prefix }}/users/logs" class="btn btn-secondary btn-sm" role="button">
                             <i class="bi bi-eraser me-1 text-white"></i> {% trans %}Clear{% endtrans %}
                         </a>
                     </div>

@@ -11,7 +11,7 @@
         <h5 class="mb-0">{% trans %}Log in{% endtrans %}</h5>
     </div>
     <div class="card-body p-4">
-        <form class="needs-validation" method="post" action="/login" novalidate>
+        <form class="needs-validation" method="post" action="{{ base_url_prefix }}/login" novalidate>
             <input type="hidden" name="_token" value="{{ login_token }}">
             <input type="hidden" name="query_string" value="{{ query_string }}">
             <div class="mb-3">
@@ -55,7 +55,7 @@
                 {% if oidc_enabled and oidc_providers %}
                     {% for provider in oidc_providers %}
                     <div class="d-grid mb-2">
-                        <a href="/oidc/login?provider={{ provider.id }}"
+                        <a href="{{ base_url_prefix }}/oidc/login?provider={{ provider.id }}"
                            class="btn btn-outline-primary btn-sm"
                            data-testid="oidc-login-{{ provider.id }}">
                             <i class="bi bi-shield-lock me-2"></i>{{ provider.display_name }} (OIDC)
@@ -66,7 +66,7 @@
                 {% if saml_enabled and saml_providers %}
                     {% for provider in saml_providers %}
                     <div class="d-grid mb-2">
-                        <a href="/saml/login?provider={{ provider.id }}"
+                        <a href="{{ base_url_prefix }}/saml/login?provider={{ provider.id }}"
                            class="btn btn-outline-success btn-sm"
                            data-testid="saml-login-{{ provider.id }}">
                             <i class="bi bi-key me-2"></i>{{ provider.display_name }} (SAML)
@@ -78,7 +78,7 @@
             {% endif %}
             {% if password_reset_enabled %}
             <div class="text-center mt-3">
-                <a href="/password/forgot" class="text-decoration-none">{% trans %}Forgot your password?{% endtrans %}</a>
+                <a href="{{ base_url_prefix }}/password/forgot" class="text-decoration-none">{% trans %}Forgot your password?{% endtrans %}</a>
             </div>
             {% endif %}
             {% if recaptcha_enabled %}

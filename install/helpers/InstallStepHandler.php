@@ -341,6 +341,9 @@ class InstallStepHandler
 
         $pdns_db_name = $this->request->get('pdns_db_name');
 
+        // Auto-detect subfolder deployment
+        $base_url_prefix = $this->detectBaseUrlPrefix();
+
         $this->renderTemplate('step7.html.twig', array(
             'current_step' => $this->currentStep,
             'language' => $this->language,
@@ -361,6 +364,7 @@ class InstallStepHandler
             'db_charset' => $db_charset,
             'db_collation' => $db_collation,
             'pdns_db_name' => $pdns_db_name,
+            'base_url_prefix' => $base_url_prefix,
             'errors' => $errors,
         ));
     }
@@ -396,5 +400,28 @@ class InstallStepHandler
 
         // Only allow pdns_db_name for MySQL
         return ($dbType === 'mysql') ? $pdnsDbName : '';
+    }
+
+    /**
+     * Auto-detect if installer is running in a subfolder
+     * Returns the base URL prefix (e.g., '/poweradmin' or empty string for root)
+     *
+     * @return string The detected base URL prefix
+     */
+    private function detectBaseUrlPrefix(): string
+    {
+        // Get the script name (e.g., /poweradmin/install/index.php)
+        $scriptName = $this->request->server->get('SCRIPT_NAME', '');
+
+        // Remove /install/index.php to get the base path
+        $basePath = str_replace('/install/index.php', '', $scriptName);
+
+        // If basePath is empty, we're in root folder
+        if (empty($basePath) || $basePath === '/') {
+            return '';
+        }
+
+        // Return the detected subfolder path (e.g., /poweradmin)
+        return $basePath;
     }
 }

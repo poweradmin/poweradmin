@@ -1,6 +1,6 @@
 <nav aria-label="breadcrumb">
   <ol class="breadcrumb">
-    <li class="breadcrumb-item"><a href="/">{% trans %}Home{% endtrans %}</a></li>
+    <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
     <li class="breadcrumb-item" aria-current="page">{% trans %}Multi-Factor Authentication{% endtrans %}</li>
   </ol>
 </nav>
@@ -27,13 +27,13 @@
               {% endif %}
               
               <div class="d-flex gap-2">
-                <form method="post" action="/mfa/setup">
+                <form method="post" action="{{ base_url_prefix }}/mfa/setup">
                   <input type="hidden" name="_token" value="{{ csrf_token }}">
                   <button type="submit" name="regenerate_codes" class="btn btn-sm btn-secondary me-2">
                     <i class="bi bi-key text-white"></i> {% trans %}Regenerate Recovery Codes{% endtrans %}
                   </button>
                 </form>
-                <form method="post" action="/mfa/setup">
+                <form method="post" action="{{ base_url_prefix }}/mfa/setup">
                   <input type="hidden" name="_token" value="{{ csrf_token }}">
                   <button type="submit" name="disable_mfa" class="btn btn-sm btn-danger">
                     {% trans %}Disable MFA{% endtrans %}
@@ -64,7 +64,7 @@
                 <li>{% trans %}More secure{% endtrans %}</li>
                 <li>{% trans %}Easy to use{% endtrans %}</li>
               </ul>
-              <form method="post" action="/mfa/setup">
+              <form method="post" action="{{ base_url_prefix }}/mfa/setup">
                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                 <button type="submit" name="setup_app" class="btn btn-sm btn-primary">{% trans %}Set up app authentication{% endtrans %}</button>
               </form>
@@ -94,7 +94,7 @@
                   <small>{% trans %}You need to set your email address in your profile before you can use email verification.{% endtrans %}</small>
                 </div>
               {% else %}
-                <form method="post" action="/mfa/setup">
+                <form method="post" action="{{ base_url_prefix }}/mfa/setup">
                   <input type="hidden" name="_token" value="{{ csrf_token }}">
                   <button type="submit" name="setup_email" class="btn btn-sm btn-primary">{% trans %}Set up email verification{% endtrans %}</button>
                 </form>

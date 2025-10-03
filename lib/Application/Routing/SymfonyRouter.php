@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Routing;
 
 use Exception;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Exception\ResourceNotFoundException;
@@ -55,6 +56,7 @@ class SymfonyRouter
 
     /**
      * Initialize the Symfony router with route configuration.
+     * Handles base_url_prefix for subfolder deployments.
      */
     private function initializeRouter(): void
     {
@@ -64,6 +66,13 @@ class SymfonyRouter
 
         $context = new RequestContext();
         $context->fromRequest($this->request);
+
+        // Support for subfolder deployments via base_url_prefix
+        $config = ConfigurationManager::getInstance();
+        $baseUrlPrefix = $config->get('interface', 'base_url_prefix', '');
+        if (!empty($baseUrlPrefix)) {
+            $context->setBaseUrl($baseUrlPrefix);
+        }
 
         $this->router = new Router($loader, 'routes.yaml', [], $context);
     }

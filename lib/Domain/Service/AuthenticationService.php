@@ -23,17 +23,20 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\SessionEntity;
+use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\RedirectService;
 
 class AuthenticationService
 {
     private SessionService $sessionService;
     private RedirectService $redirectService;
+    private ConfigurationManager $config;
 
     public function __construct(SessionService $sessionService, RedirectService $redirectService)
     {
         $this->sessionService = $sessionService;
         $this->redirectService = $redirectService;
+        $this->config = ConfigurationManager::getInstance();
     }
 
     public function logout(SessionEntity $sessionEntity): void
@@ -51,11 +54,13 @@ class AuthenticationService
 
     private function redirectToLogin(): void
     {
-        $this->redirectService->redirectTo('/login');
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+        $this->redirectService->redirectTo($baseUrlPrefix . '/login');
     }
 
     public function redirectToIndex(): void
     {
-        $this->redirectService->redirectTo('/');
+        $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
+        $this->redirectService->redirectTo($baseUrlPrefix . '/');
     }
 }

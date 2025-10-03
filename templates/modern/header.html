@@ -8,6 +8,9 @@
     <link href="{{ base_url_prefix }}/vendor/twbs/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="{{ base_url_prefix }}/vendor/twbs/bootstrap-icons/font/bootstrap-icons.css">
     <script>
+        // Global configuration for subfolder deployment
+        window.BASE_URL_PREFIX = '{{ base_url_prefix }}';
+
         // Determine correct theme before loading stylesheets to prevent FOUC
         const savedTheme = localStorage.getItem('style');
         const serverTheme = '{{ iface_style }}';
@@ -42,7 +45,7 @@
 <header class="mb-4">
     <div class="container">
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-            <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none" href="/">
+            <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none" href="{{ base_url_prefix }}/">
                 {% if custom_header %}
                 {% include ('custom/header.html') %}
                 {% else %}
@@ -63,7 +66,7 @@
     <!-- Left Sidebar -->
     <nav class="sidebar bg-light border-end" id="sidebarNav">
         <div class="sidebar-header p-3 border-bottom d-flex align-items-center justify-content-between">
-            <a href="/" class="d-flex align-items-center text-decoration-none">
+            <a href="{{ base_url_prefix }}/" class="d-flex align-items-center text-decoration-none">
                 {% if custom_header %}
                 {% include ('custom/header.html') %}
                 {% else %}
@@ -82,7 +85,7 @@
                 <ul class="nav nav-pills flex-column mb-auto">
                     <!-- Dashboard -->
                     <li class="nav-item">
-                        <a href="/" class="nav-link {{ current_page == 'index' ? 'active' : '' }}">
+                        <a href="{{ base_url_prefix }}/" class="nav-link {{ current_page == 'index' ? 'active' : '' }}">
                             <i class="bi bi-speedometer2 me-2"></i>Dashboard
                         </a>
                     </li>
@@ -90,7 +93,7 @@
                     {% if perm_search %}
                     <!-- Search -->
                     <li class="nav-item">
-                        <a href="/search" class="nav-link {{ current_page == 'search' ? 'active' : '' }}">
+                        <a href="{{ base_url_prefix }}/search" class="nav-link {{ current_page == 'search' ? 'active' : '' }}">
                             <i class="bi bi-search me-2"></i>{% trans %}Search{% endtrans %}
                         </a>
                     </li>
@@ -105,47 +108,47 @@
                         <ul class="nav nav-pills flex-column ms-3">
                             {% if perm_view_zone_own or perm_view_zone_other %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="/zones/forward">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_forward_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/forward">
                                     <i class="bi bi-arrow-right me-2"></i>{% trans %}Forward zones{% endtrans %}
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="/zones/reverse">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_reverse_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/reverse">
                                     <i class="bi bi-arrow-left me-2"></i>{% trans %}Reverse zones{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_zone_master_add %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_master' ? 'active' : '' }}" href="/zones/add/master">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_master' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/add/master">
                                     <i class="bi bi-plus-circle me-2"></i>{% trans %}Add master zone{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_zone_slave_add %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_slave' ? 'active' : '' }}" href="/zones/add/slave">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_slave' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/add/slave">
                                     <i class="bi bi-plus-circle-dotted me-2"></i>{% trans %}Add slave zone{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_zone_master_add %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'bulk_registration' ? 'active' : '' }}" href="/zones/bulk-registration">
+                                <a class="nav-link nav-link-sm {{ current_page == 'bulk_registration' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/bulk-registration">
                                     <i class="bi bi-collection me-2"></i>{% trans %}Bulk registration{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if iface_add_reverse_record and (perm_view_zone_own or perm_view_zone_other) %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'batch_ptr_record' ? 'active' : '' }}" href="/zones/batch-ptr">
+                                <a class="nav-link nav-link-sm {{ current_page == 'batch_ptr_record' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/batch-ptr">
                                     <i class="bi bi-arrow-repeat me-2"></i>{% trans %}Batch PTR Records{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_is_godlike and dblog_use == true %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="/zones/logs">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_log_zones' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/logs">
                                     <i class="bi bi-list-ul me-2"></i>{% trans %}Zone logs{% endtrans %}
                                 </a>
                             </li>
@@ -162,32 +165,32 @@
                         </div>
                         <ul class="nav nav-pills flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'users' ? 'active' : '' }}" href="/users">
+                                <a class="nav-link nav-link-sm {{ current_page == 'users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users">
                                     <i class="bi bi-person-lines-fill me-2"></i>{% trans %}User administration{% endtrans %}
                                 </a>
                             </li>
                             {% if perm_add_new %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'add_user' ? 'active' : '' }}" href="/users/add">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_user' ? 'active' : '' }}" href="{{ base_url_prefix }}/users/add">
                                     <i class="bi bi-person-plus me-2"></i>{% trans %}Add user{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_templ_perm_edit %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_perm_templ' ? 'active' : '' }}" href="/permissions/templates">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_perm_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/permissions/templates">
                                     <i class="bi bi-person-lock me-2"></i>{% trans %}List permission templates{% endtrans %}
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'add_perm_templ' ? 'active' : '' }}" href="/permissions/templates/add">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_perm_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/permissions/templates/add">
                                     <i class="bi bi-person-plus-fill me-2"></i>{% trans %}Add permission template{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_is_godlike and dblog_use == true %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_log_users' ? 'active' : '' }}" href="/users/logs">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_log_users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users/logs">
                                     <i class="bi bi-journal-text me-2"></i>{% trans %}User logs{% endtrans %}
                                 </a>
                             </li>
@@ -204,13 +207,13 @@
                         </div>
                         <ul class="nav nav-pills flex-column ms-3">
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'list_zone_templ' ? 'active' : '' }}" href="/zones/templates">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_zone_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/templates">
                                     <i class="bi bi-list me-2"></i>{% trans %}List zone templates{% endtrans %}
                                 </a>
                             </li>
                             {% if perm_zone_templ_add %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_templ' ? 'active' : '' }}" href="/zones/templates/add">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_zone_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/zones/templates/add">
                                     <i class="bi bi-plus me-2"></i>{% trans %}Add zone template{% endtrans %}
                                 </a>
                             </li>
@@ -228,42 +231,42 @@
                         <ul class="nav nav-pills flex-column ms-3">
                             {% if (not whois_restrict_to_admin or perm_is_godlike) and whois_enabled %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'whois' ? 'active' : '' }}" href="/whois">
+                                <a class="nav-link nav-link-sm {{ current_page == 'whois' ? 'active' : '' }}" href="{{ base_url_prefix }}/whois">
                                     <i class="bi bi-search-heart me-2"></i>{% trans %}WHOIS{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if (not rdap_restrict_to_admin or perm_is_godlike) and rdap_enabled %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'rdap' ? 'active' : '' }}" href="/rdap">
+                                <a class="nav-link nav-link-sm {{ current_page == 'rdap' ? 'active' : '' }}" href="{{ base_url_prefix }}/rdap">
                                     <i class="bi bi-search-heart-fill me-2"></i>{% trans %}RDAP{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_is_godlike and api_enabled %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'api_keys' ? 'active' : '' }}" href="/settings/api-keys">
+                                <a class="nav-link nav-link-sm {{ current_page == 'api_keys' ? 'active' : '' }}" href="{{ base_url_prefix }}/settings/api-keys">
                                     <i class="bi bi-key-fill me-2"></i>{% trans %}API Keys{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_is_godlike and enable_consistency_checks %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'database_consistency' ? 'active' : '' }}" href="/tools/database-consistency">
+                                <a class="nav-link nav-link-sm {{ current_page == 'database_consistency' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/database-consistency">
                                     <i class="bi bi-database-check me-2"></i>{% trans %}Database Consistency{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if perm_is_godlike and email_previews_enabled %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'email_previews' ? 'active' : '' }}" href="/tools/email-previews">
+                                <a class="nav-link nav-link-sm {{ current_page == 'email_previews' ? 'active' : '' }}" href="{{ base_url_prefix }}/tools/email-previews">
                                     <i class="bi bi-envelope-fill me-2"></i>{% trans %}Email Template Previews{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if api_docs_enabled %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm" href="/api/docs" target="_blank">
+                                <a class="nav-link nav-link-sm" href="{{ base_url_prefix }}/api/docs" target="_blank">
                                     <i class="bi bi-book me-2"></i>{% trans %}API Documentation{% endtrans %}
                                 </a>
                             </li>
@@ -280,32 +283,32 @@
                         <ul class="nav nav-pills flex-column ms-3">
                             {% if perm_edit_own %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'edit_user' and request.id == session_userid ? 'active' : '' }}" href="/users/{{ session_userid }}/edit">
+                                <a class="nav-link nav-link-sm {{ current_page == 'edit_user' and request.id == session_userid ? 'active' : '' }}" href="{{ base_url_prefix }}/users/{{ session_userid }}/edit">
                                     <i class="bi bi-person-gear me-2"></i>{% trans %}Edit profile{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'user_preferences' ? 'active' : '' }}" href="/user/preferences">
+                                <a class="nav-link nav-link-sm {{ current_page == 'user_preferences' ? 'active' : '' }}" href="{{ base_url_prefix }}/user/preferences">
                                     <i class="bi bi-gear me-2"></i>{% trans %}Preferences{% endtrans %}
                                 </a>
                             </li>
                             {% if can_change_password %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'change_password' ? 'active' : '' }}" href="/password/change">
+                                <a class="nav-link nav-link-sm {{ current_page == 'change_password' ? 'active' : '' }}" href="{{ base_url_prefix }}/password/change">
                                     <i class="bi bi-key me-2"></i>{% trans %}Change password{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             {% if mfa_enabled %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'mfa_setup' ? 'active' : '' }}" href="/mfa/setup">
+                                <a class="nav-link nav-link-sm {{ current_page == 'mfa_setup' ? 'active' : '' }}" href="{{ base_url_prefix }}/mfa/setup">
                                     <i class="bi bi-shield-lock me-2"></i>{% trans %}Multi-Factor Authentication{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
                             <li class="nav-item">
-                                <a class="nav-link nav-link-sm {{ current_page == 'logout' ? 'active' : '' }}" href="/logout">
+                                <a class="nav-link nav-link-sm {{ current_page == 'logout' ? 'active' : '' }}" href="{{ base_url_prefix }}/logout">
                                     <i class="bi bi-box-arrow-right me-2"></i>{% trans %}Logout{% endtrans %}
                                 </a>
                             </li>
@@ -357,7 +360,7 @@
                     <button class="btn btn-outline-secondary btn-sm me-2" id="style-switcher">
                         <i class="bi" id="style-icon"></i>
                     </button>
-                    <a href="/logout" class="btn btn-outline-secondary btn-sm">
+                    <a href="{{ base_url_prefix }}/logout" class="btn btn-outline-secondary btn-sm">
                         <i class="bi bi-box-arrow-right me-1"></i>{% trans %}Logout{% endtrans %}
                     </a>
                 </div>
@@ -368,7 +371,7 @@
         <header class="mb-4">
             <div class="container">
                 <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
-                    <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none" href="/">
+                    <a class="py-4 d-flex align-items-center my-2 my-lg-0 me-lg-auto text-decoration-none" href="{{ base_url_prefix }}/">
                         {% if custom_header %}
                         {% include ('custom/header.html') %}
                         {% else %}
