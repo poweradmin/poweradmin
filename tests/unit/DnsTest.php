@@ -173,4 +173,59 @@ class DnsTest extends TestCase
         $this->assertFalse(Dns::is_valid_rr_prio("foo", "A"));
         $this->assertTrue(Dns::is_valid_rr_prio("0", "A"));
     }
+
+    public function testIsValidCAA()
+    {
+        // Valid CAA records - matching PowerDNS test cases
+        $this->assertTrue(Dns::is_valid_caa('0 issue "example.net"', false));
+        $this->assertTrue(Dns::is_valid_caa('0 issue ""', false)); // Empty value is valid (denies issuance)
+        $this->assertTrue(Dns::is_valid_caa('0 issue ";"', false)); // Semicolon to disable
+        $this->assertTrue(Dns::is_valid_caa('0 issue "a"', false)); // Single character
+        $this->assertTrue(Dns::is_valid_caa('0 issue "aa"', false));
+        $this->assertTrue(Dns::is_valid_caa('0 issue "aaaaaaa"', false));
+        $this->assertTrue(Dns::is_valid_caa('0 issue "aaaaaaa.aaa"', false)); // Domain with dots
+
+        // Valid CAA records - standard cases
+        $this->assertTrue(Dns::is_valid_caa('0 issue "letsencrypt.org"', false));
+        $this->assertTrue(Dns::is_valid_caa('0 issuewild "letsencrypt.org"', false));
+        $this->assertTrue(Dns::is_valid_caa('0 iodef "mailto:admin@example.com"', false));
+        $this->assertTrue(Dns::is_valid_caa('128 issue "ca.example.net"', false)); // Critical flag
+
+        // Valid flags range
+        $this->assertTrue(Dns::is_valid_caa('255 issue "example.com"', false));
+
+        // Valid with any alphanumeric tag (RFC 8659 extensibility)
+        $this->assertTrue(Dns::is_valid_caa('0 contactemail "admin@example.com"', false));
+        $this->assertTrue(Dns::is_valid_caa('0 contactphone "+1-555-1234"', false));
+        $this->assertTrue(Dns::is_valid_caa('0 customtag123 "value"', false));
+
+        // Valid escaped quotes inside value
+        $this->assertTrue(Dns::is_valid_caa('0 issue "let\\"s"', false));
+        $this->assertTrue(Dns::is_valid_caa('0 issue "ca\\"example\\"org"', false));
+
+        // Invalid: missing flags (from issue #790)
+        $this->assertFalse(Dns::is_valid_caa('issuewild "letsencrypt.org"', false));
+
+        // Invalid: missing tag
+        $this->assertFalse(Dns::is_valid_caa('0 "letsencrypt.org"', false));
+
+        // Invalid: unquoted value (PowerDNS requires quotes)
+        $this->assertFalse(Dns::is_valid_caa('0 issue letsencrypt.org', false));
+        $this->assertFalse(Dns::is_valid_caa('0 issuewild letsencrypt.org', false));
+
+        // Invalid: flags out of range
+        $this->assertFalse(Dns::is_valid_caa('256 issue "letsencrypt.org"', false));
+        $this->assertFalse(Dns::is_valid_caa('-1 issue "letsencrypt.org"', false));
+
+        // Invalid: bad format
+        $this->assertFalse(Dns::is_valid_caa('invalid', false));
+        $this->assertFalse(Dns::is_valid_caa('', false));
+
+        // Invalid: unescaped quotes in value
+        $this->assertFalse(Dns::is_valid_caa('0 issue "lets"encrypt.org"', false));
+
+        // Invalid: non-alphanumeric tag
+        $this->assertFalse(Dns::is_valid_caa('0 issue-wild "test"', false)); // Hyphen not allowed
+        $this->assertFalse(Dns::is_valid_caa('0 issue.wild "test"', false)); // Dot not allowed
+    }
 }

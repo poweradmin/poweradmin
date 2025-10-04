@@ -104,10 +104,18 @@ class Dns
                 }
                 break;
 
+            case "CAA":
+                if (!self::is_valid_caa($content)) {
+                    return false;
+                }
+                if (!$this->is_valid_hostname_fqdn($name, 1)) {
+                    return false;
+                }
+                break;
+
             case "AFSDB":
             case "ALIAS":
             case "APL":
-            case "CAA":
             case "CDNSKEY":
             case "CDS":
             case "CERT":
@@ -992,5 +1000,89 @@ class Dns
         } else {
             return false;
         }
+    }
+
+    /** Check if CAA content is valid
+     *
+     * Based on PowerDNS CAA implementation (RFC 8659)
+     * Format: <flags> <tag> <value>
+     * - flags: 0-255 (uint8)
+     * - tag: alphanumeric property tag (case-insensitive)
+     * - value: quoted string (can be empty)
+     *
+     * @param string $content CAA content
+     * @param boolean $answer print error if true
+     * [default=true]
+     *
+     * @return boolean true if valid, false otherwise
+     */
+    public static function is_valid_caa(string $content, bool $answer = true): bool
+    {
+        $content = trim($content);
+
+        // Match: <flags> <tag> <value>
+        // Value is optional but if present must be quoted (per PowerDNS implementation)
+        if (!preg_match('/^(\d{1,3})\s+([a-z0-9]+)(?:\s+(.*))?$/i', $content, $matches)) {
+            if ($answer) {
+                $error = new ErrorMessage(_('Invalid CAA record format. Expected: FLAGS TAG VALUE (e.g., 0 issue "letsencrypt.org")'));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+            }
+            return false;
+        }
+
+        $flags = (int)$matches[1];
+        $tag = strtolower($matches[2]);
+        $value = $matches[3] ?? '';
+
+        // Validate flags (0-255, uint8)
+        if ($flags < 0 || $flags > 255) {
+            if ($answer) {
+                $error = new ErrorMessage(_('CAA flags must be between 0 and 255.'));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+            }
+            return false;
+        }
+
+        // Validate tag (alphanumeric only, per RFC 8659)
+        // Any alphanumeric tag is valid for extensibility
+        if (!preg_match('/^[a-z0-9]+$/i', $tag)) {
+            if ($answer) {
+                $error = new ErrorMessage(_('CAA tag must be alphanumeric.'));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+            }
+            return false;
+        }
+
+        // If value is present, it must be quoted (per PowerDNS xfrText)
+        if (!empty($value)) {
+            if (!preg_match('/^".*"$/', $value)) {
+                if ($answer) {
+                    $error = new ErrorMessage(_('CAA value must be enclosed in quotes (e.g., "letsencrypt.org" or "").'));
+                    $errorPresenter = new ErrorPresenter();
+                    $errorPresenter->present($error);
+                }
+                return false;
+            }
+
+            // Check for properly escaped quotes inside
+            // Empty value "" is valid per RFC 8659 (denies issuance)
+            $inner_value = substr($value, 1, -1);
+            if (!empty($inner_value)) {
+                // Look for quotes not preceded by a backslash
+                if (preg_match('/(?<!\\\\)"/', $inner_value)) {
+                    if ($answer) {
+                        $error = new ErrorMessage(_('Quotes inside CAA value must be escaped with backslash.'));
+                        $errorPresenter = new ErrorPresenter();
+                        $errorPresenter->present($error);
+                    }
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }
