@@ -45,6 +45,7 @@ class DnsRecordValidatorFactory
         }
 
         $validatorClasses = [
+            CoreRecordValidator::class,
             DnssecRecordValidator::class,
             SecurityRecordValidator::class,
             NetworkRecordValidator::class,

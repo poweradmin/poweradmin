@@ -25,28 +25,28 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 use Poweradmin\Domain\Service\Dns;
 
 /**
- * Validator for DNSSEC-related DNS record types
+ * Validator for core/fundamental DNS record types
  *
  * Handles validation for:
- * - DNSKEY (DNS Public Key) - RFC 4034
- * - DS (Delegation Signer) - RFC 4034
- * - NSEC (Next Secure) - RFC 4034
- * - NSEC3 (Next Secure v3) - RFC 5155
- * - NSEC3PARAM (NSEC3 Parameters) - RFC 5155
- * - RRSIG (Resource Record Signature) - RFC 4034
- * - TSIG (Transaction Signature) - RFC 2845
- * - DLV (DNSSEC Lookaside Validation) - RFC 4431
- * - KEY (Public Key, deprecated) - RFC 2535
- * - RKEY (Resource Key) - RFC 2930
+ * - A (IPv4 Address) - RFC 1035
+ * - AAAA (IPv6 Address) - RFC 3596
+ * - CNAME (Canonical Name) - RFC 1035
+ * - HINFO (Host Information) - RFC 1035
+ * - MX (Mail Exchange) - RFC 1035
+ * - NS (Name Server) - RFC 1035
+ * - PTR (Pointer) - RFC 1035
+ * - SOA (Start of Authority) - RFC 1035
+ * - TXT (Text) - RFC 1035
+ * - MAILA/MAILB (Obsolete meta-query types) - RFC 883
  */
-class DnssecRecordValidator implements DnsRecordValidatorInterface
+class CoreRecordValidator implements DnsRecordValidatorInterface
 {
     /**
      * @inheritDoc
      */
     public function getSupportedTypes(): array
     {
-        return ['DNSKEY', 'DS', 'NSEC', 'NSEC3', 'NSEC3PARAM', 'RRSIG', 'TSIG', 'DLV', 'KEY', 'RKEY'];
+        return ['A', 'AAAA', 'CNAME', 'HINFO', 'MX', 'NS', 'PTR', 'SOA', 'TXT', 'MAILA', 'MAILB'];
     }
 
     /**
@@ -55,16 +55,11 @@ class DnssecRecordValidator implements DnsRecordValidatorInterface
     public function validate(string $type, string $content, bool $answer = true): bool
     {
         return match ($type) {
-            'DNSKEY' => Dns::is_valid_dnskey($content, $answer),
-            'DS' => Dns::is_valid_ds($content),
-            'NSEC' => Dns::is_valid_nsec($content, $answer),
-            'NSEC3' => Dns::is_valid_nsec3($content, $answer),
-            'NSEC3PARAM' => Dns::is_valid_nsec3param($content, $answer),
-            'RRSIG' => Dns::is_valid_rrsig($content, $answer),
-            'TSIG' => Dns::is_valid_tsig($content, $answer),
-            'DLV' => Dns::is_valid_dlv($content, $answer),
-            'KEY' => Dns::is_valid_key($content, $answer),
-            'RKEY' => Dns::is_valid_rkey($content, $answer),
+            'A' => Dns::is_valid_ipv4($content, $answer),
+            'AAAA' => Dns::is_valid_ipv6($content, $answer),
+            'HINFO' => Dns::is_valid_rr_hinfo_content($content, $answer),
+            'TXT' => Dns::is_valid_printable($content, $answer) && !Dns::has_html_tags($content) && Dns::is_properly_quoted($content),
+            'MAILA', 'MAILB' => Dns::is_valid_meta_query_type($type, $answer),
             default => false,
         };
     }

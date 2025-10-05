@@ -96,6 +96,7 @@ class Dns
         }
 
         // DNS record validation is organized into specialized validator classes in lib/Domain/Service/DnsValidation/
+        // - CoreRecordValidator: Core/fundamental records (A, AAAA, CNAME, HINFO, MX, NS, PTR, SOA, TXT, MAILA, MAILB)
         // - DnssecRecordValidator: DNSSEC-related records (DNSKEY, DS, NSEC, NSEC3, RRSIG, TSIG, etc.)
         // - SecurityRecordValidator: Security/crypto records (TLSA, SSHFP, SMIMEA, OPENPGPKEY, CERT, etc.)
         // - NetworkRecordValidator: Network addressing records (EUI48, EUI64, NID, L32, L64, LP, IPSECKEY, WKS, KX)
@@ -111,213 +112,6 @@ class Dns
                     return false;
                 }
                 if (!$this->is_valid_hostname_fqdn($name, 1)) {
-                    return false;
-                }
-                break;
-
-            case "CAA":
-                if (!self::is_valid_caa($content)) {
-                    return false;
-                }
-                if (!$this->is_valid_hostname_fqdn($name, 1)) {
-                    return false;
-                }
-                break;
-
-            case "AFSDB":
-                if (!self::is_valid_afsdb($content)) {
-                    return false;
-                }
-                // Extract hostname from "subtype hostname" format for validation
-                if (preg_match('/^\d+\s+(.+)$/i', $content, $matches)) {
-                    $hostname = trim($matches[1]);
-                    if (!$this->is_valid_hostname_fqdn($hostname, 1)) {
-                        return false;
-                    }
-                }
-                break;
-
-            case "ALIAS":
-                if (!self::is_valid_alias($content)) {
-                    return false;
-                }
-                if (!$this->is_valid_hostname_fqdn($content, 1)) {
-                    return false;
-                }
-                break;
-
-            case "APL":
-                if (!self::is_valid_apl($content)) {
-                    return false;
-                }
-                break;
-
-            case "CDNSKEY":
-                if (!self::is_valid_cdnskey($content)) {
-                    return false;
-                }
-                break;
-
-            case "CDS":
-                if (!self::is_valid_cds($content)) {
-                    return false;
-                }
-                break;
-
-            case "CERT":
-                if (!self::is_valid_cert($content)) {
-                    return false;
-                }
-                break;
-
-            case "DNAME":
-                if (!self::is_valid_dname($content)) {
-                    return false;
-                }
-                if (!$this->is_valid_hostname_fqdn($content, 1)) {
-                    return false;
-                }
-                break;
-
-            case "L32":
-                if (!self::is_valid_l32($content)) {
-                    return false;
-                }
-                break;
-
-            case "L64":
-                if (!self::is_valid_l64($content)) {
-                    return false;
-                }
-                break;
-
-            case "LUA":
-                if (!self::is_valid_lua($content)) {
-                    return false;
-                }
-                break;
-
-            case "LP":
-                if (!self::is_valid_lp($content)) {
-                    return false;
-                }
-                // Extract FQDN from "preference fqdn" format for validation
-                if (preg_match('/^\d+\s+(.+)$/i', $content, $matches)) {
-                    $fqdn = trim($matches[1]);
-                    if (!$this->is_valid_hostname_fqdn($fqdn, 1)) {
-                        return false;
-                    }
-                }
-                break;
-
-            case "MAILA":
-            case "MAILB":
-                // MAILA and MAILB are obsolete meta-query types (RFC 883)
-                // They are used only in DNS queries, not in zone files
-                // Reject any attempt to create these record types
-                if (!self::is_valid_meta_query_type($type)) {
-                    return false;
-                }
-                break;
-
-            case "OPENPGPKEY":
-                if (!self::is_valid_openpgpkey($content)) {
-                    return false;
-                }
-                break;
-
-            case "SIG":
-                if (!self::is_valid_sig($content)) {
-                    return false;
-                }
-                break;
-
-            case "DHCID":
-                if (!self::is_valid_dhcid($content)) {
-                    return false;
-                }
-                break;
-
-            case "SMIMEA":
-                if (!self::is_valid_smimea($content)) {
-                    return false;
-                }
-                break;
-
-            case "TKEY":
-                if (!self::is_valid_tkey($content)) {
-                    return false;
-                }
-                break;
-
-            case "URI":
-                if (!self::is_valid_uri($content)) {
-                    return false;
-                }
-                break;
-
-            case "TLSA":
-                if (!self::is_valid_tlsa($content)) {
-                    return false;
-                }
-                break;
-
-            case "SSHFP":
-                if (!self::is_valid_sshfp($content)) {
-                    return false;
-                }
-                break;
-
-            case "NAPTR":
-                if (!self::is_valid_naptr($content)) {
-                    return false;
-                }
-                break;
-
-            case "RP":
-                if (!self::is_valid_rp($content)) {
-                    return false;
-                }
-                break;
-
-            case "DNSKEY":
-                if (!self::is_valid_dnskey($content)) {
-                    return false;
-                }
-                break;
-
-            case "NSEC":
-                if (!self::is_valid_nsec($content)) {
-                    return false;
-                }
-                break;
-
-            case "NSEC3":
-                if (!self::is_valid_nsec3($content)) {
-                    return false;
-                }
-                break;
-
-            case "NSEC3PARAM":
-                if (!self::is_valid_nsec3param($content)) {
-                    return false;
-                }
-                break;
-
-            case "RRSIG":
-                if (!self::is_valid_rrsig($content)) {
-                    return false;
-                }
-                break;
-
-            case "TSIG":
-                if (!self::is_valid_tsig($content)) {
-                    return false;
-                }
-                break;
-
-            case "A6":
-                if (!self::is_valid_a6($content)) {
                     return false;
                 }
                 break;
@@ -349,111 +143,8 @@ class Dns
                 }
                 break;
 
-            case 'EUI48':
-                if (!self::is_valid_eui48($content)) {
-                    return false;
-                }
-                break;
-
-            case 'EUI64':
-                if (!self::is_valid_eui64($content)) {
-                    return false;
-                }
-                break;
-
-            case 'NID':
-                if (!self::is_valid_nid($content)) {
-                    return false;
-                }
-                break;
-
-            case 'KX':
-                if (!self::is_valid_kx($content)) {
-                    return false;
-                }
-                break;
-
-            case 'IPSECKEY':
-                if (!self::is_valid_ipseckey($content)) {
-                    return false;
-                }
-                break;
-
-            case 'DLV':
-                if (!self::is_valid_dlv($content)) {
-                    return false;
-                }
-                break;
-
-            case 'KEY':
-                if (!self::is_valid_key($content)) {
-                    return false;
-                }
-                break;
-
-            case 'MINFO':
-                if (!self::is_valid_minfo($content)) {
-                    return false;
-                }
-                break;
-
-            case 'MR':
-                if (!self::is_valid_mr($content)) {
-                    return false;
-                }
-                break;
-
-            case 'WKS':
-                if (!self::is_valid_wks($content)) {
-                    return false;
-                }
-                break;
-
-            case 'HTTPS':
-                if (!self::is_valid_https($content)) {
-                    return false;
-                }
-                break;
-
-            case 'SVCB':
-                if (!self::is_valid_svcb($content)) {
-                    return false;
-                }
-                break;
-
-            case 'CSYNC':
-                if (!self::is_valid_csync($content)) {
-                    return false;
-                }
-                break;
-
-            case 'ZONEMD':
-                if (!self::is_valid_zonemd($content)) {
-                    return false;
-                }
-                break;
-
-            case 'RKEY':
-                // TODO: implement validation
-                break;
-
-            case 'DS':
-                if (!self::is_valid_ds($content)) {
-                    return false;
-                }
-                break;
-
             case "HINFO":
                 if (!self::is_valid_rr_hinfo_content($content)) {
-                    return false;
-                }
-                if (!$this->is_valid_hostname_fqdn($name, 1)) {
-                    return false;
-                }
-                break;
-
-            case "LOC":
-                if (!self::is_valid_loc($content)) {
                     return false;
                 }
                 if (!$this->is_valid_hostname_fqdn($name, 1)) {
@@ -499,6 +190,90 @@ class Dns
                 }
                 break;
 
+            case "TXT":
+                if (!self::is_valid_printable($name)) {
+                    return false;
+                }
+                if (!self::is_valid_printable($content) || self::has_html_tags($content)) {
+                    return false;
+                }
+                if (!self::is_properly_quoted($content)) {
+                    return false;
+                }
+                break;
+
+            case "MAILA":
+            case "MAILB":
+                // MAILA and MAILB are obsolete meta-query types (RFC 883)
+                // They are used only in DNS queries, not in zone files
+                // Reject any attempt to create these record types
+                if (!self::is_valid_meta_query_type($type)) {
+                    return false;
+                }
+                break;
+
+            case "AFSDB":
+                if (!self::is_valid_afsdb($content)) {
+                    return false;
+                }
+                // Extract hostname from "subtype hostname" format for validation
+                if (preg_match('/^\d+\s+(.+)$/i', $content, $matches)) {
+                    $hostname = trim($matches[1]);
+                    if (!$this->is_valid_hostname_fqdn($hostname, 1)) {
+                        return false;
+                    }
+                }
+                break;
+
+            case "ALIAS":
+                if (!self::is_valid_alias($content)) {
+                    return false;
+                }
+                if (!$this->is_valid_hostname_fqdn($content, 1)) {
+                    return false;
+                }
+                break;
+
+            case "DNAME":
+                if (!self::is_valid_dname($content)) {
+                    return false;
+                }
+                if (!$this->is_valid_hostname_fqdn($content, 1)) {
+                    return false;
+                }
+                break;
+
+            case "LP":
+                if (!self::is_valid_lp($content)) {
+                    return false;
+                }
+                // Extract FQDN from "preference fqdn" format for validation
+                if (preg_match('/^\d+\s+(.+)$/i', $content, $matches)) {
+                    $fqdn = trim($matches[1]);
+                    if (!$this->is_valid_hostname_fqdn($fqdn, 1)) {
+                        return false;
+                    }
+                }
+                break;
+
+            case "CAA":
+                if (!self::is_valid_caa($content)) {
+                    return false;
+                }
+                if (!$this->is_valid_hostname_fqdn($name, 1)) {
+                    return false;
+                }
+                break;
+
+            case "LOC":
+                if (!self::is_valid_loc($content)) {
+                    return false;
+                }
+                if (!$this->is_valid_hostname_fqdn($name, 1)) {
+                    return false;
+                }
+                break;
+
             case "SPF":
                 if (!self::is_valid_spf($content)) {
                     $error = new ErrorMessage(_('The content of the SPF record is invalid'));
@@ -521,25 +296,20 @@ class Dns
                 }
                 break;
 
-            case "TXT":
-                if (!self::is_valid_printable($name)) {
-                    return false;
-                }
-                if (!self::is_valid_printable($content) || self::has_html_tags($content)) {
-                    return false;
-                }
-                if (!self::is_properly_quoted($content)) {
-                    return false;
-                }
-
-                break;
-
             default:
-                $error = new ErrorMessage(_('Unknown record type.'));
-                $errorPresenter = new ErrorPresenter();
-                $errorPresenter->present($error);
+                // Try to use validator factory for all other record types
+                $validator = DnsRecordValidatorFactory::getValidator($type);
+                if ($validator === null) {
+                    $error = new ErrorMessage(_('Unknown record type.'));
+                    $errorPresenter = new ErrorPresenter();
+                    $errorPresenter->present($error);
+                    return false;
+                }
 
-                return false;
+                if (!$validator->validate($type, $content)) {
+                    return false;
+                }
+                break;
         }
 
         if (!self::is_valid_rr_prio($prio, $type)) {
@@ -4024,6 +3794,21 @@ class Dns
     public static function is_valid_key(string $content, bool $answer = true): bool
     {
         // KEY has the same format as DNSKEY
+        return self::is_valid_dnskey($content, $answer);
+    }
+
+    /**
+     * Validates RKEY record content
+     * Format: flags protocol algorithm key
+     * RFC 2930 - RKEY has the same format as KEY/DNSKEY
+     *
+     * @param string $content The record content
+     * @param bool $answer Whether to present errors
+     * @return bool True if valid, false otherwise
+     */
+    public static function is_valid_rkey(string $content, bool $answer = true): bool
+    {
+        // RKEY has the same format as DNSKEY and KEY
         return self::is_valid_dnskey($content, $answer);
     }
 

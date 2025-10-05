@@ -464,6 +464,7 @@ return array(
     'Poweradmin\\Domain\\Service\\DatabaseConnection' => $baseDir . '/lib/Domain/Service/DatabaseConnection.php',
     'Poweradmin\\Domain\\Service\\Dns' => $baseDir . '/lib/Domain/Service/Dns.php',
     'Poweradmin\\Domain\\Service\\DnsRecord' => $baseDir . '/lib/Domain/Service/DnsRecord.php',
+    'Poweradmin\\Domain\\Service\\DnsValidation\\CoreRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/CoreRecordValidator.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DnsRecordValidatorFactory' => $baseDir . '/lib/Domain/Service/DnsValidation/DnsRecordValidatorFactory.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DnsRecordValidatorInterface' => $baseDir . '/lib/Domain/Service/DnsValidation/DnsRecordValidatorInterface.php',
     'Poweradmin\\Domain\\Service\\DnsValidation\\DnssecRecordValidator' => $baseDir . '/lib/Domain/Service/DnsValidation/DnssecRecordValidator.php',
