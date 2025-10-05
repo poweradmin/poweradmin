@@ -26,6 +26,7 @@ use Poweradmin\AppConfiguration;
 use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Model\TopLevelDomain;
+use Poweradmin\Domain\Service\DnsValidation\DnsRecordValidatorFactory;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 
 /**
@@ -93,6 +94,16 @@ class Dns
                 return false;
             }
         }
+
+        // DNS record validation is organized into specialized validator classes in lib/Domain/Service/DnsValidation/
+        // - DnssecRecordValidator: DNSSEC-related records (DNSKEY, DS, NSEC, NSEC3, RRSIG, TSIG, etc.)
+        // - SecurityRecordValidator: Security/crypto records (TLSA, SSHFP, SMIMEA, OPENPGPKEY, CERT, etc.)
+        // - NetworkRecordValidator: Network addressing records (EUI48, EUI64, NID, L32, L64, LP, IPSECKEY, WKS, KX)
+        // - ServiceRecordValidator: Service discovery records (SRV, NAPTR, URI, SVCB, HTTPS)
+        // - MailRecordValidator: Mail-related records (MINFO, MR, RP)
+        // - SpecialRecordValidator: Special purpose records (LOC, SPF, CAA, CSYNC, ZONEMD)
+        // - ExtendedRecordValidator: Extended/uncommon records (AFSDB, APL, CDNSKEY, CDS, DNAME, LUA, ALIAS, A6, SIG)
+        // The static is_valid_* methods below are called by these validators via DnsRecordValidatorFactory
 
         switch ($type) {
             case "A":
