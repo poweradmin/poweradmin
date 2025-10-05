@@ -322,6 +322,11 @@ class DnsTest extends TestCase
         // Invalid: missing tag
         $this->assertFalse(Dns::is_valid_caa('0 "letsencrypt.org"', false));
 
+        // Invalid: missing value field (RFC 8659 requires value field, even if empty "")
+        $this->assertFalse(Dns::is_valid_caa('0 issue', false));
+        $this->assertFalse(Dns::is_valid_caa('0 issuewild', false));
+        $this->assertFalse(Dns::is_valid_caa('128 iodef', false));
+
         // Invalid: unquoted value (PowerDNS requires quotes)
         $this->assertFalse(Dns::is_valid_caa('0 issue letsencrypt.org', false));
         $this->assertFalse(Dns::is_valid_caa('0 issuewild letsencrypt.org', false));

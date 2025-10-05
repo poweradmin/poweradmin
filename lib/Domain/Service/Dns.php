@@ -1574,8 +1574,8 @@ class Dns
         $content = trim($content);
 
         // Match: <flags> <tag> <value>
-        // Value is optional but if present must be quoted (per PowerDNS implementation)
-        if (!preg_match('/^(\d{1,3})\s+([a-z0-9]+)(?:\s+(.*))?$/i', $content, $matches)) {
+        // Value is mandatory and must be quoted (per RFC 8659 and PowerDNS implementation)
+        if (!preg_match('/^(\d{1,3})\s+([a-z0-9]+)\s+(.*)$/i', $content, $matches)) {
             if ($answer) {
                 $error = new ErrorMessage(_('Invalid CAA record format. Expected: FLAGS TAG VALUE (e.g., 0 issue "letsencrypt.org")'));
                 $errorPresenter = new ErrorPresenter();
@@ -1609,30 +1609,28 @@ class Dns
             return false;
         }
 
-        // If value is present, it must be quoted (per PowerDNS xfrText)
-        if (!empty($value)) {
-            if (!preg_match('/^".*"$/', $value)) {
+        // Value must be quoted (per PowerDNS xfrText)
+        if (!preg_match('/^".*"$/', $value)) {
+            if ($answer) {
+                $error = new ErrorMessage(_('CAA value must be enclosed in quotes (e.g., "letsencrypt.org" or "").'));
+                $errorPresenter = new ErrorPresenter();
+                $errorPresenter->present($error);
+            }
+            return false;
+        }
+
+        // Check for properly escaped quotes inside
+        // Empty value "" is valid per RFC 8659 (denies issuance)
+        $inner_value = substr($value, 1, -1);
+        if (!empty($inner_value)) {
+            // Look for quotes not preceded by a backslash
+            if (preg_match('/(?<!\\\\)"/', $inner_value)) {
                 if ($answer) {
-                    $error = new ErrorMessage(_('CAA value must be enclosed in quotes (e.g., "letsencrypt.org" or "").'));
+                    $error = new ErrorMessage(_('Quotes inside CAA value must be escaped with backslash.'));
                     $errorPresenter = new ErrorPresenter();
                     $errorPresenter->present($error);
                 }
                 return false;
-            }
-
-            // Check for properly escaped quotes inside
-            // Empty value "" is valid per RFC 8659 (denies issuance)
-            $inner_value = substr($value, 1, -1);
-            if (!empty($inner_value)) {
-                // Look for quotes not preceded by a backslash
-                if (preg_match('/(?<!\\\\)"/', $inner_value)) {
-                    if ($answer) {
-                        $error = new ErrorMessage(_('Quotes inside CAA value must be escaped with backslash.'));
-                        $errorPresenter = new ErrorPresenter();
-                        $errorPresenter->present($error);
-                    }
-                    return false;
-                }
             }
         }
 
