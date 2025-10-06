@@ -62,7 +62,23 @@
 {% if has_zones %}
 <div class="pb-3">
     <h5 class="mb-3 pt-3 border-top">{% trans %}Zones found{% endtrans %}</h5>
-    <div class="pb-3 text-secondary">{% trans %}Total number of zones:{% endtrans %} {{ total_zones }}</div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="text-secondary">
+            {% trans %}Total number of zones:{% endtrans %} {{ total_zones }}
+        </div>
+        <div>
+            <form method="get" action="index.php" class="d-inline-flex align-items-center">
+                <input type="hidden" name="page" value="search">
+                <label for="rows_per_page_zones" class="form-label me-2 mb-0 text-nowrap">{% trans %}Rows per page:{% endtrans %}</label>
+                <select name="rows_per_page_zones" id="rows_per_page_zones" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="10"{% if current_rows_per_page_zones == 10 %} selected{% endif %}>10</option>
+                    <option value="20"{% if current_rows_per_page_zones == 20 %} selected{% endif %}>20</option>
+                    <option value="50"{% if current_rows_per_page_zones == 50 %} selected{% endif %}>50</option>
+                    <option value="100"{% if current_rows_per_page_zones == 100 %} selected{% endif %}>100</option>
+                </select>
+            </form>
+        </div>
+    </div>
     <table class="table table-striped table-hover table-sm">
         <thead>
         <tr>
@@ -165,7 +181,23 @@
 {% if has_records %}
 <div class="pb-3">
     <h5 class="mb-3 pt-3 border-top">{% trans %}Records found{% endtrans %}</h5>
-    <div class="pb-3 text-secondary">{% trans %}Total number of records:{% endtrans %} {{ total_records }}</div>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="text-secondary">
+            {% trans %}Total number of records:{% endtrans %} {{ total_records }}
+        </div>
+        <div>
+            <form method="get" action="index.php" class="d-inline-flex align-items-center">
+                <input type="hidden" name="page" value="search">
+                <label for="rows_per_page_records" class="form-label me-2 mb-0 text-nowrap">{% trans %}Rows per page:{% endtrans %}</label>
+                <select name="rows_per_page_records" id="rows_per_page_records" class="form-select form-select-sm" onchange="this.form.submit()">
+                    <option value="10"{% if current_rows_per_page_records == 10 %} selected{% endif %}>10</option>
+                    <option value="20"{% if current_rows_per_page_records == 20 %} selected{% endif %}>20</option>
+                    <option value="50"{% if current_rows_per_page_records == 50 %} selected{% endif %}>50</option>
+                    <option value="100"{% if current_rows_per_page_records == 100 %} selected{% endif %}>100</option>
+                </select>
+            </form>
+        </div>
+    </div>
     <table class="table table-striped table-hover table-sm">
         <thead>
         <tr>

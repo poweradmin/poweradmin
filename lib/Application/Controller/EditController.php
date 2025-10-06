@@ -285,7 +285,7 @@ class EditController extends BaseController
     public function getRowsPerPage(): int
     {
         $defaultRowAmount = $this->config('iface_rowamount');
-        $allowedValues = [10, 25, 50, 100];
+        $allowedValues = [10, 20, 50, 100];
 
         $rowAmount = $defaultRowAmount;
 

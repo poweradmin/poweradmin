@@ -66,9 +66,15 @@ class SearchController extends BaseController
         $_SESSION['record_sort_by'] = $record_sort_by;
         $_SESSION['record_sort_by_direction'] = $record_sort_direction;
 
-        $iface_rowamount = $this->config('iface_rowamount');
+        $iface_rowamount_zones = $this->getRowsPerPage();
+        $iface_rowamount_records = $this->getRowsPerPageRecords();
         $iface_zone_comments = $this->config('iface_zone_comments');
         $iface_record_comments = $this->config('iface_record_comments');
+
+        // Clear search when accessing page without POST or session parameters
+        if (!$this->isPost() && !isset($_GET['rows_per_page_zones']) && !isset($_GET['rows_per_page_records'])) {
+            unset($_SESSION['search_parameters']);
+        }
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -81,8 +87,17 @@ class SearchController extends BaseController
             $parameters['reverse'] = isset($_POST['reverse']) ? htmlspecialchars($_POST['reverse']) : false;
             $parameters['comments'] = isset($_POST['comments']) ? htmlspecialchars($_POST['comments']) : false;
 
-            $zones_page = isset($_POST['zones_page']) ? (int)$_POST['zones_page'] : 1;
+            // Store search parameters in session
+            $_SESSION['search_parameters'] = $parameters;
 
+            $zones_page = isset($_POST['zones_page']) ? (int)$_POST['zones_page'] : 1;
+        } elseif (isset($_SESSION['search_parameters']) && !empty($_SESSION['search_parameters']['query'])) {
+            // Restore search parameters from session when using GET (e.g., changing rows per page)
+            $parameters = $_SESSION['search_parameters'];
+            $zones_page = isset($_GET['zones_page']) ? (int)$_GET['zones_page'] : 1;
+        }
+
+        if (!empty($parameters['query'])) {
             $permission_view = Permission::getViewPermission($this->db);
 
             $db_type = $this->config('db_type');
@@ -93,14 +108,14 @@ class SearchController extends BaseController
                 $permission_view,
                 $zone_sort_by,
                 $zone_sort_direction,
-                $iface_rowamount,
+                $iface_rowamount_zones,
                 $iface_zone_comments,
                 $zones_page
             );
 
             $totalZones = $zoneSearch->getTotalZones($parameters, $permission_view);
 
-            $records_page = isset($_POST['records_page']) ? (int)$_POST['records_page'] : 1;
+            $records_page = isset($_POST['records_page']) ? (int)$_POST['records_page'] : (isset($_GET['records_page']) ? (int)$_GET['records_page'] : 1);
 
             $iface_search_group_records = $this->config('iface_search_group_records');
             $recordSearch = new RecordSearch($this->db, $this->getConfig(), $db_type);
@@ -110,7 +125,7 @@ class SearchController extends BaseController
                 $record_sort_by,
                 $record_sort_direction,
                 $iface_search_group_records,
-                $iface_rowamount,
+                $iface_rowamount_records,
                 $iface_record_comments,
                 $records_page,
             );
@@ -118,10 +133,10 @@ class SearchController extends BaseController
             $totalRecords = $recordSearch->getTotalRecords($parameters, $permission_view, $iface_search_group_records);
         }
 
-        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount, $iface_zone_comments, $iface_record_comments);
+        $this->showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount_zones, $iface_rowamount_records, $iface_zone_comments, $iface_record_comments);
     }
 
-    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount, $iface_zone_comments, $iface_record_comments): void
+    private function showSearchForm($parameters, $searchResultZones, $searchResultRecords, $zone_sort_by, $zone_sort_direction, $record_sort_by, $record_sort_direction, $totalZones, $totalRecords, $zones_page, $records_page, $iface_rowamount_zones, $iface_rowamount_records, $iface_zone_comments, $iface_record_comments): void
     {
         $this->render('search.html', [
             'zone_sort_by' => $zone_sort_by,
@@ -142,7 +157,9 @@ class SearchController extends BaseController
             'total_records' => $totalRecords,
             'zones_page' => $zones_page,
             'records_page' => $records_page,
-            'iface_rowamount' => $iface_rowamount,
+            'iface_rowamount' => $iface_rowamount_zones,
+            'current_rows_per_page_zones' => $iface_rowamount_zones,
+            'current_rows_per_page_records' => $iface_rowamount_records,
             'iface_zone_comments' => $iface_zone_comments,
             'iface_record_comments' => $iface_record_comments,
             'edit_permission' => Permission::getEditPermission($this->db),
@@ -168,5 +185,30 @@ class SearchController extends BaseController
         }
 
         return [$sortOrder, $sortDirection];
+    }
+
+    private function getRowsPerPage(): int
+    {
+        $defaultRowAmount = $this->config('iface_rowamount');
+        $allowedValues = [10, 20, 50, 100];
+
+        // Handle zones rows per page
+        if (isset($_GET['rows_per_page_zones']) && in_array((int)$_GET['rows_per_page_zones'], $allowedValues)) {
+            $_SESSION['rows_per_page_search_zones'] = (int)$_GET['rows_per_page_zones'];
+        }
+
+        // Handle records rows per page
+        if (isset($_GET['rows_per_page_records']) && in_array((int)$_GET['rows_per_page_records'], $allowedValues)) {
+            $_SESSION['rows_per_page_search_records'] = (int)$_GET['rows_per_page_records'];
+        }
+
+        // Default to the session value or config default
+        return $_SESSION['rows_per_page_search_zones'] ?? $defaultRowAmount;
+    }
+
+    private function getRowsPerPageRecords(): int
+    {
+        $defaultRowAmount = $this->config('iface_rowamount');
+        return $_SESSION['rows_per_page_search_records'] ?? $defaultRowAmount;
     }
 }

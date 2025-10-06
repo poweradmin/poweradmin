@@ -63,7 +63,7 @@ class ListZonesController extends BaseController
         $pdnssec_use = $this->config('pdnssec_use');
         $iface_zonelist_serial = $this->config('iface_zonelist_serial');
         $iface_zonelist_template = $this->config('iface_zonelist_template');
-        $iface_rowamount = $this->config('iface_rowamount');
+        $iface_rowamount = $this->getRowsPerPage();
 
         $row_start = 0;
         if (isset($_GET['start'])) {
@@ -109,6 +109,7 @@ class ListZonesController extends BaseController
             'count_zones_edit' => $count_zones_edit,
             'letter_start' => $letter_start,
             'iface_rowamount' => $iface_rowamount,
+            'current_rows_per_page' => $iface_rowamount,
             'zone_sort_by' => $zone_sort_by,
             'zone_sort_direction' => $zone_sort_direction,
             'iface_zonelist_serial' => $iface_zonelist_serial,
@@ -181,5 +182,22 @@ class ListZonesController extends BaseController
         }
 
         return [$zone_sort_by, $zone_sort_direction];
+    }
+
+    private function getRowsPerPage(): int
+    {
+        $defaultRowAmount = $this->config('iface_rowamount');
+        $allowedValues = [10, 20, 50, 100];
+
+        if (isset($_GET['rows_per_page']) && in_array((int)$_GET['rows_per_page'], $allowedValues)) {
+            $_SESSION['rows_per_page_zones'] = (int)$_GET['rows_per_page'];
+            return (int)$_GET['rows_per_page'];
+        }
+
+        if (isset($_SESSION['rows_per_page_zones'])) {
+            return $_SESSION['rows_per_page_zones'];
+        }
+
+        return $defaultRowAmount;
     }
 }
