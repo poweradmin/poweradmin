@@ -291,6 +291,18 @@ class DatabaseStructureHelper
                         'table' => 'zones',
                         'flags' => ''
                     ),
+                ),
+                'indexes' => array(
+                    'zones_domain_id_idx' => array(
+                        'fields' => array(
+                            'domain_id' => array()
+                        )
+                    ),
+                    'zones_owner_idx' => array(
+                        'fields' => array(
+                            'owner' => array()
+                        )
+                    )
                 )
             ),
             array(

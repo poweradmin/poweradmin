@@ -57,5 +57,7 @@ CREATE TABLE zone_templ_records (id integer PRIMARY KEY, zone_templ_id integer N
 
 CREATE TABLE zones (id integer PRIMARY KEY, domain_id integer NOT NULL, owner integer NOT NULL, comment VARCHAR(1024), zone_templ_id integer NOT NULL);
 
+CREATE INDEX zones_domain_id_idx ON zones(domain_id);
+CREATE INDEX zones_owner_idx ON zones(owner);
 
 --

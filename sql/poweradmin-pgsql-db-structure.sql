@@ -147,5 +147,7 @@ CREATE TABLE "public"."zones" (
                                   CONSTRAINT "zones_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
+CREATE INDEX "zones_domain_id_idx" ON "public"."zones" USING btree ("domain_id");
+CREATE INDEX "zones_owner_idx" ON "public"."zones" USING btree ("owner");
 
 -- 2022-09-29 19:10:39.890321+00

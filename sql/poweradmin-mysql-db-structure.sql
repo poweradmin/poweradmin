@@ -112,7 +112,9 @@ CREATE TABLE `zones` (
                          `owner` int(11) NOT NULL,
                          `comment` varchar(1024) DEFAULT NULL,
                          `zone_templ_id` int(11) NOT NULL,
-                         PRIMARY KEY (`id`)
+                         PRIMARY KEY (`id`),
+                         KEY `zones_domain_id_idx` (`domain_id`),
+                         KEY `zones_owner_idx` (`owner`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
