@@ -130,6 +130,18 @@ class DatabaseStructureHelper
                         'table' => 'perm_templ_items',
                         'flags' => 'not_null'
                     )
+                ),
+                'indexes' => array(
+                    'perm_templ_items_templ_id_idx' => array(
+                        'fields' => array(
+                            'templ_id' => array()
+                        )
+                    ),
+                    'perm_templ_items_perm_id_idx' => array(
+                        'fields' => array(
+                            'perm_id' => array()
+                        )
+                    )
                 )
             ),
             array(
@@ -245,6 +257,13 @@ class DatabaseStructureHelper
                         'table' => 'users',
                         'flags' => 'not_null'
                     )
+                ),
+                'indexes' => array(
+                    'users_perm_templ_idx' => array(
+                        'fields' => array(
+                            'perm_templ' => array()
+                        )
+                    )
                 )
             ),
             array(
@@ -301,6 +320,23 @@ class DatabaseStructureHelper
                         'name' => 'zone_templ_id',
                         'table' => 'zones',
                         'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'zones_domain_id_idx' => array(
+                        'fields' => array(
+                            'domain_id' => array()
+                        )
+                    ),
+                    'zones_owner_idx' => array(
+                        'fields' => array(
+                            'owner' => array()
+                        )
+                    ),
+                    'zones_zone_templ_id_idx' => array(
+                        'fields' => array(
+                            'zone_templ_id' => array()
+                        )
                     )
                 )
             ),
@@ -360,6 +396,18 @@ class DatabaseStructureHelper
                         'name' => 'created_by',
                         'table' => 'zone_templ',
                         'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'zone_templ_owner_idx' => array(
+                        'fields' => array(
+                            'owner' => array()
+                        )
+                    ),
+                    'zone_templ_created_by_idx' => array(
+                        'fields' => array(
+                            'created_by' => array()
+                        )
                     )
                 )
             ),
@@ -441,6 +489,13 @@ class DatabaseStructureHelper
                         'table' => 'zone_templ_records',
                         'flags' => ''
                     )
+                ),
+                'indexes' => array(
+                    'zone_templ_records_zone_templ_id_idx' => array(
+                        'fields' => array(
+                            'zone_templ_id' => array()
+                        )
+                    )
                 )
             ),
             array(
@@ -476,6 +531,18 @@ class DatabaseStructureHelper
                         'name' => 'zone_templ_id',
                         'table' => 'records_zone_templ',
                         'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'records_zone_templ_domain_id_idx' => array(
+                        'fields' => array(
+                            'domain_id' => array()
+                        )
+                    ),
+                    'records_zone_templ_zone_templ_id_idx' => array(
+                        'fields' => array(
+                            'zone_templ_id' => array()
+                        )
                     )
                 )
             ),
@@ -528,6 +595,13 @@ class DatabaseStructureHelper
                         'name' => 'zone_id',
                         'table' => 'log_zones',
                         'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'log_zones_zone_id_idx' => array(
+                        'fields' => array(
+                            'zone_id' => array()
+                        )
                     )
                 )
             ),

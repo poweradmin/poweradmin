@@ -94,3 +94,17 @@ CREATE TABLE IF NOT EXISTS saml_user_links (
 -- Create indexes for performance
 CREATE INDEX IF NOT EXISTS idx_saml_provider_id ON saml_user_links(provider_id);
 CREATE INDEX IF NOT EXISTS idx_saml_subject ON saml_user_links(saml_subject);
+
+-- Add performance indexes to existing tables
+-- Issue: Missing indexes on foreign key columns caused slow queries with large datasets
+
+CREATE INDEX IF NOT EXISTS idx_log_zones_zone_id ON log_zones(zone_id);
+CREATE INDEX IF NOT EXISTS idx_users_perm_templ ON users(perm_templ);
+CREATE INDEX IF NOT EXISTS idx_perm_templ_items_templ_id ON perm_templ_items(templ_id);
+CREATE INDEX IF NOT EXISTS idx_perm_templ_items_perm_id ON perm_templ_items(perm_id);
+CREATE INDEX IF NOT EXISTS idx_records_zone_templ_domain_id ON records_zone_templ(domain_id);
+CREATE INDEX IF NOT EXISTS idx_records_zone_templ_zone_templ_id ON records_zone_templ(zone_templ_id);
+CREATE INDEX IF NOT EXISTS idx_zones_zone_templ_id ON zones(zone_templ_id);
+CREATE INDEX IF NOT EXISTS idx_zone_templ_owner ON zone_templ(owner);
+CREATE INDEX IF NOT EXISTS idx_zone_templ_created_by ON zone_templ(created_by);
+CREATE INDEX IF NOT EXISTS idx_zone_templ_records_zone_templ_id ON zone_templ_records(zone_templ_id);

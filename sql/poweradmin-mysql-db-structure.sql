@@ -22,7 +22,8 @@ CREATE TABLE `log_zones` (
                              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
                              `priority` int(11) NOT NULL,
                              `zone_id` int(11) DEFAULT NULL,
-                             PRIMARY KEY (`id`)
+                             PRIMARY KEY (`id`),
+                             KEY `idx_log_zones_zone_id` (`zone_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `users` (
@@ -36,7 +37,8 @@ CREATE TABLE `users` (
                          `active` int(1) NOT NULL,
                          `use_ldap` int(1) NOT NULL,
                          `auth_method` varchar(20) NOT NULL DEFAULT 'sql',
-                         PRIMARY KEY (`id`)
+                         PRIMARY KEY (`id`),
+                         KEY `idx_users_perm_templ` (`perm_templ`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `login_attempts` (
@@ -104,7 +106,9 @@ CREATE TABLE `perm_templ_items` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,
                                     `templ_id` int(11) NOT NULL,
                                     `perm_id` int(11) NOT NULL,
-                                    PRIMARY KEY (`id`)
+                                    PRIMARY KEY (`id`),
+                                    KEY `idx_perm_templ_items_templ_id` (`templ_id`),
+                                    KEY `idx_perm_templ_items_perm_id` (`perm_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 INSERT INTO `perm_templ_items` (`id`, `templ_id`, `perm_id`) VALUES
@@ -113,7 +117,9 @@ INSERT INTO `perm_templ_items` (`id`, `templ_id`, `perm_id`) VALUES
 CREATE TABLE `records_zone_templ` (
                                       `domain_id` int(11) NOT NULL,
                                       `record_id` int(11) NOT NULL,
-                                      `zone_templ_id` int(11) NOT NULL
+                                      `zone_templ_id` int(11) NOT NULL,
+                                      KEY `idx_records_zone_templ_domain_id` (`domain_id`),
+                                      KEY `idx_records_zone_templ_zone_templ_id` (`zone_templ_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `zones` (
@@ -122,7 +128,10 @@ CREATE TABLE `zones` (
                          `owner` int(11) NOT NULL,
                          `comment` varchar(1024) DEFAULT NULL,
                          `zone_templ_id` int(11) NOT NULL,
-                         PRIMARY KEY (`id`)
+                         PRIMARY KEY (`id`),
+                         KEY `idx_zones_domain_id` (`domain_id`),
+                         KEY `idx_zones_owner` (`owner`),
+                         KEY `idx_zones_zone_templ_id` (`zone_templ_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
@@ -133,6 +142,8 @@ CREATE TABLE `zone_templ` (
                               `owner` int(11) NOT NULL,
                               `created_by` int(11) DEFAULT NULL,
                               PRIMARY KEY (`id`),
+                              KEY `idx_zone_templ_owner` (`owner`),
+                              KEY `idx_zone_templ_created_by` (`created_by`),
                               CONSTRAINT `fk_zone_templ_users` FOREIGN KEY (`created_by`) REFERENCES `users` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -145,7 +156,8 @@ CREATE TABLE `zone_templ_records` (
                                       `content` varchar(2048) NOT NULL,
                                       `ttl` int(11) NOT NULL,
                                       `prio` int(11) NOT NULL,
-                                      PRIMARY KEY (`id`)
+                                      PRIMARY KEY (`id`),
+                                      KEY `idx_zone_templ_records_zone_templ_id` (`zone_templ_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `api_keys` (

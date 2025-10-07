@@ -47,3 +47,17 @@ CREATE TABLE IF NOT EXISTS `saml_user_links` (
   KEY `idx_saml_subject` (`saml_subject`),
   CONSTRAINT `fk_saml_user_links_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Add performance indexes to existing tables
+-- Issue: Missing indexes on foreign key columns caused slow queries with large datasets
+
+ALTER TABLE `log_zones` ADD INDEX `idx_log_zones_zone_id` (`zone_id`);
+ALTER TABLE `users` ADD INDEX `idx_users_perm_templ` (`perm_templ`);
+ALTER TABLE `perm_templ_items` ADD INDEX `idx_perm_templ_items_templ_id` (`templ_id`);
+ALTER TABLE `perm_templ_items` ADD INDEX `idx_perm_templ_items_perm_id` (`perm_id`);
+ALTER TABLE `records_zone_templ` ADD INDEX `idx_records_zone_templ_domain_id` (`domain_id`);
+ALTER TABLE `records_zone_templ` ADD INDEX `idx_records_zone_templ_zone_templ_id` (`zone_templ_id`);
+ALTER TABLE `zones` ADD INDEX `idx_zones_zone_templ_id` (`zone_templ_id`);
+ALTER TABLE `zone_templ` ADD INDEX `idx_zone_templ_owner` (`owner`);
+ALTER TABLE `zone_templ` ADD INDEX `idx_zone_templ_created_by` (`created_by`);
+ALTER TABLE `zone_templ_records` ADD INDEX `idx_zone_templ_records_zone_templ_id` (`zone_templ_id`);

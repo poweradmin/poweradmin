@@ -22,6 +22,8 @@ CREATE TABLE "public"."log_zones" (
                                       CONSTRAINT "log_zones_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
+CREATE INDEX "idx_log_zones_zone_id" ON "public"."log_zones" USING btree ("zone_id");
+
 
 
 
@@ -81,6 +83,9 @@ CREATE TABLE "public"."perm_templ_items" (
                                              CONSTRAINT "perm_templ_items_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
+CREATE INDEX "idx_perm_templ_items_templ_id" ON "public"."perm_templ_items" USING btree ("templ_id");
+CREATE INDEX "idx_perm_templ_items_perm_id" ON "public"."perm_templ_items" USING btree ("perm_id");
+
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (1,	1,	53);
 
@@ -89,6 +94,9 @@ CREATE TABLE "public"."records_zone_templ" (
                                                "record_id" integer,
                                                "zone_templ_id" integer
 ) WITH (oids = false);
+
+CREATE INDEX "idx_records_zone_templ_domain_id" ON "public"."records_zone_templ" USING btree ("domain_id");
+CREATE INDEX "idx_records_zone_templ_zone_templ_id" ON "public"."records_zone_templ" USING btree ("zone_templ_id");
 
 
 CREATE SEQUENCE users_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
@@ -106,6 +114,8 @@ CREATE TABLE "public"."users" (
                                   "auth_method" character varying(20) DEFAULT 'sql' NOT NULL,
                                   CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
+
+CREATE INDEX "idx_users_perm_templ" ON "public"."users" USING btree ("perm_templ");
 
 CREATE SEQUENCE login_attempts_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -135,6 +145,9 @@ CREATE TABLE "public"."zone_templ" (
                                        CONSTRAINT "fk_zone_templ_users" FOREIGN KEY ("created_by") REFERENCES "users" ("id") ON DELETE SET NULL
 ) WITH (oids = false);
 
+CREATE INDEX "idx_zone_templ_owner" ON "public"."zone_templ" USING btree ("owner");
+CREATE INDEX "idx_zone_templ_created_by" ON "public"."zone_templ" USING btree ("created_by");
+
 
 CREATE SEQUENCE zone_templ_records_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -149,6 +162,8 @@ CREATE TABLE "public"."zone_templ_records" (
                                                CONSTRAINT "zone_templ_records_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
 
+CREATE INDEX "idx_zone_templ_records_zone_templ_id" ON "public"."zone_templ_records" USING btree ("zone_templ_id");
+
 
 CREATE SEQUENCE zones_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -160,6 +175,10 @@ CREATE TABLE "public"."zones" (
                                   "zone_templ_id" integer,
                                   CONSTRAINT "zones_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
+
+CREATE INDEX "idx_zones_domain_id" ON "public"."zones" USING btree ("domain_id");
+CREATE INDEX "idx_zones_owner" ON "public"."zones" USING btree ("owner");
+CREATE INDEX "idx_zones_zone_templ_id" ON "public"."zones" USING btree ("zone_templ_id");
 
 CREATE SEQUENCE api_keys_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
