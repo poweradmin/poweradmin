@@ -60,6 +60,13 @@ class MailService implements MailServiceInterface
         string $plainBody = '',
         array $headers = []
     ): bool {
+        $this->logDebug('Attempting to send email', [
+            'to' => $to,
+            'subject' => $subject,
+            'has_plain_body' => !empty($plainBody),
+            'additional_headers' => count($headers)
+        ]);
+
         // First, verify mail configuration is valid
         if (!$this->isMailConfigurationValid()) {
             $this->logWarning('Mail sending failed: mail configuration is invalid or mail server is unreachable');
@@ -68,26 +75,53 @@ class MailService implements MailServiceInterface
 
         // Determine which transport to use
         $transportType = $this->config->get('mail', 'transport', 'smtp');
+        $this->logDebug('Using mail transport', ['transport' => $transportType]);
 
         // check if email is multipart and generate boundary
         if ($plainBody !== '') {
             $boundary = md5(uniqid(time()));
+            $this->logDebug('Generated multipart boundary for email');
         } else {
             $boundary = '';
         }
 
         try {
+            $result = false;
             switch ($transportType) {
                 case 'smtp':
-                    return $this->sendSmtp($to, $subject, $body, $plainBody, $headers, $boundary);
+                    $result = $this->sendSmtp($to, $subject, $body, $plainBody, $headers, $boundary);
+                    break;
                 case 'sendmail':
-                    return $this->sendSendmail($to, $subject, $body, $plainBody, $headers, $boundary);
+                    $result = $this->sendSendmail($to, $subject, $body, $plainBody, $headers, $boundary);
+                    break;
                 case 'php':
                 default:
-                    return $this->sendPhpMail($to, $subject, $body, $plainBody, $headers, $boundary);
+                    $result = $this->sendPhpMail($to, $subject, $body, $plainBody, $headers, $boundary);
+                    break;
             }
+
+            if ($result) {
+                $this->logInfo('Email sent successfully', [
+                    'to' => $to,
+                    'subject' => $subject,
+                    'transport' => $transportType
+                ]);
+            } else {
+                $this->logWarning('Email sending failed', [
+                    'to' => $to,
+                    'subject' => $subject,
+                    'transport' => $transportType
+                ]);
+            }
+
+            return $result;
         } catch (Exception $e) {
-            $this->logError('Mail sending failed: ' . $e->getMessage());
+            $this->logError('Mail sending failed with exception: ' . $e->getMessage(), [
+                'to' => $to,
+                'subject' => $subject,
+                'transport' => $transportType,
+                'exception' => get_class($e)
+            ]);
             return false;
         }
     }
@@ -128,6 +162,12 @@ class MailService implements MailServiceInterface
     ): bool {
         $fromEmail = $this->config->get('mail', 'from', 'poweradmin@example.com');
         $fromName = $this->config->get('mail', 'from_name', '');
+        $returnPath = $this->config->get('mail', 'return_path', 'poweradmin@example.com');
+
+        $this->logDebug('Using PHP mail() function', [
+            'from' => $fromEmail,
+            'return_path' => $returnPath
+        ]);
 
         // Set up email headers
         $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $boundary);
@@ -142,11 +182,24 @@ class MailService implements MailServiceInterface
         // Create message body (multipart if we have plain text version)
         $messageBody = $this->getMessageBody($body, $plainBody, $boundary);
 
+        $this->logDebug('PHP mail() message prepared', [
+            'body_length' => strlen($messageBody),
+            'is_multipart' => !empty($boundary)
+        ]);
+
         // add "Return-Path" to Header
-        $returnPath = "-f" . $this->config->get('mail', 'return_path', 'poweradmin@example.com');
+        $returnPathParam = "-f" . $returnPath;
 
         // Send the email
-        return mail($to, $subject, $messageBody, $headersStr, $returnPath);
+        $result = mail($to, $subject, $messageBody, $headersStr, $returnPathParam);
+
+        if ($result) {
+            $this->logDebug('PHP mail() returned success');
+        } else {
+            $this->logWarning('PHP mail() returned failure');
+        }
+
+        return $result;
     }
 
     /**
@@ -164,6 +217,10 @@ class MailService implements MailServiceInterface
         $fromName = $this->config->get('mail', 'from_name', '');
         $sendmailPath = $this->config->get('mail', 'sendmail_path', '/usr/sbin/sendmail -bs');
 
+        $this->logDebug('Using Sendmail transport', [
+            'sendmail_path' => $sendmailPath
+        ]);
+
         // Set up email headers
         $mailHeaders = $this->getBaseHeaders($fromEmail, $fromName, $boundary);
         $mailHeaders = array_merge($mailHeaders, $headers);
@@ -176,6 +233,8 @@ class MailService implements MailServiceInterface
                 throw new Exception("Failed to open sendmail process: $sanitizedSendmailPath");
             }
 
+            $this->logDebug('Sendmail process opened successfully');
+
             // Write headers
             fputs($sendmail, "To: $to\r\n");
             fputs($sendmail, "Subject: $subject\r\n");
@@ -185,10 +244,22 @@ class MailService implements MailServiceInterface
             fputs($sendmail, "\r\n");
 
             // Write message body
-            fputs($sendmail, $this->getMessageBody($body, $plainBody, $boundary));
+            $messageBody = $this->getMessageBody($body, $plainBody, $boundary);
+            fputs($sendmail, $messageBody);
+
+            $this->logDebug('Sendmail message body written', [
+                'body_length' => strlen($messageBody),
+                'is_multipart' => !empty($boundary)
+            ]);
 
             // Close sendmail process
             $status = pclose($sendmail);
+
+            if ($status === 0) {
+                $this->logDebug('Sendmail process closed successfully', ['exit_code' => $status]);
+            } else {
+                $this->logWarning('Sendmail process returned non-zero exit code', ['exit_code' => $status]);
+            }
 
             return $status === 0;
         } catch (Exception $e) {
@@ -217,6 +288,13 @@ class MailService implements MailServiceInterface
         $fromEmail = $this->config->get('mail', 'from', 'poweradmin@example.com');
         $fromName = $this->config->get('mail', 'from_name', '');
 
+        $this->logDebug('Initializing SMTP connection', [
+            'host' => $host,
+            'port' => $port,
+            'encryption' => $encryption ?: 'none',
+            'auth_enabled' => $this->config->get('mail', 'auth', false)
+        ]);
+
         // Set prefix for encrypted connections
         $prefix = '';
         if ($encryption === 'ssl') {
@@ -230,6 +308,8 @@ class MailService implements MailServiceInterface
             $this->logError("Cannot connect to mail server at {$prefix}{$host}:{$port}. Mail service may be misconfigured.");
             return false;
         }
+
+        $this->logDebug('SMTP server connection test passed');
 
         try {
             // Connect to SMTP server with error suppression to avoid generating warnings
@@ -249,12 +329,15 @@ class MailService implements MailServiceInterface
 
             // Start TLS if needed and not already using SSL
             if ($encryption === 'tls' && $prefix !== 'ssl://') {
+                $this->logDebug('Starting TLS encryption');
                 $this->sendSmtpCommand($socket, "STARTTLS");
 
                 // Enable TLS encryption
                 if (!stream_socket_enable_crypto($socket, true, STREAM_CRYPTO_METHOD_TLS_CLIENT)) {
                     throw new Exception("Failed to enable TLS encryption");
                 }
+
+                $this->logDebug('TLS encryption enabled successfully');
 
                 // Re-send EHLO after TLS handshake
                 $this->sendSmtpCommand($socket, "EHLO " . gethostname());
@@ -265,16 +348,20 @@ class MailService implements MailServiceInterface
                 $username = $this->config->get('mail', 'username', '');
                 $password = $this->config->get('mail', 'password', '');
 
+                $this->logDebug('Authenticating with SMTP server', ['username' => $username]);
                 $this->sendSmtpCommand($socket, "AUTH LOGIN");
                 $this->sendSmtpCommand($socket, base64_encode($username));
                 $this->sendSmtpCommand($socket, base64_encode($password));
+                $this->logDebug('SMTP authentication successful');
             }
 
             // Set sender
             $this->sendSmtpCommand($socket, "MAIL FROM:<$fromEmail>");
+            $this->logDebug('SMTP sender set', ['from' => $fromEmail]);
 
             // Set recipient
             $this->sendSmtpCommand($socket, "RCPT TO:<$to>");
+            $this->logDebug('SMTP recipient set', ['to' => $to]);
 
             // Start data
             $this->sendSmtpCommand($socket, "DATA");
@@ -292,7 +379,12 @@ class MailService implements MailServiceInterface
             fputs($socket, "\r\n");
 
             // Send message body
-            fputs($socket, $this->getMessageBody($body, $plainBody, $boundary));
+            $messageBody = $this->getMessageBody($body, $plainBody, $boundary);
+            fputs($socket, $messageBody);
+            $this->logDebug('SMTP message body sent', [
+                'body_length' => strlen($messageBody),
+                'is_multipart' => !empty($boundary)
+            ]);
 
             // End data
             fputs($socket, "\r\n.\r\n");
@@ -302,6 +394,8 @@ class MailService implements MailServiceInterface
 
             // Close connection
             fclose($socket);
+
+            $this->logDebug('SMTP connection closed successfully');
 
             return true;
         } catch (Exception $e) {
@@ -495,22 +589,42 @@ class MailService implements MailServiceInterface
     }
 
     /**
-     * Log an error message
+     * Log a debug message
      */
-    private function logError(string $message): void
+    private function logDebug(string $message, array $context = []): void
     {
         if ($this->logger !== null) {
-            $this->logger->error($message);
+            $this->logger->debug($message, $context);
+        }
+    }
+
+    /**
+     * Log an info message
+     */
+    private function logInfo(string $message, array $context = []): void
+    {
+        if ($this->logger !== null) {
+            $this->logger->info($message, $context);
         }
     }
 
     /**
      * Log a warning message
      */
-    private function logWarning(string $message): void
+    private function logWarning(string $message, array $context = []): void
     {
         if ($this->logger !== null) {
-            $this->logger->warning($message);
+            $this->logger->warning($message, $context);
+        }
+    }
+
+    /**
+     * Log an error message
+     */
+    private function logError(string $message, array $context = []): void
+    {
+        if ($this->logger !== null) {
+            $this->logger->error($message, $context);
         }
     }
 
