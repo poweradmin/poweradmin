@@ -460,6 +460,7 @@ class MailService implements MailServiceInterface
             $headers['Content-Type'] = "multipart/alternative; boundary=\"$boundary\"";
         } else {
             $headers['Content-Type'] = 'text/html; charset=UTF-8';
+            $headers['Content-Transfer-Encoding'] = 'quoted-printable';
         }
 
         return $headers;
@@ -467,25 +468,26 @@ class MailService implements MailServiceInterface
 
     /**
      * Construct message body (multipart if plain text is provided)
+     * Uses quoted-printable encoding to ensure RFC 5322 compliance (max 998 chars per line)
      */
     private function getMessageBody(string $htmlBody, string $plainBody, string $boundary): string
     {
-        // If no plain text body is provided, just return the HTML body
+        // If no plain text body is provided, use quoted-printable encoding for HTML
         if (empty($plainBody)) {
-            return $htmlBody;
+            return quoted_printable_encode($htmlBody);
         }
 
-        // Otherwise, create a multipart message
+        // Otherwise, create a multipart message with quoted-printable encoding
 
         $message = "--$boundary\r\n";
         $message .= "Content-Type: text/plain; charset=UTF-8\r\n";
-        $message .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
-        $message .= $plainBody . "\r\n\r\n";
+        $message .= "Content-Transfer-Encoding: quoted-printable\r\n\r\n";
+        $message .= quoted_printable_encode($plainBody) . "\r\n\r\n";
 
         $message .= "--$boundary\r\n";
         $message .= "Content-Type: text/html; charset=UTF-8\r\n";
-        $message .= "Content-Transfer-Encoding: 8bit\r\n\r\n";
-        $message .= $htmlBody . "\r\n\r\n";
+        $message .= "Content-Transfer-Encoding: quoted-printable\r\n\r\n";
+        $message .= quoted_printable_encode($htmlBody) . "\r\n\r\n";
 
         $message .= "--$boundary--";
 
