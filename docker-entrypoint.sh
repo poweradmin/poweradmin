@@ -351,6 +351,8 @@ return [
         'url' => '${PA_PDNS_API_URL:-}',
         'key' => '${PA_PDNS_API_KEY:-}',
         'server_name' => '${PA_PDNS_SERVER_NAME:-localhost}',
+        'webserver_username' => '${PA_PDNS_WEBSERVER_USERNAME:-}',
+        'webserver_password' => '${PA_PDNS_WEBSERVER_PASSWORD:-}',
     ],
     'ldap' => [
         'enabled' => ${ldap_enabled},

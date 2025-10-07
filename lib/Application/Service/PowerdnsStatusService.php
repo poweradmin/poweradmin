@@ -36,6 +36,8 @@ class PowerdnsStatusService
     private string $apiKey;
     private string $displayName;
     private string $serverName;
+    private string $webserverUsername;
+    private string $webserverPassword;
 
     public function __construct()
     {
@@ -44,6 +46,8 @@ class PowerdnsStatusService
         $this->apiKey = $config->get('pdns_api', 'key', '');
         $this->displayName = $this->sanitizeDisplayName($config->get('pdns_api', 'display_name', 'PowerDNS'));
         $this->serverName = $config->get('pdns_api', 'server_name', 'localhost');
+        $this->webserverUsername = $config->get('pdns_api', 'webserver_username', '');
+        $this->webserverPassword = $config->get('pdns_api', 'webserver_password', '');
         $this->apiEnabled = !empty($this->apiUrl) && !empty($this->apiKey);
 
         if ($this->apiEnabled) {
@@ -76,6 +80,7 @@ class PowerdnsStatusService
 
             // Get statistics metrics
             $metrics = [];
+            $metricInfo = [];
             try {
                 // Try to get metrics from the PowerDNS API
                 $metricsData = $this->apiClient->getMetrics();
@@ -99,15 +104,18 @@ class PowerdnsStatusService
 
                         // Validate URL before fetching to prevent path traversal
                         if ($this->isSecureUrl($metricsUrl)) {
-                            // Fetch metrics in Prometheus format
-                            $rawMetrics = @file_get_contents($metricsUrl);
+                            // Fetch metrics in Prometheus format with optional Basic Auth
+                            $rawMetrics = $this->fetchMetricsWithAuth($metricsUrl);
                             if ($rawMetrics !== false) {
                                 // Parse Prometheus-style metrics
                                 $prometheusMetrics = $this->parsePrometheusMetrics($rawMetrics);
                                 // Merge with existing metrics, with Prometheus metrics taking precedence
                                 $metrics = array_merge($metrics, $prometheusMetrics);
                                 // Store metric metadata for UI display
-                                $status['metric_info'] = $this->getMetricInfo($rawMetrics);
+                                $metricInfo = $this->getMetricInfo($rawMetrics);
+                            } else {
+                                // Log failure to fetch Prometheus metrics (may require Basic Auth)
+                                error_log("Failed to fetch Prometheus metrics from {$metricsUrl}. If PowerDNS webserver-password is enabled, configure 'pdns_api.webserver_username' and 'pdns_api.webserver_password' in settings.");
                             }
                         }
                     }
@@ -134,6 +142,11 @@ class PowerdnsStatusService
                 'metrics' => $metrics,
                 'metric_categories' => $metricCategories
             ];
+
+            // Add Prometheus metric info if available
+            if (!empty($metricInfo)) {
+                $status['metric_info'] = $metricInfo;
+            }
 
             // Add server metrics if available
             if (isset($configData['uptime'])) {
@@ -464,5 +477,28 @@ class PowerdnsStatusService
         }
 
         return $displayName;
+    }
+
+    /**
+     * Fetch metrics from URL with optional Basic Authentication
+     *
+     * @param string $url The metrics URL to fetch
+     * @return string|false The metrics content or false on failure
+     */
+    private function fetchMetricsWithAuth(string $url): string|false
+    {
+        // If Basic Auth credentials are configured, use stream context
+        if (!empty($this->webserverUsername) && !empty($this->webserverPassword)) {
+            $auth = base64_encode($this->webserverUsername . ':' . $this->webserverPassword);
+            $context = stream_context_create([
+                'http' => [
+                    'header' => "Authorization: Basic $auth"
+                ]
+            ]);
+            return @file_get_contents($url, false, $context);
+        }
+
+        // Fall back to simple file_get_contents without auth
+        return @file_get_contents($url);
     }
 }
