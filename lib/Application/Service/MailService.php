@@ -25,6 +25,8 @@ namespace Poweradmin\Application\Service;
 use Exception;
 use Poweradmin\Domain\Service\MailService as MailServiceInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Psr\Log\LoggerInterface;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -33,12 +35,20 @@ use Twig\Error\SyntaxError;
 class MailService implements MailServiceInterface
 {
     private ConfigurationManager $config;
-    private ?LoggerInterface $logger;
+    private LoggerInterface $logger;
     private EmailTemplateService $templateService;
 
     public function __construct(ConfigurationManager $config, ?LoggerInterface $logger = null)
     {
         $this->config = $config;
+
+        // Create logger if not provided
+        if ($logger === null) {
+            $logHandler = LoggerHandlerFactory::create($config->getAll());
+            $logLevel = $config->get('logging', 'level', 'info');
+            $logger = new Logger($logHandler, $logLevel);
+        }
+
         $this->logger = $logger;
         $this->templateService = new EmailTemplateService($config);
     }
@@ -593,9 +603,7 @@ class MailService implements MailServiceInterface
      */
     private function logDebug(string $message, array $context = []): void
     {
-        if ($this->logger !== null) {
-            $this->logger->debug($message, $context);
-        }
+        $this->logger->debug($message, $context);
     }
 
     /**
@@ -603,9 +611,7 @@ class MailService implements MailServiceInterface
      */
     private function logInfo(string $message, array $context = []): void
     {
-        if ($this->logger !== null) {
-            $this->logger->info($message, $context);
-        }
+        $this->logger->info($message, $context);
     }
 
     /**
@@ -613,9 +619,7 @@ class MailService implements MailServiceInterface
      */
     private function logWarning(string $message, array $context = []): void
     {
-        if ($this->logger !== null) {
-            $this->logger->warning($message, $context);
-        }
+        $this->logger->warning($message, $context);
     }
 
     /**
@@ -623,9 +627,7 @@ class MailService implements MailServiceInterface
      */
     private function logError(string $message, array $context = []): void
     {
-        if ($this->logger !== null) {
-            $this->logger->error($message, $context);
-        }
+        $this->logger->error($message, $context);
     }
 
     /**
