@@ -361,15 +361,15 @@
                                                                             <div class="d-flex justify-content-between align-items-start mb-2">
                                                                                 <span class="small text-muted text-truncate">{{ metric_name }}</span>
                                                                                 {% if server_status.metric_info is defined and server_status.metric_info[metric_name] is defined %}
-                                                                                    <span class="badge bg-light text-secondary rounded-pill" 
-                                                                                          data-bs-toggle="tooltip" 
-                                                                                          data-bs-placement="top" 
+                                                                                    <span class="badge bg-light text-secondary rounded-pill"
+                                                                                          data-bs-toggle="tooltip"
+                                                                                          data-bs-placement="top"
                                                                                           title="{{ server_status.metric_info[metric_name].description }}">
                                                                                         <i class="bi bi-info-circle"></i>
                                                                                     </span>
                                                                                 {% endif %}
                                                                             </div>
-                                                                            <h4 class="mb-0 text-{% if category.color == 'light' %}dark{% else %}{{ category.color }}{% endif %}">
+                                                                            <h4 class="mb-0">
                                                                                 {% if metric_name == 'uptime' and server_status.formatted_uptime is defined %}
                                                                                     {{ server_status.formatted_uptime }}
                                                                                 {% else %}
