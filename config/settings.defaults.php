@@ -221,6 +221,8 @@ return [
         'url' => '',                               // PowerDNS API URL, e.g., 'http://127.0.0.1:8081' (added in 3.7.0)
         'key' => '',                               // PowerDNS API key (added in 3.7.0)
         'server_name' => 'localhost',              // PowerDNS server name used in API calls (added in 4.0.0)
+        'webserver_username' => '',                // PowerDNS webserver Basic Auth username (usually '#') (added in 4.0.3)
+        'webserver_password' => '',                // PowerDNS webserver Basic Auth password (for /metrics endpoint) (added in 4.0.3)
     ],
 
     /**
