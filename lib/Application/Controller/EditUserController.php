@@ -159,7 +159,7 @@ class EditUserController extends BaseController
         $editId = (int)$this->request->getPostParam('number');
         $user = $this->getUserDetails($editId);
         $externalAuthMethods = ['ldap', 'oidc', 'saml'];
-        if (in_array($user['auth_type'] ?? 'sql', $externalAuthMethods)) {
+        if (in_array($user['auth_method'] ?? 'sql', $externalAuthMethods)) {
             return true;
         }
 
@@ -220,7 +220,7 @@ class EditUserController extends BaseController
 
         // Check if password changes should be disabled for external auth users
         $externalAuthMethods = ['ldap', 'oidc', 'saml'];
-        $isExternalAuth = in_array($user['auth_type'] ?? 'sql', $externalAuthMethods);
+        $isExternalAuth = in_array($user['auth_method'] ?? 'sql', $externalAuthMethods);
 
         $this->render('edit_user.html', [
             'edit_id' => $editId,

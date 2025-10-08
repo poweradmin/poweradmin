@@ -67,6 +67,34 @@ class PasswordResetService
     }
 
     /**
+     * Check if a user's authentication method allows password reset
+     *
+     * @param string $email User email address
+     * @return array Result array with 'allowed' boolean and optional 'auth_method' for blocked users
+     */
+    public function canUserResetPassword(string $email): array
+    {
+        $user = $this->userRepository->getUserByEmail($email);
+
+        if (!$user) {
+            // Don't reveal if user exists - return allowed=true
+            return ['allowed' => true];
+        }
+
+        $authMethod = $user['auth_method'] ?? 'sql';
+        $blockedMethods = ['oidc', 'saml', 'ldap'];
+
+        if (in_array($authMethod, $blockedMethods, true)) {
+            return [
+                'allowed' => false,
+                'auth_method' => $authMethod
+            ];
+        }
+
+        return ['allowed' => true];
+    }
+
+    /**
      * Generate a cryptographically secure token
      */
     private function generateToken(): string
@@ -110,6 +138,20 @@ class PasswordResetService
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
             return true; // Return true to not reveal if email exists
+        }
+
+        // Check if user's authentication method allows password reset
+        // OIDC, SAML, and LDAP users should only authenticate through their external providers
+        $authMethod = $user['auth_method'] ?? 'sql';
+        if (in_array($authMethod, ['oidc', 'saml', 'ldap'], true)) {
+            $this->logger->warning('Password reset blocked for external auth user', [
+                'email' => $email,
+                'auth_method' => $authMethod,
+                'user_id' => $user['id'],
+                'ip' => $ip,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            return true; // Return true to not reveal auth method
         }
 
         // Generate token
@@ -246,6 +288,19 @@ class PasswordResetService
                 // Get user data
                 $user = $this->userRepository->getUserByEmail($tokenData['email']);
                 if ($user) {
+                    // Additional security check: verify auth method allows password reset
+                    $authMethod = $user['auth_method'] ?? 'sql';
+                    if (in_array($authMethod, ['oidc', 'saml', 'ldap'], true)) {
+                        $this->logger->warning('Password reset token validation blocked for external auth user', [
+                            'email' => $tokenData['email'],
+                            'auth_method' => $authMethod,
+                            'user_id' => $user['id'],
+                            'token_id' => $tokenData['id'],
+                            'timestamp' => date('Y-m-d H:i:s')
+                        ]);
+                        return null;
+                    }
+
                     return [
                         'user' => $user,
                         'token_id' => $tokenData['id']

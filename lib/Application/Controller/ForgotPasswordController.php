@@ -173,6 +173,24 @@ class ForgotPasswordController extends BaseController
             return;
         }
 
+        // Check if user's authentication method allows password reset
+        $canReset = $this->passwordResetService->canUserResetPassword($email);
+        if (!$canReset['allowed']) {
+            $authMethod = strtoupper($canReset['auth_method'] ?? 'external');
+            $this->logger->info('Password reset blocked - user uses external authentication', [
+                'email' => $email,
+                'auth_method' => $canReset['auth_method'],
+                'ip' => $ipAddress,
+                'user_agent' => $userAgent,
+                'timestamp' => date('Y-m-d H:i:s')
+            ]);
+            $this->showPasswordResetForm(
+                "This account uses {$authMethod} authentication. Password reset is not available. " .
+                "Please contact your system administrator for assistance."
+            );
+            return;
+        }
+
         // Log password reset request attempt
         $this->logger->info('Password reset request initiated', [
             'email' => $email,

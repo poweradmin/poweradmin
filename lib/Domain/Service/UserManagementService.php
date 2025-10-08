@@ -350,8 +350,24 @@ class UserManagementService
         }
 
         try {
-            // Hash password if provided
+            // Check if attempting to set password for external auth user
             if (!empty($userData['password'])) {
+                $user = $this->userRepository->getUserById($userId);
+                $authMethod = $user['auth_method'] ?? 'sql';
+                $externalAuthMethods = ['oidc', 'saml', 'ldap'];
+
+                if (in_array($authMethod, $externalAuthMethods, true)) {
+                    return [
+                        'success' => false,
+                        'message' => sprintf(
+                            'Cannot set password for %s authenticated users. This user authenticates via %s.',
+                            strtoupper($authMethod),
+                            strtoupper($authMethod)
+                        )
+                    ];
+                }
+
+                // Hash password if allowed
                 $userData['password'] = password_hash($userData['password'], PASSWORD_DEFAULT);
             }
 
