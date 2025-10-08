@@ -26,15 +26,12 @@ use PDO;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\LoginAttemptService;
 use Poweradmin\Application\Service\SqlAuthenticator;
-use Poweradmin\Application\Service\LdapAuthenticator;
 use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Application\Service\UserEventLogger;
 use Poweradmin\Domain\Model\User;
 use Poweradmin\Domain\Model\UserEntity;
-use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
-use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\NullLogHandler;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -54,7 +51,6 @@ class BasicAuthenticationMiddleware
     private ConfigurationManager $config;
     private MessageService $messageService;
     private SqlAuthenticator $sqlAuthenticator;
-    private ?LdapAuthenticator $ldapAuthenticator;
 
     /**
      * Constructor
@@ -94,24 +90,6 @@ class BasicAuthenticationMiddleware
             $logger,
             $loginAttemptService
         );
-
-        // Create LDAP authenticator only if LDAP is enabled
-        if ($this->config->get('ldap', 'enabled', false)) {
-            $ldapUserEventLogger = new LdapUserEventLogger($db);
-            $userContextService = new UserContextService();
-            $this->ldapAuthenticator = new LdapAuthenticator(
-                $db,
-                $this->config,
-                $ldapUserEventLogger,
-                $authService,
-                $csrfTokenService,
-                $logger,
-                $loginAttemptService,
-                $userContextService
-            );
-        } else {
-            $this->ldapAuthenticator = null;
-        }
     }
 
     /**
@@ -215,16 +193,18 @@ class BasicAuthenticationMiddleware
         $userModel = new User($user['id'], $user['password'], (bool) $user['use_ldap']);
 
         // Try LDAP authentication first if user is configured for LDAP
-        if ($userModel->isLdapUser() && $this->ldapAuthenticator !== null) {
+        if ($userModel->isLdapUser() && $this->config->get('ldap', 'enabled', false)) {
             if ($this->ldapAuthenticatorApiAuth($userModel->getId(), $username, $password)) {
                 // Set session for compatibility with legacy code (DomainManager)
                 $_SESSION['userid'] = $userModel->getId();
                 $_SESSION['auth_used'] = 'basic_auth';
                 return $userModel->getId();
             }
+            // LDAP users should not fall back to SQL authentication
+            return 0;
         }
 
-        // Fall back to SQL authentication
+        // Fall back to SQL authentication for non-LDAP users
         if ($this->sqlAuthenticatorApiAuth($userModel, $password)) {
             // Set session for compatibility with legacy code (DomainManager)
             $_SESSION['userid'] = $userModel->getId();
