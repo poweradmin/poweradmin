@@ -102,21 +102,19 @@ class PowerdnsStatusService
                         $port = isset($parsedUrl['port']) ? $parsedUrl['port'] : '8081';
                         $metricsUrl = "{$parsedUrl['scheme']}://{$parsedUrl['host']}:{$port}/metrics";
 
-                        // Validate URL before fetching to prevent path traversal
-                        if ($this->isSecureUrl($metricsUrl)) {
-                            // Fetch metrics in Prometheus format with optional Basic Auth
-                            $rawMetrics = $this->fetchMetricsWithAuth($metricsUrl);
-                            if ($rawMetrics !== false) {
-                                // Parse Prometheus-style metrics
-                                $prometheusMetrics = $this->parsePrometheusMetrics($rawMetrics);
-                                // Merge with existing metrics, with Prometheus metrics taking precedence
-                                $metrics = array_merge($metrics, $prometheusMetrics);
-                                // Store metric metadata for UI display
-                                $metricInfo = $this->getMetricInfo($rawMetrics);
-                            } else {
-                                // Log failure to fetch Prometheus metrics (may require Basic Auth)
-                                error_log("Failed to fetch Prometheus metrics from {$metricsUrl}. If PowerDNS webserver-password is enabled, configure 'pdns_api.webserver_username' and 'pdns_api.webserver_password' in settings.");
-                            }
+                        // Fetch metrics in Prometheus format with optional Basic Auth
+                        // URL validation happens inside fetchMetricsWithAuth()
+                        $rawMetrics = $this->fetchMetricsWithAuth($metricsUrl);
+                        if ($rawMetrics !== false) {
+                            // Parse Prometheus-style metrics
+                            $prometheusMetrics = $this->parsePrometheusMetrics($rawMetrics);
+                            // Merge with existing metrics, with Prometheus metrics taking precedence
+                            $metrics = array_merge($metrics, $prometheusMetrics);
+                            // Store metric metadata for UI display
+                            $metricInfo = $this->getMetricInfo($rawMetrics);
+                        } else {
+                            // Log failure to fetch Prometheus metrics (may require Basic Auth)
+                            error_log("Failed to fetch Prometheus metrics from {$metricsUrl}. If PowerDNS webserver-password is enabled, configure 'pdns_api.webserver_username' and 'pdns_api.webserver_password' in settings.");
                         }
                     }
                 }
@@ -451,6 +449,56 @@ class PowerdnsStatusService
     }
 
     /**
+     * Validates URL to prevent SSRF and path traversal attacks
+     * Only allows fetching from the same host/port as the configured PowerDNS API
+     *
+     * @param string $url The URL to validate
+     * @return bool True if URL is safe to fetch
+     */
+    private function isValidMetricsUrl(string $url): bool
+    {
+        // Validate URL format
+        if (filter_var($url, FILTER_VALIDATE_URL) === false) {
+            error_log("PowerdnsStatusService: Invalid URL format");
+            return false;
+        }
+
+        $parsedUrl = parse_url($url);
+
+        // Ensure scheme is http or https only (prevent file://, ftp://, gopher://, etc.)
+        if (!isset($parsedUrl['scheme']) || !in_array($parsedUrl['scheme'], ['http', 'https'], true)) {
+            error_log("PowerdnsStatusService: Invalid URL scheme, only http/https allowed");
+            return false;
+        }
+
+        // Ensure host is present
+        if (!isset($parsedUrl['host']) || empty($parsedUrl['host'])) {
+            error_log("PowerdnsStatusService: Missing URL host");
+            return false;
+        }
+
+        // Validate that the URL is from the same host as configured API URL (Option 2)
+        if (empty($this->apiUrl)) {
+            error_log("PowerdnsStatusService: API URL not configured");
+            return false;
+        }
+
+        $apiParsedUrl = parse_url($this->apiUrl);
+        if (!isset($apiParsedUrl['host'])) {
+            error_log("PowerdnsStatusService: Invalid API URL configuration");
+            return false;
+        }
+
+        // Enforce same host - prevent requests to arbitrary internal services
+        if (strtolower($parsedUrl['host']) !== strtolower($apiParsedUrl['host'])) {
+            error_log("PowerdnsStatusService: URL host mismatch with configured API URL");
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
      * Sanitize display name and provide fallback to default value
      *
      * @param mixed $displayName The display name from configuration
@@ -481,12 +529,19 @@ class PowerdnsStatusService
 
     /**
      * Fetch metrics from URL with optional Basic Authentication
+     * Validates URL to prevent SSRF and path traversal attacks
      *
      * @param string $url The metrics URL to fetch
      * @return string|false The metrics content or false on failure
      */
     private function fetchMetricsWithAuth(string $url): string|false
     {
+        // Validate URL before fetching to prevent SSRF and path traversal
+        if (!$this->isValidMetricsUrl($url)) {
+            error_log("PowerdnsStatusService: Blocked unsafe URL fetch attempt");
+            return false;
+        }
+
         // If Basic Auth credentials are configured, use stream context
         if (!empty($this->webserverUsername) && !empty($this->webserverPassword)) {
             $auth = base64_encode($this->webserverUsername . ':' . $this->webserverPassword);
