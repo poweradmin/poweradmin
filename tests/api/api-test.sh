@@ -756,9 +756,9 @@ test_security() {
         \"password\": \"test123\",
         \"email\": \"test@example.com\"
     }"
-    
-    # API correctly rejects large payloads (409 = email exists, which is safe behavior)
-    api_request "POST" "/users" "$large_payload" "409" "Large payload rejection"
+
+    # API correctly rejects large payloads (400 = validation error for oversized field)
+    api_request "POST" "/users" "$large_payload" "400" "Large payload rejection"
     
     # Invalid JSON test
     increment_test

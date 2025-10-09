@@ -340,15 +340,17 @@ class UsersController extends PublicApiController
     )]
     #[OA\Parameter(
         name: 'page',
-        description: 'Page number for pagination',
+        description: 'Page number for pagination (optional, only used when per_page is specified)',
         in: 'query',
+        required: false,
         schema: new OA\Schema(type: 'integer', default: 1)
     )]
     #[OA\Parameter(
         name: 'per_page',
-        description: 'Number of users per page',
+        description: 'Number of users per page (0 or omit to return all users, max 10000)',
         in: 'query',
-        schema: new OA\Schema(type: 'integer', default: 25)
+        required: false,
+        schema: new OA\Schema(type: 'integer', default: 0)
     )]
     #[OA\Response(
         response: 200,
@@ -390,29 +392,67 @@ class UsersController extends PublicApiController
     private function listUsers(): JsonResponse
     {
         try {
-            // Get pagination parameters
-            $page = max(1, (int)$this->request->query->get('page', 1));
-            $perPage = min(100, max(1, (int)$this->request->query->get('per_page', 25)));
+            // Get filter parameters
+            $username = $this->request->query->get('username');
+            $email = $this->request->query->get('email');
 
-            // Create pagination object
-            $pagination = new Pagination(0, $perPage, $page); // We'll set total items after getting the result
+            // Handle filtering
+            if ($username || $email) {
+                $users = [];
+                if ($username) {
+                    $user = $this->userManagementService->getUserByUsername($username);
+                    if ($user) {
+                        $users[] = $user;
+                    }
+                } elseif ($email) {
+                    $user = $this->userManagementService->getUserByEmail($email);
+                    if ($user) {
+                        $users[] = $user;
+                    }
+                }
+                return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200);
+            }
 
-            // Use the domain service to get users list
-            $result = $this->userManagementService->getUsersList($pagination);
-            $users = $result['data'];
-            $totalCount = $result['total_count'];
+            // Get pagination parameters (defaults to returning all users)
+            $perPage = (int)$this->request->query->get('per_page', 0);
 
-            return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, [
-                'pagination' => [
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'total' => $totalCount,
-                    'last_page' => ceil($totalCount / $perPage)
-                ],
-                'meta' => [
-                    'timestamp' => date('Y-m-d H:i:s')
-                ]
-            ]);
+            // If per_page is 0 or not specified, return all users
+            if ($perPage === 0) {
+                $pagination = new Pagination(0, PHP_INT_MAX, 1);
+                $result = $this->userManagementService->getUsersList($pagination);
+                $users = $result['data'];
+
+                $responseData = [
+                    'meta' => [
+                        'timestamp' => date('Y-m-d H:i:s')
+                    ]
+                ];
+
+                return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, $responseData);
+            } else {
+                // Use pagination
+                $page = max(1, (int)$this->request->query->get('page', 1));
+                $perPage = min(10000, max(1, $perPage));
+
+                $pagination = new Pagination(0, $perPage, $page);
+                $result = $this->userManagementService->getUsersList($pagination);
+                $users = $result['data'];
+                $totalCount = $result['total_count'];
+
+                $responseData = [
+                    'pagination' => [
+                        'current_page' => $page,
+                        'per_page' => $perPage,
+                        'total' => $totalCount,
+                        'last_page' => ceil($totalCount / $perPage)
+                    ],
+                    'meta' => [
+                        'timestamp' => date('Y-m-d H:i:s')
+                    ]
+                ];
+
+                return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, $responseData);
+            }
         } catch (Exception $e) {
             return $this->returnApiError('Failed to retrieve users: ' . $e->getMessage(), 500);
         }

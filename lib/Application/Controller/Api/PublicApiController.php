@@ -165,10 +165,10 @@ abstract class PublicApiController extends AbstractApiController
      * @param bool $success Whether the request was successful
      * @param string|null $message Optional message
      * @param int $status HTTP status code
-     * @param array $headers Additional headers
+     * @param array $additionalFields Additional response fields (pagination, meta, etc.)
      * @return JsonResponse The JSON response object
      */
-    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200, array $headers = []): JsonResponse
+    protected function returnApiResponse($data, bool $success = true, ?string $message = null, int $status = 200, array $additionalFields = []): JsonResponse
     {
         $response = [
             'success' => $success,
@@ -179,7 +179,10 @@ abstract class PublicApiController extends AbstractApiController
             $response['message'] = $message;
         }
 
-        return $this->returnJsonResponse($response, $status, $headers);
+        // Merge additional fields (pagination, meta, etc.) into response
+        $response = array_merge($response, $additionalFields);
+
+        return $this->returnJsonResponse($response, $status);
     }
 
     /**

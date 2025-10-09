@@ -112,15 +112,15 @@ class ZonesController extends PublicApiController
     )]
     #[OA\Parameter(
         name: 'page',
-        description: 'Page number for pagination',
+        description: 'Page number for pagination (optional, only used when per_page is specified)',
         in: 'query',
         schema: new OA\Schema(type: 'integer', default: 1)
     )]
     #[OA\Parameter(
         name: 'per_page',
-        description: 'Number of zones per page',
+        description: 'Number of zones per page (optional, omit or set to 0 to return all zones)',
         in: 'query',
-        schema: new OA\Schema(type: 'integer', default: 25)
+        schema: new OA\Schema(type: 'integer', default: 0)
     )]
     #[OA\Response(
         response: 200,
@@ -158,14 +158,26 @@ class ZonesController extends PublicApiController
     private function listZones(): JsonResponse
     {
         try {
-            // Get pagination parameters
-            $page = max(1, (int)$this->request->query->get('page', 1));
-            $perPage = min(100, max(1, (int)$this->request->query->get('per_page', 25)));
-            $offset = ($page - 1) * $perPage;
+            // Get pagination parameters (defaults to returning all zones like PowerDNS and PowerDNS-Admin)
+            $perPage = (int)$this->request->query->get('per_page', 0);
 
-            // Get zones accessible to current user
-            $zones = $this->zoneRepository->getAllZones($offset, $perPage);
+            // Get total count for metadata
             $totalCount = $this->zoneRepository->getZoneCount();
+
+            // If per_page is 0 or not specified, return all zones (compatible with PowerDNS/PowerDNS-Admin)
+            if ($perPage === 0) {
+                $zones = $this->zoneRepository->getAllZones();
+                $page = 1;
+                $lastPage = 1;
+            } else {
+                // Use pagination
+                $page = max(1, (int)$this->request->query->get('page', 1));
+                $perPage = min(10000, max(1, $perPage)); // Allow up to 10k per page
+                $offset = ($page - 1) * $perPage;
+
+                $zones = $this->zoneRepository->getAllZones($offset, $perPage);
+                $lastPage = ceil($totalCount / $perPage);
+            }
 
             // Format zone data
             $formattedZones = array_map(function ($zone) {
@@ -177,17 +189,23 @@ class ZonesController extends PublicApiController
                 ];
             }, $zones);
 
-            return $this->returnApiResponse($formattedZones, true, 'Zones retrieved successfully', 200, [
-                'pagination' => [
-                    'current_page' => $page,
-                    'per_page' => $perPage,
-                    'total' => $totalCount,
-                    'last_page' => ceil($totalCount / $perPage)
-                ],
+            $responseData = [
                 'meta' => [
                     'timestamp' => date('Y-m-d H:i:s')
                 ]
-            ]);
+            ];
+
+            // Only include pagination metadata if pagination was requested
+            if ($perPage > 0) {
+                $responseData['pagination'] = [
+                    'current_page' => $page,
+                    'per_page' => $perPage,
+                    'total' => $totalCount,
+                    'last_page' => $lastPage
+                ];
+            }
+
+            return $this->returnApiResponse($formattedZones, true, 'Zones retrieved successfully', 200, $responseData);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to retrieve zones: ' . $e->getMessage(), 500);
         }
