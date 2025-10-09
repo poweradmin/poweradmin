@@ -276,24 +276,37 @@ class SessionAuthenticator extends LoggingService
         }
 
         // Fall back to database auth_method (for existing SQL/LDAP sessions)
-        $stmt = $this->db->prepare("SELECT auth_method FROM users WHERE username = :username");
-        $stmt->execute([
-            'username' => $_SESSION["userlogin"]
-        ]);
-        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+        try {
+            $stmt = $this->db->prepare("SELECT auth_method FROM users WHERE username = :username");
+            $stmt->execute([
+                'username' => $_SESSION["userlogin"]
+            ]);
+            $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if ($rowObj === false) {
-            $this->logWarning('User {username} not found in database', ['username' => $_SESSION["userlogin"]]);
-            return 'sql'; // Default to SQL if user not found
+            if ($rowObj === false) {
+                $this->logWarning('User {username} not found in database', ['username' => $_SESSION["userlogin"]]);
+                return 'sql'; // Default to SQL if user not found
+            }
+
+            $authMethod = $rowObj['auth_method'] ?? 'sql';
+            $this->logDebug('Using database auth method for user {username}: {authMethod}', [
+                'username' => $_SESSION["userlogin"],
+                'authMethod' => $authMethod
+            ]);
+
+            return $authMethod;
+        } catch (\PDOException $e) {
+            $this->logError('Database error while fetching auth method for user {username}: {error}', [
+                'username' => $_SESSION["userlogin"],
+                'error' => $e->getMessage()
+            ]);
+
+            // Log out user and display error message
+            $sessionEntity = new SessionEntity(_('Database error: Unable to verify user authentication. Please check your database configuration.'), 'danger');
+            $this->authService->logout($sessionEntity);
+
+            return 'sql'; // Return default to prevent further errors
         }
-
-        $authMethod = $rowObj['auth_method'] ?? 'sql';
-        $this->logDebug('Using database auth method for user {username}: {authMethod}', [
-            'username' => $_SESSION["userlogin"],
-            'authMethod' => $authMethod
-        ]);
-
-        return $authMethod;
     }
 
     private function userUsesLDAP(): bool
