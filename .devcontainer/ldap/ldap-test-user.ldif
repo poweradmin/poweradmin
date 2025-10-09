@@ -1,0 +1,20 @@
+dn: ou=users,dc=poweradmin,dc=org
+objectClass: organizationalUnit
+ou: users
+
+dn: uid=testuser,ou=users,dc=poweradmin,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: testuser
+sn: User
+givenName: Test
+cn: Test User
+displayName: Test User
+uidNumber: 10000
+gidNumber: 10000
+userPassword: testpass123
+gecos: Test User
+loginShell: /bin/bash
+homeDirectory: /home/testuser
+mail: testuser@poweradmin.org

@@ -38,5 +38,6 @@
     "ldapadmin:8443": {
       "label": "LDAP Admin"
     }
-  }
+  },
+  "postStartCommand": "bash .devcontainer/ldap/setup-ldap-test.sh"
 }

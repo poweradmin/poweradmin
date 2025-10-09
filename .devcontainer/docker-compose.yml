@@ -160,9 +160,17 @@ services:
       - LDAP_DOMAIN=poweradmin.org
       - "LDAP_BASE_DN=dc=poweradmin,dc=org"
       - LDAP_ADMIN_PASSWORD=poweradmin
+    volumes:
+      - ./ldap/ldap-test-user.ldif:/ldap-test-user.ldif:ro
     ports:
       - 389:389
       - 636:636
+    healthcheck:
+      test: ["CMD-SHELL", "ldapsearch -x -H ldap://localhost -b dc=poweradmin,dc=org -D 'cn=admin,dc=poweradmin,dc=org' -w poweradmin"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
 
   ldapadmin:
     image: osixia/phpldapadmin:0.9.0
