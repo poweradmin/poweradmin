@@ -251,6 +251,35 @@ class RecordRepository implements RecordRepositoryInterface
     }
 
     /**
+     * Check if non-delegation records exist for a given name
+     *
+     * Per RFC 1034 Section 4.2.1: "NS RRs that name the servers for the subzones are NOT
+     * part of the authoritative data of the zone". Per RFC 4034: DS records are part of
+     * the delegation for DNSSEC-signed zones. This means delegation records (NS, DS) should
+     * not prevent zone creation, but other record types (A, AAAA, CNAME, MX, etc.) indicate
+     * authoritative data and should block zone creation to prevent zone hijacking.
+     *
+     * Note: Poweradmin doesn't set the auth field explicitly, so all records default to auth=1.
+     * Therefore, we check for non-delegation record types instead of relying on the auth field.
+     *
+     * @param string $name Record name
+     * @return bool True if non-delegation records exist, false otherwise
+     */
+    public function hasNonDelegationRecords(string $name): bool
+    {
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+
+        $stmt = $this->db->prepare(
+            "SELECT COUNT(id) FROM $records_table
+             WHERE name = :name
+             AND type NOT IN ('NS', 'DS')"
+        );
+        $stmt->execute([':name' => $name]);
+        $count = $stmt->fetchColumn();
+        return $count > 0;
+    }
+
+    /**
      * Check if record has similar records with same name and type
      *
      * @param int $domain_id Domain ID

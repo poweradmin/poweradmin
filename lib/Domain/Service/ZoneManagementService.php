@@ -79,6 +79,12 @@ class ZoneManagementService
             return ['success' => false, 'message' => 'Domain already exists'];
         }
 
+        // Check if non-delegation records exist (prevents zone hijacking)
+        // Only delegation records (NS, DS) are allowed
+        if ($dnsRecord->hasNonDelegationRecords($domain)) {
+            return ['success' => false, 'message' => 'Domain already exists'];
+        }
+
         // Validate zone type
         $validTypes = ['MASTER', 'SLAVE', 'NATIVE'];
         if (!in_array($type, $validTypes)) {

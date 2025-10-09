@@ -691,6 +691,22 @@ class DnsRecord
         return $this->recordRepository->recordNameExists($name);
     }
 
+    /**
+     * Check if non-delegation records exist for a given name
+     *
+     * Per RFC 1034: Delegation NS records are NOT authoritative data.
+     * Per RFC 4034: DS records are part of the delegation for DNSSEC.
+     * This method checks for records other than NS/DS which indicate authoritative data.
+     * Only delegation records (NS, DS) at a name should not prevent zone creation.
+     *
+     * @param string $name Record name
+     * @return bool True if non-delegation records exist, false otherwise
+     */
+    public function hasNonDelegationRecords(string $name): bool
+    {
+        return $this->recordRepository->hasNonDelegationRecords($name);
+    }
+
     /** Return domain level for given name
      *
      * @param string $name Zone name
