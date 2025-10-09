@@ -236,15 +236,15 @@ class UsersController extends PublicApiController
     )]
     #[OA\Parameter(
         name: 'page',
-        description: 'Page number for pagination',
+        description: 'Page number for pagination (optional, only used when per_page is specified)',
         in: 'query',
         schema: new OA\Schema(type: 'integer', default: 1)
     )]
     #[OA\Parameter(
         name: 'per_page',
-        description: 'Number of users per page',
+        description: 'Number of users per page (optional, omit or set to 0 to return all users)',
         in: 'query',
-        schema: new OA\Schema(type: 'integer', default: 25)
+        schema: new OA\Schema(type: 'integer', default: 0)
     )]
     #[OA\Parameter(
         name: 'username',
@@ -307,10 +307,6 @@ class UsersController extends PublicApiController
                 return $this->returnApiError('You do not have permission to list users', 403);
             }
 
-            // Get pagination parameters
-            $page = max(1, (int)$this->request->query->get('page', 1));
-            $perPage = min(100, max(1, (int)$this->request->query->get('per_page', 25)));
-
             // Get filter parameters
             $username = $this->request->query->get('username');
             $email = $this->request->query->get('email');
@@ -334,15 +330,50 @@ class UsersController extends PublicApiController
                 return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200);
             }
 
-            // Create pagination object for general listing
-            $pagination = new Pagination(0, $perPage, $page); // We'll set total items after getting the result
+            // Get pagination parameters (defaults to returning all users)
+            $perPage = (int)$this->request->query->get('per_page', 0);
 
-            // Use the domain service to get users list
-            $result = $this->userManagementService->getUsersList($pagination);
-            $users = $result['data'];
-            $totalCount = $result['total_count'];
+            // If per_page is 0 or not specified, return all users
+            if ($perPage === 0) {
+                // Get all users without pagination
+                $pagination = new Pagination(0, PHP_INT_MAX, 1);
+                $result = $this->userManagementService->getUsersList($pagination);
+                $users = $result['data'];
 
-            return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200);
+                $responseData = [
+                    'meta' => [
+                        'timestamp' => date('Y-m-d H:i:s')
+                    ]
+                ];
+
+                return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, $responseData);
+            } else {
+                // Use pagination
+                $page = max(1, (int)$this->request->query->get('page', 1));
+                $perPage = min(10000, max(1, $perPage)); // Allow up to 10k per page
+
+                // Create pagination object
+                $pagination = new Pagination(0, $perPage, $page);
+
+                // Use the domain service to get users list
+                $result = $this->userManagementService->getUsersList($pagination);
+                $users = $result['data'];
+                $totalCount = $result['total_count'];
+
+                $responseData = [
+                    'pagination' => [
+                        'current_page' => $page,
+                        'per_page' => $perPage,
+                        'total' => $totalCount,
+                        'last_page' => ceil($totalCount / $perPage)
+                    ],
+                    'meta' => [
+                        'timestamp' => date('Y-m-d H:i:s')
+                    ]
+                ];
+
+                return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, $responseData);
+            }
         } catch (Exception $e) {
             return $this->returnApiError('Failed to retrieve users: ' . $e->getMessage(), 500);
         }

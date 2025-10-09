@@ -853,7 +853,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return $stmt->execute($params);
     }
 
-    public function getAllZones(int $offset, int $limit): array
+    public function getAllZones(?int $offset = null, ?int $limit = null): array
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -865,12 +865,18 @@ class DbZoneRepository implements ZoneRepositoryInterface
                   LEFT JOIN zones z ON d.id = z.domain_id
                   LEFT JOIN $records_table r ON d.id = r.domain_id
                   GROUP BY d.id, d.name, d.type, d.master, z.owner
-                  ORDER BY d.name
-                  LIMIT :limit OFFSET :offset";
+                  ORDER BY d.name";
 
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        // Add pagination only if limit is specified
+        if ($limit !== null && $limit > 0) {
+            $query .= " LIMIT :limit OFFSET :offset";
+            $stmt = $this->db->prepare($query);
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset ?? 0, PDO::PARAM_INT);
+        } else {
+            $stmt = $this->db->prepare($query);
+        }
+
         $stmt->execute();
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
