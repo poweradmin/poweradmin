@@ -162,7 +162,7 @@ class Generator
         foreach ($config as $key => $value) {
             if (is_numeric($key)) {
                 $token = explode('=', $value);
-                if (2 == count($token)) {
+                if (2 === count($token)) {
                     // 'operationId.hash=false'
                     [$key, $value] = $token;
                 }
@@ -176,7 +176,7 @@ class Generator
                 $key = substr($key, 0, -2);
             }
             $token = explode('.', $key);
-            if (2 == count($token)) {
+            if (2 === count($token)) {
                 // 'operationId.hash' => false
                 // namespaced / processor
                 if ($isList) {
@@ -250,6 +250,10 @@ class Generator
                     }
                 }
             }
+
+            if (is_a($pipe, GeneratorAwareInterface::class)) {
+                $pipe->setGenerator($this);
+            }
         };
 
         return $this->processorPipeline->walk($walker);
@@ -258,6 +262,16 @@ class Generator
     public function setProcessorPipeline(?Pipeline $processor): Generator
     {
         $this->processorPipeline = $processor;
+
+        $walker = function (callable $pipe): void {
+            if (is_a($pipe, GeneratorAwareInterface::class)) {
+                $pipe->setGenerator($this);
+            }
+        };
+
+        if ($this->processorPipeline) {
+            $this->processorPipeline->walk($walker);
+        }
 
         return $this;
     }

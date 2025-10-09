@@ -83,20 +83,19 @@ class AugmentParameters
         foreach ($operations as $operation) {
             if (!Generator::isDefault($operation->parameters)) {
                 $tags = [];
-                $this->extractContent($operation->_context->comment, $tags);
-                if (array_key_exists('param', $tags)) {
-                    foreach ($tags['param'] as $name => $details) {
-                        foreach ($operation->parameters as $parameter) {
-                            if ($parameter->name == $name) {
-                                if (Generator::isDefault($parameter->description) && $details['description']) {
-                                    $parameter->description = $details['description'];
-                                }
+                $this->parseDocblock($operation->_context->comment, $tags);
+                $docblockParams = $tags['param'] ?? [];
+
+                foreach ($operation->parameters as $parameter) {
+                    if (Generator::isDefault($parameter->description)) {
+                        if (array_key_exists($parameter->name, $docblockParams)) {
+                            $details = $docblockParams[$parameter->name];
+                            if ($details['description']) {
+                                $parameter->description = $details['description'];
                             }
                         }
                     }
-                }
 
-                foreach ($operation->parameters as $parameter) {
                     if (!Generator::isDefault($parameter->schema)) {
                         $this->mapNativeType($parameter->schema, $parameter->schema->type);
                     }
