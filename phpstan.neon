@@ -6,5 +6,3 @@ parameters:
     - '#Call to an undefined method .+::expects\(\).#'
     # Ignore constructor unused parameter errors
     - '#Constructor of class .+ has an unused parameter \$_config.#'
-    # Ignore other specific warnings
-    - '#PHPDoc tag @param for parameter \$dbType with type mixed is not subtype of native type string.#'

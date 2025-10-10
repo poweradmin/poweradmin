@@ -265,6 +265,9 @@ return [
     // because they generate numerous false positives in OpenAPI annotations (336 warnings)
     // due to Phan's interpretation of named parameters in complex constructor signatures.
     // These are documentation-only annotations and do not affect runtime functionality.
+    //
+    // Note: PhanMissingRequireFile is suppressed for config/settings.php because this is
+    // an optional user configuration file that is properly guarded with file_exists().
     'suppress_issue_types' => [
         'PhanDeprecatedClass',
         'PhanDeprecatedFunction',
@@ -278,6 +281,7 @@ return [
         'PhanTypeMismatchArgumentInternalProbablyReal',
         'PhanTypeInvalidThrowsIsInterface',
         'PhanTypeMismatchArgumentSuperType',
+        'PhanMissingRequireFile',
     ],
 
     // A regular expression to match files to be excluded
