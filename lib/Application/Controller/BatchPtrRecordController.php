@@ -84,7 +84,7 @@ class BatchPtrRecordController extends BaseController
 
         if ($hasZoneId) {
             $this->checkId();
-            $zone_id = htmlspecialchars($_GET['id']);
+            $zone_id = (int)htmlspecialchars($_GET['id']);
             $zone_type = $this->dnsRecord->getDomainType($zone_id);
             $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
             $perm_edit = Permission::getEditPermission($this->db);
@@ -206,7 +206,7 @@ class BatchPtrRecordController extends BaseController
         $preFillDomain = "";
 
         if ($hasZoneId) {
-            $zone_id = htmlspecialchars($_GET['id']);
+            $zone_id = (int)htmlspecialchars($_GET['id']);
             $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
             $preFillDomain = $zone_name;

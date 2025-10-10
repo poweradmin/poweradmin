@@ -49,7 +49,7 @@ class ReverseRecordCreator
         $this->dnsRecord = $dnsRecord;
     }
 
-    public function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment = '', string $account = ''): array
+    public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = ''): array
     {
         $isReverseRecordAllowed = $this->config->get('interface', 'add_reverse_record');
 
@@ -233,7 +233,7 @@ class ReverseRecordCreator
         return null;
     }
 
-    private function addReverseRecord($zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool
+    private function addReverseRecord(int $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool
     {
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
         if (str_ends_with($name, '.' . $zone_name)) {

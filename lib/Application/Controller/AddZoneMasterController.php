@@ -100,7 +100,7 @@ class AddZoneMasterController extends BaseController
 
         $zone_name = DnsIdnService::toPunycode(trim($_POST['domain']));
         $dom_type = $_POST["dom_type"];
-        $owner = $_POST['owner'];
+        $owner = (int)$_POST['owner'];
         $zone_template = $_POST['zone_template'] ?? "none";
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());

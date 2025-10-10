@@ -81,7 +81,7 @@ class BulkRecordAddController extends BaseController
         $this->checkId();
 
         $perm_edit = Permission::getEditPermission($this->db);
-        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = (int)htmlspecialchars($_GET['id']);
         $zone_type = $this->dnsRecord->getDomainType($zone_id);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
@@ -242,7 +242,7 @@ class BulkRecordAddController extends BaseController
 
     private function showBulkRecordAdditionForm(array $failed_records = []): void
     {
-        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = (int)htmlspecialchars($_GET['id']);
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
 
         // For internationalized domain names

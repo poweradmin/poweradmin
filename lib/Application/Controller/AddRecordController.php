@@ -102,7 +102,7 @@ class AddRecordController extends BaseController
         $this->checkId();
 
         $perm_edit = Permission::getEditPermission($this->db);
-        $zone_id = $this->getSafeRequestValue('zone_id');
+        $zone_id = (int)$this->getSafeRequestValue('zone_id');
         $zone_type = $this->dnsRecord->getDomainType($zone_id);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
@@ -244,7 +244,7 @@ class AddRecordController extends BaseController
 
     private function showForm(): void
     {
-        $zone_id = $this->getSafeRequestValue('zone_id');
+        $zone_id = (int)$this->getSafeRequestValue('zone_id');
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
         $isReverseZone = DnsHelper::isReverseZone($zone_name);
 
@@ -305,7 +305,7 @@ class AddRecordController extends BaseController
         );
     }
 
-    private function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment): array
+    private function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment): array
     {
         $result = $this->reverseRecordCreator->createReverseRecord(
             $name,
@@ -325,7 +325,7 @@ class AddRecordController extends BaseController
         return $result;
     }
 
-    private function createDomainRecord(string $name, string $type, string $content, string $zone_id, string $comment): bool
+    private function createDomainRecord(string $name, string $type, string $content, int $zone_id, string $comment): bool
     {
         $result = $this->domainRecordCreator->addDomainRecord(
             $name,

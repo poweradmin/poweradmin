@@ -73,7 +73,7 @@ class DeleteDomainController extends BaseController
             $this->showFirstValidationError($this->getRequest());
         }
 
-        $zone_id = $this->getSafeRequestValue('id');
+        $zone_id = (int)$this->getSafeRequestValue('id');
 
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
@@ -86,7 +86,7 @@ class DeleteDomainController extends BaseController
         }
     }
 
-    private function deleteDomain(string $zone_id): void
+    private function deleteDomain(int $zone_id): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_info = $dnsRecord->getZoneInfoFromId($zone_id);
@@ -123,7 +123,7 @@ class DeleteDomainController extends BaseController
         }
     }
 
-    private function showDeleteDomain(string $zone_id): void
+    private function showDeleteDomain(int $zone_id): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_info = $dnsRecord->getZoneInfoFromId($zone_id);

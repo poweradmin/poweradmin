@@ -51,7 +51,7 @@ class DomainRecordCreator
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
     }
 
-    public function addDomainRecord(string $name, string $type, string $content, string $zone_id, string $comment = '', string $account = ''): array
+    public function addDomainRecord(string $name, string $type, string $content, int $zone_id, string $comment = '', string $account = ''): array
     {
         $iface_add_domain_record = $this->config->get('interface', 'add_domain_record');
 

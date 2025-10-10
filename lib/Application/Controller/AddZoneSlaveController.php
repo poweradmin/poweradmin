@@ -92,7 +92,7 @@ class AddZoneSlaveController extends BaseController
         $dns_third_level_check = $this->config->get('dns', 'third_level_check', false);
 
         $type = "SLAVE";
-        $owner = $_POST['owner'];
+        $owner = (int)$_POST['owner'];
         $master = $_POST['slave_master'];
         $zone = DnsIdnService::toPunycode(trim($_POST['domain']));
 
