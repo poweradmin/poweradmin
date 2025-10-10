@@ -35,7 +35,6 @@ class DependencyCheck
         'gettext' => 'gettext',
         'openssl' => 'openssl_encrypt',
         'session' => 'session_start',
-        'tokenizer' => 'token_get_all',
         'filter' => 'filter_var',
     );
 
