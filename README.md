@@ -15,11 +15,16 @@ DNSSEC operations.
 - Supports all zone types (master, native, and slave)
 - Supermasters for automatic provisioning of slave zones
 - IPv6 support
-- Multi-language support
-- DNSSEC operations
+- Multi-language support (15+ languages)
+- DNSSEC operations via PowerDNS API
 - Light and dark themes
 - Ability to add reverse records
-- LDAP authentication support with custom filter
+- Authentication options:
+  - Local database authentication
+  - LDAP authentication with custom filter
+  - Multi-factor authentication (MFA/2FA) with TOTP
+- RESTful API with OpenAPI documentation
+- Docker deployment with FrankenPHP
 
 ## Disclaimer
 
