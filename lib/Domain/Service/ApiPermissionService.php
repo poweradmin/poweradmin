@@ -22,7 +22,6 @@
 
 namespace Poweradmin\Domain\Service;
 
-use PDO;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 
 /**

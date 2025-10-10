@@ -24,7 +24,6 @@ namespace Poweradmin\Application\Service;
 
 use OneLogin\Saml2\Auth;
 use OneLogin\Saml2\Settings;
-use OneLogin\Saml2\Utils;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Model\SessionEntity;
