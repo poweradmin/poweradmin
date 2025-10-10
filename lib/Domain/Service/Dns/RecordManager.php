@@ -33,7 +33,6 @@ use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Service\DnsRecordValidationServiceInterface;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Configuration\FakeConfiguration;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Database\TableNameService;
@@ -179,13 +178,7 @@ class RecordManager implements RecordManagerInterface
 
         $pdnssec_use = $this->config->get('dnssec', 'enabled');
         if ($pdnssec_use) {
-            $pdns_api_url = $this->config->get('pdns_api', 'url');
-            $pdns_api_key = $this->config->get('pdns_api', 'key');
-
-            $dnssecProvider = DnssecProviderFactory::create(
-                $this->db,
-                new FakeConfiguration($pdns_api_url, $pdns_api_key)
-            );
+            $dnssecProvider = DnssecProviderFactory::create($this->db, $this->config);
             $zone_name = $this->domainRepository->getDomainNameById($zone_id);
             if (is_string($zone_name)) {
                 $dnssecProvider->rectifyZone($zone_name);
