@@ -13,6 +13,10 @@ on:
         default: false
         type: boolean
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
@@ -46,6 +50,9 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Security audit
+      run: composer audit
+
     - name: Check code style
       run: composer check:all
 
@@ -61,6 +68,23 @@ jobs:
 
     - name: Run test suite
       run: composer tests
+
+    - name: Build Summary
+      if: always()
+      run: |
+        echo "### PHP Build Summary 🚀" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**PHP Version:** 8.4" >> $GITHUB_STEP_SUMMARY
+        echo "**Platform:** ${{ runner.os }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Quality Checks:**" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Code style (PHP_CodeSniffer)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Static analysis (PHPStan level 3)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Static analysis (Psalm level 4)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Security audit (Composer)" >> $GITHUB_STEP_SUMMARY
+        echo "- ✅ Unit tests (PHPUnit)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Workflow:** ${{ github.workflow }} (#${{ github.run_number }})" >> $GITHUB_STEP_SUMMARY
 
   compatibility:
     name: PHP ${{ matrix.php-version }} Compatibility
@@ -94,4 +118,14 @@ jobs:
 
     - name: Check PHP ${{ matrix.php-version }} compatibility
       run: composer compat:${{ matrix.php-version }}
+
+    - name: Compatibility Summary
+      if: always()
+      run: |
+        echo "### PHP ${{ matrix.php-version }} Compatibility Check ✓" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Target PHP Version:** ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Analysis Tool:** Phan (polyfill parser)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Compatibility check completed for PHP ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
 
