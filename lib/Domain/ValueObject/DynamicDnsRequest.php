@@ -41,12 +41,12 @@ class DynamicDnsRequest
 
     public static function fromHttpRequest(Request $request): self
     {
-        $username = $_SERVER['PHP_AUTH_USER'] ?? $request->get('username', '');
-        $password = $_SERVER['PHP_AUTH_PW'] ?? $request->get('password', '');
-        $hostname = $request->get('hostname', '');
-        $ipv4 = $request->get('myip') ?? $request->get('ip', '');
-        $ipv6 = $request->get('myip6') ?? $request->get('ip6', '');
-        $dualstackUpdate = $request->get('dualstack_update') === '1';
+        $username = $_SERVER['PHP_AUTH_USER'] ?? $request->query->get('username', '');
+        $password = $_SERVER['PHP_AUTH_PW'] ?? $request->query->get('password', '');
+        $hostname = $request->query->get('hostname', '');
+        $ipv4 = $request->query->get('myip') ?? $request->query->get('ip', '');
+        $ipv6 = $request->query->get('myip6') ?? $request->query->get('ip6', '');
+        $dualstackUpdate = $request->query->get('dualstack_update') === '1';
         $userAgent = $_SERVER['HTTP_USER_AGENT'] ?? '';
 
         if ($ipv4 === 'whatismyip' || $ipv6 === 'whatismyip') {

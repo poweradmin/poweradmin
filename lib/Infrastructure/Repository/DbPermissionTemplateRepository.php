@@ -23,7 +23,6 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Service\MessageService;
 
 class DbPermissionTemplateRepository

@@ -38,8 +38,6 @@ class ConfigurationRegistry
 
     public static function getAll(): array
     {
-        return array_map(function ($config) {
-            return $config->get();
-        }, self::$configurations);
+        return self::$configurations;
     }
 }

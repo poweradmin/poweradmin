@@ -90,7 +90,8 @@ class ReverseZoneSorting
 
             // Merge them back, with IPv4 first, then IPv6, then others
             // This ensures consistent grouping by address family
-            return array_merge(array_values($ipv4Domains), array_values($ipv6Domains), array_values($otherDomains));
+            // array_merge automatically re-indexes, so array_values is redundant
+            return array_merge($ipv4Domains, $ipv6Domains, $otherDomains);
         }
     }
 }

@@ -95,16 +95,16 @@ class PDOCommon extends PDO
      * @param string $query
      * @param int|null $fetchMode
      * @param mixed ...$fetchModeArgs
-     * @return PDOStatement
+     * @return PDOStatement|false
      */
-    public function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement
+    public function query(string $query, ?int $fetchMode = null, mixed ...$fetchModeArgs): PDOStatement|false
     {
         if ($this->debug) {
             $this->queries[] = $query;
         }
 
         try {
-            $obj_pdoStatement = parent::query($query);
+            return parent::query($query);
         } catch (Exception $e) {
             error_log("[* SQL ERROR MESSAGE FOLLOWS:\n" .
                 $e->getTraceAsString() .
@@ -116,11 +116,8 @@ class PDOCommon extends PDO
             require_once dirname(__DIR__, 3) . '/lib/Infrastructure/Service/MessageService.php';
             $messageService = new MessageService();
             $messageService->displayDirectSystemError("An error occurred while executing the SQL statement. Please check the error logs for details.");
+            return false;
         }
-
-        // Initialize PDOStatement variable if not set
-        $obj_pdoStatement = $obj_pdoStatement ?? null;
-        return $obj_pdoStatement;
     }
 
     /**

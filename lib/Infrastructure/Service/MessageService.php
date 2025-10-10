@@ -22,8 +22,6 @@
 
 namespace Poweradmin\Infrastructure\Service;
 
-use Random\RandomException;
-
 class MessageService
 {
     private const TYPE_ERROR = 'error';

@@ -249,7 +249,7 @@ class SessionAuthenticator extends LoggingService
         );
 
         $userId = $userContextService->getLoggedInUserId();
-        if ($agreementService->isAgreementRequired($userId)) {
+        if ($userId && $agreementService->isAgreementRequired($userId)) {
             $this->logInfo('User agreement required for user {userid}', ['userid' => $userId]);
 
             // Redirect to agreement page - user will be sent to index after acceptance

@@ -49,7 +49,7 @@ class InstallSecurityService
         }
 
         if ($this->config['csrf']['enabled'] && $request->isMethod('POST')) {
-            $token = $request->get('install_token');
+            $token = $request->request->get('install_token');
             if (empty($token)) {
                 $errors['csrf'] = 'Security Token Missing: A required security token was not provided. Please start the installation from the beginning.';
             } elseif (!$this->csrfTokenService->validateToken($token, 'install_token')) {

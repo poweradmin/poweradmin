@@ -138,9 +138,6 @@ class DatabaseHelper
         $fill_perm_items = $this->db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
         $def_permissions = PermissionHelper::getPermissionMappings();
         $this->schemaService->executeMultiple($fill_perm_items, $def_permissions);
-        if (method_exists($fill_perm_items, 'free')) {
-            $fill_perm_items->free();
-        }
     }
 
     /**

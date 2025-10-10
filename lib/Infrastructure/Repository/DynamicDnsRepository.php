@@ -28,7 +28,6 @@ use Poweradmin\Domain\Repository\DynamicDnsRepositoryInterface;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\ValueObject\HostnameValue;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
 
 class DynamicDnsRepository implements DynamicDnsRepositoryInterface
 {

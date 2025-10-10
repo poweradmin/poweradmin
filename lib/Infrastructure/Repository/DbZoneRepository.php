@@ -511,7 +511,7 @@ class DbZoneRepository implements ZoneRepositoryInterface
         }
 
         // Then get the full zone details
-        return $this->getZone($zoneId);
+        return $this->getZone((int)$zoneId);
     }
 
     /**
