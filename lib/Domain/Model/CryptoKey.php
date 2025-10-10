@@ -51,22 +51,22 @@ class CryptoKey
         $this->ds = $ds;
     }
 
-    public function getId(): int
+    public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getType(): string
+    public function getType(): ?string
     {
         return $this->type;
     }
 
-    public function getSize(): int
+    public function getSize(): ?int
     {
         return $this->size;
     }
 
-    public function getAlgorithm(): string
+    public function getAlgorithm(): ?string
     {
         return $this->algorithm;
     }
@@ -86,12 +86,12 @@ class CryptoKey
         $this->isActive = false;
     }
 
-    public function getDnskey(): string
+    public function getDnskey(): ?string
     {
         return $this->dnskey;
     }
 
-    public function getDs(): array
+    public function getDs(): ?array
     {
         return $this->ds;
     }

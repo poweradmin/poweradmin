@@ -58,7 +58,8 @@ class StaticAssetController extends BaseController
      */
     public function run(): void
     {
-        $path = $this->pathParameters['path'] ?? '';
+        // Path comes from route parameters merged into request data by the router
+        $path = $this->requestData['path'] ?? '';
 
         // Security: prevent path traversal attacks
         if (strpos($path, '..') !== false || strpos($path, '\0') !== false) {

@@ -81,10 +81,10 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         ]);
     }
 
-    public function deleteByDomainId(string $domainId): void
+    public function deleteByDomainId(int $domainId): void
     {
         $stmt = $this->connection->prepare("DELETE FROM {$this->comments_table} WHERE domain_id = :domainId");
-        $stmt->bindParam(':domainId', $domainId);
+        $stmt->bindParam(':domainId', $domainId, PDO::PARAM_INT);
         $stmt->execute();
     }
 

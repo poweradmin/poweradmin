@@ -74,7 +74,7 @@ class MailService implements MailServiceInterface
 
         // check if email is multipart and generate boundary
         if ($plainBody !== '') {
-            $boundary = md5(uniqid(time()));
+            $boundary = md5(uniqid((string)time()));
         } else {
             $boundary = '';
         }

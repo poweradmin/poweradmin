@@ -76,7 +76,7 @@ class DomainRepository implements DomainRepositoryInterface
 
         $stmt = $this->db->prepare("SELECT COUNT(id) FROM $domains_table WHERE id = :id");
         $stmt->execute([':id' => $zid]);
-        return $stmt->fetchColumn();
+        return (int)$stmt->fetchColumn();
     }
 
     /**

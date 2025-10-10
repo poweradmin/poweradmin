@@ -101,7 +101,7 @@ class WhoisController extends BaseController
             }
         } elseif (isset($this->getRequest()['zone_id'])) {
             $zone_id = (int)$this->getRequest()['zone_id'];
-            $domain = $this->dnsRecord->getDomainNameById($zone_id);
+            $domain = $this->dnsRecord->getDomainNameById($zone_id) ?? '';
         }
 
         return $domain;

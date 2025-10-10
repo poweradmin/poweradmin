@@ -163,7 +163,7 @@ class EditController extends BaseController
 
         $row_start = 0;
         if (isset($_GET["start"])) {
-            $row_start = ($_GET["start"] - 1) * $iface_rowamount;
+            $row_start = ((int)$_GET["start"] - 1) * $iface_rowamount;
         }
 
         $record_sort_by = $this->getSortBy('record_sort_by', ['id', 'name', 'type', 'content', 'prio', 'ttl', 'disabled']);

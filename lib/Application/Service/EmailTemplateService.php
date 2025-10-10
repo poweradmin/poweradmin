@@ -22,7 +22,7 @@
 
 namespace Poweradmin\Application\Service;
 
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Twig\Environment;
 use Twig\Loader\FilesystemLoader;
 use Twig\Error\LoaderError;
@@ -32,11 +32,11 @@ use Twig\Error\SyntaxError;
 class EmailTemplateService
 {
     private Environment $twig;
-    private ConfigurationManager $config;
+    private ConfigurationInterface $config;
     private string $defaultTemplatePath;
     private string $customTemplatePath;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationInterface $config)
     {
         $this->config = $config;
         $this->defaultTemplatePath = __DIR__ . '/../../../templates/emails';

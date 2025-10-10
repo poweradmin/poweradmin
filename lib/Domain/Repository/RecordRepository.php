@@ -69,7 +69,7 @@ class RecordRepository implements RecordRepositoryInterface
 
         $stmt = $this->db->prepare("SELECT domain_id FROM $records_table WHERE id = :id");
         $stmt->execute([':id' => $rid]);
-        return $stmt->fetchColumn() ?: 0;
+        return (int)($stmt->fetchColumn() ?: 0);
     }
 
     /**
@@ -90,7 +90,7 @@ class RecordRepository implements RecordRepositoryInterface
 
         $stmt = $this->db->prepare("SELECT COUNT(id) FROM $records_table WHERE domain_id = :zone_id AND type IS NOT NULL AND type != ''");
         $stmt->execute([':zone_id' => $zone_id]);
-        return $stmt->fetchColumn() ?: 0;
+        return (int)($stmt->fetchColumn() ?: 0);
     }
 
     /**

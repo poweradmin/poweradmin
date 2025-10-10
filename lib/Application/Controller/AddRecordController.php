@@ -391,8 +391,8 @@ class AddRecordController extends BaseController
         }
 
         foreach ($records as $record) {
-            // Skip incomplete records
-            if (empty($record['content']) || empty($record['type'])) {
+            // Skip non-array or incomplete records
+            if (!is_array($record) || empty($record['content']) || empty($record['type'])) {
                 continue;
             }
 

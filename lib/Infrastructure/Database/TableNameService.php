@@ -23,13 +23,13 @@
 namespace Poweradmin\Infrastructure\Database;
 
 use InvalidArgumentException;
-use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 
 class TableNameService
 {
     private ?string $pdnsDbName;
 
-    public function __construct(ConfigurationManager $config)
+    public function __construct(ConfigurationInterface $config)
     {
         $this->pdnsDbName = $config->get('database', 'pdns_db_name');
     }

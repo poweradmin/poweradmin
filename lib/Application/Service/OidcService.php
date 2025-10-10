@@ -23,7 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use League\OAuth2\Client\Provider\GenericProvider;
-use League\OAuth2\Client\Token\AccessToken;
+use League\OAuth2\Client\Token\AccessTokenInterface;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Model\SessionEntity;
@@ -322,7 +322,7 @@ class OidcService extends LoggingService
         ]);
     }
 
-    private function getUserInfo(GenericProvider $provider, AccessToken $token, string $providerId): OidcUserInfo
+    private function getUserInfo(GenericProvider $provider, AccessTokenInterface $token, string $providerId): OidcUserInfo
     {
         $resourceOwner = $provider->getResourceOwner($token);
         $userData = $resourceOwner->toArray();

@@ -339,7 +339,7 @@ class ZoneTemplate
     {
         $stmt = $db->prepare("SELECT COUNT(id) FROM zone_templ_records WHERE zone_templ_id = :zone_templ_id");
         $stmt->execute([':zone_templ_id' => $zone_templ_id]);
-        return $stmt->fetchColumn();
+        return (int)$stmt->fetchColumn();
     }
 
     /**

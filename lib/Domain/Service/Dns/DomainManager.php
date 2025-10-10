@@ -166,7 +166,7 @@ class DomainManager implements DomainManagerInterface
                         $dns_ttl = $this->config->get('dns', 'ttl');
 
                         $templ_records = ZoneTemplate::getZoneTemplRecords($db, $zone_template);
-                        if (!empty($templ_records) && $templ_records !== -1) {
+                        if (is_array($templ_records) && !empty($templ_records)) {
                             // Process the template records
                             foreach ($templ_records as $r) {
                                 if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {

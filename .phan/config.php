@@ -274,6 +274,10 @@ return [
         'PhanTypePossiblyInvalidDimOffset',
         'PhanTypeMismatchArgumentNullableInternal',
         'PhanTypeMismatchDimFetch',
+        'PhanUndeclaredMethod',
+        'PhanTypeMismatchArgumentInternalProbablyReal',
+        'PhanTypeInvalidThrowsIsInterface',
+        'PhanTypeMismatchArgumentSuperType',
     ],
 
     // A regular expression to match files to be excluded

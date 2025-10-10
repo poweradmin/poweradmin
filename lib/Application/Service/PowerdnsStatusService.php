@@ -372,9 +372,12 @@ class PowerdnsStatusService
                 continue;
             }
 
-            // Cast numeric strings to actual numbers
+            // Cast numeric strings to actual numbers (handles integers, floats, and scientific notation)
             if (is_string($value) && is_numeric($value)) {
-                $value = $value + 0; // Convert to int or float
+                // Scientific notation (e.g., 1e-05) or decimal point requires float casting
+                $value = (str_contains($value, '.') || stripos($value, 'e') !== false)
+                    ? (float)$value
+                    : (int)$value;
             }
 
             // Skip empty or invalid values

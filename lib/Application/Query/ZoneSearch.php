@@ -75,7 +75,7 @@ class ZoneSearch extends BaseSearch
                 $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
                 $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
                 $found_zone = $zones[$zone_id][0];
-                $found_zone['name'] = DnsIdnService::toUtf8($found_zone['name']);
+                $found_zone['name'] = DnsIdnService::toUtf8($found_zone['name'] ?? '');
                 $foundZones[] = $found_zone;
             }
         }
