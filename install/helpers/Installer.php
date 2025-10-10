@@ -38,7 +38,7 @@ use Twig\Environment;
 
 class Installer
 {
-    private Request $request;
+    private Request $input;
     private LocaleHandler $localeHandler;
     private StepValidator $stepValidator;
     private InstallStepHandler $installStepHandler;
@@ -52,13 +52,13 @@ class Installer
     private const INSTALL_CONFIG_PATH = '/config.php';
     private array $config;
 
-    public function __construct(Request $request)
+    public function __construct(Request $input)
     {
         $this->newConfigFile = dirname(__DIR__, 2) . self::NEW_CONFIG_FILE_PATH;
         $this->defaultConfigFile = dirname(__DIR__, 2) . self::DEFAULT_CONFIG_FILE_PATH;
         $this->installConfigFile = dirname(__DIR__) . self::INSTALL_CONFIG_PATH;
 
-        $this->request = $request;
+        $this->input = $input;
         $this->localeHandler = new LocaleHandler();
         $this->stepValidator = new StepValidator();
         $this->csrfTokenService = new CsrfTokenService();
@@ -71,12 +71,11 @@ class Installer
 
     public function initialize(): void
     {
-        $rawStep = $this->request->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
+        $rawStep = $this->input->request->get('step') ?? $this->input->query->get('step', InstallationSteps::STEP_CHOOSE_LANGUAGE);
         $currentStep = $this->stepValidator->getCurrentStep($rawStep);
 
-        // Clear any stale error messages only when starting fresh or forced back to step 1
-        if ($currentStep === InstallationSteps::STEP_CHOOSE_LANGUAGE && !$this->request->get('step')) {
-            // First load of installer (no step parameter provided)
+        $hasStep = $this->input->request->get('step') !== null || $this->input->query->get('step') !== null;
+        if ($currentStep === InstallationSteps::STEP_CHOOSE_LANGUAGE && !$hasStep) {
             SessionUtils::clearMessages();
         }
 
@@ -88,7 +87,7 @@ class Installer
             }
         }
 
-        $securityErrors = $this->securityService->validateRequest($this->request);
+        $securityErrors = $this->securityService->validateRequest($this->input);
         if (!empty($securityErrors)) {
             $this->handleSecurityErrors($securityErrors);
             return;
@@ -115,7 +114,7 @@ class Installer
         $twigEnvironment = $this->initializeTwigEnvironment($currentLanguage);
 
         $this->installStepHandler = new InstallStepHandler(
-            $this->request,
+            $this->input,
             $twigEnvironment,
             $currentStep,
             $currentLanguage
@@ -178,14 +177,14 @@ class Installer
     private function getStepValidator($step): AbstractStepValidator
     {
         return match ($step) {
-            InstallationSteps::STEP_CHOOSE_LANGUAGE => new ChooseLanguageValidator($this->request, $this->config),
-            InstallationSteps::STEP_CHECK_REQUIREMENTS => new CheckRequirementsValidator($this->request, $this->config),
-            InstallationSteps::STEP_GETTING_READY => new GettingReadyValidator($this->request, $this->config),
-            InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidator($this->request, $this->config),
-            InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidator($this->request, $this->config),
-            InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidator($this->request, $this->config),
-            InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidator($this->request, $this->config),
-            default => new EmptyValidator($this->request, $this->config),
+            InstallationSteps::STEP_CHOOSE_LANGUAGE => new ChooseLanguageValidator($this->input, $this->config),
+            InstallationSteps::STEP_CHECK_REQUIREMENTS => new CheckRequirementsValidator($this->input, $this->config),
+            InstallationSteps::STEP_GETTING_READY => new GettingReadyValidator($this->input, $this->config),
+            InstallationSteps::STEP_CONFIGURING_DATABASE => new ConfiguringDatabaseValidator($this->input, $this->config),
+            InstallationSteps::STEP_SETUP_ACCOUNT_AND_NAMESERVERS => new SetupAccountAndNameServersValidator($this->input, $this->config),
+            InstallationSteps::STEP_CREATE_LIMITED_RIGHTS_USER => new CreateLimitedRightsUserValidator($this->input, $this->config),
+            InstallationSteps::STEP_CREATE_CONFIGURATION_FILE => new CreateConfigurationFileValidator($this->input, $this->config),
+            default => new EmptyValidator($this->input, $this->config),
         };
     }
 
@@ -205,7 +204,7 @@ class Installer
 
     private function initializeLocaleHandler(): string
     {
-        $language = $this->request->get('language', LocaleHandler::DEFAULT_LANGUAGE);
+        $language = $this->input->request->get('language') ?? $this->input->query->get('language', LocaleHandler::DEFAULT_LANGUAGE);
         $currentLanguage = $this->localeHandler->getCurrentLanguage($language);
         $this->localeHandler->setLanguage($currentLanguage);
         return $currentLanguage;

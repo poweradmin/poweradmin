@@ -50,7 +50,7 @@ class ConfiguringDatabaseValidator extends BaseValidator
             ]
         ));
 
-        $input = $this->request->request->all();
+        $input = $this->input->request->all();
         $violations = $this->validator->validate($input, $constraints);
 
         $errors = ValidationErrorHelper::formatErrors($violations);

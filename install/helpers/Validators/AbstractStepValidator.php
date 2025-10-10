@@ -28,13 +28,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class AbstractStepValidator
 {
-    protected Request $request;
+    protected Request $input;
     protected ValidatorInterface $validator;
     protected array $config;
 
-    public function __construct(Request $request, array $config)
+    public function __construct(Request $input, array $config)
     {
-        $this->request = $request;
+        $this->input = $input;
         $this->config = $config;
         $this->validator = Validation::createValidator();
     }

@@ -34,7 +34,7 @@ class SetupAccountAndNameServersValidator extends BaseValidator
 
     public function validate(): array
     {
-        $input = $this->request->request->all();
+        $input = $this->input->request->all();
         $dbType = $input['db_type'] ?? null;
 
         $constraints = new Assert\Collection(array_merge(
@@ -56,7 +56,7 @@ class SetupAccountAndNameServersValidator extends BaseValidator
             ]
         ));
 
-        $input = $this->request->request->all();
+        $input = $this->input->request->all();
         $violations = $this->validator->validate($input, $constraints);
 
         return ValidationErrorHelper::formatErrors($violations);

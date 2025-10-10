@@ -34,15 +34,15 @@ use Twig\Error\SyntaxError;
 
 class InstallStepHandler
 {
-    private Request $request;
+    private Request $input;
     private Environment $twig;
     private int $currentStep;
     private string $language;
     private const SESSION_KEY_LENGTH = 46;
 
-    public function __construct(Request $request, Environment $twig, int $currentStep, string $language)
+    public function __construct(Request $input, Environment $twig, int $currentStep, string $language)
     {
-        $this->request = $request;
+        $this->input = $input;
         $this->twig = $twig;
         $this->currentStep = $currentStep;
         $this->language = $language;
@@ -114,15 +114,15 @@ class InstallStepHandler
         $collations = require __DIR__ . '/../collations.php';
 
         $inputData = [
-            'db_user' => $this->request->request->get('db_user'),
-            'db_pass' => $this->request->request->get('db_pass'),
-            'db_host' => $this->request->request->get('db_host'),
-            'db_port' => $this->request->request->get('db_port'),
-            'db_name' => $this->request->request->get('db_name'),
-            'db_charset' => $this->request->request->get('db_charset'),
-            'db_collation' => $this->request->request->get('db_collation'),
-            'db_type' => $this->request->request->get('db_type'),
-            'pa_pass' => $this->request->request->get('pa_pass'),
+            'db_user' => $this->input->request->get('db_user'),
+            'db_pass' => $this->input->request->get('db_pass'),
+            'db_host' => $this->input->request->get('db_host'),
+            'db_port' => $this->input->request->get('db_port'),
+            'db_name' => $this->input->request->get('db_name'),
+            'db_charset' => $this->input->request->get('db_charset'),
+            'db_collation' => $this->input->request->get('db_collation'),
+            'db_type' => $this->input->request->get('db_type'),
+            'pa_pass' => $this->input->request->get('pa_pass'),
             // PowerDNS database field
             'pdns_db_name' => $this->getPdnsDbName(),
         ];
@@ -144,7 +144,7 @@ class InstallStepHandler
             $credentials['db_file'] = $credentials['db_name'];
         }
 
-        $pa_pass = $this->request->request->get('pa_pass');
+        $pa_pass = $this->input->request->get('pa_pass');
         $messages = [];
         $dbError = null;
 
@@ -228,7 +228,7 @@ class InstallStepHandler
             // Skip rendering the rest of the template
             $this->renderTemplate('step5.html.twig', [
                 'current_step' => $this->currentStep,
-                'language' => $this->request->request->get('language'),
+                'language' => $this->input->request->get('language'),
                 'db_error' => $dbError,
                 'errors' => $errors,
             ]);
@@ -236,19 +236,19 @@ class InstallStepHandler
         }
 
         $inputData = [
-            'pa_db_user' => $this->request->request->get('pa_db_user'),
-            'pa_db_pass' => $this->request->request->get('pa_db_pass'),
-            'dns_hostmaster' => $this->request->request->get('dns_hostmaster'),
-            'dns_ns1' => $this->request->request->get('dns_ns1'),
-            'dns_ns2' => $this->request->request->get('dns_ns2'),
-            'dns_ns3' => $this->request->request->get('dns_ns3'),
-            'dns_ns4' => $this->request->request->get('dns_ns4'),
-            'pdns_db_name' => $this->request->request->get('pdns_db_name'),
+            'pa_db_user' => $this->input->request->get('pa_db_user'),
+            'pa_db_pass' => $this->input->request->get('pa_db_pass'),
+            'dns_hostmaster' => $this->input->request->get('dns_hostmaster'),
+            'dns_ns1' => $this->input->request->get('dns_ns1'),
+            'dns_ns2' => $this->input->request->get('dns_ns2'),
+            'dns_ns3' => $this->input->request->get('dns_ns3'),
+            'dns_ns4' => $this->input->request->get('dns_ns4'),
+            'pdns_db_name' => $this->input->request->get('pdns_db_name'),
         ];
 
         $this->renderTemplate('step5.html.twig', array_merge([
             'current_step' => $this->currentStep,
-            'language' => $this->request->request->get('language'),
+            'language' => $this->input->request->get('language'),
             'pa_pass' => $pa_pass,
             'errors' => $errors,
             'messages' => $messages,
@@ -262,22 +262,22 @@ class InstallStepHandler
         if ($credentials['db_type'] == 'sqlite') {
             $credentials['db_file'] = $credentials['db_name'];
         } else {
-            $credentials['pa_db_user'] = $this->request->request->get('pa_db_user');
-            $credentials['pa_db_pass'] = $this->request->request->get('pa_db_pass');
+            $credentials['pa_db_user'] = $this->input->request->get('pa_db_user');
+            $credentials['pa_db_pass'] = $this->input->request->get('pa_db_pass');
         }
 
-        $pa_pass = $this->request->request->get('pa_pass');
-        $hostmaster = $this->request->request->get('dns_hostmaster');
-        $dns_ns1 = $this->request->request->get('dns_ns1');
-        $dns_ns2 = $this->request->request->get('dns_ns2');
-        $dns_ns3 = $this->request->request->get('dns_ns3');
-        $dns_ns4 = $this->request->request->get('dns_ns4');
+        $pa_pass = $this->input->request->get('pa_pass');
+        $hostmaster = $this->input->request->get('dns_hostmaster');
+        $dns_ns1 = $this->input->request->get('dns_ns1');
+        $dns_ns2 = $this->input->request->get('dns_ns2');
+        $dns_ns3 = $this->input->request->get('dns_ns3');
+        $dns_ns4 = $this->input->request->get('dns_ns4');
 
         $databaseConnection = new PDODatabaseConnection();
         $databaseService = new DatabaseService($databaseConnection);
         $db = $databaseService->connect($credentials);
         $databaseHelper = new DatabaseHelper($db, $credentials);
-        $instructionBlocks = $databaseHelper->generateDatabaseUserInstructions($this->request->request->get('pdns_db_name'));
+        $instructionBlocks = $databaseHelper->generateDatabaseUserInstructions($this->input->request->get('pdns_db_name'));
 
         $this->renderTemplate('step6.html.twig', array(
             'current_step' => $this->currentStep,
@@ -298,7 +298,7 @@ class InstallStepHandler
             'dns_ns2' => $dns_ns2,
             'dns_ns3' => $dns_ns3,
             'dns_ns4' => $dns_ns4,
-            'pdns_db_name' => $this->request->request->get('pdns_db_name'),
+            'pdns_db_name' => $this->input->request->get('pdns_db_name'),
             'instruction_blocks' => $instructionBlocks,
             'errors' => $errors,
         ));
@@ -307,27 +307,27 @@ class InstallStepHandler
     public function step7CreateConfigurationFile(array $errors, ?string $defaultConfigFile = null): void
     {
         // No need to set database port if it's standard port for that db
-        $db_port = ($this->request->request->get('db_type') == 'mysql' && $this->request->request->get('db_port') != 3306)
-        || ($this->request->request->get('db_type') == 'pgsql' && $this->request->request->get('db_port') != 5432) ? $this->request->request->get('db_port') : '';
+        $db_port = ($this->input->request->get('db_type') == 'mysql' && $this->input->request->get('db_port') != 3306)
+        || ($this->input->request->get('db_type') == 'pgsql' && $this->input->request->get('db_port') != 5432) ? $this->input->request->get('db_port') : '';
 
         // For SQLite we should provide path to db file
-        $db_file = $this->request->request->get('db_type') == 'sqlite' ? $this->request->request->get('db_name') : '';
+        $db_file = $this->input->request->get('db_type') == 'sqlite' ? $this->input->request->get('db_name') : '';
 
         $config = ConfigurationManager::getInstance();
         $config->initialize();
 
-        $dns_hostmaster = $this->request->request->get('dns_hostmaster');
-        $dns_ns1 = $this->request->request->get('dns_ns1');
-        $dns_ns2 = $this->request->request->get('dns_ns2');
-        $dns_ns3 = $this->request->request->get('dns_ns3');
-        $dns_ns4 = $this->request->request->get('dns_ns4');
-        $db_host = $this->request->request->get('db_host');
-        $db_user = $this->request->request->get('pa_db_user') ?? '';
-        $db_pass = $this->request->request->get('pa_db_pass') ?? '';
-        $db_name = $this->request->request->get('db_name');
-        $db_type = $this->request->request->get('db_type');
-        $db_charset = $this->request->request->get('db_charset');
-        $db_collation = $this->request->request->get('db_collation');
+        $dns_hostmaster = $this->input->request->get('dns_hostmaster');
+        $dns_ns1 = $this->input->request->get('dns_ns1');
+        $dns_ns2 = $this->input->request->get('dns_ns2');
+        $dns_ns3 = $this->input->request->get('dns_ns3');
+        $dns_ns4 = $this->input->request->get('dns_ns4');
+        $db_host = $this->input->request->get('db_host');
+        $db_user = $this->input->request->get('pa_db_user') ?? '';
+        $db_pass = $this->input->request->get('pa_db_pass') ?? '';
+        $db_name = $this->input->request->get('db_name');
+        $db_type = $this->input->request->get('db_type');
+        $db_charset = $this->input->request->get('db_charset');
+        $db_collation = $this->input->request->get('db_collation');
 
         $userAuthService = new UserAuthenticationService(
             $config->get('security', 'password_encryption'),
@@ -339,7 +339,7 @@ class InstallStepHandler
         // Format display paths for the UI (remove leading slashes)
         $displayNewConfigFile = 'config/settings.php';
 
-        $pdns_db_name = $this->request->request->get('pdns_db_name');
+        $pdns_db_name = $this->input->request->get('pdns_db_name');
 
         // Auto-detect subfolder deployment
         $base_url_prefix = $this->detectBaseUrlPrefix();
@@ -382,21 +382,21 @@ class InstallStepHandler
     public function getCredentials(): array
     {
         return [
-            'db_user' => $this->request->request->get('db_user'),
-            'db_pass' => $this->request->request->get('db_pass'),
-            'db_host' => $this->request->request->get('db_host'),
-            'db_port' => $this->request->request->get('db_port'),
-            'db_name' => $this->request->request->get('db_name'),
-            'db_charset' => $this->request->request->get('db_charset'),
-            'db_collation' => $this->request->request->get('db_collation'),
-            'db_type' => $this->request->request->get('db_type'),
+            'db_user' => $this->input->request->get('db_user'),
+            'db_pass' => $this->input->request->get('db_pass'),
+            'db_host' => $this->input->request->get('db_host'),
+            'db_port' => $this->input->request->get('db_port'),
+            'db_name' => $this->input->request->get('db_name'),
+            'db_charset' => $this->input->request->get('db_charset'),
+            'db_collation' => $this->input->request->get('db_collation'),
+            'db_type' => $this->input->request->get('db_type'),
         ];
     }
 
     private function getPdnsDbName(): string
     {
-        $dbType = $this->request->request->get('db_type');
-        $pdnsDbName = $this->request->request->get('pdns_db_name');
+        $dbType = $this->input->request->get('db_type');
+        $pdnsDbName = $this->input->request->get('pdns_db_name');
 
         // Only allow pdns_db_name for MySQL
         return ($dbType === 'mysql') ? $pdnsDbName : '';
@@ -411,7 +411,7 @@ class InstallStepHandler
     private function detectBaseUrlPrefix(): string
     {
         // Get the script name (e.g., /poweradmin/install/index.php)
-        $scriptName = $this->request->server->get('SCRIPT_NAME', '');
+        $scriptName = $this->input->server->get('SCRIPT_NAME', '');
 
         // Remove /install/index.php to get the base path
         $basePath = str_replace('/install/index.php', '', $scriptName);

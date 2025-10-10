@@ -25,6 +25,11 @@ namespace PoweradminInstall\Validators;
 use PDO;
 use PDOException;
 
+/**
+ * Trait for validating PowerDNS database configuration
+ *
+ * @method string buildDsn(array $input) Builds a DSN string from input data (provided by DatabaseValidationTrait)
+ */
 trait PdnsDatabaseValidationTrait
 {
     /**
