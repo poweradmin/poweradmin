@@ -53,6 +53,7 @@ class ZonesRecordsController extends PublicApiController
     private DbZoneRepository $zoneRepository;
     private RecordRepository $recordRepository;
     private RecordManagerInterface $recordManager;
+    private SOARecordManager $soaRecordManager;
     private TableNameService $tableNameService;
 
     public function __construct(array $request, array $pathParameters = [])
@@ -65,13 +66,13 @@ class ZonesRecordsController extends PublicApiController
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
-        $soaRecordManager = new SOARecordManager($this->db, $this->getConfig());
+        $this->soaRecordManager = new SOARecordManager($this->db, $this->getConfig());
         $domainRepository = new DomainRepository($this->db, $this->getConfig());
         $this->recordManager = new RecordManager(
             $this->db,
             $this->getConfig(),
             $validationService,
-            $soaRecordManager,
+            $this->soaRecordManager,
             $domainRepository
         );
     }
@@ -552,6 +553,11 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Failed to update record', 500);
             }
 
+            // Update SOA serial after editing the record (except for SOA records themselves)
+            if ($recordData['type'] !== 'SOA') {
+                $this->updateSOASerial($zoneId);
+            }
+
             return $this->returnApiResponse(null, true, 'Record updated successfully', 200, [
                 'zone_id' => $zoneId,
                 'record_id' => $recordId,
@@ -635,11 +641,19 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Record not found in this zone', 404);
             }
 
+            // Get record type before deletion (for SOA serial update logic)
+            $recordType = $existingRecord['type'];
+
             // Use RecordManager to delete the record
             $success = $this->recordManager->deleteRecord($recordId);
 
             if (!$success) {
                 return $this->returnApiError('Failed to delete record', 500);
+            }
+
+            // Update SOA serial after deleting the record (except for SOA records themselves)
+            if ($recordType !== 'SOA') {
+                $this->updateSOASerial($zoneId);
             }
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204, [
@@ -710,53 +724,17 @@ class ZonesRecordsController extends PublicApiController
     /**
      * Update SOA serial for a zone
      *
+     * Delegates to SOARecordManager which handles all edge cases:
+     * - 100+ changes per day (increments date instead of breaking)
+     * - Non-date based serials (simple increment)
+     * - Future-dated serials (preserved)
+     * - Overflow protection at 1979999999
+     *
      * @param int $zoneId Zone ID
      * @return void
      */
     private function updateSOASerial(int $zoneId): void
     {
-        try {
-            $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
-
-            // Get current SOA record
-            $query = "SELECT content FROM $records_table WHERE domain_id = :zone_id AND type = 'SOA'";
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-            $stmt->execute();
-
-            $soaContent = $stmt->fetchColumn();
-            if (!$soaContent) {
-                return;
-            }
-
-            // Parse SOA content and update serial
-            $parts = explode(' ', $soaContent);
-            if (count($parts) >= 3) {
-                $currentSerial = $parts[2];
-                $today = date('Ymd');
-
-                // Generate new serial
-                if (substr($currentSerial, 0, 8) === $today) {
-                    // Same day, increment the sequence number
-                    $sequence = intval(substr($currentSerial, 8)) + 1;
-                    $newSerial = $today . str_pad((string)$sequence, 2, '0', STR_PAD_LEFT);
-                } else {
-                    // New day, start with 01
-                    $newSerial = $today . '01';
-                }
-
-                $parts[2] = $newSerial;
-                $newSoaContent = implode(' ', $parts);
-
-                // Update SOA record
-                $updateQuery = "UPDATE $records_table SET content = :content WHERE domain_id = :zone_id AND type = 'SOA'";
-                $updateStmt = $this->db->prepare($updateQuery);
-                $updateStmt->bindValue(':content', $newSoaContent, PDO::PARAM_STR);
-                $updateStmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-                $updateStmt->execute();
-            }
-        } catch (Exception $e) {
-            error_log('Failed to update SOA serial: ' . $e->getMessage());
-        }
+        $this->soaRecordManager->updateSOASerial($zoneId);
     }
 }

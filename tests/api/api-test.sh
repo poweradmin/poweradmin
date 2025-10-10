@@ -1027,6 +1027,201 @@ test_dynamic_dns() {
 }
 
 ##############################################################################
+# SOA Serial Update Tests (Issue #804)
+##############################################################################
+
+get_soa_serial() {
+    local zone_id="$1"
+
+    # Get all records for the zone
+    local response=$(curl -s \
+        -H "X-API-Key: $API_KEY" \
+        -H "Accept: application/json" \
+        "${API_BASE_URL}/api/v1/zones/$zone_id/records" 2>/dev/null)
+
+    # Extract SOA record serial (third field in SOA content)
+    local soa_serial=$(echo "$response" | jq -r '.data[] | select(.type=="SOA") | .content' | awk '{print $3}')
+
+    echo "$soa_serial"
+}
+
+test_soa_serial_updates() {
+    print_section "SOA Serial Update Tests (Issue #804)"
+
+    if [[ -z "${TEST_ZONE_ID:-}" ]]; then
+        print_skip "SOA serial update tests - no test zone available"
+        return
+    fi
+
+    # Test 1: SOA serial increments after adding a record
+    increment_test
+    print_test "SOA serial increments after adding a record"
+
+    local serial_before=$(get_soa_serial "$TEST_ZONE_ID")
+
+    if [[ -z "$serial_before" ]]; then
+        print_fail "SOA serial increments after adding a record - Could not get initial serial"
+    else
+        echo "  Initial SOA serial: $serial_before"
+
+        # Add a new record
+        local add_record_data='{
+            "name": "soa-test-add.curl-test.example.com",
+            "type": "A",
+            "content": "192.0.2.201",
+            "ttl": 3600
+        }'
+
+        local add_response=$(curl -s -w "%{http_code}" \
+            -H "X-API-Key: $API_KEY" \
+            -H "Content-Type: application/json" \
+            -X POST \
+            -d "$add_record_data" \
+            "${API_BASE_URL}/api/v1/zones/$TEST_ZONE_ID/records" 2>/dev/null || echo "000")
+
+        local add_http_code="${add_response: -3}"
+        local add_body="${add_response%???}"
+
+        if [[ "$add_http_code" == "201" ]]; then
+            local added_record_id=$(echo "$add_body" | jq -r '.data.record_id // .data.id')
+            echo "  Added record ID: $added_record_id"
+
+            # Wait a moment for SOA to update
+            sleep 1
+
+            local serial_after=$(get_soa_serial "$TEST_ZONE_ID")
+            echo "  SOA serial after add: $serial_after"
+
+            if [[ "$serial_after" -gt "$serial_before" ]]; then
+                print_pass "SOA serial increments after adding a record ($serial_before → $serial_after)"
+
+                # Clean up the added record
+                if [[ -n "$added_record_id" ]]; then
+                    curl -s -X DELETE \
+                        -H "X-API-Key: $API_KEY" \
+                        "${API_BASE_URL}/api/v1/zones/$TEST_ZONE_ID/records/$added_record_id" >/dev/null 2>&1
+                fi
+            else
+                print_fail "SOA serial increments after adding a record - Serial did not increase ($serial_before → $serial_after)"
+            fi
+        else
+            print_fail "SOA serial increments after adding a record - Failed to add record (HTTP $add_http_code)"
+        fi
+    fi
+
+    # Test 2: SOA serial increments after updating a record
+    increment_test
+    print_test "SOA serial increments after updating a record"
+
+    if [[ -z "${TEST_RECORD_ID:-}" ]]; then
+        print_skip "SOA serial increments after updating a record - no test record available"
+    else
+        serial_before=$(get_soa_serial "$TEST_ZONE_ID")
+
+        if [[ -z "$serial_before" ]]; then
+            print_fail "SOA serial increments after updating a record - Could not get initial serial"
+        else
+            echo "  Initial SOA serial: $serial_before"
+
+            # Update the test record
+            local update_record_data='{
+                "content": "192.0.2.202",
+                "ttl": 7200
+            }'
+
+            local update_response=$(curl -s -w "%{http_code}" \
+                -H "X-API-Key: $API_KEY" \
+                -H "Content-Type: application/json" \
+                -X PUT \
+                -d "$update_record_data" \
+                "${API_BASE_URL}/api/v1/zones/$TEST_ZONE_ID/records/$TEST_RECORD_ID" 2>/dev/null || echo "000")
+
+            local update_http_code="${update_response: -3}"
+
+            if [[ "$update_http_code" == "200" ]]; then
+                # Wait a moment for SOA to update
+                sleep 1
+
+                local serial_after=$(get_soa_serial "$TEST_ZONE_ID")
+                echo "  SOA serial after update: $serial_after"
+
+                if [[ "$serial_after" -gt "$serial_before" ]]; then
+                    print_pass "SOA serial increments after updating a record ($serial_before → $serial_after)"
+                else
+                    print_fail "SOA serial increments after updating a record - Serial did not increase ($serial_before → $serial_after)"
+                fi
+            else
+                print_fail "SOA serial increments after updating a record - Failed to update record (HTTP $update_http_code)"
+            fi
+        fi
+    fi
+
+    # Test 3: SOA serial increments after deleting a record
+    increment_test
+    print_test "SOA serial increments after deleting a record"
+
+    # First create a record to delete
+    local delete_test_record_data='{
+        "name": "soa-test-delete.curl-test.example.com",
+        "type": "A",
+        "content": "192.0.2.203",
+        "ttl": 3600
+    }'
+
+    local create_response=$(curl -s -w "%{http_code}" \
+        -H "X-API-Key: $API_KEY" \
+        -H "Content-Type: application/json" \
+        -X POST \
+        -d "$delete_test_record_data" \
+        "${API_BASE_URL}/api/v1/zones/$TEST_ZONE_ID/records" 2>/dev/null || echo "000")
+
+    local create_http_code="${create_response: -3}"
+    local create_body="${create_response%???}"
+
+    if [[ "$create_http_code" == "201" ]]; then
+        local delete_test_record_id=$(echo "$create_body" | jq -r '.data.record_id // .data.id')
+        echo "  Created temporary record ID: $delete_test_record_id"
+
+        # Wait for SOA to settle after creation
+        sleep 1
+
+        serial_before=$(get_soa_serial "$TEST_ZONE_ID")
+
+        if [[ -z "$serial_before" ]]; then
+            print_fail "SOA serial increments after deleting a record - Could not get initial serial"
+        else
+            echo "  Initial SOA serial: $serial_before"
+
+            # Delete the record
+            local delete_response=$(curl -s -w "%{http_code}" \
+                -H "X-API-Key: $API_KEY" \
+                -X DELETE \
+                "${API_BASE_URL}/api/v1/zones/$TEST_ZONE_ID/records/$delete_test_record_id" 2>/dev/null || echo "000")
+
+            local delete_http_code="${delete_response: -3}"
+
+            if [[ "$delete_http_code" == "204" || "$delete_http_code" == "200" ]]; then
+                # Wait a moment for SOA to update
+                sleep 1
+
+                local serial_after=$(get_soa_serial "$TEST_ZONE_ID")
+                echo "  SOA serial after delete: $serial_after"
+
+                if [[ "$serial_after" -gt "$serial_before" ]]; then
+                    print_pass "SOA serial increments after deleting a record ($serial_before → $serial_after)"
+                else
+                    print_fail "SOA serial increments after deleting a record - Serial did not increase ($serial_before → $serial_after)"
+                fi
+            else
+                print_fail "SOA serial increments after deleting a record - Failed to delete record (HTTP $delete_http_code)"
+            fi
+        fi
+    else
+        print_fail "SOA serial increments after deleting a record - Failed to create temporary record (HTTP $create_http_code)"
+    fi
+}
+
+##############################################################################
 # Performance and Load Tests
 ##############################################################################
 
@@ -1087,6 +1282,7 @@ run_all_tests() {
     test_zone_management
     test_zone_records
     test_record_types
+    test_soa_serial_updates
     test_permission_templates
     test_permissions
     test_security
@@ -1163,6 +1359,13 @@ main() {
             setup_test_data
             test_zone_records
             test_record_types
+            cleanup_test_data
+            generate_report
+            ;;
+        "soa")
+            load_config
+            setup_test_data
+            test_soa_serial_updates
             cleanup_test_data
             generate_report
             ;;
