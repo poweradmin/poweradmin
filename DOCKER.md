@@ -6,8 +6,8 @@ This guide covers deploying Poweradmin using Docker with FrankenPHP and various 
 
 Poweradmin official Docker images are available at:
 
-- **Docker Hub**: `edmondas/poweradmin`
-- **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`
+- **Docker Hub**: [`edmondas/poweradmin`](https://hub.docker.com/r/edmondas/poweradmin)
+- **GitHub Container Registry**: [`ghcr.io/poweradmin/poweradmin`](https://github.com/poweradmin/poweradmin/pkgs/container/poweradmin)
 
 ## Quick Start
 
@@ -206,6 +206,8 @@ docker run -d --name poweradmin -p 80:80 \
 
 ### Recaptcha
 
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
 | `PA_RECAPTCHA_ENABLED` | Enable reCAPTCHA on login form | `false` | No |
 | `PA_RECAPTCHA_SITE_KEY` | reCAPTCHA site key (public key) | Empty | No |
 | `PA_RECAPTCHA_SECRET_KEY` | reCAPTCHA secret key (private key) | Empty | No |
@@ -632,9 +634,9 @@ To build the Docker image locally:
 
 ```bash
 docker build --no-cache -t poweradmin .
-
-**Note**: For production use, it's recommended to use the official images from Docker Hub (`edmondas/poweradmin`) or GitHub Container Registry (`ghcr.io/poweradmin/poweradmin`) instead of building locally.
 ```
+
+**Note**: For production use, it's recommended to use the official images from Docker Hub ([`edmondas/poweradmin`](https://hub.docker.com/r/edmondas/poweradmin)) or GitHub Container Registry ([`ghcr.io/poweradmin/poweradmin`](https://github.com/poweradmin/poweradmin/pkgs/container/poweradmin)) instead of building locally.
 
 ### Build Process
 

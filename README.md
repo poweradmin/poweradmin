@@ -4,6 +4,8 @@
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![PHP Version](https://img.shields.io/badge/php-8.1%2B-blue)](https://www.php.net/)
 [![Latest Release](https://img.shields.io/github/v/release/poweradmin/poweradmin)](https://github.com/poweradmin/poweradmin/releases)
+[![Docker Pulls](https://img.shields.io/docker/pulls/edmondas/poweradmin)](https://hub.docker.com/r/edmondas/poweradmin)
+[![Docker Image Size](https://img.shields.io/docker/image-size/edmondas/poweradmin)](https://hub.docker.com/r/edmondas/poweradmin)
 
 [Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for PowerDNS server. The
 interface supports most of
