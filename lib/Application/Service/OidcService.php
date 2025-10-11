@@ -324,6 +324,7 @@ class OidcService extends LoggingService
 
     private function getUserInfo(GenericProvider $provider, AccessTokenInterface $token, string $providerId): OidcUserInfo
     {
+        // @phan-suppress-next-line PhanTypeMismatchArgumentSuperType - getAccessToken returns interface but getResourceOwner expects concrete class
         $resourceOwner = $provider->getResourceOwner($token);
         $userData = $resourceOwner->toArray();
 

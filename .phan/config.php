@@ -268,6 +268,9 @@ return [
     //
     // Note: PhanMissingRequireFile is suppressed for config/settings.php because this is
     // an optional user configuration file that is properly guarded with file_exists().
+    // Note: PhanTypeMismatchArgumentSuperType is suppressed because the OAuth2 library's
+    // GenericProvider::getResourceOwner() accepts AccessToken (concrete class) but
+    // getAccessToken() returns AccessTokenInterface. This is a library design issue.
     'suppress_issue_types' => [
         'PhanDeprecatedClass',
         'PhanDeprecatedFunction',
@@ -276,8 +279,6 @@ return [
         'PhanTypeArraySuspiciousNullable',
         'PhanTypePossiblyInvalidDimOffset',
         'PhanTypeMismatchArgumentNullableInternal',
-        'PhanTypeMismatchDimFetch',
-        'PhanUndeclaredMethod',
         'PhanTypeMismatchArgumentInternalProbablyReal',
         'PhanTypeInvalidThrowsIsInterface',
         'PhanTypeMismatchArgumentSuperType',

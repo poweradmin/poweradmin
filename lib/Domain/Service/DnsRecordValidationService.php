@@ -27,6 +27,8 @@ use Poweradmin\Domain\Service\DnsValidation\DnsValidatorRegistry;
 use Poweradmin\Domain\Service\DnsValidation\TTLValidator;
 use Poweradmin\Domain\Service\DnsValidation\DnsCommonValidator;
 use Poweradmin\Domain\Service\DnsValidation\DNSViolationValidator;
+use Poweradmin\Domain\Service\DnsValidation\CNAMERecordValidator;
+use Poweradmin\Domain\Service\DnsValidation\SOARecordValidator;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -105,7 +107,7 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
 
         // Perform common validation for all record types
         $cnameValidator = $this->validatorRegistry->getValidator(RecordType::CNAME);
-        if ($type != RecordType::CNAME && method_exists($cnameValidator, 'validateCnameExistence')) {
+        if ($type != RecordType::CNAME && $cnameValidator instanceof CNAMERecordValidator) {
             $cnameResult = $cnameValidator->validateCnameExistence($name, $rid);
             if (!$cnameResult->isValid()) {
                 return $cnameResult;
@@ -113,7 +115,7 @@ class DnsRecordValidationService implements DnsRecordValidationServiceInterface
         }
 
         // Special case for SOA records
-        if ($type === RecordType::SOA && method_exists($validator, 'setSOAParams')) {
+        if ($type === RecordType::SOA && $validator instanceof SOARecordValidator) {
             $validator->setSOAParams($dns_hostmaster, $zone);
         }
 

@@ -118,6 +118,10 @@ class EditRecordController extends BaseController
 
         $recordTypes = $this->recordTypeService->getAllTypes();
         $record = $dnsRecord->getRecordFromId($record_id);
+        if ($record === null) {
+            $this->showError(_('Record not found.'));
+            return;
+        }
 
         // Use the new hostname-only display if enabled
         $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
@@ -157,6 +161,10 @@ class EditRecordController extends BaseController
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $old_record_info = $dnsRecord->getRecordFromId($_POST["rid"]);
+        if ($old_record_info === null) {
+            $this->setMessage('edit', 'error', _('Record not found.'));
+            return false;
+        }
 
         $postData = $_POST;
 
@@ -182,6 +190,11 @@ class EditRecordController extends BaseController
         $dnsRecord->updateSOASerial($zid);
 
         $new_record_info = $dnsRecord->getRecordFromId($_POST["rid"]);
+        if ($new_record_info === null) {
+            $this->setMessage('edit', 'error', _('Failed to retrieve updated record information.'));
+            return false;
+        }
+
         $this->logger->logInfo(
             sprintf(
                 'client_ip:%s user:%s operation:edit_record'

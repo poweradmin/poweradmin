@@ -89,6 +89,10 @@ class DeleteRecordsController extends BaseController
 
         foreach ($record_ids as $record_id) {
             $record_info = $dnsRecord->getRecordFromId($record_id);
+            if ($record_info === null) {
+                continue;
+            }
+
             $zid = $dnsRecord->getZoneIdFromRecordId($record_id);
 
             if ($zid !== null) {

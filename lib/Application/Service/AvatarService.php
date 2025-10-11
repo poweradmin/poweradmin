@@ -189,9 +189,11 @@ class AvatarService
             return $url;
         } elseif (strpos($url, 'accounts.google.com') !== false) {
             // For Google, we can safely add size parameter
-            parse_str($parsedUrl['query'] ?? '', $queryParams);
-            $queryParams['sz'] = $size;
-            $url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'] . '?' . http_build_query($queryParams);
+            if (isset($parsedUrl['scheme'], $parsedUrl['host'], $parsedUrl['path'])) {
+                parse_str($parsedUrl['query'] ?? '', $queryParams);
+                $queryParams['sz'] = $size;
+                $url = $parsedUrl['scheme'] . '://' . $parsedUrl['host'] . $parsedUrl['path'] . '?' . http_build_query($queryParams);
+            }
         }
 
         return $url;

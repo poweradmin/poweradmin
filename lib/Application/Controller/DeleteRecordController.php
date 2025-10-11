@@ -108,6 +108,10 @@ class DeleteRecordController extends BaseController
 
         if (isset($_GET['confirm'])) {
             $record_info = $dnsRecord->getRecordFromId($record_id);
+            if ($record_info === null) {
+                $this->showError(_('Record not found.'));
+                return;
+            }
 
             // Check if this is an A or AAAA record that might have a corresponding PTR record
             $hasPtrRecord = false;
