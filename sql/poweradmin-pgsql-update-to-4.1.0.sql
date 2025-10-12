@@ -59,3 +59,16 @@ CREATE INDEX IF NOT EXISTS idx_zones_zone_templ_id ON zones(zone_templ_id);
 CREATE INDEX IF NOT EXISTS idx_zone_templ_owner ON zone_templ(owner);
 CREATE INDEX IF NOT EXISTS idx_zone_templ_created_by ON zone_templ(created_by);
 CREATE INDEX IF NOT EXISTS idx_zone_templ_records_zone_templ_id ON zone_templ_records(zone_templ_id);
+
+-- Add username_recovery_requests table for username recovery functionality
+-- This table tracks username recovery requests for rate limiting and security
+CREATE TABLE IF NOT EXISTS username_recovery_requests (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    ip_address VARCHAR(45) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX IF NOT EXISTS idx_urr_email ON username_recovery_requests(email);
+CREATE INDEX IF NOT EXISTS idx_urr_ip ON username_recovery_requests(ip_address);
+CREATE INDEX IF NOT EXISTS idx_urr_created ON username_recovery_requests(created_at);

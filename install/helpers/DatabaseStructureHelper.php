@@ -1176,6 +1176,52 @@ class DatabaseStructureHelper
                 )
             ),
             array(
+                'table_name' => 'username_recovery_requests',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'autoincrement' => 1,
+                        'name' => 'id',
+                        'table' => 'username_recovery_requests',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'email' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'name' => 'email',
+                        'table' => 'username_recovery_requests',
+                        'flags' => 'not_null'
+                    ),
+                    'ip_address' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'length' => 45,
+                        'fixed' => 0,
+                        'name' => 'ip_address',
+                        'table' => 'username_recovery_requests',
+                        'flags' => 'not_null'
+                    ),
+                    'created_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'created_at',
+                        'table' => 'username_recovery_requests',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'idx_username_recovery_requests_email' => array('email'),
+                    'idx_username_recovery_requests_ip' => array('ip_address'),
+                    'idx_username_recovery_requests_created' => array('created_at')
+                )
+            ),
+            array(
                 'table_name' => 'oidc_user_links',
                 'options' => array('type' => 'innodb'),
                 'fields' => array(

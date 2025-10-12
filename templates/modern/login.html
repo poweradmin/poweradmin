@@ -81,6 +81,11 @@
                 <a href="{{ base_url_prefix }}/password/forgot" class="text-decoration-none">{% trans %}Forgot your password?{% endtrans %}</a>
             </div>
             {% endif %}
+            {% if username_recovery_enabled %}
+            <div class="text-center mt-2">
+                <a href="{{ base_url_prefix }}/username/forgot" class="text-decoration-none">{% trans %}Forgot your username?{% endtrans %}</a>
+            </div>
+            {% endif %}
             {% if recaptcha_enabled %}
             <div class="text-center mt-2">
                 <small class="text-muted">

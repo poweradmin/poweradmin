@@ -83,6 +83,15 @@ return [
             'min_time_between_requests' => 60,          // Minimum seconds between requests (1 minute)
         ],
         /**
+         * Username Recovery Settings
+         */
+        'username_recovery' => [
+            'enabled' => false,                         // Enable/disable username recovery functionality
+            'rate_limit_attempts' => 5,                 // Max recovery attempts per time window
+            'rate_limit_window' => 3600,                // Rate limit window in seconds (1 hour)
+            'min_time_between_requests' => 60,         // Minimum seconds between requests (1 minute)
+        ],
+        /**
          * Google reCAPTCHA Settings
          */
         'recaptcha' => [

@@ -172,6 +172,17 @@ CREATE INDEX idx_prt_email ON password_reset_tokens(email);
 CREATE UNIQUE INDEX idx_prt_token ON password_reset_tokens(token);
 CREATE INDEX idx_prt_expires ON password_reset_tokens(expires_at);
 
+CREATE TABLE username_recovery_requests (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email VARCHAR(255) NOT NULL,
+    ip_address VARCHAR(45) NOT NULL,
+    created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_urr_email ON username_recovery_requests(email);
+CREATE INDEX idx_urr_ip ON username_recovery_requests(ip_address);
+CREATE INDEX idx_urr_created ON username_recovery_requests(created_at);
+
 CREATE TABLE user_agreements (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER NOT NULL,

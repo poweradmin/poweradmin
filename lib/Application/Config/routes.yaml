@@ -109,6 +109,12 @@ reset_password:
   controller: Poweradmin\Application\Controller\ResetPasswordController::run
   methods: [GET, POST]
 
+# Username Recovery
+forgot_username:
+  path: /username/forgot
+  controller: Poweradmin\Application\Controller\ForgotUsernameController::run
+  methods: [GET, POST]
+
 # Zone Management
 zones_forward:
   path: /zones/forward

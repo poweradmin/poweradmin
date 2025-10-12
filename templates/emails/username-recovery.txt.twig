@@ -1,0 +1,36 @@
+{% extends "base.txt.twig" %}
+
+{% block title %}Username Recovery Request{% endblock %}
+
+{% block content %}
+USERNAME RECOVERY REQUEST
+=========================
+
+{{ greeting }}
+
+{% if usernameCount == 1 %}
+We received a request to recover your username. Here is your username:
+{% else %}
+We received a request to recover your username. You have {{ usernameCount }} accounts associated with this email address:
+{% endif %}
+
+{% for username in usernames %}
+  {{ username }}
+{% endfor %}
+
+{% if usernameCount == 1 %}
+You can use this username to log in to your account.
+{% else %}
+You can use any of these usernames to log in to your account.
+{% endif %}
+
+Login page: {{ loginUrl }}
+
+SECURITY NOTICE:
+- If you did not request username recovery, please ignore this email.
+- Consider changing your password if you suspect unauthorized access.
+- Never share your username or password with anyone.
+
+---
+{{ appName }}
+{% endblock %}

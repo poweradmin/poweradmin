@@ -57,3 +57,16 @@ ALTER TABLE `zones` ADD INDEX `idx_zones_zone_templ_id` (`zone_templ_id`);
 ALTER TABLE `zone_templ` ADD INDEX `idx_zone_templ_owner` (`owner`);
 ALTER TABLE `zone_templ` ADD INDEX `idx_zone_templ_created_by` (`created_by`);
 ALTER TABLE `zone_templ_records` ADD INDEX `idx_zone_templ_records_zone_templ_id` (`zone_templ_id`);
+
+-- Add username_recovery_requests table for username recovery functionality
+-- This table tracks username recovery requests for rate limiting and security
+CREATE TABLE IF NOT EXISTS `username_recovery_requests` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `email` varchar(255) NOT NULL,
+    `ip_address` varchar(45) NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_urr_email` (`email`),
+    KEY `idx_urr_ip` (`ip_address`),
+    KEY `idx_urr_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

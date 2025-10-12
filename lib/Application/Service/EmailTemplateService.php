@@ -168,6 +168,36 @@ class EmailTemplateService
     }
 
     /**
+     * Render username recovery email templates
+     *
+     * @param string $name User's name
+     * @param array $usernames Usernames associated with the email
+     * @param string $loginUrl URL to the login page
+     * @return array ['html' => string, 'text' => string, 'subject' => string]
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function renderUsernameRecoveryEmail(string $name, array $usernames, string $loginUrl): array
+    {
+        $greeting = $name ? "Hi $name," : "Hi,";
+
+        $variables = [
+            'greeting' => $greeting,
+            'name' => $name,
+            'usernames' => $usernames,
+            'usernameCount' => count($usernames),
+            'loginUrl' => $loginUrl,
+        ];
+
+        return [
+            'html' => $this->render('username-recovery.html.twig', $variables),
+            'text' => $this->render('username-recovery.txt.twig', $variables),
+            'subject' => 'Username Recovery Request'
+        ];
+    }
+
+    /**
      * Check if a custom template exists
      *
      * @param string $template Template name

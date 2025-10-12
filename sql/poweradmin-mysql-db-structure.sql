@@ -237,6 +237,17 @@ CREATE TABLE `password_reset_tokens` (
     KEY `idx_expires` (`expires_at`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `username_recovery_requests` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `email` varchar(255) NOT NULL,
+    `ip_address` varchar(45) NOT NULL,
+    `created_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (`id`),
+    KEY `idx_urr_email` (`email`),
+    KEY `idx_urr_ip` (`ip_address`),
+    KEY `idx_urr_created` (`created_at`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `user_agreements` (
     `id` int(11) NOT NULL AUTO_INCREMENT,
     `user_id` int(11) NOT NULL,

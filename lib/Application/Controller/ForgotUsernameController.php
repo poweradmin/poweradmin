@@ -25,11 +25,10 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\BaseController;
-use Poweradmin\Application\Service\PasswordResetService;
+use Poweradmin\Application\Service\UsernameRecoveryService;
 use Poweradmin\Application\Service\RecaptchaService;
-use Poweradmin\Application\Service\UserAuthenticationService;
 use Poweradmin\Domain\Service\UserContextService;
-use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
+use Poweradmin\Infrastructure\Repository\DbUsernameRecoveryRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -38,9 +37,9 @@ use Poweradmin\Infrastructure\Utility\UserAgentService;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 
-class ForgotPasswordController extends BaseController
+class ForgotUsernameController extends BaseController
 {
-    private PasswordResetService $passwordResetService;
+    private UsernameRecoveryService $usernameRecoveryService;
     private RecaptchaService $recaptchaService;
     private UserContextService $userContextService;
     private CsrfTokenService $csrfTokenService;
@@ -50,60 +49,65 @@ class ForgotPasswordController extends BaseController
 
     public function __construct(array $request)
     {
-        parent::__construct($request, false); // No authentication required for forgot password
+        parent::__construct($request, false); // No authentication required for forgot username
 
         // Create our own CSRF token service
         $this->csrfTokenService = new CsrfTokenService();
 
-        // Create PasswordResetService with dependencies
+        // Create UsernameRecoveryService with dependencies
         $configManager = ConfigurationManager::getInstance();
-        $tokenRepository = new DbPasswordResetTokenRepository($this->db, $configManager);
-        $userRepository = new DbUserRepository($this->db, $configManager);
-        $mailService = new MailService($configManager, null);
-        $authService = new UserAuthenticationService(
-            $configManager->get('security', 'password_encryption', 'bcrypt'),
-            $configManager->get('security', 'password_cost', 12)
-        );
-        $this->ipRetriever = new IpAddressRetriever($_SERVER);
-        $this->userAgentService = new UserAgentService($_SERVER);
 
-        // Create logger instance
+        // Create logger instance early for error logging
         $logHandler = LoggerHandlerFactory::create($configManager->getAll());
         $logLevel = $configManager->get('logging', 'level', 'info');
         $this->logger = new Logger($logHandler, $logLevel);
 
-        $this->passwordResetService = new PasswordResetService(
-            $tokenRepository,
-            $userRepository,
-            $mailService,
-            $configManager,
-            $authService,
-            $this->ipRetriever,
-            $this->logger
-        );
+        try {
+            $recoveryRepository = new DbUsernameRecoveryRepository($this->db, $configManager);
+            $userRepository = new DbUserRepository($this->db, $configManager);
+            $mailService = new MailService($configManager, null);
+            $this->ipRetriever = new IpAddressRetriever($_SERVER);
+            $this->userAgentService = new UserAgentService($_SERVER);
 
-        $this->recaptchaService = new RecaptchaService($this->config);
-        $this->userContextService = new UserContextService();
+            $this->usernameRecoveryService = new UsernameRecoveryService(
+                $recoveryRepository,
+                $userRepository,
+                $mailService,
+                $configManager,
+                $this->ipRetriever,
+                $this->logger,
+                $this->db
+            );
+
+            $this->recaptchaService = new RecaptchaService($this->config);
+            $this->userContextService = new UserContextService();
+        } catch (\Exception $e) {
+            $this->logger->error('Failed to initialize username recovery controller', [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+            throw $e; // Re-throw to let the application handle it
+        }
     }
 
     public function run(): void
     {
-        // Check if password reset is enabled
-        if (!$this->passwordResetService->isEnabled()) {
-            $this->logger->warning('Password reset attempt while feature is disabled', [
+        // Check if username recovery is enabled
+        if (!$this->usernameRecoveryService->isEnabled()) {
+            $this->logger->warning('Username recovery attempt while feature is disabled', [
                 'ip' => $this->ipRetriever->getClientIp(),
                 'user_agent' => $this->userAgentService->getUserAgent(),
                 'browser' => $this->userAgentService->getBrowserInfo(),
                 'is_bot' => $this->userAgentService->isBot(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
-            $this->showError('Password reset functionality is disabled.');
+            $this->showError('Username recovery functionality is disabled.');
             return;
         }
 
         // Already logged in users shouldn't access this page
         if ($this->userContextService->isAuthenticated()) {
-            $this->logger->info('Authenticated user attempted to access password reset', [
+            $this->logger->info('Authenticated user attempted to access username recovery', [
                 'user_id' => $this->userContextService->getLoggedInUserId(),
                 'username' => $this->userContextService->getLoggedInUsername(),
                 'ip' => $this->ipRetriever->getClientIp(),
@@ -116,45 +120,45 @@ class ForgotPasswordController extends BaseController
         }
 
         if ($this->isPost()) {
-            $this->handlePasswordResetRequest();
+            $this->handleUsernameRecoveryRequest();
         } else {
-            $this->showPasswordResetForm();
+            $this->showUsernameRecoveryForm();
         }
     }
 
-    private function handlePasswordResetRequest(): void
+    private function handleUsernameRecoveryRequest(): void
     {
         $ipAddress = $this->ipRetriever->getClientIp();
         $userAgent = $this->userAgentService->getUserAgent();
 
         // Verify CSRF token manually to handle errors properly
         if ($this->config->get('security', 'global_token_validation', true)) {
-            $token = $_POST['password_reset_token'] ?? '';
+            $token = $_POST['username_recovery_token'] ?? '';
 
-            if (!$this->csrfTokenService->validateToken($token, 'password_reset_token')) {
-                $this->logger->warning('Password reset failed - invalid CSRF token', [
+            if (!$this->csrfTokenService->validateToken($token, 'username_recovery_token')) {
+                $this->logger->warning('Username recovery failed - invalid CSRF token', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,
                     'timestamp' => date('Y-m-d H:i:s')
                 ]);
-                $this->showPasswordResetForm('Invalid security token. Please try again.');
+                $this->showUsernameRecoveryForm('Invalid security token. Please try again.');
                 return;
             }
 
             // Clear the token after use
-            unset($_SESSION['password_reset_token']);
+            unset($_SESSION['username_recovery_token']);
         }
 
         // Verify reCAPTCHA if enabled
         if ($this->recaptchaService->isEnabled()) {
             $recaptchaToken = $_POST['g-recaptcha-response'] ?? '';
-            if (!$this->recaptchaService->verify($recaptchaToken, $ipAddress, 'forgot_password')) {
-                $this->logger->warning('Password reset failed - reCAPTCHA verification failed', [
+            if (!$this->recaptchaService->verify($recaptchaToken, $ipAddress, 'forgot_username')) {
+                $this->logger->warning('Username recovery failed - reCAPTCHA verification failed', [
                     'ip' => $ipAddress,
                     'user_agent' => $userAgent,
                     'timestamp' => date('Y-m-d H:i:s')
                 ]);
-                $this->showPasswordResetForm('reCAPTCHA verification failed. Please try again.');
+                $this->showUsernameRecoveryForm('reCAPTCHA verification failed. Please try again.');
                 return;
             }
         }
@@ -163,36 +167,18 @@ class ForgotPasswordController extends BaseController
 
         // Validate email format
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            $this->logger->info('Password reset failed - invalid email format', [
+            $this->logger->info('Username recovery failed - invalid email format', [
                 'email' => $email,
                 'ip' => $ipAddress,
                 'user_agent' => $userAgent,
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
-            $this->showPasswordResetForm('Please enter a valid email address.');
+            $this->showUsernameRecoveryForm('Please enter a valid email address.');
             return;
         }
 
-        // Check if user's authentication method allows password reset
-        $canReset = $this->passwordResetService->canUserResetPassword($email);
-        if (!$canReset['allowed']) {
-            $authMethod = strtoupper($canReset['auth_method'] ?? 'external');
-            $this->logger->info('Password reset blocked - user uses external authentication', [
-                'email' => $email,
-                'auth_method' => $canReset['auth_method'],
-                'ip' => $ipAddress,
-                'user_agent' => $userAgent,
-                'timestamp' => date('Y-m-d H:i:s')
-            ]);
-            $this->showPasswordResetForm(
-                "This account uses {$authMethod} authentication. Password reset is not available. " .
-                "Please contact your system administrator for assistance."
-            );
-            return;
-        }
-
-        // Log password reset request attempt
-        $this->logger->info('Password reset request initiated', [
+        // Log username recovery request attempt
+        $this->logger->info('Username recovery request initiated', [
             'email' => $email,
             'ip' => $ipAddress,
             'user_agent' => $userAgent,
@@ -203,52 +189,52 @@ class ForgotPasswordController extends BaseController
         ]);
 
         try {
-            // Create password reset request
-            $this->passwordResetService->createResetRequest($email);
+            // Create username recovery request
+            $this->usernameRecoveryService->createRecoveryRequest($email);
 
             // Always show success message (for security - don't reveal if email exists)
             $this->showSuccessMessage();
         } catch (\PDOException $e) {
             // Database error - log detailed error but show generic message to user
-            $this->logger->error('Password reset failed - database error', [
+            $this->logger->error('Username recovery failed - database error', [
                 'email' => $email,
                 'ip' => $ipAddress,
                 'error' => $e->getMessage(),
                 'code' => $e->getCode(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
-            $this->showPasswordResetForm('A system error occurred. Please try again later or contact support if the problem persists.');
+            $this->showUsernameRecoveryForm('A system error occurred. Please try again later or contact support if the problem persists.');
         } catch (\Exception $e) {
             // Generic error - log and show user-friendly message
-            $this->logger->error('Password reset failed - unexpected error', [
+            $this->logger->error('Username recovery failed - unexpected error', [
                 'email' => $email,
                 'ip' => $ipAddress,
                 'error' => $e->getMessage(),
                 'trace' => $e->getTraceAsString(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
-            $this->showPasswordResetForm('An unexpected error occurred. Please try again later.');
+            $this->showUsernameRecoveryForm('An unexpected error occurred. Please try again later.');
         }
     }
 
-    private function showPasswordResetForm(string $error = ''): void
+    private function showUsernameRecoveryForm(string $error = ''): void
     {
         // Log form display with error if present
         if ($error) {
-            $this->logger->debug('Password reset form displayed with error', [
+            $this->logger->debug('Username recovery form displayed with error', [
                 'error' => $error,
                 'ip' => $this->ipRetriever->getClientIp(),
                 'timestamp' => date('Y-m-d H:i:s')
             ]);
         }
 
-        // Generate a new token for password reset
-        $passwordResetToken = $this->csrfTokenService->generateToken();
-        $_SESSION['password_reset_token'] = $passwordResetToken;
+        // Generate a new token for username recovery
+        $usernameRecoveryToken = $this->csrfTokenService->generateToken();
+        $_SESSION['username_recovery_token'] = $usernameRecoveryToken;
 
-        $this->render('forgot_password.html', [
+        $this->render('forgot_username.html', [
             'error' => $error,
-            'password_reset_token' => $passwordResetToken,
+            'username_recovery_token' => $usernameRecoveryToken,
             'recaptcha_enabled' => $this->recaptchaService->isEnabled(),
             'recaptcha_site_key' => $this->recaptchaService->getSiteKey(),
             'recaptcha_version' => $this->recaptchaService->getVersion(),
@@ -257,9 +243,9 @@ class ForgotPasswordController extends BaseController
 
     private function showSuccessMessage(): void
     {
-        $this->render('forgot_password.html', [
+        $this->render('forgot_username.html', [
             'success' => true,
-            'message' => 'If an account exists with that email address, you will receive a password reset link shortly.',
+            'message' => 'If an account exists with that email address, you will receive your username shortly.',
         ]);
     }
 }

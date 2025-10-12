@@ -1,0 +1,38 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Username Recovery Request{% endblock %}
+
+{% block content %}
+    <h2 class="heading">Username Recovery Request</h2>
+
+    <p>{{ greeting }}</p>
+
+    {% if usernameCount == 1 %}
+    <p>We received a request to recover your username. Here is your username:</p>
+    {% else %}
+    <p>We received a request to recover your username. You have {{ usernameCount }} accounts associated with this email address:</p>
+    {% endif %}
+
+    <div style="margin: 20px 0; padding: 15px; border-radius: 5px; background-color: #f8f9fa;">
+        {% for username in usernames %}
+        <p style="margin: 5px 0; font-family: monospace; font-size: 16px; font-weight: bold;">{{ username }}</p>
+        {% endfor %}
+    </div>
+
+    {% if usernameCount == 1 %}
+    <p>You can use this username to log in to your account.</p>
+    {% else %}
+    <p>You can use any of these usernames to log in to your account.</p>
+    {% endif %}
+
+    <p style="margin: 20px 0;">
+        <a href="{{ loginUrl }}" style="padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;" class="button-primary">Go to Login Page</a>
+    </p>
+
+    <p><strong>Security Notice:</strong></p>
+    <ul>
+        <li>If you did not request username recovery, please ignore this email.</li>
+        <li>Consider changing your password if you suspect unauthorized access.</li>
+        <li>Never share your username or password with anyone.</li>
+    </ul>
+{% endblock %}

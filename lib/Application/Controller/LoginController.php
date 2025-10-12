@@ -145,6 +145,7 @@ class LoginController extends BaseController
             'recaptcha_site_key' => $this->config->get('security', 'recaptcha.site_key', ''),
             'recaptcha_version' => $this->config->get('security', 'recaptcha.version', 'v2'),
             'password_reset_enabled' => $this->config->get('security', 'password_reset.enabled', false),
+            'username_recovery_enabled' => $this->config->get('security', 'username_recovery.enabled', false),
             'oidc_enabled' => $oidcEnabled,
             'oidc_providers' => $oidcProviders,
             'saml_enabled' => $samlEnabled,
