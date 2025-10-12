@@ -66,6 +66,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
         if (!$viewOthers) {
             $query .= " LEFT JOIN zones ON $domains_table.id = zones.domain_id";
             $query .= " WHERE zones.owner = :userId";
+            $query .= " AND $domains_table.name NOT LIKE '%.in-addr.arpa'";
+            $query .= " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
+        } else {
+            $query .= " WHERE $domains_table.name NOT LIKE '%.in-addr.arpa'";
+            $query .= " AND $domains_table.name NOT LIKE '%.ip6.arpa'";
         }
 
         $query .= " ORDER BY letter";
