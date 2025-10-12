@@ -1,3 +1,6 @@
+{% extends "base.txt.twig" %}
+
+{% block content %}
 {{ greeting }},
 
 Your account has been created. Here are your login details:
@@ -8,6 +11,4 @@ Password: {{ password }}
 For security reasons, please change your password after your first login.
 
 If you have any questions, please contact your administrator.
-
----
-This is an automated message from {{ appName }}. Please do not reply to this email.
+{% endblock %}
