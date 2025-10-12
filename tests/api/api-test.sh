@@ -1274,14 +1274,14 @@ test_permissions() {
 
 test_dynamic_dns() {
     print_section "Dynamic DNS Tests"
-    
+
     # Test dynamic DNS endpoint (if configured)
     increment_test
     print_test "Dynamic DNS update endpoint"
-    
+
     local response
     local http_code
-    
+
     # Test with HTTP Basic Auth (if credentials are provided)
     if [[ -n "${DYNAMIC_DNS_USER:-}" && -n "${DYNAMIC_DNS_PASS:-}" ]]; then
         response=$(curl -s -w "%{http_code}" \
@@ -1296,9 +1296,9 @@ test_dynamic_dns() {
             -d "hostname=test.example.com&myip=192.0.2.100" \
             "${API_BASE_URL}/dynamic_update.php" 2>/dev/null || echo "000")
     fi
-    
+
     http_code="${response: -3}"
-    
+
     if [[ "$http_code" == "200" ]]; then
         print_pass "Dynamic DNS update endpoint"
     elif [[ "$http_code" == "401" ]]; then
@@ -1311,6 +1311,70 @@ test_dynamic_dns() {
         print_skip "Dynamic DNS update endpoint not available"
     else
         print_warning "Dynamic DNS update endpoint - Unexpected status $http_code"
+    fi
+}
+
+test_rfc2317_classless_delegation() {
+    print_section "RFC 2317 Classless Reverse Delegation Tests"
+
+    # Test creating RFC 2317 zone with /26 subnet
+    local rfc2317_zone_data='{
+        "name": "0/26.99.0.192.in-addr.arpa",
+        "type": "NATIVE",
+        "master": "",
+        "account": "rfc2317-test",
+        "owner_user_id": '"${TEST_USER_ID:-1}"'
+    }'
+
+    if api_request "POST" "/zones" "$rfc2317_zone_data" "201" "Create RFC 2317 zone (0/26)"; then
+        RFC2317_ZONE_ID=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.zone_id // .data.id')
+        echo "Created RFC 2317 zone with ID: $RFC2317_ZONE_ID"
+
+        # Add PTR record to RFC 2317 zone
+        if [[ -n "${RFC2317_ZONE_ID:-}" && "$RFC2317_ZONE_ID" != "null" ]]; then
+            local rfc2317_ptr_data='{
+                "name": "10.0/26.99.0.192.in-addr.arpa",
+                "type": "PTR",
+                "content": "host10.example.com.",
+                "ttl": 3600,
+                "disabled": false
+            }'
+
+            if api_request "POST" "/zones/$RFC2317_ZONE_ID/records" "$rfc2317_ptr_data" "201" "Add PTR to RFC 2317 zone"; then
+                RFC2317_PTR_ID=$(echo "$LAST_RESPONSE_BODY" | jq -r '.data.record_id // .data.id')
+                echo "Created RFC 2317 PTR record with ID: $RFC2317_PTR_ID"
+
+                # Verify PTR record
+                api_request "GET" "/zones/$RFC2317_ZONE_ID/records/$RFC2317_PTR_ID" "" "200" "Verify RFC 2317 PTR record"
+
+                # Cleanup PTR record
+                cleanup_request "DELETE" "/zones/$RFC2317_ZONE_ID/records/$RFC2317_PTR_ID" "" "Delete RFC 2317 PTR record" "204"
+            fi
+
+            # Test invalid RFC 2317 zones
+            local invalid_rfc2317_1='{
+                "name": "65/26.99.0.192.in-addr.arpa",
+                "type": "NATIVE",
+                "master": "",
+                "account": "rfc2317-test",
+                "owner_user_id": '"${TEST_USER_ID:-1}"'
+            }'
+            api_request "POST" "/zones" "$invalid_rfc2317_1" "400" "Reject misaligned RFC 2317 zone (65/26)"
+
+            local invalid_rfc2317_2='{
+                "name": "0/23.99.0.192.in-addr.arpa",
+                "type": "NATIVE",
+                "master": "",
+                "account": "rfc2317-test",
+                "owner_user_id": '"${TEST_USER_ID:-1}"'
+            }'
+            api_request "POST" "/zones" "$invalid_rfc2317_2" "400" "Reject invalid RFC 2317 prefix (/23)"
+
+            # Cleanup RFC 2317 zone
+            cleanup_request "DELETE" "/zones/$RFC2317_ZONE_ID" "" "Delete RFC 2317 test zone" "204"
+        fi
+    else
+        print_skip "RFC 2317 zone creation tests - failed to create test zone"
     fi
 }
 
@@ -1392,6 +1456,7 @@ run_all_tests() {
     test_edge_cases
     test_api_documentation
     test_dynamic_dns
+    test_rfc2317_classless_delegation
     test_performance
     
     # Clean up test data

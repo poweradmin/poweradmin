@@ -170,4 +170,95 @@ class HostnameValidatorTest extends TestCase
         $this->assertFalse($this->validator->isValid('example.com/with/slash'));  // Invalid characters
         $this->assertFalse($this->validator->isValid('example.com!'));  // Invalid characters
     }
+
+    /**
+     * Test RFC 2317 classless reverse delegation support
+     */
+    public function testRFC2317ClasslessReverseDelegation()
+    {
+        // Valid RFC 2317 zones - IPv4 /26 subnets (64 addresses each)
+        $this->assertTrue($this->validator->isValid('0/26.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('64/26.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('128/26.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('192/26.1.0.192.in-addr.arpa'));
+
+        // Valid RFC 2317 zones - IPv4 /27 subnets (32 addresses each)
+        $this->assertTrue($this->validator->isValid('0/27.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('32/27.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('64/27.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('96/27.1.0.192.in-addr.arpa'));
+
+        // Valid RFC 2317 zones - IPv4 /28 subnets (16 addresses each)
+        $this->assertTrue($this->validator->isValid('0/28.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('16/28.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('32/28.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('240/28.1.0.192.in-addr.arpa'));
+
+        // Valid RFC 2317 zones - IPv4 /29 subnets (8 addresses each)
+        $this->assertTrue($this->validator->isValid('0/29.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('8/29.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('248/29.1.0.192.in-addr.arpa'));
+
+        // Valid RFC 2317 zones - IPv4 /30 subnets (4 addresses each)
+        $this->assertTrue($this->validator->isValid('0/30.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('4/30.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('252/30.1.0.192.in-addr.arpa'));
+
+        // Valid RFC 2317 zones - IPv4 /31 subnets (2 addresses - point-to-point links)
+        $this->assertTrue($this->validator->isValid('0/31.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('2/31.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('254/31.1.0.192.in-addr.arpa'));
+
+        // Valid RFC 2317 zones - IPv4 /25 subnets (128 addresses each)
+        $this->assertTrue($this->validator->isValid('0/25.1.0.192.in-addr.arpa'));
+        $this->assertTrue($this->validator->isValid('128/25.1.0.192.in-addr.arpa'));
+
+        // Valid RFC 2317 zones - IPv6 with numeric nibbles
+        $this->assertTrue($this->validator->isValid('0/64.0.0.0.1.0.0.2.ip6.arpa'));
+        $this->assertTrue($this->validator->isValid('0/48.0.0.0.1.0.0.2.ip6.arpa'));
+
+        // Valid RFC 2317 zones - IPv6 with hexadecimal nibbles (a-f)
+        $this->assertTrue($this->validator->isValid('a/64.0.0.0.1.0.0.2.ip6.arpa'));
+        $this->assertTrue($this->validator->isValid('b/64.0.0.0.1.0.0.2.ip6.arpa'));
+        $this->assertTrue($this->validator->isValid('f/64.0.0.0.1.0.0.2.ip6.arpa'));
+        $this->assertTrue($this->validator->isValid('A/64.0.0.0.1.0.0.2.ip6.arpa')); // uppercase
+        $this->assertTrue($this->validator->isValid('F/64.0.0.0.1.0.0.2.ip6.arpa')); // uppercase
+        $this->assertTrue($this->validator->isValid('abc/64.0.0.0.1.0.0.2.ip6.arpa')); // multi-nibble
+        $this->assertTrue($this->validator->isValid('deadbeef/64.0.0.0.1.0.0.2.ip6.arpa')); // multi-nibble
+
+        // Invalid RFC 2317 zones - IPv6 with non-hex characters
+        $this->assertFalse($this->validator->isValid('g/64.0.0.0.1.0.0.2.ip6.arpa')); // g is not hex
+        $this->assertFalse($this->validator->isValid('xyz/64.0.0.0.1.0.0.2.ip6.arpa')); // non-hex
+
+        // Invalid RFC 2317 zones - misaligned subnet boundaries
+        $this->assertFalse($this->validator->isValid('1/26.1.0.192.in-addr.arpa'));   // Not multiple of 64
+        $this->assertFalse($this->validator->isValid('65/26.1.0.192.in-addr.arpa'));  // Should be 64/26
+        $this->assertFalse($this->validator->isValid('127/26.1.0.192.in-addr.arpa')); // Should be 64/26
+        $this->assertFalse($this->validator->isValid('3/27.1.0.192.in-addr.arpa'));   // Not multiple of 32
+        $this->assertFalse($this->validator->isValid('17/28.1.0.192.in-addr.arpa'));  // Not multiple of 16
+        $this->assertFalse($this->validator->isValid('5/29.1.0.192.in-addr.arpa'));   // Not multiple of 8
+        $this->assertFalse($this->validator->isValid('3/30.1.0.192.in-addr.arpa'));   // Not multiple of 4
+        $this->assertFalse($this->validator->isValid('1/31.1.0.192.in-addr.arpa'));   // Not multiple of 2
+
+        // Invalid RFC 2317 zones - invalid prefix lengths for IPv4
+        $this->assertFalse($this->validator->isValid('0/23.1.0.192.in-addr.arpa'));   // Too small (< /24)
+        $this->assertFalse($this->validator->isValid('0/16.1.0.192.in-addr.arpa'));   // Too small
+        $this->assertFalse($this->validator->isValid('0/33.1.0.192.in-addr.arpa'));   // Too large (> /32)
+
+        // Invalid RFC 2317 zones - invalid subnet numbers for IPv4
+        $this->assertFalse($this->validator->isValid('256/26.1.0.192.in-addr.arpa')); // > 255
+        $this->assertFalse($this->validator->isValid('-1/26.1.0.192.in-addr.arpa'));  // Negative
+        $this->assertFalse($this->validator->isValid('abc/26.1.0.192.in-addr.arpa')); // Non-numeric (IPv4 must be numeric)
+
+        // Invalid RFC 2317 zones - malformed format
+        $this->assertFalse($this->validator->isValid('0/26/extra.1.0.192.in-addr.arpa')); // Multiple slashes in one label
+
+        // Note: Dash notation (0-63.1.0.192.in-addr.arpa) is also valid per RFC 2317
+        // We accept it as valid since it's a legitimate alternative format
+
+        // Ensure slashes still rejected in non-ARPA zones
+        $this->assertFalse($this->validator->isValid('example.com/test'));
+        $this->assertFalse($this->validator->isValid('sub/domain.example.com'));
+        $this->assertFalse($this->validator->isValid('0/26.example.com'));
+    }
 }
