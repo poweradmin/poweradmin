@@ -85,10 +85,12 @@ class ListForwardZonesController extends BaseController
 
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
+        $perm_delete = Permission::getDeletePermission($this->db);
 
         $zoneCountService = new ZoneCountService($this->db, $this->getConfig());
         $count_zones_view = $zoneCountService->countZones($perm_view);
         $count_zones_edit = $zoneCountService->countZones($perm_edit);
+        $count_zones_delete = $zoneCountService->countZones($perm_delete);
 
         $letter_start = 'all';
         if ($count_zones_view > $iface_rowamount) {
@@ -121,6 +123,7 @@ class ListForwardZonesController extends BaseController
             'count_zones_all_letterstart' => $count_zones_all_letterstart,
             'count_zones_view' => $count_zones_view,
             'count_zones_edit' => $count_zones_edit,
+            'count_zones_delete' => $count_zones_delete,
             'letter_start' => $letter_start,
             'iface_rowamount' => $iface_rowamount,
             'zone_sort_by' => $zone_sort_by,
@@ -133,6 +136,7 @@ class ListForwardZonesController extends BaseController
             'pagination' => $this->createAndPresentPagination($count_zones_all_letterstart, $iface_rowamount),
             'session_userlogin' => $_SESSION['userlogin'],
             'perm_edit' => $perm_edit,
+            'perm_delete' => $perm_delete,
             'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
             'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),

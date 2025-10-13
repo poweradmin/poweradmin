@@ -157,13 +157,12 @@ class ApiPermissionService
             return true;
         }
 
-        // User with zone_content_edit_others can delete all zones
-        if ($this->userHasPermission($userId, 'zone_content_edit_others')) {
+        // Check delete permissions
+        if ($this->userHasPermission($userId, 'zone_delete_others')) {
             return true;
         }
 
-        // User with zone_content_edit_own can delete their own zones
-        if ($this->userHasPermission($userId, 'zone_content_edit_own')) {
+        if ($this->userHasPermission($userId, 'zone_delete_own')) {
             return $this->userOwnsZone($userId, $zoneId);
         }
 

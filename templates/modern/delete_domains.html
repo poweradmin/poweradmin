@@ -54,7 +54,7 @@
                                     <td>{{ zone['owner'] }}</td>
                                     <td><span class="badge bg-light text-dark">{{ zone['type'] }}</span></td>
                                     <td>
-                                        {% if perm_edit != "all" and (perm_edit != "own" or zone['is_owner'] != "1") %}
+                                        {% if perm_delete != "all" and (perm_delete != "own" or zone['is_owner'] != "1") %}
                                         <span class="text-danger"><i class="bi bi-exclamation-circle-fill me-1"></i>{{ error }}</span>
                                         {% endif %}
 

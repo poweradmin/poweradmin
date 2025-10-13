@@ -90,7 +90,10 @@ INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (61,	'templ_perm_edit',	'User is allowed to edit existing permission templates.'),
                                                      (62,	'zone_content_edit_own_as_client',	'User is allowed to edit record, but not SOA and NS.'),
                                                      (63,	'zone_templ_add',	'User is allowed to add new zone templates.'),
-                                                     (64,	'zone_templ_edit',	'User is allowed to edit existing zone templates.');
+                                                     (64,	'zone_templ_edit',	'User is allowed to edit existing zone templates.'),
+                                                     (65,	'api_manage_keys',	'User is allowed to create and manage API keys.'),
+                                                     (67,	'zone_delete_own',	'User is allowed to delete zones they own.'),
+                                                     (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.');
 
 CREATE TABLE `perm_templ` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,

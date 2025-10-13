@@ -139,7 +139,7 @@ class DeleteDomainsController extends BaseController
         }
 
         $this->render('delete_domains.html', [
-            'perm_edit' => Permission::getEditPermission($this->db),
+            'perm_delete' => Permission::getDeletePermission($this->db),
             'zones' => $zones,
             'error' => _("You do not have the permission to delete a zone."),
             'is_reverse_zone' => $all_reverse, // If all zones are reverse, use reverse breadcrumb

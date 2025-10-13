@@ -70,6 +70,25 @@ class Permission
     }
 
     /**
+     * Get delete permission.
+     *
+     * This method determines the user's permission to delete zones.
+     *
+     * @param PDOCommon $db The database connection.
+     * @return string Returns "all", "own", or "none" depending on the user's delete permission.
+     */
+    public static function getDeletePermission(PDOCommon $db): string
+    {
+        if (UserManager::verifyPermission($db, 'zone_delete_others')) {
+            return "all";
+        } elseif (UserManager::verifyPermission($db, 'zone_delete_own')) {
+            return "own";
+        } else {
+            return "none";
+        }
+    }
+
+    /**
      * Get permissions.
      *
      * This method checks a set of permissions for the user.

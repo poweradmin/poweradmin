@@ -91,3 +91,27 @@ CREATE TABLE IF NOT EXISTS username_recovery_requests (
 CREATE INDEX IF NOT EXISTS idx_urr_email ON username_recovery_requests(email);
 CREATE INDEX IF NOT EXISTS idx_urr_ip ON username_recovery_requests(ip_address);
 CREATE INDEX IF NOT EXISTS idx_urr_created ON username_recovery_requests(created_at);
+
+-- Add zone deletion permissions (Issue #97)
+-- Separate permissions for zone deletion to allow fine-grained control
+-- Previously, zone deletion was tied to zone_content_edit_* permissions
+INSERT INTO perm_items (id, name, descr) VALUES
+    (67, 'zone_delete_own', 'User is allowed to delete zones they own.');
+INSERT INTO perm_items (id, name, descr) VALUES
+    (68, 'zone_delete_others', 'User is allowed to delete zones owned by others.');
+
+-- Grant delete permissions to users with existing edit permissions
+-- This ensures backward compatibility - users who could edit can now delete
+-- Users with edit_own get delete_own
+INSERT INTO perm_templ_items (templ_id, perm_id)
+SELECT DISTINCT templ_id, 67
+FROM perm_templ_items
+WHERE perm_id = 44; -- zone_content_edit_own
+
+-- Users with edit_others get delete_others
+INSERT INTO perm_templ_items (templ_id, perm_id)
+SELECT DISTINCT templ_id, 68
+FROM perm_templ_items
+WHERE perm_id = 47; -- zone_content_edit_others
+
+-- Note: Users with 'user_is_ueberuser' (id 53) automatically have all permissions

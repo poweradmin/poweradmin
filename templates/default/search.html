@@ -138,7 +138,7 @@
                     <thead class="table-light">
                     <tr>
                         <th>
-                            {% if edit_permission == 'all' or edit_permission == 'own' or edit_permission == 'own_as_client' %}
+                            {% if delete_permission == 'all' or delete_permission == 'own' or delete_permission == 'own_as_client' %}
                             <input type="checkbox" class="form-check-input" id="select_search_zones" onClick="toggleSearchZoneCheckboxes()"/>
                             {% endif %}
                         </th>
@@ -186,7 +186,7 @@
                     {% for zone in found_zones %}
                     <tr>
                         <td>
-                            {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and zone['user_id'] == user_id) %}
+                            {% if delete_permission == 'all' or ((delete_permission == 'own' or delete_permission == 'own_as_client') and zone['user_id'] == user_id) %}
                             <input class="form-check-input" type="checkbox" name="zone_id[]" value="{{ zone['id'] }}">
                             {% endif %}
                         </td>
@@ -216,6 +216,8 @@
                                 href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/edit">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
+                                {% endif %}
+                                {% if delete_permission == 'all' or ((delete_permission == 'own' or delete_permission == 'own_as_client') and zone['user_id'] == user_id) %}
                                 <a class="btn btn-sm btn-outline-danger"
                                 href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/delete">
                                     <i class="bi bi-trash text-danger"></i>
@@ -276,7 +278,7 @@
             </div>
             {% endif %}
 
-            {% if edit_permission == 'all' or edit_permission == 'own' or edit_permission == 'own_as_client' %}
+            {% if delete_permission == 'all' or delete_permission == 'own' or delete_permission == 'own_as_client' %}
             {% if total_zones > 0 %}
             <div class="card-footer py-3 d-flex justify-content-between align-items-center">
                 <div>
@@ -286,7 +288,7 @@
                     </button>
                 </div>
                 <div>
-                    <button type="button" class="btn btn-sm btn-outline-secondary" 
+                    <button type="button" class="btn btn-sm btn-outline-secondary"
                             onclick="document.getElementById('select_search_zones').click()">
                         <i class="bi bi-check-all me-1 text-secondary"></i>{% trans %}Toggle all{% endtrans %}
                     </button>

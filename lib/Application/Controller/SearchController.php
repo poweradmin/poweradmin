@@ -268,6 +268,7 @@ class SearchController extends BaseController
             'iface_zone_comments' => $iface_zone_comments,
             'iface_record_comments' => $iface_record_comments,
             'edit_permission' => Permission::getEditPermission($this->db),
+            'delete_permission' => Permission::getDeletePermission($this->db),
             'user_id' => $_SESSION['userid'],
             'whois_enabled' => $whois_enabled,
             'rdap_enabled' => $rdap_enabled,

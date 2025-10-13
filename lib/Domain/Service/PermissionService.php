@@ -176,4 +176,42 @@ class PermissionService
     {
         return $this->hasPermission($userId, 'zone_templ_add') || $this->isAdmin($userId);
     }
+
+    /**
+     * Get delete permission level for a user
+     *
+     * @param int $userId User ID to check
+     * @return string "all", "own", or "none" depending on the user's delete permission
+     */
+    public function getDeletePermissionLevel(int $userId): string
+    {
+        $permissions = $this->getUserPermissions($userId);
+
+        if (in_array('zone_delete_others', $permissions) || $this->isAdmin($userId)) {
+            return 'all';
+        } elseif (in_array('zone_delete_own', $permissions)) {
+            return 'own';
+        } else {
+            return 'none';
+        }
+    }
+
+    /**
+     * Check if user can delete a zone
+     *
+     * @param int $userId User ID to check
+     * @param bool $isOwner Whether the user owns the zone
+     * @return bool True if user can delete the zone
+     */
+    public function canDeleteZone(int $userId, bool $isOwner): bool
+    {
+        // Admins can always delete
+        if ($this->isAdmin($userId)) {
+            return true;
+        }
+
+        $deleteLevel = $this->getDeletePermissionLevel($userId);
+
+        return $deleteLevel === 'all' || ($deleteLevel === 'own' && $isOwner);
+    }
 }

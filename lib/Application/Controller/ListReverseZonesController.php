@@ -101,13 +101,12 @@ class ListReverseZonesController extends BaseController
 
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
+        $perm_delete = Permission::getDeletePermission($this->db);
 
-        // Set count_zones_edit to at least 1 to ensure checkboxes are displayed
-        // This is needed because in list_reverse_zones.html the checkboxes are conditionally displayed
-        // based on count_zones_edit > 0
         $zoneCountService = new ZoneCountService($this->db, $this->getConfig());
-        $count_zones_view = $zoneCountService->countZones($perm_view);
-        $count_zones_edit = max(1, $zoneCountService->countZones($perm_edit));
+        $count_zones_view = $zoneCountService->countZones($perm_view, 'all', 'reverse');
+        $count_zones_edit = $zoneCountService->countZones($perm_edit, 'all', 'reverse');
+        $count_zones_delete = $zoneCountService->countZones($perm_delete, 'all', 'reverse');
 
         list($zone_sort_by, $zone_sort_direction) = $this->zoneSortingService->getZoneSortOrder('zone_sort_by', ['name', 'type', 'count_records', 'owner']);
 
@@ -170,6 +169,7 @@ class ListReverseZonesController extends BaseController
             'zones' => $reverse_zones,
             'count_zones_view' => $count_zones_view,
             'count_zones_edit' => $count_zones_edit,
+            'count_zones_delete' => $count_zones_delete,
             'iface_rowamount' => $iface_rowamount,
             'zone_sort_by' => $zone_sort_by,
             'zone_sort_direction' => $zone_sort_direction,
@@ -189,6 +189,7 @@ class ListReverseZonesController extends BaseController
             ),
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),
             'perm_edit' => $perm_edit,
+            'perm_delete' => $perm_delete,
             'perm_zone_master_add' => UserManager::verifyPermission($this->db, 'zone_master_add'),
             'perm_zone_slave_add' => UserManager::verifyPermission($this->db, 'zone_slave_add'),
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),

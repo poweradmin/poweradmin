@@ -152,7 +152,7 @@
 
                     <tr>
                         <td>
-                            {% if count_zones_edit > 0 and (perm_edit == "all" or (perm_edit == "own" and user_is_zone_owner)) %}
+                            {% if count_zones_delete > 0 and (perm_delete == "all" or (perm_delete == "own" and user_is_zone_owner)) %}
                             <input class="form-check-input" type="checkbox" name="zone_id[]" value="{{ zone['id'] }}">
                             {% endif %}
                         </td>
@@ -223,7 +223,7 @@
                                 <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/edit" data-testid="edit-zone-{{ zone['id'] }}">
                                     <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
-                                {% if perm_edit == "all" or (perm_edit == "own" and user_is_zone_owner) %}
+                                {% if perm_delete == "all" or (perm_delete == "own" and user_is_zone_owner) %}
                                 <a class="btn btn-outline-danger btn-sm" href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/delete" data-testid="delete-zone-{{ zone['id'] }}">
                                     <i class="bi bi-trash text-danger"></i>
                                 </a>
@@ -242,7 +242,7 @@
         </form>
     </div>
     
-    {% if perm_edit == "all" or perm_edit == "own" %}
+    {% if perm_delete == "all" or perm_delete == "own" %}
     <div class="card-footer py-3">
         <button type="submit" name="commit" form="delete-zones-form" class="btn btn-danger btn-sm">
             <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete zone(s){% endtrans %}
