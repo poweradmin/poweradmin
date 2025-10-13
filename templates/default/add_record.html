@@ -207,6 +207,9 @@
             if (!name.includes('[ttl]')) {
                 if (input.tagName === 'SELECT') {
                     // Keep the selected option
+                } else if (input.type === 'checkbox') {
+                    // For checkboxes, reset checked state but keep value attribute
+                    input.checked = false;
                 } else {
                     input.value = '';
                 }
