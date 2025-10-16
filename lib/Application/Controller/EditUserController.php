@@ -169,6 +169,14 @@ class EditUserController extends BaseController
         if ((!$isOwnProfile || !$canEditOwn) && ($isOwnProfile || !$canEditOthers)) {
             $this->showError(_('You do not have the permission to edit this user.'));
         }
+
+        // Prevent non-superusers from editing superuser accounts (privilege escalation protection)
+        $targetIsSuperuser = UserManager::isUserSuperuser($this->db, $editId);
+        $currentIsSuperuser = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
+
+        if ($targetIsSuperuser && !$currentIsSuperuser) {
+            $this->showError(_('You do not have permission to edit a superuser account.'));
+        }
     }
 
     private function prepareUserData(): array
