@@ -83,6 +83,30 @@ class UserManager
     }
 
     /**
+     * Check if a specific user has superuser permission
+     *
+     * Function to check if a specific user ID has the "user_is_ueberuser" permission.
+     *
+     * @param PDOCommon $db Database connection
+     * @param int $userId User ID to check
+     *
+     * @return bool true if user is superuser, false otherwise
+     */
+    public static function isUserSuperuser(PDOCommon $db, int $userId): bool
+    {
+        $query = $db->prepare("SELECT COUNT(*) as count
+            FROM perm_templ_items
+            LEFT JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
+            LEFT JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
+            LEFT JOIN users ON perm_templ.id = users.perm_templ
+            WHERE users.id = :userId AND perm_items.name = 'user_is_ueberuser'");
+        $query->execute([':userId' => $userId]);
+        $result = $query->fetch();
+
+        return $result && $result['count'] > 0;
+    }
+
+    /**
      * Get a list of all available permission templates
      *
      * @return array array of templates [id, name, descr]

@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
+use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepository;
@@ -50,13 +51,22 @@ class DeleteUserController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
+        // Check basic permissions first
+        if (($uid != $_SESSION['userid'] && !$perm_edit_others) || ($uid == $_SESSION['userid'] && !$perm_is_godlike)) {
+            $this->showError(_("You do not have the permission to delete this user."));
+        }
+
+        // Prevent non-superusers from deleting superuser accounts (privilege escalation protection)
+        $targetIsSuperuser = UserManager::isUserSuperuser($this->db, $uid);
+
+        if ($targetIsSuperuser && !$perm_is_godlike) {
+            $this->showError(_('You do not have permission to delete a superuser account.'));
+        }
+
+        // All permission checks passed, now handle POST request
         if ($this->isPost()) {
             $this->validateCsrfToken();
             $this->deleteUser($uid);
-        }
-
-        if (($uid != $_SESSION['userid'] && !$perm_edit_others) || ($uid == $_SESSION['userid'] && !$perm_is_godlike)) {
-            $this->showError(_("You do not have the permission to delete this user."));
         }
 
         $this->showQuestion($uid);
