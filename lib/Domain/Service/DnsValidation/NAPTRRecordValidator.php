@@ -265,11 +265,6 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
             }
         }
 
-        // Check for empty regexp with non-empty replacement, which is invalid
-        if (empty($regexpValue) && $replacement !== ".") {
-            return ValidationResult::failure(_('NAPTR record must have either a regexp or a replacement (with "."), but not both.'));
-        }
-
         // Check for non-empty regexp with replacement not being ".", which is invalid
         if (!empty($regexpValue) && $replacement !== ".") {
             return ValidationResult::failure(_('NAPTR record with a regexp must have "." as the replacement.'));
@@ -305,7 +300,7 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
         // Service field format: [protocol] *("+" rs)
         // protocol = ALPHA *31ALPHANUM
         // rs = ALPHA *31ALPHANUM
-        if (!preg_match('/^([a-zA-Z][a-zA-Z0-9]{0,31})(\+[a-zA-Z][a-zA-Z0-9]{0,31})*$/', $service)) {
+        if (!preg_match('/^([a-zA-Z][a-zA-Z0-9:+\-]{0,31})(\+[a-zA-Z][a-zA-Z0-9:+\-]{0,31})*$/', $service)) {
             return ValidationResult::failure(_('NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol and rs start with a letter and contain only alphanumeric characters (max 32 chars each).'));
         }
 
