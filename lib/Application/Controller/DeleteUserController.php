@@ -96,7 +96,7 @@ class DeleteUserController extends BaseController
             $name = UserEntity::getUserNameById($this->db, $uid);
         }
         $domainRepository = new DomainRepository($this->db, $this->getConfig());
-        $zones = $domainRepository->getZones("own", $uid);
+        $zones = $domainRepository->getZones("own", (int)$uid);
 
         $users = [];
         if (count($zones) > 0) {
