@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\BaseController;
-use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\DomainRepository;
@@ -98,7 +97,7 @@ class DeleteUserController extends BaseController
             $name = UserEntity::getUserNameById($this->db, $uid);
         }
         $domainRepository = new DomainRepository($this->db, $this->getConfig());
-        $zones = $domainRepository->getZones("own", $uid);
+        $zones = $domainRepository->getZones("own", (int)$uid);
 
         $users = [];
         if (count($zones) > 0) {
