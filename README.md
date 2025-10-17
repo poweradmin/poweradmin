@@ -2,7 +2,7 @@
 
 [![release](https://img.shields.io/github/v/release/poweradmin/poweradmin)](https://github.com/poweradmin/poweradmin/releases)
 [![validations](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml/badge.svg)](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml)
-[![license](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![license](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![php version](https://img.shields.io/badge/php-8.1%2B-blue)](https://www.php.net/)
 [![docker pulls](https://img.shields.io/docker/pulls/edmondas/poweradmin)](https://hub.docker.com/r/edmondas/poweradmin)
 [![docker image size](https://img.shields.io/docker/image-size/edmondas/poweradmin)](https://hub.docker.com/r/edmondas/poweradmin)

@@ -1,4 +1,4 @@
-name: Composer
+name: validations
 
 on:
   push:
