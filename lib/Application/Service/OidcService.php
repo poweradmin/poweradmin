@@ -298,6 +298,7 @@ class OidcService extends LoggingService
                     $this->setSessionValue('pending_name', $userInfo->getDisplayName());
                     $this->setSessionValue('pending_email', $userInfo->getEmail());
                     $this->setSessionValue('pending_auth_used', 'oidc');
+                    $this->setSessionValue('pending_auth_method_used', 'oidc');
 
                     // Store OIDC-specific data as pending
                     $this->setSessionValue('pending_oidc_provider', $providerId);

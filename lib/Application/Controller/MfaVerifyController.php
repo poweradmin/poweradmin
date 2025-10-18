@@ -186,6 +186,10 @@ class MfaVerifyController extends BaseController
                 $this->userContextService->setSessionData('auth_used', $this->userContextService->getSessionData('pending_auth_used'));
                 $this->userContextService->unsetSessionData('pending_auth_used');
             }
+            if ($this->userContextService->hasSessionData('pending_auth_method_used')) {
+                $this->userContextService->setSessionData('auth_method_used', $this->userContextService->getSessionData('pending_auth_method_used'));
+                $this->userContextService->unsetSessionData('pending_auth_method_used');
+            }
 
             // Promote OIDC-specific pending session variables
             if ($this->userContextService->hasSessionData('pending_oidc_provider')) {

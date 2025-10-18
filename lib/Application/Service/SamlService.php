@@ -298,6 +298,7 @@ class SamlService extends LoggingService
                     $this->setSessionValue('pending_name', $userInfo->getDisplayName());
                     $this->setSessionValue('pending_email', $userInfo->getEmail());
                     $this->setSessionValue('pending_auth_used', UserProvisioningService::AUTH_METHOD_SAML);
+                    $this->setSessionValue('pending_auth_method_used', UserProvisioningService::AUTH_METHOD_SAML);
 
                     // Store SAML-specific data as pending
                     $this->setSessionValue('pending_saml_provider', $providerId);
