@@ -148,11 +148,6 @@ class SqlAuthenticator extends LoggingService
         session_regenerate_id(true);
         $this->logInfo('Session ID regenerated for user {username}', ['username' => $_SESSION["userlogin"]]);
 
-        $_SESSION['userid'] = $rowObj['id'];
-        $_SESSION['name'] = $rowObj['fullname'];
-        $_SESSION['email'] = $rowObj['email'];
-        $_SESSION['auth_used'] = 'internal';
-
         $this->csrfTokenService->ensureTokenExists();
         $this->logInfo('CSRF token ensured for user {username}', ['username' => $_SESSION["userlogin"]]);
 
@@ -164,6 +159,12 @@ class SqlAuthenticator extends LoggingService
 
         if ($mfaRequired) {
             $this->logInfo('MFA is required for user {username}', ['username' => $_SESSION["userlogin"]]);
+
+            // Store user details temporarily for MFA verification - DO NOT set userid yet!
+            $_SESSION['pending_userid'] = $rowObj['id'];
+            $_SESSION['pending_name'] = $rowObj['fullname'];
+            $_SESSION['pending_email'] = $rowObj['email'];
+            $_SESSION['pending_auth_used'] = 'internal';
 
             // Use our centralized MFA session manager to set MFA required
             MfaSessionManager::setMfaRequired($rowObj['id']);
@@ -188,6 +189,11 @@ class SqlAuthenticator extends LoggingService
             }
         } else {
             // No MFA required, proceed with full authentication
+            // NOW it's safe to set userid since MFA is not required
+            $_SESSION['userid'] = $rowObj['id'];
+            $_SESSION['name'] = $rowObj['fullname'];
+            $_SESSION['email'] = $rowObj['email'];
+            $_SESSION['auth_used'] = 'internal';
             $_SESSION['authenticated'] = true;
             $_SESSION['mfa_required'] = false;
 

@@ -82,7 +82,9 @@ class MfaVerifyController extends BaseController
         }
 
         // Check if we have the necessary session data
-        if (!$this->userContextService->getLoggedInUsername() || !$this->userContextService->getLoggedInUserId() || !$this->userContextService->hasSessionData('mfa_required')) {
+        // During MFA verification, userid is stored as pending_userid to prevent API bypass
+        $userId = $this->userContextService->getLoggedInUserId() ?? $this->userContextService->getSessionData('pending_userid');
+        if (!$this->userContextService->getLoggedInUsername() || !$userId || !$this->userContextService->hasSessionData('mfa_required')) {
             $this->redirect('/');
         }
 
@@ -109,7 +111,8 @@ class MfaVerifyController extends BaseController
         error_log("[MfaVerifyController] Verification attempt started");
 
         $code = $_POST['mfa_code'] ?? '';
-        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+        // During MFA verification, userid is stored as pending_userid to prevent API bypass
+        $userId = $this->userContextService->getLoggedInUserId() ?? $this->userContextService->getSessionData('pending_userid');
         $mfaToken = $_POST['mfa_token'] ?? '';
 
         // Validate CSRF token for security
@@ -165,6 +168,51 @@ class MfaVerifyController extends BaseController
                 // Continue with authentication even if updating the secret fails
             }
 
+            // Promote pending session variables to actual ones now that MFA is verified
+            if ($this->userContextService->hasSessionData('pending_userid')) {
+                $this->userContextService->setSessionData('userid', $this->userContextService->getSessionData('pending_userid'));
+                $this->userContextService->unsetSessionData('pending_userid');
+                error_log("[MfaVerifyController] Promoted pending_userid to userid for user ID: $userId");
+            }
+            if ($this->userContextService->hasSessionData('pending_name')) {
+                $this->userContextService->setSessionData('name', $this->userContextService->getSessionData('pending_name'));
+                $this->userContextService->unsetSessionData('pending_name');
+            }
+            if ($this->userContextService->hasSessionData('pending_email')) {
+                $this->userContextService->setSessionData('email', $this->userContextService->getSessionData('pending_email'));
+                $this->userContextService->unsetSessionData('pending_email');
+            }
+            if ($this->userContextService->hasSessionData('pending_auth_used')) {
+                $this->userContextService->setSessionData('auth_used', $this->userContextService->getSessionData('pending_auth_used'));
+                $this->userContextService->unsetSessionData('pending_auth_used');
+            }
+
+            // Promote OIDC-specific pending session variables
+            if ($this->userContextService->hasSessionData('pending_oidc_provider')) {
+                $this->userContextService->setSessionData('oidc_provider', $this->userContextService->getSessionData('pending_oidc_provider'));
+                $this->userContextService->unsetSessionData('pending_oidc_provider');
+                $this->userContextService->setSessionData('oidc_authenticated', true);
+            }
+            if ($this->userContextService->hasSessionData('pending_oauth_avatar_url')) {
+                $this->userContextService->setSessionData('oauth_avatar_url', $this->userContextService->getSessionData('pending_oauth_avatar_url'));
+                $this->userContextService->unsetSessionData('pending_oauth_avatar_url');
+            }
+
+            // Promote SAML-specific pending session variables
+            if ($this->userContextService->hasSessionData('pending_saml_provider')) {
+                $this->userContextService->setSessionData('saml_provider', $this->userContextService->getSessionData('pending_saml_provider'));
+                $this->userContextService->unsetSessionData('pending_saml_provider');
+                $this->userContextService->setSessionData('saml_authenticated', true);
+            }
+            if ($this->userContextService->hasSessionData('pending_saml_name_id')) {
+                $this->userContextService->setSessionData('saml_name_id', $this->userContextService->getSessionData('pending_saml_name_id'));
+                $this->userContextService->unsetSessionData('pending_saml_name_id');
+            }
+            if ($this->userContextService->hasSessionData('pending_saml_session_index')) {
+                $this->userContextService->setSessionData('saml_session_index', $this->userContextService->getSessionData('pending_saml_session_index'));
+                $this->userContextService->unsetSessionData('pending_saml_session_index');
+            }
+
             // Use the centralized session manager to mark MFA as verified
             MfaSessionManager::setMfaVerified();
 
@@ -197,9 +245,10 @@ class MfaVerifyController extends BaseController
 
     private function displayMfaForm(?string $message = null, ?string $type = null): void
     {
-        $userId = $this->userContextService->getLoggedInUserId() ?? 0;
+        // During MFA verification, userid is stored as pending_userid to prevent API bypass
+        $userId = $this->userContextService->getLoggedInUserId() ?? $this->userContextService->getSessionData('pending_userid') ?? 0;
         $username = $this->userContextService->getLoggedInUsername() ?? '';
-        $email = $this->userContextService->getSessionData('email') ?? '';
+        $email = $this->userContextService->getSessionData('email') ?? $this->userContextService->getSessionData('pending_email') ?? '';
 
         // Generate a new CSRF token
         $mfaToken = $this->csrfTokenService->generateToken();
