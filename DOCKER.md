@@ -617,6 +617,7 @@ The Docker image uses FrankenPHP with a custom Caddyfile that provides:
 
 - `gettext` - Internationalization support
 - `intl` - Unicode and internationalization functions
+- `ldap` - LDAP authentication support
 - `mysqli` - MySQL database support
 - `pdo_mysql` - PDO MySQL driver
 - `pdo_pgsql` - PDO PostgreSQL driver
