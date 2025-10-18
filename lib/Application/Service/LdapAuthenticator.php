@@ -25,12 +25,15 @@ namespace Poweradmin\Application\Service;
 use PDO;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
+use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use ReflectionClass;
 
@@ -44,6 +47,7 @@ class LdapAuthenticator extends LoggingService
     private LoginAttemptService $loginAttemptService;
     private UserContextService $userContextService;
     private array $serverParams;
+    private ?MfaService $mfaService = null;
 
     public function __construct(
         PDOCommon $connection,
@@ -67,6 +71,11 @@ class LdapAuthenticator extends LoggingService
         $this->loginAttemptService = $loginAttemptService;
         $this->userContextService = $userContextService;
         $this->serverParams = $serverParams ?: $_SERVER;
+
+        // Initialize MFA service
+        $userMfaRepository = new DbUserMfaRepository($connection, $configManager);
+        $mailService = new MailService($configManager);
+        $this->mfaService = new MfaService($userMfaRepository, $configManager, $mailService);
     }
 
     public function authenticate(): void
@@ -218,19 +227,62 @@ class LdapAuthenticator extends LoggingService
         session_regenerate_id(true);
         $this->logInfo('Session ID regenerated for user {username}', ['username' => $username]);
 
-        $this->userContextService->setSessionData('userid', $rowObj['id']);
-        $this->userContextService->setSessionData('name', $rowObj['fullname']);
-        $this->userContextService->setSessionData('auth_used', 'ldap');
-
         if (!$this->userContextService->hasSessionData('csrf_token')) {
             $this->userContextService->setSessionData('csrf_token', $this->csrfTokenService->generateToken());
             $this->logInfo('CSRF token generated for user {username}', ['username' => $username]);
         }
 
-        if (isset($_POST['authenticate'])) {
-            $this->ldapUserEventLogger->logSuccessAuth();
-            session_write_close();
-            $this->authenticationService->redirectToIndex();
+        // Check if MFA is globally enabled
+        $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
+
+        // Check if MFA is enabled for this user
+        $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($rowObj['id']);
+
+        if ($mfaRequired) {
+            $this->logInfo('MFA is required for LDAP user {username}', ['username' => $username]);
+
+            // Store user details temporarily for MFA verification - DO NOT set userid yet!
+            // This prevents API requests from bypassing MFA by checking isAuthenticated()
+            $this->userContextService->setSessionData('pending_userid', $rowObj['id']);
+            $this->userContextService->setSessionData('pending_name', $rowObj['fullname']);
+            $this->userContextService->setSessionData('pending_auth_used', 'ldap');
+
+            // Use our centralized MFA session manager to set MFA required
+            MfaSessionManager::setMfaRequired($rowObj['id']);
+
+            if (isset($_POST['authenticate'])) {
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+                $this->ldapUserEventLogger->logSuccessAuth();
+
+                // Log before redirect
+                error_log("LdapAuthenticator: Redirecting to MFA verification page");
+
+                // Clear any output buffers
+                if (ob_get_level()) {
+                    ob_end_clean();
+                }
+
+                // Build redirect URL with base_url_prefix support for subfolder deployments
+                $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
+                $redirectUrl = $baseUrlPrefix . '/mfa/verify';
+                header("Location: $redirectUrl", true, 302);
+                exit;
+            }
+        } else {
+            // No MFA required, proceed with full authentication
+            // NOW it's safe to set userid since MFA is not required
+            $this->userContextService->setSessionData('userid', $rowObj['id']);
+            $this->userContextService->setSessionData('name', $rowObj['fullname']);
+            $this->userContextService->setSessionData('auth_used', 'ldap');
+            $this->userContextService->setSessionData('authenticated', true);
+            $this->userContextService->setSessionData('mfa_required', false);
+
+            if (isset($_POST['authenticate'])) {
+                $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
+                $this->ldapUserEventLogger->logSuccessAuth();
+                session_write_close();
+                $this->authenticationService->redirectToIndex();
+            }
         }
 
         $this->logInfo('LDAP authentication process completed successfully for user {username}', ['username' => $username]);
