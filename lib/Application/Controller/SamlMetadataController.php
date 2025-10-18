@@ -55,6 +55,7 @@ class SamlMetadataController extends BaseController
             $samlConfigService,
             $userProvisioningService,
             $logger,
+            $this->db,
             $this->httpRequest
         );
     }

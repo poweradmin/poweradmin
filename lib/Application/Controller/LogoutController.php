@@ -129,7 +129,8 @@ class LogoutController extends BaseController
                 $this->config,
                 $samlConfigService,
                 $userProvisioningService,
-                $logger
+                $logger,
+                $this->db
             );
 
             // Initiate SAML Single Logout

@@ -28,10 +28,14 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
+use Poweradmin\Domain\Service\MfaService;
+use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Domain\ValueObject\OidcUserInfo;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
 use Poweradmin\Infrastructure\Service\RedirectService;
 use ReflectionClass;
 
@@ -44,12 +48,15 @@ class OidcService extends LoggingService
     private UserProvisioningService $userProvisioningService;
     private Request $request;
     private CsrfTokenService $csrfTokenService;
+    private PDOCommon $db;
+    private ?MfaService $mfaService = null;
 
     public function __construct(
         ConfigurationManager $configManager,
         OidcConfigurationService $oidcConfigurationService,
         UserProvisioningService $userProvisioningService,
         Logger $logger,
+        PDOCommon $db,
         ?Request $request = null
     ) {
         $shortClassName = (new ReflectionClass(self::class))->getShortName();
@@ -59,12 +66,18 @@ class OidcService extends LoggingService
         $this->oidcConfigurationService = $oidcConfigurationService;
         $this->userProvisioningService = $userProvisioningService;
         $this->request = $request ?: new Request();
+        $this->db = $db;
 
         // Initialize services following existing patterns
         $this->sessionService = new SessionService();
         $redirectService = new RedirectService();
         $this->authenticationService = new AuthenticationService($this->sessionService, $redirectService);
         $this->csrfTokenService = new CsrfTokenService();
+
+        // Initialize MFA service
+        $userMfaRepository = new DbUserMfaRepository($db, $configManager);
+        $mailService = new MailService($configManager);
+        $this->mfaService = new MfaService($userMfaRepository, $configManager, $mailService);
     }
 
     public function isEnabled(): bool
@@ -263,32 +276,75 @@ class OidcService extends LoggingService
 
                 $this->logInfo('Using database username for session: {username}', ['username' => $databaseUsername]);
 
-                // Set up session following existing patterns
-                $this->setSessionValue('userid', $userId);
-                $this->setSessionValue('userlogin', $databaseUsername);  // Use database username, not OIDC username
-                $this->setSessionValue('userfullname', $userInfo->getDisplayName());
-                $this->setSessionValue('useremail', $userInfo->getEmail());
-                $this->setSessionValue('auth_used', 'oidc');  // Track how THIS session was created
-                $this->setSessionValue('auth_method_used', 'oidc');  // Track how THIS session was created (backward compatibility)
-
-                // Set OIDC-specific session variables for logout detection
-                $this->setSessionValue('oidc_authenticated', true);  // For logout detection
-                $this->setSessionValue('oidc_provider', $providerId);  // Preserve provider for logout
-
-                // Store OAuth avatar URL if available
-                if ($userInfo->getAvatarUrl()) {
-                    $this->setSessionValue('oauth_avatar_url', $userInfo->getAvatarUrl());
-                }
+                // Set userlogin for MFA verification page
+                $this->setSessionValue('userlogin', $databaseUsername);
 
                 // Ensure a CSRF token exists for subsequent requests
                 $this->csrfTokenService->ensureTokenExists();
                 $this->logInfo('CSRF token ensured for OIDC session.');
 
-                // Clean up temporary session data
-                $this->unsetSessionValue('oidc_state');
-                $this->unsetSessionValue('oidc_code_verifier');
+                // Check if MFA is globally enabled
+                $mfaGloballyEnabled = $this->configManager->get('security', 'mfa.enabled', false);
 
-                $this->authenticationService->redirectToIndex();
+                // Check if MFA is enabled for this user
+                $mfaRequired = $mfaGloballyEnabled && $this->mfaService->isMfaEnabled($userId);
+
+                if ($mfaRequired) {
+                    $this->logInfo('MFA is required for OIDC user {username}', ['username' => $databaseUsername]);
+
+                    // Store user details temporarily for MFA verification - DO NOT set userid yet!
+                    // This prevents API requests from bypassing MFA by checking isAuthenticated()
+                    $this->setSessionValue('pending_userid', $userId);
+                    $this->setSessionValue('pending_name', $userInfo->getDisplayName());
+                    $this->setSessionValue('pending_email', $userInfo->getEmail());
+                    $this->setSessionValue('pending_auth_used', 'oidc');
+
+                    // Store OIDC-specific data as pending
+                    $this->setSessionValue('pending_oidc_provider', $providerId);
+                    if ($userInfo->getAvatarUrl()) {
+                        $this->setSessionValue('pending_oauth_avatar_url', $userInfo->getAvatarUrl());
+                    }
+
+                    // Use our centralized MFA session manager to set MFA required
+                    MfaSessionManager::setMfaRequired($userId);
+
+                    // Clean up temporary session data
+                    $this->unsetSessionValue('oidc_state');
+                    $this->unsetSessionValue('oidc_code_verifier');
+
+                    // Redirect to MFA verification
+                    $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
+                    $redirectUrl = $baseUrlPrefix . '/mfa/verify';
+                    header("Location: $redirectUrl", true, 302);
+                    exit;
+                } else {
+                    // No MFA required, proceed with full authentication
+                    // NOW it's safe to set userid since MFA is not required
+                    $this->setSessionValue('userid', $userId);
+                    $this->setSessionValue('name', $userInfo->getDisplayName());
+                    $this->setSessionValue('userfullname', $userInfo->getDisplayName());
+                    $this->setSessionValue('email', $userInfo->getEmail());
+                    $this->setSessionValue('useremail', $userInfo->getEmail());
+                    $this->setSessionValue('auth_used', 'oidc');
+                    $this->setSessionValue('auth_method_used', 'oidc');
+                    $this->setSessionValue('authenticated', true);
+                    $this->setSessionValue('mfa_required', false);
+
+                    // Set OIDC-specific session variables for logout detection
+                    $this->setSessionValue('oidc_authenticated', true);
+                    $this->setSessionValue('oidc_provider', $providerId);
+
+                    // Store OAuth avatar URL if available
+                    if ($userInfo->getAvatarUrl()) {
+                        $this->setSessionValue('oauth_avatar_url', $userInfo->getAvatarUrl());
+                    }
+
+                    // Clean up temporary session data
+                    $this->unsetSessionValue('oidc_state');
+                    $this->unsetSessionValue('oidc_code_verifier');
+
+                    $this->authenticationService->redirectToIndex();
+                }
             } else {
                 $this->logWarning('Failed to provision OIDC user: {username}', ['username' => $userInfo->getUsername()]);
                 $sessionEntity = new SessionEntity(_('Authentication failed: Unable to create or update user account'), 'danger');

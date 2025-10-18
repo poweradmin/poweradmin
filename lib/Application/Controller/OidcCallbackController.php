@@ -60,6 +60,7 @@ class OidcCallbackController extends BaseController
             $oidcConfigService,
             $oidcProvisioningService,
             $logger,
+            $this->db,
             $this->httpRequest
         );
 

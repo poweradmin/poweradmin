@@ -9,6 +9,7 @@ use Poweradmin\Application\Service\SamlConfigurationService;
 use Poweradmin\Application\Service\UserProvisioningService;
 use Poweradmin\Application\Http\Request;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\Logger;
 use ReflectionClass;
 use ReflectionMethod;
@@ -20,6 +21,7 @@ class SamlResponseValidationTest extends TestCase
     private Logger|MockObject $mockLogger;
     private SamlConfigurationService|MockObject $mockSamlConfig;
     private UserProvisioningService|MockObject $mockUserProvisioning;
+    private PDOCommon|MockObject $mockDb;
     private Request|MockObject $mockRequest;
 
     protected function setUp(): void
@@ -28,6 +30,7 @@ class SamlResponseValidationTest extends TestCase
         $this->mockLogger = $this->createMock(Logger::class);
         $this->mockSamlConfig = $this->createMock(SamlConfigurationService::class);
         $this->mockUserProvisioning = $this->createMock(UserProvisioningService::class);
+        $this->mockDb = $this->createMock(PDOCommon::class);
         $this->mockRequest = $this->createMock(Request::class);
 
         $this->service = new SamlService(
@@ -35,6 +38,7 @@ class SamlResponseValidationTest extends TestCase
             $this->mockSamlConfig,
             $this->mockUserProvisioning,
             $this->mockLogger,
+            $this->mockDb,
             $this->mockRequest
         );
 
