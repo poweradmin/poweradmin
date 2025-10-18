@@ -1,0 +1,22 @@
+{% extends "base.txt.twig" %}
+
+{% block content %}
+ZONE ACCESS GRANTED
+===================
+
+{{ greeting }}
+
+You have been granted access to manage the following DNS zone:
+
+Zone: {{ zoneName }}
+Granted by: {{ grantedByName }}{% if grantedByEmail %} ({{ grantedByEmail }}){% endif %}
+
+Date: {{ grantedAt }}
+
+You can now view and edit DNS records for this zone.
+
+To manage the zone, visit:
+{{ zoneEditUrl }}
+
+If you believe you received this notification in error, please contact your system administrator.
+{% endblock %}

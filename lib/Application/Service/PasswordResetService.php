@@ -236,12 +236,8 @@ class PasswordResetService
      */
     private function getResetUrl(string $token): string
     {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $basePath = dirname($_SERVER['SCRIPT_NAME'] ?? '');
-        $basePath = rtrim($basePath, '/');
-
-        return "$protocol://$host$basePath/password/reset?token=" . urlencode($token);
+        $urlService = new UrlService($this->config);
+        return $urlService->getAbsoluteUrl('/password/reset?token=' . urlencode($token));
     }
 
     /**

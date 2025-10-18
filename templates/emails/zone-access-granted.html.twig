@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Zone Access Granted{% endblock %}
+
+{% block content %}
+    <h2 class="heading">Zone Access Granted</h2>
+    <p>{{ greeting }}</p>
+    <p>You have been granted access to manage the following DNS zone:</p>
+
+    <table style="border-collapse: collapse; width: 100%; margin: 20px 0;" class="table-border">
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Zone:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ zoneName }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Granted by:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ grantedByName }}{% if grantedByEmail %} ({{ grantedByEmail }}){% endif %}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Date:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ grantedAt }}</td>
+        </tr>
+    </table>
+
+    <p>You can now view and edit DNS records for this zone.</p>
+
+    <div style="text-align: center; margin: 30px 0;">
+        <a href="{{ zoneEditUrl }}" style="display: inline-block; padding: 12px 30px; text-decoration: none; border-radius: 4px;" class="button-primary">
+            Manage Zone
+        </a>
+    </div>
+
+    <p style="font-size: 14px;" class="disclaimer-text">
+        If you believe you received this notification in error, please contact your system administrator.
+    </p>
+{% endblock %}

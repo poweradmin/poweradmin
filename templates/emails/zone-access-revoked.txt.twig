@@ -1,0 +1,18 @@
+{% extends "base.txt.twig" %}
+
+{% block content %}
+ZONE ACCESS REVOKED
+===================
+
+{{ greeting }}
+
+Your access to manage the following DNS zone has been revoked:
+
+Zone: {{ zoneName }}
+Revoked by: {{ revokedByName }}
+Date: {{ revokedAt }}
+
+You no longer have permission to view or edit DNS records for this zone.
+
+If you believe this access was revoked in error, please contact your system administrator.
+{% endblock %}

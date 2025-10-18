@@ -1,0 +1,30 @@
+{% extends "base.html.twig" %}
+
+{% block title %}Zone Access Revoked{% endblock %}
+
+{% block content %}
+    <h2 class="heading">Zone Access Revoked</h2>
+    <p>{{ greeting }}</p>
+    <p>Your access to manage the following DNS zone has been revoked:</p>
+
+    <table style="border-collapse: collapse; width: 100%; margin: 20px 0;" class="table-border">
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Zone:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ zoneName }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Revoked by:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ revokedByName }}</td>
+        </tr>
+        <tr>
+            <td style="padding: 10px;" class="table-header table-border"><strong>Date:</strong></td>
+            <td style="padding: 10px;" class="table-border">{{ revokedAt }}</td>
+        </tr>
+    </table>
+
+    <p>You no longer have permission to view or edit DNS records for this zone.</p>
+
+    <p style="font-size: 14px;" class="disclaimer-text">
+        If you believe this access was revoked in error, please contact your system administrator.
+    </p>
+{% endblock %}

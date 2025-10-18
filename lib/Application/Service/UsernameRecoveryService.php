@@ -249,12 +249,8 @@ class UsernameRecoveryService
      */
     private function getLoginUrl(): string
     {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        $basePath = $this->config->get('interface', 'base_url_prefix', '');
-        $basePath = rtrim($basePath, '/');
-
-        return "$protocol://$host$basePath/login";
+        $urlService = new UrlService($this->config);
+        return $urlService->getLoginUrl();
     }
 
     /**

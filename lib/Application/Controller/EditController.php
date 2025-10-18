@@ -35,10 +35,13 @@ namespace Poweradmin\Application\Controller;
 use Exception;
 use Poweradmin\Application\Presenter\PaginationPresenter;
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\EmailTemplateService;
+use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
+use Poweradmin\Application\Service\ZoneAccessNotificationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\RecordLog;
 use Poweradmin\Domain\Service\RecordTypeService;
@@ -266,11 +269,31 @@ class EditController extends BaseController
         if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
             $this->validateCsrfToken();
             $this->zoneRepository->addOwnerToZone($_POST["domain"], $_POST["newowner"]);
+
+            // Send zone access granted notification
+            if ($this->config->get('notifications', 'zone_access_enabled', false)) {
+                $notificationService = $this->createZoneAccessNotificationService();
+                $notificationService->notifyAccessGranted(
+                    $zone_id,
+                    (int)$_POST["newowner"],
+                    $this->userContextService->getLoggedInUserId()
+                );
+            }
         }
 
         if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"])) {
             $this->validateCsrfToken();
             $this->zoneRepository->removeOwnerFromZone($zone_id, $_POST["delete_owner"]);
+
+            // Send zone access revoked notification
+            if ($this->config->get('notifications', 'zone_access_enabled', false)) {
+                $notificationService = $this->createZoneAccessNotificationService();
+                $notificationService->notifyAccessRevoked(
+                    $zone_id,
+                    (int)$_POST["delete_owner"],
+                    $this->userContextService->getLoggedInUserId()
+                );
+            }
         }
 
         if (isset($_POST["template_change"])) {
@@ -1076,5 +1099,26 @@ class EditController extends BaseController
 
         // Store the current zone ID for future comparisons
         $_SESSION['add_record_zone_id'] = $currentZoneId;
+    }
+
+    /**
+     * Create zone access notification service
+     *
+     * @return ZoneAccessNotificationService
+     */
+    private function createZoneAccessNotificationService(): ZoneAccessNotificationService
+    {
+        // Pass null for logger since LegacyLogger doesn't implement PSR LoggerInterface
+        $mailService = new MailService($this->config, null);
+        $emailTemplateService = new EmailTemplateService($this->config);
+
+        return new ZoneAccessNotificationService(
+            $this->db,
+            $this->config,
+            $mailService,
+            $emailTemplateService,
+            $this->zoneRepository,
+            null
+        );
     }
 }

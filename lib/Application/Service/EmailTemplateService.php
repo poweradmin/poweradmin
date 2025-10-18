@@ -198,6 +198,82 @@ class EmailTemplateService
     }
 
     /**
+     * Render zone access granted email templates
+     *
+     * @param string $zoneName Zone name that access was granted to
+     * @param string $recipientName Recipient's full name or username
+     * @param string $grantedByName Name of person who granted access
+     * @param string $grantedByEmail Email of person who granted access
+     * @param string $grantedAt Timestamp of when access was granted
+     * @param string $zoneEditUrl URL to edit the zone
+     * @return array ['html' => string, 'text' => string, 'subject' => string]
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function renderZoneAccessGrantedEmail(
+        string $zoneName,
+        string $recipientName,
+        string $grantedByName,
+        string $grantedByEmail,
+        string $grantedAt,
+        string $zoneEditUrl
+    ): array {
+        $greeting = $recipientName ? "Hi $recipientName," : "Hi,";
+
+        $variables = [
+            'greeting' => $greeting,
+            'zoneName' => $zoneName,
+            'recipientName' => $recipientName,
+            'grantedByName' => $grantedByName,
+            'grantedByEmail' => $grantedByEmail,
+            'grantedAt' => $grantedAt,
+            'zoneEditUrl' => $zoneEditUrl,
+        ];
+
+        return [
+            'html' => $this->render('zone-access-granted.html.twig', $variables),
+            'text' => $this->render('zone-access-granted.txt.twig', $variables),
+            'subject' => sprintf('Zone Access Granted: %s', $zoneName)
+        ];
+    }
+
+    /**
+     * Render zone access revoked email templates
+     *
+     * @param string $zoneName Zone name that access was revoked from
+     * @param string $recipientName Recipient's full name or username
+     * @param string $revokedByName Name of person who revoked access
+     * @param string $revokedAt Timestamp of when access was revoked
+     * @return array ['html' => string, 'text' => string, 'subject' => string]
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
+     */
+    public function renderZoneAccessRevokedEmail(
+        string $zoneName,
+        string $recipientName,
+        string $revokedByName,
+        string $revokedAt
+    ): array {
+        $greeting = $recipientName ? "Hi $recipientName," : "Hi,";
+
+        $variables = [
+            'greeting' => $greeting,
+            'zoneName' => $zoneName,
+            'recipientName' => $recipientName,
+            'revokedByName' => $revokedByName,
+            'revokedAt' => $revokedAt,
+        ];
+
+        return [
+            'html' => $this->render('zone-access-revoked.html.twig', $variables),
+            'text' => $this->render('zone-access-revoked.txt.twig', $variables),
+            'subject' => sprintf('Zone Access Revoked: %s', $zoneName)
+        ];
+    }
+
+    /**
      * Check if a custom template exists
      *
      * @param string $template Template name
