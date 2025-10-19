@@ -31,6 +31,8 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * Validates NAPTR records according to:
  * - RFC 3403: Dynamic Delegation Discovery System (DDDS) Part Three: The DNS Database
  * - RFC 6116: The E.164 to Uniform Resource Identifiers (URI) Dynamic Delegation Discovery System (DDDS) Application (ENUM)
+ * - ETSI TS 123 003: Numbering, addressing and identification (3GPP TS 23.003)
+ * - 3GPP standards for telecommunications service discovery
  *
  * NAPTR records are used for translating one string into another or for replacing
  * one type of string with an entirely different one through regular expressions
@@ -38,21 +40,31 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  *
  * NAPTR format: <order> <preference> <flags> <service> <regexp> <replacement>
  *
- * Example: 10 100 "s" "SIP+D2U" "!^.*$!sip:customer-service@example.com!" .
+ * Example (terminal NAPTR with regexp):
+ *   10 100 "u" "SIP+D2U" "!^.*$!sip:customer-service@example.com!" .
+ *
+ * Example (non-terminal NAPTR with replacement, per ETSI TS 123 003):
+ *   10 100 "s" "x-3gpp-pgw:x-gn" "" next-lookup.example.com.
  *
  * Where:
  * - order: 16-bit unsigned integer specifying the order in which records MUST be processed
  * - preference: 16-bit unsigned integer specifying the order for processing records with same order
  * - flags: a character string containing flags to control DDDS processing (A, P, S, U, or "")
- * - service: a string specifying the service available (format: [protocol]+[feature])
+ * - service: a string specifying the service available
+ *   * RFC format: [protocol]+[feature] (alphanumeric)
+ *   * 3GPP format: allows hyphens, colons, and plus signs (e.g., "x-3gpp-pgw:x-gn")
  * - regexp: a string containing a substitution expression applied to the original string
+ *   * Can be empty ("") when using replacement field (non-terminal NAPTR)
  * - replacement: a domain-name for the next rule in lookup or "." for terminal rule
+ *   * Must be "." when regexp is non-empty
+ *   * Can be a domain name when regexp is empty (non-terminal NAPTR)
  *
  * Common applications:
  * - ENUM (E.164 phone number to URI mapping)
  * - SIP (Session Initiation Protocol) service location
  * - XMPP service discovery
  * - S-NAPTR (Service-NAPTR) as defined in RFC 3958
+ * - 3GPP/LTE network element discovery (PGW, SGW, etc.)
  *
  * Security considerations:
  * - NAPTR records with regexp fields can potentially be used for various injection attacks
@@ -265,7 +277,10 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
             }
         }
 
-        // Check for non-empty regexp with replacement not being ".", which is invalid
+        // RFC 3403 and ETSI TS 123 003: Validate regexp and replacement mutual exclusivity
+        // Terminal NAPTR (with regexp): Must have "." as replacement
+        // Non-terminal NAPTR (without regexp): Can have domain name as replacement for next lookup
+        // This is common in 3GPP networks where NAPTR chains are used for service discovery
         if (!empty($regexpValue) && $replacement !== ".") {
             return ValidationResult::failure(_('NAPTR record with a regexp must have "." as the replacement.'));
         }
@@ -282,10 +297,22 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
     }
 
     /**
-     * Validates service field format according to RFC 3403
-     * Format: [protocol] *("+" rs)
-     * protocol = ALPHA *31ALPHANUM
-     * rs = ALPHA *31ALPHANUM
+     * Validates service field format according to RFC 3403 and ETSI TS 123 003
+     *
+     * RFC 3403 format: [protocol] *("+" rs)
+     *   protocol = ALPHA *31ALPHANUM
+     *   rs = ALPHA *31ALPHANUM
+     *
+     * ETSI TS 123 003 / 3GPP extensions:
+     *   - Allows hyphens (-) for node type prefixes (e.g., "x-3gpp-pgw")
+     *   - Allows colons (:) to separate service and protocol (e.g., "x-3gpp-pgw:x-gn")
+     *   - Maintains plus (+) for resolution service concatenation
+     *
+     * Examples:
+     *   - "SIP+D2U" (RFC 3403)
+     *   - "x-3gpp-sgw" (3GPP with hyphens)
+     *   - "x-3gpp-pgw:x-gn" (3GPP with colon separator)
+     *   - "aaa+ap6:diameter.sctp" (Diameter with plus and colon)
      *
      * @param string $service The service string without quotes
      * @return ValidationResult ValidationResult with success or error message
@@ -297,11 +324,11 @@ class NAPTRRecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::success(true);
         }
 
-        // Service field format: [protocol] *("+" rs)
-        // protocol = ALPHA *31ALPHANUM
-        // rs = ALPHA *31ALPHANUM
+        // Service field format with 3GPP extensions
+        // Must start with a letter, can contain alphanumeric, hyphens, colons, plus signs
+        // Maximum 32 characters per segment when split by plus signs
         if (!preg_match('/^([a-zA-Z][a-zA-Z0-9:+\-]{0,31})(\+[a-zA-Z][a-zA-Z0-9:+\-]{0,31})*$/', $service)) {
-            return ValidationResult::failure(_('NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol and rs start with a letter and contain only alphanumeric characters (max 32 chars each).'));
+            return ValidationResult::failure(_('NAPTR service must follow the format: [protocol][+rs][+rs]... where protocol and rs start with a letter and contain alphanumeric characters, hyphens, colons, or plus signs (max 32 chars each).'));
         }
 
         return ValidationResult::success(true);

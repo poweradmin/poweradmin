@@ -260,9 +260,55 @@ class NAPTRRecordValidatorTest extends BaseDnsTest
         $this->assertStringContainsString('Terminal flags', $result->getFirstError());
     }
 
+    public function testValidateWith3GPPServiceFormatHyphen()
+    {
+        // Test 3GPP service format with hyphens (now valid per ETSI TS 123 003)
+        $content = '100 10 "s" "x-3gpp-sgw" "" next.example.com.';
+        $name = 'test.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+    }
+
+    public function testValidateWith3GPPServiceFormatColonAndHyphen()
+    {
+        // Test 3GPP service format with colons and hyphens (ETSI TS 123 003)
+        $content = '100 10 "s" "x-3gpp-pgw:x-gn" "" next.example.com.';
+        $name = 'test.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+    }
+
+    public function testValidateWith3GPPDiameterServiceFormat()
+    {
+        // Test Diameter application format with plus and colon (without period)
+        $content = '100 10 "a" "aaa+ap6:diameter" "" diameter-server.example.com.';
+        $name = 'test.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+    }
+
     public function testValidateWithInvalidServiceFormat()
     {
-        $content = '100 10 "u" "sip-E2U" "!^.*$!sip:info@example.com!" .'; // Invalid service format (hyphen)
+        // Test invalid service format (starts with number)
+        $content = '100 10 "u" "9invalid" "!^.*$!sip:info@example.com!" .';
         $name = 'test.example.com';
         $prio = 0;
         $ttl = 3600;
@@ -326,6 +372,36 @@ class NAPTRRecordValidatorTest extends BaseDnsTest
 
         $this->assertFalse($result->isValid());
         $this->assertStringContainsString('too long', $result->getFirstError());
+    }
+
+    public function testValidateWithEmptyRegexpAndNonEmptyReplacement()
+    {
+        // Test empty regexp with non-empty replacement (non-terminal NAPTR, valid per ETSI TS 123 003)
+        $content = '100 10 "s" "x-3gpp-sgw:x-s5-gtp" "" next-lookup.example.com.';
+        $name = 'test.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
+    }
+
+    public function testValidateWithEmptyRegexpAndTerminalReplacement()
+    {
+        // Test empty regexp with terminal replacement "." (also valid)
+        $content = '100 10 "a" "x-3gpp-pgw" "" .';
+        $name = 'test.example.com';
+        $prio = 0;
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $this->assertEmpty($result->getErrors());
     }
 
     public function testValidateWithConflictingReplacementAndRegexp()
