@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+use PDO;
 use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 
@@ -65,15 +66,14 @@ class DbUserLogger
     {
         $stmt = $this->db->prepare("
                     SELECT * FROM log_users
-                    ORDER BY created_at DESC 
-                    LIMIT :limit 
-                    OFFSET :offset 
+                    ORDER BY created_at DESC
+                    LIMIT :limit
+                    OFFSET :offset
         ");
 
-        $stmt->execute([
-            'limit' => $limit,
-            'offset' => $offset
-        ]);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
 
         return $stmt->fetchAll();
     }
@@ -88,15 +88,14 @@ class DbUserLogger
             SELECT * FROM log_users
             WHERE log_users.event LIKE :search_by
             ORDER BY created_at DESC
-            LIMIT :limit 
+            LIMIT :limit
             OFFSET :offset");
 
         $user = "%'$user'%";
-        $stmt->execute([
-            'search_by' => $user,
-            'limit' => $limit,
-            'offset' => $offset
-        ]);
+        $stmt->bindValue(':search_by', $user, PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
 
         return $stmt->fetchAll();
     }
