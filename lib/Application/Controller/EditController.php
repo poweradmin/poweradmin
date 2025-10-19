@@ -268,10 +268,10 @@ class EditController extends BaseController
 
         if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
             $this->validateCsrfToken();
-            $this->zoneRepository->addOwnerToZone($_POST["domain"], $_POST["newowner"]);
+            $ownerAdded = $this->zoneRepository->addOwnerToZone($_POST["domain"], $_POST["newowner"]);
 
-            // Send zone access granted notification
-            if ($this->config->get('notifications', 'zone_access_enabled', false)) {
+            // Send zone access granted notification only if the owner was successfully added
+            if ($ownerAdded && $this->config->get('notifications', 'zone_access_enabled', false)) {
                 $notificationService = $this->createZoneAccessNotificationService();
                 $notificationService->notifyAccessGranted(
                     $zone_id,
@@ -283,10 +283,10 @@ class EditController extends BaseController
 
         if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"])) {
             $this->validateCsrfToken();
-            $this->zoneRepository->removeOwnerFromZone($zone_id, $_POST["delete_owner"]);
+            $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $_POST["delete_owner"]);
 
-            // Send zone access revoked notification
-            if ($this->config->get('notifications', 'zone_access_enabled', false)) {
+            // Send zone access revoked notification only if the owner was successfully removed
+            if ($ownerRemoved && $this->config->get('notifications', 'zone_access_enabled', false)) {
                 $notificationService = $this->createZoneAccessNotificationService();
                 $notificationService->notifyAccessRevoked(
                     $zone_id,

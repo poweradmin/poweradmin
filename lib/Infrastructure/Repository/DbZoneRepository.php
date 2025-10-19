@@ -700,8 +700,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
         $stmt->bindValue(':zone_templ_id', $zoneTemplId, PDO::PARAM_INT);
+        $stmt->execute();
 
-        return $stmt->execute();
+        return $stmt->rowCount() > 0;
     }
 
     /**
@@ -717,8 +718,9 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->bindValue(':owner', $userId, PDO::PARAM_INT);
+        $stmt->execute();
 
-        return $stmt->execute();
+        return $stmt->rowCount() > 0;
     }
 
     /**
