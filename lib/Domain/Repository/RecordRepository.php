@@ -483,11 +483,17 @@ class RecordRepository implements RecordRepositoryInterface
 
         // Sorting and limits
         $query .= " ORDER BY $sort_by $sort_direction LIMIT :row_amount OFFSET :row_start";
-        $params[':row_amount'] = $row_amount;
-        $params[':row_start'] = $row_start;
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
+
+        // Bind parameters - use PDO::PARAM_INT for LIMIT and OFFSET
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value);
+        }
+        $stmt->bindValue(':row_amount', $row_amount, PDO::PARAM_INT);
+        $stmt->bindValue(':row_start', $row_start, PDO::PARAM_INT);
+
+        $stmt->execute();
         $records = [];
 
         while ($record = $stmt->fetch()) {
