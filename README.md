@@ -4,8 +4,8 @@
 [![validations](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml/badge.svg)](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml)
 [![license](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![php version](https://img.shields.io/badge/php-8.1%2B-blue)](https://www.php.net/)
-[![docker pulls](https://img.shields.io/docker/pulls/edmondas/poweradmin)](https://hub.docker.com/r/edmondas/poweradmin)
-[![docker image size](https://img.shields.io/docker/image-size/edmondas/poweradmin)](https://hub.docker.com/r/edmondas/poweradmin)
+[![docker pulls](https://img.shields.io/docker/pulls/poweradmin/poweradmin)](https://hub.docker.com/r/poweradmin/poweradmin)
+[![docker image size](https://img.shields.io/docker/image-size/poweradmin/poweradmin)](https://hub.docker.com/r/poweradmin/poweradmin)
 
 [Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for PowerDNS server. The
 interface supports most of
@@ -78,14 +78,14 @@ docker run -d \
   -p 8080:80 \
   -e DB_TYPE=sqlite \
   -e PA_CREATE_ADMIN=1 \
-  edmondas/poweradmin:latest
+  poweradmin/poweradmin:latest
 ```
 
 **Important**: 
 - DB_TYPE environment variable is required (sqlite, mysql, pgsql)
 - No admin user is created by default for security reasons. Use `-e PA_CREATE_ADMIN=1` to create an admin user (a secure password will be auto-generated and shown in logs)
 
-* **Docker Hub**: `edmondas/poweradmin`
+* **Docker Hub**: `poweradmin/poweradmin`
 * **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`
 * **Full documentation**: [DOCKER.md](DOCKER.md)
 * **Security with Docker Secrets**: [DOCKER-SECRETS.md](DOCKER-SECRETS.md)
