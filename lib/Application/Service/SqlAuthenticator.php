@@ -105,7 +105,7 @@ class SqlAuthenticator extends LoggingService
         $sessionPassword = $encryptionService->decrypt($_SESSION['userpwd']);
 
         $stmt = $this->connection->prepare("SELECT id, fullname, password, active, email FROM users WHERE username=:username AND use_ldap=0");
-        $stmt->bindParam(':username', $_SESSION["userlogin"]);
+        $stmt->bindValue(':username', $_SESSION["userlogin"], PDO::PARAM_STR);
         $stmt->execute();
         $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
 

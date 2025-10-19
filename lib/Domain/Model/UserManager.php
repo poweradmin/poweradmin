@@ -383,6 +383,7 @@ class UserManager
             $edit_own_perm = self::verifyPermission($this->db, 'user_edit_own');
             $passwd_edit_others_perm = self::verifyPermission($this->db, 'user_passwd_edit_others');
 
+            $passwordHash = null;
             if ($user_password != "" && ($edit_own_perm || $passwd_edit_others_perm)) {
                 $config = ConfigurationManager::getInstance();
                 $config->initialize();
@@ -413,8 +414,6 @@ class UserManager
             }
 
             if ($user_password != "" && ($edit_own_perm || $passwd_edit_others_perm)) {
-                // Use password_hash directly as the PasswordEncryptionService is for session keys
-                $passwordHash = password_hash($user_password, PASSWORD_DEFAULT);
                 $stmt->bindValue(':password', $passwordHash, PDO::PARAM_STR);
             }
 
@@ -711,6 +710,7 @@ class UserManager
             }
 
             $passwd_edit_others_perm = self::verifyPermission($this->db, 'user_passwd_edit_others');
+            $hashedPassword = null;
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
                 $config = ConfigurationManager::getInstance();
                 $config->initialize();
@@ -739,8 +739,6 @@ class UserManager
                 $stmt->bindValue(':auth_method', $use_ldap ? 'ldap' : 'sql', PDO::PARAM_STR);
             }
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
-                // Use password_hash directly as the PasswordEncryptionService is for session keys
-                $hashedPassword = password_hash($details['password'], PASSWORD_DEFAULT);
                 $stmt->bindValue(':password', $hashedPassword, PDO::PARAM_STR);
             }
 

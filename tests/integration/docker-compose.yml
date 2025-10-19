@@ -13,7 +13,8 @@ services:
       - "3307:3306"
     volumes:
       - mysql_test_data:/var/lib/mysql
-      - ../../sql/pdns/47/schema.mysql.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ../../sql/pdns/47/schema.mysql.sql:/docker-entrypoint-initdb.d/01-pdns-schema.sql
+      - ../../sql/poweradmin-mysql-db-structure.sql:/docker-entrypoint-initdb.d/02-poweradmin-schema.sql
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-ptestroot"]
       interval: 10s
@@ -35,7 +36,8 @@ services:
       - "5433:5432"
     volumes:
       - postgresql_test_data:/var/lib/postgresql/data
-      - ../../sql/pdns/47/schema.pgsql.sql:/docker-entrypoint-initdb.d/01-schema.sql
+      - ../../sql/pdns/47/schema.pgsql.sql:/docker-entrypoint-initdb.d/01-pdns-schema.sql
+      - ../../sql/poweradmin-pgsql-db-structure.sql:/docker-entrypoint-initdb.d/02-poweradmin-schema.sql
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U pdns -d pdns"]
       interval: 10s
