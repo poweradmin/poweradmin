@@ -236,14 +236,18 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         // Add limit and offset for pagination
         $query .= " LIMIT :limit OFFSET :offset";
-        $params[':limit'] = $limit;
-        $params[':offset'] = $offset;
 
         // Execute query
         $stmt = $this->db->prepare($query);
+
+        // Bind non-pagination parameters
         foreach ($params as $param => $value) {
             $stmt->bindValue($param, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
         }
+
+        // Explicitly bind pagination parameters as integers
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
         if ($countOnly) {
@@ -372,13 +376,17 @@ class DbZoneRepository implements ZoneRepositoryInterface
 
         // Add pagination
         $query .= " LIMIT :limit OFFSET :offset";
-        $params[':limit'] = $limit;
-        $params[':offset'] = $offset;
 
         $stmt = $this->db->prepare($query);
+
+        // Bind non-pagination parameters
         foreach ($params as $param => $value) {
             $stmt->bindValue($param, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
         }
+
+        // Explicitly bind pagination parameters as integers
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
         $stmt->execute();
 
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
