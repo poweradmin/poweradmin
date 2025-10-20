@@ -47,6 +47,7 @@ class TXTRecordValidatorTest extends TestCase
         $this->configMock->method('get')
             ->willReturn('example.com');
 
+        // Default validator with no length limit (for normal zone records)
         $this->validator = new TXTRecordValidator($this->configMock);
     }
 
@@ -119,12 +120,13 @@ class TXTRecordValidatorTest extends TestCase
     }
 
     /**
-     * Test validation with very long TXT record that exceeds
-     * 255 character limit for a single string
+     * Test validation with long TXT record (256 bytes)
+     * PowerDNS will automatically split this at wire format level
      */
     public function testValidateWithVeryLongSingleString()
     {
         // Creating a string exactly 256 characters long
+        // This should now be VALID as PowerDNS handles the splitting
         $longString = str_repeat('a', 256);
         $content = '"' . $longString . '"';
         $name = 'txt.example.com';
@@ -134,8 +136,9 @@ class TXTRecordValidatorTest extends TestCase
 
         $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
 
-        $this->assertFalse($result->isValid());
-        $this->assertStringContainsString('255', $result->getFirstError());
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 
     /**
@@ -428,5 +431,147 @@ class TXTRecordValidatorTest extends TestCase
 
         $this->assertTrue($result->isValid());
         // No need to check specific fields since the DMARCRecordValidator will be called
+    }
+
+    /**
+     * Test validation with DKIM record from GitHub issue #809
+     * This is a real-world example that was previously rejected
+     */
+    public function testValidateWithLongDkimRecordFromIssue809()
+    {
+        // Real DKIM record from issue #809 (392 bytes)
+        $content = '"v=DKIM1; k=rsa; h=sha256; s=email; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr4jWwiUrBv/5M87XAgbSmaMa3LvyWQ6Rj/SInmNY653/0i2qr1AwuM96XA/X0RLN78BmNHU3aXg4BvOtyhcHiKeTZoz4xYpFgALWjdq9ygsdoDQEI1dVHValLEiOGevIynVtDwmxohwscZClYIAYPI1YByC889JuIm21c/h8rN/vQrd7tlb1a01bYFGMKR+kUIHZ8VAxzvgvYm5+hp09Nvmu7NGVqfNFeKGez6CTFDyPdxHJTdP8hnzDHWxgxker9J/XyppSR4yePP/KKPgCGvkRJ2FxCVqHXejielxbGPB4DkAZb9qNVXC8W+Mc4Z39vNMzrxqoXwYHL64ZqIEx0QIDAQAB"';
+        $name = 'selector._domainkey.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid(), 'Long DKIM record should be valid - PowerDNS will handle splitting');
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * Test validation with very long TXT record for normal zones (no limit)
+     */
+    public function testValidateWithVeryLongTxtRecordNoLimit()
+    {
+        // Creating content much longer than 2048 bytes
+        // Should be VALID for normal zone records (uses records.content VARCHAR(64000))
+        $veryLongString = str_repeat('a', 5000);
+        $content = '"' . $veryLongString . '"';
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid(), 'Long TXT records should be valid for normal zones');
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+    }
+
+    /**
+     * Test validation with zone template limit (2048 bytes)
+     */
+    public function testValidateWithZoneTemplateLimitExceeded()
+    {
+        // Create validator with zone template limit
+        $templateValidator = new TXTRecordValidator($this->configMock, 2048);
+
+        // Creating content that exceeds 2048 bytes INCLUDING quotes
+        // Content: 2047 bytes + 2 quotes = 2049 bytes total
+        $veryLongString = str_repeat('a', 2047);
+        $content = '"' . $veryLongString . '"';
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $templateValidator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid());
+        $this->assertStringContainsString('2048', $result->getFirstError());
+    }
+
+    /**
+     * Test validation with TXT record at zone template maximum
+     */
+    public function testValidateWithZoneTemplateMaximumAllowedLength()
+    {
+        // Create validator with zone template limit
+        $templateValidator = new TXTRecordValidator($this->configMock, 2048);
+
+        // Creating content exactly at 2048 bytes INCLUDING quotes
+        // This matches the zone_templ_records.content VARCHAR(2048) database constraint
+        // Content: 2046 bytes + 2 quotes = 2048 bytes total
+        $maxLengthString = str_repeat('a', 2046);
+        $content = '"' . $maxLengthString . '"';
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $templateValidator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid());
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
+        // Verify the stored content fits in VARCHAR(2048)
+        $this->assertLessThanOrEqual(2048, strlen($data['content']));
+    }
+
+    /**
+     * Test that multi-string TXT records respect zone template length limit
+     */
+    public function testValidateMultiStringWithZoneTemplateLimit()
+    {
+        // Create validator with zone template limit
+        $templateValidator = new TXTRecordValidator($this->configMock, 2048);
+
+        // Create multi-string content that would exceed 2048 bytes with quotes and spaces
+        // Each string: 255 chars + 2 quotes = 257 bytes
+        // 8 strings: 8 * 257 = 2056 bytes + 7 spaces = 2063 bytes total (exceeds limit)
+        $strings = [];
+        for ($i = 0; $i < 8; $i++) {
+            $strings[] = '"' . str_repeat('a', 255) . '"';
+        }
+        $content = implode(' ', $strings);
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $templateValidator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertFalse($result->isValid(), 'Multi-string content exceeding zone template limit should be rejected');
+        $this->assertStringContainsString('2048', $result->getFirstError());
+    }
+
+    /**
+     * Test that long multi-string TXT records are valid for normal zones
+     */
+    public function testValidateLongMultiStringForNormalZones()
+    {
+        // Create multi-string content exceeding 2048 bytes
+        // Should be VALID for normal zones (no limit)
+        $strings = [];
+        for ($i = 0; $i < 10; $i++) {
+            $strings[] = '"' . str_repeat('a', 255) . '"';
+        }
+        $content = implode(' ', $strings); // ~2570 bytes total
+        $name = 'txt.example.com';
+        $prio = '';
+        $ttl = 3600;
+        $defaultTTL = 86400;
+
+        $result = $this->validator->validate($content, $name, $prio, $ttl, $defaultTTL);
+
+        $this->assertTrue($result->isValid(), 'Long multi-string TXT records should be valid for normal zones');
+        $data = $result->getData();
+        $this->assertEquals($content, $data['content']);
     }
 }
