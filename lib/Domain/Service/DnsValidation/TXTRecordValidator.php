@@ -53,7 +53,6 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
      */
     private const MAX_ZONE_TEMPLATE_LENGTH = 2048;
 
-    private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private DMARCRecordValidator $dmarcValidator;
@@ -65,7 +64,6 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
      */
     public function __construct(ConfigurationManager $config, ?int $maxLength = null)
     {
-        $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
         $this->dmarcValidator = new DMARCRecordValidator($config);
@@ -245,7 +243,7 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
      * by the DNS resolver. This is used to bypass the 255 byte limitation.
      *
      * @param string $content The TXT record content
-     * @return array|false Array of quoted strings or false if invalid format
+     * @return array<int, string>|false Array of quoted strings or false if invalid format
      */
     private function parseMultipleQuotedStrings(string $content): array|false
     {
