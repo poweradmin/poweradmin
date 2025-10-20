@@ -440,7 +440,11 @@ class TXTRecordValidatorTest extends TestCase
     public function testValidateWithLongDkimRecordFromIssue809()
     {
         // Real DKIM record from issue #809 (392 bytes)
-        $content = '"v=DKIM1; k=rsa; h=sha256; s=email; p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr4jWwiUrBv/5M87XAgbSmaMa3LvyWQ6Rj/SInmNY653/0i2qr1AwuM96XA/X0RLN78BmNHU3aXg4BvOtyhcHiKeTZoz4xYpFgALWjdq9ygsdoDQEI1dVHValLEiOGevIynVtDwmxohwscZClYIAYPI1YByC889JuIm21c/h8rN/vQrd7tlb1a01bYFGMKR+kUIHZ8VAxzvgvYm5+hp09Nvmu7NGVqfNFeKGez6CTFDyPdxHJTdP8hnzDHWxgxker9J/XyppSR4yePP/KKPgCGvkRJ2FxCVqHXejielxbGPB4DkAZb9qNVXC8W+Mc4Z39vNMzrxqoXwYHL64ZqIEx0QIDAQAB"';
+        $content = '"v=DKIM1; k=rsa; h=sha256; s=email; '
+            . 'p=MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAr4jWwiUrBv/5M87XAgbSmaMa3LvyWQ6Rj/SInmNY653/'
+            . '0i2qr1AwuM96XA/X0RLN78BmNHU3aXg4BvOtyhcHiKeTZoz4xYpFgALWjdq9ygsdoDQEI1dVHValLEiOGevIynVtDwmxohwscZClYIAYPI1YByC889JuIm21c/'
+            . 'h8rN/vQrd7tlb1a01bYFGMKR+kUIHZ8VAxzvgvYm5+hp09Nvmu7NGVqfNFeKGez6CTFDyPdxHJTdP8hnzDHWxgxker9J/XyppSR4yePP/'
+            . 'KKPgCGvkRJ2FxCVqHXejielxbGPB4DkAZb9qNVXC8W+Mc4Z39vNMzrxqoXwYHL64ZqIEx0QIDAQAB"';
         $name = 'selector._domainkey.example.com';
         $prio = '';
         $ttl = 3600;
