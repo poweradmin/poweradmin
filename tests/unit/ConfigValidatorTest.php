@@ -577,4 +577,191 @@ class ConfigValidatorTest extends TestCase
         // Should have errors for missing interface values
         $this->assertArrayHasKey('interface.language', $errors);
     }
+
+    public function testPdnsApiUrlWithHttpProtocol(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'pdns_api' => [
+                'url' => 'http://127.0.0.1:8081',
+                'key' => 'test-api-key',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getErrors());
+    }
+
+    public function testPdnsApiUrlWithHttpsProtocol(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'pdns_api' => [
+                'url' => 'https://powerdns.example.com:8081',
+                'key' => 'test-api-key',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getErrors());
+    }
+
+    public function testPdnsApiUrlMissingProtocol(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'pdns_api' => [
+                'url' => '127.0.0.1:8443',
+                'key' => 'test-api-key',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('pdns_api.url', $validator->getErrors());
+        $this->assertStringContainsString('http://', $validator->getErrors()['pdns_api.url']);
+    }
+
+    public function testPdnsApiUrlInvalidFormat(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'pdns_api' => [
+                'url' => 'not-a-valid-url',
+                'key' => 'test-api-key',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('pdns_api.url', $validator->getErrors());
+    }
+
+    public function testPdnsApiUrlInvalidPort(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'pdns_api' => [
+                'url' => 'http://127.0.0.1:99999',
+                'key' => 'test-api-key',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('pdns_api.url', $validator->getErrors());
+        $this->assertStringContainsString('port', strtolower($validator->getErrors()['pdns_api.url']));
+    }
+
+    public function testPdnsApiKeyRequired(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'pdns_api' => [
+                'url' => 'http://127.0.0.1:8081',
+                'key' => '',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('pdns_api.key', $validator->getErrors());
+    }
+
+    public function testPdnsApiUrlNotRequiredWhenNotConfigured(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'pdns_api' => [
+                'url' => '',
+                'key' => '',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getErrors());
+    }
+
+    public function testPdnsApiUrlInvalidScheme(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'pdns_api' => [
+                'url' => 'ftp://127.0.0.1:8081',
+                'key' => 'test-api-key',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('pdns_api.url', $validator->getErrors());
+        $this->assertStringContainsString('http', strtolower($validator->getErrors()['pdns_api.url']));
+    }
 }

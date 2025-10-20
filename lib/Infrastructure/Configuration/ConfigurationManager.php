@@ -101,6 +101,10 @@ class ConfigurationManager implements ConfigurationInterface
             }
         }
 
+        // Validate configuration and log errors (non-blocking)
+        if ($newConfigExists) {
+            $this->validateConfiguration();
+        }
 
         $this->initialized = true;
     }
@@ -171,5 +175,29 @@ class ConfigurationManager implements ConfigurationInterface
         }
 
         return $this->settings;
+    }
+
+    /**
+     * Validate configuration and log errors
+     *
+     * This helps detect common configuration issues like:
+     * - Missing protocol prefix in API URLs
+     * - Invalid data types
+     *
+     * @return void
+     */
+    private function validateConfiguration(): void
+    {
+        $validator = new ConfigValidator($this->settings);
+        if (!$validator->validate()) {
+            $errors = $validator->getErrors();
+            foreach ($errors as $key => $error) {
+                error_log(sprintf(
+                    "Configuration validation error [%s]: %s",
+                    $key,
+                    $error
+                ));
+            }
+        }
     }
 }

@@ -70,9 +70,8 @@ class HttpClient implements ApiClient
                     'code' => $error['type'] ?? 0
                 ];
 
-                $errorMessage = $displayErrors
-                    ? sprintf('API request failed: %s', $errorDetails['error'])
-                    : 'An unknown API error occurred';
+                // Detect common misconfigurations and provide helpful error messages
+                $errorMessage = $this->getHelpfulErrorMessage($errorDetails['error'], $url, $displayErrors);
 
                 $this->logApiError($errorMessage, $errorDetails);
                 throw new ApiErrorException($errorMessage, 0, null, $errorDetails);
@@ -182,5 +181,71 @@ class HttpClient implements ApiClient
     {
         $configManager = ConfigurationManager::getInstance();
         return (bool)$configManager->get('misc', 'display_errors');
+    }
+
+    /**
+     * Generate helpful error messages for common misconfigurations
+     *
+     * @param string $originalError The original error message
+     * @param string $url The URL that failed
+     * @param bool $displayErrors Whether to display detailed errors
+     * @return string Helpful error message
+     */
+    private function getHelpfulErrorMessage(string $originalError, string $url, bool $displayErrors): string
+    {
+        // Check for "No such file or directory" - indicates missing protocol prefix
+        if (strpos($originalError, 'No such file or directory') !== false) {
+            if ($displayErrors) {
+                return sprintf(
+                    'PowerDNS API connection failed: URL "%s" is being treated as a file path. ' .
+                    'Make sure the API URL starts with http:// or https:// (e.g., http://127.0.0.1:8081). ' .
+                    'Also verify the port number is correct (PowerDNS API typically runs on port 8081).',
+                    $url
+                );
+            }
+            return 'PowerDNS API configuration error: Invalid API URL format. Check that URL starts with http:// or https://';
+        }
+
+        // Check for connection refused
+        if (strpos($originalError, 'Connection refused') !== false || strpos($originalError, 'Failed to connect') !== false) {
+            if ($displayErrors) {
+                return sprintf(
+                    'PowerDNS API connection refused at "%s". ' .
+                    'Please verify: (1) PowerDNS API is running, (2) API port is correct (typically 8081), ' .
+                    '(3) Firewall allows the connection.',
+                    $url
+                );
+            }
+            return 'Cannot connect to PowerDNS API. Verify the API is running and accessible.';
+        }
+
+        // Check for timeout
+        if (strpos($originalError, 'timed out') !== false || strpos($originalError, 'timeout') !== false) {
+            if ($displayErrors) {
+                return sprintf(
+                    'PowerDNS API request timed out at "%s". ' .
+                    'The API server may be slow to respond or unreachable.',
+                    $url
+                );
+            }
+            return 'PowerDNS API request timed out. Check API server availability.';
+        }
+
+        // Check for name resolution failures
+        if (strpos($originalError, 'resolve') !== false || strpos($originalError, 'Name or service not known') !== false) {
+            if ($displayErrors) {
+                return sprintf(
+                    'Cannot resolve hostname in PowerDNS API URL "%s". ' .
+                    'Check that the hostname is correct and DNS is working.',
+                    $url
+                );
+            }
+            return 'Cannot resolve PowerDNS API hostname. Check the URL configuration.';
+        }
+
+        // Default error message
+        return $displayErrors
+            ? sprintf('API request failed: %s', $originalError)
+            : 'An unknown API error occurred';
     }
 }

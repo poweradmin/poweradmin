@@ -44,6 +44,8 @@ class ConfigValidator
             $this->validateSyslogIdent();
             $this->validateSyslogFacility();
         }
+        $this->validatePdnsApiUrl();
+        $this->validatePdnsApiKey();
 
         return empty($this->errors);
     }
@@ -134,6 +136,72 @@ class ConfigValidator
                 $this->errors['interface.enabled_languages'] = 'enabled_languages must be a non-empty string and contain a list of languages separated by commas';
                 break;
             }
+        }
+    }
+
+    private function validatePdnsApiUrl(): void
+    {
+        $apiUrl = $this->getSetting('pdns_api', 'url');
+
+        // Skip validation if API URL is not configured
+        if ($apiUrl === null || $apiUrl === '') {
+            return;
+        }
+
+        // Check if it's a string
+        if (!is_string($apiUrl)) {
+            $this->errors['pdns_api.url'] = 'PowerDNS API URL must be a string';
+            return;
+        }
+
+        // Check for missing protocol prefix - common misconfiguration
+        if (!preg_match('/^https?:\/\//i', $apiUrl)) {
+            $this->errors['pdns_api.url'] = 'PowerDNS API URL must start with http:// or https:// (found: "' . $apiUrl . '"). ' .
+                'Common mistake: missing protocol prefix. Example: http://127.0.0.1:8081';
+            return;
+        }
+
+        // Validate URL format
+        $parsedUrl = parse_url($apiUrl);
+        if ($parsedUrl === false || !isset($parsedUrl['scheme']) || !isset($parsedUrl['host'])) {
+            $this->errors['pdns_api.url'] = 'PowerDNS API URL is not a valid URL format. Expected format: http://hostname:port or https://hostname:port';
+            return;
+        }
+
+        // Check scheme
+        if (!in_array(strtolower($parsedUrl['scheme']), ['http', 'https'])) {
+            $this->errors['pdns_api.url'] = 'PowerDNS API URL must use http or https protocol';
+            return;
+        }
+
+        // Check port if specified
+        if (isset($parsedUrl['port'])) {
+            $port = $parsedUrl['port'];
+            if (!is_int($port) && !ctype_digit((string)$port)) {
+                $this->errors['pdns_api.url'] = 'PowerDNS API URL contains an invalid port number';
+                return;
+            }
+
+            $portNum = (int)$port;
+            if ($portNum < 1 || $portNum > 65535) {
+                $this->errors['pdns_api.url'] = 'PowerDNS API URL port must be between 1 and 65535';
+                return;
+            }
+        }
+    }
+
+    private function validatePdnsApiKey(): void
+    {
+        $apiKey = $this->getSetting('pdns_api', 'key');
+        $apiUrl = $this->getSetting('pdns_api', 'url');
+
+        // Only validate API key if URL is configured
+        if ($apiUrl === null || $apiUrl === '') {
+            return;
+        }
+
+        if (!is_string($apiKey) || empty($apiKey)) {
+            $this->errors['pdns_api.key'] = 'PowerDNS API key must be a non-empty string when API URL is configured';
         }
     }
 }
