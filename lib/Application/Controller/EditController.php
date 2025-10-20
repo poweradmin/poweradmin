@@ -56,6 +56,7 @@ use Poweradmin\Domain\Service\RecordDisplayService;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
@@ -328,26 +329,37 @@ class EditController extends BaseController
                 // Check if zone is already secured
                 $this->setMessage('edit', 'info', _('Zone is already signed with DNSSEC.'));
             } else {
-                // Sign the zone
-                // Update SOA serial before signing
-                $this->dnsRecord->updateSOASerial($zone_id);
+                // Pre-flight zone validation before DNSSEC signing
+                $zoneValidator = new ZoneValidationService($this->db);
+                $validation = $zoneValidator->validateZoneForDnssec($zone_id, $zone_name);
 
-                // Try to secure the zone
-                $result = $dnssecProvider->secureZone($zone_name);
-
-                if ($result) {
-                    // Verify the zone is now secured
-                    if ($dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
-                        $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
-                        // Rectify zone to ensure consistency
-                        $dnssecProvider->rectifyZone($zone_name);
-                    } else {
-                        $this->setMessage('edit', 'warning', _('Zone signing requested successfully, but verification failed. Check DNSSEC keys.'));
-                        error_log("DNSSEC signing verification failed for zone: $zone_name - API returned success but zone not secured");
-                    }
+                if (!$validation['valid']) {
+                    // Show validation errors to user
+                    $errorMsg = $zoneValidator->getFormattedErrorMessage($validation);
+                    $this->setMessage('edit', 'error', $errorMsg);
+                    error_log("DNSSEC pre-flight validation failed for zone: $zone_name");
                 } else {
-                    $this->setMessage('edit', 'error', _('Failed to sign zone. Check PowerDNS logs for details.'));
-                    error_log("DNSSEC signing failed for zone: $zone_name");
+                    // Validation passed - proceed with signing
+                    // Update SOA serial before signing
+                    $this->dnsRecord->updateSOASerial($zone_id);
+
+                    // Try to secure the zone
+                    $result = $dnssecProvider->secureZone($zone_name);
+
+                    if ($result) {
+                        // Verify the zone is now secured
+                        if ($dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
+                            $this->setMessage('edit', 'success', _('Zone has been signed successfully.'));
+                            // Rectify zone to ensure consistency
+                            $dnssecProvider->rectifyZone($zone_name);
+                        } else {
+                            $this->setMessage('edit', 'warning', _('Zone signing requested successfully, but verification failed. Check DNSSEC keys.'));
+                            error_log("DNSSEC signing verification failed for zone: $zone_name - API returned success but zone not secured");
+                        }
+                    } else {
+                        $this->setMessage('edit', 'error', _('Failed to sign zone. Zone validation passed, but PowerDNS API returned an error. Check PowerDNS logs for details.'));
+                        error_log("DNSSEC signing failed for zone: $zone_name");
+                    }
                 }
             }
         }

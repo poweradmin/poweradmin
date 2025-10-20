@@ -1051,6 +1051,7 @@ return array(
     'Poweradmin\\Domain\\Service\\ZoneManagementService' => $baseDir . '/lib/Domain/Service/ZoneManagementService.php',
     'Poweradmin\\Domain\\Service\\ZoneSortingService' => $baseDir . '/lib/Domain/Service/ZoneSortingService.php',
     'Poweradmin\\Domain\\Service\\ZoneTemplateSyncService' => $baseDir . '/lib/Domain/Service/ZoneTemplateSyncService.php',
+    'Poweradmin\\Domain\\Service\\ZoneValidationService' => $baseDir . '/lib/Domain/Service/ZoneValidationService.php',
     'Poweradmin\\Domain\\Utility\\DnsHelper' => $baseDir . '/lib/Domain/Utility/DnsHelper.php',
     'Poweradmin\\Domain\\Utility\\DnssecDataTransformer' => $baseDir . '/lib/Domain/Utility/DnssecDataTransformer.php',
     'Poweradmin\\Domain\\Utility\\DnssecTransformer' => $baseDir . '/lib/Domain/Utility/DnssecTransformer.php',
