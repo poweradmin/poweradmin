@@ -33,8 +33,9 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  * - RFC 7208: Sender Policy Framework (SPF) for Authorizing Use of Domains in Email
  * - RFC 7489: Domain-based Message Authentication, Reporting, and Conformance (DMARC)
  *
- * TXT records are limited to 255 bytes per string as per DNS message format.
- * Multiple strings can be concatenated for longer TXT records.
+ * PowerDNS automatically splits TXT records longer than 255 bytes into multiple
+ * 255-byte chunks for wire transmission. This validator accepts long TXT records
+ * (up to 4096 bytes) and relies on PowerDNS to handle the protocol-level splitting.
  *
  * Special handling is provided for specialized TXT record formats:
  * - DMARC records at _dmarc.<domain> with v=DMARC1 content
@@ -46,17 +47,41 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
  */
 class TXTRecordValidator implements DnsRecordValidatorInterface
 {
+    /**
+     * Maximum length for zone template records (matches zone_templ_records.content VARCHAR(2048)).
+     * Regular zone records use PowerDNS records.content VARCHAR(64000) and don't need this limit.
+     */
+    private const MAX_ZONE_TEMPLATE_LENGTH = 2048;
+
     private ConfigurationManager $config;
     private HostnameValidator $hostnameValidator;
     private TTLValidator $ttlValidator;
     private DMARCRecordValidator $dmarcValidator;
+    private ?int $maxLength;
 
-    public function __construct(ConfigurationManager $config)
+    /**
+     * @param ConfigurationManager $config
+     * @param int|null $maxLength Maximum content length (null = no limit for normal records)
+     */
+    public function __construct(ConfigurationManager $config, ?int $maxLength = null)
     {
         $this->config = $config;
         $this->hostnameValidator = new HostnameValidator($config);
         $this->ttlValidator = new TTLValidator();
         $this->dmarcValidator = new DMARCRecordValidator($config);
+        $this->maxLength = $maxLength;
+    }
+
+    /**
+     * Create a validator instance for zone template records
+     * Zone templates have a VARCHAR(2048) constraint on the content column
+     *
+     * @param ConfigurationManager $config
+     * @return self
+     */
+    public static function forZoneTemplate(ConfigurationManager $config): self
+    {
+        return new self($config, self::MAX_ZONE_TEMPLATE_LENGTH);
     }
 
     /**
@@ -129,8 +154,9 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
     /**
      * Validate TXT record content
      *
-     * According to RFC 7208, TXT record strings are limited to 255 bytes each.
-     * If the content exceeds this limit, it should be split into multiple strings.
+     * PowerDNS automatically splits long TXT records into 255-byte chunks for wire transmission,
+     * so we allow records up to MAX_TXT_RECORD_LENGTH bytes. This matches PowerDNS behavior and
+     * allows users to enter DKIM/SPF records without manual splitting.
      *
      * @param string $content Content to validate
      * @return ValidationResult ValidationResult containing validation status or error message
@@ -167,15 +193,19 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
                 return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
             }
 
-            // Check string length - RFC 7208 limits TXT strings to 255 bytes
-            if (strlen($subContent) > 255) {
+            // Check overall length limit if configured (for zone templates)
+            // PowerDNS will handle splitting at wire format level
+            if ($this->maxLength !== null && strlen($content) > $this->maxLength) {
                 return ValidationResult::failure(
-                    _('TXT record string exceeds 255 bytes. TXT strings must be 255 bytes or less. ' .
-                      'For longer content, split into multiple quoted strings separated by spaces.')
+                    sprintf(
+                        _('TXT record content exceeds maximum length of %d bytes. Please reduce the content size.'),
+                        $this->maxLength
+                    )
                 );
             }
         } else {
-            // We have properly formatted multiple strings, check each one
+            // We have properly formatted multiple strings
+
             foreach ($multipleTxtStrings as $stringPart) {
                 // Remove the quotes for length calculation
                 $unquoted = substr($stringPart, 1, -1);
@@ -186,12 +216,22 @@ class TXTRecordValidator implements DnsRecordValidatorInterface
                     return ValidationResult::failure(_('Backslashes must precede all quotes (") in TXT content'));
                 }
 
-                // Check string length - RFC 7208 limits TXT strings to 255 bytes
+                // Check individual string length - still enforce 255-byte limit for pre-split strings
                 if (strlen($unquoted) > 255) {
                     return ValidationResult::failure(
                         _('Each TXT record string must be 255 bytes or less. Split long content into multiple strings.')
                     );
                 }
+            }
+
+            // Check overall length limit if configured (for zone templates)
+            if ($this->maxLength !== null && strlen($content) > $this->maxLength) {
+                return ValidationResult::failure(
+                    sprintf(
+                        _('Total TXT record content exceeds maximum length of %d bytes. Please reduce the content size.'),
+                        $this->maxLength
+                    )
+                );
             }
         }
 
