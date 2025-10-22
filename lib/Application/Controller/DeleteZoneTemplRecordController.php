@@ -48,7 +48,7 @@ class DeleteZoneTemplRecordController extends BaseController
         }
         $record_id = (int)$id;
 
-        $zone_templ_id_value = $this->getSafeRequestValue('zone_templ_id');
+        $zone_templ_id_value = $this->getSafeRequestValue('template_id');
         if (empty($zone_templ_id_value) || !Validator::isNumber($zone_templ_id_value)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }

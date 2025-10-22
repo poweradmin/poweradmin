@@ -58,7 +58,7 @@ class EditZoneTemplRecordController extends BaseController
                 new Assert\NotBlank(),
                 new Assert\Type('numeric')
             ],
-            'zone_templ_id' => [
+            'template_id' => [
                 new Assert\NotBlank(),
                 new Assert\Type('numeric')
             ]
@@ -71,7 +71,7 @@ class EditZoneTemplRecordController extends BaseController
         }
 
         $record_id = (int)$this->getSafeRequestValue('id');
-        $zone_templ_id = (int)$this->getSafeRequestValue('zone_templ_id');
+        $zone_templ_id = (int)$this->getSafeRequestValue('template_id');
 
         $userId = $this->userContext->getLoggedInUserId();
         $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);

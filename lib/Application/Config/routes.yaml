@@ -534,23 +534,6 @@ dnssec_key_toggle:
     key_id: '\d+'
   methods: [GET, POST]
 
-# Zone Template Record Management  
-edit_zone_templ_record:
-  path: /zones/templates/{zone_templ_id}/records/{id}/edit
-  controller: Poweradmin\Application\Controller\EditZoneTemplRecordController::run
-  requirements:
-    zone_templ_id: '\d+'
-    id: '\d+'
-  methods: [GET, POST]
-
-delete_zone_templ_record:
-  path: /zones/templates/{zone_templ_id}/records/{id}/delete
-  controller: Poweradmin\Application\Controller\DeleteZoneTemplRecordController::run
-  requirements:
-    zone_templ_id: '\d+'
-    id: '\d+'
-  methods: [GET, POST]
-
 # Static Assets
 static_assets:
   path: /{path}
