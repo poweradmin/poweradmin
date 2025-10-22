@@ -93,7 +93,7 @@ class RecordManagerService
 
     private function handleComments(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, string $zone_name): void
     {
-        $fullZoneName = "$name.$zone_name";
+        $fullZoneName = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
         if ($this->config->get('misc', 'record_comments_sync')) {
             $this->handleSyncedComments($zoneId, $name, $type, $content, $comment, $userLogin, $fullZoneName);

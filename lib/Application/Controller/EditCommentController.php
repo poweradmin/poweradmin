@@ -53,10 +53,11 @@ class EditCommentController extends BaseController
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
 
-        if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
+        $zone_id = $this->getSafeRequestValue('id');
+        if (!$zone_id || !Validator::isNumber($zone_id)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = htmlspecialchars($zone_id);
 
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
