@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -65,7 +66,7 @@ class ReverseRecordCreator
         }
 
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
-        $fqdn_name = sprintf("%s.%s", $name, $zone_name);
+        $fqdn_name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
         // Check for duplicate PTR record before attempting to add
         if ($this->ptrRecordExists($zoneRevId, $contentRev, $fqdn_name)) {
@@ -236,11 +237,7 @@ class ReverseRecordCreator
     private function addReverseRecord(int $zone_id, $zone_rev_id, $name, $content_rev, $ttl, $prio, string $comment, string $account): bool
     {
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
-        if (str_ends_with($name, '.' . $zone_name)) {
-            $fqdn_name = $name;
-        } else {
-            $fqdn_name = sprintf("%s.%s", $name, $zone_name);
-        }
+        $fqdn_name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
         // Duplicate check moved to the main createReverseRecord method
 

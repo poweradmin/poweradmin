@@ -232,8 +232,8 @@ class EditController extends BaseController
                     // This is a zone update operation, handle as before
                     $this->saveRecords($zone_id, $zone_name);
                 }
-            } elseif (isset($_POST['record'])) {
-                // This is just a save operation without adding new records
+            } elseif (isset($_POST['record']) || isset($_POST['zone_comment'])) {
+                // This is just a save operation without adding new records, or zone comment update
                 $this->saveRecords($zone_id, $zone_name);
             }
         }
@@ -812,7 +812,7 @@ class EditController extends BaseController
     public function processZoneComment(int $zone_id, DnsRecord $dnsRecord, bool $one_record_changed): bool
     {
         $raw_zone_comment = $this->zoneRepository->getZoneComment($zone_id);
-        $zone_comment = $_POST['comment'] ?? '';
+        $zone_comment = $_POST['zone_comment'] ?? '';
         if ($raw_zone_comment != $zone_comment) {
             $this->zoneRepository->updateZoneComment($zone_id, $zone_comment);
             $one_record_changed = true;
