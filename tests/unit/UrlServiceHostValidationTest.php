@@ -177,13 +177,6 @@ class UrlServiceHostValidationTest extends TestCase
         $this->assertStringNotContainsString('bin', $url);
     }
 
-    public function testWebContextUsesScriptNameForSubdirectory(): void
-    {
-        // This test would need to mock php_sapi_name() which is difficult
-        // The actual subdirectory detection is tested in integration tests
-        $this->markTestSkipped('Web context SCRIPT_NAME detection requires mocking php_sapi_name()');
-    }
-
     protected function tearDown(): void
     {
         // Clean up server variables
