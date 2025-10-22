@@ -42,15 +42,17 @@ class DeleteZoneTemplRecordController extends BaseController
 
     public function run(): void
     {
-        if (!isset($_GET['id']) || !Validator::isNumber($_GET['id'])) {
+        $id = $this->getSafeRequestValue('id');
+        if (empty($id) || !Validator::isNumber($id)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $record_id = (int)$_GET['id'];
+        $record_id = (int)$id;
 
-        if (!isset($_GET['zone_templ_id']) || !Validator::isNumber($_GET['zone_templ_id'])) {
+        $zone_templ_id_value = $this->getSafeRequestValue('zone_templ_id');
+        if (empty($zone_templ_id_value) || !Validator::isNumber($zone_templ_id_value)) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $zone_templ_id = (int)$_GET['zone_templ_id'];
+        $zone_templ_id = (int)$zone_templ_id_value;
 
         $confirm = "-1";
         if (isset($_GET['confirm']) && Validator::isNumber($_GET['confirm'])) {

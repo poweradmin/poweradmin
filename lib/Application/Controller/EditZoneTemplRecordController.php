@@ -66,12 +66,12 @@ class EditZoneTemplRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_GET)) {
-            $this->showFirstValidationError($_GET);
+        if (!$this->doValidateRequest($this->requestData)) {
+            $this->showFirstValidationError($this->requestData);
         }
 
-        $record_id = (int)$_GET['id'];
-        $zone_templ_id = (int)$_GET['zone_templ_id'];
+        $record_id = (int)$this->getSafeRequestValue('id');
+        $zone_templ_id = (int)$this->getSafeRequestValue('zone_templ_id');
 
         $userId = $this->userContext->getLoggedInUserId();
         $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);

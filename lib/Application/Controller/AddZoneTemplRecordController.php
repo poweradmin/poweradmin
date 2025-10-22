@@ -61,11 +61,11 @@ class AddZoneTemplRecordController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_GET)) {
-            $this->showFirstValidationError($_GET);
+        if (!$this->doValidateRequest($this->requestData)) {
+            $this->showFirstValidationError($this->requestData);
         }
 
-        $zone_templ_id = (int)$_GET['id'];
+        $zone_templ_id = (int)$this->getSafeRequestValue('id');
         $userId = $this->userContext->getLoggedInUserId();
         $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
@@ -108,7 +108,7 @@ class AddZoneTemplRecordController extends BaseController
 
     private function addZoneTemplRecord(): void
     {
-        $zone_templ_id = (int)$_GET['id'];
+        $zone_templ_id = (int)$this->getSafeRequestValue('id');
         $name = $_POST['name'] ?? "[ZONE]";
         $type = $_POST['type'] ?? "";
         $content = $_POST['content'] ?? "";
@@ -132,7 +132,7 @@ class AddZoneTemplRecordController extends BaseController
 
     private function showAddZoneTemplRecord(): void
     {
-        $zone_templ_id = (int)$_GET['id'];
+        $zone_templ_id = (int)$this->getSafeRequestValue('id');
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
         $name = $_POST['name'] ?? "[ZONE]";
         $type = $_POST['type'] ?? "";

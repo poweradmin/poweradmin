@@ -53,11 +53,11 @@ class DeleteZoneTemplController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_GET)) {
-            $this->showFirstValidationError($_GET);
+        if (!$this->doValidateRequest($this->requestData)) {
+            $this->showFirstValidationError($this->requestData);
         }
 
-        $zone_templ_id = htmlspecialchars($_GET['id']);
+        $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
         $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $_SESSION['userid']);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
         $perm_templ_edit = UserManager::verifyPermission($this->db, 'zone_templ_edit');
@@ -82,21 +82,21 @@ class DeleteZoneTemplController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if ($this->doValidateRequest($_GET)) {
-            $zone_templ_id = htmlspecialchars($_GET['id']);
+        if ($this->doValidateRequest($this->requestData)) {
+            $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
             $zoneTemplate = new ZoneTemplate($this->db, $this->config);
             $zoneTemplate->deleteZoneTempl($zone_templ_id);
 
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been deleted successfully.'));
             $this->redirect('/zones/templates');
         } else {
-            $this->showFirstValidationError($_GET);
+            $this->showFirstValidationError($this->requestData);
         }
     }
 
     private function showDeleteZoneTempl(): void
     {
-        $zone_templ_id = htmlspecialchars($_GET['id']);
+        $zone_templ_id = htmlspecialchars($this->getSafeRequestValue('id'));
         $templ_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_templ_id);
 
         $this->render('delete_zone_templ.html', [

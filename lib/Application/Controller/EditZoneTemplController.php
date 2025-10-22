@@ -54,12 +54,13 @@ class EditZoneTemplController extends BaseController
 
     public function run(): void
     {
-        if (!isset($_GET['id']) || empty($_GET['id'])) {
+        $id = $this->getSafeRequestValue('id');
+        if (empty($id)) {
             $this->showError(_('No template ID provided.'));
             return;
         }
 
-        $zone_templ_id = (int)$_GET['id'];
+        $zone_templ_id = (int)$id;
         $userId = $this->userContext->getLoggedInUserId();
         $owner = ZoneTemplate::getZoneTemplIsOwner($this->db, $zone_templ_id, $userId);
         $perm_godlike = UserManager::verifyPermission($this->db, 'user_is_ueberuser');
@@ -79,8 +80,8 @@ class EditZoneTemplController extends BaseController
 
         $this->setValidationConstraints($constraints);
 
-        if (!$this->doValidateRequest($_GET)) {
-            $this->showFirstValidationError($_GET);
+        if (!$this->doValidateRequest($this->requestData)) {
+            $this->showFirstValidationError($this->requestData);
         }
 
         if (ZoneTemplate::zoneTemplIdExists($this->db, $zone_templ_id) == "0") {
