@@ -462,8 +462,8 @@ class RecordRepository implements RecordRepositoryInterface
         }
 
         // Base query
-        $query = "SELECT $records_table.id, $records_table.domain_id, $records_table.name, $records_table.type, 
-                 $records_table.content, $records_table.ttl, $records_table.prio, $records_table.disabled";
+        $query = "SELECT $records_table.id, $records_table.domain_id, $records_table.name, $records_table.type,
+                 $records_table.content, $records_table.ttl, $records_table.prio, $records_table.disabled, $records_table.auth";
 
         // Add comment column if needed
         if ($include_comments) {

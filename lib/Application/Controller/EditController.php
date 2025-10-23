@@ -523,7 +523,7 @@ class EditController extends BaseController
             'search_term' => $searchTerm,
             'record_type_filter' => $recordTypeFilter,
             'content_filter' => $contentFilter,
-            'display_hostname_only' => $display_hostname_only
+            'display_hostname_only' => $display_hostname_only,
         ]);
     }
 

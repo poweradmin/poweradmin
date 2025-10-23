@@ -218,6 +218,51 @@ final class DbCompat
     }
 
     /**
+     * Converts a database boolean value to integer (handles PostgreSQL 't'/'f' strings).
+     *
+     * PostgreSQL stores boolean columns as true/false and PDO returns them as 't'/'f' strings.
+     * MySQL stores them as TINYINT(1) and PDO may return integers (0/1) or strings ('0'/'1').
+     * SQLite stores them as INTEGER and PDO returns integers (0/1).
+     * This method normalizes all formats to 0 or 1.
+     *
+     * @param mixed $value The database value (can be int, bool, or string 't'/'f'/'0'/'1')
+     * @return int 1 for true values ('t', true, 1, '1'), 0 for false values ('f', false, 0, '0', null)
+     */
+    public static function boolFromDb(mixed $value): int
+    {
+        // Handle null
+        if ($value === null) {
+            return 0;
+        }
+
+        // Handle PostgreSQL 't'/'f' strings
+        if ($value === 't' || $value === 'true') {
+            return 1;
+        }
+        if ($value === 'f' || $value === 'false') {
+            return 0;
+        }
+
+        // Handle boolean
+        if (is_bool($value)) {
+            return $value ? 1 : 0;
+        }
+
+        // Handle string numerics (MySQL TINYINT(1) can return '0'/'1' strings)
+        if (is_string($value) && is_numeric($value)) {
+            return (int)$value !== 0 ? 1 : 0;
+        }
+
+        // Handle numeric (MySQL/SQLite integers)
+        if (is_numeric($value)) {
+            return (int)$value !== 0 ? 1 : 0;
+        }
+
+        // Fallback for any other truthy/falsy value
+        return $value ? 1 : 0;
+    }
+
+    /**
      * Restores the original SQL mode for the MySQL database connection if needed.
      *
      * @param object $db The database connection object

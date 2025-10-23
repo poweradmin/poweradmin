@@ -46,6 +46,7 @@ use Poweradmin\Infrastructure\Service\DnsServiceFactory;
 use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -142,7 +143,9 @@ class ZonesRecordsController extends PublicApiController
                             new OA\Property(property: 'type', type: 'string', example: 'A'),
                             new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                             new OA\Property(property: 'ttl', type: 'integer', example: 3600),
-                            new OA\Property(property: 'priority', type: 'integer', example: 10)
+                            new OA\Property(property: 'priority', type: 'integer', example: 10),
+                            new OA\Property(property: 'disabled', type: 'integer', example: 0, description: 'Disabled flag (0 = enabled, 1 = disabled)'),
+                            new OA\Property(property: 'auth', type: 'integer', example: 1, description: 'Authoritative flag (1 = authoritative, 0 = non-authoritative/glue record)')
                         ],
                         type: 'object'
                     )
@@ -179,7 +182,9 @@ class ZonesRecordsController extends PublicApiController
                     'type' => $record['type'],
                     'content' => $record['content'],
                     'ttl' => (int)$record['ttl'],
-                    'priority' => isset($record['prio']) ? (int)$record['prio'] : null
+                    'priority' => isset($record['prio']) ? (int)$record['prio'] : null,
+                    'disabled' => isset($record['disabled']) ? DbCompat::boolFromDb($record['disabled']) : 0,
+                    'auth' => isset($record['auth']) ? DbCompat::boolFromDb($record['auth']) : 1
                 ];
             }, $records);
 
@@ -217,7 +222,27 @@ class ZonesRecordsController extends PublicApiController
     )]
     #[OA\Response(
         response: 200,
-        description: 'Record retrieved successfully'
+        description: 'Record retrieved successfully',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', example: 'Record retrieved successfully'),
+                new OA\Property(
+                    property: 'data',
+                    properties: [
+                        new OA\Property(property: 'id', type: 'integer', example: 1),
+                        new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
+                        new OA\Property(property: 'type', type: 'string', example: 'A'),
+                        new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
+                        new OA\Property(property: 'ttl', type: 'integer', example: 3600),
+                        new OA\Property(property: 'priority', type: 'integer', example: 10),
+                        new OA\Property(property: 'disabled', type: 'integer', example: 0, description: 'Disabled flag (0 = enabled, 1 = disabled)'),
+                        new OA\Property(property: 'auth', type: 'integer', example: 1, description: 'Authoritative flag (1 = authoritative, 0 = non-authoritative/glue record). Automatically managed by PowerDNS.')
+                    ],
+                    type: 'object'
+                )
+            ]
+        )
     )]
     #[OA\Response(
         response: 404,
@@ -253,7 +278,9 @@ class ZonesRecordsController extends PublicApiController
                 'type' => $record['type'],
                 'content' => $record['content'],
                 'ttl' => (int)$record['ttl'],
-                'priority' => isset($record['prio']) ? (int)$record['prio'] : null
+                'priority' => isset($record['prio']) ? (int)$record['prio'] : null,
+                'disabled' => isset($record['disabled']) ? DbCompat::boolFromDb($record['disabled']) : 0,
+                'auth' => isset($record['auth']) ? DbCompat::boolFromDb($record['auth']) : 1
             ];
 
             return $this->returnApiResponse($formattedRecord, true, 'Record retrieved successfully', 200);
@@ -290,7 +317,8 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(property: 'type', type: 'string', example: 'A', description: 'Record type (A, AAAA, CNAME, MX, etc.)'),
                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content/value'),
                 new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live (TTL) in seconds'),
-                new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)')
+                new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)'),
+                new OA\Property(property: 'disabled', type: 'integer', example: 0, description: 'Disabled flag (0 = enabled, 1 = disabled). Default: 0')
             ]
         )
     )]
@@ -307,7 +335,10 @@ class ZonesRecordsController extends PublicApiController
                         new OA\Property(property: 'record_id', type: 'integer', example: 456),
                         new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
                         new OA\Property(property: 'type', type: 'string', example: 'A'),
-                        new OA\Property(property: 'content', type: 'string', example: '192.168.1.1')
+                        new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
+                        new OA\Property(property: 'ttl', type: 'integer', example: 3600),
+                        new OA\Property(property: 'priority', type: 'integer', example: 10),
+                        new OA\Property(property: 'disabled', type: 'integer', example: 0, description: 'Disabled flag (0 = enabled, 1 = disabled)')
                     ],
                     type: 'object'
                 )
@@ -375,10 +406,16 @@ class ZonesRecordsController extends PublicApiController
             $content = trim($input['content']);
             $ttl = isset($input['ttl']) ? (int)$input['ttl'] : 3600;
             $priority = isset($input['priority']) ? (int)$input['priority'] : 0;
+            $disabled = isset($input['disabled']) ? (int)$input['disabled'] : 0;
 
             // Validate TTL
             if ($ttl < 1) {
                 return $this->returnApiError('TTL must be greater than 0', 400);
+            }
+
+            // Validate disabled field
+            if ($disabled !== 0 && $disabled !== 1) {
+                return $this->returnApiError('Disabled field must be 0 or 1', 400);
             }
 
             // Validate the record using the validation service
@@ -414,7 +451,7 @@ class ZonesRecordsController extends PublicApiController
             }
 
             // If validation passes, insert the record
-            $success = $this->insertRecordDirect($zoneId, $normalizedName, $type, $content, $ttl, $priority);
+            $success = $this->insertRecordDirect($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled);
 
             if (!$success) {
                 return $this->returnApiError('Failed to create record', 500);
@@ -436,7 +473,8 @@ class ZonesRecordsController extends PublicApiController
                 'type' => $type,
                 'content' => $content,
                 'ttl' => $ttl,
-                'priority' => $priority
+                'priority' => $priority,
+                'disabled' => $disabled
             ];
 
             return $this->returnApiResponse($responseData, true, 'Record created successfully', 201);
@@ -480,7 +518,8 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(property: 'type', type: 'string', example: 'A'),
                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                 new OA\Property(property: 'ttl', type: 'integer', example: 3600),
-                new OA\Property(property: 'priority', type: 'integer', example: 10)
+                new OA\Property(property: 'priority', type: 'integer', example: 10),
+                new OA\Property(property: 'disabled', type: 'integer', example: 0, description: 'Disabled flag (0 = enabled, 1 = disabled)')
             ]
         )
     )]
@@ -548,12 +587,17 @@ class ZonesRecordsController extends PublicApiController
                 'content' => $input['content'] ?? $existingRecord['content'],
                 'ttl' => isset($input['ttl']) ? (int)$input['ttl'] : (int)$existingRecord['ttl'],
                 'prio' => isset($input['priority']) ? (int)$input['priority'] : (int)($existingRecord['prio'] ?? 0),
-                'disabled' => isset($input['disabled']) ? (int)$input['disabled'] : (int)($existingRecord['disabled'] ?? 0)
+                'disabled' => isset($input['disabled']) ? (int)$input['disabled'] : DbCompat::boolFromDb($existingRecord['disabled'] ?? 0)
             ];
 
             // Validate TTL
             if ($recordData['ttl'] < 1) {
                 return $this->returnApiError('TTL must be greater than 0', 400);
+            }
+
+            // Validate disabled field
+            if ($recordData['disabled'] !== 0 && $recordData['disabled'] !== 1) {
+                return $this->returnApiError('Disabled field must be 0 or 1', 400);
             }
 
             // Use RecordManager to edit the record
@@ -680,9 +724,10 @@ class ZonesRecordsController extends PublicApiController
      * @param string $content Record content (already validated)
      * @param int $ttl TTL value
      * @param int $priority Priority value
+     * @param int $disabled Disabled flag (0 = enabled, 1 = disabled)
      * @return bool True if successful
      */
-    private function insertRecordDirect(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority): bool
+    private function insertRecordDirect(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): bool
     {
         try {
             $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
@@ -691,8 +736,8 @@ class ZonesRecordsController extends PublicApiController
             $this->db->beginTransaction();
 
             // Insert the record
-            $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio) 
-                      VALUES (:zone_id, :name, :type, :content, :ttl, :prio)";
+            $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio, disabled)
+                      VALUES (:zone_id, :name, :type, :content, :ttl, :prio, :disabled)";
 
             $stmt = $this->db->prepare($query);
             $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
@@ -701,6 +746,7 @@ class ZonesRecordsController extends PublicApiController
             $stmt->bindValue(':content', $content, PDO::PARAM_STR);
             $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
             $stmt->bindValue(':prio', $priority, PDO::PARAM_INT);
+            $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
 
             $result = $stmt->execute();
 

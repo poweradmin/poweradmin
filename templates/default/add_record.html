@@ -208,7 +208,7 @@
                 if (input.tagName === 'SELECT') {
                     // Keep the selected option
                 } else if (input.type === 'checkbox') {
-                    // For checkboxes, reset checked state but keep value attribute
+                    // Uncheck all checkboxes (PTR reverse record and A/AAAA forward record creation)
                     input.checked = false;
                 } else {
                     input.value = '';

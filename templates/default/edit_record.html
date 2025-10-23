@@ -66,7 +66,7 @@
                         {% if iface_record_comments %}
                             <td>{{ record["comment"] }}</td>
                         {% endif %}
-                        {$ endif %}
+                        <td class="text-center">{% if record['disabled'] %}{% trans %}Yes{% endtrans %}{% else %}{% trans %}No{% endtrans %}{% endif %}</td>
                         {% else %}
                         <td>
                             <input type="hidden" name="rid" value="{{ record_id }}">
