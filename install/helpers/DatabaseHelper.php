@@ -189,24 +189,61 @@ class DatabaseHelper
 
     public function createAdministratorUser($pa_pass): void
     {
-        // Create an administrator user with the appropriate permissions
-        $adminName = 'Administrator';
-        $adminDescr = 'Administrator template with full rights.';
+        // Create permission templates
+        $templates = [
+            ['name' => 'Administrator', 'descr' => 'Administrator template with full rights.'],
+            ['name' => 'Zone Manager', 'descr' => 'Full management of own zones including creation, editing, deletion, and templates.'],
+            ['name' => 'DNS Editor', 'descr' => 'Edit own zone records but cannot modify SOA and NS records.'],
+            ['name' => 'Read Only', 'descr' => 'Read-only access to own zones with search capability.'],
+            ['name' => 'No Access', 'descr' => 'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.']
+        ];
+
+        $templateIds = [];
         $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr) VALUES (:name, :descr)");
-        $stmt->execute([':name' => $adminName, ':descr' => $adminDescr]);
+        foreach ($templates as $template) {
+            $stmt->execute([':name' => $template['name'], ':descr' => $template['descr']]);
+            $templateIds[$template['name']] = $this->db->lastInsertId();
+        }
 
-        $permTemplId = $this->db->lastInsertId();
+        // Get permission IDs for template assignments
+        $permissionNames = [
+            'user_is_ueberuser', 'zone_master_add', 'zone_slave_add', 'zone_content_view_own',
+            'zone_content_edit_own', 'zone_meta_edit_own', 'search', 'user_edit_own',
+            'zone_templ_add', 'zone_templ_edit', 'api_manage_keys', 'zone_delete_own',
+            'zone_content_edit_own_as_client'
+        ];
 
-        $uberAdminUser = 'user_is_ueberuser';
-        $stmt = $this->db->prepare("SELECT id FROM perm_items WHERE name = :name");
-        $stmt->execute([':name' => $uberAdminUser]);
+        $permissionIds = [];
+        $stmt = $this->db->prepare("SELECT id, name FROM perm_items WHERE name IN (" . implode(',', array_fill(0, count($permissionNames), '?')) . ")");
+        $stmt->execute($permissionNames);
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $permissionIds[$row['name']] = $row['id'];
+        }
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-        $uberAdminUserId = $row['id'];
+        // Assign permissions to templates
+        $templatePermissions = [
+            'Administrator' => ['user_is_ueberuser'],
+            'Zone Manager' => ['zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
+                               'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
+                               'api_manage_keys', 'zone_delete_own'],
+            'DNS Editor' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'],
+            'Read Only' => ['zone_content_view_own', 'search'],
+            'No Access' => []
+        ];
 
-        $permTemplItemsQuery = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:perm_templ_id, :uber_admin_user_id)");
-        $permTemplItemsQuery->execute([':perm_templ_id' => $permTemplId, ':uber_admin_user_id' => $uberAdminUserId]);
+        $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
+        foreach ($templatePermissions as $templateName => $permissions) {
+            foreach ($permissions as $permName) {
+                if (isset($permissionIds[$permName])) {
+                    $stmt->execute([
+                        ':templ_id' => $templateIds[$templateName],
+                        ':perm_id' => $permissionIds[$permName]
+                    ]);
+                }
+            }
+        }
 
+        // Create admin user with Administrator template
         $config = ConfigurationManager::getInstance();
         $config->initialize();
         $userAuthService = new UserAuthenticationService(
@@ -217,7 +254,7 @@ class DatabaseHelper
             "INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap, auth_method) " .
             "VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0, 'sql')"
         );
-        $user_query->execute(array($userAuthService->hashPassword($pa_pass), $permTemplId));
+        $user_query->execute(array($userAuthService->hashPassword($pa_pass), $templateIds['Administrator']));
     }
 
     public function generateDatabaseUserInstructions(?string $pdns_db_name = null): array

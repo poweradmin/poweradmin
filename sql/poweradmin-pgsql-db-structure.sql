@@ -75,7 +75,11 @@ CREATE TABLE "public"."perm_templ" (
 ) WITH (oids = false);
 
 INSERT INTO "perm_templ" ("id", "name", "descr") VALUES
-    (1,	'Administrator',	'Administrator template with full rights.');
+    (1,	'Administrator',	'Administrator template with full rights.'),
+    (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.'),
+    (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.'),
+    (4,	'Read Only',	'Read-only access to own zones with search capability.'),
+    (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.');
 
 CREATE SEQUENCE perm_templ_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -90,7 +94,24 @@ CREATE INDEX "idx_perm_templ_items_templ_id" ON "public"."perm_templ_items" USIN
 CREATE INDEX "idx_perm_templ_items_perm_id" ON "public"."perm_templ_items" USING btree ("perm_id");
 
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
-    (1,	1,	53);
+    (1,	1,	53),
+    (2,	2,	41),
+    (3,	2,	42),
+    (4,	2,	43),
+    (5,	2,	44),
+    (6,	2,	45),
+    (7,	2,	49),
+    (8,	2,	56),
+    (9,	2,	63),
+    (10,	2,	64),
+    (11,	2,	65),
+    (12,	2,	67),
+    (13,	3,	43),
+    (14,	3,	49),
+    (15,	3,	56),
+    (16,	3,	62),
+    (17,	4,	43),
+    (18,	4,	49);
 
 CREATE TABLE "public"."records_zone_templ" (
                                                "domain_id" integer,

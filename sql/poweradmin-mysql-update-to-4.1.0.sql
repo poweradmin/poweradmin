@@ -93,3 +93,68 @@ FROM `perm_templ_items`
 WHERE perm_id = 47; -- zone_content_edit_others
 
 -- Note: Users with 'user_is_ueberuser' (id 53) automatically have all permissions
+
+-- Add standard permission templates for common use cases
+-- These templates provide out-of-the-box permission profiles for typical DNS hosting scenarios
+-- If a template with the same name already exists, this will be skipped (WHERE NOT EXISTS)
+
+-- Zone Manager: Full self-service zone management
+INSERT INTO `perm_templ` (`name`, `descr`)
+SELECT 'Zone Manager', 'Full management of own zones including creation, editing, deletion, and templates.'
+WHERE NOT EXISTS (SELECT 1 FROM `perm_templ` WHERE `name` = 'Zone Manager');
+
+-- DNS Editor: Basic record editing without SOA/NS access
+INSERT INTO `perm_templ` (`name`, `descr`)
+SELECT 'DNS Editor', 'Edit own zone records but cannot modify SOA and NS records.'
+WHERE NOT EXISTS (SELECT 1 FROM `perm_templ` WHERE `name` = 'DNS Editor');
+
+-- Read Only: View-only access for auditing
+INSERT INTO `perm_templ` (`name`, `descr`)
+SELECT 'Read Only', 'Read-only access to own zones with search capability.'
+WHERE NOT EXISTS (SELECT 1 FROM `perm_templ` WHERE `name` = 'Read Only');
+
+-- No Access: Placeholder for inactive/suspended accounts
+INSERT INTO `perm_templ` (`name`, `descr`)
+SELECT 'No Access', 'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.'
+WHERE NOT EXISTS (SELECT 1 FROM `perm_templ` WHERE `name` = 'No Access');
+
+-- Assign permissions to Zone Manager template
+-- Only insert if the template exists and permission doesn't already exist
+INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
+SELECT pt.id, pi.id
+FROM `perm_templ` pt
+CROSS JOIN `perm_items` pi
+WHERE pt.name = 'Zone Manager'
+AND pi.name IN ('zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
+                'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
+                'api_manage_keys', 'zone_delete_own')
+AND NOT EXISTS (
+    SELECT 1 FROM `perm_templ_items` pti
+    WHERE pti.templ_id = pt.id AND pti.perm_id = pi.id
+);
+
+-- Assign permissions to DNS Editor template
+INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
+SELECT pt.id, pi.id
+FROM `perm_templ` pt
+CROSS JOIN `perm_items` pi
+WHERE pt.name = 'DNS Editor'
+AND pi.name IN ('zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client')
+AND NOT EXISTS (
+    SELECT 1 FROM `perm_templ_items` pti
+    WHERE pti.templ_id = pt.id AND pti.perm_id = pi.id
+);
+
+-- Assign permissions to Read Only template
+INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
+SELECT pt.id, pi.id
+FROM `perm_templ` pt
+CROSS JOIN `perm_items` pi
+WHERE pt.name = 'Read Only'
+AND pi.name IN ('zone_content_view_own', 'search')
+AND NOT EXISTS (
+    SELECT 1 FROM `perm_templ_items` pti
+    WHERE pti.templ_id = pt.id AND pti.perm_id = pi.id
+);
+
+-- No Access template intentionally has no permissions assigned

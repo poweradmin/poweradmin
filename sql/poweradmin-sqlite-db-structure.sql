@@ -43,6 +43,10 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (68,	'zone_delete_others
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL);
 
 INSERT INTO "perm_templ" ("id", "name", "descr") VALUES (1,	'Administrator',	'Administrator template with full rights.');
+INSERT INTO "perm_templ" ("id", "name", "descr") VALUES (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.');
+INSERT INTO "perm_templ" ("id", "name", "descr") VALUES (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.');
+INSERT INTO "perm_templ" ("id", "name", "descr") VALUES (4,	'Read Only',	'Read-only access to own zones with search capability.');
+INSERT INTO "perm_templ" ("id", "name", "descr") VALUES (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.');
 
 CREATE TABLE perm_templ_items (id integer PRIMARY KEY, templ_id integer NOT NULL, perm_id integer NOT NULL);
 
@@ -50,6 +54,23 @@ CREATE INDEX idx_perm_templ_items_templ_id ON perm_templ_items(templ_id);
 CREATE INDEX idx_perm_templ_items_perm_id ON perm_templ_items(perm_id);
 
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (1,	1,	53);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (2,	2,	41);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (3,	2,	42);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (4,	2,	43);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (5,	2,	44);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (6,	2,	45);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (7,	2,	49);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (8,	2,	56);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (9,	2,	63);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (10,	2,	64);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (11,	2,	65);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (12,	2,	67);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (13,	3,	43);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (14,	3,	49);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (15,	3,	56);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (16,	3,	62);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (17,	4,	43);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (18,	4,	49);
 
 CREATE TABLE records_zone_templ (domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
 
