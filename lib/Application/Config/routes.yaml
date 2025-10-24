@@ -478,6 +478,11 @@ api_internal_zone:
   path: /api/internal/zone
   controller: Poweradmin\Application\Controller\Api\Internal\ZoneController::run
 
+api_internal_dns_wizard:
+  path: /api/internal/dns-wizard
+  controller: Poweradmin\Application\Controller\Api\Internal\DnsWizardController::run
+  methods: [GET, POST]
+
 # Additional Zone Management Routes
 bulk_record_add:
   path: /zones/{id}/records/bulk

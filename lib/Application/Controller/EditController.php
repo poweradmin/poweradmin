@@ -524,6 +524,7 @@ class EditController extends BaseController
             'record_type_filter' => $recordTypeFilter,
             'content_filter' => $contentFilter,
             'display_hostname_only' => $display_hostname_only,
+            'dns_wizards_enabled' => $this->config->get('dns_wizards', 'enabled', false),
         ]);
     }
 

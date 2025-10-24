@@ -839,3 +839,85 @@ input[type=number]::-webkit-outer-spin-button {
     width: 1%;
     white-space: nowrap;
 }
+
+/* DNS Wizard Styles - Dark Theme */
+.wizard-card {
+    transition: all 0.2s ease-in-out;
+    border: 1px solid var(--border-dark);
+    background-color: var(--bg-dark-secondary);
+}
+
+.wizard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px var(--card-shadow);
+    border-color: var(--primary-blue);
+    background-color: var(--bg-dark-hover);
+}
+
+.wizard-card .card-body {
+    background-color: transparent;
+}
+
+.wizard-card h5 {
+    color: var(--text-light);
+}
+
+.wizard-card p {
+    color: var(--text-secondary);
+}
+
+#wizardFields h6 {
+    color: var(--primary-blue);
+}
+
+#wizardFields label {
+    color: var(--text-light);
+}
+
+#wizardFields .form-text {
+    color: var(--text-secondary);
+}
+
+#wizardPreview .card {
+    background-color: var(--bg-dark-accent);
+    border: 1px solid var(--border-dark);
+}
+
+#wizardPreview h6 {
+    color: var(--text-light);
+}
+
+#wizardPreview pre {
+    color: var(--text-light);
+    background-color: var(--bg-dark-secondary);
+}
+
+#wizardHelp .accordion-button {
+    background-color: var(--bg-dark-secondary);
+    color: var(--text-light);
+    border-color: var(--border-dark);
+}
+
+#wizardHelp .accordion-button:not(.collapsed) {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+#wizardHelp .accordion-body {
+    background-color: var(--bg-dark-accent);
+    color: var(--text-secondary);
+    border-color: var(--border-dark);
+}
+
+.alert-light.border {
+    border-color: var(--primary-blue) !important;
+    background-color: rgba(13, 110, 253, 0.1) !important;
+    color: var(--text-light) !important;
+}
+
+/* Wizard placeholder text styling */
+#dnsWizardModal input::placeholder,
+#dnsWizardModal textarea::placeholder {
+    color: #6c757d;
+    opacity: 1;
+}

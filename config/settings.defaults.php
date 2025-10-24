@@ -190,6 +190,44 @@ return [
     ],
 
     /**
+     * DNS Wizard Settings
+     */
+    'dns_wizards' => [
+        'enabled' => false,                                // Enable DNS record wizards (added in 4.1.0)
+        'available_types' => ['DMARC', 'SPF', 'DKIM', 'CAA', 'TLSA', 'SRV'], // Available wizard types (added in 4.1.0)
+        'default_mode' => 'wizard',                        // Default mode: 'wizard' or 'text' (added in 4.1.0)
+
+        // CAA Provider Configuration
+        // Based on industry research of major Certificate Authorities (added in 4.1.0)
+        'caa_providers' => [
+            // Most common CAs
+            'letsencrypt.org' => "Let's Encrypt",
+            'digicert.com' => 'DigiCert',
+            'sectigo.com' => 'Sectigo (Comodo)',
+            'comodoca.com' => 'Sectigo (legacy domain)',
+
+            // Major cloud providers
+            'awstrust.com' => 'Amazon Trust Services',
+            'amazontrust.com' => 'Amazon Trust Services (alt)',
+            'amazonaws.com' => 'AWS Certificate Manager',
+            'pki.goog' => 'Google Trust Services',
+            'cloudflare.com' => 'Cloudflare',
+
+            // Other popular CAs
+            'godaddy.com' => 'GoDaddy',
+            'globalsign.com' => 'GlobalSign',
+            'entrust.com' => 'Entrust',
+            'entrust.net' => 'Entrust (legacy)',
+            'ssl.com' => 'SSL.com',
+            'buypass.com' => 'Buypass',
+            'usertrust.com' => 'USERTrust (Sectigo)',
+
+            // Special values
+            ';' => 'Allow all CAs (not recommended)',
+        ],
+    ],
+
+    /**
      * Mail Settings
      */
     'mail' => [

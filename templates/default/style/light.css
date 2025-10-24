@@ -237,3 +237,45 @@ input[type=number]::-webkit-outer-spin-button {
     align-items: center !important;
     justify-content: center !important;
 }
+
+/* DNS Wizard Styles - Light Theme */
+.wizard-card {
+    transition: all 0.2s ease-in-out;
+    border: 1px solid var(--border-color);
+}
+
+.wizard-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: var(--primary-blue);
+}
+
+#wizardFields h6 {
+    color: var(--primary-blue);
+}
+
+#wizardPreview .card {
+    background-color: var(--bg-light);
+    border: 1px solid var(--border-color);
+}
+
+#wizardHelp .accordion-button:not(.collapsed) {
+    background-color: var(--primary-blue);
+    color: white;
+}
+
+#wizardHelp .accordion-body {
+    background-color: var(--bg-light);
+}
+
+.alert-light.border {
+    border-color: var(--primary-blue) !important;
+    background-color: #f0f7ff;
+}
+
+/* Wizard placeholder text styling */
+#dnsWizardModal input::placeholder,
+#dnsWizardModal textarea::placeholder {
+    color: #adb5bd;
+    opacity: 1;
+}
