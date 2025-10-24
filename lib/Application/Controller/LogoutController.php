@@ -196,6 +196,13 @@ class LogoutController extends BaseController
             $_SESSION['saml_session_index']
         );
 
+        // Clear LDAP session cache
+        unset(
+            $_SESSION['ldap_auth_timestamp'],
+            $_SESSION['ldap_auth_ip'],
+            $_SESSION['ldap_auth_username']
+        );
+
         // Clear general external auth data
         unset($_SESSION['auth_method_used']);
 
@@ -218,6 +225,13 @@ class LogoutController extends BaseController
             $_SESSION['saml_session_index']
         );
         // Keep $_SESSION['saml_provider'] for SLO callback
+
+        // Clear LDAP session cache
+        unset(
+            $_SESSION['ldap_auth_timestamp'],
+            $_SESSION['ldap_auth_ip'],
+            $_SESSION['ldap_auth_username']
+        );
 
         // Clear general external auth data
         unset($_SESSION['auth_method_used']);

@@ -18,3 +18,20 @@ gecos: Test User
 loginShell: /bin/bash
 homeDirectory: /home/testuser
 mail: testuser@poweradmin.org
+
+dn: uid=testuser2,ou=users,dc=poweradmin,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: testuser2
+sn: User2
+givenName: Test
+cn: Test User 2
+displayName: Test User 2
+uidNumber: 10001
+gidNumber: 10000
+userPassword: testpass456
+gecos: Test User 2
+loginShell: /bin/bash
+homeDirectory: /home/testuser2
+mail: testuser2@poweradmin.org

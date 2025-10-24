@@ -95,6 +95,22 @@ class LdapAuthenticator extends LoggingService
             return;
         }
 
+        // Check if LDAP authentication is cached and still valid
+        if ($this->isCachedAuthenticationValid()) {
+            // Even with valid cache, we must verify the user is still active in the database
+            // This ensures disabled/deleted users are logged out immediately, not after cache expiry
+            if (!$this->validateUserActiveStatus($username)) {
+                $this->logWarning('Cached LDAP user {username} is no longer active, invalidating cache', ['username' => $username]);
+                $this->invalidateAuthenticationCache();
+                $sessionEntity = new SessionEntity(_('LDAP Authentication failed!'), 'danger');
+                $this->authenticationService->logout($sessionEntity);
+                return;
+            }
+
+            $this->logInfo('Using cached LDAP authentication for user {username}', ['username' => $username]);
+            return;
+        }
+
         $session_key = $this->configManager->get('security', 'session_key', '');
         $ldap_uri = $this->configManager->get('ldap', 'uri', '');
         $ldap_basedn = $this->configManager->get('ldap', 'base_dn', '');
@@ -277,6 +293,9 @@ class LdapAuthenticator extends LoggingService
             $this->userContextService->setSessionData('authenticated', true);
             $this->userContextService->setSessionData('mfa_required', false);
 
+            // Update LDAP authentication cache BEFORE redirect (so next page load uses cache)
+            $this->updateAuthenticationCache($ipAddress);
+
             if (isset($_POST['authenticate'])) {
                 $this->loginAttemptService->recordAttempt($username, $ipAddress, true);
                 $this->ldapUserEventLogger->logSuccessAuth();
@@ -286,5 +305,163 @@ class LdapAuthenticator extends LoggingService
         }
 
         $this->logInfo('LDAP authentication process completed successfully for user {username}', ['username' => $username]);
+    }
+
+    /**
+     * Check if cached LDAP authentication is still valid
+     *
+     * @return bool True if cache is valid and authentication can be skipped
+     */
+    private function isCachedAuthenticationValid(): bool
+    {
+        $cacheTimeout = $this->configManager->get('ldap', 'session_cache_timeout', 300);
+
+        // If cache timeout is 0, caching is disabled
+        if ($cacheTimeout <= 0) {
+            $this->logDebug('LDAP session caching is disabled (timeout = 0)');
+            return false;
+        }
+
+        // Check if user is fully authenticated (not pending MFA)
+        // Must check both userid exists AND authenticated flag is strictly true
+        // hasSessionData() only checks isset(), which returns true even for false values
+        if (!$this->userContextService->hasSessionData('userid')) {
+            $this->logDebug('User ID not set, cache check skipped');
+            return false;
+        }
+
+        // CRITICAL: Check authenticated flag is strictly true (not just set)
+        // This prevents MFA bypass: MfaSessionManager sets authenticated=false while pending MFA
+        // We must reject cache if authenticated is false, null, or any non-true value
+        $authenticatedValue = $this->userContextService->getSessionData('authenticated');
+        if ($authenticatedValue !== true) {
+            $this->logDebug('User not fully authenticated (authenticated={value}), cache check skipped', [
+                'value' => var_export($authenticatedValue, true)
+            ]);
+            return false;
+        }
+
+        // Check if LDAP auth timestamp exists
+        if (!$this->userContextService->hasSessionData('ldap_auth_timestamp')) {
+            $this->logDebug('No LDAP auth timestamp found in session');
+            return false;
+        }
+
+        // Check if login identity has changed (user trying to switch accounts)
+        $currentUsername = $this->userContextService->getLoggedInUsername();
+        $cachedUsername = $this->userContextService->getSessionData('ldap_auth_username');
+
+        if ($cachedUsername && $currentUsername !== $cachedUsername) {
+            $this->logWarning('Username changed since LDAP authentication, invalidating cache (old: {oldUser}, new: {newUser})', [
+                'oldUser' => $cachedUsername,
+                'newUser' => $currentUsername
+            ]);
+            $this->invalidateAuthenticationCache();
+            return false;
+        }
+
+        $authTimestamp = $this->userContextService->getSessionData('ldap_auth_timestamp');
+        $currentTime = time();
+        $timeSinceAuth = $currentTime - $authTimestamp;
+
+        // Check if cache has expired
+        if ($timeSinceAuth > $cacheTimeout) {
+            $this->logDebug('LDAP authentication cache expired (age: {age}s, timeout: {timeout}s)', [
+                'age' => $timeSinceAuth,
+                'timeout' => $cacheTimeout
+            ]);
+            return false;
+        }
+
+        // Validate IP address hasn't changed (security measure)
+        $ipRetriever = new IpAddressRetriever($this->serverParams);
+        $currentIp = $ipRetriever->getClientIp() ?: '0.0.0.0';
+        $cachedIp = $this->userContextService->getSessionData('ldap_auth_ip');
+
+        if ($cachedIp && $cachedIp !== $currentIp) {
+            $this->logWarning('IP address changed since LDAP authentication, invalidating cache (old: {oldIp}, new: {newIp})', [
+                'oldIp' => $cachedIp,
+                'newIp' => $currentIp
+            ]);
+            $this->invalidateAuthenticationCache();
+            return false;
+        }
+
+        $this->logDebug('LDAP authentication cache is valid (age: {age}s, timeout: {timeout}s)', [
+            'age' => $timeSinceAuth,
+            'timeout' => $cacheTimeout
+        ]);
+
+        return true;
+    }
+
+    /**
+     * Update LDAP authentication cache with current timestamp
+     *
+     * @param string $ipAddress Client IP address
+     * @return void
+     */
+    private function updateAuthenticationCache(string $ipAddress): void
+    {
+        $cacheTimeout = $this->configManager->get('ldap', 'session_cache_timeout', 300);
+
+        // Only update cache if caching is enabled
+        if ($cacheTimeout > 0) {
+            $username = $this->userContextService->getLoggedInUsername();
+            $this->userContextService->setSessionData('ldap_auth_timestamp', time());
+            $this->userContextService->setSessionData('ldap_auth_ip', $ipAddress);
+            $this->userContextService->setSessionData('ldap_auth_username', $username);
+            $this->logDebug('LDAP authentication cache updated for user {username} from IP {ip}', [
+                'username' => $username,
+                'ip' => $ipAddress
+            ]);
+        }
+    }
+
+    /**
+     * Validate that the user is still active and has LDAP enabled in the database
+     *
+     * This check is critical for security: it ensures that users who are disabled,
+     * deleted, or have use_ldap set to 0 are immediately logged out, even if their
+     * LDAP authentication is still cached.
+     *
+     * @param string $username The username to validate
+     * @return bool True if user is active and use_ldap=1, false otherwise
+     */
+    private function validateUserActiveStatus(string $username): bool
+    {
+        $stmt = $this->db->prepare("SELECT id, fullname FROM users WHERE username = :username AND active = 1 AND use_ldap = 1");
+        $stmt->execute(['username' => $username]);
+        $rowObj = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$rowObj) {
+            $this->logDebug('User {username} is not active or use_ldap is disabled', ['username' => $username]);
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Invalidate LDAP authentication cache
+     *
+     * @return void
+     */
+    public function invalidateAuthenticationCache(): void
+    {
+        if ($this->userContextService->hasSessionData('ldap_auth_timestamp')) {
+            $this->userContextService->unsetSessionData('ldap_auth_timestamp');
+            $this->logDebug('LDAP authentication timestamp cleared from session');
+        }
+
+        if ($this->userContextService->hasSessionData('ldap_auth_ip')) {
+            $this->userContextService->unsetSessionData('ldap_auth_ip');
+            $this->logDebug('LDAP authentication IP cleared from session');
+        }
+
+        if ($this->userContextService->hasSessionData('ldap_auth_username')) {
+            $this->userContextService->unsetSessionData('ldap_auth_username');
+            $this->logDebug('LDAP authentication username cleared from session');
+        }
     }
 }

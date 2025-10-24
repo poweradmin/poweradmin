@@ -273,6 +273,7 @@ return [
         'user_attribute' => 'uid',                      // User attribute (uid for OpenLDAP, sAMAccountName for Active Directory) (added in 2.1.7)
         'protocol_version' => 3,                        // LDAP protocol version (added in 2.1.7)
         'search_filter' => '',                          // Additional search filter (added in 2.1.7)
+        'session_cache_timeout' => 300,                 // Session cache timeout in seconds (5 minutes). Set to 0 to disable caching. (added in 4.1.0)
         // Examples:
         // '(memberOf=cn=powerdns,ou=groups,dc=poweradmin,dc=org)'
         // '(objectClass=account)'

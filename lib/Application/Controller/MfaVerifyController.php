@@ -30,6 +30,7 @@ use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
+use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
 use RuntimeException;
 
 class MfaVerifyController extends BaseController
@@ -219,6 +220,21 @@ class MfaVerifyController extends BaseController
 
             // Use the centralized session manager to mark MFA as verified
             MfaSessionManager::setMfaVerified();
+
+            // Populate LDAP authentication cache for LDAP users (if auth_used is ldap)
+            // This ensures LDAP+MFA users benefit from session caching
+            if (
+                $this->userContextService->hasSessionData('auth_used') &&
+                $this->userContextService->getSessionData('auth_used') === 'ldap'
+            ) {
+                $ipRetriever = new IpAddressRetriever($_SERVER);
+                $ipAddress = $ipRetriever->getClientIp() ?: '0.0.0.0';
+                $username = $this->userContextService->getLoggedInUsername();
+
+                $this->userContextService->setSessionData('ldap_auth_timestamp', time());
+                $this->userContextService->setSessionData('ldap_auth_ip', $ipAddress);
+                $this->userContextService->setSessionData('ldap_auth_username', $username);
+            }
 
             // Ensure session is written before redirecting
             session_write_close();
