@@ -1,0 +1,83 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{% trans %}DNS Wizard{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <h5 class="mb-0">
+            <i class="bi bi-magic me-2"></i>
+            {% trans %}DNS Record Wizard{% endtrans %}
+        </h5>
+    </div>
+
+    <div class="card-body">
+        <p class="text-muted mb-4">
+            <i class="bi bi-info-circle me-1"></i>
+            {% trans %}Select a wizard to help you create complex DNS records with guided forms instead of manual text entry.{% endtrans %}
+        </p>
+
+        {% if is_reverse_zone %}
+        <div class="alert alert-info">
+            <i class="bi bi-info-circle-fill me-1"></i>
+            {% trans %}DNS wizards are designed for forward zones and may not be appropriate for reverse zones.{% endtrans %}
+        </div>
+        {% endif %}
+
+        <div class="row g-4">
+            {% for type, wizard in wizards %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/wizard/{{ type|lower }}" class="text-decoration-none">
+                    <div class="card h-100 wizard-card border-2" style="transition: all 0.3s;">
+                        <div class="card-body">
+                            <h6 class="card-title">
+                                {% if type == 'DMARC' %}
+                                <i class="bi bi-shield-check me-2 text-primary"></i>
+                                {% elseif type == 'SPF' %}
+                                <i class="bi bi-envelope-check me-2 text-primary"></i>
+                                {% elseif type == 'DKIM' %}
+                                <i class="bi bi-key me-2 text-primary"></i>
+                                {% elseif type == 'CAA' %}
+                                <i class="bi bi-award me-2 text-primary"></i>
+                                {% elseif type == 'TLSA' %}
+                                <i class="bi bi-lock me-2 text-primary"></i>
+                                {% elseif type == 'SRV' %}
+                                <i class="bi bi-hdd-network me-2 text-primary"></i>
+                                {% else %}
+                                <i class="bi bi-file-earmark-text me-2 text-primary"></i>
+                                {% endif %}
+                                {{ wizard.name }}
+                            </h6>
+                            <p class="card-text small text-muted">{{ wizard.description }}</p>
+                            <div class="mt-3">
+                                <span class="badge bg-secondary">{{ wizard.recordType }}</span>
+                                {% if wizard.recommended %}
+                                <span class="badge bg-success">{% trans %}Recommended{% endtrans %}</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="mt-4">
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
+                <i class="bi bi-arrow-left me-1 text-white"></i>{% trans %}Back{% endtrans %}
+            </a>
+        </div>
+    </div>
+</div>
+
+<style>
+.wizard-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+    border-color: var(--bs-primary) !important;
+}
+</style>

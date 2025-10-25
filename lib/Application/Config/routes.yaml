@@ -483,6 +483,22 @@ api_internal_dns_wizard:
   controller: Poweradmin\Application\Controller\Api\Internal\DnsWizardController::run
   methods: [GET, POST]
 
+# DNS Wizard Pages
+dns_wizard_select:
+  path: /zones/{id}/wizard
+  controller: Poweradmin\Application\Controller\DnsWizardController::run
+  requirements:
+    id: '\d+'
+  methods: [GET]
+
+dns_wizard_form:
+  path: /zones/{id}/wizard/{type}
+  controller: Poweradmin\Application\Controller\DnsWizardFormController::run
+  requirements:
+    id: '\d+'
+    type: '[a-zA-Z]+'
+  methods: [GET, POST]
+
 # Additional Zone Management Routes
 bulk_record_add:
   path: /zones/{id}/records/bulk

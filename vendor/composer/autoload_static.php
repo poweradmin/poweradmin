@@ -1173,6 +1173,8 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Controller\\DeleteUserController' => __DIR__ . '/../..' . '/lib/Application/Controller/DeleteUserController.php',
         'Poweradmin\\Application\\Controller\\DeleteZoneTemplController' => __DIR__ . '/../..' . '/lib/Application/Controller/DeleteZoneTemplController.php',
         'Poweradmin\\Application\\Controller\\DeleteZoneTemplRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/DeleteZoneTemplRecordController.php',
+        'Poweradmin\\Application\\Controller\\DnsWizardController' => __DIR__ . '/../..' . '/lib/Application/Controller/DnsWizardController.php',
+        'Poweradmin\\Application\\Controller\\DnsWizardFormController' => __DIR__ . '/../..' . '/lib/Application/Controller/DnsWizardFormController.php',
         'Poweradmin\\Application\\Controller\\DnssecAddKeyController' => __DIR__ . '/../..' . '/lib/Application/Controller/DnssecAddKeyController.php',
         'Poweradmin\\Application\\Controller\\DnssecController' => __DIR__ . '/../..' . '/lib/Application/Controller/DnssecController.php',
         'Poweradmin\\Application\\Controller\\DnssecDeleteKeyController' => __DIR__ . '/../..' . '/lib/Application/Controller/DnssecDeleteKeyController.php',

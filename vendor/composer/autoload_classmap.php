@@ -805,6 +805,8 @@ return array(
     'Poweradmin\\Application\\Controller\\DeleteUserController' => $baseDir . '/lib/Application/Controller/DeleteUserController.php',
     'Poweradmin\\Application\\Controller\\DeleteZoneTemplController' => $baseDir . '/lib/Application/Controller/DeleteZoneTemplController.php',
     'Poweradmin\\Application\\Controller\\DeleteZoneTemplRecordController' => $baseDir . '/lib/Application/Controller/DeleteZoneTemplRecordController.php',
+    'Poweradmin\\Application\\Controller\\DnsWizardController' => $baseDir . '/lib/Application/Controller/DnsWizardController.php',
+    'Poweradmin\\Application\\Controller\\DnsWizardFormController' => $baseDir . '/lib/Application/Controller/DnsWizardFormController.php',
     'Poweradmin\\Application\\Controller\\DnssecAddKeyController' => $baseDir . '/lib/Application/Controller/DnssecAddKeyController.php',
     'Poweradmin\\Application\\Controller\\DnssecController' => $baseDir . '/lib/Application/Controller/DnssecController.php',
     'Poweradmin\\Application\\Controller\\DnssecDeleteKeyController' => $baseDir . '/lib/Application/Controller/DnssecDeleteKeyController.php',

@@ -57,7 +57,7 @@ class TLSAWizard extends AbstractDnsWizard
                 [
                     'title' => _('DNSSEC Requirement'),
                     'type' => 'warning',
-                    'content' => _('⚠️ TLSA records require DNSSEC to be enabled for this zone. TLSA records without DNSSEC will not provide security benefits and may be ignored by clients.')
+                    'content' => _('TLSA records require DNSSEC to be enabled for this zone. TLSA records without DNSSEC will not provide security benefits and may be ignored by clients.')
                 ],
                 [
                     'title' => _('Service Configuration'),
@@ -276,7 +276,7 @@ class TLSAWizard extends AbstractDnsWizard
         }
 
         // Critical DNSSEC warning
-        $warnings[] = _('⚠️ CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without DNSSEC, TLSA records provide NO security benefit.');
+        $warnings[] = _('CRITICAL: TLSA records require DNSSEC to be enabled on this zone. Without DNSSEC, TLSA records provide NO security benefit.');
 
         // Validate TTL
         if (isset($formData['ttl'])) {

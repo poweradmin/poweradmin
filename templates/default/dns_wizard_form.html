@@ -1,0 +1,267 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/wizard">{% trans %}DNS Wizard{% endtrans %}</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{ wizard.name }}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <h5 class="mb-0">
+            <i class="bi bi-magic me-2"></i>
+            {{ wizard.name }} {% trans %}Wizard{% endtrans %}
+        </h5>
+    </div>
+
+    <div class="card-body">
+        <!-- Display validation warnings if present -->
+        {% if showWarnings and warnings is not empty %}
+            <div class="alert alert-warning mb-3" role="alert">
+                <div class="d-flex align-items-start">
+                    <i class="bi bi-exclamation-triangle-fill me-2 mt-1"></i>
+                    <div class="flex-grow-1">
+                        <strong>{% trans %}Warning: Please Review Before Proceeding{% endtrans %}</strong>
+                        <ul class="mb-0 mt-2">
+                            {% for warning in warnings %}
+                                <li>{{ warning }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        {% endif %}
+
+        <form method="post" class="needs-validation" novalidate>
+            <input type="hidden" name="_token" value="{{ csrf_token }}">
+            {% if showWarnings %}
+                <input type="hidden" name="warnings_acknowledged" value="1">
+            {% endif %}
+
+            <!-- Render form sections from schema -->
+            <div id="wizardFields">
+                {% for section in wizard.schema.sections %}
+                    <div class="mb-4">
+                        {% if section.title %}
+                        <h6 class="border-bottom pb-2 mb-3">
+                            <i class="bi bi-gear me-2"></i>{{ section.title }}
+                        </h6>
+                        {% endif %}
+
+                        {% if section.type == 'info' or section.type == 'warning' %}
+                            <div class="alert alert-{{ section.type == 'info' ? 'info' : 'warning' }}">
+                                <i class="bi bi-{{ section.type == 'info' ? 'info-circle' : 'exclamation-triangle' }} me-1"></i>{{ section.content|default(section.description)|raw }}
+                            </div>
+                        {% elseif section.fields %}
+                            {% for field in section.fields %}
+                                <div class="mb-3">
+                                    <label for="wizard_{{ field.name }}" class="form-label">
+                                        {{ field.label }}
+                                        {% if field.required %}<span class="text-danger">*</span>{% endif %}
+                                    </label>
+
+                                    {% if field.type == 'text' or field.type == 'email' or field.type == 'url' %}
+                                        <input
+                                            type="{{ field.type }}"
+                                            class="form-control wizard-field"
+                                            id="wizard_{{ field.name }}"
+                                            name="{{ field.name }}"
+                                            value="{{ formData[field.name]|default(field.default|default('')) }}"
+                                            placeholder="{{ field.placeholder|default('') }}"
+                                            {% if field.required %}required{% endif %}
+                                            {% if field.pattern %}pattern="{{ field.pattern }}"{% endif %}
+                                        >
+
+                                    {% elseif field.type == 'number' %}
+                                        <input
+                                            type="number"
+                                            class="form-control wizard-field"
+                                            id="wizard_{{ field.name }}"
+                                            name="{{ field.name }}"
+                                            value="{{ formData[field.name]|default(field.default|default('')) }}"
+                                            {% if field.min is defined %}min="{{ field.min }}"{% endif %}
+                                            {% if field.max is defined %}max="{{ field.max }}"{% endif %}
+                                            {% if field.required %}required{% endif %}
+                                        >
+
+                                    {% elseif field.type == 'textarea' %}
+                                        <textarea
+                                            class="form-control wizard-field"
+                                            id="wizard_{{ field.name }}"
+                                            name="{{ field.name }}"
+                                            rows="{{ field.rows|default(3) }}"
+                                            placeholder="{{ field.placeholder|default('') }}"
+                                            {% if field.required %}required{% endif %}
+                                        >{{ formData[field.name]|default(field.default|default('')) }}</textarea>
+
+                                    {% elseif field.type == 'select' %}
+                                        <select
+                                            class="form-select wizard-field"
+                                            id="wizard_{{ field.name }}"
+                                            name="{{ field.name }}"
+                                            {% if field.required %}required{% endif %}
+                                        >
+                                            {% for option in field.options %}
+                                                <option value="{{ option.value }}" {% if option.value == formData[field.name]|default(field.default) %}selected{% endif %}>
+                                                    {{ option.label }}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
+
+                                    {% elseif field.type == 'radio' %}
+                                        {% for option in field.options %}
+                                            <div class="form-check">
+                                                <input
+                                                    type="radio"
+                                                    class="form-check-input wizard-field"
+                                                    id="wizard_{{ field.name }}_{{ loop.index }}"
+                                                    name="{{ field.name }}"
+                                                    value="{{ option.value }}"
+                                                    {% if option.value == formData[field.name]|default(field.default) %}checked{% endif %}
+                                                >
+                                                <label class="form-check-label" for="wizard_{{ field.name }}_{{ loop.index }}">
+                                                    <strong>{{ option.label }}</strong>
+                                                    {% if option.description %}<br><small class="text-muted">{{ option.description }}</small>{% endif %}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+
+                                    {% elseif field.type == 'checkbox' %}
+                                        <div class="form-check">
+                                            <input
+                                                type="checkbox"
+                                                class="form-check-input wizard-field"
+                                                id="wizard_{{ field.name }}"
+                                                name="{{ field.name }}"
+                                                value="1"
+                                                {% if formData[field.name]|default(field.default) %}checked{% endif %}
+                                            >
+                                            <label class="form-check-label" for="wizard_{{ field.name }}">
+                                                {{ field.label }}
+                                            </label>
+                                        </div>
+
+                                    {% elseif field.type == 'checkbox_group' %}
+                                        {% set selected_values = formData[field.name]|default(field.default|default([])) %}
+                                        {% if selected_values is not iterable %}
+                                            {% set selected_values = selected_values is empty ? [] : [selected_values] %}
+                                        {% endif %}
+                                        {% for option in field.options %}
+                                            <div class="form-check">
+                                                <input
+                                                    type="checkbox"
+                                                    class="form-check-input wizard-field"
+                                                    id="wizard_{{ field.name }}_{{ loop.index }}"
+                                                    name="{{ field.name }}[]"
+                                                    value="{{ option.value }}"
+                                                    {% if option.value in selected_values %}checked{% endif %}
+                                                >
+                                                <label class="form-check-label" for="wizard_{{ field.name }}_{{ loop.index }}">
+                                                    {{ option.label }}
+                                                </label>
+                                            </div>
+                                        {% endfor %}
+                                    {% endif %}
+
+                                    {% if field.help %}
+                                        <div class="form-text">
+                                            <i class="bi bi-question-circle me-1"></i>{{ field.help|raw }}
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            </div>
+
+            <div class="mt-4">
+                <button type="submit" name="submit_wizard" value="1" class="btn btn-primary btn-sm">
+                    <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Create Record{% endtrans %}
+                </button>
+                <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/wizard" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1 text-white"></i>{% trans %}Back to Wizard Selection{% endtrans %}
+                </a>
+                <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+/* Make input placeholders more visible */
+.wizard-field::placeholder {
+    color: #6c757d;
+    opacity: 0.7;
+}
+
+.wizard-field:focus::placeholder {
+    opacity: 0.5;
+}
+
+/* Dark mode placeholder support */
+@media (prefers-color-scheme: dark) {
+    .wizard-field::placeholder {
+        color: #adb5bd;
+        opacity: 0.7;
+    }
+}
+</style>
+
+<script>
+// Bootstrap form validation
+(function() {
+    'use strict';
+
+    // Fetch the form
+    const form = document.querySelector('.needs-validation');
+
+    if (form) {
+        // Prevent submission if form is invalid
+        form.addEventListener('submit', function(event) {
+            if (!form.checkValidity()) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            form.classList.add('was-validated');
+        }, false);
+
+        // Add real-time validation feedback on blur (exclude radio/checkbox)
+        const fields = form.querySelectorAll('.wizard-field');
+        fields.forEach(function(field) {
+            // Skip validation styling for radio buttons and checkboxes
+            if (field.type === 'radio' || field.type === 'checkbox') {
+                return;
+            }
+
+            field.addEventListener('blur', function() {
+                if (field.checkValidity()) {
+                    field.classList.remove('is-invalid');
+                    field.classList.add('is-valid');
+                } else {
+                    field.classList.remove('is-valid');
+                    field.classList.add('is-invalid');
+                }
+            });
+
+            // Clear validation state on input
+            field.addEventListener('input', function() {
+                if (form.classList.contains('was-validated')) {
+                    if (field.checkValidity()) {
+                        field.classList.remove('is-invalid');
+                        field.classList.add('is-valid');
+                    } else {
+                        field.classList.remove('is-valid');
+                        field.classList.add('is-invalid');
+                    }
+                }
+            });
+        });
+    }
+})();
+</script>
