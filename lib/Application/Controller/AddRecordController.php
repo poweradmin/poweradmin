@@ -151,14 +151,14 @@ class AddRecordController extends BaseController
         $comment = $_POST['comment'] ?? '';
         $zone_id = (int)$this->getSafeRequestValue('zone_id');
 
-        // Restore full record name if using hostname-only display
-        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
-        if ($display_hostname_only) {
-            $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
-            if ($zone_name !== false) {
-                $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
-            }
+        // Normalize record name to full FQDN (always, regardless of display setting)
+        // This converts @ to zone apex and ensures proper zone suffix
+        $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
+        if ($zone_name === null) {
+            $this->showError(_('Zone not found.'));
+            return;
         }
+        $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
         try {
             if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
@@ -231,7 +231,9 @@ class AddRecordController extends BaseController
                 $this->setMessage('edit', 'success', _('The record was successfully added, but PTR record creation failed.'));
             }
         } elseif (isset($_POST['create_domain_record'])) {
-            $domainRecord = $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
+            // Strip zone suffix for PTR record processing - DomainRecordCreator expects relative hostname
+            $relativeHostname = DnsHelper::stripZoneSuffix($name, $zone_name);
+            $domainRecord = $this->createDomainRecord($relativeHostname, $type, $content, $zone_id, $comment);
             $message = $domainRecord ? _('Record successfully added. A matching A record was also created.') : _('The record was successfully added.');
             $this->setMessage('edit', 'success', $message);
         } else {

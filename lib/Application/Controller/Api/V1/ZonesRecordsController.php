@@ -40,6 +40,7 @@ use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
@@ -424,6 +425,13 @@ class ZonesRecordsController extends PublicApiController
 
             // Get zone name for validation
             $zoneName = $domainRepository->getDomainNameById($zoneId);
+            if ($zoneName === null) {
+                return $this->returnApiError(_('Zone not found.'), 404);
+            }
+
+            // Normalize record name to full FQDN (always, regardless of display setting)
+            // This converts @ to zone apex and ensures proper zone suffix
+            $name = DnsHelper::restoreZoneSuffix($name, $zoneName);
 
             // Normalize the hostname
             $hostnameValidator = new HostnameValidator($this->getConfig());

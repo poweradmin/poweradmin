@@ -165,12 +165,14 @@ class BulkRecordAddController extends BaseController
                 $comment = isset($parts[5]) ? trim($parts[5]) : '';
             }
 
-            // Restore full record name if using hostname-only display
-            $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
+            // Normalize record name to full FQDN (always, regardless of display setting)
+            // This converts @ to zone apex and ensures proper zone suffix
             $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
-            if ($display_hostname_only && $zone_name !== false) {
-                $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
+            if ($zone_name === null) {
+                $failed_records[] = $line . " - " . _('Zone not found.');
+                continue;
             }
+            $name = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
             // Validate record type
             $isReverseZone = DnsHelper::isReverseZone($zone_name);
@@ -186,15 +188,6 @@ class BulkRecordAddController extends BaseController
                 // For CNAME, MX, SRV, and similar records, ensure content ends with a dot
                 if (in_array($type, ['CNAME', 'MX', 'SRV', 'NS']) && !empty($content) && !str_ends_with($content, '.')) {
                     $content .= '.';
-                }
-
-                // Handle apex zone records (@)
-                if ($name === '@') {
-                    // For @ records, use the zone name directly without appending anything
-                    $name = '';
-                } elseif (str_starts_with($name, '@.')) {
-                    // If the name starts with @., remove it
-                    $name = substr($name, 2);
                 }
 
                 if (

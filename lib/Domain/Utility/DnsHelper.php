@@ -80,14 +80,21 @@ class DnsHelper
      */
     public static function stripZoneSuffix(string $recordName, string $zoneName): string
     {
-        // If record name equals zone name, it's the zone apex
-        if ($recordName === $zoneName) {
+        // Remove trailing dot if present (FQDN notation)
+        $recordName = rtrim($recordName, '.');
+        $zoneName = rtrim($zoneName, '.');
+
+        // If record name equals zone name (case-insensitive), it's the zone apex
+        if (strcasecmp($recordName, $zoneName) === 0) {
             return '@';
         }
 
-        // If record name ends with zone name preceded by a dot, strip it
+        // If record name ends with zone name preceded by a dot, strip it (case-insensitive)
         $suffix = '.' . $zoneName;
-        if (str_ends_with($recordName, $suffix)) {
+        $lowerRecordName = strtolower($recordName);
+        $lowerSuffix = strtolower($suffix);
+
+        if (str_ends_with($lowerRecordName, $lowerSuffix)) {
             return substr($recordName, 0, -strlen($suffix));
         }
 
@@ -104,13 +111,20 @@ class DnsHelper
      */
     public static function restoreZoneSuffix(string $hostname, string $zoneName): string
     {
+        // Remove trailing dot if present (FQDN notation)
+        $hostname = rtrim($hostname, '.');
+        $zoneName = rtrim($zoneName, '.');
+
         // Handle zone apex
         if ($hostname === '@' || $hostname === '') {
             return $zoneName;
         }
 
-        // If hostname already contains zone name, return as-is
-        if ($hostname === $zoneName || str_ends_with($hostname, '.' . $zoneName)) {
+        // If hostname already contains zone name (case-insensitive), return as-is
+        $lowerHostname = strtolower($hostname);
+        $lowerZoneName = strtolower($zoneName);
+
+        if ($lowerHostname === $lowerZoneName || str_ends_with($lowerHostname, '.' . $lowerZoneName)) {
             return $hostname;
         }
 

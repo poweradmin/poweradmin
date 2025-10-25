@@ -168,13 +168,15 @@ class EditRecordController extends BaseController
 
         $postData = $_POST;
 
-        // Restore full record name if using hostname-only display
-        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
-        if ($display_hostname_only && isset($postData['name'])) {
+        // Normalize record name to full FQDN (always, regardless of display setting)
+        // This converts @ to zone apex and ensures proper zone suffix
+        if (isset($postData['name'])) {
             $zone_name = $dnsRecord->getDomainNameById($zid);
-            if ($zone_name !== null) {
-                $postData['name'] = DnsHelper::restoreZoneSuffix($postData['name'], $zone_name);
+            if ($zone_name === null) {
+                $this->setMessage('edit', 'error', _('Zone not found.'));
+                return false;
             }
+            $postData['name'] = DnsHelper::restoreZoneSuffix($postData['name'], $zone_name);
         }
         if (isset($postData['disabled']) && $postData['disabled'] == "on") {
             $postData['disabled'] = 1;

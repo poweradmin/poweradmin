@@ -194,6 +194,10 @@ class EditController extends BaseController
 
         // Only retrieve zone data after permission validation
         $zone_name = $this->zoneRepository->getDomainNameById($zone_id);
+        if ($zone_name === null) {
+            $this->showError(_('Zone not found.'));
+            return;
+        }
 
         if (isset($_GET['export_csv'])) {
             $this->exportCsv($zone_id);
@@ -370,15 +374,15 @@ class EditController extends BaseController
             $dnssecProvider = DnssecProviderFactory::create($this->db, $this->getConfig());
 
             // Check if zone is secured before attempting to unsecure
-            if ($zone_name === false || !$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
+            if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                 $this->setMessage('edit', 'info', _('Zone is not currently signed with DNSSEC.'));
             } else {
                 // Try to unsecure the zone
-                $result = $dnssecProvider->unsecureZone((string)$zone_name);
+                $result = $dnssecProvider->unsecureZone($zone_name);
 
                 if ($result) {
                     // Verify the zone is now unsecured
-                    if (!$dnssecProvider->isZoneSecured((string)$zone_name, $this->getConfig())) {
+                    if (!$dnssecProvider->isZoneSecured($zone_name, $this->getConfig())) {
                         // Update SOA serial after unsigning
                         $this->dnsRecord->updateSOASerial($zone_id);
                         $this->setMessage('edit', 'success', _('Zone has been unsigned successfully.'));
@@ -598,14 +602,11 @@ class EditController extends BaseController
             if ($this->isSerialMismatch($current_serial)) {
                 $serial_mismatch = true;
             } else {
-                // Use RecordDisplayService to restore FQDNs if needed
-                $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
-                $recordDisplayService = new RecordDisplayService($display_hostname_only);
-
                 foreach ($_POST['record'] as &$record) {
-                    // Restore full record name if using hostname-only display
+                    // Normalize record name to full FQDN (always, regardless of display setting)
+                    // This converts @ to zone apex and ensures proper zone suffix
                     if (isset($record['name'])) {
-                        $record['name'] = $recordDisplayService->restoreFqdn($record['name'], $zone_name);
+                        $record['name'] = DnsHelper::restoreZoneSuffix($record['name'], $zone_name);
                     }
 
                     $log = new RecordLog($this->db, $this->getConfig());
@@ -897,13 +898,18 @@ class EditController extends BaseController
         $ttl = isset($_POST['ttl']) && $_POST['ttl'] !== '' ? (int)$_POST['ttl'] : $this->config->get('dns', 'ttl', 3600);
         $comment = $_POST['comment'] ?? '';
 
-        // Use RecordDisplayService to restore FQDN if needed
-        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
-        $recordDisplayService = new RecordDisplayService($display_hostname_only);
+        // Normalize record name to full FQDN (always, regardless of display setting)
+        // This converts @ to zone apex and ensures proper zone suffix
         $zone_name_for_record = $this->zoneRepository->getDomainNameById($zone_id);
-        if ($zone_name_for_record !== null) {
-            $name = $recordDisplayService->restoreFqdn($name, $zone_name_for_record);
+        if ($zone_name_for_record === null) {
+            $_SESSION['add_record_error'] = [
+                'error' => true,
+                'errorMessage' => _('Zone not found.'),
+                'fieldError' => ''
+            ];
+            return false;
         }
+        $name = DnsHelper::restoreZoneSuffix($name, $zone_name_for_record);
 
         try {
             if (!$this->createRecord($zone_id, $name, $type, $content, $ttl, $prio, $comment)) {
@@ -961,7 +967,9 @@ class EditController extends BaseController
                 $this->setMessage('edit', 'success', _('The record was successfully added, but PTR record creation failed.'));
             }
         } elseif (isset($_POST['create_domain_record'])) {
-            $domainRecord = $this->createDomainRecord($name, $type, $content, $zone_id, $comment);
+            // Strip zone suffix for PTR record processing - DomainRecordCreator expects relative hostname
+            $relativeHostname = DnsHelper::stripZoneSuffix($name, $zone_name_for_record);
+            $domainRecord = $this->createDomainRecord($relativeHostname, $type, $content, $zone_id, $comment);
             $message = $domainRecord ? _('Record successfully added. A matching A record was also created.') : _('The record was successfully added.');
             $this->setMessage('edit', 'success', $message);
         } else {
