@@ -26,7 +26,7 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
         <div>
-            {% if dns_wizards_enabled %}
+            {% if dns_wizards_enabled and not is_reverse_zone %}
             <button type="button" class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#dnsWizardModal" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
                 <i class="bi bi-magic me-1 text-white"></i>{% trans %}Record Wizard{% endtrans %}
             </button>
@@ -522,7 +522,7 @@
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
         <div>
-            {% if dns_wizards_enabled %}
+            {% if dns_wizards_enabled and not is_reverse_zone %}
             <button type="button" class="btn btn-primary btn-sm me-1" data-bs-toggle="modal" data-bs-target="#dnsWizardModal" title="{% trans %}Guided wizards for DMARC, SPF, DKIM, CAA, TLSA, and SRV records{% endtrans %}">
                 <i class="bi bi-magic me-1 text-white"></i>{% trans %}Record Wizard{% endtrans %}
             </button>
