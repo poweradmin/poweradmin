@@ -43,21 +43,27 @@
             <!-- Render form sections from schema -->
             <div id="wizardFields">
                 {% for section in wizard.schema.sections %}
-                    <div class="mb-4">
+                    {% if section.type == 'info' or section.type == 'warning' %}
                         {% if section.title %}
-                        <h6 class="border-bottom pb-2 mb-3">
-                            <i class="bi bi-gear me-2"></i>{{ section.title }}
+                        <h6 class="mb-2">
+                            <i class="bi bi-{{ section.type == 'info' ? 'info-circle' : 'exclamation-triangle' }} me-1"></i>{{ section.title }}
                         </h6>
                         {% endif %}
-
-                        {% if section.type == 'info' or section.type == 'warning' %}
-                            <div class="alert alert-{{ section.type == 'info' ? 'info' : 'warning' }}">
-                                <i class="bi bi-{{ section.type == 'info' ? 'info-circle' : 'exclamation-triangle' }} me-1"></i>{{ section.content|default(section.description)|raw }}
-                            </div>
-                        {% elseif section.fields %}
-                            {% for field in section.fields %}
-                                <div class="mb-3">
-                                    <label for="wizard_{{ field.name }}" class="form-label">
+                        <div class="alert alert-{{ section.type == 'info' ? 'info' : 'warning' }} py-2 mb-3">
+                            {{ section.content|default(section.description)|raw }}
+                        </div>
+                    {% elseif section.fields %}
+                        <div class="card mb-3">
+                            <div class="card-body p-3">
+                                {% if section.title %}
+                                <h6 class="card-subtitle mb-3 text-muted">
+                                    <i class="bi bi-gear me-1"></i>{{ section.title }}
+                                </h6>
+                                {% endif %}
+                                <div class="row g-3">
+                                {% for field in section.fields %}
+                                <div class="col-md-6">
+                                    <label for="wizard_{{ field.name }}" class="form-label mb-1 small">
                                         {{ field.label }}
                                         {% if field.required %}<span class="text-danger">*</span>{% endif %}
                                     </label>
@@ -65,7 +71,7 @@
                                     {% if field.type == 'text' or field.type == 'email' or field.type == 'url' %}
                                         <input
                                             type="{{ field.type }}"
-                                            class="form-control wizard-field"
+                                            class="form-control form-control-sm wizard-field"
                                             id="wizard_{{ field.name }}"
                                             name="{{ field.name }}"
                                             value="{{ formData[field.name]|default(field.default|default('')) }}"
@@ -77,7 +83,7 @@
                                     {% elseif field.type == 'number' %}
                                         <input
                                             type="number"
-                                            class="form-control wizard-field"
+                                            class="form-control form-control-sm wizard-field"
                                             id="wizard_{{ field.name }}"
                                             name="{{ field.name }}"
                                             value="{{ formData[field.name]|default(field.default|default('')) }}"
@@ -88,7 +94,7 @@
 
                                     {% elseif field.type == 'textarea' %}
                                         <textarea
-                                            class="form-control wizard-field"
+                                            class="form-control form-control-sm wizard-field"
                                             id="wizard_{{ field.name }}"
                                             name="{{ field.name }}"
                                             rows="{{ field.rows|default(3) }}"
@@ -98,7 +104,7 @@
 
                                     {% elseif field.type == 'select' %}
                                         <select
-                                            class="form-select wizard-field"
+                                            class="form-select form-select-sm wizard-field"
                                             id="wizard_{{ field.name }}"
                                             name="{{ field.name }}"
                                             {% if field.required %}required{% endif %}
@@ -166,14 +172,16 @@
                                     {% endif %}
 
                                     {% if field.help %}
-                                        <div class="form-text">
+                                        <div class="form-text small">
                                             <i class="bi bi-question-circle me-1"></i>{{ field.help|raw }}
                                         </div>
                                     {% endif %}
                                 </div>
-                            {% endfor %}
-                        {% endif %}
-                    </div>
+                                {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
 
