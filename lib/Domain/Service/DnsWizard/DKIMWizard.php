@@ -57,7 +57,12 @@ class DKIMWizard extends AbstractDnsWizard
                 [
                     'title' => _('Information'),
                     'type' => 'info',
-                    'content' => _('DKIM proves emails are from your domain using cryptographic signatures. Generate the DKIM key pair on your MAIL SERVER (Postfix, Exim, etc.). Only the PUBLIC KEY goes in this DNS record. Keep the PRIVATE KEY secure on your mail server (never share it).')
+                    'content' => _(
+                        'DKIM proves emails are from your domain using cryptographic signatures. ' .
+                        'Generate the DKIM key pair on your MAIL SERVER (Postfix, Exim, etc.). ' .
+                        'Only the PUBLIC KEY goes in this DNS record. ' .
+                        'Keep the PRIVATE KEY secure on your mail server (never share it).'
+                    )
                 ],
                 [
                     'title' => _('DKIM Configuration'),
