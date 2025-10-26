@@ -26,9 +26,6 @@
                         <th>{% trans %}Email address{% endtrans %}</th>
                         <th>{% trans %}Template{% endtrans %}</th>
                         <th class="text-center">{% trans %}Auth Type{% endtrans %}</th>
-                        {% if ldap_use %}
-                        <th class="text-center">{% trans %}LDAP{% endtrans %}</th>
-                        {% endif %}
                         <th class="text-center">{% trans %}Enabled{% endtrans %}</th>
                         <th class="text-end">{% trans %}Actions{% endtrans %}</th>
                     </tr>
@@ -40,12 +37,6 @@
                     {% set active = 'checked' %}
                     {% else %}
                     {% set active = '' %}
-                    {% endif %}
-
-                    {% if user['use_ldap'] %}
-                    {% set use_ldap = 'checked' %}
-                    {% else %}
-                    {% set use_ldap = '' %}
                     {% endif %}
 
                     {% set user_uid = user['uid'] %}
@@ -87,21 +78,6 @@
                             {% endif %}
                         </td>
 
-                        {% if ldap_use %}
-                        {% if permissions['user_is_ueberuser'] %}
-                        <td class="text-center">
-                            <input class="form-check-input" type="checkbox" name="user[{{ user['uid'] }}][use_ldap]" {{ use_ldap }} disabled>
-                            <input type="hidden" name="user[{{ user['uid'] }}][use_ldap]" value="{{ user['use_ldap'] }}">
-                        </td>
-                        {% else %}
-                        {% if use_ldap == "checked" %}
-                        <td class="text-center"><span class="badge bg-success">{% trans %}Yes{% endtrans %}</span></td>
-                        {% else %}
-                        <td class="text-center"><span class="badge bg-secondary">{% trans %}No{% endtrans %}</span></td>
-                        {% endif %}
-                        {% endif %}
-                        {% endif %}
-
                         {% if user['uid'] != session_userid %}
                         <td class="text-center"><input class="form-check-input" type="checkbox" name="user[{{ user['uid'] }}][active]" {{ active }}></td>
                         {% else %}
@@ -110,6 +86,7 @@
 
                         <td class="text-end">
                             <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
+                            <input type="hidden" name="user[{{ user['uid'] }}][use_ldap]" value="{{ user['use_ldap'] }}">
                             <div class="gap-2">
                                 <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/users/{{ user_uid }}/edit">
                                     <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
@@ -143,15 +120,6 @@
                             {% endif %}
                         </td>
 
-                        {% if ldap_use %}
-                        <td class="text-center">
-                            {% if user['use_ldap'] %}
-                            <span class="badge bg-success">{% trans %}Yes{% endtrans %}</span>
-                            {% else %}
-                            <span class="badge bg-secondary">{% trans %}No{% endtrans %}</span>
-                            {% endif %}
-                        </td>
-                        {% endif %}
                         <td class="text-center">
                             {% if user['active'] %}
                             <span class="badge bg-success">{% trans %}Yes{% endtrans %}</span>
