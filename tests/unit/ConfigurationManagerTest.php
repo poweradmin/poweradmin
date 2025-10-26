@@ -281,4 +281,178 @@ class ConfigurationManagerTest extends TestCase
         $this->assertEquals('default', $config->get('interface', 'theme'));
         $this->assertEquals('light', $config->get('interface', 'style'));
     }
+
+    /**
+     * Test that indexed arrays are replaced, not merged
+     * This ensures dns_wizards.available_types is properly overridden
+     */
+    public function testIndexedArrayReplacementInMerge()
+    {
+        // Simulate default config with full list
+        $defaultConfig = [
+            'dns_wizards' => [
+                'enabled' => false,
+                'available_types' => ['DMARC', 'SPF', 'DKIM', 'CAA', 'TLSA', 'SRV'],
+                'caa_providers' => [
+                    'letsencrypt.org' => "Let's Encrypt",
+                    'digicert.com' => 'DigiCert',
+                ]
+            ]
+        ];
+
+        // User config that should completely replace available_types
+        $userConfig = [
+            'dns_wizards' => [
+                'enabled' => true,
+                'available_types' => ['SPF'], // Should replace, not merge
+            ]
+        ];
+
+        // Use reflection to test mergeConfig method directly
+        $config = ConfigurationManager::getInstance();
+        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
+        $mergeMethod = $reflectionClass->getMethod('mergeConfig');
+        $mergeMethod->setAccessible(true);
+
+        $result = $mergeMethod->invoke($config, $defaultConfig, $userConfig);
+
+        // Verify indexed array was replaced, not merged
+        $this->assertEquals(
+            ['SPF'],
+            $result['dns_wizards']['available_types'],
+            'Indexed array should be replaced, not merged'
+        );
+        $this->assertTrue(
+            $result['dns_wizards']['enabled'],
+            'Boolean value should be updated'
+        );
+        $this->assertArrayHasKey(
+            'caa_providers',
+            $result['dns_wizards'],
+            'Associative arrays should be preserved from defaults'
+        );
+        $this->assertCount(
+            2,
+            $result['dns_wizards']['caa_providers'],
+            'Default caa_providers should remain intact'
+        );
+    }
+
+    /**
+     * Test that associative arrays are still merged recursively
+     */
+    public function testAssociativeArrayMergingInMerge()
+    {
+        $defaultConfig = [
+            'dns_wizards' => [
+                'caa_providers' => [
+                    'letsencrypt.org' => "Let's Encrypt",
+                    'digicert.com' => 'DigiCert',
+                    'sectigo.com' => 'Sectigo',
+                ]
+            ]
+        ];
+
+        $userConfig = [
+            'dns_wizards' => [
+                'caa_providers' => [
+                    'letsencrypt.org' => 'LE Custom Name', // Override existing
+                    'custom.ca' => 'My Custom CA', // Add new
+                ]
+            ]
+        ];
+
+        $config = ConfigurationManager::getInstance();
+        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
+        $mergeMethod = $reflectionClass->getMethod('mergeConfig');
+        $mergeMethod->setAccessible(true);
+
+        $result = $mergeMethod->invoke($config, $defaultConfig, $userConfig);
+
+        // Verify associative array was merged, not replaced
+        $this->assertCount(
+            4,
+            $result['dns_wizards']['caa_providers'],
+            'Associative arrays should be merged'
+        );
+        $this->assertEquals(
+            'LE Custom Name',
+            $result['dns_wizards']['caa_providers']['letsencrypt.org'],
+            'Existing keys should be overridden'
+        );
+        $this->assertEquals(
+            'DigiCert',
+            $result['dns_wizards']['caa_providers']['digicert.com'],
+            'Unmodified keys should remain'
+        );
+        $this->assertEquals(
+            'Sectigo',
+            $result['dns_wizards']['caa_providers']['sectigo.com'],
+            'Unmodified keys should remain'
+        );
+        $this->assertEquals(
+            'My Custom CA',
+            $result['dns_wizards']['caa_providers']['custom.ca'],
+            'New keys should be added'
+        );
+    }
+
+    /**
+     * Test mixed nested structures (indexed and associative arrays)
+     */
+    public function testMixedNestedArrayMerging()
+    {
+        $defaultConfig = [
+            'feature' => [
+                'tags' => ['tag1', 'tag2', 'tag3'], // Indexed array
+                'options' => [ // Associative array
+                    'color' => 'blue',
+                    'size' => 'large',
+                ],
+                'list' => [1, 2, 3], // Indexed array
+            ]
+        ];
+
+        $userConfig = [
+            'feature' => [
+                'tags' => ['custom-tag'], // Should replace indexed array
+                'options' => [ // Should merge associative array
+                    'color' => 'red', // Override
+                    'shape' => 'circle', // Add new
+                ],
+            ]
+        ];
+
+        $config = ConfigurationManager::getInstance();
+        $reflectionClass = new ReflectionClass(ConfigurationManager::class);
+        $mergeMethod = $reflectionClass->getMethod('mergeConfig');
+        $mergeMethod->setAccessible(true);
+
+        $result = $mergeMethod->invoke($config, $defaultConfig, $userConfig);
+
+        // Indexed arrays should be replaced
+        $this->assertEquals(['custom-tag'], $result['feature']['tags']);
+        $this->assertEquals(
+            [1, 2, 3],
+            $result['feature']['list'],
+            'Unmodified indexed arrays should remain'
+        );
+
+        // Associative arrays should be merged
+        $this->assertEquals(
+            'red',
+            $result['feature']['options']['color'],
+            'Should override existing key'
+        );
+        $this->assertEquals(
+            'large',
+            $result['feature']['options']['size'],
+            'Should keep unmodified key'
+        );
+        $this->assertEquals(
+            'circle',
+            $result['feature']['options']['shape'],
+            'Should add new key'
+        );
+    }
 }

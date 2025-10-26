@@ -85,7 +85,7 @@ class ConfigurationManager implements ConfigurationInterface
         if (file_exists($defaultConfigFile)) {
             $defaultSettings = require $defaultConfigFile;
             if (is_array($defaultSettings)) {
-                $this->settings = array_replace_recursive($this->settings, $defaultSettings);
+                $this->settings = $this->mergeConfig($this->settings, $defaultSettings);
             }
         }
 
@@ -96,7 +96,7 @@ class ConfigurationManager implements ConfigurationInterface
         if (file_exists($newConfigFile)) {
             $newSettings = require $newConfigFile;
             if (is_array($newSettings)) {
-                $this->settings = array_replace_recursive($this->settings, $newSettings);
+                $this->settings = $this->mergeConfig($this->settings, $newSettings);
                 $newConfigExists = true;
             }
         }
@@ -186,6 +186,37 @@ class ConfigurationManager implements ConfigurationInterface
      *
      * @return void
      */
+    /**
+     * Merge configuration arrays properly handling indexed arrays
+     *
+     * Unlike array_replace_recursive which merges indexed arrays,
+     * this method replaces them completely when they exist in the new config.
+     *
+     * @param array $base Base configuration
+     * @param array $new New configuration to merge
+     * @return array Merged configuration
+     */
+    private function mergeConfig(array $base, array $new): array
+    {
+        foreach ($new as $key => $value) {
+            if (is_array($value) && isset($base[$key]) && is_array($base[$key])) {
+                // Check if this is an indexed array (not associative)
+                if (array_is_list($value)) {
+                    // It's an indexed array - replace it completely
+                    $base[$key] = $value;
+                } else {
+                    // It's an associative array - merge recursively
+                    $base[$key] = $this->mergeConfig($base[$key], $value);
+                }
+            } else {
+                // Not an array or doesn't exist in base - just set it
+                $base[$key] = $value;
+            }
+        }
+
+        return $base;
+    }
+
     private function validateConfiguration(): void
     {
         $validator = new ConfigValidator($this->settings);
