@@ -44,7 +44,6 @@ class TLSAWizard extends AbstractDnsWizard
         $this->wizardType = 'TLSA';
         $this->displayName = _('TLSA Record');
         $this->description = _('TLS certificate/key authentication (DANE)');
-        $this->supportsTwoModes = true;
     }
 
     /**

@@ -182,7 +182,6 @@ class WizardRegistry
                     'name' => $wizard->getDisplayName(),
                     'description' => $wizard->getDescription(),
                     'recordType' => $wizard->getRecordType(),
-                    'supportsTwoModes' => $wizard->supportsTwoModes(),
                 ];
             } catch (\RuntimeException $e) {
                 // Skip wizards that can't be instantiated
@@ -191,17 +190,6 @@ class WizardRegistry
         }
 
         return $metadata;
-    }
-
-    /**
-     * Get default wizard mode from configuration
-     *
-     * @return string Default mode ('wizard' or 'text')
-     */
-    public function getDefaultMode(): string
-    {
-        $wizardConfig = $this->config->getGroup('dns_wizards');
-        return $wizardConfig['default_mode'] ?? 'wizard';
     }
 
     /**

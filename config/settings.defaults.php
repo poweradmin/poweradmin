@@ -195,7 +195,6 @@ return [
     'dns_wizards' => [
         'enabled' => false,                                // Enable DNS record wizards (added in 4.1.0)
         'available_types' => ['DMARC', 'SPF', 'DKIM', 'CAA', 'TLSA', 'SRV'], // Available wizard types (added in 4.1.0)
-        'default_mode' => 'wizard',                        // Default mode: 'wizard' or 'text' (added in 4.1.0)
 
         // CAA Provider Configuration
         // Based on industry research of major Certificate Authorities (added in 4.1.0)

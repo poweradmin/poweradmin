@@ -42,7 +42,6 @@ class CAAWizard extends AbstractDnsWizard
         $this->wizardType = 'CAA';
         $this->displayName = _('CAA Record');
         $this->description = _('Certificate authority authorization');
-        $this->supportsTwoModes = false;
     }
 
     /**

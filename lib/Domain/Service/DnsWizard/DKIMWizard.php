@@ -45,7 +45,6 @@ class DKIMWizard extends AbstractDnsWizard
         $this->wizardType = 'DKIM';
         $this->displayName = _('DKIM Record');
         $this->description = _('Email signature verification public key');
-        $this->supportsTwoModes = false;
     }
 
     /**

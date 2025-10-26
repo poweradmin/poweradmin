@@ -166,7 +166,6 @@ class DnsWizardFormController extends BaseController
                 'type' => $wizard_type,
                 'name' => $wizard->getDisplayName(),
                 'recordType' => $wizard->getRecordType(),
-                'supportsTwoModes' => $wizard->supportsTwoModes(),
                 'schema' => $schema,
             ],
             'formData' => $formData,

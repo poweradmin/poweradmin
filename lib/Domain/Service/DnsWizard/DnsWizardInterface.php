@@ -114,11 +114,4 @@ interface DnsWizardInterface
      * @return array Form data array
      */
     public function parseExistingRecord(string $content, array $recordData = []): array;
-
-    /**
-     * Check if this wizard supports two-mode design (simple + advanced)
-     *
-     * @return bool True if wizard supports mode switching
-     */
-    public function supportsTwoModes(): bool;
 }

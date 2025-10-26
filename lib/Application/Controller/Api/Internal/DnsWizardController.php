@@ -109,7 +109,6 @@ class DnsWizardController extends InternalApiController
             return $this->returnApiResponse([
                 'wizards' => $metadata,
                 'enabled' => $this->wizardRegistry->isEnabled(),
-                'default_mode' => $this->wizardRegistry->getDefaultMode(),
             ]);
         } catch (\Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
@@ -137,7 +136,6 @@ class DnsWizardController extends InternalApiController
                 'type' => $wizard->getWizardType(),
                 'name' => $wizard->getDisplayName(),
                 'recordType' => $wizard->getRecordType(),
-                'supportsTwoModes' => $wizard->supportsTwoModes(),
                 'schema' => $wizard->getFormSchema(),
             ]);
         } catch (\RuntimeException $e) {

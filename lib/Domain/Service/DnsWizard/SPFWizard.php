@@ -47,7 +47,6 @@ class SPFWizard extends AbstractDnsWizard
         $this->wizardType = 'SPF';
         $this->displayName = _('SPF Record');
         $this->description = _('Authorized mail server configuration');
-        $this->supportsTwoModes = false;
         $this->validator = new SPFRecordValidator($config);
     }
 

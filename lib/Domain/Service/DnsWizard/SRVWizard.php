@@ -67,7 +67,6 @@ class SRVWizard extends AbstractDnsWizard
         $this->wizardType = 'SRV';
         $this->displayName = _('SRV Record');
         $this->description = _('Service location (hostname and port)');
-        $this->supportsTwoModes = true;
     }
 
     /**

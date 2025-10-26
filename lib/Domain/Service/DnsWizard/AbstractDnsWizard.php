@@ -39,7 +39,6 @@ abstract class AbstractDnsWizard implements DnsWizardInterface
     protected string $wizardType;
     protected string $displayName;
     protected string $description;
-    protected bool $supportsTwoModes = false;
 
     /**
      * Constructor
@@ -86,10 +85,6 @@ abstract class AbstractDnsWizard implements DnsWizardInterface
     /**
      * {@inheritdoc}
      */
-    public function supportsTwoModes(): bool
-    {
-        return $this->supportsTwoModes;
-    }
 
     /**
      * {@inheritdoc}

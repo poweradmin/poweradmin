@@ -45,7 +45,6 @@ class DMARCWizard extends AbstractDnsWizard
         $this->wizardType = 'DMARC';
         $this->displayName = _('DMARC Record');
         $this->description = _('Email authentication policy and reporting configuration');
-        $this->supportsTwoModes = false;
         $this->validator = new DMARCRecordValidator($config);
     }
 
