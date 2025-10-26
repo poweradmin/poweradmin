@@ -102,7 +102,7 @@
                     {% if perm_view_zone_own or perm_view_zone_other or perm_zone_master_add or perm_zone_slave_add %}
                     <!-- Zones Section -->
                     <li class="nav-item">
-                        <div class="nav-section-header">
+                        <div class="nav-section-header {{ current_page in ['list_forward_zones', 'list_reverse_zones', 'add_zone_master', 'add_zone_slave', 'bulk_registration', 'batch_ptr_record', 'list_log_zones', 'edit', 'dns_wizard_select', 'dns_wizard_form'] ? 'text-primary' : '' }}">
                             <i class="bi bi-diagram-3 me-2"></i>{% trans %}Zones{% endtrans %}
                         </div>
                         <ul class="nav nav-pills flex-column ms-3">

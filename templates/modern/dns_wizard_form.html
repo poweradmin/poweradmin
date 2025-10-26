@@ -117,22 +117,23 @@
                                         </select>
 
                                     {% elseif field.type == 'radio' %}
-                                        {% for option in field.options %}
-                                            <div class="form-check">
-                                                <input
-                                                    type="radio"
-                                                    class="form-check-input wizard-field"
-                                                    id="wizard_{{ field.name }}_{{ loop.index }}"
-                                                    name="{{ field.name }}"
-                                                    value="{{ option.value }}"
-                                                    {% if option.value == formData[field.name]|default(field.default) %}checked{% endif %}
-                                                >
-                                                <label class="form-check-label" for="wizard_{{ field.name }}_{{ loop.index }}">
-                                                    <strong>{{ option.label }}</strong>
-                                                    {% if option.description %}<br><small class="text-muted">{{ option.description }}</small>{% endif %}
-                                                </label>
-                                            </div>
-                                        {% endfor %}
+                                        <select
+                                            class="form-select form-select-sm wizard-field"
+                                            id="wizard_{{ field.name }}"
+                                            name="{{ field.name }}"
+                                            {% if field.required %}required{% endif %}
+                                        >
+                                            {% if field.required and not formData[field.name] is defined and not field.default %}
+                                                <option value="" disabled selected>{% trans %}-- Select an option --{% endtrans %}</option>
+                                            {% endif %}
+                                            {% for option in field.options %}
+                                                <option value="{{ option.value }}"
+                                                    {% if option.value == formData[field.name]|default(field.default) %}selected{% endif %}
+                                                    {% if option.description %}title="{{ option.description }}"{% endif %}>
+                                                    {{ option.label }}{% if option.description %} - {{ option.description }}{% endif %}
+                                                </option>
+                                            {% endfor %}
+                                        </select>
 
                                     {% elseif field.type == 'checkbox' %}
                                         <div class="form-check">
@@ -239,11 +240,11 @@
             form.classList.add('was-validated');
         }, false);
 
-        // Add real-time validation feedback on blur (exclude radio/checkbox)
+        // Add real-time validation feedback on blur (exclude checkboxes)
         const fields = form.querySelectorAll('.wizard-field');
         fields.forEach(function(field) {
-            // Skip validation styling for radio buttons and checkboxes
-            if (field.type === 'radio' || field.type === 'checkbox') {
+            // Skip validation styling for checkboxes
+            if (field.type === 'checkbox') {
                 return;
             }
 

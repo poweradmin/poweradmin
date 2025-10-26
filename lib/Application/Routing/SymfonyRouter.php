@@ -152,6 +152,8 @@ class SymfonyRouter
             // Web controllers maintain current request structure for compatibility
             // but merge route parameters into the request data
             $requestData = array_merge($_REQUEST, $parameters);
+            // Add the route name as 'page' for template navigation
+            $requestData['page'] = $routeInfo['route'];
             $controller = new $controllerClass($requestData);
         }
 
