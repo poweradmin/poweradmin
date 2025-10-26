@@ -75,15 +75,15 @@ class TLSAWizard extends AbstractDnsWizard
                         [
                             'name' => 'protocol',
                             'label' => _('Protocol'),
-                            'type' => 'select',
+                            'type' => 'radio',
                             'required' => true,
                             'default' => '_tcp',
                             'options' => [
-                                ['value' => '_tcp', 'label' => 'TCP'],
-                                ['value' => '_udp', 'label' => 'UDP'],
-                                ['value' => '_sctp', 'label' => 'SCTP'],
+                                ['value' => '_tcp', 'label' => 'TCP', 'description' => _('Transmission Control Protocol - most common for HTTPS/TLS')],
+                                ['value' => '_udp', 'label' => 'UDP', 'description' => _('User Datagram Protocol - for DTLS connections')],
+                                ['value' => '_sctp', 'label' => 'SCTP', 'description' => _('Stream Control Transmission Protocol')],
                             ],
-                            'help' => _('Transport protocol (usually TCP)')
+                            'help' => _('Transport protocol for the TLS connection')
                         ],
                         [
                             'name' => 'hostname',
@@ -108,7 +108,7 @@ class TLSAWizard extends AbstractDnsWizard
                                 ['value' => 0, 'label' => _('0 - CA Constraint'), 'description' => _('Certificate must chain to specified CA (PKIX-TA)')],
                                 ['value' => 1, 'label' => _('1 - Service Certificate'), 'description' => _('Certificate must match exactly (PKIX-EE)')],
                                 ['value' => 2, 'label' => _('2 - Trust Anchor Assertion'), 'description' => _('Certificate must chain to specified anchor (DANE-TA)')],
-                                ['value' => 3, 'label' => _('3 - Domain-Issued Certificate [RECOMMENDED]'), 'description' => _('Certificate must match exactly, bypassing PKI (DANE-EE)')],
+                                ['value' => 3, 'label' => _('3 - Domain-Issued Certificate'), 'description' => _('Certificate must match exactly, bypassing PKI (DANE-EE)')],
                             ],
                             'help' => _('How the certificate should be validated. Type 3 is most common for self-signed or custom CAs.')
                         ],
@@ -125,9 +125,9 @@ class TLSAWizard extends AbstractDnsWizard
                             'default' => 1,
                             'options' => [
                                 ['value' => 0, 'label' => _('0 - Full Certificate'), 'description' => _('Use the entire certificate')],
-                                ['value' => 1, 'label' => _('1 - Public Key [RECOMMENDED]'), 'description' => _('Use only the Subject Public Key Info (SPKI)')],
+                                ['value' => 1, 'label' => _('1 - Public Key'), 'description' => _('Use only the Subject Public Key Info (SPKI)')],
                             ],
-                            'help' => _('What part of the certificate to match. Type 1 (public key) is recommended as it survives certificate renewal.')
+                            'help' => _('What part of the certificate to match. Type 1 (public key) survives certificate renewal.')
                         ],
                     ]
                 ],
@@ -141,11 +141,11 @@ class TLSAWizard extends AbstractDnsWizard
                             'required' => true,
                             'default' => 1,
                             'options' => [
-                                ['value' => 0, 'label' => _('0 - Exact Match'), 'description' => _('Full certificate/key data (not recommended - very long record)')],
-                                ['value' => 1, 'label' => _('1 - SHA-256 Hash [RECOMMENDED]'), 'description' => _('SHA-256 hash of certificate/key')],
+                                ['value' => 0, 'label' => _('0 - Exact Match'), 'description' => _('Full certificate/key data (very long record)')],
+                                ['value' => 1, 'label' => _('1 - SHA-256 Hash'), 'description' => _('SHA-256 hash of certificate/key')],
                                 ['value' => 2, 'label' => _('2 - SHA-512 Hash'), 'description' => _('SHA-512 hash of certificate/key (more secure but longer)')],
                             ],
-                            'help' => _('How to encode the certificate data. SHA-256 (type 1) is recommended.')
+                            'help' => _('How to encode the certificate data. SHA-256 (type 1) provides good balance of security and length.')
                         ],
                     ]
                 ],

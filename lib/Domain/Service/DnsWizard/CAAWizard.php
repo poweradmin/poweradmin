@@ -129,14 +129,14 @@ class CAAWizard extends AbstractDnsWizard
                         [
                             'name' => 'flags',
                             'label' => _('Flags'),
-                            'type' => 'select',
+                            'type' => 'radio',
                             'required' => false,
                             'default' => 0,
                             'options' => [
-                                ['value' => 0, 'label' => _('0 - Non-critical (recommended)')],
-                                ['value' => 128, 'label' => _('128 - Critical (reject if not understood)')],
+                                ['value' => 0, 'label' => _('Non-critical'), 'description' => _('Allow fallback if not understood')],
+                                ['value' => 128, 'label' => _('Critical'), 'description' => _('Reject if not understood - strict enforcement')],
                             ],
-                            'help' => _('0 = non-critical (recommended). 128 = critical flag (CAA record must be processed, reject if not understood)')
+                            'help' => _('Non-critical (0) provides better compatibility. Critical (128) enforces strict CAA processing.')
                         ],
                     ]
                 ],

@@ -84,14 +84,14 @@ class DKIMWizard extends AbstractDnsWizard
                         [
                             'name' => 'key_type',
                             'label' => _('Key Type'),
-                            'type' => 'select',
+                            'type' => 'radio',
                             'required' => false,
                             'default' => 'rsa',
                             'options' => [
-                                ['value' => 'rsa', 'label' => 'RSA [RECOMMENDED]'],
-                                ['value' => 'ed25519', 'label' => 'Ed25519 (newer, not universally supported)'],
+                                ['value' => 'rsa', 'label' => 'RSA', 'description' => _('Widely supported by all mail servers')],
+                                ['value' => 'ed25519', 'label' => 'Ed25519', 'description' => _('Newer algorithm - not universally supported yet')],
                             ],
-                            'help' => _('Encryption algorithm used. RSA is widely supported, Ed25519 is newer but not all mail servers support it yet.')
+                            'help' => _('Encryption algorithm for the DKIM public key')
                         ],
                     ]
                 ],

@@ -112,16 +112,16 @@ class SRVWizard extends AbstractDnsWizard
                         [
                             'name' => 'protocol',
                             'label' => _('Protocol'),
-                            'type' => 'select',
+                            'type' => 'radio',
                             'required' => true,
                             'default' => '_tcp',
                             'options' => [
-                                ['value' => '_tcp', 'label' => 'TCP'],
-                                ['value' => '_udp', 'label' => 'UDP'],
-                                ['value' => '_tls', 'label' => 'TLS'],
-                                ['value' => '_sctp', 'label' => 'SCTP'],
+                                ['value' => '_tcp', 'label' => 'TCP', 'description' => _('Transmission Control Protocol - most common')],
+                                ['value' => '_udp', 'label' => 'UDP', 'description' => _('User Datagram Protocol - connectionless')],
+                                ['value' => '_tls', 'label' => 'TLS', 'description' => _('Transport Layer Security')],
+                                ['value' => '_sctp', 'label' => 'SCTP', 'description' => _('Stream Control Transmission Protocol')],
                             ],
-                            'help' => _('Transport protocol (most services use TCP)')
+                            'help' => _('Transport protocol for the service')
                         ],
                         [
                             'name' => 'domain',

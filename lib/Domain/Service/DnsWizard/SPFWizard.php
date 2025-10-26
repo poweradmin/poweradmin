@@ -145,9 +145,9 @@ class SPFWizard extends AbstractDnsWizard
                             'required' => true,
                             'default' => 'softfail',
                             'options' => [
-                                ['value' => 'pass', 'label' => '+all', 'description' => _('Pass all (not recommended - allows anyone to send)')],
+                                ['value' => 'pass', 'label' => '+all', 'description' => _('Pass all - allows anyone to send (insecure)')],
                                 ['value' => 'neutral', 'label' => '?all', 'description' => _('Neutral (no policy)')],
-                                ['value' => 'softfail', 'label' => '~all [RECOMMENDED]', 'description' => _('Soft fail (mark as spam but accept)')],
+                                ['value' => 'softfail', 'label' => '~all', 'description' => _('Soft fail (mark as spam but accept)')],
                                 ['value' => 'fail', 'label' => '-all', 'description' => _('Fail (reject unauthorized emails)')],
                             ],
                             'help' => _('Policy for emails not matching any mechanism. Start with ~all (softfail) for testing.')

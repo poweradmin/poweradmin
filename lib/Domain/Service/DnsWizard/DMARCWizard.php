@@ -66,7 +66,7 @@ class DMARCWizard extends AbstractDnsWizard
                             'required' => true,
                             'default' => 'none',
                             'options' => [
-                                ['value' => 'none', 'label' => _('None (monitor only)'), 'description' => _('No action taken, just collect reports [RECOMMENDED for new deployment]')],
+                                ['value' => 'none', 'label' => _('None (monitor only)'), 'description' => _('No action taken, just collect reports for analysis')],
                                 ['value' => 'quarantine', 'label' => _('Quarantine'), 'description' => _('Treat suspicious emails as spam/junk')],
                                 ['value' => 'reject', 'label' => _('Reject'), 'description' => _('Block delivery of suspicious emails entirely')],
                             ],
@@ -107,7 +107,7 @@ class DMARCWizard extends AbstractDnsWizard
                             'type' => 'text',
                             'required' => false,
                             'placeholder' => 'dmarc-reports@example.com',
-                            'help' => _('Email address to receive daily aggregate reports (recommended)')
+                            'help' => _('Email address to receive daily aggregate reports')
                         ],
                         [
                             'name' => 'ruf',
@@ -143,7 +143,7 @@ class DMARCWizard extends AbstractDnsWizard
                             'required' => false,
                             'default' => 'r',
                             'options' => [
-                                ['value' => 'r', 'label' => _('Relaxed [RECOMMENDED]'), 'description' => _('DKIM domain can be subdomain of From: domain')],
+                                ['value' => 'r', 'label' => _('Relaxed'), 'description' => _('DKIM domain can be subdomain of From: domain')],
                                 ['value' => 's', 'label' => _('Strict'), 'description' => _('DKIM domain must exactly match From: domain')],
                             ],
                         ],
@@ -154,7 +154,7 @@ class DMARCWizard extends AbstractDnsWizard
                             'required' => false,
                             'default' => 'r',
                             'options' => [
-                                ['value' => 'r', 'label' => _('Relaxed [RECOMMENDED]'), 'description' => _('SPF domain can be subdomain of From: domain')],
+                                ['value' => 'r', 'label' => _('Relaxed'), 'description' => _('SPF domain can be subdomain of From: domain')],
                                 ['value' => 's', 'label' => _('Strict'), 'description' => _('SPF domain must exactly match From: domain')],
                             ],
                         ],
