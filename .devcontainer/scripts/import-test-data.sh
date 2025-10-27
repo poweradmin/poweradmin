@@ -69,7 +69,21 @@ import_mysql() {
     exit_code=$?
 
     if [ $exit_code -eq 0 ]; then
-        echo -e "${GREEN}✅ MySQL/MariaDB import successful${NC}"
+        echo -e "${GREEN}✅ MySQL/MariaDB users and zones imported${NC}"
+
+        # Import comprehensive DNS records if the file exists
+        if [ -f "$SQL_DIR/test-dns-records-mysql.sql" ]; then
+            echo -e "${YELLOW}📦 Importing comprehensive DNS records...${NC}"
+            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" "$MYSQL_PDNS_DATABASE" < "$SQL_DIR/test-dns-records-mysql.sql" 2>&1)
+            exit_code=$?
+
+            if [ $exit_code -eq 0 ]; then
+                echo -e "${GREEN}✅ MySQL/MariaDB DNS records imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  DNS records import had issues (may already exist)${NC}"
+            fi
+        fi
+
         return 0
     else
         echo -e "${RED}❌ MySQL/MariaDB import failed${NC}"
@@ -95,7 +109,18 @@ import_pgsql() {
 
     # Pass PGPASSWORD into the container environment
     if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$SQL_DIR/test-users-permissions-pgsql.sql" > /dev/null 2>&1; then
-        echo -e "${GREEN}✅ PostgreSQL import successful${NC}"
+        echo -e "${GREEN}✅ PostgreSQL users and zones imported${NC}"
+
+        # Import comprehensive DNS records if the file exists
+        if [ -f "$SQL_DIR/test-dns-records-pgsql.sql" ]; then
+            echo -e "${YELLOW}📦 Importing comprehensive DNS records...${NC}"
+            if docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" < "$SQL_DIR/test-dns-records-pgsql.sql" > /dev/null 2>&1; then
+                echo -e "${GREEN}✅ PostgreSQL DNS records imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  DNS records import had issues (may already exist)${NC}"
+            fi
+        fi
+
         return 0
     else
         echo -e "${RED}❌ PostgreSQL import failed${NC}"
@@ -120,7 +145,18 @@ import_sqlite() {
     # Execute SQL file directly (the ATTACH command is in the SQL file)
     # The script attaches /data/db/powerdns.db as 'pdns' to access domains/records tables
     if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-users-permissions-sqlite.sql" > /dev/null 2>&1; then
-        echo -e "${GREEN}✅ SQLite import successful${NC}"
+        echo -e "${GREEN}✅ SQLite users and zones imported${NC}"
+
+        # Import comprehensive DNS records if the file exists
+        if [ -f "$SQL_DIR/test-dns-records-sqlite.sql" ]; then
+            echo -e "${YELLOW}📦 Importing comprehensive DNS records...${NC}"
+            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-dns-records-sqlite.sql" > /dev/null 2>&1; then
+                echo -e "${GREEN}✅ SQLite DNS records imported${NC}"
+            else
+                echo -e "${YELLOW}⚠️  DNS records import had issues (may already exist)${NC}"
+            fi
+        fi
+
         return 0
     else
         echo -e "${RED}❌ SQLite import failed${NC}"
@@ -246,9 +282,21 @@ main() {
         echo ""
         echo -e "${BLUE}Test zones:${NC}"
         echo "  - admin-zone.example.com (owner: admin)"
-        echo "  - manager-zone.example.com (owner: manager)"
-        echo "  - client-zone.example.com (owner: client)"
+        echo "  - manager-zone.example.com (owner: manager) - with comprehensive DNS records"
+        echo "  - client-zone.example.com (owner: client) - with comprehensive DNS records"
         echo "  - shared-zone.example.com (owners: manager, client)"
+        echo ""
+        echo -e "${BLUE}DNS Records (manager-zone and client-zone):${NC}"
+        echo "  - SOA, NS: Standard zone records"
+        echo "  - A: 7 records (www, mail, ftp, blog, shop, api, root)"
+        echo "  - AAAA: 3 records (IPv6 support)"
+        echo "  - MX: 2 records (mail servers with priorities)"
+        echo "  - TXT: 3 records (SPF, DMARC, DKIM - long content for UI testing)"
+        echo "  - CNAME: 3 records (cdn, docs, webmail)"
+        echo "  - SRV: 2 records (XMPP, SIP)"
+        echo "  - CAA: 2 records (certificate authority)"
+        echo "  - Disabled: 1 record (for testing disabled state)"
+        echo "  Total: ~26 records per zone for comprehensive UI testing"
         echo ""
         exit 0
     else

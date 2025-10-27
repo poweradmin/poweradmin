@@ -10,6 +10,7 @@ The SQL files in this directory create a comprehensive test environment with:
 - **6 Test Users**: Different permission levels and states (active/inactive)
 - **4 Test Zones**: Including single-owner and multi-owner zones
 - **Sample DNS Records**: SOA, NS, and A records for each zone
+- **Comprehensive DNS Records**: ~26 diverse record types per zone for UI testing (A, AAAA, MX, TXT, CNAME, SRV, CAA, disabled records)
 
 ## Files
 
@@ -30,6 +31,15 @@ SQLite version of test data. Use with SQLite 3.8+.
 MySQL/MariaDB version for **devcontainer multi-database setup**. This script handles both the `poweradmin` database (users, permissions, zones) and the `pdns` database (domains, records) using `USE` statements and cross-database joins.
 
 **Recommended for devcontainer**: This is the version used by the import script since the devcontainer keeps PowerDNS tables in a separate `pdns` database.
+
+### `test-dns-records-mysql.sql`
+MySQL/MariaDB comprehensive DNS records for UI testing. Adds ~26 diverse record types to `manager-zone.example.com` and `client-zone.example.com` zones.
+
+### `test-dns-records-pgsql.sql`
+PostgreSQL comprehensive DNS records for UI testing. Adds ~26 diverse record types to test zones.
+
+### `test-dns-records-sqlite.sql`
+SQLite comprehensive DNS records for UI testing. Adds ~26 diverse record types to test zones. Automatically attaches the PowerDNS database.
 
 ## Quick Import
 
@@ -109,6 +119,30 @@ Each zone includes:
 - SOA record (automatically generated with current timestamp)
 - 2 NS records (ns1.example.com, ns2.example.com)
 - 1 A record (www subdomain → 192.0.2.1)
+
+#### Comprehensive DNS Records (manager-zone and client-zone)
+
+Additionally, `manager-zone.example.com` and `client-zone.example.com` include comprehensive DNS records for UI testing:
+
+| Record Type | Count | Examples | Purpose |
+|-------------|-------|----------|---------|
+| A | 7 | www, mail, ftp, blog, shop, api, root | IPv4 addresses for various services |
+| AAAA | 3 | www, mail, root | IPv6 support testing |
+| MX | 2 | mail (priority 10), mail2 (priority 20) | Mail server configuration with priorities |
+| TXT | 3 | SPF, DMARC, DKIM | Long content for UI column width testing |
+| CNAME | 3 | cdn, docs, webmail | Alias records |
+| SRV | 2 | XMPP, SIP | Service records with priorities |
+| CAA | 2 | Let's Encrypt, incident reporting | Certificate authority authorization |
+| Disabled | 1 | test-disabled.{zone} | Testing disabled record state |
+
+**Total**: ~26 records per zone (including SOA and NS)
+
+**UI Testing Features**:
+- Long TXT records (SPF, DMARC, DKIM) test column width handling
+- Multiple records of same type test bulk operations
+- Disabled record tests status display
+- Various priorities (MX, SRV) test sorting
+- Diverse record types test filtering and type-based operations
 
 ## Testing Scenarios
 
@@ -238,3 +272,10 @@ When adding new test scenarios:
 - See `CLAUDE.md` for overall development guidelines
 - See `DOCKER.md` for Docker deployment configuration
 - See main documentation for Poweradmin architecture details
+
+## Notes
+
+- The comprehensive DNS records (test-dns-records-*.sql) are automatically imported when running the import script
+- Records use TEST-NET addresses (192.0.2.0/24, 2001:db8::/32) per RFC 5737 and RFC 3849
+- Long TXT records are intentionally included to test UI handling of content that exceeds typical column widths
+- All test data is designed for development environments only and should never be used in production
