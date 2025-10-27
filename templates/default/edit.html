@@ -19,7 +19,7 @@
     </ol>
 </nav>
 
-{% if (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and domain_type != "SLAVE" and iface_edit_add_record_top %}
+{% if (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and domain_type != "SLAVE" and iface_edit_add_record_top and iface_show_add_record_form %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
@@ -191,6 +191,14 @@
                 <i class="bi bi-arrow-counterclockwise me-1 text-white"></i>{% trans %}Reset{% endtrans %}
             </button>
             {% endif %}
+            {% if not iface_show_add_record_form and (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and domain_type != "SLAVE" %}
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/add" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
+            </a>
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-primary btn-sm">
+                <i class="bi bi-file-earmark-text me-1 text-white"></i>{% trans %}Bulk add{% endtrans %}
+            </a>
+            {% endif %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?export_csv=1" class="btn btn-secondary btn-sm">
                 <i class="bi bi-file-earmark-spreadsheet me-1 text-white"></i>{% trans %}CSV{% endtrans %}
             </a>
@@ -221,10 +229,6 @@
     </div>
 
     <div class="card-body">
-        <div class="mb-3">
-            {{ pagination | raw }}
-        </div>
-
         {% if not records %}
             {% if search_term or record_type_filter or content_filter %}
                 <div class="d-flex align-items-center py-2 px-3 bg-light border rounded mb-3">
@@ -292,28 +296,13 @@
                 </div>
             </form>
         </div>
-        
-        <!-- Records control section -->
-        <div class="mb-3 d-flex justify-content-between align-items-center">
+
+        <div class="d-flex justify-content-between align-items-center">
             <div>
-                <form id="delete-records-form" method="post" action="{{ base_url_prefix }}/zones/records/delete" class="d-inline">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
-                    <input type="hidden" name="zone_id" value="{{ zone_id }}">
-                    <button type="submit" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
-                        <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
-                    </button>
-                    <div id="selected-records-container"></div>
-                </form>
-                
-                {% if filtered_record_count != record_count %}
-                <span class="ms-3 small text-muted">
-                    <i class="bi bi-info-circle me-1"></i>
-                    {% trans %}Showing{% endtrans %} {{ filtered_record_count }} {% trans %}of{% endtrans %} {{ record_count }} {% trans %}total records{% endtrans %}
-                </span>
-                {% endif %}
+                {{ pagination | raw }}
             </div>
             <div class="d-flex align-items-center">
-                <label for="rows-per-page" class="me-2 text-secondary">{% trans %}Rows per page:{% endtrans %}</label>
+                <label for="rows-per-page" class="me-2 text-secondary small">{% trans %}Rows per page:{% endtrans %}</label>
                 <select id="rows-per-page" class="form-select form-select-sm" style="width: auto;" onchange="changeRowsPerPage(this.value)">
                     <option value="10" {{ row_amount == 10 ? 'selected' : '' }}>10</option>
                     <option value="20" {{ row_amount == 20 ? 'selected' : '' }}>20</option>
@@ -322,6 +311,16 @@
                 </select>
             </div>
         </div>
+
+        <!-- Records info section -->
+        {% if filtered_record_count != record_count %}
+        <div class="mb-3">
+            <span class="small text-muted">
+                <i class="bi bi-info-circle me-1"></i>
+                {% trans %}Showing{% endtrans %} {{ filtered_record_count }} {% trans %}of{% endtrans %} {{ record_count }} {% trans %}total records{% endtrans %}
+            </span>
+        </div>
+        {% endif %}
 
         <form id="edit-zone-form" class="needs-validation" method="post" action="" novalidate>
             <input type="hidden" name="_token" value="{{ csrf_token }}">
@@ -395,7 +394,9 @@
                                 <i class="bi bi-arrow-{{ sort_direction == 'ASC' ? 'down' : 'up' }}"></i>
                             {% endif %}
                         </th>
+                        {% if iface_show_record_edit_button or iface_show_record_delete_button %}
                         <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                        {% endif %}
                     </tr>
                     </thead>
                     <tbody>
@@ -416,7 +417,7 @@
             {% endif %}
             {% if r['type'] == "SOA" or r['type'] == "NS" and perm_edit == "own_as_client" %}
             <td class="col-sm-2">{{ r['display_name'] is defined ? r['display_name'] : r['name'] }}</td>
-            <td><span class="badge {% if r['type'] == 'SOA' %}bg-dark{% elseif r['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ r['type'] }}</span></td>
+            <td class="text-center"><span class="badge {% if r['type'] == 'SOA' %}bg-dark{% elseif r['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ r['type'] }}</span></td>
             <td>{{ r['content'] }}</td>
             <td>-</td>
             <td class="col-sm-1">{{ r['ttl'] }}</td>
@@ -425,13 +426,13 @@
             {% endif %}
             <td class="text-center">{% if r['disabled'] %}{% trans %}Yes{% endtrans %}{% else %}{% trans %}No{% endtrans %}{% endif %}</td>
             {% else %}
-            <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
+            <td class="{{ (iface_show_record_edit_button or iface_show_record_delete_button) ? 'col-sm-2' : 'col-sm-4' }}"><input class="form-control form-control-sm" type="text"
                                         name="record[{{ r['id'] }}][name]" value="{{ r['editable_name'] is defined ? r['editable_name'] : r['name'] }}"></td>
-            <td>
+            <td class="text-center">
                 <input type="hidden" name="record[{{ r['id'] }}][type]" value="{{ r['type'] }}">
                 <span class="badge {% if r['type'] == 'A' %}bg-primary{% elseif r['type'] == 'AAAA' %}bg-info{% elseif r['type'] == 'CNAME' %}bg-success{% elseif r['type'] == 'MX' %}bg-warning{% elseif r['type'] == 'TXT' %}bg-secondary{% elseif r['type'] == 'PTR' %}bg-danger{% elseif r['type'] == 'SOA' %}bg-dark{% elseif r['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ r['type'] }}</span>
             </td>
-            <td>
+            <td class="{{ (iface_show_record_edit_button or iface_show_record_delete_button) ? '' : 'col-sm-5' }}">
                 <div id="contentInputContainer{{ r['id'] }}">
                     <input id="recordContent{{ r['id'] }}" class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][content]" value="{{ r['content'] }}">
                 </div>
@@ -452,51 +453,60 @@
             </td>
             {% endif %}
 
-            {% if domain_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "0" %}
-            <td>&nbsp;</td>
-            {% elseif r['type'] == "SOA" and perm_edit != "all" or r['type'] == "NS" and perm_edit == "own_as_client" %}
-            <td>&nbsp;</td>
-            {% else %}
-            <td class="{{ iface_record_comments ? 'col-sm-1' : 'col-sm-2' }} text-end">
-                <div class="gap-2">
-                    <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ r['id'] }}/edit">
-                        <i class="bi bi-pencil-square text-primary"></i></a>
-                    <a class="btn btn-outline-danger btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ r['id'] }}/delete">
-                        <i class="bi bi-trash text-danger"></i></a>
-                </div>
-            </td>
+            {% if iface_show_record_edit_button or iface_show_record_delete_button %}
+                {% if domain_type == "SLAVE" or perm_edit == "none" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "0" %}
+                <td>&nbsp;</td>
+                {% elseif r['type'] == "SOA" and perm_edit != "all" or r['type'] == "NS" and perm_edit == "own_as_client" %}
+                <td>&nbsp;</td>
+                {% else %}
+                <td class="{{ iface_record_comments ? 'col-sm-1' : 'col-sm-2' }} text-end">
+                    <div class="gap-2">
+                        {% if iface_show_record_edit_button %}
+                        <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ r['id'] }}/edit">
+                            <i class="bi bi-pencil-square text-primary"></i></a>
+                        {% endif %}
+                        {% if iface_show_record_delete_button %}
+                        <a class="btn btn-outline-danger btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ r['id'] }}/delete">
+                            <i class="bi bi-trash text-danger"></i></a>
+                        {% endif %}
+                    </div>
+                </td>
+                {% endif %}
             {% endif %}
         </tr>
         {% endfor %}
-
-        {% if iface_zone_comments %}
-        <tr>
-            {% if iface_edit_show_id %}
-            <td></td>
-            {% endif %}
-            <td colspan="{% if not iface_record_comments %}8{% else %}9{% endif %}">{% trans %}Comments{% endtrans %}:</td>
-        </tr>
-        <tr>
-            {% if iface_edit_show_id %}
-            <td></td>
-            {% endif %}
-            <td colspan="7"><textarea class="form-control form-control-sm" rows="5" cols="80" name="zone_comment">{{ zone_comment }}</textarea>
-            </td>
-            <td colspan="2">
-                {% if perm_edit != "none" %}
-                <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/comment/edit">
-                    <i class="bi bi-pencil-square text-primary"></i> {% trans %}Edit comment{% endtrans %}</a>
-                {% endif %}
-            </td>
-        </tr>
-        {% endif %}
                     </tbody>
                 </table>
             </div>
 
-            <div>
-                {{ pagination | raw }}
+            <div class="d-flex justify-content-between align-items-center">
+                <div>
+                    {{ pagination | raw }}
+                </div>
+                <div>
+                    <form id="delete-records-form" method="post" action="{{ base_url_prefix }}/zones/records/delete" class="d-inline">
+                        <input type="hidden" name="_token" value="{{ csrf_token }}">
+                        <input type="hidden" name="zone_id" value="{{ zone_id }}">
+                        <button type="submit" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
+                            <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
+                        </button>
+                        <div id="selected-records-container"></div>
+                    </form>
+                </div>
             </div>
+
+            {% if iface_zone_comments %}
+            <div class="mt-3 mb-3">
+                <label class="form-label"><strong>{% trans %}Comments{% endtrans %}:</strong></label>
+                <div class="d-flex gap-2 align-items-start">
+                    <textarea class="form-control form-control-sm" rows="5" name="zone_comment">{{ zone_comment }}</textarea>
+                    {% if perm_edit != "none" %}
+                    <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/comment/edit">
+                        <i class="bi bi-pencil-square text-primary"></i> {% trans %}Edit comment{% endtrans %}</a>
+                    {% endif %}
+                </div>
+            </div>
+            {% endif %}
 
     {% endif %}
 
@@ -515,7 +525,7 @@
 </div>
 
 {% if perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1" %}
-{% if domain_type != "SLAVE" and not iface_edit_add_record_top %}
+{% if domain_type != "SLAVE" and not iface_edit_add_record_top and iface_show_add_record_form %}
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3 d-flex justify-content-between align-items-center">
         <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add new record{% endtrans %}</strong>
@@ -1016,48 +1026,7 @@
                 container.appendChild(clone);
             });
         });
-        
-        // Add "Select All Filtered" functionality
-        if (document.getElementById('record-filter-form')) {
-            // Create select all filtered button and add it next to the delete button
-            const deleteForm = document.getElementById('delete-records-form');
-            const deleteButton = document.getElementById('delete-selected-records');
-            
-            const selectAllFilteredBtn = document.createElement('button');
-            selectAllFilteredBtn.type = 'button';
-            selectAllFilteredBtn.classList.add('btn', 'btn-outline-secondary', 'btn-sm', 'ms-2');
-            selectAllFilteredBtn.innerHTML = '<i class="bi bi-check-all me-1"></i>' + 
-                                          (document.documentElement.lang === 'en' ? 'Select All Filtered' : '{% trans %}Select All Filtered{% endtrans %}');
-            
-            // Insert the button after the delete button
-            if (deleteButton.nextSibling) {
-                deleteForm.insertBefore(selectAllFilteredBtn, deleteButton.nextSibling);
-            } else {
-                deleteForm.appendChild(selectAllFilteredBtn);
-            }
-            
-            // Add click handler to select all filtered records
-            selectAllFilteredBtn.addEventListener('click', function() {
-                const recordCheckboxes = document.getElementsByName('record_id[]');
-                const allChecked = Array.from(recordCheckboxes).every(checkbox => checkbox.checked);
-                
-                // Toggle all checkboxes to the opposite state
-                Array.from(recordCheckboxes).forEach(checkbox => {
-                    checkbox.checked = !allChecked;
-                });
-                
-                // Update UI state
-                updateDeleteButtonState('delete-selected-records', recordCheckboxes);
-                updateSelectedCount(recordCheckboxes);
-                
-                // Update select all checkbox state
-                const selectAllCheckbox = document.getElementById('select_edit_records');
-                if (selectAllCheckbox) {
-                    selectAllCheckbox.checked = !allChecked;
-                }
-            });
-        }
-        
+
         // Create a selection counter
         const selectionCounterSpan = document.createElement('span');
         selectionCounterSpan.id = 'selection-counter';

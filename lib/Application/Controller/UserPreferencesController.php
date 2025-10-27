@@ -84,6 +84,10 @@ class UserPreferencesController extends BaseController
                 UserPreference::KEY_SHOW_ZONE_TEMPLATE => isset($_POST['show_zone_template']) ? 'true' : 'false',
                 UserPreference::KEY_RECORD_FORM_POSITION => $_POST['record_form_position'] ?? null,
                 UserPreference::KEY_SAVE_BUTTON_POSITION => $_POST['save_button_position'] ?? null,
+                UserPreference::KEY_SHOW_RECORD_ID => isset($_POST['show_record_id']) ? 'true' : 'false',
+                UserPreference::KEY_SHOW_ADD_RECORD_FORM => isset($_POST['show_add_record_form']) ? 'true' : 'false',
+                UserPreference::KEY_SHOW_RECORD_EDIT_BUTTON => isset($_POST['show_record_edit_button']) ? 'true' : 'false',
+                UserPreference::KEY_SHOW_RECORD_DELETE_BUTTON => isset($_POST['show_record_delete_button']) ? 'true' : 'false',
             ];
 
             foreach ($preferencesToUpdate as $key => $value) {

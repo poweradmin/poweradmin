@@ -37,6 +37,10 @@ class UserPreference
     public const KEY_SAVE_BUTTON_POSITION = 'save_button_position';
     public const KEY_DEFAULT_ZONE_VIEW = 'default_zone_view';
     public const KEY_ZONE_SORT_ORDER = 'zone_sort_order';
+    public const KEY_SHOW_RECORD_ID = 'show_record_id';
+    public const KEY_SHOW_ADD_RECORD_FORM = 'show_add_record_form';
+    public const KEY_SHOW_RECORD_EDIT_BUTTON = 'show_record_edit_button';
+    public const KEY_SHOW_RECORD_DELETE_BUTTON = 'show_record_delete_button';
 
     /**
      * Valid preference keys
@@ -50,6 +54,10 @@ class UserPreference
         self::KEY_SAVE_BUTTON_POSITION,
         self::KEY_DEFAULT_ZONE_VIEW,
         self::KEY_ZONE_SORT_ORDER,
+        self::KEY_SHOW_RECORD_ID,
+        self::KEY_SHOW_ADD_RECORD_FORM,
+        self::KEY_SHOW_RECORD_EDIT_BUTTON,
+        self::KEY_SHOW_RECORD_DELETE_BUTTON,
     ];
 
     public function __construct(

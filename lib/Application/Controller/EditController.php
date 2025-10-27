@@ -145,9 +145,12 @@ class EditController extends BaseController
         $userPreferenceService = $this->createUserPreferenceService();
         $iface_edit_add_record_top = $userPreferenceService->getRecordFormPosition($userId) === 'top';
         $iface_edit_save_changes_top = $userPreferenceService->getSaveButtonPosition($userId) === 'top';
+        $iface_show_id = $userPreferenceService->getShowRecordId($userId);
+        $iface_show_add_record_form = $userPreferenceService->getShowAddRecordForm($userId);
+        $iface_show_record_edit_button = $userPreferenceService->getShowRecordEditButton($userId);
+        $iface_show_record_delete_button = $userPreferenceService->getShowRecordDeleteButton($userId);
 
         $configManager = ConfigurationManager::getInstance();
-        $iface_show_id = $configManager->get('interface', 'show_record_id', false);
         $iface_record_comments = $configManager->get('interface', 'show_record_comments', false);
         $iface_zone_comments = $configManager->get('interface', 'show_zone_comments', true);
 
@@ -515,6 +518,9 @@ class EditController extends BaseController
             'iface_add_reverse_record' => $this->config->get('interface', 'add_reverse_record', true),
             'iface_add_domain_record' => $this->config->get('interface', 'add_domain_record', true),
             'iface_edit_show_id' => $iface_show_id,
+            'iface_show_add_record_form' => $iface_show_add_record_form,
+            'iface_show_record_edit_button' => $iface_show_record_edit_button,
+            'iface_show_record_delete_button' => $iface_show_record_delete_button,
             'iface_edit_add_record_top' => $iface_edit_add_record_top,
             'iface_edit_save_changes_top' => $iface_edit_save_changes_top,
             'iface_record_comments' => $iface_record_comments,

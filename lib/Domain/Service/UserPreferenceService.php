@@ -148,6 +148,25 @@ class UserPreferenceService
         return $this->getPreference($userId, UserPreference::KEY_SAVE_BUTTON_POSITION) ?: 'bottom';
     }
 
+    public function getShowRecordId(int $userId): bool
+    {
+        return $this->getPreference($userId, UserPreference::KEY_SHOW_RECORD_ID) === 'true';
+    }
+
+    public function getShowAddRecordForm(int $userId): bool
+    {
+        return $this->getPreference($userId, UserPreference::KEY_SHOW_ADD_RECORD_FORM) === 'true';
+    }
+
+    public function getShowRecordEditButton(int $userId): bool
+    {
+        return $this->getPreference($userId, UserPreference::KEY_SHOW_RECORD_EDIT_BUTTON) === 'true';
+    }
+
+    public function getShowRecordDeleteButton(int $userId): bool
+    {
+        return $this->getPreference($userId, UserPreference::KEY_SHOW_RECORD_DELETE_BUTTON) === 'true';
+    }
 
     public function clearCache(): void
     {
@@ -165,6 +184,10 @@ class UserPreferenceService
             UserPreference::KEY_SAVE_BUTTON_POSITION => $this->config->get('interface', 'position_save_button_top', false) ? 'top' : 'bottom',
             UserPreference::KEY_DEFAULT_ZONE_VIEW => 'standard',
             UserPreference::KEY_ZONE_SORT_ORDER => 'asc',
+            UserPreference::KEY_SHOW_RECORD_ID => $this->config->get('interface', 'show_record_id', false) ? 'true' : 'false',
+            UserPreference::KEY_SHOW_ADD_RECORD_FORM => $this->config->get('interface', 'show_add_record_form', false) ? 'true' : 'false',
+            UserPreference::KEY_SHOW_RECORD_EDIT_BUTTON => $this->config->get('interface', 'show_record_edit_button', false) ? 'true' : 'false',
+            UserPreference::KEY_SHOW_RECORD_DELETE_BUTTON => $this->config->get('interface', 'show_record_delete_button', false) ? 'true' : 'false',
         ];
     }
 

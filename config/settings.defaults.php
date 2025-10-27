@@ -119,7 +119,10 @@ return [
         'application_url' => '',              // Full application URL for emails and absolute links (default: auto-detect, example: 'https://dns.example.com/poweradmin') (added in 4.1.0)
 
         // UI Element Settings
-        'show_record_id' => true,             // Show record ID column in edit mode (added in 3.9.0)
+        'show_record_id' => false,            // Show record ID column in edit mode (added in 3.9.0)
+        'show_add_record_form' => false,      // Show or hide add record form (added in 4.1.0)
+        'show_record_edit_button' => false,   // Show individual edit button per record (added in 4.1.0)
+        'show_record_delete_button' => false, // Show individual delete button per record (added in 4.1.0)
         'position_record_form_top' => true,   // Position the "Add record" form at the top of the page (added in 3.9.0)
         'position_save_button_top' => false,  // Position the "Save changes" button at the top of the page (added in 3.9.0)
         'show_zone_comments' => true,         // Show or hide zone comments (added in 2.2.3)

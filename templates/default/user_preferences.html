@@ -84,6 +84,41 @@
                     </div>
                 </div>
 
+                <hr class="my-3">
+                <h6 class="mb-3 text-muted small">{% trans %}Edit Zone View{% endtrans %}</h6>
+
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="show_record_id" name="show_record_id" {% if preferences.show_record_id == 'true' %}checked{% endif %}>
+                    <label class="form-check-label" for="show_record_id">
+                        <strong>{% trans %}Show record ID{% endtrans %}</strong>
+                        <div class="text-muted small">{% trans %}Display record ID column in edit view{% endtrans %}</div>
+                    </label>
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="show_add_record_form" name="show_add_record_form" {% if preferences.show_add_record_form == 'true' %}checked{% endif %}>
+                    <label class="form-check-label" for="show_add_record_form">
+                        <strong>{% trans %}Show add record form{% endtrans %}</strong>
+                        <div class="text-muted small">{% trans %}Display inline add record form in edit view{% endtrans %}</div>
+                    </label>
+                </div>
+
+                <div class="form-check form-switch mb-3">
+                    <input class="form-check-input" type="checkbox" id="show_record_edit_button" name="show_record_edit_button" {% if preferences.show_record_edit_button == 'true' %}checked{% endif %}>
+                    <label class="form-check-label" for="show_record_edit_button">
+                        <strong>{% trans %}Show edit buttons{% endtrans %}</strong>
+                        <div class="text-muted small">{% trans %}Display individual edit button per record{% endtrans %}</div>
+                    </label>
+                </div>
+
+                <div class="form-check form-switch">
+                    <input class="form-check-input" type="checkbox" id="show_record_delete_button" name="show_record_delete_button" {% if preferences.show_record_delete_button == 'true' %}checked{% endif %}>
+                    <label class="form-check-label" for="show_record_delete_button">
+                        <strong>{% trans %}Show delete buttons{% endtrans %}</strong>
+                        <div class="text-muted small">{% trans %}Display individual delete button per record{% endtrans %}</div>
+                    </label>
+                </div>
+
             </div>
         </div>
     </div>
