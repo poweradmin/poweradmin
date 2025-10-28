@@ -94,13 +94,21 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 
 ## Screenshots
 
-### Log in
+### Login Screen
 
-![The login screen](https://docs.poweradmin.org/screenshots/ignite_login.png)
+![Login interface with multi-language and MFA support](https://docs.poweradmin.org/screenshots/light_login.png)
 
-### Zone list
+### Dashboard
 
-![List of zones](https://docs.poweradmin.org/screenshots/ignite_zone_list.png)
+![Dashboard with quick actions and navigation](https://docs.poweradmin.org/screenshots/light_index_page.png)
+
+### Zone Management
+
+![Zone list with sorting and filtering](https://docs.poweradmin.org/screenshots/light_zone_list.png)
+
+### Zone Editor
+
+![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/light_zone_edit.png)
 
 ## Contributing
 
