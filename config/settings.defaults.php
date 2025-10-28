@@ -119,7 +119,7 @@ return [
         'application_url' => '',              // Full application URL for emails and absolute links (default: auto-detect, example: 'https://dns.example.com/poweradmin') (added in 4.1.0)
 
         // UI Element Settings
-        'show_record_id' => false,            // Show record ID column in edit mode (added in 3.9.0)
+        'show_record_id' => false,             // Show record ID column in edit mode (added in 3.9.0)
         'show_add_record_form' => false,      // Show or hide add record form (added in 4.1.0)
         'show_record_edit_button' => false,   // Show individual edit button per record (added in 4.1.0)
         'show_record_delete_button' => false, // Show individual delete button per record (added in 4.1.0)

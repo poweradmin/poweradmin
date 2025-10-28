@@ -395,7 +395,7 @@
                             {% endif %}
                         </th>
                         {% if iface_show_record_edit_button or iface_show_record_delete_button %}
-                        <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                        <th class="text-center" style="width: 100px;">{% trans %}Actions{% endtrans %}</th>
                         {% endif %}
                     </tr>
                     </thead>
@@ -426,13 +426,13 @@
             {% endif %}
             <td class="text-center">{% if r['disabled'] %}{% trans %}Yes{% endtrans %}{% else %}{% trans %}No{% endtrans %}{% endif %}</td>
             {% else %}
-            <td class="{{ (iface_show_record_edit_button or iface_show_record_delete_button) ? 'col-sm-2' : 'col-sm-4' }}"><input class="form-control form-control-sm" type="text"
+            <td class="col-sm-2"><input class="form-control form-control-sm" type="text"
                                         name="record[{{ r['id'] }}][name]" value="{{ r['editable_name'] is defined ? r['editable_name'] : r['name'] }}"></td>
             <td class="text-center">
                 <input type="hidden" name="record[{{ r['id'] }}][type]" value="{{ r['type'] }}">
                 <span class="badge {% if r['type'] == 'A' %}bg-primary{% elseif r['type'] == 'AAAA' %}bg-info{% elseif r['type'] == 'CNAME' %}bg-success{% elseif r['type'] == 'MX' %}bg-warning{% elseif r['type'] == 'TXT' %}bg-secondary{% elseif r['type'] == 'PTR' %}bg-danger{% elseif r['type'] == 'SOA' %}bg-dark{% elseif r['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ r['type'] }}</span>
             </td>
-            <td class="{{ (iface_show_record_edit_button or iface_show_record_delete_button) ? '' : 'col-sm-5' }}">
+            <td>
                 <div id="contentInputContainer{{ r['id'] }}">
                     <input id="recordContent{{ r['id'] }}" class="form-control form-control-sm" type="text" name="record[{{ r['id'] }}][content]" value="{{ r['content'] }}">
                 </div>
@@ -459,8 +459,8 @@
                 {% elseif r['type'] == "SOA" and perm_edit != "all" or r['type'] == "NS" and perm_edit == "own_as_client" %}
                 <td>&nbsp;</td>
                 {% else %}
-                <td class="{{ iface_record_comments ? 'col-sm-1' : 'col-sm-2' }} text-end">
-                    <div class="gap-2">
+                <td class="text-center" style="width: 100px;">
+                    <div class="d-flex gap-1 justify-content-center">
                         {% if iface_show_record_edit_button %}
                         <a class="btn btn-outline-primary btn-sm" href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/{{ r['id'] }}/edit">
                             <i class="bi bi-pencil-square text-primary"></i></a>
@@ -484,9 +484,11 @@
                     {{ pagination | raw }}
                 </div>
                 <div class="d-flex gap-2">
+                    {% if not iface_show_record_edit_button %}
                     <button type="button" class="btn btn-primary btn-sm" id="edit-selected-record" disabled onclick="editSelectedRecord()">
                         <i class="bi bi-pencil-square me-1 text-white"></i>{% trans %}Edit selected{% endtrans %}
                     </button>
+                    {% endif %}
                     <form id="delete-records-form" method="post" action="{{ base_url_prefix }}/zones/records/delete" class="d-inline">
                         <input type="hidden" name="_token" value="{{ csrf_token }}">
                         <input type="hidden" name="zone_id" value="{{ zone_id }}">
