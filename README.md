@@ -104,25 +104,4 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 
 ## Contributing
 
-We welcome contributions to improve Poweradmin. If you'd like to contribute, please follow the standard GitHub workflow
-of forking the repository, creating a branch, making changes, and submitting a pull request.
-
-### Contribution Guidelines
-
-1. **Code Quality**: Ensure your code follows the project's style and standards
-2. **Testing**: Test your changes thoroughly before submitting
-3. **Documentation**: Include appropriate documentation for new features
-
-### Attribution Policy
-
-All meaningful contributions are credited in release notes. Please note:
-
-- Sometimes similar ideas come from multiple contributors; implementation quality determines which is merged
-- Contributions may be partially accepted or rewritten to maintain project consistency
-- Even if your exact code isn't used, your ideas will still be credited if they influence the final implementation
-
-Please forgive me if I occasionally miss crediting someone in the release notes. Managing a project and preparing new
-versions while tracking all contributions is challenging. If you notice your contribution hasn't been acknowledged,
-please reach out - I'm always open to corrections and want to ensure everyone receives proper recognition.
-
-Thank you for your contributions!
+We welcome contributions to improve Poweradmin. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines on how to contribute to this project.
