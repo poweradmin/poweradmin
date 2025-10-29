@@ -46,6 +46,7 @@ class ConfigValidator
         }
         $this->validatePdnsApiUrl();
         $this->validatePdnsApiKey();
+        $this->validatePdnsDbName();
 
         return empty($this->errors);
     }
@@ -202,6 +203,23 @@ class ConfigValidator
 
         if (!is_string($apiKey) || empty($apiKey)) {
             $this->errors['pdns_api.key'] = 'PowerDNS API key must be a non-empty string when API URL is configured';
+        }
+    }
+
+    private function validatePdnsDbName(): void
+    {
+        $dbType = $this->getSetting('database', 'type');
+        $pdnsDbName = $this->getSetting('database', 'pdns_db_name');
+
+        // Skip if pdns_db_name is not set or is null (which is valid)
+        if ($pdnsDbName === null) {
+            return;
+        }
+
+        // For PostgreSQL and SQLite, pdns_db_name should be null or empty
+        // Only MySQL supports separate database for PowerDNS tables
+        if (in_array($dbType, ['pgsql', 'sqlite'], true) && !empty($pdnsDbName)) {
+            $this->errors['database.pdns_db_name'] = "pdns_db_name must be null for '$dbType' (only MySQL supports separate database)";
         }
     }
 }

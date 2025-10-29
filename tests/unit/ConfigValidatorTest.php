@@ -764,4 +764,121 @@ class ConfigValidatorTest extends TestCase
         $this->assertArrayHasKey('pdns_api.url', $validator->getErrors());
         $this->assertStringContainsString('http', strtolower($validator->getErrors()['pdns_api.url']));
     }
+
+    public function testPdnsDbNameNullIsValidForPostgresql(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'database' => [
+                'type' => 'pgsql',
+                'pdns_db_name' => null,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getErrors());
+    }
+
+    public function testPdnsDbNameNullIsValidForSqlite(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'database' => [
+                'type' => 'sqlite',
+                'pdns_db_name' => null,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getErrors());
+    }
+
+    public function testPdnsDbNameIsValidForMysql(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'database' => [
+                'type' => 'mysql',
+                'pdns_db_name' => 'pdns',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getErrors());
+    }
+
+    public function testPdnsDbNameShouldBeNullForPostgresql(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'database' => [
+                'type' => 'pgsql',
+                'pdns_db_name' => 'pdns',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('database.pdns_db_name', $validator->getErrors());
+        $this->assertStringContainsString('pgsql', $validator->getErrors()['database.pdns_db_name']);
+    }
+
+    public function testPdnsDbNameShouldBeNullForSqlite(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+            ],
+            'database' => [
+                'type' => 'sqlite',
+                'pdns_db_name' => 'pdns',
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $this->assertArrayHasKey('database.pdns_db_name', $validator->getErrors());
+        $this->assertStringContainsString('sqlite', $validator->getErrors()['database.pdns_db_name']);
+    }
 }
