@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -36,6 +37,7 @@ class ZoneValidationService
 {
     private PDOCommon $db;
     private string $pdnsDbName;
+    private string $dbType;
 
     public function __construct(PDOCommon $db)
     {
@@ -44,6 +46,7 @@ class ZoneValidationService
         // Get PowerDNS database name from configuration
         $config = ConfigurationManager::getInstance();
         $this->pdnsDbName = $config->get('database', 'pdns_db_name', 'pdns');
+        $this->dbType = $config->get('database', 'type');
     }
 
     /**
@@ -112,7 +115,7 @@ class ZoneValidationService
                   FROM {$recordsTable}
                   WHERE domain_id = :zone_id
                   AND type = 'SOA'
-                  AND disabled = 0";
+                  AND disabled = " . DbCompat::boolFalse($this->dbType);
 
         $stmt = $this->db->prepare($query);
         $stmt->execute([':zone_id' => $zoneId]);
@@ -194,7 +197,7 @@ class ZoneValidationService
                   FROM {$recordsTable}
                   WHERE domain_id = :zone_id
                   AND type = 'NS'
-                  AND disabled = 0";
+                  AND disabled = " . DbCompat::boolFalse($this->dbType);
 
         $stmt = $this->db->prepare($query);
         $stmt->execute([':zone_id' => $zoneId]);

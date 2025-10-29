@@ -150,10 +150,11 @@ class DbUserMfaRepository implements UserMfaRepositoryInterface
 
     public function findAllEnabled(): array
     {
+        $db_type = $this->config->get('database', 'type');
         $stmt = $this->db->prepare("
             SELECT id, user_id, enabled, secret, recovery_codes, type, last_used_at, created_at, updated_at
             FROM user_mfa
-            WHERE enabled = 1
+            WHERE enabled = " . DbCompat::boolTrue($db_type) . "
         ");
 
         $stmt->execute();
