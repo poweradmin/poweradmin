@@ -614,19 +614,8 @@
     }
     
     function clearSearch() {
-        // Clear the search query
-        document.getElementById('query').value = '';
-        
-        // Reset select boxes and filters
-        if (document.getElementById('type_filter')) {
-            document.getElementById('type_filter').value = '';
-        }
-        if (document.getElementById('content_filter')) {
-            document.getElementById('content_filter').value = '';
-        }
-        
-        // Submit the form to refresh the page
-        document.search_form.submit();
+        // Reload the page to show initial empty search form
+        window.location.href = '{{ base_url_prefix }}/search';
     }
     
 </script>
