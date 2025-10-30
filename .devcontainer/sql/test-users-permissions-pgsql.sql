@@ -57,7 +57,11 @@ INSERT INTO "domains" ("name", "type") VALUES
 ('admin-zone.example.com', 'MASTER'),
 ('manager-zone.example.com', 'MASTER'),
 ('client-zone.example.com', 'MASTER'),
-('shared-zone.example.com', 'MASTER')
+('shared-zone.example.com', 'MASTER'),
+('xn--verstt-eua3l.info', 'MASTER'),
+('xn--80aejmjbdxvpe2k.net', 'MASTER'),
+('xn--ob0bz7i69i99fm8qgkfwlc.com', 'MASTER'),
+('xn--chtnbin-rwa9e0573b.vn', 'MASTER')
 ON CONFLICT (name) DO NOTHING;
 
 -- Add SOA records for each domain (required for PowerDNS)
@@ -71,7 +75,8 @@ SELECT
     86400,
     0
 FROM "domains" d
-WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com')
+WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com',
+                   'xn--verstt-eua3l.info', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn')
   AND NOT EXISTS (
     SELECT 1 FROM "records" r WHERE r."domain_id" = d."id" AND r."type" = 'SOA'
   );
@@ -80,7 +85,8 @@ WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client
 INSERT INTO "records" ("domain_id", "name", "type", "content", "ttl", "prio")
 SELECT d."id", d."name", 'NS', 'ns1.example.com.', 86400, 0
 FROM "domains" d
-WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com')
+WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com',
+                   'xn--verstt-eua3l.info', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn')
   AND NOT EXISTS (
     SELECT 1 FROM "records" r WHERE r."domain_id" = d."id" AND r."type" = 'NS' AND r."content" = 'ns1.example.com.'
   );
@@ -88,7 +94,8 @@ WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client
 INSERT INTO "records" ("domain_id", "name", "type", "content", "ttl", "prio")
 SELECT d."id", d."name", 'NS', 'ns2.example.com.', 86400, 0
 FROM "domains" d
-WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com')
+WHERE d."name" IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com',
+                   'xn--verstt-eua3l.info', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn')
   AND NOT EXISTS (
     SELECT 1 FROM "records" r WHERE r."domain_id" = d."id" AND r."type" = 'NS' AND r."content" = 'ns2.example.com.'
   );
