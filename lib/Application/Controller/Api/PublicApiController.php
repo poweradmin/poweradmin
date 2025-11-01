@@ -109,7 +109,12 @@ abstract class PublicApiController extends AbstractApiController
 
         // If all authentication methods failed, return 401 Unauthorized
         if (!$authenticated) {
-            $response = $this->returnErrorResponse('Unauthorized: Invalid credentials', 401);
+            // Use V2 response format for V2 controllers, V1 format for V1 controllers
+            if ($this->isV2Controller()) {
+                $response = $this->returnApiError('Unauthorized: Invalid credentials', 401);
+            } else {
+                $response = $this->returnErrorResponse('Unauthorized: Invalid credentials', 401);
+            }
             $response->send();
             exit;
         }
@@ -152,6 +157,16 @@ abstract class PublicApiController extends AbstractApiController
 
         // Authenticate using the API key service
         return $apiKeyService->authenticate($apiKey);
+    }
+
+    /**
+     * Check if this controller is a V2 API controller
+     *
+     * @return bool True if V2 controller, false if V1
+     */
+    protected function isV2Controller(): bool
+    {
+        return str_contains(get_class($this), '\\V2\\');
     }
 
     /**

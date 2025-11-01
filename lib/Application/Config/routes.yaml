@@ -456,14 +456,94 @@ api_v1_permission:
     id: '\d+'
   methods: [GET]
 
+# API v2 Routes - RESTful with wrapped responses
+api_v2_zones:
+  path: /api/v2/zones
+  controller: Poweradmin\Application\Controller\Api\V2\ZonesController::run
+  methods: [GET, POST]
+
+api_v2_zone:
+  path: /api/v2/zones/{id}
+  controller: Poweradmin\Application\Controller\Api\V2\ZonesController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, PUT, DELETE]
+
+api_v2_zone_records:
+  path: /api/v2/zones/{id}/records
+  controller: Poweradmin\Application\Controller\Api\V2\ZonesRecordsController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_v2_zone_record:
+  path: /api/v2/zones/{id}/records/{record_id}
+  controller: Poweradmin\Application\Controller\Api\V2\ZonesRecordsController::run
+  requirements:
+    id: '\d+'
+    record_id: '\d+'
+  methods: [GET, PUT, DELETE]
+
+api_v2_users:
+  path: /api/v2/users
+  controller: Poweradmin\Application\Controller\Api\V2\UsersController::run
+  methods: [GET, POST]
+
+api_v2_user:
+  path: /api/v2/users/{id}
+  controller: Poweradmin\Application\Controller\Api\V2\UsersController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, PUT, PATCH, DELETE]
+
+api_v2_permission_templates:
+  path: /api/v2/permission-templates
+  controller: Poweradmin\Application\Controller\Api\V2\PermissionTemplatesController::run
+  methods: [GET, POST]
+
+api_v2_permission_template:
+  path: /api/v2/permission-templates/{id}
+  controller: Poweradmin\Application\Controller\Api\V2\PermissionTemplatesController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, PUT, DELETE]
+
+api_v2_permissions:
+  path: /api/v2/permissions
+  controller: Poweradmin\Application\Controller\Api\V2\PermissionsController::run
+  methods: [GET]
+
+api_v2_permission:
+  path: /api/v2/permissions/{id}
+  controller: Poweradmin\Application\Controller\Api\V2\PermissionsController::run
+  requirements:
+    id: '\d+'
+  methods: [GET]
+
 # API Documentation
 api_docs:
   path: /api/docs
   controller: Poweradmin\Application\Controller\Api\DocsController::run
 
+# Versioned API Documentation (V1 and V2)
+api_docs_json_v1:
+  path: /api/docs/v1/json
+  controller: Poweradmin\Application\Controller\Api\Docs\JsonController::run
+  defaults:
+    version: V1
+
+api_docs_json_v2:
+  path: /api/docs/v2/json
+  controller: Poweradmin\Application\Controller\Api\Docs\JsonController::run
+  defaults:
+    version: V2
+
+# Legacy endpoint (defaults to V1 for backward compatibility)
 api_docs_json:
   path: /api/docs/json
   controller: Poweradmin\Application\Controller\Api\Docs\JsonController::run
+  defaults:
+    version: V1
 
 # Internal API Routes
 api_internal_validation:

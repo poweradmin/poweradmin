@@ -323,4 +323,37 @@ class ApiPermissionService
         // User with user_view_others can list users
         return $this->userHasPermission($userId, 'user_view_others');
     }
+
+    /**
+     * Get all zone IDs that the user is allowed to view (stateless)
+     *
+     * @param int $userId User ID to check
+     * @return int[]|null Array of zone IDs the user can view, or null if user can view all zones
+     */
+    public function getUserVisibleZoneIds(int $userId): ?array
+    {
+        // Uberuser can view all zones
+        if ($this->userHasPermission($userId, 'user_is_ueberuser')) {
+            return null; // null = all zones
+        }
+
+        // User with zone_content_view_others can view all zones
+        if ($this->userHasPermission($userId, 'zone_content_view_others')) {
+            return null; // null = all zones
+        }
+
+        // User with zone_content_view_own can view only their own zones
+        if ($this->userHasPermission($userId, 'zone_content_view_own')) {
+            $stmt = $this->db->prepare("
+                SELECT domain_id
+                FROM zones
+                WHERE owner = :user_id
+            ");
+            $stmt->execute([':user_id' => $userId]);
+            return $stmt->fetchAll(\PDO::FETCH_COLUMN);
+        }
+
+        // No view permissions - return empty array
+        return [];
+    }
 }

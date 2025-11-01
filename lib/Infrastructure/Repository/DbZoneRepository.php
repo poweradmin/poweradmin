@@ -907,18 +907,143 @@ class DbZoneRepository implements ZoneRepositoryInterface
         return (int)$stmt->fetchColumn();
     }
 
+    /**
+     * Get count of zones filtered by zone IDs (permission-aware)
+     *
+     * @param int[]|null $zoneIds Array of allowed zone IDs, or null for all zones
+     * @return int Count of zones the user can access
+     */
+    public function getZoneCountFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null): int
+    {
+        // If empty array, user can't see any zones
+        if ($zoneIds !== null && empty($zoneIds)) {
+            return 0;
+        }
+
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        // Build query with optional JOIN for permission filtering
+        if ($zoneIds === null && $userId === null) {
+            // No filtering - count all zones
+            $query = "SELECT COUNT(*) FROM $domains_table";
+            $params = [];
+        } elseif ($zoneIds === null && $userId !== null) {
+            // User can see all zones, but use JOIN for consistency
+            $query = "SELECT COUNT(DISTINCT d.id) FROM $domains_table d";
+            $params = [];
+        } else {
+            // User can see only specific zones - use JOIN to avoid SQLite 999 parameter limit
+            $query = "SELECT COUNT(DISTINCT d.id)
+                      FROM $domains_table d
+                      INNER JOIN zones z ON d.id = z.domain_id
+                      WHERE z.owner = :user_id";
+            $params = [':user_id' => $userId];
+        }
+
+        // Add name filter if specified
+        if ($nameFilter !== null && $nameFilter !== '') {
+            $whereClause = ($zoneIds === null && $userId === null) ? 'WHERE' : 'AND';
+            $query .= " $whereClause d.name = :name_filter";
+            $params[':name_filter'] = $nameFilter;
+        }
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute($params);
+
+        return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Get all zones filtered by zone IDs (permission-aware)
+     *
+     * @param int[]|null $zoneIds Array of allowed zone IDs, or null for all zones
+     * @param int|null $userId User ID for permission filtering (used when $zoneIds is array)
+     * @param string|null $nameFilter Optional zone name filter (exact match)
+     * @param int|null $offset Pagination offset
+     * @param int|null $limit Pagination limit
+     * @return array Array of zones the user can access
+     */
+    public function getAllZonesFiltered(?array $zoneIds, ?int $userId = null, ?string $nameFilter = null, ?int $offset = null, ?int $limit = null): array
+    {
+        // If empty array, user can't see any zones
+        if ($zoneIds !== null && empty($zoneIds)) {
+            return [];
+        }
+
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+
+        // Build query based on permission model
+        if ($zoneIds === null && $userId === null) {
+            // No filtering - get all zones (uberuser or view_others permission)
+            $query = "SELECT d.id, d.name, d.type, d.master,
+                             COALESCE(z.owner, 0) as owner,
+                             COUNT(DISTINCT r.id) as record_count
+                      FROM $domains_table d
+                      LEFT JOIN zones z ON d.id = z.domain_id
+                      LEFT JOIN $records_table r ON d.id = r.domain_id";
+            $whereAdded = false;
+            $params = [];
+        } else {
+            // User can see only their own zones - use JOIN to avoid SQLite 999 parameter limit
+            $query = "SELECT d.id, d.name, d.type, d.master,
+                             COALESCE(z.owner, 0) as owner,
+                             COUNT(DISTINCT r.id) as record_count
+                      FROM $domains_table d
+                      INNER JOIN zones z ON d.id = z.domain_id
+                      LEFT JOIN $records_table r ON d.id = r.domain_id
+                      WHERE z.owner = :user_id";
+            $whereAdded = true;
+            $params = [':user_id' => $userId];
+        }
+
+        // Add name filter if specified
+        if ($nameFilter !== null && $nameFilter !== '') {
+            $whereClause = $whereAdded ? 'AND' : 'WHERE';
+            $query .= " $whereClause d.name = :name_filter";
+            $params[':name_filter'] = $nameFilter;
+            $whereAdded = true;
+        }
+
+        // Add GROUP BY and ORDER BY
+        $query .= " GROUP BY d.id, d.name, d.type, d.master, z.owner
+                    ORDER BY d.name";
+
+        // Add pagination only if limit is specified
+        if ($limit !== null && $limit > 0) {
+            $query .= " LIMIT :limit OFFSET :offset";
+        }
+
+        $stmt = $this->db->prepare($query);
+
+        // Bind parameters
+        foreach ($params as $key => $value) {
+            $stmt->bindValue($key, $value, is_int($value) ? PDO::PARAM_INT : PDO::PARAM_STR);
+        }
+
+        // Bind pagination parameters if specified
+        if ($limit !== null && $limit > 0) {
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset ?? 0, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     public function getZoneById(int $zoneId): ?array
     {
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        $query = "SELECT d.id, d.name, d.type, d.master,
+        $query = "SELECT d.id, d.name, d.type, d.master, d.account,
                          COALESCE(z.owner, 0) as owner,
                          COUNT(DISTINCT r.id) as record_count
                   FROM $domains_table d
                   LEFT JOIN zones z ON d.id = z.domain_id
                   LEFT JOIN " . $this->tableNameService->getTable(PdnsTable::RECORDS) . " r ON d.id = r.domain_id
                   WHERE d.id = :id
-                  GROUP BY d.id, d.name, d.type, d.master, z.owner";
+                  GROUP BY d.id, d.name, d.type, d.master, d.account, z.owner";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':id', $zoneId, PDO::PARAM_INT);

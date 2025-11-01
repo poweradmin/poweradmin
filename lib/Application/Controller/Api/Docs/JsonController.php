@@ -40,18 +40,23 @@ use Symfony\Component\HttpFoundation\Response;
  * Class JsonController
  *
  * This controller serves the OpenAPI JSON specification generated from annotations.
+ * Supports both V1 and V2 API versions.
  */
 class JsonController extends BaseController
 {
+    private array $pathParameters;
+
     /**
      * Constructor for JsonController
      *
      * @param array $request The request data
+     * @param array $pathParameters Path parameters (including version)
      */
-    public function __construct(array $request)
+    public function __construct(array $request, array $pathParameters = [])
     {
         // Disable authentication for docs endpoint
         parent::__construct($request, false);
+        $this->pathParameters = $pathParameters;
     }
 
     /**
@@ -73,14 +78,17 @@ class JsonController extends BaseController
             exit;
         }
 
+        // Get version from path parameters, default to v2
+        $version = strtoupper($this->pathParameters['version'] ?? 'v2');
+
         try {
             // Generate OpenAPI specification from annotations
             // Current path: /lib/Application/Controller/Api/Docs/JsonController.php
-            // Target path: /lib/Application/Controller/Api/V1/
-            $scanPath = dirname(dirname(__FILE__)) . '/V1';
+            // Target path: /lib/Application/Controller/Api/V1/ or V2/
+            $scanPath = dirname(dirname(__FILE__)) . '/' . $version;
 
             if (!is_dir($scanPath)) {
-                throw new Exception("Scan path does not exist: " . $scanPath);
+                throw new Exception("API version {$version} does not exist");
             }
 
             $openapi = Generator::scan([$scanPath], [
@@ -96,10 +104,14 @@ class JsonController extends BaseController
                 throw new Exception('No paths found in generated OpenAPI spec');
             }
 
+            // Update version info in the spec
+            $decoded['info']['version'] = $version === 'V1' ? '1.0.0' : '2.0.0';
+            $decoded['info']['title'] = 'Poweradmin API ' . $version;
+
             // Set response headers
             $response = new Response();
             $response->headers->set('Content-Type', 'application/json');
-            $response->setContent($jsonContent);
+            $response->setContent(json_encode($decoded, JSON_PRETTY_PRINT));
             $response->send();
         } catch (Exception $e) {
             // Log the actual error for debugging

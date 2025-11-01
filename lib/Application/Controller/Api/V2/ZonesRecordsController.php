@@ -29,7 +29,7 @@
  * @license     https://opensource.org/licenses/GPL-3.0 GPL
  */
 
-namespace Poweradmin\Application\Controller\Api\V1;
+namespace Poweradmin\Application\Controller\Api\V2;
 
 use Exception;
 use PDO;
@@ -39,6 +39,7 @@ use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
+use Poweradmin\Domain\Service\DnsFormatter;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
@@ -106,8 +107,8 @@ class ZonesRecordsController extends PublicApiController
      * @return JsonResponse The JSON response
      */
     #[OA\Get(
-        path: '/v1/zones/{id}/records',
-        operationId: 'v1ListZoneRecords',
+        path: '/v2/zones/{id}/records',
+        operationId: 'v2ListZoneRecords',
         summary: 'List all records in a zone',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
@@ -143,8 +144,8 @@ class ZonesRecordsController extends PublicApiController
                             new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                             new OA\Property(property: 'ttl', type: 'integer', example: 3600),
                             new OA\Property(property: 'priority', type: 'integer', example: 10),
-                            new OA\Property(property: 'disabled', type: 'integer', example: 0, description: 'Disabled flag (0 = enabled, 1 = disabled)'),
-                            new OA\Property(property: 'auth', type: 'integer', example: 1, description: 'Authoritative flag (1 = authoritative, 0 = non-authoritative/glue record)')
+                            new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)'),
+                            new OA\Property(property: 'auth', type: 'boolean', example: true, description: 'Authoritative flag (true = authoritative, false = non-authoritative/glue record)')
                         ],
                         type: 'object'
                     )
@@ -179,7 +180,7 @@ class ZonesRecordsController extends PublicApiController
                     'id' => (int)$record['id'],
                     'name' => $record['name'],
                     'type' => $record['type'],
-                    'content' => $record['content'],
+                    'content' => $this->stripTxtQuotes($record['content'], $record['type']),
                     'ttl' => (int)$record['ttl'],
                     'priority' => isset($record['prio']) ? (int)$record['prio'] : null,
                     'disabled' => isset($record['disabled']) ? DbCompat::boolFromDb($record['disabled']) : 0,
@@ -199,8 +200,8 @@ class ZonesRecordsController extends PublicApiController
      * @return JsonResponse The JSON response
      */
     #[OA\Get(
-        path: '/v1/zones/{id}/records/{recordId}',
-        operationId: 'v1GetZoneRecord',
+        path: '/v2/zones/{id}/records/{recordId}',
+        operationId: 'v2GetZoneRecord',
         summary: 'Get a specific record',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
@@ -229,14 +230,20 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(
                     property: 'data',
                     properties: [
-                        new OA\Property(property: 'id', type: 'integer', example: 1),
-                        new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
-                        new OA\Property(property: 'type', type: 'string', example: 'A'),
-                        new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
-                        new OA\Property(property: 'ttl', type: 'integer', example: 3600),
-                        new OA\Property(property: 'priority', type: 'integer', example: 10),
-                        new OA\Property(property: 'disabled', type: 'integer', example: 0, description: 'Disabled flag (0 = enabled, 1 = disabled)'),
-                        new OA\Property(property: 'auth', type: 'integer', example: 1, description: 'Authoritative flag (1 = authoritative, 0 = non-authoritative/glue record). Automatically managed by PowerDNS.')
+                        new OA\Property(
+                            property: 'record',
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
+                                new OA\Property(property: 'type', type: 'string', example: 'A'),
+                                new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
+                                new OA\Property(property: 'ttl', type: 'integer', example: 3600),
+                                new OA\Property(property: 'priority', type: 'integer', example: 10),
+                                new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)'),
+                                new OA\Property(property: 'auth', type: 'boolean', example: true, description: 'Authoritative flag (true = authoritative, false = non-authoritative/glue record). Automatically managed by PowerDNS.')
+                            ],
+                            type: 'object'
+                        )
                     ],
                     type: 'object'
                 )
@@ -251,8 +258,8 @@ class ZonesRecordsController extends PublicApiController
     {
         try {
             $userId = $this->getAuthenticatedUserId();
-            $zoneId = $this->pathParameters['id'];
-            $recordId = $this->pathParameters['record_id'];
+            $zoneId = (int)$this->pathParameters['id'];
+            $recordId = (int)$this->pathParameters['record_id'];
 
             // Verify zone exists
             $zone = $this->zoneRepository->getZoneById($zoneId);
@@ -271,18 +278,22 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError('Record not found in this zone', 404);
             }
 
+            $domainRepository = new DomainRepository($this->db, $this->getConfig());
+            $zoneName = $domainRepository->getDomainNameById($zoneId);
+
             $formattedRecord = [
                 'id' => (int)$record['id'],
-                'name' => $record['name'],
+                'zone_id' => $zoneId,
+                'name' => DnsHelper::stripZoneSuffix($record['name'], $zoneName),
                 'type' => $record['type'],
-                'content' => $record['content'],
+                'content' => $this->stripTxtQuotes($record['content'], $record['type']),
                 'ttl' => (int)$record['ttl'],
-                'priority' => isset($record['prio']) ? (int)$record['prio'] : null,
-                'disabled' => isset($record['disabled']) ? DbCompat::boolFromDb($record['disabled']) : 0,
-                'auth' => isset($record['auth']) ? DbCompat::boolFromDb($record['auth']) : 1
+                'priority' => isset($record['prio']) ? (int)$record['prio'] : 0,
+                'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false,
+                'auth' => isset($record['auth']) ? (bool)DbCompat::boolFromDb($record['auth']) : true
             ];
 
-            return $this->returnApiResponse($formattedRecord, true, 'Record retrieved successfully', 200);
+            return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record retrieved successfully', 200);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to retrieve record: ' . $e->getMessage(), 500);
         }
@@ -294,8 +305,8 @@ class ZonesRecordsController extends PublicApiController
      * @return JsonResponse The JSON response
      */
     #[OA\Post(
-        path: '/v1/zones/{id}/records',
-        operationId: 'v1CreateZoneRecord',
+        path: '/v2/zones/{id}/records',
+        operationId: 'v2CreateZoneRecord',
         summary: 'Create a new record in a zone',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
@@ -317,7 +328,7 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content/value'),
                 new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live (TTL) in seconds'),
                 new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)'),
-                new OA\Property(property: 'disabled', type: 'integer', example: 0, description: 'Disabled flag (0 = enabled, 1 = disabled). Default: 0')
+                new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled). Default: false')
             ]
         )
     )]
@@ -337,7 +348,7 @@ class ZonesRecordsController extends PublicApiController
                         new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                         new OA\Property(property: 'ttl', type: 'integer', example: 3600),
                         new OA\Property(property: 'priority', type: 'integer', example: 10),
-                        new OA\Property(property: 'disabled', type: 'integer', example: 0, description: 'Disabled flag (0 = enabled, 1 = disabled)')
+                        new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)')
                     ],
                     type: 'object'
                 )
@@ -402,7 +413,8 @@ class ZonesRecordsController extends PublicApiController
             // Extract and validate input
             $name = trim($input['name']);
             $type = strtoupper(trim($input['type']));
-            $content = trim($input['content']);
+            $originalContent = trim($input['content']);
+            $content = $originalContent;
             $ttl = isset($input['ttl']) ? (int)$input['ttl'] : 3600;
             $priority = isset($input['priority']) ? (int)$input['priority'] : 0;
             $disabled = isset($input['disabled']) ? (int)$input['disabled'] : 0;
@@ -435,6 +447,18 @@ class ZonesRecordsController extends PublicApiController
             $hostnameValidator = new HostnameValidator($this->getConfig());
             $normalizedName = $hostnameValidator->normalizeRecordName($name, $zoneName);
 
+            // Format content using DnsFormatter, with V2 API always auto-quoting TXT records
+            $dnsFormatter = new DnsFormatter($this->getConfig());
+            $content = $dnsFormatter->formatContent($type, $content);
+
+            // V2 API always auto-quotes TXT records, even when txt_auto_quote config is false
+            if ($type === 'TXT') {
+                $content = trim($content);
+                if (!str_starts_with($content, '"') || !str_ends_with($content, '"')) {
+                    $content = '"' . $content . '"';
+                }
+            }
+
             // Validate the record
             $dns_hostmaster = $this->getConfig()->get('dns', 'hostmaster');
             $dns_ttl = $this->getConfig()->get('dns', 'ttl');
@@ -456,8 +480,14 @@ class ZonesRecordsController extends PublicApiController
                 return $this->returnApiError($errorMessage, 400);
             }
 
-            // If validation passes, insert the record
-            $success = $this->insertRecordDirect($zoneId, $normalizedName, $type, $content, $ttl, $priority, $disabled);
+            // Get validated and normalized values from validation result
+            $validatedData = $validationResult->getData();
+            $validatedContent = $validatedData['content'] ?? $content;
+            $validatedTtl = $validatedData['ttl'] ?? $ttl;
+            $validatedPriority = $validatedData['prio'] ?? $priority;
+
+            // If validation passes, insert the record with validated values
+            $success = $this->insertRecordDirect($zoneId, $normalizedName, $type, $validatedContent, $validatedTtl, $validatedPriority, $disabled);
 
             if (!$success) {
                 return $this->returnApiError('Failed to create record', 500);
@@ -467,23 +497,25 @@ class ZonesRecordsController extends PublicApiController
             $records = $this->recordRepository->getRecordsByDomainId($zoneId);
             $newRecord = null;
             foreach ($records as $record) {
-                if ($record['name'] === $name && $record['type'] === $type && $record['content'] === $content) {
+                if ($record['name'] === $normalizedName && $record['type'] === $type && $record['content'] === $validatedContent) {
                     $newRecord = $record;
                     break;
                 }
             }
 
             $responseData = [
-                'record_id' => $newRecord ? (int)$newRecord['id'] : null,
-                'name' => $name,
+                'id' => $newRecord ? (int)$newRecord['id'] : null,
+                'zone_id' => $zoneId,
+                'name' => DnsHelper::stripZoneSuffix($name, $zoneName),
                 'type' => $type,
-                'content' => $content,
-                'ttl' => $ttl,
-                'priority' => $priority,
-                'disabled' => $disabled
+                'content' => $originalContent,
+                'ttl' => $validatedTtl,
+                'priority' => $validatedPriority,
+                'disabled' => (bool)$disabled,
+                'auth' => true
             ];
 
-            return $this->returnApiResponse($responseData, true, 'Record created successfully', 201);
+            return $this->returnApiResponse(['record' => $responseData], true, 'Record created successfully', 201);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to create record: ' . $e->getMessage(), 500);
         }
@@ -495,8 +527,8 @@ class ZonesRecordsController extends PublicApiController
      * @return JsonResponse The JSON response
      */
     #[OA\Put(
-        path: '/v1/zones/{id}/records/{recordId}',
-        operationId: 'v1UpdateZoneRecord',
+        path: '/v2/zones/{id}/records/{recordId}',
+        operationId: 'v2UpdateZoneRecord',
         summary: 'Update an existing record',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
@@ -525,7 +557,7 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
                 new OA\Property(property: 'ttl', type: 'integer', example: 3600),
                 new OA\Property(property: 'priority', type: 'integer', example: 10),
-                new OA\Property(property: 'disabled', type: 'integer', example: 0, description: 'Disabled flag (0 = enabled, 1 = disabled)')
+                new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)')
             ]
         )
     )]
@@ -536,7 +568,26 @@ class ZonesRecordsController extends PublicApiController
             properties: [
                 new OA\Property(property: 'success', type: 'boolean', example: true),
                 new OA\Property(property: 'message', type: 'string', example: 'Record updated successfully'),
-                new OA\Property(property: 'data', type: 'null')
+                new OA\Property(
+                    property: 'data',
+                    properties: [
+                        new OA\Property(
+                            property: 'record',
+                            properties: [
+                                new OA\Property(property: 'id', type: 'integer', example: 1),
+                                new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
+                                new OA\Property(property: 'type', type: 'string', example: 'A'),
+                                new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
+                                new OA\Property(property: 'ttl', type: 'integer', example: 3600),
+                                new OA\Property(property: 'priority', type: 'integer', example: 10),
+                                new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled)'),
+                                new OA\Property(property: 'auth', type: 'boolean', example: true, description: 'Authoritative flag (true = authoritative, false = non-authoritative/glue record)')
+                            ],
+                            type: 'object'
+                        )
+                    ],
+                    type: 'object'
+                )
             ]
         )
     )]
@@ -618,7 +669,26 @@ class ZonesRecordsController extends PublicApiController
                 $this->updateSOASerial($zoneId);
             }
 
-            return $this->returnApiResponse(null, true, 'Record updated successfully', 200);
+            // Get the updated record to return
+            $updatedRecord = $this->recordRepository->getRecordById($recordId);
+
+            // Get zone name for stripping suffix
+            $domainRepository = new DomainRepository($this->db, $this->getConfig());
+            $zoneName = $domainRepository->getDomainNameById($zoneId);
+
+            $formattedRecord = [
+                'id' => (int)$updatedRecord['id'],
+                'zone_id' => $zoneId,
+                'name' => DnsHelper::stripZoneSuffix($updatedRecord['name'], $zoneName),
+                'type' => $updatedRecord['type'],
+                'content' => $this->stripTxtQuotes($updatedRecord['content'], $updatedRecord['type']),
+                'ttl' => (int)$updatedRecord['ttl'],
+                'priority' => isset($updatedRecord['prio']) ? (int)$updatedRecord['prio'] : 0,
+                'disabled' => isset($updatedRecord['disabled']) ? (bool)DbCompat::boolFromDb($updatedRecord['disabled']) : false,
+                'auth' => isset($updatedRecord['auth']) ? (bool)DbCompat::boolFromDb($updatedRecord['auth']) : true
+            ];
+
+            return $this->returnApiResponse(['record' => $formattedRecord], true, 'Record updated successfully', 200);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to update record: ' . $e->getMessage(), 500);
         }
@@ -630,8 +700,8 @@ class ZonesRecordsController extends PublicApiController
      * @return JsonResponse The JSON response
      */
     #[OA\Delete(
-        path: '/v1/zones/{id}/records/{recordId}',
-        operationId: 'v1DeleteZoneRecord',
+        path: '/v2/zones/{id}/records/{recordId}',
+        operationId: 'v2DeleteZoneRecord',
         summary: 'Delete a record',
         tags: ['records'],
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]]
@@ -735,44 +805,67 @@ class ZonesRecordsController extends PublicApiController
      */
     private function insertRecordDirect(int $zoneId, string $name, string $type, string $content, int $ttl, int $priority, int $disabled = 0): bool
     {
-        try {
-            $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $maxRetries = 3;
+        $retryDelay = 50000; // 50ms in microseconds
 
-            // Start transaction
-            $this->db->beginTransaction();
+        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+            try {
+                $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
-            // Insert the record
-            $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio, disabled)
-                      VALUES (:zone_id, :name, :type, :content, :ttl, :prio, :disabled)";
+                // Start transaction
+                $this->db->beginTransaction();
 
-            $stmt = $this->db->prepare($query);
-            $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
-            $stmt->bindValue(':name', $name, PDO::PARAM_STR);
-            $stmt->bindValue(':type', $type, PDO::PARAM_STR);
-            $stmt->bindValue(':content', $content, PDO::PARAM_STR);
-            $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
-            $stmt->bindValue(':prio', $priority, PDO::PARAM_INT);
-            $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
+                // Insert the record
+                $query = "INSERT INTO $records_table (domain_id, name, type, content, ttl, prio, disabled)
+                          VALUES (:zone_id, :name, :type, :content, :ttl, :prio, :disabled)";
 
-            $result = $stmt->execute();
+                $stmt = $this->db->prepare($query);
+                $stmt->bindValue(':zone_id', $zoneId, PDO::PARAM_INT);
+                $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+                $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+                $stmt->bindValue(':content', $content, PDO::PARAM_STR);
+                $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
+                $stmt->bindValue(':prio', $priority, PDO::PARAM_INT);
+                $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
 
-            if (!$result) {
+                $result = $stmt->execute();
+
+                if (!$result) {
+                    $this->db->rollBack();
+                    return false;
+                }
+
+                // Update SOA serial if it's not a SOA record
+                if ($type !== 'SOA') {
+                    $this->updateSOASerial($zoneId);
+                }
+
+                $this->db->commit();
+                return true;
+            } catch (Exception $e) {
                 $this->db->rollBack();
+
+                // Check if this is a deadlock error (1213) or lock wait timeout (1205)
+                $errorCode = $e->getCode();
+                $isDeadlock = ($errorCode == 1213 || $errorCode == '40001' ||
+                              strpos($e->getMessage(), '1213') !== false ||
+                              strpos($e->getMessage(), 'Deadlock') !== false);
+
+                if ($isDeadlock && $attempt < $maxRetries) {
+                    // Log the retry attempt
+                    error_log("Deadlock detected on attempt $attempt, retrying... " . $e->getMessage());
+                    // Wait before retrying with exponential backoff
+                    usleep($retryDelay * $attempt);
+                    continue; // Retry the transaction
+                }
+
+                // Not a deadlock or max retries reached
+                error_log('Failed to insert record: ' . $e->getMessage());
                 return false;
             }
-
-            // Update SOA serial if it's not a SOA record
-            if ($type !== 'SOA') {
-                $this->updateSOASerial($zoneId);
-            }
-
-            $this->db->commit();
-            return true;
-        } catch (Exception $e) {
-            $this->db->rollBack();
-            error_log('Failed to insert record: ' . $e->getMessage());
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -790,5 +883,33 @@ class ZonesRecordsController extends PublicApiController
     private function updateSOASerial(int $zoneId): void
     {
         $this->soaRecordManager->updateSOASerial($zoneId);
+    }
+
+    /**
+     * Strip quotes from single-string TXT records for V2 API responses
+     *
+     * V2 API automatically quotes TXT records on creation, but strips quotes when reading
+     * to provide a clean API experience. Multi-string TXT records (e.g., "part1" "part2")
+     * are preserved as-is since they represent long values split across multiple strings.
+     *
+     * @param string $content The TXT record content from database
+     * @param string $type The record type
+     * @return string The formatted content (quotes stripped for single-string TXT records)
+     */
+    private function stripTxtQuotes(string $content, string $type): string
+    {
+        if ($type !== 'TXT') {
+            return $content;
+        }
+
+        $content = trim($content);
+        $isMultiString = strpos($content, '" "') !== false;
+
+        // Only strip quotes for single-string TXT records
+        if (!$isMultiString && str_starts_with($content, '"') && str_ends_with($content, '"') && strlen($content) > 1) {
+            return substr($content, 1, -1);
+        }
+
+        return $content;
     }
 }

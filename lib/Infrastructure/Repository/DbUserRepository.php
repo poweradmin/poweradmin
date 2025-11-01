@@ -303,9 +303,8 @@ class DbUserRepository implements UserRepository
      */
     public function getUserZones(int $userId): array
     {
-        $query = "SELECT z.id, d.name, d.type 
-                  FROM zones z 
-                  INNER JOIN domains d ON z.domain_id = d.id 
+        $query = "SELECT z.id, z.domain_id
+                  FROM zones z
                   WHERE z.owner = :userId";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':userId' => $userId]);
