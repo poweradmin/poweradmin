@@ -147,6 +147,156 @@ class DnsSecApiProviderTest extends TestCase
     }
 
 
+    public function testGetDsRecordsWithKeysWithoutDsRecords(): void
+    {
+        $zskKey = new CryptoKey(
+            id: 1,
+            type: 'zsk',
+            size: 256,
+            algorithm: 'ECDSAP256SHA256',
+            isActive: true,
+            dnskey: 'example-dnskey-string',
+            ds: null
+        );
+
+        $this->mockApiClient
+            ->expects($this->once())
+            ->method('getZoneKeys')
+            ->willReturn([$zskKey]);
+
+        $result = $this->provider->getDsRecords('example.com');
+
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
+    }
+
+    public function testGetDsRecordsWithKeysWithDsRecords(): void
+    {
+        $kskKey = new CryptoKey(
+            id: 2,
+            type: 'ksk',
+            size: 256,
+            algorithm: 'ECDSAP256SHA256',
+            isActive: true,
+            dnskey: 'example-dnskey-string',
+            ds: ['12345 13 2 abcdef...', '12345 13 4 123456...']
+        );
+
+        $this->mockApiClient
+            ->expects($this->once())
+            ->method('getZoneKeys')
+            ->willReturn([$kskKey]);
+
+        $result = $this->provider->getDsRecords('example.com');
+
+        $this->assertCount(2, $result);
+        $this->assertStringContainsString('example.com. IN DS 12345', $result[0]);
+        $this->assertStringContainsString('example.com. IN DS 12345', $result[1]);
+    }
+
+    public function testGetDsRecordsWithMixedKeyTypes(): void
+    {
+        $zskKey = new CryptoKey(
+            id: 1,
+            type: 'zsk',
+            size: 256,
+            algorithm: 'ECDSAP256SHA256',
+            isActive: true,
+            dnskey: 'zsk-dnskey-string',
+            ds: null
+        );
+
+        $kskKey = new CryptoKey(
+            id: 2,
+            type: 'ksk',
+            size: 256,
+            algorithm: 'ECDSAP256SHA256',
+            isActive: true,
+            dnskey: 'ksk-dnskey-string',
+            ds: ['67890 13 2 fedcba...']
+        );
+
+        $this->mockApiClient
+            ->expects($this->once())
+            ->method('getZoneKeys')
+            ->willReturn([$zskKey, $kskKey]);
+
+        $result = $this->provider->getDsRecords('example.com');
+
+        $this->assertCount(1, $result);
+        $this->assertStringContainsString('example.com. IN DS 67890', $result[0]);
+    }
+
+    public function testGetDnsKeyRecordsWithSingleKey(): void
+    {
+        $key = new CryptoKey(
+            id: 1,
+            type: 'ksk',
+            size: 256,
+            algorithm: 'ECDSAP256SHA256',
+            isActive: true,
+            dnskey: 'example-dnskey-data',
+            ds: ['12345 13 2 abcdef...']
+        );
+
+        $this->mockApiClient
+            ->expects($this->once())
+            ->method('getZoneKeys')
+            ->willReturn([$key]);
+
+        $result = $this->provider->getDnsKeyRecords('example.com');
+
+        $this->assertCount(1, $result);
+        $this->assertEquals('example.com. IN DNSKEY example-dnskey-data', $result[0]);
+    }
+
+    public function testGetDnsKeyRecordsWithMultipleKeys(): void
+    {
+        $zskKey = new CryptoKey(
+            id: 1,
+            type: 'zsk',
+            size: 256,
+            algorithm: 'ECDSAP256SHA256',
+            isActive: true,
+            dnskey: 'zsk-dnskey-data',
+            ds: null
+        );
+
+        $kskKey = new CryptoKey(
+            id: 2,
+            type: 'ksk',
+            size: 256,
+            algorithm: 'ECDSAP256SHA256',
+            isActive: true,
+            dnskey: 'ksk-dnskey-data',
+            ds: ['67890 13 2 fedcba...']
+        );
+
+        $this->mockApiClient
+            ->expects($this->once())
+            ->method('getZoneKeys')
+            ->willReturn([$zskKey, $kskKey]);
+
+        $result = $this->provider->getDnsKeyRecords('example.com');
+
+        $this->assertCount(2, $result);
+        $this->assertEquals('example.com. IN DNSKEY zsk-dnskey-data', $result[0]);
+        $this->assertEquals('example.com. IN DNSKEY ksk-dnskey-data', $result[1]);
+    }
+
+    public function testGetDnsKeyRecordsReturnsEmptyArrayWhenNoKeys(): void
+    {
+        $this->mockApiClient
+            ->expects($this->once())
+            ->method('getZoneKeys')
+            ->willReturn([]);
+
+        $result = $this->provider->getDnsKeyRecords('example.com');
+
+        $this->assertIsArray($result);
+        $this->assertEmpty($result);
+    }
+
     /**
      * Helper method to create mock CryptoKey with specific ID
      */

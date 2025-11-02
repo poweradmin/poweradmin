@@ -31,7 +31,7 @@ class CryptoKey
     private ?string $algorithm;
     private bool $isActive;
     private ?string $dnskey;
-    private ?array $ds;
+    private array $ds;
 
     public function __construct(
         ?int $id,
@@ -48,7 +48,7 @@ class CryptoKey
         $this->algorithm = $algorithm;
         $this->isActive = $isActive;
         $this->dnskey = $dnskey;
-        $this->ds = $ds;
+        $this->ds = $ds ?? [];
     }
 
     public function getId(): ?int
@@ -91,7 +91,7 @@ class CryptoKey
         return $this->dnskey;
     }
 
-    public function getDs(): ?array
+    public function getDs(): array
     {
         return $this->ds;
     }

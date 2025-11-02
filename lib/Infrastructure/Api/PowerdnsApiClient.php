@@ -219,7 +219,10 @@ class PowerdnsApiClient
                 foreach ($response['data'] as $keyData) {
                     // Normalize optional fields from PowerDNS API
                     // ZSK keys don't have DS records, only KSK/CSK do
-                    $keyData['ds'] = $keyData['ds'] ?? [];
+                    $dsRecords = [];
+                    if (array_key_exists('ds', $keyData) && is_array($keyData['ds'])) {
+                        $dsRecords = $keyData['ds'];
+                    }
 
                     $keys[] = new CryptoKey(
                         $keyData['id'],
@@ -228,7 +231,7 @@ class PowerdnsApiClient
                         $keyData['algorithm'],
                         $keyData['active'],
                         $keyData['dnskey'],
-                        $keyData['ds'],
+                        $dsRecords,
                     );
                 }
                 return $keys;
