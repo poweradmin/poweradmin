@@ -17,7 +17,7 @@ concurrency:
 
 env:
   GHCR_IMAGE_NAME: poweradmin
-  DOCKERHUB_IMAGE_NAME: edmondas/poweradmin
+  DOCKERHUB_IMAGE_NAME: poweradmin/poweradmin
 
 jobs:
   build-push:
