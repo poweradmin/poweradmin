@@ -1117,7 +1117,15 @@
         }
 
         if (selectedRecordId) {
-            window.location.href = '{{ base_url_prefix }}/zones/{{ zone_id }}/records/' + selectedRecordId + '/edit';
+            // Validate that the record ID is a valid integer
+            if (!/^\d+$/.test(selectedRecordId)) {
+                console.error('Invalid record ID format');
+                return;
+            }
+
+            // Encode the record ID for safe URL construction
+            const encodedRecordId = encodeURIComponent(selectedRecordId);
+            window.location.href = '{{ base_url_prefix }}/zones/{{ zone_id }}/records/' + encodedRecordId + '/edit';
         }
     }
 
