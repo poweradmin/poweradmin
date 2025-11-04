@@ -1,0 +1,153 @@
+# Auto-labeler configuration for Pull Requests
+# This file defines which labels to automatically apply based on changed files
+
+auth:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'lib/**/Service/*Authentication*.php'
+      - 'lib/**/Service/*Authenticator*.php'
+      - 'lib/**/Middleware/*Authentication*.php'
+      - 'lib/Application/Service/SessionService.php'
+      - 'lib/Application/Service/MfaService.php'
+      - 'lib/Application/Service/LoginAttemptService.php'
+      - 'tests/**/*Authentication*.php'
+      - 'tests/**/*Authenticator*.php'
+
+dns:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'lib/**/Service/*Dns*.php'
+      - 'lib/**/Service/*Zone*.php'
+      - 'lib/**/Service/*Record*.php'
+      - 'lib/**/Repository/*Record*.php'
+      - 'lib/**/Repository/*Zone*.php'
+      - 'lib/Domain/Service/DnsRecordValidationService.php'
+      - 'lib/Domain/Service/DnssecService.php'
+      - 'tests/**/*Record*.php'
+      - 'tests/**/*Zone*.php'
+
+dnssec:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'lib/**/*Dnssec*.php'
+      - 'lib/Domain/Service/DnssecService.php'
+      - 'tests/**/*Dnssec*.php'
+      - 'docs/**/*dnssec*.md'
+      - 'docs/**/*DNSSEC*.md'
+
+api:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'lib/Application/Controller/Api/**'
+      - 'lib/Infrastructure/Service/ApiKeyAuthenticationMiddleware.php'
+      - 'tests/**/Api/**'
+      - 'docs/API*.md'
+
+ui:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'assets/**'
+      - 'css/**'
+      - 'images/**'
+      - 'js/**'
+      - 'style/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'webpack.config.js'
+
+ui-templates:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'templates/**/*.twig'
+      - 'lib/Application/Presenter/**'
+
+dns-templates:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'lib/**/Service/*Template*.php'
+      - 'lib/**/Repository/*Template*.php'
+      - 'tests/**/*Template*.php'
+
+validation:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'lib/**/Validation/**'
+      - 'lib/**/Validator/**'
+      - 'lib/Domain/Service/DnsRecordValidationService.php'
+      - 'lib/Domain/Service/IpAddressValidator.php'
+      - 'tests/**/*Validation*.php'
+
+security:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'lib/**/Service/CsrfTokenService.php'
+      - 'lib/**/Service/MfaService.php'
+      - 'lib/**/Service/PasswordService.php'
+      - 'lib/**/Middleware/**'
+      - 'config/security*.php'
+      - 'SECURITY.md'
+      - 'tests/**/*Security*.php'
+
+integration:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'lib/**/Service/*Ldap*.php'
+      - 'lib/**/Service/*Oidc*.php'
+      - 'lib/**/Service/*Saml*.php'
+      - 'lib/**/Service/*PowerDns*.php'
+      - 'tests/**/*Ldap*.php'
+      - 'tests/**/*Integration*.php'
+
+core:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'lib/Domain/**'
+      - 'lib/Application/Controller/*.php'
+      - 'lib/Application/Service/UserManager.php'
+      - 'lib/Application/Service/ZoneService.php'
+      - 'lib/Application/Service/RecordManager.php'
+      - 'index.php'
+      - 'dynamic_update.php'
+
+infra:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'lib/Infrastructure/**'
+      - '.github/workflows/**'
+      - 'Dockerfile'
+      - 'docker-compose*.yml'
+      - '.dockerignore'
+      - 'nginx.conf.example'
+      - '.htaccess'
+
+i18n:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'locale/**'
+      - 'lib/Application/Service/LocaleService.php'
+      - 'transifex.yml'
+
+docs:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'docs/**'
+      - '*.md'
+      - '!CLAUDE.md'
+      - 'LICENSE'
+      - 'CHANGELOG.md'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+
+installer:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'install/**'
+      - 'lib/Application/Controller/InstallController.php'
+
+dependencies:
+  - changed-files:
+    - any-glob-to-any-file:
+      - 'composer.json'
+      - 'composer.lock'
+      - 'package.json'
+      - 'package-lock.json'

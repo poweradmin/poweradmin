@@ -1,0 +1,57 @@
+# Issue auto-labeling configuration
+# Automatically applies labels to issues based on keywords in title and body
+# Uses regex patterns - case insensitive matching
+
+auth:
+  - '(authentication|login|logout|session|mfa|2fa|two.factor|ldap|saml|oidc|oauth|sso|sign.in|credentials|password)'
+
+dns:
+  - '(dns|zone(?!.template)|record(?!.template)|domain|nameserver|ns\s|a\srecord|aaaa|cname|mx\srecord|txt\srecord|srv\srecord|ptr\srecord)'
+
+dnssec:
+  - '(dnssec|ds\srecord|dnskey|nsec|rrsig|crypto.key|key\ssigning)'
+
+api:
+  - '(api|rest|endpoint|/api/|json\sresponse|swagger|openapi)'
+
+ui:
+  - '(user\sinterface|frontend|ui|design|css|stylesheet|javascript|layout|responsive|button|form\sfield)'
+
+ui-templates:
+  - '(twig|template(?!.zone)(?!.record)|theme|\.html|\.twig|rendering)'
+
+dns-templates:
+  - '(zone\stemplate|record\stemplate|template\szone|template\srecord)'
+
+validation:
+  - '(validation|validate|validator|invalid\s|input\svalidation|form\svalidation|data\svalidation)'
+
+security:
+  - '(security|vulnerability|vulnerabilities|xss|sql\sinjection|csrf|exploit|cve-|penetration|breach|malicious)'
+
+integration:
+  - '(ldap\sintegration|powerdns\sapi|saml\sintegration|oidc\sprovider|oauth\sprovider|external\sservice|third.party)'
+
+core:
+  - '(user\smanagement|permission|role|access\scontrol|überuser|authorization)'
+
+infra:
+  - '(docker|container|deployment|infrastructure|performance|nginx|apache|caddy|server|hosting|ci/cd|github\sactions)'
+
+i18n:
+  - '(translation|locale|language|i18n|internationalization|gettext|transifex|\.po\sfile|\.mo\sfile)'
+
+docs:
+  - '(documentation|readme|guide|tutorial|wiki|changelog|contributing|how\sto)'
+
+installer:
+  - '(install|installation|setup|first\stime|getting\sstarted|install\.php|wizard)'
+
+dependencies:
+  - '(dependency|dependencies|composer|npm|package|library|vendor|node_modules)'
+
+bug:
+  - '(bug|error|crash|issue|problem|broken|not\sworking|fails\sto|exception|fatal|warning\s)'
+
+feature:
+  - '(feature|enhancement|improvement|request|suggest|would\sbe\snice|add\ssupport|implement)'

@@ -1,0 +1,63 @@
+name: Twig Linting
+
+on:
+  push:
+    branches: [ "master" ]
+    paths:
+      - 'templates/**/*.twig'
+      - 'templates/**/*.html'
+      - '.github/workflows/twig-lint.yml'
+  pull_request:
+    branches: [ "master" ]
+    paths:
+      - 'templates/**/*.twig'
+      - 'templates/**/*.html'
+      - '.github/workflows/twig-lint.yml'
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  twigcs:
+    runs-on: ubuntu-latest
+    name: TwigCS Linting
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+          coverage: none
+
+      - name: Get Composer cache directory
+        id: composer-cache-dir
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache-dir.outputs.dir }}
+          key: ${{ runner.os }}-composer-twigcs-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-twigcs-
+            ${{ runner.os }}-composer-
+
+      - name: Install twigcs
+        run: composer require --dev friendsoftwig/twigcs --no-interaction --no-progress
+
+      - name: Run TwigCS linter
+        run: vendor/bin/twigcs templates --reporter githubAction --severity error
+
+      - name: Lint Summary
+        if: always()
+        run: |
+          echo "### Twig Linting Summary ✓" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Linter:** TwigCS (friendsoftwig/twigcs)" >> $GITHUB_STEP_SUMMARY
+          echo "**Templates checked:** templates/ (*.twig, *.html)" >> $GITHUB_STEP_SUMMARY
+          echo "**Severity level:** error" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Twig template validation completed" >> $GITHUB_STEP_SUMMARY
