@@ -269,7 +269,6 @@ When adding new test scenarios:
 
 ## Related Documentation
 
-- See `CLAUDE.md` for overall development guidelines
 - See `DOCKER.md` for Docker deployment configuration
 - See main documentation for Poweradmin architecture details
 
