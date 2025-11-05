@@ -20,3 +20,4 @@ jobs:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           assignees: edmondas
           numOfAssignee: 1
+          abortIfPreviousAssignees: false

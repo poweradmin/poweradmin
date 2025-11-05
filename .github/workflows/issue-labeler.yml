@@ -14,7 +14,16 @@ jobs:
     steps:
       - uses: actions/checkout@v5
 
+      - name: Label Dependency Dashboard
+        if: github.event.issue.title == 'Dependency Dashboard'
+        run: |
+          gh issue edit ${{ github.event.issue.number }} --remove-label bug,feature,auth,dns,ui,infra,i18n,security,api,ui-templates,installer,validation || true
+          gh issue edit ${{ github.event.issue.number }} --add-label dependencies
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - uses: github/issue-labeler@v3.4
+        if: github.event.issue.title != 'Dependency Dashboard'
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/issue-labeler.yml
