@@ -45,6 +45,12 @@
       "matchPackagePatterns": ["^symfony/"],
       "allowedVersions": "<7.0",
       "description": "Symfony 7.0 requires PHP 8.2+, we target PHP 8.1"
+    },
+    {
+      "matchDatasources": ["packagist"],
+      "matchPackageNames": ["pragmarx/google2fa"],
+      "allowedVersions": "<9.0",
+      "description": "google2fa v9 has breaking changes requiring code updates"
     }
   ]
 }
