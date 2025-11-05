@@ -22,8 +22,8 @@
     {
       "matchDatasources": ["packagist"],
       "matchPackageNames": ["phpunit/phpunit"],
-      "allowedVersions": "<12.0",
-      "description": "PHPUnit 12 requires PHP 8.3+"
+      "allowedVersions": "<11.0",
+      "description": "PHPUnit 11+ requires PHP 8.2+, we target PHP 8.1"
     },
     {
       "matchDatasources": ["packagist"],
