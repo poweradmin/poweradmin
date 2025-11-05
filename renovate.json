@@ -12,6 +12,12 @@
     {
       "matchDepTypes": ["require"],
       "groupName": "production dependencies"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackageNames": ["php"],
+      "allowedVersions": "8.2",
+      "description": "Pin PHP Docker image to 8.2.x"
     }
   ]
 }
