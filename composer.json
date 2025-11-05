@@ -42,7 +42,7 @@
     "twbs/bootstrap": "^5.3.7",
     "twbs/bootstrap-icons": "^1.13.1",
     "twig/twig": "^3.21.1",
-    "pragmarx/google2fa": "^8.0.3",
+    "pragmarx/google2fa": "^9.0.0",
     "bacon/bacon-qr-code": "^3.0.1",
     "zircote/swagger-php": "^5.4.2",
     "league/oauth2-client": "^2.8",
