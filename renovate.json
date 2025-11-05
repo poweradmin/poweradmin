@@ -36,6 +36,12 @@
       "matchPackageNames": ["vimeo/psalm"],
       "allowedVersions": "<6.0",
       "description": "Psalm 6.0 requires PHP 8.3+"
+    },
+    {
+      "matchDatasources": ["packagist"],
+      "matchPackagePatterns": ["^symfony/"],
+      "allowedVersions": "<7.0",
+      "description": "Symfony 7.0 requires PHP 8.2+, we target PHP 8.1"
     }
   ]
 }
