@@ -53,6 +53,9 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Fix vendor binary permissions
+      run: chmod +x vendor/bin/*
+
     - name: Security audit
       run: composer audit
 
@@ -121,6 +124,9 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
+
+    - name: Fix vendor binary permissions
+      run: chmod +x vendor/bin/*
 
     - name: Check PHP ${{ matrix.php-version }} compatibility
       run: composer compat:${{ matrix.php-version }}
