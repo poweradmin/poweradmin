@@ -2,5 +2,16 @@
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
     "config:recommended"
+  ],
+  "packageRules": [
+    {
+      "matchDepTypes": ["require-dev"],
+      "groupName": "dev dependencies",
+      "ignorePaths": ["**/vendor/**"]
+    },
+    {
+      "matchDepTypes": ["require"],
+      "groupName": "production dependencies"
+    }
   ]
 }
