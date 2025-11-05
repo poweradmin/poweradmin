@@ -1,0 +1,37 @@
+{
+  "admin": {
+    "username": "admin",
+    "password": "poweradmin123",
+    "description": "Full system administrator (überuser)"
+  },
+  "manager": {
+    "username": "manager",
+    "password": "poweradmin123",
+    "description": "Zone manager with full management of own zones"
+  },
+  "client": {
+    "username": "client",
+    "password": "poweradmin123",
+    "description": "Client editor with limited editing (no SOA/NS)"
+  },
+  "viewer": {
+    "username": "viewer",
+    "password": "poweradmin123",
+    "description": "Read-only access"
+  },
+  "noperm": {
+    "username": "noperm",
+    "password": "poweradmin123",
+    "description": "No permissions (for testing)"
+  },
+  "inactive": {
+    "username": "inactive",
+    "password": "poweradmin123",
+    "description": "Inactive account (cannot login)"
+  },
+  "invalidUser": {
+    "username": "invaliduser",
+    "password": "wrongpassword",
+    "description": "Invalid credentials for negative testing"
+  }
+}

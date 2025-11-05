@@ -52,9 +52,13 @@ package-lock.json
 *.diff
 *.patch
 
-# Cypress
-/cypress/videos
-/cypress/screenshots
+# Playwright
+/playwright-report/
+/playwright/.cache/
+/test-results/
+*.trace.zip
+/blob-report/
+/playwright/.auth/
 
 # PHP tools
 /.php-cs-fixer.cache
