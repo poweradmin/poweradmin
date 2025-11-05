@@ -3,9 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "constraints": {
-    "php": "8.1"
-  },
   "packageRules": [
     {
       "matchDepTypes": ["require-dev"],
