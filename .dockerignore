@@ -48,11 +48,12 @@ logs
 *.log
 npm-debug.log*
 
-# Cypress
-cypress/
-cypress.config.js
-cypress/videos
-cypress/screenshots
+# Playwright E2E tests
+playwright/
+playwright.config.js
+playwright-report/
+test-results/
+*.trace.zip
 
 # Configuration files
 composer.json
