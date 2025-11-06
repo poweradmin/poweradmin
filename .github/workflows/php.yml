@@ -21,8 +21,11 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  setup:
+    name: Setup & Install Dependencies
     runs-on: ubuntu-latest
+    outputs:
+      cache-key: ${{ steps.cache-key.outputs.key }}
 
     steps:
     - uses: actions/checkout@v5
@@ -44,9 +47,6 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-composer-
 
-    - name: Validate PHP syntax
-      run: find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
-
     - name: Validate composer.json and composer.lock
       run: composer validate --strict --check-lock --with-dependencies
 
@@ -56,46 +56,169 @@ jobs:
     - name: Fix vendor binary permissions
       run: chmod +x vendor/bin/*
 
+    - name: Generate cache key
+      id: cache-key
+      run: echo "key=${{ runner.os }}-vendor-${{ hashFiles('**/composer.lock') }}" >> $GITHUB_OUTPUT
+
+    - name: Cache vendor directory
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ steps.cache-key.outputs.key }}
+
+  syntax-check:
+    name: PHP Syntax Validation
+    runs-on: ubuntu-latest
+    needs: setup
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+
+    - name: Validate PHP syntax
+      run: find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
+
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    needs: setup
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+
+    - name: Restore vendor cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ needs.setup.outputs.cache-key }}
+
     - name: Security audit
       run: composer audit
+
+  code-style:
+    name: Code Style Check
+    runs-on: ubuntu-latest
+    needs: setup
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+
+    - name: Restore vendor cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ needs.setup.outputs.cache-key }}
 
     - name: Check code style
       run: composer check:all
 
+  phpstan:
+    name: PHPStan Analysis
+    runs-on: ubuntu-latest
+    needs: setup
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+
+    - name: Restore vendor cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ needs.setup.outputs.cache-key }}
+
     - name: Run PHPStan analysis
       run: composer analyse:phpstan
+
+  psalm:
+    name: Psalm Analysis
+    runs-on: ubuntu-latest
+    needs: setup
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+
+    - name: Restore vendor cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ needs.setup.outputs.cache-key }}
 
     - name: Run Psalm analysis
       run: composer analyse:psalm
 
+  phpmd:
+    name: PHP Mess Detector
+    runs-on: ubuntu-latest
+    needs: setup
+    if: github.event_name == 'workflow_dispatch' && inputs.run_quality_check == true
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+
+    - name: Restore vendor cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ needs.setup.outputs.cache-key }}
+
     - name: Run PHP Mess Detector
-      if: github.event_name == 'workflow_dispatch' && inputs.run_quality_check == true
       run: composer quality:all
+
+  unit-tests:
+    name: Unit Tests
+    runs-on: ubuntu-latest
+    needs: setup
+
+    steps:
+    - uses: actions/checkout@v5
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '8.4'
+
+    - name: Restore vendor cache
+      uses: actions/cache@v4
+      with:
+        path: vendor
+        key: ${{ needs.setup.outputs.cache-key }}
 
     - name: Run test suite
       run: composer tests
 
-    - name: Build Summary
-      if: always()
-      run: |
-        echo "### PHP Build Summary 🚀" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**PHP Version:** 8.4" >> $GITHUB_STEP_SUMMARY
-        echo "**Platform:** ${{ runner.os }}" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Quality Checks:**" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Code style (PHP_CodeSniffer)" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Static analysis (PHPStan level 3)" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Static analysis (Psalm level 4)" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Security audit (Composer)" >> $GITHUB_STEP_SUMMARY
-        echo "- ✅ Unit tests (PHPUnit)" >> $GITHUB_STEP_SUMMARY
-        echo "" >> $GITHUB_STEP_SUMMARY
-        echo "**Workflow:** ${{ github.workflow }} (#${{ github.run_number }})" >> $GITHUB_STEP_SUMMARY
-
   compatibility:
     name: PHP ${{ matrix.php-version }} Compatibility
     runs-on: ubuntu-latest
-    needs: build
+    needs: setup
 
     strategy:
       fail-fast: false
@@ -141,4 +264,76 @@ jobs:
         echo "**Analysis Tool:** Phan (polyfill parser)" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "Compatibility check completed for PHP ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
+
+  summary:
+    name: Validation Summary
+    runs-on: ubuntu-latest
+    needs: [syntax-check, security-audit, code-style, phpstan, psalm, unit-tests, compatibility]
+    if: always()
+
+    steps:
+    - name: Check job statuses
+      run: |
+        echo "### Validation Summary 🚀" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**PHP Version:** 8.4" >> $GITHUB_STEP_SUMMARY
+        echo "**Platform:** ${{ runner.os }}" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Quality Checks:**" >> $GITHUB_STEP_SUMMARY
+
+        if [ "${{ needs.syntax-check.result }}" == "success" ]; then
+          echo "- ✅ PHP Syntax Validation" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ❌ PHP Syntax Validation" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        if [ "${{ needs.security-audit.result }}" == "success" ]; then
+          echo "- ✅ Security Audit" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ❌ Security Audit" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        if [ "${{ needs.code-style.result }}" == "success" ]; then
+          echo "- ✅ Code Style (PHP_CodeSniffer)" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ❌ Code Style (PHP_CodeSniffer)" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        if [ "${{ needs.phpstan.result }}" == "success" ]; then
+          echo "- ✅ Static Analysis (PHPStan level 3)" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ❌ Static Analysis (PHPStan level 3)" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        if [ "${{ needs.psalm.result }}" == "success" ]; then
+          echo "- ✅ Static Analysis (Psalm level 4)" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ❌ Static Analysis (Psalm level 4)" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        if [ "${{ needs.unit-tests.result }}" == "success" ]; then
+          echo "- ✅ Unit Tests (PHPUnit)" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ❌ Unit Tests (PHPUnit)" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        if [ "${{ needs.compatibility.result }}" == "success" ]; then
+          echo "- ✅ PHP Compatibility (8.1, 8.2, 8.3, 8.4)" >> $GITHUB_STEP_SUMMARY
+        else
+          echo "- ❌ PHP Compatibility (8.1, 8.2, 8.3, 8.4)" >> $GITHUB_STEP_SUMMARY
+        fi
+
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Workflow:** ${{ github.workflow }} (#${{ github.run_number }})" >> $GITHUB_STEP_SUMMARY
+
+    - name: Fail if any job failed
+      if: |
+        needs.syntax-check.result != 'success' ||
+        needs.security-audit.result != 'success' ||
+        needs.code-style.result != 'success' ||
+        needs.phpstan.result != 'success' ||
+        needs.psalm.result != 'success' ||
+        needs.unit-tests.result != 'success' ||
+        needs.compatibility.result != 'success'
+      run: exit 1
 
