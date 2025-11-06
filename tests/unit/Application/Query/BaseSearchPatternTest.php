@@ -24,6 +24,7 @@ namespace Poweradmin\Tests\Unit\Application\Query;
 
 use PHPUnit\Framework\TestCase;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use unit\Application\Query\TestableBaseSearch;
 
 /**
  * Test Search Pattern Handling and Wildcard Functionality
