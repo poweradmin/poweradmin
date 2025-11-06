@@ -27,6 +27,17 @@ use Poweradmin\Application\Query\BaseSearch;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
+ * Concrete test class to expose protected methods of BaseSearch
+ */
+class TestableBaseSearch extends BaseSearch
+{
+    public function exposeBuildSearchString(array $parameters): array
+    {
+        return $this->buildSearchString($parameters);
+    }
+}
+
+/**
  * Test Search Pattern Handling and Wildcard Functionality
  *
  * @package Poweradmin\Tests\Unit\Application\Query
@@ -36,20 +47,14 @@ class BaseSearchPatternTest extends TestCase
 {
     private $mockDb;
     private $mockConfig;
-    private BaseSearch $baseSearch;
+    private TestableBaseSearch $baseSearch;
 
     protected function setUp(): void
     {
         $this->mockDb = $this->createMock(\PDO::class);
         $this->mockConfig = $this->createMock(ConfigurationManager::class);
 
-        // Create anonymous class to test protected method
-        $this->baseSearch = new class ($this->mockDb, $this->mockConfig, 'mysql') extends BaseSearch {
-            public function exposeBuildSearchString(array $parameters): array
-            {
-                return $this->buildSearchString($parameters);
-            }
-        };
+        $this->baseSearch = new TestableBaseSearch($this->mockDb, $this->mockConfig, 'mysql');
     }
 
     public function testWildcardSearchAddsPercentSigns(): void
