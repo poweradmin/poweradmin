@@ -23,19 +23,7 @@
 namespace Poweradmin\Tests\Unit\Application\Query;
 
 use PHPUnit\Framework\TestCase;
-use Poweradmin\Application\Query\BaseSearch;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-
-/**
- * Concrete test class to expose protected methods of BaseSearch
- */
-class TestableBaseSearch extends BaseSearch
-{
-    public function exposeBuildSearchString(array $parameters): array
-    {
-        return $this->buildSearchString($parameters);
-    }
-}
 
 /**
  * Test Search Pattern Handling and Wildcard Functionality
