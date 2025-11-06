@@ -95,6 +95,7 @@ jobs:
   compatibility:
     name: PHP ${{ matrix.php-version }} Compatibility
     runs-on: ubuntu-latest
+    needs: build
 
     strategy:
       fail-fast: false
