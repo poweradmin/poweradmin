@@ -5475,17 +5475,17 @@
         },
         {
             "name": "symfony/config",
-            "version": "v6.4.26",
-            "version_normalized": "6.4.26.0",
+            "version": "v6.4.28",
+            "version_normalized": "6.4.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/config.git",
-                "reference": "f18dc5926cb203e125956987def795d052ee774e"
+                "reference": "15947c18ef3ddb0b2f4ec936b9e90e2520979f62"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/config/zipball/f18dc5926cb203e125956987def795d052ee774e",
-                "reference": "f18dc5926cb203e125956987def795d052ee774e",
+                "url": "https://api.github.com/repos/symfony/config/zipball/15947c18ef3ddb0b2f4ec936b9e90e2520979f62",
+                "reference": "15947c18ef3ddb0b2f4ec936b9e90e2520979f62",
                 "shasum": ""
             },
             "require": {
@@ -5505,7 +5505,7 @@
                 "symfony/service-contracts": "^2.5|^3",
                 "symfony/yaml": "^5.4|^6.0|^7.0"
             },
-            "time": "2025-09-11T09:57:09+00:00",
+            "time": "2025-11-01T19:52:02+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -5533,7 +5533,7 @@
             "description": "Helps you find, load, combine, autofill and validate configuration values of any kind",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/config/tree/v6.4.26"
+                "source": "https://github.com/symfony/config/tree/v6.4.28"
             },
             "funding": [
                 {
@@ -6208,17 +6208,17 @@
         },
         {
             "name": "symfony/http-foundation",
-            "version": "v6.4.26",
-            "version_normalized": "6.4.26.0",
+            "version": "v6.4.28",
+            "version_normalized": "6.4.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/http-foundation.git",
-                "reference": "369241591d92bb5dfb4c6ccd6ee94378a45b1521"
+                "reference": "1ba1d5fe6465b0fa39c8627ba552b2c29301aa81"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/369241591d92bb5dfb4c6ccd6ee94378a45b1521",
-                "reference": "369241591d92bb5dfb4c6ccd6ee94378a45b1521",
+                "url": "https://api.github.com/repos/symfony/http-foundation/zipball/1ba1d5fe6465b0fa39c8627ba552b2c29301aa81",
+                "reference": "1ba1d5fe6465b0fa39c8627ba552b2c29301aa81",
                 "shasum": ""
             },
             "require": {
@@ -6240,7 +6240,7 @@
                 "symfony/mime": "^5.4|^6.0|^7.0",
                 "symfony/rate-limiter": "^5.4|^6.0|^7.0"
             },
-            "time": "2025-09-16T08:22:30+00:00",
+            "time": "2025-11-06T10:41:18+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -6268,7 +6268,7 @@
             "description": "Defines an object-oriented layer for the HTTP specification",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/http-foundation/tree/v6.4.26"
+                "source": "https://github.com/symfony/http-foundation/tree/v6.4.28"
             },
             "funding": [
                 {
@@ -7763,17 +7763,17 @@
         },
         {
             "name": "symfony/routing",
-            "version": "v6.4.26",
-            "version_normalized": "6.4.26.0",
+            "version": "v6.4.28",
+            "version_normalized": "6.4.28.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/routing.git",
-                "reference": "6fc4c445f22857d4b8b40a02b73f423ddab295de"
+                "reference": "ae064a6d9cf39507f9797658465a2ca702965fa8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/routing/zipball/6fc4c445f22857d4b8b40a02b73f423ddab295de",
-                "reference": "6fc4c445f22857d4b8b40a02b73f423ddab295de",
+                "url": "https://api.github.com/repos/symfony/routing/zipball/ae064a6d9cf39507f9797658465a2ca702965fa8",
+                "reference": "ae064a6d9cf39507f9797658465a2ca702965fa8",
                 "shasum": ""
             },
             "require": {
@@ -7795,7 +7795,7 @@
                 "symfony/http-foundation": "^5.4|^6.0|^7.0",
                 "symfony/yaml": "^5.4|^6.0|^7.0"
             },
-            "time": "2025-09-11T09:57:09+00:00",
+            "time": "2025-10-31T16:43:05+00:00",
             "type": "library",
             "installation-source": "dist",
             "autoload": {
@@ -7829,7 +7829,7 @@
                 "url"
             ],
             "support": {
-                "source": "https://github.com/symfony/routing/tree/v6.4.26"
+                "source": "https://github.com/symfony/routing/tree/v6.4.28"
             },
             "funding": [
                 {
