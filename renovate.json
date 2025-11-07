@@ -6,15 +6,26 @@
   "constraints": {
     "php": ">=8.1 <8.2"
   },
+  "postUpdateOptions": [
+    "composerInstallNoDev"
+  ],
   "packageRules": [
     {
       "matchDepTypes": ["require-dev"],
       "groupName": "dev dependencies",
-      "ignorePaths": ["**/vendor/**"]
+      "postUpdateOptions": [],
+      "ignorePaths": [
+        "**/vendor/**",
+        "!composer.json",
+        "!composer.lock"
+      ]
     },
     {
       "matchDepTypes": ["require"],
-      "groupName": "production dependencies"
+      "groupName": "production dependencies",
+      "postUpdateOptions": [
+        "composerInstallNoDev"
+      ]
     },
     {
       "matchDatasources": ["docker"],
