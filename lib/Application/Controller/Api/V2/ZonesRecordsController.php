@@ -40,6 +40,8 @@ use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsFormatter;
+use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\ReverseRecordCreator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
@@ -48,6 +50,7 @@ use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -328,7 +331,8 @@ class ZonesRecordsController extends PublicApiController
                 new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content/value'),
                 new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live (TTL) in seconds'),
                 new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)'),
-                new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled). Default: false')
+                new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (false = enabled, true = disabled). Default: false'),
+                new OA\Property(property: 'create_ptr', type: 'boolean', example: false, description: 'Automatically create PTR record (reverse DNS). Only applicable for A and AAAA records. Requires matching reverse zone. Default: false')
             ]
         )
     )]
@@ -418,6 +422,7 @@ class ZonesRecordsController extends PublicApiController
             $ttl = isset($input['ttl']) ? (int)$input['ttl'] : 3600;
             $priority = isset($input['priority']) ? (int)$input['priority'] : 0;
             $disabled = isset($input['disabled']) ? (int)$input['disabled'] : 0;
+            $createPtr = isset($input['create_ptr']) ? (bool)$input['create_ptr'] : false;
 
             // Validate TTL
             if ($ttl < 1) {
@@ -503,6 +508,38 @@ class ZonesRecordsController extends PublicApiController
                 }
             }
 
+            // Create PTR record if requested and record type is A or AAAA
+            $ptrCreated = false;
+            $ptrMessage = '';
+            if ($createPtr && ($type === 'A' || $type === 'AAAA')) {
+                try {
+                    $dnsRecord = new DnsRecord($this->db, $this->getConfig());
+                    $logger = new LegacyLogger($this->db);
+                    $reverseRecordCreator = new ReverseRecordCreator($this->db, $this->getConfig(), $logger, $dnsRecord);
+
+                    $ptrResult = $reverseRecordCreator->createReverseRecord(
+                        $name,
+                        $type,
+                        $validatedContent,
+                        $zoneId,
+                        $validatedTtl,
+                        $validatedPriority
+                    );
+
+                    if ($ptrResult['success']) {
+                        $ptrCreated = true;
+                        $ptrMessage = ' PTR record created successfully.';
+                    } else {
+                        // PTR creation failed but don't fail the entire request
+                        $ptrMessage = ' PTR record creation failed: ' . $ptrResult['message'];
+                    }
+                } catch (Exception $e) {
+                    // Log error but don't fail the entire request
+                    $ptrMessage = ' PTR record creation failed: ' . $e->getMessage();
+                    error_log('PTR record creation failed: ' . $e->getMessage());
+                }
+            }
+
             $responseData = [
                 'id' => $newRecord ? (int)$newRecord['id'] : null,
                 'zone_id' => $zoneId,
@@ -512,10 +549,12 @@ class ZonesRecordsController extends PublicApiController
                 'ttl' => $validatedTtl,
                 'priority' => $validatedPriority,
                 'disabled' => (bool)$disabled,
-                'auth' => true
+                'auth' => true,
+                'ptr_created' => $ptrCreated
             ];
 
-            return $this->returnApiResponse(['record' => $responseData], true, 'Record created successfully', 201);
+            $message = 'Record created successfully' . $ptrMessage;
+            return $this->returnApiResponse(['record' => $responseData], true, $message, 201);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to create record: ' . $e->getMessage(), 500);
         }

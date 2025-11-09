@@ -8,7 +8,8 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-API_TEST_SCRIPT="$SCRIPT_DIR/api-test.sh"
+API_V1_TEST_SCRIPT="$SCRIPT_DIR/api-test.sh"
+API_V2_TEST_SCRIPT="$SCRIPT_DIR/api-v2-test.sh"
 CONFIG_FILE="$SCRIPT_DIR/.env.api-test"
 CONFIG_EXAMPLE="$SCRIPT_DIR/.env.api-test.example"
 
@@ -26,24 +27,29 @@ usage() {
     echo ""
     echo "Commands:"
     echo "  setup              Setup test configuration"
-    echo "  test [SUITE]       Run API tests"
+    echo "  test [VERSION]     Run API tests (v1, v2, or all)"
     echo "  check              Check test prerequisites"
     echo "  clean              Clean up test data"
     echo ""
-    echo "Test Suites:"
-    echo "  all                Run all tests (default)"
-    echo "  auth               Authentication tests only"
-    echo "  users              User management tests"
-    echo "  zones              Zone management tests"
-    echo "  records            Record management tests"
-    echo "  security           Security tests"
-    echo "  performance        Performance tests"
+    echo "API Versions:"
+    echo "  v1                 Run API v1 tests only (98 tests)"
+    echo "  v2                 Run API v2 tests only (RRSets, Bulk, PTR)"
+    echo "  all                Run both v1 and v2 tests (default)"
+    echo ""
+    echo "API v1 Test Suites (use with 'test v1:SUITE'):"
+    echo "  v1:auth            Authentication tests only"
+    echo "  v1:users           User management tests"
+    echo "  v1:zones           Zone management tests"
+    echo "  v1:records         Record management tests"
+    echo "  v1:security        Security tests"
+    echo "  v1:performance     Performance tests"
     echo ""
     echo "Examples:"
     echo "  $0 setup"
-    echo "  $0 test auth"
-    echo "  $0 test all"
-    echo "  $0 load rate-limit"
+    echo "  $0 test v1         # Run all API v1 tests"
+    echo "  $0 test v2         # Run all API v2 tests"
+    echo "  $0 test all        # Run both v1 and v2 tests"
+    echo "  $0 test v1:auth    # Run v1 auth tests only"
     echo "  $0 check"
 }
 
@@ -209,16 +215,70 @@ test_api_connection() {
 }
 
 run_api_tests() {
-    local suite="${1:-all}"
-    
-    echo -e "${BLUE}Running API tests: $suite${NC}"
-    echo ""
-    
-    if [[ ! -x "$API_TEST_SCRIPT" ]]; then
-        chmod +x "$API_TEST_SCRIPT"
-    fi
-    
-    "$API_TEST_SCRIPT" "$suite"
+    local version="${1:-all}"
+
+    case "$version" in
+        "v1")
+            echo -e "${BLUE}Running API v1 tests${NC}"
+            echo ""
+            if [[ ! -x "$API_V1_TEST_SCRIPT" ]]; then
+                chmod +x "$API_V1_TEST_SCRIPT"
+            fi
+            "$API_V1_TEST_SCRIPT" "all"
+            ;;
+        "v1:"*)
+            # Extract suite name after v1:
+            local suite="${version#v1:}"
+            echo -e "${BLUE}Running API v1 tests: $suite${NC}"
+            echo ""
+            if [[ ! -x "$API_V1_TEST_SCRIPT" ]]; then
+                chmod +x "$API_V1_TEST_SCRIPT"
+            fi
+            "$API_V1_TEST_SCRIPT" "$suite"
+            ;;
+        "v2")
+            echo -e "${BLUE}Running API v2 tests${NC}"
+            echo ""
+            if [[ ! -x "$API_V2_TEST_SCRIPT" ]]; then
+                chmod +x "$API_V2_TEST_SCRIPT"
+            fi
+            "$API_V2_TEST_SCRIPT"
+            ;;
+        "all")
+            echo -e "${BLUE}Running all API tests (v1 + v2)${NC}"
+            echo ""
+
+            # Run v1 tests
+            echo -e "${CYAN}═══════════════════════════════════════════${NC}"
+            echo -e "${CYAN}  API v1 Test Suite${NC}"
+            echo -e "${CYAN}═══════════════════════════════════════════${NC}"
+            if [[ ! -x "$API_V1_TEST_SCRIPT" ]]; then
+                chmod +x "$API_V1_TEST_SCRIPT"
+            fi
+            "$API_V1_TEST_SCRIPT" "all"
+            local v1_exit=$?
+
+            echo ""
+            echo -e "${CYAN}═══════════════════════════════════════════${NC}"
+            echo -e "${CYAN}  API v2 Test Suite${NC}"
+            echo -e "${CYAN}═══════════════════════════════════════════${NC}"
+            if [[ ! -x "$API_V2_TEST_SCRIPT" ]]; then
+                chmod +x "$API_V2_TEST_SCRIPT"
+            fi
+            "$API_V2_TEST_SCRIPT"
+            local v2_exit=$?
+
+            # Return failure if either suite failed
+            if [[ $v1_exit -ne 0 ]] || [[ $v2_exit -ne 0 ]]; then
+                return 1
+            fi
+            ;;
+        *)
+            echo -e "${RED}Unknown test version: $version${NC}"
+            echo "Use: v1, v2, or all"
+            return 1
+            ;;
+    esac
 }
 
 

@@ -640,4 +640,40 @@ class RecordRepository implements RecordRepositoryInterface
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
         return $result ?: null;
     }
+
+    /**
+     * Get all records matching a specific name and type (RRSet)
+     *
+     * This method retrieves all records with the same name and type, which form
+     * a Resource Record Set (RRSet) in DNS terms. This is the DNS-correct way
+     * to handle records as PowerDNS treats records with the same name+type as a set.
+     *
+     * @param int $domainId Zone/domain ID
+     * @param string $name Full qualified domain name (FQDN)
+     * @param string $type Record type (A, AAAA, CNAME, etc.)
+     * @return array Array of matching records
+     */
+    public function getRRSetRecords(int $domainId, string $name, string $type): array
+    {
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+
+        // PowerDNS stores all record names in lowercase - normalize for consistent lookup
+        $name = strtolower($name);
+
+        $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth
+                  FROM $records_table
+                  WHERE domain_id = :domain_id
+                    AND name = :name
+                    AND type = :type
+                  ORDER BY content";
+
+        $stmt = $this->db->prepare($query);
+        $stmt->execute([
+            ':domain_id' => $domainId,
+            ':name' => $name,
+            ':type' => $type
+        ]);
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 }

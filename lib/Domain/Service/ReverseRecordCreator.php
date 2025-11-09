@@ -242,10 +242,13 @@ class ReverseRecordCreator
         // Duplicate check moved to the main createReverseRecord method
 
         if ($this->dnsRecord->addRecord($zone_rev_id, $content_rev, 'PTR', $fqdn_name, $ttl, $prio)) {
+            // Determine username for logging - API auth uses userid without userlogin
+            $username = $_SESSION["userlogin"] ?? 'api_user_' . ($_SESSION['userid'] ?? 'unknown');
+
             $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_record record_type:PTR record:%s content:%s ttl:%s priority:%s',
-                $_SERVER['REMOTE_ADDR'],
-                $_SESSION["userlogin"],
+                $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+                $username,
                 $content_rev,
                 $fqdn_name,
                 $ttl,

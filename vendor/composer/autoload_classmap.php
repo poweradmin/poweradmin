@@ -889,6 +889,8 @@ return array(
     'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionsController' => $baseDir . '/lib/Application/Controller/Api/V2/PermissionsController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\UsersController' => $baseDir . '/lib/Application/Controller/Api/V2/UsersController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\ZonesController' => $baseDir . '/lib/Application/Controller/Api/V2/ZonesController.php',
+    'Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRRSetsController' => $baseDir . '/lib/Application/Controller/Api/V2/ZonesRRSetsController.php',
+    'Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRecordsBulkController' => $baseDir . '/lib/Application/Controller/Api/V2/ZonesRecordsBulkController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRecordsController' => $baseDir . '/lib/Application/Controller/Api/V2/ZonesRecordsController.php',
     'Poweradmin\\Application\\Controller\\BatchPtrRecordController' => $baseDir . '/lib/Application/Controller/BatchPtrRecordController.php',
     'Poweradmin\\Application\\Controller\\BulkRecordAddController' => $baseDir . '/lib/Application/Controller/BulkRecordAddController.php',

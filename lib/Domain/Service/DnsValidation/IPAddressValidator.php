@@ -270,41 +270,110 @@ class IPAddressValidator
     /**
      * Validate multiple IP addresses separated by commas
      *
-     * @param string $ips Comma separated IP addresses
+     * Supports PowerDNS IP:port syntax for backward compatibility:
+     * - IPv4: "192.0.0.1, 192.0.0.2"
+     * - IPv4 with port: "192.0.2.1:5300"
+     * - IPv6: "2001:1::1"
+     * - IPv6 with port: "[2001:db8::1]:5300"
+     *
+     * @param string $ips Comma separated IP addresses with optional ports
      *
      * @return ValidationResult ValidationResult with array of validated IPs or error
      */
     public function validateMultipleIPs(string $ips): ValidationResult
     {
-        // Multiple IP records are permitted and must be separated by commas
-        // e.g. "192.0.0.1, 192.0.0.2, 2001:1::1"
-        $multipleIps = explode(",", $ips);
-        $validatedIps = [];
+        if (trim($ips) === '') {
+            return ValidationResult::failure(_('IP address list cannot be empty.'));
+        }
+
+        $servers = array_map('trim', explode(',', $ips));
+        $validatedServers = [];
         $errors = [];
 
-        foreach ($multipleIps as $ip) {
-            $trimmedIp = trim($ip);
+        foreach ($servers as $server) {
+            if (empty($server)) {
+                continue; // Skip empty entries
+            }
 
-            $ipv4Result = $this->validateIPv4($trimmedIp);
+            // Check for IPv6 with port: [2001:db8::1]:5300
+            if (preg_match('/^\[([^\]]+)\]:(\d+)$/', $server, $matches)) {
+                $ip = $matches[1];
+                $port = (int)$matches[2];
+
+                // Use validateIPv6() to preserve RFC checks and deprecated format rejection
+                $ipv6Result = $this->validateIPv6($ip);
+                if (!$ipv6Result->isValid()) {
+                    $errors[] = sprintf(_('Invalid IPv6 address in %s: %s'), $server, $ipv6Result->getFirstError());
+                    continue;
+                }
+
+                if ($port < 1 || $port > 65535) {
+                    $errors[] = sprintf(_('Invalid port number: %d (must be 1-65535)'), $port);
+                    continue;
+                }
+
+                $validatedServers[] = $server;
+                continue;
+            }
+
+            // Check if it's a plain IPv6 address first (before checking for colon as IPv4:port separator)
+            // IPv6 addresses contain colons, so we must validate them before treating colon as port delimiter
+            if (filter_var($server, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)) {
+                // Use the comprehensive validateIPv6() to preserve RFC checks and deprecated format rejection
+                $ipv6Result = $this->validateIPv6($server);
+                if (!$ipv6Result->isValid()) {
+                    $errors[] = $ipv6Result->getFirstError();
+                    continue;
+                }
+                $validatedServers[] = $server;
+                continue;
+            }
+
+            // Check for IPv4 with port: 192.0.2.1:5300
+            if (str_contains($server, ':')) {
+                $parts = explode(':', $server);
+
+                if (count($parts) != 2) {
+                    $errors[] = sprintf(_('Invalid server format: %s (expected IP:port or [IPv6]:port)'), $server);
+                    continue;
+                }
+
+                $ip = $parts[0];
+                $port = (int)$parts[1];
+
+                // Use validateIPv4() for consistency and to preserve any future IPv4-specific checks
+                $ipv4Result = $this->validateIPv4($ip);
+                if (!$ipv4Result->isValid()) {
+                    $errors[] = sprintf(_('Invalid IPv4 address in %s: %s'), $server, $ipv4Result->getFirstError());
+                    continue;
+                }
+
+                if ($port < 1 || $port > 65535) {
+                    $errors[] = sprintf(_('Invalid port number: %d (must be 1-65535)'), $port);
+                    continue;
+                }
+
+                $validatedServers[] = $server;
+                continue;
+            }
+
+            // Plain IPv4 address (backward compatibility)
+            // Note: IPv6 addresses were already handled above, so this should only be IPv4
+            $ipv4Result = $this->validateIPv4($server);
             if ($ipv4Result->isValid()) {
-                $validatedIps[] = $ipv4Result->getData();
+                $validatedServers[] = $server;
                 continue;
             }
 
-            $ipv6Result = $this->validateIPv6($trimmedIp);
-            if ($ipv6Result->isValid()) {
-                $validatedIps[] = $ipv6Result->getData();
-                continue;
-            }
-
-            $errors[] = sprintf(_('IP address "%s" is not valid. Must be a valid IPv4 or IPv6 address.'), $trimmedIp);
+            // If not valid IPv4, report error
+            $errors[] = sprintf(_('Invalid IP address: %s'), $server);
         }
 
         if (count($errors) > 0) {
             return ValidationResult::errors($errors);
         }
 
-        return ValidationResult::success($validatedIps);
+        return ValidationResult::success($validatedServers);
     }
 
     /**

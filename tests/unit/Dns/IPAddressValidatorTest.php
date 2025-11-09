@@ -228,4 +228,196 @@ class IPAddressValidatorTest extends TestCase
         $this->assertTrue($result->isValid());
         $this->assertEquals('2001:db8::1', $result->getData());
     }
+
+    // IP:port format tests (PowerDNS compatibility)
+
+    public function testValidateMultipleIPsWithIPv4Port()
+    {
+        // Single IPv4 with port
+        $result1 = $this->validator->validateMultipleIPs("192.0.2.1:5300");
+        $this->assertTrue($result1->isValid());
+        $this->assertCount(1, $result1->getData());
+        $this->assertEquals(["192.0.2.1:5300"], $result1->getData());
+
+        // Multiple IPv4 with ports
+        $result2 = $this->validator->validateMultipleIPs("192.0.2.1:5300, 192.0.2.2:5301");
+        $this->assertTrue($result2->isValid());
+        $this->assertCount(2, $result2->getData());
+
+        // IPv4 with standard DNS port
+        $result3 = $this->validator->validateMultipleIPs("192.0.2.1:53");
+        $this->assertTrue($result3->isValid());
+
+        // IPv4 with high port number
+        $result4 = $this->validator->validateMultipleIPs("192.0.2.1:65535");
+        $this->assertTrue($result4->isValid());
+
+        // IPv4 with low port number
+        $result5 = $this->validator->validateMultipleIPs("192.0.2.1:1");
+        $this->assertTrue($result5->isValid());
+    }
+
+    public function testValidateMultipleIPsWithIPv6Port()
+    {
+        // Single IPv6 with port
+        $result1 = $this->validator->validateMultipleIPs("[2001:db8::1]:5300");
+        $this->assertTrue($result1->isValid());
+        $this->assertCount(1, $result1->getData());
+        $this->assertEquals(["[2001:db8::1]:5300"], $result1->getData());
+
+        // Multiple IPv6 with ports
+        $result2 = $this->validator->validateMultipleIPs("[2001:db8::1]:5300, [2001:db8::2]:5301");
+        $this->assertTrue($result2->isValid());
+        $this->assertCount(2, $result2->getData());
+
+        // IPv6 with standard DNS port
+        $result3 = $this->validator->validateMultipleIPs("[::1]:53");
+        $this->assertTrue($result3->isValid());
+
+        // IPv6 with high port number
+        $result4 = $this->validator->validateMultipleIPs("[fe80::1]:65535");
+        $this->assertTrue($result4->isValid());
+
+        // Compressed IPv6 with port
+        $result5 = $this->validator->validateMultipleIPs("[::]:5300");
+        $this->assertTrue($result5->isValid());
+    }
+
+    public function testValidateMultipleIPsWithMixedFormats()
+    {
+        // Mix of IPv4 with and without port
+        $result1 = $this->validator->validateMultipleIPs("192.0.2.1, 192.0.2.2:5300");
+        $this->assertTrue($result1->isValid());
+        $this->assertCount(2, $result1->getData());
+
+        // Mix of IPv6 with and without port
+        $result2 = $this->validator->validateMultipleIPs("2001:db8::1, [2001:db8::2]:5300");
+        $this->assertTrue($result2->isValid());
+        $this->assertCount(2, $result2->getData());
+
+        // Mix of IPv4 and IPv6 with ports
+        $result3 = $this->validator->validateMultipleIPs("192.0.2.1:5300, [2001:db8::1]:5301");
+        $this->assertTrue($result3->isValid());
+        $this->assertCount(2, $result3->getData());
+
+        // Mix of all formats
+        $result4 = $this->validator->validateMultipleIPs("192.0.2.1, 192.0.2.2:5300, 2001:db8::1, [2001:db8::2]:5301");
+        $this->assertTrue($result4->isValid());
+        $this->assertCount(4, $result4->getData());
+    }
+
+    public function testValidateMultipleIPsWithInvalidPorts()
+    {
+        // Port too high
+        $result1 = $this->validator->validateMultipleIPs("192.0.2.1:99999");
+        $this->assertFalse($result1->isValid());
+        $this->assertNotEmpty($result1->getErrors());
+
+        // Port zero
+        $result2 = $this->validator->validateMultipleIPs("192.0.2.1:0");
+        $this->assertFalse($result2->isValid());
+
+        // Negative port
+        $result3 = $this->validator->validateMultipleIPs("192.0.2.1:-1");
+        $this->assertFalse($result3->isValid());
+
+        // IPv6 with port too high
+        $result4 = $this->validator->validateMultipleIPs("[2001:db8::1]:70000");
+        $this->assertFalse($result4->isValid());
+
+        // IPv6 with port zero
+        $result5 = $this->validator->validateMultipleIPs("[2001:db8::1]:0");
+        $this->assertFalse($result5->isValid());
+
+        // Port is not a number
+        $result6 = $this->validator->validateMultipleIPs("192.0.2.1:abc");
+        $this->assertFalse($result6->isValid());
+    }
+
+    public function testValidateMultipleIPsWithInvalidPortFormats()
+    {
+        // IPv4 with port but invalid IP
+        $result1 = $this->validator->validateMultipleIPs("300.0.0.1:5300");
+        $this->assertFalse($result1->isValid());
+        $this->assertNotEmpty($result1->getErrors());
+
+        // IPv6 with unclosed bracket
+        $result2 = $this->validator->validateMultipleIPs("[2001:db8::1:5300");
+        $this->assertFalse($result2->isValid());
+
+        // IPv6 with unopened bracket
+        $result3 = $this->validator->validateMultipleIPs("2001:db8::1]:5300");
+        $this->assertFalse($result3->isValid());
+
+        // Invalid IP with port
+        $result4 = $this->validator->validateMultipleIPs("invalid:5300");
+        $this->assertFalse($result4->isValid());
+
+        // Multiple colons in IPv4
+        $result5 = $this->validator->validateMultipleIPs("192.0.2.1:53:00");
+        $this->assertFalse($result5->isValid());
+
+        // IPv6 with invalid characters in brackets
+        $result6 = $this->validator->validateMultipleIPs("[2001:gg8::1]:5300");
+        $this->assertFalse($result6->isValid());
+    }
+
+    public function testValidateMultipleIPsWithEdgeCases()
+    {
+        // Whitespace handling with ports
+        $result1 = $this->validator->validateMultipleIPs(" 192.0.2.1:5300 , 192.0.2.2:5301 ");
+        $this->assertTrue($result1->isValid());
+        $this->assertCount(2, $result1->getData());
+
+        // Empty entries with ports
+        $result2 = $this->validator->validateMultipleIPs("192.0.2.1:5300,,192.0.2.2:5301");
+        $this->assertTrue($result2->isValid());
+        $this->assertCount(2, $result2->getData());
+
+        // Loopback with port
+        $result3 = $this->validator->validateMultipleIPs("127.0.0.1:8080");
+        $this->assertTrue($result3->isValid());
+
+        // IPv6 loopback with port
+        $result4 = $this->validator->validateMultipleIPs("[::1]:8080");
+        $this->assertTrue($result4->isValid());
+
+        // Private network with port
+        $result5 = $this->validator->validateMultipleIPs("10.0.0.1:5300, 172.16.0.1:5301, 192.168.1.1:5302");
+        $this->assertTrue($result5->isValid());
+        $this->assertCount(3, $result5->getData());
+    }
+
+    public function testValidateMultipleIPsBackwardCompatibility()
+    {
+        // Ensure old tests still pass - bare IPs without ports
+        $result1 = $this->validator->validateMultipleIPs("192.0.2.1");
+        $this->assertTrue($result1->isValid());
+
+        $result2 = $this->validator->validateMultipleIPs("192.0.2.1, 192.0.2.2");
+        $this->assertTrue($result2->isValid());
+
+        $result3 = $this->validator->validateMultipleIPs("2001:db8::1");
+        $this->assertTrue($result3->isValid());
+
+        $result4 = $this->validator->validateMultipleIPs("192.0.2.1, 2001:db8::1");
+        $this->assertTrue($result4->isValid());
+
+        // These should still fail
+        $result5 = $this->validator->validateMultipleIPs("invalid");
+        $this->assertFalse($result5->isValid());
+
+        $result6 = $this->validator->validateMultipleIPs("");
+        $this->assertFalse($result6->isValid());
+    }
+
+    public function testAreMultipleValidIPsWithPorts()
+    {
+        // Test the boolean convenience method with ports
+        $this->assertTrue($this->validator->areMultipleValidIPs("192.0.2.1:5300"));
+        $this->assertTrue($this->validator->areMultipleValidIPs("[2001:db8::1]:5300"));
+        $this->assertTrue($this->validator->areMultipleValidIPs("192.0.2.1, 192.0.2.2:5300"));
+        $this->assertFalse($this->validator->areMultipleValidIPs("192.0.2.1:99999"));
+        $this->assertFalse($this->validator->areMultipleValidIPs("invalid:5300"));
+    }
 }

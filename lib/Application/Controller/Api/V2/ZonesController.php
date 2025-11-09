@@ -44,6 +44,7 @@ use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\ZoneManagementService;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 
@@ -54,6 +55,7 @@ class ZonesController extends PublicApiController
     private RecordManagerInterface $recordManager;
     private ZoneManagementService $zoneManagementService;
     private ApiPermissionService $permissionService;
+    private IPAddressValidator $ipAddressValidator;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -62,6 +64,7 @@ class ZonesController extends PublicApiController
         $this->zoneRepository = new DbZoneRepository($this->db, $this->getConfig());
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
         $this->permissionService = new ApiPermissionService($this->db);
+        $this->ipAddressValidator = new IPAddressValidator();
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
@@ -371,9 +374,11 @@ class ZonesController extends PublicApiController
                 ),
                 new OA\Property(
                     property: 'master',
-                    description: 'Master server IP (required for SLAVE zones)',
+                    description: 'Master server(s) for SLAVE zones. Supports: "192.0.2.1" (plain IP), ' .
+                        '"192.0.2.1,192.0.2.2" (multiple), "192.0.2.1:5300" (with port). ' .
+                        'IPv6 with port needs brackets: "[2001:db8::1]:5300"',
                     type: 'string',
-                    example: '192.168.1.1'
+                    example: '192.168.1.1:5300,192.168.1.2:5300'
                 ),
                 new OA\Property(
                     property: 'template',
@@ -462,6 +467,15 @@ class ZonesController extends PublicApiController
             // Extract optional parameters
             $description = $input['description'] ?? '';
             $account = $input['account'] ?? '';
+
+            // Validate master servers format if provided
+            if (!empty($slaveMaster)) {
+                $validation = $this->validateMasterServers($slaveMaster);
+                if (!$validation['valid']) {
+                    return $this->returnApiError('Invalid master servers format: ' . $validation['message'], 400);
+                }
+                $slaveMaster = $validation['normalized'];
+            }
 
             // Check if user has permission to create zones
             if (!$this->permissionService->canCreateZone($userId, $type)) {
@@ -667,6 +681,15 @@ class ZonesController extends PublicApiController
                 }
             }
 
+            // Validate master servers format if provided
+            if (isset($updates['master']) && !empty($updates['master'])) {
+                $validation = $this->validateMasterServers($updates['master']);
+                if (!$validation['valid']) {
+                    return $this->returnApiError('Invalid master servers format: ' . $validation['message'], 400);
+                }
+                $updates['master'] = $validation['normalized'];
+            }
+
             // For SLAVE zones, ensure master IP is provided
             if (isset($updates['type']) && $updates['type'] === 'SLAVE' && empty($updates['master'])) {
                 return $this->returnApiError('Master IP address is required for SLAVE zones', 400);
@@ -765,5 +788,53 @@ class ZonesController extends PublicApiController
         } catch (Exception $e) {
             return $this->returnApiError('Failed to delete zone: ' . $e->getMessage(), 500);
         }
+    }
+
+    /**
+     * Validate master servers format
+     *
+     * Supports both formats for backward compatibility:
+     * - Simple IP list: "192.0.2.1,192.0.2.2"
+     * - IP with port: "192.0.2.1:5300,192.0.2.2:5300"
+     * - Mixed: "192.0.2.1,192.0.2.2:5300" (though not recommended)
+     *
+     * IPv6 addresses must be enclosed in brackets when using port notation:
+     * - "[2001:db8::1]:5300"
+     *
+     * @param string $masters Comma-separated list of master servers
+     * @return array ['valid' => bool, 'message' => string, 'normalized' => string]
+     */
+    private function validateMasterServers(string $masters): array
+    {
+        if (trim($masters) === '') {
+            return ['valid' => true, 'message' => '', 'normalized' => ''];
+        }
+
+        $result = $this->ipAddressValidator->validateMultipleIPs($masters);
+
+        if (!$result->isValid()) {
+            $errors = $result->getErrors();
+            return [
+                'valid' => false,
+                'message' => implode('; ', $errors),
+                'normalized' => ''
+            ];
+        }
+
+        $validatedServers = $result->getData();
+
+        if (empty($validatedServers)) {
+            return [
+                'valid' => false,
+                'message' => 'No valid master servers provided',
+                'normalized' => ''
+            ];
+        }
+
+        return [
+            'valid' => true,
+            'message' => '',
+            'normalized' => implode(',', $validatedServers)
+        ];
     }
 }

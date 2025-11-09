@@ -1262,6 +1262,8 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/PermissionsController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\UsersController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/UsersController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\ZonesController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZonesController.php',
+        'Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRRSetsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZonesRRSetsController.php',
+        'Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRecordsBulkController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZonesRecordsBulkController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\ZonesRecordsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/ZonesRecordsController.php',
         'Poweradmin\\Application\\Controller\\BatchPtrRecordController' => __DIR__ . '/../..' . '/lib/Application/Controller/BatchPtrRecordController.php',
         'Poweradmin\\Application\\Controller\\BulkRecordAddController' => __DIR__ . '/../..' . '/lib/Application/Controller/BulkRecordAddController.php',

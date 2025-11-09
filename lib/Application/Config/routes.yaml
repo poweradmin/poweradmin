@@ -484,6 +484,27 @@ api_v2_zone_record:
     record_id: '\d+'
   methods: [GET, PUT, DELETE]
 
+api_v2_zone_records_bulk:
+  path: /api/v2/zones/{id}/records/bulk
+  controller: Poweradmin\Application\Controller\Api\V2\ZonesRecordsBulkController::run
+  requirements:
+    id: '\d+'
+  methods: [POST]
+
+api_v2_zone_rrsets:
+  path: /api/v2/zones/{id}/rrsets
+  controller: Poweradmin\Application\Controller\Api\V2\ZonesRRSetsController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, PUT, POST, PATCH]
+
+api_v2_zone_rrset:
+  path: /api/v2/zones/{id}/rrsets/{name}/{type}
+  controller: Poweradmin\Application\Controller\Api\V2\ZonesRRSetsController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, DELETE]
+
 api_v2_users:
   path: /api/v2/users
   controller: Poweradmin\Application\Controller\Api\V2\UsersController::run
