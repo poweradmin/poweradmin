@@ -131,8 +131,8 @@ class DnssecProviderFactory
             $apiClient,
             $logger,
             $transformer,
-            $_SERVER['REMOTE_ADDR'],
-            $_SESSION['userlogin']
+            $_SERVER['REMOTE_ADDR'] ?? 'unknown',
+            $_SESSION['userlogin'] ?? 'api_user_' . ($_SESSION['userid'] ?? 'unknown')
         );
     }
 }

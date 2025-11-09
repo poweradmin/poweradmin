@@ -143,24 +143,26 @@ class ZonesRRSetsController extends PublicApiController
                     type: 'array',
                     items: new OA\Items(
                         properties: [
-                            new OA\Property(property: 'name', type: 'string', example: 'www.example.com'),
-                            new OA\Property(property: 'type', type: 'string', example: 'A'),
-                            new OA\Property(property: 'ttl', type: 'integer', example: 3600),
+                            new OA\Property(property: 'name', type: 'string', example: 'www.example.com', description: 'Fully qualified domain name'),
+                            new OA\Property(property: 'type', type: 'string', example: 'A', description: 'Record type'),
+                            new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live in seconds'),
                             new OA\Property(
                                 property: 'records',
                                 type: 'array',
                                 items: new OA\Items(
                                     properties: [
-                                        new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
-                                        new OA\Property(property: 'disabled', type: 'boolean', example: false)
+                                        new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content/value'),
+                                        new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)'),
+                                        new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag')
                                     ],
                                     type: 'object'
                                 ),
-                                description: 'Array of record contents with same name+type'
+                                description: 'Array of record data with same name and type'
                             )
                         ],
                         type: 'object'
-                    )
+                    ),
+                    description: 'Array of RRSets in the zone'
                 )
             ]
         )
@@ -239,22 +241,25 @@ class ZonesRRSetsController extends PublicApiController
                 new OA\Property(
                     property: 'data',
                     properties: [
-                        new OA\Property(property: 'name', type: 'string', example: 'www'),
-                        new OA\Property(property: 'type', type: 'string', example: 'A'),
-                        new OA\Property(property: 'ttl', type: 'integer', example: 3600),
+                        new OA\Property(property: 'name', type: 'string', example: 'www', description: 'Record name without zone suffix'),
+                        new OA\Property(property: 'type', type: 'string', example: 'A', description: 'Record type'),
+                        new OA\Property(property: 'ttl', type: 'integer', example: 3600, description: 'Time to live in seconds'),
                         new OA\Property(
                             property: 'records',
                             type: 'array',
                             items: new OA\Items(
                                 properties: [
-                                    new OA\Property(property: 'content', type: 'string', example: '192.168.1.1'),
-                                    new OA\Property(property: 'disabled', type: 'boolean', example: false)
+                                    new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content/value'),
+                                    new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.)'),
+                                    new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag')
                                 ],
                                 type: 'object'
-                            )
+                            ),
+                            description: 'Array of record data with same name and type'
                         )
                     ],
-                    type: 'object'
+                    type: 'object',
+                    description: 'RRSet object containing all records with the same name and type'
                 )
             ]
         )
@@ -299,7 +304,7 @@ class ZonesRRSetsController extends PublicApiController
             // Format as RRSet
             $rrset = $this->formatRRSet($records, $zoneName);
 
-            return $this->returnApiResponse(['rrset' => $rrset], true, 'RRSet retrieved successfully', 200);
+            return $this->returnApiResponse($rrset, true, 'RRSet retrieved successfully', 200);
         } catch (Exception $e) {
             return $this->returnApiError('Failed to retrieve RRSet: ' . $e->getMessage(), 500);
         }
@@ -338,12 +343,13 @@ class ZonesRRSetsController extends PublicApiController
                     type: 'array',
                     items: new OA\Items(
                         properties: [
-                            new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content'),
+                            new OA\Property(property: 'content', type: 'string', example: '192.168.1.1', description: 'Record content/value'),
+                            new OA\Property(property: 'priority', type: 'integer', example: 10, description: 'Priority (for MX, SRV records, etc.). Default: 0'),
                             new OA\Property(property: 'disabled', type: 'boolean', example: false, description: 'Disabled flag (default: false)')
                         ],
                         type: 'object'
                     ),
-                    description: 'Array of record contents'
+                    description: 'Array of record data'
                 )
             ]
         )
@@ -693,6 +699,7 @@ class ZonesRRSetsController extends PublicApiController
 
             $rrsets[$key]['records'][] = [
                 'content' => $this->stripTxtQuotes($record['content'], $record['type']),
+                'priority' => isset($record['prio']) ? (int)$record['prio'] : 0,
                 'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false
             ];
 
@@ -727,6 +734,7 @@ class ZonesRRSetsController extends PublicApiController
             'records' => array_map(function ($record) {
                 return [
                     'content' => $this->stripTxtQuotes($record['content'], $record['type']),
+                    'priority' => isset($record['prio']) ? (int)$record['prio'] : 0,
                     'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false
                 ];
             }, $records)

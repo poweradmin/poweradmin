@@ -443,7 +443,7 @@ test_bulk_operations() {
             {"action":"create","name":"invalid","type":"A","content":"999.999.999.999","ttl":3600}
         ]
     }'
-    api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records/bulk" "$bulk_invalid" 500 "Bulk with invalid record (atomic rollback)"
+    api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records/bulk" "$bulk_invalid" 400 "Bulk with invalid record (atomic rollback)"
 
     # Test 5: Verify rollback (valid record should not exist)
     api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records" "" 200 "Verify rollback"
@@ -461,7 +461,7 @@ test_bulk_operations() {
 
     # Test 7: Invalid action type
     local bulk_bad_action='{"operations":[{"action":"invalid","name":"test","type":"A","content":"192.0.2.1"}]}'
-    api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records/bulk" "$bulk_bad_action" 500 "Reject invalid action type"
+    api_request_v2 "POST" "/zones/$TEST_ZONE_ID/records/bulk" "$bulk_bad_action" 400 "Reject invalid action type"
 
     # Test 8: Bulk delete all test records
     api_request_v2 "GET" "/zones/$TEST_ZONE_ID/records?type=A" "" 200 "Get all A records"
@@ -521,9 +521,11 @@ test_master_port_syntax() {
     local slave_bad_ipv6='{"name":"slave-bad-ipv6.example.com","type":"SLAVE","masters":"[gggg:hhhh::1]:5300"}'
     api_request_v2 "POST" "/zones" "$slave_bad_ipv6" 400 "Reject invalid IPv6 address"
 
-    # Test 10: IPv6 without brackets (invalid)
+    # Test 10: IPv6 ambiguous format (treated as plain IPv6, not IPv6:port)
+    # Note: "2001:db8::1:5300" is a valid IPv6 address, not IPv6 with port
+    # To specify port with IPv6, brackets are required: "[2001:db8::1]:5300"
     local slave_no_brackets='{"name":"slave-no-brackets.example.com","type":"SLAVE","masters":"2001:db8::1:5300"}'
-    api_request_v2 "POST" "/zones" "$slave_no_brackets" 400 "Reject IPv6 with port but no brackets"
+    api_request_v2 "POST" "/zones" "$slave_no_brackets" 201 "Accept ambiguous IPv6 format (no brackets = plain IPv6)"
 
     # Test 11: Update zone master servers
     if [[ -n "$TEST_SLAVE_ZONE_ID" ]]; then
