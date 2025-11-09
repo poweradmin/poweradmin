@@ -11,21 +11,17 @@
   ],
   "packageRules": [
     {
+      "description": "Dev dependencies - update composer.json and composer.lock only, exclude vendor files",
       "matchDepTypes": ["require-dev"],
       "groupName": "dev dependencies",
       "postUpdateOptions": [],
-      "ignorePaths": [
-        "**/vendor/**",
-        "!composer.json",
-        "!composer.lock"
-      ]
+      "ignorePaths": ["**/vendor/**"]
     },
     {
+      "description": "Production dependencies - update composer files and vendor directory (no dev packages)",
       "matchDepTypes": ["require"],
       "groupName": "production dependencies",
-      "postUpdateOptions": [
-        "composerInstallNoDev"
-      ]
+      "postUpdateOptions": ["composerInstallNoDev"]
     },
     {
       "matchDatasources": ["docker"],
