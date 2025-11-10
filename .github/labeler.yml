@@ -133,15 +133,12 @@ i18n:
 docs:
   - changed-files:
     - any-glob-to-any-file:
-      - 'docs/**'
-      - '*.md'
-      - '!CLAUDE.md'
-      - '!vendor/**'
-      - '!node_modules/**'
       - 'LICENSE'
-      - 'CHANGELOG.md'
       - 'README.md'
       - 'CONTRIBUTING.md'
+      - 'DOCKER.md'
+      - 'DOCKER-SECRETS.md'
+      - 'DONORS.md'
 
 installer:
   - changed-files:
