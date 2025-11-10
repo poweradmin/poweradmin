@@ -11,11 +11,11 @@
   ],
   "packageRules": [
     {
-      "description": "Dev dependencies - update composer.json and composer.lock only, exclude vendor files",
+      "description": "Dev dependencies - update composer.json version only, skip lock file and vendor",
       "matchDepTypes": ["require-dev"],
       "groupName": "dev dependencies",
-      "postUpdateOptions": [],
-      "ignorePaths": ["**/vendor/**"]
+      "updateLockFiles": false,
+      "postUpdateOptions": []
     },
     {
       "description": "Production dependencies - update composer files and vendor directory (no dev packages)",
