@@ -6,9 +6,7 @@
   "constraints": {
     "php": ">=8.1 <8.2"
   },
-  "postUpdateOptions": [
-    "composerInstallNoDev"
-  ],
+  "postUpdateOptions": [],
   "packageRules": [
     {
       "description": "Dev dependencies - update composer.json version only, skip lock file and vendor",
@@ -21,7 +19,7 @@
       "description": "Production dependencies - update composer files and vendor directory (no dev packages)",
       "matchDepTypes": ["require"],
       "groupName": "production dependencies",
-      "postUpdateOptions": ["composerInstallNoDev"]
+      "postUpdateOptions": ["composerUpdateNoDevOption"]
     },
     {
       "matchDatasources": ["docker"],
