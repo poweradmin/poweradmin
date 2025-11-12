@@ -319,3 +319,49 @@ CREATE TABLE `saml_user_links` (
   KEY `idx_saml_subject` (`saml_subject`),
   CONSTRAINT `fk_saml_user_links_user_id` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `user_groups` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(255) NOT NULL,
+  `description` TEXT,
+  `perm_templ` INT NOT NULL,
+  `created_by` INT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_name` (`name`),
+  KEY `idx_perm_templ` (`perm_templ`),
+  KEY `idx_created_by` (`created_by`),
+  KEY `idx_name` (`name`(191)),
+  CONSTRAINT `fk_user_groups_perm_templ` FOREIGN KEY (`perm_templ`) REFERENCES `perm_templ`(`id`),
+  CONSTRAINT `fk_user_groups_created_by` FOREIGN KEY (`created_by`) REFERENCES `users`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `user_group_members` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `group_id` INT UNSIGNED NOT NULL,
+  `user_id` INT NOT NULL,
+  `added_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_member` (`group_id`, `user_id`),
+  KEY `idx_user_id` (`user_id`),
+  KEY `idx_group_id` (`group_id`),
+  CONSTRAINT `fk_user_group_members_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_user_group_members_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `zones_groups` (
+  `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
+  `domain_id` INT NOT NULL,
+  `group_id` INT UNSIGNED NOT NULL,
+  `zone_templ_id` INT,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique_zone_group` (`domain_id`, `group_id`),
+  KEY `idx_domain_id` (`domain_id`),
+  KEY `idx_group_id` (`group_id`),
+  KEY `idx_zone_templ_id` (`zone_templ_id`),
+  CONSTRAINT `fk_zones_groups_domain` FOREIGN KEY (`domain_id`) REFERENCES `domains`(`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_zones_groups_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_zones_groups_zone_templ` FOREIGN KEY (`zone_templ_id`) REFERENCES `zone_templ`(`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
