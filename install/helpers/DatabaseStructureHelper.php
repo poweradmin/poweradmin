@@ -1396,6 +1396,214 @@ class DatabaseStructureHelper
                         'ondelete' => 'CASCADE'
                     )
                 )
+            ),
+            array(
+                'table_name' => 'user_groups',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 1,
+                        'autoincrement' => 1,
+                        'name' => 'id',
+                        'table' => 'user_groups',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'name' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'length' => 255,
+                        'fixed' => 0,
+                        'name' => 'name',
+                        'table' => 'user_groups',
+                        'flags' => 'not_null'
+                    ),
+                    'description' => array(
+                        'type' => 'text',
+                        'notnull' => 0,
+                        'length' => 65535,
+                        'fixed' => 0,
+                        'name' => 'description',
+                        'table' => 'user_groups',
+                        'flags' => ''
+                    ),
+                    'perm_templ' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'perm_templ',
+                        'table' => 'user_groups',
+                        'flags' => 'not_null'
+                    ),
+                    'created_by' => array(
+                        'type' => 'integer',
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'name' => 'created_by',
+                        'table' => 'user_groups',
+                        'flags' => ''
+                    ),
+                    'created_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'created_at',
+                        'table' => 'user_groups',
+                        'flags' => 'not_null'
+                    ),
+                    'updated_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'updated_at',
+                        'table' => 'user_groups',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'unique_name' => array('name'),
+                    'idx_perm_templ' => array('perm_templ'),
+                    'idx_created_by' => array('created_by'),
+                    'idx_name' => array('name')
+                ),
+                'foreign_keys' => array(
+                    'fk_user_groups_perm_templ' => array(
+                        'table' => 'perm_templ',
+                        'fields' => array('perm_templ' => 'id')
+                    ),
+                    'fk_user_groups_created_by' => array(
+                        'table' => 'users',
+                        'fields' => array('created_by' => 'id'),
+                        'ondelete' => 'SET NULL'
+                    )
+                )
+            ),
+            array(
+                'table_name' => 'user_group_members',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 1,
+                        'autoincrement' => 1,
+                        'name' => 'id',
+                        'table' => 'user_group_members',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'group_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 1,
+                        'name' => 'group_id',
+                        'table' => 'user_group_members',
+                        'flags' => 'not_null'
+                    ),
+                    'user_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'user_id',
+                        'table' => 'user_group_members',
+                        'flags' => 'not_null'
+                    ),
+                    'added_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'added_at',
+                        'table' => 'user_group_members',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'unique_member' => array('group_id', 'user_id'),
+                    'idx_user_id' => array('user_id'),
+                    'idx_group_id' => array('group_id')
+                ),
+                'foreign_keys' => array(
+                    'fk_user_group_members_group' => array(
+                        'table' => 'user_groups',
+                        'fields' => array('group_id' => 'id'),
+                        'ondelete' => 'CASCADE'
+                    ),
+                    'fk_user_group_members_user' => array(
+                        'table' => 'users',
+                        'fields' => array('user_id' => 'id'),
+                        'ondelete' => 'CASCADE'
+                    )
+                )
+            ),
+            array(
+                'table_name' => 'zones_groups',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 1,
+                        'autoincrement' => 1,
+                        'name' => 'id',
+                        'table' => 'zones_groups',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'domain_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'domain_id',
+                        'table' => 'zones_groups',
+                        'flags' => 'not_null'
+                    ),
+                    'group_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 1,
+                        'name' => 'group_id',
+                        'table' => 'zones_groups',
+                        'flags' => 'not_null'
+                    ),
+                    'zone_templ_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'name' => 'zone_templ_id',
+                        'table' => 'zones_groups',
+                        'flags' => ''
+                    ),
+                    'created_at' => array(
+                        'type' => 'timestamp',
+                        'notnull' => 1,
+                        'default' => 'current_timestamp',
+                        'name' => 'created_at',
+                        'table' => 'zones_groups',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'unique_zone_group' => array('domain_id', 'group_id'),
+                    'idx_domain_id' => array('domain_id'),
+                    'idx_group_id' => array('group_id'),
+                    'idx_zone_templ_id' => array('zone_templ_id')
+                ),
+                'foreign_keys' => array(
+                    'fk_zones_groups_domain' => array(
+                        'table' => 'domains',
+                        'fields' => array('domain_id' => 'id'),
+                        'ondelete' => 'CASCADE'
+                    ),
+                    'fk_zones_groups_group' => array(
+                        'table' => 'user_groups',
+                        'fields' => array('group_id' => 'id'),
+                        'ondelete' => 'CASCADE'
+                    ),
+                    'fk_zones_groups_zone_templ' => array(
+                        'table' => 'zone_templ',
+                        'fields' => array('zone_templ_id' => 'id'),
+                        'ondelete' => 'SET NULL'
+                    )
+                )
             )
         );
     }
