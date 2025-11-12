@@ -86,10 +86,12 @@ class DbUserGroupMemberRepository implements UserGroupMemberRepositoryInterface
     {
         $query = "DELETE FROM user_group_members WHERE group_id = :group_id AND user_id = :user_id";
         $stmt = $this->db->prepare($query);
-        return $stmt->execute([
+        $stmt->execute([
             ':group_id' => $groupId,
             ':user_id' => $userId
         ]);
+
+        return $stmt->rowCount() > 0;
     }
 
     public function exists(int $groupId, int $userId): bool
