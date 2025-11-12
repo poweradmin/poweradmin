@@ -180,3 +180,66 @@ AND NOT EXISTS (
 );
 
 -- No Access template intentionally has no permissions assigned
+
+-- ============================================================================
+-- Group-Based Permissions (Issue #480)
+-- ============================================================================
+
+-- Table: user_groups
+-- Description: Stores user groups with permission templates
+CREATE TABLE IF NOT EXISTS user_groups (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    perm_templ INTEGER NOT NULL,
+    created_by INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (perm_templ) REFERENCES perm_templ(id),
+    FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_groups_perm_templ ON user_groups(perm_templ);
+CREATE INDEX IF NOT EXISTS idx_user_groups_created_by ON user_groups(created_by);
+CREATE INDEX IF NOT EXISTS idx_user_groups_name ON user_groups(name);
+
+-- Trigger for updated_at column
+CREATE TRIGGER IF NOT EXISTS trigger_user_groups_updated_at
+    AFTER UPDATE ON user_groups
+    FOR EACH ROW
+BEGIN
+    UPDATE user_groups SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
+END;
+
+-- Table: user_group_members
+-- Description: Junction table for user-group membership (many-to-many)
+CREATE TABLE IF NOT EXISTS user_group_members (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    group_id INTEGER NOT NULL,
+    user_id INTEGER NOT NULL,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (group_id, user_id),
+    FOREIGN KEY (group_id) REFERENCES user_groups(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE INDEX IF NOT EXISTS idx_user_group_members_user ON user_group_members(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_group_members_group ON user_group_members(group_id);
+
+-- Table: zones_groups
+-- Description: Junction table for zone-group ownership (many-to-many)
+CREATE TABLE IF NOT EXISTS zones_groups (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    domain_id INTEGER NOT NULL,
+    group_id INTEGER NOT NULL,
+    zone_templ_id INTEGER,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (domain_id, group_id),
+    FOREIGN KEY (domain_id) REFERENCES domains(id) ON DELETE CASCADE,
+    FOREIGN KEY (group_id) REFERENCES user_groups(id) ON DELETE CASCADE,
+    FOREIGN KEY (zone_templ_id) REFERENCES zone_templ(id) ON DELETE SET NULL
+);
+
+CREATE INDEX IF NOT EXISTS idx_zones_groups_domain ON zones_groups(domain_id);
+CREATE INDEX IF NOT EXISTS idx_zones_groups_group ON zones_groups(group_id);
+CREATE INDEX IF NOT EXISTS idx_zones_groups_zone_templ ON zones_groups(zone_templ_id);

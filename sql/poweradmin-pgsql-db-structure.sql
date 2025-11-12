@@ -346,3 +346,56 @@ CREATE TABLE saml_user_links (
 
 CREATE INDEX idx_saml_provider_id ON saml_user_links(provider_id);
 CREATE INDEX idx_saml_subject ON saml_user_links(saml_subject);
+
+
+CREATE TABLE user_groups (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    perm_templ INTEGER NOT NULL REFERENCES perm_templ(id),
+    created_by INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE INDEX idx_user_groups_perm_templ ON user_groups(perm_templ);
+CREATE INDEX idx_user_groups_created_by ON user_groups(created_by);
+CREATE INDEX idx_user_groups_name ON user_groups(name);
+
+CREATE OR REPLACE FUNCTION update_user_groups_updated_at()
+RETURNS TRIGGER AS $$
+BEGIN
+    NEW.updated_at = CURRENT_TIMESTAMP;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_user_groups_updated_at
+    BEFORE UPDATE ON user_groups
+    FOR EACH ROW
+    EXECUTE FUNCTION update_user_groups_updated_at();
+
+CREATE TABLE user_group_members (
+    id SERIAL PRIMARY KEY,
+    group_id INTEGER NOT NULL REFERENCES user_groups(id) ON DELETE CASCADE,
+    user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (group_id, user_id)
+);
+
+CREATE INDEX idx_user_group_members_user ON user_group_members(user_id);
+CREATE INDEX idx_user_group_members_group ON user_group_members(group_id);
+
+CREATE TABLE zones_groups (
+    id SERIAL PRIMARY KEY,
+    domain_id INTEGER NOT NULL REFERENCES domains(id) ON DELETE CASCADE,
+    group_id INTEGER NOT NULL REFERENCES user_groups(id) ON DELETE CASCADE,
+    zone_templ_id INTEGER REFERENCES zone_templ(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    UNIQUE (domain_id, group_id)
+);
+
+CREATE INDEX idx_zones_groups_domain ON zones_groups(domain_id);
+CREATE INDEX idx_zones_groups_group ON zones_groups(group_id);
+CREATE INDEX idx_zones_groups_zone_templ ON zones_groups(zone_templ_id);
+
