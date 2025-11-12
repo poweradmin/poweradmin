@@ -86,10 +86,12 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
     {
         $query = "DELETE FROM zones_groups WHERE domain_id = :domain_id AND group_id = :group_id";
         $stmt = $this->db->prepare($query);
-        return $stmt->execute([
+        $stmt->execute([
             ':domain_id' => $domainId,
             ':group_id' => $groupId
         ]);
+
+        return $stmt->rowCount() > 0;
     }
 
     public function exists(int $domainId, int $groupId): bool

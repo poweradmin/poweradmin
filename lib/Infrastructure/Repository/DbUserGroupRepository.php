@@ -92,7 +92,9 @@ class DbUserGroupRepository implements UserGroupRepositoryInterface
     {
         $query = "DELETE FROM user_groups WHERE id = :id";
         $stmt = $this->db->prepare($query);
-        return $stmt->execute([':id' => $id]);
+        $stmt->execute([':id' => $id]);
+
+        return $stmt->rowCount() > 0;
     }
 
     public function countMembers(int $groupId): int
