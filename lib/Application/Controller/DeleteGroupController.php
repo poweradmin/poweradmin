@@ -61,7 +61,8 @@ class DeleteGroupController extends BaseController
     public function run(): void
     {
         // Only admin (überuser) can delete groups
-        $userId = $_SESSION['userid'];
+        $userContext = $this->getUserContextService();
+        $userId = $userContext->getLoggedInUserId();
         if (!UserManager::isAdmin($userId, $this->db)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to delete groups.'));
             $this->redirect('/groups');
@@ -110,7 +111,11 @@ class DeleteGroupController extends BaseController
     private function showDeleteConfirmation(int $groupId): void
     {
         try {
-            $group = $this->groupService->getGroupById($groupId);
+            $userContext = $this->getUserContextService();
+            $userId = $userContext->getLoggedInUserId();
+            $isAdmin = UserManager::isAdmin($userId, $this->db);
+
+            $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
                 $this->setMessage('list_groups', 'error', _('Group not found.'));
                 $this->redirect('/groups');
@@ -141,7 +146,7 @@ class DeleteGroupController extends BaseController
 
             $this->render('delete_group.html', [
                 'group' => $group,
-                'member_count' => $details['member_count'],
+                'member_count' => $details['memberCount'],
                 'zone_count' => $impact['zoneCount'],
                 'zones_sample' => $zoneDetails,
                 'show_more_zones' => $impact['zoneCount'] > 20,

@@ -62,7 +62,8 @@ class ManageGroupMembersController extends BaseController
     public function run(): void
     {
         // Only admin (überuser) can manage group membership
-        $userId = $_SESSION['userid'];
+        $userContext = $this->getUserContextService();
+        $userId = $userContext->getLoggedInUserId();
         if (!UserManager::isAdmin($userId, $this->db)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to manage group members.'));
             $this->redirect('/groups');
@@ -200,7 +201,11 @@ class ManageGroupMembersController extends BaseController
     private function showManageMembers(int $groupId): void
     {
         try {
-            $group = $this->groupService->getGroupById($groupId);
+            $userContext = $this->getUserContextService();
+            $userId = $userContext->getLoggedInUserId();
+            $isAdmin = UserManager::isAdmin($userId, $this->db);
+
+            $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
                 $this->setMessage('list_groups', 'error', _('Group not found.'));
                 $this->redirect('/groups');
