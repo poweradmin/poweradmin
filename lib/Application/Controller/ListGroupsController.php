@@ -59,7 +59,8 @@ class ListGroupsController extends BaseController
 
     private function showGroupsList(): void
     {
-        $userId = $_SESSION['userid'];
+        $userContext = $this->getUserContextService();
+        $userId = $userContext->getLoggedInUserId();
         $isAdmin = UserManager::isAdmin($userId, $this->db);
 
         // Get groups based on user role (admin sees all, normal users see only their groups)
@@ -74,8 +75,8 @@ class ListGroupsController extends BaseController
                 'name' => $group->getName(),
                 'description' => $group->getDescription(),
                 'perm_templ_id' => $group->getPermTemplId(),
-                'member_count' => $details['member_count'],
-                'zone_count' => $details['zone_count'],
+                'member_count' => $details['memberCount'],
+                'zone_count' => $details['zoneCount'],
                 'created_at' => $group->getCreatedAt(),
             ];
         }

@@ -61,7 +61,8 @@ class ManageGroupZonesController extends BaseController
     public function run(): void
     {
         // Any admin can manage zone ownership (same as user ownership model)
-        $userId = $_SESSION['userid'];
+        $userContext = $this->getUserContextService();
+        $userId = $userContext->getLoggedInUserId();
         if (!UserManager::isAdmin($userId, $this->db)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to manage zone ownership.'));
             $this->redirect('/groups');
@@ -199,7 +200,11 @@ class ManageGroupZonesController extends BaseController
     private function showManageZones(int $groupId): void
     {
         try {
-            $group = $this->groupService->getGroupById($groupId);
+            $userContext = $this->getUserContextService();
+            $userId = $userContext->getLoggedInUserId();
+            $isAdmin = UserManager::isAdmin($userId, $this->db);
+
+            $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
                 $this->setMessage('list_groups', 'error', _('Group not found.'));
                 $this->redirect('/groups');

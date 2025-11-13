@@ -67,7 +67,8 @@ class EditGroupController extends BaseController
     public function run(): void
     {
         // Only admin (überuser) can edit groups
-        $userId = $_SESSION['userid'];
+        $userContext = $this->getUserContextService();
+        $userId = $userContext->getLoggedInUserId();
         if (!UserManager::isAdmin($userId, $this->db)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to edit groups.'));
             $this->redirect('/groups');
@@ -117,7 +118,11 @@ class EditGroupController extends BaseController
     private function renderEditGroupForm(int $groupId): void
     {
         try {
-            $group = $this->groupService->getGroupById($groupId);
+            $userContext = $this->getUserContextService();
+            $userId = $userContext->getLoggedInUserId();
+            $isAdmin = UserManager::isAdmin($userId, $this->db);
+
+            $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {
                 $this->setMessage('list_groups', 'error', _('Group not found.'));
                 $this->redirect('/groups');

@@ -56,7 +56,8 @@ class AddGroupController extends BaseController
     public function run(): void
     {
         // Only admin (überuser) can create groups
-        $userId = $_SESSION['userid'];
+        $userContext = $this->getUserContextService();
+        $userId = $userContext->getLoggedInUserId();
         if (!UserManager::isAdmin($userId, $this->db)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to create groups.'));
             $this->redirect('/groups');
@@ -84,7 +85,8 @@ class AddGroupController extends BaseController
         $name = $this->request->getPostParam('name');
         $description = $this->request->getPostParam('description', '');
         $permTemplId = (int)$this->request->getPostParam('perm_templ');
-        $userId = $_SESSION['userid'];
+        $userContext = $this->getUserContextService();
+        $userId = $userContext->getLoggedInUserId();
 
         try {
             $group = $this->groupService->createGroup($name, $permTemplId, $description, $userId);
