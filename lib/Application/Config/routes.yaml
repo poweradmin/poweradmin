@@ -264,6 +264,44 @@ delete_perm_templ:
     id: '\d+'
   methods: [GET, POST]
 
+# User Groups
+list_groups:
+  path: /groups
+  controller: Poweradmin\Application\Controller\ListGroupsController::run
+
+add_group:
+  path: /groups/add
+  controller: Poweradmin\Application\Controller\AddGroupController::run
+  methods: [GET, POST]
+
+edit_group:
+  path: /groups/{id}/edit
+  controller: Poweradmin\Application\Controller\EditGroupController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+delete_group:
+  path: /groups/{id}/delete
+  controller: Poweradmin\Application\Controller\DeleteGroupController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+manage_group_members:
+  path: /groups/{id}/members
+  controller: Poweradmin\Application\Controller\ManageGroupMembersController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+manage_group_zones:
+  path: /groups/{id}/zones
+  controller: Poweradmin\Application\Controller\ManageGroupZonesController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
 # User Logs
 users_logs:
   path: /users/logs
