@@ -61,7 +61,7 @@ class ListGroupsController extends BaseController
     {
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        $isAdmin = UserManager::isAdmin($userId, $this->db);
+        $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
 
         // Get groups based on user role (admin sees all, normal users see only their groups)
         $groups = $this->groupService->listGroups($userId, $isAdmin);

@@ -38,7 +38,11 @@ class DbUserGroupMemberRepository implements UserGroupMemberRepositoryInterface
 
     public function findByGroupId(int $groupId): array
     {
-        $query = "SELECT * FROM user_group_members WHERE group_id = :group_id ORDER BY added_at DESC";
+        $query = "SELECT ugm.*, u.username, u.fullname, u.email
+                  FROM user_group_members ugm
+                  LEFT JOIN users u ON ugm.user_id = u.id
+                  WHERE ugm.group_id = :group_id
+                  ORDER BY ugm.joined_at DESC";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':group_id' => $groupId]);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -48,7 +52,7 @@ class DbUserGroupMemberRepository implements UserGroupMemberRepositoryInterface
 
     public function findByUserId(int $userId): array
     {
-        $query = "SELECT * FROM user_group_members WHERE user_id = :user_id ORDER BY added_at DESC";
+        $query = "SELECT * FROM user_group_members WHERE user_id = :user_id ORDER BY joined_at DESC";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':user_id' => $userId]);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -68,7 +72,7 @@ class DbUserGroupMemberRepository implements UserGroupMemberRepositoryInterface
             return $this->mapRowToEntity($row);
         }
 
-        $query = "INSERT INTO user_group_members (group_id, user_id, added_at)
+        $query = "INSERT INTO user_group_members (group_id, user_id, joined_at)
                   VALUES (:group_id, :user_id, CURRENT_TIMESTAMP)";
 
         $stmt = $this->db->prepare($query);
@@ -112,7 +116,10 @@ class DbUserGroupMemberRepository implements UserGroupMemberRepositoryInterface
             (int)$row['id'],
             (int)$row['group_id'],
             (int)$row['user_id'],
-            $row['added_at'] ?? null
+            $row['joined_at'] ?? null,
+            $row['username'] ?? null,
+            $row['fullname'] ?? null,
+            $row['email'] ?? null
         );
     }
 }

@@ -69,7 +69,7 @@ class EditGroupController extends BaseController
         // Only admin (überuser) can edit groups
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isAdmin($userId, $this->db)) {
+        if (!UserManager::isUserSuperuser($this->db, $userId)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to edit groups.'));
             $this->redirect('/groups');
             return;
@@ -120,7 +120,7 @@ class EditGroupController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isAdmin($userId, $this->db);
+            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {

@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\ZoneGroupService;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,14 +43,16 @@ use Exception;
 class GroupZonesController extends PublicApiController
 {
     private ZoneGroupService $zoneGroupService;
+    private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
         parent::__construct($request, $pathParameters);
 
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db);
+        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config);
         $groupRepository = new DbUserGroupRepository($this->db);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
+        $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
     /**
@@ -121,7 +124,7 @@ class GroupZonesController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     private function listZones(): JsonResponse
     {
-        if (!$this->isAdmin()) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
             return $this->returnApiError('Only administrators can view group zones', 403);
         }
 
@@ -189,13 +192,13 @@ class GroupZonesController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     private function assignZone(): JsonResponse
     {
-        if (!$this->isAdmin()) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
             return $this->returnApiError('Only administrators can assign zones to groups', 403);
         }
 
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $data = $this->getRequestData();
+            $data = json_decode($this->request->getContent(), true);
 
             if (empty($data['zone_id'])) {
                 return $this->returnApiError('Missing required field: zone_id', 400);
@@ -255,7 +258,7 @@ class GroupZonesController extends PublicApiController
     #[OA\Response(response: 404, description: 'Zone assignment not found')]
     private function unassignZone(): JsonResponse
     {
-        if (!$this->isAdmin()) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
             return $this->returnApiError('Only administrators can unassign zones from groups', 403);
         }
 

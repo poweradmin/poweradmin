@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupMembershipService;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -42,6 +43,7 @@ use Exception;
 class GroupMembersController extends PublicApiController
 {
     private GroupMembershipService $membershipService;
+    private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -50,6 +52,7 @@ class GroupMembersController extends PublicApiController
         $memberRepository = new DbUserGroupMemberRepository($this->db);
         $groupRepository = new DbUserGroupRepository($this->db);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
+        $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
     /**
@@ -122,7 +125,7 @@ class GroupMembersController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     private function listMembers(): JsonResponse
     {
-        if (!$this->isAdmin()) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
             return $this->returnApiError('Only administrators can view group members', 403);
         }
 
@@ -191,13 +194,13 @@ class GroupMembersController extends PublicApiController
     #[OA\Response(response: 403, description: 'Forbidden')]
     private function addMember(): JsonResponse
     {
-        if (!$this->isAdmin()) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
             return $this->returnApiError('Only administrators can add group members', 403);
         }
 
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $data = $this->getRequestData();
+            $data = json_decode($this->request->getContent(), true);
 
             if (empty($data['user_id'])) {
                 return $this->returnApiError('Missing required field: user_id', 400);
@@ -257,7 +260,7 @@ class GroupMembersController extends PublicApiController
     #[OA\Response(response: 404, description: 'Member not found')]
     private function removeMember(): JsonResponse
     {
-        if (!$this->isAdmin()) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
             return $this->returnApiError('Only administrators can remove group members', 403);
         }
 

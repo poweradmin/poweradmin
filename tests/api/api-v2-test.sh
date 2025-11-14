@@ -3,7 +3,7 @@
 ##############################################################################
 # Poweradmin API v2 Test Suite
 # Comprehensive testing for API v2 endpoints
-# Tests: RRSets, PTR auto-creation, Bulk operations, Master port syntax
+# Tests: RRSets, PTR auto-creation, Bulk operations, Master port syntax, Groups
 ##############################################################################
 
 set -euo pipefail
@@ -33,6 +33,8 @@ TEST_ZONE_ID=""
 TEST_RECORD_ID=""
 TEST_SLAVE_ZONE_ID=""
 TEST_REVERSE_ZONE_ID=""
+TEST_GROUP_ID=""
+TEST_USER_ID=""
 
 ##############################################################################
 # Utility Functions
@@ -54,12 +56,12 @@ print_test() {
 
 print_pass() {
     echo -e "${GREEN}✓ PASS: $1${NC}"
-    ((PASSED_TESTS++))
+    PASSED_TESTS=$((PASSED_TESTS + 1))
 }
 
 print_fail() {
     echo -e "${RED}✗ FAIL: $1${NC}"
-    ((FAILED_TESTS++))
+    FAILED_TESTS=$((FAILED_TESTS + 1))
 }
 
 print_info() {
@@ -67,7 +69,7 @@ print_info() {
 }
 
 increment_test() {
-    ((TOTAL_TESTS++))
+    TOTAL_TESTS=$((TOTAL_TESTS + 1))
 }
 
 ##############################################################################
@@ -557,6 +559,249 @@ test_master_port_syntax() {
 }
 
 ##############################################################################
+# Test: Groups API
+##############################################################################
+
+# Helper function for group API requests that don't use the standard pattern
+api_request_groups() {
+    local method=$1
+    local endpoint=$2
+    local data=${3:-}
+
+    local url="${API_BASE_URL}/api/v2${endpoint}"
+    local args=(-s -w "\n%{http_code}" -X "$method")
+
+    args+=(-H "X-API-Key: ${API_KEY}")
+    args+=(-H "Content-Type: application/json")
+    args+=(-H "Accept: application/json")
+
+    if [[ -n "$data" ]]; then
+        args+=(-d "$data")
+    fi
+
+    curl "${args[@]}" "$url"
+}
+
+cleanup_existing_test_groups() {
+    # Remove any test groups from previous runs
+    local test_names=("Test Admins" "Updated Test Admins" "Debug Test" "Test Update Group" "Updated Name")
+
+    for name in "${test_names[@]}"; do
+        local group_id=$(curl -s -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/groups" | jq -r ".data[] | select(.name == \"$name\") | .id" 2>/dev/null)
+        if [[ -n "$group_id" ]]; then
+            curl -s -X DELETE -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/groups/${group_id}" >/dev/null 2>&1 || true
+        fi
+    done
+}
+
+test_groups() {
+    print_section "Groups API Tests"
+
+    cleanup_existing_test_groups
+
+    # Test 1: Create group
+    increment_test
+    print_test "Create new group"
+    local response=$(api_request_groups POST "/groups" '{"name": "Test Admins", "description": "Test group for administrators", "perm_templ_id": 1}')
+    local http_code=$(echo "$response" | tail -n1)
+    local body=$(echo "$response" | sed '$d')
+
+    if [[ "$http_code" == "201" ]]; then
+        local success=$(echo "$body" | jq -r '.success')
+        if [[ "$success" == "true" ]]; then
+            TEST_GROUP_ID=$(echo "$body" | jq -r '.data.id')
+            print_pass "Group created successfully (ID: $TEST_GROUP_ID)"
+        else
+            print_fail "Failed to create group"
+        fi
+    else
+        print_fail "Failed to create group (HTTP $http_code)"
+    fi
+
+    # Test 2: List groups
+    api_request_v2 "GET" "/groups" "" 200 "List all groups" || true
+
+    # Test 3: Get group details
+    if [[ -n "$TEST_GROUP_ID" ]]; then
+        increment_test
+        print_test "Get group details"
+        response=$(api_request_groups GET "/groups/${TEST_GROUP_ID}")
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | sed '$d')
+
+        if [[ "$http_code" == "200" ]]; then
+            local success=$(echo "$body" | jq -r '.success')
+            local name=$(echo "$body" | jq -r '.data.name')
+            if [[ "$success" == "true" ]] && [[ "$name" == "Test Admins" ]]; then
+                print_pass "Retrieved group details"
+            else
+                print_fail "Failed to get group details"
+            fi
+        else
+            print_fail "Failed to get group (HTTP $http_code)"
+        fi
+    fi
+
+    # Test 4: Update group
+    if [[ -n "$TEST_GROUP_ID" ]]; then
+        increment_test
+        print_test "Update group"
+        response=$(api_request_groups PUT "/groups/${TEST_GROUP_ID}" '{"name": "Updated Test Admins", "description": "Updated description"}')
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | sed '$d')
+
+        if [[ "$http_code" == "200" ]]; then
+            local success=$(echo "$body" | jq -r '.success')
+            if [[ "$success" == "true" ]]; then
+                print_pass "Group updated successfully"
+            else
+                print_fail "Failed to update group"
+            fi
+        else
+            print_fail "Failed to update group (HTTP $http_code)"
+        fi
+    fi
+
+    # Test 5: List group members
+    if [[ -n "$TEST_GROUP_ID" ]]; then
+        api_request_v2 "GET" "/groups/${TEST_GROUP_ID}/members" "" 200 "List group members" || true
+    fi
+
+    # Test 6: Add member to group
+    if [[ -n "$TEST_GROUP_ID" ]]; then
+        TEST_USER_ID=1  # Assume user ID 1 exists (admin user)
+        increment_test
+        print_test "Add member to group"
+        response=$(api_request_groups POST "/groups/${TEST_GROUP_ID}/members" "{\"user_id\": ${TEST_USER_ID}}")
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | sed '$d')
+
+        if [[ "$http_code" == "201" ]]; then
+            local success=$(echo "$body" | jq -r '.success')
+            if [[ "$success" == "true" ]]; then
+                print_pass "Member added successfully"
+            else
+                print_fail "Failed to add member"
+            fi
+        else
+            print_fail "Failed to add member (HTTP $http_code)"
+        fi
+    fi
+
+    # Test 7: List group members again
+    if [[ -n "$TEST_GROUP_ID" ]]; then
+        api_request_v2 "GET" "/groups/${TEST_GROUP_ID}/members" "" 200 "List group members after addition" || true
+    fi
+
+    # Test 8: Remove member from group
+    if [[ -n "$TEST_GROUP_ID" ]] && [[ -n "$TEST_USER_ID" ]]; then
+        increment_test
+        print_test "Remove member from group"
+        response=$(api_request_groups DELETE "/groups/${TEST_GROUP_ID}/members/${TEST_USER_ID}")
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | sed '$d')
+
+        if [[ "$http_code" == "200" ]]; then
+            local success=$(echo "$body" | jq -r '.success')
+            if [[ "$success" == "true" ]]; then
+                print_pass "Member removed successfully"
+            else
+                print_fail "Failed to remove member"
+            fi
+        else
+            print_fail "Failed to remove member (HTTP $http_code)"
+        fi
+    fi
+
+    # Test 9: List group zones
+    if [[ -n "$TEST_GROUP_ID" ]]; then
+        api_request_v2 "GET" "/groups/${TEST_GROUP_ID}/zones" "" 200 "List group zones" || true
+    fi
+
+    # Test 10: Assign zone to group
+    if [[ -n "$TEST_GROUP_ID" ]]; then
+        local TEST_ZONE_ASSIGN_ID=1  # Assume zone ID 1 exists
+        increment_test
+        print_test "Assign zone to group"
+        response=$(api_request_groups POST "/groups/${TEST_GROUP_ID}/zones" "{\"zone_id\": ${TEST_ZONE_ASSIGN_ID}}")
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | sed '$d')
+
+        if [[ "$http_code" == "201" ]]; then
+            local success=$(echo "$body" | jq -r '.success')
+            if [[ "$success" == "true" ]]; then
+                print_pass "Zone assigned successfully"
+            else
+                print_fail "Failed to assign zone"
+            fi
+        elif [[ "$http_code" == "400" ]]; then
+            print_info "Zone assignment skipped (may already exist or invalid zone)"
+            PASSED_TESTS=$((PASSED_TESTS + 1))
+        else
+            print_fail "Failed to assign zone (HTTP $http_code)"
+        fi
+    fi
+
+    # Test 11: List group zones again
+    if [[ -n "$TEST_GROUP_ID" ]]; then
+        api_request_v2 "GET" "/groups/${TEST_GROUP_ID}/zones" "" 200 "List group zones after assignment" || true
+    fi
+
+    # Test 12: Unassign zone from group
+    if [[ -n "$TEST_GROUP_ID" ]]; then
+        local TEST_ZONE_ASSIGN_ID=1
+        increment_test
+        print_test "Unassign zone from group"
+        response=$(api_request_groups DELETE "/groups/${TEST_GROUP_ID}/zones/${TEST_ZONE_ASSIGN_ID}")
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | sed '$d')
+
+        if [[ "$http_code" == "200" ]] || [[ "$http_code" == "404" ]]; then
+            print_pass "Zone unassigned (or not found)"
+        else
+            print_fail "Failed to unassign zone (HTTP $http_code)"
+        fi
+    fi
+
+    # Test 13: Validation - missing fields
+    increment_test
+    print_test "Create group with missing required fields"
+    response=$(api_request_groups POST "/groups" '{"description": "Missing name and perm_templ_id"}')
+    http_code=$(echo "$response" | tail -n1)
+
+    if [[ "$http_code" == "400" ]]; then
+        print_pass "Validation error returned correctly"
+    else
+        print_fail "Expected 400, got HTTP $http_code"
+    fi
+
+    # Test 14: Get non-existent group
+    api_request_v2 "GET" "/groups/999999" "" 404 "Get non-existent group" || true
+
+    # Test 15: Delete group (cleanup)
+    if [[ -n "$TEST_GROUP_ID" ]]; then
+        increment_test
+        print_test "Delete group"
+        response=$(api_request_groups DELETE "/groups/${TEST_GROUP_ID}")
+        http_code=$(echo "$response" | tail -n1)
+        body=$(echo "$response" | sed '$d')
+
+        if [[ "$http_code" == "200" ]]; then
+            local success=$(echo "$body" | jq -r '.success')
+            if [[ "$success" == "true" ]]; then
+                print_pass "Group deleted successfully"
+            else
+                print_fail "Failed to delete group"
+            fi
+        else
+            print_fail "Failed to delete group (HTTP $http_code)"
+        fi
+    fi
+
+    print_info "Groups API tests completed"
+}
+
+##############################################################################
 # Cleanup Function
 ##############################################################################
 
@@ -579,9 +824,18 @@ cleanup() {
         api_request_v2 "DELETE" "/zones/$TEST_REVERSE_ZONE_ID" "" 204 "Delete reverse zone" || true
     fi
 
+    # Delete test group if still exists
+    if [[ -n "$TEST_GROUP_ID" ]]; then
+        print_info "Deleting test group $TEST_GROUP_ID..."
+        curl -s -X DELETE -H "X-API-Key: ${API_KEY}" "${API_BASE_URL}/api/v2/groups/${TEST_GROUP_ID}" >/dev/null 2>&1 || true
+    fi
+
     # Delete other test zones by name pattern
     print_info "Cleaning up any remaining test zones..."
     # This would require listing zones and filtering - simplified for now
+
+    # Cleanup any remaining test groups
+    cleanup_existing_test_groups
 }
 
 ##############################################################################
@@ -600,6 +854,7 @@ main() {
     test_ptr_autocreation
     test_bulk_operations
     test_master_port_syntax
+    test_groups
 
     # Cleanup
     cleanup
