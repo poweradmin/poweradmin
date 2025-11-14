@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -47,7 +48,8 @@ class GroupZonesController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $zoneGroupRepository = new DbZoneGroupRepository($this->db);
-        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository);
+        $groupRepository = new DbUserGroupRepository($this->db);
+        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
     }
 
     /**
@@ -125,7 +127,7 @@ class GroupZonesController extends PublicApiController
 
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $zones = $this->zoneGroupService->getGroupZones($groupId);
+            $zones = $this->zoneGroupService->listGroupZones($groupId);
 
             $zonesData = array_map(fn($z) => [
                 'zone_id' => $z->getDomainId(),
@@ -200,7 +202,7 @@ class GroupZonesController extends PublicApiController
             }
 
             $zoneId = (int)$data['zone_id'];
-            $this->zoneGroupService->assignZone($groupId, $zoneId);
+            $this->zoneGroupService->addGroupToZone($zoneId, $groupId);
 
             return $this->returnApiSuccess(null, 'Zone assigned successfully', 201);
         } catch (Exception $e) {
@@ -265,7 +267,7 @@ class GroupZonesController extends PublicApiController
                 return $this->returnApiError('Invalid zone_id', 400);
             }
 
-            $success = $this->zoneGroupService->unassignZone($groupId, $zoneId);
+            $success = $this->zoneGroupService->removeGroupFromZone($zoneId, $groupId);
 
             if (!$success) {
                 return $this->returnApiError('Zone assignment not found', 404);
