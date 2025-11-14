@@ -57,8 +57,8 @@ class GroupsController extends PublicApiController
         $zoneGroupRepository = new DbZoneGroupRepository($this->db);
 
         $this->groupService = new GroupService($groupRepository);
-        $this->membershipService = new GroupMembershipService($memberRepository);
-        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository);
+        $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
+        $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
     }
 
     /**
@@ -238,8 +238,8 @@ class GroupsController extends PublicApiController
             }
 
             $details = $this->groupService->getGroupDetails($groupId);
-            $members = $this->membershipService->getGroupMembers($groupId);
-            $zones = $this->zoneGroupService->getGroupZones($groupId);
+            $members = $this->membershipService->listGroupMembers($groupId);
+            $zones = $this->zoneGroupService->listGroupZones($groupId);
 
             $data = [
                 'id' => $group->getId(),
