@@ -76,8 +76,12 @@
   },
   "scripts": {
     "docs": "tools/phpDocumentor",
-    "docs:api:json": "vendor/bin/openapi lib/Application/Controller/Api/V1/ --output docs/openapi.json",
-    "docs:api:yaml": "vendor/bin/openapi lib/Application/Controller/Api/V1/ --output docs/openapi.yaml --format yaml",
+    "docs:api:v1:json": "vendor/bin/openapi lib/Application/Controller/Api/V1/ --output docs/openapi-v1.json",
+    "docs:api:v1:yaml": "vendor/bin/openapi lib/Application/Controller/Api/V1/ --output docs/openapi-v1.yaml --format yaml",
+    "docs:api:v2:json": "vendor/bin/openapi lib/Application/Controller/Api/V2/ --output docs/openapi-v2.json",
+    "docs:api:v2:yaml": "vendor/bin/openapi lib/Application/Controller/Api/V2/ --output docs/openapi-v2.yaml --format yaml",
+    "docs:api:json": ["@docs:api:v1:json", "@docs:api:v2:json"],
+    "docs:api:yaml": ["@docs:api:v1:yaml", "@docs:api:v2:yaml"],
     "docs:api": ["@docs:api:json", "@docs:api:yaml"],
 
     "tests": "phpunit --testsuite unit",

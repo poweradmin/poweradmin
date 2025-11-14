@@ -144,7 +144,7 @@ class GroupsController extends PublicApiController
                 ];
             }
 
-            return $this->returnApiSuccess($enrichedGroups, 'Groups retrieved successfully');
+            return $this->returnApiResponse($enrichedGroups, true, 'Groups retrieved successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -259,7 +259,7 @@ class GroupsController extends PublicApiController
                 'created_at' => $group->getCreatedAt(),
             ];
 
-            return $this->returnApiSuccess($data, 'Group retrieved successfully');
+            return $this->returnApiResponse($data, true, 'Group retrieved successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -329,10 +329,10 @@ class GroupsController extends PublicApiController
                 $this->authenticatedUserId
             );
 
-            return $this->returnApiSuccess([
+            return $this->returnApiResponse([
                 'id' => $group->getId(),
                 'name' => $group->getName(),
-            ], 'Group created successfully', 201);
+            ], true, 'Group created successfully', 201);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -404,7 +404,7 @@ class GroupsController extends PublicApiController
                 return $this->returnApiError('Group not found or update failed', 404);
             }
 
-            return $this->returnApiSuccess(null, 'Group updated successfully');
+            return $this->returnApiResponse(null, true, 'Group updated successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -459,33 +459,9 @@ class GroupsController extends PublicApiController
                 return $this->returnApiError('Group not found or deletion failed', 404);
             }
 
-            return $this->returnApiSuccess(null, 'Group deleted successfully');
+            return $this->returnApiResponse(null, true, 'Group deleted successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
-    }
-
-    /**
-     * Return API success response with wrapped format
-     */
-    private function returnApiSuccess(mixed $data = null, string $message = 'Success', int $statusCode = 200): JsonResponse
-    {
-        return new JsonResponse([
-            'success' => true,
-            'message' => $message,
-            'data' => $data,
-        ], $statusCode);
-    }
-
-    /**
-     * Return API error response with wrapped format
-     */
-    protected function returnApiError(string $message, int $statusCode = 400): JsonResponse
-    {
-        return new JsonResponse([
-            'success' => false,
-            'message' => $message,
-            'data' => null,
-        ], $statusCode);
     }
 }

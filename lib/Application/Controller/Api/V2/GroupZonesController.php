@@ -136,7 +136,7 @@ class GroupZonesController extends PublicApiController
                 'assigned_at' => $z->getAssignedAt(),
             ], $zones);
 
-            return $this->returnApiSuccess($zonesData, 'Zones retrieved successfully');
+            return $this->returnApiResponse($zonesData, true, 'Zones retrieved successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -204,7 +204,7 @@ class GroupZonesController extends PublicApiController
             $zoneId = (int)$data['zone_id'];
             $this->zoneGroupService->addGroupToZone($zoneId, $groupId);
 
-            return $this->returnApiSuccess(null, 'Zone assigned successfully', 201);
+            return $this->returnApiResponse(null, true, 'Zone assigned successfully', 201);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -273,33 +273,9 @@ class GroupZonesController extends PublicApiController
                 return $this->returnApiError('Zone assignment not found', 404);
             }
 
-            return $this->returnApiSuccess(null, 'Zone unassigned successfully');
+            return $this->returnApiResponse(null, true, 'Zone unassigned successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
-    }
-
-    /**
-     * Return API success response with wrapped format
-     */
-    private function returnApiSuccess(mixed $data = null, string $message = 'Success', int $statusCode = 200): JsonResponse
-    {
-        return new JsonResponse([
-            'success' => true,
-            'message' => $message,
-            'data' => $data,
-        ], $statusCode);
-    }
-
-    /**
-     * Return API error response with wrapped format
-     */
-    protected function returnApiError(string $message, int $statusCode = 400): JsonResponse
-    {
-        return new JsonResponse([
-            'success' => false,
-            'message' => $message,
-            'data' => null,
-        ], $statusCode);
     }
 }
