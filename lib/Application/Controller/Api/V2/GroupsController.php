@@ -35,6 +35,7 @@ use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
+use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -47,6 +48,7 @@ class GroupsController extends PublicApiController
     private GroupService $groupService;
     private GroupMembershipService $membershipService;
     private ZoneGroupService $zoneGroupService;
+    private ApiPermissionService $apiPermissionService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -54,11 +56,12 @@ class GroupsController extends PublicApiController
 
         $groupRepository = new DbUserGroupRepository($this->db);
         $memberRepository = new DbUserGroupMemberRepository($this->db);
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db);
+        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config);
 
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
+        $this->apiPermissionService = new ApiPermissionService($this->db);
     }
 
     /**
@@ -126,7 +129,7 @@ class GroupsController extends PublicApiController
     {
         try {
             $userId = $this->authenticatedUserId;
-            $isAdmin = $this->isAdmin();
+            $isAdmin = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
 
             $groups = $this->groupService->listGroups($userId, $isAdmin);
 
@@ -224,7 +227,7 @@ class GroupsController extends PublicApiController
         try {
             $groupId = (int)$this->pathParameters['id'];
             $userId = $this->authenticatedUserId;
-            $isAdmin = $this->isAdmin();
+            $isAdmin = $this->apiPermissionService->userHasPermission($userId, 'user_is_ueberuser');
 
             try {
                 $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
@@ -311,12 +314,12 @@ class GroupsController extends PublicApiController
     #[OA\Response(response: 400, description: 'Invalid input')]
     private function createGroup(): JsonResponse
     {
-        if (!$this->isAdmin()) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
             return $this->returnApiError('Only administrators can create groups', 403);
         }
 
         try {
-            $data = $this->getRequestData();
+            $data = json_decode($this->request->getContent(), true);
 
             if (empty($data['name']) || empty($data['perm_templ_id'])) {
                 return $this->returnApiError('Missing required fields: name, perm_templ_id', 400);
@@ -385,13 +388,13 @@ class GroupsController extends PublicApiController
     #[OA\Response(response: 404, description: 'Group not found')]
     private function updateGroup(): JsonResponse
     {
-        if (!$this->isAdmin()) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
             return $this->returnApiError('Only administrators can update groups', 403);
         }
 
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $data = $this->getRequestData();
+            $data = json_decode($this->request->getContent(), true);
 
             $success = $this->groupService->updateGroup(
                 $groupId,
@@ -447,7 +450,7 @@ class GroupsController extends PublicApiController
     #[OA\Response(response: 404, description: 'Group not found')]
     private function deleteGroup(): JsonResponse
     {
-        if (!$this->isAdmin()) {
+        if (!$this->apiPermissionService->userHasPermission($this->authenticatedUserId, 'user_is_ueberuser')) {
             return $this->returnApiError('Only administrators can delete groups', 403);
         }
 

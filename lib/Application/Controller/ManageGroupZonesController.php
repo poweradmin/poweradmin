@@ -63,7 +63,7 @@ class ManageGroupZonesController extends BaseController
         // Any admin can manage zone ownership (same as user ownership model)
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
-        if (!UserManager::isAdmin($userId, $this->db)) {
+        if (!UserManager::isUserSuperuser($this->db, $userId)) {
             $this->setMessage('list_groups', 'error', _('You do not have permission to manage zone ownership.'));
             $this->redirect('/groups');
             return;
@@ -202,7 +202,7 @@ class ManageGroupZonesController extends BaseController
         try {
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
-            $isAdmin = UserManager::isAdmin($userId, $this->db);
+            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
 
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             if (!$group) {

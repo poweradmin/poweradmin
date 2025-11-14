@@ -32,18 +32,27 @@ class UserGroupMember
     private ?int $id;
     private int $groupId;
     private int $userId;
-    private ?string $addedAt;
+    private ?string $joinedAt;
+    private ?string $username;
+    private ?string $fullname;
+    private ?string $email;
 
     public function __construct(
         ?int $id,
         int $groupId,
         int $userId,
-        ?string $addedAt = null
+        ?string $joinedAt = null,
+        ?string $username = null,
+        ?string $fullname = null,
+        ?string $email = null
     ) {
         $this->id = $id;
         $this->groupId = $groupId;
         $this->userId = $userId;
-        $this->addedAt = $addedAt;
+        $this->joinedAt = $joinedAt;
+        $this->username = $username;
+        $this->fullname = $fullname;
+        $this->email = $email;
     }
 
     public function getId(): ?int
@@ -61,9 +70,24 @@ class UserGroupMember
         return $this->userId;
     }
 
-    public function getAddedAt(): ?string
+    public function getJoinedAt(): ?string
     {
-        return $this->addedAt;
+        return $this->joinedAt;
+    }
+
+    public function getUsername(): ?string
+    {
+        return $this->username;
+    }
+
+    public function getFullname(): ?string
+    {
+        return $this->fullname;
+    }
+
+    public function getEmail(): ?string
+    {
+        return $this->email;
     }
 
     /**
@@ -75,6 +99,6 @@ class UserGroupMember
      */
     public static function create(int $groupId, int $userId): self
     {
-        return new self(null, $groupId, $userId, null);
+        return new self(null, $groupId, $userId, null, null, null, null);
     }
 }
