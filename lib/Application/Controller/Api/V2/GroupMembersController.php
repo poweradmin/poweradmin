@@ -138,7 +138,7 @@ class GroupMembersController extends PublicApiController
                 'joined_at' => $m->getJoinedAt(),
             ], $members);
 
-            return $this->returnApiSuccess($membersData, 'Members retrieved successfully');
+            return $this->returnApiResponse($membersData, true, 'Members retrieved successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
@@ -206,7 +206,7 @@ class GroupMembersController extends PublicApiController
             $userId = (int)$data['user_id'];
             $this->membershipService->addUserToGroup($groupId, $userId);
 
-            return $this->returnApiSuccess(null, 'Member added successfully', 201);
+            return $this->returnApiResponse(null, true, 'Member added successfully', 201);
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 400);
         }
@@ -275,33 +275,9 @@ class GroupMembersController extends PublicApiController
                 return $this->returnApiError('Member not found in group', 404);
             }
 
-            return $this->returnApiSuccess(null, 'Member removed successfully');
+            return $this->returnApiResponse(null, true, 'Member removed successfully');
         } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
-    }
-
-    /**
-     * Return API success response with wrapped format
-     */
-    private function returnApiSuccess(mixed $data = null, string $message = 'Success', int $statusCode = 200): JsonResponse
-    {
-        return new JsonResponse([
-            'success' => true,
-            'message' => $message,
-            'data' => $data,
-        ], $statusCode);
-    }
-
-    /**
-     * Return API error response with wrapped format
-     */
-    protected function returnApiError(string $message, int $statusCode = 400): JsonResponse
-    {
-        return new JsonResponse([
-            'success' => false,
-            'message' => $message,
-            'data' => null,
-        ], $statusCode);
     }
 }
