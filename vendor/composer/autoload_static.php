@@ -1261,6 +1261,8 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Controller\\Api\\V1\\UsersController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V1/UsersController.php',
         'Poweradmin\\Application\\Controller\\Api\\V1\\ZonesController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V1/ZonesController.php',
         'Poweradmin\\Application\\Controller\\Api\\V1\\ZonesRecordsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V1/ZonesRecordsController.php',
+        'Poweradmin\\Application\\Controller\\Api\\V2\\GroupMembersController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/GroupMembersController.php',
+        'Poweradmin\\Application\\Controller\\Api\\V2\\GroupZonesController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/GroupZonesController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\GroupsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/GroupsController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionTemplatesController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/PermissionTemplatesController.php',
         'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionsController' => __DIR__ . '/../..' . '/lib/Application/Controller/Api/V2/PermissionsController.php',

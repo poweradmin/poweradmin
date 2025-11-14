@@ -591,6 +591,36 @@ api_v2_group:
     id: '\d+'
   methods: [GET, PUT, DELETE]
 
+api_v2_group_members:
+  path: /api/v2/groups/{id}/members
+  controller: Poweradmin\Application\Controller\Api\V2\GroupMembersController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_v2_group_member:
+  path: /api/v2/groups/{id}/members/{user_id}
+  controller: Poweradmin\Application\Controller\Api\V2\GroupMembersController::run
+  requirements:
+    id: '\d+'
+    user_id: '\d+'
+  methods: [DELETE]
+
+api_v2_group_zones:
+  path: /api/v2/groups/{id}/zones
+  controller: Poweradmin\Application\Controller\Api\V2\GroupZonesController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+api_v2_group_zone:
+  path: /api/v2/groups/{id}/zones/{zone_id}
+  controller: Poweradmin\Application\Controller\Api\V2\GroupZonesController::run
+  requirements:
+    id: '\d+'
+    zone_id: '\d+'
+  methods: [DELETE]
+
 # API Documentation
 api_docs:
   path: /api/docs
