@@ -132,6 +132,18 @@
                     </ul>
                 </li>
                 {% endif %}
+                {% if perm_is_godlike %}
+                <li class="p-2">
+                    <a href="{{ base_url_prefix }}/groups" class="nav-link text-{{ current_page in ['list_groups', 'add_group', 'edit_group', 'manage_group_members', 'manage_group_zones'] ? 'primary' : 'secondary' }}"><i class="bi bi-people-fill fs-5"></i></a>
+                    <a class="text-{{ current_page in ['list_groups', 'add_group', 'edit_group', 'manage_group_members', 'manage_group_zones'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                       href="#"
+                       role="button">{% trans %}Groups{% endtrans %}</a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item {{ current_page == 'list_groups' ? 'active' : '' }}" href="{{ base_url_prefix }}/groups"><i class="bi bi-collection-fill me-2"></i>{% trans %}List groups{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'add_group' ? 'active' : '' }}" href="{{ base_url_prefix }}/groups/add"><i class="bi bi-plus-circle me-2"></i>{% trans %}Add group{% endtrans %}</a></li>
+                    </ul>
+                </li>
+                {% endif %}
                 {% if perm_zone_templ_add or perm_zone_templ_edit %}
                 <li class="p-2">
                     <a href="{{ base_url_prefix }}/zones/templates" class="nav-link text-{{ current_page in ['list_zone_templ', 'add_zone_templ', 'edit_zone_templ', 'list_template_zones'] ? 'primary' : 'secondary' }} text-center"><i

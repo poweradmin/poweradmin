@@ -888,6 +888,7 @@ return array(
     'Poweradmin\\Application\\Controller\\Api\\V1\\UsersController' => $baseDir . '/lib/Application/Controller/Api/V1/UsersController.php',
     'Poweradmin\\Application\\Controller\\Api\\V1\\ZonesController' => $baseDir . '/lib/Application/Controller/Api/V1/ZonesController.php',
     'Poweradmin\\Application\\Controller\\Api\\V1\\ZonesRecordsController' => $baseDir . '/lib/Application/Controller/Api/V1/ZonesRecordsController.php',
+    'Poweradmin\\Application\\Controller\\Api\\V2\\GroupsController' => $baseDir . '/lib/Application/Controller/Api/V2/GroupsController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionTemplatesController' => $baseDir . '/lib/Application/Controller/Api/V2/PermissionTemplatesController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\PermissionsController' => $baseDir . '/lib/Application/Controller/Api/V2/PermissionsController.php',
     'Poweradmin\\Application\\Controller\\Api\\V2\\UsersController' => $baseDir . '/lib/Application/Controller/Api/V2/UsersController.php',
