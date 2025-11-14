@@ -579,6 +579,18 @@ api_v2_permission:
     id: '\d+'
   methods: [GET]
 
+api_v2_groups:
+  path: /api/v2/groups
+  controller: Poweradmin\Application\Controller\Api\V2\GroupsController::run
+  methods: [GET, POST]
+
+api_v2_group:
+  path: /api/v2/groups/{id}
+  controller: Poweradmin\Application\Controller\Api\V2\GroupsController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, PUT, DELETE]
+
 # API Documentation
 api_docs:
   path: /api/docs
