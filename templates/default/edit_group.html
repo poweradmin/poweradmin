@@ -1,0 +1,143 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/groups">{% trans %}Groups{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Edit group{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-pencil-square me-2"></i>{% trans %}Edit Group{% endtrans %}: {{ group.name }}</strong>
+            </div>
+            <div class="card-body">
+                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/edit" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+                    <div class="mb-3">
+                        <label for="name" class="form-label">{% trans %}Group Name{% endtrans %} <span class="text-danger">*</span></label>
+                        <input class="form-control form-control-sm" type="text" id="name" name="name" value="{{ name }}" required maxlength="255">
+                        <small class="text-muted">{% trans %}Unique name for this group{% endtrans %}</small>
+                        <div class="invalid-feedback">{% trans %}Provide group name{% endtrans %}</div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">{% trans %}Description{% endtrans %}</label>
+                        <textarea class="form-control form-control-sm" id="description" rows="3" name="description">{{ description }}</textarea>
+                        <small class="text-muted">{% trans %}Optional information about this group{% endtrans %}</small>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="perm_templ" class="form-label">{% trans %}Permission template{% endtrans %} <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm" id="perm_templ" name="perm_templ" required>
+                            {% for template in perm_templates %}
+                            {% if perm_templ == template['id'] %}
+                            {% set selected = 'selected' %}
+                            {% else %}
+                            {% set selected = '' %}
+                            {% endif %}
+                            <option value="{{ template['id'] }}" {{ selected }}>{{ template['name'] }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">{% trans %}All group members will inherit these permissions for zones owned by this group{% endtrans %}</small>
+                        <div class="invalid-feedback">{% trans %}Select a permission template{% endtrans %}</div>
+                    </div>
+
+                    <div class="d-flex gap-2">
+                        <button type="submit" class="btn btn-primary btn-sm">
+                            <i class="bi bi-check-circle me-1"></i>{% trans %}Update Group{% endtrans %}
+                        </button>
+                        <a href="{{ base_url_prefix }}/groups" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <strong><i class="bi bi-people me-2"></i>{% trans %}Members{% endtrans %}</strong>
+                        <span class="badge bg-info">{{ details.memberCount }}</span>
+                    </div>
+                    <div class="card-body">
+                        {% if members is empty %}
+                        <p class="text-muted mb-2">{% trans %}No members in this group yet.{% endtrans %}</p>
+                        {% else %}
+                        <ul class="list-unstyled mb-2">
+                            {% for member in members|slice(0, 5) %}
+                            <li class="mb-1">
+                                <i class="bi bi-person-fill text-secondary me-1"></i>
+                                {{ member.username }}
+                                {% if member.fullname %}
+                                    <small class="text-muted">({{ member.fullname }})</small>
+                                {% endif %}
+                            </li>
+                            {% endfor %}
+                            {% if members|length > 5 %}
+                            <li class="text-muted">
+                                <small>{% trans %}and{% endtrans %} {{ members|length - 5 }} {% trans %}more...{% endtrans %}</small>
+                            </li>
+                            {% endif %}
+                        </ul>
+                        {% endif %}
+                        <a href="{{ base_url_prefix }}/groups/{{ group.id }}/members" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-people-fill me-1"></i>{% trans %}Manage Members{% endtrans %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="card shadow-sm mb-4">
+                    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                        <strong><i class="bi bi-hdd-stack me-2"></i>{% trans %}Zones{% endtrans %}</strong>
+                        <span class="badge bg-primary">{{ details.zoneCount }}</span>
+                    </div>
+                    <div class="card-body">
+                        {% if zones is empty %}
+                        <p class="text-muted mb-2">{% trans %}This group doesn't own any zones yet.{% endtrans %}</p>
+                        {% else %}
+                        <ul class="list-unstyled mb-2">
+                            {% for zone in zones|slice(0, 5) %}
+                            <li class="mb-1">
+                                <i class="bi bi-hdd text-secondary me-1"></i>
+                                {{ zone.name }}
+                            </li>
+                            {% endfor %}
+                            {% if zones|length > 5 %}
+                            <li class="text-muted">
+                                <small>{% trans %}and{% endtrans %} {{ zones|length - 5 }} {% trans %}more...{% endtrans %}</small>
+                            </li>
+                            {% endif %}
+                        </ul>
+                        {% endif %}
+                        <a href="{{ base_url_prefix }}/groups/{{ group.id }}/zones" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-hdd-stack-fill me-1"></i>{% trans %}Manage Zones{% endtrans %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>

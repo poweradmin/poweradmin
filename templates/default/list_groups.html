@@ -1,0 +1,76 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Groups{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3 d-flex justify-content-between align-items-center">
+        <strong><i class="bi bi-people-fill me-2"></i>{% trans %}Group Management{% endtrans %}</strong>
+        {% if can_add_group %}
+        <a href="{{ base_url_prefix }}/groups/add" class="btn btn-primary btn-sm">
+            <i class="bi bi-plus-circle-fill me-1 text-white"></i>{% trans %}Add group{% endtrans %}
+        </a>
+        {% endif %}
+    </div>
+    <div class="card-body p-0">
+        {% if groups is empty %}
+        <div class="p-4 text-center text-muted">
+            <i class="bi bi-inbox fs-1"></i>
+            <p class="mt-2">{% trans %}No groups found{% endtrans %}</p>
+            {% if can_add_group %}
+            <a href="{{ base_url_prefix }}/groups/add" class="btn btn-primary btn-sm">
+                <i class="bi bi-plus-circle-fill me-1"></i>{% trans %}Create your first group{% endtrans %}
+            </a>
+            {% endif %}
+        </div>
+        {% else %}
+        <div class="table-responsive">
+            <table class="table table-striped table-hover table-sm mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>{% trans %}Name{% endtrans %}</th>
+                    <th>{% trans %}Description{% endtrans %}</th>
+                    <th class="text-center">{% trans %}Members{% endtrans %}</th>
+                    <th class="text-center">{% trans %}Zones{% endtrans %}</th>
+                    <th class="text-end">{% trans %}Actions{% endtrans %}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for group in groups %}
+                <tr>
+                    <td><strong>{{ group.name }}</strong></td>
+                    <td>{{ group.description|default('—') }}</td>
+                    <td class="text-center">
+                        <span class="badge bg-info">{{ group.member_count }}</span>
+                    </td>
+                    <td class="text-center">
+                        <span class="badge bg-primary">{{ group.zone_count }}</span>
+                    </td>
+                    <td class="text-end">
+                        <div class="btn-group btn-group-sm" role="group">
+                            {% if is_admin %}
+                            <a class="btn btn-sm btn-outline-secondary" href="{{ base_url_prefix }}/groups/{{ group.id }}/members" title="{% trans %}Manage members{% endtrans %}">
+                                <i class="bi bi-people text-secondary"></i> <span class="d-none d-lg-inline">{% trans %}Members{% endtrans %}</span>
+                            </a>
+                            <a class="btn btn-sm btn-outline-secondary" href="{{ base_url_prefix }}/groups/{{ group.id }}/zones" title="{% trans %}Manage zones{% endtrans %}">
+                                <i class="bi bi-hdd-stack text-secondary"></i> <span class="d-none d-lg-inline">{% trans %}Zones{% endtrans %}</span>
+                            </a>
+                            <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/groups/{{ group.id }}/edit" title="{% trans %}Edit group{% endtrans %}">
+                                <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-lg-inline">{% trans %}Edit{% endtrans %}</span>
+                            </a>
+                            <a class="btn btn-sm btn-outline-danger" href="{{ base_url_prefix }}/groups/{{ group.id }}/delete" title="{% trans %}Delete group{% endtrans %}">
+                                <i class="bi bi-trash text-danger"></i> <span class="d-none d-lg-inline">{% trans %}Delete{% endtrans %}</span>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% endif %}
+    </div>
+</div>

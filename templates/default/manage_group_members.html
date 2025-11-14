@@ -1,0 +1,184 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/groups">{% trans %}Groups{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/groups/{{ group.id }}/edit">{{ group.name }}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Manage members{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="mb-3">
+    <a href="{{ base_url_prefix }}/groups/{{ group.id }}/edit" class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>{% trans %}Back to Group{% endtrans %}
+    </a>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3 bg-primary text-white">
+                <strong><i class="bi bi-people-fill me-2"></i>{% trans %}Current Members{% endtrans %}</strong>
+                <span class="badge bg-light text-dark ms-2">{{ current_members|length }}</span>
+            </div>
+            <div class="card-body">
+                {% if current_members is empty %}
+                <p class="text-muted text-center py-4">
+                    <i class="bi bi-inbox fs-1"></i><br>
+                    {% trans %}No members in this group yet{% endtrans %}
+                </p>
+                {% else %}
+                <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/members" id="remove-form">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="action" value="remove">
+
+                    <div class="table-responsive">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light">
+                            <tr>
+                                <th width="30"><input type="checkbox" id="select-all-current" class="form-check-input"></th>
+                                <th>{% trans %}Username{% endtrans %}</th>
+                                <th>{% trans %}Name{% endtrans %}</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            {% for member in current_members %}
+                            <tr>
+                                <td><input type="checkbox" name="user_ids[]" value="{{ member.id }}" class="form-check-input member-checkbox"></td>
+                                <td>{{ member.username }}</td>
+                                <td>{{ member.fullname|default('—') }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-danger btn-sm" id="remove-btn" disabled>
+                            <i class="bi bi-person-dash-fill me-1"></i>{% trans %}Remove Selected{% endtrans %}
+                        </button>
+                        <small class="text-muted ms-2">
+                            <i class="bi bi-info-circle"></i>
+                            {% trans %}Select users to remove from this group{% endtrans %}
+                        </small>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3 bg-success text-white">
+                <strong><i class="bi bi-person-plus-fill me-2"></i>{% trans %}Available Users{% endtrans %}</strong>
+                <span class="badge bg-light text-dark ms-2">{{ available_users|length }}</span>
+            </div>
+            <div class="card-body">
+                {% if available_users is empty %}
+                <p class="text-muted text-center py-4">
+                    <i class="bi bi-check-circle fs-1"></i><br>
+                    {% trans %}All users are already members of this group{% endtrans %}
+                </p>
+                {% else %}
+                <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/members" id="add-form">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="action" value="add">
+
+                    <div class="mb-3">
+                        <input type="text" id="search-available" class="form-control form-control-sm" placeholder="{% trans %}Search users...{% endtrans %}">
+                    </div>
+
+                    <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                        <table class="table table-sm table-hover mb-0">
+                            <thead class="table-light sticky-top">
+                            <tr>
+                                <th width="30"><input type="checkbox" id="select-all-available" class="form-check-input"></th>
+                                <th>{% trans %}Username{% endtrans %}</th>
+                                <th>{% trans %}Name{% endtrans %}</th>
+                            </tr>
+                            </thead>
+                            <tbody id="available-users-body">
+                            {% for user in available_users %}
+                            <tr class="user-row" data-username="{{ user['username']|lower }}" data-fullname="{{ user['fullname']|default('')|lower }}">
+                                <td><input type="checkbox" name="user_ids[]" value="{{ user['id'] }}" class="form-check-input available-checkbox"></td>
+                                <td>{{ user['username'] }}</td>
+                                <td>{{ user['fullname']|default('—') }}</td>
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-success btn-sm" id="add-btn" disabled>
+                            <i class="bi bi-person-plus-fill me-1"></i>{% trans %}Add Selected{% endtrans %}
+                        </button>
+                        <small class="text-muted ms-2">
+                            <i class="bi bi-info-circle"></i>
+                            {% trans %}Select users to add to this group{% endtrans %}
+                        </small>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Select all checkboxes functionality
+document.getElementById('select-all-current')?.addEventListener('change', function() {
+    document.querySelectorAll('.member-checkbox').forEach(cb => cb.checked = this.checked);
+    toggleRemoveButton();
+});
+
+document.getElementById('select-all-available')?.addEventListener('change', function() {
+    document.querySelectorAll('.user-row').forEach(row => {
+        if (row.style.display !== 'none') {
+            const checkbox = row.querySelector('.available-checkbox');
+            if (checkbox) checkbox.checked = this.checked;
+        }
+    });
+    toggleAddButton();
+});
+
+// Enable/disable buttons based on selection
+document.querySelectorAll('.member-checkbox').forEach(cb => {
+    cb.addEventListener('change', toggleRemoveButton);
+});
+
+document.querySelectorAll('.available-checkbox').forEach(cb => {
+    cb.addEventListener('change', toggleAddButton);
+});
+
+function toggleRemoveButton() {
+    const removeBtn = document.getElementById('remove-btn');
+    const checked = document.querySelectorAll('.member-checkbox:checked').length > 0;
+    if (removeBtn) removeBtn.disabled = !checked;
+}
+
+function toggleAddButton() {
+    const addBtn = document.getElementById('add-btn');
+    const checked = document.querySelectorAll('.available-checkbox:checked').length > 0;
+    if (addBtn) addBtn.disabled = !checked;
+}
+
+// Search functionality
+document.getElementById('search-available')?.addEventListener('input', function() {
+    const searchTerm = this.value.toLowerCase();
+    document.querySelectorAll('.user-row').forEach(row => {
+        const username = row.dataset.username;
+        const fullname = row.dataset.fullname;
+        const matches = username.includes(searchTerm) || fullname.includes(searchTerm);
+        row.style.display = matches ? '' : 'none';
+    });
+});
+
+// Form confirmation
+document.getElementById('remove-form')?.addEventListener('submit', function(e) {
+    const count = document.querySelectorAll('.member-checkbox:checked').length;
+    if (!confirm('{% trans %}Remove{% endtrans %} ' + count + ' {% trans %}user(s) from this group?{% endtrans %}')) {
+        e.preventDefault();
+    }
+});
+</script>
