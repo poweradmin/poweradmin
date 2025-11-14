@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller\Api\V2;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
 use Exception;
@@ -47,7 +48,8 @@ class GroupMembersController extends PublicApiController
         parent::__construct($request, $pathParameters);
 
         $memberRepository = new DbUserGroupMemberRepository($this->db);
-        $this->membershipService = new GroupMembershipService($memberRepository);
+        $groupRepository = new DbUserGroupRepository($this->db);
+        $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
     }
 
     /**
@@ -126,7 +128,7 @@ class GroupMembersController extends PublicApiController
 
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $members = $this->membershipService->getGroupMembers($groupId);
+            $members = $this->membershipService->listGroupMembers($groupId);
 
             $membersData = array_map(fn($m) => [
                 'user_id' => $m->getUserId(),
@@ -202,7 +204,7 @@ class GroupMembersController extends PublicApiController
             }
 
             $userId = (int)$data['user_id'];
-            $this->membershipService->addMember($groupId, $userId);
+            $this->membershipService->addUserToGroup($groupId, $userId);
 
             return $this->returnApiSuccess(null, 'Member added successfully', 201);
         } catch (Exception $e) {
@@ -267,7 +269,7 @@ class GroupMembersController extends PublicApiController
                 return $this->returnApiError('Invalid user_id', 400);
             }
 
-            $success = $this->membershipService->removeMember($groupId, $userId);
+            $success = $this->membershipService->removeUserFromGroup($groupId, $userId);
 
             if (!$success) {
                 return $this->returnApiError('Member not found in group', 404);
