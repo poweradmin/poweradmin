@@ -223,7 +223,15 @@ class GroupsController extends PublicApiController
     {
         try {
             $groupId = (int)$this->pathParameters['id'];
-            $group = $this->groupService->getGroupById($groupId);
+            $userId = $this->authenticatedUserId;
+            $isAdmin = $this->isAdmin();
+
+            try {
+                $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
+            } catch (\InvalidArgumentException $e) {
+                // Permission denied
+                return $this->returnApiError($e->getMessage(), 403);
+            }
 
             if (!$group) {
                 return $this->returnApiError('Group not found', 404);
@@ -388,8 +396,8 @@ class GroupsController extends PublicApiController
             $success = $this->groupService->updateGroup(
                 $groupId,
                 $data['name'] ?? null,
-                isset($data['perm_templ_id']) ? (int)$data['perm_templ_id'] : null,
-                $data['description'] ?? null
+                $data['description'] ?? null,
+                isset($data['perm_templ_id']) ? (int)$data['perm_templ_id'] : null
             );
 
             if (!$success) {
