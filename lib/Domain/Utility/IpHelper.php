@@ -181,6 +181,54 @@ class IpHelper
     }
 
     /**
+     * Convert IPv6 reverse zone (ip6.arpa) to shortened IPv6 notation
+     *
+     * @param string $reverseZone The reverse zone name (e.g., "1.0.0.0...ip6.arpa")
+     * @return string|null Shortened IPv6 address or null if invalid
+     */
+    public static function shortenIPv6ReverseZone(string $reverseZone): ?string
+    {
+        // Remove .ip6.arpa suffix
+        if (!str_ends_with($reverseZone, '.ip6.arpa')) {
+            return null;
+        }
+
+        $reversedNibbles = str_replace('.ip6.arpa', '', $reverseZone);
+        $nibbles = explode('.', $reversedNibbles);
+
+        // Reverse the nibbles to get original order
+        $nibbles = array_reverse($nibbles);
+
+        // Validate nibbles (must be hex digits)
+        foreach ($nibbles as $nibble) {
+            if (!ctype_xdigit($nibble) || strlen($nibble) !== 1) {
+                return null;
+            }
+        }
+
+        // Pad with zeros if needed to make it 32 nibbles (full IPv6)
+        $nibbles = array_pad($nibbles, 32, '0');
+
+        // Join nibbles to form hex string
+        $hex = implode('', $nibbles);
+
+        // Format as IPv6 address (8 groups of 4 hex digits)
+        $parts = [];
+        for ($i = 0; $i < 8; $i++) {
+            $parts[] = substr($hex, $i * 4, 4);
+        }
+        $ipv6 = implode(':', $parts);
+
+        // Use inet_pton and inet_ntop to get the shortened form
+        $binary = inet_pton($ipv6);
+        if ($binary === false) {
+            return null;
+        }
+
+        return inet_ntop($binary);
+    }
+
+    /**
      * Extract the first valid IP address from a PowerDNS master field value
      *
      * PowerDNS master field can contain various formats:
