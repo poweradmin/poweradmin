@@ -45,6 +45,7 @@ use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
+use Poweradmin\Domain\Utility\IpHelper;
 
 class ListReverseZonesController extends BaseController
 {
@@ -167,12 +168,18 @@ class ListReverseZonesController extends BaseController
         // Get associated forward zones (if needed)
         $associatedForwardZones = $this->forwardZoneAssociationService->getAssociatedForwardZones($reverse_zones);
 
-        // Augment zones with group information
+        // Augment zones with group information and shorten IPv6 reverse zones
         $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
         $userGroupRepo = new DbUserGroupRepository($this->db);
         $allGroups = $userGroupRepo->findAll();
 
         foreach ($reverse_zones as &$zone) {
+            // Shorten IPv6 reverse zones for display
+            if (isset($zone['utf8_name']) && str_ends_with($zone['utf8_name'], '.ip6.arpa')) {
+                $shortened = IpHelper::shortenIPv6ReverseZone($zone['utf8_name']);
+                $zone['utf8_name'] = $shortened ?? $zone['utf8_name'];
+            }
+
             $groupOwnerships = $zoneGroupRepo->findByDomainId($zone['id']);
             $zone['groups'] = array_map(function ($zg) use ($allGroups) {
                 $groupId = $zg->getGroupId();

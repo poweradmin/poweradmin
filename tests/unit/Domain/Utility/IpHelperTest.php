@@ -247,4 +247,138 @@ class IpHelperTest extends TestCase
             $this->assertEquals($expected, $result, "Failed for input: $input");
         }
     }
+
+    /**
+     * Test shortening full IPv6 reverse zone
+     */
+    public function testShortenIPv6ReverseZoneFullAddress(): void
+    {
+        $input = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
+        $result = IpHelper::shortenIPv6ReverseZone($input);
+        $this->assertEquals('2001:db8::1:0', $result);
+    }
+
+    /**
+     * Test shortening IPv6 reverse zone with all zeros
+     */
+    public function testShortenIPv6ReverseZoneAllZeros(): void
+    {
+        $input = '0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
+        $result = IpHelper::shortenIPv6ReverseZone($input);
+        $this->assertEquals('2001:db8::', $result);
+    }
+
+    /**
+     * Test shortening partial IPv6 reverse zone (/64 network)
+     */
+    public function testShortenIPv6ReverseZonePartial64(): void
+    {
+        $input = '1.1.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
+        $result = IpHelper::shortenIPv6ReverseZone($input);
+        // Partial zones get padded with zeros
+        $this->assertEquals('2001:db8:11::', $result);
+    }
+
+    /**
+     * Test shortening partial IPv6 reverse zone (/48 network)
+     */
+    public function testShortenIPv6ReverseZonePartial48(): void
+    {
+        $input = '8.b.d.0.1.0.0.2.ip6.arpa';
+        $result = IpHelper::shortenIPv6ReverseZone($input);
+        $this->assertEquals('2001:db8::', $result);
+    }
+
+    /**
+     * Test shortening IPv6 reverse zone with maximum compression
+     */
+    public function testShortenIPv6ReverseZoneMaxCompression(): void
+    {
+        $input = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa';
+        $result = IpHelper::shortenIPv6ReverseZone($input);
+        $this->assertEquals('::1', $result);
+    }
+
+    /**
+     * Test shortening IPv6 reverse zone - loopback
+     */
+    public function testShortenIPv6ReverseZoneLoopback(): void
+    {
+        $input = '0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.ip6.arpa';
+        $result = IpHelper::shortenIPv6ReverseZone($input);
+        $this->assertEquals('::', $result);
+    }
+
+    /**
+     * Test shortening IPv6 reverse zone with no compression needed
+     */
+    public function testShortenIPv6ReverseZoneNoCompression(): void
+    {
+        $input = 'f.e.d.c.b.a.9.8.7.6.5.4.3.2.1.0.f.e.d.c.b.a.9.8.7.6.5.4.3.2.1.0.ip6.arpa';
+        $result = IpHelper::shortenIPv6ReverseZone($input);
+        $this->assertEquals('123:4567:89ab:cdef:123:4567:89ab:cdef', $result);
+    }
+
+    /**
+     * Test shortening invalid zone (not ending in .ip6.arpa)
+     */
+    public function testShortenIPv6ReverseZoneInvalidSuffix(): void
+    {
+        $input = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.in-addr.arpa';
+        $result = IpHelper::shortenIPv6ReverseZone($input);
+        $this->assertNull($result);
+    }
+
+    /**
+     * Test shortening invalid zone (invalid hex characters)
+     */
+    public function testShortenIPv6ReverseZoneInvalidHex(): void
+    {
+        $input = 'g.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
+        $result = IpHelper::shortenIPv6ReverseZone($input);
+        $this->assertNull($result);
+    }
+
+    /**
+     * Test shortening invalid zone (nibbles not single character)
+     */
+    public function testShortenIPv6ReverseZoneInvalidNibbleLength(): void
+    {
+        $input = '10.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
+        $result = IpHelper::shortenIPv6ReverseZone($input);
+        $this->assertNull($result);
+    }
+
+    /**
+     * Test shortening with real-world examples
+     */
+    public function testShortenIPv6ReverseZoneRealWorld(): void
+    {
+        $testCases = [
+            // Google Public DNS
+            '8.8.8.8.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.4.6.8.2.ip6.arpa' => '2864::8888',
+            // Cloudflare DNS
+            '1.1.1.1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.6.6.8.2.ip6.arpa' => '2866::1111',
+            // Documentation prefix (nibbles 0.0.0.1 reversed = 1.0.0.0 = 0x1000)
+            '0.0.0.1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa' => '2001:db8::1000:0',
+        ];
+
+        foreach ($testCases as $input => $expected) {
+            $result = IpHelper::shortenIPv6ReverseZone($input);
+            $this->assertEquals($expected, $result, "Failed for input: $input");
+        }
+    }
+
+    /**
+     * Test that shortening is idempotent (can be called multiple times)
+     */
+    public function testShortenIPv6ReverseZoneIdempotent(): void
+    {
+        $input = '1.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa';
+        $result1 = IpHelper::shortenIPv6ReverseZone($input);
+
+        // Second call with same input should return same result
+        $result2 = IpHelper::shortenIPv6ReverseZone($input);
+        $this->assertEquals($result1, $result2);
+    }
 }

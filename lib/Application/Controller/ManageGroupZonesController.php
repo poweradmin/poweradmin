@@ -41,6 +41,7 @@ use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Domain\Utility\IpHelper;
 
 class ManageGroupZonesController extends BaseController
 {
@@ -229,6 +230,15 @@ class ManageGroupZonesController extends BaseController
                 $stmt = $this->db->prepare($query);
                 $stmt->execute($ownedDomainIds);
                 $ownedZones = $stmt->fetchAll(\PDO::FETCH_ASSOC);
+
+                // Shorten IPv6 reverse zones for display
+                foreach ($ownedZones as &$zone) {
+                    if (str_ends_with($zone['name'], '.ip6.arpa')) {
+                        $shortened = IpHelper::shortenIPv6ReverseZone($zone['name']);
+                        $zone['name'] = $shortened ?? $zone['name'];
+                    }
+                }
+                unset($zone);
             }
 
             // Get all zones for selection
@@ -236,10 +246,19 @@ class ManageGroupZonesController extends BaseController
             $stmt = $this->db->query($query);
             $allZones = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
-            // Filter out owned zones from available zones
+            // Filter out owned zones from available zones and shorten IPv6 zones
             $availableZones = array_filter($allZones, function ($zone) use ($ownedDomainIds) {
                 return !in_array($zone['id'], $ownedDomainIds);
             });
+
+            // Shorten IPv6 reverse zones for display
+            foreach ($availableZones as &$zone) {
+                if (str_ends_with($zone['name'], '.ip6.arpa')) {
+                    $shortened = IpHelper::shortenIPv6ReverseZone($zone['name']);
+                    $zone['name'] = $shortened ?? $zone['name'];
+                }
+            }
+            unset($zone);
 
             $this->render('manage_group_zones.html', [
                 'group' => $group,
