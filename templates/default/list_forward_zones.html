@@ -129,6 +129,13 @@
                             {% for owner in zone['owners'] %}
                             {{ owner }}<br>
                             {% endfor %}
+                            {% if zone['groups'] is defined and zone['groups']|length > 0 %}
+                            <div class="text-muted small mt-1">
+                                {% for group in zone['groups'] %}
+                                <i class="bi bi-people"></i> {{ group }}<br>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
                         </td>
                         {% if iface_zonelist_fullname %}
                         <td>

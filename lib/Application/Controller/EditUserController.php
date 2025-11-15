@@ -37,6 +37,8 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditUserController extends BaseController
@@ -230,6 +232,28 @@ class EditUserController extends BaseController
         $externalAuthMethods = ['ldap', 'oidc', 'saml'];
         $isExternalAuth = in_array($user['auth_type'] ?? 'sql', $externalAuthMethods);
 
+        // Fetch user's group memberships
+        $groupMemberRepo = new DbUserGroupMemberRepository($this->db);
+        $userGroupRepo = new DbUserGroupRepository($this->db);
+
+        $memberships = $groupMemberRepo->findByUserId($editId);
+        $allGroups = $userGroupRepo->findAll();
+
+        $userGroups = array_map(function ($membership) use ($allGroups) {
+            $groupId = $membership->getGroupId();
+            foreach ($allGroups as $group) {
+                if ($group->getId() === $groupId) {
+                    return [
+                        'id' => $group->getId(),
+                        'name' => $group->getName(),
+                        'description' => $group->getDescription()
+                    ];
+                }
+            }
+            return null;
+        }, $memberships);
+        $userGroups = array_filter($userGroups); // Remove nulls
+
         $this->render('edit_user.html', [
             'edit_id' => $editId,
             'name' => $user['fullname'] ?: $user['username'],
@@ -245,6 +269,7 @@ class EditUserController extends BaseController
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
             'is_external_auth' => $isExternalAuth,
             'password_policy' => $policyConfig,
+            'user_groups' => $userGroups,
         ]);
     }
 

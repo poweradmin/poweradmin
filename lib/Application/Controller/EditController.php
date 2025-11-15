@@ -66,6 +66,8 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -304,6 +306,19 @@ class EditController extends BaseController
             }
         }
 
+        // Handle group ownership operations
+        if (isset($_POST["newgroup"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newgroup"])) {
+            $this->validateCsrfToken();
+            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
+            $zoneGroupRepo->add((int)$_POST["domain"], (int)$_POST["newgroup"]);
+        }
+
+        if (isset($_POST["delete_group"]) && is_numeric($_POST["delete_group"])) {
+            $this->validateCsrfToken();
+            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
+            $zoneGroupRepo->remove($zone_id, (int)$_POST["delete_group"]);
+        }
+
         if (isset($_POST["template_change"])) {
             $this->validateCsrfToken();
             if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
@@ -458,6 +473,32 @@ class EditController extends BaseController
         }
         $owners = $this->zoneRepository->getZoneOwners($zone_id);
 
+        // Fetch group ownership
+        $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
+        $groupOwnerships = $zoneGroupRepo->findByDomainId($zone_id);
+
+        // Fetch all groups for name lookup and dropdown
+        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $allGroups = $userGroupRepo->findAll();
+
+        // Map group IDs to group data for display
+        $groupOwners = array_map(function ($zg) use ($allGroups) {
+            $groupId = $zg->getGroupId();
+            $groupName = 'Group #' . $groupId;
+
+            foreach ($allGroups as $group) {
+                if ($group->getId() === $groupId) {
+                    $groupName = $group->getName();
+                    break;
+                }
+            }
+
+            return [
+                'id' => $groupId,
+                'name' => $groupName
+            ];
+        }, $groupOwnerships);
+
         $soa_record = $this->dnsRecord->getSOARecord($zone_id);
 
         $isDnsSecEnabled = $this->config->get('dnssec', 'enabled', false);
@@ -493,6 +534,8 @@ class EditController extends BaseController
             'slave_master' => $slave_master,
             'users' => $users,
             'owners' => $owners,
+            'group_owners' => $groupOwners,
+            'all_groups' => $allGroups,
             'records' => $displayRecords,
             'perm_view' => $perm_view,
             'perm_edit' => $perm_edit,

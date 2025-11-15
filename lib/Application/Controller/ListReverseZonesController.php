@@ -42,6 +42,8 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Domain\Service\ZoneSortingService;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class ListReverseZonesController extends BaseController
@@ -164,6 +166,25 @@ class ListReverseZonesController extends BaseController
 
         // Get associated forward zones (if needed)
         $associatedForwardZones = $this->forwardZoneAssociationService->getAssociatedForwardZones($reverse_zones);
+
+        // Augment zones with group information
+        $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
+        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $allGroups = $userGroupRepo->findAll();
+
+        foreach ($reverse_zones as &$zone) {
+            $groupOwnerships = $zoneGroupRepo->findByDomainId($zone['id']);
+            $zone['groups'] = array_map(function ($zg) use ($allGroups) {
+                $groupId = $zg->getGroupId();
+                foreach ($allGroups as $group) {
+                    if ($group->getId() === $groupId) {
+                        return $group->getName();
+                    }
+                }
+                return 'Group #' . $groupId;
+            }, $groupOwnerships);
+        }
+        unset($zone); // Break the reference
 
         $this->render('list_reverse_zones.html', [
             'zones' => $reverse_zones,
