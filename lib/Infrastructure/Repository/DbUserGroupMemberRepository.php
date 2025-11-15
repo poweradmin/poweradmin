@@ -23,7 +23,6 @@
 namespace Poweradmin\Infrastructure\Repository;
 
 use PDO;
-use PDOException;
 use Poweradmin\Domain\Model\UserGroupMember;
 use Poweradmin\Domain\Repository\UserGroupMemberRepositoryInterface;
 

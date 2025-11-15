@@ -10,7 +10,7 @@
     <div class="col-md-8 col-lg-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
-                <strong><i class="bi bi-plus-circle me-2"></i>{% trans %}Add Group{% endtrans %}</strong>
+                <strong><i class="bi bi-plus-circle me-2 text-dark"></i>{% trans %}Add Group{% endtrans %}</strong>
             </div>
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/groups/add" novalidate>
@@ -56,10 +56,10 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary btn-sm">
-                            <i class="bi bi-check-circle me-1"></i>{% trans %}Create Group{% endtrans %}
+                            <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Create Group{% endtrans %}
                         </button>
                         <a href="{{ base_url_prefix }}/groups" class="btn btn-secondary btn-sm">
-                            <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                         </a>
                     </div>
                 </form>

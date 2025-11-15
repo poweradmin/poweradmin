@@ -107,7 +107,7 @@ class EditGroupController extends BaseController
         $permTemplId = (int)$this->request->getPostParam('perm_templ');
 
         try {
-            $this->groupService->updateGroup($groupId, $name, $permTemplId, $description);
+            $this->groupService->updateGroup($groupId, $name, $description, $permTemplId);
 
             $this->setMessage('list_groups', 'success', _('Group has been updated successfully.'));
             $this->redirect('/groups');

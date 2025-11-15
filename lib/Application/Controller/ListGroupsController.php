@@ -34,7 +34,6 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Repository\UserGroupRepositoryInterface;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
 class ListGroupsController extends BaseController

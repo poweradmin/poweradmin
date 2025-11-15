@@ -39,6 +39,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Symfony\Component\Validator\Constraints as Assert;
@@ -133,8 +134,12 @@ class DeleteDomainController extends BaseController
         if ($zone_info['type'] == 'SLAVE') {
             $dnsRecord = new DnsRecord($this->db, $this->getConfig());
             $slave_master = $dnsRecord->getDomainSlaveMaster($zone_id);
-            if ($dnsRecord->supermasterExists($slave_master)) {
-                $slave_master_exists = true;
+            if ($slave_master) {
+                // Extract first IP from master field (can contain multiple IPs, hostnames, ports)
+                $master_ip = IpHelper::extractFirstIpFromMaster($slave_master);
+                if ($master_ip && $dnsRecord->supermasterExists($master_ip)) {
+                    $slave_master_exists = true;
+                }
             }
         }
 
