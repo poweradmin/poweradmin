@@ -7,10 +7,13 @@
 </nav>
 
 <div class="row">
-    <div class="col-md-8">
+    <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-pencil-square me-2 text-dark"></i>{% trans %}Edit Group{% endtrans %}: {{ group.name }}</strong>
+            <div class="card-header py-3 d-flex justify-content-between align-items-center">
+                <strong><i class="bi bi-pencil-square me-2 text-dark"></i>{% trans %}Edit Group{% endtrans %}</strong>
+                <a href="{{ base_url_prefix }}/groups/{{ group.id }}/delete" class="btn btn-sm btn-outline-danger">
+                    <i class="bi bi-trash me-1 text-danger"></i>{% trans %}Delete{% endtrans %}
+                </a>
             </div>
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/edit" novalidate>
@@ -56,69 +59,90 @@
                 </form>
             </div>
         </div>
+    </div>
 
+    <div class="col-md-6">
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <strong><i class="bi bi-people me-2 text-dark"></i>{% trans %}Members{% endtrans %}</strong>
-                        <span class="badge bg-info">{{ details.memberCount }}</span>
+                        <div>
+                            <strong><i class="bi bi-people me-2 text-dark"></i>{% trans %}Members{% endtrans %}</strong>
+                            <span class="badge bg-info ms-2">{{ details.memberCount }}</span>
+                        </div>
+                        <a href="{{ base_url_prefix }}/groups/{{ group.id }}/members" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil me-1 text-primary"></i>{% trans %}Manage{% endtrans %}
+                        </a>
                     </div>
                     <div class="card-body">
                         {% if members is empty %}
-                        <p class="text-muted mb-2">{% trans %}No members in this group yet.{% endtrans %}</p>
+                        <p class="text-muted text-center py-3">
+                            <i class="bi bi-inbox fs-4"></i><br>
+                            {% trans %}No members in this group yet.{% endtrans %}
+                        </p>
                         {% else %}
-                        <ul class="list-unstyled mb-2">
+                        <ul class="list-unstyled mb-0">
                             {% for member in members|slice(0, 5) %}
-                            <li class="mb-1">
+                            <li class="mb-2">
                                 <i class="bi bi-person-fill text-secondary me-1"></i>
-                                {{ member.username }}
+                                <strong>{{ member.username }}</strong>
                                 {% if member.fullname %}
-                                    <small class="text-muted">({{ member.fullname }})</small>
+                                    <small class="text-muted ms-2">({{ member.fullname }})</small>
                                 {% endif %}
                             </li>
                             {% endfor %}
                             {% if members|length > 5 %}
-                            <li class="text-muted">
-                                <small>{% trans %}and{% endtrans %} {{ members|length - 5 }} {% trans %}more...{% endtrans %}</small>
+                            <li class="text-muted border-top pt-2 mt-2">
+                                <small><i class="bi bi-three-dots"></i> {% trans %}and{% endtrans %} {{ members|length - 5 }} {% trans %}more...{% endtrans %}</small>
                             </li>
                             {% endif %}
                         </ul>
                         {% endif %}
-                        <a href="{{ base_url_prefix }}/groups/{{ group.id }}/members" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-people-fill me-1 text-primary"></i>{% trans %}Manage Members{% endtrans %}
-                        </a>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-12">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <strong><i class="bi bi-hdd-stack me-2 text-dark"></i>{% trans %}Zones{% endtrans %}</strong>
-                        <span class="badge bg-primary">{{ details.zoneCount }}</span>
+                        <div>
+                            <strong><i class="bi bi-hdd-stack me-2 text-dark"></i>{% trans %}Zones{% endtrans %}</strong>
+                            <span class="badge bg-primary ms-2">{{ details.zoneCount }}</span>
+                        </div>
+                        <a href="{{ base_url_prefix }}/groups/{{ group.id }}/zones" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-pencil me-1 text-primary"></i>{% trans %}Manage{% endtrans %}
+                        </a>
                     </div>
                     <div class="card-body">
                         {% if zones is empty %}
-                        <p class="text-muted mb-2">{% trans %}This group doesn't own any zones yet.{% endtrans %}</p>
+                        <p class="text-muted text-center py-3">
+                            <i class="bi bi-inbox fs-4"></i><br>
+                            {% trans %}This group doesn't own any zones yet.{% endtrans %}
+                        </p>
                         {% else %}
-                        <ul class="list-unstyled mb-2">
+                        <ul class="list-unstyled mb-0">
                             {% for zone in zones|slice(0, 5) %}
-                            <li class="mb-1">
+                            <li class="mb-2">
                                 <i class="bi bi-hdd text-secondary me-1"></i>
-                                {{ zone.name }}
+                                <strong>{{ zone.name }}</strong>
+                                {% if zone.type %}
+                                    {% if zone.type == 'MASTER' %}
+                                        <span class="badge bg-success badge-sm ms-1">{% trans %}Master{% endtrans %}</span>
+                                    {% elseif zone.type == 'SLAVE' %}
+                                        <span class="badge bg-info badge-sm ms-1">{% trans %}Slave{% endtrans %}</span>
+                                    {% elseif zone.type == 'NATIVE' %}
+                                        <span class="badge bg-warning badge-sm ms-1">{% trans %}Native{% endtrans %}</span>
+                                    {% endif %}
+                                {% endif %}
                             </li>
                             {% endfor %}
                             {% if zones|length > 5 %}
-                            <li class="text-muted">
-                                <small>{% trans %}and{% endtrans %} {{ zones|length - 5 }} {% trans %}more...{% endtrans %}</small>
+                            <li class="text-muted border-top pt-2 mt-2">
+                                <small><i class="bi bi-three-dots"></i> {% trans %}and{% endtrans %} {{ zones|length - 5 }} {% trans %}more...{% endtrans %}</small>
                             </li>
                             {% endif %}
                         </ul>
                         {% endif %}
-                        <a href="{{ base_url_prefix }}/groups/{{ group.id }}/zones" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-hdd-stack-fill me-1 text-primary"></i>{% trans %}Manage Zones{% endtrans %}
-                        </a>
                     </div>
                 </div>
             </div>
