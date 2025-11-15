@@ -38,6 +38,8 @@ use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -56,7 +58,7 @@ class EditGroupController extends BaseController
 
         $groupRepository = new DbUserGroupRepository($this->db);
         $memberRepository = new DbUserGroupMemberRepository($this->db);
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db);
+        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config);
 
         $this->groupService = new GroupService($groupRepository);
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
@@ -138,23 +140,22 @@ class EditGroupController extends BaseController
             // Get member usernames
             $memberUsernames = [];
             foreach ($members as $member) {
-                $userId = $member->getUserId();
-                $userDetails = UserManager::getUserDetails($this->db, $userId);
-                if ($userDetails) {
-                    $memberUsernames[] = [
-                        'id' => $userId,
-                        'username' => $userDetails['username'],
-                        'fullname' => $userDetails['fullname'] ?? '',
-                    ];
-                }
+                $memberUsernames[] = [
+                    'id' => $member->getUserId(),
+                    'username' => $member->getUsername(),
+                    'fullname' => $member->getFullname() ?? '',
+                ];
             }
 
             // Get zone details
+            $tableNameService = new TableNameService($this->config);
+            $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
+
             $zoneDetails = [];
             foreach ($zones as $zoneGroup) {
                 $domainId = $zoneGroup->getDomainId();
                 // Get zone name from domains table
-                $query = "SELECT name FROM domains WHERE id = :id";
+                $query = "SELECT name FROM $domainsTable WHERE id = :id";
                 $stmt = $this->db->prepare($query);
                 $stmt->execute([':id' => $domainId]);
                 $zoneName = $stmt->fetchColumn();

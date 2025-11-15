@@ -10,7 +10,7 @@
     <div class="col-md-8">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
-                <strong><i class="bi bi-pencil-square me-2"></i>{% trans %}Edit Group{% endtrans %}: {{ group.name }}</strong>
+                <strong><i class="bi bi-pencil-square me-2 text-dark"></i>{% trans %}Edit Group{% endtrans %}: {{ group.name }}</strong>
             </div>
             <div class="card-body">
                 <form class="needs-validation" method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/edit" novalidate>
@@ -47,10 +47,10 @@
 
                     <div class="d-flex gap-2">
                         <button type="submit" class="btn btn-primary btn-sm">
-                            <i class="bi bi-check-circle me-1"></i>{% trans %}Update Group{% endtrans %}
+                            <i class="bi bi-check-circle me-1 text-white"></i>{% trans %}Update Group{% endtrans %}
                         </button>
                         <a href="{{ base_url_prefix }}/groups" class="btn btn-secondary btn-sm">
-                            <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
                         </a>
                     </div>
                 </form>
@@ -61,7 +61,7 @@
             <div class="col-md-6">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <strong><i class="bi bi-people me-2"></i>{% trans %}Members{% endtrans %}</strong>
+                        <strong><i class="bi bi-people me-2 text-dark"></i>{% trans %}Members{% endtrans %}</strong>
                         <span class="badge bg-info">{{ details.memberCount }}</span>
                     </div>
                     <div class="card-body">
@@ -86,7 +86,7 @@
                         </ul>
                         {% endif %}
                         <a href="{{ base_url_prefix }}/groups/{{ group.id }}/members" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-people-fill me-1"></i>{% trans %}Manage Members{% endtrans %}
+                            <i class="bi bi-people-fill me-1 text-primary"></i>{% trans %}Manage Members{% endtrans %}
                         </a>
                     </div>
                 </div>
@@ -95,7 +95,7 @@
             <div class="col-md-6">
                 <div class="card shadow-sm mb-4">
                     <div class="card-header py-3 d-flex justify-content-between align-items-center">
-                        <strong><i class="bi bi-hdd-stack me-2"></i>{% trans %}Zones{% endtrans %}</strong>
+                        <strong><i class="bi bi-hdd-stack me-2 text-dark"></i>{% trans %}Zones{% endtrans %}</strong>
                         <span class="badge bg-primary">{{ details.zoneCount }}</span>
                     </div>
                     <div class="card-body">
@@ -117,7 +117,7 @@
                         </ul>
                         {% endif %}
                         <a href="{{ base_url_prefix }}/groups/{{ group.id }}/zones" class="btn btn-sm btn-outline-primary">
-                            <i class="bi bi-hdd-stack-fill me-1"></i>{% trans %}Manage Zones{% endtrans %}
+                            <i class="bi bi-hdd-stack-fill me-1 text-primary"></i>{% trans %}Manage Zones{% endtrans %}
                         </a>
                     </div>
                 </div>

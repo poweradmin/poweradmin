@@ -37,6 +37,8 @@ use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
@@ -51,7 +53,7 @@ class DeleteGroupController extends BaseController
         parent::__construct($request);
 
         $groupRepository = new DbUserGroupRepository($this->db);
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db);
+        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config);
 
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
@@ -128,10 +130,13 @@ class DeleteGroupController extends BaseController
             $impact = $this->zoneGroupService->getGroupDeletionImpact($groupId, 20);
 
             // Get zone details for display
+            $tableNameService = new TableNameService($this->config);
+            $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
+
             $zoneDetails = [];
             foreach ($impact['zones'] as $zoneGroup) {
                 $domainId = $zoneGroup->getDomainId();
-                $query = "SELECT name FROM domains WHERE id = :id";
+                $query = "SELECT name FROM $domainsTable WHERE id = :id";
                 $stmt = $this->db->prepare($query);
                 $stmt->execute([':id' => $domainId]);
                 $zoneName = $stmt->fetchColumn();

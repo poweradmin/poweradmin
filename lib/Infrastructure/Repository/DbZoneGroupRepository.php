@@ -32,7 +32,7 @@ use Poweradmin\Infrastructure\Database\PdnsTable;
 class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 {
     private PDO $db;
-    private TableNameService $tableNameService;
+    private ?TableNameService $tableNameService = null;
 
     public function __construct(PDO $db, ?ConfigurationInterface $config = null)
     {
@@ -130,7 +130,7 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
             (int)$row['id'],
             (int)$row['zone_id'],
             (int)$row['group_id'],
-            isset($row['zone_templ_id']) && $row['zone_templ_id'] !== null ? (int)$row['zone_templ_id'] : null,
+            null, // zone_templ_id not in current schema
             $row['assigned_at'] ?? null,
             $row['zone_name'] ?? null,
             $row['zone_type'] ?? null
