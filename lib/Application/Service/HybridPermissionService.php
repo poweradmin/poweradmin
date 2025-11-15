@@ -233,7 +233,7 @@ class HybridPermissionService
         // Group by group_id
         $groupedResults = [];
         foreach ($results as $row) {
-            $groupId = $row['group_id'];
+            $groupId = (int)$row['group_id'];
             if (!isset($groupedResults[$groupId])) {
                 $groupedResults[$groupId] = [
                     'group_id' => $groupId,

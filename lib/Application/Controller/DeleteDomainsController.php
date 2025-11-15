@@ -38,6 +38,7 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
@@ -164,8 +165,12 @@ class DeleteDomainsController extends BaseController
                 $slave_master = $dnsRecord->getDomainSlaveMaster($zone_id);
                 $zones[$zone_id]['slave_master'] = $slave_master;
 
-                if ($dnsRecord->supermasterExists($slave_master)) {
-                    $zones[$zone_id]['has_supermaster'] = true;
+                if ($slave_master) {
+                    // Extract first IP from master field (can contain multiple IPs, hostnames, ports)
+                    $master_ip = IpHelper::extractFirstIpFromMaster($slave_master);
+                    if ($master_ip && $dnsRecord->supermasterExists($master_ip)) {
+                        $zones[$zone_id]['has_supermaster'] = true;
+                    }
                 }
             }
 

@@ -179,4 +179,102 @@ class IpHelper
 
         return $reversed . '.ip6.arpa';
     }
+
+    /**
+     * Extract the first valid IP address from a PowerDNS master field value
+     *
+     * PowerDNS master field can contain various formats:
+     * - Single IP: "192.168.1.1"
+     * - Multiple IPs: "192.168.1.1,192.168.1.2"
+     * - IP with port: "192.168.1.1:5300" or "[2001:db8::1]:5300"
+     * - Hostname: "ns1.example.com"
+     * - Whitespace: " 192.168.1.1 "
+     *
+     * This method extracts the first valid IP address, stripping ports and
+     * ignoring hostnames.
+     *
+     * @param string $master The master field value from PowerDNS
+     * @return string|null First valid IP address or null if none found
+     */
+    public static function extractFirstIpFromMaster(string $master): ?string
+    {
+        // Trim whitespace
+        $master = trim($master);
+
+        if (empty($master)) {
+            return null;
+        }
+
+        // Split by comma in case of multiple masters
+        $masters = array_map('trim', explode(',', $master));
+
+        foreach ($masters as $entry) {
+            // Remove port notation if present
+            // Handle IPv6 with port: [2001:db8::1]:5300
+            if (preg_match('/^\[([^\]]+)\](?::\d+)?$/', $entry, $matches)) {
+                $ip = $matches[1];
+            }
+            // Handle IPv4 with port: 192.168.1.1:5300
+            // Be careful not to match IPv6 colons
+            elseif (preg_match('/^([0-9.]+):\d+$/', $entry, $matches)) {
+                $ip = $matches[1];
+            }
+            // No port notation
+            else {
+                $ip = $entry;
+            }
+
+            // Check if it's a valid IPv4 or IPv6 address (not a hostname)
+            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
+                return $ip;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Extract all valid IP addresses from a PowerDNS master field value
+     *
+     * Similar to extractFirstIpFromMaster but returns all valid IPs found.
+     *
+     * @param string $master The master field value from PowerDNS
+     * @return array Array of valid IP addresses
+     */
+    public static function extractAllIpsFromMaster(string $master): array
+    {
+        // Trim whitespace
+        $master = trim($master);
+
+        if (empty($master)) {
+            return [];
+        }
+
+        // Split by comma in case of multiple masters
+        $masters = array_map('trim', explode(',', $master));
+        $validIps = [];
+
+        foreach ($masters as $entry) {
+            // Remove port notation if present
+            // Handle IPv6 with port: [2001:db8::1]:5300
+            if (preg_match('/^\[([^\]]+)\](?::\d+)?$/', $entry, $matches)) {
+                $ip = $matches[1];
+            }
+            // Handle IPv4 with port: 192.168.1.1:5300
+            elseif (preg_match('/^([0-9.]+):\d+$/', $entry, $matches)) {
+                $ip = $matches[1];
+            }
+            // No port notation
+            else {
+                $ip = $entry;
+            }
+
+            // Check if it's a valid IPv4 or IPv6 address (not a hostname)
+            if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 | FILTER_FLAG_IPV6)) {
+                $validIps[] = $ip;
+            }
+        }
+
+        return $validIps;
+    }
 }

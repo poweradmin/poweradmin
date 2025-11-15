@@ -39,7 +39,6 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Symfony\Component\Validator\Constraints as Assert;
 
 class ManageGroupMembersController extends BaseController
 {

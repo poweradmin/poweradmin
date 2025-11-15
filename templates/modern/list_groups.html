@@ -19,11 +19,6 @@
         <div class="p-4 text-center text-muted">
             <i class="bi bi-inbox fs-1"></i>
             <p class="mt-2">{% trans %}No groups found{% endtrans %}</p>
-            {% if can_add_group %}
-            <a href="{{ base_url_prefix }}/groups/add" class="btn btn-primary btn-sm">
-                <i class="bi bi-plus-circle-fill me-1"></i>{% trans %}Create your first group{% endtrans %}
-            </a>
-            {% endif %}
         </div>
         {% else %}
         <div class="table-responsive">
