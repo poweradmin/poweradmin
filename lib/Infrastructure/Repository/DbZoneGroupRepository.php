@@ -44,9 +44,9 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 
     public function findByDomainId(int $domainId): array
     {
-        $query = "SELECT * FROM zones_groups WHERE zone_id = :zone_id ORDER BY assigned_at DESC";
+        $query = "SELECT * FROM zones_groups WHERE domain_id = :domain_id ORDER BY assigned_at DESC";
         $stmt = $this->db->prepare($query);
-        $stmt->execute([':zone_id' => $domainId]);
+        $stmt->execute([':domain_id' => $domainId]);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         return array_map(fn($row) => $this->mapRowToEntity($row), $results);
@@ -59,7 +59,7 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
             $domainsTable = $this->tableNameService->getTable(PdnsTable::DOMAINS);
             $query = "SELECT zg.*, d.name as zone_name, d.type as zone_type
                       FROM zones_groups zg
-                      LEFT JOIN $domainsTable d ON zg.zone_id = d.id
+                      LEFT JOIN $domainsTable d ON zg.domain_id = d.id
                       WHERE zg.group_id = :group_id
                       ORDER BY zg.assigned_at DESC";
         } else {
@@ -79,19 +79,19 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         // Check if ownership already exists
         if ($this->exists($domainId, $groupId)) {
             // Return existing ownership
-            $query = "SELECT * FROM zones_groups WHERE zone_id = :zone_id AND group_id = :group_id";
+            $query = "SELECT * FROM zones_groups WHERE domain_id = :domain_id AND group_id = :group_id";
             $stmt = $this->db->prepare($query);
-            $stmt->execute([':zone_id' => $domainId, ':group_id' => $groupId]);
+            $stmt->execute([':domain_id' => $domainId, ':group_id' => $groupId]);
             $row = $stmt->fetch(PDO::FETCH_ASSOC);
             return $this->mapRowToEntity($row);
         }
 
-        $query = "INSERT INTO zones_groups (zone_id, group_id, assigned_at)
-                  VALUES (:zone_id, :group_id, CURRENT_TIMESTAMP)";
+        $query = "INSERT INTO zones_groups (domain_id, group_id, assigned_at)
+                  VALUES (:domain_id, :group_id, CURRENT_TIMESTAMP)";
 
         $stmt = $this->db->prepare($query);
         $stmt->execute([
-            ':zone_id' => $domainId,
+            ':domain_id' => $domainId,
             ':group_id' => $groupId
         ]);
 
@@ -102,10 +102,10 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 
     public function remove(int $domainId, int $groupId): bool
     {
-        $query = "DELETE FROM zones_groups WHERE zone_id = :zone_id AND group_id = :group_id";
+        $query = "DELETE FROM zones_groups WHERE domain_id = :domain_id AND group_id = :group_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
-            ':zone_id' => $domainId,
+            ':domain_id' => $domainId,
             ':group_id' => $groupId
         ]);
 
@@ -114,10 +114,10 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 
     public function exists(int $domainId, int $groupId): bool
     {
-        $query = "SELECT COUNT(*) FROM zones_groups WHERE zone_id = :zone_id AND group_id = :group_id";
+        $query = "SELECT COUNT(*) FROM zones_groups WHERE domain_id = :domain_id AND group_id = :group_id";
         $stmt = $this->db->prepare($query);
         $stmt->execute([
-            ':zone_id' => $domainId,
+            ':domain_id' => $domainId,
             ':group_id' => $groupId
         ]);
 
@@ -128,7 +128,7 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
     {
         return new ZoneGroup(
             (int)$row['id'],
-            (int)$row['zone_id'],
+            (int)$row['domain_id'],
             (int)$row['group_id'],
             null, // zone_templ_id not in current schema
             $row['assigned_at'] ?? null,
