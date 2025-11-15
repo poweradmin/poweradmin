@@ -6,100 +6,88 @@
     </ol>
 </nav>
 
-<div class="row">
-    <div class="col-md-8 col-lg-6">
-        <div class="card shadow-sm mb-4 border-danger">
-            <div class="card-header py-3 bg-danger text-white">
-                <strong><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Delete Group{% endtrans %}</strong>
+<div class="card shadow-sm mb-4">
+    <div class="card-header py-3">
+        <strong><i class="bi bi-trash me-2 text-danger"></i>{% trans %}Delete Group{% endtrans %}</strong>
+    </div>
+    <div class="card-body">
+        <div class="alert alert-danger bg-danger bg-opacity-10">
+            <h5 class="alert-heading text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Warning{% endtrans %}</h5>
+            <p>{% trans %}You are about to delete the group{% endtrans %}: <strong>"{{ group.name }}"</strong></p>
+            <p class="mb-0">{% trans %}This action cannot be undone. Are you sure you want to proceed?{% endtrans %}</p>
+        </div>
+
+        <div class="card mb-3">
+            <div class="card-header py-2">
+                <strong>{% trans %}Deletion Impact{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <div class="alert alert-danger d-flex align-items-start">
-                    <i class="bi bi-exclamation-circle-fill me-2 mt-1 fs-4"></i>
-                    <div>
-                        <strong>{% trans %}Warning: This action cannot be undone!{% endtrans %}</strong>
-                        <p class="mb-0 mt-2">
-                            {% trans %}You are about to delete the group{% endtrans %} <strong>"{{ group.name }}"</strong>.
-                        </p>
-                    </div>
-                </div>
-
-                <div class="card bg-light mb-3">
-                    <div class="card-body">
-                        <h6 class="card-title">{% trans %}Deletion Impact{% endtrans %}</h6>
-                        <ul class="mb-0">
-                            <li>
-                                <strong>{{ member_count }}</strong>
-                                {% if member_count == 1 %}
-                                    {% trans %}member will be removed from this group{% endtrans %}
-                                {% else %}
-                                    {% trans %}members will be removed from this group{% endtrans %}
-                                {% endif %}
-                            </li>
-                            <li>
-                                <strong>{{ zone_count }}</strong>
-                                {% if zone_count == 1 %}
-                                    {% trans %}zone will lose this group ownership{% endtrans %}
-                                {% else %}
-                                    {% trans %}zones will lose this group ownership{% endtrans %}
-                                {% endif %}
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-
-                {% if zones_sample is not empty %}
-                <div class="card mb-3">
-                    <div class="card-header">
-                        <strong>{% trans %}Affected Zones{% endtrans %}</strong>
-                        {% if show_more_zones %}
-                        <small class="text-muted">({% trans %}showing first 20{% endtrans %})</small>
+                <ul class="mb-0">
+                    <li>
+                        <strong>{{ member_count }}</strong>
+                        {% if member_count == 1 %}
+                            {% trans %}member will be removed from this group{% endtrans %}
+                        {% else %}
+                            {% trans %}members will be removed from this group{% endtrans %}
                         {% endif %}
-                    </div>
-                    <div class="card-body p-0">
-                        <ul class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
-                            {% for zone in zones_sample %}
-                            <li class="list-group-item py-2">
-                                <i class="bi bi-hdd text-secondary me-1"></i>
-                                {{ zone.name }}
-                            </li>
-                            {% endfor %}
-                        </ul>
-                    </div>
-                    {% if show_more_zones %}
-                    <div class="card-footer text-muted">
-                        <small>
-                            <i class="bi bi-info-circle me-1"></i>
-                            {% trans %}and{% endtrans %} {{ zone_count - 20 }} {% trans %}more zones...{% endtrans %}
-                        </small>
-                    </div>
-                    {% endif %}
-                </div>
-                {% endif %}
-
-                <div class="alert alert-warning d-flex align-items-start">
-                    <i class="bi bi-shield-exclamation me-2 mt-1"></i>
-                    <div>
-                        <small>
-                            <strong>{% trans %}Note:{% endtrans %}</strong>
-                            {% trans %}Members will lose access to all zones owned by this group. Zones without any remaining owners will still exist but will be inaccessible to regular users.{% endtrans %}
-                        </small>
-                    </div>
-                </div>
-
-                <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/delete">
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
-                    <input type="hidden" name="confirm" value="yes">
-
-                    <div class="d-flex gap-2">
-                        <button type="submit" class="btn btn-danger btn-sm">
-                            <i class="bi bi-trash-fill me-1"></i>{% trans %}Yes, Delete Group{% endtrans %}
-                        </button>
-                        <a href="{{ base_url_prefix }}/groups" class="btn btn-secondary btn-sm">
-                            <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
-                        </a>
-                    </div>
-                </form>
+                    </li>
+                    <li>
+                        <strong>{{ zone_count }}</strong>
+                        {% if zone_count == 1 %}
+                            {% trans %}zone will lose this group ownership{% endtrans %}
+                        {% else %}
+                            {% trans %}zones will lose this group ownership{% endtrans %}
+                        {% endif %}
+                    </li>
+                </ul>
             </div>
+        </div>
+
+        {% if zones_sample is not empty %}
+        <div class="card mb-3">
+            <div class="card-header py-2">
+                <strong>{% trans %}Affected Zones{% endtrans %}</strong>
+                {% if show_more_zones %}
+                <small class="text-muted">({% trans %}showing first 20{% endtrans %})</small>
+                {% endif %}
+            </div>
+            <div class="card-body p-0">
+                <ul class="list-group list-group-flush" style="max-height: 300px; overflow-y: auto;">
+                    {% for zone in zones_sample %}
+                    <li class="list-group-item py-2">
+                        <i class="bi bi-hdd text-secondary me-1"></i>
+                        {{ zone.name }}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% if show_more_zones %}
+            <div class="card-footer text-muted">
+                <small>
+                    <i class="bi bi-info-circle me-1"></i>
+                    {% trans %}and{% endtrans %} {{ zone_count - 20 }} {% trans %}more zones...{% endtrans %}
+                </small>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="alert alert-warning bg-warning bg-opacity-10">
+            <h5 class="alert-heading text-warning"><i class="bi bi-exclamation-triangle-fill me-2"></i>{% trans %}Important Note{% endtrans %}</h5>
+            <p class="mb-0">{% trans %}Members will lose access to all zones owned by this group. Zones without any remaining owners will still exist but will be inaccessible to regular users.{% endtrans %}</p>
+        </div>
+
+        <div class="mt-4">
+            <form method="post" action="{{ base_url_prefix }}/groups/{{ group.id }}/delete" style="display: inline;">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <input type="hidden" name="confirm" value="yes">
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this group{% endtrans %}
+                </button>
+            </form>
+            <a href="{{ base_url_prefix }}/groups" class="btn btn-secondary btn-sm">
+                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}No, keep this group{% endtrans %}
+            </a>
         </div>
     </div>
 </div>
