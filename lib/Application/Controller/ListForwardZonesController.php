@@ -43,6 +43,8 @@ use Poweradmin\Domain\Repository\DomainRepository;
 use Poweradmin\Domain\Service\ZoneCountService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class ListForwardZonesController extends BaseController
@@ -113,6 +115,25 @@ class ListForwardZonesController extends BaseController
         } else {
             $zones = $domainRepository->getZones($perm_view, $_SESSION['userid'], $letter_start, $row_start, $iface_rowamount, $zone_sort_by, $zone_sort_direction, true, $iface_zonelist_serial, $iface_zonelist_template);
         }
+
+        // Augment zones with group information
+        $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
+        $userGroupRepo = new DbUserGroupRepository($this->db);
+        $allGroups = $userGroupRepo->findAll();
+
+        foreach ($zones as &$zone) {
+            $groupOwnerships = $zoneGroupRepo->findByDomainId($zone['id']);
+            $zone['groups'] = array_map(function ($zg) use ($allGroups) {
+                $groupId = $zg->getGroupId();
+                foreach ($allGroups as $group) {
+                    if ($group->getId() === $groupId) {
+                        return $group->getName();
+                    }
+                }
+                return 'Group #' . $groupId;
+            }, $groupOwnerships);
+        }
+        unset($zone); // Break the reference
 
         if ($perm_view == 'none') {
             $this->showError(_('You do not have the permission to see any zones.'));
