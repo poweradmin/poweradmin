@@ -100,7 +100,7 @@
                             <tbody id="available-users-body">
                             {% for user in available_users %}
                             <tr class="user-row" data-username="{{ user['username']|lower }}" data-fullname="{{ user['fullname']|default('')|lower }}">
-                                <td><input type="checkbox" name="user_ids[]" value="{{ user['id'] }}" class="form-check-input available-checkbox"></td>
+                                <td><input type="checkbox" name="user_ids[]" value="{{ user['uid'] }}" class="form-check-input available-checkbox"></td>
                                 <td>{{ user['username'] }}</td>
                                 <td>{{ user['fullname']|default('—') }}</td>
                             </tr>

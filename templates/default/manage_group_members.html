@@ -16,9 +16,9 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3 bg-primary text-white">
-                <strong><i class="bi bi-people-fill me-2"></i>{% trans %}Current Members{% endtrans %}</strong>
-                <span class="badge bg-light text-dark ms-2">{{ current_members|length }}</span>
+            <div class="card-header py-2 bg-primary bg-opacity-10 text-primary">
+                <strong><i class="bi bi-people-fill me-2 text-primary"></i>{% trans %}Current Members{% endtrans %}</strong>
+                <span class="badge bg-primary ms-2">{{ current_members|length }}</span>
             </div>
             <div class="card-body">
                 {% if current_members is empty %}
@@ -69,9 +69,9 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3 bg-success text-white">
-                <strong><i class="bi bi-person-plus-fill me-2"></i>{% trans %}Available Users{% endtrans %}</strong>
-                <span class="badge bg-light text-dark ms-2">{{ available_users|length }}</span>
+            <div class="card-header py-2 bg-success bg-opacity-10 text-success">
+                <strong><i class="bi bi-person-plus-fill me-2 text-success"></i>{% trans %}Available Users{% endtrans %}</strong>
+                <span class="badge bg-success ms-2">{{ available_users|length }}</span>
             </div>
             <div class="card-body">
                 {% if available_users is empty %}
@@ -100,7 +100,7 @@
                             <tbody id="available-users-body">
                             {% for user in available_users %}
                             <tr class="user-row" data-username="{{ user['username']|lower }}" data-fullname="{{ user['fullname']|default('')|lower }}">
-                                <td><input type="checkbox" name="user_ids[]" value="{{ user['id'] }}" class="form-check-input available-checkbox"></td>
+                                <td><input type="checkbox" name="user_ids[]" value="{{ user['uid'] }}" class="form-check-input available-checkbox"></td>
                                 <td>{{ user['username'] }}</td>
                                 <td>{{ user['fullname']|default('—') }}</td>
                             </tr>

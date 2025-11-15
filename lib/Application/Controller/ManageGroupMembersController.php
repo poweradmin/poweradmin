@@ -219,16 +219,12 @@ class ManageGroupMembersController extends BaseController
             // Get member details
             $currentMembers = [];
             foreach ($members as $member) {
-                $userId = $member->getUserId();
-                $userDetails = UserManager::getUserDetails($this->db, $userId);
-                if ($userDetails) {
-                    $currentMembers[] = [
-                        'id' => $userId,
-                        'username' => $userDetails['username'],
-                        'fullname' => $userDetails['fullname'] ?? '',
-                        'email' => $userDetails['email'] ?? '',
-                    ];
-                }
+                $currentMembers[] = [
+                    'id' => $member->getUserId(),
+                    'username' => $member->getUsername(),
+                    'fullname' => $member->getFullname() ?? '',
+                    'email' => $member->getEmail() ?? '',
+                ];
             }
 
             // Get all users for selection
@@ -236,7 +232,7 @@ class ManageGroupMembersController extends BaseController
 
             // Filter out current members from available users
             $availableUsers = array_filter($allUsers, function ($user) use ($memberIds) {
-                return !in_array($user['id'], $memberIds);
+                return !in_array($user['uid'], $memberIds);
             });
 
             $this->render('manage_group_members.html', [

@@ -37,6 +37,8 @@ use Poweradmin\Application\Service\GroupService;
 use Poweradmin\Application\Service\ZoneGroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Infrastructure\Database\TableNameService;
+use Poweradmin\Infrastructure\Database\PdnsTable;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
@@ -51,7 +53,7 @@ class ManageGroupZonesController extends BaseController
         parent::__construct($request);
 
         $groupRepository = new DbUserGroupRepository($this->db);
-        $zoneGroupRepository = new DbZoneGroupRepository($this->db);
+        $zoneGroupRepository = new DbZoneGroupRepository($this->db, $this->config);
 
         $this->groupService = new GroupService($groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
@@ -211,6 +213,10 @@ class ManageGroupZonesController extends BaseController
                 return;
             }
 
+            // Get the proper table name for domains
+            $tableNameService = new TableNameService($this->config);
+            $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
+
             // Get zones owned by this group
             $zoneGroups = $this->zoneGroupService->listGroupZones($groupId);
             $ownedDomainIds = array_map(fn($zg) => $zg->getDomainId(), $zoneGroups);
@@ -219,14 +225,14 @@ class ManageGroupZonesController extends BaseController
             $ownedZones = [];
             if (!empty($ownedDomainIds)) {
                 $placeholders = implode(',', array_fill(0, count($ownedDomainIds), '?'));
-                $query = "SELECT id, name, type FROM domains WHERE id IN ($placeholders) ORDER BY name ASC";
+                $query = "SELECT id, name, type FROM $domainsTable WHERE id IN ($placeholders) ORDER BY name ASC";
                 $stmt = $this->db->prepare($query);
                 $stmt->execute($ownedDomainIds);
                 $ownedZones = $stmt->fetchAll(\PDO::FETCH_ASSOC);
             }
 
             // Get all zones for selection
-            $query = "SELECT id, name, type FROM domains ORDER BY name ASC";
+            $query = "SELECT id, name, type FROM $domainsTable ORDER BY name ASC";
             $stmt = $this->db->query($query);
             $allZones = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 
