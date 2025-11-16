@@ -197,6 +197,10 @@ CREATE TABLE IF NOT EXISTS `user_group_members` (
     CONSTRAINT `fk_user_group_members_user` FOREIGN KEY (`user_id`) REFERENCES `users`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Modify zones table to allow nullable owner for group-only ownership
+-- Description: Allow zones to be owned only by groups without requiring a user owner
+ALTER TABLE `zones` MODIFY `owner` INT(11) NULL DEFAULT NULL;
+
 -- Table: zones_groups
 -- Description: Junction table for zone-group ownership (many-to-many)
 CREATE TABLE IF NOT EXISTS `zones_groups` (

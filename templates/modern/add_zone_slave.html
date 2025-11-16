@@ -12,107 +12,103 @@
     </ol>
 </nav>
 
+<form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/add/slave" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+
 <div class="row">
+    <!-- Left Column - Zone Configuration -->
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
-                <strong><i class="bi bi-cloud-download me-2"></i>{% trans %}Add Slave Zone{% endtrans %}</strong>
+                <strong><i class="bi bi-cloud-download me-2"></i>{% trans %}Slave Zone Configuration{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/add/slave" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <div class="mb-3">
+                    <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %} <span class="text-danger">*</span></label>
+                    <input class="form-control form-control-sm" type="text" id="domain" name="domain" value="{{ domain_value }}" required>
+                    <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
+                    <small class="text-muted">{% trans %}Example: example.com{% endtrans %}</small>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %} <span class="text-danger">*</span></label>
-                        <input class="form-control form-control-sm" type="text" id="domain" name="domain" value="{{ domain_value }}" required>
-                        <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
-                        <small class="text-muted">{% trans %}Example: example.com{% endtrans %}</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="slave_master" class="form-label">{% trans %}IP address of master NS{% endtrans %} <span class="text-danger">*</span></label>
-                        <input class="form-control form-control-sm" type="text" id="slave_master" name="slave_master" value="{{ slave_master_value }}" required>
-                        <div class="invalid-feedback">{% trans %}Provide IP address{% endtrans %}</div>
-                        <small class="text-muted">{% trans %}IP address of the master name server (can be IPv4 or IPv6){% endtrans %}</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <label for="owner" class="form-label">{% trans %}Owner{% endtrans %}</label>
-                        <select class="form-select form-select-sm" id="owner" name="owner">
-                            {% for user in users %}
-                            {% if user['id'] == owner_value %}
-                            <option value="{{ user['id'] }}" selected>
-                                {% if user['fullname'] %}
-                                {{ user['fullname'] }}
-                                {% else %}
-                                {{ user['username'] }}
-                                {% endif %}
-                            </option>
-                            {% elseif perm_view_others or user['id'] == session_user_id %}
-                            <option value="{{ user['id'] }}">
-                                {% if user['fullname'] %}
-                                {{ user['fullname'] }}
-                                {% else %}
-                                {{ user['username'] }}
-                                {% endif %}
-                            </option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
-                        <small class="text-muted">{% trans %}User responsible for this zone{% endtrans %}</small>
-                    </div>
-
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <button class="btn btn-primary btn-sm" type="submit" name="submit">
-                                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
-                            </button>
-                            <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm">
-                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
-                            </a>
-                        </div>
-                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
-                    </div>
-                </form>
+                <div class="mb-3">
+                    <label for="slave_master" class="form-label">{% trans %}IP address of master NS{% endtrans %} <span class="text-danger">*</span></label>
+                    <input class="form-control form-control-sm" type="text" id="slave_master" name="slave_master" value="{{ slave_master_value }}" required>
+                    <div class="invalid-feedback">{% trans %}Provide IP address{% endtrans %}</div>
+                    <small class="text-muted">{% trans %}IP address of the master name server (supports IPv4 and IPv6, multiple IPs separated by commas){% endtrans %}</small>
+                </div>
             </div>
         </div>
     </div>
 
+    <!-- Right Column - Ownership -->
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Zone Information{% endtrans %}</strong>
+                <strong><i class="bi bi-person-badge me-2"></i>{% trans %}User Owner{% endtrans %}</strong>
             </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item border-bottom">
-                        <h6 class="mb-1"><i class="bi bi-cloud-download text-primary me-2"></i>{% trans %}About Slave Zones{% endtrans %}</h6>
-                        <p class="small mb-1">{% trans %}A slave zone is a read-only copy of a zone hosted on another DNS server. PowerDNS will automatically fetch and update zone data from the master server.{% endtrans %}</p>
-                        <p class="small mb-0">{% trans %}You cannot edit records in a slave zone - all changes must be made on the master server.{% endtrans %}</p>
-                    </div>
-                    <div class="list-group-item">
-                        <h6 class="mb-1"><i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Important Notes{% endtrans %}</h6>
-                        <p class="small mb-0">{% trans %}Make sure that this PowerDNS server is allowed to transfer the zone from the master server. The master server must have an allow-transfer or similar configuration permitting zone transfers to this server's IP address.{% endtrans %}</p>
-                    </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="owner" class="form-label">{% trans %}Select User{% endtrans %}</label>
+                    <select class="form-select form-select-sm" id="owner" name="owner">
+                        <option value="">-- {% trans %}No user owner{% endtrans %} --</option>
+                        {% for user in users %}
+                        {% if (user['id'] == owner_value) %}
+                        <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
+                        {% elseif perm_view_others or user['id'] == session_user_id %}
+                        <option value="{{ user['id'] }}">{{ user['fullname'] }}</option>
+                        {% endif %}
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">{% trans %}Optional: Select a user responsible for this zone{% endtrans %}</small>
                 </div>
             </div>
         </div>
 
+        {% if all_groups is not empty %}
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
-                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}Quick Tips{% endtrans %}</strong>
+                <strong><i class="bi bi-people me-2"></i>{% trans %}Group Ownership{% endtrans %}</strong>
             </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item">
-                        <ul class="mb-0 ps-4 small">
-                            <li>{% trans %}You can specify multiple master servers by separating IP addresses with commas{% endtrans %}</li>
-                            <li>{% trans %}Slave zones will automatically update when the master server sends a notification{% endtrans %}</li>
-                            <li>{% trans %}To test the connection, check the PowerDNS logs after adding the zone{% endtrans %}</li>
-                        </ul>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="groups" class="form-label">{% trans %}Select Groups{% endtrans %}</label>
+                    <select class="form-select form-select-sm" id="groups" name="groups[]" multiple size="6">
+                        {% for group in all_groups %}
+                        <option value="{{ group.id }}" {% if selected_groups is defined and group.id in selected_groups %}selected{% endif %}>{{ group.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">{% trans %}Optional: Select groups (hold Ctrl/Cmd for multiple){% endtrans %}</small>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="alert alert-info small mb-0">
+            <i class="bi bi-info-circle me-1"></i>
+            {% trans %}At least one user or group must be selected as owner{% endtrans %}
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <button class="btn btn-primary btn-sm" type="submit" name="submit">
+                            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
+                        </button>
+                        <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                        </a>
                     </div>
+                    <small class="text-muted">{% trans %}* Required fields{% endtrans %}</small>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+</form>

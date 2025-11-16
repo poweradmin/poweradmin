@@ -355,7 +355,7 @@ class DnsRecord
      *
      * @return boolean true on success
      */
-    public function addDomain($db, string $domain, int $owner, string $type, string $slave_master, int|string $zone_template): bool
+    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template): bool
     {
         return $this->domainManager->addDomain($db, $domain, $owner, $type, $slave_master, $zone_template);
     }

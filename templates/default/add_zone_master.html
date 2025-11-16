@@ -12,142 +12,147 @@
     </ol>
 </nav>
 
+<form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/add/master" novalidate>
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+
 <div class="row">
+    <!-- Left Column - Zone Configuration -->
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
-                <strong><i class="bi bi-globe me-2"></i>{% trans %}Add Master Zone{% endtrans %}</strong>
+                <strong><i class="bi bi-gear me-2"></i>{% trans %}Zone Configuration{% endtrans %}</strong>
             </div>
             <div class="card-body">
-                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/add/master" novalidate>
-                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <div class="mb-3">
+                    <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %} <span class="text-danger">*</span></label>
+                    <input data-testid="zone-name-input" class="form-control form-control-sm" type="text" id="domain" name="domain" value="{{ domain_value }}" required>
+                    <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
+                    <small class="text-muted">{% trans %}Example: example.com{% endtrans %}</small>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="domain" class="form-label">{% trans %}Zone name{% endtrans %} <span class="text-danger">*</span></label>
-                        <input data-testid="zone-name-input" class="form-control form-control-sm" type="text" id="domain" name="domain" value="{{ domain_value }}" required>
-                        <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
-                        <small class="text-muted">{% trans %}Example: example.com{% endtrans %}</small>
-                    </div>
+                <div class="mb-3">
+                    <label for="dom_type" class="form-label">{% trans %}Type{% endtrans %}</label>
+                    <select data-testid="zone-type-select" class="form-select form-select-sm" id="dom_type" name="dom_type">
+                        {% for type in available_zone_types %}
+                        {% if type == dom_type_value %}
+                        {% set selected = 'selected' %}
+                        {% else %}
+                        {% set selected = '' %}
+                        {% endif %}
+                        <option value="{{ type }}" {{ selected }}>{{type|lower}}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">{% trans %}Zone type (usually NATIVE){% endtrans %}</small>
+                </div>
 
-                    <div class="mb-3">
-                        <label for="owner" class="form-label">{% trans %}Owner{% endtrans %}</label>
-                        <select data-testid="zone-owner-select" class="form-select form-select-sm" id="owner" name="owner">
-                            {% for user in users %}
-                            {% if (user['id'] == owner_value) %}
-                            <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
-                            {% elseif perm_view_others or user['id'] == session_user_id %}
-                            <option value="{{ user['id'] }}">{{ user['fullname'] }}</option>
-                            {% endif %}
-                            {% endfor %}
-                        </select>
-                        <small class="text-muted">{% trans %}User responsible for this zone{% endtrans %}</small>
-                    </div>
+                {% if can_use_templates %}
+                <div class="mb-3">
+                    <label for="zone_template" class="form-label">{% trans %}Template{% endtrans %}</label>
+                    <select data-testid="zone-template-select" class="form-select form-select-sm" id="zone_template" name="zone_template">
+                        <option value="none" {% if zone_template_value == 'none' %}selected{% endif %}>none</option>
+                        {% for zone_template in zone_templates %}
+                        <option value="{{ zone_template['id'] }}" {% if zone_template_value == zone_template['id'] %}selected{% endif %}>{{ zone_template['name'] }}</option>
+                        {% endfor %}
+                    </select>
+                    <small class="text-muted">{% trans %}Optional: Apply predefined records from a template{% endtrans %}</small>
+                </div>
+                {% endif %}
 
-                    {% if all_groups is not empty %}
-                    <div class="mb-3">
-                        <label for="groups" class="form-label">{% trans %}Group Ownership{% endtrans %}</label>
-                        <select data-testid="zone-groups-select" class="form-select form-select-sm" id="groups" name="groups[]" multiple size="5">
-                            {% for group in all_groups %}
-                            <option value="{{ group.id }}" {% if selected_groups is defined and group.id in selected_groups %}selected{% endif %}>{{ group.name }}</option>
-                            {% endfor %}
-                        </select>
-                        <small class="text-muted">{% trans %}Optional: Select groups with access to this zone (hold Ctrl/Cmd to select multiple){% endtrans %}</small>
+                {% if pdnssec_use %}
+                <div class="mb-3">
+                    <div class="form-check">
+                        <input data-testid="dnssec-checkbox" class="form-check-input" type="checkbox" id="dnssec" name="dnssec" value="1" {% if dnssec_checked %}checked{% endif %}>
+                        <label class="form-check-label" for="dnssec">{% trans %}Enable DNSSEC{% endtrans %}</label>
                     </div>
-                    {% endif %}
-
-                    <div class="mb-3">
-                        <label for="dom_type" class="form-label">{% trans %}Type{% endtrans %}</label>
-                        <select data-testid="zone-type-select" class="form-select form-select-sm" id="dom_type" name="dom_type">
-                            {% for type in available_zone_types %}
-                            {% if type == dom_type_value %}
-                            {% set selected = 'selected' %}
-                            {% else %}
-                            {% set selected = '' %}
-                            {% endif %}
-                            <option value="{{ type }}" {{ selected }}>{{type|lower}}</option>
-                            {% endfor %}
-                        </select>
-                        <small class="text-muted">{% trans %}Zone type (usually NATIVE){% endtrans %}</small>
-                    </div>
-
-                    {% if can_use_templates %}
-                    <div class="mb-3">
-                        <label for="zone_template" class="form-label">{% trans %}Template{% endtrans %}</label>
-                        <select data-testid="zone-template-select" class="form-select form-select-sm" id="zone_template" name="zone_template">
-                            <option value="none" {% if zone_template_value == 'none' %}selected{% endif %}>none</option>
-                            {% for zone_template in zone_templates %}
-                            <option value="{{ zone_template['id'] }}" {% if zone_template_value == zone_template['id'] %}selected{% endif %}>{{ zone_template['name'] }}</option>
-                            {% endfor %}
-                        </select>
-                        <small class="text-muted">{% trans %}Optional: Apply predefined records from a template{% endtrans %}</small>
-                    </div>
-                    {% endif %}
-
-                    {% if pdnssec_use %}
-                    <div class="mb-3">
-                        <div class="form-check">
-                            <input data-testid="dnssec-checkbox" class="form-check-input" type="checkbox" id="dnssec" name="dnssec" value="1" {% if dnssec_checked %}checked{% endif %}>
-                            <label class="form-check-label" for="dnssec">{% trans %}Enable DNSSEC{% endtrans %}</label>
-                        </div>
-                        <small class="text-muted">{% trans %}Secure this zone with DNSSEC signing{% endtrans %}</small>
-                    </div>
-                    {% endif %}
-
-                    <div class="d-flex justify-content-between">
-                        <div>
-                            <button data-testid="add-zone-button" class="btn btn-primary btn-sm" type="submit" name="submit">
-                                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
-                            </button>
-                            <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm">
-                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
-                            </a>
-                        </div>
-                        <small class="text-muted align-self-end">{% trans %}* Required fields{% endtrans %}</small>
-                    </div>
-                </form>
+                    <small class="text-muted">{% trans %}Secure this zone with DNSSEC signing{% endtrans %}</small>
+                </div>
+                {% endif %}
             </div>
         </div>
     </div>
 
+    <!-- Right Column - Ownership -->
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
-                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}Zone Information{% endtrans %}</strong>
+                <strong><i class="bi bi-person-badge me-2"></i>{% trans %}User Owner{% endtrans %}</strong>
             </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item border-bottom">
-                        <h6 class="mb-1"><i class="bi bi-database-fill text-primary me-2"></i>{% trans %}About Master Zones{% endtrans %}</h6>
-                        <p class="mb-1 small">{% trans %}A master zone is a zone for which this PowerDNS server is the primary authority. You can add, edit and delete records in master zones.{% endtrans %}</p>
-                        <p class="mb-0 small">{% trans %}After creating the zone, you will be redirected to add DNS records to it.{% endtrans %}</p>
+            <div class="card-body">
+                <div class="mb-2">
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="owner" id="owner_none" value="" {% if owner_value == '' %}checked{% endif %}>
+                        <label class="form-check-label" for="owner_none">
+                            <strong>{% trans %}No user owner{% endtrans %}</strong>
+                            <small class="text-muted d-block">{% trans %}Zone will be owned only by groups{% endtrans %}</small>
+                        </label>
                     </div>
-                    
-                    {% if pdnssec_use %}
-                    <div class="list-group-item">
-                        <h6 class="mb-1"><i class="bi bi-shield-lock text-warning me-2"></i>{% trans %}DNSSEC Information{% endtrans %}</h6>
-                        <p class="mb-1 small">{% trans %}DNSSEC (Domain Name System Security Extensions) adds cryptographic signatures to DNS records to protect against spoofing and cache poisoning attacks.{% endtrans %}</p>
-                        <p class="mb-0 small">{% trans %}When enabled, PowerDNS will automatically generate and manage the necessary keys and signatures for the zone.{% endtrans %}</p>
+                </div>
+                <hr class="my-2">
+                <div style="max-height: 200px; overflow-y: auto;">
+                    {% for user in users %}
+                    {% if perm_view_others or user['id'] == session_user_id %}
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="radio" name="owner" id="owner_{{ user['id'] }}" value="{{ user['id'] }}" {% if user['id'] == owner_value %}checked{% endif %}>
+                        <label class="form-check-label" for="owner_{{ user['id'] }}">
+                            {{ user['fullname'] }}
+                            {% if user['id'] == session_user_id %}<span class="badge bg-primary ms-1">{% trans %}You{% endtrans %}</span>{% endif %}
+                        </label>
                     </div>
                     {% endif %}
+                    {% endfor %}
                 </div>
+                <small class="text-muted mt-2 d-block">{% trans %}Optional: Select a user responsible for this zone{% endtrans %}</small>
             </div>
         </div>
-        
+
+        {% if all_groups is not empty %}
         <div class="card shadow-sm mb-4">
             <div class="card-header py-3">
-                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}Quick Tips{% endtrans %}</strong>
+                <strong><i class="bi bi-people me-2"></i>{% trans %}Group Ownership{% endtrans %}</strong>
             </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item">
-                        <ul class="mb-0 ps-4 small">
-                            <li>{% trans %}Use fully qualified domain names (example.com){% endtrans %}</li>
-                            <li>{% trans %}Select a template to automatically create common DNS records{% endtrans %}</li>
-                            <li>{% trans %}NATIVE zone type is recommended for most setups{% endtrans %}</li>
-                        </ul>
+            <div class="card-body">
+                <div style="max-height: 200px; overflow-y: auto;">
+                    {% for group in all_groups %}
+                    <div class="form-check mb-2">
+                        <input class="form-check-input" type="checkbox" name="groups[]" id="group_{{ group.id }}" value="{{ group.id }}" {% if selected_groups is defined and group.id in selected_groups %}checked{% endif %}>
+                        <label class="form-check-label" for="group_{{ group.id }}">
+                            {{ group.name }}
+                            {% if group.description %}<small class="text-muted d-block">{{ group.description }}</small>{% endif %}
+                        </label>
                     </div>
+                    {% endfor %}
+                </div>
+                <small class="text-muted mt-2 d-block">{% trans %}Optional: Select one or more groups{% endtrans %}</small>
+            </div>
+        </div>
+        {% endif %}
+
+        <div class="alert alert-info small mb-0">
+            <i class="bi bi-info-circle me-1"></i>
+            {% trans %}At least one user or group must be selected as owner{% endtrans %}
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center">
+                    <div>
+                        <button data-testid="add-zone-button" class="btn btn-primary btn-sm" type="submit" name="submit">
+                            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add zone{% endtrans %}
+                        </button>
+                        <a href="{{ base_url_prefix }}/zones/forward" class="btn btn-secondary btn-sm">
+                            <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                        </a>
+                    </div>
+                    <small class="text-muted">{% trans %}* Required fields{% endtrans %}</small>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+</form>
