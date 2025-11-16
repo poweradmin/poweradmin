@@ -103,6 +103,8 @@ class AddZoneMasterController extends BaseController
         $dom_type = $_POST["dom_type"];
         $owner = (int)$_POST['owner'];
         $zone_template = $_POST['zone_template'] ?? "none";
+        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
+            array_map('intval', $_POST['groups']) : [];
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $hostnameValidator = new HostnameValidator($this->config);
@@ -117,6 +119,14 @@ class AddZoneMasterController extends BaseController
             $this->showForm();
         } elseif ($dnsRecord->addDomain($this->db, $zone_name, $owner, $dom_type, '', $zone_template)) {
             $zone_id = $dnsRecord->getZoneIdFromName($zone_name);
+
+            // Add group ownership if groups were selected
+            if (!empty($selected_groups)) {
+                $zoneGroupRepo = new \Poweradmin\Infrastructure\Repository\DbZoneGroupRepository($this->db, $this->getConfig());
+                foreach ($selected_groups as $groupId) {
+                    $zoneGroupRepo->add($zone_id, $groupId);
+                }
+            }
             $this->logger->logInfo(sprintf(
                 'client_ip:%s user:%s operation:add_zone zone_name:%s zone_type:%s zone_template:%s',
                 $_SERVER['REMOTE_ADDR'],
@@ -239,6 +249,14 @@ class AddZoneMasterController extends BaseController
         $userId = $this->userContext->getLoggedInUserId();
         $templates = $zone_templates->getListZoneTempl($userId);
 
+        // Fetch all groups for the dropdown
+        $userGroupRepo = new \Poweradmin\Infrastructure\Repository\DbUserGroupRepository($this->db);
+        $allGroups = $userGroupRepo->findAll();
+
+        // Handle selected groups on error re-render
+        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
+            array_map('intval', $_POST['groups']) : [];
+
         $this->render('add_zone_master.html', [
             'perm_view_others' => $perm_view_others,
             'session_user_id' => $userId,
@@ -255,6 +273,8 @@ class AddZoneMasterController extends BaseController
             'dom_type_value' => $dom_type_value,
             'is_post' => $is_post_request,
             'dnssec_checked' => $dnssec_checked,
+            'all_groups' => $allGroups,
+            'selected_groups' => $selected_groups,
             // Don't pass raw POST data to the template for security
         ]);
     }

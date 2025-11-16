@@ -95,6 +95,8 @@ class AddZoneSlaveController extends BaseController
         $owner = (int)$_POST['owner'];
         $master = $_POST['slave_master'];
         $zone = DnsIdnService::toPunycode(trim($_POST['domain']));
+        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
+            array_map('intval', $_POST['groups']) : [];
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $hostnameValidator = new HostnameValidator($this->config);
@@ -114,6 +116,14 @@ class AddZoneSlaveController extends BaseController
             $dnsRecord = new DnsRecord($this->db, $this->getConfig());
             if ($dnsRecord->addDomain($this->db, $zone, $owner, $type, $master, 'none')) {
                 $zone_id = $dnsRecord->getZoneIdFromName($zone);
+
+                // Add group ownership if groups were selected
+                if (!empty($selected_groups)) {
+                    $zoneGroupRepo = new \Poweradmin\Infrastructure\Repository\DbZoneGroupRepository($this->db, $this->getConfig());
+                    foreach ($selected_groups as $groupId) {
+                        $zoneGroupRepo->add($zone_id, $groupId);
+                    }
+                }
                 $this->logger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:add_zone zone:%s zone_type:SLAVE zone_master:%s',
                     $_SERVER['REMOTE_ADDR'],
@@ -153,6 +163,14 @@ class AddZoneSlaveController extends BaseController
 
         $is_post_request = !empty($_POST);
 
+        // Fetch all groups for the dropdown
+        $userGroupRepo = new \Poweradmin\Infrastructure\Repository\DbUserGroupRepository($this->db);
+        $allGroups = $userGroupRepo->findAll();
+
+        // Handle selected groups on error re-render
+        $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
+            array_map('intval', $_POST['groups']) : [];
+
         $this->render('add_zone_slave.html', [
             'users' => UserManager::showUsers($this->db),
             'session_user_id' => $_SESSION['userid'],
@@ -161,6 +179,8 @@ class AddZoneSlaveController extends BaseController
             'slave_master_value' => $slave_master_value,
             'owner_value' => $owner_value,
             'is_post' => $is_post_request,
+            'all_groups' => $allGroups,
+            'selected_groups' => $selected_groups,
             // Don't pass raw POST data to the template for security
         ]);
     }
