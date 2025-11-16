@@ -149,7 +149,7 @@ CREATE TABLE `records_zone_templ` (
 CREATE TABLE `zones` (
                          `id` int(11) NOT NULL AUTO_INCREMENT,
                          `domain_id` int(11) NOT NULL,
-                         `owner` int(11) NOT NULL,
+                         `owner` int(11) NULL DEFAULT NULL,
                          `comment` varchar(1024) DEFAULT NULL,
                          `zone_templ_id` int(11) NOT NULL,
                          PRIMARY KEY (`id`),

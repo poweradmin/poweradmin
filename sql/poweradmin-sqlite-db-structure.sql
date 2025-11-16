@@ -114,7 +114,7 @@ CREATE TABLE zone_templ_records (id integer PRIMARY KEY, zone_templ_id integer N
 CREATE INDEX idx_zone_templ_records_zone_templ_id ON zone_templ_records(zone_templ_id);
 
 
-CREATE TABLE zones (id integer PRIMARY KEY, domain_id integer NOT NULL, owner integer NOT NULL, comment VARCHAR(1024), zone_templ_id integer NOT NULL);
+CREATE TABLE zones (id integer PRIMARY KEY, domain_id integer NOT NULL, owner integer NULL DEFAULT NULL, comment VARCHAR(1024), zone_templ_id integer NOT NULL);
 
 CREATE INDEX idx_zones_domain_id ON zones(domain_id);
 CREATE INDEX idx_zones_owner ON zones(owner);

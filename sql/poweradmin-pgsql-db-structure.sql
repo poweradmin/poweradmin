@@ -194,7 +194,7 @@ CREATE SEQUENCE zones_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 CREATE TABLE "public"."zones" (
                                   "id" integer DEFAULT nextval('zones_id_seq') NOT NULL,
                                   "domain_id" integer,
-                                  "owner" integer,
+                                  "owner" integer DEFAULT NULL,
                                   "comment" character varying(1024),
                                   "zone_templ_id" integer,
                                   CONSTRAINT "zones_pkey" PRIMARY KEY ("id")
