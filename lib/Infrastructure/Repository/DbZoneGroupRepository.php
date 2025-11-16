@@ -44,7 +44,7 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 
     public function findByDomainId(int $domainId): array
     {
-        $query = "SELECT * FROM zones_groups WHERE domain_id = :domain_id ORDER BY assigned_at DESC";
+        $query = "SELECT * FROM zones_groups WHERE domain_id = :domain_id ORDER BY created_at DESC";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':domain_id' => $domainId]);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -61,10 +61,10 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
                       FROM zones_groups zg
                       LEFT JOIN $domainsTable d ON zg.domain_id = d.id
                       WHERE zg.group_id = :group_id
-                      ORDER BY zg.assigned_at DESC";
+                      ORDER BY zg.created_at DESC";
         } else {
             // Fallback without zone details if config not available
-            $query = "SELECT * FROM zones_groups WHERE group_id = :group_id ORDER BY assigned_at DESC";
+            $query = "SELECT * FROM zones_groups WHERE group_id = :group_id ORDER BY created_at DESC";
         }
 
         $stmt = $this->db->prepare($query);
@@ -86,7 +86,7 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
             return $this->mapRowToEntity($row);
         }
 
-        $query = "INSERT INTO zones_groups (domain_id, group_id, assigned_at)
+        $query = "INSERT INTO zones_groups (domain_id, group_id, created_at)
                   VALUES (:domain_id, :group_id, CURRENT_TIMESTAMP)";
 
         $stmt = $this->db->prepare($query);
@@ -130,8 +130,8 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
             (int)$row['id'],
             (int)$row['domain_id'],
             (int)$row['group_id'],
-            null, // zone_templ_id not in current schema
-            $row['assigned_at'] ?? null,
+            isset($row['zone_templ_id']) ? (int)$row['zone_templ_id'] : null,
+            $row['created_at'] ?? null,
             $row['zone_name'] ?? null,
             $row['zone_type'] ?? null
         );
