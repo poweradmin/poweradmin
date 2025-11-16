@@ -104,23 +104,14 @@
                 {% endif %}
                 {% if perm_view_others or perm_edit_others or perm_add_new or perm_is_godlike %}
                 <li class="p-2">
-                    <a href="{{ base_url_prefix }}/users" class="nav-link text-{{ current_page in ['users', 'add_user', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) ? 'primary' : 'secondary' }}"><i class="bi bi-people fs-5"></i></a>
-                    <a class="text-{{ current_page in ['users', 'add_user', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a href="{{ base_url_prefix }}/users" class="nav-link text-{{ current_page in ['users', 'add_user', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) ? 'primary' : 'secondary' }}"><i class="bi bi-people fs-5"></i></a>
+                    <a class="text-{{ current_page in ['users', 'add_user', 'list_log_users'] or (current_page == 'edit_user' and request.id != session_userid) ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Users{% endtrans %}</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item {{ current_page == 'users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users"><i class="bi bi-people-fill me-2"></i>{% trans %}User administration{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users"><i class="bi bi-person-gear me-2"></i>{% trans %}User administration{% endtrans %}</a></li>
                         {% if perm_add_new %}
                         <li><a class="dropdown-item {{ current_page == 'add_user' ? 'active' : '' }}" href="{{ base_url_prefix }}/users/add"><i class="bi bi-person-plus me-2"></i>{% trans %}Add user{% endtrans %}</a></li>
-                        {% endif %}
-                        {% if perm_templ_perm_edit %}
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item {{ current_page == 'list_perm_templ' ? 'active' : '' }}"
-                               href="{{ base_url_prefix }}/permissions/templates"><i class="bi bi-shield-fill-check me-2"></i>{% trans %}List permission templates{% endtrans %}</a></li>
-                        <li><a class="dropdown-item {{ current_page == 'add_perm_templ' ? 'active' : '' }}"
-                               href="{{ base_url_prefix }}/permissions/templates/add"><i class="bi bi-shield-plus me-2"></i>{% trans %}Add permission template{% endtrans %}</a></li>
                         {% endif %}
                         {% if perm_is_godlike and dblog_use == true %}
                         <li>
@@ -134,19 +125,26 @@
                 {% endif %}
                 {% if perm_is_godlike %}
                 <li class="p-2">
-                    <a href="{{ base_url_prefix }}/groups" class="nav-link text-{{ current_page in ['list_groups', 'add_group', 'edit_group', 'manage_group_members', 'manage_group_zones', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ'] ? 'primary' : 'secondary' }}"><i class="bi bi-people-fill fs-5"></i></a>
-                    <a class="text-{{ current_page in ['list_groups', 'add_group', 'edit_group', 'manage_group_members', 'manage_group_zones', 'list_perm_templ', 'add_perm_templ', 'edit_perm_templ'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                    <a href="{{ base_url_prefix }}/groups" class="nav-link text-{{ current_page in ['list_groups', 'add_group', 'edit_group', 'manage_group_members', 'manage_group_zones'] ? 'primary' : 'secondary' }}"><i class="bi bi-people-fill fs-5"></i></a>
+                    <a class="text-{{ current_page in ['list_groups', 'add_group', 'edit_group', 'manage_group_members', 'manage_group_zones'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
                        href="#"
                        role="button">{% trans %}Groups{% endtrans %}</a>
                     <ul class="dropdown-menu">
                         <li><a class="dropdown-item {{ current_page == 'list_groups' ? 'active' : '' }}" href="{{ base_url_prefix }}/groups"><i class="bi bi-collection-fill me-2"></i>{% trans %}List groups{% endtrans %}</a></li>
                         <li><a class="dropdown-item {{ current_page == 'add_group' ? 'active' : '' }}" href="{{ base_url_prefix }}/groups/add"><i class="bi bi-plus-circle me-2"></i>{% trans %}Add group{% endtrans %}</a></li>
-                        {% if perm_templ_perm_edit %}
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
+                    </ul>
+                </li>
+                {% endif %}
+                {% if perm_templ_perm_edit %}
+                <li class="p-2">
+                    <a href="{{ base_url_prefix }}/permissions/templates" class="nav-link text-{{ current_page in ['list_perm_templ', 'add_perm_templ', 'edit_perm_templ'] ? 'primary' : 'secondary' }} text-center"><i class="bi bi-shield-lock fs-5"></i></a>
+                    <a class="text-{{ current_page in ['list_perm_templ', 'add_perm_templ', 'edit_perm_templ'] ? 'primary' : 'secondary' }} text-decoration-none dropdown-toggle" data-bs-toggle="dropdown"
+                       href="#"
+                       role="button">{% trans %}Permissions{% endtrans %}</a>
+                    <ul class="dropdown-menu">
                         <li><a class="dropdown-item {{ current_page == 'list_perm_templ' ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/permissions/templates"><i class="bi bi-shield-fill-check me-2"></i>{% trans %}List permission templates{% endtrans %}</a></li>
+                        {% if perm_templ_perm_add %}
                         <li><a class="dropdown-item {{ current_page == 'add_perm_templ' ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/permissions/templates/add"><i class="bi bi-shield-plus me-2"></i>{% trans %}Add permission template{% endtrans %}</a></li>
                         {% endif %}
