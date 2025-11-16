@@ -489,14 +489,9 @@
                         <i class="bi bi-pencil-square me-1 text-white"></i>{% trans %}Edit selected{% endtrans %}
                     </button>
                     {% endif %}
-                    <form id="delete-records-form" method="post" action="{{ base_url_prefix }}/zones/records/delete" class="d-inline">
-                        <input type="hidden" name="_token" value="{{ csrf_token }}">
-                        <input type="hidden" name="zone_id" value="{{ zone_id }}">
-                        <button type="submit" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
-                            <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
-                        </button>
-                        <div id="selected-records-container"></div>
-                    </form>
+                    <button type="submit" form="delete-records-form" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
+                        <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
+                    </button>
                 </div>
             </div>
 
@@ -525,6 +520,12 @@
     </button>
 </div>
 {% endif %}
+</form>
+
+<form id="delete-records-form" method="post" action="{{ base_url_prefix }}/zones/records/delete" style="display: none;">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    <input type="hidden" name="zone_id" value="{{ zone_id }}">
+    <div id="selected-records-container"></div>
 </form>
 </div>
 </div>
@@ -1010,27 +1011,30 @@
         }
 
         // Handle delete form submission
-        document.getElementById('delete-records-form').addEventListener('submit', function(e) {
-            // Get all checked checkboxes
-            const checkedBoxes = document.querySelectorAll('input[name="record_id[]"]:checked');
+        const deleteRecordsForm = document.getElementById('delete-records-form');
+        if (deleteRecordsForm) {
+            deleteRecordsForm.addEventListener('submit', function(e) {
+                // Get all checked checkboxes
+                const checkedBoxes = document.querySelectorAll('input[name="record_id[]"]:checked');
 
-            if (checkedBoxes.length === 0) {
-                e.preventDefault();
-                return;
-            }
+                if (checkedBoxes.length === 0) {
+                    e.preventDefault();
+                    return;
+                }
 
-            const container = document.getElementById('selected-records-container');
-            container.innerHTML = '';
+                const container = document.getElementById('selected-records-container');
+                container.innerHTML = '';
 
-            // Clone checked checkboxes to the delete form
-            checkedBoxes.forEach(function(checkbox) {
-                const clone = document.createElement('input');
-                clone.type = 'hidden';
-                clone.name = 'record_id[]';
-                clone.value = checkbox.value;
-                container.appendChild(clone);
+                // Clone checked checkboxes to the delete form
+                checkedBoxes.forEach(function(checkbox) {
+                    const clone = document.createElement('input');
+                    clone.type = 'hidden';
+                    clone.name = 'record_id[]';
+                    clone.value = checkbox.value;
+                    container.appendChild(clone);
+                });
             });
-        });
+        }
 
         // Create a selection counter
         const selectionCounterSpan = document.createElement('span');
