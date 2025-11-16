@@ -45,6 +45,11 @@ class PDODatabaseConnection implements DatabaseConnection
             $pdo = new PDOCommon($dsn, $credentials['db_user'], $credentials['db_pass'], []);
             $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
+            // Enable foreign key constraints for SQLite
+            if ($credentials['db_type'] === 'sqlite') {
+                $pdo->exec('PRAGMA foreign_keys = ON');
+            }
+
             if (isset($credentials['db_debug']) && $credentials['db_debug']) {
                 $pdo->setDebug(true);
             }
