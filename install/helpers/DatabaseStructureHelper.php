@@ -293,13 +293,13 @@ class DatabaseStructureHelper
                     ),
                     'owner' => array
                     (
-                        'notnull' => 1,
+                        'notnull' => 0,
                         'unsigned' => 0,
-                        'default' => 0,
+                        'default' => null,
                         'type' => 'integer',
                         'name' => 'owner',
                         'table' => 'zones',
-                        'flags' => 'not_null'
+                        'flags' => ''
                     ),
                     'comment' => array
                     (
