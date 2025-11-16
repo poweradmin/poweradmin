@@ -461,9 +461,24 @@ class DomainRepository implements DomainRepositoryInterface
             $ret[$domainName]["type"] = $r["type"];
             $ret[$domainName]["count_records"] = $r["count_records"];
             $ret[$domainName]["comment"] = $r["comment"] ?? '';
-            $ret[$domainName]["owners"][] = $r["username"];
-            $ret[$domainName]["full_names"][] = $r["fullname"] ?: '';
-            $ret[$domainName]["users"][] = $r["username"];
+
+            // Only add owner if username is not NULL
+            if ($r["username"] !== null) {
+                $ret[$domainName]["owners"][] = $r["username"];
+                $ret[$domainName]["full_names"][] = $r["fullname"] ?: '';
+                $ret[$domainName]["users"][] = $r["username"];
+            } else {
+                // Initialize empty arrays if not already set
+                if (!isset($ret[$domainName]["owners"])) {
+                    $ret[$domainName]["owners"] = [];
+                }
+                if (!isset($ret[$domainName]["full_names"])) {
+                    $ret[$domainName]["full_names"] = [];
+                }
+                if (!isset($ret[$domainName]["users"])) {
+                    $ret[$domainName]["users"] = [];
+                }
+            }
 
             if ($pdnssec_use) {
                 $ret[$domainName]["secured"] = $r["secured"];

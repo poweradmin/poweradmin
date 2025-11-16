@@ -769,7 +769,8 @@
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <input type="hidden" name="domain" value="{{ zone_id }}">
                     <div class="input-group">
-                        <select class="form-select form-select-sm" name="newowner">
+                        <select class="form-select form-select-sm" name="newowner" id="owner-select" onchange="toggleAddButton('owner-select', 'owner-add-btn')">
+                            <option value=""></option>
                             {% for user in users %}
                             {% set add = "" %}
                             {% if user["id"] == session_userid %}
@@ -785,7 +786,7 @@
                             {% endif %}
                             {% endfor %}
                         </select>
-                        <button class="btn btn-outline-secondary btn-sm" type="submit" name="co">
+                        <button class="btn btn-outline-secondary btn-sm" type="submit" name="co" id="owner-add-btn" disabled>
                             <i class="bi bi-plus text-secondary"></i> {% trans %}Add{% endtrans %}
                         </button>
                     </div>
@@ -793,11 +794,7 @@
                 {% endif %}
 
                 <h6 class="card-subtitle mb-3 text-muted mt-4">{% trans %}Group Ownership{% endtrans %}</h6>
-                {% if group_owners is empty %}
-                <div class="alert alert-info">
-                    <i class="bi bi-info-circle me-2"></i>{% trans %}No groups assigned to this zone.{% endtrans %}
-                </div>
-                {% else %}
+                {% if group_owners is not empty %}
                 <div class="mb-3">
                     <ul class="list-group">
                     {% if meta_edit %}
@@ -831,12 +828,13 @@
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <input type="hidden" name="domain" value="{{ zone_id }}">
                     <div class="input-group">
-                        <select class="form-select form-select-sm" name="newgroup">
+                        <select class="form-select form-select-sm" name="newgroup" id="group-select" onchange="toggleAddButton('group-select', 'group-add-btn')">
+                            <option value=""></option>
                             {% for group in all_groups %}
                             <option value="{{ group.id }}">{{ group.name }}</option>
                             {% endfor %}
                         </select>
-                        <button class="btn btn-outline-secondary btn-sm" type="submit" name="co">
+                        <button class="btn btn-outline-secondary btn-sm" type="submit" name="co" id="group-add-btn" disabled>
                             <i class="bi bi-plus text-secondary"></i> {% trans %}Add{% endtrans %}
                         </button>
                     </div>
@@ -924,6 +922,16 @@
 <script src="{{ base_url_prefix }}/assets/textareaAutoResize.js?time={{ file_version }}"></script>
 
 <script>
+    // Function to toggle Add button state based on select value
+    function toggleAddButton(selectId, buttonId) {
+        const select = document.getElementById(selectId);
+        const button = document.getElementById(buttonId);
+
+        if (select && button) {
+            button.disabled = !select.value || select.value === '';
+        }
+    }
+
     // Record types that support priority field
     const RECORD_TYPES_WITH_PRIORITY = ['MX', 'SRV', 'KX', 'NAPTR'];
     
