@@ -111,7 +111,7 @@ class GroupZonesController extends PublicApiController
                             new OA\Property(property: 'zone_id', type: 'integer', example: 1),
                             new OA\Property(property: 'zone_name', type: 'string', example: 'example.com'),
                             new OA\Property(property: 'zone_type', type: 'string', example: 'MASTER'),
-                            new OA\Property(property: 'assigned_at', type: 'string', example: '2025-01-01 12:00:00'),
+                            new OA\Property(property: 'created_at', type: 'string', example: '2025-01-01 12:00:00'),
                         ],
                         type: 'object'
                     )
@@ -136,7 +136,7 @@ class GroupZonesController extends PublicApiController
                 'zone_id' => $z->getDomainId(),
                 'zone_name' => $z->getName(),
                 'zone_type' => $z->getType(),
-                'assigned_at' => $z->getAssignedAt(),
+                'created_at' => $z->getCreatedAt(),
             ], $zones);
 
             return $this->returnApiResponse($zonesData, true, 'Zones retrieved successfully');

@@ -33,7 +33,7 @@ class ZoneGroup
     private int $domainId;
     private int $groupId;
     private ?int $zoneTemplId;
-    private ?string $assignedAt;
+    private ?string $createdAt;
     private ?string $name;
     private ?string $type;
 
@@ -42,7 +42,7 @@ class ZoneGroup
         int $domainId,
         int $groupId,
         ?int $zoneTemplId = null,
-        ?string $assignedAt = null,
+        ?string $createdAt = null,
         ?string $name = null,
         ?string $type = null
     ) {
@@ -50,7 +50,7 @@ class ZoneGroup
         $this->domainId = $domainId;
         $this->groupId = $groupId;
         $this->zoneTemplId = $zoneTemplId;
-        $this->assignedAt = $assignedAt;
+        $this->createdAt = $createdAt;
         $this->name = $name;
         $this->type = $type;
     }
@@ -75,9 +75,9 @@ class ZoneGroup
         return $this->zoneTemplId;
     }
 
-    public function getAssignedAt(): ?string
+    public function getCreatedAt(): ?string
     {
-        return $this->assignedAt;
+        return $this->createdAt;
     }
 
     public function getName(): ?string
