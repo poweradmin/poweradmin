@@ -216,6 +216,21 @@
                                     <i class="bi bi-plus-circle me-2"></i>{% trans %}Add group{% endtrans %}
                                 </a>
                             </li>
+                            {% if perm_templ_perm_edit %}
+                            <li class="nav-item mt-2">
+                                <hr class="my-2 opacity-50">
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == 'list_perm_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/permissions/templates">
+                                    <i class="bi bi-shield-fill-check me-2"></i>{% trans %}List permission templates{% endtrans %}
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link nav-link-sm {{ current_page == 'add_perm_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/permissions/templates/add">
+                                    <i class="bi bi-shield-plus me-2"></i>{% trans %}Add permission template{% endtrans %}
+                                </a>
+                            </li>
+                            {% endif %}
                         </ul>
                     </li>
                     {% endif %}
