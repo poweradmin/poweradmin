@@ -280,14 +280,18 @@ class EditController extends BaseController
             $this->validateCsrfToken();
             $ownerAdded = $this->zoneRepository->addOwnerToZone($_POST["domain"], $_POST["newowner"]);
 
-            // Send zone access granted notification only if the owner was successfully added
-            if ($ownerAdded && $this->config->get('notifications', 'zone_access_enabled', false)) {
-                $notificationService = $this->createZoneAccessNotificationService();
-                $notificationService->notifyAccessGranted(
-                    $zone_id,
-                    (int)$_POST["newowner"],
-                    $this->userContextService->getLoggedInUserId()
-                );
+            if ($ownerAdded) {
+                $this->setMessage('edit', 'success', _('Owner has been added successfully.'));
+
+                // Send zone access granted notification only if the owner was successfully added
+                if ($this->config->get('notifications', 'zone_access_enabled', false)) {
+                    $notificationService = $this->createZoneAccessNotificationService();
+                    $notificationService->notifyAccessGranted(
+                        $zone_id,
+                        (int)$_POST["newowner"],
+                        $this->userContextService->getLoggedInUserId()
+                    );
+                }
             }
         }
 
@@ -295,14 +299,18 @@ class EditController extends BaseController
             $this->validateCsrfToken();
             $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $_POST["delete_owner"]);
 
-            // Send zone access revoked notification only if the owner was successfully removed
-            if ($ownerRemoved && $this->config->get('notifications', 'zone_access_enabled', false)) {
-                $notificationService = $this->createZoneAccessNotificationService();
-                $notificationService->notifyAccessRevoked(
-                    $zone_id,
-                    (int)$_POST["delete_owner"],
-                    $this->userContextService->getLoggedInUserId()
-                );
+            if ($ownerRemoved) {
+                $this->setMessage('edit', 'success', _('Owner has been removed successfully.'));
+
+                // Send zone access revoked notification only if the owner was successfully removed
+                if ($this->config->get('notifications', 'zone_access_enabled', false)) {
+                    $notificationService = $this->createZoneAccessNotificationService();
+                    $notificationService->notifyAccessRevoked(
+                        $zone_id,
+                        (int)$_POST["delete_owner"],
+                        $this->userContextService->getLoggedInUserId()
+                    );
+                }
             }
         }
 
@@ -311,12 +319,14 @@ class EditController extends BaseController
             $this->validateCsrfToken();
             $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
             $zoneGroupRepo->add((int)$_POST["domain"], (int)$_POST["newgroup"]);
+            $this->setMessage('edit', 'success', _('Group has been added successfully.'));
         }
 
         if (isset($_POST["delete_group"]) && is_numeric($_POST["delete_group"])) {
             $this->validateCsrfToken();
             $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
             $zoneGroupRepo->remove($zone_id, (int)$_POST["delete_group"]);
+            $this->setMessage('edit', 'success', _('Group has been removed successfully.'));
         }
 
         if (isset($_POST["template_change"])) {
