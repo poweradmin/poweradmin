@@ -792,6 +792,57 @@
                 </form>
                 {% endif %}
 
+                <h6 class="card-subtitle mb-3 text-muted mt-4">{% trans %}Group Ownership{% endtrans %}</h6>
+                {% if group_owners is empty %}
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>{% trans %}No groups assigned to this zone.{% endtrans %}
+                </div>
+                {% else %}
+                <div class="mb-3">
+                    <ul class="list-group">
+                    {% if meta_edit %}
+                        {% for group in group_owners %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="bi bi-people me-2"></i>{{ group.name }}
+                            </span>
+                            <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="delete_group" value="{{ group.id }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm" name="co">
+                                    <i class="bi bi-trash text-danger"></i>
+                                </button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        {% for group in group_owners %}
+                        <li class="list-group-item">
+                            <i class="bi bi-people me-2"></i>{{ group.name }}
+                        </li>
+                        {% endfor %}
+                    {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if meta_edit and all_groups is not empty %}
+                <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="mb-4">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="domain" value="{{ zone_id }}">
+                    <div class="input-group">
+                        <select class="form-select form-select-sm" name="newgroup">
+                            {% for group in all_groups %}
+                            <option value="{{ group.id }}">{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <button class="btn btn-outline-secondary btn-sm" type="submit" name="co">
+                            <i class="bi bi-plus text-secondary"></i> {% trans %}Add{% endtrans %}
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+
                 <h6 class="card-subtitle mb-2 text-muted">{% trans %}Type{% endtrans %}</h6>
                 {% if meta_edit %}
                 <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post" class="mb-4">
