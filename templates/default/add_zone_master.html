@@ -43,6 +43,18 @@
                         <small class="text-muted">{% trans %}User responsible for this zone{% endtrans %}</small>
                     </div>
 
+                    {% if all_groups is not empty %}
+                    <div class="mb-3">
+                        <label for="groups" class="form-label">{% trans %}Group Ownership{% endtrans %}</label>
+                        <select data-testid="zone-groups-select" class="form-select form-select-sm" id="groups" name="groups[]" multiple size="5">
+                            {% for group in all_groups %}
+                            <option value="{{ group.id }}" {% if selected_groups is defined and group.id in selected_groups %}selected{% endif %}>{{ group.name }}</option>
+                            {% endfor %}
+                        </select>
+                        <small class="text-muted">{% trans %}Optional: Select groups with access to this zone (hold Ctrl/Cmd to select multiple){% endtrans %}</small>
+                    </div>
+                    {% endif %}
+
                     <div class="mb-3">
                         <label for="dom_type" class="form-label">{% trans %}Type{% endtrans %}</label>
                         <select data-testid="zone-type-select" class="form-select form-select-sm" id="dom_type" name="dom_type">
