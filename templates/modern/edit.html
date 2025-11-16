@@ -793,7 +793,9 @@
                 </form>
                 {% endif %}
 
+                {% if group_owners is not empty or all_groups is not empty %}
                 <h6 class="card-subtitle mb-3 text-muted mt-4">{% trans %}Group Ownership{% endtrans %}</h6>
+                {% endif %}
                 {% if group_owners is not empty %}
                 <div class="mb-3">
                     <ul class="list-group">

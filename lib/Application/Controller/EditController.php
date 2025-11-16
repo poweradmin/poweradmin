@@ -473,6 +473,15 @@ class EditController extends BaseController
         }
         $owners = $this->zoneRepository->getZoneOwners($zone_id);
 
+        // Filter out users who are already owners
+        $ownerIds = [];
+        if ($owners !== "-1") {
+            $ownerIds = array_column($owners, 'id');
+        }
+        $availableUsers = array_values(array_filter($users, function ($user) use ($ownerIds) {
+            return !in_array($user['id'], $ownerIds);
+        }));
+
         // Fetch group ownership
         $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
         $groupOwnerships = $zoneGroupRepo->findByDomainId($zone_id);
@@ -480,6 +489,12 @@ class EditController extends BaseController
         // Fetch all groups for name lookup and dropdown
         $userGroupRepo = new DbUserGroupRepository($this->db);
         $allGroups = $userGroupRepo->findAll();
+
+        // Filter out groups that are already owners
+        $groupOwnerIds = array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
+        $availableGroups = array_values(array_filter($allGroups, function ($group) use ($groupOwnerIds) {
+            return !in_array($group->getId(), $groupOwnerIds);
+        }));
 
         // Map group IDs to group data for display
         $groupOwners = array_map(function ($zg) use ($allGroups) {
@@ -532,10 +547,10 @@ class EditController extends BaseController
             'zone_template_id' => $zone_template_id,
             'zone_template_details' => $zone_template_details,
             'slave_master' => $slave_master,
-            'users' => $users,
+            'users' => $availableUsers,
             'owners' => $owners,
             'group_owners' => $groupOwners,
-            'all_groups' => $allGroups,
+            'all_groups' => $availableGroups,
             'records' => $displayRecords,
             'perm_view' => $perm_view,
             'perm_edit' => $perm_edit,
