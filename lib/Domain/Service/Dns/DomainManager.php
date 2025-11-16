@@ -76,14 +76,14 @@ class DomainManager implements DomainManagerInterface
      *
      * @param object $db Database connection
      * @param string $domain A domain name
-     * @param int $owner Owner ID for domain
+     * @param int|null $owner Owner ID for domain (null if only groups are assigned)
      * @param string $type Type of domain ['NATIVE','MASTER','SLAVE']
      * @param string $slave_master Master server hostname for domain
      * @param int|string $zone_template ID of zone template ['none' or int]
      *
      * @return boolean true on success
      */
-    public function addDomain($db, string $domain, int $owner, string $type, string $slave_master, int|string $zone_template): bool
+    public function addDomain($db, string $domain, ?int $owner, string $type, string $slave_master, int|string $zone_template): bool
     {
         $zone_master_add = UserManager::verifyPermission($db, 'zone_master_add');
         $zone_slave_add = UserManager::verifyPermission($db, 'zone_slave_add');
@@ -100,9 +100,9 @@ class DomainManager implements DomainManagerInterface
             $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
 
             if (
-                ($domain && $owner && $zone_template) ||
-                (preg_match('/in-addr.arpa/i', $domain) && $owner && $zone_template) ||
-                $type == "SLAVE" && $domain && $owner && $slave_master
+                ($domain && $zone_template) ||
+                (preg_match('/in-addr.arpa/i', $domain) && $zone_template) ||
+                $type == "SLAVE" && $domain && $slave_master
             ) {
                 $stmt = $db->prepare("INSERT INTO $domains_table (name, type) VALUES (:domain, :type)");
                 $stmt->bindValue(':domain', $domain, PDO::PARAM_STR);
@@ -113,7 +113,7 @@ class DomainManager implements DomainManagerInterface
 
                 $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES (:domain_id, :owner, :zone_template)");
                 $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
-                $stmt->bindValue(':owner', $owner, PDO::PARAM_INT);
+                $stmt->bindValue(':owner', $owner, $owner === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
                 $stmt->bindValue(':zone_template', ($zone_template == "none") ? 0 : $zone_template, PDO::PARAM_INT);
                 $stmt->execute();
 

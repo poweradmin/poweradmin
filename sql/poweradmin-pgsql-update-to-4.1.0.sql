@@ -208,6 +208,11 @@ CREATE TABLE IF NOT EXISTS "user_group_members" (
 CREATE INDEX IF NOT EXISTS "idx_user_group_members_user" ON "user_group_members"("user_id");
 CREATE INDEX IF NOT EXISTS "idx_user_group_members_group" ON "user_group_members"("group_id");
 
+-- Modify zones table to allow nullable owner for group-only ownership
+-- Description: Allow zones to be owned only by groups without requiring a user owner
+ALTER TABLE "zones" ALTER COLUMN "owner" DROP NOT NULL;
+ALTER TABLE "zones" ALTER COLUMN "owner" SET DEFAULT NULL;
+
 -- Table: zones_groups
 -- Description: Junction table for zone-group ownership (many-to-many)
 CREATE TABLE IF NOT EXISTS "zones_groups" (

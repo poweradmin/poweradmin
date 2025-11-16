@@ -82,9 +82,6 @@ class AddZoneMasterController extends BaseController
             'dom_type' => [
                 new Assert\NotBlank()
             ],
-            'owner' => [
-                new Assert\NotBlank()
-            ],
             'zone_template' => [
                 new Assert\NotBlank()
             ]
@@ -101,10 +98,17 @@ class AddZoneMasterController extends BaseController
 
         $zone_name = DnsIdnService::toPunycode(trim($_POST['domain']));
         $dom_type = $_POST["dom_type"];
-        $owner = (int)$_POST['owner'];
+        $owner = !empty($_POST['owner']) ? (int)$_POST['owner'] : null;
         $zone_template = $_POST['zone_template'] ?? "none";
         $selected_groups = isset($_POST['groups']) && is_array($_POST['groups']) ?
             array_map('intval', $_POST['groups']) : [];
+
+        // Validate: at least one owner (user or group) must be selected
+        if ($owner === null && empty($selected_groups)) {
+            $this->setMessage('add_zone_master', 'error', _('At least one user or group must be selected as owner.'));
+            $this->showForm();
+            return;
+        }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $hostnameValidator = new HostnameValidator($this->config);
@@ -224,14 +228,20 @@ class AddZoneMasterController extends BaseController
             $zone_template_value = 'none';
         }
 
-        // Safely handle the owner value - ensure it's an integer
+        // Safely handle the owner value - ensure it's an integer or preserve empty selection
         if (isset($_POST['owner'])) {
-            $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
-            // Verify that the owner ID exists among valid users
-            $valid_users = UserManager::showUsers($this->db);
-            $valid_owner_ids = array_column($valid_users, 'id');
-            $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
+            if ($_POST['owner'] === '') {
+                // Empty value means "no user owner" was explicitly selected
+                $owner_value = '';
+            } else {
+                $owner_id = filter_var($_POST['owner'], FILTER_VALIDATE_INT);
+                // Verify that the owner ID exists among valid users
+                $valid_users = UserManager::showUsers($this->db);
+                $valid_owner_ids = array_column($valid_users, 'id');
+                $owner_value = ($owner_id !== false && in_array($owner_id, $valid_owner_ids)) ? $owner_id : $_SESSION['userid'];
+            }
         } else {
+            // No POST data, default to current user
             $owner_value = $_SESSION['userid'];
         }
 

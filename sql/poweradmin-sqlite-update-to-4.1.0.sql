@@ -226,6 +226,37 @@ CREATE TABLE IF NOT EXISTS user_group_members (
 CREATE INDEX IF NOT EXISTS idx_user_group_members_user ON user_group_members(user_id);
 CREATE INDEX IF NOT EXISTS idx_user_group_members_group ON user_group_members(group_id);
 
+-- Modify zones table to allow nullable owner for group-only ownership
+-- Description: Allow zones to be owned only by groups without requiring a user owner
+-- Note: SQLite doesn't support ALTER COLUMN, so we need to recreate the table
+BEGIN TRANSACTION;
+
+-- Create new zones table with nullable owner
+CREATE TABLE zones_new (
+    id INTEGER PRIMARY KEY,
+    domain_id INTEGER NOT NULL,
+    owner INTEGER NULL DEFAULT NULL,
+    comment VARCHAR(1024),
+    zone_templ_id INTEGER NOT NULL
+);
+
+-- Copy data from old table
+INSERT INTO zones_new (id, domain_id, owner, comment, zone_templ_id)
+SELECT id, domain_id, owner, comment, zone_templ_id FROM zones;
+
+-- Drop old table
+DROP TABLE zones;
+
+-- Rename new table
+ALTER TABLE zones_new RENAME TO zones;
+
+-- Recreate indexes
+CREATE INDEX idx_zones_domain_id ON zones(domain_id);
+CREATE INDEX idx_zones_owner ON zones(owner);
+CREATE INDEX idx_zones_zone_templ_id ON zones(zone_templ_id);
+
+COMMIT;
+
 -- Table: zones_groups
 -- Description: Junction table for zone-group ownership (many-to-many)
 CREATE TABLE IF NOT EXISTS zones_groups (
