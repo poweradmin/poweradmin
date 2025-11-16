@@ -313,6 +313,10 @@ class DatabaseConsistencyService
             $stmt = $this->db->prepare("DELETE FROM $records_table WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);
 
+            // Delete group ownership associations
+            $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :domain_id");
+            $stmt->execute(['domain_id' => $zoneId]);
+
             // Delete zone ownership
             $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :domain_id");
             $stmt->execute(['domain_id' => $zoneId]);

@@ -822,6 +822,12 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
         $stmt->execute();
 
+        // Delete group ownership associations
+        $query = "DELETE FROM zones_groups WHERE domain_id = :domain_id";
+        $stmt = $this->db->prepare($query);
+        $stmt->bindValue(':domain_id', $zoneId, PDO::PARAM_INT);
+        $stmt->execute();
+
         // Delete from zones table
         $query = "DELETE FROM zones WHERE domain_id = :domain_id";
         $stmt = $this->db->prepare($query);

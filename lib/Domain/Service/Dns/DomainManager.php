@@ -246,6 +246,10 @@ class DomainManager implements DomainManagerInterface
                 $syncService->cleanupZoneSyncRecords($zoneId);
             }
 
+            // Clean up group ownership associations
+            $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
+            $stmt->execute([':id' => $id]);
+
             $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
             $stmt->execute([':id' => $id]);
 
@@ -312,6 +316,10 @@ class DomainManager implements DomainManagerInterface
                         $syncService = new ZoneTemplateSyncService($this->db, $this->config);
                         $syncService->cleanupZoneSyncRecords($zoneId);
                     }
+
+                    // Clean up group ownership associations
+                    $stmt = $this->db->prepare("DELETE FROM zones_groups WHERE domain_id = :id");
+                    $stmt->execute([':id' => $id]);
 
                     $stmt = $this->db->prepare("DELETE FROM zones WHERE domain_id = :id");
                     $stmt->execute([':id' => $id]);
