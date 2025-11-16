@@ -164,14 +164,12 @@
 
                         <td>
                             {% for owner in zone['owners'] %}
-                            {{ owner }}<br>
+                            <div><i class="bi bi-person"></i> {{ owner }}</div>
                             {% endfor %}
                             {% if zone['groups'] is defined and zone['groups']|length > 0 %}
-                            <div class="text-muted small mt-1">
                                 {% for group in zone['groups'] %}
-                                <i class="bi bi-people"></i> {{ group }}<br>
+                                <div class="text-muted"><i class="bi bi-people"></i> {{ group }}</div>
                                 {% endfor %}
-                            </div>
                             {% endif %}
                         </td>
                         {% if iface_zonelist_fullname %}
