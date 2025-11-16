@@ -205,9 +205,34 @@
     
     {% if perm_delete == "all" or perm_delete == "own" %}
     <div class="card-footer py-3">
-        <button type="submit" name="commit" form="delete-zones-form" class="btn btn-danger btn-sm">
+        <button type="submit" name="commit" form="delete-zones-form" class="btn btn-danger btn-sm" id="delete-zones-btn" disabled>
             <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete zone(s){% endtrans %}
         </button>
     </div>
     {% endif %}
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const deleteBtn = document.getElementById('delete-zones-btn');
+    const form = document.getElementById('delete-zones-form');
+
+    if (deleteBtn && form) {
+        // Function to update delete button state
+        function updateDeleteButtonState() {
+            const checkedBoxes = form.querySelectorAll('input[type="checkbox"][name="zone_id[]"]:checked');
+            deleteBtn.disabled = checkedBoxes.length === 0;
+        }
+
+        // Listen for checkbox changes
+        form.addEventListener('change', function(e) {
+            if (e.target.type === 'checkbox') {
+                updateDeleteButtonState();
+            }
+        });
+
+        // Initial state check
+        updateDeleteButtonState();
+    }
+});
+</script>
