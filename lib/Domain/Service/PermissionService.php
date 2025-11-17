@@ -93,6 +93,8 @@ class PermissionService
      */
     public function getViewPermissionLevel(int $userId): string
     {
+        // Note: This checks DIRECT user permissions only
+        // For zone-specific permissions (including groups), use getViewPermissionLevelForZone()
         $permissions = $this->getUserPermissions($userId);
 
         if (in_array('zone_content_view_others', $permissions) || $this->isAdmin($userId)) {
@@ -105,6 +107,34 @@ class PermissionService
     }
 
     /**
+     * Get view permission level for a user on a specific zone (includes group permissions)
+     *
+     * @param \PDO $db Database connection
+     * @param int $userId User ID to check
+     * @param int $domainId Zone/Domain ID
+     * @return string "all", "own", or "none" depending on the user's view permission for this zone
+     */
+    public function getViewPermissionLevelForZone(\PDO $db, int $userId, int $domainId): string
+    {
+        // Check direct permissions first
+        $permissions = $this->getUserPermissions($userId);
+
+        if (in_array('zone_content_view_others', $permissions) || $this->isAdmin($userId)) {
+            return 'all';
+        }
+
+        // Check zone-specific permissions (direct ownership + group membership)
+        // This uses HybridPermissionService internally
+        $zonePermissions = \Poweradmin\Domain\Model\UserManager::getUserZonePermissions($db, $userId, $domainId);
+
+        if (in_array('zone_content_view_own', $zonePermissions['permissions'])) {
+            return 'own';
+        }
+
+        return 'none';
+    }
+
+    /**
      * Get edit permission level for a user
      *
      * @param int $userId User ID to check
@@ -112,6 +142,8 @@ class PermissionService
      */
     public function getEditPermissionLevel(int $userId): string
     {
+        // Note: This checks DIRECT user permissions only
+        // For zone-specific permissions (including groups), use getEditPermissionLevelForZone()
         $permissions = $this->getUserPermissions($userId);
 
         if (in_array('zone_content_edit_others', $permissions) || $this->isAdmin($userId)) {
@@ -123,6 +155,36 @@ class PermissionService
         } else {
             return 'none';
         }
+    }
+
+    /**
+     * Get edit permission level for a user on a specific zone (includes group permissions)
+     *
+     * @param \PDO $db Database connection
+     * @param int $userId User ID to check
+     * @param int $domainId Zone/Domain ID
+     * @return string "all", "own", "own_as_client", or "none" depending on the user's edit permission for this zone
+     */
+    public function getEditPermissionLevelForZone(\PDO $db, int $userId, int $domainId): string
+    {
+        // Check direct permissions first
+        $permissions = $this->getUserPermissions($userId);
+
+        if (in_array('zone_content_edit_others', $permissions) || $this->isAdmin($userId)) {
+            return 'all';
+        }
+
+        // Check zone-specific permissions (direct ownership + group membership)
+        // This uses HybridPermissionService internally
+        $zonePermissions = \Poweradmin\Domain\Model\UserManager::getUserZonePermissions($db, $userId, $domainId);
+
+        if (in_array('zone_content_edit_own', $zonePermissions['permissions'])) {
+            return 'own';
+        } elseif (in_array('zone_content_edit_own_as_client', $zonePermissions['permissions'])) {
+            return 'own_as_client';
+        }
+
+        return 'none';
     }
 
     /**

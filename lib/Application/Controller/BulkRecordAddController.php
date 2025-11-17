@@ -41,6 +41,7 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
@@ -52,6 +53,7 @@ class BulkRecordAddController extends BaseController
     private DnsRecord $dnsRecord;
     private RecordManagerService $recordManager;
     private RecordTypeService $recordTypeService;
+    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
@@ -74,21 +76,27 @@ class BulkRecordAddController extends BaseController
         );
 
         $this->recordTypeService = new RecordTypeService($this->getConfig());
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
     {
         $this->checkId();
 
-        $perm_edit = Permission::getEditPermission($this->db);
         $zone_id = (int)htmlspecialchars($this->getSafeRequestValue('id'));
         $zone_type = $this->dnsRecord->getDomainType($zone_id);
+        $userId = $this->userContextService->getLoggedInUserId();
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
 
-        $this->checkCondition($zone_type == "SLAVE"
-            || $perm_edit == "none"
-            || ($perm_edit == "own" || $perm_edit == "own_as_client")
-            && !$user_is_zone_owner, _('You do not have the permission to add records to this zone.'));
+        // Check zone-specific edit permission (includes group permissions)
+        $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_content_edit_own');
+        $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_content_edit_own_as_client');
+        $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+
+        $this->checkCondition(
+            $zone_type == "SLAVE" || (!$canEditOthers && !$canEdit && !$canEditAsClient),
+            _('You do not have the permission to add records to this zone.')
+        );
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -199,7 +207,7 @@ class BulkRecordAddController extends BaseController
                         $ttl,
                         $prio,
                         $comment,
-                        $_SESSION['userlogin'],
+                        $this->userContextService->getLoggedInUsername(),
                         $_SERVER['REMOTE_ADDR']
                     )
                 ) {
@@ -209,7 +217,7 @@ class BulkRecordAddController extends BaseController
                     $this->logger->logInfo(sprintf(
                         'client_ip:%s user:%s operation:add_record name:%s type:%s content:%s ttl:%s prio:%s',
                         $_SERVER['REMOTE_ADDR'],
-                        $_SESSION["userlogin"],
+                        $this->userContextService->getLoggedInUsername(),
                         $name,
                         $type,
                         $content,

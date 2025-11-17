@@ -22,7 +22,9 @@
 
 namespace Poweradmin\Application\Controller\Api\Internal;
 
+use Exception;
 use Poweradmin\Application\Controller\Api\InternalApiController;
+use Poweradmin\Application\Service\CsrfTokenService;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
 use Poweradmin\Application\Service\RecordManagerService;
@@ -34,6 +36,8 @@ use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
+use RuntimeException;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
  * DNS Wizard Internal API Controller
@@ -100,9 +104,9 @@ class DnsWizardController extends InternalApiController
      *
      * GET /api/internal/dns-wizard?action=list
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
-    private function listWizards(): \Symfony\Component\HttpFoundation\JsonResponse
+    private function listWizards(): JsonResponse
     {
         try {
             $metadata = $this->wizardRegistry->getWizardMetadata();
@@ -110,7 +114,7 @@ class DnsWizardController extends InternalApiController
                 'wizards' => $metadata,
                 'enabled' => $this->wizardRegistry->isEnabled(),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
     }
@@ -120,9 +124,9 @@ class DnsWizardController extends InternalApiController
      *
      * GET /api/internal/dns-wizard?action=schema&type=DMARC
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
-    private function getWizardSchema(): \Symfony\Component\HttpFoundation\JsonResponse
+    private function getWizardSchema(): JsonResponse
     {
         $type = $this->request->query->get('type', '');
 
@@ -138,9 +142,9 @@ class DnsWizardController extends InternalApiController
                 'recordType' => $wizard->getRecordType(),
                 'schema' => $wizard->getFormSchema(),
             ]);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
     }
@@ -151,9 +155,9 @@ class DnsWizardController extends InternalApiController
      * POST /api/internal/dns-wizard?action=validate
      * Body: { "type": "DMARC", "formData": {...} }
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
-    private function validateWizardData(): \Symfony\Component\HttpFoundation\JsonResponse
+    private function validateWizardData(): JsonResponse
     {
         $input = json_decode($this->request->getContent(), true) ?? [];
         $type = $input['type'] ?? '';
@@ -168,9 +172,9 @@ class DnsWizardController extends InternalApiController
             $validation = $wizard->validate($formData);
 
             return $this->returnApiResponse($validation);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
     }
@@ -181,9 +185,9 @@ class DnsWizardController extends InternalApiController
      * POST /api/internal/dns-wizard?action=preview
      * Body: { "type": "DMARC", "formData": {...} }
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
-    private function previewWizardRecord(): \Symfony\Component\HttpFoundation\JsonResponse
+    private function previewWizardRecord(): JsonResponse
     {
         $input = json_decode($this->request->getContent(), true) ?? [];
         $type = $input['type'] ?? '';
@@ -211,9 +215,9 @@ class DnsWizardController extends InternalApiController
                 'preview' => $preview,
                 'validation' => $validation
             ]);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
     }
@@ -224,9 +228,9 @@ class DnsWizardController extends InternalApiController
      * POST /api/internal/dns-wizard?action=parse
      * Body: { "type": "DMARC", "content": "v=DMARC1; p=none;", "recordData": {...} }
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
-    private function parseExistingRecord(): \Symfony\Component\HttpFoundation\JsonResponse
+    private function parseExistingRecord(): JsonResponse
     {
         $input = json_decode($this->request->getContent(), true) ?? [];
         $type = $input['type'] ?? '';
@@ -244,9 +248,9 @@ class DnsWizardController extends InternalApiController
             return $this->returnApiResponse([
                 'formData' => $formData
             ]);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
     }
@@ -257,9 +261,9 @@ class DnsWizardController extends InternalApiController
      * POST /api/internal/dns-wizard?action=generate
      * Body: { "type": "DMARC", "formData": {...} }
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
-    private function generateRecord(): \Symfony\Component\HttpFoundation\JsonResponse
+    private function generateRecord(): JsonResponse
     {
         $input = json_decode($this->request->getContent(), true) ?? [];
         $type = $input['type'] ?? '';
@@ -274,9 +278,9 @@ class DnsWizardController extends InternalApiController
             $recordData = $wizard->generateRecord($formData);
 
             return $this->returnApiResponse($recordData);
-        } catch (\RuntimeException $e) {
+        } catch (RuntimeException $e) {
             return $this->returnApiError($e->getMessage(), 404);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
     }
@@ -288,9 +292,9 @@ class DnsWizardController extends InternalApiController
      * Body: { "zone_id": 1, "name": "@", "type": "TXT", "content": "...", "ttl": 3600, "priority": 0 }
      * Headers: X-CSRF-Token: <token>
      *
-     * @return \Symfony\Component\HttpFoundation\JsonResponse
+     * @return JsonResponse
      */
-    private function createRecord(): \Symfony\Component\HttpFoundation\JsonResponse
+    private function createRecord(): JsonResponse
     {
         // Validate CSRF token from X-CSRF-Token header
         $csrfToken = $this->request->headers->get('X-CSRF-Token', '');
@@ -303,7 +307,7 @@ class DnsWizardController extends InternalApiController
             // CSRF validation is disabled in config - skip check
         } else {
             // Create a temporary CsrfTokenService to validate the token
-            $csrfService = new \Poweradmin\Application\Service\CsrfTokenService();
+            $csrfService = new CsrfTokenService();
             if (!$csrfService->validateToken($csrfToken)) {
                 return $this->returnApiError('Invalid CSRF token', 403);
             }
@@ -404,7 +408,7 @@ class DnsWizardController extends InternalApiController
                 'success' => true,
                 'message' => _('Record created successfully'),
             ]);
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return $this->returnApiError($e->getMessage(), 500);
         }
     }

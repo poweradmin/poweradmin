@@ -33,6 +33,7 @@ namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\RecordType;
@@ -47,6 +48,7 @@ class DeleteRecordsController extends BaseController
     private LegacyLogger $logger;
     private RecordCommentService $recordCommentService;
     private ReverseRecordCreator $reverseRecordCreator;
+    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
@@ -63,6 +65,7 @@ class DeleteRecordsController extends BaseController
             $this->logger,
             $dnsRecord
         );
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -207,11 +210,13 @@ class DeleteRecordsController extends BaseController
                 $zone_info = $dnsRecord->getZoneInfoFromId($zid);
                 $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $domain_id);
 
-                $perm_edit = Permission::getEditPermission($this->db);
-                if (
-                    $zone_info['type'] == "SLAVE" || $perm_edit == "none" ||
-                    (($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0")
-                ) {
+                // Check zone-specific edit permission (includes group permissions)
+                $userId = $this->userContextService->getLoggedInUserId();
+                $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $domain_id, 'zone_content_edit_own');
+                $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $domain_id, 'zone_content_edit_own_as_client');
+                $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+
+                if ($zone_info['type'] == "SLAVE" || (!$canEditOthers && !$canEdit && !$canEditAsClient)) {
                     continue;
                 }
 
