@@ -281,7 +281,12 @@ class RecordSearch extends BaseSearch
         $whereConditions .= ')';
 
         if ($permission_view == 'own') {
-            $whereConditions .= ' AND z.owner = :user_id';
+            // Check both direct ownership and group ownership
+            $whereConditions .= ' AND (z.owner = :user_id OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = ' . $records_table . '.domain_id AND ugm.user_id = :user_id
+            ))';
             $params[':user_id'] = $_SESSION['userid'];
         }
 
@@ -314,7 +319,12 @@ class RecordSearch extends BaseSearch
         $whereConditions .= ')';
 
         if ($permission_view == 'own') {
-            $whereConditions .= ' AND z.owner = :user_id';
+            // Check both direct ownership and group ownership
+            $whereConditions .= ' AND (z.owner = :user_id OR EXISTS (
+                SELECT 1 FROM zones_groups zg
+                INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                WHERE zg.domain_id = ' . $records_table . '.domain_id AND ugm.user_id = :user_id
+            ))';
             $params[':user_id'] = $_SESSION['userid'];
         }
 

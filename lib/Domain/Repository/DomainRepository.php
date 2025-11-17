@@ -256,8 +256,13 @@ class DomainRepository implements DomainRepositoryInterface
         } else {
             $params = [];
             if ($perm == "own") {
-                $sql_add = " AND zones.domain_id = $domains_table.id AND zones.owner = :userid";
+                $sql_add = " AND zones.domain_id = $domains_table.id AND (zones.owner = :userid OR EXISTS (
+                    SELECT 1 FROM zones_groups zg
+                    INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                    WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userid_group
+                ))";
                 $params[':userid'] = $userid;
+                $params[':userid_group'] = $userid;
             }
 
             if ($letterstart != 'all' && $letterstart != 1) {
@@ -304,7 +309,14 @@ class DomainRepository implements DomainRepositoryInterface
                 $id_query .= " WHERE 1=1";
 
                 if ($perm == "own") {
-                    $id_query .= " AND zones.owner = :userid";
+                    $id_query .= " AND (zones.owner = :userid OR EXISTS (
+                        SELECT 1 FROM zones_groups zg
+                        INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                        WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userid_group
+                    ))";
+                    if (!isset($params[':userid_group'])) {
+                        $params[':userid_group'] = $userid;
+                    }
                 }
 
                 if ($letterstart != 'all' && $letterstart != 1) {
@@ -347,7 +359,14 @@ class DomainRepository implements DomainRepositoryInterface
                 $id_query .= " WHERE 1=1";
 
                 if ($perm == "own") {
-                    $id_query .= " AND zones.owner = :userid";
+                    $id_query .= " AND (zones.owner = :userid OR EXISTS (
+                        SELECT 1 FROM zones_groups zg
+                        INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+                        WHERE zg.domain_id = $domains_table.id AND ugm.user_id = :userid_group
+                    ))";
+                    if (!isset($params[':userid_group'])) {
+                        $params[':userid_group'] = $userid;
+                    }
                 }
 
                 if ($letterstart != 'all' && $letterstart != 1) {

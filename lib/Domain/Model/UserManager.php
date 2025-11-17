@@ -515,20 +515,38 @@ class UserManager
     /**
      * Verify User is Zone ID owner
      *
+     * Checks if user owns the zone directly or via group membership
+     *
      * @param int $zoneid Zone ID
      *
-     * @return bool 1 if owner, 0 if not owner
+     * @return bool true if owner (directly or via group), false otherwise
      */
     public static function verifyUserIsOwnerZoneId($db, int $zoneid): bool
     {
         $userid = $_SESSION["userid"];
+
+        // Check direct ownership
         $stmt = $db->prepare("SELECT zones.id FROM zones WHERE zones.owner = :userid AND zones.domain_id = :zoneid");
         $stmt->execute([
             ':userid' => $userid,
             ':zoneid' => $zoneid
         ]);
-        $response = $stmt->fetchColumn();
-        return (bool)$response;
+        if ($stmt->fetchColumn()) {
+            return true;
+        }
+
+        // Check group ownership
+        $stmt = $db->prepare("
+            SELECT zg.id
+            FROM zones_groups zg
+            INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
+            WHERE ugm.user_id = :userid AND zg.domain_id = :zoneid
+        ");
+        $stmt->execute([
+            ':userid' => $userid,
+            ':zoneid' => $zoneid
+        ]);
+        return (bool)$stmt->fetchColumn();
     }
 
     /**
