@@ -1508,11 +1508,11 @@ class DatabaseStructureHelper
                         'table' => 'user_group_members',
                         'flags' => 'not_null'
                     ),
-                    'added_at' => array(
+                    'created_at' => array(
                         'type' => 'timestamp',
                         'notnull' => 1,
                         'default' => 'current_timestamp',
-                        'name' => 'added_at',
+                        'name' => 'created_at',
                         'table' => 'user_group_members',
                         'flags' => 'not_null'
                     )
@@ -1564,14 +1564,6 @@ class DatabaseStructureHelper
                         'table' => 'zones_groups',
                         'flags' => 'not_null'
                     ),
-                    'zone_templ_id' => array(
-                        'type' => 'integer',
-                        'notnull' => 0,
-                        'unsigned' => 0,
-                        'name' => 'zone_templ_id',
-                        'table' => 'zones_groups',
-                        'flags' => ''
-                    ),
                     'created_at' => array(
                         'type' => 'timestamp',
                         'notnull' => 1,
@@ -1584,8 +1576,7 @@ class DatabaseStructureHelper
                 'indexes' => array(
                     'unique_zone_group' => array('domain_id', 'group_id'),
                     'idx_domain_id' => array('domain_id'),
-                    'idx_group_id' => array('group_id'),
-                    'idx_zone_templ_id' => array('zone_templ_id')
+                    'idx_group_id' => array('group_id')
                 ),
                 'foreign_keys' => array(
                     'fk_zones_groups_domain' => array(
@@ -1597,11 +1588,6 @@ class DatabaseStructureHelper
                         'table' => 'user_groups',
                         'fields' => array('group_id' => 'id'),
                         'ondelete' => 'CASCADE'
-                    ),
-                    'fk_zones_groups_zone_templ' => array(
-                        'table' => 'zone_templ',
-                        'fields' => array('zone_templ_id' => 'id'),
-                        'ondelete' => 'SET NULL'
                     )
                 )
             )

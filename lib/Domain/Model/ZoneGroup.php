@@ -32,7 +32,6 @@ class ZoneGroup
     private ?int $id;
     private int $domainId;
     private int $groupId;
-    private ?int $zoneTemplId;
     private ?string $createdAt;
     private ?string $name;
     private ?string $type;
@@ -41,7 +40,6 @@ class ZoneGroup
         ?int $id,
         int $domainId,
         int $groupId,
-        ?int $zoneTemplId = null,
         ?string $createdAt = null,
         ?string $name = null,
         ?string $type = null
@@ -49,7 +47,6 @@ class ZoneGroup
         $this->id = $id;
         $this->domainId = $domainId;
         $this->groupId = $groupId;
-        $this->zoneTemplId = $zoneTemplId;
         $this->createdAt = $createdAt;
         $this->name = $name;
         $this->type = $type;
@@ -68,11 +65,6 @@ class ZoneGroup
     public function getGroupId(): int
     {
         return $this->groupId;
-    }
-
-    public function getZoneTemplId(): ?int
-    {
-        return $this->zoneTemplId;
     }
 
     public function getCreatedAt(): ?string
@@ -95,14 +87,12 @@ class ZoneGroup
      *
      * @param int $domainId Domain/Zone ID
      * @param int $groupId Group ID
-     * @param int|null $zoneTemplId Optional zone template ID
      * @return self
      */
     public static function create(
         int $domainId,
-        int $groupId,
-        ?int $zoneTemplId = null
+        int $groupId
     ): self {
-        return new self(null, $domainId, $groupId, $zoneTemplId, null, null, null);
+        return new self(null, $domainId, $groupId, null, null, null);
     }
 }

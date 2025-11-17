@@ -341,7 +341,7 @@ CREATE TABLE `user_group_members` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `group_id` INT UNSIGNED NOT NULL,
   `user_id` INT NOT NULL,
-  `added_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_member` (`group_id`, `user_id`),
   KEY `idx_user_id` (`user_id`),
@@ -354,14 +354,11 @@ CREATE TABLE `zones_groups` (
   `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
   `domain_id` INT NOT NULL,
   `group_id` INT UNSIGNED NOT NULL,
-  `zone_templ_id` INT,
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_zone_group` (`domain_id`, `group_id`),
   KEY `idx_domain_id` (`domain_id`),
   KEY `idx_group_id` (`group_id`),
-  KEY `idx_zone_templ_id` (`zone_templ_id`),
   CONSTRAINT `fk_zones_groups_domain` FOREIGN KEY (`domain_id`) REFERENCES `domains`(`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_zones_groups_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE,
-  CONSTRAINT `fk_zones_groups_zone_templ` FOREIGN KEY (`zone_templ_id`) REFERENCES `zone_templ`(`id`) ON DELETE SET NULL
+  CONSTRAINT `fk_zones_groups_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

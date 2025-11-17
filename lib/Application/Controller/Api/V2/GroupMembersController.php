@@ -138,7 +138,7 @@ class GroupMembersController extends PublicApiController
                 'username' => $m->getUsername(),
                 'fullname' => $m->getFullname(),
                 'email' => $m->getEmail(),
-                'joined_at' => $m->getJoinedAt(),
+                'joined_at' => $m->getCreatedAt(),
             ], $members);
 
             return $this->returnApiResponse($membersData, true, 'Members retrieved successfully');

@@ -201,7 +201,7 @@ CREATE TABLE IF NOT EXISTS "user_group_members" (
     "id" SERIAL PRIMARY KEY,
     "group_id" INTEGER NOT NULL REFERENCES "user_groups"("id") ON DELETE CASCADE,
     "user_id" INTEGER NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
-    "added_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE ("group_id", "user_id")
 );
 
@@ -219,11 +219,9 @@ CREATE TABLE IF NOT EXISTS "zones_groups" (
     "id" SERIAL PRIMARY KEY,
     "domain_id" INTEGER NOT NULL REFERENCES "domains"("id") ON DELETE CASCADE,
     "group_id" INTEGER NOT NULL REFERENCES "user_groups"("id") ON DELETE CASCADE,
-    "zone_templ_id" INTEGER REFERENCES "zone_templ"("id") ON DELETE SET NULL,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE ("domain_id", "group_id")
 );
 
 CREATE INDEX IF NOT EXISTS "idx_zones_groups_domain" ON "zones_groups"("domain_id");
 CREATE INDEX IF NOT EXISTS "idx_zones_groups_group" ON "zones_groups"("group_id");
-CREATE INDEX IF NOT EXISTS "idx_zones_groups_zone_templ" ON "zones_groups"("zone_templ_id");

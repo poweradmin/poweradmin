@@ -32,7 +32,7 @@ class UserGroupMember
     private ?int $id;
     private int $groupId;
     private int $userId;
-    private ?string $joinedAt;
+    private ?string $createdAt;
     private ?string $username;
     private ?string $fullname;
     private ?string $email;
@@ -41,7 +41,7 @@ class UserGroupMember
         ?int $id,
         int $groupId,
         int $userId,
-        ?string $joinedAt = null,
+        ?string $createdAt = null,
         ?string $username = null,
         ?string $fullname = null,
         ?string $email = null
@@ -49,7 +49,7 @@ class UserGroupMember
         $this->id = $id;
         $this->groupId = $groupId;
         $this->userId = $userId;
-        $this->joinedAt = $joinedAt;
+        $this->createdAt = $createdAt;
         $this->username = $username;
         $this->fullname = $fullname;
         $this->email = $email;
@@ -70,9 +70,9 @@ class UserGroupMember
         return $this->userId;
     }
 
-    public function getJoinedAt(): ?string
+    public function getCreatedAt(): ?string
     {
-        return $this->joinedAt;
+        return $this->createdAt;
     }
 
     public function getUsername(): ?string

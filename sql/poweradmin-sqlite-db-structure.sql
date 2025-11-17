@@ -283,7 +283,7 @@ CREATE TABLE user_group_members (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     group_id INTEGER NOT NULL,
     user_id INTEGER NOT NULL,
-    added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (group_id, user_id),
     FOREIGN KEY (group_id) REFERENCES user_groups(id) ON DELETE CASCADE,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -296,14 +296,11 @@ CREATE TABLE zones_groups (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     domain_id INTEGER NOT NULL,
     group_id INTEGER NOT NULL,
-    zone_templ_id INTEGER,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (domain_id, group_id),
     FOREIGN KEY (domain_id) REFERENCES domains(id) ON DELETE CASCADE,
-    FOREIGN KEY (group_id) REFERENCES user_groups(id) ON DELETE CASCADE,
-    FOREIGN KEY (zone_templ_id) REFERENCES zone_templ(id) ON DELETE SET NULL
+    FOREIGN KEY (group_id) REFERENCES user_groups(id) ON DELETE CASCADE
 );
 
 CREATE INDEX idx_zones_groups_domain ON zones_groups(domain_id);
 CREATE INDEX idx_zones_groups_group ON zones_groups(group_id);
-CREATE INDEX idx_zones_groups_zone_templ ON zones_groups(zone_templ_id);
