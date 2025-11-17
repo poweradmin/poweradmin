@@ -220,14 +220,15 @@ class DeleteRecordController extends BaseController
             }
         }
 
-        $perm_edit = Permission::getEditPermission($this->db);
-
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_info = $dnsRecord->getZoneInfoFromId($zid);
-        $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $domain_id);
-        if ($zone_info['type'] == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
-            $this->showError(_("You do not have the permission to edit this record."));
+
+        // SLAVE zones cannot have records deleted
+        if ($zone_info['type'] == "SLAVE") {
+            $this->showError(_("You cannot delete records from a SLAVE zone."));
         }
+
+        // Permission already validated with zone-aware check at top of method
 
         $this->showQuestion($record_id, $zid, $domain_id);
     }
