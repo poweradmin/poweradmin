@@ -63,7 +63,7 @@
                     </div>
 
                     <div class="mt-3">
-                        <button type="submit" class="btn btn-danger btn-sm" id="remove-btn" disabled>
+                        <button type="button" class="btn btn-danger btn-sm" id="remove-btn" onclick="showRemoveZonesModal()" disabled>
                             <i class="bi bi-dash-circle-fill me-1 text-white"></i>{% trans %}Remove Selected{% endtrans %}
                         </button>
                         <small class="text-muted ms-2">
@@ -193,11 +193,42 @@ document.getElementById('search-available')?.addEventListener('input', function(
     });
 });
 
-// Form confirmation
-document.getElementById('remove-form')?.addEventListener('submit', function(e) {
+// Show modal confirmation for removing zones
+function showRemoveZonesModal() {
     const count = document.querySelectorAll('.owned-checkbox:checked').length;
-    if (!confirm('{% trans %}Remove group ownership from{% endtrans %} ' + count + ' {% trans %}zone(s)?{% endtrans %}')) {
-        e.preventDefault();
-    }
+    document.getElementById('modalZoneCount').textContent = count;
+    const modal = new bootstrap.Modal(document.getElementById('removeZonesModal'));
+    modal.show();
+}
+
+// Handle remove confirmation
+document.getElementById('confirmRemoveZonesBtn')?.addEventListener('click', function() {
+    document.getElementById('remove-form').submit();
 });
 </script>
+
+<!-- Remove Zones Confirmation Modal -->
+<div class="modal fade" id="removeZonesModal" tabindex="-1" aria-labelledby="removeZonesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeZonesModalLabel">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Confirm Removal{% endtrans %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans %}Are you sure you want to remove group ownership from{% endtrans %} <strong id="modalZoneCount"></strong> {% trans %}zone(s)?{% endtrans %}</p>
+                <p class="text-muted small mb-0">{% trans %}The zones will remain in the system but this group will no longer have ownership.{% endtrans %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" id="confirmRemoveZonesBtn">
+                    <i class="bi bi-trash me-1"></i>{% trans %}Remove{% endtrans %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

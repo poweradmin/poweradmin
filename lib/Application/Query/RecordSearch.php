@@ -285,9 +285,11 @@ class RecordSearch extends BaseSearch
             $whereConditions .= ' AND (z.owner = :user_id OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE zg.domain_id = ' . $records_table . '.domain_id AND ugm.user_id = :user_id
+                WHERE zg.domain_id = ' . $records_table . '.domain_id AND ugm.user_id = :user_id_group
             ))';
-            $params[':user_id'] = $_SESSION['userid'];
+            $userId = $this->userContext->getLoggedInUserId();
+            $params[':user_id'] = $userId;
+            $params[':user_id_group'] = $userId;
         }
 
         return $whereConditions;
@@ -320,12 +322,14 @@ class RecordSearch extends BaseSearch
 
         if ($permission_view == 'own') {
             // Check both direct ownership and group ownership
-            $whereConditions .= ' AND (z.owner = :user_id OR EXISTS (
+            $whereConditions .= ' AND (z.owner = :user_id_count OR EXISTS (
                 SELECT 1 FROM zones_groups zg
                 INNER JOIN user_group_members ugm ON zg.group_id = ugm.group_id
-                WHERE zg.domain_id = ' . $records_table . '.domain_id AND ugm.user_id = :user_id
+                WHERE zg.domain_id = ' . $records_table . '.domain_id AND ugm.user_id = :user_id_count_group
             ))';
-            $params[':user_id'] = $_SESSION['userid'];
+            $userId = $this->userContext->getLoggedInUserId();
+            $params[':user_id_count'] = $userId;
+            $params[':user_id_count_group'] = $userId;
         }
 
         return $whereConditions;
