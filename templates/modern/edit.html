@@ -484,14 +484,16 @@
                     {{ pagination | raw }}
                 </div>
                 <div class="d-flex gap-2">
-                    {% if not iface_show_record_edit_button %}
-                    <button type="button" class="btn btn-primary btn-sm" id="edit-selected-record" disabled onclick="editSelectedRecord()">
-                        <i class="bi bi-pencil-square me-1 text-white"></i>{% trans %}Edit selected{% endtrans %}
-                    </button>
+                    {% if perm_edit != "none" and domain_type != "SLAVE" and (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") %}
+                        {% if not iface_show_record_edit_button %}
+                        <button type="button" class="btn btn-primary btn-sm" id="edit-selected-record" disabled onclick="editSelectedRecord()">
+                            <i class="bi bi-pencil-square me-1 text-white"></i>{% trans %}Edit selected{% endtrans %}
+                        </button>
+                        {% endif %}
+                        <button type="submit" form="delete-records-form" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
+                            <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
+                        </button>
                     {% endif %}
-                    <button type="submit" form="delete-records-form" class="btn btn-danger btn-sm" id="delete-selected-records" disabled>
-                        <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
-                    </button>
                 </div>
             </div>
 
