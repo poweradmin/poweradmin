@@ -74,7 +74,7 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
         return array_map(fn($row) => $this->mapRowToEntity($row), $results);
     }
 
-    public function add(int $domainId, int $groupId, ?int $zoneTemplId = null): ZoneGroup
+    public function add(int $domainId, int $groupId): ZoneGroup
     {
         // Check if ownership already exists
         if ($this->exists($domainId, $groupId)) {
@@ -97,7 +97,7 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
 
         $id = (int)$this->db->lastInsertId();
 
-        return new ZoneGroup($id, $domainId, $groupId, null, null, null, null);
+        return new ZoneGroup($id, $domainId, $groupId, null, null, null);
     }
 
     public function remove(int $domainId, int $groupId): bool
@@ -130,7 +130,6 @@ class DbZoneGroupRepository implements ZoneGroupRepositoryInterface
             (int)$row['id'],
             (int)$row['domain_id'],
             (int)$row['group_id'],
-            isset($row['zone_templ_id']) ? (int)$row['zone_templ_id'] : null,
             $row['created_at'] ?? null,
             $row['zone_name'] ?? null,
             $row['zone_type'] ?? null

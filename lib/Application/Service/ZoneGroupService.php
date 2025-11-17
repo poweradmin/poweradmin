@@ -50,11 +50,10 @@ class ZoneGroupService
      *
      * @param int $domainId Zone/Domain ID
      * @param int $groupId Group ID
-     * @param int|null $zoneTemplId Optional zone template ID
      * @return ZoneGroup
      * @throws InvalidArgumentException If group not found or ownership already exists
      */
-    public function addGroupToZone(int $domainId, int $groupId, ?int $zoneTemplId = null): ZoneGroup
+    public function addGroupToZone(int $domainId, int $groupId): ZoneGroup
     {
         // Validate group exists
         $group = $this->groupRepository->findById($groupId);
@@ -67,7 +66,7 @@ class ZoneGroupService
             throw new InvalidArgumentException('Group already owns this zone');
         }
 
-        return $this->zoneGroupRepository->add($domainId, $groupId, $zoneTemplId);
+        return $this->zoneGroupRepository->add($domainId, $groupId);
     }
 
     /**
@@ -125,10 +124,9 @@ class ZoneGroupService
      *
      * @param int $groupId Group ID
      * @param int[] $domainIds Array of domain IDs
-     * @param int|null $zoneTemplId Optional zone template ID
      * @return array{success: int[], failed: array<int, string>} Results of bulk operation
      */
-    public function bulkAddZones(int $groupId, array $domainIds, ?int $zoneTemplId = null): array
+    public function bulkAddZones(int $groupId, array $domainIds): array
     {
         // Validate group exists
         $group = $this->groupRepository->findById($groupId);
@@ -144,7 +142,7 @@ class ZoneGroupService
         foreach ($domainIds as $domainId) {
             try {
                 if (!$this->zoneGroupRepository->exists($domainId, $groupId)) {
-                    $this->zoneGroupRepository->add($domainId, $groupId, $zoneTemplId);
+                    $this->zoneGroupRepository->add($domainId, $groupId);
                     $results['success'][] = $domainId;
                 } else {
                     $results['failed'][$domainId] = 'Group already owns this zone';

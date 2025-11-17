@@ -47,10 +47,9 @@ interface ZoneGroupRepositoryInterface
      *
      * @param int $domainId
      * @param int $groupId
-     * @param int|null $zoneTemplId
      * @return ZoneGroup
      */
-    public function add(int $domainId, int $groupId, ?int $zoneTemplId = null): ZoneGroup;
+    public function add(int $domainId, int $groupId): ZoneGroup;
 
     /**
      * Remove a group from zone owners
