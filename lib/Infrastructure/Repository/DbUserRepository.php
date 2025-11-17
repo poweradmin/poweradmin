@@ -102,15 +102,30 @@ class DbUserRepository implements UserRepository
             return [];
         }
 
-        // Query to get all permissions for the user
-        $query = "SELECT
-            perm_items.name AS permission
+        // Query to get all permissions for the user from both direct template and groups
+        // UNION automatically removes duplicates if same permission exists in both sources
+        $query = "
+            SELECT perm_items.name AS permission
             FROM perm_templ_items
-            LEFT JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
-            LEFT JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
-            LEFT JOIN users ON perm_templ.id = users.perm_templ
+            INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
+            INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
+            INNER JOIN users ON perm_templ.id = users.perm_templ
             WHERE users.id = :userId
-            ORDER BY perm_items.name";
+                AND perm_items.name IS NOT NULL
+
+            UNION
+
+            SELECT pi.name AS permission
+            FROM user_group_members ugm
+            INNER JOIN user_groups ug ON ugm.group_id = ug.id
+            INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
+            INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE ugm.user_id = :userId
+                AND pi.name IS NOT NULL
+
+            ORDER BY permission
+        ";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
@@ -118,7 +133,9 @@ class DbUserRepository implements UserRepository
 
         $userPermissions = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-            $userPermissions[] = $row['permission'];
+            if ($row['permission'] !== null) {
+                $userPermissions[] = $row['permission'];
+            }
         }
 
         return $userPermissions;
@@ -132,19 +149,36 @@ class DbUserRepository implements UserRepository
      */
     public function hasAdminPermission(int $userId): bool
     {
-        $query = "SELECT
-            COUNT(*)
+        // Check both direct user permissions and group permissions
+        // Uses same logic as UserManager::isUserSuperuser for consistency
+        $query = "
+            SELECT perm_items.name AS permission
             FROM perm_templ_items
-            LEFT JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
-            LEFT JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
-            LEFT JOIN users ON perm_templ.id = users.perm_templ
-            WHERE users.id = :userId AND perm_items.name = 'user_is_ueberuser'";
+            INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
+            INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
+            INNER JOIN users ON perm_templ.id = users.perm_templ
+            WHERE users.id = :userId
+                AND perm_items.name = 'user_is_ueberuser'
+                AND perm_items.name IS NOT NULL
+
+            UNION
+
+            SELECT pi.name AS permission
+            FROM user_group_members ugm
+            INNER JOIN user_groups ug ON ugm.group_id = ug.id
+            INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
+            INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
+            INNER JOIN perm_items pi ON pti.perm_id = pi.id
+            WHERE ugm.user_id = :userId
+                AND pi.name = 'user_is_ueberuser'
+                AND pi.name IS NOT NULL
+        ";
 
         $stmt = $this->db->prepare($query);
         $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
         $stmt->execute();
 
-        return (bool)$stmt->fetchColumn();
+        return $stmt->fetch() !== false;
     }
 
     /**
