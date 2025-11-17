@@ -37,6 +37,7 @@ use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
@@ -47,6 +48,7 @@ class DeleteDomainsController extends BaseController
 
     private LegacyLogger $logger;
     private RecordCommentService $recordCommentService;
+    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
@@ -55,6 +57,7 @@ class DeleteDomainsController extends BaseController
         $this->logger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -92,7 +95,7 @@ class DeleteDomainsController extends BaseController
                 $this->logger->logInfo(sprintf(
                     'client_ip:%s user:%s operation:delete_zone zone:%s zone_type:%s',
                     $_SERVER['REMOTE_ADDR'],
-                    $_SESSION["userlogin"],
+                    $this->userContextService->getLoggedInUsername(),
                     $deleted_zone['name'],
                     $deleted_zone['type']
                 ), $deleted_zone['id']);
@@ -153,11 +156,17 @@ class DeleteDomainsController extends BaseController
         $zones = [];
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
+        $userId = $this->userContextService->getLoggedInUserId();
+
         foreach ($zone_ids as $zone_id) {
             $zones[$zone_id]['id'] = $zone_id;
             $zones[$zone_id] = $dnsRecord->getZoneInfoFromId($zone_id);
             $zones[$zone_id]['owner'] = UserManager::getFullnamesOwnersFromFomainId($this->db, $zone_id);
             $zones[$zone_id]['is_owner'] = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
+
+            // Check zone-specific delete permission (includes group permissions)
+            $canDelete = UserManager::canUserPerformZoneAction($this->db, $userId, $zone_id, 'zone_delete_own');
+            $zones[$zone_id]['can_delete'] = $canDelete;
 
             $zones[$zone_id]['has_supermaster'] = false;
             $zones[$zone_id]['slave_master'] = null;
