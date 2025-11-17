@@ -42,6 +42,8 @@ use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Service\ZoneValidationService;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneMasterController extends BaseController
@@ -126,7 +128,7 @@ class AddZoneMasterController extends BaseController
 
             // Add group ownership if groups were selected
             if (!empty($selected_groups)) {
-                $zoneGroupRepo = new \Poweradmin\Infrastructure\Repository\DbZoneGroupRepository($this->db, $this->getConfig());
+                $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
                 foreach ($selected_groups as $groupId) {
                     $zoneGroupRepo->add($zone_id, $groupId);
                 }
@@ -260,7 +262,7 @@ class AddZoneMasterController extends BaseController
         $templates = $zone_templates->getListZoneTempl($userId);
 
         // Fetch all groups for the dropdown
-        $userGroupRepo = new \Poweradmin\Infrastructure\Repository\DbUserGroupRepository($this->db);
+        $userGroupRepo = new DbUserGroupRepository($this->db);
         $allGroups = $userGroupRepo->findAll();
 
         // Handle selected groups on error re-render

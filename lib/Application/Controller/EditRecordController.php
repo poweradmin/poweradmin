@@ -34,6 +34,7 @@ namespace Poweradmin\Application\Controller;
 use Poweradmin\Application\Service\DnssecProviderFactory;
 use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Application\Service\RecordCommentSyncService;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Domain\Model\Permission;
@@ -52,6 +53,7 @@ class EditRecordController extends BaseController
     private RecordCommentService $recordCommentService;
     private RecordCommentSyncService $commentSyncService;
     private RecordTypeService $recordTypeService;
+    private UserContextService $userContextService;
 
     public function __construct(array $request)
     {
@@ -62,6 +64,7 @@ class EditRecordController extends BaseController
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
         $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -83,12 +86,14 @@ class EditRecordController extends BaseController
         }
 
         // Early permission check - validate access before further operations
-        $perm_view = Permission::getViewPermission($this->db);
-        $perm_edit = Permission::getEditPermission($this->db);
+        $userId = $this->userContextService->getLoggedInUserId();
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zid);
 
-        // Check view permission first
-        if ($perm_view == "none" || ($perm_view == "own" && !$user_is_zone_owner)) {
+        // Check view permission first (zone-aware for group support)
+        $canView = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_view_own');
+        $canViewOthers = UserManager::verifyPermission($this->db, 'zone_content_view_others');
+
+        if (!$canViewOthers && !$canView) {
             $this->showError(_("You do not have permission to view this record."));
             return;
         }
@@ -96,10 +101,30 @@ class EditRecordController extends BaseController
         // Get zone type after permission validation
         $zone_type = $dnsRecord->getDomainType($zid);
 
-        // Check edit permission for SLAVE zones and ownership
-        if ($zone_type == "SLAVE" || $perm_edit == "none" || (($perm_edit == "own" || $perm_edit == "own_as_client") && !$user_is_zone_owner)) {
+        // Check edit permission for SLAVE zones and zone-specific edit rights
+        if ($zone_type == "SLAVE") {
+            $this->showError(_("You cannot edit records in a SLAVE zone."));
+            return;
+        }
+
+        // Check zone-specific edit permission (includes group permissions)
+        $canEdit = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_edit_own');
+        $canEditAsClient = UserManager::canUserPerformZoneAction($this->db, $userId, $zid, 'zone_content_edit_own_as_client');
+        $canEditOthers = UserManager::verifyPermission($this->db, 'zone_content_edit_others');
+
+        if (!$canEditOthers && !$canEdit && !$canEditAsClient) {
             $this->showError(_("You do not have permission to edit this record."));
             return;
+        }
+
+        // Determine permission level for UI (for backward compatibility with templates)
+        $perm_edit = 'none';
+        if ($canEditOthers) {
+            $perm_edit = 'all';
+        } elseif ($canEdit) {
+            $perm_edit = 'own';
+        } elseif ($canEditAsClient) {
+            $perm_edit = 'own_as_client';
         }
 
         $validationFailed = false;

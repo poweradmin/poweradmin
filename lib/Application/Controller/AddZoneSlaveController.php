@@ -39,6 +39,8 @@ use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddZoneSlaveController extends BaseController
@@ -122,7 +124,7 @@ class AddZoneSlaveController extends BaseController
 
                 // Add group ownership if groups were selected
                 if (!empty($selected_groups)) {
-                    $zoneGroupRepo = new \Poweradmin\Infrastructure\Repository\DbZoneGroupRepository($this->db, $this->getConfig());
+                    $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
                     foreach ($selected_groups as $groupId) {
                         $zoneGroupRepo->add($zone_id, $groupId);
                     }
@@ -173,7 +175,7 @@ class AddZoneSlaveController extends BaseController
         $is_post_request = !empty($_POST);
 
         // Fetch all groups for the dropdown
-        $userGroupRepo = new \Poweradmin\Infrastructure\Repository\DbUserGroupRepository($this->db);
+        $userGroupRepo = new DbUserGroupRepository($this->db);
         $allGroups = $userGroupRepo->findAll();
 
         // Handle selected groups on error re-render

@@ -257,8 +257,8 @@ class EditController extends BaseController
             $this->saveAsTemplate($zone_id);
         }
 
-        // Permission levels already retrieved in early check above
-        $perm_edit = $this->permissionService->getEditPermissionLevel($userId);
+        // Permission levels - use zone-aware checking for group permission support
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
         $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
 
         $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");

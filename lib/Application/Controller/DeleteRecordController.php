@@ -97,9 +97,11 @@ class DeleteRecordController extends BaseController
         // Early permission check - validate zone access before proceeding
         $userId = $this->userContextService->getLoggedInUserId();
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zid);
-        $perm_edit = $this->permissionService->getEditPermissionLevel($userId);
 
-        if ($perm_edit !== "all" && !$user_is_zone_owner) {
+        // Check zone-specific edit permission (includes group permissions)
+        $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zid);
+
+        if ($perm_edit === "none") {
             $this->showError(_('You do not have permission to delete records in this zone.'));
             return;
         }
