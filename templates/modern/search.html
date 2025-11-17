@@ -198,7 +198,7 @@
                             <td>{{ zone['comment'] }}</td>
                         {% endif %}
                         <td class="text-end">
-                            <div class="gap-2">
+                            <div class="d-flex gap-2 justify-content-end">
                                 {% if perm_is_godlike and whois_enabled %}
                                 <a class="btn btn-sm btn-outline-secondary"
                                 href="{{ base_url_prefix }}/zones/{{ zone['id'] }}/whois" data-testid="whois-zone-{{ zone['id'] }}">
@@ -404,7 +404,7 @@
                         {% endif %}
                         <td class="text-end">
                             {% if edit_permission == 'all' or ((edit_permission == 'own' or edit_permission == 'own_as_client') and record['user_id'] == user_id) %}
-                            <div class="gap-2">
+                            <div class="d-flex gap-2 justify-content-end">
                                 <a class="btn btn-sm btn-outline-primary"
                                 href="{{ base_url_prefix }}/zones/{{ record['domain_id'] }}/records/{{ record['id'] }}/edit">
                                     <i class="bi bi-pencil-square text-primary"></i>
