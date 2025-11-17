@@ -187,7 +187,8 @@ class HybridPermissionService
     {
         $query = "SELECT pi.name
                   FROM zones z
-                  INNER JOIN perm_templ pt ON z.zone_templ_id = pt.id
+                  INNER JOIN users u ON z.owner = u.id
+                  INNER JOIN perm_templ pt ON u.perm_templ = pt.id
                   INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
                   INNER JOIN perm_items pi ON pti.perm_id = pi.id
                   WHERE z.owner = :user_id AND z.domain_id = :domain_id";

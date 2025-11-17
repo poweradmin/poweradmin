@@ -6,6 +6,4 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'PHPMD\\' => array($vendorDir . '/phpmd/phpmd/src/main/php'),
-    'JsonMapper' => array($vendorDir . '/netresearch/jsonmapper/src'),
 );
