@@ -87,6 +87,12 @@ user_delete:
     id: '\d+'
   methods: [GET, POST]
 
+# Remove user from group
+user_remove_group:
+  path: /users/groups/remove
+  controller: Poweradmin\Application\Controller\RemoveUserGroupController::run
+  methods: [POST]
+
 # User Preferences
 user_preferences:
   path: /user/preferences
@@ -301,6 +307,18 @@ manage_group_zones:
   requirements:
     id: '\d+'
   methods: [GET, POST]
+
+# Quick remove member from group (from edit page)
+quick_remove_group_member:
+  path: /groups/quick-remove-member
+  controller: Poweradmin\Application\Controller\QuickRemoveGroupMemberController::run
+  methods: [POST]
+
+# Quick remove zone from group (from edit page)
+quick_remove_group_zone:
+  path: /groups/quick-remove-zone
+  controller: Poweradmin\Application\Controller\QuickRemoveGroupZoneController::run
+  methods: [POST]
 
 # User Logs
 users_logs:

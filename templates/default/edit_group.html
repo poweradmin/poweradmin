@@ -83,12 +83,17 @@
                         {% else %}
                         <ul class="list-unstyled mb-0">
                             {% for member in members|slice(0, 5) %}
-                            <li class="mb-2">
-                                <i class="bi bi-person-fill text-secondary me-1"></i>
-                                <strong>{{ member.username }}</strong>
-                                {% if member.fullname %}
-                                    <small class="text-muted ms-2">({{ member.fullname }})</small>
-                                {% endif %}
+                            <li class="mb-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-person-fill text-secondary me-1"></i>
+                                    <strong>{{ member.username }}</strong>
+                                    {% if member.fullname %}
+                                        <small class="text-muted ms-2">({{ member.fullname }})</small>
+                                    {% endif %}
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="showRemoveMemberModal({{ member.id }}, '{{ member.username|e('js') }}')" title="{% trans %}Remove from group{% endtrans %}">
+                                    <i class="bi bi-x-circle text-danger"></i>
+                                </button>
                             </li>
                             {% endfor %}
                             {% if members|length > 5 %}
@@ -122,18 +127,23 @@
                         {% else %}
                         <ul class="list-unstyled mb-0">
                             {% for zone in zones|slice(0, 5) %}
-                            <li class="mb-2">
-                                <i class="bi bi-hdd text-secondary me-1"></i>
-                                <strong>{{ zone.name }}</strong>
-                                {% if zone.type %}
-                                    {% if zone.type == 'MASTER' %}
-                                        <span class="badge bg-success badge-sm ms-1">{% trans %}Master{% endtrans %}</span>
-                                    {% elseif zone.type == 'SLAVE' %}
-                                        <span class="badge bg-info badge-sm ms-1">{% trans %}Slave{% endtrans %}</span>
-                                    {% elseif zone.type == 'NATIVE' %}
-                                        <span class="badge bg-warning badge-sm ms-1">{% trans %}Native{% endtrans %}</span>
+                            <li class="mb-2 d-flex justify-content-between align-items-center">
+                                <div>
+                                    <i class="bi bi-hdd text-secondary me-1"></i>
+                                    <strong>{{ zone.name }}</strong>
+                                    {% if zone.type %}
+                                        {% if zone.type == 'MASTER' %}
+                                            <span class="badge bg-success badge-sm ms-1">{% trans %}Master{% endtrans %}</span>
+                                        {% elseif zone.type == 'SLAVE' %}
+                                            <span class="badge bg-info badge-sm ms-1">{% trans %}Slave{% endtrans %}</span>
+                                        {% elseif zone.type == 'NATIVE' %}
+                                            <span class="badge bg-warning badge-sm ms-1">{% trans %}Native{% endtrans %}</span>
+                                        {% endif %}
                                     {% endif %}
-                                {% endif %}
+                                </div>
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="showRemoveZoneModal({{ zone.id }}, '{{ zone.name|e('js') }}')" title="{% trans %}Remove from group{% endtrans %}">
+                                    <i class="bi bi-x-circle text-danger"></i>
+                                </button>
                             </li>
                             {% endfor %}
                             {% if zones|length > 5 %}
@@ -145,6 +155,71 @@
                         {% endif %}
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Forms for removing members and zones -->
+<form id="removeMemberForm" method="post" action="{{ base_url_prefix }}/groups/quick-remove-member" style="display: none;">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    <input type="hidden" name="group_id" value="{{ group.id }}">
+    <input type="hidden" name="user_id" id="remove_member_id" value="">
+</form>
+
+<form id="removeZoneForm" method="post" action="{{ base_url_prefix }}/groups/quick-remove-zone" style="display: none;">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    <input type="hidden" name="group_id" value="{{ group.id }}">
+    <input type="hidden" name="zone_id" id="remove_zone_id" value="">
+</form>
+
+<!-- Remove Member Confirmation Modal -->
+<div class="modal fade" id="removeMemberModal" tabindex="-1" aria-labelledby="removeMemberModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeMemberModalLabel">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Confirm Member Removal{% endtrans %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans %}Are you sure you want to remove user{% endtrans %} "<strong id="modalMemberUsername"></strong>" {% trans %}from this group?{% endtrans %}</p>
+                <p class="text-muted small mb-0">{% trans %}This action will immediately revoke any permissions granted by this group.{% endtrans %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" id="confirmRemoveMemberBtn">
+                    <i class="bi bi-trash me-1"></i>{% trans %}Remove{% endtrans %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Remove Zone Confirmation Modal -->
+<div class="modal fade" id="removeZoneModal" tabindex="-1" aria-labelledby="removeZoneModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeZoneModalLabel">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Confirm Zone Removal{% endtrans %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans %}Are you sure you want to remove zone{% endtrans %} "<strong id="modalZoneName"></strong>" {% trans %}from this group?{% endtrans %}</p>
+                <p class="text-muted small mb-0">{% trans %}The zone will remain in the system but this group will no longer have ownership.{% endtrans %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" id="confirmRemoveZoneBtn">
+                    <i class="bi bi-trash me-1"></i>{% trans %}Remove{% endtrans %}
+                </button>
             </div>
         </div>
     </div>
@@ -164,4 +239,30 @@
         }, false)
     })
 })()
+
+// Show modal for removing member
+function showRemoveMemberModal(userId, username) {
+    document.getElementById('modalMemberUsername').textContent = username;
+    document.getElementById('remove_member_id').value = userId;
+    const modal = new bootstrap.Modal(document.getElementById('removeMemberModal'));
+    modal.show();
+}
+
+// Show modal for removing zone
+function showRemoveZoneModal(zoneId, zoneName) {
+    document.getElementById('modalZoneName').textContent = zoneName;
+    document.getElementById('remove_zone_id').value = zoneId;
+    const modal = new bootstrap.Modal(document.getElementById('removeZoneModal'));
+    modal.show();
+}
+
+// Handle remove member confirmation
+document.getElementById('confirmRemoveMemberBtn')?.addEventListener('click', function() {
+    document.getElementById('removeMemberForm').submit();
+});
+
+// Handle remove zone confirmation
+document.getElementById('confirmRemoveZoneBtn')?.addEventListener('click', function() {
+    document.getElementById('removeZoneForm').submit();
+});
 </script>

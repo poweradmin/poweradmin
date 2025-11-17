@@ -270,6 +270,7 @@ class EditUserController extends BaseController
             'is_external_auth' => $isExternalAuth,
             'password_policy' => $policyConfig,
             'user_groups' => $userGroups,
+            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
         ]);
     }
 

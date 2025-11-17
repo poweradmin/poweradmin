@@ -282,8 +282,8 @@
             {% if total_zones > 0 %}
             <div class="card-footer py-3 d-flex justify-content-between align-items-center">
                 <div>
-                    <button type="submit" name="commit" class="btn btn-danger btn-sm" id="delete-zones-button" disabled
-                            onclick="return confirm('{% trans %}Are you sure you want to delete the selected zones? This action cannot be undone.{% endtrans %}')">
+                    <button type="button" name="commit" class="btn btn-danger btn-sm" id="delete-zones-button" disabled
+                            onclick="showDeleteZonesModal()">
                         <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete zone(s){% endtrans %}
                     </button>
                 </div>
@@ -473,8 +473,8 @@
             {% if total_records > 0 %}
             <div class="card-footer py-3 d-flex justify-content-between align-items-center">
                 <div>
-                    <button type="submit" name="commit" class="btn btn-danger btn-sm" id="delete-records-button" disabled 
-                            onclick="return confirm('{% trans %}Are you sure you want to delete the selected records? This action cannot be undone.{% endtrans %}')">
+                    <button type="button" name="commit" class="btn btn-danger btn-sm" id="delete-records-button" disabled
+                            onclick="showDeleteRecordsModal()">
                         <i class="bi bi-trash me-1 text-white"></i>{% trans %}Delete record(s){% endtrans %}
                     </button>
                 </div>
@@ -624,9 +624,95 @@
         if (document.getElementById('content_filter')) {
             document.getElementById('content_filter').value = '';
         }
-        
+
         // Submit the form to refresh the page
         document.search_form.submit();
     }
-    
+
+    // Show delete zones confirmation modal
+    function showDeleteZonesModal() {
+        const checkedBoxes = document.querySelectorAll('input[name="zone_id[]"]:checked');
+        const count = checkedBoxes.length;
+        document.getElementById('modalDeleteZonesCount').textContent = count;
+        const modal = new bootstrap.Modal(document.getElementById('deleteZonesModal'));
+        modal.show();
+    }
+
+    // Show delete records confirmation modal
+    function showDeleteRecordsModal() {
+        const checkedBoxes = document.querySelectorAll('input[name="record_id[]"]:checked');
+        const count = checkedBoxes.length;
+        document.getElementById('modalDeleteRecordsCount').textContent = count;
+        const modal = new bootstrap.Modal(document.getElementById('deleteRecordsModal'));
+        modal.show();
+    }
+
+    // Handle delete zones confirmation
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('confirmDeleteZonesBtn')?.addEventListener('click', function() {
+            const deleteButton = document.getElementById('delete-zones-button');
+            deleteButton.type = 'submit';
+            deleteButton.click();
+        });
+
+        // Handle delete records confirmation
+        document.getElementById('confirmDeleteRecordsBtn')?.addEventListener('click', function() {
+            const deleteButton = document.getElementById('delete-records-button');
+            deleteButton.type = 'submit';
+            deleteButton.click();
+        });
+    });
+
 </script>
+
+<!-- Delete Zones Confirmation Modal -->
+<div class="modal fade" id="deleteZonesModal" tabindex="-1" aria-labelledby="deleteZonesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteZonesModalLabel">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Confirm Zone Deletion{% endtrans %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans %}Are you sure you want to delete{% endtrans %} <strong id="modalDeleteZonesCount"></strong> {% trans %}selected zone(s)?{% endtrans %}</p>
+                <p class="text-danger small mb-0"><i class="bi bi-exclamation-circle me-1"></i>{% trans %}This action cannot be undone.{% endtrans %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" id="confirmDeleteZonesBtn">
+                    <i class="bi bi-trash me-1"></i>{% trans %}Delete{% endtrans %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Delete Records Confirmation Modal -->
+<div class="modal fade" id="deleteRecordsModal" tabindex="-1" aria-labelledby="deleteRecordsModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteRecordsModalLabel">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Confirm Record Deletion{% endtrans %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans %}Are you sure you want to delete{% endtrans %} <strong id="modalDeleteRecordsCount"></strong> {% trans %}selected record(s)?{% endtrans %}</p>
+                <p class="text-danger small mb-0"><i class="bi bi-exclamation-circle me-1"></i>{% trans %}This action cannot be undone.{% endtrans %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" id="confirmDeleteRecordsBtn">
+                    <i class="bi bi-trash me-1"></i>{% trans %}Delete{% endtrans %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

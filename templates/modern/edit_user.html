@@ -210,9 +210,16 @@
                                 <p class="mb-0 small text-muted">{{ group.description }}</p>
                                 {% endif %}
                             </div>
-                            <a href="{{ base_url_prefix }}/groups/{{ group.id }}/edit" class="btn btn-sm btn-outline-primary" title="{% trans %}View group details{% endtrans %}">
-                                <i class="bi bi-box-arrow-up-right"></i>
-                            </a>
+                            <div class="btn-group btn-group-sm">
+                                <a href="{{ base_url_prefix }}/groups/{{ group.id }}/edit" class="btn btn-sm btn-outline-secondary" title="{% trans %}View group details{% endtrans %}">
+                                    <i class="bi bi-box-arrow-up-right text-secondary"></i>
+                                </a>
+                                {% if perm_is_godlike %}
+                                <button type="button" class="btn btn-sm btn-outline-danger" onclick="showRemoveGroupModal({{ edit_id }}, {{ group.id }}, '{{ group.name|e('js') }}')" title="{% trans %}Remove from group{% endtrans %}">
+                                    <i class="bi bi-x-circle text-danger"></i>
+                                </button>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
@@ -220,7 +227,7 @@
                 {% endif %}
                 <div class="mt-3">
                     <a href="{{ base_url_prefix }}/groups" class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-people me-1"></i>{% trans %}Manage Groups{% endtrans %}
+                        <i class="bi bi-people-fill me-1 text-secondary"></i>{% trans %}Manage Groups{% endtrans %}
                     </a>
                 </div>
             </div>
@@ -246,6 +253,38 @@
     </div>
 </div>
 
+<form id="removeGroupForm" method="post" action="{{ base_url_prefix }}/users/groups/remove" style="display: none;">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    <input type="hidden" name="user_id" id="remove_user_id" value="">
+    <input type="hidden" name="group_id" id="remove_group_id" value="">
+</form>
+
+<!-- Remove Group Confirmation Modal -->
+<div class="modal fade" id="removeGroupModal" tabindex="-1" aria-labelledby="removeGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeGroupModalLabel">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Confirm Removal{% endtrans %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans %}Are you sure you want to remove this user from the group{% endtrans %} "<strong id="modalGroupName"></strong>"?</p>
+                <p class="text-muted small mb-0">{% trans %}This action will immediately revoke any permissions granted by this group.{% endtrans %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" id="confirmRemoveBtn">
+                    <i class="bi bi-trash me-1"></i>{% trans %}Remove{% endtrans %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 function disablePasswordField() {
     const ldapCheckbox = document.getElementById('ldap');
@@ -258,11 +297,25 @@ function disablePasswordField() {
     }
 }
 
+function showRemoveGroupModal(userId, groupId, groupName) {
+    document.getElementById('modalGroupName').textContent = groupName;
+    document.getElementById('remove_user_id').value = userId;
+    document.getElementById('remove_group_id').value = groupId;
+
+    const modal = new bootstrap.Modal(document.getElementById('removeGroupModal'));
+    modal.show();
+}
+
 // Initialize fields on page load
 document.addEventListener('DOMContentLoaded', function() {
     const ldapCheckbox = document.getElementById('ldap');
     if (ldapCheckbox) {
         disablePasswordField();
     }
+
+    // Handle remove confirmation
+    document.getElementById('confirmRemoveBtn').addEventListener('click', function() {
+        document.getElementById('removeGroupForm').submit();
+    });
 });
 </script>

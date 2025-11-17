@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="mt-3">
-                        <button type="submit" class="btn btn-danger btn-sm" id="remove-btn" disabled>
+                        <button type="button" class="btn btn-danger btn-sm" id="remove-btn" onclick="showRemoveMembersModal()" disabled>
                             <i class="bi bi-person-dash-fill me-1 text-white"></i>{% trans %}Remove Selected{% endtrans %}
                         </button>
                     </div>
@@ -117,6 +117,32 @@
     </div>
 </div>
 
+<!-- Remove Members Confirmation Modal -->
+<div class="modal fade" id="removeMembersModal" tabindex="-1" aria-labelledby="removeMembersModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="removeMembersModalLabel">
+                    <i class="bi bi-exclamation-triangle text-warning me-2"></i>{% trans %}Confirm Removal{% endtrans %}
+                </h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>{% trans %}Are you sure you want to remove{% endtrans %} <strong id="modalMemberCount"></strong> {% trans %}user(s) from this group?{% endtrans %}</p>
+                <p class="text-muted small mb-0">{% trans %}This action will immediately revoke any permissions granted by this group.{% endtrans %}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">
+                    <i class="bi bi-x-circle me-1"></i>{% trans %}Cancel{% endtrans %}
+                </button>
+                <button type="button" class="btn btn-danger btn-sm" id="confirmRemoveMembersBtn">
+                    <i class="bi bi-trash me-1"></i>{% trans %}Remove{% endtrans %}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
 // Select all checkboxes functionality
 document.getElementById('select-all-current')?.addEventListener('change', function() {
@@ -166,11 +192,16 @@ document.getElementById('search-available')?.addEventListener('input', function(
     });
 });
 
-// Form confirmation
-document.getElementById('remove-form')?.addEventListener('submit', function(e) {
+// Show modal confirmation for removing members
+function showRemoveMembersModal() {
     const count = document.querySelectorAll('.member-checkbox:checked').length;
-    if (!confirm('{% trans %}Remove{% endtrans %} ' + count + ' {% trans %}user(s) from this group?{% endtrans %}')) {
-        e.preventDefault();
-    }
+    document.getElementById('modalMemberCount').textContent = count;
+    const modal = new bootstrap.Modal(document.getElementById('removeMembersModal'));
+    modal.show();
+}
+
+// Handle remove confirmation
+document.getElementById('confirmRemoveMembersBtn')?.addEventListener('click', function() {
+    document.getElementById('remove-form').submit();
 });
 </script>

@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Query;
 
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsValidation\IPAddressValidator;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
 
@@ -33,13 +34,15 @@ abstract class BaseSearch
     protected string $db_type;
     protected ConfigurationManager $config;
     protected IPAddressValidator $ipValidator;
+    protected UserContextService $userContext;
 
-    public function __construct($db, $config, string $db_type, ?IPAddressValidator $ipValidator = null)
+    public function __construct($db, $config, string $db_type, ?IPAddressValidator $ipValidator = null, ?UserContextService $userContext = null)
     {
         $this->db = $db;
         $this->config = $config;
         $this->db_type = $db_type;
         $this->ipValidator = $ipValidator ?? new IPAddressValidator();
+        $this->userContext = $userContext ?? new UserContextService();
     }
 
     /**
