@@ -188,9 +188,28 @@ class DeleteRecordController extends BaseController
                     $dnssecProvider->rectifyZone($zone_name);
                 }
 
-                if (!$dnsRecord->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
-                    $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
+                $hasSimilarRecords = $dnsRecord->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id);
 
+                if (!$hasSimilarRecords) {
+                    $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
+                }
+
+                // Check if there's a non-empty comment that's being preserved
+                $existingCommentRecord = $this->recordCommentService->findComment($domain_id, $record_info['name'], $record_info['type']);
+                $hasNonEmptyComment = $existingCommentRecord !== null && !empty(trim($existingCommentRecord->getComment()));
+                $shouldShowCommentWarning = $hasSimilarRecords && $hasNonEmptyComment && $this->config->get('interface', 'show_record_comments', false);
+
+                if ($shouldShowCommentWarning) {
+                    if ($deletedPtrRecord && $deletedForwardRecord) {
+                        $this->setMessage('edit', 'warn', _('The record and its corresponding PTR and A/AAAA records were deleted but the comment was preserved because similar records exist.'));
+                    } elseif ($deletedPtrRecord) {
+                        $this->setMessage('edit', 'warn', _('The record and its corresponding PTR record were deleted but the comment was preserved because similar records exist.'));
+                    } elseif ($deletedForwardRecord) {
+                        $this->setMessage('edit', 'warn', _('The record and its corresponding A/AAAA record were deleted but the comment was preserved because similar records exist.'));
+                    } else {
+                        $this->setMessage('edit', 'warn', _('The record was deleted but the comment was preserved because similar records exist.'));
+                    }
+                } else {
                     if ($deletedPtrRecord && $deletedForwardRecord) {
                         $this->setMessage('edit', 'success', _('The record and its corresponding PTR and A/AAAA records have been deleted successfully.'));
                     } elseif ($deletedPtrRecord) {
@@ -203,16 +222,6 @@ class DeleteRecordController extends BaseController
                         $this->setMessage('edit', 'success', _('The record has been deleted successfully. No matching A/AAAA record was found.'));
                     } else {
                         $this->setMessage('edit', 'success', _('The record has been deleted successfully.'));
-                    }
-                } elseif ($this->config->get('interface', 'show_record_comments', false)) {
-                    if ($deletedPtrRecord && $deletedForwardRecord) {
-                        $this->setMessage('edit', 'warn', _('The record and its corresponding PTR and A/AAAA records were deleted but the comment was preserved because similar records exist.'));
-                    } elseif ($deletedPtrRecord) {
-                        $this->setMessage('edit', 'warn', _('The record and its corresponding PTR record were deleted but the comment was preserved because similar records exist.'));
-                    } elseif ($deletedForwardRecord) {
-                        $this->setMessage('edit', 'warn', _('The record and its corresponding A/AAAA record were deleted but the comment was preserved because similar records exist.'));
-                    } else {
-                        $this->setMessage('edit', 'warn', _('The record was deleted but the comment was preserved because similar records exist.'));
                     }
                 }
 

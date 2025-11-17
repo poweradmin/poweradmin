@@ -986,6 +986,7 @@ return array(
     'Poweradmin\\Application\\Service\\EmailTemplateService' => $baseDir . '/lib/Application/Service/EmailTemplateService.php',
     'Poweradmin\\Application\\Service\\GroupMembershipService' => $baseDir . '/lib/Application/Service/GroupMembershipService.php',
     'Poweradmin\\Application\\Service\\GroupService' => $baseDir . '/lib/Application/Service/GroupService.php',
+    'Poweradmin\\Application\\Service\\GroupZoneService' => $baseDir . '/lib/Application/Service/GroupZoneService.php',
     'Poweradmin\\Application\\Service\\HybridPermissionService' => $baseDir . '/lib/Application/Service/HybridPermissionService.php',
     'Poweradmin\\Application\\Service\\LdapAuthenticator' => $baseDir . '/lib/Application/Service/LdapAuthenticator.php',
     'Poweradmin\\Application\\Service\\LocaleService' => $baseDir . '/lib/Application/Service/LocaleService.php',
