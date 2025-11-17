@@ -36,7 +36,7 @@ use Poweradmin\Application\Service\GroupZoneService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
-use Poweradmin\Infrastructure\Repository\DbUserGroupZoneRepository;
+use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
 class QuickRemoveGroupZoneController extends BaseController
 {
@@ -47,7 +47,7 @@ class QuickRemoveGroupZoneController extends BaseController
         parent::__construct($request);
 
         $groupRepository = new DbUserGroupRepository($this->db);
-        $zoneRepository = new DbUserGroupZoneRepository($this->db);
+        $zoneRepository = new DbZoneGroupRepository($this->db, $this->getConfig());
         $this->groupZoneService = new GroupZoneService($zoneRepository, $groupRepository);
     }
 

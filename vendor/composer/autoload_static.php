@@ -1359,6 +1359,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Application\\Service\\EmailTemplateService' => __DIR__ . '/../..' . '/lib/Application/Service/EmailTemplateService.php',
         'Poweradmin\\Application\\Service\\GroupMembershipService' => __DIR__ . '/../..' . '/lib/Application/Service/GroupMembershipService.php',
         'Poweradmin\\Application\\Service\\GroupService' => __DIR__ . '/../..' . '/lib/Application/Service/GroupService.php',
+        'Poweradmin\\Application\\Service\\GroupZoneService' => __DIR__ . '/../..' . '/lib/Application/Service/GroupZoneService.php',
         'Poweradmin\\Application\\Service\\HybridPermissionService' => __DIR__ . '/../..' . '/lib/Application/Service/HybridPermissionService.php',
         'Poweradmin\\Application\\Service\\LdapAuthenticator' => __DIR__ . '/../..' . '/lib/Application/Service/LdapAuthenticator.php',
         'Poweradmin\\Application\\Service\\LocaleService' => __DIR__ . '/../..' . '/lib/Application/Service/LocaleService.php',
