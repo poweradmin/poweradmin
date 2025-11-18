@@ -1,0 +1,77 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Save as Template{% endtrans %}</li>
+    </ol>
+</nav>
+
+<div class="row">
+    <div class="col-lg-8 offset-lg-2">
+        <div class="card shadow-sm">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-save me-2"></i>{% trans %}Save Zone as Template{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-info py-2 small mb-4">
+                    <i class="bi bi-info-circle me-2"></i>
+                    {% trans %}Create a reusable template from this zone's records. The template can be applied when creating new zones to quickly set up DNS records.{% endtrans %}
+                </div>
+
+                <div class="mb-3">
+                    <h6 class="text-muted">{% trans %}Source Zone{% endtrans %}</h6>
+                    <p class="mb-1"><strong>{{ zone_name }}</strong></p>
+                    <p class="text-muted small mb-0">{% trans %}Type:{% endtrans %} <span class="badge bg-secondary">{{ domain_type|lower }}</span></p>
+                </div>
+
+                <hr class="my-4">
+
+                <form class="needs-validation" method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/save-template" novalidate>
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+
+                    <div class="mb-3">
+                        <label for="templ_name" class="form-label">
+                            {% trans %}Template Name{% endtrans %} <span class="text-danger">*</span>
+                        </label>
+                        <input id="templ_name" class="form-control form-control-sm" type="text" name="templ_name" value="{{ templ_name }}" required autofocus>
+                        <div class="invalid-feedback">{% trans %}Provide template name{% endtrans %}</div>
+                        <small class="text-muted">{% trans %}Choose a descriptive name for this template (e.g., "Standard Web Hosting", "Email Server"){% endtrans %}</small>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="templ_descr" class="form-label">{% trans %}Template Description{% endtrans %}</label>
+                        <textarea id="templ_descr" class="form-control form-control-sm" rows="3" name="templ_descr">{{ templ_descr }}</textarea>
+                        <small class="text-muted">{% trans %}Optional: Add a description explaining when to use this template{% endtrans %}</small>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <button class="btn btn-primary btn-sm" type="submit" name="save_as">
+                                <i class="bi bi-save me-1 text-white"></i>{% trans %}Create Template{% endtrans %}
+                            </button>
+                            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
+                                <i class="bi bi-x-circle me-1 text-white"></i>{% trans %}Cancel{% endtrans %}
+                            </a>
+                        </div>
+                        <small class="text-muted">{% trans %}* Required fields{% endtrans %}</small>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card shadow-sm mt-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-info-circle me-2"></i>{% trans %}What happens next?{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <ul class="mb-0">
+                    <li>{% trans %}All DNS records from this zone will be saved to the template{% endtrans %}</li>
+                    <li>{% trans %}The template will be available when creating new zones{% endtrans %}</li>
+                    <li>{% trans %}Hostnames will be automatically adjusted for new zones{% endtrans %}</li>
+                    <li>{% trans %}The SOA serial will be reset for new zones{% endtrans %}</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>

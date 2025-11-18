@@ -1,0 +1,345 @@
+<nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Zones{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a></li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Settings{% endtrans %}</li>
+    </ol>
+</nav>
+
+<!-- Zone Configuration -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-gear me-2"></i>{% trans %}Zone Configuration{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Zone Type -->
+                    <div class="col-md-4">
+                        <h6 class="text-muted mb-3">{% trans %}Type{% endtrans %}</h6>
+                        {% if meta_edit %}
+                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings" method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            <div class="input-group input-group-sm">
+                                <select class="form-select form-select-sm" name="newtype">
+                                    {% for type in zone_types %}
+                                    {% set add = '' %}
+                                    {% if type == domain_type %}
+                                    {% set add = "SELECTED" %}
+                                    {% endif %}
+                                    <option {{ add }} value="{{ type }}">{{ type | lower }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-outline-secondary btn-sm" type="submit" name="type_change">
+                                    <i class="bi bi-arrow-repeat text-secondary"></i> {% trans %}Change{% endtrans %}
+                                </button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <p><span class="badge bg-secondary">{{ domain_type | lower }}</span></p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Slave Master IP (only for SLAVE type) -->
+                    {% if domain_type == "SLAVE" %}
+                    <div class="col-md-4">
+                        <h6 class="text-muted mb-3">{% trans %}IP address of master NS{% endtrans %}</h6>
+                        {% if meta_edit %}
+                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings" method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-sm" type="text" name="new_master" value="{{ slave_master }}">
+                                <button class="btn btn-outline-secondary btn-sm" type="submit" name="slave_master_change">
+                                    <i class="bi bi-arrow-repeat text-secondary"></i> {% trans %}Change{% endtrans %}
+                                </button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <p><code>{{ slave_master }}</code></p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Template -->
+                    <div class="col-md-4">
+                        <h6 class="text-muted mb-3">{% trans %}Template{% endtrans %}</h6>
+                        {% if meta_edit %}
+                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings" method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
+                            <div class="input-group input-group-sm">
+                                <select class="form-select form-select-sm" name="zone_template">
+                                    <option value="none">none</option>
+                                    {% for zone_template in zone_templates %}
+                                    {% set add = '' %}
+                                    {% if zone_template['id'] == zone_template_id %}
+                                    {% set add = "SELECTED" %}
+                                    {% endif %}
+                                    <option {{ add }} value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-outline-secondary btn-sm" type="submit" name="template_change">
+                                    <i class="bi text-secondary bi-arrow-repeat"></i> {% trans %}Change{% endtrans %}
+                                </button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <p>
+                            {% if zone_template_details %}
+                            <span class="badge bg-info">{{ zone_template_details['name'] | lower }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary">none</span>
+                            {% endif %}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Ownership (Side by Side) -->
+<div class="row">
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-person-badge me-2"></i>{% trans %}User Owner{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                {% if owners == "-1" %}
+                <div class="alert alert-info py-2 small mb-3">
+                    <i class="bi bi-info-circle me-2"></i>{% trans %}No owner set for this zone.{% endtrans %}
+                </div>
+                {% else %}
+                <div class="mb-3">
+                    <ul class="list-group">
+                    {% if meta_edit %}
+                        {% for owner in owners %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <div>
+                                {% if owner["fullname"] %}
+                                {{ owner["fullname"] }}
+                                {% else %}
+                                {{ owner["username"] }}
+                                {% endif %}
+                                <small class="text-muted d-block">({{ owner["username"] }})</small>
+                            </div>
+                            <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="delete_owner" value="{{ owner['id'] }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash text-danger"></i>
+                                </button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        {% for owner in owners %}
+                        <li class="list-group-item">
+                            {% if owner["fullname"] %}
+                            {{ owner["fullname"] }}
+                            {% else %}
+                            {{ owner["username"] }}
+                            {% endif %}
+                            <small class="text-muted d-block">({{ owner["username"] }})</small>
+                        </li>
+                        {% endfor %}
+                    {% endif %}
+                    </ul>
+                </div>
+                {% endif %}
+
+                {% if meta_edit %}
+                <hr class="my-3">
+                <h6 class="text-muted mb-3">{% trans %}Add User Owner{% endtrans %}</h6>
+                <div class="mb-2">
+                    <input type="text" class="form-control form-control-sm" id="user_search" placeholder="{% trans %}Search users...{% endtrans %}" autocomplete="off">
+                </div>
+                <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <div id="user_list" style="max-height: 250px; overflow-y: auto;" class="border rounded p-2">
+                        {% for user in users %}
+                        {% if perm_view_others or user['id'] == session_userid %}
+                        <div class="form-check mb-2 user-item" data-username="{{ user['fullname']|lower }} {{ user['username']|lower }}">
+                            <input class="form-check-input" type="radio" name="newowner" id="owner_{{ user['id'] }}" value="{{ user['id'] }}">
+                            <label class="form-check-label" for="owner_{{ user['id'] }}">
+                                {{ user['fullname'] }}
+                                <small class="text-muted">({{ user['username'] }})</small>
+                                {% if user['id'] == session_userid %}<span class="badge bg-primary ms-1">{% trans %}You{% endtrans %}</span>{% endif %}
+                            </label>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" type="submit" id="add-owner-btn" disabled>
+                            <i class="bi bi-plus text-white"></i> {% trans %}Add Owner{% endtrans %}
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-people me-2"></i>{% trans %}Group Ownership{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                {% if group_owners is not empty %}
+                <div class="mb-3">
+                    <ul class="list-group">
+                    {% if meta_edit %}
+                        {% for group in group_owners %}
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>
+                                <i class="bi bi-people me-2"></i>{{ group.name }}
+                            </span>
+                            <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings" class="d-inline">
+                                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                                <input type="hidden" name="delete_group" value="{{ group.id }}">
+                                <button type="submit" class="btn btn-outline-danger btn-sm">
+                                    <i class="bi bi-trash text-danger"></i>
+                                </button>
+                            </form>
+                        </li>
+                        {% endfor %}
+                    {% else %}
+                        {% for group in group_owners %}
+                        <li class="list-group-item">
+                            <i class="bi bi-people me-2"></i>{{ group.name }}
+                        </li>
+                        {% endfor %}
+                    {% endif %}
+                    </ul>
+                </div>
+                {% else %}
+                <div class="alert alert-info py-2 small mb-3">
+                    <i class="bi bi-info-circle me-2"></i>{% trans %}No groups assigned to this zone.{% endtrans %}
+                </div>
+                {% endif %}
+
+                {% if meta_edit and all_groups is not empty %}
+                <hr class="my-3">
+                <h6 class="text-muted mb-3">{% trans %}Add Group Ownership{% endtrans %}</h6>
+                <div class="mb-2">
+                    <input type="text" class="form-control form-control-sm" id="group_search" placeholder="{% trans %}Search groups...{% endtrans %}" autocomplete="off">
+                </div>
+                <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <div id="group_list" style="max-height: 250px; overflow-y: auto;" class="border rounded p-2">
+                        {% for group in all_groups %}
+                        <div class="form-check mb-2 group-item" data-groupname="{{ group.name|lower }}" data-groupdesc="{{ group.description|lower|default('') }}">
+                            <input class="form-check-input group-checkbox" type="checkbox" name="newgroup" id="group_{{ group.id }}" value="{{ group.id }}">
+                            <label class="form-check-label" for="group_{{ group.id }}">
+                                {{ group.name }}
+                                {% if group.description %}<small class="text-muted d-block">{{ group.description }}</small>{% endif %}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    <div class="mt-3">
+                        <button class="btn btn-primary btn-sm" type="submit" id="add-group-btn" disabled>
+                            <i class="bi bi-plus text-white"></i> {% trans %}Add Group{% endtrans %}
+                        </button>
+                    </div>
+                </form>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Action Buttons -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
+                    <i class="bi bi-arrow-left me-1 text-white"></i>{% trans %}Back to Zone{% endtrans %}
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // User search functionality
+    const userSearch = document.getElementById('user_search');
+    const userItems = document.querySelectorAll('.user-item');
+    const addOwnerBtn = document.getElementById('add-owner-btn');
+    const ownerRadios = document.querySelectorAll('input[name="newowner"]');
+
+    if (userSearch) {
+        userSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+
+            userItems.forEach(function(item) {
+                const username = item.getAttribute('data-username');
+                if (username.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Enable add owner button when a user is selected
+    ownerRadios.forEach(radio => {
+        radio.addEventListener('change', function() {
+            if (addOwnerBtn) {
+                addOwnerBtn.disabled = false;
+            }
+        });
+    });
+
+    // Group search functionality
+    const groupSearch = document.getElementById('group_search');
+    const groupItems = document.querySelectorAll('.group-item');
+    const addGroupBtn = document.getElementById('add-group-btn');
+    const groupCheckboxes = document.querySelectorAll('.group-checkbox');
+
+    if (groupSearch) {
+        groupSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+
+            groupItems.forEach(function(item) {
+                const groupname = item.getAttribute('data-groupname');
+                const groupdesc = item.getAttribute('data-groupdesc');
+                if (groupname.includes(searchTerm) || groupdesc.includes(searchTerm)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    }
+
+    // Enable add group button when a group is selected (allow only one at a time)
+    groupCheckboxes.forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            // Uncheck other checkboxes to allow only single selection
+            if (this.checked) {
+                groupCheckboxes.forEach(cb => {
+                    if (cb !== this) {
+                        cb.checked = false;
+                    }
+                });
+            }
+
+            // Enable/disable add group button
+            if (addGroupBtn) {
+                const anyChecked = Array.from(groupCheckboxes).some(cb => cb.checked);
+                addGroupBtn.disabled = !anyChecked;
+            }
+        });
+    });
+});
+</script>
