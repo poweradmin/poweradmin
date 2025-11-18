@@ -16,9 +16,9 @@
 <div class="row">
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3 bg-primary text-white">
-                <strong><i class="bi bi-hdd-stack-fill me-2"></i>{% trans %}Owned Zones{% endtrans %}</strong>
-                <span class="badge bg-light text-dark ms-2">{{ owned_zones|length }}</span>
+            <div class="card-header py-2 bg-primary bg-opacity-10 text-primary">
+                <strong><i class="bi bi-hdd-stack-fill me-2 text-primary"></i>{% trans %}Owned Zones{% endtrans %}</strong>
+                <span class="badge bg-primary ms-2">{{ owned_zones|length }}</span>
             </div>
             <div class="card-body">
                 {% if owned_zones is empty %}
@@ -79,9 +79,9 @@
 
     <div class="col-md-6">
         <div class="card shadow-sm mb-4">
-            <div class="card-header py-3 bg-success text-white">
-                <strong><i class="bi bi-plus-circle-fill me-2"></i>{% trans %}Available Zones{% endtrans %}</strong>
-                <span class="badge bg-light text-dark ms-2">{{ available_zones|length }}</span>
+            <div class="card-header py-2 bg-success bg-opacity-10 text-success">
+                <strong><i class="bi bi-plus-circle-fill me-2 text-success"></i>{% trans %}Available Zones{% endtrans %}</strong>
+                <span class="badge bg-success ms-2">{{ available_zones|length }}</span>
             </div>
             <div class="card-body">
                 {% if available_zones is empty %}
