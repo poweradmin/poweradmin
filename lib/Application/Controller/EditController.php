@@ -252,94 +252,8 @@ class EditController extends BaseController
             $formData = array_merge($_SESSION['add_record_last_data'], $_SESSION['add_record_error']);
         }
 
-        if (isset($_POST['save_as'])) {
-            $this->validateCsrfToken();
-            $this->saveAsTemplate($zone_id);
-        }
-
         // Permission levels - use zone-aware checking for group permission support
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
-        $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
-
-        $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
-
-        if (isset($_POST['slave_master_change']) && is_numeric($_POST["domain"])) {
-            $this->validateCsrfToken();
-            $this->dnsRecord->changeZoneSlaveMaster($_POST['domain'], $_POST['new_master']);
-        }
-
-        $types = ZoneType::getTypes();
-
-        $new_type = htmlspecialchars($_POST['newtype'] ?? '');
-        if (isset($_POST['type_change']) && in_array($new_type, $types)) {
-            $this->validateCsrfToken();
-            $this->dnsRecord->changeZoneType($new_type, $zone_id);
-        }
-
-        if (isset($_POST["newowner"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newowner"])) {
-            $this->validateCsrfToken();
-            $ownerAdded = $this->zoneRepository->addOwnerToZone($_POST["domain"], $_POST["newowner"]);
-
-            if ($ownerAdded) {
-                $this->setMessage('edit', 'success', _('Owner has been added successfully.'));
-
-                // Send zone access granted notification only if the owner was successfully added
-                if ($this->config->get('notifications', 'zone_access_enabled', false)) {
-                    $notificationService = $this->createZoneAccessNotificationService();
-                    $notificationService->notifyAccessGranted(
-                        $zone_id,
-                        (int)$_POST["newowner"],
-                        $this->userContextService->getLoggedInUserId()
-                    );
-                }
-            }
-        }
-
-        if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"])) {
-            $this->validateCsrfToken();
-            $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $_POST["delete_owner"]);
-
-            if ($ownerRemoved) {
-                $this->setMessage('edit', 'success', _('Owner has been removed successfully.'));
-
-                // Send zone access revoked notification only if the owner was successfully removed
-                if ($this->config->get('notifications', 'zone_access_enabled', false)) {
-                    $notificationService = $this->createZoneAccessNotificationService();
-                    $notificationService->notifyAccessRevoked(
-                        $zone_id,
-                        (int)$_POST["delete_owner"],
-                        $this->userContextService->getLoggedInUserId()
-                    );
-                }
-            }
-        }
-
-        // Handle group ownership operations
-        if (isset($_POST["newgroup"]) && is_numeric($_POST["domain"]) && is_numeric($_POST["newgroup"])) {
-            $this->validateCsrfToken();
-            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
-            $zoneGroupRepo->add((int)$_POST["domain"], (int)$_POST["newgroup"]);
-            $this->setMessage('edit', 'success', _('Group has been added successfully.'));
-        }
-
-        if (isset($_POST["delete_group"]) && is_numeric($_POST["delete_group"])) {
-            $this->validateCsrfToken();
-            $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
-            $zoneGroupRepo->remove($zone_id, (int)$_POST["delete_group"]);
-            $this->setMessage('edit', 'success', _('Group has been removed successfully.'));
-        }
-
-        if (isset($_POST["template_change"])) {
-            $this->validateCsrfToken();
-            if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
-                $new_zone_template = 0;
-            } else {
-                $new_zone_template = $_POST['zone_template'];
-            }
-            if ($_POST['current_zone_template'] != $new_zone_template) {
-                $this->dnsRecord->updateZoneRecords($this->config->get('database', 'type', 'mysql'), $this->config->get('dns', 'ttl', 86400), $zone_id, $new_zone_template);
-            }
-        }
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));
@@ -425,17 +339,8 @@ class EditController extends BaseController
             }
         }
 
-        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
-
         $domain_type = $this->zoneRepository->getDomainType($zone_id);
         $record_count = $this->dnsRecord->countZoneRecords($zone_id);
-        $zone_templates = $zone_templates->getListZoneTempl($this->userContextService->getLoggedInUserId());
-        $zone_template_id = DnsRecord::getZoneTemplate($this->db, $zone_id);
-        $zone_template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id);
-
-        $slave_master = $this->zoneRepository->getDomainSlaveMaster($zone_id);
-
-        $users = UserManager::showUsers($this->db);
 
         $zone_comment = '';
         $raw_zone_comment = $this->zoneRepository->getZoneComment($zone_id);
@@ -481,48 +386,6 @@ class EditController extends BaseController
             );
             $total_filtered_count = $record_count;
         }
-        $owners = $this->zoneRepository->getZoneOwners($zone_id);
-
-        // Filter out users who are already owners
-        $ownerIds = [];
-        if ($owners !== "-1") {
-            $ownerIds = array_column($owners, 'id');
-        }
-        $availableUsers = array_values(array_filter($users, function ($user) use ($ownerIds) {
-            return !in_array($user['id'], $ownerIds);
-        }));
-
-        // Fetch group ownership
-        $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
-        $groupOwnerships = $zoneGroupRepo->findByDomainId($zone_id);
-
-        // Fetch all groups for name lookup and dropdown
-        $userGroupRepo = new DbUserGroupRepository($this->db);
-        $allGroups = $userGroupRepo->findAll();
-
-        // Filter out groups that are already owners
-        $groupOwnerIds = array_map(fn($zg) => $zg->getGroupId(), $groupOwnerships);
-        $availableGroups = array_values(array_filter($allGroups, function ($group) use ($groupOwnerIds) {
-            return !in_array($group->getId(), $groupOwnerIds);
-        }));
-
-        // Map group IDs to group data for display
-        $groupOwners = array_map(function ($zg) use ($allGroups) {
-            $groupId = $zg->getGroupId();
-            $groupName = 'Group #' . $groupId;
-
-            foreach ($allGroups as $group) {
-                if ($group->getId() === $groupId) {
-                    $groupName = $group->getName();
-                    break;
-                }
-            }
-
-            return [
-                'id' => $groupId,
-                'name' => $groupName
-            ];
-        }, $groupOwnerships);
 
         $soa_record = $this->dnsRecord->getSOARecord($zone_id);
 
@@ -553,25 +416,12 @@ class EditController extends BaseController
             'domain_type' => $domain_type,
             'record_count' => $record_count,
             'filtered_record_count' => $total_filtered_count,
-            'zone_templates' => $zone_templates,
-            'zone_template_id' => $zone_template_id,
-            'zone_template_details' => $zone_template_details,
-            'slave_master' => $slave_master,
-            'users' => $availableUsers,
-            'owners' => $owners,
-            'group_owners' => $groupOwners,
-            'all_groups' => $availableGroups,
             'records' => $displayRecords,
             'perm_view' => $perm_view,
             'perm_edit' => $perm_edit,
-            'perm_meta_edit' => $perm_meta_edit,
-            'meta_edit' => $meta_edit,
-            'perm_zone_master_add' => $this->permissionService->canAddZones($userId),
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
-            'perm_view_others' => $this->permissionService->canViewOthersContent($userId),
             'perm_is_godlike' => $this->permissionService->isAdmin($userId),
             'user_is_zone_owner' => $user_is_zone_owner,
-            'zone_types' => $types,
             'row_start' => $row_start,
             'row_amount' => $iface_rowamount,
             'record_sort_by' => $record_sort_by,
@@ -751,28 +601,6 @@ class EditController extends BaseController
         $this->finalizeSave($error, $serial_mismatch, $this->dnsRecord, $zone_id, $one_record_changed, $zone_name);
     }
 
-    public function saveAsTemplate(string $zone_id): void
-    {
-        $template_name = htmlspecialchars($_POST['templ_name']) ?? '';
-        $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
-        if ($zoneTemplate->zoneTemplNameExists($template_name)) {
-            $this->showError(_('Zone template with this name already exists, please choose another one.'));
-        } elseif ($template_name == '') {
-            $this->showError(_("Template name can't be an empty string."));
-        } else {
-            $records = $this->dnsRecord->getRecordsFromDomainId($this->config->get('database', 'type', 'mysql'), $zone_id);
-
-            $description = htmlspecialchars($_POST['templ_descr']) ?? '';
-
-            $options = [
-                'NS1' => $this->config->get('dns', 'ns1', '') ?? '',
-                'HOSTMASTER' => $this->config->get('dns', 'hostmaster', '') ?? '',
-            ];
-
-            $zoneTemplate->addZoneTemplSaveAs($template_name, $description, $this->userContextService->getLoggedInUserId(), $records, $options, $this->zoneRepository->getDomainNameById($zone_id));
-            $this->setMessage('edit', 'success', _('Zone template has been added successfully.'));
-        }
-    }
 
     public function exportCsv(int $zone_id): void
     {
@@ -1196,24 +1024,4 @@ class EditController extends BaseController
         $_SESSION['add_record_zone_id'] = $currentZoneId;
     }
 
-    /**
-     * Create zone access notification service
-     *
-     * @return ZoneAccessNotificationService
-     */
-    private function createZoneAccessNotificationService(): ZoneAccessNotificationService
-    {
-        // Pass null for logger since LegacyLogger doesn't implement PSR LoggerInterface
-        $mailService = new MailService($this->config, null);
-        $emailTemplateService = new EmailTemplateService($this->config);
-
-        return new ZoneAccessNotificationService(
-            $this->db,
-            $this->config,
-            $mailService,
-            $emailTemplateService,
-            $this->zoneRepository,
-            null
-        );
-    }
 }

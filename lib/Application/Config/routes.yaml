@@ -150,6 +150,20 @@ zone_edit:
   requirements:
     id: '\d+'
 
+zone_settings:
+  path: /zones/{id}/settings
+  controller: Poweradmin\Application\Controller\ZoneSettingsController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
+zone_save_template:
+  path: /zones/{id}/save-template
+  controller: Poweradmin\Application\Controller\SaveZoneAsTemplateController::run
+  requirements:
+    id: '\d+'
+  methods: [GET, POST]
+
 zone_delete:
   path: /zones/{id}/delete
   controller: Poweradmin\Application\Controller\DeleteDomainController::run
