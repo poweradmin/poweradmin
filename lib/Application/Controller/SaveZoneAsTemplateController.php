@@ -149,7 +149,7 @@ class SaveZoneAsTemplateController extends BaseController
 
         $this->setMessage('save_zone_template', 'success', _('Zone template has been created successfully.'));
 
-        // Redirect back to zone edit page after successful save
-        $this->redirect("/zones/{$zone_id}/edit");
+        // Redirect to template list after successful save
+        $this->redirect("/zones/templates");
     }
 }
