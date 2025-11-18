@@ -1079,5 +1079,4 @@ class EditController extends BaseController
         // Store the current zone ID for future comparisons
         $_SESSION['add_record_zone_id'] = $currentZoneId;
     }
-
 }
