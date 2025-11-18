@@ -22,7 +22,7 @@
  */
 
 /**
- * Script that handles zone settings (ownership, type, template)
+ * Script that handles zone ownership (user and group access)
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -37,9 +37,6 @@ use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\ZoneAccessNotificationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
-use Poweradmin\Domain\Model\ZoneTemplate;
-use Poweradmin\Domain\Model\ZoneType;
-use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Domain\Repository\ZoneRepositoryInterface;
 use Poweradmin\Domain\Service\PermissionService;
@@ -48,12 +45,11 @@ use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
-class ZoneSettingsController extends BaseController
+class ZoneOwnershipController extends BaseController
 {
     private UserContextService $userContextService;
     private ZoneRepositoryInterface $zoneRepository;
     private PermissionService $permissionService;
-    private DnsRecord $dnsRecord;
 
     public function __construct(array $request)
     {
@@ -63,7 +59,6 @@ class ZoneSettingsController extends BaseController
 
         $userRepository = new DbUserRepository($this->db, $this->getConfig());
         $this->permissionService = new PermissionService($userRepository);
-        $this->dnsRecord = new DnsRecord($this->db, $this->getConfig());
     }
 
     public function run(): void
@@ -104,17 +99,6 @@ class ZoneSettingsController extends BaseController
             $this->validateCsrfToken();
             $this->handleFormSubmission($zone_id, $userId, $meta_edit);
         }
-
-        // Get zone data
-        $domain_type = $this->zoneRepository->getDomainType($zone_id);
-        $slave_master = $this->zoneRepository->getDomainSlaveMaster($zone_id);
-        $types = ZoneType::getTypes();
-
-        // Get zone templates
-        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
-        $zone_templates = $zone_templates->getListZoneTempl($userId);
-        $zone_template_id = DnsRecord::getZoneTemplate($this->db, $zone_id);
-        $zone_template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id);
 
         // Get owners
         $users = UserManager::showUsers($this->db);
@@ -161,16 +145,10 @@ class ZoneSettingsController extends BaseController
             ];
         }, $groupOwnerships);
 
-        // Render the settings page
-        $this->render('zone-settings.html', [
+        // Render the ownership page
+        $this->render('zone-ownership.html', [
             'zone_id' => $zone_id,
             'zone_name' => $zone_name,
-            'domain_type' => $domain_type,
-            'slave_master' => $slave_master,
-            'zone_types' => $types,
-            'zone_templates' => $zone_templates,
-            'zone_template_id' => $zone_template_id,
-            'zone_template_details' => $zone_template_details,
             'users' => $availableUsers,
             'owners' => $owners,
             'group_owners' => $groupOwners,
@@ -188,7 +166,7 @@ class ZoneSettingsController extends BaseController
             $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, $_POST["newowner"]);
 
             if ($ownerAdded) {
-                $this->setMessage('zone_settings', 'success', _('Owner has been added successfully.'));
+                $this->setMessage('zone_ownership', 'success', _('Owner has been added successfully.'));
 
                 // Send zone access granted notification
                 if ($this->config->get('notifications', 'zone_access_enabled', false)) {
@@ -203,7 +181,7 @@ class ZoneSettingsController extends BaseController
             $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $_POST["delete_owner"]);
 
             if ($ownerRemoved) {
-                $this->setMessage('zone_settings', 'success', _('Owner has been removed successfully.'));
+                $this->setMessage('zone_ownership', 'success', _('Owner has been removed successfully.'));
 
                 // Send zone access revoked notification
                 if ($this->config->get('notifications', 'zone_access_enabled', false)) {
@@ -217,47 +195,14 @@ class ZoneSettingsController extends BaseController
         if (isset($_POST["newgroup"]) && is_numeric($_POST["newgroup"]) && $meta_edit) {
             $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
             $zoneGroupRepo->add($zone_id, (int)$_POST["newgroup"]);
-            $this->setMessage('zone_settings', 'success', _('Group has been added successfully.'));
+            $this->setMessage('zone_ownership', 'success', _('Group has been added successfully.'));
         }
 
         // Delete group
         if (isset($_POST["delete_group"]) && is_numeric($_POST["delete_group"]) && $meta_edit) {
             $zoneGroupRepo = new DbZoneGroupRepository($this->db, $this->getConfig());
             $zoneGroupRepo->remove($zone_id, (int)$_POST["delete_group"]);
-            $this->setMessage('zone_settings', 'success', _('Group has been removed successfully.'));
-        }
-
-        // Change zone type
-        $new_type = htmlspecialchars($_POST['newtype'] ?? '');
-        if (isset($_POST['type_change']) && in_array($new_type, ZoneType::getTypes()) && $meta_edit) {
-            $this->dnsRecord->changeZoneType($new_type, $zone_id);
-            $this->setMessage('zone_settings', 'success', _('Zone type has been changed successfully.'));
-        }
-
-        // Change slave master
-        if (isset($_POST['slave_master_change']) && $meta_edit) {
-            $this->dnsRecord->changeZoneSlaveMaster($zone_id, $_POST['new_master']);
-            $this->setMessage('zone_settings', 'success', _('Slave master has been changed successfully.'));
-        }
-
-        // Change template
-        if (isset($_POST["template_change"]) && $meta_edit) {
-            if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
-                $new_zone_template = 0;
-            } else {
-                $new_zone_template = $_POST['zone_template'];
-            }
-            $current_zone_template = $_POST['current_zone_template'] ?? 0;
-
-            if ($current_zone_template != $new_zone_template) {
-                $this->dnsRecord->updateZoneRecords(
-                    $this->config->get('database', 'type', 'mysql'),
-                    $this->config->get('dns', 'ttl', 86400),
-                    $zone_id,
-                    $new_zone_template
-                );
-                $this->setMessage('zone_settings', 'success', _('Zone template has been changed successfully.'));
-            }
+            $this->setMessage('zone_ownership', 'success', _('Group has been removed successfully.'));
         }
     }
 

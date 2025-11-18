@@ -150,9 +150,9 @@ zone_edit:
   requirements:
     id: '\d+'
 
-zone_settings:
-  path: /zones/{id}/settings
-  controller: Poweradmin\Application\Controller\ZoneSettingsController::run
+zone_ownership:
+  path: /zones/{id}/ownership
+  controller: Poweradmin\Application\Controller\ZoneOwnershipController::run
   requirements:
     id: '\d+'
   methods: [GET, POST]

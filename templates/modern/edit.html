@@ -212,8 +212,8 @@
                 <i class="bi bi-search-heart me-1 text-white"></i>{% trans %}WHOIS{% endtrans %}
             </a>
             {% endif %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/settings" class="btn btn-secondary btn-sm">
-                <i class="bi bi-gear me-1 text-white"></i>{% trans %}Settings{% endtrans %}
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership" class="btn btn-secondary btn-sm">
+                <i class="bi bi-people me-1 text-white"></i>{% trans %}Ownership{% endtrans %}
             </a>
             {% if (perm_zone_templ_add or perm_is_godlike) and domain_type != "SLAVE" %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/save-template" class="btn btn-secondary btn-sm">
@@ -694,6 +694,100 @@
 {% endif %}
 
 {% endif %}
+
+<!-- Zone Configuration -->
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow-sm mb-4">
+            <div class="card-header py-3">
+                <strong><i class="bi bi-gear me-2"></i>{% trans %}Zone Configuration{% endtrans %}</strong>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Zone Type -->
+                    <div class="col-md-4">
+                        <h6 class="text-muted mb-3">{% trans %}Type{% endtrans %}</h6>
+                        {% if meta_edit %}
+                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            <div class="input-group input-group-sm">
+                                <select class="form-select form-select-sm" name="newtype">
+                                    {% for type in zone_types %}
+                                    {% set add = '' %}
+                                    {% if type == domain_type %}
+                                    {% set add = "SELECTED" %}
+                                    {% endif %}
+                                    <option {{ add }} value="{{ type }}">{{ type | lower }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-outline-secondary btn-sm" type="submit" name="type_change">
+                                    <i class="bi bi-arrow-repeat text-secondary"></i> {% trans %}Change{% endtrans %}
+                                </button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <p><span class="badge bg-secondary">{{ domain_type | lower }}</span></p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Slave Master IP (only for SLAVE type) -->
+                    {% if domain_type == "SLAVE" %}
+                    <div class="col-md-4">
+                        <h6 class="text-muted mb-3">{% trans %}IP address of master NS{% endtrans %}</h6>
+                        {% if meta_edit %}
+                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            <div class="input-group input-group-sm">
+                                <input class="form-control form-control-sm" type="text" name="new_master" value="{{ slave_master }}">
+                                <button class="btn btn-outline-secondary btn-sm" type="submit" name="slave_master_change">
+                                    <i class="bi bi-arrow-repeat text-secondary"></i> {% trans %}Change{% endtrans %}
+                                </button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <p><code>{{ slave_master }}</code></p>
+                        {% endif %}
+                    </div>
+                    {% endif %}
+
+                    <!-- Template -->
+                    <div class="col-md-4">
+                        <h6 class="text-muted mb-3">{% trans %}Template{% endtrans %}</h6>
+                        {% if meta_edit %}
+                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" method="post">
+                            <input type="hidden" name="_token" value="{{ csrf_token }}">
+                            <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
+                            <div class="input-group input-group-sm">
+                                <select class="form-select form-select-sm" name="zone_template">
+                                    <option value="none">none</option>
+                                    {% for zone_template in zone_templates %}
+                                    {% set add = '' %}
+                                    {% if zone_template['id'] == zone_template_id %}
+                                    {% set add = "SELECTED" %}
+                                    {% endif %}
+                                    <option {{ add }} value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
+                                    {% endfor %}
+                                </select>
+                                <button class="btn btn-outline-secondary btn-sm" type="submit" name="template_change">
+                                    <i class="bi text-secondary bi-arrow-repeat"></i> {% trans %}Change{% endtrans %}
+                                </button>
+                            </div>
+                        </form>
+                        {% else %}
+                        <p>
+                            {% if zone_template_details %}
+                            <span class="badge bg-info">{{ zone_template_details['name'] | lower }}</span>
+                            {% else %}
+                            <span class="badge bg-secondary">none</span>
+                            {% endif %}
+                        </p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src="{{ base_url_prefix }}/assets/textareaAutoResize.js?time={{ file_version }}"></script>
 

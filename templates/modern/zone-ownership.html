@@ -3,103 +3,9 @@
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/forward">{% trans %}Zones{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit">{{ zone_name }}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Settings{% endtrans %}</li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Ownership{% endtrans %}</li>
     </ol>
 </nav>
-
-<!-- Zone Configuration -->
-<div class="row">
-    <div class="col-12">
-        <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-gear me-2"></i>{% trans %}Zone Configuration{% endtrans %}</strong>
-            </div>
-            <div class="card-body">
-                <div class="row">
-                    <!-- Zone Type -->
-                    <div class="col-md-4">
-                        <h6 class="text-muted mb-3">{% trans %}Type{% endtrans %}</h6>
-                        {% if meta_edit %}
-                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings" method="post">
-                            <input type="hidden" name="_token" value="{{ csrf_token }}">
-                            <div class="input-group input-group-sm">
-                                <select class="form-select form-select-sm" name="newtype">
-                                    {% for type in zone_types %}
-                                    {% set add = '' %}
-                                    {% if type == domain_type %}
-                                    {% set add = "SELECTED" %}
-                                    {% endif %}
-                                    <option {{ add }} value="{{ type }}">{{ type | lower }}</option>
-                                    {% endfor %}
-                                </select>
-                                <button class="btn btn-outline-secondary btn-sm" type="submit" name="type_change">
-                                    <i class="bi bi-arrow-repeat text-secondary"></i> {% trans %}Change{% endtrans %}
-                                </button>
-                            </div>
-                        </form>
-                        {% else %}
-                        <p><span class="badge bg-secondary">{{ domain_type | lower }}</span></p>
-                        {% endif %}
-                    </div>
-
-                    <!-- Slave Master IP (only for SLAVE type) -->
-                    {% if domain_type == "SLAVE" %}
-                    <div class="col-md-4">
-                        <h6 class="text-muted mb-3">{% trans %}IP address of master NS{% endtrans %}</h6>
-                        {% if meta_edit %}
-                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings" method="post">
-                            <input type="hidden" name="_token" value="{{ csrf_token }}">
-                            <div class="input-group input-group-sm">
-                                <input class="form-control form-control-sm" type="text" name="new_master" value="{{ slave_master }}">
-                                <button class="btn btn-outline-secondary btn-sm" type="submit" name="slave_master_change">
-                                    <i class="bi bi-arrow-repeat text-secondary"></i> {% trans %}Change{% endtrans %}
-                                </button>
-                            </div>
-                        </form>
-                        {% else %}
-                        <p><code>{{ slave_master }}</code></p>
-                        {% endif %}
-                    </div>
-                    {% endif %}
-
-                    <!-- Template -->
-                    <div class="col-md-4">
-                        <h6 class="text-muted mb-3">{% trans %}Template{% endtrans %}</h6>
-                        {% if meta_edit %}
-                        <form action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings" method="post">
-                            <input type="hidden" name="_token" value="{{ csrf_token }}">
-                            <input type="hidden" name="current_zone_template" value="{{ zone_template_id }}">
-                            <div class="input-group input-group-sm">
-                                <select class="form-select form-select-sm" name="zone_template">
-                                    <option value="none">none</option>
-                                    {% for zone_template in zone_templates %}
-                                    {% set add = '' %}
-                                    {% if zone_template['id'] == zone_template_id %}
-                                    {% set add = "SELECTED" %}
-                                    {% endif %}
-                                    <option {{ add }} value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
-                                    {% endfor %}
-                                </select>
-                                <button class="btn btn-outline-secondary btn-sm" type="submit" name="template_change">
-                                    <i class="bi text-secondary bi-arrow-repeat"></i> {% trans %}Change{% endtrans %}
-                                </button>
-                            </div>
-                        </form>
-                        {% else %}
-                        <p>
-                            {% if zone_template_details %}
-                            <span class="badge bg-info">{{ zone_template_details['name'] | lower }}</span>
-                            {% else %}
-                            <span class="badge bg-secondary">none</span>
-                            {% endif %}
-                        </p>
-                        {% endif %}
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
 
 <!-- Ownership (Side by Side) -->
 <div class="row">
@@ -127,7 +33,7 @@
                                 {% endif %}
                                 <small class="text-muted d-block">({{ owner["username"] }})</small>
                             </div>
-                            <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings" class="d-inline">
+                            <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                                 <input type="hidden" name="delete_owner" value="{{ owner['id'] }}">
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
@@ -158,7 +64,7 @@
                 <div class="mb-2">
                     <input type="text" class="form-control form-control-sm" id="user_search" placeholder="{% trans %}Search users...{% endtrans %}" autocomplete="off">
                 </div>
-                <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings">
+                <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <div id="user_list" style="max-height: 250px; overflow-y: auto;" class="border rounded p-2">
                         {% for user in users %}
@@ -200,7 +106,7 @@
                             <span>
                                 <i class="bi bi-people me-2"></i>{{ group.name }}
                             </span>
-                            <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings" class="d-inline">
+                            <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership" class="d-inline">
                                 <input type="hidden" name="_token" value="{{ csrf_token }}">
                                 <input type="hidden" name="delete_group" value="{{ group.id }}">
                                 <button type="submit" class="btn btn-outline-danger btn-sm">
@@ -230,7 +136,7 @@
                 <div class="mb-2">
                     <input type="text" class="form-control form-control-sm" id="group_search" placeholder="{% trans %}Search groups...{% endtrans %}" autocomplete="off">
                 </div>
-                <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/settings">
+                <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/ownership">
                     <input type="hidden" name="_token" value="{{ csrf_token }}">
                     <div id="group_list" style="max-height: 250px; overflow-y: auto;" class="border rounded p-2">
                         {% for group in all_groups %}
@@ -250,19 +156,6 @@
                     </div>
                 </form>
                 {% endif %}
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Action Buttons -->
-<div class="row">
-    <div class="col-12">
-        <div class="card shadow-sm">
-            <div class="card-body">
-                <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit" class="btn btn-secondary btn-sm">
-                    <i class="bi bi-arrow-left me-1 text-white"></i>{% trans %}Back to Zone{% endtrans %}
-                </a>
             </div>
         </div>
     </div>

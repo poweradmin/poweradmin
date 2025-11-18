@@ -254,6 +254,8 @@ class EditController extends BaseController
 
         // Permission levels - use zone-aware checking for group permission support
         $perm_edit = $this->permissionService->getEditPermissionLevelForZone($this->db, $userId, $zone_id);
+        $perm_meta_edit = $this->permissionService->getZoneMetaEditPermissionLevel($userId);
+        $meta_edit = $perm_meta_edit == "all" || ($perm_meta_edit == "own" && $user_is_zone_owner == "1");
 
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
             $this->showError(_("You do not have the permission to view this zone."));
@@ -261,6 +263,45 @@ class EditController extends BaseController
 
         if (!$this->zoneRepository->zoneIdExists($zone_id)) {
             $this->showError(_('There is no zone with this ID.'));
+        }
+
+        // Handle zone configuration changes
+        if ($this->isPost() && $meta_edit) {
+            // Change zone type
+            $new_type = htmlspecialchars($_POST['newtype'] ?? '');
+            if (isset($_POST['type_change']) && in_array($new_type, ZoneType::getTypes())) {
+                $this->validateCsrfToken();
+                $this->dnsRecord->changeZoneType($new_type, $zone_id);
+                $this->setMessage('edit', 'success', _('Zone type has been changed successfully.'));
+            }
+
+            // Change slave master
+            if (isset($_POST['slave_master_change'])) {
+                $this->validateCsrfToken();
+                $this->dnsRecord->changeZoneSlaveMaster($zone_id, $_POST['new_master']);
+                $this->setMessage('edit', 'success', _('Slave master has been changed successfully.'));
+            }
+
+            // Change template
+            if (isset($_POST["template_change"])) {
+                $this->validateCsrfToken();
+                if (!isset($_POST['zone_template']) || "none" == $_POST['zone_template']) {
+                    $new_zone_template = 0;
+                } else {
+                    $new_zone_template = $_POST['zone_template'];
+                }
+                $current_zone_template = $_POST['current_zone_template'] ?? 0;
+
+                if ($current_zone_template != $new_zone_template) {
+                    $this->dnsRecord->updateZoneRecords(
+                        $this->config->get('database', 'type', 'mysql'),
+                        $this->config->get('dns', 'ttl', 86400),
+                        $zone_id,
+                        $new_zone_template
+                    );
+                    $this->setMessage('edit', 'success', _('Zone template has been changed successfully.'));
+                }
+            }
         }
 
         if (isset($_POST['sign_zone'])) {
@@ -341,6 +382,14 @@ class EditController extends BaseController
 
         $domain_type = $this->zoneRepository->getDomainType($zone_id);
         $record_count = $this->dnsRecord->countZoneRecords($zone_id);
+        $slave_master = $this->zoneRepository->getDomainSlaveMaster($zone_id);
+        $types = ZoneType::getTypes();
+
+        // Get zone templates
+        $zone_templates = new ZoneTemplate($this->db, $this->getConfig());
+        $zone_templates = $zone_templates->getListZoneTempl($userId);
+        $zone_template_id = DnsRecord::getZoneTemplate($this->db, $zone_id);
+        $zone_template_details = ZoneTemplate::getZoneTemplDetails($this->db, $zone_template_id);
 
         $zone_comment = '';
         $raw_zone_comment = $this->zoneRepository->getZoneComment($zone_id);
@@ -414,11 +463,18 @@ class EditController extends BaseController
             'idn_zone_name' => $idn_zone_name,
             'zone_comment' => $zone_comment,
             'domain_type' => $domain_type,
+            'slave_master' => $slave_master,
+            'zone_types' => $types,
+            'zone_templates' => $zone_templates,
+            'zone_template_id' => $zone_template_id,
+            'zone_template_details' => $zone_template_details,
             'record_count' => $record_count,
             'filtered_record_count' => $total_filtered_count,
             'records' => $displayRecords,
             'perm_view' => $perm_view,
             'perm_edit' => $perm_edit,
+            'perm_meta_edit' => $perm_meta_edit,
+            'meta_edit' => $meta_edit,
             'perm_zone_templ_add' => $this->permissionService->canAddZoneTemplates($userId),
             'perm_is_godlike' => $this->permissionService->isAdmin($userId),
             'user_is_zone_owner' => $user_is_zone_owner,
