@@ -261,14 +261,12 @@ class IpHelper
             // Handle IPv6 with port: [2001:db8::1]:5300
             if (preg_match('/^\[([^\]]+)\](?::\d+)?$/', $entry, $matches)) {
                 $ip = $matches[1];
-            }
-            // Handle IPv4 with port: 192.168.1.1:5300
-            // Be careful not to match IPv6 colons
-            elseif (preg_match('/^([0-9.]+):\d+$/', $entry, $matches)) {
+            } elseif (preg_match('/^([0-9.]+):\d+$/', $entry, $matches)) {
+                // Handle IPv4 with port: 192.168.1.1:5300
+                // Be careful not to match IPv6 colons
                 $ip = $matches[1];
-            }
-            // No port notation
-            else {
+            } else {
+                // No port notation
                 $ip = $entry;
             }
 
@@ -307,13 +305,11 @@ class IpHelper
             // Handle IPv6 with port: [2001:db8::1]:5300
             if (preg_match('/^\[([^\]]+)\](?::\d+)?$/', $entry, $matches)) {
                 $ip = $matches[1];
-            }
-            // Handle IPv4 with port: 192.168.1.1:5300
-            elseif (preg_match('/^([0-9.]+):\d+$/', $entry, $matches)) {
+            } elseif (preg_match('/^([0-9.]+):\d+$/', $entry, $matches)) {
+                // Handle IPv4 with port: 192.168.1.1:5300
                 $ip = $matches[1];
-            }
-            // No port notation
-            else {
+            } else {
+                // No port notation
                 $ip = $entry;
             }
 
