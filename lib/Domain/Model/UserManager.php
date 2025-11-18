@@ -130,7 +130,7 @@ class UserManager
             INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
             INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
             INNER JOIN users ON perm_templ.id = users.perm_templ
-            WHERE users.id = :userId
+            WHERE users.id = ?
                 AND perm_items.name = 'user_is_ueberuser'
                 AND perm_items.name IS NOT NULL
 
@@ -142,11 +142,11 @@ class UserManager
             INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
             INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
             INNER JOIN perm_items pi ON pti.perm_id = pi.id
-            WHERE ugm.user_id = :userId
+            WHERE ugm.user_id = ?
                 AND pi.name = 'user_is_ueberuser'
                 AND pi.name IS NOT NULL
         ");
-        $query->execute([':userId' => $userId]);
+        $query->execute([$userId, $userId]);
         $result = $query->fetch();
 
         return $result !== false;

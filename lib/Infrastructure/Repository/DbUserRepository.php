@@ -104,13 +104,14 @@ class DbUserRepository implements UserRepository
 
         // Query to get all permissions for the user from both direct template and groups
         // UNION automatically removes duplicates if same permission exists in both sources
+        // Using positional parameters for UNION queries to avoid PDO binding issues
         $query = "
             SELECT perm_items.name AS permission
             FROM perm_templ_items
             INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
             INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
             INNER JOIN users ON perm_templ.id = users.perm_templ
-            WHERE users.id = :userId
+            WHERE users.id = ?
                 AND perm_items.name IS NOT NULL
 
             UNION
@@ -121,15 +122,14 @@ class DbUserRepository implements UserRepository
             INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
             INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
             INNER JOIN perm_items pi ON pti.perm_id = pi.id
-            WHERE ugm.user_id = :userId
+            WHERE ugm.user_id = ?
                 AND pi.name IS NOT NULL
 
             ORDER BY permission
         ";
 
         $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute([$userId, $userId]);
 
         $userPermissions = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -151,13 +151,14 @@ class DbUserRepository implements UserRepository
     {
         // Check both direct user permissions and group permissions
         // Uses same logic as UserManager::isUserSuperuser for consistency
+        // Using positional parameters for UNION queries to avoid PDO binding issues
         $query = "
             SELECT perm_items.name AS permission
             FROM perm_templ_items
             INNER JOIN perm_items ON perm_items.id = perm_templ_items.perm_id
             INNER JOIN perm_templ ON perm_templ.id = perm_templ_items.templ_id
             INNER JOIN users ON perm_templ.id = users.perm_templ
-            WHERE users.id = :userId
+            WHERE users.id = ?
                 AND perm_items.name = 'user_is_ueberuser'
                 AND perm_items.name IS NOT NULL
 
@@ -169,14 +170,13 @@ class DbUserRepository implements UserRepository
             INNER JOIN perm_templ pt ON ug.perm_templ = pt.id
             INNER JOIN perm_templ_items pti ON pt.id = pti.templ_id
             INNER JOIN perm_items pi ON pti.perm_id = pi.id
-            WHERE ugm.user_id = :userId
+            WHERE ugm.user_id = ?
                 AND pi.name = 'user_is_ueberuser'
                 AND pi.name IS NOT NULL
         ";
 
         $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':userId', $userId, PDO::PARAM_INT);
-        $stmt->execute();
+        $stmt->execute([$userId, $userId]);
 
         return $stmt->fetch() !== false;
     }
