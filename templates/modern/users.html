@@ -87,13 +87,13 @@
                         <td class="text-end">
                             <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
                             <input type="hidden" name="user[{{ user['uid'] }}][use_ldap]" value="{{ user['use_ldap'] }}">
-                            <div class="gap-2">
+                            <div class="btn-group btn-group-sm" role="group">
                                 <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/users/{{ user_uid }}/edit">
-                                    <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
+                                    <i class="bi bi-pencil-square text-primary"></i>
                                 </a>
                                 {% if user['uid'] != session_userid %}
                                 <a class="btn btn-sm btn-outline-danger" href="{{ base_url_prefix }}/users/{{ user['uid'] }}/delete">
-                                    <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
+                                    <i class="bi bi-trash text-danger"></i>
                                 </a>
                                 {% endif %}
                             </div>
