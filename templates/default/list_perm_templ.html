@@ -30,14 +30,12 @@
                     <td>{{ template['name'] }}</td>
                     <td>{{ template['descr'] }}</td>
                     <td class="text-end">
-                        <div class="gap-2">
-                            <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/permissions/templates/{{ template['id'] }}/edit">
-                                <i class="bi bi-pencil-square text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Edit{% endtrans %}</span>
-                            </a>
-                            <a class="btn btn-sm btn-outline-danger" href="{{ base_url_prefix }}/permissions/templates/{{ template['id'] }}/delete">
-                                <i class="bi bi-trash text-danger"></i> <span class="d-none d-md-inline text-danger">{% trans %}Delete{% endtrans %}</span>
-                            </a>
-                        </div>
+                        <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/permissions/templates/{{ template['id'] }}/edit" title="{% trans %}Edit{% endtrans %}">
+                            <i class="bi bi-pencil-square text-primary"></i>
+                        </a>
+                        <a class="btn btn-sm btn-outline-danger" href="{{ base_url_prefix }}/permissions/templates/{{ template['id'] }}/delete" title="{% trans %}Delete{% endtrans %}">
+                            <i class="bi bi-trash text-danger"></i>
+                        </a>
                     </td>
                 </tr>
                 {% endfor %}
