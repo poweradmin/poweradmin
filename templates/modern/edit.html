@@ -195,17 +195,6 @@
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/add" class="btn btn-primary btn-sm">
                 <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add record{% endtrans %}
             </a>
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-primary btn-sm">
-                <i class="bi bi-file-earmark-text me-1 text-white"></i>{% trans %}Bulk add{% endtrans %}
-            </a>
-            {% endif %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?export_csv=1" class="btn btn-secondary btn-sm">
-                <i class="bi bi-file-earmark-spreadsheet me-1 text-white"></i>{% trans %}CSV{% endtrans %}
-            </a>
-            {% if not is_reverse_zone and perm_edit != "none" %}
-            <a href="{{ base_url_prefix }}/zones/batch-ptr?id={{ zone_id }}" class="btn btn-secondary btn-sm">
-                <i class="bi bi-arrow-repeat me-1 text-white"></i>{% trans %}PTR{% endtrans %}
-            </a>
             {% endif %}
             {% if perm_is_godlike and whois_enabled %}
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/whois" class="btn btn-secondary btn-sm">
@@ -216,22 +205,9 @@
                 <i class="bi bi-people me-1 text-white"></i>{% trans %}Ownership{% endtrans %}
             </a>
             {% if (perm_zone_templ_add or perm_is_godlike) and domain_type != "SLAVE" %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/save-template" class="btn btn-secondary btn-sm">
-                <i class="bi bi-save me-1 text-white"></i>{% trans %}Save as Template{% endtrans %}
+            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/save-template" class="btn btn-outline-secondary btn-sm">
+                <i class="bi bi-save me-1 text-secondary"></i>{% trans %}Save as Template{% endtrans %}
             </a>
-            {% endif %}
-            {% if pdnssec_use %}
-            {% if is_secured %}
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec" class="btn btn-secondary btn-sm">
-                <i class="bi bi-shield-lock me-1 text-white"></i>{% trans %}DNSSEC{% endtrans %}
-            </a>
-            {% else %}
-                {% if perm_edit != "none" %}
-                <button class="btn btn-secondary btn-sm" type="submit" form="edit-zone-form" name="sign_zone">
-                    <i class="bi bi-shield-check me-1 text-white"></i>{% trans %}Sign zone{% endtrans %}
-                </button>
-                {% endif %}
-            {% endif %}
             {% endif %}
         </div>
     </div>
@@ -305,9 +281,27 @@
             </form>
         </div>
 
-        <div class="d-flex justify-content-between align-items-center">
-            <div>
-                {{ pagination | raw }}
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <div class="d-flex align-items-center gap-2">
+                <div>
+                    {{ pagination | raw }}
+                </div>
+                {% if (perm_edit == "all" or (perm_edit == "own" or perm_edit == "own_as_client") and user_is_zone_owner == "1") and domain_type != "SLAVE" %}
+                <div class="d-flex align-items-center gap-2">
+                    <span class="text-muted small"><i class="bi bi-tools me-1"></i>{% trans %}Quick Actions:{% endtrans %}</span>
+                    <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/records/bulk" class="btn btn-outline-primary btn-sm">
+                        <i class="bi bi-file-earmark-text me-1 text-primary"></i>{% trans %}Bulk add{% endtrans %}
+                    </a>
+                    <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/edit?export_csv=1" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-file-earmark-spreadsheet me-1 text-secondary"></i>{% trans %}Export CSV{% endtrans %}
+                    </a>
+                    {% if not is_reverse_zone and perm_edit != "none" %}
+                    <a href="{{ base_url_prefix }}/zones/batch-ptr?id={{ zone_id }}" class="btn btn-outline-secondary btn-sm">
+                        <i class="bi bi-arrow-repeat me-1 text-secondary"></i>{% trans %}Generate PTR{% endtrans %}
+                    </a>
+                    {% endif %}
+                </div>
+                {% endif %}
             </div>
             <div class="d-flex align-items-center">
                 <label for="rows-per-page" class="me-2 text-secondary small">{% trans %}Rows per page:{% endtrans %}</label>
@@ -783,6 +777,26 @@
                         </p>
                         {% endif %}
                     </div>
+
+                    <!-- DNSSEC -->
+                    {% if pdnssec_use %}
+                    <div class="col-md-4">
+                        <h6 class="text-muted mb-3">{% trans %}DNSSEC{% endtrans %}</h6>
+                        {% if is_secured %}
+                        <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec" class="btn btn-outline-primary btn-sm">
+                            <i class="bi bi-shield-lock me-1"></i>{% trans %}Manage DNSSEC{% endtrans %}
+                        </a>
+                        {% else %}
+                            {% if perm_edit != "none" and meta_edit %}
+                            <button class="btn btn-outline-success btn-sm" type="submit" form="edit-zone-form" name="sign_zone">
+                                <i class="bi bi-shield-check me-1"></i>{% trans %}Sign zone{% endtrans %}
+                            </button>
+                            {% else %}
+                            <p><span class="badge bg-secondary">{% trans %}Not signed{% endtrans %}</span></p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
