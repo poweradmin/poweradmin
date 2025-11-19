@@ -63,9 +63,6 @@
     <InvalidScalarArgument>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_id]]></code>
-      <code><![CDATA[$zone_id]]></code>
     </InvalidScalarArgument>
   </file>
   <file src="lib/Application/Controller/EditPermTemplController.php">
