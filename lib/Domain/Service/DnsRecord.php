@@ -348,7 +348,7 @@ class DnsRecord
      * Add a domain to the database
      *
      * @param string $domain A domain name
-     * @param int $owner Owner ID for domain
+     * @param int|null $owner Owner ID for domain
      * @param string $type Type of domain ['NATIVE','MASTER','SLAVE']
      * @param string $slave_master Master server hostname for domain
      * @param int|string $zone_template ID of zone template ['none' or int]

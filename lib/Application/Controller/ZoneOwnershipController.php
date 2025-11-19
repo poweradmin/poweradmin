@@ -106,7 +106,7 @@ class ZoneOwnershipController extends BaseController
 
         // Filter out users who are already owners
         $ownerIds = [];
-        if (is_array($owners) && $owners !== "-1") {
+        if (is_array($owners)) {
             $ownerIds = array_column($owners, 'id');
         }
         $availableUsers = array_values(array_filter($users, function ($user) use ($ownerIds) {
