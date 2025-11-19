@@ -9,6 +9,14 @@ Poweradmin official Docker images are available at:
 - **Docker Hub**: [`poweradmin/poweradmin`](https://hub.docker.com/r/poweradmin/poweradmin)
 - **GitHub Container Registry**: [`ghcr.io/poweradmin/poweradmin`](https://github.com/poweradmin/poweradmin/pkgs/container/poweradmin)
 
+### Image Tags
+
+- **`latest`** - Stable release from the `master` branch (recommended for production)
+- **`dev`** - Development version from the `develop` branch (includes experimental features)
+- **`v*`** - Specific version tags (e.g., `v4.0.0`, `v4.1.0`)
+
+For production deployments, use the `latest` tag or a specific version tag. The `dev` tag is intended for testing upcoming features and should not be used in production.
+
 ## Quick Start
 
 ```bash
