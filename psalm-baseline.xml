@@ -61,10 +61,6 @@
   </file>
   <file src="lib/Application/Controller/EditController.php">
     <InvalidScalarArgument>
-      <code><![CDATA[$_POST["delete_owner"]]]></code>
-      <code><![CDATA[$_POST["domain"]]]></code>
-      <code><![CDATA[$_POST["newowner"]]]></code>
-      <code><![CDATA[$_POST['domain']]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
       <code><![CDATA[$zone_id]]></code>
