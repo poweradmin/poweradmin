@@ -106,7 +106,7 @@ class ZoneOwnershipController extends BaseController
 
         // Filter out users who are already owners
         $ownerIds = [];
-        if ($owners !== "-1") {
+        if (is_array($owners) && $owners !== "-1") {
             $ownerIds = array_column($owners, 'id');
         }
         $availableUsers = array_values(array_filter($users, function ($user) use ($ownerIds) {
@@ -163,7 +163,7 @@ class ZoneOwnershipController extends BaseController
     {
         // Add owner
         if (isset($_POST["newowner"]) && is_numeric($_POST["newowner"]) && $meta_edit) {
-            $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, $_POST["newowner"]);
+            $ownerAdded = $this->zoneRepository->addOwnerToZone($zone_id, (int)$_POST["newowner"]);
 
             if ($ownerAdded) {
                 $this->setMessage('zone_ownership', 'success', _('Owner has been added successfully.'));
@@ -178,7 +178,7 @@ class ZoneOwnershipController extends BaseController
 
         // Delete owner
         if (isset($_POST["delete_owner"]) && is_numeric($_POST["delete_owner"]) && $meta_edit) {
-            $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, $_POST["delete_owner"]);
+            $ownerRemoved = $this->zoneRepository->removeOwnerFromZone($zone_id, (int)$_POST["delete_owner"]);
 
             if ($ownerRemoved) {
                 $this->setMessage('zone_ownership', 'success', _('Owner has been removed successfully.'));
