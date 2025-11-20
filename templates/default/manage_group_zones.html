@@ -95,7 +95,12 @@
                     <input type="hidden" name="action" value="add">
 
                     <div class="mb-3">
-                        <input type="text" id="search-available" class="form-control form-control-sm" placeholder="{% trans %}Search zones...{% endtrans %}">
+                        <div class="input-group input-group-sm">
+                            <input type="text" id="search-available" class="form-control form-control-sm" placeholder="{% trans %}Search zones...{% endtrans %}">
+                            <button class="btn btn-outline-secondary" type="button" id="clear-search-available" title="{% trans %}Clear search{% endtrans %}">
+                                <i class="bi bi-x-circle text-secondary"></i>
+                            </button>
+                        </div>
                     </div>
 
                     <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
@@ -184,13 +189,27 @@ function toggleAddButton() {
 }
 
 // Search functionality
-document.getElementById('search-available')?.addEventListener('input', function() {
+const searchAvailable = document.getElementById('search-available');
+const clearSearchAvailable = document.getElementById('clear-search-available');
+
+searchAvailable?.addEventListener('input', function() {
     const searchTerm = this.value.toLowerCase();
     document.querySelectorAll('.zone-row').forEach(row => {
         const name = row.dataset.name;
         const matches = name.includes(searchTerm);
         row.style.display = matches ? '' : 'none';
     });
+});
+
+// Clear search button
+clearSearchAvailable?.addEventListener('click', function() {
+    if (searchAvailable) {
+        searchAvailable.value = '';
+        document.querySelectorAll('.zone-row').forEach(row => {
+            row.style.display = '';
+        });
+        searchAvailable.focus();
+    }
 });
 
 // Show modal confirmation for removing zones
