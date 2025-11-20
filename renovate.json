@@ -12,14 +12,13 @@
       "description": "Dev dependencies - update composer.json version only, skip lock file and vendor",
       "matchDepTypes": ["require-dev"],
       "groupName": "dev dependencies",
-      "updateLockFiles": false,
-      "postUpdateOptions": []
+      "updateLockFiles": false
     },
     {
       "description": "Production dependencies - update composer files and vendor directory (no dev packages)",
       "matchDepTypes": ["require"],
       "groupName": "production dependencies",
-      "postUpdateOptions": ["composerUpdateNoDevOption"]
+      "postUpdateOptions": ["composerUpdateNoDev"]
     },
     {
       "matchDatasources": ["docker"],
