@@ -197,8 +197,10 @@
                 <strong><i class="bi bi-people me-2"></i>{% trans %}Group Memberships{% endtrans %}</strong>
             </div>
             <div class="card-body">
+                <!-- Current Memberships -->
+                <h6 class="text-muted mb-2">{% trans %}Current Memberships{% endtrans %}</h6>
                 {% if user_groups is not empty %}
-                <div class="list-group">
+                <div class="list-group mb-3">
                     {% for group in user_groups %}
                     <div class="list-group-item">
                         <div class="d-flex w-100 justify-content-between align-items-start">
@@ -224,30 +226,58 @@
                     </div>
                     {% endfor %}
                 </div>
+                {% else %}
+                <p class="text-muted small mb-3">{% trans %}This user is not a member of any groups.{% endtrans %}</p>
                 {% endif %}
-                <div class="mt-3">
-                    <a href="{{ base_url_prefix }}/groups" class="btn btn-sm btn-outline-secondary">
-                        <i class="bi bi-people-fill me-1 text-secondary"></i>{% trans %}Manage Groups{% endtrans %}
-                    </a>
-                </div>
-            </div>
-        </div>
 
-        <div class="card shadow-sm mb-4">
-            <div class="card-header py-3">
-                <strong><i class="bi bi-question-circle me-2"></i>{% trans %}User Management Tips{% endtrans %}</strong>
-            </div>
-            <div class="card-body p-0">
-                <div class="list-group list-group-flush">
-                    <div class="list-group-item">
-                        <ul class="mb-0 ps-4 small">
-                            <li>{% trans %}Leave password field empty to keep the current password{% endtrans %}</li>
-                            <li>{% trans %}Changing permission templates will update user access immediately{% endtrans %}</li>
-                            <li>{% trans %}Users can be disabled instead of deleted to preserve their settings{% endtrans %}</li>
-                            <li>{% trans %}External authentication users (LDAP, OIDC, SAML) cannot have passwords managed through this interface{% endtrans %}</li>
-                        </ul>
+                <!-- Add to Groups Section (Admin Only) -->
+                {% if perm_is_godlike and available_groups is not empty %}
+                <hr class="my-3">
+                <h6 class="text-muted mb-2">{% trans %}Add to Groups{% endtrans %}</h6>
+                <p class="small text-muted mb-3">{% trans %}Select one or more groups and click "Add Selected Groups" button.{% endtrans %}</p>
+
+                <form method="post" action="{{ base_url_prefix }}/users/{{ edit_id }}/edit" id="addGroupsForm">
+                    <input type="hidden" name="_token" value="{{ csrf_token }}">
+                    <input type="hidden" name="action" value="add_groups">
+
+                    <div class="mb-2">
+                        <div class="input-group input-group-sm">
+                            <input type="text" class="form-control form-control-sm" id="available_groups_search" placeholder="{% trans %}Search available groups...{% endtrans %}" autocomplete="off">
+                            <button class="btn btn-outline-secondary" type="button" id="clear_available_groups_search" title="{% trans %}Clear search{% endtrans %}">
+                                <i class="bi bi-x-circle text-secondary"></i>
+                            </button>
+                        </div>
                     </div>
-                </div>
+
+                    <div id="available_groups_list" style="max-height: 200px; overflow-y: auto;" class="border rounded p-2 mb-3">
+                        <div id="no_groups_found" class="text-muted text-center py-3" style="display: none;">
+                            <i class="bi bi-search me-2"></i>{% trans %}No groups found{% endtrans %}
+                        </div>
+                        {% for group in available_groups %}
+                        <div class="form-check mb-2 available-group-item" data-groupname="{{ group.name|lower }}" data-groupdesc="{{ group.description|lower|default('') }}">
+                            <input class="form-check-input" type="checkbox" name="add_to_groups[]" id="add_group_{{ group.id }}" value="{{ group.id }}">
+                            <label class="form-check-label" for="add_group_{{ group.id }}">
+                                <strong>{{ group.name }}</strong>
+                                {% if group.description %}<small class="text-muted d-block">{{ group.description }}</small>{% endif %}
+                            </label>
+                        </div>
+                        {% endfor %}
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="select_all_available_groups">{% trans %}Select All{% endtrans %}</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary" id="deselect_all_available_groups">{% trans %}Clear All{% endtrans %}</button>
+                        </div>
+                        <div>
+                            <span class="badge bg-secondary me-2" id="selected_groups_count">0 {% trans %}selected{% endtrans %}</span>
+                            <button type="submit" class="btn btn-primary btn-sm" id="addGroupsBtn" disabled>
+                                <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add Selected Groups{% endtrans %}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+                {% endif %}
             </div>
         </div>
     </div>
@@ -317,5 +347,95 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('confirmRemoveBtn').addEventListener('click', function() {
         document.getElementById('removeGroupForm').submit();
     });
+
+    // Available groups search functionality
+    const availableGroupsSearch = document.getElementById('available_groups_search');
+    const clearAvailableGroupsSearch = document.getElementById('clear_available_groups_search');
+
+    if (availableGroupsSearch) {
+        const availableGroupItems = document.querySelectorAll('.available-group-item');
+        const noGroupsFound = document.getElementById('no_groups_found');
+
+        function updateGroupSearch() {
+            const searchTerm = availableGroupsSearch.value.toLowerCase();
+            let visibleCount = 0;
+
+            availableGroupItems.forEach(function(item) {
+                const groupname = item.getAttribute('data-groupname') || '';
+                const groupdesc = item.getAttribute('data-groupdesc') || '';
+                if (groupname.includes(searchTerm) || groupdesc.includes(searchTerm)) {
+                    item.style.display = '';
+                    visibleCount++;
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            // Show/hide "no results" message
+            if (noGroupsFound) {
+                noGroupsFound.style.display = visibleCount === 0 ? '' : 'none';
+            }
+        }
+
+        availableGroupsSearch.addEventListener('input', updateGroupSearch);
+
+        // Clear search button
+        if (clearAvailableGroupsSearch) {
+            clearAvailableGroupsSearch.addEventListener('click', function() {
+                availableGroupsSearch.value = '';
+                updateGroupSearch();
+                availableGroupsSearch.focus();
+            });
+        }
+    }
+
+    // Select all available groups
+    const selectAllBtn = document.getElementById('select_all_available_groups');
+    if (selectAllBtn) {
+        const availableGroupItems = document.querySelectorAll('.available-group-item');
+        selectAllBtn.addEventListener('click', function() {
+            const visibleCheckboxes = Array.from(availableGroupItems)
+                .filter(item => item.style.display !== 'none')
+                .map(item => item.querySelector('input[type="checkbox"]'));
+
+            visibleCheckboxes.forEach(checkbox => checkbox.checked = true);
+            updateSelectedGroupsCount();
+        });
+    }
+
+    // Deselect all available groups
+    const deselectAllBtn = document.getElementById('deselect_all_available_groups');
+    if (deselectAllBtn) {
+        deselectAllBtn.addEventListener('click', function() {
+            const checkboxes = document.querySelectorAll('input[name="add_to_groups[]"]');
+            checkboxes.forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            updateSelectedGroupsCount();
+        });
+    }
+
+    // Update selected groups count and button state
+    function updateSelectedGroupsCount() {
+        const selectedCount = document.querySelectorAll('input[name="add_to_groups[]"]:checked').length;
+        const countBadge = document.getElementById('selected_groups_count');
+        const addGroupsBtn = document.getElementById('addGroupsBtn');
+
+        if (countBadge) {
+            countBadge.textContent = selectedCount + ' {% trans %}selected{% endtrans %}';
+        }
+
+        if (addGroupsBtn) {
+            addGroupsBtn.disabled = selectedCount === 0;
+        }
+    }
+
+    // Track checkbox changes (only if checkboxes exist)
+    const groupCheckboxes = document.querySelectorAll('input[name="add_to_groups[]"]');
+    if (groupCheckboxes.length > 0) {
+        groupCheckboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', updateSelectedGroupsCount);
+        });
+    }
 });
 </script>

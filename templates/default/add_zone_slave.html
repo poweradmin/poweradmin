@@ -69,7 +69,12 @@
                 </div>
                 <hr class="my-2">
                 <div class="mb-2">
-                    <input type="text" class="form-control form-control-sm" id="user_search" placeholder="{% trans %}Search users...{% endtrans %}" autocomplete="off">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="user_search" placeholder="{% trans %}Search users...{% endtrans %}" autocomplete="off">
+                        <button class="btn btn-outline-secondary" type="button" id="clear_user_search" title="{% trans %}Clear search{% endtrans %}">
+                            <i class="bi bi-x-circle text-secondary"></i>
+                        </button>
+                    </div>
                 </div>
                 <div id="user_list" style="max-height: 200px; overflow-y: auto;">
                     {% for user in users %}
@@ -98,7 +103,12 @@
             </div>
             <div class="card-body">
                 <div class="mb-2">
-                    <input type="text" class="form-control form-control-sm" id="group_search" placeholder="{% trans %}Search groups...{% endtrans %}" autocomplete="off">
+                    <div class="input-group input-group-sm">
+                        <input type="text" class="form-control form-control-sm" id="group_search" placeholder="{% trans %}Search groups...{% endtrans %}" autocomplete="off">
+                        <button class="btn btn-outline-secondary" type="button" id="clear_group_search" title="{% trans %}Clear search{% endtrans %}">
+                            <i class="bi bi-x-circle text-secondary"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="mb-2">
                     <button type="button" class="btn btn-sm btn-outline-secondary" id="select_all_groups">{% trans %}Select All{% endtrans %}</button>
@@ -185,6 +195,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // User search functionality
     const userSearch = document.getElementById('user_search');
+    const clearUserSearch = document.getElementById('clear_user_search');
     const userItems = document.querySelectorAll('.user-item');
 
     if (userSearch) {
@@ -200,10 +211,22 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+
+        // Clear user search button
+        if (clearUserSearch) {
+            clearUserSearch.addEventListener('click', function() {
+                userSearch.value = '';
+                userItems.forEach(function(item) {
+                    item.style.display = '';
+                });
+                userSearch.focus();
+            });
+        }
     }
 
     // Group search functionality
     const groupSearch = document.getElementById('group_search');
+    const clearGroupSearch = document.getElementById('clear_group_search');
     const groupItems = document.querySelectorAll('.group-item');
 
     if (groupSearch) {
@@ -220,6 +243,17 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             });
         });
+
+        // Clear group search button
+        if (clearGroupSearch) {
+            clearGroupSearch.addEventListener('click', function() {
+                groupSearch.value = '';
+                groupItems.forEach(function(item) {
+                    item.style.display = '';
+                });
+                groupSearch.focus();
+            });
+        }
     }
 
     // Select all groups

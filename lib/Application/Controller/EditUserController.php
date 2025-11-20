@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
@@ -74,7 +75,14 @@ class EditUserController extends BaseController
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
-            $this->updateUser($editId, $policyConfig);
+
+            // Check if this is a group addition request
+            $action = $this->request->getPostParam('action');
+            if ($action === 'add_groups') {
+                $this->handleAddToGroups($editId);
+            } else {
+                $this->updateUser($editId, $policyConfig);
+            }
         } else {
             $this->showUserEditForm($editId, $policyConfig);
         }
@@ -239,6 +247,11 @@ class EditUserController extends BaseController
         $memberships = $groupMemberRepo->findByUserId($editId);
         $allGroups = $userGroupRepo->findAll();
 
+        // Get list of group IDs user is already a member of
+        $memberGroupIds = array_map(function ($membership) {
+            return $membership->getGroupId();
+        }, $memberships);
+
         $userGroups = array_map(function ($membership) use ($allGroups) {
             $groupId = $membership->getGroupId();
             foreach ($allGroups as $group) {
@@ -253,6 +266,19 @@ class EditUserController extends BaseController
             return null;
         }, $memberships);
         $userGroups = array_filter($userGroups); // Remove nulls
+
+        // Get available groups (groups user is NOT a member of)
+        $availableGroups = array_filter($allGroups, function ($group) use ($memberGroupIds) {
+            return !in_array($group->getId(), $memberGroupIds);
+        });
+
+        $availableGroupsArray = array_map(function ($group) {
+            return [
+                'id' => $group->getId(),
+                'name' => $group->getName(),
+                'description' => $group->getDescription()
+            ];
+        }, $availableGroups);
 
         $this->render('edit_user.html', [
             'edit_id' => $editId,
@@ -270,6 +296,7 @@ class EditUserController extends BaseController
             'is_external_auth' => $isExternalAuth,
             'password_policy' => $policyConfig,
             'user_groups' => $userGroups,
+            'available_groups' => $availableGroupsArray,
             'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
         ]);
     }
@@ -285,6 +312,70 @@ class EditUserController extends BaseController
             'is_admin' => Permission::getPermissions($this->db, ['user_is_ueberuser'])['user_is_ueberuser']
                 && $isCurrentUser
         ];
+    }
+
+    private function handleAddToGroups(int $userId): void
+    {
+        // Only admins can manage group memberships
+        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+            $this->setMessage('edit_user', 'error', _('You do not have permission to manage group memberships.'));
+            $this->showUserEditForm($userId, $this->policyService->getPolicyConfig());
+            return;
+        }
+
+        $groupIds = $this->request->getPostParam('add_to_groups', []);
+
+        if (!is_array($groupIds) || empty($groupIds)) {
+            $this->setMessage('edit_user', 'warning', _('Please select at least one group.'));
+            $this->showUserEditForm($userId, $this->policyService->getPolicyConfig());
+            return;
+        }
+
+        // Convert to integers
+        $groupIds = array_map('intval', $groupIds);
+
+        $groupRepository = new DbUserGroupRepository($this->db);
+        $memberRepository = new DbUserGroupMemberRepository($this->db);
+        $membershipService = new GroupMembershipService($memberRepository, $groupRepository);
+
+        $successCount = 0;
+        $failedCount = 0;
+
+        foreach ($groupIds as $groupId) {
+            try {
+                $membershipService->addUserToGroup($groupId, $userId);
+                $successCount++;
+            } catch (\Exception $e) {
+                $failedCount++;
+            }
+        }
+
+        if ($successCount > 0) {
+            $message = sprintf(
+                ngettext(
+                    'User added to %d group successfully.',
+                    'User added to %d groups successfully.',
+                    $successCount
+                ),
+                $successCount
+            );
+            $this->setMessage('edit_user', 'success', $message);
+        }
+
+        if ($failedCount > 0) {
+            $message = sprintf(
+                ngettext(
+                    'Failed to add user to %d group (already a member or group not found).',
+                    'Failed to add user to %d groups (already a member or groups not found).',
+                    $failedCount
+                ),
+                $failedCount
+            );
+            $this->setMessage('edit_user', 'warning', $message);
+        }
+
+        // Redirect back to edit page to show updated memberships
+        $this->redirect("/users/$userId/edit");
     }
 
     private function getUserDetails(int $editId): array
