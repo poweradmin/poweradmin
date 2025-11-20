@@ -649,6 +649,65 @@ class DatabaseStructureHelper
                 )
             ),
             array(
+                'table_name' => 'log_groups',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'id' => array
+                    (
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'log_groups',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'event' => array
+                    (
+                        'notnull' => 1,
+                        'length' => 2048,
+                        'type' => 'text',
+                        'name' => 'event',
+                        'table' => 'log_groups',
+                        'flags' => ''
+                    ),
+                    'created_at' => array(
+                        'notnull' => 0,
+                        'default' => 'current_timestamp',
+                        'type' => 'timestamp',
+                        'name' => 'created_at',
+                        'table' => 'log_groups',
+                        'flags' => ''
+                    ),
+                    'priority' => array
+                    (
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'type' => 'integer',
+                        'name' => 'priority',
+                        'table' => 'log_groups',
+                        'flags' => ''
+                    ),
+                    'group_id' => array(
+                        'notnull' => 0,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'type' => 'integer',
+                        'name' => 'group_id',
+                        'table' => 'log_groups',
+                        'flags' => ''
+                    )
+                ),
+                'indexes' => array(
+                    'log_groups_group_id_idx' => array(
+                        'fields' => array(
+                            'group_id' => array()
+                        )
+                    )
+                )
+            ),
+            array(
                 'table_name' => 'login_attempts',
                 'options' => array('type' => 'innodb'),
                 'fields' => array(

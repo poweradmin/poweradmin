@@ -26,6 +26,16 @@ CREATE TABLE `log_zones` (
                              KEY `idx_log_zones_zone_id` (`zone_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE `log_groups` (
+                              `id` int(11) NOT NULL AUTO_INCREMENT,
+                              `event` varchar(2048) NOT NULL,
+                              `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+                              `priority` int(11) NOT NULL,
+                              `group_id` int(11) DEFAULT NULL,
+                              PRIMARY KEY (`id`),
+                              KEY `idx_log_groups_group_id` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 CREATE TABLE `users` (
                          `id` int(11) NOT NULL AUTO_INCREMENT,
                          `username` varchar(64) NOT NULL,

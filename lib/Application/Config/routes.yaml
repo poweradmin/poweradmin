@@ -339,6 +339,11 @@ users_logs:
   path: /users/logs
   controller: Poweradmin\Application\Controller\ListLogUsersController::run
 
+# Group Logs
+groups_logs:
+  path: /groups/logs
+  controller: Poweradmin\Application\Controller\ListLogGroupsController::run
+
 # DNSSEC Management
 dnssec:
   path: /zones/{id}/dnssec

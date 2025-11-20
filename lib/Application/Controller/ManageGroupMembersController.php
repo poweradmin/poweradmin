@@ -37,6 +37,7 @@ use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
@@ -127,6 +128,10 @@ class ManageGroupMembersController extends BaseController
                     count($results['success'])
                 );
                 $this->setMessage('manage_group_members', 'success', $message);
+
+                // Log member additions
+                $logger = new DbGroupLogger($this->db);
+                $logger->doLog("Added " . count($results['success']) . " user(s) to group (ID: $groupId)", $groupId, LOG_INFO);
             }
 
             if (!empty($results['failed'])) {
@@ -175,6 +180,10 @@ class ManageGroupMembersController extends BaseController
                     count($results['success'])
                 );
                 $this->setMessage('manage_group_members', 'success', $message);
+
+                // Log member removals
+                $logger = new DbGroupLogger($this->db);
+                $logger->doLog("Removed " . count($results['success']) . " user(s) from group (ID: $groupId)", $groupId, LOG_INFO);
             }
 
             if (!empty($results['failed'])) {

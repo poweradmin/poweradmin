@@ -40,6 +40,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
@@ -108,6 +109,10 @@ class EditGroupController extends BaseController
 
         try {
             $this->groupService->updateGroup($groupId, $name, $description, $permTemplId);
+
+            // Log group update
+            $logger = new DbGroupLogger($this->db);
+            $logger->doLog("Group updated: $name (ID: $groupId)", $groupId, LOG_INFO);
 
             $this->setMessage('list_groups', 'success', _('Group has been updated successfully.'));
             $this->redirect('/groups');

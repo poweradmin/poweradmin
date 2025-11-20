@@ -39,6 +39,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 
@@ -100,7 +101,18 @@ class DeleteGroupController extends BaseController
         }
 
         try {
+            // Get group name before deletion for logging
+            $userContext = $this->getUserContextService();
+            $userId = $userContext->getLoggedInUserId();
+            $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
+            $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
+            $groupName = $group ? $group->getName() : "ID: $groupId";
+
             $this->groupService->deleteGroup($groupId);
+
+            // Log group deletion
+            $logger = new DbGroupLogger($this->db);
+            $logger->doLog("Group deleted: $groupName (ID: $groupId)", null, LOG_WARNING);
 
             $this->setMessage('list_groups', 'success', _('Group has been deleted successfully.'));
             $this->redirect('/groups');
