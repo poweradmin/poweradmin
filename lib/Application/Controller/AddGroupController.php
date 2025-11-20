@@ -92,9 +92,32 @@ class AddGroupController extends BaseController
         try {
             $group = $this->groupService->createGroup($name, $permTemplId, $description, $userId);
 
-            // Log group creation
+            // Log group creation with actor and template details
+            $ldapUse = $this->config->get('ldap', 'enabled');
+            $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $userId);
+            $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $userId";
+
+            // Get permission template name for logging
+            $permTemplates = UserManager::listPermissionTemplates($this->db);
+            $templateName = 'Unknown';
+            foreach ($permTemplates as $template) {
+                if ($template['id'] == $permTemplId) {
+                    $templateName = $template['name'];
+                    break;
+                }
+            }
+
+            $logMessage = sprintf(
+                "Group created: '%s' (ID: %d) by %s with permission template '%s' (ID: %d)",
+                $name,
+                $group->getId(),
+                $actorUsername,
+                $templateName,
+                $permTemplId
+            );
+
             $logger = new DbGroupLogger($this->db);
-            $logger->doLog("Group created: $name (ID: {$group->getId()})", $group->getId(), LOG_INFO);
+            $logger->doLog($logMessage, $group->getId(), LOG_INFO);
 
             $this->setMessage('list_groups', 'success', _('Group has been created successfully.'));
             $this->redirect('/groups');

@@ -119,6 +119,17 @@ class ManageGroupZonesController extends BaseController
         $domainIds = array_map('intval', $domainIds);
 
         try {
+            // Get group details and zone names before adding
+            $userContext = $this->getUserContextService();
+            $currentUserId = $userContext->getLoggedInUserId();
+            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
+            $groupName = $group ? $group->getName() : "ID: $groupId";
+
+            // Get zone names for logging
+            $tableNameService = new TableNameService($this->config);
+            $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
+
             $results = $this->zoneGroupService->bulkAddZones($groupId, $domainIds);
 
             if (!empty($results['success'])) {
@@ -132,9 +143,38 @@ class ManageGroupZonesController extends BaseController
                 );
                 $this->setMessage('manage_group_zones', 'success', $message);
 
+                // Get current admin username
+                $ldapUse = $this->config->get('ldap', 'enabled');
+                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
+                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+
+                // Get zone names for successful additions
+                $placeholders = implode(',', array_fill(0, count($results['success']), '?'));
+                $query = "SELECT name FROM $domainsTable WHERE id IN ($placeholders)";
+                $stmt = $this->db->prepare($query);
+                $stmt->execute($results['success']);
+                $zoneNames = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+
+                // Shorten IPv6 zones for logging
+                $displayNames = array_map(function ($name) {
+                    if (str_ends_with($name, '.ip6.arpa')) {
+                        return IpHelper::shortenIPv6ReverseZone($name) ?? $name;
+                    }
+                    return $name;
+                }, $zoneNames);
+
+                $logMessage = sprintf(
+                    "Added %d zone(s) to group '%s' (ID: %d) by %s: %s",
+                    count($results['success']),
+                    $groupName,
+                    $groupId,
+                    $actorUsername,
+                    implode(', ', $displayNames)
+                );
+
                 // Log zone additions
                 $logger = new DbGroupLogger($this->db);
-                $logger->doLog("Added " . count($results['success']) . " zone(s) to group (ID: $groupId)", $groupId, LOG_INFO);
+                $logger->doLog($logMessage, $groupId, LOG_INFO);
             }
 
             if (!empty($results['failed'])) {
@@ -171,6 +211,17 @@ class ManageGroupZonesController extends BaseController
         $domainIds = array_map('intval', $domainIds);
 
         try {
+            // Get group details and zone names before removing
+            $userContext = $this->getUserContextService();
+            $currentUserId = $userContext->getLoggedInUserId();
+            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
+            $groupName = $group ? $group->getName() : "ID: $groupId";
+
+            // Get zone names for logging
+            $tableNameService = new TableNameService($this->config);
+            $domainsTable = $tableNameService->getTable(PdnsTable::DOMAINS);
+
             $results = $this->zoneGroupService->bulkRemoveZones($groupId, $domainIds);
 
             if (!empty($results['success'])) {
@@ -184,9 +235,38 @@ class ManageGroupZonesController extends BaseController
                 );
                 $this->setMessage('manage_group_zones', 'success', $message);
 
+                // Get current admin username
+                $ldapUse = $this->config->get('ldap', 'enabled');
+                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
+                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+
+                // Get zone names for successful removals
+                $placeholders = implode(',', array_fill(0, count($results['success']), '?'));
+                $query = "SELECT name FROM $domainsTable WHERE id IN ($placeholders)";
+                $stmt = $this->db->prepare($query);
+                $stmt->execute($results['success']);
+                $zoneNames = $stmt->fetchAll(\PDO::FETCH_COLUMN);
+
+                // Shorten IPv6 zones for logging
+                $displayNames = array_map(function ($name) {
+                    if (str_ends_with($name, '.ip6.arpa')) {
+                        return IpHelper::shortenIPv6ReverseZone($name) ?? $name;
+                    }
+                    return $name;
+                }, $zoneNames);
+
+                $logMessage = sprintf(
+                    "Removed %d zone(s) from group '%s' (ID: %d) by %s: %s",
+                    count($results['success']),
+                    $groupName,
+                    $groupId,
+                    $actorUsername,
+                    implode(', ', $displayNames)
+                );
+
                 // Log zone removals
                 $logger = new DbGroupLogger($this->db);
-                $logger->doLog("Removed " . count($results['success']) . " zone(s) from group (ID: $groupId)", $groupId, LOG_INFO);
+                $logger->doLog($logMessage, $groupId, LOG_INFO);
             }
 
             if (!empty($results['failed'])) {

@@ -33,8 +33,10 @@ namespace Poweradmin\Application\Controller;
 
 use InvalidArgumentException;
 use Poweradmin\Application\Service\GroupMembershipService;
+use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 
@@ -80,10 +82,38 @@ class RemoveUserGroupController extends BaseController
         }
 
         try {
+            // Get details before removal for logging
+            $groupRepository = new DbUserGroupRepository($this->db);
+            $groupService = new GroupService($groupRepository);
+
+            $group = $groupRepository->findById($groupId);
+            $groupName = $group ? $group->getName() : "ID: $groupId";
+
+            // Get target user details for logging
+            $ldapUse = $this->config->get('ldap', 'enabled');
+            $targetUsers = UserManager::getUserDetailList($this->db, $ldapUse, $targetUserId);
+            $targetUsername = !empty($targetUsers) ? $targetUsers[0]['username'] : "ID: $targetUserId";
+
             $success = $this->membershipService->removeUserFromGroup($groupId, $targetUserId);
 
             if ($success) {
                 $this->setMessage('edit_user', 'success', _('User removed from group successfully.'));
+
+                // Log the removal in the same format as group management
+                $currentUserId = $userId;
+                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
+                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+
+                $logMessage = sprintf(
+                    "Removed 1 user(s) from group '%s' (ID: %d) by %s: %s",
+                    $groupName,
+                    $groupId,
+                    $actorUsername,
+                    $targetUsername
+                );
+
+                $logger = new DbGroupLogger($this->db);
+                $logger->doLog($logMessage, $groupId, LOG_INFO);
             } else {
                 $this->setMessage('edit_user', 'warning', _('User was not a member of this group.'));
             }
