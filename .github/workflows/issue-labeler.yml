@@ -12,7 +12,7 @@ jobs:
   label-issues:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v6
 
       - name: Label Dependency Dashboard
         if: github.event.issue.title == 'Dependency Dashboard'
