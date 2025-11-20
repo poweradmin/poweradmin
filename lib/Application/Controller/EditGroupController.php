@@ -125,7 +125,7 @@ class EditGroupController extends BaseController
                 $changes[] = sprintf("description: '%s' → '%s'", $oldDesc, $newDesc);
             }
             if ($oldGroup->getPermTemplId() !== $permTemplId) {
-                // Get permission template names for better logging
+                // Get permission template names for better logging (no filter - need to find any template type)
                 $permTemplates = UserManager::listPermissionTemplates($this->db);
                 $oldTemplName = 'Unknown';
                 $newTemplName = 'Unknown';
@@ -193,7 +193,7 @@ class EditGroupController extends BaseController
             $members = $this->membershipService->listGroupMembers($groupId);
             $zones = $this->zoneGroupService->listGroupZones($groupId);
 
-            $permTemplates = UserManager::listPermissionTemplates($this->db);
+            $permTemplates = UserManager::listPermissionTemplates($this->db, 'group');
 
             // Get member usernames
             $memberUsernames = [];

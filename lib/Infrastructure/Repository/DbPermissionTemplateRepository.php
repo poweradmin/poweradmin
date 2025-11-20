@@ -39,16 +39,19 @@ class DbPermissionTemplateRepository
     /**
      * Add a Permission Template
      *
-     * @param array $details Permission template details [templ_name,templ_descr,perm_id]
+     * @param array $details Permission template details [templ_name,templ_descr,template_type,perm_id]
      *
      * @return boolean true on success, false otherwise
      */
     public function addPermissionTemplate(array $details): bool
     {
-        $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr) VALUES (:name, :descr)");
+        $template_type = $details['template_type'] ?? 'user';
+
+        $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr, template_type) VALUES (:name, :descr, :template_type)");
         $stmt->execute([
             ':name' => $details['templ_name'],
-            ':descr' => $details['templ_descr']
+            ':descr' => $details['templ_descr'],
+            ':template_type' => $template_type
         ]);
 
         $perm_templ_id = $this->db->lastInsertId();
@@ -125,12 +128,14 @@ class DbPermissionTemplateRepository
      */
     public function updatePermissionTemplateDetails(array $details): bool
     {
-        // Fix permission template name and description first.
+        // Fix permission template name, description, and type first.
+        $template_type = $details['template_type'] ?? 'user';
 
-        $stmt = $this->db->prepare("UPDATE perm_templ SET name = :name, descr = :descr WHERE id = :id");
+        $stmt = $this->db->prepare("UPDATE perm_templ SET name = :name, descr = :descr, template_type = :template_type WHERE id = :id");
         $stmt->execute([
             ':name' => $details['templ_name'],
             ':descr' => $details['templ_descr'],
+            ':template_type' => $template_type,
             ':id' => $details['templ_id']
         ]);
 
@@ -174,19 +179,28 @@ class DbPermissionTemplateRepository
     /**
      * Get a list of all available permission templates
      *
-     * @return array array of templates [id, name, descr]
+     * @param string|null $filter_type Filter by template type ('user', 'group', or null for all)
+     * @return array array of templates [id, name, descr, template_type]
      */
-    public function listPermissionTemplates(): array
+    public function listPermissionTemplates(?string $filter_type = null): array
     {
-        $query = "SELECT * FROM perm_templ ORDER BY name";
-        $response = $this->db->query($query);
+        if ($filter_type !== null && in_array($filter_type, ['user', 'group'])) {
+            $query = "SELECT * FROM perm_templ WHERE template_type = :template_type ORDER BY name";
+            $stmt = $this->db->prepare($query);
+            $stmt->execute([':template_type' => $filter_type]);
+            $response = $stmt;
+        } else {
+            $query = "SELECT * FROM perm_templ ORDER BY name";
+            $response = $this->db->query($query);
+        }
 
         $template_list = array();
         while ($template = $response->fetch()) {
             $template_list [] = array(
                 "id" => $template ['id'],
                 "name" => $template ['name'],
-                "descr" => $template ['descr']
+                "descr" => $template ['descr'],
+                "template_type" => $template ['template_type'] ?? 'user'
             );
         }
         return $template_list;
@@ -201,13 +215,25 @@ class DbPermissionTemplateRepository
      */
     public function deletePermissionTemplate(int $id): bool
     {
+        // Check if template is assigned to users
         $stmt = $this->db->prepare("SELECT id FROM users WHERE perm_templ = :id");
         $stmt->execute([':id' => $id]);
-        $response = $stmt->fetchColumn();
+        $usedByUsers = $stmt->fetchColumn();
 
-        if ($response) {
+        // Check if template is assigned to groups
+        $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE perm_templ = :id");
+        $stmt->execute([':id' => $id]);
+        $usedByGroups = $stmt->fetchColumn();
+
+        if ($usedByUsers || $usedByGroups) {
             $messageService = new MessageService();
-            $messageService->addSystemError(_('This template is assigned to at least one user.'));
+            if ($usedByUsers && $usedByGroups) {
+                $messageService->addSystemError(_('This template is assigned to at least one user and one group.'));
+            } elseif ($usedByUsers) {
+                $messageService->addSystemError(_('This template is assigned to at least one user.'));
+            } else {
+                $messageService->addSystemError(_('This template is assigned to at least one group.'));
+            }
 
             return false;
         } else {

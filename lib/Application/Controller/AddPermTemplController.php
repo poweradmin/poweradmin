@@ -83,12 +83,15 @@ class AddPermTemplController extends BaseController
     private function validateSubmitRequest(): bool
     {
         $this->setRequestRules([
-            'required' => ['templ_name'],
+            'required' => ['templ_name', 'template_type'],
             'lengthMax' => [
                 ['templ_name', 128],
                 ['templ_descr', 1024],
             ],
             'array' => ['perm_id'],
+            'in' => [
+                ['template_type', ['user', 'group']]
+            ],
         ]);
 
         return $this->doValidateRequest();

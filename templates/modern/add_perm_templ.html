@@ -29,7 +29,17 @@
                         <input class="form-control form-control-sm" type="text" id="templ_descr" name="templ_descr" value="">
                         <small class="text-muted">{% trans %}Optional: more detailed description of this permission set{% endtrans %}</small>
                     </div>
-                    
+
+                    <div class="mb-3">
+                        <label for="template_type" class="form-label">{% trans %}Template Type{% endtrans %} <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm" id="template_type" name="template_type" required>
+                            <option value="user" selected>{% trans %}User Template{% endtrans %}</option>
+                            <option value="group">{% trans %}Group Template{% endtrans %}</option>
+                        </select>
+                        <small class="text-muted">{% trans %}User templates apply globally; Group templates apply only to group-owned zones{% endtrans %}</small>
+                        <div class="invalid-feedback">{% trans %}Please select a template type{% endtrans %}</div>
+                    </div>
+
                     <div class="d-flex justify-content-between">
                         <div>
                             <button type="submit" class="btn btn-primary btn-sm" name="commit">

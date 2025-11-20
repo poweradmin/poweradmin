@@ -148,7 +148,7 @@ class AddUserController extends BaseController
     private function renderAddUserForm(array $policyConfig): void
     {
         $user_edit_templ_perm = UserManager::verifyPermission($this->db, 'user_edit_templ_perm');
-        $user_templates = UserManager::listPermissionTemplates($this->db);
+        $user_templates = UserManager::listPermissionTemplates($this->db, 'user');
 
         $username = $this->request->getPostParam('username', '');
         $fullname = $this->request->getPostParam('fullname', '');

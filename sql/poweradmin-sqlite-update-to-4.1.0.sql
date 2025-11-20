@@ -283,3 +283,29 @@ CREATE TABLE IF NOT EXISTS log_groups (
 );
 
 CREATE INDEX IF NOT EXISTS idx_log_groups_group_id ON log_groups(group_id);
+
+-- ============================================================================
+-- Permission Template Types (distinguish user vs group templates)
+-- ============================================================================
+
+-- SQLite doesn't support ALTER TABLE ADD COLUMN with constraints easily
+-- So we need to recreate the table
+
+-- Create new table with template_type column
+CREATE TABLE perm_templ_new (
+    id integer PRIMARY KEY,
+    name VARCHAR(128) NOT NULL,
+    descr VARCHAR(1024) NOT NULL,
+    template_type VARCHAR(10) NOT NULL DEFAULT 'user',
+    CHECK(template_type IN ('user', 'group'))
+);
+
+-- Copy data from old table
+INSERT INTO perm_templ_new (id, name, descr, template_type)
+SELECT id, name, descr, 'user' FROM perm_templ;
+
+-- Drop old table
+DROP TABLE perm_templ;
+
+-- Rename new table
+ALTER TABLE perm_templ_new RENAME TO perm_templ;

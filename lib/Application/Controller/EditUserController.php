@@ -289,7 +289,7 @@ class EditUserController extends BaseController
             'edit_templ_perm' => $permissions['edit_templ_perm'],
             'edit_own_perm' => $permissions['edit_own'],
             'perm_passwd_edit_others' => $permissions['passwd_edit_others'],
-            'permission_templates' => UserManager::listPermissionTemplates($this->db),
+            'permission_templates' => UserManager::listPermissionTemplates($this->db, 'user'),
             'user_permissions' => UserManager::getPermissionsByTemplateId($this->db, $user['tpl_id']),
             'ldap_use' => $this->config->get('ldap', 'enabled', false) && !$permissions['is_admin'],
             'use_ldap_checked' => $user['use_ldap'] ? "checked" : "",
