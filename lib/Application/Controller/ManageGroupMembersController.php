@@ -116,6 +116,20 @@ class ManageGroupMembersController extends BaseController
         $userIds = array_map('intval', $userIds);
 
         try {
+            // Get group details and usernames before adding
+            $userContext = $this->getUserContextService();
+            $currentUserId = $userContext->getLoggedInUserId();
+            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
+            $groupName = $group ? $group->getName() : "ID: $groupId";
+
+            // Get usernames for logging
+            $allUsers = UserManager::getUserDetailList($this->db, false);
+            $userMap = [];
+            foreach ($allUsers as $user) {
+                $userMap[$user['uid']] = $user['username'];
+            }
+
             $results = $this->membershipService->bulkAddUsers($groupId, $userIds);
 
             if (!empty($results['success'])) {
@@ -129,9 +143,25 @@ class ManageGroupMembersController extends BaseController
                 );
                 $this->setMessage('manage_group_members', 'success', $message);
 
+                // Get current admin username
+                $ldapUse = $this->config->get('ldap', 'enabled');
+                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
+                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+
+                // Build detailed log message with usernames
+                $addedUsernames = array_map(fn($id) => $userMap[$id] ?? "ID: $id", $results['success']);
+                $logMessage = sprintf(
+                    "Added %d user(s) to group '%s' (ID: %d) by %s: %s",
+                    count($results['success']),
+                    $groupName,
+                    $groupId,
+                    $actorUsername,
+                    implode(', ', $addedUsernames)
+                );
+
                 // Log member additions
                 $logger = new DbGroupLogger($this->db);
-                $logger->doLog("Added " . count($results['success']) . " user(s) to group (ID: $groupId)", $groupId, LOG_INFO);
+                $logger->doLog($logMessage, $groupId, LOG_INFO);
             }
 
             if (!empty($results['failed'])) {
@@ -168,6 +198,20 @@ class ManageGroupMembersController extends BaseController
         $userIds = array_map('intval', $userIds);
 
         try {
+            // Get group details and usernames before removing
+            $userContext = $this->getUserContextService();
+            $currentUserId = $userContext->getLoggedInUserId();
+            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $group = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
+            $groupName = $group ? $group->getName() : "ID: $groupId";
+
+            // Get usernames for logging
+            $allUsers = UserManager::getUserDetailList($this->db, false);
+            $userMap = [];
+            foreach ($allUsers as $user) {
+                $userMap[$user['uid']] = $user['username'];
+            }
+
             $results = $this->membershipService->bulkRemoveUsers($groupId, $userIds);
 
             if (!empty($results['success'])) {
@@ -181,9 +225,25 @@ class ManageGroupMembersController extends BaseController
                 );
                 $this->setMessage('manage_group_members', 'success', $message);
 
+                // Get current admin username
+                $ldapUse = $this->config->get('ldap', 'enabled');
+                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
+                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+
+                // Build detailed log message with usernames
+                $removedUsernames = array_map(fn($id) => $userMap[$id] ?? "ID: $id", $results['success']);
+                $logMessage = sprintf(
+                    "Removed %d user(s) from group '%s' (ID: %d) by %s: %s",
+                    count($results['success']),
+                    $groupName,
+                    $groupId,
+                    $actorUsername,
+                    implode(', ', $removedUsernames)
+                );
+
                 // Log member removals
                 $logger = new DbGroupLogger($this->db);
-                $logger->doLog("Removed " . count($results['success']) . " user(s) from group (ID: $groupId)", $groupId, LOG_INFO);
+                $logger->doLog($logMessage, $groupId, LOG_INFO);
             }
 
             if (!empty($results['failed'])) {

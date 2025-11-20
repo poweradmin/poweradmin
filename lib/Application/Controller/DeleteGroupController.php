@@ -101,18 +101,36 @@ class DeleteGroupController extends BaseController
         }
 
         try {
-            // Get group name before deletion for logging
+            // Get group details and stats before deletion for logging
             $userContext = $this->getUserContextService();
             $userId = $userContext->getLoggedInUserId();
             $isAdmin = UserManager::isUserSuperuser($this->db, $userId);
             $group = $this->groupService->getGroupById($groupId, $userId, $isAdmin);
             $groupName = $group ? $group->getName() : "ID: $groupId";
 
+            // Get member and zone counts before deletion
+            $details = $this->groupService->getGroupDetails($groupId);
+            $memberCount = $details['memberCount'];
+            $zoneCount = $details['zoneCount'];
+
             $this->groupService->deleteGroup($groupId);
 
-            // Log group deletion
+            // Log group deletion with actor and impact details
+            $ldapUse = $this->config->get('ldap', 'enabled');
+            $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $userId);
+            $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $userId";
+
+            $logMessage = sprintf(
+                "Group deleted: '%s' (ID: %d) by %s - Impact: %d member(s), %d zone(s) lost access",
+                $groupName,
+                $groupId,
+                $actorUsername,
+                $memberCount,
+                $zoneCount
+            );
+
             $logger = new DbGroupLogger($this->db);
-            $logger->doLog("Group deleted: $groupName (ID: $groupId)", null, LOG_WARNING);
+            $logger->doLog($logMessage, null, LOG_WARNING);
 
             $this->setMessage('list_groups', 'success', _('Group has been deleted successfully.'));
             $this->redirect('/groups');

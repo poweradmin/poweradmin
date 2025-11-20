@@ -108,11 +108,64 @@ class EditGroupController extends BaseController
         $permTemplId = (int)$this->request->getPostParam('perm_templ');
 
         try {
+            // Get current group details before update for change tracking
+            $userContext = $this->getUserContextService();
+            $currentUserId = $userContext->getLoggedInUserId();
+            $isAdmin = UserManager::isUserSuperuser($this->db, $currentUserId);
+            $oldGroup = $this->groupService->getGroupById($groupId, $currentUserId, $isAdmin);
+
+            // Track what changed
+            $changes = [];
+            if ($oldGroup->getName() !== $name) {
+                $changes[] = sprintf("name: '%s' → '%s'", $oldGroup->getName(), $name);
+            }
+            if (($oldGroup->getDescription() ?? '') !== $description) {
+                $oldDesc = $oldGroup->getDescription() ?? '(empty)';
+                $newDesc = $description ?: '(empty)';
+                $changes[] = sprintf("description: '%s' → '%s'", $oldDesc, $newDesc);
+            }
+            if ($oldGroup->getPermTemplId() !== $permTemplId) {
+                // Get permission template names for better logging
+                $permTemplates = UserManager::listPermissionTemplates($this->db);
+                $oldTemplName = 'Unknown';
+                $newTemplName = 'Unknown';
+                foreach ($permTemplates as $template) {
+                    if ($template['id'] == $oldGroup->getPermTemplId()) {
+                        $oldTemplName = $template['name'];
+                    }
+                    if ($template['id'] == $permTemplId) {
+                        $newTemplName = $template['name'];
+                    }
+                }
+                $changes[] = sprintf(
+                    "permission template: '%s' (ID: %d) → '%s' (ID: %d)",
+                    $oldTemplName,
+                    $oldGroup->getPermTemplId(),
+                    $newTemplName,
+                    $permTemplId
+                );
+            }
+
+            // Update the group
             $this->groupService->updateGroup($groupId, $name, $description, $permTemplId);
 
-            // Log group update
-            $logger = new DbGroupLogger($this->db);
-            $logger->doLog("Group updated: $name (ID: $groupId)", $groupId, LOG_INFO);
+            // Log group update with details
+            if (!empty($changes)) {
+                $ldapUse = $this->config->get('ldap', 'enabled');
+                $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
+                $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+
+                $logMessage = sprintf(
+                    "Group '%s' (ID: %d) updated by %s - Changes: %s",
+                    $name,
+                    $groupId,
+                    $actorUsername,
+                    implode('; ', $changes)
+                );
+
+                $logger = new DbGroupLogger($this->db);
+                $logger->doLog($logMessage, $groupId, LOG_INFO);
+            }
 
             $this->setMessage('list_groups', 'success', _('Group has been updated successfully.'));
             $this->redirect('/groups');

@@ -338,13 +338,24 @@ class EditUserController extends BaseController
         $memberRepository = new DbUserGroupMemberRepository($this->db);
         $membershipService = new GroupMembershipService($memberRepository, $groupRepository);
 
+        // Get target user details for logging
+        $targetUser = $this->getUserDetails($userId);
+        $targetUsername = $targetUser['username'];
+
         $successCount = 0;
         $failedCount = 0;
+        $successfulGroups = [];
 
         foreach ($groupIds as $groupId) {
             try {
                 $membershipService->addUserToGroup($groupId, $userId);
                 $successCount++;
+
+                // Get group name for logging
+                $group = $groupRepository->findById($groupId);
+                if ($group) {
+                    $successfulGroups[] = $group->getName();
+                }
             } catch (\Exception $e) {
                 $failedCount++;
             }
@@ -360,6 +371,29 @@ class EditUserController extends BaseController
                 $successCount
             );
             $this->setMessage('edit_user', 'success', $message);
+
+            // Log the additions for each group in the same format as group management
+            $currentUserId = $this->userContextService->getLoggedInUserId();
+            $ldapUse = $this->config->get('ldap', 'enabled');
+            $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
+            $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+
+            $logger = new \Poweradmin\Infrastructure\Logger\DbGroupLogger($this->db);
+
+            // Log each group addition separately with the target username
+            foreach ($successfulGroups as $index => $groupName) {
+                $groupId = $groupIds[$index] ?? null;
+                if ($groupId) {
+                    $logMessage = sprintf(
+                        "Added 1 user(s) to group '%s' (ID: %d) by %s: %s",
+                        $groupName,
+                        $groupId,
+                        $actorUsername,
+                        $targetUsername
+                    );
+                    $logger->doLog($logMessage, $groupId, LOG_INFO);
+                }
+            }
         }
 
         if ($failedCount > 0) {
