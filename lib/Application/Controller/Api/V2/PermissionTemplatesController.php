@@ -227,10 +227,11 @@ class PermissionTemplatesController extends PublicApiController
             required: true,
             content: new OA\JsonContent(
                 type: 'object',
-                required: ['name', 'descr'],
+                required: ['name', 'descr', 'template_type'],
                 properties: [
                     'name' => new OA\Property(property: 'name', type: 'string', example: 'Zone Administrator'),
                     'descr' => new OA\Property(property: 'descr', type: 'string', example: 'Administrator for zones'),
+                    'template_type' => new OA\Property(property: 'template_type', type: 'string', enum: ['user', 'group'], example: 'user', description: 'Template type: user (global permissions) or group (zone-specific permissions)'),
                     'permissions' => new OA\Property(
                         property: 'permissions',
                         type: 'array',
@@ -274,15 +275,21 @@ class PermissionTemplatesController extends PublicApiController
             $data = $this->getJsonInput();
 
             if (
-                !$data || !isset($data['name']) || !isset($data['descr']) ||
+                !$data || !isset($data['name']) || !isset($data['descr']) || !isset($data['template_type']) ||
                 empty(trim($data['name'])) || empty(trim($data['descr']))
             ) {
-                return $this->returnApiError('Missing required fields: name, descr', 400);
+                return $this->returnApiError('Missing required fields: name, descr, template_type', 400);
+            }
+
+            // Validate template_type
+            if (!in_array($data['template_type'], ['user', 'group'])) {
+                return $this->returnApiError('Invalid template_type. Must be either "user" or "group"', 400);
             }
 
             $details = [
                 'templ_name' => $data['name'],
-                'templ_descr' => $data['descr']
+                'templ_descr' => $data['descr'],
+                'template_type' => $data['template_type']
             ];
 
             if (isset($data['permissions']) && is_array($data['permissions'])) {
@@ -322,10 +329,11 @@ class PermissionTemplatesController extends PublicApiController
             required: true,
             content: new OA\JsonContent(
                 type: 'object',
-                required: ['name', 'descr'],
+                required: ['name', 'descr', 'template_type'],
                 properties: [
                     'name' => new OA\Property(property: 'name', type: 'string', example: 'Zone Administrator'),
                     'descr' => new OA\Property(property: 'descr', type: 'string', example: 'Administrator for zones'),
+                    'template_type' => new OA\Property(property: 'template_type', type: 'string', enum: ['user', 'group'], example: 'user', description: 'Template type: user (global permissions) or group (zone-specific permissions)'),
                     'permissions' => new OA\Property(
                         property: 'permissions',
                         type: 'array',
@@ -375,10 +383,15 @@ class PermissionTemplatesController extends PublicApiController
             $data = $this->getJsonInput();
 
             if (
-                !$data || !isset($data['name']) || !isset($data['descr']) ||
+                !$data || !isset($data['name']) || !isset($data['descr']) || !isset($data['template_type']) ||
                 empty(trim($data['name'])) || empty(trim($data['descr']))
             ) {
-                return $this->returnApiError('Missing required fields: name, descr', 400);
+                return $this->returnApiError('Missing required fields: name, descr, template_type', 400);
+            }
+
+            // Validate template_type
+            if (!in_array($data['template_type'], ['user', 'group'])) {
+                return $this->returnApiError('Invalid template_type. Must be either "user" or "group"', 400);
             }
 
             $existing = $this->permissionTemplateRepository->getPermissionTemplateDetails($id);
@@ -389,7 +402,8 @@ class PermissionTemplatesController extends PublicApiController
             $details = [
                 'templ_id' => $id,
                 'templ_name' => $data['name'],
-                'templ_descr' => $data['descr']
+                'templ_descr' => $data['descr'],
+                'template_type' => $data['template_type']
             ];
 
             if (isset($data['permissions']) && is_array($data['permissions'])) {

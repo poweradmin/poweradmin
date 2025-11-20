@@ -44,7 +44,7 @@
                             <option value="{{ template['id'] }}" {{ selected }}>{{ template['name'] }}</option>
                             {% endfor %}
                         </select>
-                        <small class="text-muted">{% trans %}All group members will inherit these permissions for zones owned by this group{% endtrans %}</small>
+                        <small class="text-muted">{% trans %}Group members inherit these permissions only for zones owned by this group{% endtrans %}</small>
                         <div class="invalid-feedback">{% trans %}Select a permission template{% endtrans %}</div>
                     </div>
 

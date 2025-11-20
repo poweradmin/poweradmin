@@ -227,3 +227,14 @@ CREATE TABLE IF NOT EXISTS `log_groups` (
     PRIMARY KEY (`id`),
     KEY `idx_log_groups_group_id` (`group_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+-- ============================================================================
+-- Permission Template Types (distinguish user vs group templates)
+-- ============================================================================
+
+-- Add template_type column to perm_templ table
+ALTER TABLE `perm_templ` ADD COLUMN `template_type` ENUM('user','group') NOT NULL DEFAULT 'user' AFTER `descr`;
+
+-- Set default template type for all existing templates
+-- All existing templates default to 'user' type
+-- Administrators can change this later if templates are used for groups
+UPDATE `perm_templ` SET `template_type` = 'user' WHERE `template_type` = 'user';

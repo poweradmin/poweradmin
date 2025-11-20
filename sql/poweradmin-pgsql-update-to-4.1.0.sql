@@ -237,3 +237,18 @@ CREATE TABLE IF NOT EXISTS "log_groups" (
 );
 
 CREATE INDEX IF NOT EXISTS "idx_log_groups_group_id" ON "log_groups"("group_id");
+
+-- ============================================================================
+-- Permission Template Types (distinguish user vs group templates)
+-- ============================================================================
+
+-- Add template_type column to perm_templ table
+ALTER TABLE "public"."perm_templ" ADD COLUMN "template_type" character varying(10) DEFAULT 'user' NOT NULL;
+
+-- Add CHECK constraint for template_type values
+ALTER TABLE "public"."perm_templ" ADD CONSTRAINT "perm_templ_template_type_check" CHECK (template_type IN ('user', 'group'));
+
+-- Set default template type for all existing templates
+-- All existing templates default to 'user' type
+-- Administrators can change this later if templates are used for groups
+UPDATE "perm_templ" SET "template_type" = 'user' WHERE "template_type" = 'user';

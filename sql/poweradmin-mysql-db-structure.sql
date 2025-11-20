@@ -109,15 +109,16 @@ CREATE TABLE `perm_templ` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,
                               `name` varchar(128) NOT NULL,
                               `descr` varchar(1024) NOT NULL,
+                              `template_type` enum('user','group') NOT NULL DEFAULT 'user',
                               PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
-INSERT INTO `perm_templ` (`id`, `name`, `descr`) VALUES
-    (1,	'Administrator',	'Administrator template with full rights.'),
-    (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.'),
-    (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.'),
-    (4,	'Read Only',	'Read-only access to own zones with search capability.'),
-    (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.');
+INSERT INTO `perm_templ` (`id`, `name`, `descr`, `template_type`) VALUES
+    (1,	'Administrator',	'Administrator template with full rights.',	'user'),
+    (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.',	'user'),
+    (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.',	'user'),
+    (4,	'Read Only',	'Read-only access to own zones with search capability.',	'user'),
+    (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.',	'user');
 
 CREATE TABLE `perm_templ_items` (
                                     `id` int(11) NOT NULL AUTO_INCREMENT,

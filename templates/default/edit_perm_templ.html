@@ -30,7 +30,17 @@
                         <input class="form-control form-control-sm" type="text" id="templ_descr" name="templ_descr" value="{{ templ['descr'] }}">
                         <small class="text-muted">{% trans %}Optional: more detailed description of this permission set{% endtrans %}</small>
                     </div>
-                    
+
+                    <div class="mb-3">
+                        <label for="template_type" class="form-label">{% trans %}Template Type{% endtrans %} <span class="text-danger">*</span></label>
+                        <select class="form-select form-select-sm" id="template_type" name="template_type" required>
+                            <option value="user" {% if templ['template_type'] == 'user' or not templ['template_type'] %}selected{% endif %}>{% trans %}User Template{% endtrans %}</option>
+                            <option value="group" {% if templ['template_type'] == 'group' %}selected{% endif %}>{% trans %}Group Template{% endtrans %}</option>
+                        </select>
+                        <small class="text-muted">{% trans %}User templates apply globally; Group templates apply only to group-owned zones{% endtrans %}</small>
+                        <div class="invalid-feedback">{% trans %}Please select a template type{% endtrans %}</div>
+                    </div>
+
                     <div class="d-flex justify-content-between">
                         <div>
                             <button type="submit" class="btn btn-primary btn-sm" name="commit">
@@ -56,7 +66,12 @@
                     <div class="list-group list-group-flush">
                         <div class="list-group-item border-bottom">
                             <h6 class="mb-1"><i class="bi bi-person-check text-success me-2"></i>{% trans %}Template Assignment{% endtrans %}</h6>
-                            <p class="small mb-1">{% trans %}This template can be assigned to users to quickly apply its set of permissions. Changes made here will affect all users who have this template assigned.{% endtrans %}</p>
+                            <p class="small mb-1">{% trans %}This template can be assigned to users and groups to quickly apply its set of permissions. Changes made here will affect all users and groups who have this template assigned.{% endtrans %}</p>
+                        </div>
+                        <div class="list-group-item border-bottom">
+                            <h6 class="mb-1"><i class="bi bi-info-circle text-info me-2"></i>{% trans %}Users vs Groups{% endtrans %}</h6>
+                            <p class="small mb-1">{% trans %}When assigned to <strong>users</strong>: Permissions apply globally across the system.{% endtrans %}</p>
+                            <p class="small mb-0">{% trans %}When assigned to <strong>groups</strong>: Permissions apply only to zones owned by that group.{% endtrans %}</p>
                         </div>
                         <div class="list-group-item border-bottom">
                             <h6 class="mb-1"><i class="bi bi-shield-check text-primary me-2"></i>{% trans %}Permission Groups{% endtrans %}</h6>

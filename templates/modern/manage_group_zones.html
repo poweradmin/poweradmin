@@ -66,10 +66,6 @@
                         <button type="button" class="btn btn-danger btn-sm" id="remove-btn" onclick="showRemoveZonesModal()" disabled>
                             <i class="bi bi-dash-circle-fill me-1 text-white"></i>{% trans %}Remove Selected{% endtrans %}
                         </button>
-                        <small class="text-muted ms-2">
-                            <i class="bi bi-info-circle"></i>
-                            {% trans %}Remove group ownership from selected zones{% endtrans %}
-                        </small>
                     </div>
                 </form>
                 {% endif %}
@@ -198,8 +194,16 @@ function showRemoveZonesModal() {
 }
 
 // Handle remove confirmation
-document.getElementById('confirmRemoveZonesBtn')?.addEventListener('click', function() {
-    document.getElementById('remove-form').submit();
+document.addEventListener('DOMContentLoaded', function() {
+    const confirmBtn = document.getElementById('confirmRemoveZonesBtn');
+    if (confirmBtn) {
+        confirmBtn.addEventListener('click', function() {
+            const removeForm = document.getElementById('remove-form');
+            if (removeForm) {
+                removeForm.submit();
+            }
+        });
+    }
 });
 </script>
 
@@ -214,8 +218,8 @@ document.getElementById('confirmRemoveZonesBtn')?.addEventListener('click', func
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>{% trans %}Are you sure you want to remove group ownership from{% endtrans %} <strong id="modalZoneCount"></strong> {% trans %}zone(s)?{% endtrans %}</p>
-                <p class="text-muted small mb-0">{% trans %}The zones will remain in the system but this group will no longer have ownership.{% endtrans %}</p>
+                <p>{% trans %}Are you sure you want to remove{% endtrans %} <strong id="modalZoneCount"></strong> {% trans %}zone(s) from this group?{% endtrans %}</p>
+                <p class="text-muted small mb-0">{% trans %}The zones will remain in the system.{% endtrans %}</p>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">

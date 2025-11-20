@@ -83,15 +83,17 @@ CREATE TABLE "public"."perm_templ" (
                                        "id" integer DEFAULT nextval('perm_templ_id_seq') NOT NULL,
                                        "name" character varying(128),
                                        "descr" character varying(1024),
-                                       CONSTRAINT "perm_templ_pkey" PRIMARY KEY ("id")
+                                       "template_type" character varying(10) DEFAULT 'user' NOT NULL,
+                                       CONSTRAINT "perm_templ_pkey" PRIMARY KEY ("id"),
+                                       CONSTRAINT "perm_templ_template_type_check" CHECK (template_type IN ('user', 'group'))
 ) WITH (oids = false);
 
-INSERT INTO "perm_templ" ("id", "name", "descr") VALUES
-    (1,	'Administrator',	'Administrator template with full rights.'),
-    (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.'),
-    (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.'),
-    (4,	'Read Only',	'Read-only access to own zones with search capability.'),
-    (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES
+    (1,	'Administrator',	'Administrator template with full rights.',	'user'),
+    (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.',	'user'),
+    (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.',	'user'),
+    (4,	'Read Only',	'Read-only access to own zones with search capability.',	'user'),
+    (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.',	'user');
 
 CREATE SEQUENCE perm_templ_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 

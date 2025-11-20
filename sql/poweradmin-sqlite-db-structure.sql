@@ -43,13 +43,13 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (65,	'api_manage_keys',	
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (67,	'zone_delete_own',	'User is allowed to delete zones they own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.');
 
-CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL);
+CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user', CHECK(template_type IN ('user', 'group')));
 
-INSERT INTO "perm_templ" ("id", "name", "descr") VALUES (1,	'Administrator',	'Administrator template with full rights.');
-INSERT INTO "perm_templ" ("id", "name", "descr") VALUES (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.');
-INSERT INTO "perm_templ" ("id", "name", "descr") VALUES (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.');
-INSERT INTO "perm_templ" ("id", "name", "descr") VALUES (4,	'Read Only',	'Read-only access to own zones with search capability.');
-INSERT INTO "perm_templ" ("id", "name", "descr") VALUES (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (1,	'Administrator',	'Administrator template with full rights.',	'user');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.',	'user');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.',	'user');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (4,	'Read Only',	'Read-only access to own zones with search capability.',	'user');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.',	'user');
 
 CREATE TABLE perm_templ_items (id integer PRIMARY KEY, templ_id integer NOT NULL, perm_id integer NOT NULL);
 

@@ -97,7 +97,7 @@ class AddGroupController extends BaseController
             $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $userId);
             $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $userId";
 
-            // Get permission template name for logging
+            // Get permission template name for logging (no filter - need to find any template type)
             $permTemplates = UserManager::listPermissionTemplates($this->db);
             $templateName = 'Unknown';
             foreach ($permTemplates as $template) {
@@ -129,7 +129,7 @@ class AddGroupController extends BaseController
 
     private function renderAddGroupForm(): void
     {
-        $permTemplates = UserManager::listPermissionTemplates($this->db);
+        $permTemplates = UserManager::listPermissionTemplates($this->db, 'group');
 
         // Use minimal permission template as default (most secure)
         $defaultTemplateId = UserManager::getMinimalPermissionTemplateId($this->db) ?? '1';

@@ -5,6 +5,10 @@
     </ol>
 </nav>
 
+<div class="alert alert-info mb-4">
+    <p class="mb-0 small"><i class="bi bi-info-circle me-2"></i><strong>{% trans %}User{% endtrans %}</strong> {% trans %}templates apply globally{% endtrans %}; <strong>{% trans %}Group{% endtrans %}</strong> {% trans %}templates apply only to group-owned zones{% endtrans %}</p>
+</div>
+
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">
         <strong><i class="bi bi-shield-lock me-2"></i>{% trans %}Permission Templates{% endtrans %}</strong>
@@ -16,19 +20,27 @@
                 <tr>
                     <th>{% trans %}Name{% endtrans %}</th>
                     <th>{% trans %}Description{% endtrans %}</th>
+                    <th>{% trans %}Type{% endtrans %}</th>
                     <th class="text-end">{% trans %}Actions{% endtrans %}</th>
                 </tr>
                 </thead>
                 <tbody>
                 {% if permission_templates is empty %}
                 <tr>
-                    <td colspan="3" class="text-center py-3">{% trans %}No permission templates found{% endtrans %}</td>
+                    <td colspan="4" class="text-center py-3">{% trans %}No permission templates found{% endtrans %}</td>
                 </tr>
                 {% else %}
                 {% for template in permission_templates %}
                 <tr>
                     <td>{{ template['name'] }}</td>
                     <td>{{ template['descr'] }}</td>
+                    <td>
+                        {% if template['template_type'] == 'user' or not template['template_type'] %}
+                        <span class="badge bg-primary">{% trans %}User{% endtrans %}</span>
+                        {% else %}
+                        <span class="badge bg-success">{% trans %}Group{% endtrans %}</span>
+                        {% endif %}
+                    </td>
                     <td class="text-end">
                         <a class="btn btn-sm btn-outline-primary" href="{{ base_url_prefix }}/permissions/templates/{{ template['id'] }}/edit" title="{% trans %}Edit{% endtrans %}">
                             <i class="bi bi-pencil-square text-primary"></i>
