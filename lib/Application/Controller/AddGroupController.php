@@ -36,6 +36,7 @@ use Poweradmin\Application\Http\Request;
 use Poweradmin\Application\Service\GroupService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -90,6 +91,10 @@ class AddGroupController extends BaseController
 
         try {
             $group = $this->groupService->createGroup($name, $permTemplId, $description, $userId);
+
+            // Log group creation
+            $logger = new DbGroupLogger($this->db);
+            $logger->doLog("Group created: $name (ID: {$group->getId()})", $group->getId(), LOG_INFO);
 
             $this->setMessage('list_groups', 'success', _('Group has been created successfully.'));
             $this->redirect('/groups');

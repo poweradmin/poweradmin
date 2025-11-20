@@ -225,3 +225,15 @@ CREATE TABLE IF NOT EXISTS "zones_groups" (
 
 CREATE INDEX IF NOT EXISTS "idx_zones_groups_domain" ON "zones_groups"("domain_id");
 CREATE INDEX IF NOT EXISTS "idx_zones_groups_group" ON "zones_groups"("group_id");
+
+-- Table: log_groups
+-- Description: Audit log for group operations (create, update, delete, member/zone changes)
+CREATE TABLE IF NOT EXISTS "log_groups" (
+    "id" SERIAL PRIMARY KEY,
+    "event" VARCHAR(2048) NOT NULL,
+    "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    "priority" INTEGER NOT NULL,
+    "group_id" INTEGER DEFAULT NULL
+);
+
+CREATE INDEX IF NOT EXISTS "idx_log_groups_group_id" ON "log_groups"("group_id");

@@ -215,3 +215,15 @@ CREATE TABLE IF NOT EXISTS `zones_groups` (
     CONSTRAINT `fk_zones_groups_domain` FOREIGN KEY (`domain_id`) REFERENCES `domains`(`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_zones_groups_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- Table: log_groups
+-- Description: Audit log for group operations (create, update, delete, member/zone changes)
+CREATE TABLE IF NOT EXISTS `log_groups` (
+    `id` INT(11) NOT NULL AUTO_INCREMENT,
+    `event` VARCHAR(2048) NOT NULL,
+    `created_at` TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    `priority` INT(11) NOT NULL,
+    `group_id` INT(11) DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `idx_log_groups_group_id` (`group_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

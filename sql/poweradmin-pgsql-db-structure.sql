@@ -25,6 +25,18 @@ CREATE TABLE "public"."log_zones" (
 CREATE INDEX "idx_log_zones_zone_id" ON "public"."log_zones" USING btree ("zone_id");
 
 
+CREATE SEQUENCE log_groups_id_seq1 INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
+CREATE TABLE "public"."log_groups" (
+                                       "id" integer DEFAULT nextval('log_groups_id_seq1') NOT NULL,
+                                       "event" character varying(2048),
+                                       "created_at" timestamp DEFAULT CURRENT_TIMESTAMP,
+                                       "priority" integer,
+                                       "group_id" integer,
+                                       CONSTRAINT "log_groups_pkey" PRIMARY KEY ("id")
+) WITH (oids = false);
+
+CREATE INDEX "idx_log_groups_group_id" ON "public"."log_groups" USING btree ("group_id");
 
 
 CREATE SEQUENCE perm_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;

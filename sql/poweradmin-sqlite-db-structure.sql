@@ -8,6 +8,9 @@ CREATE TABLE log_zones (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, cr
 CREATE INDEX idx_log_zones_zone_id ON log_zones(zone_id);
 
 
+CREATE TABLE log_groups (id integer PRIMARY KEY, event VARCHAR(2048) NOT NULL, created_at timestamp DEFAULT current_timestamp, priority integer NOT NULL, group_id integer);
+
+CREATE INDEX idx_log_groups_group_id ON log_groups(group_id);
 
 
 CREATE TABLE perm_items (id integer PRIMARY KEY, name VARCHAR(64) NOT NULL, descr VARCHAR(1024) NOT NULL);

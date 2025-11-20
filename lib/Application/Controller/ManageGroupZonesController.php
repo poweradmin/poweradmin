@@ -39,6 +39,7 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
 use Poweradmin\Domain\Utility\IpHelper;
@@ -130,6 +131,10 @@ class ManageGroupZonesController extends BaseController
                     count($results['success'])
                 );
                 $this->setMessage('manage_group_zones', 'success', $message);
+
+                // Log zone additions
+                $logger = new DbGroupLogger($this->db);
+                $logger->doLog("Added " . count($results['success']) . " zone(s) to group (ID: $groupId)", $groupId, LOG_INFO);
             }
 
             if (!empty($results['failed'])) {
@@ -178,6 +183,10 @@ class ManageGroupZonesController extends BaseController
                     count($results['success'])
                 );
                 $this->setMessage('manage_group_zones', 'success', $message);
+
+                // Log zone removals
+                $logger = new DbGroupLogger($this->db);
+                $logger->doLog("Removed " . count($results['success']) . " zone(s) from group (ID: $groupId)", $groupId, LOG_INFO);
             }
 
             if (!empty($results['failed'])) {
