@@ -47,12 +47,18 @@ class DbGroupLogger
             return;
         }
 
-        $stmt = $this->db->prepare('INSERT INTO log_groups (group_id, event, priority) VALUES (:group_id, :msg, :priority)');
-        $stmt->execute([
-            ':msg' => $msg,
-            ':group_id' => $group_id,
-            ':priority' => $priority,
-        ]);
+        try {
+            $stmt = $this->db->prepare('INSERT INTO log_groups (group_id, event, priority) VALUES (:group_id, :msg, :priority)');
+            $stmt->execute([
+                ':msg' => $msg,
+                ':group_id' => $group_id,
+                ':priority' => $priority,
+            ]);
+        } catch (\PDOException $e) {
+            // Silently fail if table doesn't exist yet (during upgrade before migration)
+            // This prevents breaking group operations when log_groups table hasn't been created
+            return;
+        }
     }
 
     public function countAllLogs()
