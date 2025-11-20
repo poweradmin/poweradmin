@@ -351,10 +351,13 @@ class EditUserController extends BaseController
                 $membershipService->addUserToGroup($groupId, $userId);
                 $successCount++;
 
-                // Get group name for logging
+                // Store both ID and name for accurate logging
                 $group = $groupRepository->findById($groupId);
                 if ($group) {
-                    $successfulGroups[] = $group->getName();
+                    $successfulGroups[] = [
+                        'id' => $groupId,
+                        'name' => $group->getName()
+                    ];
                 }
             } catch (\Exception $e) {
                 $failedCount++;
@@ -381,18 +384,15 @@ class EditUserController extends BaseController
             $logger = new \Poweradmin\Infrastructure\Logger\DbGroupLogger($this->db);
 
             // Log each group addition separately with the target username
-            foreach ($successfulGroups as $index => $groupName) {
-                $groupId = $groupIds[$index] ?? null;
-                if ($groupId) {
-                    $logMessage = sprintf(
-                        "Added 1 user(s) to group '%s' (ID: %d) by %s: %s",
-                        $groupName,
-                        $groupId,
-                        $actorUsername,
-                        $targetUsername
-                    );
-                    $logger->doLog($logMessage, $groupId, LOG_INFO);
-                }
+            foreach ($successfulGroups as $groupInfo) {
+                $logMessage = sprintf(
+                    "Added 1 user(s) to group '%s' (ID: %d) by %s: %s",
+                    $groupInfo['name'],
+                    $groupInfo['id'],
+                    $actorUsername,
+                    $targetUsername
+                );
+                $logger->doLog($logMessage, $groupInfo['id'], LOG_INFO);
             }
         }
 
