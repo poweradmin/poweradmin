@@ -99,8 +99,8 @@ class AddUserController extends BaseController
         $userParams = $this->request->getPostParams();
 
         // Validate that the template is a user template
-        if (isset($userParams['templ_id'])) {
-            if (!$this->permissionTemplateRepository->validateTemplateType((int)$userParams['templ_id'], 'user')) {
+        if (isset($userParams['perm_templ']) && $userParams['perm_templ'] !== '') {
+            if (!$this->permissionTemplateRepository->validateTemplateType((int)$userParams['perm_templ'], 'user')) {
                 $this->setMessage('add_user', 'error', _('Invalid permission template: must be a user template'));
                 $this->renderAddUserForm($policyConfig);
                 return;

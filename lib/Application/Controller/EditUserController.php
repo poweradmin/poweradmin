@@ -103,7 +103,14 @@ class EditUserController extends BaseController
             return;
         }
 
-        $params = $this->prepareUserData();
+        try {
+            $params = $this->prepareUserData();
+        } catch (\InvalidArgumentException $e) {
+            $this->setMessage('edit_user', 'error', $e->getMessage());
+            $this->showUserEditForm($editId, $policyConfig);
+            return;
+        }
+
         $legacyUsers = new UserManager($this->db, $this->getConfig());
 
         if (
