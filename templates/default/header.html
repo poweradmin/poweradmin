@@ -227,6 +227,11 @@
                        href="#"
                        role="button">{% trans %}Account{% endtrans %}</a>
                     <ul class="dropdown-menu">
+                        <li class="dropdown-header">
+                            <strong>{{ user_name }}</strong><br>
+                            <small class="text-muted">{{ user_username }}</small>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
                         {% if perm_edit_own %}
                         <li><a class="dropdown-item {{ current_page == 'edit_user' and request.id == session_userid ? 'active' : '' }}"
                                href="{{ base_url_prefix }}/users/{{ session_userid }}/edit"><i class="bi bi-person-gear me-2"></i>{% trans %}Edit profile{% endtrans %}</a></li>
