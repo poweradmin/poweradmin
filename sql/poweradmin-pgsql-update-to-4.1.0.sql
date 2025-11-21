@@ -1,6 +1,7 @@
 -- Add API key management permission
-INSERT INTO perm_items (id, name, descr) VALUES
-(65, 'api_manage_keys', 'User is allowed to create and manage API keys.');
+INSERT INTO perm_items (name, descr)
+SELECT 'api_manage_keys', 'User is allowed to create and manage API keys.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'api_manage_keys');
 
 -- Add authentication method column to users table
 ALTER TABLE users ADD COLUMN auth_method VARCHAR(20) NOT NULL DEFAULT 'sql';
@@ -76,21 +77,25 @@ CREATE INDEX IF NOT EXISTS idx_urr_created ON username_recovery_requests(created
 -- Add zone deletion permissions (Issue #97)
 -- Separate permissions for zone deletion to allow fine-grained control
 -- Previously, zone deletion was tied to zone_content_edit_* permissions
-INSERT INTO perm_items (id, name, descr) VALUES
-    (67, 'zone_delete_own', 'User is allowed to delete zones they own.'),
-    (68, 'zone_delete_others', 'User is allowed to delete zones owned by others.');
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_delete_own', 'User is allowed to delete zones they own.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_delete_own');
+
+INSERT INTO perm_items (name, descr)
+SELECT 'zone_delete_others', 'User is allowed to delete zones owned by others.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'zone_delete_others');
 
 -- Grant delete permissions to users with existing edit permissions
 -- This ensures backward compatibility - users who could edit can now delete
 -- Users with edit_own get delete_own
 INSERT INTO perm_templ_items (templ_id, perm_id)
-SELECT DISTINCT templ_id, 67
+SELECT DISTINCT templ_id, (SELECT id FROM perm_items WHERE name = 'zone_delete_own')
 FROM perm_templ_items
 WHERE perm_id = 44; -- zone_content_edit_own
 
 -- Users with edit_others get delete_others
 INSERT INTO perm_templ_items (templ_id, perm_id)
-SELECT DISTINCT templ_id, 68
+SELECT DISTINCT templ_id, (SELECT id FROM perm_items WHERE name = 'zone_delete_others')
 FROM perm_templ_items
 WHERE perm_id = 47; -- zone_content_edit_others
 
