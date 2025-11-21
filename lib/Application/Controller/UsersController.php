@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Presenter\PaginationPresenter;
-use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
@@ -97,8 +96,8 @@ class UsersController extends BaseController
         $currentPage = $httpParameters->getCurrentPage();
         $rowsPerPage = $this->config->get('interface', 'rows_per_page', 50);
 
-        $paginationService = new PaginationService();
-        $rowsPerPage = $paginationService->getUserRowsPerPage($rowsPerPage, $_SESSION['userid'] ?? null);
+        $paginationService = $this->createPaginationService();
+        $rowsPerPage = $paginationService->getUserRowsPerPage($rowsPerPage, $this->getCurrentUserId());
 
         // Get total count and paginated users
         $totalUsers = UserManager::countUsers($this->db);
