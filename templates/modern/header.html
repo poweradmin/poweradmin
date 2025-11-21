@@ -219,18 +219,18 @@
                     <!-- Permissions -->
                     <li class="nav-item">
                         <div class="nav-section-header">
-                            <i class="bi bi-shield-lock me-2"></i>{% trans %}Permissions{% endtrans %}
+                            <i class="bi bi-shield-lock me-2"></i>{% trans %}Perms{% endtrans %}
                         </div>
                         <ul class="nav nav-pills flex-column ms-3">
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'list_perm_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/permissions/templates">
-                                    <i class="bi bi-shield-fill-check me-2"></i>{% trans %}List permission templates{% endtrans %}
+                                    <i class="bi bi-shield-fill-check me-2"></i>{% trans %}List templates{% endtrans %}
                                 </a>
                             </li>
                             {% if perm_templ_perm_add %}
                             <li class="nav-item">
                                 <a class="nav-link nav-link-sm {{ current_page == 'add_perm_templ' ? 'active' : '' }}" href="{{ base_url_prefix }}/permissions/templates/add">
-                                    <i class="bi bi-shield-plus me-2"></i>{% trans %}Add permission template{% endtrans %}
+                                    <i class="bi bi-shield-plus me-2"></i>{% trans %}Add template{% endtrans %}
                                 </a>
                             </li>
                             {% endif %}
