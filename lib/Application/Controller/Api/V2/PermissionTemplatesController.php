@@ -231,7 +231,13 @@ class PermissionTemplatesController extends PublicApiController
                 properties: [
                     'name' => new OA\Property(property: 'name', type: 'string', example: 'Zone Administrator'),
                     'descr' => new OA\Property(property: 'descr', type: 'string', example: 'Administrator for zones'),
-                    'template_type' => new OA\Property(property: 'template_type', type: 'string', enum: ['user', 'group'], example: 'user', description: 'Template type: user (global permissions) or group (zone-specific permissions). Defaults to "user" if not specified.'),
+                    'template_type' => new OA\Property(
+                        property: 'template_type',
+                        type: 'string',
+                        enum: ['user', 'group'],
+                        example: 'user',
+                        description: 'Template type: user (global) or group (zone-specific). Defaults to "user".'
+                    ),
                     'permissions' => new OA\Property(
                         property: 'permissions',
                         type: 'array',
@@ -336,7 +342,13 @@ class PermissionTemplatesController extends PublicApiController
                 properties: [
                     'name' => new OA\Property(property: 'name', type: 'string', example: 'Zone Administrator'),
                     'descr' => new OA\Property(property: 'descr', type: 'string', example: 'Administrator for zones'),
-                    'template_type' => new OA\Property(property: 'template_type', type: 'string', enum: ['user', 'group'], example: 'user', description: 'Template type: user (global permissions) or group (zone-specific permissions). Defaults to "user" if not specified.'),
+                    'template_type' => new OA\Property(
+                        property: 'template_type',
+                        type: 'string',
+                        enum: ['user', 'group'],
+                        example: 'user',
+                        description: 'Template type: user (global) or group (zone-specific). Defaults to "user".'
+                    ),
                     'permissions' => new OA\Property(
                         property: 'permissions',
                         type: 'array',
