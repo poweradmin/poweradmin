@@ -325,6 +325,12 @@ class GroupsController extends PublicApiController
                 return $this->returnApiError('Missing required fields: name, perm_templ_id', 400);
             }
 
+            // Validate that the template is a group template
+            $permTemplateRepo = new \Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository($this->db, $this->config);
+            if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
+                return $this->returnApiError('Invalid permission template: must be a group template', 400);
+            }
+
             $group = $this->groupService->createGroup(
                 $data['name'],
                 (int)$data['perm_templ_id'],
@@ -395,6 +401,14 @@ class GroupsController extends PublicApiController
         try {
             $groupId = (int)$this->pathParameters['id'];
             $data = json_decode($this->request->getContent(), true);
+
+            // Validate that the template is a group template (if provided)
+            if (isset($data['perm_templ_id'])) {
+                $permTemplateRepo = new \Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository($this->db, $this->config);
+                if (!$permTemplateRepo->validateTemplateType((int)$data['perm_templ_id'], 'group')) {
+                    return $this->returnApiError('Invalid permission template: must be a group template', 400);
+                }
+            }
 
             $success = $this->groupService->updateGroup(
                 $groupId,

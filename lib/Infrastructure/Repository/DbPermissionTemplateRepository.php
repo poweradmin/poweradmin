@@ -177,6 +177,26 @@ class DbPermissionTemplateRepository
     }
 
     /**
+     * Validate that a template has the expected type
+     *
+     * @param int $templ_id Template ID to validate
+     * @param string $expected_type Expected template type ('user' or 'group')
+     * @return bool true if template exists and has expected type, false otherwise
+     */
+    public function validateTemplateType(int $templ_id, string $expected_type): bool
+    {
+        $stmt = $this->db->prepare("SELECT template_type FROM perm_templ WHERE id = :id");
+        $stmt->execute([':id' => $templ_id]);
+        $result = $stmt->fetch();
+
+        if (!$result) {
+            return false;
+        }
+
+        return $result['template_type'] === $expected_type;
+    }
+
+    /**
      * Get a list of all available permission templates
      *
      * @param string|null $filter_type Filter by template type ('user', 'group', or null for all)

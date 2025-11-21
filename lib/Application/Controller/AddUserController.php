@@ -38,6 +38,7 @@ use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddUserController extends BaseController
@@ -45,6 +46,7 @@ class AddUserController extends BaseController
     private PasswordPolicyService $passwordPolicyService;
     private PasswordGenerationService $passwordGenerationService;
     private MailService $mailService;
+    private DbPermissionTemplateRepository $permissionTemplateRepository;
     protected Request $request;
 
 
@@ -59,6 +61,9 @@ class AddUserController extends BaseController
 
         // Initialize mail service
         $this->mailService = new MailService($configManager);
+
+        // Initialize permission template repository
+        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
     }
 
     public function run(): void
@@ -92,6 +97,15 @@ class AddUserController extends BaseController
 
         $legacyUsers = new UserManager($this->db, $this->getConfig());
         $userParams = $this->request->getPostParams();
+
+        // Validate that the template is a user template
+        if (isset($userParams['templ_id'])) {
+            if (!$this->permissionTemplateRepository->validateTemplateType((int)$userParams['templ_id'], 'user')) {
+                $this->setMessage('add_user', 'error', _('Invalid permission template: must be a user template'));
+                $this->renderAddUserForm($policyConfig);
+                return;
+            }
+        }
 
         // Handle auto-generated password
         $generatedPassword = '';

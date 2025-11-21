@@ -40,12 +40,14 @@ use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditUserController extends BaseController
 {
     protected Request $request;
     private PasswordPolicyService $policyService;
+    private DbPermissionTemplateRepository $permissionTemplateRepository;
 
     private readonly UserContextService $userContextService;
     public function __construct(
@@ -56,6 +58,7 @@ class EditUserController extends BaseController
         $this->request = new Request();
         $this->policyService = new PasswordPolicyService();
         $this->userContextService = new UserContextService();
+        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
     }
 
     public function run(): void
@@ -217,6 +220,13 @@ class EditUserController extends BaseController
         if ($isOwnProfile && !$canEditOthers) {
             $userData = $this->getUserDetails($editId);
             $permTempl = $userData['tpl_id'];
+        }
+
+        // Validate that the template is a user template (skip if maintaining existing template)
+        if ($permTempl && (!$isOwnProfile || $canEditOthers)) {
+            if (!$this->permissionTemplateRepository->validateTemplateType((int)$permTempl, 'user')) {
+                throw new \InvalidArgumentException(_('Invalid permission template: must be a user template'));
+            }
         }
 
         return [

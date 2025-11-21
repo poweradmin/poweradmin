@@ -44,6 +44,7 @@ use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class EditGroupController extends BaseController
@@ -52,6 +53,7 @@ class EditGroupController extends BaseController
     private GroupMembershipService $membershipService;
     private ZoneGroupService $zoneGroupService;
     private Request $request;
+    private DbPermissionTemplateRepository $permissionTemplateRepository;
 
     public function __construct(array $request)
     {
@@ -65,6 +67,7 @@ class EditGroupController extends BaseController
         $this->membershipService = new GroupMembershipService($memberRepository, $groupRepository);
         $this->zoneGroupService = new ZoneGroupService($zoneGroupRepository, $groupRepository);
         $this->request = new Request();
+        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
     }
 
     public function run(): void
@@ -106,6 +109,13 @@ class EditGroupController extends BaseController
         $name = $this->request->getPostParam('name');
         $description = $this->request->getPostParam('description', '');
         $permTemplId = (int)$this->request->getPostParam('perm_templ');
+
+        // Validate that the template is a group template
+        if (!$this->permissionTemplateRepository->validateTemplateType($permTemplId, 'group')) {
+            $this->setMessage('edit_group', 'error', _('Invalid permission template: must be a group template'));
+            $this->renderEditGroupForm($groupId);
+            return;
+        }
 
         try {
             // Get current group details before update for change tracking
