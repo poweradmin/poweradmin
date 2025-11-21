@@ -35,7 +35,7 @@
                 <tbody>
                 {% for group in groups %}
                 <tr>
-                    <td><strong>{{ group.name }}</strong></td>
+                    <td>{{ group.name }}</td>
                     <td>{{ group.description|default('—') }}</td>
                     <td class="text-center">
                         <span class="badge bg-info">{{ group.member_count }}</span>

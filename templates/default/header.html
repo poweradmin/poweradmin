@@ -109,7 +109,7 @@
                        href="#"
                        role="button">{% trans %}Users{% endtrans %}</a>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item {{ current_page == 'users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users"><i class="bi bi-person-gear me-2"></i>{% trans %}User administration{% endtrans %}</a></li>
+                        <li><a class="dropdown-item {{ current_page == 'users' ? 'active' : '' }}" href="{{ base_url_prefix }}/users"><i class="bi bi-person-gear me-2"></i>{% trans %}List users{% endtrans %}</a></li>
                         {% if perm_add_new %}
                         <li><a class="dropdown-item {{ current_page == 'add_user' ? 'active' : '' }}" href="{{ base_url_prefix }}/users/add"><i class="bi bi-person-plus me-2"></i>{% trans %}Add user{% endtrans %}</a></li>
                         {% endif %}

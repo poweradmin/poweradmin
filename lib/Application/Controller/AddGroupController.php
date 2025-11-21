@@ -38,12 +38,14 @@ use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Infrastructure\Logger\DbGroupLogger;
 use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddGroupController extends BaseController
 {
     private GroupService $groupService;
     private Request $request;
+    private DbPermissionTemplateRepository $permissionTemplateRepository;
 
     public function __construct(array $request)
     {
@@ -52,6 +54,7 @@ class AddGroupController extends BaseController
         $groupRepository = new DbUserGroupRepository($this->db);
         $this->groupService = new GroupService($groupRepository);
         $this->request = new Request();
+        $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
     }
 
     public function run(): void
@@ -88,6 +91,13 @@ class AddGroupController extends BaseController
         $permTemplId = (int)$this->request->getPostParam('perm_templ');
         $userContext = $this->getUserContextService();
         $userId = $userContext->getLoggedInUserId();
+
+        // Validate that the template is a group template
+        if (!$this->permissionTemplateRepository->validateTemplateType($permTemplId, 'group')) {
+            $this->setMessage('add_group', 'error', _('Invalid permission template: must be a group template'));
+            $this->renderAddGroupForm();
+            return;
+        }
 
         try {
             $group = $this->groupService->createGroup($name, $permTemplId, $description, $userId);
