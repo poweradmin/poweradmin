@@ -91,9 +91,16 @@ CREATE TABLE "public"."perm_templ" (
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES
     (1,	'Administrator',	'Administrator template with full rights.',	'user'),
     (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.',	'user'),
-    (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.',	'user'),
-    (4,	'Read Only',	'Read-only access to own zones with search capability.',	'user'),
-    (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.',	'user');
+    (3,	'Editor',	'Edit own zone records but cannot modify SOA and NS records.',	'user'),
+    (4,	'Viewer',	'Read-only access to own zones with search capability.',	'user'),
+    (5,	'Guest',	'Temporary access with no permissions. Suitable for users awaiting approval or limited access.',	'user'),
+    (6,	'Administrators',	'Full administrative access for group members.',	'group'),
+    (7,	'Zone Managers',	'Full zone management for group members.',	'group'),
+    (8,	'Editors',	'Edit zone records (no SOA/NS) for group members.',	'group'),
+    (9,	'Viewers',	'Read-only zone access for group members.',	'group'),
+    (10,	'Guests',	'Temporary group with no permissions. Suitable for users awaiting approval.',	'group');
+
+SELECT setval('perm_templ_id_seq', 10);
 
 CREATE SEQUENCE perm_templ_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -125,7 +132,27 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (15,	3,	56),
     (16,	3,	62),
     (17,	4,	43),
-    (18,	4,	49);
+    (18,	4,	49),
+    (19,	6,	53),
+    (20,	7,	41),
+    (21,	7,	42),
+    (22,	7,	43),
+    (23,	7,	44),
+    (24,	7,	45),
+    (25,	7,	49),
+    (26,	7,	56),
+    (27,	7,	63),
+    (28,	7,	64),
+    (29,	7,	65),
+    (30,	7,	67),
+    (31,	8,	43),
+    (32,	8,	49),
+    (33,	8,	56),
+    (34,	8,	62),
+    (35,	9,	43),
+    (36,	9,	49);
+
+SELECT setval('perm_templ_items_id_seq', 36);
 
 CREATE TABLE "public"."records_zone_templ" (
                                                "domain_id" integer,
@@ -388,6 +415,15 @@ CREATE TRIGGER trigger_user_groups_updated_at
     BEFORE UPDATE ON user_groups
     FOR EACH ROW
     EXECUTE FUNCTION update_user_groups_updated_at();
+
+INSERT INTO user_groups (id, name, description, perm_templ, created_by) VALUES
+    (1, 'Administrators', 'Full administrative access to all system functions.', 6, NULL),
+    (2, 'Zone Managers', 'Full zone management including creation, editing, and deletion.', 7, NULL),
+    (3, 'Editors', 'Edit zone records but cannot modify SOA and NS records.', 8, NULL),
+    (4, 'Viewers', 'Read-only access to zones with search capability.', 9, NULL),
+    (5, 'Guests', 'Temporary group with no permissions. Suitable for users awaiting approval.', 10, NULL);
+
+SELECT setval('user_groups_id_seq', 5);
 
 CREATE TABLE user_group_members (
     id SERIAL PRIMARY KEY,
