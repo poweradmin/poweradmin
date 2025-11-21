@@ -1,6 +1,6 @@
 -- Add API key management permission
-INSERT INTO perm_items (id, name, descr) VALUES
-(65, 'api_manage_keys', 'User is allowed to create and manage API keys.');
+INSERT OR IGNORE INTO perm_items (name, descr) VALUES
+('api_manage_keys', 'User is allowed to create and manage API keys.');
 
 -- Add authentication method column to users table
 -- SQLite doesn't support ALTER COLUMN with constraints, so we need to recreate the table
@@ -95,22 +95,22 @@ CREATE INDEX IF NOT EXISTS idx_urr_created ON username_recovery_requests(created
 -- Add zone deletion permissions (Issue #97)
 -- Separate permissions for zone deletion to allow fine-grained control
 -- Previously, zone deletion was tied to zone_content_edit_* permissions
-INSERT INTO perm_items (id, name, descr) VALUES
-    (67, 'zone_delete_own', 'User is allowed to delete zones they own.');
-INSERT INTO perm_items (id, name, descr) VALUES
-    (68, 'zone_delete_others', 'User is allowed to delete zones owned by others.');
+INSERT OR IGNORE INTO perm_items (name, descr) VALUES
+    ('zone_delete_own', 'User is allowed to delete zones they own.');
+INSERT OR IGNORE INTO perm_items (name, descr) VALUES
+    ('zone_delete_others', 'User is allowed to delete zones owned by others.');
 
 -- Grant delete permissions to users with existing edit permissions
 -- This ensures backward compatibility - users who could edit can now delete
 -- Users with edit_own get delete_own
 INSERT INTO perm_templ_items (templ_id, perm_id)
-SELECT DISTINCT templ_id, 67
+SELECT DISTINCT templ_id, (SELECT id FROM perm_items WHERE name = 'zone_delete_own')
 FROM perm_templ_items
 WHERE perm_id = 44; -- zone_content_edit_own
 
 -- Users with edit_others get delete_others
 INSERT INTO perm_templ_items (templ_id, perm_id)
-SELECT DISTINCT templ_id, 68
+SELECT DISTINCT templ_id, (SELECT id FROM perm_items WHERE name = 'zone_delete_others')
 FROM perm_templ_items
 WHERE perm_id = 47; -- zone_content_edit_others
 
