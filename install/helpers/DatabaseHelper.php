@@ -193,9 +193,9 @@ class DatabaseHelper
         $templates = [
             ['name' => 'Administrator', 'descr' => 'Administrator template with full rights.'],
             ['name' => 'Zone Manager', 'descr' => 'Full management of own zones including creation, editing, deletion, and templates.'],
-            ['name' => 'DNS Editor', 'descr' => 'Edit own zone records but cannot modify SOA and NS records.'],
-            ['name' => 'Read Only', 'descr' => 'Read-only access to own zones with search capability.'],
-            ['name' => 'No Access', 'descr' => 'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.']
+            ['name' => 'Editor', 'descr' => 'Edit own zone records but cannot modify SOA and NS records.'],
+            ['name' => 'Viewer', 'descr' => 'Read-only access to own zones with search capability.'],
+            ['name' => 'Guest', 'descr' => 'Temporary access with no permissions. Suitable for users awaiting approval or limited access.']
         ];
 
         $templateIds = [];
@@ -226,9 +226,9 @@ class DatabaseHelper
             'Zone Manager' => ['zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
                                'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
                                'api_manage_keys', 'zone_delete_own'],
-            'DNS Editor' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'],
-            'Read Only' => ['zone_content_view_own', 'search'],
-            'No Access' => []
+            'Editor' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'],
+            'Viewer' => ['zone_content_view_own', 'search'],
+            'Guest' => []
         ];
 
         $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
@@ -255,6 +255,65 @@ class DatabaseHelper
             "VALUES ('admin', ?, 'Administrator', 'admin@example.net', 'Administrator with full rights.', ?, 1, 0, 'sql')"
         );
         $user_query->execute(array($userAuthService->hashPassword($pa_pass), $templateIds['Administrator']));
+
+        // Create group-type permission templates for default groups
+        $groupTemplates = [
+            ['name' => 'Administrators', 'descr' => 'Full administrative access for group members.', 'template_type' => 'group'],
+            ['name' => 'Zone Managers', 'descr' => 'Full zone management for group members.', 'template_type' => 'group'],
+            ['name' => 'Editors', 'descr' => 'Edit zone records (no SOA/NS) for group members.', 'template_type' => 'group'],
+            ['name' => 'Viewers', 'descr' => 'Read-only zone access for group members.', 'template_type' => 'group'],
+            ['name' => 'Guests', 'descr' => 'Temporary group with no permissions. Suitable for users awaiting approval.', 'template_type' => 'group'],
+        ];
+
+        $groupTemplateIds = [];
+        $stmt = $this->db->prepare("INSERT INTO perm_templ (name, descr, template_type) VALUES (:name, :descr, :template_type)");
+        foreach ($groupTemplates as $template) {
+            $stmt->execute([':name' => $template['name'], ':descr' => $template['descr'], ':template_type' => $template['template_type']]);
+            $groupTemplateIds[$template['name']] = $this->db->lastInsertId();
+        }
+
+        // Assign permissions to group templates (same as corresponding user templates)
+        $groupTemplatePermissions = [
+            'Administrators' => ['user_is_ueberuser'],
+            'Zone Managers' => ['zone_master_add', 'zone_slave_add', 'zone_content_view_own', 'zone_content_edit_own',
+                               'zone_meta_edit_own', 'search', 'user_edit_own', 'zone_templ_add', 'zone_templ_edit',
+                               'api_manage_keys', 'zone_delete_own'],
+            'Editors' => ['zone_content_view_own', 'search', 'user_edit_own', 'zone_content_edit_own_as_client'],
+            'Viewers' => ['zone_content_view_own', 'search'],
+            'Guests' => [],
+        ];
+
+        $stmt = $this->db->prepare("INSERT INTO perm_templ_items (templ_id, perm_id) VALUES (:templ_id, :perm_id)");
+        foreach ($groupTemplatePermissions as $templateName => $permissions) {
+            foreach ($permissions as $permName) {
+                if (isset($permissionIds[$permName]) && isset($groupTemplateIds[$templateName])) {
+                    $stmt->execute([
+                        ':templ_id' => $groupTemplateIds[$templateName],
+                        ':perm_id' => $permissionIds[$permName]
+                    ]);
+                }
+            }
+        }
+
+        // Create default user groups using group-type templates
+        $defaultGroups = [
+            ['name' => 'Administrators', 'description' => 'Full administrative access to all system functions.'],
+            ['name' => 'Zone Managers', 'description' => 'Full zone management including creation, editing, and deletion.'],
+            ['name' => 'Editors', 'description' => 'Edit zone records but cannot modify SOA and NS records.'],
+            ['name' => 'Viewers', 'description' => 'Read-only access to zones with search capability.'],
+            ['name' => 'Guests', 'description' => 'Temporary group with no permissions. Suitable for users awaiting approval.'],
+        ];
+
+        $stmt = $this->db->prepare("INSERT INTO user_groups (name, description, perm_templ, created_by) VALUES (:name, :description, :perm_templ, NULL)");
+        foreach ($defaultGroups as $group) {
+            if (isset($groupTemplateIds[$group['name']])) {
+                $stmt->execute([
+                    ':name' => $group['name'],
+                    ':description' => $group['description'],
+                    ':perm_templ' => $groupTemplateIds[$group['name']]
+                ]);
+            }
+        }
     }
 
     public function generateDatabaseUserInstructions(?string $pdns_db_name = null): array

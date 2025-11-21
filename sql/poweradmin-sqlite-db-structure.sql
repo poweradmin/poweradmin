@@ -47,9 +47,14 @@ CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, des
 
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (1,	'Administrator',	'Administrator template with full rights.',	'user');
 INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (2,	'Zone Manager',	'Full management of own zones including creation, editing, deletion, and templates.',	'user');
-INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.',	'user');
-INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (4,	'Read Only',	'Read-only access to own zones with search capability.',	'user');
-INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.',	'user');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (3,	'Editor',	'Edit own zone records but cannot modify SOA and NS records.',	'user');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (4,	'Viewer',	'Read-only access to own zones with search capability.',	'user');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (5,	'Guest',	'Temporary access with no permissions. Suitable for users awaiting approval or limited access.',	'user');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (6,	'Administrators',	'Full administrative access for group members.',	'group');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (7,	'Zone Managers',	'Full zone management for group members.',	'group');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (8,	'Editors',	'Edit zone records (no SOA/NS) for group members.',	'group');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (9,	'Viewers',	'Read-only zone access for group members.',	'group');
+INSERT INTO "perm_templ" ("id", "name", "descr", "template_type") VALUES (10,	'Guests',	'Temporary group with no permissions. Suitable for users awaiting approval.',	'group');
 
 CREATE TABLE perm_templ_items (id integer PRIMARY KEY, templ_id integer NOT NULL, perm_id integer NOT NULL);
 
@@ -74,6 +79,24 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (15,	3,	56);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (16,	3,	62);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (17,	4,	43);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (18,	4,	49);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (19,	6,	53);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (20,	7,	41);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (21,	7,	42);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (22,	7,	43);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (23,	7,	44);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (24,	7,	45);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (25,	7,	49);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (26,	7,	56);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (27,	7,	63);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (28,	7,	64);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (29,	7,	65);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (30,	7,	67);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (31,	8,	43);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (32,	8,	49);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (33,	8,	56);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (34,	8,	62);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (35,	9,	43);
+INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (36,	9,	49);
 
 CREATE TABLE records_zone_templ (domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
 
@@ -281,6 +304,13 @@ CREATE TRIGGER trigger_user_groups_updated_at
 BEGIN
     UPDATE user_groups SET updated_at = CURRENT_TIMESTAMP WHERE id = NEW.id;
 END;
+
+INSERT INTO user_groups (id, name, description, perm_templ, created_by) VALUES
+    (1, 'Administrators', 'Full administrative access to all system functions.', 6, NULL),
+    (2, 'Zone Managers', 'Full zone management including creation, editing, and deletion.', 7, NULL),
+    (3, 'Editors', 'Edit zone records but cannot modify SOA and NS records.', 8, NULL),
+    (4, 'Viewers', 'Read-only access to zones with search capability.', 9, NULL),
+    (5, 'Guests', 'Temporary group with no permissions. Suitable for users awaiting approval.', 10, NULL);
 
 CREATE TABLE user_group_members (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
