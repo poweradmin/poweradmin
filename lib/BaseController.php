@@ -518,6 +518,7 @@ abstract class BaseController
             $vars = array_merge($vars, [
                 'user_logged_in' => $this->userContextService->isAuthenticated(),
                 'user_name' => $this->userContextService->getDisplayName(),
+                'user_username' => $this->userContextService->getLoggedInUsername(),
                 'perm_search' => UserManager::verifyPermission($this->db, 'search'),
                 'perm_view_zone_own' => UserManager::verifyPermission($this->db, 'zone_content_view_own'),
                 'perm_view_zone_other' => UserManager::verifyPermission($this->db, 'zone_content_view_others'),
