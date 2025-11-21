@@ -855,9 +855,9 @@ class UserManager
      *
      * @param array $details Array of User details
      *
-     * @return boolean true on success, false otherwise
+     * @return int|false The new user ID on success, false otherwise
      */
-    public function addNewUser(array $details): bool
+    public function addNewUser(array $details): int|false
     {
         $ldap_use = $this->config->get('ldap', 'enabled');
         $validation = new Validator($this->db, $this->config);
@@ -920,7 +920,7 @@ class UserManager
         $stmt->bindValue(':auth_method', $auth_method);
         $stmt->execute();
 
-        return true;
+        return (int)$this->db->lastInsertId();
     }
 
     /**

@@ -32,13 +32,17 @@
 namespace Poweradmin\Application\Controller;
 
 use Poweradmin\Application\Http\Request;
+use Poweradmin\Application\Service\GroupMembershipService;
 use Poweradmin\Application\Service\MailService;
 use Poweradmin\Application\Service\PasswordGenerationService;
 use Poweradmin\Application\Service\PasswordPolicyService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupRepository;
+use Poweradmin\Infrastructure\Repository\DbUserGroupMemberRepository;
 use Symfony\Component\Validator\Constraints as Assert;
 
 class AddUserController extends BaseController
@@ -47,6 +51,9 @@ class AddUserController extends BaseController
     private PasswordGenerationService $passwordGenerationService;
     private MailService $mailService;
     private DbPermissionTemplateRepository $permissionTemplateRepository;
+    private DbUserGroupRepository $groupRepository;
+    private DbUserGroupMemberRepository $memberRepository;
+    private UserContextService $userContextService;
     protected Request $request;
 
 
@@ -64,6 +71,11 @@ class AddUserController extends BaseController
 
         // Initialize permission template repository
         $this->permissionTemplateRepository = new DbPermissionTemplateRepository($this->db, $this->config);
+
+        // Initialize group repositories for group membership management
+        $this->groupRepository = new DbUserGroupRepository($this->db);
+        $this->memberRepository = new DbUserGroupMemberRepository($this->db);
+        $this->userContextService = new UserContextService();
     }
 
     public function run(): void
@@ -114,8 +126,15 @@ class AddUserController extends BaseController
             $userParams['password'] = $generatedPassword;
         }
 
-        if ($legacyUsers->addNewUser($userParams)) {
+        $newUserId = $legacyUsers->addNewUser($userParams);
+        if ($newUserId !== false) {
             $successMessage = _('The user has been created successfully.');
+
+            // Handle group membership assignments
+            $groupIds = $this->request->getPostParam('add_to_groups', []);
+            if (is_array($groupIds) && !empty($groupIds)) {
+                $this->assignUserToGroups($newUserId, $groupIds, $userParams['username']);
+            }
 
             // Handle generated password and email sending
             if (!empty($generatedPassword)) {
@@ -181,6 +200,19 @@ class AddUserController extends BaseController
         $configManager = ConfigurationManager::getInstance();
         $mail_enabled = $configManager->get('mail', 'enabled', false);
 
+        // Fetch all available groups for group membership assignment
+        $allGroups = $this->groupRepository->findAll();
+        $availableGroups = array_map(function ($group) {
+            return [
+                'id' => $group->getId(),
+                'name' => $group->getName(),
+                'description' => $group->getDescription()
+            ];
+        }, $allGroups);
+
+        // Get previously selected groups (in case of form re-render after validation error)
+        $selectedGroups = $this->request->getPostParam('add_to_groups', []);
+
         $this->render('add_user.html', [
             'username' => $username,
             'fullname' => $fullname,
@@ -194,6 +226,9 @@ class AddUserController extends BaseController
             'ldap_use' => $this->config->get('ldap', 'enabled', false),
             'password_policy' => $policyConfig,
             'mail_enabled' => $mail_enabled,
+            'available_groups' => $availableGroups,
+            'selected_groups' => $selectedGroups,
+            'perm_is_godlike' => UserManager::verifyPermission($this->db, 'user_is_ueberuser'),
         ]);
     }
 
@@ -247,5 +282,65 @@ class AddUserController extends BaseController
         }
 
         return true;
+    }
+
+    /**
+     * Assign the newly created user to selected groups
+     *
+     * @param int $userId The ID of the newly created user
+     * @param array $groupIds Array of group IDs to assign the user to
+     * @param string $username The username for logging purposes
+     */
+    private function assignUserToGroups(int $userId, array $groupIds, string $username): void
+    {
+        // Only admins can manage group memberships
+        if (!UserManager::verifyPermission($this->db, 'user_is_ueberuser')) {
+            return;
+        }
+
+        // Convert to integers
+        $groupIds = array_map('intval', $groupIds);
+
+        $membershipService = new GroupMembershipService($this->memberRepository, $this->groupRepository);
+
+        $successfulGroups = [];
+
+        foreach ($groupIds as $groupId) {
+            try {
+                $membershipService->addUserToGroup($groupId, $userId);
+
+                // Store group info for logging
+                $group = $this->groupRepository->findById($groupId);
+                if ($group) {
+                    $successfulGroups[] = [
+                        'id' => $groupId,
+                        'name' => $group->getName()
+                    ];
+                }
+            } catch (\Exception $e) {
+                // Silently skip failed group assignments (group not found, etc.)
+            }
+        }
+
+        // Log the additions
+        if (!empty($successfulGroups)) {
+            $currentUserId = $this->userContextService->getLoggedInUserId();
+            $ldapUse = $this->config->get('ldap', 'enabled');
+            $currentUsers = UserManager::getUserDetailList($this->db, $ldapUse, $currentUserId);
+            $actorUsername = !empty($currentUsers) ? $currentUsers[0]['username'] : "ID: $currentUserId";
+
+            $logger = new \Poweradmin\Infrastructure\Logger\DbGroupLogger($this->db);
+
+            foreach ($successfulGroups as $groupInfo) {
+                $logMessage = sprintf(
+                    "Added 1 user(s) to group '%s' (ID: %d) by %s: %s",
+                    $groupInfo['name'],
+                    $groupInfo['id'],
+                    $actorUsername,
+                    $username
+                );
+                $logger->doLog($logMessage, $groupInfo['id'], LOG_INFO);
+            }
+        }
     }
 }
