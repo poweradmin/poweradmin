@@ -93,6 +93,17 @@ final class DbCompat
     ];
 
     /**
+     * Mapping of database types to their GROUP_CONCAT equivalent functions.
+     */
+    private const GROUP_CONCAT_FUNCTIONS = [
+        'mysql' => 'GROUP_CONCAT',
+        'mysqli' => 'GROUP_CONCAT',
+        'sqlite' => 'GROUP_CONCAT',
+        'pgsql' => 'STRING_AGG',
+        'default' => 'GROUP_CONCAT'
+    ];
+
+    /**
      * Returns the appropriate substring function for the given database type.
      *
      * @param string $db_type The type of database (e.g., "sqlite", "mysql", etc.)
@@ -260,6 +271,27 @@ final class DbCompat
 
         // Fallback for any other truthy/falsy value
         return $value ? 1 : 0;
+    }
+
+    /**
+     * Returns the appropriate GROUP_CONCAT expression for the given database type.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", "pgsql")
+     * @param string $column The column to aggregate
+     * @param string $separator The separator between values (default: ', ')
+     * @return string The GROUP_CONCAT expression corresponding to the given database type.
+     */
+    public static function groupConcat(string $db_type, string $column, string $separator = ', '): string
+    {
+        $func = self::GROUP_CONCAT_FUNCTIONS[$db_type] ?? self::GROUP_CONCAT_FUNCTIONS['default'];
+
+        if ($db_type === 'pgsql') {
+            // PostgreSQL uses STRING_AGG(column, separator)
+            return $func . '(' . $column . ", '" . $separator . "')";
+        } else {
+            // MySQL and SQLite use GROUP_CONCAT(column SEPARATOR 'sep')
+            return $func . '(' . $column . " SEPARATOR '" . $separator . "')";
+        }
     }
 
     /**

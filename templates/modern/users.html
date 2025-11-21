@@ -25,6 +25,7 @@
                         <th>{% trans %}Fullname{% endtrans %}</th>
                         <th>{% trans %}Email address{% endtrans %}</th>
                         <th>{% trans %}Template{% endtrans %}</th>
+                        <th>{% trans %}Groups{% endtrans %}</th>
                         <th class="text-center">{% trans %}Auth Type{% endtrans %}</th>
                         <th class="text-center">{% trans %}Enabled{% endtrans %}</th>
                         <th class="text-end">{% trans %}Actions{% endtrans %}</th>
@@ -61,6 +62,16 @@
                             {% else %}
                             <input type="hidden" name="user[{{ user['uid'] }}][templ_id]" value="{{ user['tpl_id'] }}">
                             {{ user['tpl_name'] }}
+                            {% endif %}
+                        </td>
+
+                        <td class="small text-muted">
+                            {% if user['groups'] is not empty %}
+                                {% for group in user['groups'] %}
+                                <div>{{ group }}</div>
+                                {% endfor %}
+                            {% else %}
+                            -
                             {% endif %}
                         </td>
 
@@ -105,6 +116,16 @@
                         <td>{{ user['fullname'] }}</td>
                         <td>{{ user['email'] }}</td>
                         <td>{{ user['tpl_name'] }}</td>
+
+                        <td class="small text-muted">
+                            {% if user['groups'] is not empty %}
+                                {% for group in user['groups'] %}
+                                <div>{{ group }}</div>
+                                {% endfor %}
+                            {% else %}
+                            -
+                            {% endif %}
+                        </td>
 
                         <td class="text-center">
                             {% if user['auth_type'] == 'sql' %}

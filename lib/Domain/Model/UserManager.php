@@ -656,6 +656,9 @@ class UserManager
         $stmt->execute();
         $response = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        // Fetch user groups in a separate query
+        $userGroups = self::getUserGroupsMap($db);
+
         $userList = array();
         foreach ($response as $user) {
             $userList[] = array(
@@ -669,10 +672,40 @@ class UserManager
                 "auth_type" => $user['auth_method'] ?? 'sql',
                 "tpl_id" => $user['tpl_id'],
                 "tpl_name" => $user['tpl_name'],
-                "tpl_descr" => $user['tpl_descr']
+                "tpl_descr" => $user['tpl_descr'],
+                "groups" => $userGroups[$user['uid']] ?? []
             );
         }
         return $userList;
+    }
+
+    /**
+     * Get a map of user IDs to their group names
+     *
+     * @param object $db Database connection
+     * @return array Map of user_id => array of group names
+     */
+    private static function getUserGroupsMap($db): array
+    {
+        $query = "SELECT ugm.user_id, ug.name AS group_name
+                  FROM user_group_members ugm
+                  INNER JOIN user_groups ug ON ugm.group_id = ug.id
+                  ORDER BY ugm.user_id, ug.name";
+
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+        $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $userGroups = [];
+        foreach ($results as $row) {
+            $userId = $row['user_id'];
+            if (!isset($userGroups[$userId])) {
+                $userGroups[$userId] = [];
+            }
+            $userGroups[$userId][] = $row['group_name'];
+        }
+
+        return $userGroups;
     }
 
     /**
