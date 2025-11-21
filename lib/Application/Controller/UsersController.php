@@ -31,9 +31,12 @@
 
 namespace Poweradmin\Application\Controller;
 
+use Poweradmin\Application\Presenter\PaginationPresenter;
+use Poweradmin\Application\Service\PaginationService;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Model\UserManager;
+use Poweradmin\Infrastructure\Service\HttpPaginationParameters;
 
 class UsersController extends BaseController
 {
@@ -89,12 +92,38 @@ class UsersController extends BaseController
             ]
         );
 
+        // Pagination setup
+        $httpParameters = new HttpPaginationParameters();
+        $currentPage = $httpParameters->getCurrentPage();
+        $rowsPerPage = $this->config->get('interface', 'rows_per_page', 50);
+
+        $paginationService = new PaginationService();
+        $rowsPerPage = $paginationService->getUserRowsPerPage($rowsPerPage, $_SESSION['userid'] ?? null);
+
+        // Get total count and paginated users
+        $totalUsers = UserManager::countUsers($this->db);
+        $offset = ($currentPage - 1) * $rowsPerPage;
+        $users = UserManager::getUserDetailList(
+            $this->db,
+            $this->config->get('ldap', 'enabled', false),
+            null,
+            $rowsPerPage,
+            $offset
+        );
+
+        // Create pagination
+        $pagination = $paginationService->createPagination($totalUsers, $rowsPerPage, $currentPage);
+        $paginationPresenter = new PaginationPresenter($pagination, '/users?start={PageNumber}');
+
         $this->render('users.html', [
             'permissions' => $permissions,
             'perm_templates' => UserManager::listPermissionTemplates($this->db, 'user'),
-            'users' => UserManager::getUserDetailList($this->db, $this->config->get('ldap', 'enabled', false)),
+            'users' => $users,
             'session_userid' => $_SESSION["userid"],
             'perm_add_new' => UserManager::verifyPermission($this->db, 'user_add_new'),
+            'pagination' => $paginationPresenter->present(),
+            'total_users' => $totalUsers,
+            'rows_per_page' => $rowsPerPage,
         ]);
     }
 }
