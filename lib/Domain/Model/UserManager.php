@@ -604,6 +604,40 @@ class UserManager
     }
 
     /**
+     * Count total users for pagination
+     *
+     * @param object $db Database connection
+     * @param int|null $specific User ID (optional)
+     *
+     * @return int Total number of users
+     */
+    public static function countUsers($db, ?int $specific = null): int
+    {
+        $userid = $_SESSION['userid'];
+
+        if ($specific) {
+            $sql_add = "AND users.id = :specific";
+        } elseif (self::verifyPermission($db, 'user_view_others')) {
+            $sql_add = "";
+        } else {
+            $sql_add = "AND users.id = :userid";
+        }
+
+        $query = "SELECT COUNT(*) FROM users, perm_templ WHERE users.perm_templ = perm_templ.id " . $sql_add;
+
+        $stmt = $db->prepare($query);
+
+        if ($specific) {
+            $stmt->bindValue(':specific', $specific, PDO::PARAM_INT);
+        } elseif (!self::verifyPermission($db, 'user_view_others')) {
+            $stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+        return (int) $stmt->fetchColumn();
+    }
+
+    /**
      * Get User Details
      *
      * Gets an array of all users and their details
@@ -611,10 +645,12 @@ class UserManager
      * @param $db
      * @param $ldap_use
      * @param int|null $specific User ID (optional)
+     * @param int|null $limit Number of records to return (optional)
+     * @param int|null $offset Starting offset (optional)
      *
      * @return array array of user details
      */
-    public static function getUserDetailList($db, $ldap_use, ?int $specific = null): array
+    public static function getUserDetailList($db, $ldap_use, ?int $specific = null, ?int $limit = null, ?int $offset = null): array
     {
         $userid = $_SESSION['userid'];
 
@@ -645,12 +681,21 @@ class UserManager
         WHERE users.perm_templ = perm_templ.id " . $sql_add . "
         ORDER BY username";
 
+        if ($limit !== null) {
+            $query .= " LIMIT :limit OFFSET :offset";
+        }
+
         $stmt = $db->prepare($query);
 
         if ($specific) {
             $stmt->bindValue(':specific', $specific, PDO::PARAM_INT);
         } elseif (!self::verifyPermission($db, 'user_view_others')) {
             $stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
+        }
+
+        if ($limit !== null) {
+            $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+            $stmt->bindValue(':offset', $offset ?? 0, PDO::PARAM_INT);
         }
 
         $stmt->execute();
