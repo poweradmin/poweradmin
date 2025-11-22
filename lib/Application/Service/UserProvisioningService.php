@@ -259,6 +259,9 @@ class UserProvisioningService extends LoggingService
                 $this->linkOidcToExistingUser($userId, $userInfo, $providerId);
             }
 
+            // Apply group membership based on external groups
+            $this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod);
+
             $this->logInfo('Successfully created new user: {username} with ID: {id}', [
                 'username' => $username,
                 'id' => $userId
@@ -334,6 +337,9 @@ class UserProvisioningService extends LoggingService
 
                 $this->logInfo('Updated user information and permissions for user ID: {id}', ['id' => $userId]);
             }
+
+            // Apply/sync group membership based on external groups
+            $this->applyGroupMembership($userId, $userInfo->getGroups(), $authMethod);
         } catch (\Exception $e) {
             $this->logError('Error updating existing user: {error}', ['error' => $e->getMessage()]);
         }
@@ -829,6 +835,167 @@ class UserProvisioningService extends LoggingService
             }
         } catch (\Exception $e) {
             $this->logError('Error cleaning up orphaned OIDC links: {error}', ['error' => $e->getMessage()]);
+        }
+    }
+
+    /**
+     * Synchronize group membership based on OIDC/SAML groups
+     * Maps external groups to Poweradmin groups, adds user to matching groups,
+     * and removes user from mapped groups they no longer belong to.
+     *
+     * @param int $userId User ID to sync groups for
+     * @param array $externalGroups Groups from external identity provider
+     * @param string $authMethod Authentication method (oidc or saml)
+     */
+    private function applyGroupMembership(int $userId, array $externalGroups, string $authMethod): void
+    {
+        $groupMapping = $this->configManager->get($authMethod, 'group_mapping', []);
+
+        if (empty($groupMapping)) {
+            $this->logInfo('No group mapping configured for {method}, skipping group membership sync', [
+                'method' => strtoupper($authMethod)
+            ]);
+            return;
+        }
+
+        $this->logInfo('Synchronizing group membership for user {userId} based on {method} groups: {groups}', [
+            'userId' => $userId,
+            'method' => strtoupper($authMethod),
+            'groups' => $externalGroups
+        ]);
+
+        // Determine which Poweradmin groups the user should be in based on external groups
+        $targetGroupIds = [];
+        $targetGroupNames = [];
+        foreach ($groupMapping as $externalGroupName => $poweradminGroupName) {
+            if (in_array($externalGroupName, $externalGroups, true)) {
+                $groupId = $this->findGroupByName($poweradminGroupName);
+                if ($groupId) {
+                    $targetGroupIds[] = $groupId;
+                    $targetGroupNames[$groupId] = $poweradminGroupName;
+                } else {
+                    $this->logWarning('Poweradmin group {group} not found for mapping from external group {external}', [
+                        'group' => $poweradminGroupName,
+                        'external' => $externalGroupName
+                    ]);
+                }
+            }
+        }
+
+        // Get all mapped Poweradmin group IDs (regardless of current external groups)
+        $allMappedGroupIds = [];
+        $allMappedGroupNames = [];
+        foreach ($groupMapping as $poweradminGroupName) {
+            $groupId = $this->findGroupByName($poweradminGroupName);
+            if ($groupId) {
+                $allMappedGroupIds[] = $groupId;
+                $allMappedGroupNames[$groupId] = $poweradminGroupName;
+            }
+        }
+
+        // Remove user from mapped groups they should no longer be in
+        $groupsToRemove = array_diff($allMappedGroupIds, $targetGroupIds);
+        foreach ($groupsToRemove as $groupId) {
+            if ($this->removeUserFromGroup($userId, $groupId)) {
+                $this->logInfo('Removed user {userId} from group: {group} (no longer in external group)', [
+                    'userId' => $userId,
+                    'group' => $allMappedGroupNames[$groupId] ?? $groupId
+                ]);
+            }
+        }
+
+        // Add user to groups they should be in
+        $addedGroups = [];
+        foreach ($targetGroupIds as $groupId) {
+            if ($this->addUserToGroup($userId, $groupId)) {
+                $addedGroups[] = $targetGroupNames[$groupId];
+            }
+        }
+
+        if (!empty($addedGroups)) {
+            $this->logInfo('User {userId} membership synchronized, in groups: {groups}', [
+                'userId' => $userId,
+                'groups' => implode(', ', $addedGroups)
+            ]);
+        } else {
+            $this->logInfo('User {userId} not a member of any mapped groups', ['userId' => $userId]);
+        }
+    }
+
+    /**
+     * Find a Poweradmin group by name
+     *
+     * @param string $groupName Group name to find
+     * @return int|null Group ID or null if not found
+     */
+    private function findGroupByName(string $groupName): ?int
+    {
+        try {
+            $stmt = $this->db->prepare("SELECT id FROM user_groups WHERE name = ?");
+            $stmt->execute([$groupName]);
+            $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            return $result ? (int)$result['id'] : null;
+        } catch (\Exception $e) {
+            $this->logError('Error finding group by name: {error}', ['error' => $e->getMessage()]);
+            return null;
+        }
+    }
+
+    /**
+     * Add a user to a group if not already a member
+     *
+     * @param int $userId User ID
+     * @param int $groupId Group ID
+     * @return bool True if user was added or already a member
+     */
+    private function addUserToGroup(int $userId, int $groupId): bool
+    {
+        try {
+            // Check if membership already exists
+            $stmt = $this->db->prepare("SELECT id FROM user_group_members WHERE group_id = ? AND user_id = ?");
+            $stmt->execute([$groupId, $userId]);
+
+            if ($stmt->fetch()) {
+                return true;
+            }
+
+            // Add user to group
+            $stmt = $this->db->prepare("INSERT INTO user_group_members (group_id, user_id, created_at) VALUES (?, ?, CURRENT_TIMESTAMP)");
+            $stmt->execute([$groupId, $userId]);
+
+            return true;
+        } catch (\Exception $e) {
+            $this->logError('Error adding user {userId} to group {groupId}: {error}', [
+                'userId' => $userId,
+                'groupId' => $groupId,
+                'error' => $e->getMessage()
+            ]);
+            return false;
+        }
+    }
+
+    /**
+     * Remove a user from a group
+     *
+     * @param int $userId User ID
+     * @param int $groupId Group ID
+     * @return bool True if user was removed or wasn't a member
+     */
+    private function removeUserFromGroup(int $userId, int $groupId): bool
+    {
+        try {
+            $stmt = $this->db->prepare("DELETE FROM user_group_members WHERE group_id = ? AND user_id = ?");
+            $stmt->execute([$groupId, $userId]);
+
+            return $stmt->rowCount() > 0;
+        } catch (\Exception $e) {
+            $this->logError('Error removing user {userId} from group {groupId}: {error}', [
+                'userId' => $userId,
+                'groupId' => $groupId,
+                'error' => $e->getMessage()
+            ]);
+            return false;
         }
     }
 }
