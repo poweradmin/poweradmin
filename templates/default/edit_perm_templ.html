@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/permissions/templates">{% trans %}Permission templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/permissions/templates">{% trans %}Access templates{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Edit{% endtrans %}</li>
     </ol>
 </nav>
@@ -15,7 +15,7 @@
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
                 <div class="card-header py-3">
-                    <strong><i class="bi bi-shield-check me-2"></i>{% trans %}Edit Permission Template{% endtrans %}: "{{ templ['name'] }}"</strong>
+                    <strong><i class="bi bi-shield-check me-2"></i>{% trans %}Edit Access Template{% endtrans %}: "{{ templ['name'] }}"</strong>
                 </div>
                 <div class="card-body">
                     
@@ -56,7 +56,7 @@
             </div>
         </div>
 
-        <!-- About Permission Templates -->
+        <!-- About Access Templates -->
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
                 <div class="card-header py-3">

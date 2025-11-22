@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item" aria-current="page">{% trans %}Permission templates{% endtrans %}</li>
+        <li class="breadcrumb-item" aria-current="page">{% trans %}Access templates{% endtrans %}</li>
     </ol>
 </nav>
 
@@ -11,7 +11,7 @@
 
 <div class="card shadow-sm mb-4">
     <div class="card-header py-3">
-        <strong><i class="bi bi-shield-lock me-2"></i>{% trans %}Permission Templates{% endtrans %}</strong>
+        <strong><i class="bi bi-shield-lock me-2"></i>{% trans %}Access Templates{% endtrans %}</strong>
     </div>
     <div class="card-body p-0">
         <div class="table-responsive">
@@ -27,7 +27,7 @@
                 <tbody>
                 {% if permission_templates is empty %}
                 <tr>
-                    <td colspan="4" class="text-center py-3">{% trans %}No permission templates found{% endtrans %}</td>
+                    <td colspan="4" class="text-center py-3">{% trans %}No access templates found{% endtrans %}</td>
                 </tr>
                 {% else %}
                 {% for template in permission_templates %}
@@ -59,7 +59,7 @@
     {% if templ_perm_add %}
     <div class="card-footer py-3">
         <a class="btn btn-primary btn-sm" href="{{ base_url_prefix }}/permissions/templates/add">
-            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add permission template{% endtrans %}
+            <i class="bi bi-plus-circle me-1 text-white"></i>{% trans %}Add access template{% endtrans %}
         </a>
     </div>
     {% endif %}
