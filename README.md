@@ -16,16 +16,21 @@ DNSSEC operations.
 
 - Supports all zone types (master, native, and slave)
 - Supermasters for automatic provisioning of slave zones
+- Zone templates for quick zone creation
+- Bulk operations for records and reverse DNS
 - IPv6 support
 - Multi-language support (15+ languages)
 - DNSSEC operations via PowerDNS API
 - Light and dark themes
+- Search functionality across zones and records
+- User and permission management with role-based access
 - Ability to add reverse records
 - Authentication options:
   - Local database authentication
   - LDAP authentication with custom filter
+  - SAML and OIDC authentication
   - Multi-factor authentication (MFA/2FA) with TOTP
-- RESTful API with OpenAPI documentation
+- RESTful API with OpenAPI documentation (used by Terraform/OpenTofu provider)
 - Docker deployment with FrankenPHP
 
 ## Screenshots
@@ -85,7 +90,7 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 * PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
 * PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, xml, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
 * MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
-* PowerDNS authoritative server 4.0.0+
+* PowerDNS authoritative server 4.0.0+ (including 5.0)
 
 ## Tested on
 
@@ -104,6 +109,8 @@ Poweradmin is independently developed and maintained. Your support helps keep th
 
 [![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
 
+JetBrains provides IDE licenses used for development of this project.
+
 ### Organizations Supporting Development
 
 * HLkomm Telekommunikations GmbH
@@ -121,9 +128,13 @@ Poweradmin is independently developed and maintained. Your support helps keep th
 
 For feature sponsorship or to be added to the supporters list, please [contact me](https://github.com/edmondas).
 
+## Related Projects
+
+* [terraform-provider-poweradmin](https://github.com/poweradmin/terraform-provider-poweradmin) - Terraform/OpenTofu provider for managing DNS zones and records through Poweradmin
+
 ## Note
 
-Poweradmin is an independent community project, not affiliated with [PowerDNS.com](https://www.powerdns.com/index.html) or [Open-Xchange](https://www.open-xchange.com). Looking for alternatives? Check out other [PowerDNS web frontends](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
+Poweradmin is an independent community project, not affiliated with [PowerDNS.com](https://www.powerdns.com/index.html) or [Open-Xchange](https://www.open-xchange.com).
 
 ## License
 
