@@ -31,7 +31,7 @@
     <div class="card-body">
         <!-- Reverse Zone Type Filter as Button Group -->
         <div class="mb-3">
-            <div class="btn-group" role="group" aria-label="{% trans %}Reverse Zone Types{% endtrans %}">
+            <div class="btn-group btn-group-sm" role="group" aria-label="{% trans %}Reverse Zone Types{% endtrans %}">
                 <a href="{{ base_url_prefix }}/zones/reverse?reverse_type=all" class="btn {{ reverse_zone_type == 'all' ? 'btn-secondary' : 'btn-outline-secondary' }}">
                     {% trans %}All{% endtrans %} <span class="badge bg-secondary text-white">{{ count_all_reverse_zones }}</span>
                 </a>

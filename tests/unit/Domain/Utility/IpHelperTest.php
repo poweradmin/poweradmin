@@ -381,4 +381,118 @@ class IpHelperTest extends TestCase
         $result2 = IpHelper::shortenIPv6ReverseZone($input);
         $this->assertEquals($result1, $result2);
     }
+
+    /**
+     * Test shortening a full expanded IPv6 address
+     */
+    public function testShortenIPv6AddressFullExpanded(): void
+    {
+        $result = IpHelper::shortenIPv6Address('2001:0db8:0000:0000:0000:0000:0000:0001');
+        $this->assertEquals('2001:db8::1', $result);
+    }
+
+    /**
+     * Test shortening an already compressed IPv6 address
+     */
+    public function testShortenIPv6AddressAlreadyCompressed(): void
+    {
+        $result = IpHelper::shortenIPv6Address('2001:db8::1');
+        $this->assertEquals('2001:db8::1', $result);
+    }
+
+    /**
+     * Test shortening IPv6 loopback address
+     */
+    public function testShortenIPv6AddressLoopback(): void
+    {
+        $result = IpHelper::shortenIPv6Address('0000:0000:0000:0000:0000:0000:0000:0001');
+        $this->assertEquals('::1', $result);
+    }
+
+    /**
+     * Test shortening IPv6 all zeros
+     */
+    public function testShortenIPv6AddressAllZeros(): void
+    {
+        $result = IpHelper::shortenIPv6Address('0000:0000:0000:0000:0000:0000:0000:0000');
+        $this->assertEquals('::', $result);
+    }
+
+    /**
+     * Test shortening IPv6 address with leading zeros in groups
+     */
+    public function testShortenIPv6AddressLeadingZeros(): void
+    {
+        $result = IpHelper::shortenIPv6Address('2001:0db8:0085:0000:0000:0008:0800:0200');
+        $this->assertEquals('2001:db8:85::8:800:200', $result);
+    }
+
+    /**
+     * Test shortening IPv6 address returns original for invalid input
+     */
+    public function testShortenIPv6AddressInvalidReturnsOriginal(): void
+    {
+        $result = IpHelper::shortenIPv6Address('not-an-ipv6-address');
+        $this->assertEquals('not-an-ipv6-address', $result);
+    }
+
+    /**
+     * Test shortening IPv6 address returns original for IPv4 address
+     */
+    public function testShortenIPv6AddressIPv4ReturnsOriginal(): void
+    {
+        $result = IpHelper::shortenIPv6Address('192.168.1.1');
+        $this->assertEquals('192.168.1.1', $result);
+    }
+
+    /**
+     * Test shortening IPv6 address with empty string
+     */
+    public function testShortenIPv6AddressEmptyString(): void
+    {
+        $result = IpHelper::shortenIPv6Address('');
+        $this->assertEquals('', $result);
+    }
+
+    /**
+     * Test shortening IPv6 address with whitespace
+     */
+    public function testShortenIPv6AddressWithWhitespace(): void
+    {
+        $result = IpHelper::shortenIPv6Address('  2001:0db8:0000:0000:0000:0000:0000:0001  ');
+        $this->assertEquals('2001:db8::1', $result);
+    }
+
+    /**
+     * Test shortening IPv6 address - real world examples
+     */
+    public function testShortenIPv6AddressRealWorld(): void
+    {
+        $testCases = [
+            // Google Public DNS
+            '2001:4860:4860:0000:0000:0000:0000:8888' => '2001:4860:4860::8888',
+            // Cloudflare DNS
+            '2606:4700:4700:0000:0000:0000:0000:1111' => '2606:4700:4700::1111',
+            // Link-local address
+            'fe80:0000:0000:0000:0000:0000:0000:0001' => 'fe80::1',
+            // Full address with no compression needed
+            '2001:db8:85a3:8d3:1319:8a2e:370:7348' => '2001:db8:85a3:8d3:1319:8a2e:370:7348',
+        ];
+
+        foreach ($testCases as $input => $expected) {
+            $result = IpHelper::shortenIPv6Address($input);
+            $this->assertEquals($expected, $result, "Failed for input: $input");
+        }
+    }
+
+    /**
+     * Test that shortenIPv6Address is idempotent
+     */
+    public function testShortenIPv6AddressIdempotent(): void
+    {
+        $input = '2001:0db8:0000:0000:0000:0000:0000:0001';
+        $result1 = IpHelper::shortenIPv6Address($input);
+        $result2 = IpHelper::shortenIPv6Address($result1);
+        $this->assertEquals($result1, $result2);
+    }
 }

@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Domain\Model\RecordDisplay;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Domain\Utility\IpHelper;
 
 /**
  * Service responsible for transforming DNS records for display purposes
@@ -55,8 +56,23 @@ class RecordDisplayService
             $editableName = $displayName;
         }
 
+        // Shorten IPv6 addresses in AAAA record content for display
+        $transformedRecord = $record;
+        if (isset($record['type']) && $record['type'] === 'AAAA' && isset($record['content'])) {
+            $transformedRecord['content'] = IpHelper::shortenIPv6Address($record['content']);
+        }
+
+        // Shorten IPv6 reverse zone names (PTR records) for display
+        if (isset($record['name']) && str_ends_with($record['name'], '.ip6.arpa')) {
+            $shortened = IpHelper::shortenIPv6ReverseZone($record['name']);
+            if ($shortened !== null) {
+                $displayName = $shortened;
+                // Keep editable name as original for form submissions
+            }
+        }
+
         return new RecordDisplay(
-            $record,
+            $transformedRecord,
             $displayName,
             $editableName,
             $this->displayHostnameOnly
