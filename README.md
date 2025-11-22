@@ -112,17 +112,15 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 
 ## Contributing
 
-We welcome contributions to improve Poweradmin. Please see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed guidelines on how to contribute to this project.
+We welcome contributions to Poweradmin! As the sole maintainer of this non-profit project, I work alongside our amazing [contributors](https://github.com/poweradmin/poweradmin/graphs/contributors). See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-## Financial Support and Donations
+<a href="https://github.com/poweradmin/poweradmin/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=poweradmin/poweradmin" />
+</a>
 
-As the sole maintainer of Poweradmin, a non-profit project, I work alongside our amazing community of voluntary
-[contributors](https://github.com/poweradmin/poweradmin/graphs/contributors). I am deeply grateful for both individual
-donations and financial support from organizations. While personal donations help maintain the project, companies often
-provide financial support for implementing new features or fixing specific issues. This combined support enables
-continuous development and improvement of the project.
+## Financial Support
 
-If your name is missing from the lists below, please [contact me](https://github.com/edmondas).
+Donations help maintain and improve the project. For feature sponsorship or to be added to the lists below, please [contact me](https://github.com/edmondas).
 
 ### Organizations Supporting Development
 
