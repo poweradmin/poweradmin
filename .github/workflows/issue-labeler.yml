@@ -22,10 +22,45 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - uses: github/issue-labeler@v3.4
+      - name: Apply keyword-based labels
         if: github.event.issue.title != 'Dependency Dashboard'
+        uses: github/issue-labeler@v3.4
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           configuration-path: .github/issue-labeler.yml
           include-title: 1
           enable-versioned-regex: 0
+
+      - name: Apply issue type label and resolve conflicts
+        if: github.event.issue.title != 'Dependency Dashboard'
+        run: |
+          ISSUE_NUMBER=${{ github.event.issue.number }}
+          TITLE="${{ github.event.issue.title }}"
+
+          # Determine issue type from title prefix (set by issue templates)
+          if [[ "$TITLE" == \[Bug\]:* ]]; then
+            # Bug report - ensure bug label, remove feature if present
+            gh issue edit "$ISSUE_NUMBER" --add-label bug || true
+            gh issue edit "$ISSUE_NUMBER" --remove-label feature || true
+          elif [[ "$TITLE" == \[Feature\]:* ]]; then
+            # Feature request - ensure feature label, remove bug if present
+            gh issue edit "$ISSUE_NUMBER" --add-label feature || true
+            gh issue edit "$ISSUE_NUMBER" --remove-label bug || true
+          fi
+
+          # Get current labels
+          LABELS=$(gh issue view "$ISSUE_NUMBER" --json labels -q '.labels[].name' | tr '\n' ',')
+
+          # If both bug and feature are present (from keyword matching), keep only one based on title
+          if [[ "$LABELS" == *"bug"* ]] && [[ "$LABELS" == *"feature"* ]]; then
+            if [[ "$TITLE" == \[Bug\]:* ]]; then
+              gh issue edit "$ISSUE_NUMBER" --remove-label feature || true
+            elif [[ "$TITLE" == \[Feature\]:* ]]; then
+              gh issue edit "$ISSUE_NUMBER" --remove-label bug || true
+            else
+              # No template prefix - remove both, let maintainers decide
+              gh issue edit "$ISSUE_NUMBER" --remove-label bug,feature || true
+            fi
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

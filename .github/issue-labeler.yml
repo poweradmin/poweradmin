@@ -1,57 +1,67 @@
 # Issue auto-labeling configuration
 # Automatically applies labels to issues based on keywords in title and body
 # Uses regex patterns - case insensitive matching
+#
+# IMPORTANT: bug and feature labels are mutually exclusive and handled by
+# the workflow based on issue template type. Keywords here are backup only.
 
+# === Authentication & Security ===
 auth:
-  - '(authentication|login|logout|session|mfa|2fa|two.factor|ldap|saml|oidc|oauth|sso|sign.in|credentials|password)'
-
-dns:
-  - '(dns|zone(?!.template)|record(?!.template)|domain|nameserver|ns\s|a\srecord|aaaa|cname|mx\srecord|txt\srecord|srv\srecord|ptr\srecord)'
-
-dnssec:
-  - '(dnssec|ds\srecord|dnskey|nsec|rrsig|crypto.key|key\ssigning)'
-
-api:
-  - '(api|rest|endpoint|/api/|json\sresponse|swagger|openapi)'
-
-ui:
-  - '(user\sinterface|frontend|ui|design|css|stylesheet|javascript|layout|responsive|button|form\sfield)'
-
-ui-templates:
-  - '(twig|template(?!.zone)(?!.record)|theme|\.html|\.twig|rendering)'
-
-dns-templates:
-  - '(zone\stemplate|record\stemplate|template\szone|template\srecord)'
-
-validation:
-  - '(validation|validate|validator|invalid\s|input\svalidation|form\svalidation|data\svalidation)'
+  - '(authentication|log\s?in|log\s?out|session\smanagement|mfa|2fa|two.factor|ldap\s|saml\s|oidc\s|oauth\s|sso\s|sign.in|credentials|password\s(reset|change|policy))'
 
 security:
-  - '(security|vulnerability|vulnerabilities|xss|sql\sinjection|csrf|exploit|cve-|penetration|breach|malicious)'
+  - '(security|vulnerability|vulnerabilities|xss|sql.injection|csrf|exploit|cve-\d|penetration|breach|malicious|attack)'
 
-integration:
-  - '(ldap\sintegration|powerdns\sapi|saml\sintegration|oidc\sprovider|oauth\sprovider|external\sservice|third.party)'
+# === DNS Core ===
+dns:
+  - '(dns\s|zone\s(?!template)|record\s(?!template)|nameserver|ns\srecord|a\srecord|aaaa\srecord|cname\srecord|mx\srecord|txt\srecord|srv\srecord|ptr\srecord|soa\srecord)'
 
+dnssec:
+  - '(dnssec|ds\srecord|dnskey|nsec3?|rrsig|key.signing|zone.signing)'
+
+dns-templates:
+  - '(zone.template|record.template|template.zone|template.record|default.record)'
+
+# === API ===
+api:
+  - '(rest\sapi|api\sendpoint|/api/v|json\sresponse|swagger|openapi|api.key|api.authentication)'
+
+# === User Interface ===
+ui:
+  - '(user.interface|\bui\b|frontend|css\s|stylesheet|javascript|layout|responsive|button|form.field|modal|dialog|dropdown)'
+
+ui-templates:
+  - '(twig\s|\.twig\b|theme\s|template.file|rendering|partial)'
+
+# === Core Functionality ===
 core:
-  - '(user\smanagement|permission|role|access\scontrol|überuser|authorization)'
+  - '(user.management|permission.template|role.assignment|access.control|überuser|supermaster|supermasteraccount)'
 
+validation:
+  - '(validation|validator|invalid.input|input.validation|form.validation|data.validation|constraint)'
+
+# === Infrastructure ===
 infra:
-  - '(docker|container|deployment|infrastructure|performance|nginx|apache|caddy|server|hosting|ci/cd|github\sactions)'
-
-i18n:
-  - '(translation|locale|language|i18n|internationalization|gettext|transifex|\.po\sfile|\.mo\sfile)'
-
-docs:
-  - '(documentation|readme|guide|tutorial|wiki|changelog|contributing|how\sto)'
+  - '(docker|container|dockerfile|deployment|nginx|apache|caddy|frankenphp|ci/cd|github.actions|\.yml\sworkflow)'
 
 installer:
-  - '(install|installation|setup|first\stime|getting\sstarted|install\.php|wizard)'
+  - '(installation|setup.wizard|first.time.setup|getting.started|install\.php|initial.config)'
 
+# === Internationalization ===
+i18n:
+  - '(translation|locale|language.support|i18n|internationalization|gettext|transifex|\.po\b|\.mo\b|localization)'
+
+# === Documentation ===
+docs:
+  - '(documentation|readme\.md|user.guide|tutorial|wiki\s|changelog|contributing\.md)'
+
+# === Dependencies ===
 dependencies:
-  - '(dependency|dependencies|composer|npm|package|library|vendor|node_modules)'
+  - '(dependency|dependencies|composer\.(json|lock)|npm|package\.json|library.update|vendor)'
 
+# === Issue Type (backup patterns - workflow uses template type as primary) ===
 bug:
-  - '(bug|error|crash|issue|problem|broken|not\sworking|fails\sto|exception|fatal|warning\s)'
+  - '(\[bug\]|bug.report|error.message|crash|exception|fatal.error|not.working|fails.to|broken|regression)'
 
 feature:
-  - '(feature|enhancement|improvement|request|suggest|would\sbe\snice|add\ssupport|implement)'
+  - '(\[feature\]|feature.request|enhancement|new.feature|add.support|implement.new|would.like)'
