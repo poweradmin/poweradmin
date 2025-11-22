@@ -393,7 +393,7 @@
                             <input class="form-check-input" type="checkbox" name="record_id[]" value="{{ record['id'] }}">
                             {% endif %}
                         </td>
-                        <td>{{ record['name'] }}</td>
+                        <td>{{ record['display_name'] is defined ? record['display_name'] : record['name'] }}</td>
                         <td><span class="badge {% if record['type'] == 'A' %}bg-primary{% elseif record['type'] == 'AAAA' %}bg-info{% elseif record['type'] == 'CNAME' %}bg-success{% elseif record['type'] == 'MX' %}bg-warning{% elseif record['type'] == 'TXT' %}bg-secondary{% elseif record['type'] == 'PTR' %}bg-danger{% elseif record['type'] == 'SOA' %}bg-dark{% elseif record['type'] == 'NS' %}bg-info{% else %}bg-secondary{% endif %}">{{ record['type'] }}</span></td>
                         <td>{{ record['prio'] }}</td>
                         <td><code class="text-break">{{ record['content'] }}</code></td>

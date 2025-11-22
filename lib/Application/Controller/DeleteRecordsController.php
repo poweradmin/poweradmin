@@ -39,6 +39,7 @@ use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\ReverseRecordCreator;
+use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 
@@ -220,6 +221,20 @@ class DeleteRecordsController extends BaseController
                 }
 
                 $record_info['zone_name'] = $dnsRecord->getDomainNameById($domain_id);
+
+                // Shorten IPv6 addresses in AAAA record content for display
+                if ($record_info['type'] === 'AAAA' && isset($record_info['content'])) {
+                    $record_info['content'] = IpHelper::shortenIPv6Address($record_info['content']);
+                }
+
+                // Shorten IPv6 reverse zone names (PTR records) for display
+                if (isset($record_info['name']) && str_ends_with($record_info['name'], '.ip6.arpa')) {
+                    $shortened = IpHelper::shortenIPv6ReverseZone($record_info['name']);
+                    if ($shortened !== null) {
+                        $record_info['display_name'] = $shortened;
+                    }
+                }
+
                 $records[] = $record_info;
             }
         }

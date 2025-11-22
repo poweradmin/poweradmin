@@ -36,6 +36,7 @@ use Poweradmin\Application\Query\ZoneSearch;
 use Poweradmin\BaseController;
 use Poweradmin\Domain\Model\Permission;
 use Poweradmin\Domain\Service\RecordTypeService;
+use Poweradmin\Domain\Utility\IpHelper;
 
 class SearchController extends BaseController
 {
@@ -197,6 +198,9 @@ class SearchController extends BaseController
             );
 
             $totalRecords = $recordSearch->getTotalRecords($parameters, $permission_view, $iface_search_group_records);
+
+            // Shorten IPv6 addresses in AAAA record content for display
+            $searchResultRecords = $this->shortenIPv6InRecords($searchResultRecords);
         }
 
         $this->showSearchForm(
@@ -294,6 +298,34 @@ class SearchController extends BaseController
         }
 
         return [$sortOrder, $sortDirection];
+    }
+
+    /**
+     * Shorten IPv6 addresses in records for better display
+     *
+     * - AAAA records: Shortens IPv6 content (e.g., 2001:0db8:0000:... -> 2001:db8::...)
+     * - PTR records in ip6.arpa: Shortens the record name display
+     *
+     * @param array $records Array of record data
+     * @return array Records with shortened IPv6 addresses
+     */
+    private function shortenIPv6InRecords(array $records): array
+    {
+        foreach ($records as &$record) {
+            // Shorten IPv6 addresses in AAAA record content
+            if (isset($record['type']) && $record['type'] === 'AAAA' && isset($record['content'])) {
+                $record['content'] = IpHelper::shortenIPv6Address($record['content']);
+            }
+
+            // Shorten IPv6 reverse zone names (PTR records) for display
+            if (isset($record['name']) && str_ends_with($record['name'], '.ip6.arpa')) {
+                $shortened = IpHelper::shortenIPv6ReverseZone($record['name']);
+                if ($shortened !== null) {
+                    $record['display_name'] = $shortened;
+                }
+            }
+        }
+        return $records;
     }
 
     /**

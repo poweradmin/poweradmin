@@ -280,6 +280,45 @@ class IpHelper
     }
 
     /**
+     * Shorten an IPv6 address to its compressed form
+     *
+     * Converts a full or partially expanded IPv6 address to its shortest
+     * representation using zero compression (::).
+     *
+     * @param string $address IPv6 address in any valid format
+     * @return string Shortened IPv6 address, or original string if not a valid IPv6
+     */
+    public static function shortenIPv6Address(string $address): string
+    {
+        // Trim whitespace
+        $address = trim($address);
+
+        if (empty($address)) {
+            return $address;
+        }
+
+        // Use inet_pton to parse and validate the IPv6 address
+        $binary = @inet_pton($address);
+        if ($binary === false) {
+            // Not a valid IPv6 address, return as-is
+            return $address;
+        }
+
+        // Check if it's actually an IPv6 address (16 bytes)
+        if (strlen($binary) !== 16) {
+            return $address;
+        }
+
+        // Use inet_ntop to get the shortened form
+        $shortened = inet_ntop($binary);
+        if ($shortened === false) {
+            return $address;
+        }
+
+        return $shortened;
+    }
+
+    /**
      * Extract all valid IP addresses from a PowerDNS master field value
      *
      * Similar to extractFirstIpFromMaster but returns all valid IPs found.
