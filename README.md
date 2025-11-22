@@ -28,70 +28,6 @@ DNSSEC operations.
 - RESTful API with OpenAPI documentation
 - Docker deployment with FrankenPHP
 
-## Disclaimer
-
-This project is not associated
-with [PowerDNS.com](https://www.powerdns.com/index.html), [Open-Xchange](https://www.open-xchange.com), or any other
-external parties.
-It is independently funded and maintained. If this project does not fulfill your requirements, please explore these
-alternative [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
-
-## License
-
-This project is licensed under the GNU General Public License v3.0. See the LICENSE file for more details.
-
-## Supported by
-
-[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
-
-## Requirements
-
-* PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
-* PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, xml, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
-* MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
-* PowerDNS authoritative server 4.0.0+
-
-## Tested on
-
-**Versions:**
-- **4.1.x (development)**: PHP 8.2.28, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
-- **4.0.x (stable)**: PHP 8.1.31, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
-- **3.9.x (previous stable)**: PHP 8.1.31, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
-
-## Installation
-
-For detailed installation instructions, please visit [the official documentation](https://docs.poweradmin.org/installation/).
-
-### Traditional Installation
-
-* **Recommended method - via releases**:
-    * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
-* **For specific needs - via Git**:
-    * ⚠️ **Warning**: The master branch (4.1.x) is used for development and may be unstable. For production use, stick with the stable 4.0.x release.
-
-### Docker Deployment
-
-🐳 **Quick Start with Docker**:
-```bash
-docker run -d \
-  --name poweradmin \
-  -p 8080:80 \
-  -e DB_TYPE=sqlite \
-  -e PA_CREATE_ADMIN=1 \
-  poweradmin/poweradmin:latest
-```
-
-**Important**: 
-- DB_TYPE environment variable is required (sqlite, mysql, pgsql)
-- No admin user is created by default for security reasons. Use `-e PA_CREATE_ADMIN=1` to create an admin user (a secure password will be auto-generated and shown in logs)
-
-* **Docker Hub**: `poweradmin/poweradmin`
-* **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`
-* **Full documentation**: [DOCKER.md](DOCKER.md)
-* **Security with Docker Secrets**: [DOCKER-SECRETS.md](DOCKER-SECRETS.md)
-
-Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets integration, FrankenPHP for enhanced performance.
-
 ## Screenshots
 
 ### Login Screen
@@ -110,17 +46,63 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 
 ![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/light_zone_edit.png)
 
+## Installation
+
+For detailed installation instructions, please visit [the official documentation](https://docs.poweradmin.org/installation/).
+
+### Traditional Installation
+
+* **Recommended method - via releases**:
+    * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
+* **For specific needs - via Git**:
+    * **Warning**: The master branch (4.1.x) is used for development and may be unstable. For production use, stick with the stable 4.0.x release.
+
+### Docker Deployment
+
+**Quick Start with Docker**:
+```bash
+docker run -d \
+  --name poweradmin \
+  -p 8080:80 \
+  -e DB_TYPE=sqlite \
+  -e PA_CREATE_ADMIN=1 \
+  poweradmin/poweradmin:latest
+```
+
+**Important**:
+- DB_TYPE environment variable is required (sqlite, mysql, pgsql)
+- No admin user is created by default for security reasons. Use `-e PA_CREATE_ADMIN=1` to create an admin user (a secure password will be auto-generated and shown in logs)
+
+* **Docker Hub**: `poweradmin/poweradmin`
+* **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`
+* **Full documentation**: [DOCKER.md](DOCKER.md)
+* **Security with Docker Secrets**: [DOCKER-SECRETS.md](DOCKER-SECRETS.md)
+
+Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets integration, FrankenPHP for enhanced performance.
+
+## Requirements
+
+* PHP 8.1 or higher (including 8.2, 8.3, 8.4, etc.)
+* PHP extensions: intl, gettext, openssl, filter, tokenizer, pdo, xml, pdo-mysql/pdo-pgsql/pdo-sqlite, ldap (optional)
+* MySQL 5.7.x/8.x, MariaDB, PostgreSQL or SQLite database
+* PowerDNS authoritative server 4.0.0+
+
+## Tested on
+
+**Versions:**
+- **4.1.x (development)**: PHP 8.2.28, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
+- **4.0.x (stable)**: PHP 8.1.31, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
+- **3.9.x (previous stable)**: PHP 8.1.31, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
+
 ## Contributing
 
 We welcome contributions to Poweradmin! As the sole maintainer of this non-profit project, I work alongside our amazing [contributors](https://github.com/poweradmin/poweradmin/graphs/contributors). See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-<a href="https://github.com/poweradmin/poweradmin/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=poweradmin/poweradmin" />
-</a>
+## Support the Project
 
-## Financial Support
+Poweradmin is independently developed and maintained. Your support helps keep the project alive and growing.
 
-Donations help maintain and improve the project. For feature sponsorship or to be added to the lists below, please [contact me](https://github.com/edmondas).
+[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
 
 ### Organizations Supporting Development
 
@@ -136,3 +118,13 @@ Donations help maintain and improve the project. For feature sponsorship or to b
 * Arthur Mayer
 * Dylan Blanqué
 * trendymail
+
+For feature sponsorship or to be added to the supporters list, please [contact me](https://github.com/edmondas).
+
+## Note
+
+Poweradmin is an independent community project, not affiliated with [PowerDNS.com](https://www.powerdns.com/index.html) or [Open-Xchange](https://www.open-xchange.com). Looking for alternatives? Check out other [PowerDNS web frontends](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
+
+## License
+
+This project is licensed under the GNU General Public License v3.0. See the LICENSE file for more details.
