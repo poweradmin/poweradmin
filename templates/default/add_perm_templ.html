@@ -1,7 +1,7 @@
 <nav aria-label="breadcrumb">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/">{% trans %}Home{% endtrans %}</a></li>
-        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/permissions/templates">{% trans %}Permission templates{% endtrans %}</a></li>
+        <li class="breadcrumb-item"><a href="{{ base_url_prefix }}/permissions/templates">{% trans %}Access templates{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Add{% endtrans %}</li>
     </ol>
 </nav>
@@ -14,7 +14,7 @@
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
                 <div class="card-header py-3">
-                    <strong><i class="bi bi-shield-lock me-2"></i>{% trans %}Add Permission Template{% endtrans %}</strong>
+                    <strong><i class="bi bi-shield-lock me-2"></i>{% trans %}Add Access Template{% endtrans %}</strong>
                 </div>
                 <div class="card-body">
                     <div class="mb-3">
@@ -54,21 +54,21 @@
             </div>
         </div>
         
-        <!-- About Permission Templates -->
+        <!-- About Access Templates -->
         <div class="col-md-6">
             <div class="card shadow-sm h-100">
                 <div class="card-header py-3">
-                    <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About Permission Templates{% endtrans %}</strong>
+                    <strong><i class="bi bi-info-circle me-2"></i>{% trans %}About Access Templates{% endtrans %}</strong>
                 </div>
                 <div class="card-body p-0">
                     <div class="list-group list-group-flush">
                         <div class="list-group-item border-bottom">
-                            <h6 class="mb-1"><i class="bi bi-shield-check text-primary me-2"></i>{% trans %}What are Permission Templates?{% endtrans %}</h6>
-                            <p class="small mb-1">{% trans %}Permission templates define sets of actions that users can perform in Poweradmin. They provide a quick way to assign common permission combinations to multiple users.{% endtrans %}</p>
+                            <h6 class="mb-1"><i class="bi bi-shield-check text-primary me-2"></i>{% trans %}What are Access Templates?{% endtrans %}</h6>
+                            <p class="small mb-1">{% trans %}Access templates define sets of actions that users and groups can perform in Poweradmin. They provide a quick way to assign common permission combinations.{% endtrans %}</p>
                         </div>
                         <div class="list-group-item">
                             <h6 class="mb-1"><i class="bi bi-key text-success me-2"></i>{% trans %}How to Use Templates{% endtrans %}</h6>
-                            <p class="small mb-0">{% trans %}After creating a template, you can assign it to users when creating or editing user accounts. This ensures consistent permissions across user groups with similar roles.{% endtrans %}</p>
+                            <p class="small mb-0">{% trans %}After creating a template, you can assign it to users or groups. This ensures consistent permissions across users and groups with similar roles.{% endtrans %}</p>
                         </div>
                     </div>
                 </div>

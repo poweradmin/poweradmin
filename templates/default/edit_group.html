@@ -33,7 +33,7 @@
                     </div>
 
                     <div class="mb-3">
-                        <label for="perm_templ" class="form-label">{% trans %}Permission template{% endtrans %} <span class="text-danger">*</span></label>
+                        <label for="perm_templ" class="form-label">{% trans %}Access template{% endtrans %} <span class="text-danger">*</span></label>
                         <select class="form-select form-select-sm" id="perm_templ" name="perm_templ" required>
                             {% for template in perm_templates %}
                             {% if perm_templ == template['id'] %}
@@ -45,7 +45,7 @@
                             {% endfor %}
                         </select>
                         <small class="text-muted">{% trans %}Group members inherit these permissions only for zones owned by this group{% endtrans %}</small>
-                        <div class="invalid-feedback">{% trans %}Select a permission template{% endtrans %}</div>
+                        <div class="invalid-feedback">{% trans %}Select an access template{% endtrans %}</div>
                     </div>
 
                     <div class="d-flex gap-2">
