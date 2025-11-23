@@ -850,6 +850,9 @@ main() {
     log "Processing Docker secrets..."
     process_secret_files
 
+    # Initialize SQLite database if needed (must run before admin user creation)
+    init_sqlite_db
+
     if [ -n "${PA_CONFIG_PATH}" ] && [ -f "${PA_CONFIG_PATH}" ]; then
         log "Using custom configuration from: ${PA_CONFIG_PATH}"
         cp "${PA_CONFIG_PATH}" "${CONFIG_FILE}"
@@ -859,9 +862,6 @@ main() {
         log "Using existing settings.php (generated from environment variables)"
     else
         log "No custom config found. Generating settings.php from environment variables..."
-
-        # Initialize database if needed (before validation)
-        init_sqlite_db
 
         # Validate all configurations
         debug_log "Starting configuration validation..."
