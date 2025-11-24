@@ -28,7 +28,13 @@
                     <tr>
                         <td>{{ server['master_ip'] }}</td>
                         <td>{{ server['ns_name'] }}</td>
-                        <td>{{ server['account'] }}</td>
+                        <td>
+                            {% if server['fullname'] %}
+                                {{ server['fullname'] }} <small class="text-muted">({{ server['account'] }})</small>
+                            {% else %}
+                                {{ server['account'] }}
+                            {% endif %}
+                        </td>
                         {% if perm_sm_edit %}
                         <td class="text-end">
                             <a class="btn btn-outline-primary btn-sm me-2" href="{{ base_url_prefix }}/supermasters/edit?master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">

@@ -67,13 +67,26 @@ class ZoneSearch extends BaseSearch
         if ($zones) {
             foreach ($zones as $zone_id => $zone_array) {
                 $zone_owner_fullnames = [];
+                $zone_owner_usernames = [];
                 $zone_owner_ids = [];
                 foreach ($zone_array as $zone_entry) {
                     $zone_owner_ids[] = $zone_entry['owner'];
-                    $zone_owner_fullnames[] = $zone_entry['fullname'] != "" ? $zone_entry['fullname'] : $zone_entry['username'];
+                    $zone_owner_fullnames[] = $zone_entry['fullname'];
+                    $zone_owner_usernames[] = $zone_entry['username'];
                 }
                 $zones[$zone_id][0]['owner'] = implode(', ', $zone_owner_ids);
-                $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_fullnames);
+                $zones[$zone_id][0]['owner_fullnames'] = $zone_owner_fullnames;
+                $zones[$zone_id][0]['owner_usernames'] = $zone_owner_usernames;
+                // Keep old fullname field for backwards compatibility (simple display)
+                $zone_owner_displays = [];
+                foreach ($zone_array as $zone_entry) {
+                    if ($zone_entry['fullname'] != "") {
+                        $zone_owner_displays[] = $zone_entry['fullname'] . ' (' . $zone_entry['username'] . ')';
+                    } else {
+                        $zone_owner_displays[] = $zone_entry['username'];
+                    }
+                }
+                $zones[$zone_id][0]['fullname'] = implode(', ', $zone_owner_displays);
                 $found_zone = $zones[$zone_id][0];
                 $found_zone['name'] = DnsIdnService::toUtf8($found_zone['name'] ?? '');
                 $foundZones[] = $found_zone;

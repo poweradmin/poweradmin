@@ -143,7 +143,9 @@ class SupermasterManager implements SupermasterManagerInterface
     {
         $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
 
-        $result = $this->db->query("SELECT ip, nameserver, account FROM $supermasters_table");
+        $result = $this->db->query("SELECT s.ip, s.nameserver, s.account, u.fullname
+                                     FROM $supermasters_table s
+                                     LEFT JOIN users u ON s.account = u.username");
 
         $supermasters = array();
 
@@ -152,6 +154,7 @@ class SupermasterManager implements SupermasterManagerInterface
                 "master_ip" => $r["ip"],
                 "ns_name" => $r["nameserver"],
                 "account" => $r["account"],
+                "fullname" => $r["fullname"] ?? '',
             );
         }
         return $supermasters;
@@ -172,14 +175,18 @@ class SupermasterManager implements SupermasterManagerInterface
             $pdns_db_name = $this->config->get('database', 'pdns_db_name');
             $supermasters_table = $this->tableNameService->getTable(PdnsTable::SUPERMASTERS);
 
-            $stmt = $this->db->prepare("SELECT ip,nameserver,account FROM $supermasters_table WHERE ip = :master_ip");
+            $stmt = $this->db->prepare("SELECT s.ip, s.nameserver, s.account, u.fullname
+                                         FROM $supermasters_table s
+                                         LEFT JOIN users u ON s.account = u.username
+                                         WHERE s.ip = :master_ip");
             $stmt->execute([':master_ip' => $master_ip]);
             $result = $stmt->fetch();
 
             return array(
                 "master_ip" => $result["ip"],
                 "ns_name" => $result["nameserver"],
-                "account" => $result["account"]
+                "account" => $result["account"],
+                "fullname" => $result["fullname"] ?? ''
             );
         } else {
             $this->messageService->addSystemError(sprintf(_('Invalid argument(s) given to function %s %s'), "getSupermasterInfoFromIp", "No or no valid ipv4 or ipv6 address given."));

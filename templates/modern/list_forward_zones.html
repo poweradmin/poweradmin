@@ -126,8 +126,14 @@
                         <td>{{ zone["count_records"] }}</td>
 
                         <td>
-                            {% for owner in zone['owners'] %}
-                            <div><i class="bi bi-person"></i> {{ owner }}</div>
+                            {% for key, owner in zone['owners'] %}
+                            <div><i class="bi bi-person"></i>
+                                {% if zone['full_names'][key] %}
+                                    {{ zone['full_names'][key] }} <small class="text-muted">({{ owner }})</small>
+                                {% else %}
+                                    {{ owner }}
+                                {% endif %}
+                            </div>
                             {% endfor %}
                             {% if zone['groups'] is defined and zone['groups']|length > 0 %}
                                 {% for group in zone['groups'] %}

@@ -85,8 +85,8 @@
                     </td>
                     <td>{{ zone.count_records|default(0) }}</td>
                     <td>
-                        {% if zone.owner_fullname %}
-                        {{ zone.owner_fullname }}
+                        {% if zone.owner_fullname and zone.owner_name %}
+                        {{ zone.owner_fullname }} <small class="text-muted">({{ zone.owner_name }})</small>
                         {% elseif zone.owner_name %}
                         {{ zone.owner_name }}
                         {% else %}

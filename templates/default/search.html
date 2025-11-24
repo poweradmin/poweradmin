@@ -193,7 +193,20 @@
                         <td>{{ zone['name'] }}</td>
                         <td><span class="badge bg-light text-dark">{{ zone['type'] }}</span></td>
                         <td><span class="badge bg-secondary">{{ zone['count_records'] }}</span></td>
-                        <td>{{ zone['fullname'] }}</td>
+                        <td>
+                            {% if zone['owner_fullnames'] is defined %}
+                                {% for key, fullname in zone['owner_fullnames'] %}
+                                    {% if fullname %}
+                                        {{ fullname }} <small class="text-muted">({{ zone['owner_usernames'][key] }})</small>
+                                    {% else %}
+                                        {{ zone['owner_usernames'][key] }}
+                                    {% endif %}
+                                    {% if not loop.last %}, {% endif %}
+                                {% endfor %}
+                            {% else %}
+                                {{ zone['fullname'] }}
+                            {% endif %}
+                        </td>
                         {% if iface_zone_comments %}
                             <td>{{ zone['comment'] }}</td>
                         {% endif %}

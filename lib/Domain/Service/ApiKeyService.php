@@ -92,14 +92,24 @@ class ApiKeyService
             $apiKeys = $this->apiKeyRepository->getAll($userId);
         }
 
-        // Add creator username for each API key
+        // Add creator username and fullname for each API key
         foreach ($apiKeys as $key) {
             if ($key->getCreatedBy() !== null) {
-                // Get creator username using UserEntity
-                $creatorUsername = UserEntity::getUserNameById($this->db, $key->getCreatedBy());
-                $key->setCreatorUsername($creatorUsername);
+                // Get creator username and fullname from database
+                $stmt = $this->db->prepare("SELECT username, fullname FROM users WHERE id = :user_id");
+                $stmt->execute(['user_id' => $key->getCreatedBy()]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($user) {
+                    $key->setCreatorUsername($user['username'] ?: '');
+                    $key->setCreatorFullname($user['fullname'] ?: '');
+                } else {
+                    $key->setCreatorUsername('');
+                    $key->setCreatorFullname('');
+                }
             } else {
                 $key->setCreatorUsername('');
+                $key->setCreatorFullname('');
             }
         }
 
@@ -123,12 +133,22 @@ class ApiKeyService
         // Check if the current user has access to this API key
         $userId = $_SESSION['userid'] ?? 0;
         if (UserManager::verifyPermission($this->db, 'user_is_ueberuser') || $apiKey->getCreatedBy() === $userId) {
-            // Add creator username
+            // Add creator username and fullname
             if ($apiKey->getCreatedBy() !== null) {
-                $creatorUsername = UserEntity::getUserNameById($this->db, $apiKey->getCreatedBy());
-                $apiKey->setCreatorUsername($creatorUsername);
+                $stmt = $this->db->prepare("SELECT username, fullname FROM users WHERE id = :user_id");
+                $stmt->execute(['user_id' => $apiKey->getCreatedBy()]);
+                $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+                if ($user) {
+                    $apiKey->setCreatorUsername($user['username'] ?: '');
+                    $apiKey->setCreatorFullname($user['fullname'] ?: '');
+                } else {
+                    $apiKey->setCreatorUsername('');
+                    $apiKey->setCreatorFullname('');
+                }
             } else {
                 $apiKey->setCreatorUsername('');
+                $apiKey->setCreatorFullname('');
             }
 
             return $apiKey;

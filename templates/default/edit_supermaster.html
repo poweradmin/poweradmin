@@ -36,27 +36,15 @@
                             {% for user in users %}
                             {% if account == user['username'] %}
                             <option value="{{ user['username'] }}" selected>
-                                {% if user['fullname'] %}
-                                {{ user['fullname'] }}
-                                {% else %}
-                                {{ user['username'] }}
-                                {% endif %}
+                                {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
                             </option>
                             {% elseif user['id'] == session_uid %}
                             <option value="{{ user['username'] }}">
-                                {% if user['fullname'] %}
-                                {{ user['fullname'] }}
-                                {% else %}
-                                {{ user['username'] }}
-                                {% endif %}
+                                {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
                             </option>
                             {% elseif perm_view_others %}
                             <option value="{{ user['username'] }}">
-                                {% if user['fullname'] %}
-                                {{ user['fullname'] }}
-                                {% else %}
-                                {{ user['username'] }}
-                                {% endif %}
+                                {% if user['fullname'] %}{{ user['fullname'] }} ({{ user['username'] }}){% else %}{{ user['username'] }}{% endif %}
                             </option>
                             {% endif %}
                             {% endfor %}

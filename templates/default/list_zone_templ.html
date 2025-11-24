@@ -57,8 +57,8 @@
                         {% endif %}
                     </td>
                     <td>
-                        {% if template['creator_fullname'] %}
-                            {{ template['creator_fullname'] }}
+                        {% if template['creator_fullname'] and template['creator_username'] %}
+                            {{ template['creator_fullname'] }} <small class="text-muted">({{ template['creator_username'] }})</small>
                         {% elseif template['creator_username'] %}
                             {{ template['creator_username'] }}
                         {% else %}

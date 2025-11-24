@@ -65,7 +65,9 @@
                                     <select class="form-select form-select-sm" name="zone[{{ zone['id']}}][newowner]"
                                             onchange="document.getElementById('new_owner_{{ zone['id']}}').checked = true;">
                                         {% for user in users %}
-                                        <option value="{{ user['id'] }}">{{ user["fullname"]}}</option>
+                                        <option value="{{ user['id'] }}">
+                                            {% if user["fullname"] %}{{ user["fullname"]}} ({{ user["username"]}}){% else %}{{ user["username"]}}{% endif %}
+                                        </option>
                                         {% endfor %}
                                     </select>
                                 </td>

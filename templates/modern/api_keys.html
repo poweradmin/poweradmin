@@ -41,7 +41,13 @@
                             {{ key.name }}
                         </td>
                         <td>
-                            {% if key.getCreatorUsername() %}{{ key.getCreatorUsername() }}{% else %}<span class="text-muted">{% trans %}Unknown{% endtrans %}</span>{% endif %}
+                            {% if key.getCreatorFullname() %}
+                                {{ key.getCreatorFullname() }} <small class="text-muted">({{ key.getCreatorUsername() }})</small>
+                            {% elseif key.getCreatorUsername() %}
+                                {{ key.getCreatorUsername() }}
+                            {% else %}
+                                <span class="text-muted">{% trans %}Unknown{% endtrans %}</span>
+                            {% endif %}
                         </td>
                         <td>
                             {% if key.isDisabled %}
