@@ -12,7 +12,6 @@ use League\Container\Argument\{
 };
 use League\Container\ContainerAwareTrait;
 use League\Container\Exception\ContainerException;
-use League\Container\Exception\NotFoundException;
 use Psr\Container\ContainerInterface;
 use ReflectionClass;
 
@@ -57,18 +56,11 @@ class Definition implements ArgumentResolverInterface, DefinitionInterface
     protected $resolved;
 
     /**
-     * @var array
-     */
-    protected $recursiveCheck = [];
-
-    /**
      * @param string     $id
      * @param mixed|null $concrete
      */
     public function __construct(string $id, $concrete = null)
     {
-        $id = static::normaliseAlias($id);
-
         $concrete = $concrete ?? $id;
         $this->alias    = $id;
         $this->concrete = $concrete;
@@ -87,8 +79,6 @@ class Definition implements ArgumentResolverInterface, DefinitionInterface
 
     public function setAlias(string $id): DefinitionInterface
     {
-        $id = static::normaliseAlias($id);
-
         $this->alias = $id;
         return $this;
     }
@@ -195,16 +185,9 @@ class Definition implements ArgumentResolverInterface, DefinitionInterface
             $container = null;
         }
 
-        // stop recursive resolving
-        if (is_string($concrete) && in_array($concrete, $this->recursiveCheck)) {
-            $this->resolved = $concrete;
-            return $concrete;
-        }
-
         // if we still have a string, try to pull it from the container
         // this allows for `alias -> alias -> ... -> concrete
         if (is_string($concrete) && $container instanceof ContainerInterface && $container->has($concrete)) {
-            $this->recursiveCheck[] = $concrete;
             $concrete = $container->get($concrete);
         }
 
@@ -238,14 +221,5 @@ class Definition implements ArgumentResolverInterface, DefinitionInterface
         }
 
         return $instance;
-    }
-
-    public static function normaliseAlias(string $alias): string
-    {
-        if (strpos($alias, '\\') === 0) {
-            return substr($alias, 1);
-        }
-
-        return $alias;
     }
 }
