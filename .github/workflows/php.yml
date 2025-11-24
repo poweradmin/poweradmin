@@ -74,50 +74,11 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
-    - name: Install Phan for compatibility checking
-      run: |
-        if ! composer show phan/phan > /dev/null 2>&1; then
-          composer require --dev phan/phan:^5.5 --no-interaction --no-progress
-        fi
+    - name: Validate PHP syntax
+      run: find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l > /dev/null
 
-    - name: Create Phan configuration if missing
-      run: |
-        if [ ! -f .phan/config.php ]; then
-          mkdir -p .phan
-          cat > .phan/config.php << 'EOF'
-        <?php
-        return [
-            'target_php_version' => '8.1',
-            'allow_missing_properties' => true,
-            'null_casts_as_any_type' => true,
-            'null_casts_as_array' => true,
-            'array_casts_as_null' => true,
-            'scalar_implicit_cast' => true,
-            'ignore_undeclared_variables_in_global_scope' => true,
-            'suppress_issue_types' => [
-                'PhanUnreferencedUseNormal',
-                'PhanUnreferencedClass',
-                'PhanUnusedVariable',
-            ],
-            'directory_list' => [
-                'index.php',
-                'inc',
-                'install',
-                'lib',
-                'tests',
-                'vendor/symfony',
-                'vendor/twig',
-                'vendor/psr',
-            ],
-            'exclude_analysis_directory_list' => [
-                'vendor/'
-            ],
-        ];
-        EOF
-        fi
-
-    - name: Check PHP ${{ matrix.php-version }} compatibility
-      run: vendor/bin/phan --target-php-version=${{ matrix.php-version }} --allow-polyfill-parser --no-progress-bar
+    - name: Run basic test suite
+      run: composer tests
 
     - name: Compatibility Summary
       if: always()
@@ -125,7 +86,10 @@ jobs:
         echo "### PHP ${{ matrix.php-version }} Compatibility Check ✓" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "**Target PHP Version:** ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
-        echo "**Analysis Tool:** Phan (polyfill parser)" >> $GITHUB_STEP_SUMMARY
+        echo "**Checks Performed:**" >> $GITHUB_STEP_SUMMARY
+        echo "- PHP syntax validation (all .php files)" >> $GITHUB_STEP_SUMMARY
+        echo "- Dependency installation" >> $GITHUB_STEP_SUMMARY
+        echo "- Unit test suite execution" >> $GITHUB_STEP_SUMMARY
         echo "**Branch:** release/3.9.x (LTS)" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "Compatibility check completed for PHP ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
