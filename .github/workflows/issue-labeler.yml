@@ -35,7 +35,9 @@ jobs:
         if: github.event.issue.title != 'Dependency Dashboard'
         run: |
           ISSUE_NUMBER=${{ github.event.issue.number }}
-          TITLE="${{ github.event.issue.title }}"
+
+          # Get title safely using GitHub CLI JSON output to prevent code injection
+          TITLE=$(gh issue view "$ISSUE_NUMBER" --json title -q '.title')
 
           # Determine issue type from title prefix (set by issue templates)
           if [[ "$TITLE" == \[Bug\]:* ]]; then
