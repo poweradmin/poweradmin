@@ -33,18 +33,10 @@
                         const urlParams = new URLSearchParams(window.location.search);
                         urlParams.set('rows_per_page', value);
 
-                        // Preserve the template ID
-                        const templateId = urlParams.get('id');
-                        if (templateId) {
-                            urlParams.set('id', templateId);
-                        }
-
                         // Reset pagination to first page when changing rows per page
-                        if (urlParams.has('start')) {
-                            urlParams.set('start', 1);
-                        }
+                        urlParams.delete('start');
 
-                        // Redirect to the new URL
+                        // Redirect to the new URL (template ID is in the path, not query params)
                         window.location.href = window.location.pathname + '?' + urlParams.toString();
                     }
 
