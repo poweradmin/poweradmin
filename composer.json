@@ -101,13 +101,11 @@
     "compat:8.2": "phan --target-php-version=8.2 --allow-polyfill-parser",
     "compat:8.3": "phan --target-php-version=8.3 --allow-polyfill-parser",
     "compat:8.4": "phan --target-php-version=8.4 --allow-polyfill-parser",
-    "compat:8.5": "phan --target-php-version=8.5 --allow-polyfill-parser",
     "compat:all": [
         "@compat:8.1",
         "@compat:8.2",
         "@compat:8.3",
-        "@compat:8.4",
-        "@compat:8.5"
+        "@compat:8.4"
     ],
 
     "post-create-project-cmd": [
