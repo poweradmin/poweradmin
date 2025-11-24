@@ -131,6 +131,7 @@ For feature sponsorship, to speed up development of specific features, or to dis
 ## Related Projects
 
 * [terraform-provider-poweradmin](https://github.com/poweradmin/terraform-provider-poweradmin) - Terraform/OpenTofu provider for managing DNS zones and records through Poweradmin
+* [certbot-dns-poweradmin](https://github.com/poweradmin/certbot-dns-poweradmin) - Certbot DNS plugin for Poweradmin to automate Let's Encrypt certificate issuance with DNS-01 challenge
 
 ## Note
 
