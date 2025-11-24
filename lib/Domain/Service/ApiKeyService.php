@@ -26,7 +26,6 @@ use DateTime;
 use Exception;
 use PDO;
 use Poweradmin\Domain\Model\ApiKey;
-use Poweradmin\Domain\Model\UserEntity;
 use Poweradmin\Domain\Model\UserManager;
 use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
