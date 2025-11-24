@@ -11,5 +11,7 @@
             <property name="lineLimit" value="250"/>
             <property name="absoluteLineLimit" value="0"/>
         </properties>
+        <!-- Exclude test files from line length checks (test data can be long) -->
+        <exclude-pattern>*/tests/*</exclude-pattern>
     </rule>
 </ruleset>

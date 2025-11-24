@@ -20,7 +20,6 @@ jobs:
   docker-lint:
     name: Dockerfile Linting
     runs-on: ubuntu-latest
-    if: hashFiles('Dockerfile') != ''
 
     steps:
       - uses: actions/checkout@v6
@@ -34,7 +33,6 @@ jobs:
   docker-build-test:
     name: Build Test
     runs-on: ubuntu-latest
-    if: hashFiles('Dockerfile') != ''
 
     steps:
       - uses: actions/checkout@v6
@@ -56,7 +54,6 @@ jobs:
   docker-security-scan:
     name: Security Scan
     runs-on: ubuntu-latest
-    if: hashFiles('Dockerfile') != ''
     needs: docker-build-test
 
     steps:
@@ -93,7 +90,7 @@ jobs:
     name: Docker Checks Summary
     runs-on: ubuntu-latest
     needs: [docker-lint, docker-build-test, docker-security-scan]
-    if: always() && hashFiles('Dockerfile') != ''
+    if: always()
 
     steps:
       - name: Check job statuses

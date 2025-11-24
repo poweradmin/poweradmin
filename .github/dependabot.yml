@@ -1,6 +1,6 @@
 version: 2
 updates:
-  # Composer dependencies - Security updates only for LTS
+  # Composer dependencies - All updates for LTS
   - package-ecosystem: "composer"
     directory: "/"
     schedule:
@@ -9,16 +9,7 @@ updates:
     target-branch: "release/3.9.x"
     labels:
       - "dependencies"
-      - "security"
       - "lts"
-    reviewers:
-      - "poweradmin/maintainers"
-    # Only security updates for LTS
-    allow:
-      - dependency-type: "direct"
-        update-type: "security"
-      - dependency-type: "indirect"
-        update-type: "security"
 
   # GitHub Actions - Keep workflows updated
   - package-ecosystem: "github-actions"
@@ -41,6 +32,3 @@ updates:
       - "dependencies"
       - "docker"
       - "lts"
-    allow:
-      - dependency-type: "direct"
-        update-type: "security"
