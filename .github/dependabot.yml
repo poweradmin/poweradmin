@@ -1,0 +1,46 @@
+version: 2
+updates:
+  # Composer dependencies - Security updates only for LTS
+  - package-ecosystem: "composer"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 5
+    target-branch: "release/3.9.x"
+    labels:
+      - "dependencies"
+      - "security"
+      - "lts"
+    reviewers:
+      - "poweradmin/maintainers"
+    # Only security updates for LTS
+    allow:
+      - dependency-type: "direct"
+        update-type: "security"
+      - dependency-type: "indirect"
+        update-type: "security"
+
+  # GitHub Actions - Keep workflows updated
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
+    target-branch: "release/3.9.x"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "lts"
+
+  # Docker (if Dockerfile exists)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+    target-branch: "release/3.9.x"
+    labels:
+      - "dependencies"
+      - "docker"
+      - "lts"
+    allow:
+      - dependency-type: "direct"
+        update-type: "security"

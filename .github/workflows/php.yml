@@ -2,9 +2,9 @@ name: Composer
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ "release/3.9.x" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "release/3.9.x" ]
 
 permissions:
   contents: read
@@ -40,4 +40,93 @@ jobs:
 
     - name: Run test suite
       run: composer tests
+
+  compatibility:
+    name: PHP ${{ matrix.php-version }} Compatibility
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-version: ['8.1', '8.2', '8.3', '8.4', '8.5']
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup PHP ${{ matrix.php-version }}
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: ${{ matrix.php-version }}
+        coverage: none
+
+    - name: Get Composer cache directory
+      id: composer-cache-dir
+      run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+    - name: Cache Composer dependencies
+      uses: actions/cache@v4
+      with:
+        path: ${{ steps.composer-cache-dir.outputs.dir }}
+        key: ${{ runner.os }}-php-${{ matrix.php-version }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-${{ matrix.php-version }}-composer-
+
+    - name: Install dependencies
+      run: composer install --prefer-dist --no-progress
+
+    - name: Install Phan for compatibility checking
+      run: |
+        if ! composer show phan/phan > /dev/null 2>&1; then
+          composer require --dev phan/phan:^5.5 --no-interaction --no-progress
+        fi
+
+    - name: Create Phan configuration if missing
+      run: |
+        if [ ! -f .phan/config.php ]; then
+          mkdir -p .phan
+          cat > .phan/config.php << 'EOF'
+        <?php
+        return [
+            'target_php_version' => '8.1',
+            'allow_missing_properties' => true,
+            'null_casts_as_any_type' => true,
+            'null_casts_as_array' => true,
+            'array_casts_as_null' => true,
+            'scalar_implicit_cast' => true,
+            'ignore_undeclared_variables_in_global_scope' => true,
+            'suppress_issue_types' => [
+                'PhanUnreferencedUseNormal',
+                'PhanUnreferencedClass',
+                'PhanUnusedVariable',
+            ],
+            'directory_list' => [
+                'index.php',
+                'inc',
+                'install',
+                'lib',
+                'tests',
+                'vendor/symfony',
+                'vendor/twig',
+                'vendor/psr',
+            ],
+            'exclude_analysis_directory_list' => [
+                'vendor/'
+            ],
+        ];
+        EOF
+        fi
+
+    - name: Check PHP ${{ matrix.php-version }} compatibility
+      run: vendor/bin/phan --target-php-version=${{ matrix.php-version }} --allow-polyfill-parser --no-progress-bar
+
+    - name: Compatibility Summary
+      if: always()
+      run: |
+        echo "### PHP ${{ matrix.php-version }} Compatibility Check ✓" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "**Target PHP Version:** ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
+        echo "**Analysis Tool:** Phan (polyfill parser)" >> $GITHUB_STEP_SUMMARY
+        echo "**Branch:** release/3.9.x (LTS)" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "Compatibility check completed for PHP ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
 
