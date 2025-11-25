@@ -45,13 +45,6 @@ class EditZoneTemplController extends BaseController
 
     public function run(): void
     {
-        $zone_templ_id = htmlspecialchars($_GET['id']);
-        $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
-        $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
-        $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
-
-        $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
-
         $v = new Valitron\Validator($_GET);
         $v->rules([
             'required' => ['id'],
@@ -59,7 +52,15 @@ class EditZoneTemplController extends BaseController
         ]);
         if (!$v->validate()) {
             $this->showFirstError($v->errors());
+            return;
         }
+
+        $zone_templ_id = (int)$_GET['id'];
+        $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
+        $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
+        $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
+
+        $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to edit zone templates."));
 
         if (ZoneTemplate::zone_templ_id_exists($this->db, $zone_templ_id) == "0") {
             $this->showError(_('There is no zone template with this ID.'));
@@ -72,7 +73,7 @@ class EditZoneTemplController extends BaseController
         $this->showForm($zone_templ_id);
     }
 
-    private function updateZoneTemplate(string $zone_templ_id): void
+    private function updateZoneTemplate(int $zone_templ_id): void
     {
         $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
         $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
@@ -99,7 +100,7 @@ class EditZoneTemplController extends BaseController
         }
     }
 
-    private function showForm(string $zone_templ_id): void
+    private function showForm(int $zone_templ_id): void
     {
         $iface_rowamount = $this->config('iface_rowamount');
         $row_start = $this->getRowStart($iface_rowamount);
@@ -116,7 +117,7 @@ class EditZoneTemplController extends BaseController
         ]);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage, int $id): string
+    private function createAndPresentPagination(int $totalItems, int $itemsPerPage, int $id): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();
@@ -128,7 +129,7 @@ class EditZoneTemplController extends BaseController
         return $presenter->present();
     }
 
-    public function getRowStart($rowAmount)
+    public function getRowStart(int $rowAmount): int
     {
         $row_start = 0;
         $start = filter_input(INPUT_GET, "start", FILTER_VALIDATE_INT);
@@ -155,7 +156,7 @@ class EditZoneTemplController extends BaseController
         return $sortOrder;
     }
 
-    public function updateZoneTemplateDetails(string $zone_templ_id): void
+    public function updateZoneTemplateDetails(int $zone_templ_id): void
     {
         if (!isset($_POST['templ_name']) || $_POST['templ_name'] == "") {
             $this->showError(_('Invalid or unexpected input given.'));
@@ -165,7 +166,7 @@ class EditZoneTemplController extends BaseController
         $this->redirect('index.php', ['page' => 'list_zone_templ']);
     }
 
-    public function updateZoneRecords(string $zone_templ_id): void
+    public function updateZoneRecords(int $zone_templ_id): void
     {
         $zoneTemplate = new ZoneTemplate($this->db, $this->getConfig());
         $zones = $zoneTemplate->get_list_zone_use_templ($zone_templ_id, $_SESSION['userid']);

@@ -41,15 +41,15 @@ class EditUserController extends BaseController
 
     public function run(): void
     {
-        $edit_id = "-1";
+        $edit_id = -1;
         if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {
-            $edit_id = $_GET['id'];
+            $edit_id = (int)$_GET['id'];
         }
 
         $perm_edit_own = UserManager::verify_permission($this->db, 'user_edit_own');
         $perm_edit_others = UserManager::verify_permission($this->db, 'user_edit_others');
 
-        if ($edit_id == "-1") {
+        if ($edit_id == -1) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
@@ -65,7 +65,7 @@ class EditUserController extends BaseController
         $this->showUserEditForm($edit_id);
     }
 
-    public function saveUser($edit_id): void
+    public function saveUser(int $edit_id): void
     {
         $i_username = "-1";
         $i_fullname = "-1";
@@ -128,7 +128,7 @@ class EditUserController extends BaseController
         }
     }
 
-    public function showUserEditForm($edit_id): void
+    public function showUserEditForm(int $edit_id): void
     {
         $users = UserManager::get_user_detail_list($this->db, $this->config('ldap_use'), $edit_id);
         if (empty($users)) {

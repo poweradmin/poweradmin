@@ -21,7 +21,7 @@
  */
 
 /**
- * Script that handles deletion of zone templates
+ * Script that handles deletion of permission templates
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>

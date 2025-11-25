@@ -114,7 +114,7 @@ class AddRecordController extends BaseController
         $v = new Valitron\Validator($_POST);
         $v->rules([
             'required' => ['content', 'type', 'ttl'],
-            'integer' => ['priority', 'ttl'],
+            'integer' => ['prio', 'ttl'],
         ]);
 
         if (!$v->validate()) {
@@ -124,7 +124,7 @@ class AddRecordController extends BaseController
         $name = $_POST['name'] ?? '';
         $content = $_POST['content'];
         $type = $_POST['type'];
-        $prio = $_POST['prio'];
+        $prio = $_POST['prio'] ?? 0;
         $ttl = $_POST['ttl'];
         $comment = $_POST['comment'] ?? '';
         $zone_id = (int)$_GET['id'];
@@ -208,7 +208,7 @@ class AddRecordController extends BaseController
         );
     }
 
-    private function createReverseRecord($name, $type, $content, string $zone_id, $ttl, $prio, string $comment): bool
+    private function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment): bool
     {
         $result = $this->reverseRecordCreator->createReverseRecord(
             $name,
@@ -229,7 +229,7 @@ class AddRecordController extends BaseController
         }
     }
 
-    private function createDomainRecord(string $name, string $type, string $content, string $zone_id, string $comment): bool
+    private function createDomainRecord(string $name, string $type, string $content, int $zone_id, string $comment): bool
     {
         $result = $this->domainRecordCreator->addDomainRecord(
             $name,

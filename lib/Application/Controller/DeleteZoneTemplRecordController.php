@@ -21,7 +21,7 @@
  */
 
 /**
- * Script that record deletion from zone template
+ * Script that handles record deletion from zone template
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -44,12 +44,12 @@ class DeleteZoneTemplRecordController extends BaseController
         if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $record_id = htmlspecialchars($_GET['id']);
+        $record_id = (int)$_GET['id'];
 
         if (!isset($_GET['zone_templ_id']) || !Validator::is_number($_GET['zone_templ_id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
+        $zone_templ_id = (int)$_GET['zone_templ_id'];
 
         $confirm = "-1";
         if (isset($_GET['confirm']) && Validator::is_number($_GET['confirm'])) {

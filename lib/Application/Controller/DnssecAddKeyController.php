@@ -21,7 +21,7 @@
  */
 
 /**
- * Script that handles requests to add new supermaster servers
+ * Script that handles requests to add new DNSSEC keys
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -44,9 +44,9 @@ class DnssecAddKeyController extends BaseController
 
     public function run(): void
     {
-        $zone_id = "-1";
+        $zone_id = -1;
         if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {
-            $zone_id = htmlspecialchars($_GET['id']);
+            $zone_id = (int)$_GET['id'];
         }
 
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);

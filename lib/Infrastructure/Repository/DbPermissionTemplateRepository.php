@@ -44,7 +44,7 @@ class DbPermissionTemplateRepository
     public function addPermissionTemplate(array $details): bool
     {
         $query = "INSERT INTO perm_templ (name, descr)
-			VALUES (" . $this->db->quote($details['templ_name'], 'text') . ", " . $this->db->quote($details['templ_descr'], 'text') . ")";
+			VALUES (" . $this->db->quote($details['templ_name'], 'text') . ", " . $this->db->quote($details['templ_descr'] ?? '', 'text') . ")";
 
         $this->db->query($query);
 

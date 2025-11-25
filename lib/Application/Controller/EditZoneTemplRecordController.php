@@ -51,13 +51,13 @@ class EditZoneTemplRecordController extends BaseController
             $this->showFirstError($v->errors());
         }
 
-        $record_id = htmlspecialchars($_GET['id']);
-        $zone_templ_id = htmlspecialchars($_GET['zone_templ_id']);
+        $record_id = (int)$_GET['id'];
+        $zone_templ_id = (int)$_GET['zone_templ_id'];
 
         $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
         $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
         $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
-        $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
+        $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to edit zone template records."));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -67,7 +67,7 @@ class EditZoneTemplRecordController extends BaseController
         $this->showZoneTemplateRecordForm($record_id, $zone_templ_id);
     }
 
-    public function showZoneTemplateRecordForm(string $record_id, string $zone_templ_id): void
+    public function showZoneTemplateRecordForm(int $record_id, int $zone_templ_id): void
     {
         $record = ZoneTemplate::get_zone_templ_record_from_id($this->db, $record_id);
 
@@ -80,7 +80,7 @@ class EditZoneTemplRecordController extends BaseController
         ]);
     }
 
-    public function updateZoneTemplateRecord(string $zone_templ_id): void
+    public function updateZoneTemplateRecord(int $zone_templ_id): void
     {
         if (ZoneTemplate::edit_zone_templ_record($this->db, $_POST)) {
             $this->setMessage('edit_zone_templ', 'success', _('Zone template has been updated successfully.'));

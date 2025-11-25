@@ -53,7 +53,7 @@ class AddZoneTemplRecordController extends BaseController
         $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
         $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
 
-        $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to delete zone templates."));
+        $this->checkCondition(!($perm_godlike || $perm_master_add && $owner), _("You do not have the permission to add a record to this zone template."));
 
         if ($this->isPost()) {
             $this->validateCsrfToken();

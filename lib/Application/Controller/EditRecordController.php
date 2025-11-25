@@ -66,7 +66,10 @@ class EditRecordController extends BaseController
         $perm_view = Permission::getViewPermission($this->db);
         $perm_edit = Permission::getEditPermission($this->db);
 
-        $record_id = $_GET['id'];
+        if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
+            $this->showError(_('Invalid or unexpected input given.'));
+        }
+        $record_id = (int)$_GET['id'];
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zid = $dnsRecord->get_zone_id_from_record_id($record_id);
 
@@ -93,7 +96,7 @@ class EditRecordController extends BaseController
         $this->showRecordEditForm($record_id, $zone_type, $zid, $perm_edit, $user_is_zone_owner);
     }
 
-    public function showRecordEditForm($record_id, string $zone_type, $zid, string $perm_edit, $user_is_zone_owner): void
+    public function showRecordEditForm(int $record_id, string $zone_type, int $zid, string $perm_edit, string $user_is_zone_owner): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_name = $dnsRecord->get_domain_name_by_id($zid);
@@ -126,7 +129,7 @@ class EditRecordController extends BaseController
         ]);
     }
 
-    public function saveRecord($zid): void
+    public function saveRecord(int $zid): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $old_record_info = $dnsRecord->get_record_from_id($_POST["rid"]);

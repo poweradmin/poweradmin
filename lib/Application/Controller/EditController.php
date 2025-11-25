@@ -82,7 +82,7 @@ class EditController extends BaseController
         if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $zone_id = intval(htmlspecialchars($_GET['id']));
+        $zone_id = (int)$_GET['id'];
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);
 
@@ -414,7 +414,7 @@ class EditController extends BaseController
         $this->finalizeSave($error, $serial_mismatch, $dnsRecord, $zone_id, $one_record_changed, $zone_name);
     }
 
-    public function saveAsTemplate(string $zone_id): void
+    public function saveAsTemplate(int $zone_id): void
     {
         $template_name = htmlspecialchars($_POST['templ_name']) ?? '';
         if (ZoneTemplate::zone_templ_name_exists($this->db, $template_name)) {

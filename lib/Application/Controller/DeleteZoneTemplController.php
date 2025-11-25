@@ -40,7 +40,17 @@ class DeleteZoneTemplController extends BaseController
 {
     public function run(): void
     {
-        $zone_templ_id = htmlspecialchars($_GET['id']);
+        $v = new Valitron\Validator($_GET);
+        $v->rules([
+            'required' => ['id'],
+            'integer' => ['id'],
+        ]);
+        if (!$v->validate()) {
+            $this->showFirstError($v->errors());
+            return;
+        }
+
+        $zone_templ_id = (int)$_GET['id'];
         $owner = ZoneTemplate::get_zone_templ_is_owner($this->db, $zone_templ_id, $_SESSION['userid']);
         $perm_godlike = UserManager::verify_permission($this->db, 'user_is_ueberuser');
         $perm_master_add = UserManager::verify_permission($this->db, 'zone_master_add');
@@ -56,26 +66,16 @@ class DeleteZoneTemplController extends BaseController
 
     private function deleteZoneTempl(): void
     {
-        $v = new Valitron\Validator($_GET);
-        $v->rules([
-            'required' => ['id'],
-            'integer' => ['id'],
-        ]);
+        $zone_templ_id = (int)$_GET['id'];
+        ZoneTemplate::delete_zone_templ($this->db, $zone_templ_id);
 
-        if ($v->validate()) {
-            $zone_templ_id = htmlspecialchars($_GET['id']);
-            ZoneTemplate::delete_zone_templ($this->db, $zone_templ_id);
-
-            $this->setMessage('list_zone_templ', 'success', _('Zone template has been deleted successfully.'));
-            $this->redirect('index.php', ['page' => 'list_zone_templ']);
-        } else {
-            $this->showFirstError($v->errors());
-        }
+        $this->setMessage('list_zone_templ', 'success', _('Zone template has been deleted successfully.'));
+        $this->redirect('index.php', ['page' => 'list_zone_templ']);
     }
 
     private function showDeleteZoneTempl(): void
     {
-        $zone_templ_id = htmlspecialchars($_GET['id']);
+        $zone_templ_id = (int)$_GET['id'];
         $templ_details = ZoneTemplate::get_zone_templ_details($this->db, $zone_templ_id);
 
         $this->render('delete_zone_templ.html', [

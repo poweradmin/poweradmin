@@ -69,14 +69,19 @@ class AddZoneTemplController extends BaseController
             ],
         ]);
 
+        if (!$v->validate()) {
+            $this->showFirstError($v->errors());
+            return;
+        }
+
         if (ZoneTemplate::add_zone_templ($this->db, $_POST, $_SESSION['userid'])) {
             $this->setMessage('list_zone_templ', 'success', _('Zone template has been added successfully.'));
             $this->redirect('index.php', ['page' => 'list_zone_templ']);
         } else {
             $this->render('add_zone_templ.html', [
                 'user_name' => UserManager::get_fullname_from_userid($this->db, $_SESSION['userid']) ?: $_SESSION['userlogin'],
-                'templ_name' => htmlspecialchars($_POST['templ_name']),
-                'templ_descr' => htmlspecialchars($_POST['templ_descr']),
+                'templ_name' => htmlspecialchars($_POST['templ_name'] ?? ''),
+                'templ_descr' => htmlspecialchars($_POST['templ_descr'] ?? ''),
                 'perm_is_godlike' => UserManager::verify_permission($this->db, 'user_is_ueberuser')
             ]);
         }

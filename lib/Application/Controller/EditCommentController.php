@@ -56,7 +56,7 @@ class EditCommentController extends BaseController
         if (!isset($_GET['id']) || !Validator::is_number($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
-        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = (int)$_GET['id'];
 
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
         if ($perm_view == "none" || $perm_view == "own" && $user_is_zone_owner == "0") {
@@ -85,7 +85,7 @@ class EditCommentController extends BaseController
         $this->showCommentForm($zone_id, $perm_edit_comment);
     }
 
-    public function showCommentForm(string $zone_id, bool $perm_edit_comment): void
+    public function showCommentForm(int $zone_id, bool $perm_edit_comment): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);

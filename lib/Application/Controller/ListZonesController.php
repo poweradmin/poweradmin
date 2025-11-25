@@ -67,7 +67,7 @@ class ListZonesController extends BaseController
 
         $row_start = 0;
         if (isset($_GET['start'])) {
-            $row_start = (htmlspecialchars($_GET['start']) - 1) * $iface_rowamount;
+            $row_start = ((int)$_GET['start'] - 1) * $iface_rowamount;
         }
 
         $perm_view = Permission::getViewPermission($this->db);
@@ -140,7 +140,7 @@ class ListZonesController extends BaseController
         return $presenter->present($availableChars, $digitsAvailable, $letterStart);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string
+    private function createAndPresentPagination(int $totalItems, int $itemsPerPage): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();

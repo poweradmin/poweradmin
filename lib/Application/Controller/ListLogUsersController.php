@@ -60,9 +60,12 @@ class ListLogUsersController extends BaseController
     {
         $selected_page = 1;
         if (isset($_GET['start'])) {
-            is_numeric($_GET['start']) ? $selected_page = $_GET['start'] : die("Unknown page.");
+            if (!is_numeric($_GET['start'])) {
+                $this->showError(_('Unknown page.'));
+            }
+            $selected_page = (int)$_GET['start'];
             if ($selected_page < 0) {
-                die('Unknown page.');
+                $this->showError(_('Unknown page.'));
             }
         }
 
@@ -72,14 +75,14 @@ class ListLogUsersController extends BaseController
             $number_of_logs = $this->dbUserLogger->count_logs_by_user($_GET['name']);
             $number_of_pages = ceil($number_of_logs / $logs_per_page);
             if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
-                die('Unknown page');
+                $this->showError(_('Unknown page.'));
             }
             $logs = $this->dbUserLogger->get_logs_for_user($_GET['name'], $logs_per_page, ($selected_page - 1) * $logs_per_page);
         } else {
             $number_of_logs = $this->dbUserLogger->count_all_logs();
             $number_of_pages = ceil($number_of_logs / $logs_per_page);
             if ($number_of_logs != 0 && $selected_page > $number_of_pages) {
-                die('Unknown page');
+                $this->showError(_('Unknown page.'));
             }
             $logs = $this->dbUserLogger->get_all_logs($logs_per_page, ($selected_page - 1) * $logs_per_page);
         }
@@ -94,7 +97,7 @@ class ListLogUsersController extends BaseController
         ]);
     }
 
-    private function createAndPresentPagination(int $totalItems, string $itemsPerPage): string
+    private function createAndPresentPagination(int $totalItems, int $itemsPerPage): string
     {
         $httpParameters = new HttpPaginationParameters();
         $currentPage = $httpParameters->getCurrentPage();

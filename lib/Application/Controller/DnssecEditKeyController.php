@@ -21,7 +21,7 @@
  */
 
 /**
- * Script that handles zone deletion
+ * Script that handles DNSSEC key editing
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -43,31 +43,31 @@ class DnssecEditKeyController extends BaseController
 
     public function run(): void
     {
-        $zone_id = "-1";
+        $zone_id = -1;
         if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {
-            $zone_id = htmlspecialchars($_GET['id']);
+            $zone_id = (int)$_GET['id'];
         }
 
-        $key_id = "-1";
+        $key_id = -1;
         if (isset($_GET['key_id']) && Validator::is_number($_GET['key_id'])) {
             $key_id = (int)$_GET['key_id'];
         }
 
-        $confirm = "-1";
+        $confirm = -1;
         if (isset($_GET['confirm']) && Validator::is_number($_GET['confirm'])) {
-            $confirm = $_GET['confirm'];
+            $confirm = (int)$_GET['confirm'];
         }
 
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
-        if ($zone_id == "-1") {
+        if ($zone_id == -1) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);
 
-        if ($key_id == "-1") {
+        if ($key_id == -1) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
@@ -77,12 +77,12 @@ class DnssecEditKeyController extends BaseController
         }
 
         if ($user_is_zone_owner != "1") {
-            $this->showError(_('Failed to delete DNSSEC key.'));
+            $this->showError(_("You do not have the permission to edit this zone."));
         }
 
         $key_info = $dnssecProvider->getZoneKey($domain_name, $key_id);
 
-        if ($confirm == '1') {
+        if ($confirm == 1) {
             if ($key_info[5]) {
                 if ($dnssecProvider->deactivateZoneKey($domain_name, $key_id)) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been successfully deactivated.'));

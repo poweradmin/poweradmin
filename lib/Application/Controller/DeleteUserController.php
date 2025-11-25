@@ -49,7 +49,7 @@ class DeleteUserController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $uid = htmlspecialchars($_GET['id']);
+        $uid = (int)$_GET['id'];
 
         if ($this->isPost()) {
             $this->validateCsrfToken();
@@ -63,7 +63,7 @@ class DeleteUserController extends BaseController
         $this->showQuestion($uid);
     }
 
-    public function deleteUser(string $uid): void
+    public function deleteUser(int $uid): void
     {
         if (!UserManager::is_valid_user($this->db, $uid)) {
             $this->showError(_('User does not exist.'));
@@ -81,7 +81,7 @@ class DeleteUserController extends BaseController
         }
     }
 
-    public function showQuestion(string $uid): void
+    public function showQuestion(int $uid): void
     {
         $name = UserManager::get_fullname_from_userid($this->db, $uid);
         if (!$name) {

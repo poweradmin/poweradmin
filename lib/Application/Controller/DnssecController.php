@@ -22,7 +22,7 @@
  */
 
 /**
- * Script that handles editing of zone records
+ * Script that handles DNSSEC key management
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -50,7 +50,7 @@ class DnssecController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $zone_id = htmlspecialchars($_GET['id']);
+        $zone_id = (int)$_GET['id'];
         $perm_view = Permission::getViewPermission($this->db);
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
@@ -68,7 +68,7 @@ class DnssecController extends BaseController
         $this->showDnsSecKeys($zone_id);
     }
 
-    public function showDnsSecKeys(string $zone_id): void
+    public function showDnsSecKeys(int $zone_id): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $domain_name = $dnsRecord->get_domain_name_by_id($zone_id);

@@ -64,6 +64,7 @@ class DeleteDomainsController extends BaseController
         }
 
         if (isset($_POST['confirm'])) {
+            $this->validateCsrfToken();
             $this->deleteDomains($zone_ids);
         }
 

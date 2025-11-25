@@ -62,7 +62,7 @@ class DeleteRecordController extends BaseController
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
-        $record_id = htmlspecialchars($_GET['id']);
+        $record_id = (int)$_GET['id'];
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
         $zid = $dnsRecord->get_zone_id_from_record_id($record_id);
@@ -131,7 +131,7 @@ class DeleteRecordController extends BaseController
         $this->showQuestion($record_id, $zid, $domain_id);
     }
 
-    public function showQuestion(string $record_id, $zid, int $zone_id): void
+    public function showQuestion(int $record_id, int $zid, int $zone_id): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zone_name = $dnsRecord->get_domain_name_by_id($zone_id);

@@ -22,7 +22,7 @@
  */
 
 /**
- * Script that handles editing of zone records
+ * Script that handles DNSSEC DS and DNSKEY record display
  *
  * @package     Poweradmin
  * @copyright   2007-2010 Rejo Zenger <rejo@zenger.nl>
@@ -46,12 +46,12 @@ class DnssecDsDnskeyController extends BaseController
     {
         $pdnssec_use = $this->config('pdnssec_use');
 
-        $zone_id = "-1";
+        $zone_id = -1;
         if (isset($_GET['id']) && Validator::is_number($_GET['id'])) {
-            $zone_id = htmlspecialchars($_GET['id']);
+            $zone_id = (int)$_GET['id'];
         }
 
-        if ($zone_id == "-1") {
+        if ($zone_id == -1) {
             $this->showError(_('Invalid or unexpected input given.'));
         }
 
@@ -73,7 +73,7 @@ class DnssecDsDnskeyController extends BaseController
         $this->showKeys($zone_id, $pdnssec_use);
     }
 
-    public function showKeys(string $zone_id, $pdnssec_use): void
+    public function showKeys(int $zone_id, bool $pdnssec_use): void
     {
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
 
