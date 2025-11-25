@@ -1,0 +1,48 @@
+language: php
+
+php:
+# - 5.3 # requires old distro, see below
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+  - 7.1
+  - 7.2
+# - 7.0 # Mac OS X, ignore errors, see below
+  - hhvm # ignore errors, see below
+
+# lock distro so new future defaults will not break the build
+dist: trusty
+
+matrix:
+  include:
+    - php: 5.3
+      dist: precise
+    - os: osx
+      language: generic
+      php: 7.0 # just to look right on travis
+      env:
+        - PACKAGE: php70
+  allow_failures:
+    - php: hhvm
+    - os: osx
+
+sudo: false
+
+install:
+  # OSX install inspired by https://github.com/kiler129/TravisCI-OSX-PHP
+  - |
+    if [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then 
+      brew tap homebrew/homebrew-php 
+      echo "Installing PHP ..."
+      brew install "${PACKAGE}"
+      brew install "${PACKAGE}"-xdebug
+      brew link "${PACKAGE}"
+      echo "Installing composer ..."
+      curl -s http://getcomposer.org/installer | php
+      mv composer.phar /usr/local/bin/composer
+    fi
+  - composer install --no-interaction
+
+script:
+  - ./vendor/bin/phpunit --coverage-text

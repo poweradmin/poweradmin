@@ -5,21 +5,27 @@ declare(strict_types=1);
 namespace Pdp;
 
 use Stringable;
+
 use function count;
+use function is_bool;
 
 final class ResolvedDomain implements ResolvedDomainName
 {
+    private readonly DomainName $domain;
     private readonly DomainName $secondLevelDomain;
     private readonly DomainName $registrableDomain;
     private readonly DomainName $subDomain;
+    private readonly EffectiveTopLevelDomain $suffix;
 
     /**
      * @throws CannotProcessHost
      */
     private function __construct(
-        private readonly DomainName $domain,
-        private readonly EffectiveTopLevelDomain $suffix
+        DomainName $domain,
+        EffectiveTopLevelDomain $suffix
     ) {
+        $this->domain = $domain;
+        $this->suffix = $suffix;
         [
             'registrableDomain' => $this->registrableDomain,
             'secondLevelDomain' => $this->secondLevelDomain,
@@ -34,7 +40,7 @@ final class ResolvedDomain implements ResolvedDomainName
     {
         $domain = self::setDomainName($domain);
 
-        return new self($domain, Suffix::fromICANN($domain->slice(0, $suffixLength)));
+        return new self($domain, Suffix::fromICANN($domain->withoutRootLabel()->slice(0, $suffixLength)));
     }
 
     /**
@@ -44,7 +50,7 @@ final class ResolvedDomain implements ResolvedDomainName
     {
         $domain = self::setDomainName($domain);
 
-        return new self($domain, Suffix::fromPrivate($domain->slice(0, $suffixLength)));
+        return new self($domain, Suffix::fromPrivate($domain->withoutRootLabel()->slice(0, $suffixLength)));
     }
 
     /**
@@ -54,7 +60,7 @@ final class ResolvedDomain implements ResolvedDomainName
     {
         $domain = self::setDomainName($domain);
 
-        return new self($domain, Suffix::fromIANA($domain->label(0)));
+        return new self($domain, Suffix::fromIANA($domain->withoutRootLabel()->label(0)));
     }
 
     /**
@@ -118,11 +124,15 @@ final class ResolvedDomain implements ResolvedDomainName
         }
 
         $length = count($this->suffix);
+        $offset = 0;
+        if ($this->domain->isAbsolute()) {
+            $offset = 1;
+        }
 
         return [
-            'registrableDomain' => $this->domain->slice(0, $length + 1),
-            'secondLevelDomain' => $this->domain->slice($length, 1),
-            'subDomain' => RegisteredName::fromIDNA2008($this->domain->value())->slice($length + 1),
+            'registrableDomain' => $this->domain->slice($offset, $length + 1),
+            'secondLevelDomain' => $this->domain->slice($length + $offset, 1),
+            'subDomain' => RegisteredName::fromIDNA2008($this->domain->value())->slice($length + 1 + $offset),
         ];
     }
 
@@ -181,6 +191,21 @@ final class ResolvedDomain implements ResolvedDomainName
         return new self($this->domain->toUnicode(), $this->suffix->toUnicode());
     }
 
+    public function isAbsolute(): bool
+    {
+        return $this->domain->isAbsolute();
+    }
+
+    public function withoutRootLabel(): self
+    {
+        return new self($this->domain->withoutRootLabel(), $this->suffix);
+    }
+
+    public function withRootLabel(): self
+    {
+        return new self($this->domain->withRootLabel(), $this->suffix);
+    }
+
     /**
      * @throws CannotProcessHost
      */
@@ -190,8 +215,10 @@ final class ResolvedDomain implements ResolvedDomainName
             $suffix = Suffix::fromUnknown($suffix);
         }
 
+        $domain = $this->domain->withoutRootLabel()->slice(count($this->suffix))->append($suffix);
+
         return new self(
-            $this->domain->slice(count($this->suffix))->append($suffix),
+            $domain->when($this->domain->isAbsolute(), fn (DomainName $domainName) => $domain->withRootLabel()),
             $suffix->normalize($this->domain)
         );
     }
@@ -206,11 +233,20 @@ final class ResolvedDomain implements ResolvedDomainName
         }
 
         $subDomain = RegisteredName::fromIDNA2008($subDomain);
+        if ($subDomain->isAbsolute()) {
+            $subDomain = $subDomain->withoutRootLabel();
+            if (null === $subDomain->value()) {
+                throw SyntaxError::dueToMalformedValue($subDomain->withRootLabel()->toString());
+            }
+        }
+
         if ($this->subDomain->value() === $subDomain->value()) {
             return $this;
         }
 
-        return new self($this->registrableDomain->prepend($subDomain), $this->suffix);
+        $domain = $this->registrableDomain->prepend($subDomain);
+
+        return new self($domain->when($this->domain->isAbsolute(), fn (DomainName $domainName) => $domain->withRootLabel()), $this->suffix);
     }
 
     /**
@@ -223,6 +259,13 @@ final class ResolvedDomain implements ResolvedDomainName
         }
 
         $label = RegisteredName::fromIDNA2008($label);
+        if ($label->isAbsolute()) {
+            if (2 !== count($label)) {
+                throw UnableToResolveDomain::dueToInvalidSecondLevelDomain($label);
+            }
+            $label = $label->withoutRootLabel();
+        }
+
         if (1 !== count($label)) {
             throw UnableToResolveDomain::dueToInvalidSecondLevelDomain($label);
         }
@@ -233,5 +276,26 @@ final class ResolvedDomain implements ResolvedDomainName
         }
 
         return new self($newRegistrableDomain->prepend($this->subDomain), $this->suffix);
+    }
+
+    /**
+     * Apply the callback if the given "condition" is (or resolves to) true.
+     *
+     * @param (callable($this): bool)|bool $condition
+     * @param callable($this): (self|null) $onSuccess
+     * @param ?callable($this): (self|null) $onFail
+     *
+     */
+    public function when(callable|bool $condition, callable $onSuccess, ?callable $onFail = null): self
+    {
+        if (!is_bool($condition)) {
+            $condition = $condition($this);
+        }
+
+        return match (true) {
+            $condition => $onSuccess($this),
+            null !== $onFail => $onFail($this),
+            default => $this,
+        } ?? $this;
     }
 }

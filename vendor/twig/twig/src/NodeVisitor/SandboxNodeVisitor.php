@@ -123,12 +123,7 @@ final class SandboxNodeVisitor implements NodeVisitorInterface
     {
         $expr = $node->getNode($name);
         if (($expr instanceof ContextVariable || $expr instanceof GetAttrExpression) && !$expr->isGenerator()) {
-            // Simplify in 4.0 as the spread attribute has been removed there
-            $new = new CheckToStringNode($expr);
-            if ($expr->hasAttribute('spread')) {
-                $new->setAttribute('spread', $expr->getAttribute('spread'));
-            }
-            $node->setNode($name, $new);
+            $node->setNode($name, new CheckToStringNode($expr));
         } elseif ($expr instanceof SpreadUnary) {
             $this->wrapNode($expr, 'node');
         } elseif ($expr instanceof ArrayExpression) {

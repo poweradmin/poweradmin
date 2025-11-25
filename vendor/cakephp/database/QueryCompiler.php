@@ -49,7 +49,7 @@ class QueryCompiler
     /**
      * The list of query clauses to traverse for generating a SELECT statement
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected array $_selectParts = [
         'comment', 'with', 'select', 'from', 'join', 'where', 'group', 'having', 'window', 'order',
@@ -59,21 +59,21 @@ class QueryCompiler
     /**
      * The list of query clauses to traverse for generating an UPDATE statement
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected array $_updateParts = ['comment', 'with', 'update', 'set', 'where', 'epilog'];
 
     /**
      * The list of query clauses to traverse for generating a DELETE statement
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected array $_deleteParts = ['comment', 'with', 'delete', 'modifier', 'from', 'where', 'epilog'];
 
     /**
      * The list of query clauses to traverse for generating an INSERT statement
      *
-     * @var list<string>
+     * @var array<string>
      */
     protected array $_insertParts = ['comment', 'with', 'insert', 'values', 'epilog'];
 
@@ -102,11 +102,13 @@ class QueryCompiler
         );
 
         // Propagate bound parameters from sub-queries if the
-        // placeholders can be found in the SQL statement.
+        // placeholders can be found in the SQL statement. Only
+        // add new placeholders, as sub-queries may have been executed already.
         if ($query->getValueBinder() !== $binder) {
+            $existing = $binder->bindings();
             foreach ($query->getValueBinder()->bindings() as $binding) {
                 $placeholder = ':' . $binding['placeholder'];
-                if (preg_match('/' . $placeholder . '(?:\W|$)/', $sql) > 0) {
+                if (!isset($existing[$placeholder]) && preg_match('/' . $placeholder . '(?:\W|$)/', $sql) > 0) {
                     $binder->bind($placeholder, $binding['value'], $binding['type']);
                 }
             }
@@ -315,7 +317,7 @@ class QueryCompiler
     /**
      * Helper function to generate SQL for SET expressions.
      *
-     * @param array $parts List of keys & values to set.
+     * @param array $parts List of keys and values to set.
      * @param \Cake\Database\Query $query The query that is being compiled
      * @param \Cake\Database\ValueBinder $binder Value binder used to generate parameter placeholder
      * @return string

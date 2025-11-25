@@ -102,6 +102,14 @@ abstract class IntegrationTestCase extends TestCase
     }
 
     /**
+     * @return array<callable(string): (TwigTest|false)>
+     */
+    protected function getUndefinedTestCallbacks(): array
+    {
+        return [];
+    }
+
+    /**
      * @return array<callable(string): (TokenParserInterface|false)>
      */
     protected function getUndefinedTokenParserCallbacks(): array
@@ -255,6 +263,10 @@ abstract class IntegrationTestCase extends TestCase
                 $twig->registerUndefinedFunctionCallback($callback);
             }
 
+            foreach ($this->getUndefinedTestCallbacks() as $callback) {
+                $twig->registerUndefinedTestCallback($callback);
+            }
+
             foreach ($this->getUndefinedTokenParserCallbacks() as $callback) {
                 $twig->registerUndefinedTokenParserCallback($callback);
             }
@@ -275,14 +287,14 @@ abstract class IntegrationTestCase extends TestCase
             } catch (\Exception $e) {
                 if (false !== $exception) {
                     $message = $e->getMessage();
-                    $this->assertSame(trim($exception), trim(\sprintf('%s: %s', \get_class($e), $message)));
+                    $this->assertSame(trim($exception), trim(\sprintf('%s: %s', $e::class, $message)));
                     $last = substr($message, \strlen($message) - 1);
                     $this->assertTrue('.' === $last || '?' === $last, 'Exception message must end with a dot or a question mark.');
 
                     return;
                 }
 
-                throw new Error(\sprintf('%s: %s', \get_class($e), $e->getMessage()), -1, null, $e);
+                throw new Error(\sprintf('%s: %s', $e::class, $e->getMessage()), -1, null, $e);
             } finally {
                 restore_error_handler();
             }
@@ -293,14 +305,14 @@ abstract class IntegrationTestCase extends TestCase
                 $output = trim($template->render(eval($match[1].';')), "\n ");
             } catch (\Exception $e) {
                 if (false !== $exception) {
-                    $this->assertStringMatchesFormat(trim($exception), trim(\sprintf('%s: %s', \get_class($e), $e->getMessage())));
+                    $this->assertStringMatchesFormat(trim($exception), trim(\sprintf('%s: %s', $e::class, $e->getMessage())));
 
                     return;
                 }
 
-                $e = new Error(\sprintf('%s: %s', \get_class($e), $e->getMessage()), -1, null, $e);
+                $e = new Error(\sprintf('%s: %s', $e::class, $e->getMessage()), -1, null, $e);
 
-                $output = trim(\sprintf('%s: %s', \get_class($e), $e->getMessage()));
+                $output = trim(\sprintf('%s: %s', $e::class, $e->getMessage()));
             }
 
             if (false !== $exception) {

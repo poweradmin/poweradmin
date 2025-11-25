@@ -1,0 +1,24 @@
+{
+    "name": "clue/ndjson-react",
+    "description": "Streaming newline-delimited JSON (NDJSON) parser and encoder for ReactPHP.",
+    "keywords": ["NDJSON", "newline", "JSON", "jsonlines", "streaming", "ReactPHP"],
+    "homepage": "https://github.com/clue/reactphp-ndjson",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Christian Lück",
+            "email": "christian@lueck.tv"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Clue\\React\\NDJson\\": "src/" }
+    },
+    "require": {
+        "php": ">=5.3",
+        "react/stream": "^1.0 || ^0.7 || ^0.6"
+    },
+    "require-dev": {
+        "react/event-loop": "^1.0 || ^0.5 || ^0.4 || ^0.3",
+        "phpunit/phpunit": "^6.0 || ^5.7 || ^4.8.35"
+    }
+}
