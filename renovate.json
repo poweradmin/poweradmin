@@ -1,0 +1,97 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended"
+  ],
+  "baseBranches": [
+    "master",
+    "release/3.9.x"
+  ],
+  "constraints": {
+    "php": ">=8.1 <8.2"
+  },
+  "postUpdateOptions": [],
+  "packageRules": [
+    {
+      "description": "Dev dependencies - update composer.json version only, skip lock file and vendor",
+      "matchDepTypes": [
+        "require-dev"
+      ],
+      "groupName": "dev dependencies",
+      "skipArtifactsUpdate": true
+    },
+    {
+      "description": "Production dependencies - update composer files and vendor directory (no dev packages)",
+      "matchDepTypes": [
+        "require"
+      ],
+      "groupName": "production dependencies",
+      "postUpdateOptions": [
+        "composerUpdateNoDev"
+      ]
+    },
+    {
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "php"
+      ],
+      "allowedVersions": "8.2",
+      "description": "Pin PHP Docker image to 8.2.x"
+    },
+    {
+      "matchDatasources": [
+        "packagist"
+      ],
+      "matchPackageNames": [
+        "phpunit/phpunit"
+      ],
+      "allowedVersions": "<11.0",
+      "description": "PHPUnit 11+ requires PHP 8.2+, we target PHP 8.1"
+    },
+    {
+      "matchDatasources": [
+        "packagist"
+      ],
+      "matchPackageNames": [
+        "squizlabs/php_codesniffer"
+      ],
+      "allowedVersions": "<4.0",
+      "description": "PHP_CodeSniffer 4.0 requires PHP 8.3+"
+    },
+    {
+      "matchDatasources": [
+        "packagist"
+      ],
+      "matchPackageNames": [
+        "vimeo/psalm"
+      ],
+      "allowedVersions": "<6.0",
+      "description": "Psalm 6.0 requires PHP 8.3+"
+    },
+    {
+      "matchDatasources": [
+        "packagist"
+      ],
+      "allowedVersions": "<7.0",
+      "description": "Symfony 7.0 requires PHP 8.2+, we target PHP 8.1",
+      "matchPackageNames": [
+        "/^symfony//"
+      ]
+    },
+    {
+      "matchDatasources": [
+        "packagist"
+      ],
+      "matchPackageNames": [
+        "cakephp/core",
+        "cakephp/database",
+        "cakephp/datasource",
+        "cakephp/utility"
+      ],
+      "allowedVersions": "<6.0",
+      "description": "CakePHP 6.0 requires PHP 8.2+, we target PHP 8.1"
+    }
+  ]
+}
