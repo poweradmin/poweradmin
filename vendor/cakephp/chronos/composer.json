@@ -30,7 +30,7 @@
     },
     "require-dev": {
         "cakephp/cakephp-codesniffer": "^5.0",
-        "phpunit/phpunit": "^10.1.0 || ^11.1.3"
+        "phpunit/phpunit": "^10.5.58 || ^11.1.3"
     },
     "provide": {
         "psr/clock-implementation": "1.0"
@@ -59,12 +59,7 @@
         "cs-check": "phpcs --colors --parallel=16 -p",
         "cs-fix": "phpcbf --colors --parallel=16 -p",
         "phpstan": "tools/phpstan analyse",
-        "psalm": "tools/psalm --show-info=false",
-        "psalm-baseline": "tools/psalm  --set-baseline=psalm-baseline.xml",
-        "stan": [
-            "@phpstan",
-            "@psalm"
-        ],
+        "stan": "@phpstan",
         "stan-baseline": "tools/phpstan --generate-baseline",
         "stan-setup": "phive install",
         "test": "phpunit"

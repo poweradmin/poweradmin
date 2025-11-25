@@ -236,6 +236,8 @@ trait FormattingTrait
     /**
      * Returns the quarter
      *
+     * Deprecated 3.3.0: The $range parameter is deprecated. Use toQuarterRange() for quarter ranges.
+     *
      * @param bool $range Range.
      * @return array|int 1, 2, 3, or 4 quarter of year or array if $range true
      */
@@ -246,17 +248,31 @@ trait FormattingTrait
             return $quarter;
         }
 
+        trigger_error(
+            'Using toQuarter() with `$range=true` is deprecated. Use `toQuarterRange()` instead.',
+            E_USER_DEPRECATED,
+        );
+
+        return $this->toQuarterRange();
+    }
+
+    /**
+     * Returns the quarter range
+     *
+     * @return array{0: string, 1: string} Array with start and end date of quarter in Y-m-d format
+     */
+    public function toQuarterRange(): array
+    {
+        /** @var int<1, 4> $quarter */
+        $quarter = (int)ceil((int)$this->format('m') / 3);
         $year = $this->format('Y');
-        switch ($quarter) {
-            case 1:
-                return [$year . '-01-01', $year . '-03-31'];
-            case 2:
-                return [$year . '-04-01', $year . '-06-30'];
-            case 3:
-                return [$year . '-07-01', $year . '-09-30'];
-            default:
-                return [$year . '-10-01', $year . '-12-31'];
-        }
+
+        return match ($quarter) {
+            1 => [$year . '-01-01', $year . '-03-31'],
+            2 => [$year . '-04-01', $year . '-06-30'],
+            3 => [$year . '-07-01', $year . '-09-30'],
+            4 => [$year . '-10-01', $year . '-12-31'],
+        };
     }
 
     /**
