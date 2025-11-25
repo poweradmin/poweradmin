@@ -154,7 +154,7 @@ class ZoneSearch extends BaseSearch
     {
         list($reverse_search_string, $parameters, $search_string) = $this->buildSearchString($parameters);
 
-        return $this->getFoundZones($parameters, $search_string, $parameters['reverse'], $reverse_search_string, $permission_view);
+        return $this->getFoundZones($parameters, $search_string, $reverse_search_string, $permission_view);
     }
 
     /**

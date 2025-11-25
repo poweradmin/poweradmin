@@ -94,7 +94,7 @@ class PaginationPresenter
 
     private function createPageUrl(int $pageNumber): string
     {
-        $url = str_replace('{PageNumber}', $pageNumber, $this->urlPattern);
+        $url = str_replace('{PageNumber}', (string)$pageNumber, $this->urlPattern);
         if ($this->id !== '') {
             $url .= (parse_url($url, PHP_URL_QUERY) ? '&' : '?') . 'id=' . urlencode($this->id);
         }

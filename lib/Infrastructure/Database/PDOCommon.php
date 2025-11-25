@@ -134,6 +134,7 @@ class PDOCommon extends PDO
             "FROM ", "LIMIT ", "UNION ",
             "INNER ", "LEFT ", "RIGHT ", "JOIN ", ",",
             "GROUP BY ", "ORDER BY ", "HAVING ");
+        $Replace = [];
         foreach ($Keyword as $key => $value) {
             if ($value == ",") {
                 $Replace[$key] = "<b>" . $value . "</b>\n";

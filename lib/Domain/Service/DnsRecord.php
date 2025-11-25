@@ -780,7 +780,7 @@ class DnsRecord
                         $dns_ttl = $this->config->get('dns_ttl');
 
                         $templ_records = ZoneTemplate::get_zone_templ_records($db, $zone_template);
-                        if ($templ_records != -1) {
+                        if (!empty($templ_records)) {
                             foreach ($templ_records as $r) {
                                 if ((preg_match('/in-addr.arpa/i', $domain) && ($r["type"] == "NS" || $r["type"] == "SOA")) || (!preg_match('/in-addr.arpa/i', $domain))) {
                                     $zoneTemplate = new ZoneTemplate($this->db, $this->config);
@@ -1643,7 +1643,6 @@ class DnsRecord
 
     /** Change Zone Type
      *
-     * @param $db
      * @param string $type New Zone Type [NATIVE,MASTER,SLAVE]
      * @param int $id Zone ID
      *
@@ -1750,13 +1749,8 @@ class DnsRecord
         $perm_edit = Permission::getEditPermission($this->db);
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
 
-        if (UserManager::verify_permission($this->db, 'zone_master_add')) {
-            $zone_master_add = "1";
-        }
-
-        if (UserManager::verify_permission($this->db, 'zone_slave_add')) {
-            $zone_slave_add = "1";
-        }
+        $zone_master_add = UserManager::verify_permission($this->db, 'zone_master_add') ? "1" : "0";
+        $zone_slave_add = UserManager::verify_permission($this->db, 'zone_slave_add') ? "1" : "0";
 
         $soa_rec = $this->get_soa_record($zone_id);
         $this->db->beginTransaction();

@@ -342,6 +342,7 @@ class UserManager
             $edit_own_perm = self::verify_permission($this->db, 'user_edit_own');
             $passwd_edit_others_perm = self::verify_permission($this->db, 'user_passwd_edit_others');
 
+            $passwordHash = '';
             if ($user_password != "" && ($edit_own_perm || $passwd_edit_others_perm)) {
                 $config = new AppConfiguration();
                 $userAuthService = new UserAuthenticationService(
@@ -706,6 +707,7 @@ class UserManager
             }
 
             $passwd_edit_others_perm = self::verify_permission($this->db, 'user_passwd_edit_others');
+            $hashedPassword = '';
             if (isset($details['password']) && $details['password'] != "" && $passwd_edit_others_perm) {
                 $config = new AppConfiguration();
                 $userAuthService = new UserAuthenticationService(

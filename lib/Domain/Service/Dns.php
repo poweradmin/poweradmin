@@ -538,7 +538,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_printable(string $string): bool
+    public static function is_valid_printable(string $string, bool $answer = true): bool
     {
         if (!preg_match('/^[[:print:]]+$/', trim($string))) {
             $error = new ErrorMessage(_('Invalid characters have been used in this record.'));
@@ -755,7 +755,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_rr_hinfo_content(string $content): bool
+    public static function is_valid_rr_hinfo_content(string $content, bool $answer = true): bool
     {
 
         if ($content[0] == "\"") {
@@ -982,7 +982,7 @@ class Dns
      *
      * @return boolean true if valid, false otherwise
      */
-    public static function is_valid_spf(string $content): bool
+    public static function is_valid_spf(string $content, bool $answer = true): bool
     {
         // Cleanup required quotes before validation
         $content = trim($content, '"');
@@ -1012,7 +1012,7 @@ class Dns
         }
     }
 
-    public static function is_valid_ds($content): bool
+    public static function is_valid_ds(string $content, bool $answer = true): bool
     {
         if (preg_match("/^([0-9]+) ([0-9]+) ([0-9]+) ([a-f0-9]+)$/i", $content)) {
             return true;

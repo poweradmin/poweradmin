@@ -336,6 +336,7 @@ class PdnsUtilProvider implements DnssecProvider
         $keys = array();
         foreach ($output as $line) {
             if (str_starts_with($line, 'ID')) {
+                $items = [];
                 $items[0] = explode(' ', (explode('ID = ', $line)[1]))[0];
                 $items[1] = substr(explode(' ', (explode('ID = ', $line)[1]))[1], 1, -2);
                 $items[2] = substr(explode(' ', (explode('flags = ', $line)[1]))[0], 0, -1);
