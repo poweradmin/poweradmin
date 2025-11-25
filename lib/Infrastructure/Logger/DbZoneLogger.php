@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Infrastructure\Logger;
 
+use PDO;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Infrastructure\Database\PDOLayer;
 use Poweradmin\AppConfiguration;
@@ -74,15 +75,14 @@ class DbZoneLogger
     {
         $stmt = $this->db->prepare("
                     SELECT * FROM log_zones
-                    ORDER BY created_at DESC 
-                    LIMIT :limit 
-                    OFFSET :offset 
+                    ORDER BY created_at DESC
+                    LIMIT :limit
+                    OFFSET :offset
         ");
 
-        $stmt->execute([
-            'limit' => $limit,
-            'offset' => $offset
-        ]);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
 
         $records = $stmt->fetchAll();
         return $this->processFetchedLogs($records);
@@ -99,18 +99,17 @@ class DbZoneLogger
 
         $stmt = $this->db->prepare("
             SELECT log_zones.id, log_zones.event, log_zones.created_at, $domains_table.name FROM log_zones
-            INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id 
+            INNER JOIN $domains_table ON $domains_table.id = log_zones.zone_id
             WHERE $domains_table.name LIKE :search_by
             ORDER BY log_zones.created_at DESC
-            LIMIT :limit 
+            LIMIT :limit
             OFFSET :offset");
 
         $domain = "%$domain%";
-        $stmt->execute([
-            'search_by' => $domain,
-            'limit' => $limit,
-            'offset' => $offset
-        ]);
+        $stmt->bindValue(':search_by', $domain, PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
 
         $records = $stmt->fetchAll();
         return $this->processFetchedLogs($records);
