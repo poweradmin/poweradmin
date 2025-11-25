@@ -16,16 +16,23 @@
         }
     ],
     "require": {
-        "php": ">=5.3.3"
+        "php": ">=7.2"
+    },
+    "provide": {
+        "ext-ctype": "*"
     },
     "autoload": {
         "psr-4": { "Symfony\\Polyfill\\Ctype\\": "" },
         "files": [ "bootstrap.php" ]
     },
+    "suggest": {
+        "ext-ctype": "For best performance"
+    },
     "minimum-stability": "dev",
     "extra": {
-        "branch-alias": {
-            "dev-master": "1.8-dev"
+        "thanks": {
+            "name": "symfony/polyfill",
+            "url": "https://github.com/symfony/polyfill"
         }
     }
 }

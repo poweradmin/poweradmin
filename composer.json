@@ -52,7 +52,8 @@
     "phpstan/phpstan": "^2.1",
     "friendsofphp/php-cs-fixer": "^3.64",
     "vimeo/psalm": "^0.3.14",
-    "phpmd/phpmd": "^2.15"
+    "phpmd/phpmd": "^2.15",
+    "phan/phan": "^5.5"
   },
   "scripts": {
     "docs": "tools/phpDocumentor",
@@ -85,10 +86,26 @@
     "check:phpmd:lib": "phpmd lib ansi cleancode,codesize,controversial,design,naming,unusedcode",
     "check:phpmd:tests": "phpmd tests ansi cleancode,codesize,controversial,design,naming,unusedcode",
 
+    "compat:8.1": "phan --target-php-version=8.1 --allow-polyfill-parser",
+    "compat:8.2": "phan --target-php-version=8.2 --allow-polyfill-parser",
+    "compat:8.3": "phan --target-php-version=8.3 --allow-polyfill-parser",
+    "compat:8.4": "phan --target-php-version=8.4 --allow-polyfill-parser",
+    "compat:all": [
+        "@compat:8.1",
+        "@compat:8.2",
+        "@compat:8.3",
+        "@compat:8.4"
+    ],
+
     "post-create-project-cmd": [
       "rm -rf install/",
       "rm -rf tests/"
     ]
+  },
+  "config": {
+    "platform": {
+      "php": "8.1"
+    }
   },
   "archive": {
     "exclude": [
