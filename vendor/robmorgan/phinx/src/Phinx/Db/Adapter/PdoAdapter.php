@@ -15,6 +15,8 @@ use Cake\Database\Query\DeleteQuery;
 use Cake\Database\Query\InsertQuery;
 use Cake\Database\Query\SelectQuery;
 use Cake\Database\Query\UpdateQuery;
+use Cake\I18n\Date;
+use Cake\I18n\DateTime;
 use InvalidArgumentException;
 use PDO;
 use PDOException;
@@ -92,7 +94,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
         ?string $username = null,
         #[SensitiveParameter]
         ?string $password = null,
-        array $options = []
+        array $options = [],
     ): PDO {
         $adapterOptions = $this->getOptions() + [
             'attr_errmode' => PDO::ERRMODE_EXCEPTION,
@@ -113,7 +115,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
         } catch (PDOException $e) {
             throw new InvalidArgumentException(sprintf(
                 'There was a problem connecting to the database: %s',
-                $e->getMessage()
+                $e->getMessage(),
             ), 0, $e);
         }
 
@@ -154,7 +156,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                     ->addColumn(
                         'migration_name',
                         'string',
-                        ['limit' => 100, 'after' => 'version', 'default' => null, 'null' => true]
+                        ['limit' => 100, 'after' => 'version', 'default' => null, 'null' => true],
                     )
                     ->save();
             }
@@ -197,8 +199,8 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
      */
     public function execute(string $sql, array $params = []): int
     {
-        $sql = rtrim($sql, "; \t\n\r\0\x0B") . ';';
-        $this->verboseLog($sql);
+        $sql = rtrim($sql, "; \t\n\r\0\x0B");
+        $this->verboseLog($sql . ';');
 
         if ($this->isDryRunEnabled()) {
             return 0;
@@ -249,7 +251,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
             Query::TYPE_UPDATE => $this->getDecoratedConnection()->updateQuery(),
             Query::TYPE_DELETE => $this->getDecoratedConnection()->deleteQuery(),
             default => throw new InvalidArgumentException(
-                'Query type must be one of: `select`, `insert`, `update`, `delete`.'
+                'Query type must be one of: `select`, `insert`, `update`, `delete`.',
             )
         };
     }
@@ -320,13 +322,36 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
     }
 
     /**
+     * Get the parameters array for prepared insert statement
+     *
+     * @param array $params Parameters array to be filled
+     * @param array $row Row to be inserted into DB
+     */
+    protected function getInsertParameters(array &$params, array $row): void
+    {
+        foreach ($row as $value) {
+            if ($value instanceof Literal) {
+                continue;
+            } elseif ($value instanceof DateTime) {
+                $params[] = $value->toDateTimeString();
+            } elseif ($value instanceof Date) {
+                $params[] = $value->toDateString();
+            } elseif (is_bool($value)) {
+                $params[] = $this->castToBool($value);
+            } else {
+                $params[] = $value;
+            }
+        }
+    }
+
+    /**
      * @inheritDoc
      */
     public function insert(Table $table, array $row): void
     {
         $sql = sprintf(
             'INSERT INTO %s ',
-            $this->quoteTableName($table->getName())
+            $this->quoteTableName($table->getName()),
         );
         $columns = array_keys($row);
         $sql .= '(' . implode(', ', array_map([$this, 'quoteColumnName'], $columns)) . ') ' . $this->getInsertOverride() . 'VALUES ';
@@ -342,21 +367,15 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
             $this->output->writeln($sql);
         } else {
             $sql .= '(';
-            $vals = [];
             $values = [];
             foreach ($row as $value) {
                 $values[] = $value instanceof Literal ? (string)$value : '?';
-                if (!($value instanceof Literal)) {
-                    if (is_bool($value)) {
-                        $vals[] = $this->castToBool($value);
-                    } else {
-                        $vals[] = $value;
-                    }
-                }
             }
+            $params = [];
+            $this->getInsertParameters($params, $row);
             $sql .= implode(', ', $values) . ')';
             $stmt = $this->getConnection()->prepare($sql);
-            $stmt->execute($vals);
+            $stmt->execute($params);
         }
     }
 
@@ -372,12 +391,22 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
             return $value;
         }
 
+        if (is_bool($value)) {
+            return $this->castToBool($value);
+        }
+
         if ($value === null) {
             return 'null';
         }
 
         if ($value instanceof Literal) {
             return (string)$value;
+        }
+
+        if ($value instanceof DateTime) {
+            $value = $value->toDateTimeString();
+        } elseif ($value instanceof Date) {
+            $value = $value->toDateString();
         }
 
         return $this->getConnection()->quote($value);
@@ -401,7 +430,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
     {
         $sql = sprintf(
             'INSERT INTO %s ',
-            $this->quoteTableName($table->getName())
+            $this->quoteTableName($table->getName()),
         );
         $current = current($rows);
         $keys = array_keys($current);
@@ -424,21 +453,13 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
             }
             $sql .= implode(',', $queries);
             $stmt = $this->getConnection()->prepare($sql);
-            $vals = [];
 
+            $params = [];
             foreach ($rows as $row) {
-                foreach ($row as $v) {
-                    if ($v instanceof Literal) {
-                        continue;
-                    } elseif (is_bool($v)) {
-                        $vals[] = $this->castToBool($v);
-                    } else {
-                        $vals[] = $v;
-                    }
-                }
+                $this->getInsertParameters($params, $row);
             }
 
-            $stmt->execute($vals);
+            $stmt->execute($params);
         }
     }
 
@@ -519,7 +540,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                 substr($migration->getName(), 0, 100),
                 $startTime,
                 $endTime,
-                $this->castToBool(false)
+                $this->castToBool(false),
             );
 
             $this->execute($sql);
@@ -529,7 +550,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                 "DELETE FROM %s WHERE %s = '%s'",
                 $this->quoteTableName($this->getSchemaTableName()),
                 $this->quoteColumnName('version'),
-                $migration->getVersion()
+                $migration->getVersion(),
             );
 
             $this->execute($sql);
@@ -552,8 +573,8 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                 $this->castToBool(false),
                 $this->quoteColumnName('version'),
                 $migration->getVersion(),
-                $this->quoteColumnName('start_time')
-            )
+                $this->quoteColumnName('start_time'),
+            ),
         );
 
         return $this;
@@ -570,8 +591,8 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                 $this->quoteTableName($this->getSchemaTableName()),
                 $this->quoteColumnName('breakpoint'),
                 $this->castToBool(false),
-                $this->quoteColumnName('start_time')
-            )
+                $this->quoteColumnName('start_time'),
+            ),
         );
     }
 
@@ -612,8 +633,8 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                 $this->castToBool($state),
                 $this->quoteColumnName('start_time'),
                 $this->quoteColumnName('version'),
-                $migration->getVersion()
-            )
+                $migration->getVersion(),
+            ),
         );
 
         return $this;
@@ -1012,7 +1033,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                     $instructions->merge($this->getChangeColumnInstructions(
                         $table->getName(),
                         $action->getColumnName(),
-                        $action->getColumn()
+                        $action->getColumn(),
                     ));
                     break;
 
@@ -1020,7 +1041,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                     /** @var \Phinx\Db\Action\DropForeignKey $action */
                     $instructions->merge($this->getDropForeignKeyByColumnsInstructions(
                         $table->getName(),
-                        $action->getForeignKey()->getColumns()
+                        $action->getForeignKey()->getColumns(),
                     ));
                     break;
 
@@ -1028,7 +1049,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                     /** @var \Phinx\Db\Action\DropForeignKey $action */
                     $instructions->merge($this->getDropForeignKeyInstructions(
                         $table->getName(),
-                        $action->getForeignKey()->getConstraint()
+                        $action->getForeignKey()->getConstraint(),
                     ));
                     break;
 
@@ -1036,7 +1057,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                     /** @var \Phinx\Db\Action\DropIndex $action */
                     $instructions->merge($this->getDropIndexByNameInstructions(
                         $table->getName(),
-                        $action->getIndex()->getName()
+                        $action->getIndex()->getName(),
                     ));
                     break;
 
@@ -1044,14 +1065,14 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                     /** @var \Phinx\Db\Action\DropIndex $action */
                     $instructions->merge($this->getDropIndexByColumnsInstructions(
                         $table->getName(),
-                        $action->getIndex()->getColumns()
+                        $action->getIndex()->getColumns(),
                     ));
                     break;
 
                 case $action instanceof DropTable:
                     /** @var \Phinx\Db\Action\DropTable $action */
                     $instructions->merge($this->getDropTableInstructions(
-                        $table->getName()
+                        $table->getName(),
                     ));
                     break;
 
@@ -1059,7 +1080,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                     /** @var \Phinx\Db\Action\RemoveColumn $action */
                     $instructions->merge($this->getDropColumnInstructions(
                         $table->getName(),
-                        $action->getColumn()->getName()
+                        $action->getColumn()->getName(),
                     ));
                     break;
 
@@ -1068,7 +1089,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                     $instructions->merge($this->getRenameColumnInstructions(
                         $table->getName(),
                         $action->getColumn()->getName(),
-                        $action->getNewName()
+                        $action->getNewName(),
                     ));
                     break;
 
@@ -1076,7 +1097,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                     /** @var \Phinx\Db\Action\RenameTable $action */
                     $instructions->merge($this->getRenameTableInstructions(
                         $table->getName(),
-                        $action->getNewName()
+                        $action->getNewName(),
                     ));
                     break;
 
@@ -1084,7 +1105,7 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                     /** @var \Phinx\Db\Action\ChangePrimaryKey $action */
                     $instructions->merge($this->getChangePrimaryKeyInstructions(
                         $table,
-                        $action->getNewColumns()
+                        $action->getNewColumns(),
                     ));
                     break;
 
@@ -1092,13 +1113,13 @@ abstract class PdoAdapter extends AbstractAdapter implements DirectActionInterfa
                     /** @var \Phinx\Db\Action\ChangeComment $action */
                     $instructions->merge($this->getChangeCommentInstructions(
                         $table,
-                        $action->getNewComment()
+                        $action->getNewComment(),
                     ));
                     break;
 
                 default:
                     throw new InvalidArgumentException(
-                        sprintf("Don't know how to execute action: '%s'", get_class($action))
+                        sprintf("Don't know how to execute action: '%s'", get_class($action)),
                     );
             }
         }

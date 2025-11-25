@@ -22,17 +22,19 @@ use Traversable;
 use function Cake\Core\deprecationWarning;
 
 /**
- * Paginated resultset.
+ * Paginated result set.
  *
- * @template T of mixed
- * @template-implements \IteratorAggregate<mixed>
+ * @template TKey
+ * @template TValue
+ * @implements \IteratorAggregate<TKey, TValue>
+ * @implements \Cake\Datasource\Paging\PaginatedInterface<TKey, TValue>
  */
 class PaginatedResultSet implements IteratorAggregate, JsonSerializable, PaginatedInterface
 {
     /**
      * Resultset instance.
      *
-     * @var \Traversable<T>
+     * @var \Traversable<TKey, TValue>
      */
     protected Traversable $results;
 
@@ -46,7 +48,7 @@ class PaginatedResultSet implements IteratorAggregate, JsonSerializable, Paginat
     /**
      * Constructor
      *
-     * @param \Traversable<T> $results Resultset instance.
+     * @param \Traversable<TKey, TValue> $results Resultset instance.
      * @param array $params Paging params.
      */
     public function __construct(Traversable $results, array $params)
@@ -68,7 +70,7 @@ class PaginatedResultSet implements IteratorAggregate, JsonSerializable, Paginat
      *
      * This will exhaust the iterator `items`.
      *
-     * @return array<array-key, T>
+     * @return array<array-key, TValue>
      */
     public function toArray(): array
     {
@@ -78,7 +80,7 @@ class PaginatedResultSet implements IteratorAggregate, JsonSerializable, Paginat
     /**
      * Get paginated items.
      *
-     * @return \Traversable<T> The paginated items result set.
+     * @return \Traversable<TKey, TValue> The paginated items result set.
      */
     public function items(): Traversable
     {

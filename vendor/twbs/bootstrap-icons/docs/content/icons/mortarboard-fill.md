@@ -1,8 +1,10 @@
 ---
-title: Mortorboard fill
+title: Mortarboard fill
 categories:
-  - Real World
+  - Real world
 tags:
   - graduation
   - cap
+aliases:
+  - /icons/mortorboard-fill/
 ---

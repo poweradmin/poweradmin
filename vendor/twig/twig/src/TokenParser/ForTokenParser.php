@@ -35,9 +35,9 @@ final class ForTokenParser extends AbstractTokenParser
     {
         $lineno = $token->getLine();
         $stream = $this->parser->getStream();
-        $targets = $this->parser->getExpressionParser()->parseAssignmentExpression();
+        $targets = $this->parseAssignmentExpression();
         $stream->expect(Token::OPERATOR_TYPE, 'in');
-        $seq = $this->parser->getExpressionParser()->parseExpression();
+        $seq = $this->parser->parseExpression();
 
         $stream->expect(Token::BLOCK_END_TYPE);
         $body = $this->parser->subparse([$this, 'decideForFork']);

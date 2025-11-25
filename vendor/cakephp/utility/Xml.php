@@ -271,7 +271,10 @@ class Xml
             $input = $input->toArray();
         }
         if (!is_array($input) || count($input) !== 1) {
-            throw new XmlException('Invalid input.');
+            throw new XmlException(
+                'Invalid input of type `' . gettype($input) . '`'
+                . (is_array($input) ? ' (Count of ' . count($input) . ')' : '') . '.',
+            );
         }
         $key = key($input);
         if (is_int($key)) {
@@ -295,7 +298,28 @@ class Xml
 
         $options['return'] = strtolower($options['return']);
         if ($options['return'] === 'simplexml' || $options['return'] === 'simplexmlelement') {
-            return new SimpleXMLElement((string)$dom->saveXML());
+            $xmlString = (string)$dom->saveXML();
+            $check = new DOMDocument();
+            libxml_use_internal_errors(true);
+
+            if (!$check->loadXML($xmlString, LIBXML_NOWARNING | LIBXML_NOERROR)) {
+                $errors = libxml_get_errors();
+                $messages = [];
+
+                foreach ($errors as $error) {
+                    $messages[] = trim(sprintf(
+                        'File: %s, Line %d, Column %d: %s',
+                        $error->file ?: '[string input]',
+                        $error->line,
+                        $error->column,
+                        $error->message,
+                    ));
+                }
+                libxml_clear_errors();
+                throw new XmlException("Invalid XML string:\n" . implode("\n", $messages));
+            }
+
+            return new SimpleXMLElement($xmlString);
         }
 
         return $dom;
@@ -390,7 +414,7 @@ class Xml
      *
      * @param array<string, mixed> $data Array with information to create children
      * @return void
-     * @psalm-param {dom: \DOMDocument, node: \DOMDocument|\DOMElement, key: string, format: string, ?value: mixed} $data
+     * @phpstan-param array{dom: \DOMDocument, node: \DOMNode, key: string, format: string, value?: mixed} $data
      */
     protected static function _createChild(array $data): void
     {
@@ -401,9 +425,7 @@ class Xml
         $key = $data['key'];
         $format = $data['format'];
         $value = $data['value'];
-        /** @var \DOMDocument $dom */
         $dom = $data['dom'];
-        /** @var \DOMNode $node */
         $node = $data['node'];
         $childNS = null;
         $childValue = null;
