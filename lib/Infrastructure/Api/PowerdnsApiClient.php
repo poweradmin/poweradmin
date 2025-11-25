@@ -128,6 +128,10 @@ class PowerdnsApiClient
         if ($response && $response['responseCode'] === 200) {
             $keys = [];
             foreach ($response['data'] as $keyData) {
+                // Normalize optional fields from PowerDNS API
+                // ZSK keys don't have DS records, only KSK/CSK do
+                $keyData['ds'] = $keyData['ds'] ?? [];
+
                 $keys[] = new CryptoKey(
                     $keyData['id'],
                     $keyData['keytype'],
