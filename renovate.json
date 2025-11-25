@@ -3,10 +3,6 @@
   "extends": [
     "config:recommended"
   ],
-  "baseBranches": [
-    "master",
-    "release/3.9.x"
-  ],
   "constraints": {
     "php": ">=8.1 <8.2"
   },
@@ -85,13 +81,10 @@
         "packagist"
       ],
       "matchPackageNames": [
-        "cakephp/core",
-        "cakephp/database",
-        "cakephp/datasource",
-        "cakephp/utility"
+        "pragmarx/google2fa"
       ],
-      "allowedVersions": "<6.0",
-      "description": "CakePHP 6.0 requires PHP 8.2+, we target PHP 8.1"
+      "allowedVersions": "<9.0",
+      "description": "google2fa v9 has breaking changes requiring code updates"
     }
   ]
 }
