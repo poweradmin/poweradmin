@@ -32,6 +32,9 @@ jobs:
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
 
+    - name: Fix vendor binary permissions
+      run: chmod +x vendor/bin/*
+
     - name: Check code
       run: composer check:all
 
@@ -73,6 +76,9 @@ jobs:
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
+
+    - name: Fix vendor binary permissions
+      run: chmod +x vendor/bin/*
 
     - name: Validate PHP syntax
       run: find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l > /dev/null
