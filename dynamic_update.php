@@ -195,17 +195,19 @@ if (!strlen($hostname)) {
     return status_exit('notfqdn');
 }
 
-$user = $db->queryRow("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items 
-                        WHERE users.username='$username'
-                        AND users.active=1 
-                        AND perm_templ.id = users.perm_templ 
-                        AND perm_templ_items.templ_id = perm_templ.id 
-                        AND perm_items.id = perm_templ_items.perm_id 
+$user_query = $db->prepare("SELECT users.id, users.password FROM users, perm_templ, perm_templ_items, perm_items
+                        WHERE users.username = :username
+                        AND users.active = 1
+                        AND perm_templ.id = users.perm_templ
+                        AND perm_templ_items.templ_id = perm_templ.id
+                        AND perm_items.id = perm_templ_items.perm_id
                         AND (
                             perm_items.name = 'zone_content_edit_own'
                             OR perm_items.name = 'zone_content_edit_own_as_client'
                             OR perm_items.name = 'zone_content_edit_others'
                         )");
+$user_query->execute([':username' => $auth_username]);
+$user = $user_query->fetch(\PDO::FETCH_ASSOC);
 
 $userAuthService = new UserAuthenticationService(
     $config->get('password_encryption'),

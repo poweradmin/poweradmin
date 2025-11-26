@@ -104,9 +104,10 @@ class LdapAuthenticator extends LoggingService
         }
 
         $attributes = array($ldap_user_attribute, 'dn');
+        $escaped_username = ldap_escape($_SESSION['userlogin'], '', LDAP_ESCAPE_FILTER);
         $filter = $ldap_search_filter
-            ? "(&($ldap_user_attribute={$_SESSION['userlogin']})$ldap_search_filter)"
-            : "($ldap_user_attribute={$_SESSION['userlogin']})";
+            ? "(&($ldap_user_attribute=$escaped_username)$ldap_search_filter)"
+            : "($ldap_user_attribute=$escaped_username)";
 
         if ($ldap_debug) {
             echo "<div class=\"container\"><pre>";

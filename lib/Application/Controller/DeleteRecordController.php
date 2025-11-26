@@ -72,7 +72,17 @@ class DeleteRecordController extends BaseController
 
         $domain_id = $dnsRecord->recid_to_domid($record_id);
 
-        if (isset($_GET['confirm'])) {
+        // Authorization check - must be done BEFORE any state-changing operations
+        $perm_edit = Permission::getEditPermission($this->db);
+        $zone_info = $dnsRecord->get_zone_info_from_id($zid);
+        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $domain_id);
+        if ($zone_info['type'] == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
+            $this->showError(_("You do not have the permission to edit this record."));
+            return;
+        }
+
+        if ($this->isPost()) {
+            $this->validateCsrfToken();
             $record_info = $dnsRecord->get_record_from_id($record_id);
             if ($dnsRecord->delete_record($record_id)) {
                 if (isset($record_info['prio'])) {
@@ -117,15 +127,6 @@ class DeleteRecordController extends BaseController
 
                 $this->redirect('index.php', ['page' => 'edit', 'id' => $zid]);
             }
-        }
-
-        $perm_edit = Permission::getEditPermission($this->db);
-
-        $dnsRecord = new DnsRecord($this->db, $this->getConfig());
-        $zone_info = $dnsRecord->get_zone_info_from_id($zid);
-        $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $domain_id);
-        if ($zone_info['type'] == "SLAVE" || $perm_edit == "none" || ($perm_edit == "own" || $perm_edit == "own_as_client") && $user_is_zone_owner == "0") {
-            $this->showError(_("You do not have the permission to edit this record."));
         }
 
         $this->showQuestion($record_id, $zid, $domain_id);

@@ -40,9 +40,10 @@
 {% trans %}Active{% endtrans %}: {{ active|trans }}
 
 <p class="pt-3"><strong>{% trans %}Are you sure?{% endtrans %}</strong></p>
-<input class="btn btn-primary btn-sm" type="button"
-       onClick="location.href='index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ key_id }}&confirm=1'"
-       value="{% trans %}Yes{% endtrans %}">
+<form method="post" action="index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ key_id }}" style="display: inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    <input class="btn btn-primary btn-sm" type="submit" value="{% trans %}Yes{% endtrans %}">
+</form>
 <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=dnssec&id={{ zone_id }}'"
        value="{% trans %}No{% endtrans %}">
 

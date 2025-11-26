@@ -73,7 +73,8 @@ class DeleteDomainController extends BaseController
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zone_id);
         $this->checkCondition($perm_edit != "all" && ($perm_edit != "own" || !$user_is_zone_owner), _("You do not have the permission to delete a zone."));
 
-        if (isset($_GET['confirm'])) {
+        if ($this->isPost()) {
+            $this->validateCsrfToken();
             $this->deleteDomain($zone_id);
         } else {
             $this->showDeleteDomain($zone_id);

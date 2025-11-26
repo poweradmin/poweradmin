@@ -47,6 +47,8 @@
 <p>{% trans %}You are trying to delete a record that is needed for this zone to work.{% endtrans %}</p>
 {% endif %}
 <p>{% trans %}Are you sure?{% endtrans %}</p>
-<input type="button" class="btn btn-primary btn-sm" onClick="location.href='index.php?page=delete_record&id={{ record_id }}&confirm=1'"
-       value="{% trans %}Yes{% endtrans %}">
+<form method="post" action="index.php?page=delete_record&id={{ record_id }}" style="display: inline;">
+    <input type="hidden" name="_token" value="{{ csrf_token }}">
+    <input type="submit" class="btn btn-primary btn-sm" value="{% trans %}Yes{% endtrans %}">
+</form>
 <input type="button" class="btn btn-secondary btn-sm" onClick="location.href='index.php?page=edit&id={{ zone_id }}'" value="{% trans %}No{% endtrans %}">
