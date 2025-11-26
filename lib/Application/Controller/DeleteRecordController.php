@@ -106,7 +106,8 @@ class DeleteRecordController extends BaseController
 
         $domain_id = $dnsRecord->recidToDomid($record_id);
 
-        if (isset($_GET['confirm'])) {
+        if ($this->isPost()) {
+            $this->validateCsrfToken();
             $record_info = $dnsRecord->getRecordFromId($record_id);
             if ($record_info === null) {
                 $this->showError(_('Record not found.'));
@@ -162,7 +163,7 @@ class DeleteRecordController extends BaseController
                 $dnsRecord->updateSOASerial($zid);
 
                 // Delete corresponding PTR record if this was an A or AAAA record and deletion is requested
-                $delete_ptr = isset($_GET['delete_ptr']) && $_GET['delete_ptr'] === '1';
+                $delete_ptr = isset($_POST['delete_ptr']) && $_POST['delete_ptr'] === '1';
                 if ($hasPtrRecord && $delete_ptr) {
                     $deletedPtrRecord = $this->reverseRecordCreator->deleteReverseRecord(
                         $record_info['type'],
@@ -172,7 +173,7 @@ class DeleteRecordController extends BaseController
                 }
 
                 // Delete corresponding A/AAAA record if this was a PTR record and deletion is requested
-                $delete_forward = isset($_GET['delete_forward']) && $_GET['delete_forward'] === '1';
+                $delete_forward = isset($_POST['delete_forward']) && $_POST['delete_forward'] === '1';
                 if ($hasForwardRecord && $delete_forward) {
                     $deletedForwardRecord = $this->reverseRecordCreator->deleteForwardRecord(
                         $record_info['name'],

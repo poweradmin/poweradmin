@@ -119,9 +119,12 @@
         </div>
 
         <div class="d-flex gap-2">
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/{{ key_id }}/delete?confirm=1" class="btn btn-danger btn-sm">
-                <i class="bi bi-trash text-white me-1"></i>{% trans %}Delete key{% endtrans %}
-            </a>
+            <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec/keys/{{ key_id }}/delete" style="display: inline;">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <button type="submit" class="btn btn-danger btn-sm">
+                    <i class="bi bi-trash text-white me-1"></i>{% trans %}Delete key{% endtrans %}
+                </button>
+            </form>
             <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/dnssec" class="btn btn-secondary btn-sm">
                 <i class="bi bi-x-circle text-white me-1"></i>{% trans %}Cancel{% endtrans %}
             </a>
