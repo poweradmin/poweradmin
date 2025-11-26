@@ -901,11 +901,10 @@ class DnsRecord
                         $zone_templ_id = 0;
                     }
                     $stmt = $db->prepare("INSERT INTO zones (domain_id, owner, zone_templ_id) VALUES(:zone_id, :user_id, :zone_templ_id)");
-                    $stmt->execute([
-                        "zone_id" => $zone_id,
-                        "user_id" => $user_id,
-                        "zone_templ_id" => $zone_templ_id,
-                    ]);
+                    $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+                    $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+                    $stmt->bindValue(':zone_templ_id', $zone_templ_id, PDO::PARAM_INT);
+                    $stmt->execute();
                     return true;
                 } else {
                     $error = new ErrorMessage(_('The selected user already owns the zone.'));
@@ -1960,12 +1959,11 @@ class DnsRecord
         $query = "SELECT COUNT(*) FROM $records_table
               WHERE domain_id = :domain_id AND name = :name AND type = :type AND id != :record_id";
         $stmt = $this->db->prepare($query);
-        $stmt->execute([
-            ':domain_id' => $domain_id,
-            ':name' => $name,
-            ':type' => $type,
-            ':record_id' => $record_id
-        ]);
+        $stmt->bindValue(':domain_id', $domain_id, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+        $stmt->bindValue(':record_id', $record_id, PDO::PARAM_INT);
+        $stmt->execute();
         return (bool)$stmt->fetchColumn();
     }
 }

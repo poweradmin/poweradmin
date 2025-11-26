@@ -22,6 +22,8 @@
 
 namespace Poweradmin\Domain\Model;
 
+use PDO;
+
 class UserEntity
 {
     public static function exists($db, $name): bool
@@ -43,7 +45,8 @@ class UserEntity
         }
 
         $stmt = $db->prepare("SELECT username FROM users WHERE id=:user_id");
-        $stmt->execute(['user_id' => $user_id]);
+        $stmt->bindValue(':user_id', $user_id, PDO::PARAM_INT);
+        $stmt->execute();
 
         $user = $stmt->fetch();
 

@@ -46,14 +46,13 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
              VALUES (:domain_id, :name, :type, :modified_at, :account, :comment)"
         );
 
-        $stmt->execute([
-            ':domain_id' => $comment->getDomainId(),
-            ':name' => $comment->getName(),
-            ':type' => $comment->getType(),
-            ':modified_at' => $comment->getModifiedAt(),
-            ':account' => $comment->getAccount(),
-            ':comment' => $comment->getComment()
-        ]);
+        $stmt->bindValue(':domain_id', $comment->getDomainId(), PDO::PARAM_INT);
+        $stmt->bindValue(':name', $comment->getName(), PDO::PARAM_STR);
+        $stmt->bindValue(':type', $comment->getType(), PDO::PARAM_STR);
+        $stmt->bindValue(':modified_at', $comment->getModifiedAt(), PDO::PARAM_INT);
+        $stmt->bindValue(':account', $comment->getAccount(), PDO::PARAM_STR);
+        $stmt->bindValue(':comment', $comment->getComment(), PDO::PARAM_STR);
+        $stmt->execute();
 
         $id = (int)$this->connection->lastInsertId();
 
@@ -72,17 +71,16 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
     {
         $query = "DELETE FROM {$this->comments_table} WHERE domain_id = :domain_id AND name = :name AND type = :type";
         $stmt = $this->connection->prepare($query);
-        return $stmt->execute([
-            ':domain_id' => $domainId,
-            ':name' => $name,
-            ':type' => $type
-        ]);
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+        return $stmt->execute();
     }
 
-    public function deleteByDomainId(string $domainId): void
+    public function deleteByDomainId(int $domainId): void
     {
         $stmt = $this->connection->prepare("DELETE FROM {$this->comments_table} WHERE domain_id = :domainId");
-        $stmt->bindParam(':domainId', $domainId);
+        $stmt->bindValue(':domainId', $domainId, PDO::PARAM_INT);
         $stmt->execute();
     }
 
@@ -91,11 +89,10 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         // Currently only one comment per record is supported
         $query = "SELECT * FROM {$this->comments_table} WHERE domain_id = :domain_id AND name = :name AND type = :type LIMIT 1";
         $stmt = $this->connection->prepare($query);
-        $stmt->execute([
-            ':domain_id' => $domainId,
-            ':name' => $name,
-            ':type' => $type
-        ]);
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+        $stmt->execute();
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
         return $result ? new RecordComment(
@@ -123,16 +120,15 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
          AND type = :old_type"
         );
 
-        $success = $stmt->execute([
-            ':domain_id' => $domainId,
-            ':old_name' => $oldName,
-            ':old_type' => $oldType,
-            ':new_name' => $comment->getName(),
-            ':new_type' => $comment->getType(),
-            ':modified_at' => $comment->getModifiedAt(),
-            ':account' => $comment->getAccount(),
-            ':comment' => $comment->getComment()
-        ]);
+        $stmt->bindValue(':domain_id', $domainId, PDO::PARAM_INT);
+        $stmt->bindValue(':old_name', $oldName, PDO::PARAM_STR);
+        $stmt->bindValue(':old_type', $oldType, PDO::PARAM_STR);
+        $stmt->bindValue(':new_name', $comment->getName(), PDO::PARAM_STR);
+        $stmt->bindValue(':new_type', $comment->getType(), PDO::PARAM_STR);
+        $stmt->bindValue(':modified_at', $comment->getModifiedAt(), PDO::PARAM_INT);
+        $stmt->bindValue(':account', $comment->getAccount(), PDO::PARAM_STR);
+        $stmt->bindValue(':comment', $comment->getComment(), PDO::PARAM_STR);
+        $success = $stmt->execute();
 
         if (!$success) {
             return null;

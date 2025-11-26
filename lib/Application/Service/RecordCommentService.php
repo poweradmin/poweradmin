@@ -57,7 +57,7 @@ class RecordCommentService
         return $this->recordCommentRepository->delete($domainId, $name, $type);
     }
 
-    public function deleteCommentsByDomainId(string $domainId): void
+    public function deleteCommentsByDomainId(int $domainId): void
     {
         $this->recordCommentRepository->deleteByDomainId($domainId);
     }

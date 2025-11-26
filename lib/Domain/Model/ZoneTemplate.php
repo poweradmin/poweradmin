@@ -22,6 +22,7 @@
 
 namespace Poweradmin\Domain\Model;
 
+use PDO;
 use Poweradmin\Application\Presenter\ErrorPresenter;
 use Poweradmin\Domain\Error\ErrorMessage;
 use Poweradmin\Domain\Service\Dns;
@@ -100,13 +101,15 @@ class ZoneTemplate
 
         if (!UserManager::verify_permission($this->db, 'user_is_ueberuser')) {
             $query .= " WHERE zt.owner = :userid OR zt.owner = 0";
-            $params[':userid'] = $userid;
         }
 
         $query .= " GROUP BY zt.id, zt.name, zt.descr, u.username, u.fullname ORDER BY zt.name";
 
         $stmt = $this->db->prepare($query);
-        $stmt->execute($params);
+        if (!UserManager::verify_permission($this->db, 'user_is_ueberuser')) {
+            $stmt->bindValue(':userid', $userid, PDO::PARAM_INT);
+        }
+        $stmt->execute();
 
         return $stmt->fetchAll();
     }
@@ -134,11 +137,10 @@ class ZoneTemplate
             $errorPresenter->present($error);
         } else {
             $stmt = $db->prepare("INSERT INTO zone_templ (name, descr, owner) VALUES (:name, :descr, :owner)");
-            $stmt->execute([
-                ':name' => $details['templ_name'],
-                ':descr' => $details['templ_descr'],
-                ':owner' => isset($details['templ_global']) ? 0 : $userid
-            ]);
+            $stmt->bindValue(':name', $details['templ_name'], PDO::PARAM_STR);
+            $stmt->bindValue(':descr', $details['templ_descr'], PDO::PARAM_STR);
+            $stmt->bindValue(':owner', isset($details['templ_global']) ? 0 : $userid, PDO::PARAM_INT);
+            $stmt->execute();
             return true;
         }
         return false;
@@ -147,7 +149,8 @@ class ZoneTemplate
     public static function get_zone_templ_name($db, $zone_id)
     {
         $stmt = $db->prepare("SELECT zt.name FROM zones z JOIN zone_templ zt ON zt.id = z.zone_templ_id WHERE z.domain_id = :zone_id");
-        $stmt->execute([':zone_id' => $zone_id]);
+        $stmt->bindValue(':zone_id', $zone_id, PDO::PARAM_INT);
+        $stmt->execute();
         $result = $stmt->fetch();
 
         return $result ? $result['name'] : '';
@@ -293,7 +296,8 @@ class ZoneTemplate
         $sortby = in_array($sortby, $allowedSortColumns) ? htmlspecialchars($sortby) : 'name';
 
         $stmt = $db->prepare("SELECT id FROM zone_templ_records WHERE zone_templ_id = :id ORDER BY " . $sortby);
-        $stmt->execute([':id' => $id]);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
         $db->setLimit(0);
 
         $ret = [];
@@ -356,14 +360,13 @@ class ZoneTemplate
 
         $query = "INSERT INTO zone_templ_records (zone_templ_id, name, type, content, ttl, prio) VALUES (:zone_templ_id, :name, :type, :content, :ttl, :prio)";
         $stmt = $db->prepare($query);
-        $stmt->execute([
-            ':zone_templ_id' => $zone_templ_id,
-            ':name' => $name,
-            ':type' => $type,
-            ':content' => $content,
-            ':ttl' => $ttl,
-            ':prio' => $prio
-        ]);
+        $stmt->bindValue(':zone_templ_id', $zone_templ_id, PDO::PARAM_INT);
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->bindValue(':type', $type, PDO::PARAM_STR);
+        $stmt->bindValue(':content', $content, PDO::PARAM_STR);
+        $stmt->bindValue(':ttl', $ttl, PDO::PARAM_INT);
+        $stmt->bindValue(':prio', $prio, PDO::PARAM_INT);
+        $stmt->execute();
 
         return true;
     }
@@ -573,22 +576,22 @@ class ZoneTemplate
             return false;
         } else {
             $query = 'UPDATE zone_templ SET name=:templ_name, descr=:templ_descr';
-            $params = [
-                "templ_name" => $details['templ_name'],
-                "templ_descr" => $details['templ_descr'],
-                "templ_id" => $zone_templ_id
-            ];
 
             if (isset($details['templ_global'])) {
                 $query .= ', owner=0';
             } else {
                 $query .= ', owner=:templ_owner';
-                $params['templ_owner'] = $user_id;
             }
             $query .= ' WHERE id=:templ_id';
             $stmt = $db->prepare($query);
 
-            $stmt->execute($params);
+            $stmt->bindValue(':templ_name', $details['templ_name'], PDO::PARAM_STR);
+            $stmt->bindValue(':templ_descr', $details['templ_descr'], PDO::PARAM_STR);
+            $stmt->bindValue(':templ_id', $zone_templ_id, PDO::PARAM_INT);
+            if (!isset($details['templ_global'])) {
+                $stmt->bindValue(':templ_owner', $user_id, PDO::PARAM_INT);
+            }
+            $stmt->execute();
 
             return true;
         }
