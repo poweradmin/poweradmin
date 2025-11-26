@@ -69,9 +69,12 @@
         {% endif %}
 
         <div class="mt-4">
-            <a href="{{ base_url_prefix }}/zones/{{ zone_id }}/delete?confirm=1" class="btn btn-danger btn-sm" data-testid="confirm-delete-zone">
-                <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this zone{% endtrans %}
-            </a>
+            <form method="post" action="{{ base_url_prefix }}/zones/{{ zone_id }}/delete" style="display: inline;">
+                <input type="hidden" name="_token" value="{{ csrf_token }}">
+                <button type="submit" class="btn btn-danger btn-sm" data-testid="confirm-delete-zone">
+                    <i class="bi bi-trash-fill me-1 text-white"></i>{% trans %}Yes, delete this zone{% endtrans %}
+                </button>
+            </form>
             {% if is_reverse_zone %}
             <a href="{{ base_url_prefix }}/zones/reverse" class="btn btn-secondary btn-sm" data-testid="cancel-delete-zone">
             {% else %}
