@@ -704,6 +704,9 @@ class UserManager
         // Fetch user groups in a separate query
         $userGroups = self::getUserGroupsMap($db);
 
+        // Fetch MFA status in a separate query
+        $mfaStatus = self::getUserMfaStatusMap($db);
+
         $userList = array();
         foreach ($response as $user) {
             $userList[] = array(
@@ -718,7 +721,8 @@ class UserManager
                 "tpl_id" => $user['tpl_id'],
                 "tpl_name" => $user['tpl_name'],
                 "tpl_descr" => $user['tpl_descr'],
-                "groups" => $userGroups[$user['uid']] ?? []
+                "groups" => $userGroups[$user['uid']] ?? [],
+                "mfa_enabled" => $mfaStatus[$user['uid']] ?? false
             );
         }
         return $userList;
@@ -751,6 +755,32 @@ class UserManager
         }
 
         return $userGroups;
+    }
+
+    /**
+     * Get a map of user IDs to their MFA enabled status
+     *
+     * @param object $db Database connection
+     * @return array Map of user_id => bool (true if MFA enabled)
+     */
+    private static function getUserMfaStatusMap($db): array
+    {
+        try {
+            $query = "SELECT user_id, enabled FROM user_mfa WHERE enabled = 1";
+            $stmt = $db->prepare($query);
+            $stmt->execute();
+            $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+            $mfaStatus = [];
+            foreach ($results as $row) {
+                $mfaStatus[$row['user_id']] = true;
+            }
+
+            return $mfaStatus;
+        } catch (\PDOException $e) {
+            // Table might not exist if MFA was never enabled
+            return [];
+        }
     }
 
     /**

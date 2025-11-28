@@ -123,6 +123,7 @@ class UsersController extends BaseController
             'pagination' => $paginationPresenter->present(),
             'total_users' => $totalUsers,
             'rows_per_page' => $rowsPerPage,
+            'mfa_enabled' => $this->config->get('security', 'mfa')['enabled'] ?? false,
         ]);
     }
 }
