@@ -438,7 +438,7 @@ CREATE INDEX idx_user_group_members_group ON user_group_members(group_id);
 
 CREATE TABLE zones_groups (
     id SERIAL PRIMARY KEY,
-    domain_id INTEGER NOT NULL REFERENCES domains(id) ON DELETE CASCADE,
+    domain_id INTEGER NOT NULL,
     group_id INTEGER NOT NULL REFERENCES user_groups(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (domain_id, group_id)
@@ -446,4 +446,3 @@ CREATE TABLE zones_groups (
 
 CREATE INDEX idx_zones_groups_domain ON zones_groups(domain_id);
 CREATE INDEX idx_zones_groups_group ON zones_groups(group_id);
-

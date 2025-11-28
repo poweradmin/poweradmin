@@ -212,7 +212,6 @@ CREATE TABLE IF NOT EXISTS `zones_groups` (
     UNIQUE KEY `unique_zone_group` (`domain_id`, `group_id`),
     KEY `idx_domain_id` (`domain_id`),
     KEY `idx_group_id` (`group_id`),
-    CONSTRAINT `fk_zones_groups_domain` FOREIGN KEY (`domain_id`) REFERENCES `domains`(`id`) ON DELETE CASCADE,
     CONSTRAINT `fk_zones_groups_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 

@@ -95,6 +95,16 @@ class DatabaseStructureHelper
                         'name' => 'descr',
                         'table' => 'perm_templ',
                         'flags' => 'not_null'
+                    ),
+                    'template_type' => array(
+                        'type' => 'text',
+                        'notnull' => 1,
+                        'length' => 10,
+                        'fixed' => 0,
+                        'default' => 'user',
+                        'name' => 'template_type',
+                        'table' => 'perm_templ',
+                        'flags' => 'not_null'
                     )
                 )
             ),
@@ -1481,7 +1491,7 @@ class DatabaseStructureHelper
                     'description' => array(
                         'type' => 'text',
                         'notnull' => 0,
-                        'length' => 65535,
+                        'length' => 1024,
                         'fixed' => 0,
                         'name' => 'description',
                         'table' => 'user_groups',
@@ -1638,11 +1648,6 @@ class DatabaseStructureHelper
                     'idx_group_id' => array('group_id')
                 ),
                 'foreign_keys' => array(
-                    'fk_zones_groups_domain' => array(
-                        'table' => 'domains',
-                        'fields' => array('domain_id' => 'id'),
-                        'ondelete' => 'CASCADE'
-                    ),
                     'fk_zones_groups_group' => array(
                         'table' => 'user_groups',
                         'fields' => array('group_id' => 'id'),

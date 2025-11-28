@@ -331,7 +331,6 @@ CREATE TABLE zones_groups (
     group_id INTEGER NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE (domain_id, group_id),
-    FOREIGN KEY (domain_id) REFERENCES domains(id) ON DELETE CASCADE,
     FOREIGN KEY (group_id) REFERENCES user_groups(id) ON DELETE CASCADE
 );
 

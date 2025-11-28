@@ -222,7 +222,7 @@ ALTER TABLE "zones" ALTER COLUMN "owner" SET DEFAULT NULL;
 -- Description: Junction table for zone-group ownership (many-to-many)
 CREATE TABLE IF NOT EXISTS "zones_groups" (
     "id" SERIAL PRIMARY KEY,
-    "domain_id" INTEGER NOT NULL REFERENCES "domains"("id") ON DELETE CASCADE,
+    "domain_id" INTEGER NOT NULL,
     "group_id" INTEGER NOT NULL REFERENCES "user_groups"("id") ON DELETE CASCADE,
     "created_at" TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     UNIQUE ("domain_id", "group_id")
