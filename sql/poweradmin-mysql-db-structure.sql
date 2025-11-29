@@ -103,7 +103,8 @@ INSERT INTO `perm_items` (`id`, `name`, `descr`) VALUES
                                                      (64,	'zone_templ_edit',	'User is allowed to edit existing zone templates.'),
                                                      (65,	'api_manage_keys',	'User is allowed to create and manage API keys.'),
                                                      (67,	'zone_delete_own',	'User is allowed to delete zones they own.'),
-                                                     (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.');
+                                                     (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.'),
+                                                     (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.');
 
 CREATE TABLE `perm_templ` (
                               `id` int(11) NOT NULL AUTO_INCREMENT,

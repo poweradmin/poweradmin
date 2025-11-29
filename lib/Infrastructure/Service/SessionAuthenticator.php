@@ -36,6 +36,7 @@ use Poweradmin\Domain\Model\SessionEntity;
 use Poweradmin\Domain\Service\AuthenticationService;
 use Poweradmin\Domain\Service\PasswordEncryptionService;
 use Poweradmin\Domain\Service\SessionService;
+use Poweradmin\Domain\Service\MfaService;
 use Poweradmin\Domain\Service\UserAgreementService;
 use Poweradmin\Domain\Service\UserContextService;
 use Poweradmin\Infrastructure\Database\PDOCommon;
@@ -43,6 +44,8 @@ use Poweradmin\Infrastructure\Logger\LdapUserEventLogger;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Repository\DbUserAgreementRepository;
+use Poweradmin\Infrastructure\Repository\DbUserMfaRepository;
+use Poweradmin\Application\Service\MailService;
 use ReflectionClass;
 
 class SessionAuthenticator extends LoggingService
@@ -224,6 +227,9 @@ class SessionAuthenticator extends LoggingService
         // Check for user agreement requirements after successful authentication
         $this->checkUserAgreementRequirements();
 
+        // Check for MFA enforcement requirements after user agreement
+        $this->checkMfaEnforcementRequirements();
+
         $this->logDebug('Authentication process completed for user {username}', ['username' => $_SESSION["userlogin"] ?? 'unknown']);
     }
 
@@ -236,10 +242,12 @@ class SessionAuthenticator extends LoggingService
             return;
         }
 
-        // Skip agreement check for API requests and specific pages
-        $currentPage = $_REQUEST['page'] ?? '';
-        $skipPages = ['user_agreement', 'logout', 'mfa_verify', 'mfa_setup'];
-        if (in_array($currentPage, $skipPages) || strpos($currentPage, 'api/') === 0) {
+        // Get the current request path (without base_url_prefix)
+        $currentPath = $this->getCurrentRequestPath();
+
+        // Skip agreement check for API requests and specific paths
+        $skipPaths = ['/user-agreement', '/logout', '/mfa/verify', '/mfa/setup'];
+        if ($this->isPathInList($currentPath, $skipPaths) || str_contains($currentPath, '/api/')) {
             return;
         }
 
@@ -256,6 +264,93 @@ class SessionAuthenticator extends LoggingService
             $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
             $this->redirectService->redirectTo($baseUrlPrefix . '/user-agreement');
         }
+    }
+
+    private function checkMfaEnforcementRequirements(): void
+    {
+        $userContextService = new UserContextService();
+
+        // Only check if user is authenticated
+        if (!$userContextService->isAuthenticated()) {
+            return;
+        }
+
+        // Get the current request path (without base_url_prefix)
+        $currentPath = $this->getCurrentRequestPath();
+
+        // Skip MFA enforcement check for specific paths and API requests
+        $skipPaths = ['/logout', '/mfa/verify', '/mfa/setup'];
+        if ($this->isPathInList($currentPath, $skipPaths) || str_contains($currentPath, '/api/')) {
+            return;
+        }
+
+        $userId = $userContextService->getLoggedInUserId();
+        if (!$userId) {
+            return;
+        }
+
+        // Create MFA service to check enforcement
+        $mfaService = new MfaService(
+            new DbUserMfaRepository($this->db, $this->configManager),
+            $this->configManager,
+            new MailService($this->configManager)
+        );
+
+        // Check if MFA setup is required for this user
+        if ($mfaService->isMfaSetupRequired($userId, $this->db)) {
+            $this->logInfo('MFA setup required for user {userid}', ['userid' => $userId]);
+
+            // Set a session flag to indicate this is an enforced setup
+            $_SESSION['mfa_setup_enforced'] = true;
+
+            // Redirect to MFA setup page
+            $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
+            $this->redirectService->redirectTo($baseUrlPrefix . '/mfa/setup');
+        }
+    }
+
+    /**
+     * Get the current request path without base_url_prefix.
+     *
+     * This extracts the path from REQUEST_URI and strips the base_url_prefix
+     * if configured, returning just the application route path.
+     *
+     * @return string The request path (e.g., '/mfa/setup', '/zones/forward')
+     */
+    private function getCurrentRequestPath(): string
+    {
+        $requestUri = $_SERVER['REQUEST_URI'] ?? '/';
+
+        // Remove query string if present
+        $path = parse_url($requestUri, PHP_URL_PATH) ?: '/';
+
+        // Strip base_url_prefix if configured
+        $baseUrlPrefix = $this->configManager->get('interface', 'base_url_prefix', '');
+        if (!empty($baseUrlPrefix) && str_starts_with($path, $baseUrlPrefix)) {
+            $path = substr($path, strlen($baseUrlPrefix));
+            if (empty($path)) {
+                $path = '/';
+            }
+        }
+
+        return $path;
+    }
+
+    /**
+     * Check if the current path matches any path in the skip list.
+     *
+     * @param string $currentPath The current request path
+     * @param array $skipPaths List of paths to skip
+     * @return bool True if path should be skipped
+     */
+    private function isPathInList(string $currentPath, array $skipPaths): bool
+    {
+        foreach ($skipPaths as $skipPath) {
+            if ($currentPath === $skipPath || str_starts_with($currentPath, $skipPath . '/')) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private function getUserAuthMethod(): string

@@ -8,6 +8,14 @@
 <div class="container-fluid">
   <div class="row">
     <div class="col-md-12">
+      {% if setup_enforced %}
+      <div class="alert alert-warning mb-4">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        <strong>{% trans %}MFA Setup Required{% endtrans %}</strong>
+        <p class="mb-0 small">{% trans %}Your organization requires multi-factor authentication. Please set up MFA to continue using the system.{% endtrans %}</p>
+      </div>
+      {% endif %}
+
       <div class="card mb-4">
         <div class="card-header py-3">
           <small><strong><i class="bi bi-shield-lock me-2"></i>{% trans %}Multi-Factor Authentication{% endtrans %}</strong></small>
@@ -26,6 +34,10 @@
                 <p class="mb-2 small"><strong>{% trans %}Authentication method:{% endtrans %}</strong> {% trans %}Email verification{% endtrans %}</p>
               {% endif %}
               
+              {% if mfa_enforced %}
+              <p class="mb-2 small text-muted"><i class="bi bi-lock-fill me-1"></i>{% trans %}MFA is required by your organization's security policy and cannot be disabled.{% endtrans %}</p>
+              {% endif %}
+
               <div class="d-flex gap-2">
                 <form method="post" action="{{ base_url_prefix }}/mfa/setup">
                   <input type="hidden" name="_token" value="{{ csrf_token }}">
@@ -33,12 +45,14 @@
                     <i class="bi bi-key text-white"></i> {% trans %}Regenerate Recovery Codes{% endtrans %}
                   </button>
                 </form>
+                {% if not mfa_enforced %}
                 <form method="post" action="{{ base_url_prefix }}/mfa/setup">
                   <input type="hidden" name="_token" value="{{ csrf_token }}">
                   <button type="submit" name="disable_mfa" class="btn btn-sm btn-danger">
                     {% trans %}Disable MFA{% endtrans %}
                   </button>
                 </form>
+                {% endif %}
               </div>
             </div>
           {% else %}
@@ -85,7 +99,11 @@
                 <li>{% trans %}Relies on email delivery{% endtrans %}</li>
               </ul>
               
-              {% if not mail_enabled %}
+              {% if not email_mfa_enabled %}
+                <div class="alert alert-danger py-1 px-2">
+                  <small>{% trans %}Email verification is not available because it has been disabled by the administrator.{% endtrans %}</small>
+                </div>
+              {% elseif not mail_service_enabled %}
                 <div class="alert alert-danger py-1 px-2">
                   <small>{% trans %}Email verification is not available because mail service is not enabled on this system.{% endtrans %}</small>
                 </div>

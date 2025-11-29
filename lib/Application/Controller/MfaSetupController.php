@@ -277,6 +277,13 @@ class MfaSetupController extends BaseController
     {
         $userId = $this->userContextService->getLoggedInUserId() ?? 0;
 
+        // Check if MFA is enforced for this user
+        if ($this->mfaService->isMfaEnforced($userId, $this->db)) {
+            $this->addSystemMessage('error', _('MFA is required by your organization\'s security policy and cannot be disabled.'));
+            $this->displayMfaSetup();
+            return;
+        }
+
         // Check if MFA exists before trying to disable it
         $userMfa = $this->mfaService->getUserMfa($userId);
 
@@ -330,16 +337,30 @@ class MfaSetupController extends BaseController
             $mfaType = $userMfa->getType();
         }
 
-        // Check if mail service is enabled for the template
-        $mailEnabled = $this->config->get('mail', 'enabled', false);
-        // Check if email MFA is specifically enabled
+        // Check if mail service is enabled
+        $mailServiceEnabled = $this->config->get('mail', 'enabled', false);
+        // Check if email MFA is specifically enabled in security settings
         $emailMfaEnabled = $this->config->get('security', 'mfa.email_enabled', true);
+
+        // Check if MFA is enforced for this user
+        $mfaEnforced = $this->mfaService->isMfaEnforced($userId, $this->db);
+
+        // Check if this is an enforced setup from login redirect
+        $setupEnforced = isset($_SESSION['mfa_setup_enforced']) && $_SESSION['mfa_setup_enforced'] === true;
+
+        // Clear the session flag once we've read it
+        if ($setupEnforced) {
+            unset($_SESSION['mfa_setup_enforced']);
+        }
 
         $this->render('mfa_setup.html', [
             'mfa_enabled' => $mfaEnabled,
             'mfa_type' => $mfaType,
             'email' => $this->userContextService->getSessionData('email') ?? '',
-            'mail_enabled' => $mailEnabled && $emailMfaEnabled
+            'mail_service_enabled' => $mailServiceEnabled,
+            'email_mfa_enabled' => $emailMfaEnabled,
+            'mfa_enforced' => $mfaEnforced,
+            'setup_enforced' => $setupEnforced
         ]);
     }
 

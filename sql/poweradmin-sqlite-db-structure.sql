@@ -42,6 +42,7 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES (64,	'zone_templ_edit',	
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (65,	'api_manage_keys',	'User is allowed to create and manage API keys.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (67,	'zone_delete_own',	'User is allowed to delete zones they own.');
 INSERT INTO "perm_items" ("id", "name", "descr") VALUES (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.');
+INSERT INTO "perm_items" ("id", "name", "descr") VALUES (69,	'user_enforce_mfa',	'User is required to use multi-factor authentication.');
 
 CREATE TABLE perm_templ (id integer PRIMARY KEY, name VARCHAR(128) NOT NULL, descr VARCHAR(1024) NOT NULL, template_type VARCHAR(10) NOT NULL DEFAULT 'user', CHECK(template_type IN ('user', 'group')));
 

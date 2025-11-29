@@ -366,3 +366,9 @@ INSERT INTO "user_groups" ("name", "description", "perm_templ", "created_by")
 SELECT 'Guests', 'Temporary group with no permissions. Suitable for users awaiting approval.', pt.id, NULL
 FROM "perm_templ" pt WHERE pt.name = 'Guests' AND pt.template_type = 'group'
 AND NOT EXISTS (SELECT 1 FROM "user_groups" WHERE "name" = 'Guests');
+
+-- Add MFA enforcement permission
+-- This permission allows enforcing MFA for users/groups when mfa.enforced is enabled
+INSERT INTO perm_items (name, descr)
+SELECT 'user_enforce_mfa', 'User is required to use multi-factor authentication.'
+WHERE NOT EXISTS (SELECT 1 FROM perm_items WHERE name = 'user_enforce_mfa');

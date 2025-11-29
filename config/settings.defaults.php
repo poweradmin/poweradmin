@@ -67,6 +67,7 @@ return [
          */
         'mfa' => [
             'enabled' => false,                  // Enable MFA functionality
+            'enforced' => false,                 // Enable MFA enforcement (requires user_enforce_mfa permission)
             'app_enabled' => true,               // Enable authenticator app option
             'email_enabled' => true,             // Enable email verification option
             'recovery_codes' => 8,               // Number of recovery codes to generate
