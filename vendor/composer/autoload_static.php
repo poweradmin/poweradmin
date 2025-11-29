@@ -782,6 +782,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'OpenApi\\OpenApiException' => __DIR__ . '/..' . '/zircote/swagger-php/src/OpenApiException.php',
         'OpenApi\\Pipeline' => __DIR__ . '/..' . '/zircote/swagger-php/src/Pipeline.php',
         'OpenApi\\Processors\\AugmentDiscriminators' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/AugmentDiscriminators.php',
+        'OpenApi\\Processors\\AugmentItems' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/AugmentItems.php',
         'OpenApi\\Processors\\AugmentMediaType' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/AugmentMediaType.php',
         'OpenApi\\Processors\\AugmentParameters' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/AugmentParameters.php',
         'OpenApi\\Processors\\AugmentProperties' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/AugmentProperties.php',

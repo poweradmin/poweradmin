@@ -409,6 +409,7 @@ return array(
     'OpenApi\\OpenApiException' => $vendorDir . '/zircote/swagger-php/src/OpenApiException.php',
     'OpenApi\\Pipeline' => $vendorDir . '/zircote/swagger-php/src/Pipeline.php',
     'OpenApi\\Processors\\AugmentDiscriminators' => $vendorDir . '/zircote/swagger-php/src/Processors/AugmentDiscriminators.php',
+    'OpenApi\\Processors\\AugmentItems' => $vendorDir . '/zircote/swagger-php/src/Processors/AugmentItems.php',
     'OpenApi\\Processors\\AugmentMediaType' => $vendorDir . '/zircote/swagger-php/src/Processors/AugmentMediaType.php',
     'OpenApi\\Processors\\AugmentParameters' => $vendorDir . '/zircote/swagger-php/src/Processors/AugmentParameters.php',
     'OpenApi\\Processors\\AugmentProperties' => $vendorDir . '/zircote/swagger-php/src/Processors/AugmentProperties.php',
