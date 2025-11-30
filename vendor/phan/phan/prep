@@ -1,2 +1,0 @@
-#!/usr/bin/env php
-<?php require_once 'src/prep.php';
