@@ -1,0 +1,229 @@
+#!/usr/bin/env php
+<?php
+// pdep is a tool to help explore dependencies of classes.
+// @phan-file-suppress PhanPluginRemoveDebugEcho
+
+use Phan\CLIBuilder;
+use Phan\Phan;
+
+define("PDEP_IGNORE_STATIC", 1 << 0);
+define("PDEP_HIDE_LABELS", 1 << 1);
+define("PDEP_IGNORE_NEW", 1 << 2);
+
+/**
+ * Prints a usage message for 'pdep' and exits.
+ * @return never
+ */
+function pdep_usage(int $status) : void {
+    global $argv;
+    echo <<<EOT
+Usage: {$argv[0]} [options] [files or classes...]
+
+ -c, --find-classes  Find classes that depend on the passed files or classes
+ -f, --find-files    Find files that depend on the passed files or classes
+ -i, --import        Import class graph from json file previously generated
+ -j, --json          JSON output of entire class and file graphs plus metadata
+                     unless a depth and starting node is given, then you get
+                     a json file with just the dependency list for that node
+ -g, --graph         Graphviz dot output
+ -m, --graphml       GraphML output
+     --hide-labels   Labels are hidden - hover in yEd to see them
+     --ignore-static Don't include static calls and static var dependencies
+     --ignore-new    Don't include instantiation dependencies
+ -d, --depth <depth_level>
+    When walking the dependency graph, limit it to this depth. For
+    example,
+      {$argv[0]} -f -d 1 MyClass
+    would show only the files that directly depend on MyClass.
+ -l, --file-list <filelist.txt>
+ -q, --quick         Uses Phan's --quick mode
+ -p, --progress-bar  Show progress bar
+ -h, --help          This help
+
+If no filenames or classnames are provided, it will generate the
+full dependency tree.
+
+Note that this tool will read your local .phan/config.php and pick out
+the list of files to scan/not scan from there. Or, you can provide it
+with a file list.
+
+Examples:
+    {$argv[0]} -f src/Phan/PluginV3/PluginAwarePreAnalysisVisitor.php
+    {$argv[0]} -c -g '\Phan\PluginV3\PluginAwarePreAnalysisVisitor' | dot -Tpng > graph.png
+    {$argv[0]} -c -d 2 -g '\Phan\Language\Type\ClassStringType' | dot -Kfdp -Tpng > graph.png
+
+EOT;
+    exit($status);
+}
+
+call_user_func(static function () : void {
+    global $argv;
+    $tool_dir = dirname($argv[0]);
+    $depth = 0;
+    $cmd = '';
+    $graph_flags = 0;
+    $graph_file = '';
+
+    $options = getopt(
+        "cfjgmhpqd:l:i:",
+        [
+            'import',
+            'json',
+            'graph',
+            'graphml',
+            'ignore-static',
+            'ignore-new',
+            'hide-labels',
+            'find-classes',
+            'find-files',
+            'file-list:',
+            'progress-bar',
+            'depth:',
+            'help',
+        ],
+        $optind
+    );
+    if (isset($options['find-classes'])) {
+        $options['c'] = false;
+    }
+    if (isset($options['find-files'])) {
+        $options['f'] = false;
+    }
+    if (isset($options['depth'])) {
+        $options['d'] = false;
+    }
+    if (isset($options['json'])) {
+        $options['j'] = false;
+    }
+    if (isset($options['import'])) {
+        $options['i'] = false;
+    }
+    $mode = null;
+    if (isset($options['c'])) {
+        if (isset($options['f'])) {
+            echo "ERROR: Cannot pass both -c and -f\n";
+            pdep_usage(1);
+        }
+        $mode = 'class';
+    } elseif (isset($options['f'])) {
+        $mode = 'file';
+    }
+    if (isset($options['d'])) {
+        if (empty($mode)) {
+            echo "ERROR: You must specify either -c or -f\n";
+            pdep_usage(1);
+        }
+    }
+
+    if (isset($options['h']) || isset($options['help'])) {
+        pdep_usage(0);
+        return;
+    }
+
+    require_once __DIR__ . '/../src/Phan/Bootstrap.php';
+
+    $cli_builder = new CLIBuilder();
+    foreach ($options as $opt => $value) {
+        switch ($opt) {
+            case 'j':
+            case 'json':
+                $cmd = 'json';
+                break;
+            case 'g':
+            case 'graph':
+                $cmd = "graph";
+                break;
+            case 'm':
+            case 'graphml':
+                $cmd = "graphml";
+                break;
+            case 'ignore-static':
+                $graph_flags |= \PDEP_IGNORE_STATIC;
+                break;
+            case 'ignore-new':
+                $graph_flags |= \PDEP_IGNORE_NEW;
+                break;
+            case 'hide-labels':
+                $graph_flags |= \PDEP_HIDE_LABELS;
+                break;
+            case 'p':
+            case 'progress-bar':
+                $cli_builder->setOption('progress-bar');
+                break;
+            case 'q':
+            case 'quick':
+                $cli_builder->setOption('quick');
+                break;
+            case 'd':
+            case 'depth':
+                $depth = filter_var($value, FILTER_VALIDATE_INT);
+                if ($depth === false) {
+                    echo "ERROR: Invalid depth '$value' (expected int)\n";
+                    pdep_usage(1);
+                }
+                break;
+            case 'l':
+            case 'file-list':
+                // @phan-suppress-next-line PhanPossiblyNullTypeArgument
+                $cli_builder->setOption('file-list', $value);
+                break;
+            case 'i':
+            case 'import':
+                $cli_builder->setOption('no-progress-bar');
+                $graph_file = (string)$value;
+                break;
+        }
+    }
+
+    if ($cmd === 'json' && $depth === 0) {
+        $mode = '';
+    }
+
+    // Args for PDEP
+    $arg_string = implode(' ', array_slice($argv, $optind));
+
+    if (empty($arg_string) && $depth) {
+        echo "ERROR: You must specify a starting node when specifying a depth\n";
+        pdep_usage(1);
+    }
+
+    $cwd = \getcwd();
+
+    $cli_builder->setOption('allow-polyfill-parser');
+    $cli_builder->setOption('processes', '1');
+    $cli_builder->setOption('plugin', dirname($tool_dir) . '/src/Phan/Plugin/Internal/DependencyGraphPlugin.php');
+    $cli_builder->setOption('config-file', "$cwd/.phan/pdep_config.php");
+    // @phan-suppress-next-line PhanThrowTypeAbsentForCall
+    $cli = $cli_builder->build();
+    $putenv = static function (string $key, string $value) : void {
+        putenv("$key=$value");
+        $_ENV[$key] = $value;
+    };
+    $putenv("PDEP_CMD", $cmd);
+    $putenv("PDEP_MODE", (string)$mode);
+    $putenv("PDEP_DEPTH", (string)$depth);
+    $putenv("PDEP_ARGS", $arg_string);
+    $putenv("PDEP_GRAPH_FLAGS", (string)$graph_flags);
+    // Generate codebase info after parsing configs (e.g. included_extension_subset)
+    $code_base = require(__DIR__ . '/../src/codebase.php');
+
+    if (isset($options['i'])) {
+        $data = @file_get_contents($graph_file);
+        if (!is_string($data)) {
+            echo "Unable to read graph file '$graph_file'\n";
+            exit(1);
+        }
+        $cached_graph = @json_decode($data, true);
+        if (!is_array($cached_graph)) {
+            echo "Invalid JSON contents of graph file '$graph_file': " . (json_last_error() !== JSON_ERROR_NONE ? json_last_error_msg() : 'expected array, got ' . gettype($cached_graph)) . "\n";
+            exit(1);
+        }
+        require_once __DIR__ . '/../src/Phan/Plugin/Internal/DependencyGraphPlugin.php';
+        (new \Phan\Plugin\Internal\DependencyGraphPlugin)->processGraph($cached_graph);
+    } else {
+        // @phan-suppress-next-line PhanThrowTypeAbsentForCall
+        Phan::analyzeFileList($code_base, /** @return string[] */ static function () use($cli) : array {
+            return $cli->getFileList();
+        });
+    }
+});
