@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -57,13 +58,16 @@ class RecordManagerService
     public function createRecord(int $zone_id, string $name, string $type, string $content, int $ttl, int $prio, string $comment, string $userlogin, string $clientIp): bool
     {
         $zone_name = $this->dnsRecord->getDomainNameById($zone_id);
-        if (!$this->dnsRecord->addRecord($zone_id, $name, $type, $content, $ttl, $prio)) {
+
+        // Use addRecordGetId to get the newly created record ID directly
+        $recordId = $this->dnsRecord->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
+        if ($recordId === null) {
             return false;
         }
 
         $this->logRecordCreation($clientIp, $userlogin, $type, $name, $zone_name, $content, $ttl, $prio, $zone_id);
         $this->handleDnssec($zone_name);
-        $this->handleComments($zone_id, $name, $type, $content, $comment, $userlogin, $zone_name);
+        $this->handleCommentsWithId($zone_id, $name, $type, $content, $comment, $userlogin, $zone_name, $recordId);
 
         return true;
     }
@@ -91,13 +95,68 @@ class RecordManagerService
         }
     }
 
-    private function handleComments(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, string $zone_name): void
+    /**
+     * Handle comments when record ID is already known (from addRecordGetId).
+     * This avoids the need to look up the record ID after creation.
+     */
+    private function handleCommentsWithId(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, string $zone_name, int $recordId): void
     {
+        if ($comment === '') {
+            return;
+        }
+
         $fullZoneName = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
+        // Get all records in the RRset for legacy comment migration
+        $recordRepository = new RecordRepository($this->db, $this->config);
+        $rrsetRecords = $recordRepository->getRRSetRecords($zoneId, $fullZoneName, $type);
+        $rrsetRecordIds = array_map(fn($r) => (int)$r['id'], $rrsetRecords);
+
+        // Use the provided record ID directly for per-record comment
+        $this->recordCommentService->createCommentForRecord(
+            $zoneId,
+            $fullZoneName,
+            $type,
+            $comment,
+            $recordId,
+            $rrsetRecordIds
+        );
+
+        // Handle synced comments (propagate to related A/PTR records)
         if ($this->config->get('misc', 'record_comments_sync')) {
             $this->handleSyncedComments($zoneId, $name, $type, $content, $comment, $userLogin, $fullZoneName);
+        }
+    }
+
+    private function handleComments(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, string $zone_name, ?int $prio = null, ?int $ttl = null): void
+    {
+        if ($comment === '') {
+            return;
+        }
+
+        $fullZoneName = DnsHelper::restoreZoneSuffix($name, $zone_name);
+
+        // Get record ID for per-record comment linking
+        // Pass prio and ttl for deterministic lookup (important for MX, SRV records with same content)
+        $recordRepository = new RecordRepository($this->db, $this->config);
+        $recordId = $recordRepository->getRecordId($zoneId, strtolower($fullZoneName), $type, $content, $prio, $ttl);
+
+        if ($recordId !== null) {
+            // Get all records in the RRset for legacy comment migration
+            $rrsetRecords = $recordRepository->getRRSetRecords($zoneId, $fullZoneName, $type);
+            $rrsetRecordIds = array_map(fn($r) => (int)$r['id'], $rrsetRecords);
+
+            // Use per-record comment (linked by record ID)
+            $this->recordCommentService->createCommentForRecord(
+                $zoneId,
+                $fullZoneName,
+                $type,
+                $comment,
+                $recordId,
+                $rrsetRecordIds
+            );
         } else {
+            // Fallback to legacy RRset-based comment if record ID not found
             $this->recordCommentService->createComment(
                 $zoneId,
                 $fullZoneName,
@@ -106,26 +165,34 @@ class RecordManagerService
                 $userLogin
             );
         }
-    }
 
-    private function handleSyncedComments(int $zone_id, string $name, string $type, string $content, string $comment, string $userlogin, string $full_name): void
-    {
-        if ($type === RecordType::A || $type === RecordType::AAAA) {
-            $this->handleForwardRecordComments($zone_id, $name, $type, $content, $comment, $userlogin, $full_name);
-        } elseif ($type === 'PTR') {
-            $this->handlePtrRecordComments($zone_id, $content, $comment, $userlogin, $full_name);
-        } else {
-            $this->recordCommentService->createComment(
-                $zone_id,
-                $full_name,
-                $type,
-                $comment,
-                $userlogin
-            );
+        // Handle synced comments separately (for PTR records, etc.)
+        if ($this->config->get('misc', 'record_comments_sync')) {
+            $this->handleSyncedComments($zoneId, $name, $type, $content, $comment, $userLogin, $fullZoneName);
         }
     }
 
-    private function handleForwardRecordComments(int $zone_id, string $name, string $type, string $content, string $comment, string $userlogin, string $full_name): void
+    /**
+     * Sync comments to related records (A/AAAA <-> PTR).
+     * This only syncs to the TARGET record, not the source record
+     * (which already has a per-record comment from handleCommentsWithId).
+     */
+    private function handleSyncedComments(int $zone_id, string $name, string $type, string $content, string $comment, string $userlogin, string $full_name): void
+    {
+        if ($type === RecordType::A || $type === RecordType::AAAA) {
+            // Sync comment to the corresponding PTR record
+            $this->syncCommentToPtrRecord($type, $content, $comment, $userlogin);
+        } elseif ($type === 'PTR') {
+            // Sync comment to the corresponding A record
+            $this->syncCommentToARecord($content, $comment, $userlogin);
+        }
+        // For other record types, no sync needed - per-record comment is already set
+    }
+
+    /**
+     * Sync comment from A/AAAA record to corresponding PTR record.
+     */
+    private function syncCommentToPtrRecord(string $type, string $content, string $comment, string $userlogin): void
     {
         $ptrName = $type === RecordType::A
             ? DnsRecord::convertIPv4AddrToPtrRec($content)
@@ -133,46 +200,52 @@ class RecordManagerService
 
         $ptrZoneId = $this->dnsRecord->getBestMatchingZoneIdFromName($ptrName);
         if ($ptrZoneId !== -1) {
-            $this->commentSyncService->syncCommentsForPtrRecord(
-                $zone_id,
-                $ptrZoneId,
-                $full_name,
-                $ptrName,
-                $comment,
-                $userlogin
-            );
-        } else {
-            $this->recordCommentService->createComment(
-                $zone_id,
-                $full_name,
-                $type,
-                $comment,
-                $userlogin
-            );
+            $recordRepository = new RecordRepository($this->db, $this->config);
+            $rrsetRecords = $recordRepository->getRRSetRecords($ptrZoneId, $ptrName, RecordType::PTR);
+
+            foreach ($rrsetRecords as $record) {
+                $this->recordCommentService->createCommentForRecord(
+                    $ptrZoneId,
+                    $ptrName,
+                    RecordType::PTR,
+                    $comment,
+                    (int)$record['id']
+                );
+            }
         }
     }
 
-    private function handlePtrRecordComments(int $ptrZoneId, string $content, string $comment, string $userlogin, string $full_name): void
+    /**
+     * Sync comment from PTR record to corresponding A record.
+     */
+    private function syncCommentToARecord(string $content, string $comment, string $userlogin): void
     {
-        $domainName = DnsHelper::getRegisteredDomain($content);
-        $contentDomainId = $this->dnsRecord->getDomainIdByName($domainName);
+        $content = rtrim($content, '.');
+        $contentDomainId = null;
+        $parts = explode('.', $content);
+
+        while (count($parts) > 1) {
+            array_shift($parts);
+            $zoneName = implode('.', $parts);
+            $contentDomainId = $this->dnsRecord->getDomainIdByName($zoneName);
+            if ($contentDomainId !== null) {
+                break;
+            }
+        }
+
         if ($contentDomainId !== null) {
-            $this->commentSyncService->syncCommentsForDomainRecord(
-                $contentDomainId,
-                $ptrZoneId,
-                $content,
-                $full_name,
-                $comment,
-                $userlogin
-            );
-        } else {
-            $this->recordCommentService->createComment(
-                $ptrZoneId,
-                $full_name,
-                'PTR',
-                $comment,
-                $userlogin
-            );
+            $recordRepository = new RecordRepository($this->db, $this->config);
+            $rrsetRecords = $recordRepository->getRRSetRecords($contentDomainId, $content, RecordType::A);
+
+            foreach ($rrsetRecords as $record) {
+                $this->recordCommentService->createCommentForRecord(
+                    $contentDomainId,
+                    $content,
+                    RecordType::A,
+                    $comment,
+                    (int)$record['id']
+                );
+            }
         }
     }
 }

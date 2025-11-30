@@ -93,7 +93,8 @@ class AddRecordController extends BaseController
             $this->db,
             $this->getConfig(),
             $this->logger,
-            $this->dnsRecord
+            $this->dnsRecord,
+            $recordCommentService
         );
     }
 

@@ -70,7 +70,8 @@ class DeleteRecordController extends BaseController
             $this->db,
             $this->getConfig(),
             $this->logger,
-            $dnsRecord
+            $dnsRecord,
+            $this->recordCommentService
         );
 
         $this->userContextService = new UserContextService();
@@ -188,16 +189,16 @@ class DeleteRecordController extends BaseController
                     $dnssecProvider->rectifyZone($zone_name);
                 }
 
-                $hasSimilarRecords = $dnsRecord->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id);
+                // Delete comment for this specific record (per-record comment by record_id)
+                $this->recordCommentService->deleteCommentByRecordId((int)$record_id);
 
+                // For backward compatibility, also clean up RRset-based comments if no similar records remain
+                $hasSimilarRecords = $dnsRecord->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id);
                 if (!$hasSimilarRecords) {
                     $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                 }
 
-                // Check if there's a non-empty comment that's being preserved
-                $existingCommentRecord = $this->recordCommentService->findComment($domain_id, $record_info['name'], $record_info['type']);
-                $hasNonEmptyComment = $existingCommentRecord !== null && !empty(trim($existingCommentRecord->getComment()));
-                $shouldShowCommentWarning = $hasSimilarRecords && $hasNonEmptyComment && $this->config->get('interface', 'show_record_comments', false);
+                $shouldShowCommentWarning = false;
 
                 if ($shouldShowCommentWarning) {
                     if ($deletedPtrRecord && $deletedForwardRecord) {

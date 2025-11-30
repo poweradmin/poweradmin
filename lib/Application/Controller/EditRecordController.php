@@ -44,6 +44,7 @@ use Poweradmin\Domain\Service\RecordTypeService;
 use Poweradmin\Domain\Service\Validator;
 use Poweradmin\Infrastructure\Logger\LegacyLogger;
 use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
+use Poweradmin\Domain\Repository\RecordRepository;
 
 class EditRecordController extends BaseController
 {
@@ -53,6 +54,7 @@ class EditRecordController extends BaseController
     private RecordCommentSyncService $commentSyncService;
     private RecordTypeService $recordTypeService;
     private UserContextService $userContextService;
+    private RecordRepository $recordRepository;
 
     public function __construct(array $request)
     {
@@ -61,7 +63,8 @@ class EditRecordController extends BaseController
         $this->logger = new LegacyLogger($this->db);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService);
+        $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
+        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->userContextService = new UserContextService();
     }
@@ -163,7 +166,12 @@ class EditRecordController extends BaseController
         }
 
         $iface_record_comments = $this->config->get('interface', 'show_record_comments', false);
-        $recordComment = $this->recordCommentService->findComment($zid, $record['name'], $record['type']);
+        // Use record ID to find per-record comment, with fallback to RRset-based lookup for legacy comments
+        $recordComment = $this->recordCommentService->findCommentByRecordId($record_id);
+        if ($recordComment === null) {
+            // Fallback to legacy RRset-based comment lookup
+            $recordComment = $this->recordCommentService->findComment($zid, $record['name'], $record['type']);
+        }
 
         $this->render('edit_record.html', [
             'record_id' => $record_id,
@@ -242,14 +250,18 @@ class EditRecordController extends BaseController
             $zid
         );
 
-        $this->recordCommentService->updateComment(
+        // Use per-record comment (linked by record ID)
+        // Get all records in the RRset for legacy comment migration
+        $rrsetRecords = $this->recordRepository->getRRSetRecords($zid, $new_record_info['name'], $new_record_info['type']);
+        $rrsetRecordIds = array_map(fn($r) => (int)$r['id'], $rrsetRecords);
+
+        $this->recordCommentService->updateCommentForRecord(
             $zid,
-            $old_record_info['name'],
-            $old_record_info['type'],
             $new_record_info['name'],
             $new_record_info['type'],
             $_POST['comment'] ?? '',
-            $_SESSION['userlogin']
+            (int)$_POST['rid'],
+            $rrsetRecordIds
         );
 
         if ($this->config->get('misc', 'record_comments_sync')) {

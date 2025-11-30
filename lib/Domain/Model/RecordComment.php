@@ -113,4 +113,79 @@ class RecordComment
             $comment ?? $this->comment
         );
     }
+
+    /**
+     * Prefix used to identify per-record comments in the account field.
+     * This distinguishes per-record comments from legacy comments that may have
+     * numeric usernames.
+     */
+    public const RECORD_ID_PREFIX = 'rid:';
+
+    /**
+     * Create a comment linked to a specific record by its ID.
+     *
+     * PowerDNS stores comments per RRset (name + type), but we need per-record comments.
+     * This method stores the record ID with a prefix in the 'account' field to uniquely
+     * identify which record a comment belongs to.
+     *
+     * @param int $domainId Domain/zone ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @param string $comment The comment text
+     * @param int $recordId The record ID to link this comment to
+     * @return self
+     */
+    public static function createForRecord(
+        int $domainId,
+        string $name,
+        string $type,
+        string $comment,
+        int $recordId
+    ): self {
+        return new self(
+            null,
+            $domainId,
+            $name,
+            $type,
+            time(),
+            self::RECORD_ID_PREFIX . $recordId,
+            $comment
+        );
+    }
+
+    /**
+     * Check if an account value contains a per-record comment marker.
+     *
+     * @param string|null $account The account value to check
+     * @return bool True if account contains a per-record comment marker (rid:XXX)
+     */
+    public static function hasRecordId(?string $account): bool
+    {
+        return $account !== null && str_starts_with($account, self::RECORD_ID_PREFIX);
+    }
+
+    /**
+     * Get record ID from account field if present.
+     *
+     * @param string|null $account The account value
+     * @return int|null The record ID or null if not a valid per-record comment
+     */
+    public static function getRecordIdFromAccount(?string $account): ?int
+    {
+        if (self::hasRecordId($account)) {
+            return (int)substr($account, strlen(self::RECORD_ID_PREFIX));
+        }
+        return null;
+    }
+
+    /**
+     * Format a record ID for storage in the account field.
+     *
+     * @param int $recordId The record ID
+     * @return string The formatted account value (e.g., "rid:123")
+     */
+    public static function formatRecordIdForAccount(int $recordId): string
+    {
+        return self::RECORD_ID_PREFIX . $recordId;
+    }
 }

@@ -23,16 +23,18 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Domain\Model\RecordType;
+use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Domain\Service\DnsRecord;
-use Poweradmin\Domain\Utility\DnsHelper;
 
 class RecordCommentSyncService
 {
     private RecordCommentService $commentService;
+    private ?RecordRepository $recordRepository;
 
-    public function __construct(RecordCommentService $commentService)
+    public function __construct(RecordCommentService $commentService, ?RecordRepository $recordRepository = null)
     {
         $this->commentService = $commentService;
+        $this->recordRepository = $recordRepository;
     }
 
     public function syncCommentsForPtrRecord(
@@ -91,13 +93,46 @@ class RecordCommentSyncService
                 : DnsRecord::convertIPv6AddrToPtrRec($newRecordInfo['content']);
             $ptrZoneId = $dnsRecord->getBestMatchingZoneIdFromName($ptrName);
             if ($ptrZoneId !== -1) {
-                $this->updatePtrRecordComment($ptrZoneId, $ptrName, $ptrName, $comment, $userLogin);
+                $this->updateRecordComments($ptrZoneId, $ptrName, RecordType::PTR, $comment, $userLogin);
             }
         } elseif ($newRecordInfo['type'] === RecordType::PTR) {
-            $domainName = DnsHelper::getRegisteredDomain($newRecordInfo['content']);
-            $contentDomainId = $dnsRecord->getDomainIdByName($domainName);
+            $hostname = rtrim($newRecordInfo['content'], '.');
+            $contentDomainId = null;
+            $parts = explode('.', $hostname);
+
+            while (count($parts) > 1) {
+                array_shift($parts);
+                $zoneName = implode('.', $parts);
+                $contentDomainId = $dnsRecord->getDomainIdByName($zoneName);
+                if ($contentDomainId !== null) {
+                    break;
+                }
+            }
+
             if ($contentDomainId !== null) {
-                $this->updateARecordComment($contentDomainId, $newRecordInfo['content'], $newRecordInfo['content'], $comment, $userLogin);
+                $this->updateRecordComments($contentDomainId, $hostname, RecordType::A, $comment, $userLogin);
+            }
+        }
+    }
+
+    private function updateRecordComments(int $zoneId, string $name, string $type, string $comment, string $userLogin): void
+    {
+        if ($this->recordRepository !== null) {
+            $rrsetRecords = $this->recordRepository->getRRSetRecords($zoneId, $name, $type);
+            foreach ($rrsetRecords as $record) {
+                $this->commentService->updateCommentForRecord(
+                    $zoneId,
+                    $name,
+                    $type,
+                    $comment,
+                    (int)$record['id']
+                );
+            }
+        } else {
+            if ($type === RecordType::PTR) {
+                $this->updatePtrRecordComment($zoneId, $name, $name, $comment, $userLogin);
+            } else {
+                $this->updateARecordComment($zoneId, $name, $name, $comment, $userLogin);
             }
         }
     }

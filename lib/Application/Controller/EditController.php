@@ -87,7 +87,8 @@ class EditController extends BaseController
         parent::__construct($request);
         $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
         $this->recordCommentService = new RecordCommentService($recordCommentRepository);
-        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService);
+        $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
+        $this->commentSyncService = new RecordCommentSyncService($this->recordCommentService, $this->recordRepository);
         $this->recordTypeService = new RecordTypeService($this->getConfig());
         $this->formStateService = new FormStateService();
 
@@ -114,7 +115,8 @@ class EditController extends BaseController
             $this->db,
             $this->getConfig(),
             $this->logger,
-            $this->dnsRecord
+            $this->dnsRecord,
+            $this->recordCommentService
         );
 
         $this->userContextService = new UserContextService();
@@ -122,7 +124,6 @@ class EditController extends BaseController
 
         $userRepository = new DbUserRepository($this->db, $this->getConfig());
         $this->permissionService = new PermissionService($userRepository);
-        $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
     }
 
     public function run(): void
@@ -568,7 +569,6 @@ class EditController extends BaseController
         $error = false;
         $one_record_changed = false;
         $serial_mismatch = false;
-        $updatedRecordComments = [];
 
         if (isset($_POST['record'])) {
             $soa_record = $this->dnsRecord->getSOARecord($zone_id);
@@ -594,8 +594,11 @@ class EditController extends BaseController
 
                     $comment = '';
                     if ($this->config->get('interface', 'show_record_comments', false)) {
-                        $recordComment = $this->recordCommentService->findComment($zone_id, $record['name'], $record['type']);
-                        $comment = $recordComment && $recordComment->getComment() ?? '';
+                        $recordComment = $this->recordCommentService->findCommentByRecordId((int)$record['rid']);
+                        if ($recordComment === null) {
+                            $recordComment = $this->recordCommentService->findComment($zone_id, $record['name'], $record['type']);
+                        }
+                        $comment = $recordComment ? $recordComment->getComment() : '';
                     }
 
                     $log->logPrior($record['rid'], $record['zid'], $comment);
@@ -614,30 +617,27 @@ class EditController extends BaseController
                         $log->write();
 
                         if ($this->config->get('interface', 'show_record_comments', false)) {
-                            $recordCopy = $log->getRecordCopy();
-                            $recordKey = $recordCopy['name'] . '|' . $recordCopy['type'];
+                            // Use per-record comment (linked by record ID)
+                            // Get all records in the RRset for legacy comment migration
+                            $rrsetRecords = $this->recordRepository->getRRSetRecords($zone_id, $record['name'], $record['type']);
+                            $rrsetRecordIds = array_map(fn($r) => (int)$r['id'], $rrsetRecords);
 
-                            if (!isset($updatedRecordComments[$recordKey])) {
-                                $this->recordCommentService->updateComment(
-                                    $zone_id,
-                                    $recordCopy['name'],
-                                    $recordCopy['type'],
-                                    $record['name'],
-                                    $record['type'],
+                            $this->recordCommentService->updateCommentForRecord(
+                                $zone_id,
+                                $record['name'],
+                                $record['type'],
+                                $record['comment'] ?? '',
+                                (int)$record['rid'],
+                                $rrsetRecordIds
+                            );
+
+                            if ($this->config->get('misc', 'record_comments_sync')) {
+                                $this->commentSyncService->updateRelatedRecordComments(
+                                    $this->dnsRecord,
+                                    $record,
                                     $record['comment'] ?? '',
                                     $this->userContextService->getLoggedInUsername()
                                 );
-
-                                if ($this->config->get('misc', 'record_comments_sync')) {
-                                    $this->commentSyncService->updateRelatedRecordComments(
-                                        $this->dnsRecord,
-                                        $record,
-                                        $record['comment'] ?? '',
-                                        $this->userContextService->getLoggedInUsername()
-                                    );
-                                }
-
-                                $updatedRecordComments[$recordKey] = true;
                             }
                         }
                     }

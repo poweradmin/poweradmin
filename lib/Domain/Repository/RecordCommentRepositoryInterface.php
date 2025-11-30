@@ -32,4 +32,44 @@ interface RecordCommentRepositoryInterface
 
     public function find(int $domainId, string $name, string $type): ?RecordComment;
     public function update(int $domainId, string $oldName, string $oldType, RecordComment $comment): ?RecordComment;
+
+    /**
+     * Find a comment by record ID for per-record comment support.
+     *
+     * @param int $recordId The record ID
+     * @return RecordComment|null
+     */
+    public function findByRecordId(int $recordId): ?RecordComment;
+
+    /**
+     * Delete a specific comment by record ID.
+     *
+     * @param int $recordId The record ID
+     * @return bool
+     */
+    public function deleteByRecordId(int $recordId): bool;
+
+    /**
+     * Delete legacy comments for an RRset (where account is non-numeric username).
+     * This is used to clean up old-style shared comments when creating per-record comments.
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @return bool
+     */
+    public function deleteLegacyComments(int $domainId, string $name, string $type): bool;
+
+    /**
+     * Migrate legacy RRset comments to per-record comments for all records in the RRset.
+     * This preserves existing comments when transitioning from legacy to per-record format.
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @param array $recordIds List of record IDs in the RRset to migrate comments to
+     * @param int|null $excludeRecordId Optional record ID to exclude (the one being edited with new comment)
+     * @return bool True if migration was performed, false if no legacy comment existed
+     */
+    public function migrateLegacyComment(int $domainId, string $name, string $type, array $recordIds, ?int $excludeRecordId = null): bool;
 }

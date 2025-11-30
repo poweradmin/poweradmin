@@ -63,7 +63,8 @@ class DeleteRecordsController extends BaseController
             $this->db,
             $this->getConfig(),
             $this->logger,
-            $dnsRecord
+            $dnsRecord,
+            $this->recordCommentService
         );
         $this->userContextService = new UserContextService();
     }
@@ -149,6 +150,10 @@ class DeleteRecordsController extends BaseController
                         );
                     }
 
+                    // Delete comment for this specific record (per-record comment by record_id)
+                    $this->recordCommentService->deleteCommentByRecordId((int)$record_id);
+
+                    // For backward compatibility, also clean up RRset-based comments if no similar records remain
                     if (!$dnsRecord->hasSimilarRecords($domain_id, $record_info['name'], $record_info['type'], $record_id)) {
                         $this->recordCommentService->deleteComment($domain_id, $record_info['name'], $record_info['type']);
                     }

@@ -26,6 +26,7 @@ use PDO;
 use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Repository\RecordCommentRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
 
@@ -33,10 +34,12 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
 {
     private PDO $connection;
     private string $comments_table;
+    private string $db_type;
 
     public function __construct(PDO $connection, ConfigurationManager $config)
     {
         $this->connection = $connection;
+        $this->db_type = $config->get('database', 'type', 'mysql');
         $tableNameService = new TableNameService($config);
         $this->comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
     }
@@ -90,13 +93,15 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
 
     public function find(int $domainId, string $name, string $type): ?RecordComment
     {
-        // Currently only one comment per record is supported
-        $query = "SELECT * FROM {$this->comments_table} WHERE domain_id = :domain_id AND name = :name AND type = :type LIMIT 1";
+        // Only return legacy RRset comments (not per-record comments with rid: prefix)
+        $prefix = RecordComment::RECORD_ID_PREFIX;
+        $query = "SELECT * FROM {$this->comments_table} WHERE domain_id = :domain_id AND name = :name AND type = :type AND (account IS NULL OR account NOT LIKE :prefix) LIMIT 1";
         $stmt = $this->connection->prepare($query);
         $stmt->execute([
             ':domain_id' => $domainId,
             ':name' => $name,
-            ':type' => $type
+            ':type' => $type,
+            ':prefix' => $prefix . '%'
         ]);
         $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -113,6 +118,15 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
 
     public function update(int $domainId, string $oldName, string $oldType, RecordComment $comment): ?RecordComment
     {
+        $account = $comment->getAccount();
+
+        // If using record_id in account field (rid:XXX format), update only the specific comment for this record
+        $recordId = RecordComment::getRecordIdFromAccount($account);
+        if ($recordId !== null) {
+            return $this->updateByRecordId($recordId, $comment);
+        }
+
+        // Legacy behavior: update all comments for the RRset (name + type)
         $stmt = $this->connection->prepare(
             "UPDATE {$this->comments_table}
          SET name = :new_name,
@@ -145,5 +159,175 @@ class DbRecordCommentRepository implements RecordCommentRepositoryInterface
         }
 
         return $this->find($domainId, $comment->getName(), $comment->getType());
+    }
+
+    public function findByRecordId(int $recordId): ?RecordComment
+    {
+        // Use the prefix format to find per-record comments
+        $accountValue = RecordComment::formatRecordIdForAccount($recordId);
+        $query = "SELECT * FROM {$this->comments_table} WHERE account = :record_id LIMIT 1";
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([':record_id' => $accountValue]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? new RecordComment(
+            $result['id'],
+            $result['domain_id'],
+            $result['name'],
+            $result['type'],
+            $result['modified_at'],
+            $result['account'],
+            $result['comment']
+        ) : null;
+    }
+
+    public function deleteByRecordId(int $recordId): bool
+    {
+        // Use the prefix format to delete only per-record comments
+        $accountValue = RecordComment::formatRecordIdForAccount($recordId);
+        $query = "DELETE FROM {$this->comments_table} WHERE account = :record_id";
+        $stmt = $this->connection->prepare($query);
+        return $stmt->execute([':record_id' => $accountValue]);
+    }
+
+    /**
+     * Update a specific comment identified by record ID stored in account field.
+     */
+    private function updateByRecordId(int $recordId, RecordComment $comment): ?RecordComment
+    {
+        // Use the prefix format to update per-record comments
+        $accountValue = RecordComment::formatRecordIdForAccount($recordId);
+        $stmt = $this->connection->prepare(
+            "UPDATE {$this->comments_table}
+             SET name = :new_name,
+                 type = :new_type,
+                 modified_at = :modified_at,
+                 comment = :comment
+             WHERE account = :record_id"
+        );
+
+        $success = $stmt->execute([
+            ':record_id' => $accountValue,
+            ':new_name' => $comment->getName(),
+            ':new_type' => $comment->getType(),
+            ':modified_at' => $comment->getModifiedAt(),
+            ':comment' => $comment->getComment()
+        ]);
+
+        if (!$success) {
+            return null;
+        }
+
+        if ($stmt->rowCount() === 0) {
+            // No existing comment found, create new one
+            return $this->add($comment);
+        }
+
+        return $this->findByRecordId($recordId);
+    }
+
+    /**
+     * Delete legacy comments for an RRset (comments without the per-record marker).
+     * This is used to clean up old-style shared comments when creating per-record comments.
+     *
+     * Legacy comments are those where account does NOT start with the per-record prefix (rid:).
+     * This includes NULL, empty, usernames (including numeric usernames).
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @return bool
+     */
+    public function deleteLegacyComments(int $domainId, string $name, string $type): bool
+    {
+        // Delete comments that don't have the per-record prefix
+        $prefix = RecordComment::RECORD_ID_PREFIX;
+
+        $query = "DELETE FROM {$this->comments_table}
+                  WHERE domain_id = :domain_id
+                  AND name = :name
+                  AND type = :type
+                  AND (account IS NULL OR account NOT LIKE :prefix)";
+
+        $stmt = $this->connection->prepare($query);
+        return $stmt->execute([
+            ':domain_id' => $domainId,
+            ':name' => $name,
+            ':type' => $type,
+            ':prefix' => $prefix . '%'
+        ]);
+    }
+
+    /**
+     * Find a legacy comment for an RRset (where account does not have the per-record prefix).
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @return RecordComment|null The legacy comment if found
+     */
+    public function findLegacyComment(int $domainId, string $name, string $type): ?RecordComment
+    {
+        $prefix = RecordComment::RECORD_ID_PREFIX;
+
+        $query = "SELECT * FROM {$this->comments_table}
+                  WHERE domain_id = :domain_id
+                  AND name = :name
+                  AND type = :type
+                  AND (account IS NULL OR account NOT LIKE :prefix)
+                  LIMIT 1";
+
+        $stmt = $this->connection->prepare($query);
+        $stmt->execute([
+            ':domain_id' => $domainId,
+            ':name' => $name,
+            ':type' => $type,
+            ':prefix' => $prefix . '%'
+        ]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $result ? new RecordComment(
+            $result['id'],
+            $result['domain_id'],
+            $result['name'],
+            $result['type'],
+            $result['modified_at'],
+            $result['account'],
+            $result['comment']
+        ) : null;
+    }
+
+    public function migrateLegacyComment(int $domainId, string $name, string $type, array $recordIds, ?int $excludeRecordId = null): bool
+    {
+        // First, find if there's a legacy comment to migrate
+        $legacyComment = $this->findLegacyComment($domainId, $name, $type);
+        if ($legacyComment === null) {
+            return false; // No legacy comment to migrate
+        }
+
+        $commentText = $legacyComment->getComment();
+        $modifiedAt = time();
+
+        // Create per-record comments for all records except the excluded one
+        foreach ($recordIds as $recordId) {
+            if ($excludeRecordId !== null && $recordId === $excludeRecordId) {
+                continue; // Skip the record being edited (it will get its own new comment)
+            }
+
+            // Check if this record already has a per-record comment
+            $existing = $this->findByRecordId($recordId);
+            if ($existing !== null) {
+                continue; // Already has a per-record comment, don't overwrite
+            }
+
+            // Create per-record comment for this record
+            $newComment = RecordComment::createForRecord($domainId, $name, $type, $commentText, $recordId);
+            $this->add($newComment);
+        }
+
+        // Now delete the legacy comment
+        $this->deleteLegacyComments($domainId, $name, $type);
+
+        return true;
     }
 }

@@ -23,6 +23,7 @@
 namespace Poweradmin\Domain\Service;
 
 use Poweradmin\Application\Service\DnssecProviderFactory;
+use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Model\RecordType;
 use Poweradmin\Domain\Utility\DnsHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
@@ -37,17 +38,20 @@ class ReverseRecordCreator
     private ConfigurationManager $config;
     private LegacyLogger $logger;
     private DnsRecord $dnsRecord;
+    private ?RecordCommentService $recordCommentService;
 
     public function __construct(
         PDOCommon $db,
         ConfigurationManager $config,
         LegacyLogger $logger,
-        DnsRecord $dnsRecord
+        DnsRecord $dnsRecord,
+        ?RecordCommentService $recordCommentService = null
     ) {
         $this->db = $db;
         $this->config = $config;
         $this->logger = $logger;
         $this->dnsRecord = $dnsRecord;
+        $this->recordCommentService = $recordCommentService;
     }
 
     public function createReverseRecord($name, $type, $content, int $zone_id, $ttl, $prio, string $comment = '', string $account = ''): array
@@ -125,11 +129,13 @@ class ReverseRecordCreator
 
         $result = $stmt->fetch();
         if ($result) {
-            $recordId = $result['id'];
+            $recordId = (int)$result['id'];
             $domainId = $result['domain_id'];
 
             $dnsRecord = new DnsRecord($this->db, $this->config);
             if ($dnsRecord->deleteRecord($recordId)) {
+                $this->recordCommentService?->deleteCommentByRecordId($recordId);
+
                 $dnsRecord->updateSOASerial($domainId);
 
                 if ($this->config->get('dnssec', 'enabled')) {
@@ -179,11 +185,13 @@ class ReverseRecordCreator
 
         $result = $stmt->fetch();
         if ($result) {
-            $recordId = $result['id'];
+            $recordId = (int)$result['id'];
             $domainId = $result['domain_id'];
 
             $dnsRecord = new DnsRecord($this->db, $this->config);
             if ($dnsRecord->deleteRecord($recordId)) {
+                $this->recordCommentService?->deleteCommentByRecordId($recordId);
+
                 $dnsRecord->updateSOASerial($domainId);
 
                 if ($this->config->get('dnssec', 'enabled')) {

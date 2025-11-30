@@ -22,7 +22,9 @@
 
 namespace Poweradmin\Application\Query;
 
+use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Service\DnsIdnService;
+use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -130,6 +132,25 @@ class RecordSearch extends BaseSearch
             $params[':content_filter'] = $content;
         }
 
+        // Build per-record comment subquery
+        $commentSelect = '';
+        if ($iface_record_comments) {
+            $prefix = RecordComment::RECORD_ID_PREFIX;
+            $perRecordAccount = DbCompat::concat($db_type, ["'$prefix'", "$records_table.id"]);
+            $commentSelect = ", (
+                SELECT comment FROM $comments_table
+                WHERE $records_table.domain_id = $comments_table.domain_id
+                AND $records_table.name = $comments_table.name
+                AND $records_table.type = $comments_table.type
+                AND ($comments_table.account = $perRecordAccount
+                     OR $comments_table.account IS NULL
+                     OR $comments_table.account = ''
+                     OR $comments_table.account NOT LIKE '$prefix%')
+                ORDER BY CASE WHEN $comments_table.account = $perRecordAccount THEN 0 ELSE 1 END
+                LIMIT 1
+            ) AS comment";
+        }
+
         $recordsQuery = "
         SELECT
             $records_table.id,
@@ -144,12 +165,11 @@ class RecordSearch extends BaseSearch
             z.owner,
             u.id as user_id,
             u.fullname" .
-            ($iface_record_comments ? ", c.comment" : "") . "
+            $commentSelect . "
         FROM
             $records_table
         LEFT JOIN zones z on $records_table.domain_id = z.domain_id
-        LEFT JOIN users u on z.owner = u.id" .
-            ($iface_record_comments ? " LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type" : "") . "
+        LEFT JOIN users u on z.owner = u.id
         WHERE
             " . $this->buildWhereConditionsFetch($records_table, $search_string, $reverse, $reverse_search_string, $iface_record_comments, $parameters, $permission_view, $params) .
             $typeFilter .
@@ -207,7 +227,6 @@ class RecordSearch extends BaseSearch
     {
         $tableNameService = new TableNameService($this->config);
         $records_table = $tableNameService->getTable(PdnsTable::RECORDS);
-        $comments_table = $tableNameService->getTable(PdnsTable::COMMENTS);
         $groupByClause = $iface_search_group_records ? "GROUP BY $records_table.name, $records_table.content" : '';
 
         // Prepare query parameters
@@ -242,7 +261,6 @@ class RecordSearch extends BaseSearch
                 $records_table
             LEFT JOIN zones z on $records_table.domain_id = z.domain_id
             LEFT JOIN users u on z.owner = u.id
-            LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type
             WHERE
                 " . $this->buildWhereConditionsCount($records_table, $search_string, $reverse, $reverse_search_string, $parameters, $permission_view, $params) .
             $typeFilter .

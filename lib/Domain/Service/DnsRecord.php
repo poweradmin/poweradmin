@@ -263,6 +263,24 @@ class DnsRecord
         return $this->recordManager->addRecord($zone_id, $name, $type, $content, $ttl, $prio);
     }
 
+    /**
+     * Add a record and return its ID
+     *
+     * @param int $zone_id Zone ID
+     * @param string $name Name part of record
+     * @param string $type Type of record
+     * @param string $content Content of record
+     * @param int $ttl Time-To-Live of record
+     * @param mixed $prio Priority of record
+     *
+     * @return int|null The new record ID, or null on failure
+     * @throws Exception
+     */
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): ?int
+    {
+        return $this->recordManager->addRecordGetId($zone_id, $name, $type, $content, $ttl, $prio);
+    }
+
     /** Add Supermaster
      *
      * Add a trusted supermaster to the global supermasters table

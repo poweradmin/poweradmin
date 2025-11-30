@@ -308,4 +308,39 @@ final class DbCompat
             $db->exec("SET SESSION sql_mode = '$originalSqlMode'");
         }
     }
+
+    /**
+     * Returns the expression to cast an integer column to string for comparison.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", "pgsql")
+     * @param string $column The column to cast
+     * @return string The CAST expression corresponding to the given database type.
+     */
+    public static function castToString(string $db_type, string $column): string
+    {
+        return match ($db_type) {
+            'sqlite' => "CAST($column AS TEXT)",
+            'pgsql' => "CAST($column AS VARCHAR)",
+            default => "CAST($column AS CHAR)",
+        };
+    }
+
+    /**
+     * Returns the expression to check if a column contains only digits (is numeric string).
+     *
+     * Used to distinguish between record IDs (numeric) and legacy usernames (non-numeric)
+     * in the comments.account field.
+     *
+     * @param string $db_type The type of database (e.g., "mysql", "sqlite", "pgsql")
+     * @param string $column The column to check
+     * @return string The expression that returns true if column contains only digits
+     */
+    public static function isNumericString(string $db_type, string $column): string
+    {
+        return match ($db_type) {
+            'sqlite' => "$column GLOB '[0-9]*' AND $column NOT GLOB '*[^0-9]*'",
+            'pgsql' => "$column ~ '^[0-9]+$'",
+            default => "$column REGEXP '^[0-9]+$'",
+        };
+    }
 }

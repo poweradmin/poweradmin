@@ -45,6 +45,21 @@ interface RecordManagerInterface
     public function addRecord(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): bool;
 
     /**
+     * Add a record and return its ID
+     *
+     * @param int $zone_id Zone ID
+     * @param string $name Name part of record
+     * @param string $type Type of record
+     * @param string $content Content of record
+     * @param int $ttl Time-To-Live of record
+     * @param mixed $prio Priority of record
+     *
+     * @return int|null The new record ID, or null on failure
+     * @throws Exception
+     */
+    public function addRecordGetId(int $zone_id, string $name, string $type, string $content, int $ttl, mixed $prio): ?int;
+
+    /**
      * Edit a record
      *
      * @param array $record Record structure to update

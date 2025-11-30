@@ -34,12 +34,14 @@ namespace Poweradmin\Application\Controller\Api\V1;
 use Exception;
 use PDO;
 use Poweradmin\Application\Controller\Api\PublicApiController;
+use Poweradmin\Application\Service\RecordCommentService;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;
 use Poweradmin\Domain\Service\Dns\RecordManagerInterface;
 use Poweradmin\Domain\Service\Dns\SOARecordManager;
 use Poweradmin\Domain\Service\DnsValidation\HostnameValidator;
 use Poweradmin\Domain\Utility\DnsHelper;
+use Poweradmin\Infrastructure\Repository\DbRecordCommentRepository;
 use Poweradmin\Infrastructure\Repository\DbZoneRepository;
 use Poweradmin\Domain\Repository\RecordRepository;
 use Poweradmin\Infrastructure\Service\DnsServiceFactory;
@@ -58,6 +60,7 @@ class ZonesRecordsController extends PublicApiController
     private SOARecordManager $soaRecordManager;
     private TableNameService $tableNameService;
     private ApiPermissionService $permissionService;
+    private RecordCommentService $recordCommentService;
 
     public function __construct(array $request, array $pathParameters = [])
     {
@@ -67,6 +70,9 @@ class ZonesRecordsController extends PublicApiController
         $this->recordRepository = new RecordRepository($this->db, $this->getConfig());
         $this->tableNameService = new TableNameService($this->getConfig());
         $this->permissionService = new ApiPermissionService($this->db);
+
+        $recordCommentRepository = new DbRecordCommentRepository($this->db, $this->getConfig());
+        $this->recordCommentService = new RecordCommentService($recordCommentRepository);
 
         // Initialize services using factory
         $validationService = DnsServiceFactory::createDnsRecordValidationService($this->db, $this->getConfig());
@@ -708,6 +714,14 @@ class ZonesRecordsController extends PublicApiController
 
             if (!$success) {
                 return $this->returnApiError('Failed to delete record', 500);
+            }
+
+            // Delete comment for this specific record (per-record comment by record_id)
+            $this->recordCommentService->deleteCommentByRecordId($recordId);
+
+            // For backward compatibility, also clean up RRset-based comments if no similar records remain
+            if (!$this->recordRepository->hasSimilarRecords($zoneId, $existingRecord['name'], $existingRecord['type'], $recordId)) {
+                $this->recordCommentService->deleteComment($zoneId, $existingRecord['name'], $existingRecord['type']);
             }
 
             // Update SOA serial after deleting the record (except for SOA records themselves)
