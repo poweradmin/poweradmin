@@ -39,6 +39,7 @@ return array(
     'Phinx\\' => array($vendorDir . '/robmorgan/phinx/src/Phinx'),
     'Pdp\\' => array($vendorDir . '/jeremykendall/php-domain-parser/src'),
     'ParagonIE\\ConstantTime\\' => array($vendorDir . '/paragonie/constant_time_encoding/src'),
+    'PHPStan\\PhpDocParser\\' => array($vendorDir . '/phpstan/phpdoc-parser/src'),
     'OpenApi\\' => array($vendorDir . '/zircote/swagger-php/src'),
     'League\\Container\\' => array($vendorDir . '/league/container/src'),
     'DASPRiD\\Enum\\' => array($vendorDir . '/dasprid/enum/src'),

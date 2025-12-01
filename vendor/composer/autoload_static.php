@@ -24,12 +24,12 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
     );
 
     public static $prefixLengthsPsr4 = array (
-        'T' => 
+        'T' =>
         array (
             'Twig\\' => 5,
             'TestHelpers\\' => 12,
         ),
-        'S' => 
+        'S' =>
         array (
             'Symfony\\Polyfill\\Php83\\' => 23,
             'Symfony\\Polyfill\\Mbstring\\' => 26,
@@ -52,7 +52,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
             'Symfony\\Component\\Config\\' => 25,
             'Symfony\\Bridge\\Twig\\' => 20,
         ),
-        'P' => 
+        'P' =>
         array (
             'Psr\\SimpleCache\\' => 16,
             'Psr\\Log\\' => 8,
@@ -65,20 +65,21 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
             'Phinx\\' => 6,
             'Pdp\\' => 4,
             'ParagonIE\\ConstantTime\\' => 23,
+            'PHPStan\\PhpDocParser\\' => 21,
         ),
-        'O' => 
+        'O' =>
         array (
             'OpenApi\\' => 8,
         ),
-        'L' => 
+        'L' =>
         array (
             'League\\Container\\' => 17,
         ),
-        'D' => 
+        'D' =>
         array (
             'DASPRiD\\Enum\\' => 13,
         ),
-        'C' => 
+        'C' =>
         array (
             'Cake\\Utility\\' => 13,
             'Cake\\Datasource\\' => 16,
@@ -86,178 +87,182 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
             'Cake\\Core\\' => 10,
             'Cake\\Chronos\\' => 13,
         ),
-        'B' => 
+        'B' =>
         array (
             'BaconQrCode\\' => 12,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'Twig\\' => 
+        'Twig\\' =>
         array (
             0 => __DIR__ . '/..' . '/twig/twig/src',
         ),
-        'TestHelpers\\' => 
+        'TestHelpers\\' =>
         array (
             0 => __DIR__ . '/../..' . '/tests/helpers',
         ),
-        'Symfony\\Polyfill\\Php83\\' => 
+        'Symfony\\Polyfill\\Php83\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-php83',
         ),
-        'Symfony\\Polyfill\\Mbstring\\' => 
+        'Symfony\\Polyfill\\Mbstring\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-mbstring',
         ),
-        'Symfony\\Polyfill\\Intl\\Normalizer\\' => 
+        'Symfony\\Polyfill\\Intl\\Normalizer\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-normalizer',
         ),
-        'Symfony\\Polyfill\\Intl\\Grapheme\\' => 
+        'Symfony\\Polyfill\\Intl\\Grapheme\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-intl-grapheme',
         ),
-        'Symfony\\Polyfill\\Ctype\\' => 
+        'Symfony\\Polyfill\\Ctype\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/polyfill-ctype',
         ),
-        'Symfony\\Contracts\\Translation\\' => 
+        'Symfony\\Contracts\\Translation\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/translation-contracts',
         ),
-        'Symfony\\Contracts\\Service\\' => 
+        'Symfony\\Contracts\\Service\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/service-contracts',
         ),
-        'Symfony\\Component\\Yaml\\' => 
+        'Symfony\\Component\\Yaml\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/yaml',
         ),
-        'Symfony\\Component\\Validator\\' => 
+        'Symfony\\Component\\Validator\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/validator',
         ),
-        'Symfony\\Component\\Translation\\' => 
+        'Symfony\\Component\\Translation\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/translation',
         ),
-        'Symfony\\Component\\String\\' => 
+        'Symfony\\Component\\String\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/string',
         ),
-        'Symfony\\Component\\Serializer\\' => 
+        'Symfony\\Component\\Serializer\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/serializer',
         ),
-        'Symfony\\Component\\PropertyInfo\\' => 
+        'Symfony\\Component\\PropertyInfo\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/property-info',
         ),
-        'Symfony\\Component\\PropertyAccess\\' => 
+        'Symfony\\Component\\PropertyAccess\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/property-access',
         ),
-        'Symfony\\Component\\HttpFoundation\\' => 
+        'Symfony\\Component\\HttpFoundation\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/http-foundation',
         ),
-        'Symfony\\Component\\Finder\\' => 
+        'Symfony\\Component\\Finder\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/finder',
         ),
-        'Symfony\\Component\\Filesystem\\' => 
+        'Symfony\\Component\\Filesystem\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/filesystem',
         ),
-        'Symfony\\Component\\Console\\' => 
+        'Symfony\\Component\\Console\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
         ),
-        'Symfony\\Component\\Config\\' => 
+        'Symfony\\Component\\Config\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/config',
         ),
-        'Symfony\\Bridge\\Twig\\' => 
+        'Symfony\\Bridge\\Twig\\' =>
         array (
             0 => __DIR__ . '/..' . '/symfony/twig-bridge',
         ),
-        'Psr\\SimpleCache\\' => 
+        'Psr\\SimpleCache\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/simple-cache/src',
         ),
-        'Psr\\Log\\' => 
+        'Psr\\Log\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/log/src',
         ),
-        'Psr\\Container\\' => 
+        'Psr\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/container/src',
         ),
-        'Psr\\Clock\\' => 
+        'Psr\\Clock\\' =>
         array (
             0 => __DIR__ . '/..' . '/psr/clock/src',
         ),
-        'PragmaRX\\Google2FA\\' => 
+        'PragmaRX\\Google2FA\\' =>
         array (
             0 => __DIR__ . '/..' . '/pragmarx/google2fa/src',
         ),
-        'Poweradmin\\' => 
+        'Poweradmin\\' =>
         array (
             0 => __DIR__ . '/../..' . '/lib',
         ),
-        'PoweradminInstall\\' => 
+        'PoweradminInstall\\' =>
         array (
             0 => __DIR__ . '/../..' . '/install/helpers',
         ),
-        'PhpParser\\' => 
+        'PhpParser\\' =>
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
         ),
-        'Phinx\\' => 
+        'Phinx\\' =>
         array (
             0 => __DIR__ . '/..' . '/robmorgan/phinx/src/Phinx',
         ),
-        'Pdp\\' => 
+        'Pdp\\' =>
         array (
             0 => __DIR__ . '/..' . '/jeremykendall/php-domain-parser/src',
         ),
-        'ParagonIE\\ConstantTime\\' => 
+        'ParagonIE\\ConstantTime\\' =>
         array (
             0 => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src',
         ),
-        'OpenApi\\' => 
+        'PHPStan\\PhpDocParser\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src',
+        ),
+        'OpenApi\\' =>
         array (
             0 => __DIR__ . '/..' . '/zircote/swagger-php/src',
         ),
-        'League\\Container\\' => 
+        'League\\Container\\' =>
         array (
             0 => __DIR__ . '/..' . '/league/container/src',
         ),
-        'DASPRiD\\Enum\\' => 
+        'DASPRiD\\Enum\\' =>
         array (
             0 => __DIR__ . '/..' . '/dasprid/enum/src',
         ),
-        'Cake\\Utility\\' => 
+        'Cake\\Utility\\' =>
         array (
             0 => __DIR__ . '/..' . '/cakephp/utility',
         ),
-        'Cake\\Datasource\\' => 
+        'Cake\\Datasource\\' =>
         array (
             0 => __DIR__ . '/..' . '/cakephp/datasource',
         ),
-        'Cake\\Database\\' => 
+        'Cake\\Database\\' =>
         array (
             0 => __DIR__ . '/..' . '/cakephp/database',
         ),
-        'Cake\\Core\\' => 
+        'Cake\\Core\\' =>
         array (
             0 => __DIR__ . '/..' . '/cakephp/core',
         ),
-        'Cake\\Chronos\\' => 
+        'Cake\\Chronos\\' =>
         array (
             0 => __DIR__ . '/..' . '/cakephp/chronos/src',
         ),
-        'BaconQrCode\\' => 
+        'BaconQrCode\\' =>
         array (
             0 => __DIR__ . '/..' . '/bacon/bacon-qr-code/src',
         ),
@@ -580,6 +585,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'OpenApi\\Annotations\\CookieParameter' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/CookieParameter.php',
         'OpenApi\\Annotations\\Delete' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Delete.php',
         'OpenApi\\Annotations\\Discriminator' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Discriminator.php',
+        'OpenApi\\Annotations\\Encoding' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Encoding.php',
         'OpenApi\\Annotations\\Examples' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Examples.php',
         'OpenApi\\Annotations\\ExternalDocumentation' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/ExternalDocumentation.php',
         'OpenApi\\Annotations\\Flow' => __DIR__ . '/..' . '/zircote/swagger-php/src/Annotations/Flow.php',
@@ -622,6 +628,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'OpenApi\\Attributes\\CookieParameter' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/CookieParameter.php',
         'OpenApi\\Attributes\\Delete' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Delete.php',
         'OpenApi\\Attributes\\Discriminator' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Discriminator.php',
+        'OpenApi\\Attributes\\Encoding' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Encoding.php',
         'OpenApi\\Attributes\\Examples' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Examples.php',
         'OpenApi\\Attributes\\ExternalDocumentation' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/ExternalDocumentation.php',
         'OpenApi\\Attributes\\Flow' => __DIR__ . '/..' . '/zircote/swagger-php/src/Attributes/Flow.php',
@@ -667,6 +674,8 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'OpenApi\\OpenApiException' => __DIR__ . '/..' . '/zircote/swagger-php/src/OpenApiException.php',
         'OpenApi\\Pipeline' => __DIR__ . '/..' . '/zircote/swagger-php/src/Pipeline.php',
         'OpenApi\\Processors\\AugmentDiscriminators' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/AugmentDiscriminators.php',
+        'OpenApi\\Processors\\AugmentItems' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/AugmentItems.php',
+        'OpenApi\\Processors\\AugmentMediaType' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/AugmentMediaType.php',
         'OpenApi\\Processors\\AugmentParameters' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/AugmentParameters.php',
         'OpenApi\\Processors\\AugmentProperties' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/AugmentProperties.php',
         'OpenApi\\Processors\\AugmentRefs' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/AugmentRefs.php',
@@ -680,7 +689,6 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'OpenApi\\Processors\\Concerns\\DocblockTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/DocblockTrait.php',
         'OpenApi\\Processors\\Concerns\\MergePropertiesTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/MergePropertiesTrait.php',
         'OpenApi\\Processors\\Concerns\\RefTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/RefTrait.php',
-        'OpenApi\\Processors\\Concerns\\TypesTrait' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/Concerns/TypesTrait.php',
         'OpenApi\\Processors\\DocBlockDescriptions' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/DocBlockDescriptions.php',
         'OpenApi\\Processors\\ExpandClasses' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/ExpandClasses.php',
         'OpenApi\\Processors\\ExpandEnums' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/ExpandEnums.php',
@@ -693,8 +701,102 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'OpenApi\\Processors\\OperationId' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/OperationId.php',
         'OpenApi\\Processors\\PathFilter' => __DIR__ . '/..' . '/zircote/swagger-php/src/Processors/PathFilter.php',
         'OpenApi\\Serializer' => __DIR__ . '/..' . '/zircote/swagger-php/src/Serializer.php',
+        'OpenApi\\TypeResolverInterface' => __DIR__ . '/..' . '/zircote/swagger-php/src/TypeResolverInterface.php',
+        'OpenApi\\Type\\AbstractTypeResolver' => __DIR__ . '/..' . '/zircote/swagger-php/src/Type/AbstractTypeResolver.php',
+        'OpenApi\\Type\\LegacyTypeResolver' => __DIR__ . '/..' . '/zircote/swagger-php/src/Type/LegacyTypeResolver.php',
+        'OpenApi\\Type\\TypeInfoTypeResolver' => __DIR__ . '/..' . '/zircote/swagger-php/src/Type/TypeInfoTypeResolver.php',
         'OpenApi\\Util' => __DIR__ . '/..' . '/zircote/swagger-php/src/Util.php',
         'Override' => __DIR__ . '/..' . '/symfony/polyfill-php83/Resources/stubs/Override.php',
+        'PHPStan\\PhpDocParser\\Ast\\AbstractNodeVisitor' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/AbstractNodeVisitor.php',
+        'PHPStan\\PhpDocParser\\Ast\\Attribute' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Attribute.php',
+        'PHPStan\\PhpDocParser\\Ast\\Comment' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Comment.php',
+        'PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprArrayItemNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprArrayItemNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprArrayNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprArrayNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprFalseNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprFalseNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprFloatNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprFloatNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprIntegerNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprIntegerNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprNullNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprNullNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprStringNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprStringNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstExprTrueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstExprTrueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\ConstExpr\\ConstFetchNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/ConstExpr/ConstFetchNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\ConstExpr\\DoctrineConstExprStringNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/ConstExpr/DoctrineConstExprStringNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Node' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Node.php',
+        'PHPStan\\PhpDocParser\\Ast\\NodeAttributes' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/NodeAttributes.php',
+        'PHPStan\\PhpDocParser\\Ast\\NodeTraverser' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/NodeTraverser.php',
+        'PHPStan\\PhpDocParser\\Ast\\NodeVisitor' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/NodeVisitor.php',
+        'PHPStan\\PhpDocParser\\Ast\\NodeVisitor\\CloningVisitor' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/NodeVisitor/CloningVisitor.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\AssertTagMethodValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/AssertTagMethodValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\AssertTagPropertyValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/AssertTagPropertyValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\AssertTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/AssertTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\DeprecatedTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/DeprecatedTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\Doctrine\\DoctrineAnnotation' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/Doctrine/DoctrineAnnotation.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\Doctrine\\DoctrineArgument' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/Doctrine/DoctrineArgument.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\Doctrine\\DoctrineArray' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/Doctrine/DoctrineArray.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\Doctrine\\DoctrineArrayItem' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/Doctrine/DoctrineArrayItem.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\Doctrine\\DoctrineTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/Doctrine/DoctrineTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\ExtendsTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/ExtendsTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\GenericTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/GenericTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\ImplementsTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/ImplementsTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\InvalidTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/InvalidTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\MethodTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/MethodTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\MethodTagValueParameterNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/MethodTagValueParameterNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\MixinTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/MixinTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\ParamClosureThisTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/ParamClosureThisTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\ParamImmediatelyInvokedCallableTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/ParamImmediatelyInvokedCallableTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\ParamLaterInvokedCallableTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/ParamLaterInvokedCallableTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\ParamOutTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/ParamOutTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\ParamTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/ParamTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocChildNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/PhpDocChildNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/PhpDocNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/PhpDocTagNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/PhpDocTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PhpDocTextNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/PhpDocTextNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PropertyTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/PropertyTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\PureUnlessCallableIsImpureTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/PureUnlessCallableIsImpureTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\RequireExtendsTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/RequireExtendsTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\RequireImplementsTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/RequireImplementsTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\ReturnTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/ReturnTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\SealedTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/SealedTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\SelfOutTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/SelfOutTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\TemplateTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/TemplateTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\ThrowsTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/ThrowsTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\TypeAliasImportTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/TypeAliasImportTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\TypeAliasTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/TypeAliasTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\TypelessParamTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/TypelessParamTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\UsesTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/UsesTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\PhpDoc\\VarTagValueNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/PhpDoc/VarTagValueNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\ArrayShapeItemNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/ArrayShapeItemNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\ArrayShapeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/ArrayShapeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\ArrayShapeUnsealedTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/ArrayShapeUnsealedTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\ArrayTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/ArrayTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\CallableTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/CallableTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\CallableTypeParameterNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/CallableTypeParameterNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\ConditionalTypeForParameterNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/ConditionalTypeForParameterNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\ConditionalTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/ConditionalTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\ConstTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/ConstTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\GenericTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/GenericTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\IdentifierTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/IdentifierTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\IntersectionTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/IntersectionTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\InvalidTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/InvalidTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\NullableTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/NullableTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\ObjectShapeItemNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/ObjectShapeItemNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\ObjectShapeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/ObjectShapeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\OffsetAccessTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/OffsetAccessTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\ThisTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/ThisTypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\TypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/TypeNode.php',
+        'PHPStan\\PhpDocParser\\Ast\\Type\\UnionTypeNode' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Ast/Type/UnionTypeNode.php',
+        'PHPStan\\PhpDocParser\\Lexer\\Lexer' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Lexer/Lexer.php',
+        'PHPStan\\PhpDocParser\\ParserConfig' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/ParserConfig.php',
+        'PHPStan\\PhpDocParser\\Parser\\ConstExprParser' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Parser/ConstExprParser.php',
+        'PHPStan\\PhpDocParser\\Parser\\ParserException' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Parser/ParserException.php',
+        'PHPStan\\PhpDocParser\\Parser\\PhpDocParser' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Parser/PhpDocParser.php',
+        'PHPStan\\PhpDocParser\\Parser\\StringUnescaper' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Parser/StringUnescaper.php',
+        'PHPStan\\PhpDocParser\\Parser\\TokenIterator' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Parser/TokenIterator.php',
+        'PHPStan\\PhpDocParser\\Parser\\TypeParser' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Parser/TypeParser.php',
+        'PHPStan\\PhpDocParser\\Printer\\DiffElem' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Printer/DiffElem.php',
+        'PHPStan\\PhpDocParser\\Printer\\Differ' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Printer/Differ.php',
+        'PHPStan\\PhpDocParser\\Printer\\Printer' => __DIR__ . '/..' . '/phpstan/phpdoc-parser/src/Printer/Printer.php',
         'ParagonIE\\ConstantTime\\Base32' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base32.php',
         'ParagonIE\\ConstantTime\\Base32Hex' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base32Hex.php',
         'ParagonIE\\ConstantTime\\Base64' => __DIR__ . '/..' . '/paragonie/constant_time_encoding/src/Base64.php',
@@ -1685,6 +1787,7 @@ class ComposerStaticInit85e56c7ae9bafe68542ce0103f72f774
         'Symfony\\Component\\Console\\Helper\\TableRows' => __DIR__ . '/..' . '/symfony/console/Helper/TableRows.php',
         'Symfony\\Component\\Console\\Helper\\TableSeparator' => __DIR__ . '/..' . '/symfony/console/Helper/TableSeparator.php',
         'Symfony\\Component\\Console\\Helper\\TableStyle' => __DIR__ . '/..' . '/symfony/console/Helper/TableStyle.php',
+        'Symfony\\Component\\Console\\Helper\\TerminalInputHelper' => __DIR__ . '/..' . '/symfony/console/Helper/TerminalInputHelper.php',
         'Symfony\\Component\\Console\\Input\\ArgvInput' => __DIR__ . '/..' . '/symfony/console/Input/ArgvInput.php',
         'Symfony\\Component\\Console\\Input\\ArrayInput' => __DIR__ . '/..' . '/symfony/console/Input/ArrayInput.php',
         'Symfony\\Component\\Console\\Input\\Input' => __DIR__ . '/..' . '/symfony/console/Input/Input.php',
