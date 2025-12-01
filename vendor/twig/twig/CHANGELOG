@@ -1,3 +1,7 @@
+# 3.22.1 (2025-11-16)
+
+ * Add support for Symfony 8
+
 # 3.22.0 (2025-10-29)
 
  * Add support for two words test in guard tag
