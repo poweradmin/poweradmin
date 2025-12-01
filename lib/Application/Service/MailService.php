@@ -364,12 +364,11 @@ class MailService implements MailServiceInterface
             $port = $this->config->get('mail', 'port', 25);
             $encryption = $this->config->get('mail', 'encryption', '');
 
-            // Set prefix for encrypted connections
+            // Set prefix for SSL connections (SMTPS on port 465)
+            // For TLS (STARTTLS), we connect without encryption first, then upgrade
             $prefix = '';
             if ($encryption === 'ssl') {
                 $prefix = 'ssl://';
-            } elseif ($encryption === 'tls') {
-                $prefix = 'tls://';
             }
 
             return $this->canConnectToMailServer($prefix . $host, $port);
