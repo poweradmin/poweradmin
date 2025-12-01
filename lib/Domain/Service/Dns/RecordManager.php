@@ -246,10 +246,8 @@ class RecordManager implements RecordManagerInterface
             $dns_hostmaster,
             (int)$dns_ttl
         );
-        if ($validationResult === null || !$validationResult->isValid()) {
-            if ($validationResult !== null) {
-                $this->messageService->addSystemError($validationResult->getFirstError());
-            }
+        if (!$validationResult->isValid()) {
+            $this->messageService->addSystemError($validationResult->getFirstError());
             return null;
         }
 
