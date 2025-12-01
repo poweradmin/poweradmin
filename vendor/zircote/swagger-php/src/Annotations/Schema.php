@@ -429,6 +429,22 @@ class Schema extends AbstractAnnotation
     public $const = Generator::UNDEFINED;
 
     /**
+     * https://spec.openapis.org/oas/v3.1.0.html#considerations-for-file-uploads
+     * https://json-schema.org/draft/2020-12/draft-bhutton-json-schema-validation-00#rfc.section.8.3.
+     *
+     * @var string
+     */
+    public $contentEncoding = Generator::UNDEFINED;
+
+    /**
+     * https://spec.openapis.org/oas/v3.1.0.html#considerations-for-file-uploads
+     * https://json-schema.org/draft/2020-12/draft-bhutton-json-schema-validation-00#rfc.section.8.4.
+     *
+     * @var string
+     */
+    public $contentMediaType = Generator::UNDEFINED;
+
+    /**
      * @inheritdoc
      */
     public static $_types = [
@@ -451,6 +467,8 @@ class Schema extends AbstractAnnotation
         'allOf' => '[' . Schema::class . ']',
         'oneOf' => '[' . Schema::class . ']',
         'anyOf' => '[' . Schema::class . ']',
+        'contentEncoding' => 'string',
+        'contentMediaType' => 'string',
     ];
 
     /**
@@ -479,6 +497,16 @@ class Schema extends AbstractAnnotation
     ];
 
     /**
+     * Type safe nullable check.
+     *
+     * Defaults to `false` when nullable is not set.
+     */
+    public function isNullable(): bool
+    {
+        return !Generator::isDefault($this->nullable) && $this->nullable;
+    }
+
+    /**
      * @inheritdoc
      */
     #[\ReturnTypeWillChange]
@@ -486,7 +514,7 @@ class Schema extends AbstractAnnotation
     {
         $data = parent::jsonSerialize();
 
-        if ($this->_context->isVersion(OpenApi::VERSION_3_0_0)) {
+        if ($this->_context->isVersion('3.0.x')) {
             unset($data->examples);
             if (isset($data->const)) {
                 $data->enum = [$data->const];
@@ -500,7 +528,7 @@ class Schema extends AbstractAnnotation
     /**
      * @inheritdoc
      */
-    public function validate(array $stack = [], array $skip = [], string $ref = '', $context = null): bool
+    public function validate(array $stack = [], array $skip = [], string $ref = '', ?object $context = null): bool
     {
         if ($this->type === 'array' && Generator::isDefault($this->items)) {
             $this->_context->logger->warning('@OA\\Items() is required when ' . $this->identity() . ' has type "array" in ' . $this->_context);
@@ -508,9 +536,9 @@ class Schema extends AbstractAnnotation
             return false;
         }
 
-        if ($this->_context->isVersion(OpenApi::VERSION_3_0_0)) {
+        if ($this->_context->isVersion('3.0.x')) {
             if (!Generator::isDefault($this->examples)) {
-                $this->_context->logger->warning($this->identity() . ' is only allowed for ' . OpenApi::VERSION_3_1_0);
+                $this->_context->logger->warning($this->identity() . ' is only allowed for 3.1.x');
 
                 return false;
             }
