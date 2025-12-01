@@ -12,7 +12,10 @@ use OpenApi\Analysers\DocBlockAnnotationFactory;
 use OpenApi\Analysers\ReflectionAnalyser;
 use OpenApi\Annotations as OA;
 use OpenApi\Loggers\DefaultLogger;
+use OpenApi\Type\LegacyTypeResolver;
+use OpenApi\Type\TypeInfoTypeResolver;
 use Psr\Log\LoggerInterface;
+use Radebatz\TypeInfoExtras\TypeResolver\StringTypeResolver;
 
 /**
  * OpenApi spec generator.
@@ -50,6 +53,8 @@ class Generator
 
     protected ?Pipeline $processorPipeline = null;
 
+    protected ?TypeResolverInterface $typeResolver = null;
+
     protected ?LoggerInterface $logger = null;
 
     /**
@@ -70,9 +75,15 @@ class Generator
         $this->setNamespaces(self::DEFAULT_NAMESPACES);
     }
 
-    public static function isDefault($value): bool
+    public static function isDefault(...$value): bool
     {
-        return $value === Generator::UNDEFINED;
+        foreach ($value as $v) {
+            if ($v !== Generator::UNDEFINED) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -162,7 +173,7 @@ class Generator
         foreach ($config as $key => $value) {
             if (is_numeric($key)) {
                 $token = explode('=', $value);
-                if (2 == count($token)) {
+                if (2 === count($token)) {
                     // 'operationId.hash=false'
                     [$key, $value] = $token;
                 }
@@ -176,7 +187,7 @@ class Generator
                 $key = substr($key, 0, -2);
             }
             $token = explode('.', $key);
-            if (2 == count($token)) {
+            if (2 === count($token)) {
                 // 'operationId.hash' => false
                 // namespaced / processor
                 if ($isList) {
@@ -226,8 +237,10 @@ class Generator
                 new Processors\BuildPaths(),
                 new Processors\AugmentParameters(),
                 new Processors\AugmentRefs(),
+                new Processors\AugmentItems(),
                 new Processors\MergeJsonContent(),
                 new Processors\MergeXmlContent(),
+                new Processors\AugmentMediaType(),
                 new Processors\OperationId(),
                 new Processors\CleanUnmerged(),
                 new Processors\PathFilter(),
@@ -237,7 +250,7 @@ class Generator
         }
 
         $config = $this->getConfig();
-        $walker = function (callable $pipe) use ($config) {
+        $walker = function (callable $pipe) use ($config): void {
             $rc = new \ReflectionClass($pipe);
 
             // apply config
@@ -250,6 +263,10 @@ class Generator
                     }
                 }
             }
+
+            if (is_a($pipe, GeneratorAwareInterface::class)) {
+                $pipe->setGenerator($this);
+            }
         };
 
         return $this->processorPipeline->walk($walker);
@@ -258,6 +275,16 @@ class Generator
     public function setProcessorPipeline(?Pipeline $processor): Generator
     {
         $this->processorPipeline = $processor;
+
+        $walker = function (callable $pipe): void {
+            if (is_a($pipe, GeneratorAwareInterface::class)) {
+                $pipe->setGenerator($this);
+            }
+        };
+
+        if ($this->processorPipeline) {
+            $this->processorPipeline->walk($walker);
+        }
 
         return $this;
     }
@@ -282,9 +309,27 @@ class Generator
         return $this->withProcessorPipeline($with);
     }
 
+    public function setTypeResolver(?TypeResolverInterface $typeResolver): Generator
+    {
+        $this->typeResolver = $typeResolver;
+
+        return $this;
+    }
+
+    public function getTypeResolver(): TypeResolverInterface
+    {
+        $this->typeResolver ??= class_exists(StringTypeResolver::class)
+                    ? new TypeInfoTypeResolver()
+                    : new LegacyTypeResolver();
+
+        return $this->typeResolver;
+    }
+
     public function getLogger(): ?LoggerInterface
     {
-        return $this->logger ?: new DefaultLogger();
+        $this->logger ??= new DefaultLogger();
+
+        return $this->logger;
     }
 
     public function getVersion(): ?string

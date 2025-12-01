@@ -79,14 +79,14 @@ class MysqlSchemaDialect extends SchemaDialect
     }
 
     /**
-     * Split a tablename into a tuple of database, table
+     * Split a table name into a tuple of database, table
      * If the table does not have a database name included, the connection
      * database will be used.
      *
      * @param string $tableName The table name to split
-     * @return array A tuple of [database, tablename]
+     * @return array<string> A tuple of [database, tablename]
      */
-    private function splitTablename(string $tableName): array
+    private function splitTableName(string $tableName): array
     {
         $config = $this->_driver->config();
         $db = $config['database'];
@@ -278,7 +278,7 @@ class MysqlSchemaDialect extends SchemaDialect
      */
     public function describeOptions(string $tableName): array
     {
-        [, $name] = $this->splitTablename($tableName);
+        [, $name] = $this->splitTableName($tableName);
         $sql = 'SHOW TABLE STATUS WHERE Name = ?';
         $statement = $this->_driver->execute($sql, [$name]);
         $row = $statement->fetch('assoc');
@@ -531,7 +531,7 @@ class MysqlSchemaDialect extends SchemaDialect
      */
     public function describeForeignKeys(string $tableName): array
     {
-        [$database, $name] = $this->splitTablename($tableName);
+        [$database, $name] = $this->splitTableName($tableName);
         $sql = 'SELECT * FROM information_schema.key_column_usage AS kcu
             INNER JOIN information_schema.referential_constraints AS rc
             ON (
@@ -789,6 +789,7 @@ class MysqlSchemaDialect extends SchemaDialect
         if (
             isset($column['default']) &&
             in_array($column['type'], $dateTimeTypes) &&
+            is_string($column['default']) &&
             str_contains(strtolower($column['default']), 'current_timestamp')
         ) {
             $out .= ' DEFAULT CURRENT_TIMESTAMP';
@@ -802,7 +803,9 @@ class MysqlSchemaDialect extends SchemaDialect
             unset($column['default']);
         }
         if (isset($column['comment']) && $column['comment'] !== '') {
-            $out .= ' COMMENT ' . $this->_driver->schemaValue($column['comment']);
+            // Always quote comments as strings to prevent SQL syntax errors with numeric comments
+            // See: https://github.com/cakephp/migrations/issues/889
+            $out .= ' COMMENT ' . $this->_driver->quote((string)$column['comment']);
         }
         if (isset($column['onUpdate']) && $column['onUpdate'] !== '') {
             $out .= ' ON UPDATE ' . $column['onUpdate'];

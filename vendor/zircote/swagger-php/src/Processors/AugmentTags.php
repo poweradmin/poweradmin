@@ -16,11 +16,13 @@ use OpenApi\Generator;
 class AugmentTags
 {
     /** @var array<string> */
-    protected array $whitelist = [];
+    protected array $whitelist;
+    protected bool $withDescription;
 
-    public function __construct(array $whitelist = [])
+    public function __construct(array $whitelist = [], bool $withDescription = true)
     {
         $this->whitelist = $whitelist;
+        $this->withDescription = $withDescription;
     }
 
     /**
@@ -33,7 +35,17 @@ class AugmentTags
         return $this;
     }
 
-    public function __invoke(Analysis $analysis)
+    /**
+     * Enables/disables generation of default tag descriptions.
+     */
+    public function setWithDescription(bool $withDescription): AugmentTags
+    {
+        $this->withDescription = $withDescription;
+
+        return $this;
+    }
+
+    public function __invoke(Analysis $analysis): void
     {
         /** @var OA\Operation[] $operations */
         $operations = $analysis->getAnnotationsOfType(OA\Operation::class);
@@ -62,7 +74,12 @@ class AugmentTags
             $declatedTagNames = array_keys($declaredTags);
             foreach ($usedTagNames as $tagName) {
                 if (!in_array($tagName, $declatedTagNames)) {
-                    $analysis->openapi->merge([new OA\Tag(['name' => $tagName, 'description' => $tagName])]);
+                    $analysis->openapi->merge([new OA\Tag([
+                        'name' => $tagName,
+                        'description' => $this->withDescription
+                            ? $tagName
+                            : Generator::UNDEFINED,
+                    ])]);
                 }
             }
         }
@@ -70,7 +87,7 @@ class AugmentTags
         $this->removeUnusedTags($usedTagNames, $declaredTags, $analysis);
     }
 
-    private function removeUnusedTags(array $usedTagNames, array $declaredTags, Analysis $analysis)
+    private function removeUnusedTags(array $usedTagNames, array $declaredTags, Analysis $analysis): void
     {
         if (in_array('*', $this->whitelist)) {
             return;

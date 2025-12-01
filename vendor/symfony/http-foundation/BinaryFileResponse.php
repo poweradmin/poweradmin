@@ -163,7 +163,7 @@ class BinaryFileResponse extends Response
             for ($i = 0, $filenameLength = mb_strlen($filename, $encoding); $i < $filenameLength; ++$i) {
                 $char = mb_substr($filename, $i, 1, $encoding);
 
-                if ('%' === $char || \ord($char) < 32 || \ord($char) > 126) {
+                if ('%' === $char || \ord($char[0]) < 32 || \ord($char[0]) > 126) {
                     $filenameFallback .= '_';
                 } else {
                     $filenameFallback .= $char;
@@ -259,13 +259,13 @@ class BinaryFileResponse extends Response
                         $end = min($end, $fileSize - 1);
                         if ($start < 0 || $start > $end) {
                             $this->setStatusCode(416);
-                            $this->headers->set('Content-Range', sprintf('bytes */%s', $fileSize));
+                            $this->headers->set('Content-Range', \sprintf('bytes */%s', $fileSize));
                         } elseif ($end - $start < $fileSize - 1) {
                             $this->maxlen = $end < $fileSize ? $end - $start + 1 : -1;
                             $this->offset = $start;
 
                             $this->setStatusCode(206);
-                            $this->headers->set('Content-Range', sprintf('bytes %s-%s/%s', $start, $end, $fileSize));
+                            $this->headers->set('Content-Range', \sprintf('bytes %s-%s/%s', $start, $end, $fileSize));
                             $this->headers->set('Content-Length', $end - $start + 1);
                         }
                     }
