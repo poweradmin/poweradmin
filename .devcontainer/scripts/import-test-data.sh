@@ -285,6 +285,8 @@ main() {
         echo "  - manager-zone.example.com (owner: manager) - with comprehensive DNS records"
         echo "  - client-zone.example.com (owner: client) - with comprehensive DNS records"
         echo "  - shared-zone.example.com (owners: manager, client)"
+        echo "  - test858.example.com (owner: admin) - Issue #858 comment testing"
+        echo "  - 168.192.in-addr.arpa (owner: admin) - A/PTR sync testing"
         echo ""
         echo -e "${BLUE}DNS Records (manager-zone and client-zone):${NC}"
         echo "  - SOA, NS: Standard zone records"
@@ -297,6 +299,12 @@ main() {
         echo "  - CAA: 2 records (certificate authority)"
         echo "  - Disabled: 1 record (for testing disabled state)"
         echo "  Total: ~26 records per zone for comprehensive UI testing"
+        echo ""
+        echo -e "${BLUE}Issue #858 Test Data (test858.example.com):${NC}"
+        echo "  - CAA: 3 records with individual comments (per-record comment testing)"
+        echo "  - A: 3 records (www, mail, server1)"
+        echo "  - PTR: 3 records in 168.192.in-addr.arpa (sync testing)"
+        echo "  - Comments linked via record_comment_links table"
         echo ""
         exit 0
     else

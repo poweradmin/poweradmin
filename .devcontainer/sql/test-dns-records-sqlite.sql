@@ -149,6 +149,118 @@ WHERE (SELECT id FROM pdns.domains WHERE name = 'client-zone.example.com' LIMIT 
   );
 
 -- =============================================================================
+-- TEST858 ZONE - FOR ISSUE #858 COMMENT TESTING
+-- =============================================================================
+-- This zone tests per-record comment storage (CAA records with different comments)
+-- and A/PTR comment sync functionality
+
+-- Insert records for test858.example.com
+INSERT INTO pdns.records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT
+    (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1),
+    name_col, type_col, content_col, ttl_col, prio_col, disabled_col
+FROM (
+    -- A records for forward zone
+    SELECT 'www.test858.example.com' as name_col, 'A' as type_col, '192.168.1.10' as content_col, 3600 as ttl_col, 0 as prio_col, 0 as disabled_col
+    UNION ALL SELECT 'mail.test858.example.com', 'A', '192.168.1.20', 3600, 0, 0
+    UNION ALL SELECT 'server1.test858.example.com', 'A', '192.168.1.100', 3600, 0, 0
+    -- CAA records (3 total) - For testing issue #858 individual comments
+    UNION ALL SELECT 'test858.example.com', 'CAA', '0 issue "letsencrypt.org"', 3600, 0, 0
+    UNION ALL SELECT 'test858.example.com', 'CAA', '0 issuewild "letsencrypt.org"', 3600, 0, 0
+    UNION ALL SELECT 'test858.example.com', 'CAA', '0 iodef "mailto:security@example.com"', 3600, 0, 0
+) AS records_data
+WHERE (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1) IS NOT NULL
+  AND NOT EXISTS (
+    SELECT 1 FROM pdns.records r
+    WHERE r.domain_id = (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1)
+      AND r.type = 'CAA'
+      AND r.content LIKE '%issue "letsencrypt%'
+    LIMIT 1
+  );
+
+-- PTR records for reverse zone
+INSERT INTO pdns.records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT
+    (SELECT id FROM pdns.domains WHERE name = '168.192.in-addr.arpa' LIMIT 1),
+    name_col, type_col, content_col, ttl_col, prio_col, disabled_col
+FROM (
+    SELECT '10.1.168.192.in-addr.arpa' as name_col, 'PTR' as type_col, 'www.test858.example.com' as content_col, 3600 as ttl_col, 0 as prio_col, 0 as disabled_col
+    UNION ALL SELECT '20.1.168.192.in-addr.arpa', 'PTR', 'mail.test858.example.com', 3600, 0, 0
+    UNION ALL SELECT '100.1.168.192.in-addr.arpa', 'PTR', 'server1.test858.example.com', 3600, 0, 0
+) AS records_data
+WHERE (SELECT id FROM pdns.domains WHERE name = '168.192.in-addr.arpa' LIMIT 1) IS NOT NULL
+  AND NOT EXISTS (
+    SELECT 1 FROM pdns.records r
+    WHERE r.domain_id = (SELECT id FROM pdns.domains WHERE name = '168.192.in-addr.arpa' LIMIT 1)
+      AND r.type = 'PTR'
+      AND r.name = '10.1.168.192.in-addr.arpa'
+    LIMIT 1
+  );
+
+-- Insert comments for CAA records (each with different comment to test #858)
+INSERT INTO pdns.comments (domain_id, name, type, modified_at, comment)
+SELECT (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1),
+       'test858.example.com', 'CAA', strftime('%s', 'now'), 'Allow LetsEncrypt to issue regular certs'
+WHERE (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1) IS NOT NULL
+  AND NOT EXISTS (SELECT 1 FROM pdns.comments WHERE domain_id = (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1) AND type = 'CAA' AND comment LIKE '%regular certs%');
+
+INSERT INTO pdns.comments (domain_id, name, type, modified_at, comment)
+SELECT (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1),
+       'test858.example.com', 'CAA', strftime('%s', 'now'), 'Allow LetsEncrypt wildcard certs'
+WHERE (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1) IS NOT NULL
+  AND NOT EXISTS (SELECT 1 FROM pdns.comments WHERE domain_id = (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1) AND type = 'CAA' AND comment LIKE '%wildcard%');
+
+INSERT INTO pdns.comments (domain_id, name, type, modified_at, comment)
+SELECT (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1),
+       'test858.example.com', 'CAA', strftime('%s', 'now'), 'Security contact for certificate issues'
+WHERE (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1) IS NOT NULL
+  AND NOT EXISTS (SELECT 1 FROM pdns.comments WHERE domain_id = (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1) AND type = 'CAA' AND comment LIKE '%Security contact%');
+
+-- Insert comment for A record (for sync testing)
+INSERT INTO pdns.comments (domain_id, name, type, modified_at, comment)
+SELECT (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1),
+       'www.test858.example.com', 'A', strftime('%s', 'now'), 'Web server - should sync with PTR'
+WHERE (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1) IS NOT NULL
+  AND NOT EXISTS (SELECT 1 FROM pdns.comments WHERE domain_id = (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1) AND name = 'www.test858.example.com' AND type = 'A');
+
+-- Link CAA comments to specific records via record_comment_links
+INSERT OR IGNORE INTO record_comment_links (record_id, comment_id)
+SELECT r.id, c.id
+FROM pdns.records r
+JOIN pdns.comments c ON c.domain_id = r.domain_id AND c.name = r.name AND c.type = r.type
+WHERE r.domain_id = (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1)
+  AND r.type = 'CAA'
+  AND r.content LIKE '%issue "letsencrypt%'
+  AND c.comment LIKE '%regular certs%';
+
+INSERT OR IGNORE INTO record_comment_links (record_id, comment_id)
+SELECT r.id, c.id
+FROM pdns.records r
+JOIN pdns.comments c ON c.domain_id = r.domain_id AND c.name = r.name AND c.type = r.type
+WHERE r.domain_id = (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1)
+  AND r.type = 'CAA'
+  AND r.content LIKE '%issuewild%'
+  AND c.comment LIKE '%wildcard%';
+
+INSERT OR IGNORE INTO record_comment_links (record_id, comment_id)
+SELECT r.id, c.id
+FROM pdns.records r
+JOIN pdns.comments c ON c.domain_id = r.domain_id AND c.name = r.name AND c.type = r.type
+WHERE r.domain_id = (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1)
+  AND r.type = 'CAA'
+  AND r.content LIKE '%iodef%'
+  AND c.comment LIKE '%Security contact%';
+
+INSERT OR IGNORE INTO record_comment_links (record_id, comment_id)
+SELECT r.id, c.id
+FROM pdns.records r
+JOIN pdns.comments c ON c.domain_id = r.domain_id AND c.name = r.name AND c.type = r.type
+WHERE r.domain_id = (SELECT id FROM pdns.domains WHERE name = 'test858.example.com' LIMIT 1)
+  AND r.type = 'A'
+  AND r.name = 'www.test858.example.com'
+  AND c.comment LIKE '%sync with PTR%';
+
+-- =============================================================================
 -- VERIFICATION
 -- =============================================================================
 
@@ -168,9 +280,23 @@ SELECT
     SUM(CASE WHEN r.disabled = 1 THEN 1 ELSE 0 END) AS disabled_records
 FROM pdns.domains d
 LEFT JOIN pdns.records r ON d.id = r.domain_id
-WHERE d.name IN ('manager-zone.example.com', 'client-zone.example.com')
+WHERE d.name IN ('manager-zone.example.com', 'client-zone.example.com', 'test858.example.com', '168.192.in-addr.arpa')
 GROUP BY d.name
 ORDER BY d.name;
+
+-- Show test858 comments and links for verification
+SELECT
+    'ISSUE #858 TEST DATA' as info,
+    r.id as record_id,
+    r.type,
+    substr(r.content, 1, 40) as content,
+    c.comment
+FROM pdns.records r
+LEFT JOIN record_comment_links rcl ON r.id = rcl.record_id
+LEFT JOIN pdns.comments c ON rcl.comment_id = c.id
+WHERE r.domain_id = (SELECT id FROM pdns.domains WHERE name = 'test858.example.com')
+  AND r.type IN ('CAA', 'A')
+ORDER BY r.type, r.id;
 
 -- Detach the PowerDNS database
 DETACH DATABASE pdns;

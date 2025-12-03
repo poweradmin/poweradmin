@@ -58,7 +58,9 @@ INSERT IGNORE INTO `domains` (`name`, `type`) VALUES
 ('admin-zone.example.com', 'MASTER'),
 ('manager-zone.example.com', 'MASTER'),
 ('client-zone.example.com', 'MASTER'),
-('shared-zone.example.com', 'MASTER');
+('shared-zone.example.com', 'MASTER'),
+('test858.example.com', 'MASTER'),
+('168.192.in-addr.arpa', 'MASTER');
 
 -- Add SOA records for each domain (required for PowerDNS)
 -- Use NOT EXISTS to prevent duplicate records
@@ -71,7 +73,7 @@ SELECT
     86400,
     0
 FROM `domains` d
-WHERE d.`name` IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com')
+WHERE d.`name` IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com', 'test858.example.com', '168.192.in-addr.arpa')
   AND NOT EXISTS (
     SELECT 1 FROM `records` r WHERE r.`domain_id` = d.`id` AND r.`type` = 'SOA'
   );
@@ -80,7 +82,7 @@ WHERE d.`name` IN ('admin-zone.example.com', 'manager-zone.example.com', 'client
 INSERT INTO `records` (`domain_id`, `name`, `type`, `content`, `ttl`, `prio`)
 SELECT d.`id`, d.`name`, 'NS', 'ns1.example.com.', 86400, 0
 FROM `domains` d
-WHERE d.`name` IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com')
+WHERE d.`name` IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com', 'test858.example.com', '168.192.in-addr.arpa')
   AND NOT EXISTS (
     SELECT 1 FROM `records` r WHERE r.`domain_id` = d.`id` AND r.`type` = 'NS' AND r.`content` = 'ns1.example.com.'
   );
@@ -88,7 +90,7 @@ WHERE d.`name` IN ('admin-zone.example.com', 'manager-zone.example.com', 'client
 INSERT INTO `records` (`domain_id`, `name`, `type`, `content`, `ttl`, `prio`)
 SELECT d.`id`, d.`name`, 'NS', 'ns2.example.com.', 86400, 0
 FROM `domains` d
-WHERE d.`name` IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com')
+WHERE d.`name` IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com', 'test858.example.com', '168.192.in-addr.arpa')
   AND NOT EXISTS (
     SELECT 1 FROM `records` r WHERE r.`domain_id` = d.`id` AND r.`type` = 'NS' AND r.`content` = 'ns2.example.com.'
   );
@@ -149,6 +151,26 @@ WHERE d.`name` = 'shared-zone.example.com'
     SELECT 1 FROM poweradmin.`zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
   );
 
+-- Admin owns test858.example.com (for issue #858 comment testing)
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
+SELECT d.`id`, u.`id`, 0
+FROM pdns.`domains` d
+CROSS JOIN poweradmin.`users` u
+WHERE d.`name` = 'test858.example.com' AND u.`username` = 'admin'
+  AND NOT EXISTS (
+    SELECT 1 FROM poweradmin.`zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
+  );
+
+-- Admin owns 168.192.in-addr.arpa reverse zone (for A/PTR sync testing)
+INSERT INTO poweradmin.`zones` (`domain_id`, `owner`, `zone_templ_id`)
+SELECT d.`id`, u.`id`, 0
+FROM pdns.`domains` d
+CROSS JOIN poweradmin.`users` u
+WHERE d.`name` = '168.192.in-addr.arpa' AND u.`username` = 'admin'
+  AND NOT EXISTS (
+    SELECT 1 FROM poweradmin.`zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
+  );
+
 -- =============================================================================
 -- VERIFICATION QUERIES
 -- =============================================================================
@@ -204,11 +226,13 @@ ORDER BY d.`name`, u.`username`;
 --
 -- Test Domains Created:
 -- ---------------------
--- Domain                      | Owner(s)
--- ----------------------------|------------------
--- admin-zone.example.com      | admin
--- manager-zone.example.com    | manager
--- client-zone.example.com     | client
--- shared-zone.example.com     | manager, client (multi-owner)
+-- Domain                      | Owner(s)           | Purpose
+-- ----------------------------|--------------------|---------------------------------
+-- admin-zone.example.com      | admin              | Standard admin zone
+-- manager-zone.example.com    | manager            | Zone management testing
+-- client-zone.example.com     | client             | Client editing testing
+-- shared-zone.example.com     | manager, client    | Multi-owner zone testing
+-- test858.example.com         | admin              | Issue #858 CAA comment testing
+-- 168.192.in-addr.arpa        | admin              | A/PTR comment sync testing
 --
 -- =============================================================================
