@@ -26,15 +26,65 @@ use Poweradmin\Domain\Model\RecordComment;
 
 interface RecordCommentRepositoryInterface
 {
+    /**
+     * Add a new comment to the database.
+     *
+     * @param RecordComment $comment The comment to add
+     * @return RecordComment The added comment with ID
+     */
     public function add(RecordComment $comment): RecordComment;
+
+    /**
+     * Delete all comments for an RRset (domain_id, name, type).
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @return bool
+     */
     public function delete(int $domainId, string $name, string $type): bool;
+
+    /**
+     * Delete only legacy RRset comments (no per-record links).
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @return bool
+     */
+    public function deleteLegacyComment(int $domainId, string $name, string $type): bool;
+
+    /**
+     * Delete all comments for a domain.
+     *
+     * @param int $domainId Domain ID
+     */
     public function deleteByDomainId(int $domainId): void;
 
+    /**
+     * Find a comment by RRset (domain_id, name, type).
+     * Returns the first matching comment.
+     *
+     * @param int $domainId Domain ID
+     * @param string $name Record name
+     * @param string $type Record type
+     * @return RecordComment|null
+     */
     public function find(int $domainId, string $name, string $type): ?RecordComment;
+
+    /**
+     * Update an existing comment or create a new one.
+     *
+     * @param int $domainId Domain ID
+     * @param string $oldName Previous record name
+     * @param string $oldType Previous record type
+     * @param RecordComment $comment The updated comment
+     * @return RecordComment|null
+     */
     public function update(int $domainId, string $oldName, string $oldType, RecordComment $comment): ?RecordComment;
 
     /**
-     * Find a comment by record ID for per-record comment support.
+     * Find a comment linked to a specific record ID.
      *
      * @param int $recordId The record ID
      * @return RecordComment|null
@@ -42,7 +92,7 @@ interface RecordCommentRepositoryInterface
     public function findByRecordId(int $recordId): ?RecordComment;
 
     /**
-     * Delete a specific comment by record ID.
+     * Delete the comment linked to a specific record ID.
      *
      * @param int $recordId The record ID
      * @return bool
@@ -50,26 +100,40 @@ interface RecordCommentRepositoryInterface
     public function deleteByRecordId(int $recordId): bool;
 
     /**
-     * Delete legacy comments for an RRset (where account is non-numeric username).
-     * This is used to clean up old-style shared comments when creating per-record comments.
+     * Link a record to a comment.
      *
-     * @param int $domainId Domain ID
-     * @param string $name Record name
-     * @param string $type Record type
+     * @param int $recordId The record ID
+     * @param int $commentId The comment ID
      * @return bool
      */
-    public function deleteLegacyComments(int $domainId, string $name, string $type): bool;
+    public function linkRecordToComment(int $recordId, int $commentId): bool;
 
     /**
-     * Migrate legacy RRset comments to per-record comments for all records in the RRset.
-     * This preserves existing comments when transitioning from legacy to per-record format.
+     * Unlink a record from its comment.
+     *
+     * @param int $recordId The record ID
+     * @return bool
+     */
+    public function unlinkRecord(int $recordId): bool;
+
+    /**
+     * Add a comment for a specific record.
+     * Creates the comment and links it to the record.
+     *
+     * @param int $recordId The record ID
+     * @param RecordComment $comment The comment to add
+     * @return RecordComment|null The added comment with ID, or null on failure
+     */
+    public function addForRecord(int $recordId, RecordComment $comment): ?RecordComment;
+
+    /**
+     * Migrate legacy RRset comments to per-record links for all records
+     * in the RRset that don't have linked comments yet.
      *
      * @param int $domainId Domain ID
      * @param string $name Record name
      * @param string $type Record type
-     * @param array $recordIds List of record IDs in the RRset to migrate comments to
-     * @param int|null $excludeRecordId Optional record ID to exclude (the one being edited with new comment)
-     * @return bool True if migration was performed, false if no legacy comment existed
+     * @param int $excludeRecordId Record ID to exclude (the one being edited)
      */
-    public function migrateLegacyComment(int $domainId, string $name, string $type, array $recordIds, ?int $excludeRecordId = null): bool;
+    public function migrateLegacyComments(int $domainId, string $name, string $type, int $excludeRecordId): void;
 }

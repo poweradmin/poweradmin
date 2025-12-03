@@ -125,7 +125,8 @@ class RecordCommentSyncService
                     $name,
                     $type,
                     $comment,
-                    (int)$record['id']
+                    (int)$record['id'],
+                    $userLogin
                 );
             }
         } else {

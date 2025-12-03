@@ -22,9 +22,7 @@
 
 namespace Poweradmin\Application\Query;
 
-use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Domain\Service\DnsIdnService;
-use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Utility\SortHelper;
 use Poweradmin\Infrastructure\Database\TableNameService;
 use Poweradmin\Infrastructure\Database\PdnsTable;
@@ -132,21 +130,20 @@ class RecordSearch extends BaseSearch
             $params[':content_filter'] = $content;
         }
 
-        // Build per-record comment subquery
+        // Per-record comments via linking table, with fallback to RRset-based comments for legacy data
+        $links_table = 'record_comment_links';
         $commentSelect = '';
         if ($iface_record_comments) {
-            $prefix = RecordComment::RECORD_ID_PREFIX;
-            $perRecordAccount = DbCompat::concat($db_type, ["'$prefix'", "$records_table.id"]);
             $commentSelect = ", (
-                SELECT comment FROM $comments_table
-                WHERE $records_table.domain_id = $comments_table.domain_id
-                AND $records_table.name = $comments_table.name
-                AND $records_table.type = $comments_table.type
-                AND ($comments_table.account = $perRecordAccount
-                     OR $comments_table.account IS NULL
-                     OR $comments_table.account = ''
-                     OR $comments_table.account NOT LIKE '$prefix%')
-                ORDER BY CASE WHEN $comments_table.account = $perRecordAccount THEN 0 ELSE 1 END
+                SELECT c.comment
+                FROM $comments_table c
+                LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
+                WHERE (rcl.record_id = $records_table.id)
+                   OR (rcl.record_id IS NULL
+                       AND c.domain_id = $records_table.domain_id
+                       AND c.name = $records_table.name
+                       AND c.type = $records_table.type)
+                ORDER BY CASE WHEN rcl.record_id = $records_table.id THEN 0 ELSE 1 END
                 LIMIT 1
             ) AS comment";
         }

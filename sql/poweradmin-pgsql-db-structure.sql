@@ -447,3 +447,12 @@ CREATE TABLE zones_groups (
 
 CREATE INDEX idx_zones_groups_domain ON zones_groups(domain_id);
 CREATE INDEX idx_zones_groups_group ON zones_groups(group_id);
+
+CREATE TABLE record_comment_links (
+    record_id INTEGER NOT NULL,
+    comment_id INTEGER NOT NULL,
+    PRIMARY KEY (record_id),
+    UNIQUE (comment_id)
+);
+
+CREATE INDEX idx_record_comment_links_comment ON record_comment_links(comment_id);

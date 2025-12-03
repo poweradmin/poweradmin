@@ -617,18 +617,14 @@ class EditController extends BaseController
                         $log->write();
 
                         if ($this->config->get('interface', 'show_record_comments', false)) {
-                            // Use per-record comment (linked by record ID)
-                            // Get all records in the RRset for legacy comment migration
-                            $rrsetRecords = $this->recordRepository->getRRSetRecords($zone_id, $record['name'], $record['type']);
-                            $rrsetRecordIds = array_map(fn($r) => (int)$r['id'], $rrsetRecords);
-
+                            // Use per-record comment (linked by record ID via record_comment_links table)
                             $this->recordCommentService->updateCommentForRecord(
                                 $zone_id,
                                 $record['name'],
                                 $record['type'],
                                 $record['comment'] ?? '',
                                 (int)$record['rid'],
-                                $rrsetRecordIds
+                                $this->userContextService->getLoggedInUsername()
                             );
 
                             if ($this->config->get('misc', 'record_comments_sync')) {

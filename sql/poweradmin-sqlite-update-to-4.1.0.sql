@@ -422,3 +422,20 @@ AND NOT EXISTS (SELECT 1 FROM user_groups WHERE name = 'Guests');
 -- This permission allows enforcing MFA for users/groups when mfa.enforced is enabled
 INSERT OR IGNORE INTO perm_items (name, descr) VALUES
     ('user_enforce_mfa', 'User is required to use multi-factor authentication.');
+
+-- ============================================================================
+-- Per-Record Comments Support (Issue #858)
+-- ============================================================================
+-- Create linking table to associate individual records with comments
+-- This allows per-record comments instead of per-RRset comments
+-- The PowerDNS comments table stores comments by (domain_id, name, type),
+-- this linking table maps individual record IDs to specific comment IDs
+
+CREATE TABLE IF NOT EXISTS record_comment_links (
+    record_id INTEGER NOT NULL,
+    comment_id INTEGER NOT NULL,
+    PRIMARY KEY (record_id),
+    UNIQUE (comment_id)
+);
+
+CREATE INDEX IF NOT EXISTS idx_record_comment_links_comment ON record_comment_links(comment_id);

@@ -235,7 +235,7 @@ class EditRecordController extends BaseController
                 . ' old_record_type:%s old_record:%s old_content:%s old_ttl:%s old_priority:%s'
                 . ' record_type:%s record:%s content:%s ttl:%s priority:%s',
                 $_SERVER['REMOTE_ADDR'],
-                $_SESSION["userlogin"],
+                $this->userContextService->getLoggedInUsername(),
                 $old_record_info['type'],
                 $old_record_info['name'],
                 $old_record_info['content'],
@@ -250,18 +250,14 @@ class EditRecordController extends BaseController
             $zid
         );
 
-        // Use per-record comment (linked by record ID)
-        // Get all records in the RRset for legacy comment migration
-        $rrsetRecords = $this->recordRepository->getRRSetRecords($zid, $new_record_info['name'], $new_record_info['type']);
-        $rrsetRecordIds = array_map(fn($r) => (int)$r['id'], $rrsetRecords);
-
+        // Use per-record comment (linked by record ID via record_comment_links table)
         $this->recordCommentService->updateCommentForRecord(
             $zid,
             $new_record_info['name'],
             $new_record_info['type'],
             $_POST['comment'] ?? '',
             (int)$_POST['rid'],
-            $rrsetRecordIds
+            $this->userContextService->getLoggedInUsername()
         );
 
         if ($this->config->get('misc', 'record_comments_sync')) {
@@ -269,7 +265,7 @@ class EditRecordController extends BaseController
                 $dnsRecord,
                 $new_record_info,
                 $_POST['comment'] ?? '',
-                $_SESSION['userlogin']
+                $this->userContextService->getLoggedInUsername()
             );
         }
 

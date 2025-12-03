@@ -98,6 +98,7 @@ class RecordManagerService
     /**
      * Handle comments when record ID is already known (from addRecordGetId).
      * This avoids the need to look up the record ID after creation.
+     * Uses the record_comment_links table for per-record comment linking.
      */
     private function handleCommentsWithId(int $zoneId, string $name, string $type, string $content, string $comment, string $userLogin, string $zone_name, int $recordId): void
     {
@@ -107,19 +108,14 @@ class RecordManagerService
 
         $fullZoneName = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
-        // Get all records in the RRset for legacy comment migration
-        $recordRepository = new RecordRepository($this->db, $this->config);
-        $rrsetRecords = $recordRepository->getRRSetRecords($zoneId, $fullZoneName, $type);
-        $rrsetRecordIds = array_map(fn($r) => (int)$r['id'], $rrsetRecords);
-
-        // Use the provided record ID directly for per-record comment
+        // Use the provided record ID directly for per-record comment (via linking table)
         $this->recordCommentService->createCommentForRecord(
             $zoneId,
             $fullZoneName,
             $type,
             $comment,
             $recordId,
-            $rrsetRecordIds
+            $userLogin
         );
 
         // Handle synced comments (propagate to related A/PTR records)
@@ -136,24 +132,20 @@ class RecordManagerService
 
         $fullZoneName = DnsHelper::restoreZoneSuffix($name, $zone_name);
 
-        // Get record ID for per-record comment linking
+        // Get record ID for per-record comment linking (via linking table)
         // Pass prio and ttl for deterministic lookup (important for MX, SRV records with same content)
         $recordRepository = new RecordRepository($this->db, $this->config);
         $recordId = $recordRepository->getRecordId($zoneId, strtolower($fullZoneName), $type, $content, $prio, $ttl);
 
         if ($recordId !== null) {
-            // Get all records in the RRset for legacy comment migration
-            $rrsetRecords = $recordRepository->getRRSetRecords($zoneId, $fullZoneName, $type);
-            $rrsetRecordIds = array_map(fn($r) => (int)$r['id'], $rrsetRecords);
-
-            // Use per-record comment (linked by record ID)
+            // Use per-record comment (linked by record ID via linking table)
             $this->recordCommentService->createCommentForRecord(
                 $zoneId,
                 $fullZoneName,
                 $type,
                 $comment,
                 $recordId,
-                $rrsetRecordIds
+                $userLogin
             );
         } else {
             // Fallback to legacy RRset-based comment if record ID not found
@@ -209,7 +201,8 @@ class RecordManagerService
                     $ptrName,
                     RecordType::PTR,
                     $comment,
-                    (int)$record['id']
+                    (int)$record['id'],
+                    $userlogin
                 );
             }
         }
@@ -243,7 +236,8 @@ class RecordManagerService
                     $content,
                     RecordType::A,
                     $comment,
-                    (int)$record['id']
+                    (int)$record['id'],
+                    $userlogin
                 );
             }
         }

@@ -24,9 +24,7 @@ namespace Poweradmin\Domain\Repository;
 
 use PDO;
 use Poweradmin\Domain\Model\Constants;
-use Poweradmin\Domain\Model\RecordComment;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
@@ -192,24 +190,19 @@ class RecordRepository implements RecordRepositoryInterface
                          $sql_sortby;
         }
 
-        // Use record_id based comment lookup (stored in account field with 'rid:' prefix) for per-record comments,
-        // with fallback to RRset-based lookup for backward compatibility with legacy comments.
-        // Per-record comments have account = 'rid:' || record_id
-        // Legacy comments have account = username (including numeric usernames) or NULL/empty
-        $prefix = RecordComment::RECORD_ID_PREFIX;
-        $perRecordAccount = DbCompat::concat($db_type, ["'$prefix'", "$records_table.id"]);
+        // Per-record comments via linking table, with fallback to RRset-based comments for legacy data
+        $links_table = 'record_comment_links';
         $query = "SELECT $records_table.*,
             " . ($fetchComments ? "(
-                SELECT comment
-                FROM $comments_table
-                WHERE $records_table.domain_id = $comments_table.domain_id
-                AND $records_table.name = $comments_table.name
-                AND $records_table.type = $comments_table.type
-                AND ($comments_table.account = $perRecordAccount
-                     OR $comments_table.account IS NULL
-                     OR $comments_table.account = ''
-                     OR $comments_table.account NOT LIKE '$prefix%')
-                ORDER BY CASE WHEN $comments_table.account = $perRecordAccount THEN 0 ELSE 1 END
+                SELECT c.comment
+                FROM $comments_table c
+                LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
+                WHERE (rcl.record_id = $records_table.id)
+                   OR (rcl.record_id IS NULL
+                       AND c.domain_id = $records_table.domain_id
+                       AND c.name = $records_table.name
+                       AND c.type = $records_table.type)
+                ORDER BY CASE WHEN rcl.record_id = $records_table.id THEN 0 ELSE 1 END
                 LIMIT 1
             )" : "NULL") . " AS comment
             FROM $records_table
@@ -524,29 +517,23 @@ class RecordRepository implements RecordRepositoryInterface
             $params[':content_filter'] = $content_filter;
         }
 
-        // Base query with comment subquery for per-record comment support
-        // Uses subquery with ORDER BY to prioritize per-record comments (account = 'rid:' || record_id)
-        // over legacy RRset-based comments (account = username including numeric usernames, or NULL/empty)
-        $db_type = $this->config->get('database', 'type', 'mysql');
-        $prefix = RecordComment::RECORD_ID_PREFIX;
-        $perRecordAccount = DbCompat::concat($db_type, ["'$prefix'", "$records_table.id"]);
-
+        // Per-record comments via linking table, with fallback to RRset-based comments for legacy data
+        $links_table = 'record_comment_links';
         $query = "SELECT $records_table.id, $records_table.domain_id, $records_table.name, $records_table.type,
                  $records_table.content, $records_table.ttl, $records_table.prio, $records_table.disabled, $records_table.auth";
 
         // Add comment column using subquery if needed
         if ($include_comments) {
             $query .= ", (
-                SELECT comment
-                FROM $comments_table
-                WHERE $records_table.domain_id = $comments_table.domain_id
-                AND $records_table.name = $comments_table.name
-                AND $records_table.type = $comments_table.type
-                AND ($comments_table.account = $perRecordAccount
-                     OR $comments_table.account IS NULL
-                     OR $comments_table.account = ''
-                     OR $comments_table.account NOT LIKE '$prefix%')
-                ORDER BY CASE WHEN $comments_table.account = $perRecordAccount THEN 0 ELSE 1 END
+                SELECT c.comment
+                FROM $comments_table c
+                LEFT JOIN $links_table rcl ON rcl.comment_id = c.id
+                WHERE (rcl.record_id = $records_table.id)
+                   OR (rcl.record_id IS NULL
+                       AND c.domain_id = $records_table.domain_id
+                       AND c.name = $records_table.name
+                       AND c.type = $records_table.type)
+                ORDER BY CASE WHEN rcl.record_id = $records_table.id THEN 0 ELSE 1 END
                 LIMIT 1
             ) AS comment";
         }

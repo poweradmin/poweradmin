@@ -1654,6 +1654,31 @@ class DatabaseStructureHelper
                         'ondelete' => 'CASCADE'
                     )
                 )
+            ),
+            array(
+                'table_name' => 'record_comment_links',
+                'options' => array('type' => 'innodb'),
+                'fields' => array(
+                    'record_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'record_id',
+                        'table' => 'record_comment_links',
+                        'flags' => 'primary_keynot_null'
+                    ),
+                    'comment_id' => array(
+                        'type' => 'integer',
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'name' => 'comment_id',
+                        'table' => 'record_comment_links',
+                        'flags' => 'not_null'
+                    )
+                ),
+                'indexes' => array(
+                    'idx_record_comment_links_comment' => array('comment_id')
+                )
             )
         );
     }

@@ -403,3 +403,10 @@ CREATE TABLE `zones_groups` (
   KEY `idx_group_id` (`group_id`),
   CONSTRAINT `fk_zones_groups_group` FOREIGN KEY (`group_id`) REFERENCES `user_groups`(`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE `record_comment_links` (
+    `record_id` INT NOT NULL,
+    `comment_id` INT NOT NULL,
+    PRIMARY KEY (`record_id`),
+    UNIQUE KEY `idx_record_comment_links_comment` (`comment_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
