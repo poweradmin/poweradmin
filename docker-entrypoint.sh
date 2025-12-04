@@ -20,19 +20,19 @@ process_secret_files() {
         VAR_NAME_FILE="${VAR_NAME}__FILE"
 
         # Check if both regular and __FILE versions are set (they are exclusive)
-        [ "${!VAR_NAME}" ] && {
+        if [ "${!VAR_NAME}" ]; then
             log "ERROR: Both ${VAR_NAME} and ${VAR_NAME_FILE} are set but are exclusive"
             exit 1
-        }
+        fi
 
         VAR_FILENAME="${!VAR_NAME_FILE}"
         log "Getting secret ${VAR_NAME} from ${VAR_FILENAME}"
 
         # Validate the secret file exists and is readable
-        [ ! -r "${VAR_FILENAME}" ] && {
+        if [ ! -r "${VAR_FILENAME}" ]; then
             log "ERROR: ${VAR_FILENAME} does not exist or is not readable"
             exit 1
-        }
+        fi
 
         # Read the secret file content and export as environment variable
         export "${VAR_NAME}"="$(<"${VAR_FILENAME}")"
@@ -76,10 +76,10 @@ init_sqlite_db() {
 
 # Validate required database configuration
 validate_database_config() {
-    [ -z "${DB_TYPE}" ] && {
+    if [ -z "${DB_TYPE}" ]; then
         log "ERROR: DB_TYPE environment variable is required. Supported types: sqlite, mysql, pgsql"
         exit 1
-    }
+    fi
     debug_log "Starting database validation with DB_TYPE=${DB_TYPE}"
     case "${DB_TYPE}" in
         "sqlite")
@@ -87,25 +87,25 @@ validate_database_config() {
             debug_log "Checking SQLite database file: ${db_file}"
             debug_log "File exists check: [ -f ${db_file} ] = $([ -f "${db_file}" ] && echo true || echo false)"
             debug_log "Directory writable check: [ -w $(dirname ${db_file}) ] = $([ -w "$(dirname "${db_file}")" ] && echo true || echo false)"
-            [ ! -f "${db_file}" ] && [ ! -w "$(dirname "${db_file}")" ] && {
+            if [ ! -f "${db_file}" ] && [ ! -w "$(dirname "${db_file}")" ]; then
                 log "ERROR: SQLite database file ${db_file} doesn't exist and directory is not writable"
                 exit 1
-            }
+            fi
             debug_log "SQLite validation passed"
             ;;
         "mysql"|"pgsql")
-            [ -z "${DB_HOST}" ] && {
+            if [ -z "${DB_HOST}" ]; then
                 log "ERROR: DB_HOST is required for ${DB_TYPE} database"
                 exit 1
-            }
-            [ -z "${DB_USER}" ] && {
+            fi
+            if [ -z "${DB_USER}" ]; then
                 log "ERROR: DB_USER is required for ${DB_TYPE} database"
                 exit 1
-            }
-            [ -z "${DB_NAME}" ] && {
+            fi
+            if [ -z "${DB_NAME}" ]; then
                 log "ERROR: DB_NAME is required for ${DB_TYPE} database"
                 exit 1
-            }
+            fi
             ;;
         *)
             log "ERROR: Unsupported database type: ${DB_TYPE}. Supported types: sqlite, mysql, pgsql"
@@ -120,18 +120,18 @@ validate_dns_config() {
     debug_log "DNS_NS1='${DNS_NS1}'"
     debug_log "DNS_NS2='${DNS_NS2}'"
     debug_log "DNS_HOSTMASTER='${DNS_HOSTMASTER}'"
-    [ -z "${DNS_NS1}" ] && {
+    if [ -z "${DNS_NS1}" ]; then
         log "WARNING: DNS_NS1 not set, using default: ns1.example.com"
         DNS_NS1="ns1.example.com"
-    }
-    [ -z "${DNS_NS2}" ] && {
+    fi
+    if [ -z "${DNS_NS2}" ]; then
         log "WARNING: DNS_NS2 not set, using default: ns2.example.com"
         DNS_NS2="ns2.example.com"
-    }
-    [ -z "${DNS_HOSTMASTER}" ] && {
+    fi
+    if [ -z "${DNS_HOSTMASTER}" ]; then
         log "WARNING: DNS_HOSTMASTER not set, using default: hostmaster@example.com"
         DNS_HOSTMASTER="hostmaster@example.com"
-    }
+    fi
     debug_log "DNS validation completed"
 }
 
@@ -139,14 +139,14 @@ validate_dns_config() {
 validate_mail_config() {
     local mail_enabled=$(echo "${PA_MAIL_ENABLED:-true}" | tr '[:upper:]' '[:lower:]')
     if [ "$mail_enabled" = "true" ] && [ "${PA_MAIL_TRANSPORT}" = "smtp" ]; then
-        [ -z "${PA_SMTP_HOST}" ] && {
+        if [ -z "${PA_SMTP_HOST}" ]; then
             log "ERROR: PA_SMTP_HOST is required when using SMTP transport"
             exit 1
-        }
-        [ -z "${PA_MAIL_FROM}" ] && {
+        fi
+        if [ -z "${PA_MAIL_FROM}" ]; then
             log "ERROR: PA_MAIL_FROM is required when mail is enabled"
             exit 1
-        }
+        fi
     fi
 }
 
@@ -167,10 +167,10 @@ validate_ldap_config() {
     if [ "$ldap_enabled" = "true" ]; then
         local required_ldap_vars=("PA_LDAP_URI" "PA_LDAP_BASE_DN")
         for var in "${required_ldap_vars[@]}"; do
-            [ -z "${!var}" ] && {
+            if [ -z "${!var}" ]; then
                 log "ERROR: ${var} is required when LDAP is enabled"
                 exit 1
-            }
+            fi
         done
     fi
 }
