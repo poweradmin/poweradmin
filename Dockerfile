@@ -38,7 +38,7 @@
 #     -e PA_ADMIN_PASSWORD=your-secure-password \
 #     poweradmin
 
-FROM dunglas/frankenphp:latest-alpine
+FROM dunglas/frankenphp:1.10-php8.4-alpine
 
 # Install required packages and PHP extensions
 RUN apk add --no-cache --virtual .build-deps \
