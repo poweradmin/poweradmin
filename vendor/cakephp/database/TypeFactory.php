@@ -24,7 +24,7 @@ use InvalidArgumentException;
 class TypeFactory
 {
     /**
-     * List of supported database types. A human readable
+     * List of supported database types. A human-readable
      * identifier is used as key and a complete namespaced class name as value
      * representing the class that will do actual type conversions.
      *
