@@ -182,8 +182,8 @@ class ZonesRecordsController extends PublicApiController
                     'content' => $record['content'],
                     'ttl' => (int)$record['ttl'],
                     'priority' => isset($record['prio']) ? (int)$record['prio'] : null,
-                    'disabled' => isset($record['disabled']) ? DbCompat::boolFromDb($record['disabled']) : 0,
-                    'auth' => isset($record['auth']) ? DbCompat::boolFromDb($record['auth']) : 1
+                    'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false,
+                    'auth' => isset($record['auth']) ? (bool)DbCompat::boolFromDb($record['auth']) : true
                 ];
             }, $records);
 
@@ -278,8 +278,8 @@ class ZonesRecordsController extends PublicApiController
                 'content' => $record['content'],
                 'ttl' => (int)$record['ttl'],
                 'priority' => isset($record['prio']) ? (int)$record['prio'] : null,
-                'disabled' => isset($record['disabled']) ? DbCompat::boolFromDb($record['disabled']) : 0,
-                'auth' => isset($record['auth']) ? DbCompat::boolFromDb($record['auth']) : 1
+                'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false,
+                'auth' => isset($record['auth']) ? (bool)DbCompat::boolFromDb($record['auth']) : true
             ];
 
             return $this->returnApiResponse($formattedRecord, true, 'Record retrieved successfully', 200);
