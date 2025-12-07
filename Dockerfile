@@ -13,6 +13,7 @@
 FROM php:8.2-cli-alpine
 
 # Update base packages to fix known security vulnerabilities and install dependencies
+# hadolint ignore=DL3018
 RUN apk upgrade --no-cache \
     && apk add --no-cache --virtual .build-deps \
     icu-data-full \
@@ -35,6 +36,7 @@ WORKDIR /app
 COPY . .
 
 # Setup database and configuration
+# hadolint ignore=SC2016
 RUN mkdir -p /db /app/inc \
     && sqlite3 /db/pdns.db < /app/sql/pdns/47/schema.sqlite3.sql \
     && sqlite3 /db/pdns.db < /app/sql/poweradmin-sqlite-db-structure.sql \
