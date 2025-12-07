@@ -64,14 +64,14 @@ class Logger extends AbstractLogger
         }
 
         $this->logHandler->handle([
-            'message' => self::interpolateMessage((string)$message, $context),
+            'message' => $this->interpolateMessage((string)$message, $context),
             'level' => strtoupper($level),
             'timestamp' => ($timestamp),
             'classname' => $classname,
         ]);
     }
 
-    function interpolateMessage(string $message, array $context = []): string
+    private function interpolateMessage(string $message, array $context = []): string
     {
         $replace = array();
         foreach ($context as $key => $val) {

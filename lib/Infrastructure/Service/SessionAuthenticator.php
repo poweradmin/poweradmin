@@ -77,7 +77,7 @@ class SessionAuthenticator extends LoggingService
      *
      * @return void
      */
-    function authenticate(): void
+    public function authenticate(): void
     {
         $this->logDebug('Starting authentication process');
 
