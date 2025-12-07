@@ -76,7 +76,7 @@ class Installer
         if (file_exists($this->localConfigFile)) {
             // Only allow viewing the final step if installation is complete
             if ($currentStep !== InstallationSteps::STEP_INSTALLATION_COMPLETE) {
-                echo 'There is already a configuration file in place, so the installation will be skipped.';
+                echo _('There is already a configuration file in place, so the installation will be skipped.');
                 exit;
             }
         }
@@ -90,7 +90,7 @@ class Installer
         $errors = $this->validatePreviousStep($currentStep - 1);
 
         if ($this->hasLanguageError($errors)) {
-            echo 'Please select a language to proceed with the installation.';
+            echo _('Please select a language to proceed with the installation.');
             $currentStep = InstallationSteps::STEP_CHOOSE_LANGUAGE;
         }
 

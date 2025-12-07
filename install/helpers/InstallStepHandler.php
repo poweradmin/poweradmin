@@ -57,7 +57,7 @@ class InstallStepHandler
             echo $this->twig->render($templateName, $data);
         } catch (LoaderError | RuntimeError | SyntaxError $e) {
             error_log($e->getMessage());
-            echo "An error occurred while rendering the template.";
+            echo _('An error occurred while rendering the template.');
         }
     }
 
