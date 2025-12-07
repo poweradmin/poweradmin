@@ -184,10 +184,7 @@ class Installer
 
     private function hasLanguageError(array $errors): bool
     {
-        if (isset($errors['language'])) {
-            return true;
-        }
-        return false;
+        return isset($errors['language']);
     }
 
     private function initializeLocaleHandler(): string
