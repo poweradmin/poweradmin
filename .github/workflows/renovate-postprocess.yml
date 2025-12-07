@@ -1,0 +1,34 @@
+name: Renovate Post-Processing
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+jobs:
+  postprocess:
+    if: github.actor == 'renovate[bot]'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref }}
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.1'
+
+      - name: Optimize vendor for production
+        run: |
+          composer install --no-dev --prefer-dist --no-progress
+          composer dump-autoload --optimize
+          git checkout -- vendor/composer/installed.php
+
+      - name: Commit if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore(deps): optimize vendor for production"
+          file_pattern: "vendor/"
