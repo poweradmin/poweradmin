@@ -73,7 +73,7 @@ class PdnsUtilProvider implements DnssecProvider
         $output = '';
         $return_code = -1;
 
-        if (!self::dnssec_is_pdnssec_callable()) {
+        if (!$this->dnssec_is_pdnssec_callable()) {
             return array($output, $return_code);
         }
 
@@ -121,7 +121,7 @@ class PdnsUtilProvider implements DnssecProvider
                 $pdnssec_debug ? '2>&1' : ''
             ));
 
-            if (!self::dnssec_is_pdnssec_callable()) {
+            if (!$this->dnssec_is_pdnssec_callable()) {
                 return false;
             }
 
@@ -147,7 +147,7 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function secureZone(string $zoneName): bool
     {
-        $call_result = self::dnssec_call_pdnssec('secure-zone', $zoneName);
+        $call_result = $this->dnssec_call_pdnssec('secure-zone', $zoneName);
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -170,7 +170,7 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function unsecureZone(string $zoneName): bool
     {
-        $call_result = self::dnssec_call_pdnssec('disable-dnssec', $zoneName);
+        $call_result = $this->dnssec_call_pdnssec('disable-dnssec', $zoneName);
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -214,7 +214,7 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function getDsRecords(string $zoneName): array
     {
-        $call_result = self::dnssec_call_pdnssec('show-zone', $zoneName);
+        $call_result = $this->dnssec_call_pdnssec('show-zone', $zoneName);
         $output = $call_result[0];
         $return_code = $call_result[1];
 
@@ -248,7 +248,7 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function getDnsKeyRecords(string $zoneName): array
     {
-        $call_result = self::dnssec_call_pdnssec('show-zone', $zoneName);
+        $call_result = $this->dnssec_call_pdnssec('show-zone', $zoneName);
         $output = $call_result[0];
         $return_code = $call_result[1];
 
@@ -273,7 +273,7 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function activateZoneKey(string $zoneName, int $keyId): bool
     {
-        $call_result = self::dnssec_call_pdnssec('activate-zone-key', $zoneName, array($keyId));
+        $call_result = $this->dnssec_call_pdnssec('activate-zone-key', $zoneName, array($keyId));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -297,7 +297,7 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function deactivateZoneKey(string $zoneName, int $keyId): bool
     {
-        $call_result = self::dnssec_call_pdnssec('deactivate-zone-key', $zoneName, array($keyId));
+        $call_result = $this->dnssec_call_pdnssec('deactivate-zone-key', $zoneName, array($keyId));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -321,7 +321,7 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function getKeys(string $zoneName): array
     {
-        $call_result = self::dnssec_call_pdnssec('show-zone', $zoneName);
+        $call_result = $this->dnssec_call_pdnssec('show-zone', $zoneName);
         $output = $call_result[0];
         $return_code = $call_result[1];
 
@@ -357,7 +357,7 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function addZoneKey(string $zoneName, string $keyType, int $keySize, string $algorithm): bool
     {
-        $call_result = self::dnssec_call_pdnssec('add-zone-key', $zoneName, array($keyType, $keySize, "inactive", $algorithm));
+        $call_result = $this->dnssec_call_pdnssec('add-zone-key', $zoneName, array($keyType, $keySize, "inactive", $algorithm));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
@@ -383,7 +383,7 @@ class PdnsUtilProvider implements DnssecProvider
 
     public function removeZoneKey(string $zoneName, int $keyId): bool
     {
-        $call_result = self::dnssec_call_pdnssec('remove-zone-key', $zoneName, array($keyId));
+        $call_result = $this->dnssec_call_pdnssec('remove-zone-key', $zoneName, array($keyId));
         $return_code = $call_result[1];
 
         if ($return_code != 0) {
