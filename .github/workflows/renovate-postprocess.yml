@@ -28,7 +28,7 @@ jobs:
           git checkout -- vendor/composer/installed.php
 
       - name: Commit if changed
-        uses: stefanzweifel/git-auto-commit-action@v5
+        uses: stefanzweifel/git-auto-commit-action@v7
         with:
           commit_message: "chore(deps): optimize vendor for production"
           file_pattern: "vendor/"
