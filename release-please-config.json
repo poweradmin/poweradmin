@@ -1,0 +1,20 @@
+{
+  "$schema": "https://raw.githubusercontent.com/googleapis/release-please/main/schemas/config.json",
+  "packages": {
+    ".": {
+      "release-type": "simple",
+      "bump-minor-pre-major": true,
+      "bump-patch-for-minor-pre-major": true,
+      "include-component-in-tag": false,
+      "skip-github-release": false,
+      "extra-files": [
+        {
+          "type": "generic",
+          "path": "lib/Version.php",
+          "glob": false
+        }
+      ]
+    }
+  },
+  "changelog-sections": []
+}
