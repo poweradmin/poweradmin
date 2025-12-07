@@ -12,6 +12,9 @@
 
 FROM php:8.2-cli-alpine
 
+# Update base packages to fix known security vulnerabilities
+RUN apk upgrade --no-cache
+
 RUN apk add --no-cache --virtual .build-deps \
     icu-data-full \
     gettext \
