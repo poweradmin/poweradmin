@@ -40,6 +40,9 @@
 
 FROM dunglas/frankenphp:1.10-php8.4-alpine
 
+# Update base packages to fix known security vulnerabilities
+RUN apk upgrade --no-cache
+
 # Install required packages and PHP extensions
 RUN apk add --no-cache --virtual .build-deps \
     gettext-dev \
