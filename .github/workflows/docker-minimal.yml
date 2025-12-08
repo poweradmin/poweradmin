@@ -2,12 +2,12 @@ name: Docker Minimal Checks
 
 on:
   push:
-    branches: [ "release/3.9.x" ]
+    branches: [ "release/3.x" ]
     paths:
       - 'Dockerfile'
       - '.dockerignore'
   pull_request:
-    branches: [ "release/3.9.x" ]
+    branches: [ "release/3.x" ]
     paths:
       - 'Dockerfile'
       - '.dockerignore'
@@ -47,7 +47,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           push: false
-          tags: poweradmin:test-3.9
+          tags: poweradmin:test-3.x
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
@@ -70,12 +70,12 @@ jobs:
           platforms: linux/amd64
           push: false
           load: true
-          tags: poweradmin:scan-3.9
+          tags: poweradmin:scan-3.x
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@0.33.1
         with:
-          image-ref: poweradmin:scan-3.9
+          image-ref: poweradmin:scan-3.x
           format: 'sarif'
           output: 'trivy-results.sarif'
           severity: 'CRITICAL,HIGH'
@@ -97,7 +97,7 @@ jobs:
         run: |
           echo "### Docker Minimal Checks Summary 🐳" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "**Branch:** release/3.9.x (LTS)" >> $GITHUB_STEP_SUMMARY
+          echo "**Branch:** release/3.x (LTS)" >> $GITHUB_STEP_SUMMARY
           echo "**Scope:** Minimal checks only (no publishing)" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
 

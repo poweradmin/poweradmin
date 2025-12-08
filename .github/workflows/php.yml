@@ -2,9 +2,9 @@ name: Composer
 
 on:
   push:
-    branches: [ "release/3.9.x" ]
+    branches: [ "release/3.x" ]
   pull_request:
-    branches: [ "release/3.9.x" ]
+    branches: [ "release/3.x" ]
 
 permissions:
   contents: read
@@ -96,7 +96,7 @@ jobs:
         echo "- PHP syntax validation (all .php files)" >> $GITHUB_STEP_SUMMARY
         echo "- Dependency installation" >> $GITHUB_STEP_SUMMARY
         echo "- Unit test suite execution" >> $GITHUB_STEP_SUMMARY
-        echo "**Branch:** release/3.9.x (LTS)" >> $GITHUB_STEP_SUMMARY
+        echo "**Branch:** release/3.x (LTS)" >> $GITHUB_STEP_SUMMARY
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "Compatibility check completed for PHP ${{ matrix.php-version }}" >> $GITHUB_STEP_SUMMARY
 

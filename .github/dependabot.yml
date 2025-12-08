@@ -6,7 +6,7 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 5
-    target-branch: "release/3.9.x"
+    target-branch: "release/3.x"
     labels:
       - "dependencies"
       - "lts"
@@ -16,7 +16,7 @@ updates:
     directory: "/"
     schedule:
       interval: "monthly"
-    target-branch: "release/3.9.x"
+    target-branch: "release/3.x"
     labels:
       - "dependencies"
       - "github-actions"
@@ -27,7 +27,7 @@ updates:
     directory: "/"
     schedule:
       interval: "weekly"
-    target-branch: "release/3.9.x"
+    target-branch: "release/3.x"
     labels:
       - "dependencies"
       - "docker"
