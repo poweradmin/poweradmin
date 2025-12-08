@@ -8,13 +8,17 @@ on:
     branches:
       - master
       - develop
+      - release/3.x
   push:
     tags:
       - 'v*'
+    branches:
+      - release/3.x
   pull_request:
     branches:
       - master
       - develop
+      - release/3.x
   workflow_dispatch:
 
 concurrency:
@@ -83,6 +87,7 @@ jobs:
             type=semver,pattern={{major}}
             type=raw,value=latest,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'master') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/master') }}
             type=raw,value=dev,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'develop') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/develop') }}
+            type=raw,value=lts,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/3.x') }}
 
       - name: Build and push
         id: build
