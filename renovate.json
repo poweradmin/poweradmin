@@ -6,7 +6,7 @@
   "baseBranchPatterns": [
     "master",
     "release/3.x",
-    "release/4.0.x"
+    "release/4.x"
   ],
   "constraints": {
     "php": ">=8.1 <8.2"
