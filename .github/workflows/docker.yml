@@ -9,16 +9,19 @@ on:
       - master
       - develop
       - release/3.x
+      - release/4.x
   push:
     tags:
       - 'v*'
     branches:
       - release/3.x
+      - release/4.x
   pull_request:
     branches:
       - master
       - develop
       - release/3.x
+      - release/4.x
   workflow_dispatch:
 
 concurrency:
@@ -88,6 +91,7 @@ jobs:
             type=raw,value=latest,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'master') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/master') }}
             type=raw,value=dev,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'develop') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/develop') }}
             type=raw,value=lts,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/3.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/3.x') }}
+            type=raw,value=stable,enable=${{ (github.event_name == 'workflow_run' && github.event.workflow_run.head_branch == 'release/4.x') || (github.event_name != 'workflow_run' && github.ref == 'refs/heads/release/4.x') }}
 
       - name: Build and push
         id: build
