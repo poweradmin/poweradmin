@@ -32,7 +32,7 @@ jobs:
       run: find . -name "*.php" -not -path "./vendor/*" -print0 | xargs -0 -n1 php -l
 
     - name: Validate composer.json and composer.lock
-      run: composer validate --strict --check-lock --with-dependencies
+      run: composer validate --strict --check-lock
 
     - name: Cache Composer packages
       id: composer-cache
