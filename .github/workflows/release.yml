@@ -4,8 +4,8 @@ on:
   push:
     branches:
       - master
-      - release/3.9.x
-      - release/4.0.x
+      - release/3.x
+      - release/4.x
 
 permissions:
   contents: write
