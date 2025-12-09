@@ -1,7 +1,11 @@
 CHANGELOG
 =========
 
+v4.3.1
+* Update xmlseclibs version requirement to 3.1.4 due [CVE-2025-66475](https://github.com/advisories/GHSA-c4cc-x928-vjw9)
+
 v4.3.0
+* PHP 8.4 Compatibility via #600 and #607.
 * [#619](https://github.com/SAML-Toolkits/php-saml/pull/619) Add Parameter checking on validateBinarySign, inspired on CVE-2025-27773
 * [#603](https://github.com/SAML-Toolkits/php-saml/issues/603) Fix typo in ignoreValidUntil that breaks metadata. Add a new parameter to exclude validUntil on Settings getSPMetadata
 * [#594](https://github.com/SAML-Toolkits/php-saml/pull/594) Add support for encrypted name id in encrypted assertion
