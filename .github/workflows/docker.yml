@@ -109,7 +109,7 @@ jobs:
 
       - name: Upload SBOM as artifact
         if: github.event_name != 'pull_request' && success()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: sbom-${{ github.run_id }}
           path: sbom.spdx.json
