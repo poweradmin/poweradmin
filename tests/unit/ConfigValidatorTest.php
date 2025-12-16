@@ -577,4 +577,181 @@ class ConfigValidatorTest extends TestCase
         // Should have errors for missing interface values
         $this->assertArrayHasKey('interface.language', $errors);
     }
+
+    public function testThemeDirectoryExists(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+                'theme' => 'default',
+                'theme_base_path' => 'templates',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertTrue($validator->validate());
+        $this->assertEmpty($validator->getErrors());
+    }
+
+    public function testThemeDirectoryMissing(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+                'theme' => 'nonexistent',
+                'theme_base_path' => 'templates',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $errors = $validator->getErrors();
+        $this->assertArrayHasKey('interface.theme', $errors);
+        $this->assertStringContainsString('does not exist', $errors['interface.theme']);
+    }
+
+    public function testRemovedLegacyThemesSpark(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+                'theme' => 'spark',
+                'theme_base_path' => 'templates',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $errors = $validator->getErrors();
+        $this->assertArrayHasKey('interface.theme', $errors);
+        $this->assertStringContainsString('spark', $errors['interface.theme']);
+        $this->assertStringContainsString('removed in Poweradmin 4.0', $errors['interface.theme']);
+        $this->assertStringContainsString('migrate-config.php', $errors['interface.theme']);
+    }
+
+    public function testRemovedLegacyThemesIgnite(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+                'theme' => 'ignite',
+                'theme_base_path' => 'templates',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $errors = $validator->getErrors();
+        $this->assertArrayHasKey('interface.theme', $errors);
+        $this->assertStringContainsString('ignite', $errors['interface.theme']);
+        $this->assertStringContainsString('removed in Poweradmin 4.0', $errors['interface.theme']);
+    }
+
+    public function testRemovedLegacyThemesMobile(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+                'theme' => 'mobile',
+                'theme_base_path' => 'templates',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $errors = $validator->getErrors();
+        $this->assertArrayHasKey('interface.theme', $errors);
+        $this->assertStringContainsString('mobile', $errors['interface.theme']);
+        $this->assertStringContainsString('removed in Poweradmin 4.0', $errors['interface.theme']);
+    }
+
+    public function testThemeEmptyString(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+                'theme' => '',
+                'theme_base_path' => 'templates',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $errors = $validator->getErrors();
+        $this->assertArrayHasKey('interface.theme', $errors);
+        $this->assertStringContainsString('must be a non-empty string', $errors['interface.theme']);
+    }
+
+    public function testThemeInvalidType(): void
+    {
+        $config = [
+            'interface' => [
+                'rows_per_page' => 10,
+                'language' => 'en_EN',
+                'enabled_languages' => 'en_EN,de_DE',
+                'theme' => 123,
+                'theme_base_path' => 'templates',
+            ],
+            'logging' => [
+                'syslog_enabled' => false,
+                'syslog_identity' => 'poweradmin',
+                'syslog_facility' => LOG_USER,
+            ],
+        ];
+
+        $validator = new ConfigValidator($config);
+
+        $this->assertFalse($validator->validate());
+        $errors = $validator->getErrors();
+        $this->assertArrayHasKey('interface.theme', $errors);
+        $this->assertStringContainsString('must be a non-empty string', $errors['interface.theme']);
+    }
 }

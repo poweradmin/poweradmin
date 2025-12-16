@@ -66,6 +66,31 @@ class AppManager
         $theme = $this->configuration->get('interface', 'theme', 'default');
         $theme_path = $theme_base_path . '/' . $theme;
 
+        // Validate theme directory exists, fallback to 'default' if not
+        if (!is_dir($theme_path)) {
+            error_log("Theme directory '$theme_path' does not exist. Falling back to 'default' theme.");
+
+            // Check if this is a removed legacy theme
+            $removedThemes = ['spark', 'ignite', 'mobile'];
+            if (in_array($theme, $removedThemes)) {
+                error_log("The '$theme' theme was removed in Poweradmin 4.0. Please run: php config/migrate-config.php");
+            }
+
+            // Fallback to default theme
+            $theme = 'default';
+            $theme_path = $theme_base_path . '/' . $theme;
+
+            // If even default doesn't exist, this is a critical error
+            if (!is_dir($theme_path)) {
+                $messageService = new MessageService();
+                $messageService->displayDirectSystemError(
+                    "Critical error: Default theme directory '$theme_path' does not exist. " .
+                    "Please ensure Poweradmin is properly installed."
+                );
+                exit(1);
+            }
+        }
+
         // Look directly in the theme path for templates, not in subdirectories
         $loader = new FilesystemLoader([$theme_path]);
         $this->templateRenderer = new Environment($loader, ['debug' => false]);
