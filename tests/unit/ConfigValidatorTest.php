@@ -954,7 +954,7 @@ class ConfigValidatorTest extends TestCase
         $this->assertArrayHasKey('interface.theme', $errors);
         $this->assertStringContainsString('spark', $errors['interface.theme']);
         $this->assertStringContainsString('removed in Poweradmin 4.0', $errors['interface.theme']);
-        $this->assertStringContainsString('migrate-config.php', $errors['interface.theme']);
+        $this->assertStringContainsString("use theme: 'default'", $errors['interface.theme']);
     }
 
     public function testRemovedLegacyThemesIgnite(): void

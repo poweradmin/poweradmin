@@ -73,7 +73,7 @@ class AppManager
             // Check if this is a removed legacy theme
             $removedThemes = ['spark', 'ignite', 'mobile'];
             if (in_array($theme, $removedThemes)) {
-                error_log("The '$theme' theme was removed in Poweradmin 4.0. Please run: php config/migrate-config.php");
+                error_log("The '$theme' theme was removed in Poweradmin 4.0. Please update your configuration to use theme: 'default'.");
             }
 
             // Fallback to default theme

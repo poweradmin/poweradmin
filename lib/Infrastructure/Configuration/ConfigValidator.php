@@ -158,8 +158,7 @@ class ConfigValidator
             $removedThemes = ['spark', 'ignite', 'mobile'];
             if (in_array($theme, $removedThemes)) {
                 $this->errors['interface.theme'] = "Theme '$theme' was removed in Poweradmin 4.0. The theme directory '$themePath' does not exist. " .
-                    "Please run the configuration migration script: php config/migrate-config.php " .
-                    "or update your configuration to use theme: 'default'.";
+                    "Please update your configuration to use theme: 'default'.";
             } else {
                 $this->errors['interface.theme'] = "Theme directory '$themePath' does not exist. " .
                     "Please check your theme configuration or use the default theme.";
