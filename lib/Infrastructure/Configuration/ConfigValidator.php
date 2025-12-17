@@ -39,6 +39,7 @@ class ConfigValidator
 
         $this->validateIfaceRowAmount();
         $this->validateIfaceLang();
+        $this->validateTheme();
         $this->validateSyslogUse();
         if ($this->getSetting('logging', 'syslog_enabled')) {
             $this->validateSyslogIdent();
@@ -136,6 +137,32 @@ class ConfigValidator
             if (!is_string($lang) || empty($lang)) {
                 $this->errors['interface.enabled_languages'] = 'enabled_languages must be a non-empty string and contain a list of languages separated by commas';
                 break;
+            }
+        }
+    }
+
+    private function validateTheme(): void
+    {
+        $themeBasePath = $this->getSetting('interface', 'theme_base_path', 'templates');
+        $theme = $this->getSetting('interface', 'theme', 'default');
+
+        if (!is_string($theme) || empty($theme)) {
+            $this->errors['interface.theme'] = 'theme must be a non-empty string';
+            return;
+        }
+
+        $themePath = $themeBasePath . '/' . $theme;
+
+        if (!is_dir($themePath)) {
+            // Check if this is a legacy config issue (old removed themes)
+            $removedThemes = ['spark', 'ignite', 'mobile'];
+            if (in_array($theme, $removedThemes)) {
+                $this->errors['interface.theme'] = "Theme '$theme' was removed in Poweradmin 4.0. The theme directory '$themePath' does not exist. " .
+                    "Please run the configuration migration script: php config/migrate-config.php " .
+                    "or update your configuration to use theme: 'default'.";
+            } else {
+                $this->errors['interface.theme'] = "Theme directory '$themePath' does not exist. " .
+                    "Please check your theme configuration or use the default theme.";
             }
         }
     }
