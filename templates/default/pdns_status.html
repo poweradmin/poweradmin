@@ -197,7 +197,7 @@
                                             <div>
                                                 <div class="small text-muted">{% trans %}Latency{% endtrans %}</div>
                                                 <div class="fw-bold">
-                                                    {{ server_status.metrics['latency'] ?? '0' }}ms
+                                                    {{ server_status.metrics['latency'] ?? '0' }}&micro;s
                                                 </div>
                                             </div>
                                         </div>
@@ -385,8 +385,12 @@
                                                                                         [Array]
                                                                                     {% endif %}
                                                                                 {% endif %}
-                                                                                
-                                                                                {% if metric_name ends with 'bytes' or metric_name ends with '_bytes' %}
+
+                                                                                {% if 'latency' in metric_name %}
+                                                                                    &micro;s
+                                                                                {% elseif metric_name ends with 'msec' or metric_name ends with '_msec' %}
+                                                                                    ms
+                                                                                {% elseif metric_name ends with 'bytes' or metric_name ends with '_bytes' %}
                                                                                     {% trans %}Bytes{% endtrans %}
                                                                                 {% endif %}
                                                                             </h4>
@@ -428,8 +432,12 @@
                                                                                         [Array]
                                                                                     {% endif %}
                                                                                 {% endif %}
-                                                                                
-                                                                                {% if metric_name ends with 'bytes' or metric_name ends with '_bytes' %}
+
+                                                                                {% if 'latency' in metric_name %}
+                                                                                    &micro;s
+                                                                                {% elseif metric_name ends with 'msec' or metric_name ends with '_msec' %}
+                                                                                    ms
+                                                                                {% elseif metric_name ends with 'bytes' or metric_name ends with '_bytes' %}
                                                                                     {% trans %}Bytes{% endtrans %}
                                                                                 {% endif %}
                                                                             </td>
