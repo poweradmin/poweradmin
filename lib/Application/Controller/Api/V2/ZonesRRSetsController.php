@@ -192,7 +192,7 @@ class ZonesRRSetsController extends PublicApiController
             $rrsets = $this->groupIntoRRSets($records);
 
             return $this->returnApiResponse($rrsets, true, 'RRSets retrieved successfully', 200);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to retrieve RRSets: ' . $e->getMessage(), 500);
         }
     }
@@ -305,7 +305,7 @@ class ZonesRRSetsController extends PublicApiController
             $rrset = $this->formatRRSet($records, $zoneName);
 
             return $this->returnApiResponse($rrset, true, 'RRSet retrieved successfully', 200);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to retrieve RRSet: ' . $e->getMessage(), 500);
         }
     }
@@ -528,11 +528,11 @@ class ZonesRRSetsController extends PublicApiController
                 ];
 
                 return $this->returnApiResponse($responseData, true, 'RRSet replaced successfully', 200);
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $this->db->rollBack();
                 throw $e;
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to replace RRSet: ' . $e->getMessage(), 500);
         }
     }
@@ -666,11 +666,11 @@ class ZonesRRSetsController extends PublicApiController
                     'RRSet deleted successfully',
                     204
                 );
-            } catch (Exception $e) {
+            } catch (\Throwable $e) {
                 $this->db->rollBack();
                 throw $e;
             }
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to delete RRSet: ' . $e->getMessage(), 500);
         }
     }
@@ -774,7 +774,7 @@ class ZonesRRSetsController extends PublicApiController
             $stmt->bindValue(':disabled', $disabled, PDO::PARAM_INT);
 
             return $stmt->execute();
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             error_log('Failed to insert record: ' . $e->getMessage());
             return false;
         }

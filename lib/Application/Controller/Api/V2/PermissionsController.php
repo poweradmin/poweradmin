@@ -118,7 +118,7 @@ class PermissionsController extends PublicApiController
 
             $permissions = $this->permissionTemplateRepository->getPermissionsByTemplateId(0);
             return $this->returnApiResponse($permissions);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to fetch permissions: ' . $e->getMessage(), 500);
         }
     }
@@ -199,7 +199,7 @@ class PermissionsController extends PublicApiController
             }
 
             return $this->returnApiResponse(['permission' => array_values($permission)[0]]);
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to fetch permission: ' . $e->getMessage(), 500);
         }
     }

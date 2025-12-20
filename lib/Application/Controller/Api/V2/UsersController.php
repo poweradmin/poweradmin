@@ -210,8 +210,8 @@ class UsersController extends PublicApiController
                     ]
                 ]
             );
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to retrieve user: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'UsersController::getUser', 'Failed to retrieve user');
         }
     }
 
@@ -380,8 +380,8 @@ class UsersController extends PublicApiController
 
                 return $this->returnApiResponse($users, true, 'Users retrieved successfully', 200, $responseData);
             }
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to retrieve users: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'UsersController::listUsers', 'Failed to retrieve users');
         }
     }
 
@@ -543,8 +543,8 @@ class UsersController extends PublicApiController
                     ]
                 ]
             );
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to create user: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'UsersController::createUser', 'Failed to create user');
         }
     }
 
@@ -727,8 +727,8 @@ class UsersController extends PublicApiController
                     ]
                 ]
             );
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to update user: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'UsersController::updateUser', 'Failed to update user');
         }
     }
 
@@ -835,8 +835,8 @@ class UsersController extends PublicApiController
                     ]
                 ]
             );
-        } catch (Exception $e) {
-            return $this->returnApiError('Failed to delete user: ' . $e->getMessage(), 500);
+        } catch (\Throwable $e) {
+            return $this->handleException($e, 'UsersController::deleteUser', 'Failed to delete user');
         }
     }
 
@@ -952,7 +952,7 @@ class UsersController extends PublicApiController
                     ]
                 ]
             );
-        } catch (Exception $e) {
+        } catch (\Throwable $e) {
             return $this->returnApiError('Failed to assign permission template: ' . $e->getMessage(), 500);
         }
     }
