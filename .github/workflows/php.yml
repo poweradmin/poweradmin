@@ -223,7 +223,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-version: ['8.1', '8.2', '8.3', '8.4']
+        php-version: ['8.1', '8.2', '8.3', '8.4', '8.5']
 
     steps:
     - uses: actions/checkout@v6
@@ -318,9 +318,9 @@ jobs:
         fi
 
         if [ "${{ needs.compatibility.result }}" == "success" ]; then
-          echo "- ✅ PHP Compatibility (8.1, 8.2, 8.3, 8.4)" >> $GITHUB_STEP_SUMMARY
+          echo "- ✅ PHP Compatibility (8.1, 8.2, 8.3, 8.4, 8.5)" >> $GITHUB_STEP_SUMMARY
         else
-          echo "- ❌ PHP Compatibility (8.1, 8.2, 8.3, 8.4)" >> $GITHUB_STEP_SUMMARY
+          echo "- ❌ PHP Compatibility (8.1, 8.2, 8.3, 8.4, 8.5)" >> $GITHUB_STEP_SUMMARY
         fi
 
         echo "" >> $GITHUB_STEP_SUMMARY
