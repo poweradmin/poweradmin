@@ -177,6 +177,12 @@ class ZonesRecordsController extends PublicApiController
             // Get records for the zone
             $records = $this->recordRepository->getRecordsByDomainId($zoneId, $recordType);
 
+            // Filter out ghost records (records with NULL type or content)
+            // These are invalid database entries that should not be exposed via API
+            $validRecords = array_filter($records, function ($record) {
+                return !empty($record['type']) && !empty($record['name']);
+            });
+
             // Format record data
             $formattedRecords = array_map(function ($record) {
                 return [
@@ -189,7 +195,7 @@ class ZonesRecordsController extends PublicApiController
                     'disabled' => isset($record['disabled']) ? DbCompat::boolFromDb($record['disabled']) : 0,
                     'auth' => isset($record['auth']) ? DbCompat::boolFromDb($record['auth']) : 1
                 ];
-            }, $records);
+            }, $validRecords);
 
             return $this->returnApiResponse($formattedRecords, true, 'Records retrieved successfully', 200);
         } catch (Exception $e) {
