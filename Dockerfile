@@ -46,7 +46,7 @@ RUN apk upgrade --no-cache
 # Install required packages and PHP extensions
 RUN apk add --no-cache --virtual .build-deps \
     gettext-dev \
-    postgresql15-dev \
+    postgresql-dev \
     icu-dev \
     openldap-dev \
     libxml2-dev \
@@ -60,8 +60,8 @@ RUN apk add --no-cache --virtual .build-deps \
     bash \
     mariadb-client \
     mariadb-connector-c \
-    postgresql15-client \
-    postgresql15-dev \
+    postgresql-client \
+    postgresql-dev \
     libpq \
     libldap \
     libxml2 \
