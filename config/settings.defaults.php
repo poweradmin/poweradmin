@@ -109,7 +109,7 @@ return [
     'interface' => [
         'language' => 'en_EN',                // Default language for the interface
         'enabled_languages' => 'cs_CZ,de_DE,en_EN,es_ES,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,pt_PT,ru_RU,tr_TR,zh_CN', // Added in 3.8.0
-        'title' => 'Poweradmin',              // Title displayed in the browser (added in 2.1.5)
+        'title' => 'Poweradmin',              // Application title (browser tab and header logo). Useful for distinguishing multiple server instances. (added in 2.1.5)
         'session_timeout' => 1800,            // Session timeout in seconds (30 minutes)
         'rows_per_page' => 10,
         'theme' => 'default',                 // Theme name to use (default, custom, etc.) (added in 4.0.0)
