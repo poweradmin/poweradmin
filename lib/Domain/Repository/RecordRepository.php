@@ -603,13 +603,26 @@ class RecordRepository implements RecordRepositoryInterface
         return $result ? (int)$result : null;
     }
 
+    /**
+     * Get records by domain ID
+     *
+     * Note: Excludes PowerDNS Empty Non-Terminal (ENT) records.
+     * PowerDNS automatically creates records with NULL/empty type for RFC 8020 compliance
+     * to support DNS hierarchy (e.g., if a.b.c.example.com exists, ENT records are created
+     * for b.c.example.com and c.example.com). These are not user-manageable records.
+     *
+     * @param int $domainId Domain ID
+     * @param string|null $recordType Optional record type filter
+     * @return array Array of records
+     */
     public function getRecordsByDomainId(int $domainId, ?string $recordType = null): array
     {
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
 
         $query = "SELECT id, domain_id, name, type, content, ttl, prio, disabled, ordername, auth
                   FROM $records_table
-                  WHERE domain_id = :domain_id";
+                  WHERE domain_id = :domain_id
+                  AND type IS NOT NULL AND type != ''";
 
         $params = [':domain_id' => $domainId];
 

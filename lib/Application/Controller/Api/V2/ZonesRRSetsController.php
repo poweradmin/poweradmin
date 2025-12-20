@@ -685,6 +685,11 @@ class ZonesRRSetsController extends PublicApiController
         $rrsets = [];
 
         foreach ($records as $record) {
+            // Skip ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance
+            if (empty($record['type']) || empty($record['name'])) {
+                continue;
+            }
+
             $key = $record['name'] . '|' . $record['type'];
 
             if (!isset($rrsets[$key])) {
@@ -720,11 +725,16 @@ class ZonesRRSetsController extends PublicApiController
      */
     private function formatRRSet(array $records, string $zoneName): array
     {
-        if (empty($records)) {
+        // Filter out ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance
+        $validRecords = array_filter($records, function ($record) {
+            return !empty($record['type']) && !empty($record['name']);
+        });
+
+        if (empty($validRecords)) {
             return [];
         }
 
-        $firstRecord = $records[0];
+        $firstRecord = reset($validRecords);
 
         return [
             'name' => DnsHelper::stripZoneSuffix($firstRecord['name'], $zoneName),
@@ -732,11 +742,11 @@ class ZonesRRSetsController extends PublicApiController
             'ttl' => (int)$firstRecord['ttl'],
             'records' => array_map(function ($record) {
                 return [
-                    'content' => $this->stripTxtQuotes($record['content'], $record['type']),
+                    'content' => $this->stripTxtQuotes($record['content'] ?? '', $record['type'] ?? ''),
                     'priority' => isset($record['prio']) ? (int)$record['prio'] : 0,
                     'disabled' => isset($record['disabled']) ? (bool)DbCompat::boolFromDb($record['disabled']) : false
                 ];
-            }, $records)
+            }, $validRecords)
         ];
     }
 

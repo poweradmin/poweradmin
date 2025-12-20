@@ -177,8 +177,9 @@ class ZonesRecordsController extends PublicApiController
             // Get records for the zone
             $records = $this->recordRepository->getRecordsByDomainId($zoneId, $recordType);
 
-            // Filter out ghost records (records with NULL type or content)
-            // These are invalid database entries that should not be exposed via API
+            // Filter out ENT (Empty Non-Terminal) records created by PowerDNS for RFC 8020 compliance.
+            // These records have NULL/empty type and are not user-manageable.
+            // Note: Repository already filters these, but kept as defensive measure.
             $validRecords = array_filter($records, function ($record) {
                 return !empty($record['type']) && !empty($record['name']);
             });
