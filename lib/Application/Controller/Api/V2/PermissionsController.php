@@ -36,7 +36,6 @@ use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Infrastructure\Repository\DbPermissionTemplateRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
-use Exception;
 
 class PermissionsController extends PublicApiController
 {

@@ -31,7 +31,6 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
-use Exception;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;
 use Poweradmin\Domain\Service\Dns\RecordManager;

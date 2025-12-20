@@ -34,7 +34,6 @@
 
 namespace Poweradmin\Application\Controller\Api\V2;
 
-use Exception;
 use PDO;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\ApiPermissionService;

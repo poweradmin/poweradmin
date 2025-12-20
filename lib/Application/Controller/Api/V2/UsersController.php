@@ -39,7 +39,6 @@ use Poweradmin\Domain\Service\UserManagementService;
 use Poweradmin\Infrastructure\Repository\DbUserRepository;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use OpenApi\Attributes as OA;
-use Exception;
 
 #[OA\OpenApi(
     info: new OA\Info(
