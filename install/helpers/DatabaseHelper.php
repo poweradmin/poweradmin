@@ -329,9 +329,6 @@ class DatabaseHelper
             if ($table['table_name'] == 'migrations') {
                 continue;
             }
-            if ($table['table_name'] == 'records_zone_templ') {
-                continue;
-            }
             $grantSequences[] = $table['table_name'] . '_id_seq';
         }
 

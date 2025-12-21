@@ -113,11 +113,17 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (17,	4,	43),
     (18,	4,	49);
 
+CREATE SEQUENCE records_zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
 CREATE TABLE "public"."records_zone_templ" (
+                                               "id" integer DEFAULT nextval('records_zone_templ_id_seq') NOT NULL,
                                                "domain_id" integer,
                                                "record_id" integer,
-                                               "zone_templ_id" integer
+                                               "zone_templ_id" integer,
+                                               CONSTRAINT "records_zone_templ_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
+
+ALTER SEQUENCE records_zone_templ_id_seq OWNED BY records_zone_templ.id;
 
 CREATE INDEX "idx_records_zone_templ_domain_id" ON "public"."records_zone_templ" USING btree ("domain_id");
 CREATE INDEX "idx_records_zone_templ_zone_templ_id" ON "public"."records_zone_templ" USING btree ("zone_templ_id");

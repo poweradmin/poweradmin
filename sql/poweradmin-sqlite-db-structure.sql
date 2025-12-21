@@ -72,7 +72,7 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (16,	3,	62);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (17,	4,	43);
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (18,	4,	49);
 
-CREATE TABLE records_zone_templ (domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
+CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
 
 CREATE INDEX idx_records_zone_templ_domain_id ON records_zone_templ(domain_id);
 CREATE INDEX idx_records_zone_templ_zone_templ_id ON records_zone_templ(zone_templ_id);

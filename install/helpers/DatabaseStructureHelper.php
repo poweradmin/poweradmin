@@ -502,6 +502,17 @@ class DatabaseStructureHelper
                 'table_name' => 'records_zone_templ',
                 'options' => array('type' => 'innodb'),
                 'fields' => array(
+                    'id' => array
+                    (
+                        'notnull' => 1,
+                        'unsigned' => 0,
+                        'default' => 0,
+                        'autoincrement' => 1,
+                        'type' => 'integer',
+                        'name' => 'id',
+                        'table' => 'records_zone_templ',
+                        'flags' => 'primary_keynot_null'
+                    ),
                     'domain_id' => array
                     (
                         'notnull' => 1,
