@@ -169,22 +169,24 @@ class EditRecordController extends BaseController
             $zid
         );
 
-        $this->recordCommentService->updateComment(
-            $zid,
-            $old_record_info['name'],
-            $old_record_info['type'],
-            $new_record_info['name'],
-            $new_record_info['type'],
-            $_POST['comment'] ?? '',
-            $_SESSION['userlogin']
-        );
+        if ($this->config('iface_record_comments')) {
+            $this->recordCommentService->updateComment(
+                $zid,
+                $old_record_info['name'],
+                $old_record_info['type'],
+                $new_record_info['name'],
+                $new_record_info['type'],
+                $_POST['comment'] ?? '',
+                $_SESSION['userlogin']
+            );
 
-        $this->commentSyncService->updateRelatedRecordComments(
-            $dnsRecord,
-            $new_record_info,
-            $_POST['comment'] ?? '',
-            $_SESSION['userlogin']
-        );
+            $this->commentSyncService->updateRelatedRecordComments(
+                $dnsRecord,
+                $new_record_info,
+                $_POST['comment'] ?? '',
+                $_SESSION['userlogin']
+            );
+        }
 
         if ($this->config('pdnssec_use')) {
             $zone_name = $dnsRecord->get_domain_name_by_id($zid);
