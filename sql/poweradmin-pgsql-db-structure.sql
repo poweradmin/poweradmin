@@ -92,11 +92,17 @@ CREATE TABLE "public"."perm_templ_items" (
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (1,	1,	53);
 
+CREATE SEQUENCE records_zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
+
 CREATE TABLE "public"."records_zone_templ" (
+                                               "id" integer DEFAULT nextval('records_zone_templ_id_seq') NOT NULL,
                                                "domain_id" integer,
                                                "record_id" integer,
-                                               "zone_templ_id" integer
+                                               "zone_templ_id" integer,
+                                               CONSTRAINT "records_zone_templ_pkey" PRIMARY KEY ("id")
 ) WITH (oids = false);
+
+ALTER SEQUENCE records_zone_templ_id_seq OWNED BY records_zone_templ.id;
 
 
 CREATE SEQUENCE users_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;

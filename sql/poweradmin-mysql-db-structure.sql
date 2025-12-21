@@ -118,9 +118,11 @@ INSERT INTO `perm_templ_items` (`id`, `templ_id`, `perm_id`) VALUES
     (1,	1,	53);
 
 CREATE TABLE `records_zone_templ` (
+                                      `id` int(11) NOT NULL AUTO_INCREMENT,
                                       `domain_id` int(11) NOT NULL,
                                       `record_id` int(11) NOT NULL,
-                                      `zone_templ_id` int(11) NOT NULL
+                                      `zone_templ_id` int(11) NOT NULL,
+                                      PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE `zones` (

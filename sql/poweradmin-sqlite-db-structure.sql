@@ -50,7 +50,7 @@ CREATE TABLE perm_templ_items (id integer PRIMARY KEY, templ_id integer NOT NULL
 
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES (1,	1,	53);
 
-CREATE TABLE records_zone_templ (domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
+CREATE TABLE records_zone_templ (id INTEGER PRIMARY KEY AUTOINCREMENT, domain_id integer NOT NULL, record_id integer NOT NULL, zone_templ_id integer NOT NULL);
 
 
 CREATE TABLE users (id integer PRIMARY KEY, username VARCHAR(64) NOT NULL, password VARCHAR(128) NOT NULL, fullname VARCHAR(255) NOT NULL, email VARCHAR(255) NOT NULL, description VARCHAR(1024) NOT NULL, perm_templ integer NOT NULL, active integer(1) NOT NULL, use_ldap integer(1) NOT NULL);
