@@ -245,6 +245,61 @@ validate_saml_config() {
     fi
 }
 
+# Validate OIDC configuration if enabled
+validate_oidc_config() {
+    local oidc_enabled=$(echo "${PA_OIDC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    if [ "$oidc_enabled" = "true" ]; then
+        # Check if at least one provider is enabled
+        local azure_enabled=$(echo "${PA_OIDC_AZURE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        local google_enabled=$(echo "${PA_OIDC_GOOGLE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+        local generic_enabled=$(echo "${PA_OIDC_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+
+        if [ "$azure_enabled" != "true" ] && [ "$google_enabled" != "true" ] && [ "$generic_enabled" != "true" ]; then
+            log "ERROR: OIDC is enabled but no OIDC providers are configured. Enable at least one provider (PA_OIDC_*_ENABLED=true)"
+            exit 1
+        fi
+
+        # Validate Azure OIDC configuration if enabled
+        if [ "$azure_enabled" = "true" ]; then
+            if [ -z "${PA_OIDC_AZURE_CLIENT_ID}" ] || [ -z "${PA_OIDC_AZURE_CLIENT_SECRET}" ]; then
+                log "ERROR: PA_OIDC_AZURE_CLIENT_ID and PA_OIDC_AZURE_CLIENT_SECRET are required when Azure OIDC is enabled"
+                exit 1
+            fi
+        fi
+
+        # Validate Google OIDC configuration if enabled
+        if [ "$google_enabled" = "true" ]; then
+            if [ -z "${PA_OIDC_GOOGLE_CLIENT_ID}" ] || [ -z "${PA_OIDC_GOOGLE_CLIENT_SECRET}" ]; then
+                log "ERROR: PA_OIDC_GOOGLE_CLIENT_ID and PA_OIDC_GOOGLE_CLIENT_SECRET are required when Google OIDC is enabled"
+                exit 1
+            fi
+        fi
+
+        # Validate Generic OIDC configuration if enabled
+        if [ "$generic_enabled" = "true" ]; then
+            if [ -z "${PA_OIDC_GENERIC_CLIENT_ID}" ] || [ -z "${PA_OIDC_GENERIC_CLIENT_SECRET}" ]; then
+                log "ERROR: PA_OIDC_GENERIC_CLIENT_ID and PA_OIDC_GENERIC_CLIENT_SECRET are required when Generic OIDC is enabled"
+                exit 1
+            fi
+
+            # Check for either auto_discovery with metadata_url OR manual endpoint URLs
+            local auto_discovery=$(echo "${PA_OIDC_GENERIC_AUTO_DISCOVERY:-false}" | tr '[:upper:]' '[:lower:]')
+            if [ "$auto_discovery" = "true" ]; then
+                if [ -z "${PA_OIDC_GENERIC_METADATA_URL}" ]; then
+                    log "ERROR: PA_OIDC_GENERIC_METADATA_URL is required when PA_OIDC_GENERIC_AUTO_DISCOVERY is enabled"
+                    exit 1
+                fi
+            else
+                # Manual configuration - require essential endpoints
+                if [ -z "${PA_OIDC_GENERIC_AUTHORIZE_URL}" ] || [ -z "${PA_OIDC_GENERIC_TOKEN_URL}" ]; then
+                    log "ERROR: PA_OIDC_GENERIC_AUTHORIZE_URL and PA_OIDC_GENERIC_TOKEN_URL are required when auto_discovery is disabled"
+                    exit 1
+                fi
+            fi
+        fi
+    fi
+}
+
 # Create initial admin user if specified
 create_admin_user() {
     local create_admin=$(echo "${PA_CREATE_ADMIN:-false}" | tr '[:upper:]' '[:lower:]')
@@ -413,6 +468,8 @@ generate_config() {
     local oidc_azure_auto_discovery=$(echo "${PA_OIDC_AZURE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')
     local oidc_google_enabled=$(echo "${PA_OIDC_GOOGLE_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
     local oidc_google_auto_discovery=$(echo "${PA_OIDC_GOOGLE_AUTO_DISCOVERY:-true}" | tr '[:upper:]' '[:lower:]')
+    local oidc_generic_enabled=$(echo "${PA_OIDC_GENERIC_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
+    local oidc_generic_auto_discovery=$(echo "${PA_OIDC_GENERIC_AUTO_DISCOVERY:-false}" | tr '[:upper:]' '[:lower:]')
 
     # Convert SAML boolean values to lowercase
     local saml_enabled=$(echo "${PA_SAML_ENABLED:-false}" | tr '[:upper:]' '[:lower:]')
@@ -605,6 +662,33 @@ EOF
                     'last_name' => 'family_name',
                     'display_name' => 'name',
                     'groups' => 'groups',
+                ],
+            ],
+EOF
+    fi
+
+    # Add Generic OIDC configuration if enabled (for Authentik, Keycloak, Okta, etc.)
+    if [ "${oidc_generic_enabled}" = "true" ]; then
+        cat >> "${CONFIG_FILE}" << EOF
+            'generic' => [
+                'name' => '${PA_OIDC_GENERIC_NAME:-Generic OIDC}',
+                'display_name' => '${PA_OIDC_GENERIC_DISPLAY_NAME:-Sign in with OIDC}',
+                'client_id' => '${PA_OIDC_GENERIC_CLIENT_ID:-}',
+                'client_secret' => '${PA_OIDC_GENERIC_CLIENT_SECRET:-}',
+                'auto_discovery' => ${oidc_generic_auto_discovery},
+                'metadata_url' => '${PA_OIDC_GENERIC_METADATA_URL:-}',
+                'authorize_url' => '${PA_OIDC_GENERIC_AUTHORIZE_URL:-}',
+                'token_url' => '${PA_OIDC_GENERIC_TOKEN_URL:-}',
+                'userinfo_url' => '${PA_OIDC_GENERIC_USERINFO_URL:-}',
+                'logout_url' => '${PA_OIDC_GENERIC_LOGOUT_URL:-}',
+                'scopes' => '${PA_OIDC_GENERIC_SCOPES:-openid profile email}',
+                'user_mapping' => [
+                    'username' => '${PA_OIDC_GENERIC_USERNAME_ATTR:-preferred_username}',
+                    'email' => '${PA_OIDC_GENERIC_EMAIL_ATTR:-email}',
+                    'first_name' => '${PA_OIDC_GENERIC_FIRST_NAME_ATTR:-given_name}',
+                    'last_name' => '${PA_OIDC_GENERIC_LAST_NAME_ATTR:-family_name}',
+                    'display_name' => '${PA_OIDC_GENERIC_DISPLAY_NAME_ATTR:-name}',
+                    'groups' => '${PA_OIDC_GENERIC_GROUPS_ATTR:-groups}',
                 ],
             ],
 EOF
@@ -885,6 +969,8 @@ main() {
         debug_log "LDAP validation completed successfully"
         validate_saml_config
         debug_log "SAML validation completed successfully"
+        validate_oidc_config
+        debug_log "OIDC validation completed successfully"
         log "Configuration validation completed successfully"
 
         # Generate configuration
