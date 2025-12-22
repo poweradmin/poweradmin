@@ -215,5 +215,9 @@ USER www-data
 
 EXPOSE 80
 
+# Override base image healthcheck to use port 80 instead of Caddy admin port 2019
+HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
+    CMD wget -q --spider http://localhost:80/ || exit 1
+
 ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]
 CMD ["frankenphp", "run", "--config", "/etc/caddy/Caddyfile"]
