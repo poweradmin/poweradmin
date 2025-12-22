@@ -56,8 +56,8 @@ class DnssecDeleteKeyController extends BaseController
         }
 
         $confirm = "-1";
-        if (isset($_GET['confirm']) && Validator::isNumber($_GET['confirm'])) {
-            $confirm = (string)$_GET['confirm']; // Convert to string for consistent comparison
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['confirm']) && Validator::isNumber($_POST['confirm'])) {
+            $confirm = (string)$_POST['confirm']; // Convert to string for consistent comparison
         }
 
         $user_is_zone_owner = UserManager::verifyUserIsOwnerZoneId($this->db, $zone_id);
@@ -84,6 +84,7 @@ class DnssecDeleteKeyController extends BaseController
         }
 
         if ($confirm == '1') {
+            $this->validateCsrfToken();
             try {
                 $result = $dnssecProvider->removeZoneKey($domain_name, $key_id);
 
