@@ -482,7 +482,7 @@ class RecordRepository implements RecordRepositoryInterface
                  $search_condition . $type_condition . $content_condition;
 
         // Sorting and limits
-        $query .= " ORDER BY $sort_by $sort_direction LIMIT :row_amount OFFSET :row_start";
+        $query .= " ORDER BY $records_table.$sort_by $sort_direction LIMIT :row_amount OFFSET :row_start";
 
         $stmt = $this->db->prepare($query);
 
