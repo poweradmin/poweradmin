@@ -35,6 +35,10 @@ class DnsIdnService
      */
     public static function toUtf8(string $domainName): string
     {
+        if ($domainName === '') {
+            return '';
+        }
+
         // Convert punycode (xn--) to UTF-8
         return idn_to_utf8(htmlspecialchars($domainName), IDNA_NONTRANSITIONAL_TO_ASCII);
     }
@@ -47,6 +51,10 @@ class DnsIdnService
      */
     public static function toPunycode(string $domainName): string
     {
+        if ($domainName === '') {
+            return '';
+        }
+
         // Convert UTF-8 to punycode (xn--)
         return idn_to_ascii($domainName, IDNA_NONTRANSITIONAL_TO_ASCII);
     }
