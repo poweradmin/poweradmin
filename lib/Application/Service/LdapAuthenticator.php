@@ -157,7 +157,7 @@ class LdapAuthenticator extends LoggingService
 
         if ($ldap_debug) {
             echo "<div class=\"container\"><pre>";
-            echo sprintf("LDAP search filter: %s\n", $filter);
+            echo sprintf("LDAP search filter: %s\n", htmlspecialchars($filter, ENT_QUOTES, 'UTF-8'));
             echo "</pre></div>";
         }
 
