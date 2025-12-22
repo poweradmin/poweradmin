@@ -41,6 +41,7 @@ use Poweradmin\Domain\Model\ZoneTemplate;
 use Poweradmin\Domain\Service\DnsIdnService;
 use Poweradmin\Domain\Service\DnsRecord;
 use Poweradmin\Domain\Service\Validator;
+use Poweradmin\Domain\Utility\DnsHelper;
 
 class DnssecController extends BaseController
 {
@@ -144,6 +145,7 @@ class DnssecController extends BaseController
             'zone_templates' => $zone_templates->getListZoneTempl($_SESSION['userid']),
             'algorithms' => DnssecAlgorithm::ALGORITHMS,
             'perm_edit' => $perm_edit,
+            'is_reverse_zone' => DnsHelper::isReverseZone($domain_name),
         ]);
     }
 }
