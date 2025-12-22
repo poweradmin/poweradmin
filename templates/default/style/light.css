@@ -196,6 +196,21 @@ input[type=number]::-webkit-outer-spin-button {
     font-size: 0.75rem !important;
 }
 
+/* Log table cell styles */
+.log-id-cell {
+    width: 80px;
+    white-space: nowrap;
+}
+
+.log-timestamp-cell {
+    width: 180px;
+    white-space: nowrap;
+}
+
+.log-event-cell {
+    word-break: break-word;
+}
+
 /* Style switcher button - fix size to prevent growing */
 #style-switcher {
     width: 2rem !important;

@@ -52,8 +52,8 @@
                     {% if iface_edit_show_id is defined and iface_edit_show_id %}
                     <th>{% trans %}Id{% endtrans %}</th>
                     {% endif %}
-                    <th>{% trans %}Event{% endtrans %}</th>
                     <th>{% trans %}Created at{% endtrans %}</th>
+                    <th>{% trans %}Event{% endtrans %}</th>
                     <th class="text-end">{% trans %}Actions{% endtrans %}</th>
                 </tr>
                 </thead>
@@ -61,10 +61,10 @@
                 {% for row in data %}
                 <tr>
                     {% if iface_edit_show_id is defined and iface_edit_show_id %}
-                    <td>{{ row['id'] }}</td>
+                    <td class="log-id-cell">{{ row['id'] }}</td>
                     {% endif %}
-                    <td>{{ row['event'] }}</td>
-                    <td class="text-nowrap"><i class="bi bi-clock me-1 text-muted small"></i>{{ row['created_at'] }}</td>
+                    <td class="log-timestamp-cell">{{ row['created_at'] }}</td>
+                    <td class="log-event-cell">{{ row['event'] }}</td>
                     <td class="text-end">
                         <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#logModal" data-bs-content="{{ row['details'] }}">
                             <i class="bi bi-eye-fill text-primary"></i> <span class="d-none d-md-inline text-primary">{% trans %}Details{% endtrans %}</span>

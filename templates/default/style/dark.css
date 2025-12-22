@@ -614,6 +614,21 @@ input[type=number]::-webkit-outer-spin-button {
     color: inherit !important;
 }
 
+/* Log table cell styles */
+.log-id-cell {
+    width: 80px;
+    white-space: nowrap;
+}
+
+.log-timestamp-cell {
+    width: 180px;
+    white-space: nowrap;
+}
+
+.log-event-cell {
+    word-break: break-word;
+}
+
 /* Alert variants for dark mode */
 .alert-warning {
     background-color: #856404 !important;
