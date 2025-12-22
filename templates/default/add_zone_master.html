@@ -74,7 +74,7 @@
                     {% if pdnssec_use %}
                     <div class="mb-3">
                         <div class="form-check">
-                            <input data-testid="dnssec-checkbox" class="form-check-input" type="checkbox" id="dnssec" name="dnssec" value="1" {% if not is_post or dnssec_checked %}checked{% endif %}>
+                            <input data-testid="dnssec-checkbox" class="form-check-input" type="checkbox" id="dnssec" name="dnssec" value="1" {% if dnssec_checked %}checked{% endif %}>
                             <label class="form-check-label" for="dnssec">{% trans %}Enable DNSSEC{% endtrans %}</label>
                         </div>
                         <small class="text-muted">{% trans %}Secure this zone with DNSSEC signing{% endtrans %}</small>
