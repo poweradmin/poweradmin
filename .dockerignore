@@ -52,3 +52,4 @@ cypress/
 cypress.config.js
 cypress/videos
 cypress/screenshots
+cliff.toml

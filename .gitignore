@@ -46,3 +46,11 @@ cypress/screenshots
 
 # PHP tools
 .php-cs-fixer.cache
+
+# AI assistant instruction files
+AGENTS.md
+CLAUDE.md
+GEMINI.md
+
+# Local configuration
+config/
