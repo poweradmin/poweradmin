@@ -8,49 +8,49 @@ body = """
 {%- if (group is starting_with("1-") or group is starting_with("2-") or group is starting_with("3-") or group is starting_with("4-")) and commits | length > 0 -%}
 {%- set group_name = group | replace(from="1-", to="") | replace(from="2-", to="") | replace(from="3-", to="") | replace(from="4-", to="") %}
 ### {{ group_name }}
-
-{% for commit in commits -%}
-{%- set scope_name = commit.scope | default(value="general") -%}
-{%- if scope_name == "" %}{% set scope_name = "general" %}{% endif -%}
-{%- if scope_name == "api" %}{% set scope_icon = "🌐" -%}
-{%- elif scope_name == "auth" %}{% set scope_icon = "🔐" -%}
-{%- elif scope_name == "dns" %}{% set scope_icon = "🌍" -%}
-{%- elif scope_name == "dnssec" %}{% set scope_icon = "🔒" -%}
-{%- elif scope_name == "records" %}{% set scope_icon = "📝" -%}
-{%- elif scope_name == "zones" %}{% set scope_icon = "📁" -%}
-{%- elif scope_name == "sql" %}{% set scope_icon = "🗄️" -%}
-{%- elif scope_name == "ui" %}{% set scope_icon = "🖥️" -%}
-{%- elif scope_name == "i18n" %}{% set scope_icon = "🌐" -%}
-{%- elif scope_name == "mail" %}{% set scope_icon = "📧" -%}
-{%- elif scope_name == "ldap" %}{% set scope_icon = "🔐" -%}
-{%- elif scope_name == "mfa" %}{% set scope_icon = "🔑" -%}
-{%- elif scope_name == "users" %}{% set scope_icon = "👥" -%}
-{%- elif scope_name == "permissions" %}{% set scope_icon = "🛡️" -%}
-{%- elif scope_name == "templates" %}{% set scope_icon = "📋" -%}
-{%- elif scope_name == "logging" %}{% set scope_icon = "📊" -%}
-{%- elif scope_name == "docker" %}{% set scope_icon = "🐳" -%}
-{%- elif scope_name == "config" %}{% set scope_icon = "⚙️" -%}
-{%- elif scope_name == "security" %}{% set scope_icon = "🔒" -%}
-{%- elif scope_name == "search" %}{% set scope_icon = "🔍" -%}
-{%- elif scope_name == "export" %}{% set scope_icon = "📤" -%}
-{%- elif scope_name == "import" %}{% set scope_icon = "📥" -%}
-{%- elif scope_name == "database" %}{% set scope_icon = "🗃️" -%}
-{%- elif scope_name == "db" %}{% set scope_icon = "🗃️" -%}
-{%- elif scope_name == "infrastructure" %}{% set scope_icon = "🔌" -%}
-{%- elif scope_name == "infra" %}{% set scope_icon = "🔌" -%}
-{%- elif scope_name == "validation" %}{% set scope_icon = "✅" -%}
-{%- elif scope_name == "smtp" %}{% set scope_icon = "📧" -%}
-{%- elif scope_name == "email" %}{% set scope_icon = "📧" -%}
-{%- elif scope_name == "session" %}{% set scope_icon = "🔐" -%}
-{%- elif scope_name == "routing" %}{% set scope_icon = "🔀" -%}
-{%- elif scope_name == "cache" %}{% set scope_icon = "💾" -%}
-{%- elif scope_name == "tests" %}{% set scope_icon = "🧪" -%}
-{%- elif scope_name == "migration" %}{% set scope_icon = "📦" -%}
-{%- elif scope_name == "installer" %}{% set scope_icon = "📥" -%}
-{%- elif scope_name == "install" %}{% set scope_icon = "📥" -%}
+{% for scope, scope_commits in commits | group_by(attribute="scope") -%}
+{%- if scope == "api" %}{% set scope_icon = "🌐" -%}
+{%- elif scope == "auth" %}{% set scope_icon = "🔐" -%}
+{%- elif scope == "dns" %}{% set scope_icon = "🌍" -%}
+{%- elif scope == "dnssec" %}{% set scope_icon = "🔒" -%}
+{%- elif scope == "records" %}{% set scope_icon = "📝" -%}
+{%- elif scope == "zones" %}{% set scope_icon = "📁" -%}
+{%- elif scope == "sql" %}{% set scope_icon = "🗄️" -%}
+{%- elif scope == "ui" %}{% set scope_icon = "🖥️" -%}
+{%- elif scope == "i18n" %}{% set scope_icon = "🌐" -%}
+{%- elif scope == "mail" %}{% set scope_icon = "📧" -%}
+{%- elif scope == "ldap" %}{% set scope_icon = "🔐" -%}
+{%- elif scope == "mfa" %}{% set scope_icon = "🔑" -%}
+{%- elif scope == "users" %}{% set scope_icon = "👥" -%}
+{%- elif scope == "permissions" %}{% set scope_icon = "🛡️" -%}
+{%- elif scope == "templates" %}{% set scope_icon = "📋" -%}
+{%- elif scope == "logging" %}{% set scope_icon = "📊" -%}
+{%- elif scope == "docker" %}{% set scope_icon = "🐳" -%}
+{%- elif scope == "config" %}{% set scope_icon = "⚙️" -%}
+{%- elif scope == "security" %}{% set scope_icon = "🔒" -%}
+{%- elif scope == "search" %}{% set scope_icon = "🔍" -%}
+{%- elif scope == "export" %}{% set scope_icon = "📤" -%}
+{%- elif scope == "import" %}{% set scope_icon = "📥" -%}
+{%- elif scope == "database" %}{% set scope_icon = "🗃️" -%}
+{%- elif scope == "db" %}{% set scope_icon = "🗃️" -%}
+{%- elif scope == "infrastructure" %}{% set scope_icon = "🔌" -%}
+{%- elif scope == "infra" %}{% set scope_icon = "🔌" -%}
+{%- elif scope == "validation" %}{% set scope_icon = "✅" -%}
+{%- elif scope == "smtp" %}{% set scope_icon = "📧" -%}
+{%- elif scope == "email" %}{% set scope_icon = "📧" -%}
+{%- elif scope == "session" %}{% set scope_icon = "🔐" -%}
+{%- elif scope == "routing" %}{% set scope_icon = "🔀" -%}
+{%- elif scope == "cache" %}{% set scope_icon = "💾" -%}
+{%- elif scope == "tests" %}{% set scope_icon = "🧪" -%}
+{%- elif scope == "migration" %}{% set scope_icon = "📦" -%}
+{%- elif scope == "installer" %}{% set scope_icon = "📥" -%}
+{%- elif scope == "install" %}{% set scope_icon = "📥" -%}
 {%- else %}{% set scope_icon = "🔧" -%}
 {%- endif %}
-* **{{ scope_icon }} {{ scope_name }}:** {{ commit.message | split(pat="\n") | first | trim }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/poweradmin/poweradmin/commit/{{ commit.id }}))
+{{ scope_icon }} **{{ scope }}:**
+{% for commit in scope_commits -%}
+* {{ commit.message | split(pat="\n") | first | trim }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/poweradmin/poweradmin/commit/{{ commit.id }}))
+{% endfor %}
 {% endfor -%}
 {%- endif -%}
 {%- endfor %}
@@ -63,10 +63,10 @@ conventional_commits = true
 filter_unconventional = true
 split_commits = false
 commit_parsers = [
-    { message = "^feat", group = "1-✨ Features" },
-    { message = "^fix", group = "2-🐛 Bug Fixes" },
-    { message = "^perf", group = "3-⚡ Performance" },
-    { message = "^refactor", group = "4-♻️ Refactoring" },
+    { message = "^feat", group = "1-✨ Features", default_scope = "general" },
+    { message = "^fix", group = "2-🐛 Bug Fixes", default_scope = "general" },
+    { message = "^perf", group = "3-⚡ Performance", default_scope = "general" },
+    { message = "^refactor", group = "4-♻️ Refactoring", default_scope = "general" },
     { message = "^doc", group = "Documentation", skip = true },
     { message = "^style", group = "Style", skip = true },
     { message = "^test", group = "Testing", skip = true },
