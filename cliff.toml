@@ -5,7 +5,7 @@
 header = ""
 body = """
 {% for group, commits in commits | group_by(attribute="group") %}
-{% set group_name = group | replace(pat="1-", rep="") | replace(pat="2-", rep="") | replace(pat="3-", rep="") | replace(pat="4-", rep="") %}
+{% set group_name = group | replace(from="1-", to="") | replace(from="2-", to="") | replace(from="3-", to="") | replace(from="4-", to="") %}
 ### {{ group_name }}
 
 {% for scope, commits in commits | group_by(attribute="scope") %}
@@ -51,12 +51,6 @@ body = """
 **{{ scope_icon }} {{ scope_name }}:**
 {% for commit in commits -%}
 {%- set msg = commit.message | split(pat="\n") | first | trim -%}
-{%- set msg = msg | regex_replace(pat=", closes #(\\d+)", rep=" (#$1)") -%}
-{%- set msg = msg | regex_replace(pat=", resolves #(\\d+)", rep=" (#$1)") -%}
-{%- set msg = msg | regex_replace(pat=", related to #(\\d+)", rep=" (#$1)") -%}
-{%- set msg = msg | regex_replace(pat=" closes #(\\d+)", rep=" (#$1)") -%}
-{%- set msg = msg | regex_replace(pat=" resolves #(\\d+)", rep=" (#$1)") -%}
-{%- set msg = msg | regex_replace(pat=" related to #(\\d+)", rep=" (#$1)") -%}
 * {{ msg }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/poweradmin/poweradmin/commit/{{ commit.id }}))
 {% endfor %}
 {% endfor %}
