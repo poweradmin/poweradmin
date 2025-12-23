@@ -30,7 +30,7 @@
             <td>
                 <select class="form-select form-select-sm" name="type">
                     {% for record_type in record_types %}
-                    <option value="{{ record_type }}" {% if record_type== type %}selected{% endif %}>{{ record_type }}
+                    <option value="{{ record_type }}" {% if record_type == type %}selected{% endif %}>{{ record_type }}
                     </option>
                     {% endfor %}
                 </select>
@@ -80,6 +80,5 @@
                 {% trans %}For the SOA record, place [NS1] [HOSTMASTER] [SERIAL] 28800 7200 604800 86400 in the content field.{% endtrans %}
             </td>
         </tr>
-        <tr>
     </table>
 </form>
