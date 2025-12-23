@@ -1,0 +1,134 @@
+name: Create Release PR
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+      - release/3.x
+      - release/4.x
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  create-release-pr:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get current version
+        id: current_version
+        run: |
+          VERSION=$(grep -oP "VERSION = '\K[^']+" lib/Version.php)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+      - name: Calculate next version
+        id: next_version
+        run: |
+          CURRENT="${{ steps.current_version.outputs.version }}"
+
+          # Check for breaking changes or features
+          if git log $(git describe --tags --abbrev=0 2>/dev/null || echo "")..HEAD --oneline | grep -qE "^[a-f0-9]+ feat(\(|:|\!)|BREAKING CHANGE"; then
+            # Bump minor version
+            NEXT=$(echo "$CURRENT" | awk -F. '{print $1"."$2+1".0"}')
+          else
+            # Bump patch version
+            NEXT=$(echo "$CURRENT" | awk -F. '{print $1"."$2"."$3+1}')
+          fi
+
+          echo "version=$NEXT" >> "$GITHUB_OUTPUT"
+
+      - name: Check if release PR needed
+        id: check_changes
+        run: |
+          # Get commits since last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            COMMIT_COUNT=$(git rev-list --count HEAD)
+          else
+            COMMIT_COUNT=$(git rev-list --count ${LAST_TAG}..HEAD)
+          fi
+
+          # Check if there are releasable commits (feat or fix)
+          if [ "$COMMIT_COUNT" -gt 0 ] && git log ${LAST_TAG:+$LAST_TAG..}HEAD --oneline | grep -qE "^[a-f0-9]+ (feat|fix)(\(|:)"; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Generate release notes with git-cliff
+        if: steps.check_changes.outputs.has_changes == 'true'
+        uses: orhun/git-cliff-action@v4
+        id: cliff
+        with:
+          config: cliff.toml
+          args: --unreleased --strip header
+        env:
+          OUTPUT: RELEASE_NOTES.md
+
+      - name: Read release notes
+        if: steps.check_changes.outputs.has_changes == 'true'
+        id: notes
+        run: |
+          {
+            echo 'RELEASE_NOTES<<EOF'
+            cat RELEASE_NOTES.md
+            echo 'EOF'
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Check for existing PR
+        if: steps.check_changes.outputs.has_changes == 'true'
+        id: check_pr
+        run: |
+          PR_NUMBER=$(gh pr list --head "release/v${{ steps.next_version.outputs.version }}" --json number --jq '.[0].number // empty')
+          echo "pr_number=$PR_NUMBER" >> "$GITHUB_OUTPUT"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create or update release branch
+        if: steps.check_changes.outputs.has_changes == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git checkout -B "release/v${{ steps.next_version.outputs.version }}"
+
+          # Update version file
+          sed -i "s/VERSION = '[^']*'/VERSION = '${{ steps.next_version.outputs.version }}'/" lib/Version.php
+
+          git add lib/Version.php
+          git commit -m "chore(release): prepare v${{ steps.next_version.outputs.version }}" || echo "No changes to commit"
+          git push -f origin "release/v${{ steps.next_version.outputs.version }}"
+
+      - name: Create Pull Request
+        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_pr.outputs.pr_number == ''
+        run: |
+          gh pr create \
+            --title "Release v${{ steps.next_version.outputs.version }}" \
+            --body "## Release v${{ steps.next_version.outputs.version }}
+
+          ${{ steps.notes.outputs.RELEASE_NOTES }}
+
+          ---
+          *Automatically generated release PR*" \
+            --base "${{ github.ref_name }}" \
+            --head "release/v${{ steps.next_version.outputs.version }}"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update Pull Request
+        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_pr.outputs.pr_number != ''
+        run: |
+          gh pr edit ${{ steps.check_pr.outputs.pr_number }} \
+            --body "## Release v${{ steps.next_version.outputs.version }}
+
+          ${{ steps.notes.outputs.RELEASE_NOTES }}
+
+          ---
+          *Automatically generated release PR*"
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

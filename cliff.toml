@@ -1,0 +1,44 @@
+# git-cliff configuration for Poweradmin
+# Groups commits by scope within each type section
+
+[changelog]
+header = ""
+body = """
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | upper_first }}
+
+{% for scope, commits in commits | group_by(attribute="scope") %}
+**{{ scope | default(value="general") }}:**
+{% for commit in commits -%}
+* {{ commit.message | split(pat="\n") | first | trim }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/poweradmin/poweradmin/commit/{{ commit.id }}))
+{% endfor %}
+{% endfor %}
+{% endfor %}
+"""
+footer = ""
+trim = true
+
+[git]
+conventional_commits = true
+filter_unconventional = true
+split_commits = false
+commit_parsers = [
+    { message = "^feat", group = "Features" },
+    { message = "^fix", group = "Bug Fixes" },
+    { message = "^perf", group = "Performance" },
+    { message = "^refactor", group = "Refactoring" },
+    { message = "^doc", group = "Documentation", skip = true },
+    { message = "^style", group = "Style", skip = true },
+    { message = "^test", group = "Testing", skip = true },
+    { message = "^chore\\(release\\)", skip = true },
+    { message = "^chore\\(deps\\)", group = "Dependencies", skip = true },
+    { message = "^chore", group = "Miscellaneous", skip = true },
+    { message = "^ci", group = "CI/CD", skip = true },
+    { message = "^build", group = "Build", skip = true },
+]
+filter_commits = false
+tag_pattern = "v[0-9].*"
+skip_tags = ""
+ignore_tags = ""
+topo_order = false
+sort_commits = "oldest"
