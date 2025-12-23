@@ -22,7 +22,7 @@ jobs:
 
       - name: Format Release PR
         if: ${{ steps.release.outputs.pr }}
-        uses: actions/github-script@v7
+        uses: actions/github-script@v8
         with:
           script: |
             const prNumber = ${{ steps.release.outputs.pr }};
