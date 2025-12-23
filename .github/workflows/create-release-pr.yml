@@ -2,6 +2,11 @@ name: Create Release PR
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - master
+      - release/3.x
+      - release/4.x
 
 permissions:
   contents: write
@@ -78,52 +83,34 @@ jobs:
             echo "has_notes=true" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Check for database migrations
-        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true'
-        id: migrations
-        run: |
-          VERSION="${{ steps.next_version.outputs.version }}"
-
-          # Check for SQL update files matching the target version
-          SQL_FILES=""
-          for db in mysql pgsql sqlite; do
-            FILE="sql/poweradmin-${db}-update-to-${VERSION}.sql"
-            if [ -f "$FILE" ]; then
-              SQL_FILES="${SQL_FILES}${FILE}\n"
-            fi
-          done
-
-          # Remove trailing newline
-          SQL_FILES=$(echo -e "$SQL_FILES" | sed '/^$/d')
-
-          if [ -n "$SQL_FILES" ]; then
-            echo "has_migrations=true" >> "$GITHUB_OUTPUT"
-            {
-              echo 'files<<EOF'
-              echo -e "$SQL_FILES"
-              echo 'EOF'
-            } >> "$GITHUB_OUTPUT"
-          else
-            echo "has_migrations=false" >> "$GITHUB_OUTPUT"
-          fi
-
       - name: Build release notes
         if: steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true'
         id: notes
         run: |
           cp RELEASE_NOTES.md FINAL_NOTES.md
+          VERSION="${{ steps.next_version.outputs.version }}"
+
+          # Check for SQL update files matching the target version
+          HAS_MIGRATIONS=false
+          for db in mysql pgsql sqlite; do
+            if [ -f "sql/poweradmin-${db}-update-to-${VERSION}.sql" ]; then
+              HAS_MIGRATIONS=true
+              break
+            fi
+          done
 
           # Append migrations section if there are SQL updates
-          if [ "${{ steps.migrations.outputs.has_migrations }}" == "true" ]; then
+          if [ "$HAS_MIGRATIONS" == "true" ]; then
             echo "" >> FINAL_NOTES.md
             echo "### 📦 Database Migrations" >> FINAL_NOTES.md
             echo "" >> FINAL_NOTES.md
             echo "The following database update scripts are included in this release:" >> FINAL_NOTES.md
             echo "" >> FINAL_NOTES.md
 
-            echo "${{ steps.migrations.outputs.files }}" | while IFS= read -r file; do
-              if [ -n "$file" ]; then
-                echo "* \`${file}\`" >> FINAL_NOTES.md
+            for db in mysql pgsql sqlite; do
+              FILE="sql/poweradmin-${db}-update-to-${VERSION}.sql"
+              if [ -f "$FILE" ]; then
+                echo "* \`${FILE}\`" >> FINAL_NOTES.md
               fi
             done
 
