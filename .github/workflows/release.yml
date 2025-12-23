@@ -21,11 +21,17 @@ jobs:
           target-branch: ${{ github.ref_name }}
 
       - name: Format Release PR
-        if: ${{ steps.release.outputs.pr }}
+        if: ${{ steps.release.outputs.prs_created == 'true' }}
         uses: actions/github-script@v8
+        env:
+          PR_DATA: ${{ steps.release.outputs.pr }}
         with:
           script: |
-            const prNumber = ${{ steps.release.outputs.pr }};
+            const prData = JSON.parse(process.env.PR_DATA);
+            const prNumber = prData.number;
+
+            console.log(`Processing PR #${prNumber}`);
+
             const { data: pr } = await github.rest.pulls.get({
               owner: context.repo.owner,
               repo: context.repo.repo,
