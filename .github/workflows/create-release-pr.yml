@@ -150,14 +150,20 @@ jobs:
       - name: Create Pull Request
         if: steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true' && steps.check_pr.outputs.pr_number == ''
         run: |
-          gh pr create \
-            --title "v${{ steps.next_version.outputs.version }}" \
-            --body "## v${{ steps.next_version.outputs.version }}
+          cat > PR_BODY.md << 'PREOF'
+          ## v${{ steps.next_version.outputs.version }}
 
-          ${{ steps.notes.outputs.RELEASE_NOTES }}
+          PREOF
+          cat FINAL_NOTES.md >> PR_BODY.md
+          cat >> PR_BODY.md << 'PREOF'
 
           ---
-          *Automatically generated release PR*" \
+          *Automatically generated release PR*
+          PREOF
+
+          gh pr create \
+            --title "v${{ steps.next_version.outputs.version }}" \
+            --body-file PR_BODY.md \
             --base "${{ github.ref_name }}" \
             --head "release/v${{ steps.next_version.outputs.version }}"
         env:
@@ -166,13 +172,19 @@ jobs:
       - name: Update Pull Request
         if: steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true' && steps.check_pr.outputs.pr_number != ''
         run: |
-          gh pr edit ${{ steps.check_pr.outputs.pr_number }} \
-            --title "v${{ steps.next_version.outputs.version }}" \
-            --body "## v${{ steps.next_version.outputs.version }}
+          cat > PR_BODY.md << 'PREOF'
+          ## v${{ steps.next_version.outputs.version }}
 
-          ${{ steps.notes.outputs.RELEASE_NOTES }}
+          PREOF
+          cat FINAL_NOTES.md >> PR_BODY.md
+          cat >> PR_BODY.md << 'PREOF'
 
           ---
-          *Automatically generated release PR*"
+          *Automatically generated release PR*
+          PREOF
+
+          gh pr edit ${{ steps.check_pr.outputs.pr_number }} \
+            --title "v${{ steps.next_version.outputs.version }}" \
+            --body-file PR_BODY.md
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
