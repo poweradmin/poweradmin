@@ -155,11 +155,6 @@ jobs:
 
           PREOF
           cat FINAL_NOTES.md >> PR_BODY.md
-          cat >> PR_BODY.md << 'PREOF'
-
-          ---
-          *Automatically generated release PR*
-          PREOF
 
           gh pr create \
             --title "v${{ steps.next_version.outputs.version }}" \
@@ -177,11 +172,6 @@ jobs:
 
           PREOF
           cat FINAL_NOTES.md >> PR_BODY.md
-          cat >> PR_BODY.md << 'PREOF'
-
-          ---
-          *Automatically generated release PR*
-          PREOF
 
           gh pr edit ${{ steps.check_pr.outputs.pr_number }} \
             --title "v${{ steps.next_version.outputs.version }}" \
