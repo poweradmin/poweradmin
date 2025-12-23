@@ -64,6 +64,14 @@ conventional_commits = true
 filter_unconventional = true
 split_commits = false
 commit_parsers = [
+    # Skip development/CI scopes from release notes
+    { message = "\\(ci\\)", skip = true },
+    { message = "\\(dev\\)", skip = true },
+    { message = "\\(devcontainer\\)", skip = true },
+    { message = "\\(renovate\\)", skip = true },
+    { message = "\\(tests\\)", skip = true },
+    { message = "\\(build\\)", skip = true },
+    # Main commit types
     { message = "^feat", group = "1-✨ Features" },
     { message = "^fix", group = "2-🐛 Bug Fixes" },
     { message = "^perf", group = "3-⚡ Performance" },
