@@ -70,3 +70,4 @@ psalm.xml
 nginx.conf.example
 .htaccess
 .hadolint.yaml
+cliff.toml

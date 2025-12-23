@@ -14,3 +14,4 @@ phpdoc.dist.xml export-ignore
 phpunit.xml.dist export-ignore
 psalm.xml export-ignore
 transifex.yml export-ignore
+cliff.toml export-ignore
