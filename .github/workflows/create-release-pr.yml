@@ -94,36 +94,33 @@ jobs:
             echo "has_migrations=false" >> "$GITHUB_OUTPUT"
           fi
 
-      - name: Read release notes
+      - name: Build release notes
         if: steps.check_changes.outputs.has_changes == 'true'
         id: notes
         run: |
-          NOTES=$(cat RELEASE_NOTES.md)
+          cp RELEASE_NOTES.md FINAL_NOTES.md
 
           # Append migrations section if there are SQL updates
           if [ "${{ steps.migrations.outputs.has_migrations }}" == "true" ]; then
-            MIGRATIONS_SECTION="
-### 📦 Database Migrations
+            echo "" >> FINAL_NOTES.md
+            echo "### 📦 Database Migrations" >> FINAL_NOTES.md
+            echo "" >> FINAL_NOTES.md
+            echo "The following database update scripts are included in this release:" >> FINAL_NOTES.md
+            echo "" >> FINAL_NOTES.md
 
-The following database update scripts are included in this release:
-
-"
-            while IFS= read -r file; do
+            echo "${{ steps.migrations.outputs.files }}" | while IFS= read -r file; do
               if [ -n "$file" ]; then
-                MIGRATIONS_SECTION="${MIGRATIONS_SECTION}* \`${file}\`
-"
+                echo "* \`${file}\`" >> FINAL_NOTES.md
               fi
-            done <<< "${{ steps.migrations.outputs.files }}"
+            done
 
-            MIGRATIONS_SECTION="${MIGRATIONS_SECTION}
-> **Note:** Run the appropriate update script for your database type (mysql, pgsql, or sqlite) before upgrading."
-
-            NOTES="${NOTES}${MIGRATIONS_SECTION}"
+            echo "" >> FINAL_NOTES.md
+            echo "> **Note:** Run the appropriate update script for your database type (mysql, pgsql, or sqlite) before upgrading." >> FINAL_NOTES.md
           fi
 
           {
             echo 'RELEASE_NOTES<<EOF'
-            echo "$NOTES"
+            cat FINAL_NOTES.md
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
