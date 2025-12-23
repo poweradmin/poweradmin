@@ -1,0 +1,143 @@
+name: Create Draft Release
+
+on:
+  push:
+    branches:
+      - master
+      - release/3.x
+      - release/4.x
+
+permissions:
+  contents: write
+
+jobs:
+  create-draft-release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get current version
+        id: current_version
+        run: |
+          VERSION=$(grep -oP "VERSION = '\K[^']+" lib/Version.php)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Current version: $VERSION"
+
+      - name: Check if release already exists
+        id: check_release
+        run: |
+          RELEASE_TAG="v${{ steps.current_version.outputs.version }}"
+
+          # Check if a non-draft release already exists for this version
+          EXISTING=$(gh release view "$RELEASE_TAG" --json isDraft --jq '.isDraft' 2>/dev/null || echo "not_found")
+
+          if [ "$EXISTING" = "false" ]; then
+            echo "Release $RELEASE_TAG already published, skipping"
+            echo "skip=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "skip=false" >> "$GITHUB_OUTPUT"
+            echo "is_draft=$EXISTING" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Check for releasable changes
+        if: steps.check_release.outputs.skip != 'true'
+        id: check_changes
+        run: |
+          # Get commits since last tag
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          if [ -z "$LAST_TAG" ]; then
+            COMMIT_COUNT=$(git rev-list --count HEAD)
+          else
+            COMMIT_COUNT=$(git rev-list --count ${LAST_TAG}..HEAD)
+          fi
+
+          # Check if there are releasable commits (feat or fix)
+          if [ "$COMMIT_COUNT" -gt 0 ] && git log ${LAST_TAG:+$LAST_TAG..}HEAD --oneline | grep -qE "^[a-f0-9]+ (feat|fix)(\(|:)"; then
+            echo "has_changes=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_changes=false" >> "$GITHUB_OUTPUT"
+            echo "No releasable changes found"
+          fi
+
+      - name: Generate release notes with git-cliff
+        if: steps.check_release.outputs.skip != 'true' && steps.check_changes.outputs.has_changes == 'true'
+        uses: orhun/git-cliff-action@v4
+        id: cliff
+        with:
+          config: cliff.toml
+          args: --unreleased --strip header
+        env:
+          OUTPUT: RELEASE_NOTES.md
+        continue-on-error: true
+
+      - name: Check release notes generated
+        if: steps.check_release.outputs.skip != 'true' && steps.check_changes.outputs.has_changes == 'true'
+        id: check_notes
+        run: |
+          if [ ! -f RELEASE_NOTES.md ] || [ ! -s RELEASE_NOTES.md ]; then
+            echo "No release notes generated, skipping"
+            echo "has_notes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_notes=true" >> "$GITHUB_OUTPUT"
+            cat RELEASE_NOTES.md
+          fi
+
+      - name: Build final release notes
+        if: steps.check_release.outputs.skip != 'true' && steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true'
+        run: |
+          VERSION="${{ steps.current_version.outputs.version }}"
+
+          # Check for SQL update files matching the target version
+          HAS_MIGRATIONS=false
+          for db in mysql pgsql sqlite; do
+            if [ -f "sql/poweradmin-${db}-update-to-${VERSION}.sql" ]; then
+              HAS_MIGRATIONS=true
+              break
+            fi
+          done
+
+          # Append migrations section if there are SQL updates
+          if [ "$HAS_MIGRATIONS" == "true" ]; then
+            echo "" >> RELEASE_NOTES.md
+            echo "### Database Migrations" >> RELEASE_NOTES.md
+            echo "" >> RELEASE_NOTES.md
+            echo "The following database update scripts are included in this release:" >> RELEASE_NOTES.md
+            echo "" >> RELEASE_NOTES.md
+
+            for db in mysql pgsql sqlite; do
+              FILE="sql/poweradmin-${db}-update-to-${VERSION}.sql"
+              if [ -f "$FILE" ]; then
+                echo "* \`${FILE}\`" >> RELEASE_NOTES.md
+              fi
+            done
+
+            echo "" >> RELEASE_NOTES.md
+            echo "> **Note:** Run the appropriate update script for your database type before upgrading." >> RELEASE_NOTES.md
+          fi
+
+      - name: Create or update draft release
+        if: steps.check_release.outputs.skip != 'true' && steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true'
+        run: |
+          RELEASE_TAG="v${{ steps.current_version.outputs.version }}"
+
+          if [ "${{ steps.check_release.outputs.is_draft }}" = "true" ]; then
+            echo "Updating existing draft release $RELEASE_TAG"
+            gh release edit "$RELEASE_TAG" \
+              --title "$RELEASE_TAG" \
+              --notes-file RELEASE_NOTES.md \
+              --target "${{ github.ref_name }}"
+          else
+            echo "Creating new draft release $RELEASE_TAG"
+            gh release create "$RELEASE_TAG" \
+              --title "$RELEASE_TAG" \
+              --notes-file RELEASE_NOTES.md \
+              --target "${{ github.ref_name }}" \
+              --draft
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

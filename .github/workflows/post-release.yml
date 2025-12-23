@@ -1,0 +1,52 @@
+name: Post Release Version Bump
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  version-bump:
+    # Only run for non-prerelease versions
+    if: "!github.event.release.prerelease"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.release.target_commitish }}
+
+      - name: Get released version
+        id: released
+        run: |
+          # Remove 'v' prefix from tag
+          VERSION="${{ github.event.release.tag_name }}"
+          VERSION="${VERSION#v}"
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "Released version: $VERSION"
+
+      - name: Calculate next version
+        id: next_version
+        run: |
+          CURRENT="${{ steps.released.outputs.version }}"
+
+          # Always bump patch version after release
+          NEXT=$(echo "$CURRENT" | awk -F. '{print $1"."$2"."$3+1}')
+
+          echo "version=$NEXT" >> "$GITHUB_OUTPUT"
+          echo "Next development version: $NEXT"
+
+      - name: Update version file
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Update version in lib/Version.php
+          sed -i "s/VERSION = '[^']*'/VERSION = '${{ steps.next_version.outputs.version }}'/" lib/Version.php
+
+          git add lib/Version.php
+          git commit -m "chore(release): bump version to ${{ steps.next_version.outputs.version }}"
+          git push origin "${{ github.event.release.target_commitish }}"
