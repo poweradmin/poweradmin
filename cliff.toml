@@ -5,12 +5,59 @@
 header = ""
 body = """
 {% for group, commits in commits | group_by(attribute="group") %}
-### {{ group | upper_first }}
+{% set group_name = group | replace(pat="1-", rep="") | replace(pat="2-", rep="") | replace(pat="3-", rep="") | replace(pat="4-", rep="") %}
+### {{ group_name }}
 
 {% for scope, commits in commits | group_by(attribute="scope") %}
-**{{ scope | default(value="general") }}:**
+{%- set scope_name = scope | default(value="general") -%}
+{%- if scope_name == "api" %}{% set scope_icon = "🌐" -%}
+{%- elif scope_name == "auth" %}{% set scope_icon = "🔐" -%}
+{%- elif scope_name == "dns" %}{% set scope_icon = "🌍" -%}
+{%- elif scope_name == "dnssec" %}{% set scope_icon = "🔒" -%}
+{%- elif scope_name == "records" %}{% set scope_icon = "📝" -%}
+{%- elif scope_name == "zones" %}{% set scope_icon = "📁" -%}
+{%- elif scope_name == "sql" %}{% set scope_icon = "🗄️" -%}
+{%- elif scope_name == "ui" %}{% set scope_icon = "🖥️" -%}
+{%- elif scope_name == "i18n" %}{% set scope_icon = "🌐" -%}
+{%- elif scope_name == "mail" %}{% set scope_icon = "📧" -%}
+{%- elif scope_name == "ldap" %}{% set scope_icon = "🔐" -%}
+{%- elif scope_name == "mfa" %}{% set scope_icon = "🔑" -%}
+{%- elif scope_name == "users" %}{% set scope_icon = "👥" -%}
+{%- elif scope_name == "permissions" %}{% set scope_icon = "🛡️" -%}
+{%- elif scope_name == "templates" %}{% set scope_icon = "📋" -%}
+{%- elif scope_name == "logging" %}{% set scope_icon = "📊" -%}
+{%- elif scope_name == "docker" %}{% set scope_icon = "🐳" -%}
+{%- elif scope_name == "config" %}{% set scope_icon = "⚙️" -%}
+{%- elif scope_name == "security" %}{% set scope_icon = "🔒" -%}
+{%- elif scope_name == "search" %}{% set scope_icon = "🔍" -%}
+{%- elif scope_name == "export" %}{% set scope_icon = "📤" -%}
+{%- elif scope_name == "import" %}{% set scope_icon = "📥" -%}
+{%- elif scope_name == "database" %}{% set scope_icon = "🗃️" -%}
+{%- elif scope_name == "db" %}{% set scope_icon = "🗃️" -%}
+{%- elif scope_name == "infrastructure" %}{% set scope_icon = "🔌" -%}
+{%- elif scope_name == "infra" %}{% set scope_icon = "🔌" -%}
+{%- elif scope_name == "validation" %}{% set scope_icon = "✅" -%}
+{%- elif scope_name == "smtp" %}{% set scope_icon = "📧" -%}
+{%- elif scope_name == "email" %}{% set scope_icon = "📧" -%}
+{%- elif scope_name == "session" %}{% set scope_icon = "🔐" -%}
+{%- elif scope_name == "routing" %}{% set scope_icon = "🔀" -%}
+{%- elif scope_name == "cache" %}{% set scope_icon = "💾" -%}
+{%- elif scope_name == "tests" %}{% set scope_icon = "🧪" -%}
+{%- elif scope_name == "migration" %}{% set scope_icon = "📦" -%}
+{%- elif scope_name == "installer" %}{% set scope_icon = "📥" -%}
+{%- elif scope_name == "install" %}{% set scope_icon = "📥" -%}
+{%- else %}{% set scope_icon = "🔧" -%}
+{%- endif %}
+**{{ scope_icon }} {{ scope_name }}:**
 {% for commit in commits -%}
-* {{ commit.message | split(pat="\n") | first | trim }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/poweradmin/poweradmin/commit/{{ commit.id }}))
+{%- set msg = commit.message | split(pat="\n") | first | trim -%}
+{%- set msg = msg | regex_replace(pat=", closes #(\\d+)", rep=" (#$1)") -%}
+{%- set msg = msg | regex_replace(pat=", resolves #(\\d+)", rep=" (#$1)") -%}
+{%- set msg = msg | regex_replace(pat=", related to #(\\d+)", rep=" (#$1)") -%}
+{%- set msg = msg | regex_replace(pat=" closes #(\\d+)", rep=" (#$1)") -%}
+{%- set msg = msg | regex_replace(pat=" resolves #(\\d+)", rep=" (#$1)") -%}
+{%- set msg = msg | regex_replace(pat=" related to #(\\d+)", rep=" (#$1)") -%}
+* {{ msg }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/poweradmin/poweradmin/commit/{{ commit.id }}))
 {% endfor %}
 {% endfor %}
 {% endfor %}
@@ -23,10 +70,10 @@ conventional_commits = true
 filter_unconventional = true
 split_commits = false
 commit_parsers = [
-    { message = "^feat", group = "Features" },
-    { message = "^fix", group = "Bug Fixes" },
-    { message = "^perf", group = "Performance" },
-    { message = "^refactor", group = "Refactoring" },
+    { message = "^feat", group = "1-✨ Features" },
+    { message = "^fix", group = "2-🐛 Bug Fixes" },
+    { message = "^perf", group = "3-⚡ Performance" },
+    { message = "^refactor", group = "4-♻️ Refactoring" },
     { message = "^doc", group = "Documentation", skip = true },
     { message = "^style", group = "Style", skip = true },
     { message = "^test", group = "Testing", skip = true },

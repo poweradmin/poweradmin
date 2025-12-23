@@ -1,7 +1,6 @@
 name: Create Release PR
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - master
@@ -71,13 +70,60 @@ jobs:
         env:
           OUTPUT: RELEASE_NOTES.md
 
+      - name: Check for database migrations
+        if: steps.check_changes.outputs.has_changes == 'true'
+        id: migrations
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+
+          # Find SQL update files changed since last tag
+          if [ -z "$LAST_TAG" ]; then
+            SQL_FILES=$(git diff --name-only --diff-filter=A HEAD -- 'sql/*update*.sql' 2>/dev/null || true)
+          else
+            SQL_FILES=$(git diff --name-only --diff-filter=A ${LAST_TAG}..HEAD -- 'sql/*update*.sql' 2>/dev/null || true)
+          fi
+
+          if [ -n "$SQL_FILES" ]; then
+            echo "has_migrations=true" >> "$GITHUB_OUTPUT"
+            {
+              echo 'files<<EOF'
+              echo "$SQL_FILES"
+              echo 'EOF'
+            } >> "$GITHUB_OUTPUT"
+          else
+            echo "has_migrations=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Read release notes
         if: steps.check_changes.outputs.has_changes == 'true'
         id: notes
         run: |
+          NOTES=$(cat RELEASE_NOTES.md)
+
+          # Append migrations section if there are SQL updates
+          if [ "${{ steps.migrations.outputs.has_migrations }}" == "true" ]; then
+            MIGRATIONS_SECTION="
+### 📦 Database Migrations
+
+The following database update scripts are included in this release:
+
+"
+            while IFS= read -r file; do
+              if [ -n "$file" ]; then
+                MIGRATIONS_SECTION="${MIGRATIONS_SECTION}* \`${file}\`
+"
+              fi
+            done <<< "${{ steps.migrations.outputs.files }}"
+
+            MIGRATIONS_SECTION="${MIGRATIONS_SECTION}
+> **Note:** Run the appropriate update script for your database type (mysql, pgsql, or sqlite) before upgrading."
+
+            NOTES="${NOTES}${MIGRATIONS_SECTION}"
+          fi
+
           {
             echo 'RELEASE_NOTES<<EOF'
-            cat RELEASE_NOTES.md
+            echo "$NOTES"
             echo 'EOF'
           } >> "$GITHUB_OUTPUT"
 
@@ -108,8 +154,8 @@ jobs:
         if: steps.check_changes.outputs.has_changes == 'true' && steps.check_pr.outputs.pr_number == ''
         run: |
           gh pr create \
-            --title "Release v${{ steps.next_version.outputs.version }}" \
-            --body "## Release v${{ steps.next_version.outputs.version }}
+            --title "v${{ steps.next_version.outputs.version }}" \
+            --body "## v${{ steps.next_version.outputs.version }}
 
           ${{ steps.notes.outputs.RELEASE_NOTES }}
 
@@ -124,7 +170,8 @@ jobs:
         if: steps.check_changes.outputs.has_changes == 'true' && steps.check_pr.outputs.pr_number != ''
         run: |
           gh pr edit ${{ steps.check_pr.outputs.pr_number }} \
-            --body "## Release v${{ steps.next_version.outputs.version }}
+            --title "v${{ steps.next_version.outputs.version }}" \
+            --body "## v${{ steps.next_version.outputs.version }}
 
           ${{ steps.notes.outputs.RELEASE_NOTES }}
 
