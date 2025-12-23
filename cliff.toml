@@ -4,12 +4,14 @@
 [changelog]
 header = ""
 body = """
-{% for group, commits in commits | group_by(attribute="group") %}
-{% set group_name = group | replace(from="1-", to="") | replace(from="2-", to="") | replace(from="3-", to="") | replace(from="4-", to="") %}
+{%- for group, commits in commits | group_by(attribute="group") -%}
+{%- if (group is starting_with("1-") or group is starting_with("2-") or group is starting_with("3-") or group is starting_with("4-")) and commits | length > 0 -%}
+{%- set group_name = group | replace(from="1-", to="") | replace(from="2-", to="") | replace(from="3-", to="") | replace(from="4-", to="") %}
 ### {{ group_name }}
 
-{% for scope, commits in commits | group_by(attribute="scope") %}
-{%- set scope_name = scope | default(value="general") -%}
+{% for commit in commits -%}
+{%- set scope_name = commit.scope | default(value="general") -%}
+{%- if scope_name == "" %}{% set scope_name = "general" %}{% endif -%}
 {%- if scope_name == "api" %}{% set scope_icon = "🌐" -%}
 {%- elif scope_name == "auth" %}{% set scope_icon = "🔐" -%}
 {%- elif scope_name == "dns" %}{% set scope_icon = "🌍" -%}
@@ -48,13 +50,10 @@ body = """
 {%- elif scope_name == "install" %}{% set scope_icon = "📥" -%}
 {%- else %}{% set scope_icon = "🔧" -%}
 {%- endif %}
-**{{ scope_icon }} {{ scope_name }}:**
-{% for commit in commits -%}
-{%- set msg = commit.message | split(pat="\n") | first | trim -%}
-* {{ msg }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/poweradmin/poweradmin/commit/{{ commit.id }}))
-{% endfor %}
-{% endfor %}
-{% endfor %}
+* **{{ scope_icon }} {{ scope_name }}:** {{ commit.message | split(pat="\n") | first | trim }} ([{{ commit.id | truncate(length=7, end="") }}](https://github.com/poweradmin/poweradmin/commit/{{ commit.id }}))
+{% endfor -%}
+{%- endif -%}
+{%- endfor %}
 """
 footer = ""
 trim = true
