@@ -35,5 +35,5 @@ class Version
      * @var string
      */
     // x-release-please-version
-    public final const VERSION = '3.9.8';
+    public final const VERSION = '3.9.9';
 }
