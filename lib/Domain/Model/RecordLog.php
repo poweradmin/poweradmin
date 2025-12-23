@@ -29,9 +29,8 @@ use Poweradmin\Infrastructure\Logger\LegacyLogger;
 
 class RecordLog
 {
-
-    private $record_prior;
-    private $record_after;
+    private ?array $record_prior = null;
+    private ?array $record_after = null;
 
     private bool $record_changed = false;
     private LegacyLogger $logger;
@@ -39,7 +38,7 @@ class RecordLog
 
     private ConfigurationManager $config;
 
-    public function __construct($db, $config)
+    public function __construct(PDOCommon $db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;
@@ -58,7 +57,7 @@ class RecordLog
         $this->record_after = $this->getRecord($rid);
     }
 
-    private function getRecord($rid): array|int
+    private function getRecord(int $rid): ?array
     {
         $dnsRecord = new DnsRecord($this->db, $this->config);
         return $dnsRecord->getRecordFromId($rid);
