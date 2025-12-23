@@ -82,20 +82,25 @@ jobs:
         if: steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true'
         id: migrations
         run: |
-          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          VERSION="${{ steps.next_version.outputs.version }}"
 
-          # Find SQL update files changed since last tag
-          if [ -z "$LAST_TAG" ]; then
-            SQL_FILES=$(git diff --name-only --diff-filter=A HEAD -- 'sql/*update*.sql' 2>/dev/null || true)
-          else
-            SQL_FILES=$(git diff --name-only --diff-filter=A ${LAST_TAG}..HEAD -- 'sql/*update*.sql' 2>/dev/null || true)
-          fi
+          # Check for SQL update files matching the target version
+          SQL_FILES=""
+          for db in mysql pgsql sqlite; do
+            FILE="sql/poweradmin-${db}-update-to-${VERSION}.sql"
+            if [ -f "$FILE" ]; then
+              SQL_FILES="${SQL_FILES}${FILE}\n"
+            fi
+          done
+
+          # Remove trailing newline
+          SQL_FILES=$(echo -e "$SQL_FILES" | sed '/^$/d')
 
           if [ -n "$SQL_FILES" ]; then
             echo "has_migrations=true" >> "$GITHUB_OUTPUT"
             {
               echo 'files<<EOF'
-              echo "$SQL_FILES"
+              echo -e "$SQL_FILES"
               echo 'EOF'
             } >> "$GITHUB_OUTPUT"
           else
