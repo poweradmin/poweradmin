@@ -1,11 +1,7 @@
 name: Create Release PR
 
 on:
-  push:
-    branches:
-      - master
-      - release/3.x
-      - release/4.x
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -69,9 +65,21 @@ jobs:
           args: --unreleased --strip header
         env:
           OUTPUT: RELEASE_NOTES.md
+        continue-on-error: true
+
+      - name: Check release notes generated
+        if: steps.check_changes.outputs.has_changes == 'true'
+        id: check_notes
+        run: |
+          if [ ! -f RELEASE_NOTES.md ] || [ ! -s RELEASE_NOTES.md ]; then
+            echo "No release notes generated, skipping PR creation"
+            echo "has_notes=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "has_notes=true" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Check for database migrations
-        if: steps.check_changes.outputs.has_changes == 'true'
+        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true'
         id: migrations
         run: |
           LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
@@ -95,7 +103,7 @@ jobs:
           fi
 
       - name: Build release notes
-        if: steps.check_changes.outputs.has_changes == 'true'
+        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true'
         id: notes
         run: |
           cp RELEASE_NOTES.md FINAL_NOTES.md
@@ -125,7 +133,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
       - name: Check for existing PR
-        if: steps.check_changes.outputs.has_changes == 'true'
+        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true'
         id: check_pr
         run: |
           PR_NUMBER=$(gh pr list --head "release/v${{ steps.next_version.outputs.version }}" --json number --jq '.[0].number // empty')
@@ -134,7 +142,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Create or update release branch
-        if: steps.check_changes.outputs.has_changes == 'true'
+        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true'
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
@@ -148,7 +156,7 @@ jobs:
           git push -f origin "release/v${{ steps.next_version.outputs.version }}"
 
       - name: Create Pull Request
-        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_pr.outputs.pr_number == ''
+        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true' && steps.check_pr.outputs.pr_number == ''
         run: |
           gh pr create \
             --title "v${{ steps.next_version.outputs.version }}" \
@@ -164,7 +172,7 @@ jobs:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Update Pull Request
-        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_pr.outputs.pr_number != ''
+        if: steps.check_changes.outputs.has_changes == 'true' && steps.check_notes.outputs.has_notes == 'true' && steps.check_pr.outputs.pr_number != ''
         run: |
           gh pr edit ${{ steps.check_pr.outputs.pr_number }} \
             --title "v${{ steps.next_version.outputs.version }}" \
