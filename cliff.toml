@@ -64,6 +64,7 @@ filter_unconventional = true
 split_commits = false
 commit_parsers = [
     { message = "^feat", group = "1-✨ Features", default_scope = "general" },
+    { message = "^fix\\(ci\\)", skip = true },
     { message = "^fix", group = "2-🐛 Bug Fixes", default_scope = "general" },
     { message = "^perf", group = "3-⚡ Performance", default_scope = "general" },
     { message = "^refactor", group = "4-♻️ Refactoring", default_scope = "general" },
