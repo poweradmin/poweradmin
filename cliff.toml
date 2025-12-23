@@ -5,6 +5,9 @@
 header = ""
 body = """
 {%- for group, commits in commits | group_by(attribute="group") -%}
+{%- if version and version is starting_with("v") -%}
+{%- continue -%}
+{%- endif -%}
 {%- if (group is starting_with("1-") or group is starting_with("2-") or group is starting_with("3-") or group is starting_with("4-")) and commits | length > 0 -%}
 {%- set group_name = group | replace(from="1-", to="") | replace(from="2-", to="") | replace(from="3-", to="") | replace(from="4-", to="") %}
 ### {{ group_name }}
