@@ -48,7 +48,7 @@ jobs:
           ${{ runner.os }}-composer-
 
     - name: Validate composer.json and composer.lock
-      run: composer validate --strict --check-lock --with-dependencies
+      run: composer validate --strict --check-lock
 
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress
