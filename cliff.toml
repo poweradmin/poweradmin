@@ -66,6 +66,13 @@ conventional_commits = true
 filter_unconventional = true
 split_commits = false
 commit_parsers = [
+    # Skip devcontainer-related commits
+    { message = "^feat\\(devcontainer\\)", skip = true },
+    { message = "^fix\\(devcontainer\\)", skip = true },
+    { message = "^chore\\(devcontainer\\)", skip = true },
+    { message = "^refactor\\(devcontainer\\)", skip = true },
+    { message = "^test\\(devcontainer\\)", skip = true },
+    # Standard commit parsers
     { message = "^feat", group = "1-✨ Features", default_scope = "general" },
     { message = "^fix\\(ci\\)", skip = true },
     { message = "^fix", group = "2-🐛 Bug Fixes", default_scope = "general" },
