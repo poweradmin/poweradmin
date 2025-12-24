@@ -293,7 +293,11 @@ class XMLSecurityDSig
             }
         }
 
-        return $node->C14N($exclusive, $withComments, $arXPath, $prefixList);
+        $ret = $node->C14N($exclusive, $withComments, $arXPath, $prefixList);
+        if ($ret === false) {
+            throw new Exception("Canonicalization failed");
+        }
+        return $ret; 
     }
 
     /**
