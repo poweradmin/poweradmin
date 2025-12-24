@@ -54,3 +54,4 @@ GEMINI.md
 
 # Local configuration
 config/
+package-lock.json
