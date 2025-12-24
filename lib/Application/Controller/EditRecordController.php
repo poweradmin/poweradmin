@@ -169,23 +169,51 @@ class EditRecordController extends BaseController
             $zid
         );
 
-        if ($this->config('iface_record_comments')) {
+        $showRecordComments = $this->config('iface_record_comments');
+        $nameOrTypeChanged = ($old_record_info['name'] !== $new_record_info['name'] ||
+                              $old_record_info['type'] !== $new_record_info['type']);
+
+        if ($showRecordComments) {
+            // Comments visible - use the posted comment value
+            $commentValue = $_POST['comment'] ?? '';
+
             $this->recordCommentService->updateComment(
                 $zid,
                 $old_record_info['name'],
                 $old_record_info['type'],
                 $new_record_info['name'],
                 $new_record_info['type'],
-                $_POST['comment'] ?? '',
+                $commentValue,
                 $_SESSION['userlogin']
             );
 
-            $this->commentSyncService->updateRelatedRecordComments(
-                $dnsRecord,
-                $new_record_info,
-                $_POST['comment'] ?? '',
-                $_SESSION['userlogin']
+            if ($this->config('record_comments_sync')) {
+                $this->commentSyncService->updateRelatedRecordComments(
+                    $dnsRecord,
+                    $new_record_info,
+                    $commentValue,
+                    $_SESSION['userlogin']
+                );
+            }
+        } elseif ($nameOrTypeChanged) {
+            // Comments hidden but record name/type changed - migrate existing comment
+            $existingComment = $this->recordCommentService->findComment(
+                $zid,
+                $old_record_info['name'],
+                $old_record_info['type']
             );
+
+            if ($existingComment !== null) {
+                $this->recordCommentService->updateComment(
+                    $zid,
+                    $old_record_info['name'],
+                    $old_record_info['type'],
+                    $new_record_info['name'],
+                    $new_record_info['type'],
+                    $existingComment->getComment(),
+                    $_SESSION['userlogin']
+                );
+            }
         }
 
         if ($this->config('pdnssec_use')) {
