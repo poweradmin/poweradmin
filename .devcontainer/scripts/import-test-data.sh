@@ -76,8 +76,11 @@ clean_mysql() {
     fi
 
     # Clean test data (keep admin user and Administrator template)
-    # Note: 3.x uses unified pdns database for both PowerDNS and Poweradmin tables
-    docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" pdns << 'EOSQL'
+    # Note: 3.x uses separate databases - poweradmin (app tables) and pdns (PowerDNS tables)
+    docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" << 'EOSQL'
+-- Clean poweradmin database
+USE poweradmin;
+
 -- Delete zone templates and their records (except admin's templates)
 DELETE ztr FROM zone_templ_records ztr
 INNER JOIN zone_templ zt ON ztr.zone_templ_id = zt.id
@@ -96,6 +99,9 @@ DELETE FROM perm_templ_items WHERE templ_id > 1;
 
 -- Delete permission templates (keep Administrator)
 DELETE FROM perm_templ WHERE id > 1;
+
+-- Clean pdns database
+USE pdns;
 
 -- Delete all records
 DELETE FROM records;
@@ -166,19 +172,19 @@ import_mysql() {
     fi
 
     # Import users, permissions, and zones
-    # Note: The SQL file uses USE pdns; so we don't need to specify database here
+    # Note: SQL file uses USE poweradmin; and USE pdns; statements internally
     local output
     local exit_code
-    output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" pdns < "$SQL_DIR/test-users-permissions-mysql-combined.sql" 2>&1)
+    output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$SQL_DIR/test-users-permissions-mysql-combined.sql" 2>&1)
     exit_code=$?
 
     if [ $exit_code -eq 0 ]; then
         echo -e "${GREEN}✅ MySQL/MariaDB users and zones imported${NC}"
 
-        # Import comprehensive DNS records
+        # Import comprehensive DNS records (uses pdns database)
         if [ -f "$SQL_DIR/test-dns-records-mysql.sql" ]; then
             echo -e "${YELLOW}📦 Importing comprehensive DNS records...${NC}"
-            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" pdns < "$SQL_DIR/test-dns-records-mysql.sql" 2>&1)
+            output=$(docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" < "$SQL_DIR/test-dns-records-mysql.sql" 2>&1)
             exit_code=$?
 
             if [ $exit_code -eq 0 ]; then

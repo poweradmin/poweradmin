@@ -1,6 +1,6 @@
 -- MySQL Test Data: Users, Permission Templates, Zones for 3.x Branch
 -- Purpose: Create comprehensive test data for development and testing
--- Database: pdns (unified database for both Poweradmin and PowerDNS tables)
+-- Databases: poweradmin (Poweradmin tables), pdns (PowerDNS tables)
 --
 -- This script creates:
 -- - 5 permission templates with various permission levels
@@ -9,13 +9,13 @@
 -- - Zone ownership records
 -- - Zone templates for quick zone creation
 --
--- Usage: docker exec -i mariadb mysql -u pdns -ppoweradmin pdns < test-users-permissions-mysql-combined.sql
+-- Usage: docker exec -i mariadb mysql -u pdns -ppoweradmin < test-users-permissions-mysql-combined.sql
 
 -- =============================================================================
--- PERMISSION TEMPLATES
+-- PERMISSION TEMPLATES (poweradmin database)
 -- =============================================================================
 
-USE pdns;
+USE poweradmin;
 
 -- Template 2: Zone Manager - Full management of own zones
 INSERT INTO `perm_templ` (`id`, `name`, `descr`)
@@ -123,8 +123,10 @@ SELECT 'inactive', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi
 WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'inactive');
 
 -- =============================================================================
--- TEST DOMAINS
+-- TEST DOMAINS (pdns database)
 -- =============================================================================
+
+USE pdns;
 
 -- Master zones (forward)
 INSERT IGNORE INTO `domains` (`name`, `type`) VALUES
@@ -213,13 +215,15 @@ WHERE d.`type` IN ('MASTER', 'NATIVE')
   );
 
 -- =============================================================================
--- ZONE OWNERSHIP
+-- ZONE OWNERSHIP (poweradmin database, references pdns.domains)
 -- =============================================================================
+
+USE poweradmin;
 
 -- Admin owns admin-zone.example.com
 INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
 SELECT d.`id`, u.`id`, 0
-FROM `domains` d
+FROM `pdns`.`domains` d
 CROSS JOIN `users` u
 WHERE d.`name` = 'admin-zone.example.com' AND u.`username` = 'admin'
   AND NOT EXISTS (
@@ -229,7 +233,7 @@ WHERE d.`name` = 'admin-zone.example.com' AND u.`username` = 'admin'
 -- Manager owns manager-zone.example.com
 INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
 SELECT d.`id`, u.`id`, 0
-FROM `domains` d
+FROM `pdns`.`domains` d
 CROSS JOIN `users` u
 WHERE d.`name` = 'manager-zone.example.com' AND u.`username` = 'manager'
   AND NOT EXISTS (
@@ -239,7 +243,7 @@ WHERE d.`name` = 'manager-zone.example.com' AND u.`username` = 'manager'
 -- Client owns client-zone.example.com
 INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
 SELECT d.`id`, u.`id`, 0
-FROM `domains` d
+FROM `pdns`.`domains` d
 CROSS JOIN `users` u
 WHERE d.`name` = 'client-zone.example.com' AND u.`username` = 'client'
   AND NOT EXISTS (
@@ -249,7 +253,7 @@ WHERE d.`name` = 'client-zone.example.com' AND u.`username` = 'client'
 -- Shared zone with MULTIPLE OWNERS (manager and client both own it)
 INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
 SELECT d.`id`, u.`id`, 0
-FROM `domains` d
+FROM `pdns`.`domains` d
 CROSS JOIN `users` u
 WHERE d.`name` = 'shared-zone.example.com'
   AND u.`username` IN ('manager', 'client')
@@ -260,7 +264,7 @@ WHERE d.`name` = 'shared-zone.example.com'
 -- Viewer owns viewer-zone.example.com
 INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
 SELECT d.`id`, u.`id`, 0
-FROM `domains` d
+FROM `pdns`.`domains` d
 CROSS JOIN `users` u
 WHERE d.`name` = 'viewer-zone.example.com' AND u.`username` = 'viewer'
   AND NOT EXISTS (
@@ -270,7 +274,7 @@ WHERE d.`name` = 'viewer-zone.example.com' AND u.`username` = 'viewer'
 -- Manager owns native zones
 INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
 SELECT d.`id`, u.`id`, 0
-FROM `domains` d
+FROM `pdns`.`domains` d
 CROSS JOIN `users` u
 WHERE d.`name` IN ('native-zone.example.org', 'secondary-native.example.org')
   AND u.`username` = 'manager'
@@ -281,7 +285,7 @@ WHERE d.`name` IN ('native-zone.example.org', 'secondary-native.example.org')
 -- Admin owns slave zones
 INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
 SELECT d.`id`, u.`id`, 0
-FROM `domains` d
+FROM `pdns`.`domains` d
 CROSS JOIN `users` u
 WHERE d.`name` IN ('slave-zone.example.net', 'external-slave.example.net')
   AND u.`username` = 'admin'
@@ -292,7 +296,7 @@ WHERE d.`name` IN ('slave-zone.example.net', 'external-slave.example.net')
 -- Admin owns reverse zones
 INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
 SELECT d.`id`, u.`id`, 0
-FROM `domains` d
+FROM `pdns`.`domains` d
 CROSS JOIN `users` u
 WHERE d.`name` LIKE '%.arpa'
   AND u.`username` = 'admin'
@@ -303,7 +307,7 @@ WHERE d.`name` LIKE '%.arpa'
 -- Manager owns IDN zones
 INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
 SELECT d.`id`, u.`id`, 0
-FROM `domains` d
+FROM `pdns`.`domains` d
 CROSS JOIN `users` u
 WHERE d.`name` LIKE 'xn--%'
   AND u.`username` = 'manager'
@@ -314,7 +318,7 @@ WHERE d.`name` LIKE 'xn--%'
 -- Client owns long domain name zones
 INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
 SELECT d.`id`, u.`id`, 0
-FROM `domains` d
+FROM `pdns`.`domains` d
 CROSS JOIN `users` u
 WHERE (d.`name` LIKE 'very-long-%' OR d.`name` LIKE 'another.very%')
   AND u.`username` = 'client'
@@ -389,37 +393,37 @@ FROM `users` u WHERE u.`username` = 'manager'
 -- VERIFICATION QUERIES
 -- =============================================================================
 
--- Verify permission templates
+-- Verify permission templates (poweradmin database)
 SELECT
     pt.`id`,
     pt.`name`,
     COUNT(pti.`id`) as `permission_count`
-FROM `perm_templ` pt
-LEFT JOIN `perm_templ_items` pti ON pt.`id` = pti.`templ_id`
+FROM `poweradmin`.`perm_templ` pt
+LEFT JOIN `poweradmin`.`perm_templ_items` pti ON pt.`id` = pti.`templ_id`
 GROUP BY pt.`id`, pt.`name`
 ORDER BY pt.`id`;
 
--- Verify users and their templates
+-- Verify users and their templates (poweradmin database)
 SELECT
     u.`username`,
     u.`fullname`,
     u.`active`,
     pt.`name` as `permission_template`
-FROM `users` u
-LEFT JOIN `perm_templ` pt ON u.`perm_templ` = pt.`id`
+FROM `poweradmin`.`users` u
+LEFT JOIN `poweradmin`.`perm_templ` pt ON u.`perm_templ` = pt.`id`
 ORDER BY u.`id`;
 
--- Verify domains by type
-SELECT `type`, COUNT(*) as `count` FROM `domains` GROUP BY `type`;
+-- Verify domains by type (pdns database)
+SELECT `type`, COUNT(*) as `count` FROM `pdns`.`domains` GROUP BY `type`;
 
--- Verify zones and ownership
+-- Verify zones and ownership (cross-database query)
 SELECT
     d.`name` as `domain`,
     d.`type`,
     GROUP_CONCAT(u.`username` ORDER BY u.`username`) as `owners`
-FROM `domains` d
-LEFT JOIN `zones` z ON d.`id` = z.`domain_id`
-LEFT JOIN `users` u ON z.`owner` = u.`id`
+FROM `pdns`.`domains` d
+LEFT JOIN `poweradmin`.`zones` z ON d.`id` = z.`domain_id`
+LEFT JOIN `poweradmin`.`users` u ON z.`owner` = u.`id`
 GROUP BY d.`id`, d.`name`, d.`type`
 ORDER BY d.`name`;
 
