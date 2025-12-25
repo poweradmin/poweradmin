@@ -7,8 +7,8 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Delete permission template{% endtrans %} "{{ templ_name }}"</h5>
+<h5 class="mb-3" data-testid="delete-permission-template-heading">{% trans %}Delete permission template{% endtrans %} "{{ templ_name }}"</h5>
 
-<p>{% trans %}Are you sure?{% endtrans %}</p>
-<input type="button" class="btn btn-primary btn-sm" onClick="location.href='index.php?page=delete_perm_templ&id={{ perm_templ_id }}&confirm=1'" value="{% trans %}Yes{% endtrans %}">
-<input type="button" class="btn btn-secondary btn-sm" onClick="location.href='index.php?page=list_perm_templ'" value="{% trans %}No{% endtrans %}">
+<p data-testid="delete-confirmation-text">{% trans %}Are you sure?{% endtrans %}</p>
+<input type="button" class="btn btn-primary btn-sm" onClick="location.href='index.php?page=delete_perm_templ&id={{ perm_templ_id }}&confirm=1'" value="{% trans %}Yes{% endtrans %}" data-testid="confirm-delete-template">
+<input type="button" class="btn btn-secondary btn-sm" onClick="location.href='index.php?page=list_perm_templ'" value="{% trans %}No{% endtrans %}" data-testid="cancel-delete-template">

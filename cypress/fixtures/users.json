@@ -6,5 +6,42 @@
   "invalidUser": {
     "username": "invaliduser",
     "password": "wrongpassword"
+  },
+  "admin": {
+    "username": "admin",
+    "password": "poweradmin123",
+    "role": "System Administrator",
+    "permissions": ["user_is_ueberuser"]
+  },
+  "manager": {
+    "username": "manager",
+    "password": "poweradmin123",
+    "role": "Zone Manager",
+    "permissions": ["zone_master_add", "zone_slave_add", "zone_content_view_own", "zone_content_edit_own", "zone_meta_edit_own", "search", "user_edit_own"]
+  },
+  "client": {
+    "username": "client",
+    "password": "poweradmin123",
+    "role": "Client Editor",
+    "permissions": ["zone_content_view_own", "zone_content_edit_own_as_client", "search", "user_edit_own"]
+  },
+  "viewer": {
+    "username": "viewer",
+    "password": "poweradmin123",
+    "role": "Read Only",
+    "permissions": ["zone_content_view_own", "search"]
+  },
+  "noperm": {
+    "username": "noperm",
+    "password": "poweradmin123",
+    "role": "No Permissions",
+    "permissions": []
+  },
+  "inactive": {
+    "username": "inactive",
+    "password": "poweradmin123",
+    "role": "Inactive User",
+    "active": false,
+    "permissions": []
   }
 }

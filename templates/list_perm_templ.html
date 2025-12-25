@@ -6,8 +6,8 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Permission templates{% endtrans %}</h5>
-<table class="table table-striped table-hover table-sm">
+<h5 class="mb-3" data-testid="permission-templates-heading">{% trans %}Permission templates{% endtrans %}</h5>
+<table class="table table-striped table-hover table-sm" data-testid="permission-templates-table">
     <thead>
     <tr>
         <th>{% trans %}Name{% endtrans %}</th>
@@ -15,14 +15,14 @@
         <th>&nbsp;</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody data-testid="permission-templates-tbody">
     {% for template in permission_templates %}
-        <tr>
-            <td class="col-sm-2">{{ template['name'] }}</td>
-            <td class="col-sm-3">{{ template['descr'] }}</td>
+        <tr data-testid="permission-template-row-{{ template['id'] }}">
+            <td class="col-sm-2" data-testid="template-name-{{ template['id'] }}">{{ template['name'] }}</td>
+            <td class="col-sm-3" data-testid="template-descr-{{ template['id'] }}">{{ template['descr'] }}</td>
             <td>
-                <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_perm_templ&id={{ template['id'] }}"><i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
-                <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_perm_templ&id={{ template['id'] }}"><i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
+                <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_perm_templ&id={{ template['id'] }}" data-testid="edit-template-{{ template['id'] }}"><i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
+                <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_perm_templ&id={{ template['id'] }}" data-testid="delete-template-{{ template['id'] }}"><i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
             </td>
         </tr>
     {% endfor %}
@@ -31,6 +31,6 @@
 
 <div>
     {% if templ_perm_add %}
-    <a class="btn btn-primary btn-sm" href="index.php?page=add_perm_templ">{% trans %}Add permission template{% endtrans %}</a>
+    <a class="btn btn-primary btn-sm" href="index.php?page=add_perm_templ" data-testid="add-permission-template-link">{% trans %}Add permission template{% endtrans %}</a>
     {% endif %}
 </div>
