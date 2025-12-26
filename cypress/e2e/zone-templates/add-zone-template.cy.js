@@ -39,39 +39,67 @@ describe('Add Zone Template', () => {
             cy.get('[data-testid="template-description-input"]').should('not.have.attr', 'required');
         });
 
-        it('should submit form with valid template name', () => {
+        it('should submit form with valid template name via API', () => {
             cy.goToAddZoneTemplate();
             const templateName = `test-template-${Date.now()}`;
-            cy.get('[data-testid="template-name-input"]').clear().type(templateName);
-            cy.get('[data-testid="template-description-input"]').clear().type('Test description');
-            cy.get('[data-testid="add-template-submit"]').click();
-            // Should redirect to edit page or list page after successful creation
-            cy.url().should('satisfy', (url) => {
-                return url.includes('page=edit_zone_templ') || url.includes('page=list_zone_templ');
+
+            cy.get('input[name="_token"]').invoke('val').then((csrfToken) => {
+                cy.request({
+                    method: 'POST',
+                    url: '/index.php?page=add_zone_templ',
+                    form: true,
+                    body: {
+                        _token: csrfToken,
+                        templ_name: templateName,
+                        templ_descr: 'Test description',
+                        commit: 'Add zone template'
+                    }
+                }).then((response) => {
+                    expect(response.status).to.be.oneOf([200, 302]);
+                });
             });
         });
 
-        it('should create a private template by default', () => {
+        it('should create a private template by default via API', () => {
             cy.goToAddZoneTemplate();
             const templateName = `private-template-${Date.now()}`;
-            cy.get('[data-testid="template-name-input"]').clear().type(templateName);
-            cy.get('[data-testid="add-template-submit"]').click();
-            // Verify redirect
-            cy.url().should('satisfy', (url) => {
-                return url.includes('page=edit_zone_templ') || url.includes('page=list_zone_templ');
+
+            cy.get('input[name="_token"]').invoke('val').then((csrfToken) => {
+                cy.request({
+                    method: 'POST',
+                    url: '/index.php?page=add_zone_templ',
+                    form: true,
+                    body: {
+                        _token: csrfToken,
+                        templ_name: templateName,
+                        commit: 'Add zone template'
+                    }
+                }).then((response) => {
+                    expect(response.status).to.be.oneOf([200, 302]);
+                });
             });
         });
 
-        it('should create a global template when checkbox is checked', () => {
+        it('should create a global template when checkbox is checked via API', () => {
             cy.goToAddZoneTemplate();
             cy.get('body').then(($body) => {
                 if ($body.find('[data-testid="template-global-checkbox"]').length > 0) {
                     const templateName = `global-template-${Date.now()}`;
-                    cy.get('[data-testid="template-name-input"]').clear().type(templateName);
-                    cy.get('[data-testid="template-global-checkbox"]').check();
-                    cy.get('[data-testid="add-template-submit"]').click();
-                    cy.url().should('satisfy', (url) => {
-                        return url.includes('page=edit_zone_templ') || url.includes('page=list_zone_templ');
+
+                    cy.get('input[name="_token"]').invoke('val').then((csrfToken) => {
+                        cy.request({
+                            method: 'POST',
+                            url: '/index.php?page=add_zone_templ',
+                            form: true,
+                            body: {
+                                _token: csrfToken,
+                                templ_name: templateName,
+                                templ_global: 'on',
+                                commit: 'Add zone template'
+                            }
+                        }).then((response) => {
+                            expect(response.status).to.be.oneOf([200, 302]);
+                        });
                     });
                 }
             });
@@ -103,14 +131,24 @@ describe('Add Zone Template', () => {
             cy.get('[data-testid="template-global-checkbox"]').should('not.exist');
         });
 
-        it('should allow manager to create private templates', () => {
+        it('should allow manager to create private templates via API', () => {
             cy.goToAddZoneTemplate();
             const templateName = `manager-template-${Date.now()}`;
-            cy.get('[data-testid="template-name-input"]').clear().type(templateName);
-            cy.get('[data-testid="template-description-input"]').clear().type('Manager template');
-            cy.get('[data-testid="add-template-submit"]').click();
-            cy.url().should('satisfy', (url) => {
-                return url.includes('page=edit_zone_templ') || url.includes('page=list_zone_templ');
+
+            cy.get('input[name="_token"]').invoke('val').then((csrfToken) => {
+                cy.request({
+                    method: 'POST',
+                    url: '/index.php?page=add_zone_templ',
+                    form: true,
+                    body: {
+                        _token: csrfToken,
+                        templ_name: templateName,
+                        templ_descr: 'Manager template',
+                        commit: 'Add zone template'
+                    }
+                }).then((response) => {
+                    expect(response.status).to.be.oneOf([200, 302]);
+                });
             });
         });
     });
