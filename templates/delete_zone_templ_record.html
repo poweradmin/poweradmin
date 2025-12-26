@@ -31,7 +31,5 @@
     </tbody>
 </table>
 <p data-testid="confirmation-message">{% trans %}Are you sure?{% endtrans %}</p>
-<input type="button" class="btn btn-primary btn-sm"
-       onClick="location.href='index.php?page=delete_zone_templ_record&id={{ record_id }}&zone_templ_id={{ zone_templ_id }}&confirm=1'"
-       value="{% trans %}Yes{% endtrans %}" data-testid="confirm-button">
-<input type="button" class="btn btn-secondary btn-sm" onClick="location.href='index.php?page=edit_zone_templ&id={{ zone_templ_id }}'" value="{% trans %}No{% endtrans %}" data-testid="cancel-button">
+<a href="index.php?page=delete_zone_templ_record&id={{ record_id }}&zone_templ_id={{ zone_templ_id }}&confirm=1" class="btn btn-primary btn-sm" data-testid="confirm-button">{% trans %}Yes{% endtrans %}</a>
+<a href="index.php?page=edit_zone_templ&id={{ zone_templ_id }}" class="btn btn-secondary btn-sm" data-testid="cancel-button">{% trans %}No{% endtrans %}</a>

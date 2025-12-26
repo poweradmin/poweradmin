@@ -16,9 +16,7 @@
 {% if records == "-1" %}
 <div class="text-secondary" data-testid="no-records-message">{% trans %}This zone template does not have any records yet.{% endtrans %}</div>
 <br>
-<div><input class="btn btn-primary btn-sm" type="button"
-            onClick="location.href='index.php?page=add_zone_templ_record&id={{zone_templ_id}}'"
-            value="{% trans %}Add record{% endtrans %}" data-testid="add-record-button">
+<div><a href="index.php?page=add_zone_templ_record&id={{zone_templ_id}}" class="btn btn-primary btn-sm" data-testid="add-record-button">{% trans %}Add record{% endtrans %}</a>
 </div>
 {% else %}
 <form method="post" action="" data-testid="edit-template-form">
@@ -57,9 +55,7 @@
         {% endfor %}
         <tr>
             <td colspan="6">
-                <input class="btn btn-primary btn-sm" type="button"
-                       onClick="location.href='index.php?page=add_zone_templ_record&id={{zone_templ_id}}'"
-                       value="{% trans %}Add record{% endtrans %}" data-testid="add-record-button-table">&nbsp;&nbsp
+                <a href="index.php?page=add_zone_templ_record&id={{zone_templ_id}}" class="btn btn-primary btn-sm" data-testid="add-record-button-table">{% trans %}Add record{% endtrans %}</a>&nbsp;&nbsp
             </td>
         </tr>
     </table>
