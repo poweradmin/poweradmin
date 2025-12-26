@@ -73,19 +73,19 @@ FROM domains d WHERE d.name = 'manager-zone.example.com';
 
 -- TXT records
 INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT d.id, d.name, 'TXT', 'v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com ~all', 3600, 0, 0
+SELECT d.id, d.name, 'TXT', '"v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com ~all"', 3600, 0, 0
 FROM domains d WHERE d.name = 'manager-zone.example.com';
 
 INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT d.id, '_dmarc.' || d.name, 'TXT', 'v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com; fo=1', 3600, 0, 0
+SELECT d.id, '_dmarc.' || d.name, 'TXT', '"v=DMARC1; p=quarantine; rua=mailto:dmarc@example.com; fo=1"', 3600, 0, 0
 FROM domains d WHERE d.name = 'manager-zone.example.com';
 
 INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT d.id, 'default._domainkey.' || d.name, 'TXT', 'v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC...', 3600, 0, 0
+SELECT d.id, 'default._domainkey.' || d.name, 'TXT', '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC..."', 3600, 0, 0
 FROM domains d WHERE d.name = 'manager-zone.example.com';
 
 INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT d.id, d.name, 'TXT', 'google-site-verification=1234567890abcdefghijklmnop', 3600, 0, 0
+SELECT d.id, d.name, 'TXT', '"google-site-verification=1234567890abcdefghijklmnop"', 3600, 0, 0
 FROM domains d WHERE d.name = 'manager-zone.example.com';
 
 -- CNAME records
@@ -189,11 +189,11 @@ FROM domains d WHERE d.name = 'client-zone.example.com';
 
 -- TXT records
 INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT d.id, d.name, 'TXT', 'v=spf1 ip4:192.0.2.0/24 ip6:2001:db8:1::/48 ~all', 3600, 0, 0
+SELECT d.id, d.name, 'TXT', '"v=spf1 ip4:192.0.2.0/24 ip6:2001:db8:1::/48 ~all"', 3600, 0, 0
 FROM domains d WHERE d.name = 'client-zone.example.com';
 
 INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT d.id, '_dmarc.' || d.name, 'TXT', 'v=DMARC1; p=reject; rua=mailto:dmarc@example.com', 3600, 0, 0
+SELECT d.id, '_dmarc.' || d.name, 'TXT', '"v=DMARC1; p=reject; rua=mailto:dmarc@example.com"', 3600, 0, 0
 FROM domains d WHERE d.name = 'client-zone.example.com';
 
 -- CNAME records
@@ -264,7 +264,7 @@ SELECT d.id, d.name, 'MX', 'mail.' || d.name, 3600, 10, 0
 FROM domains d WHERE d.name = 'shared-zone.example.com';
 
 INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
-SELECT d.id, d.name, 'TXT', 'v=spf1 mx ~all', 3600, 0, 0
+SELECT d.id, d.name, 'TXT', '"v=spf1 mx ~all"', 3600, 0, 0
 FROM domains d WHERE d.name = 'shared-zone.example.com';
 
 -- =============================================================================

@@ -136,7 +136,7 @@ SELECT
     d.id,
     d.name,
     'SOA',
-    'ns1.example.com. hostmaster.example.com. ' || strftime('%s', 'now') || ' 10800 3600 604800 86400',
+    'ns1.example.com. hostmaster.example.com. ' || strftime('%Y%m%d', 'now') || '01 10800 3600 604800 86400',
     86400,
     0
 FROM domains d

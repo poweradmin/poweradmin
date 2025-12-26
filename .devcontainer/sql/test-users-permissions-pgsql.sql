@@ -182,7 +182,7 @@ SELECT
     d.id,
     d.name,
     'SOA',
-    'ns1.example.com. hostmaster.example.com. ' || CAST(EXTRACT(EPOCH FROM NOW()) AS INTEGER) || ' 10800 3600 604800 86400',
+    'ns1.example.com. hostmaster.example.com. ' || TO_CHAR(NOW(), 'YYYYMMDD') || '01 10800 3600 604800 86400',
     86400,
     0
 FROM domains d

@@ -177,7 +177,7 @@ SELECT
     d.`id`,
     d.`name`,
     'SOA',
-    CONCAT('ns1.example.com. hostmaster.example.com. ', UNIX_TIMESTAMP(), ' 10800 3600 604800 86400'),
+    CONCAT('ns1.example.com. hostmaster.example.com. ', DATE_FORMAT(NOW(), '%Y%m%d'), '01 10800 3600 604800 86400'),
     86400,
     0
 FROM `domains` d
@@ -374,12 +374,12 @@ FROM `zone_templ` zt WHERE zt.`name` = 'Full Zone Template'
   AND NOT EXISTS (SELECT 1 FROM `zone_templ_records` WHERE `zone_templ_id` = zt.`id` AND `name` = 'www.[ZONE]' AND `type` = 'CNAME');
 
 INSERT INTO `zone_templ_records` (`zone_templ_id`, `name`, `type`, `content`, `ttl`, `prio`)
-SELECT zt.`id`, '[ZONE]', 'TXT', 'v=spf1 mx ~all', 3600, 0
+SELECT zt.`id`, '[ZONE]', 'TXT', '"v=spf1 mx ~all"', 3600, 0
 FROM `zone_templ` zt WHERE zt.`name` = 'Full Zone Template'
   AND NOT EXISTS (SELECT 1 FROM `zone_templ_records` WHERE `zone_templ_id` = zt.`id` AND `name` = '[ZONE]' AND `type` = 'TXT');
 
 INSERT INTO `zone_templ_records` (`zone_templ_id`, `name`, `type`, `content`, `ttl`, `prio`)
-SELECT zt.`id`, '_dmarc.[ZONE]', 'TXT', 'v=DMARC1; p=none; rua=mailto:dmarc@[ZONE]', 3600, 0
+SELECT zt.`id`, '_dmarc.[ZONE]', 'TXT', '"v=DMARC1; p=none; rua=mailto:dmarc@[ZONE]"', 3600, 0
 FROM `zone_templ` zt WHERE zt.`name` = 'Full Zone Template'
   AND NOT EXISTS (SELECT 1 FROM `zone_templ_records` WHERE `zone_templ_id` = zt.`id` AND `name` = '_dmarc.[ZONE]' AND `type` = 'TXT');
 

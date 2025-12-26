@@ -45,11 +45,11 @@ FROM (
     UNION ALL SELECT @zone_name, 'MX', 'backup-mx.example.net.', 3600, 30, 0
 
     -- TXT records (5 total) - Long content for UI testing
-    UNION ALL SELECT @zone_name, 'TXT', 'v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com include:spf.protection.outlook.com ~all', 3600, 0, 0
-    UNION ALL SELECT CONCAT('_dmarc.', @zone_name), 'TXT', 'v=DMARC1; p=quarantine; sp=reject; rua=mailto:dmarc-reports@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1; adkim=s; aspf=s', 3600, 0, 0
-    UNION ALL SELECT CONCAT('default._domainkey.', @zone_name), 'TXT', 'v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz6WIl0d8AJ7gMXBN0123456789abcdef', 3600, 0, 0
-    UNION ALL SELECT CONCAT('_github-challenge.', @zone_name), 'TXT', 'a1b2c3d4e5f6g7h8i9j0', 3600, 0, 0
-    UNION ALL SELECT @zone_name, 'TXT', 'google-site-verification=1234567890abcdefghijklmnop', 3600, 0, 0
+    UNION ALL SELECT @zone_name, 'TXT', '"v=spf1 ip4:192.0.2.0/24 ip6:2001:db8::/32 include:_spf.google.com include:spf.protection.outlook.com ~all"', 3600, 0, 0
+    UNION ALL SELECT CONCAT('_dmarc.', @zone_name), 'TXT', '"v=DMARC1; p=quarantine; sp=reject; rua=mailto:dmarc-reports@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1; adkim=s; aspf=s"', 3600, 0, 0
+    UNION ALL SELECT CONCAT('default._domainkey.', @zone_name), 'TXT', '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz6WIl0d8AJ7gMXBN0123456789abcdef"', 3600, 0, 0
+    UNION ALL SELECT CONCAT('_github-challenge.', @zone_name), 'TXT', '"a1b2c3d4e5f6g7h8i9j0"', 3600, 0, 0
+    UNION ALL SELECT @zone_name, 'TXT', '"google-site-verification=1234567890abcdefghijklmnop"', 3600, 0, 0
 
     -- CNAME records (4 total)
     UNION ALL SELECT CONCAT('cdn.', @zone_name), 'CNAME', 'cdn.cloudflare.net.', 3600, 0, 0
@@ -122,11 +122,11 @@ FROM (
     UNION ALL SELECT @zone_name, 'MX', 'backup-mx.example.net.', 3600, 30, 0
 
     -- TXT records (5 total)
-    UNION ALL SELECT @zone_name, 'TXT', 'v=spf1 ip4:192.0.2.0/24 ip6:2001:db8:1::/48 include:_spf.google.com ~all', 3600, 0, 0
-    UNION ALL SELECT CONCAT('_dmarc.', @zone_name), 'TXT', 'v=DMARC1; p=reject; rua=mailto:dmarc@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1', 3600, 0, 0
-    UNION ALL SELECT CONCAT('default._domainkey.', @zone_name), 'TXT', 'v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz', 3600, 0, 0
-    UNION ALL SELECT @zone_name, 'TXT', 'google-site-verification=abcdefghijklmnopqrstuvwxyz', 3600, 0, 0
-    UNION ALL SELECT @zone_name, 'TXT', 'ms=ms12345678', 3600, 0, 0
+    UNION ALL SELECT @zone_name, 'TXT', '"v=spf1 ip4:192.0.2.0/24 ip6:2001:db8:1::/48 include:_spf.google.com ~all"', 3600, 0, 0
+    UNION ALL SELECT CONCAT('_dmarc.', @zone_name), 'TXT', '"v=DMARC1; p=reject; rua=mailto:dmarc@example.com; ruf=mailto:dmarc-forensics@example.com; fo=1"', 3600, 0, 0
+    UNION ALL SELECT CONCAT('default._domainkey.', @zone_name), 'TXT', '"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQC3QEKyU1fSma0axspqYK5iAj+54lsAg4qRRCnpKK68hawSI8zvKBSjzQAHNxfh3UDPz"', 3600, 0, 0
+    UNION ALL SELECT @zone_name, 'TXT', '"google-site-verification=abcdefghijklmnopqrstuvwxyz"', 3600, 0, 0
+    UNION ALL SELECT @zone_name, 'TXT', '"ms=ms12345678"', 3600, 0, 0
 
     -- CNAME records (4 total)
     UNION ALL SELECT CONCAT('cdn.', @zone_name), 'CNAME', 'd1234567890.cloudfront.net.', 3600, 0, 0
@@ -196,7 +196,7 @@ FROM (
     UNION ALL SELECT CONCAT('api.', @zone_name), 'A', '192.0.2.201', 3600, 0
     UNION ALL SELECT CONCAT('mail.', @zone_name), 'A', '192.0.2.210', 3600, 0
     UNION ALL SELECT @zone_name, 'MX', CONCAT('mail.', @zone_name), 3600, 10
-    UNION ALL SELECT @zone_name, 'TXT', 'v=spf1 mx ~all', 3600, 0
+    UNION ALL SELECT @zone_name, 'TXT', '"v=spf1 mx ~all"', 3600, 0
     UNION ALL SELECT @zone_name, 'AAAA', '2001:db8:2::1', 3600, 0
 ) AS shared_records
 WHERE @zone_id IS NOT NULL
