@@ -6,10 +6,10 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Delete user{% endtrans %} "{{ name }}"</h5>
-<form method="post" action="">
+<h5 class="mb-3" data-testid="delete-user-heading">{% trans %}Delete user{% endtrans %} "{{ name }}"</h5>
+<form method="post" action="" data-testid="delete-user-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table class="table table-striped table-sm">
+    <table class="table table-striped table-sm" data-testid="zones-table">
 
         {% if zones_count > 0 %}
         <tr>
@@ -28,13 +28,13 @@
 
         {% for zone in zones %}
         <input type="hidden" name="zone[{{ zone['id']}}][zid]" value="{{ zone['id']}}">
-        <tr>
-            <td>{{ zone['name']}}</td>
-            <td><input type="radio" name="zone[{{ zone['id']}}][target]" value="delete"></td>
-            <td><input type="radio" name="zone[{{ zone['id']}}][target]" value="leave" CHECKED></td>
-            <td><input type="radio" name="zone[{{ zone['id']}}][target]" value="new_owner"></td>
+        <tr data-testid="zone-row-{{ zone['id'] }}">
+            <td data-testid="zone-name-{{ zone['id'] }}">{{ zone['name']}}</td>
+            <td><input type="radio" name="zone[{{ zone['id']}}][target]" value="delete" data-testid="zone-delete-radio-{{ zone['id'] }}"></td>
+            <td><input type="radio" name="zone[{{ zone['id']}}][target]" value="leave" CHECKED data-testid="zone-leave-radio-{{ zone['id'] }}"></td>
+            <td><input type="radio" name="zone[{{ zone['id']}}][target]" value="new_owner" data-testid="zone-newowner-radio-{{ zone['id'] }}"></td>
             <td>
-                <select class="form-select form-select-sm" name="zone[{{ zone['id']}}][newowner]">
+                <select class="form-select form-select-sm" name="zone[{{ zone['id']}}][newowner]" data-testid="zone-newowner-select-{{ zone['id'] }}">
                     {% for user in users %}
                     <option value="{{ user['id'] }}">{{ user["fullname"]}}</option>
                     {% endfor %}
@@ -51,6 +51,6 @@
         </tr>
 
     </table>
-    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Yes{% endtrans %}">
-    <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=users'" value="{% trans %}No{% endtrans %}">
+    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Yes{% endtrans %}" data-testid="confirm-delete-user">
+    <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=users'" value="{% trans %}No{% endtrans %}" data-testid="cancel-delete-user">
 </form>

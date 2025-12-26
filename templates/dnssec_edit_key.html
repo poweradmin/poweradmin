@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -23,9 +23,9 @@
 </nav>
 
 {% if key_info[5] %}
-<h5 class="mb-3">{% trans %}Deactivate zone key{% endtrans %}</h5>
+<h5 class="mb-3" data-testid="edit-key-heading">{% trans %}Deactivate zone key{% endtrans %}</h5>
 {% else %}
-<h5 class="mb-3">{% trans %}Activate zone key{% endtrans %}</h5>
+<h5 class="mb-3" data-testid="edit-key-heading">{% trans %}Activate zone key{% endtrans %}</h5>
 {% endif %}
 
 {% if key_info[5] %}
@@ -34,6 +34,7 @@
 {% set active = 'No' %}
 {% endif %}
 
+<div data-testid="key-info">
 {% trans %}Domain{% endtrans %}:
 {% if idn_zone_name %}
 {{ idn_zone_name }} ({{ domain_name }})
@@ -41,14 +42,15 @@
 {{ domain_name }}
 {% endif %}
 <br>
-{% trans %}Id{% endtrans %}: {{ key_info[0] }}<br>
-{% trans %}Type{% endtrans %}: {{ key_info[1] }}<br>
-{% trans %}Tag{% endtrans %}: {{ key_info[2] }}<br>
-{% trans %}Algorithm{% endtrans %}: {{ algorithms[key_info[3]] }}<br>
-{% trans %}Bits{% endtrans %}: {{ key_info[4] }}<br>
-{% trans %}Active{% endtrans %}: {{ active|trans }}<br>
-<p class="pt-3"><strong>{% trans %}Are you sure?{% endtrans %}</strong></p>
+{% trans %}Id{% endtrans %}: <span data-testid="key-id">{{ key_info[0] }}</span><br>
+{% trans %}Type{% endtrans %}: <span data-testid="key-type">{{ key_info[1] }}</span><br>
+{% trans %}Tag{% endtrans %}: <span data-testid="key-tag">{{ key_info[2] }}</span><br>
+{% trans %}Algorithm{% endtrans %}: <span data-testid="key-algorithm">{{ algorithms[key_info[3]] }}</span><br>
+{% trans %}Bits{% endtrans %}: <span data-testid="key-bits">{{ key_info[4] }}</span><br>
+{% trans %}Active{% endtrans %}: <span data-testid="key-active">{{ active|trans }}</span><br>
+</div>
+<p class="pt-3" data-testid="confirmation-message"><strong>{% trans %}Are you sure?{% endtrans %}</strong></p>
 <input class="btn btn-primary btn-sm" type="button"
        onClick="location.href='index.php?page=dnssec_edit_key&id={{ zone_id }}&key_id={{ key_id }}&confirm=1'"
-       value="{% trans %}Yes{% endtrans %}">
-<input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=dnssec&id={{ zone_id }}'" value="{% trans %}No{% endtrans %}">
+       value="{% trans %}Yes{% endtrans %}" data-testid="confirm-button">
+<input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=dnssec&id={{ zone_id }}'" value="{% trans %}No{% endtrans %}" data-testid="cancel-button">

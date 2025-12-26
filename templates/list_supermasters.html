@@ -1,12 +1,12 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Supermasters{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}List supermasters{% endtrans %}</h5>
-<table class="table table-striped table-hover table-sm">
+<h5 class="mb-3" data-testid="supermasters-heading">{% trans %}List supermasters{% endtrans %}</h5>
+<table class="table table-striped table-hover table-sm" data-testid="supermasters-table">
     {% if supermasters %}
     <thead>
     <tr>
@@ -16,16 +16,17 @@
         <th>&nbsp;</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody data-testid="supermasters-tbody">
     {% for server in supermasters %}
-    <tr>
-        <td class="col-sm-3">{{ server['master_ip'] }}</td>
-        <td class="col-sm-3">{{ server['ns_name'] }}</td>
-        <td class="col-sm-2">{{ server['account'] }}</td>
+    <tr data-testid="supermaster-row-{{ loop.index }}">
+        <td class="col-sm-3" data-testid="supermaster-ip-{{ loop.index }}">{{ server['master_ip'] }}</td>
+        <td class="col-sm-3" data-testid="supermaster-ns-{{ loop.index }}">{{ server['ns_name'] }}</td>
+        <td class="col-sm-2" data-testid="supermaster-account-{{ loop.index }}">{{ server['account'] }}</td>
         {% if perm_sm_edit %}
         <td>
             <a class="btn btn-outline-danger btn-sm"
-               href="index.php?page=delete_supermaster&master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}">
+               href="index.php?page=delete_supermaster&master_ip={{ server['master_ip'] }}&ns_name={{ server['ns_name'] }}"
+               data-testid="delete-supermaster-{{ loop.index }}">
                 <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}
             </a>
         </td>
@@ -36,7 +37,7 @@
     {% endfor %}
     {% else %}
     <tr>
-        <td colspan="3">
+        <td colspan="3" data-testid="no-supermasters-message">
             {% trans %}There are no supermasters to show in this listing.{% endtrans %}
         </td>
     </tr>
@@ -45,6 +46,6 @@
 </table>
 {% if perm_sm_add %}
 <div>
-    <a class="btn btn-primary btn-sm" href="index.php?page=add_supermaster">{% trans %}Add supermaster{% endtrans %}</a>
+    <a class="btn btn-primary btn-sm" href="index.php?page=add_supermaster" data-testid="add-supermaster-button">{% trans %}Add supermaster{% endtrans %}</a>
 </div>
 {% endif %}

@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -9,9 +9,9 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Edit record in zone template{% endtrans %} "{{ templ_details['name'] }}"</h5>
+<h5 class="mb-3" data-testid="edit-record-heading">{% trans %}Edit record in zone template{% endtrans %} "{{ templ_details['name'] }}"</h5>
 <form class="needs-validation" method="post"
-      action="index.php?page=edit_zone_templ_record&zone_templ_id={{ zone_templ_id }}&id={{ record_id }}" novalidate>
+      action="index.php?page=edit_zone_templ_record&zone_templ_id={{ zone_templ_id }}&id={{ record_id }}" novalidate data-testid="edit-record-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="rid" value="{{ record_id }}">
     <input type="hidden" name="zid" value="{{ zone_templ_id }}">
@@ -26,10 +26,10 @@
             <th>{% trans %}TTL{% endtrans %}</th>
         </tr>
         <tr>
-            <td><input class="form-control form-control-sm" type="text" name="name" value="{{ record['name'] }}"></td>
+            <td><input class="form-control form-control-sm" type="text" name="name" value="{{ record['name'] }}" data-testid="record-name-input"></td>
             <td>IN</td>
             <td>
-                <select class="form-select form-select-sm" name="type">
+                <select class="form-select form-select-sm" name="type" data-testid="record-type-select">
                     {% set found_selected_type = false %}
                     {% for type_available in record_types %}
                     {% if type_available == record["type"] %}
@@ -47,17 +47,17 @@
                 </select>
             </td>
             <td><input class="form-control form-control-sm" type="text" name="content" value="{{ record['content'] }}"
-                       required>
+                       required data-testid="record-content-input">
                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
             </td>
             <td><input class="form-control form-control-sm" type="number" name="prio" min="0" max="65535" pattern="[0-9]*"
-                       value="{{ record['prio'] }}"></td>
+                       value="{{ record['prio'] }}" data-testid="record-priority-input"></td>
             <td><input class="form-control form-control-sm" type="number" name="ttl" min="0" max="2147483647"
-                       pattern="[0-9]*" value="{{ record['ttl'] }}" required></td>
+                       pattern="[0-9]*" value="{{ record['ttl'] }}" required data-testid="record-ttl-input"></td>
         </tr>
     </table>
     <p class="pt-3">
-        <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Update{% endtrans %}">&nbsp;&nbsp;
-        <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans %}Reset{% endtrans %}">&nbsp;&nbsp;
+        <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Update{% endtrans %}" data-testid="update-record-button">&nbsp;&nbsp;
+        <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans %}Reset{% endtrans %}" data-testid="reset-button">&nbsp;&nbsp;
     </p>
 </form>

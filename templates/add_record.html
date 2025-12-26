@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -14,15 +14,15 @@
 </nav>
 
 {% if idn_zone_name %}
-<h5 class="mb-3">{% trans %}Add record to zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name }})</h5>
+<h5 class="mb-3" data-testid="add-record-heading">{% trans %}Add record to zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name }})</h5>
 {% else %}
-<h5 class="mb-3">{% trans %}Add record to zone{% endtrans %} "{{ zone_name }}"</h5>
+<h5 class="mb-3" data-testid="add-record-heading">{% trans %}Add record to zone{% endtrans %} "{{ zone_name }}"</h5>
 {% endif %}
 
-<form class="needs-validation" method="post" novalidate>
+<form class="needs-validation" method="post" novalidate data-testid="add-record-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="domain" value="{{ zone_id }}">
-    <table class="table table-striped table-sm">
+    <table class="table table-striped table-sm" data-testid="add-record-table">
         <tr>
             <td>{% trans %}Name{% endtrans %}</td>
             <td>&nbsp;</td>
@@ -35,12 +35,12 @@
             {% endif %}
         </tr>
         <tr>
-            <td class="col-sm-2"><input class="form-control form-control-sm" type="text" name="name" value="{{ name }}">.{{
+            <td class="col-sm-2"><input class="form-control form-control-sm" type="text" name="name" value="{{ name }}" data-testid="record-name-input">.{{
                 idn_zone_name ?: zone_name }}
             </td>
             <td>IN</td>
             <td class="col-sm-1">
-                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent')">
+                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent')" data-testid="record-type-select">
                     {% for record_type in types %}
                     {% set add = '' %}
                     {% if type == record_type %}
@@ -54,33 +54,33 @@
             </td>
             <td>
                 <div id="contentInputContainer">
-                    <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="{{ content }}" required>
+                    <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="{{ content }}" required data-testid="record-content-input">
                 </div>
                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
             </td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="prio"
-                                        value="{{ prio }}" min="0" max="65535" pattern="[0-9]*"></td>
+                                        value="{{ prio }}" min="0" max="65535" pattern="[0-9]*" data-testid="record-priority-input"></td>
             <td class="col-sm-1"><input class="form-control form-control-sm" type="number" name="ttl" value="{{ ttl }}"
-                                        min="0" max="2147483647" pattern="[0-9]*" required></td>
+                                        min="0" max="2147483647" pattern="[0-9]*" required data-testid="record-ttl-input"></td>
             {% if iface_record_comments %}
-                <td><input class="form-control form-control-sm" type="text" name="comment" value=""></td>
+                <td><input class="form-control form-control-sm" type="text" name="comment" value="" data-testid="record-comment-input"></td>
             {% endif %}
         </tr>
     </table>
     <br>
-    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Add record{% endtrans %}">
+    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Add record{% endtrans %}" data-testid="add-record-submit">
 
     {% if not is_reverse_zone and iface_add_reverse_record %}
     <span class="align-middle">
         &nbsp;
-        <input class="form-check-input" type="checkbox" name="reverse">
+        <input class="form-check-input" type="checkbox" name="reverse" data-testid="add-reverse-ptr-checkbox">
         <span class="text-secondary"> {% trans %}Also add a PTR record in the matching zone{% endtrans %}</span>
     </span>
     {% endif %}
     {% if is_reverse_zone and iface_add_domain_record %}
     <span class="align-middle">
         &nbsp;
-        <input class="form-check-input" type="checkbox" name="create_domain_record">
+        <input class="form-check-input" type="checkbox" name="create_domain_record" data-testid="add-domain-record-checkbox">
         <span class="text-secondary"> {% trans %}Also add an A/AAAA record in the matching zone{% endtrans %}</span>
     </span>
     {% endif %}

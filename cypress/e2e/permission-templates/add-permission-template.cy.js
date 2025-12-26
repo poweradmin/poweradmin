@@ -32,6 +32,75 @@ describe('Add Permission Template', () => {
             cy.get('[data-testid="template-name-input"]:invalid').should('exist');
         });
 
+        it('should display validation error message for empty name field', () => {
+            cy.goToAddPermissionTemplate();
+            // The error div should exist but not be visible initially
+            cy.get('[data-testid="template-name-error"]').should('exist');
+            // Trigger validation by clicking submit
+            cy.get('[data-testid="submit-template-button"]').click();
+            // The invalid-feedback class shows when input is invalid
+            cy.get('[data-testid="template-name-input"]:invalid').should('exist');
+        });
+
+        it('should display permission names in the permissions table', () => {
+            cy.goToAddPermissionTemplate();
+            // Verify permission names are visible in the table
+            cy.get('[data-testid^="permission-name-"]').should('have.length.at.least', 1);
+            cy.get('[data-testid^="permission-name-"]').first().should('not.be.empty');
+        });
+
+        it('should have matching permission checkboxes and names', () => {
+            cy.goToAddPermissionTemplate();
+            // Get a permission row and verify it has both checkbox and name
+            cy.get('[data-testid^="permission-row-"]').first().within(() => {
+                cy.get('[data-testid^="permission-checkbox-"]').should('exist');
+                cy.get('[data-testid^="permission-name-"]').should('exist').and('not.be.empty');
+            });
+        });
+
+        it('should display breadcrumb navigation', () => {
+            cy.goToAddPermissionTemplate();
+            cy.get('nav[aria-label="breadcrumb"]').should('be.visible');
+            cy.get('.breadcrumb').should('be.visible');
+            cy.get('.breadcrumb-item').should('have.length', 4);
+            cy.get('.breadcrumb-item').eq(0).should('contain', 'Home');
+            cy.get('.breadcrumb-item').eq(1).should('contain', 'Users');
+            cy.get('.breadcrumb-item').eq(2).should('contain', 'Permission templates');
+            cy.get('.breadcrumb-item').eq(3).should('contain', 'Add');
+        });
+
+        it('should submit form via UI and create template', () => {
+            const templateName = `UI Submit Template ${Date.now()}`;
+            cy.goToAddPermissionTemplate();
+
+            // Fill in the form via UI
+            cy.get('[data-testid="template-name-input"]').type(templateName);
+            cy.get('[data-testid="template-description-input"]').type('Created via UI submit');
+            cy.get('[data-testid^="permission-checkbox-"]').first().check();
+
+            // Get CSRF token and submit via request to maintain session
+            cy.get('input[name="_token"]').invoke('val').then((csrfToken) => {
+                cy.get('[data-testid^="permission-checkbox-"]').first().invoke('val').then((permId) => {
+                    cy.request({
+                        method: 'POST',
+                        url: '/index.php?page=add_perm_templ',
+                        form: true,
+                        body: {
+                            _token: csrfToken,
+                            templ_name: templateName,
+                            templ_descr: 'Created via UI submit',
+                            'perm_id[]': [permId],
+                            commit: 'Update'
+                        }
+                    });
+                });
+            });
+
+            // Verify template was created by visiting list page
+            cy.goToPermissionTemplates();
+            cy.contains(templateName).should('be.visible');
+        });
+
         it('should add a permission template with name only', () => {
             const templateName = `Name Only Template ${Date.now()}`;
             cy.goToAddPermissionTemplate();

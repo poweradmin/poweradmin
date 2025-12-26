@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -6,20 +6,20 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Zone logs{% endtrans %}</h5>
+<h5 class="mb-3" data-testid="zone-logs-heading">{% trans %}Zone logs{% endtrans %}</h5>
 
-<form method="GET">
+<form method="GET" data-testid="search-form">
     <input type="hidden" name="page" value="list_log_zones">
     <div class="row pb-3">
         <div class="col-sm-4">
             <div class="input-group">
                 <input name="name" id="name" type="text" class="form-control form-control-sm"
                        placeholder="{% trans %}Search logs by domain{% endtrans %}"
-                       {% if name %}value="{{ name }}"{% endif %}>
-                <button for="name" type="submit" class="btn btn-primary btn-sm">
+                       {% if name %}value="{{ name }}"{% endif %} data-testid="search-input">
+                <button for="name" type="submit" class="btn btn-primary btn-sm" data-testid="search-button">
                     <i class="bi bi-search"></i> {% trans %}Search{% endtrans %}
                 </button>
-                <a href="index.php?page=list_log_zones" class="btn btn-secondary btn-sm" role="button">
+                <a href="index.php?page=list_log_zones" class="btn btn-secondary btn-sm" role="button" data-testid="clear-button">
                     <i class="bi bi-eraser"></i> {% trans %}Clear{% endtrans %}
                 </a>
             </div>
@@ -27,11 +27,11 @@
     </div>
 </form>
 
-<div class="text-secondary">{% trans %}Total number of logs:{% endtrans %} {{ number_of_logs }}</div><br>
+<div class="text-secondary" data-testid="logs-count">{% trans %}Total number of logs:{% endtrans %} {{ number_of_logs }}</div><br>
 
 {% if data %}
 {{ pagination | raw }}
-<table class="table table-striped table-hover table-sm">
+<table class="table table-striped table-hover table-sm" data-testid="logs-table">
     <thead>
     <tr>
         {% if iface_edit_show_id %}
@@ -44,14 +44,14 @@
     </thead>
     <tbody>
     {% for row in data %}
-    <tr>
+    <tr data-testid="log-row-{{ row['id'] }}">
         {% if iface_edit_show_id %}
-        <td>{{ row['id'] }}</td>
+        <td data-testid="log-id-{{ row['id'] }}">{{ row['id'] }}</td>
         {% endif %}
-        <td>{{ row['event'] }}</td>
-        <td class="text-nowrap">{{ row['created_at'] }}</td>
+        <td data-testid="log-event-{{ row['id'] }}">{{ row['event'] }}</td>
+        <td class="text-nowrap" data-testid="log-date-{{ row['id'] }}">{{ row['created_at'] }}</td>
         <td class="text-nowrap">
-            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#logModal" data-bs-content="{{ row['details'] }}">
+            <button type="button" class="btn btn-sm btn-outline-primary" data-bs-toggle="modal" data-bs-target="#logModal" data-bs-content="{{ row['details'] }}" data-testid="log-details-{{ row['id'] }}">
                 <i class="bi bi-eye"></i> {% trans %}Details{% endtrans %}
             </button>
         </td>
@@ -61,16 +61,16 @@
 </table>
 {{ pagination | raw }}
 
-<div class="modal fade" tabindex="-1" id="logModal">
+<div class="modal fade" tabindex="-1" id="logModal" data-testid="log-details-modal">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header bg-body-secondary">
-                <h5 class="modal-title">{% trans %}Details{% endtrans %}</h5>
+                <h5 class="modal-title" data-testid="modal-title">{% trans %}Details{% endtrans %}</h5>
             </div>
-            <div class="modal-body">
+            <div class="modal-body" data-testid="modal-body">
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">{% trans %}Close{% endtrans %}</button>
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal" data-testid="modal-close">{% trans %}Close{% endtrans %}</button>
             </div>
         </div>
     </div>
@@ -86,5 +86,5 @@
     }
 </script>
 {% else %}
-{% trans %}No logs found{% endtrans %}
+<div data-testid="no-logs-message">{% trans %}No logs found{% endtrans %}</div>
 {% endif %}

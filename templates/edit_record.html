@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -14,14 +14,14 @@
 </nav>
 
 {% if idn_zone_name %}
-<h5 class="mb-3">{% trans %}Edit record in zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name }})</h5>
+<h5 class="mb-3" data-testid="edit-record-heading">{% trans %}Edit record in zone{% endtrans %} "{{ idn_zone_name }}" ({{ zone_name }})</h5>
 {% else %}
-<h5 class="mb-3">{% trans %}Edit record in zone{% endtrans %} "{{ zone_name }}"</h5>
+<h5 class="mb-3" data-testid="edit-record-heading">{% trans %}Edit record in zone{% endtrans %} "{{ zone_name }}"</h5>
 {% endif %}
 
-<form class="needs-validation" method="post" action="index.php?page=edit_record&id={{ record_id }}" novalidate>
+<form class="needs-validation" method="post" action="index.php?page=edit_record&id={{ record_id }}" novalidate data-testid="edit-record-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table class="table table-striped table-hover table-sm">
+    <table class="table table-striped table-hover table-sm" data-testid="edit-record-table">
         <thead>
         <tr>
             <th>{% trans %}Name{% endtrans %}</th>
@@ -53,12 +53,12 @@
             <td>
                 <input type="hidden" name="rid" value="{{ record_id }}">
                 <input type="hidden" name="zid" value="{{ zid }}">
-                <input class="form-control form-control-sm" type="text" name="name" value="{{ record['record_name'] }}">
+                <input class="form-control form-control-sm" type="text" name="name" value="{{ record['record_name'] }}" data-testid="record-name-input">
                 .{{ idn_zone_name ?: zone_name }}
             </td>
             <td>IN</td>
             <td>
-                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent')">
+                <select id="recordTypeSelect" class="form-select form-select-sm" name="type" onchange="updateContentInput('recordTypeSelect', 'contentInputContainer', 'recordContent')" data-testid="record-type-select">
                     {% set found_selected_type = false %}
                     {% for type_available in recordTypes %}
                     {% if type_available == record["type"] %}
@@ -77,27 +77,27 @@
             </td>
             <td>
                 <div id="contentInputContainer">
-                    <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="{{ record['content'] }}" required>
+                    <input id="recordContent" class="form-control form-control-sm" type="text" name="content" value="{{ record['content'] }}" required data-testid="record-content-input">
                 </div>
                 <div class="invalid-feedback">{% trans %}Provide content{% endtrans %}</div>
             </td>
             <td><input class="form-control form-control-sm" type="number" name="prio" min="0" max="65535"
-                       pattern="[0-9]*" value="{{ record['prio'] }}"></td>
+                       pattern="[0-9]*" value="{{ record['prio'] }}" data-testid="record-priority-input"></td>
             <td><input class="form-control form-control-sm" type="number" name="ttl" min="0" max="2147483647"
-                       pattern="[0-9]*" value="{{ record['ttl'] }}"></td>
+                       pattern="[0-9]*" value="{{ record['ttl'] }}" data-testid="record-ttl-input"></td>
             {% if iface_record_comments %}
                 <td>
-                    <textarea class="form-control form-control-sm" name="comment" rows="1">{{ comment }}</textarea>
+                    <textarea class="form-control form-control-sm" name="comment" rows="1" data-testid="record-comment-input">{{ comment }}</textarea>
                 </td>
             {% endif %}
             <td>
-                <input class="form-check-input" type="checkbox" name="disabled" {% if record['disabled'] == 1 %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox" name="disabled" {% if record['disabled'] == 1 %}checked{% endif %} data-testid="record-disabled-checkbox">
             </td>
             {% endif %}
         </tr>
     </table>
-    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Update{% endtrans %}">&nbsp;&nbsp;
-    <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans %}Reset{% endtrans %}">&nbsp;&nbsp;
+    <input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Update{% endtrans %}" data-testid="update-record-button">&nbsp;&nbsp;
+    <input class="btn btn-secondary btn-sm" type="reset" name="reset" value="{% trans %}Reset{% endtrans %}" data-testid="reset-button">&nbsp;&nbsp;
 </form>
 
 <script src="assets/textareaAutoResize.js?time={{ file_version }}"></script>

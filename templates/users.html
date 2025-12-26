@@ -5,11 +5,11 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}User administration{% endtrans %}</h5>
+<h5 class="mb-3" data-testid="users-heading">{% trans %}User administration{% endtrans %}</h5>
 
 <form method="post" action="index.php?page=users">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table class="table table-striped table-hover table-sm">
+    <table class="table table-striped table-hover table-sm" data-testid="users-table">
         <thead>
         <tr>
             <th>{% trans %}Username{% endtrans %}</th>
@@ -26,7 +26,7 @@
         </tr>
         </thead>
 
-        <tbody>
+        <tbody data-testid="users-tbody">
         {% for user in users %}
 
         {% if user['active'] %}
@@ -44,13 +44,13 @@
         {% set user_uid = user['uid'] %}
 
         {% if (user_uid == session_userid and permissions['user_edit_own']) or (user_uid != session_userid and permissions['user_edit_others']) or (permissions['user_is_ueberuser']) %}
-        <tr>
-            <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}"></td>
-            <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}"></td>
-            <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}"></td>
+        <tr data-testid="user-row-{{ user['uid'] }}">
+            <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][username]" value="{{ user ['username'] }}" data-testid="username-input-{{ user['uid'] }}"></td>
+            <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][fullname]" value="{{ user ['fullname'] }}" data-testid="fullname-input-{{ user['uid'] }}"></td>
+            <td><input class="form-control form-control-sm" type="text" name="user[{{ user['uid'] }}][email]" value="{{ user ['email'] }}" data-testid="email-input-{{ user['uid'] }}"></td>
             <td>
                 {% if permissions['user_edit_templ_perm'] %}
-                <select class="form-select form-select-sm" name="user[{{ user['uid'] }}][templ_id]">
+                <select class="form-select form-select-sm" name="user[{{ user['uid'] }}][templ_id]" data-testid="template-select-{{ user['uid'] }}">
                     {% for template in perm_templates %}
                     {% if template['id'] == user['tpl_id'] %}
                     {% set selected = 'SELECTED' %}
@@ -82,19 +82,19 @@
             {% endif %}
 
             {% if user['uid'] != session_userid %}
-            <td class="text-center"><input class="form-check-input" type="checkbox" name="user[{{ user['uid'] }}][active]" {{ active }}></td>
+            <td class="text-center"><input class="form-check-input" type="checkbox" name="user[{{ user['uid'] }}][active]" {{ active }} data-testid="active-checkbox-{{ user['uid'] }}"></td>
             {% else %}
             <td class="text-center"><input type="hidden" name="user[{{ user['uid'] }}][active]" value="on">-</td>
             {% endif %}
 
             <td>
                 <input type="hidden" name="user[{{ user_uid }}][uid]" value="{{ user_uid }}">
-                <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_user&id={{ user_uid }}">
+                <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_user&id={{ user_uid }}" data-testid="edit-user-{{ user_uid }}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}
                 </a>
 
                 {% if user['uid'] != session_userid %}
-                <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_user&id={{ user['uid'] }}">
+                <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_user&id={{ user['uid'] }}" data-testid="delete-user-{{ user['uid'] }}">
                     <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}
                 </a>
                 {% endif %}
@@ -116,12 +116,12 @@
     </table>
 
     {% if permissions['user_edit_own'] or permissions['user_edit_others'] %}
-    <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans %}Update{% endtrans %}">
-    <input type="reset" class="btn btn-secondary btn-sm" name="reset" value="{% trans %}Reset{% endtrans %}">
+    <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans %}Update{% endtrans %}" data-testid="update-users-button">
+    <input type="reset" class="btn btn-secondary btn-sm" name="reset" value="{% trans %}Reset{% endtrans %}" data-testid="reset-users-button">
     {% endif %}
 
     {% if perm_add_new %}
     <input class="btn btn-secondary btn-sm" type="button" name="add_slave"
-           onclick="location.href = 'index.php?page=add_user'" value="{% trans %}Add user{% endtrans %}">
+           onclick="location.href = 'index.php?page=add_user'" value="{% trans %}Add user{% endtrans %}" data-testid="add-user-button">
     {% endif %}
 </form>

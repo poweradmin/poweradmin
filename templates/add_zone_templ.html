@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -7,27 +7,27 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Add zone template for{% endtrans %} {{ user_name }}</h5>
-<form class="needs-validation" method="post" action="index.php?page=add_zone_templ" novalidate>
+<h5 class="mb-3" data-testid="add-template-heading">{% trans %}Add zone template for{% endtrans %} {{ user_name }}</h5>
+<form class="needs-validation" method="post" action="index.php?page=add_zone_templ" novalidate data-testid="add-template-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <div class="col-sm-3">
         <div class="mb-2">
             <label for="templ_name" class="form-label">{% trans %}Name{% endtrans %}</label>
-            <input class="form-control form-control-sm" type="text" id="templ_name" name="templ_name" value="{{ templ_name }}" required>
+            <input class="form-control form-control-sm" type="text" id="templ_name" name="templ_name" value="{{ templ_name }}" required data-testid="template-name-input">
             <div class="invalid-feedback">{% trans %}Provide a name for your template{% endtrans %}</div>
         </div>
         <div class="mb-2">
             <label for="templ_descr" class="form-label">{% trans %}Description{% endtrans %}</label>
-            <input class="form-control form-control-sm" type="text" id="templ_descr" name="templ_descr" value="{{ templ_descr }}">
+            <input class="form-control form-control-sm" type="text" id="templ_descr" name="templ_descr" value="{{ templ_descr }}" data-testid="template-description-input">
         </div>
         {% if perm_is_godlike %}
         <div class="mb-2">
-            <input class="form-check-input" type="checkbox" id="templ_global" name="templ_global">
+            <input class="form-check-input" type="checkbox" id="templ_global" name="templ_global" data-testid="template-global-checkbox">
             <label for="templ_global" class="form-check-label">{% trans %}Everyone could use it (global)?{% endtrans %}</label>
         </div>
         {% endif %}
         <div div class="mb-2">
-            <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans %}Add zone template{% endtrans %}">
+            <input type="submit" class="btn btn-primary btn-sm" name="commit" value="{% trans %}Add zone template{% endtrans %}" data-testid="add-template-submit">
         </div>
     </div>
 </form>

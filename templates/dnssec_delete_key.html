@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -18,13 +18,14 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Delete zone key{% endtrans %}</h5>
+<h5 class="mb-3" data-testid="delete-key-heading">{% trans %}Delete zone key{% endtrans %}</h5>
 {% if key_info[5] %}
 {% set active = 'Yes' %}
 {% else %}
 {% set active = 'No' %}
 {% endif %}
 
+<div data-testid="key-info">
 {% trans %}Domain{% endtrans %}:
 {% if idn_zone_name %}
 {{ idn_zone_name }} ({{ domain_name }})
@@ -32,18 +33,17 @@
 {{ domain_name }}
 {% endif %}
 <br>
-{% trans %}Id{% endtrans %}: {{ key_info[0] }}<br>
-{% trans %}Type{% endtrans %}: {{ key_info[1] }}<br>
-{% trans %}Tag{% endtrans %}: {{ key_info[2] }}<br>
-{% trans %}Algorithm{% endtrans %}: {{ algorithms[key_info[3]] }}<br>
-{% trans %}Bits{% endtrans %}: {{ key_info[4] }}<br>
-{% trans %}Active{% endtrans %}: {{ active|trans }}
-
-<p class="pt-3"><strong>{% trans %}Are you sure?{% endtrans %}</strong></p>
-<form method="post" action="index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ key_id }}" style="display: inline;">
+{% trans %}Id{% endtrans %}: <span data-testid="key-id">{{ key_info[0] }}</span><br>
+{% trans %}Type{% endtrans %}: <span data-testid="key-type">{{ key_info[1] }}</span><br>
+{% trans %}Tag{% endtrans %}: <span data-testid="key-tag">{{ key_info[2] }}</span><br>
+{% trans %}Algorithm{% endtrans %}: <span data-testid="key-algorithm">{{ algorithms[key_info[3]] }}</span><br>
+{% trans %}Bits{% endtrans %}: <span data-testid="key-bits">{{ key_info[4] }}</span><br>
+{% trans %}Active{% endtrans %}: <span data-testid="key-active">{{ active|trans }}</span><br>
+</div>
+<p class="pt-3" data-testid="confirmation-message"><strong>{% trans %}Are you sure?{% endtrans %}</strong></p>
+<form method="post" action="index.php?page=dnssec_delete_key&id={{ zone_id }}&key_id={{ key_id }}" style="display: inline;" data-testid="delete-key-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <input class="btn btn-primary btn-sm" type="submit" value="{% trans %}Yes{% endtrans %}">
+    <input class="btn btn-primary btn-sm" type="submit" value="{% trans %}Yes{% endtrans %}" data-testid="confirm-button">
 </form>
 <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=dnssec&id={{ zone_id }}'"
-       value="{% trans %}No{% endtrans %}">
-
+       value="{% trans %}No{% endtrans %}" data-testid="cancel-button">

@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -6,28 +6,28 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Add slave zone{% endtrans %}</h5>
-<form class="needs-validation" method="post" action="index.php?page=add_zone_slave" novalidate>
+<h5 class="mb-3" data-testid="add-slave-zone-heading">{% trans %}Add slave zone{% endtrans %}</h5>
+<form class="needs-validation" method="post" action="index.php?page=add_zone_slave" novalidate data-testid="add-slave-zone-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <table>
         <tr>
             <td style="vertical-align: top" class="pt-1">{% trans %}Zone name{% endtrans %}</td>
             <td>
-                <input class="form-control form-control-sm" type="text" name="domain" value="" required>
-                <div class="invalid-feedback">{% trans %}Provide zone name{% endtrans %}</div>
+                <input class="form-control form-control-sm" type="text" name="domain" value="" required data-testid="zone-name-input">
+                <div class="invalid-feedback" data-testid="zone-name-error">{% trans %}Provide zone name{% endtrans %}</div>
             </td>
         </tr>
         <tr>
             <td style="vertical-align: top" class="pt-1">{% trans %}IP address of master NS{% endtrans %}:</td>
             <td>
-                <input class="form-control form-control-sm" type="text" name="slave_master" value="" required>
-                <div class="invalid-feedback">{% trans %}Provide ip address{% endtrans %}</div>
+                <input class="form-control form-control-sm" type="text" name="slave_master" value="" required data-testid="master-ip-input">
+                <div class="invalid-feedback" data-testid="master-ip-error">{% trans %}Provide ip address{% endtrans %}</div>
             </td>
         </tr>
         <tr>
             <td>{% trans %}Owner{% endtrans %}:</td>
             <td>
-                <select class="form-select form-select-sm" name="owner">
+                <select class="form-select form-select-sm" name="owner" data-testid="owner-select">
                     {% for user in users %}
                     {% if user['id'] == session_user_id %}
                     <option value="{{ user['id'] }}" selected>
@@ -53,7 +53,7 @@
         <tr>
             <td>&nbsp;</td>
             <td>
-                <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans %}Add zone{% endtrans %}">
+                <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans %}Add zone{% endtrans %}" data-testid="add-slave-zone-submit">
             </td>
         </tr>
     </table>

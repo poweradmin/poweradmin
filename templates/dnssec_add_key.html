@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -17,18 +17,18 @@
 </nav>
 
 {% if idn_zone_name %}
-<h5 class="mb-3">{% trans %}Add key for zone{% endtrans %} "{{ idn_zone_name }}" ({{ domain_name }})</h5>
+<h5 class="mb-3" data-testid="add-key-heading">{% trans %}Add key for zone{% endtrans %} "{{ idn_zone_name }}" ({{ domain_name }})</h5>
 {% else %}
-<h5 class="mb-3">{% trans %}Add key for zone{% endtrans %} "{{ domain_name }}"</h5>
+<h5 class="mb-3" data-testid="add-key-heading">{% trans %}Add key for zone{% endtrans %} "{{ domain_name }}"</h5>
 {% endif %}
 
-<form class="needs-validation" method="post" action="index.php?page=dnssec_add_key&id={{ zone_id }}" novalidate>
+<form class="needs-validation" method="post" action="index.php?page=dnssec_add_key&id={{ zone_id }}" novalidate data-testid="add-key-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <table>
         <tr>
             <td style="vertical-align: top" class="pt-1">{% trans %}Key type{% endtrans %}</td>
             <td>
-                <select class="form-select form-select-sm" name="key_type" required>
+                <select class="form-select form-select-sm" name="key_type" required data-testid="key-type-select">
                     <option value=""></option>
                     <option value="ksk" {{ key_type == 'ksk' ? 'selected' : '' }}>KSK</option>
                     <option value="zsk" {{ key_type == 'zsk' ? 'selected' : '' }}>ZSK</option>
@@ -39,7 +39,7 @@
         <tr>
             <td style="vertical-align: top" class="pt-1">{% trans %}Bits in length{% endtrans %}</td>
             <td>
-                <select class="form-select form-select-sm" name="bits" required>
+                <select class="form-select form-select-sm" name="bits" required data-testid="bits-select">
                     <option value=""></option>
                     <option value="2048" {{ bits == '2048' ? 'selected' : '' }}>2048</option>
                     <option value="1024" {{ bits == '1024' ? 'selected' : '' }}>1024</option>
@@ -54,7 +54,7 @@
             <td style="vertical-align: top" class="pt-1">{% trans %}Algorithm{% endtrans %}</td>
             <td>
 
-                <select class="form-select form-select-sm" name="algorithm" required>
+                <select class="form-select form-select-sm" name="algorithm" required data-testid="algorithm-select">
                     <option value=""></option>
                     {% for alg, name in algorithm_names %}
                     <option value="{{ alg }}" {{ algorithm == alg ? 'selected' : '' }}>{{ name }}</option>
@@ -66,7 +66,7 @@
         <tr>
             <td>&nbsp;</td>
             <td>
-                <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans %}Add key{% endtrans %}">
+                <input class="btn btn-primary btn-sm" type="submit" name="submit" value="{% trans %}Add key{% endtrans %}" data-testid="add-key-submit">
             </td>
         </tr>
     </table>

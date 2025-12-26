@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -6,10 +6,10 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Delete zones{% endtrans %}</h5>
-<form method="post" action="index.php?page=delete_domains">
+<h5 class="mb-3" data-testid="delete-zones-heading">{% trans %}Delete zones{% endtrans %}</h5>
+<form method="post" action="index.php?page=delete_domains" data-testid="delete-zones-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table class="table table-striped table-hover table-sm">
+    <table class="table table-striped table-hover table-sm" data-testid="delete-zones-table">
         <thead>
             <tr>
                 <th>{% trans %}Name{% endtrans %}</th>
@@ -18,22 +18,22 @@
                 <th>{% trans %}Note{% endtrans %}</th>
             </tr>
         </thead>
-        <tbody>
+        <tbody data-testid="delete-zones-tbody">
 
         {% for zone in zones %}
-        <tr>
+        <tr data-testid="delete-zone-row-{{ zone['id'] }}">
             <input type="hidden" name="zone_id[]" value="{{ zone['id'] }}">
-            <td>
+            <td data-testid="delete-zone-name-{{ zone['id'] }}">
                 {% if zone['idn_zone_name'] %}
                 {{ zone['idn_zone_name'] }} ({{ zone['name'] }})
                 {% else %}
                 {{ zone['name'] }}
                 {% endif %}
             </td>
-            <td>{{ zone['owner'] }}</td>
-            <td>{{ zone['type'] }}</td>
+            <td data-testid="delete-zone-owner-{{ zone['id'] }}">{{ zone['owner'] }}</td>
+            <td data-testid="delete-zone-type-{{ zone['id'] }}">{{ zone['type'] }}</td>
 
-            <td>
+            <td data-testid="delete-zone-note-{{ zone['id'] }}">
                 {% if perm_edit != "all" and (perm_edit != "own" or zone['is_owner'] != "1") %}
                 {{ error }}
                 {% endif %}
@@ -47,8 +47,8 @@
 
         </tbody>
     </table>
-    <p>{% trans %}Are you sure?{% endtrans %}</p>
-    <input class="btn btn-primary btn-sm" type="submit" name="confirm" value="{% trans %}Yes{% endtrans %}">
+    <p data-testid="confirmation-message">{% trans %}Are you sure?{% endtrans %}</p>
+    <input class="btn btn-primary btn-sm" type="submit" name="confirm" value="{% trans %}Yes{% endtrans %}" data-testid="confirm-delete-zones">
     <input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=list_zones'"
-           value="{% trans %}No{% endtrans %}">
+           value="{% trans %}No{% endtrans %}" data-testid="cancel-delete-zones">
 </form>

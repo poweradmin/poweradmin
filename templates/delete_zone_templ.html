@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -7,9 +7,9 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Delete zone template{% endtrans %} "{{ templ_name }}"</h5>
-<p>{% trans %}Are you sure?{% endtrans %}</p>
+<h5 class="mb-3" data-testid="delete-template-heading">{% trans %}Delete zone template{% endtrans %} "{{ templ_name }}"</h5>
+<p data-testid="confirmation-message">{% trans %}Are you sure?{% endtrans %}</p>
 <input type="button" class="btn btn-primary btn-sm"
-       onClick="location.href='index.php?page=delete_zone_templ&id={{ zone_templ_id }}&confirm=1'" value="{% trans %}Yes{% endtrans %}">
+       onClick="location.href='index.php?page=delete_zone_templ&id={{ zone_templ_id }}&confirm=1'" value="{% trans %}Yes{% endtrans %}" data-testid="confirm-button">
 <input type="button" class="btn btn-secondary btn-sm" onClick="location.href='index.php?page=list_zone_templ'"
-       value="{% trans %}No{% endtrans %}">
+       value="{% trans %}No{% endtrans %}" data-testid="cancel-button">

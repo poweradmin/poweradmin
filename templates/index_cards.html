@@ -1,5 +1,5 @@
-<h5 class="mb-3">{% trans %}Welcome{% endtrans %} {{ user_name }}</h5>
-<div class="row">
+<h5 class="mb-3" data-testid="welcome-heading">{% trans %}Welcome{% endtrans %} {{ user_name }}</h5>
+<div class="row" data-testid="dashboard-cards">
     {% if permissions['search'] %}
     <div class="col-sm-3 mb-3">
         <div class="card">

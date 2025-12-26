@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -19,18 +19,22 @@
 </nav>
 
 {% if idn_zone_name %}
-<h5 class="mb-3">{% trans %}DNSSEC public records for zone{% endtrans %} "{{ idn_zone_name }}" ({{ domain_name }})</h5>
+<h5 class="mb-3" data-testid="ds-dnskey-heading">{% trans %}DNSSEC public records for zone{% endtrans %} "{{ idn_zone_name }}" ({{ domain_name }})</h5>
 {% else %}
-<h5 class="mb-3">{% trans %}DNSSEC public records for zone{% endtrans %} "{{ domain_name }}"</h5>
+<h5 class="mb-3" data-testid="ds-dnskey-heading">{% trans %}DNSSEC public records for zone{% endtrans %} "{{ domain_name }}"</h5>
 {% endif %}
 
-<h5 class="mb-3">{% trans %}DNSKEY{% endtrans %}</h5>
+<h5 class="mb-3" data-testid="dnskey-section-heading">{% trans %}DNSKEY{% endtrans %}</h5>
+<div data-testid="dnskey-records">
 {% for record in dnskey_records %}
 {{ record }}<br/>
 {% endfor %}
+</div>
 <br>
 
-<h5 class="mb-3">{% trans %}DS record{% endtrans %}</h5>
+<h5 class="mb-3" data-testid="ds-section-heading">{% trans %}DS record{% endtrans %}</h5>
+<div data-testid="ds-records">
 {% for record in ds_records %}
 {{ record }}<br/>
 {% endfor %}
+</div>

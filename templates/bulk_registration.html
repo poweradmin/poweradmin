@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -6,15 +6,15 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Bulk registration{% endtrans %}</h5>
+<h5 class="mb-3" data-testid="bulk-registration-heading">{% trans %}Bulk registration{% endtrans %}</h5>
 
-<form class="needs-validation" method="post" action="index.php?page=bulk_registration" novalidate>
+<form class="needs-validation" method="post" action="index.php?page=bulk_registration" novalidate data-testid="bulk-registration-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table class="table">
+    <table class="table" data-testid="bulk-registration-table">
         <tr>
             <td>{% trans %}Owner{% endtrans %}:</td>
             <td>
-                <select class="form-select form-select-sm" name="owner">
+                <select class="form-select form-select-sm" name="owner" data-testid="owner-select">
                     {% for user in users %}
                     {% if user['id'] == userid %}
                     <option value="{{ user['id'] }}" selected>{{ user['fullname'] }}</option>
@@ -28,7 +28,7 @@
         <tr>
             <td>{% trans %}Type{% endtrans %}:</td>
             <td>
-                <select class="form-select form-select-sm" name="dom_type">
+                <select class="form-select form-select-sm" name="dom_type" data-testid="zone-type-select">
                     {% for type in available_zone_types %}
                     {% if type == iface_zone_type_default %}
                     {% set selected = 'selected' %}
@@ -43,7 +43,7 @@
         <tr>
             <td>{% trans %}Template{% endtrans %}:</td>
             <td>
-                <select class="form-select form-select-sm" name="zone_template">
+                <select class="form-select form-select-sm" name="zone_template" data-testid="zone-template-select">
                     <option value="none">none</option>
                     {% for zone_template in zone_templates %}
                     <option value="{{ zone_template['id'] }}">{{ zone_template['name'] }}</option>
@@ -57,7 +57,7 @@
             <td>
                 <div>{% trans %}Type one domain per line{% endtrans %}:</div>
                 <div>
-                    <textarea class="form-control form-control-sm" name="domains" rows="10" required>{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
+                    <textarea class="form-control form-control-sm" name="domains" rows="10" required data-testid="domains-textarea">{% if failed_domains %}{{ failed_domains | join('\n') }}{% endif %}</textarea>
                     <div class="invalid-feedback">{% trans %}Provide a domain name(s){% endtrans %}</div>
                 </div>
             </td>
@@ -66,7 +66,7 @@
         <tr>
             <td>&nbsp;</td>
             <td>
-                <input type="submit" class="btn btn-primary btn-sm" name="submit" value="{% trans %}Add zones{% endtrans %}">
+                <input type="submit" class="btn btn-primary btn-sm" name="submit" value="{% trans %}Add zones{% endtrans %}" data-testid="add-zones-button">
             </td>
         </tr>
     </table>

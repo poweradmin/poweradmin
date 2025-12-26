@@ -1,12 +1,12 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Migrations{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Migrations{% endtrans %}</h5>
+<h5 class="mb-3" data-testid="migrations-heading">{% trans %}Migrations{% endtrans %}</h5>
 
-<pre>
+<pre data-testid="migrations-output">
     {{ output }}
 </pre>

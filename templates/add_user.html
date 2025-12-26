@@ -6,41 +6,41 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Add user{% endtrans %}</h5>
-<form class="needs-validation" method="post" action="index.php?page=add_user" novalidate>
+<h5 class="mb-3" data-testid="add-user-heading">{% trans %}Add user{% endtrans %}</h5>
+<form class="needs-validation" method="post" action="index.php?page=add_user" novalidate data-testid="add-user-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <table>
         <tr>
             <td>{% trans %}Username{% endtrans %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="username" value="{{ username }}" required>
-                <div class="invalid-feedback">{% trans %}Provide user name{% endtrans %}</div>
+            <td><input class="form-control form-control-sm" type="text" name="username" value="{{ username }}" required data-testid="username-input">
+                <div class="invalid-feedback" data-testid="username-error">{% trans %}Provide user name{% endtrans %}</div>
             </td>
         </tr>
         <tr>
             <td>{% trans %}Fullname{% endtrans %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="fullname" value="{{ fullname }}"></td>
+            <td><input class="form-control form-control-sm" type="text" name="fullname" value="{{ fullname }}" data-testid="fullname-input"></td>
         </tr>
         <tr>
             <td>{% trans %}Password{% endtrans %}</td>
             <td>
                 <div class="input-group">
-                    <input class="form-control form-control-sm" type="password" id="password" name="password" value="" {% if not ldap_use %}required{% endif %}>
+                    <input class="form-control form-control-sm" type="password" id="password" name="password" value="" {% if not ldap_use %}required{% endif %} data-testid="password-input">
                     <button class="btn btn-sm btn-outline-secondary" type="button" onclick="showPassword('password', 'eye')"><i class="bi bi-eye-fill" id="eye"></i></button>
-                    {% if not ldap_use %}<div class="invalid-feedback">{% trans %}Provide user password{% endtrans %}</div>{% endif %}
+                    {% if not ldap_use %}<div class="invalid-feedback" data-testid="password-error">{% trans %}Provide user password{% endtrans %}</div>{% endif %}
                 </div>
             </td>
         </tr>
         <tr>
             <td>{% trans %}Email address{% endtrans %}</td>
-            <td><input class="form-control form-control-sm" type="text" name="email" value="{{ email }}" required>
-                <div class="invalid-feedback">{% trans %}Provide email{% endtrans %}</div>
+            <td><input class="form-control form-control-sm" type="text" name="email" value="{{ email }}" required data-testid="email-input">
+                <div class="invalid-feedback" data-testid="email-error">{% trans %}Provide email{% endtrans %}</div>
             </td>
         </tr>
         {% if user_edit_templ_perm %}
         <tr>
             <td>{% trans %}Permission template{% endtrans %}</td>
             <td>
-                <select class="form-select form-select-sm" name="perm_templ">
+                <select class="form-select form-select-sm" name="perm_templ" data-testid="template-select">
                     {% for template in user_templates %}
                     {% if perm_templ == template['id'] %}
                     {% set selected = 'selected' %}
@@ -55,23 +55,23 @@
         {% endif %}
         <tr>
             <td>{% trans %}Description{% endtrans %}</td>
-            <td><textarea class="form-control form-control-sm" rows="4" cols="30" name="descr">{{ description }}</textarea>
+            <td><textarea class="form-control form-control-sm" rows="4" cols="30" name="descr" data-testid="description-textarea">{{ description }}</textarea>
             </td>
         </tr>
         <tr>
             <td>{% trans %}Enabled{% endtrans %}</td>
-            <td><input class="form-check-input" type="checkbox" name="active" value="1" {{ active_checked }}></td>
+            <td><input class="form-check-input" type="checkbox" name="active" value="1" {{ active_checked }} data-testid="active-checkbox"></td>
         </tr>
         {% if ldap_use %}
         <tr>
             <td>{% trans %}LDAP Authentication{% endtrans %}</td>
             <td><input class="form-check-input" id="ldap" type="checkbox" name="use_ldap" value="1"
-                       onclick="disablePasswordField()" {{ use_ldap_checked }}></td>
+                       onclick="disablePasswordField()" {{ use_ldap_checked }} data-testid="ldap-checkbox"></td>
         </tr>
         {% endif %}
         <tr>
             <td>&nbsp;</td>
-            <td><input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Add{% endtrans %}">
+            <td><input class="btn btn-primary btn-sm" type="submit" name="commit" value="{% trans %}Add{% endtrans %}" data-testid="add-user-submit">
             </td>
         </tr>
     </table>

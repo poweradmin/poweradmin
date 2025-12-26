@@ -1,22 +1,22 @@
 </main>
-<footer class="footer py-3">
+<footer class="footer py-3" data-testid="site-footer">
     <div class="container">
         <div class="row">
             <div class="col-md-6">
                 {% if custom_footer %}
                 {% include ('custom/footer.html') %}
                 {% else %}
-                <a href="https://www.poweradmin.org/">a complete(r) <strong>Poweradmin</strong>
+                <a href="https://www.poweradmin.org/" data-testid="poweradmin-link">a complete(r) <strong>Poweradmin</strong>
                     {% if version %}
-                    v{{ version }}
+                    <span data-testid="version-number">v{{ version }}</span>
                     {% endif %}
                 </a>
                 {% endif %}
             </div>
             <div class="col-md-6 d-flex justify-content-end">
                 {% if show_theme_switcher %}
-                <button class="btn btn-outline-secondary btn-sm" id="theme-switcher">
-                    <i class="bi" id="theme-icon"></i>
+                <button class="btn btn-outline-secondary btn-sm" id="theme-switcher" data-testid="theme-switcher">
+                    <i class="bi" id="theme-icon" data-testid="theme-icon"></i>
                 </button>
                 {% endif %}
             </div>
@@ -26,7 +26,7 @@
 
 
 {% if db_queries %}
-<div class="container pt-3 pb-3">
+<div class="container pt-3 pb-3" data-testid="debug-queries">
     <code>
         {% for query in db_queries %}
         {{ query }}<br>
@@ -35,7 +35,9 @@
 </div>
 {% endif %}
 {% if display_stats %}
+<div data-testid="debug-stats">
 {{ display_stats | raw }}
+</div>
 {% endif %}
 <script src="vendor/twbs/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
 

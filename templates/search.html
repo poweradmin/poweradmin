@@ -1,13 +1,13 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item" aria-current="page">{% trans %}Search{% endtrans %}</li>
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Search zones and records{% endtrans %}</h5>
-<span class="text-secondary">{% trans %}Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.{% endtrans %}</span>
-<form class="needs-validation" name="search_form" action="index.php?page=search" method="POST" onsubmit="checkQueryChange(this);" novalidate>
+<h5 class="mb-3" data-testid="search-heading">{% trans %}Search zones and records{% endtrans %}</h5>
+<span class="text-secondary" data-testid="search-hint">{% trans %}Enter a hostname or IP address. SQL LIKE syntax supported: an underscore (_) in pattern matches any single character, a percent sign (%) matches any string of zero or more characters.{% endtrans %}</span>
+<form class="needs-validation" name="search_form" action="index.php?page=search" method="POST" onsubmit="checkQueryChange(this);" novalidate data-testid="search-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input type="hidden" name="zone_sort_by" value="{{ zone_sort_by }}">
     <input type="hidden" name="record_sort_by" value="{{ record_sort_by }}">
@@ -19,39 +19,39 @@
     <div class="row pt-3 pb-3">
         <div class="col-sm-4">
             <div class="input-group has-validation">
-                <input type="text" class="form-control form-control-sm" name="query" value="{{ query }}" required>
-                <input type="submit" class="btn btn-primary btn-sm" name="do_search" value="{% trans %}Search{% endtrans %}">
+                <input type="text" class="form-control form-control-sm" name="query" value="{{ query }}" required data-testid="search-query-input">
+                <input type="submit" class="btn btn-primary btn-sm" name="do_search" value="{% trans %}Search{% endtrans %}" data-testid="search-submit-button">
                 <div class="input-group-append">
-                    <a href="index.php?page=search" class="btn btn-secondary btn-sm" role="button"><i class="bi bi-eraser"></i> {% trans %}Clear{% endtrans %}</a>
+                    <a href="index.php?page=search" class="btn btn-secondary btn-sm" role="button" data-testid="search-clear-button"><i class="bi bi-eraser"></i> {% trans %}Clear{% endtrans %}</a>
                 </div>
-                <div class="invalid-feedback">{% trans %}Provide a keyword for your search{% endtrans %}</div>
+                <div class="invalid-feedback" data-testid="search-query-error">{% trans %}Provide a keyword for your search{% endtrans %}</div>
             </div>
         </div>
         <div class="col-sm-8 mt-1">
             <div class="form-check form-check-inline">
                 <input type="checkbox" class="form-check-input" name="zones" id="inlineCheckbox1"
-                       value="true" {% if search_by_zones %}checked{% endif %}>
+                       value="true" {% if search_by_zones %}checked{% endif %} data-testid="search-zones-checkbox">
                 <label class="form-check-label" for="inlineCheckbox1">{% trans %}Zones{% endtrans %}</label>
             </div>
             <div class="form-check form-check-inline">
                 <input type="checkbox" class="form-check-input" name="records" id="inlineCheckbox2"
-                       value="true" {% if search_by_records %}checked{% endif %}>
+                       value="true" {% if search_by_records %}checked{% endif %} data-testid="search-records-checkbox">
                 <label class="form-check-label" for="inlineCheckbox2">{% trans %}Records{% endtrans %}</label>
             </div>
             <div class="form-check form-check-inline">
                 <input type="checkbox" class="form-check-input" name="wildcard" id="inlineCheckbox3"
-                       value="true" {% if search_by_wildcard %}checked{% endif %}>
+                       value="true" {% if search_by_wildcard %}checked{% endif %} data-testid="search-wildcard-checkbox">
                 <label class="form-check-label" for="inlineCheckbox3">{% trans %}Wildcard{% endtrans %}</label>
             </div>
             <div class="form-check form-check-inline">
                 <input type="checkbox" class="form-check-input" name="reverse" id="inlineCheckbox4"
-                       value="true" {% if search_by_reverse %}checked{% endif %}>
+                       value="true" {% if search_by_reverse %}checked{% endif %} data-testid="search-reverse-checkbox">
                 <label class="form-check-label" for="inlineCheckbox4">{% trans %}Reverse{% endtrans %}</label>
             </div>
             {% if iface_zone_comments or iface_record_comments %}
             <div class="form-check form-check-inline">
                 <input type="checkbox" class="form-check-input" name="comments" id="inlineCheckbox5"
-                       value="true" {% if search_by_comments %}checked{% endif %}>
+                       value="true" {% if search_by_comments %}checked{% endif %} data-testid="search-comments-checkbox">
                 <label class="form-check-label" for="inlineCheckbox5">{% trans %}Comments{% endtrans %}</label>
             </div>
             {% endif %}
@@ -60,10 +60,10 @@
 </form>
 
 {% if has_zones %}
-<div class="pb-3">
-    <h5 class="mb-3 pt-3 border-top">{% trans %}Zones found{% endtrans %}</h5>
+<div class="pb-3" data-testid="zones-results-section">
+    <h5 class="mb-3 pt-3 border-top" data-testid="zones-found-heading">{% trans %}Zones found{% endtrans %}</h5>
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="text-secondary">
+        <div class="text-secondary" data-testid="zones-count">
             {% trans %}Total number of zones:{% endtrans %} {{ total_zones }}
         </div>
         <div>
@@ -79,7 +79,7 @@
             </form>
         </div>
     </div>
-    <table class="table table-striped table-hover table-sm">
+    <table class="table table-striped table-hover table-sm" data-testid="zones-results-table">
         <thead>
         <tr>
             <th>
@@ -179,10 +179,10 @@
 {% endif %}
 
 {% if has_records %}
-<div class="pb-3">
-    <h5 class="mb-3 pt-3 border-top">{% trans %}Records found{% endtrans %}</h5>
+<div class="pb-3" data-testid="records-results-section">
+    <h5 class="mb-3 pt-3 border-top" data-testid="records-found-heading">{% trans %}Records found{% endtrans %}</h5>
     <div class="d-flex justify-content-between align-items-center mb-3">
-        <div class="text-secondary">
+        <div class="text-secondary" data-testid="records-count">
             {% trans %}Total number of records:{% endtrans %} {{ total_records }}
         </div>
         <div>
@@ -198,7 +198,7 @@
             </form>
         </div>
     </div>
-    <table class="table table-striped table-hover table-sm">
+    <table class="table table-striped table-hover table-sm" data-testid="records-results-table">
         <thead>
         <tr>
             <th>
@@ -312,8 +312,10 @@
 {% endif %}
 
 {% if query is not empty and (not has_records and not has_zones) %}
-<hr>
-{% trans %}No results found{% endtrans %}
+<div data-testid="no-results-message">
+    <hr>
+    {% trans %}No results found{% endtrans %}
+</div>
 {% endif %}
 
 <script>

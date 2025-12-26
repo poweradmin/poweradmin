@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -6,8 +6,8 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Zone templates for{% endtrans %} "{{ user_name }}"</h5>
-<table class="table table-striped table-hover table-sm">
+<h5 class="mb-3" data-testid="zone-templates-heading">{% trans %}Zone templates for{% endtrans %} "{{ user_name }}"</h5>
+<table class="table table-striped table-hover table-sm" data-testid="zone-templates-table">
     <thead>
     <tr>
         <th>{% trans %}In use{% endtrans%}</th>
@@ -22,22 +22,22 @@
 
     <tbody>
     {% if not zone_templates %}
-    <tr>
+    <tr data-testid="no-results-row">
         <td colspan="7">{% trans %}No results found{% endtrans %}</td>
     </tr>
     {% endif %}
     {% for template in zone_templates %}
-    <tr>
-        <td class="col-sm-1">
+    <tr data-testid="template-row-{{ template['id'] }}">
+        <td class="col-sm-1" data-testid="template-in-use-{{ template['id'] }}">
             {% if template['zones_linked'] == '0' %}
             <i class="bi bi-circle"></i>
             {% else %}
             <i class="bi bi-check-circle"></i>
             {% endif %}
         </td>
-        <td class="col-sm-2">{{ template['name'] }}</td>
-        <td class="col-sm-2">{{ template['descr'] }}</td>
-        <td class="col-sm-1">
+        <td class="col-sm-2" data-testid="template-name-{{ template['id'] }}">{{ template['name'] }}</td>
+        <td class="col-sm-2" data-testid="template-description-{{ template['id'] }}">{{ template['descr'] }}</td>
+        <td class="col-sm-1" data-testid="template-owner-{{ template['id'] }}">
             {% if template['fullname'] %}
             {{ template['fullname'] }}
             {% elseif template['username'] %}
@@ -46,18 +46,18 @@
             -
             {% endif %}
         </td>
-        <td class="col-sm-1">
+        <td class="col-sm-1" data-testid="template-type-{{ template['id'] }}">
             {% if template['username'] %}
             {% trans %}private{% endtrans %}
             {% else %}
             {% trans %}global{% endtrans %}
             {% endif %}
         </td>
-        <td class="col-sm-1 {% if template['zones_linked'] == '0' %}table-warning{% endif %}">{{ template['zones_linked'] }}</td>
+        <td class="col-sm-1 {% if template['zones_linked'] == '0' %}table-warning{% endif %}" data-testid="template-zones-linked-{{ template['id'] }}">{{ template['zones_linked'] }}</td>
         {% if (perm_zone_master_add and template['username']) or perm_is_godlike %}
         <td class="col-sm-2">
-            <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_zone_templ&id={{ template['id'] }}"><i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
-            <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_zone_templ&id={{ template['id'] }}"><i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
+            <a class="btn btn-outline-primary btn-sm" href="index.php?page=edit_zone_templ&id={{ template['id'] }}" data-testid="edit-template-{{ template['id'] }}"><i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
+            <a class="btn btn-outline-danger btn-sm" href="index.php?page=delete_zone_templ&id={{ template['id'] }}" data-testid="delete-template-{{ template['id'] }}"><i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
         </td>
         {% else %}
         <td>&nbsp;</td>
@@ -68,5 +68,5 @@
 
 </table>
 <div>
-    <a class="btn btn-primary btn-sm" href="index.php?page=add_zone_templ">{% trans %}Add zone template{% endtrans %}</a>
+    <a class="btn btn-primary btn-sm" href="index.php?page=add_zone_templ" data-testid="add-zone-template-button">{% trans %}Add zone template{% endtrans %}</a>
 </div>

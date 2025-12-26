@@ -1,4 +1,4 @@
-<nav aria-label="breadcrumb">
+<nav aria-label="breadcrumb" data-testid="breadcrumb-nav">
     <ol class="breadcrumb">
         <li class="breadcrumb-item"><a href="index.php">{% trans %}Home{% endtrans %}</a></li>
         <li class="breadcrumb-item"><a href="index.php?page=list_zones">{% trans %}Zones{% endtrans %}</a></li>
@@ -8,22 +8,22 @@
     </ol>
 </nav>
 
-<h5 class="mb-3">{% trans %}Edit zone template{% endtrans %} "{{templ_details['name']}}"</h5>
-<div>
+<h5 class="mb-3" data-testid="edit-template-heading">{% trans %}Edit zone template{% endtrans %} "{{templ_details['name']}}"</h5>
+<div data-testid="pagination-controls">
     {{ pagination | raw }}
 </div>
 
 {% if records == "-1" %}
-<div class="text-secondary">{% trans %}This zone template does not have any records yet.{% endtrans %}</div>
+<div class="text-secondary" data-testid="no-records-message">{% trans %}This zone template does not have any records yet.{% endtrans %}</div>
 <br>
 <div><input class="btn btn-primary btn-sm" type="button"
             onClick="location.href='index.php?page=add_zone_templ_record&id={{zone_templ_id}}'"
-            value="{% trans %}Add record{% endtrans %}">
+            value="{% trans %}Add record{% endtrans %}" data-testid="add-record-button">
 </div>
 {% else %}
-<form method="post" action="">
+<form method="post" action="" data-testid="edit-template-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
-    <table class="table table-striped table-hover table-sm">
+    <table class="table table-striped table-hover table-sm" data-testid="template-records-table">
         <tr>
             <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&record_sort_by=name">{% trans %}Name{% endtrans %}</a></th>
             <th><a href="index.php?page=edit_zone_templ&id={{zone_templ_id}}&record_sort_by=type">{% trans %}Type{% endtrans %}</a></th>
@@ -34,23 +34,23 @@
             <th>&nbsp;</th>
         </tr>
         {% for record in records %}
-        <tr>
-            <td class="col-sm-2">{{record['name']}}</td>
-            <td class="col-sm-1">{{record['type']}}</td>
-            <td class="col-sm-5"><input class="form-control form-control-sm" type="text" name="content" value="{{record['content']}}" disabled></td>
+        <tr data-testid="record-row-{{ record['id'] }}">
+            <td class="col-sm-2" data-testid="record-name-{{ record['id'] }}">{{record['name']}}</td>
+            <td class="col-sm-1" data-testid="record-type-{{ record['id'] }}">{{record['type']}}</td>
+            <td class="col-sm-5"><input class="form-control form-control-sm" type="text" name="content" value="{{record['content']}}" disabled data-testid="record-content-{{ record['id'] }}"></td>
             {% if (record['type'] == "MX") or (record['type'] == "SRV") %}
-            <td class="col-sm-1">{{record['prio']}}</td>
+            <td class="col-sm-1" data-testid="record-priority-{{ record['id'] }}">{{record['prio']}}</td>
             {% else %}
             <td class="col-sm-1">&nbsp;</td>
             {% endif %}
-            <td class="col-sm-1">{{record['ttl']}}</td>
+            <td class="col-sm-1" data-testid="record-ttl-{{ record['id'] }}">{{record['ttl']}}</td>
             <td>
                 <input type="hidden" name="record[{{record['id']}}][rid]" value="{{record['id']}}">
                 <a class="btn btn-outline-primary btn-sm"
-                   href="index.php?page=edit_zone_templ_record&id={{record['id']}}&zone_templ_id={{zone_templ_id}}">
+                   href="index.php?page=edit_zone_templ_record&id={{record['id']}}&zone_templ_id={{zone_templ_id}}" data-testid="edit-record-{{ record['id'] }}">
                     <i class="bi bi-pencil-square"></i> {% trans %}Edit{% endtrans %}</a>
                 <a class="btn btn-outline-danger btn-sm"
-                   href="index.php?page=delete_zone_templ_record&id={{record['id']}}&zone_templ_id={{zone_templ_id}}">
+                   href="index.php?page=delete_zone_templ_record&id={{record['id']}}&zone_templ_id={{zone_templ_id}}" data-testid="delete-record-{{ record['id'] }}">
                     <i class="bi bi-trash"></i> {% trans %}Delete{% endtrans %}</a>
             </td>
         </tr>
@@ -59,14 +59,14 @@
             <td colspan="6">
                 <input class="btn btn-primary btn-sm" type="button"
                        onClick="location.href='index.php?page=add_zone_templ_record&id={{zone_templ_id}}'"
-                       value="{% trans %}Add record{% endtrans %}">&nbsp;&nbsp
+                       value="{% trans %}Add record{% endtrans %}" data-testid="add-record-button-table">&nbsp;&nbsp
             </td>
         </tr>
     </table>
     <input class="btn btn-secondary btn-sm" type="submit" name="update_zones"
-           value="{% trans %}Update zones{% endtrans %}">
+           value="{% trans %}Update zones{% endtrans %}" data-testid="update-zones-button">
 
-    <table>
+    <table data-testid="template-hints">
         <tr>
             <td colspan="6"><br><b>{% trans %}Hint:{% endtrans %}</b></td>
         </tr>
@@ -122,26 +122,26 @@
 {% endif %}
 
 <hr>
-<form class="needs-validation" method="post" action="" novalidate>
+<form class="needs-validation" method="post" action="" novalidate data-testid="template-details-form">
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <table>
         <tr>
             <td style="vertical-align: top" class="pt-1">{% trans %}Name{% endtrans %}</td>
             <td>
                 <input class="form-control form-control-sm" type="text" name="templ_name"
-                       value="{{templ_details['name']}}" required>
+                       value="{{templ_details['name']}}" required data-testid="template-name-input">
                 <div class="invalid-feedback">{% trans %}Provide a name for your template{% endtrans %}</div>
             </td>
         </tr>
         <tr>
             <td>{% trans %}Description{% endtrans %}</td>
             <td><input class="form-control form-control-sm" type="text" name="templ_descr"
-                       value="{{templ_details['descr']}}"></td>
+                       value="{{templ_details['descr']}}" data-testid="template-description-input"></td>
         </tr>
         {% if perm_is_godlike %}
         <tr>
             <td colspan="2">
-                <input class="form-check-input" type="checkbox" id="templ_global" name="templ_global" {% if templ_details['owner'] == 0 %}checked{% endif %}>
+                <input class="form-check-input" type="checkbox" id="templ_global" name="templ_global" {% if templ_details['owner'] == 0 %}checked{% endif %} data-testid="template-global-checkbox">
                 <label for="templ_global" class="form-check-label">
                     {% trans %}Everyone could use it (global)?{% endtrans %}</label>
             </td>
@@ -149,6 +149,6 @@
         {% endif %}
     </table>
     <div class="pt-3">
-        <input class="btn btn-primary btn-sm" type="submit" name="edit" value="{% trans %}Update{% endtrans %}">
+        <input class="btn btn-primary btn-sm" type="submit" name="edit" value="{% trans %}Update{% endtrans %}" data-testid="update-template-button">
     </div>
 </form>
