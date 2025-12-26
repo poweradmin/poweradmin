@@ -138,9 +138,9 @@ describe('Delete Zone Template Record', () => {
                                     const href = $link.attr('href');
                                     cy.visit('/' + href);
                                 });
-                                // Verify the cancel button has the correct onclick handler
+                                // Verify the cancel button is an anchor with correct href
                                 cy.get('[data-testid="cancel-button"]')
-                                    .should('have.attr', 'onclick')
+                                    .should('have.attr', 'href')
                                     .and('include', 'edit_zone_templ');
                             }
                         });

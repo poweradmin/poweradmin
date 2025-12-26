@@ -16,13 +16,10 @@ const navigateToAddRecordPage = (callback) => {
                     : '[data-testid="add-record-button-table"]';
                 if ($body.find(buttonSelector).length > 0) {
                     cy.get(buttonSelector).then(($button) => {
-                        const onclick = $button.attr('onclick');
-                        if (onclick) {
-                            const match = onclick.match(/'([^']+)'/);
-                            if (match) {
-                                cy.visit('/' + match[1]);
-                                callback();
-                            }
+                        const href = $button.attr('href');
+                        if (href) {
+                            cy.visit('/' + href);
+                            callback();
                         }
                     });
                 }
