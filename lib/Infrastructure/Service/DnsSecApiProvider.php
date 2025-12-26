@@ -22,6 +22,7 @@ namespace Poweradmin\Infrastructure\Service;
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+use Poweradmin\Domain\Error\ApiErrorException;
 use Poweradmin\Domain\Model\CryptoKey;
 use Poweradmin\Domain\Model\Zone;
 use Poweradmin\Domain\Service\DnssecProvider;
@@ -84,8 +85,14 @@ class DnsSecApiProvider implements DnssecProvider
 
     public function isZoneSecured(string $zoneName, $config): bool
     {
-        $zone = new Zone($zoneName);
-        return $this->client->isZoneSecured($zone);
+        try {
+            $zone = new Zone($zoneName);
+            return $this->client->isZoneSecured($zone);
+        } catch (ApiErrorException $e) {
+            // Return false instead of crashing when API call fails
+            // (e.g., due to invalid record data in the zone)
+            return false;
+        }
     }
 
     public function getDsRecords(string $zoneName): array
