@@ -1,34 +1,21 @@
 import users from '../../fixtures/users.json';
 
-describe('Delete DNS Record', () => {
-    // Test with zones that have deletable records
-    let testZoneId;
-    let testRecordId;
+// Known zone and record IDs from test data
+const ZONE_IDS = {
+    manager: 2,     // manager-zone.example.com
+    client: 3       // client-zone.example.com
+};
 
+const RECORD_IDS = {
+    managerA: 312,  // www.manager-zone.example.com A record
+    clientA: 375    // www.client-zone.example.com A record
+};
+
+describe('Delete DNS Record', () => {
     describe('Admin User', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            // Navigate to zone with records
-            cy.visit('/index.php?page=list_zones');
-            cy.get('body').then(($body) => {
-                if ($body.find('a:contains("manager-zone.example.com")').length > 0) {
-                    cy.get('a:contains("manager-zone.example.com")').first().click();
-                    cy.url().then((url) => {
-                        const match = url.match(/id=(\d+)/);
-                        if (match) {
-                            testZoneId = match[1];
-                        }
-                    });
-                    // Find a deletable record (not critical SOA/NS)
-                    cy.get('body').then(($editBody) => {
-                        if ($editBody.find('a[href*="delete_record"]').length > 0) {
-                            cy.get('a[href*="delete_record"]').first().should('have.attr', 'href').then((href) => {
-                                cy.visit(href);
-                            });
-                        }
-                    });
-                }
-            });
+            cy.visit(`/index.php?page=delete_record&id=${RECORD_IDS.managerA}&domain_id=${ZONE_IDS.manager}`);
         });
 
         it('should display delete record heading', () => {
@@ -138,20 +125,7 @@ describe('Delete DNS Record', () => {
     describe('Manager User', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            // Navigate to manager's own zone
-            cy.visit('/index.php?page=list_zones');
-            cy.get('body').then(($body) => {
-                if ($body.find('a:contains("manager-zone.example.com")').length > 0) {
-                    cy.get('a:contains("manager-zone.example.com")').first().click();
-                    cy.get('body').then(($editBody) => {
-                        if ($editBody.find('a[href*="delete_record"]').length > 0) {
-                            cy.get('a[href*="delete_record"]').first().should('have.attr', 'href').then((href) => {
-                                cy.visit(href);
-                            });
-                        }
-                    });
-                }
-            });
+            cy.visit(`/index.php?page=delete_record&id=${RECORD_IDS.managerA}&domain_id=${ZONE_IDS.manager}`);
         });
 
         it('should have access to delete records in own zones', () => {
@@ -174,20 +148,7 @@ describe('Delete DNS Record', () => {
     describe('Client User', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            // Navigate to client's own zone
-            cy.visit('/index.php?page=list_zones');
-            cy.get('body').then(($body) => {
-                if ($body.find('a:contains("client-zone.example.com")').length > 0) {
-                    cy.get('a:contains("client-zone.example.com")').first().click();
-                    cy.get('body').then(($editBody) => {
-                        if ($editBody.find('a[href*="delete_record"]').length > 0) {
-                            cy.get('a[href*="delete_record"]').first().should('have.attr', 'href').then((href) => {
-                                cy.visit(href);
-                            });
-                        }
-                    });
-                }
-            });
+            cy.visit(`/index.php?page=delete_record&id=${RECORD_IDS.clientA}&domain_id=${ZONE_IDS.client}`);
         });
 
         it('should have limited delete access in own zones', () => {

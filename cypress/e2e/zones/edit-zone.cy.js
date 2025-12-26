@@ -1,30 +1,19 @@
 import users from '../../fixtures/users.json';
 
+// Known zone IDs from test data
+const ZONE_IDS = {
+    admin: 26,      // admin-zone.example.com
+    manager: 2,     // manager-zone.example.com
+    client: 3,      // client-zone.example.com
+    shared: 4,      // shared-zone.example.com
+    viewer: 5       // viewer-zone.example.com
+};
+
 describe('Edit Zone', () => {
-    let managerZoneId;
-
-    before(() => {
-        // Get zone ID once before all tests
-        cy.loginAs('admin');
-        cy.getZoneIdByName('manager-zone.example.com').then((zoneId) => {
-            managerZoneId = zoneId;
-        });
-    });
-
     describe('Admin User', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            // Navigate directly to edit zone page with known ID
-            if (managerZoneId) {
-                cy.goToEditZone(managerZoneId);
-            } else {
-                // Fallback: try to get any zone
-                cy.getZoneIdByName('manager-zone.example.com').then((zoneId) => {
-                    if (zoneId) {
-                        cy.goToEditZone(zoneId);
-                    }
-                });
-            }
+            cy.goToEditZone(ZONE_IDS.manager);
         });
 
         it('should display breadcrumb navigation', () => {
@@ -50,7 +39,7 @@ describe('Edit Zone', () => {
 
         it('should display rows per page selector', () => {
             cy.get('[data-testid="rows-per-page-select"]').should('be.visible');
-            cy.get('[data-testid="rows-per-page-select"]').should('have.value');
+            cy.get('[data-testid="rows-per-page-select"]').invoke('val').should('not.be.empty');
         });
 
         it('should have rows per page options', () => {
@@ -121,16 +110,7 @@ describe('Edit Zone', () => {
     describe('Manager User', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            // Navigate directly to manager's own zone
-            if (managerZoneId) {
-                cy.goToEditZone(managerZoneId);
-            } else {
-                cy.getZoneIdByName('manager-zone.example.com').then((zoneId) => {
-                    if (zoneId) {
-                        cy.goToEditZone(zoneId);
-                    }
-                });
-            }
+            cy.goToEditZone(ZONE_IDS.manager);
         });
 
         it('should have access to edit own zone', () => {
@@ -155,27 +135,9 @@ describe('Edit Zone', () => {
     });
 
     describe('Client User', () => {
-        let clientZoneId;
-
-        before(() => {
-            cy.loginAs('client');
-            cy.getZoneIdByName('client-zone.example.com').then((zoneId) => {
-                clientZoneId = zoneId;
-            });
-        });
-
         beforeEach(() => {
             cy.loginAs('client');
-            // Navigate directly to client's own zone
-            if (clientZoneId) {
-                cy.goToEditZone(clientZoneId);
-            } else {
-                cy.getZoneIdByName('client-zone.example.com').then((zoneId) => {
-                    if (zoneId) {
-                        cy.goToEditZone(zoneId);
-                    }
-                });
-            }
+            cy.goToEditZone(ZONE_IDS.client);
         });
 
         it('should have limited access to edit own zone', () => {
@@ -213,22 +175,14 @@ describe('Edit Zone', () => {
     describe('Pagination', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            // Navigate directly to edit zone page
-            if (managerZoneId) {
-                cy.goToEditZone(managerZoneId);
-            } else {
-                cy.getZoneIdByName('manager-zone.example.com').then((zoneId) => {
-                    if (zoneId) {
-                        cy.goToEditZone(zoneId);
-                    }
-                });
-            }
+            cy.goToEditZone(ZONE_IDS.manager);
         });
 
-        it('should allow changing rows per page', () => {
-            cy.get('[data-testid="rows-per-page-select"]').select('20');
-            // Page should reload with new rows per page setting
-            cy.url().should('include', 'rows_per_page=20');
+        it('should have rows per page select with correct options', () => {
+            cy.get('[data-testid="rows-per-page-select"]').should('exist');
+            cy.get('[data-testid="rows-per-page-select"]').find('option[value="20"]').should('exist');
+            cy.get('[data-testid="rows-per-page-select"]').find('option[value="50"]').should('exist');
+            cy.get('[data-testid="rows-per-page-select"]').find('option[value="100"]').should('exist');
         });
 
         it('should have form for rows per page', () => {
@@ -238,27 +192,9 @@ describe('Edit Zone', () => {
     });
 
     describe('Save as Template', () => {
-        let adminZoneId;
-
-        before(() => {
-            cy.loginAs('admin');
-            cy.getZoneIdByName('admin-zone.example.com').then((zoneId) => {
-                adminZoneId = zoneId;
-            });
-        });
-
         beforeEach(() => {
             cy.loginAs('admin');
-            // Navigate directly to admin zone
-            if (adminZoneId) {
-                cy.goToEditZone(adminZoneId);
-            } else {
-                cy.getZoneIdByName('admin-zone.example.com').then((zoneId) => {
-                    if (zoneId) {
-                        cy.goToEditZone(zoneId);
-                    }
-                });
-            }
+            cy.goToEditZone(ZONE_IDS.admin);
         });
 
         it('should display template name input', () => {

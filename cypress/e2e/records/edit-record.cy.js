@@ -1,39 +1,21 @@
 import users from '../../fixtures/users.json';
 
-describe('Edit DNS Record', () => {
-    // Test with manager-zone.example.com which has records
-    let testZoneId;
-    let testRecordId;
+// Known zone and record IDs from test data
+const ZONE_IDS = {
+    manager: 2,     // manager-zone.example.com
+    client: 3       // client-zone.example.com
+};
 
+const RECORD_IDS = {
+    managerA: 312,  // www.manager-zone.example.com A record
+    clientA: 375    // www.client-zone.example.com A record
+};
+
+describe('Edit DNS Record', () => {
     describe('Admin User', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            // Navigate to zone with records
-            cy.visit('/index.php?page=list_zones');
-            cy.get('body').then(($body) => {
-                if ($body.find('a:contains("manager-zone.example.com")').length > 0) {
-                    cy.get('a:contains("manager-zone.example.com")').first().click();
-                    // Now on the edit zone page with records
-                    cy.url().then((url) => {
-                        const match = url.match(/id=(\d+)/);
-                        if (match) {
-                            testZoneId = match[1];
-                        }
-                    });
-                    // Find first editable record (not SOA/NS)
-                    cy.get('body').then(($editBody) => {
-                        if ($editBody.find('a[href*="edit_record"]').length > 0) {
-                            cy.get('a[href*="edit_record"]').first().should('have.attr', 'href').then((href) => {
-                                const match = href.match(/id=(\d+)/);
-                                if (match) {
-                                    testRecordId = match[1];
-                                    cy.visit(`/index.php?page=edit_record&id=${testRecordId}`);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+            cy.visit(`/index.php?page=edit_record&id=${RECORD_IDS.managerA}`);
         });
 
         it('should display edit record heading', () => {
@@ -60,15 +42,15 @@ describe('Edit DNS Record', () => {
 
         it('should display record input fields with existing values', () => {
             cy.get('[data-testid="record-name-input"]').should('be.visible');
-            cy.get('[data-testid="record-name-input"]').should('have.value');
+            cy.get('[data-testid="record-name-input"]').invoke('val').should('not.be.empty');
             cy.get('[data-testid="record-type-select"]').should('be.visible');
             cy.get('[data-testid="record-content-input"]').should('be.visible');
-            cy.get('[data-testid="record-content-input"]').should('have.value');
+            cy.get('[data-testid="record-content-input"]').invoke('val').should('not.be.empty');
         });
 
         it('should have TTL and priority inputs', () => {
             cy.get('[data-testid="record-ttl-input"]').should('be.visible');
-            cy.get('[data-testid="record-ttl-input"]').should('have.value');
+            cy.get('[data-testid="record-ttl-input"]').invoke('val').should('not.be.empty');
             cy.get('[data-testid="record-priority-input"]').should('be.visible');
         });
 
@@ -79,9 +61,9 @@ describe('Edit DNS Record', () => {
 
         it('should display update and reset buttons', () => {
             cy.get('[data-testid="update-record-button"]').should('be.visible');
-            cy.get('[data-testid="update-record-button"]').should('contain', 'Update');
+            cy.get('[data-testid="update-record-button"]').should('have.value', 'Update');
             cy.get('[data-testid="reset-button"]').should('be.visible');
-            cy.get('[data-testid="reset-button"]').should('contain', 'Reset');
+            cy.get('[data-testid="reset-button"]').should('have.value', 'Reset');
         });
 
         it('should have update button as submit type', () => {
@@ -168,23 +150,7 @@ describe('Edit DNS Record', () => {
     describe('Manager User', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            // Navigate to manager's own zone
-            cy.visit('/index.php?page=list_zones');
-            cy.get('body').then(($body) => {
-                if ($body.find('a:contains("manager-zone.example.com")').length > 0) {
-                    cy.get('a:contains("manager-zone.example.com")').first().click();
-                    cy.get('body').then(($editBody) => {
-                        if ($editBody.find('a[href*="edit_record"]').length > 0) {
-                            cy.get('a[href*="edit_record"]').first().should('have.attr', 'href').then((href) => {
-                                const match = href.match(/id=(\d+)/);
-                                if (match) {
-                                    cy.visit(`/index.php?page=edit_record&id=${match[1]}`);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+            cy.visit(`/index.php?page=edit_record&id=${RECORD_IDS.managerA}`);
         });
 
         it('should have access to edit records in own zones', () => {
@@ -202,23 +168,7 @@ describe('Edit DNS Record', () => {
     describe('Client User', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            // Navigate to client's own zone
-            cy.visit('/index.php?page=list_zones');
-            cy.get('body').then(($body) => {
-                if ($body.find('a:contains("client-zone.example.com")').length > 0) {
-                    cy.get('a:contains("client-zone.example.com")').first().click();
-                    cy.get('body').then(($editBody) => {
-                        if ($editBody.find('a[href*="edit_record"]').length > 0) {
-                            cy.get('a[href*="edit_record"]').first().should('have.attr', 'href').then((href) => {
-                                const match = href.match(/id=(\d+)/);
-                                if (match) {
-                                    cy.visit(`/index.php?page=edit_record&id=${match[1]}`);
-                                }
-                            });
-                        }
-                    });
-                }
-            });
+            cy.visit(`/index.php?page=edit_record&id=${RECORD_IDS.clientA}`);
         });
 
         it('should have limited edit access in own zones', () => {

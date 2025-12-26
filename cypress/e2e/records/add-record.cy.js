@@ -1,26 +1,16 @@
 import users from '../../fixtures/users.json';
 
-describe('Add DNS Record', () => {
-    // We'll use manager-zone.example.com (zone created by manager user)
-    // Zone ID needs to be discovered dynamically
-    let testZoneId;
+// Known zone IDs from test data
+const ZONE_IDS = {
+    manager: 2,     // manager-zone.example.com
+    client: 3       // client-zone.example.com
+};
 
+describe('Add DNS Record', () => {
     describe('Admin User', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            // Get zone ID for manager-zone.example.com
-            cy.visit('/index.php?page=list_zones');
-            cy.get('body').then(($body) => {
-                if ($body.find('a:contains("manager-zone.example.com")').length > 0) {
-                    cy.get('a:contains("manager-zone.example.com")').first().should('have.attr', 'href').then((href) => {
-                        const match = href.match(/id=(\d+)/);
-                        if (match) {
-                            testZoneId = match[1];
-                            cy.visit(`/index.php?page=add_record&id=${testZoneId}`);
-                        }
-                    });
-                }
-            });
+            cy.visit(`/index.php?page=add_record&id=${ZONE_IDS.manager}`);
         });
 
         it('should display add record heading', () => {
@@ -147,19 +137,7 @@ describe('Add DNS Record', () => {
     describe('Manager User', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            // Manager should be able to add records to their own zones
-            cy.visit('/index.php?page=list_zones');
-            cy.get('body').then(($body) => {
-                if ($body.find('a:contains("manager-zone.example.com")').length > 0) {
-                    cy.get('a:contains("manager-zone.example.com")').first().should('have.attr', 'href').then((href) => {
-                        const match = href.match(/id=(\d+)/);
-                        if (match) {
-                            testZoneId = match[1];
-                            cy.visit(`/index.php?page=add_record&id=${testZoneId}`);
-                        }
-                    });
-                }
-            });
+            cy.visit(`/index.php?page=add_record&id=${ZONE_IDS.manager}`);
         });
 
         it('should have access to add records in own zones', () => {
@@ -177,19 +155,7 @@ describe('Add DNS Record', () => {
     describe('Client User', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            // Client should be able to add records to their zones
-            cy.visit('/index.php?page=list_zones');
-            cy.get('body').then(($body) => {
-                if ($body.find('a:contains("client-zone.example.com")').length > 0) {
-                    cy.get('a:contains("client-zone.example.com")').first().should('have.attr', 'href').then((href) => {
-                        const match = href.match(/id=(\d+)/);
-                        if (match) {
-                            testZoneId = match[1];
-                            cy.visit(`/index.php?page=add_record&id=${testZoneId}`);
-                        }
-                    });
-                }
-            });
+            cy.visit(`/index.php?page=add_record&id=${ZONE_IDS.client}`);
         });
 
         it('should have access to add records in own zones', () => {
