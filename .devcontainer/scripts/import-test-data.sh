@@ -273,6 +273,48 @@ import_sqlite() {
     fi
 }
 
+# Function to import LDAP test users
+import_ldap() {
+    echo -e "${YELLOW}📦 Setting up LDAP test users...${NC}"
+
+    local LDAP_CONTAINER="${LDAP_CONTAINER:-ldap}"
+    local LDAP_ADMIN_DN="cn=admin,dc=poweradmin,dc=org"
+    local LDAP_ADMIN_PW="poweradmin"
+    local LDAP_BASE_DN="dc=poweradmin,dc=org"
+
+    if ! check_container "$LDAP_CONTAINER"; then
+        echo -e "${YELLOW}⚠️  LDAP container '$LDAP_CONTAINER' is not running - skipping LDAP setup${NC}"
+        return 0
+    fi
+
+    # Wait for LDAP to be ready (max 30 seconds)
+    local timeout=30
+    local counter=0
+    until docker exec "$LDAP_CONTAINER" ldapsearch -x -H ldap://localhost -b "$LDAP_BASE_DN" -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" >/dev/null 2>&1; do
+        sleep 1
+        counter=$((counter + 1))
+        if [ $counter -ge $timeout ]; then
+            echo -e "${YELLOW}⚠️  LDAP service not ready - skipping LDAP setup${NC}"
+            return 0
+        fi
+    done
+
+    # Check if users already exist
+    if docker exec "$LDAP_CONTAINER" ldapsearch -x -H ldap://localhost -b "ou=users,$LDAP_BASE_DN" -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" "(uid=ldap-admin)" 2>/dev/null | grep -q "uid=ldap-admin"; then
+        echo -e "${GREEN}✅ LDAP test users already exist${NC}"
+        return 0
+    fi
+
+    # Add LDAP test users
+    if docker exec "$LDAP_CONTAINER" ldapadd -x -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" -f /ldap-test-users.ldif 2>/dev/null; then
+        echo -e "${GREEN}✅ LDAP test users created${NC}"
+        return 0
+    else
+        echo -e "${YELLOW}⚠️  LDAP users may already exist or failed to create${NC}"
+        return 0
+    fi
+}
+
 # Function to show summary
 show_summary() {
     echo ""
@@ -280,7 +322,7 @@ show_summary() {
     echo -e "${BLUE}  Test Data Summary${NC}"
     echo -e "${BLUE}================================================${NC}"
     echo ""
-    echo -e "${GREEN}Test Users Created:${NC}"
+    echo -e "${GREEN}Local Test Users (password: poweradmin123):${NC}"
     echo "  Username  | Password       | Template        | Active"
     echo "  ----------|----------------|-----------------|-------"
     echo "  admin     | poweradmin123  | Administrator   | Yes"
@@ -289,6 +331,14 @@ show_summary() {
     echo "  viewer    | poweradmin123  | Read Only       | Yes"
     echo "  noperm    | poweradmin123  | No Access       | Yes"
     echo "  inactive  | poweradmin123  | No Access       | No"
+    echo ""
+    echo -e "${GREEN}LDAP Test Users (password: testpass123):${NC}"
+    echo "  Username     | Password     | Template        | Active"
+    echo "  -------------|--------------|-----------------|-------"
+    echo "  ldap-admin   | testpass123  | Administrator   | Yes"
+    echo "  ldap-manager | testpass123  | Zone Manager    | Yes"
+    echo "  ldap-client  | testpass123  | Client Editor   | Yes"
+    echo "  ldap-viewer  | testpass123  | Read Only       | Yes"
     echo ""
     echo -e "${GREEN}Test Domains Created:${NC}"
     echo "  Type   | Domain                              | Owner(s)"
@@ -433,6 +483,11 @@ main() {
         else
             ((fail_count++))
         fi
+    fi
+
+    # Import LDAP test users (always try if any database import was done)
+    if [ "$import_mysql" = true ] || [ "$import_pgsql" = true ] || [ "$import_sqlite" = true ]; then
+        import_ldap
     fi
 
     # Show summary
