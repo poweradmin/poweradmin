@@ -1,0 +1,230 @@
+<?php
+
+/**
+ * Poweradmin Example Configuration File (All Features Enabled)
+ *
+ * This is a comprehensive configuration file for development and testing.
+ * Copy this file to inc/config.inc.php to use it.
+ *
+ * All optional features are enabled to facilitate testing and development.
+ * For production use, review each setting and adjust as needed.
+ *
+ * =============================================================================
+ * DEVCONTAINER SERVICES
+ * =============================================================================
+ *
+ * Available services and their endpoints:
+ *
+ * Web servers:
+ *   - Nginx:        http://localhost:8080
+ *
+ * Databases:
+ *   - MariaDB:      mariadb:3306      (user: pdns, pass: poweradmin, db: pdns)
+ *   - PostgreSQL:   postgres:5432     (user: pdns, pass: poweradmin, db: pdns)
+ *   - SQLite:       /data/db/powerdns.db
+ *
+ * Database management:
+ *   - Adminer:      http://localhost:8090
+ *
+ * PowerDNS:
+ *   - DNS:          localhost:1053
+ *   - API:          http://powerdns:8081 (key: see $pdns_api_key below)
+ *
+ * LDAP (osixia/openldap):
+ *   - LDAP:         ldap://ldap:389
+ *   - LDAPS:        ldaps://ldap:636
+ *   - phpLDAPadmin: https://localhost:8443
+ *   - Admin DN:     cn=admin,dc=poweradmin,dc=org
+ *   - Password:     poweradmin
+ */
+
+// =============================================================================
+// DATABASE SETTINGS
+// =============================================================================
+
+// Database connection - MySQL/MariaDB (devcontainer default)
+$db_host = 'mariadb';
+$db_port = '3306';
+$db_user = 'pdns';
+$db_pass = 'poweradmin';
+$db_name = 'poweradmin';
+$db_type = 'mysql';         // mysql, pgsql, sqlite
+$db_charset = 'utf8';
+$db_debug = true;           // Show all SQL queries (disable in production)
+
+// PostgreSQL alternative (devcontainer):
+// $db_host = 'postgres';
+// $db_port = '5432';
+// $db_user = 'pdns';
+// $db_pass = 'poweradmin';
+// $db_name = 'pdns';
+// $db_type = 'pgsql';
+// $db_charset = 'utf8';
+
+// SQLite alternative (devcontainer):
+// The SQLite database is stored in a Docker volume mounted at /data
+// $db_type = 'sqlite';
+// $db_file = '/data/db/powerdns.db';
+
+// Separate PowerDNS database (experimental)
+// Use when Poweradmin app tables and PowerDNS tables are in different databases
+$pdns_db_name = 'pdns';
+
+// =============================================================================
+// SECURITY SETTINGS
+// =============================================================================
+
+// Session encryption key - CHANGE THIS IN PRODUCTION!
+// Generate a new key: php -r "echo bin2hex(random_bytes(32));"
+$session_key = 'YV4@SQ(Wa8l8L7fDlU3e_(XhuCyuuEifm68Xtuh!MNE#!L';
+
+// Password hashing algorithm
+// Options: md5 (legacy), md5salt, bcrypt, argon2i, argon2id
+$password_encryption = 'bcrypt';
+$password_encryption_cost = 10;     // bcrypt cost factor (10-12 recommended)
+
+// CSRF token validation
+$login_token_validation = false;    // Disabled for testing; enable in production
+$global_token_validation = false;   // Disabled for testing; enable in production
+
+// =============================================================================
+// INTERFACE SETTINGS
+// =============================================================================
+
+// Language and localization
+$iface_lang = 'en_EN';
+$iface_enabled_languages = 'cs_CZ,de_DE,en_EN,fr_FR,it_IT,ja_JP,lt_LT,nb_NO,nl_NL,pl_PL,ru_RU,tr_TR,zh_CN';
+
+// Theme and appearance
+$iface_style = 'ignite';            // 'ignite' (light) or 'spark' (dark)
+$iface_templates = 'templates';
+$iface_title = 'Poweradmin';
+
+// Dashboard and list settings
+$iface_rowamount = 50;              // Records per page
+$iface_expire = 1800;               // Session timeout in seconds (30 minutes)
+$iface_index = 'cards';             // Dashboard style: 'cards' or 'list'
+
+// Zone list display options
+$iface_zonelist_serial = true;      // Show serial numbers in zone list
+$iface_zonelist_template = true;    // Show template indicator in zone list
+
+// Record management options
+$iface_add_reverse_record = true;   // Checkbox to add PTR record when creating A/AAAA
+$iface_add_domain_record = true;    // Checkbox to add A/AAAA record when creating PTR
+$iface_zone_type_default = 'MASTER';// Default zone type: 'MASTER' or 'NATIVE'
+$iface_zone_comments = true;        // Show zone comments
+$iface_record_comments = true;      // Show record comments
+
+// Search and edit form options
+$iface_search_group_records = true; // Group records by name/content in search results
+$iface_edit_show_id = true;         // Show record ID in edit form
+$iface_edit_add_record_top = true;  // Add new record fields at top of list
+$iface_edit_save_changes_top = true;// Save button at top of record list
+
+// Experimental features
+$iface_migrations_show = true;      // Show migrations menu (experimental)
+
+// =============================================================================
+// DNS DEFAULT SETTINGS
+// =============================================================================
+
+// Default nameservers for new zones
+$dns_hostmaster = 'hostmaster.example.com';
+$dns_ns1 = 'ns1.example.com';
+$dns_ns2 = 'ns2.example.com';
+$dns_ns3 = 'ns3.example.com';
+$dns_ns4 = 'ns4.example.com';
+
+// Default TTL and SOA values
+$dns_ttl = 86400;                   // Default TTL: 24 hours
+$dns_soa = '28800 7200 604800 86400'; // refresh, retry, expire, minimum
+
+// Domain validation
+$dns_strict_tld_check = true;       // Validate TLDs against public suffix list
+$dns_top_level_tld_check = true;    // Prevent creation of top-level domains
+$dns_third_level_check = true;      // Warn about third-level domain creation
+
+// Record handling
+$dns_txt_auto_quote = true;         // Automatically quote TXT record values
+
+// =============================================================================
+// TIMEZONE SETTINGS
+// =============================================================================
+
+// Server timezone - see https://www.php.net/manual/en/timezones.php
+$timezone = 'UTC';
+
+// =============================================================================
+// LOGGING SETTINGS
+// =============================================================================
+
+// Application logging
+$logger_type = 'native';            // 'null' (disabled) or 'native' (file/stdout)
+$logger_level = 'debug';            // debug, info, notice, warning, error, critical, alert, emergency
+
+// Syslog integration (useful for fail2ban)
+$syslog_use = true;
+$syslog_ident = 'poweradmin';
+$syslog_facility = LOG_USER;        // LOG_USER, LOG_LOCAL0-7, etc.
+
+// Database logging (audit trail)
+$dblog_use = true;                  // Log record/zone changes to database
+
+// =============================================================================
+// DNSSEC SETTINGS
+// =============================================================================
+
+// DNSSEC management via pdnsutil command
+$pdnssec_use = true;
+$pdnssec_debug = true;
+$pdnssec_command = '/usr/bin/pdnsutil';
+
+// =============================================================================
+// POWERDNS API SETTINGS
+// =============================================================================
+
+// PowerDNS HTTP API (required for DNSSEC operations via API)
+$pdns_api_url = 'http://powerdns:8081';
+$pdns_api_key = 'fxiBmBFx7MITw5ECRMOr10ghlxGMvWZA';
+
+// =============================================================================
+// LDAP AUTHENTICATION (Optional)
+// =============================================================================
+
+// Enable LDAP authentication
+$ldap_use = false;                  // Set to true to enable LDAP
+$ldap_debug = true;
+
+// LDAP server settings (devcontainer: osixia/openldap)
+$ldap_uri = 'ldap://ldap';          // Container name; use ldaps://ldap:636 for SSL
+$ldap_proto = 3;                    // LDAP protocol version
+
+// LDAP bind credentials (devcontainer defaults)
+$ldap_binddn = 'cn=admin,dc=poweradmin,dc=org';  // OpenLDAP: full DN, AD: DOMAIN\User
+$ldap_bindpw = 'poweradmin';
+
+// LDAP search settings (devcontainer defaults)
+$ldap_basedn = 'dc=poweradmin,dc=org';  // Base DN for user search
+$ldap_user_attribute = 'uid';            // OpenLDAP: uid, AD: sAMAccountName
+
+// Optional: LDAP group filter
+// $ldap_search_filter = '(memberOf=cn=powerdns,ou=groups,dc=poweradmin,dc=org)';
+// $ldap_search_filter = '(objectClass=person)(memberOf=cn=admins,ou=groups,dc=poweradmin,dc=org)';
+
+// phpLDAPadmin available at https://localhost:8443
+// Login: cn=admin,dc=poweradmin,dc=org / poweradmin
+
+// =============================================================================
+// ADVANCED SETTINGS
+// =============================================================================
+
+// Performance monitoring (development only)
+$display_stats = false;             // Show memory/execution time
+
+// Concurrent edit handling
+// Options: last_writer_wins, only_latest_version
+$experimental_edit_conflict_resolution = 'only_latest_version';
+
+// Comment synchronization
+$record_comments_sync = true;       // Sync comments between A and PTR records
