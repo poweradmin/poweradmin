@@ -8,21 +8,19 @@
     "test": "tests"
   },
   "scripts": {
-    "cypress:open": "cypress open",
-    "cypress:run": "cypress run",
-    "test:e2e": "cypress run",
-    "test:e2e:ui": "cypress open",
-    "test:e2e:headed": "cypress run --headed",
-    "test:e2e:debug": "cypress open --e2e --browser chrome",
-    "test:e2e:chromium": "cypress run --browser chrome",
-    "test:e2e:firefox": "cypress run --browser firefox",
-    "test:e2e:webkit": "cypress run --browser webkit",
-    "test:e2e:report": "cypress run --reporter spec"
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:e2e:chromium": "playwright test --project=chromium",
+    "test:e2e:firefox": "playwright test --project=firefox",
+    "test:e2e:webkit": "playwright test --project=webkit",
+    "test:e2e:report": "playwright show-report"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "cypress": "^15.8.1"
+    "@playwright/test": "^1.57.0"
   }
 }
