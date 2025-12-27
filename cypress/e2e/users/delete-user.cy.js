@@ -4,7 +4,6 @@ describe('Delete User', () => {
     describe('Admin User - Delete User Page', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the delete user confirmation page', () => {
@@ -86,7 +85,6 @@ describe('Delete User', () => {
     describe('Manager User - Delete User Access', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to delete user page', () => {
@@ -98,7 +96,6 @@ describe('Delete User', () => {
     describe('Client User - Delete User Access', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to delete user page', () => {
@@ -110,7 +107,6 @@ describe('Delete User', () => {
     describe('Viewer User - Delete User Access', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to delete user page', () => {
@@ -122,7 +118,6 @@ describe('Delete User', () => {
     describe('No Permission User - Delete User Access', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to delete user page', () => {

@@ -4,7 +4,6 @@ describe('Delete Permission Template', () => {
     describe('Admin User - Delete Permission Template', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the delete confirmation page', () => {
@@ -184,28 +183,24 @@ describe('Delete Permission Template', () => {
     describe('Non-Admin User Access', () => {
         it('manager should not have access to delete permission template', () => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
             cy.visit('/index.php?page=delete_perm_templ&id=1');
             cy.get('[data-testid="delete-permission-template-heading"]').should('not.exist');
         });
 
         it('client should not have access to delete permission template', () => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
             cy.visit('/index.php?page=delete_perm_templ&id=1');
             cy.get('[data-testid="delete-permission-template-heading"]').should('not.exist');
         });
 
         it('viewer should not have access to delete permission template', () => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
             cy.visit('/index.php?page=delete_perm_templ&id=1');
             cy.get('[data-testid="delete-permission-template-heading"]').should('not.exist');
         });
 
         it('noperm user should not have access to delete permission template', () => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
             cy.visit('/index.php?page=delete_perm_templ&id=1');
             cy.get('[data-testid="delete-permission-template-heading"]').should('not.exist');
         });

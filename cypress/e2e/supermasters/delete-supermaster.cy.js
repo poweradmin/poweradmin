@@ -30,7 +30,6 @@ describe('Delete Supermaster', () => {
     describe('Admin User - Delete Supermaster Page', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the delete supermaster confirmation page', () => {
@@ -80,7 +79,6 @@ describe('Delete Supermaster', () => {
     describe('Manager User - Delete Supermaster Access', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to delete supermaster page', () => {
@@ -92,7 +90,6 @@ describe('Delete Supermaster', () => {
     describe('Client User - Delete Supermaster Access', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to delete supermaster page', () => {
@@ -104,7 +101,6 @@ describe('Delete Supermaster', () => {
     describe('Viewer User - Delete Supermaster Access', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to delete supermaster page', () => {
@@ -116,7 +112,6 @@ describe('Delete Supermaster', () => {
     describe('No Permission User - Delete Supermaster Access', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to delete supermaster page', () => {

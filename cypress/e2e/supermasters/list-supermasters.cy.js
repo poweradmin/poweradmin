@@ -4,7 +4,6 @@ describe('List Supermasters', () => {
     describe('Admin User - Supermasters List Access', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the supermasters list page', () => {
@@ -105,7 +104,6 @@ describe('List Supermasters', () => {
     describe('Manager User - Supermasters List Access', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should have limited access to supermasters list page', () => {
@@ -121,7 +119,6 @@ describe('List Supermasters', () => {
     describe('Client User - Supermasters List Access', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should have limited access to supermasters list page', () => {
@@ -137,7 +134,6 @@ describe('List Supermasters', () => {
     describe('Viewer User - Supermasters List Access', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should have limited access to supermasters list page', () => {
@@ -153,7 +149,6 @@ describe('List Supermasters', () => {
     describe('No Permission User - Supermasters List Access', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should have limited or no access to supermasters list page', () => {

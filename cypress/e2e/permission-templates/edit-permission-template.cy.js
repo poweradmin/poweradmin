@@ -4,7 +4,6 @@ describe('Edit Permission Template', () => {
     describe('Admin User - Edit Permission Template', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the edit permission template form', () => {
@@ -189,28 +188,24 @@ describe('Edit Permission Template', () => {
     describe('Non-Admin User Access', () => {
         it('manager should not have access to edit permission template', () => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
             cy.visit('/index.php?page=edit_perm_templ&id=1');
             cy.get('[data-testid="edit-permission-template-heading"]').should('not.exist');
         });
 
         it('client should not have access to edit permission template', () => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
             cy.visit('/index.php?page=edit_perm_templ&id=1');
             cy.get('[data-testid="edit-permission-template-heading"]').should('not.exist');
         });
 
         it('viewer should not have access to edit permission template', () => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
             cy.visit('/index.php?page=edit_perm_templ&id=1');
             cy.get('[data-testid="edit-permission-template-heading"]').should('not.exist');
         });
 
         it('noperm user should not have access to edit permission template', () => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
             cy.visit('/index.php?page=edit_perm_templ&id=1');
             cy.get('[data-testid="edit-permission-template-heading"]').should('not.exist');
         });

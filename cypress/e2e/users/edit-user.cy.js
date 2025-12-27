@@ -4,7 +4,6 @@ describe('Edit User', () => {
     describe('Admin User - Edit User Form', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the edit user form', () => {
@@ -103,7 +102,6 @@ describe('Edit User', () => {
     describe('Manager User - Edit User Access', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to edit other users', () => {
@@ -116,7 +114,6 @@ describe('Edit User', () => {
     describe('Client User - Edit User Access', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to edit other users', () => {
@@ -128,7 +125,6 @@ describe('Edit User', () => {
     describe('Viewer User - Edit User Access', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to edit user page', () => {
@@ -140,7 +136,6 @@ describe('Edit User', () => {
     describe('No Permission User - Edit User Access', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to edit user page', () => {
@@ -152,7 +147,6 @@ describe('Edit User', () => {
     describe('Form Validation', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
             cy.visit('/index.php?page=edit_user&id=2');
         });
 

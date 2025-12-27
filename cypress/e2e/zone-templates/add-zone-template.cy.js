@@ -4,7 +4,6 @@ describe('Add Zone Template', () => {
     describe('Admin User', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the add zone template page', () => {
@@ -117,7 +116,6 @@ describe('Add Zone Template', () => {
     describe('Manager User', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display add zone template page for manager', () => {
@@ -156,7 +154,6 @@ describe('Add Zone Template', () => {
     describe('Client User Access', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add zone template page', () => {
@@ -168,7 +165,6 @@ describe('Add Zone Template', () => {
     describe('Viewer User Access', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add zone template page', () => {
@@ -180,7 +176,6 @@ describe('Add Zone Template', () => {
     describe('No Permission User Access', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add zone template page', () => {

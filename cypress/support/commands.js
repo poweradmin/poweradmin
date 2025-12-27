@@ -17,7 +17,10 @@ Cypress.Commands.add('login', (username, password) => {
  * Login as a specific user role from fixtures with session caching
  * @param {string} userKey - Key from users.json (admin, manager, client, viewer, noperm, inactive)
  */
-Cypress.Commands.add('loginAs', (userKey) => {
+Cypress.Commands.add('loginAs', (userKey, options = {}) => {
+    const envDefault = Cypress.env('visitDashboardAfterLogin')
+    const visitDashboard = options.visitDashboard ?? (typeof envDefault === 'undefined' ? true : envDefault)
+
     cy.session(userKey, () => {
         cy.fixture('users.json').then((users) => {
             const user = users[userKey]
@@ -33,13 +36,19 @@ Cypress.Commands.add('loginAs', (userKey) => {
         })
     }, {
         validate() {
-            // Validate session by checking we can access a protected page
-            cy.visit('/index.php?page=index')
-            cy.url().should('include', 'page=index')
-        }
+            // Validate session without incurring a full page render
+            cy.request({
+                url: '/index.php?page=index',
+                failOnStatusCode: false,
+                followRedirect: false
+            }).its('status').should('eq', 200)
+        },
+        cacheAcrossSpecs: true
     })
-    // After session restore, navigate to home page
-    cy.visit('/index.php?page=index')
+
+    if (visitDashboard) {
+        cy.visit('/index.php?page=index')
+    }
 })
 
 /**

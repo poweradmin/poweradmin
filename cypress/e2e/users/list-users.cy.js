@@ -4,7 +4,6 @@ describe('List Users', () => {
     describe('Admin User - User List Access', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the users list page', () => {
@@ -103,7 +102,6 @@ describe('List Users', () => {
     describe('Manager User - User List Access', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should have limited access to users list page', () => {
@@ -121,7 +119,6 @@ describe('List Users', () => {
     describe('Client User - User List Access', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should have limited access to users list page', () => {
@@ -138,7 +135,6 @@ describe('List Users', () => {
     describe('Viewer User - User List Access', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should have limited access to users list page', () => {
@@ -155,7 +151,6 @@ describe('List Users', () => {
     describe('No Permission User - User List Access', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should have limited or no access to users list page', () => {

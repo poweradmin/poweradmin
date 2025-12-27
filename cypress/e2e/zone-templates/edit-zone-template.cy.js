@@ -4,7 +4,6 @@ describe('Edit Zone Template', () => {
     describe('Admin User', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the edit zone template page with template details form', () => {
@@ -231,7 +230,6 @@ describe('Edit Zone Template', () => {
     describe('Manager User', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should allow manager to edit their own templates', () => {
@@ -252,7 +250,6 @@ describe('Edit Zone Template', () => {
     describe('Client User Access', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to edit zone template page', () => {
@@ -264,7 +261,6 @@ describe('Edit Zone Template', () => {
     describe('Viewer User Access', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to edit zone template page', () => {
@@ -276,7 +272,6 @@ describe('Edit Zone Template', () => {
     describe('No Permission User Access', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to edit zone template page', () => {

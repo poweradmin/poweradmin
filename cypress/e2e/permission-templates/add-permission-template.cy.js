@@ -6,7 +6,6 @@ describe('Add Permission Template', () => {
     describe('Admin User - Add Permission Template', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the add permission template form', () => {
@@ -219,7 +218,6 @@ describe('Add Permission Template', () => {
     describe('Manager User - Add Permission Template', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add permission template page', () => {
@@ -232,7 +230,6 @@ describe('Add Permission Template', () => {
     describe('Client User - Add Permission Template', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add permission template page', () => {
@@ -245,7 +242,6 @@ describe('Add Permission Template', () => {
     describe('Viewer User - Add Permission Template', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add permission template page', () => {
@@ -258,7 +254,6 @@ describe('Add Permission Template', () => {
     describe('No Permission User - Add Permission Template', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add permission template page', () => {
@@ -271,7 +266,6 @@ describe('Add Permission Template', () => {
     describe('Form Validation', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
             cy.goToAddPermissionTemplate();
         });
 
@@ -300,7 +294,6 @@ describe('Add Permission Template', () => {
     describe('Cleanup - Delete Test Templates', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should be able to delete created test templates', () => {

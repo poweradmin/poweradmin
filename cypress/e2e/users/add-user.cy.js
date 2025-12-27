@@ -4,7 +4,6 @@ describe('Add User', () => {
     describe('Admin User - Add User Form', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the add user form', () => {
@@ -130,7 +129,6 @@ describe('Add User', () => {
     describe('Manager User - Add User Access', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add user page', () => {
@@ -142,7 +140,6 @@ describe('Add User', () => {
     describe('Client User - Add User Access', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add user page', () => {
@@ -154,7 +151,6 @@ describe('Add User', () => {
     describe('Viewer User - Add User Access', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add user page', () => {
@@ -166,7 +162,6 @@ describe('Add User', () => {
     describe('No Permission User - Add User Access', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add user page', () => {
@@ -178,7 +173,6 @@ describe('Add User', () => {
     describe('Form Validation', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
             cy.goToAddUser();
         });
 

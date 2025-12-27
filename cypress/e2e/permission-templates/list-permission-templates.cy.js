@@ -4,7 +4,6 @@ describe('List Permission Templates', () => {
     describe('Admin User Access', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the permission templates list page', () => {
@@ -69,7 +68,6 @@ describe('List Permission Templates', () => {
     describe('Manager User Access', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to permission templates page', () => {
@@ -82,7 +80,6 @@ describe('List Permission Templates', () => {
     describe('Client User Access', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to permission templates page', () => {
@@ -95,7 +92,6 @@ describe('List Permission Templates', () => {
     describe('Viewer User Access', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to permission templates page', () => {
@@ -108,7 +104,6 @@ describe('List Permission Templates', () => {
     describe('No Permission User Access', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to permission templates page', () => {

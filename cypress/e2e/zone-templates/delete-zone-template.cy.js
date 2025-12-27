@@ -4,7 +4,6 @@ describe('Delete Zone Template', () => {
     describe('Admin User', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the delete confirmation page', () => {
@@ -81,7 +80,6 @@ describe('Delete Zone Template', () => {
     describe('Manager User', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should allow manager to delete their own templates', () => {
@@ -103,7 +101,6 @@ describe('Delete Zone Template', () => {
     describe('Client User Access', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to delete zone template page', () => {
@@ -115,7 +112,6 @@ describe('Delete Zone Template', () => {
     describe('Viewer User Access', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to delete zone template page', () => {
@@ -127,7 +123,6 @@ describe('Delete Zone Template', () => {
     describe('No Permission User Access', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to delete zone template page', () => {

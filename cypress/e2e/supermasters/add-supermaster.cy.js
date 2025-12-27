@@ -4,7 +4,6 @@ describe('Add Supermaster', () => {
     describe('Admin User - Add Supermaster Form', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
         });
 
         it('should display the add supermaster form', () => {
@@ -96,7 +95,6 @@ describe('Add Supermaster', () => {
     describe('Manager User - Add Supermaster Access', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add supermaster page', () => {
@@ -108,7 +106,6 @@ describe('Add Supermaster', () => {
     describe('Client User - Add Supermaster Access', () => {
         beforeEach(() => {
             cy.loginAs('client');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add supermaster page', () => {
@@ -120,7 +117,6 @@ describe('Add Supermaster', () => {
     describe('Viewer User - Add Supermaster Access', () => {
         beforeEach(() => {
             cy.loginAs('viewer');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add supermaster page', () => {
@@ -132,7 +128,6 @@ describe('Add Supermaster', () => {
     describe('No Permission User - Add Supermaster Access', () => {
         beforeEach(() => {
             cy.loginAs('noperm');
-            cy.url().should('include', '/index.php');
         });
 
         it('should not have access to add supermaster page', () => {
@@ -144,7 +139,6 @@ describe('Add Supermaster', () => {
     describe('Form Validation', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            cy.url().should('include', '/index.php');
             cy.goToAddSupermaster();
         });
 
