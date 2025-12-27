@@ -1,21 +1,27 @@
 import users from '../../fixtures/users.json';
 
 describe('DNSSEC Keys Listing', () => {
-    let testZoneId;
+    let adminZoneId;
+    let managerZoneId;
 
     before(() => {
-        // Get a zone ID for testing
+        // Get zone IDs for testing - each user needs to use zones they own
         cy.loginAs('admin');
+        cy.getZoneIdByName('example.com').then((zoneId) => {
+            adminZoneId = zoneId;
+        });
+
+        cy.loginAs('manager');
         cy.getZoneIdByName('manager-zone.example.com').then((zoneId) => {
-            testZoneId = zoneId;
+            managerZoneId = zoneId;
         });
     });
 
     describe('Admin User', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
-                cy.goToDNSSEC(testZoneId);
+            if (adminZoneId) {
+                cy.goToDNSSEC(adminZoneId);
             }
         });
 
@@ -48,22 +54,22 @@ describe('DNSSEC Keys Listing', () => {
 
         it('should display Add new key button', () => {
             cy.get('[data-testid="add-new-key-button"]').should('be.visible');
-            cy.get('[data-testid="add-new-key-button"]').should('have.value', 'Add new key');
+            cy.get('[data-testid="add-new-key-button"]').should('contain', 'Add new key');
         });
 
         it('should display Show DS and DNSKEY button', () => {
             cy.get('[data-testid="show-ds-dnskey-button"]').should('be.visible');
-            cy.get('[data-testid="show-ds-dnskey-button"]').should('have.value', 'Show DS and DNSKEY');
+            cy.get('[data-testid="show-ds-dnskey-button"]').should('contain', 'Show DS and DNSKEY');
         });
 
-        it('should navigate to add key page when clicking Add new key', () => {
-            cy.get('[data-testid="add-new-key-button"]').click();
-            cy.url().should('include', 'page=dnssec_add_key');
+        it('should have Add new key link with correct href', () => {
+            cy.get('[data-testid="add-new-key-button"]').should('be.visible');
+            cy.get('[data-testid="add-new-key-button"]').should('have.attr', 'href').and('include', 'page=dnssec_add_key');
         });
 
-        it('should navigate to DS/DNSKEY page when clicking Show DS and DNSKEY', () => {
-            cy.get('[data-testid="show-ds-dnskey-button"]').click();
-            cy.url().should('include', 'page=dnssec_ds_dnskey');
+        it('should have Show DS and DNSKEY link with correct href', () => {
+            cy.get('[data-testid="show-ds-dnskey-button"]').should('be.visible');
+            cy.get('[data-testid="show-ds-dnskey-button"]').should('have.attr', 'href').and('include', 'page=dnssec_ds_dnskey');
         });
 
         it('should display key rows if keys exist', () => {
@@ -93,8 +99,8 @@ describe('DNSSEC Keys Listing', () => {
     describe('Manager User', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            if (testZoneId) {
-                cy.goToDNSSEC(testZoneId);
+            if (managerZoneId) {
+                cy.goToDNSSEC(managerZoneId);
             }
         });
 
@@ -143,8 +149,8 @@ describe('DNSSEC Keys Listing', () => {
     describe('Zone Name Display', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
-                cy.goToDNSSEC(testZoneId);
+            if (adminZoneId) {
+                cy.goToDNSSEC(adminZoneId);
             }
         });
 

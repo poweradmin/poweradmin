@@ -223,15 +223,28 @@ Cypress.Commands.add('goToEditZone', (zoneId) => {
 /**
  * Get zone ID by zone name from the list zones page
  * Returns the zone ID if found, null otherwise
+ *
+ * Note: Zone names are displayed in td elements, not as links.
+ * We find the zone name in the table and then get the ID from the edit link in the same row.
  */
 Cypress.Commands.add('getZoneIdByName', (zoneName) => {
     return cy.visit('/index.php?page=list_zones').then(() => {
         return cy.get('body').then(($body) => {
-            const zoneLink = $body.find(`a:contains("${zoneName}")`).first();
-            if (zoneLink.length > 0) {
-                const href = zoneLink.attr('href');
-                const match = href.match(/id=(\d+)/);
-                return match ? match[1] : null;
+            // Find the td that contains exactly the zone name (zone names are in span inside td)
+            const zoneTd = $body.find(`td:contains("${zoneName}")`).filter(function() {
+                // Match the EXACT zone name, not a partial match
+                const text = Cypress.$(this).text().trim();
+                return text === zoneName;
+            }).first();
+
+            if (zoneTd.length > 0) {
+                // Find the edit link in the same row (has data-testid="edit-zone-{id}")
+                const editLink = zoneTd.closest('tr').find('a[data-testid^="edit-zone-"]');
+                if (editLink.length > 0) {
+                    const href = editLink.attr('href');
+                    const match = href.match(/id=(\d+)/);
+                    return match ? match[1] : null;
+                }
             }
             return null;
         });

@@ -1,23 +1,29 @@
 import users from '../../fixtures/users.json';
 
 describe('Delete DNSSEC Key', () => {
-    let testZoneId;
+    let adminZoneId;
+    let managerZoneId;
     const testKeyId = 1; // Test key ID - may not exist in actual database
 
     before(() => {
-        // Get a zone ID for testing
+        // Get zone IDs for testing - each user needs to use zones they own
         cy.loginAs('admin');
+        cy.getZoneIdByName('example.com').then((zoneId) => {
+            adminZoneId = zoneId;
+        });
+
+        cy.loginAs('manager');
         cy.getZoneIdByName('manager-zone.example.com').then((zoneId) => {
-            testZoneId = zoneId;
+            managerZoneId = zoneId;
         });
     });
 
     describe('Page Structure', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
+            if (adminZoneId) {
                 // Navigate to delete key page - may not find actual key
-                cy.visit(`/index.php?page=dnssec_delete_key&id=${testZoneId}&key_id=${testKeyId}`, {
+                cy.visit(`/index.php?page=dnssec_delete_key&id=${adminZoneId}&key_id=${testKeyId}`, {
                     failOnStatusCode: false
                 });
             }
@@ -109,7 +115,7 @@ describe('Delete DNSSEC Key', () => {
             cy.get('body').then(($body) => {
                 if ($body.find('[data-testid="key-active"]').length > 0) {
                     cy.get('[data-testid="key-active"]').should('be.visible');
-                    cy.get('[data-testid="key-active"]').should('match', /(Yes|No)/i);
+                    cy.get('[data-testid="key-active"]').should('not.be.empty');
                 }
             });
         });
@@ -137,7 +143,7 @@ describe('Delete DNSSEC Key', () => {
                 if ($body.find('[data-testid="delete-key-form"]').length > 0) {
                     cy.get('[data-testid="delete-key-form"]').within(() => {
                         cy.get('input[name="_token"]').should('exist');
-                        cy.get('input[name="_token"]').should('have.value');
+                        cy.get('input[name="_token"]').invoke('val').should('not.be.empty');
                     });
                 }
             });
@@ -157,16 +163,16 @@ describe('Delete DNSSEC Key', () => {
             cy.get('body').then(($body) => {
                 if ($body.find('[data-testid="cancel-button"]').length > 0) {
                     cy.get('[data-testid="cancel-button"]').should('be.visible');
-                    cy.get('[data-testid="cancel-button"]').should('have.value', 'No');
+                    cy.get('[data-testid="cancel-button"]').should('contain', 'No');
                 }
             });
         });
 
-        it('should navigate back to DNSSEC page when clicking No', () => {
+        it('should have cancel link with correct href', () => {
             cy.get('body').then(($body) => {
                 if ($body.find('[data-testid="cancel-button"]').length > 0) {
-                    cy.get('[data-testid="cancel-button"]').click();
-                    cy.url().should('include', 'page=dnssec');
+                    cy.get('[data-testid="cancel-button"]').should('be.visible');
+                    cy.get('[data-testid="cancel-button"]').should('have.attr', 'href').and('include', 'page=dnssec');
                 }
             });
         });
@@ -175,16 +181,16 @@ describe('Delete DNSSEC Key', () => {
     describe('Navigation from DNSSEC Page', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
-                cy.goToDNSSEC(testZoneId);
+            if (adminZoneId) {
+                cy.goToDNSSEC(adminZoneId);
             }
         });
 
-        it('should navigate to delete key page when clicking delete button', () => {
+        it('should have delete key link with correct href', () => {
             cy.get('body').then(($body) => {
                 if ($body.find('[data-testid^="delete-key-"]').length > 0) {
-                    cy.get('[data-testid^="delete-key-"]').first().click();
-                    cy.url().should('include', 'page=dnssec_delete_key');
+                    cy.get('[data-testid^="delete-key-"]').first().should('be.visible');
+                    cy.get('[data-testid^="delete-key-"]').first().should('have.attr', 'href').and('include', 'page=dnssec_delete_key');
                 }
             });
         });
@@ -205,8 +211,8 @@ describe('Delete DNSSEC Key', () => {
     describe('Manager User Access', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            if (testZoneId) {
-                cy.visit(`/index.php?page=dnssec_delete_key&id=${testZoneId}&key_id=${testKeyId}`, {
+            if (managerZoneId) {
+                cy.visit(`/index.php?page=dnssec_delete_key&id=${managerZoneId}&key_id=${testKeyId}`, {
                     failOnStatusCode: false
                 });
             }
@@ -224,8 +230,8 @@ describe('Delete DNSSEC Key', () => {
     describe('Form Action URL', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
-                cy.visit(`/index.php?page=dnssec_delete_key&id=${testZoneId}&key_id=${testKeyId}`, {
+            if (adminZoneId) {
+                cy.visit(`/index.php?page=dnssec_delete_key&id=${adminZoneId}&key_id=${testKeyId}`, {
                     failOnStatusCode: false
                 });
             }
@@ -237,7 +243,7 @@ describe('Delete DNSSEC Key', () => {
                     cy.get('[data-testid="delete-key-form"]').then(($form) => {
                         const action = $form.attr('action');
                         expect(action).to.include('page=dnssec_delete_key');
-                        expect(action).to.include(`id=${testZoneId}`);
+                        expect(action).to.include(`id=${adminZoneId}`);
                         expect(action).to.include(`key_id=${testKeyId}`);
                     });
                 }

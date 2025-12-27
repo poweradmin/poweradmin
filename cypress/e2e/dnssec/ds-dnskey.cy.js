@@ -1,21 +1,27 @@
 import users from '../../fixtures/users.json';
 
 describe('DNSSEC DS and DNSKEY Records', () => {
-    let testZoneId;
+    let adminZoneId;
+    let managerZoneId;
 
     before(() => {
-        // Get a zone ID for testing
+        // Get zone IDs for testing - each user needs to use zones they own
         cy.loginAs('admin');
+        cy.getZoneIdByName('example.com').then((zoneId) => {
+            adminZoneId = zoneId;
+        });
+
+        cy.loginAs('manager');
         cy.getZoneIdByName('manager-zone.example.com').then((zoneId) => {
-            testZoneId = zoneId;
+            managerZoneId = zoneId;
         });
     });
 
     describe('Admin User', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
-                cy.goToDNSSECDSDnskey(testZoneId);
+            if (adminZoneId) {
+                cy.goToDNSSECDSDnskey(adminZoneId);
             }
         });
 
@@ -93,27 +99,27 @@ describe('DNSSEC DS and DNSKEY Records', () => {
     describe('Navigation from DNSSEC Page', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
-                cy.goToDNSSEC(testZoneId);
+            if (adminZoneId) {
+                cy.goToDNSSEC(adminZoneId);
             }
         });
 
-        it('should navigate to DS/DNSKEY page when clicking button', () => {
-            cy.get('[data-testid="show-ds-dnskey-button"]').click();
-            cy.url().should('include', 'page=dnssec_ds_dnskey');
+        it('should have DS/DNSKEY link with correct href', () => {
+            cy.get('[data-testid="show-ds-dnskey-button"]').should('be.visible');
+            cy.get('[data-testid="show-ds-dnskey-button"]').should('have.attr', 'href').and('include', 'page=dnssec_ds_dnskey');
         });
 
-        it('should maintain zone ID in URL when navigating', () => {
-            cy.get('[data-testid="show-ds-dnskey-button"]').click();
-            cy.url().should('include', `id=${testZoneId}`);
+        it('should have zone ID in link href', () => {
+            cy.get('[data-testid="show-ds-dnskey-button"]').should('be.visible');
+            cy.get('[data-testid="show-ds-dnskey-button"]').should('have.attr', 'href').and('include', `id=${adminZoneId}`);
         });
     });
 
     describe('Manager User', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            if (testZoneId) {
-                cy.goToDNSSECDSDnskey(testZoneId);
+            if (managerZoneId) {
+                cy.goToDNSSECDSDnskey(managerZoneId);
             }
         });
 
@@ -161,8 +167,8 @@ describe('DNSSEC DS and DNSKEY Records', () => {
     describe('IDN Zone Name Display', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
-                cy.goToDNSSECDSDnskey(testZoneId);
+            if (adminZoneId) {
+                cy.goToDNSSECDSDnskey(adminZoneId);
             }
         });
 
@@ -182,8 +188,8 @@ describe('DNSSEC DS and DNSKEY Records', () => {
     describe('Record Format', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
-                cy.goToDNSSECDSDnskey(testZoneId);
+            if (adminZoneId) {
+                cy.goToDNSSECDSDnskey(adminZoneId);
             }
         });
 

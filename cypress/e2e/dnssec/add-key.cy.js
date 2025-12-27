@@ -1,21 +1,27 @@
 import users from '../../fixtures/users.json';
 
 describe('Add DNSSEC Key', () => {
-    let testZoneId;
+    let adminZoneId;
+    let managerZoneId;
 
     before(() => {
-        // Get a zone ID for testing
+        // Get zone IDs for testing - each user needs to use zones they own
         cy.loginAs('admin');
+        cy.getZoneIdByName('example.com').then((zoneId) => {
+            adminZoneId = zoneId;
+        });
+
+        cy.loginAs('manager');
         cy.getZoneIdByName('manager-zone.example.com').then((zoneId) => {
-            testZoneId = zoneId;
+            managerZoneId = zoneId;
         });
     });
 
     describe('Admin User', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
-                cy.goToAddDNSSECKey(testZoneId);
+            if (adminZoneId) {
+                cy.goToAddDNSSECKey(adminZoneId);
             }
         });
 
@@ -47,7 +53,7 @@ describe('Add DNSSEC Key', () => {
         it('should have CSRF token in form', () => {
             cy.get('[data-testid="add-key-form"]').within(() => {
                 cy.get('input[name="_token"]').should('exist');
-                cy.get('input[name="_token"]').should('have.value');
+                cy.get('input[name="_token"]').invoke('val').should('not.be.empty');
             });
         });
 
@@ -132,8 +138,8 @@ describe('Add DNSSEC Key', () => {
     describe('Form Validation', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
-                cy.goToAddDNSSECKey(testZoneId);
+            if (adminZoneId) {
+                cy.goToAddDNSSECKey(adminZoneId);
             }
         });
 
@@ -161,8 +167,8 @@ describe('Add DNSSEC Key', () => {
     describe('Manager User', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            if (testZoneId) {
-                cy.goToAddDNSSECKey(testZoneId);
+            if (managerZoneId) {
+                cy.goToAddDNSSECKey(managerZoneId);
             }
         });
 

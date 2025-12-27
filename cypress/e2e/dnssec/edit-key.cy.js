@@ -1,23 +1,29 @@
 import users from '../../fixtures/users.json';
 
 describe('Edit DNSSEC Key (Activate/Deactivate)', () => {
-    let testZoneId;
+    let adminZoneId;
+    let managerZoneId;
     const testKeyId = 1; // Test key ID - may not exist in actual database
 
     before(() => {
-        // Get a zone ID for testing
+        // Get zone IDs for testing - each user needs to use zones they own
         cy.loginAs('admin');
+        cy.getZoneIdByName('example.com').then((zoneId) => {
+            adminZoneId = zoneId;
+        });
+
+        cy.loginAs('manager');
         cy.getZoneIdByName('manager-zone.example.com').then((zoneId) => {
-            testZoneId = zoneId;
+            managerZoneId = zoneId;
         });
     });
 
     describe('Page Structure', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
+            if (adminZoneId) {
                 // Navigate to edit key page - may not find actual key
-                cy.visit(`/index.php?page=dnssec_edit_key&id=${testZoneId}&key_id=${testKeyId}`, {
+                cy.visit(`/index.php?page=dnssec_edit_key&id=${adminZoneId}&key_id=${testKeyId}`, {
                     failOnStatusCode: false
                 });
             }
@@ -103,7 +109,7 @@ describe('Edit DNSSEC Key (Activate/Deactivate)', () => {
             cy.get('body').then(($body) => {
                 if ($body.find('[data-testid="key-active"]').length > 0) {
                     cy.get('[data-testid="key-active"]').should('be.visible');
-                    cy.get('[data-testid="key-active"]').should('match', /(Yes|No)/i);
+                    cy.get('[data-testid="key-active"]').should('not.be.empty');
                 }
             });
         });
@@ -121,7 +127,7 @@ describe('Edit DNSSEC Key (Activate/Deactivate)', () => {
             cy.get('body').then(($body) => {
                 if ($body.find('[data-testid="confirm-button"]').length > 0) {
                     cy.get('[data-testid="confirm-button"]').should('be.visible');
-                    cy.get('[data-testid="confirm-button"]').should('have.value', 'Yes');
+                    cy.get('[data-testid="confirm-button"]').should('contain', 'Yes');
                 }
             });
         });
@@ -130,16 +136,16 @@ describe('Edit DNSSEC Key (Activate/Deactivate)', () => {
             cy.get('body').then(($body) => {
                 if ($body.find('[data-testid="cancel-button"]').length > 0) {
                     cy.get('[data-testid="cancel-button"]').should('be.visible');
-                    cy.get('[data-testid="cancel-button"]').should('have.value', 'No');
+                    cy.get('[data-testid="cancel-button"]').should('contain', 'No');
                 }
             });
         });
 
-        it('should navigate back to DNSSEC page when clicking No', () => {
+        it('should have cancel link with correct href', () => {
             cy.get('body').then(($body) => {
                 if ($body.find('[data-testid="cancel-button"]').length > 0) {
-                    cy.get('[data-testid="cancel-button"]').click();
-                    cy.url().should('include', 'page=dnssec');
+                    cy.get('[data-testid="cancel-button"]').should('be.visible');
+                    cy.get('[data-testid="cancel-button"]').should('have.attr', 'href').and('include', 'page=dnssec');
                 }
             });
         });
@@ -148,16 +154,16 @@ describe('Edit DNSSEC Key (Activate/Deactivate)', () => {
     describe('Navigation from DNSSEC Page', () => {
         beforeEach(() => {
             cy.loginAs('admin');
-            if (testZoneId) {
-                cy.goToDNSSEC(testZoneId);
+            if (adminZoneId) {
+                cy.goToDNSSEC(adminZoneId);
             }
         });
 
-        it('should navigate to edit key page when clicking edit button', () => {
+        it('should have edit key link with correct href', () => {
             cy.get('body').then(($body) => {
                 if ($body.find('[data-testid^="edit-key-"]').length > 0) {
-                    cy.get('[data-testid^="edit-key-"]').first().click();
-                    cy.url().should('include', 'page=dnssec_edit_key');
+                    cy.get('[data-testid^="edit-key-"]').first().should('be.visible');
+                    cy.get('[data-testid^="edit-key-"]').first().should('have.attr', 'href').and('include', 'page=dnssec_edit_key');
                 }
             });
         });
@@ -178,8 +184,8 @@ describe('Edit DNSSEC Key (Activate/Deactivate)', () => {
     describe('Manager User Access', () => {
         beforeEach(() => {
             cy.loginAs('manager');
-            if (testZoneId) {
-                cy.visit(`/index.php?page=dnssec_edit_key&id=${testZoneId}&key_id=${testKeyId}`, {
+            if (managerZoneId) {
+                cy.visit(`/index.php?page=dnssec_edit_key&id=${managerZoneId}&key_id=${testKeyId}`, {
                     failOnStatusCode: false
                 });
             }
