@@ -50,7 +50,5 @@
 {% trans %}Active{% endtrans %}: <span data-testid="key-active">{{ active|trans }}</span><br>
 </div>
 <p class="pt-3" data-testid="confirmation-message"><strong>{% trans %}Are you sure?{% endtrans %}</strong></p>
-<input class="btn btn-primary btn-sm" type="button"
-       onClick="location.href='index.php?page=dnssec_edit_key&id={{ zone_id }}&key_id={{ key_id }}&confirm=1'"
-       value="{% trans %}Yes{% endtrans %}" data-testid="confirm-button">
-<input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=dnssec&id={{ zone_id }}'" value="{% trans %}No{% endtrans %}" data-testid="cancel-button">
+<a class="btn btn-primary btn-sm" href="index.php?page=dnssec_edit_key&id={{ zone_id }}&key_id={{ key_id }}&confirm=1" data-testid="confirm-button">{% trans %}Yes{% endtrans %}</a>
+<a class="btn btn-secondary btn-sm" href="index.php?page=dnssec&id={{ zone_id }}" data-testid="cancel-button">{% trans %}No{% endtrans %}</a>

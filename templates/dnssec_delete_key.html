@@ -45,5 +45,4 @@
     <input type="hidden" name="_token" value="{{ csrf_token }}">
     <input class="btn btn-primary btn-sm" type="submit" value="{% trans %}Yes{% endtrans %}" data-testid="confirm-button">
 </form>
-<input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=dnssec&id={{ zone_id }}'"
-       value="{% trans %}No{% endtrans %}" data-testid="cancel-button">
+<a class="btn btn-secondary btn-sm" href="index.php?page=dnssec&id={{ zone_id }}" data-testid="cancel-button">{% trans %}No{% endtrans %}</a>

@@ -56,7 +56,5 @@
     {% endfor %}
 
 </table>
-<input class="btn btn-primary btn-sm" type="button" onClick="location.href='index.php?page=dnssec_add_key&id={{ zone_id }}'"
-       value="{% trans %}Add new key{% endtrans %}" data-testid="add-new-key-button">
-<input class="btn btn-secondary btn-sm" type="button" onClick="location.href='index.php?page=dnssec_ds_dnskey&id={{ zone_id }}'"
-       value="{% trans %}Show DS and DNSKEY{% endtrans %}" data-testid="show-ds-dnskey-button">
+<a class="btn btn-primary btn-sm" href="index.php?page=dnssec_add_key&id={{ zone_id }}" data-testid="add-new-key-button">{% trans %}Add new key{% endtrans %}</a>
+<a class="btn btn-secondary btn-sm" href="index.php?page=dnssec_ds_dnskey&id={{ zone_id }}" data-testid="show-ds-dnskey-button">{% trans %}Show DS and DNSKEY{% endtrans %}</a>
