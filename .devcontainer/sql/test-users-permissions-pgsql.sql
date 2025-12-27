@@ -116,6 +116,33 @@ INSERT INTO users (username, password, fullname, email, description, perm_templ,
 SELECT 'inactive', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Inactive User', 'inactive@example.com', 'Inactive account - cannot login', 5, 0, 0
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'inactive');
 
+-- =============================================================================
+-- LDAP TEST USERS
+-- =============================================================================
+-- These users authenticate via LDAP (password stored in LDAP, not database)
+-- LDAP Password for all users: testpass123
+-- LDAP users must exist in LDAP directory (created via ldap-test-users.ldif)
+
+-- ldap-admin - LDAP user with Administrator permissions
+INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap)
+SELECT 'ldap-admin', '', 'LDAP Administrator', 'ldap-admin@poweradmin.org', 'LDAP test user with Administrator permissions', 1, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'ldap-admin');
+
+-- ldap-manager - LDAP user with Zone Manager permissions
+INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap)
+SELECT 'ldap-manager', '', 'LDAP Zone Manager', 'ldap-manager@poweradmin.org', 'LDAP test user with Zone Manager permissions', 2, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'ldap-manager');
+
+-- ldap-client - LDAP user with Client Editor permissions
+INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap)
+SELECT 'ldap-client', '', 'LDAP Client Editor', 'ldap-client@poweradmin.org', 'LDAP test user with Client Editor permissions', 3, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'ldap-client');
+
+-- ldap-viewer - LDAP user with Read Only permissions
+INSERT INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap)
+SELECT 'ldap-viewer', '', 'LDAP Read Only', 'ldap-viewer@poweradmin.org', 'LDAP test user with Read Only permissions', 4, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'ldap-viewer');
+
 -- Update sequence
 SELECT setval('users_id_seq', (SELECT COALESCE(MAX(id), 1) FROM users));
 

@@ -123,6 +123,33 @@ SELECT 'inactive', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi
 WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'inactive');
 
 -- =============================================================================
+-- LDAP TEST USERS
+-- =============================================================================
+-- These users authenticate via LDAP (password stored in LDAP, not database)
+-- LDAP Password for all users: testpass123
+-- LDAP users must exist in LDAP directory (created via ldap-test-users.ldif)
+
+-- ldap-admin - LDAP user with Administrator permissions
+INSERT INTO `users` (`username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)
+SELECT 'ldap-admin', '', 'LDAP Administrator', 'ldap-admin@poweradmin.org', 'LDAP test user with Administrator permissions', 1, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'ldap-admin');
+
+-- ldap-manager - LDAP user with Zone Manager permissions
+INSERT INTO `users` (`username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)
+SELECT 'ldap-manager', '', 'LDAP Zone Manager', 'ldap-manager@poweradmin.org', 'LDAP test user with Zone Manager permissions', 2, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'ldap-manager');
+
+-- ldap-client - LDAP user with Client Editor permissions
+INSERT INTO `users` (`username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)
+SELECT 'ldap-client', '', 'LDAP Client Editor', 'ldap-client@poweradmin.org', 'LDAP test user with Client Editor permissions', 3, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'ldap-client');
+
+-- ldap-viewer - LDAP user with Read Only permissions
+INSERT INTO `users` (`username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)
+SELECT 'ldap-viewer', '', 'LDAP Read Only', 'ldap-viewer@poweradmin.org', 'LDAP test user with Read Only permissions', 4, 1, 1
+WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'ldap-viewer');
+
+-- =============================================================================
 -- TEST DOMAINS (pdns database)
 -- =============================================================================
 
@@ -431,8 +458,8 @@ ORDER BY d.`name`;
 -- SUMMARY
 -- =============================================================================
 --
--- Test Users Created:
--- -------------------
+-- Local Test Users (password: poweradmin123):
+-- --------------------------------------------
 -- Username  | Password       | Template        | Active | Description
 -- ----------|----------------|-----------------|--------|---------------------------
 -- admin     | poweradmin123  | Administrator   | Yes    | Full system access
@@ -441,6 +468,15 @@ ORDER BY d.`name`;
 -- viewer    | poweradmin123  | Read Only       | Yes    | View-only access (2 perms)
 -- noperm    | poweradmin123  | No Access       | Yes    | No permissions (0 perms)
 -- inactive  | poweradmin123  | No Access       | No     | Cannot login
+--
+-- LDAP Test Users (password: testpass123):
+-- ----------------------------------------
+-- Username     | Password     | Template        | Active | Description
+-- -------------|--------------|-----------------|--------|---------------------------
+-- ldap-admin   | testpass123  | Administrator   | Yes    | LDAP auth, full access
+-- ldap-manager | testpass123  | Zone Manager    | Yes    | LDAP auth, zone management
+-- ldap-client  | testpass123  | Client Editor   | Yes    | LDAP auth, limited editing
+-- ldap-viewer  | testpass123  | Read Only       | Yes    | LDAP auth, view-only
 --
 -- Test Domains Created:
 -- ---------------------

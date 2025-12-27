@@ -91,6 +91,29 @@ INSERT OR IGNORE INTO users (username, password, fullname, email, description, p
 VALUES ('inactive', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Inactive User', 'inactive@example.com', 'Inactive account - cannot login', 5, 0, 0);
 
 -- =============================================================================
+-- LDAP TEST USERS
+-- =============================================================================
+-- These users authenticate via LDAP (password stored in LDAP, not database)
+-- LDAP Password for all users: testpass123
+-- LDAP users must exist in LDAP directory (created via ldap-test-users.ldif)
+
+-- ldap-admin - LDAP user with Administrator permissions
+INSERT OR IGNORE INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap)
+VALUES ('ldap-admin', '', 'LDAP Administrator', 'ldap-admin@poweradmin.org', 'LDAP test user with Administrator permissions', 1, 1, 1);
+
+-- ldap-manager - LDAP user with Zone Manager permissions
+INSERT OR IGNORE INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap)
+VALUES ('ldap-manager', '', 'LDAP Zone Manager', 'ldap-manager@poweradmin.org', 'LDAP test user with Zone Manager permissions', 2, 1, 1);
+
+-- ldap-client - LDAP user with Client Editor permissions
+INSERT OR IGNORE INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap)
+VALUES ('ldap-client', '', 'LDAP Client Editor', 'ldap-client@poweradmin.org', 'LDAP test user with Client Editor permissions', 3, 1, 1);
+
+-- ldap-viewer - LDAP user with Read Only permissions
+INSERT OR IGNORE INTO users (username, password, fullname, email, description, perm_templ, active, use_ldap)
+VALUES ('ldap-viewer', '', 'LDAP Read Only', 'ldap-viewer@poweradmin.org', 'LDAP test user with Read Only permissions', 4, 1, 1);
+
+-- =============================================================================
 -- TEST DOMAINS
 -- =============================================================================
 
