@@ -15,9 +15,10 @@
  */
 export async function login(page, username, password) {
   await page.goto('/index.php?page=login');
-  await page.fill('[data-testid="username-input"]', username);
-  await page.fill('[data-testid="password-input"]', password);
-  await page.click('[data-testid="login-button"]');
+  // Use flexible selectors that work in both 3.x and master branches
+  await page.locator('input[name="username"], input[name*="user"], [data-testid="username-input"]').first().fill(username);
+  await page.locator('input[name="password"], input[type="password"], [data-testid="password-input"]').first().fill(password);
+  await page.locator('button[type="submit"], input[type="submit"], [data-testid="login-button"]').first().click();
 }
 
 /**

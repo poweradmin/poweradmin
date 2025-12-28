@@ -2,7 +2,8 @@ import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
-test.describe('API Keys Management', () => {
+// Skip: API Keys feature does not exist in 3.x branch
+test.describe.skip('API Keys Management', () => {
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
   });

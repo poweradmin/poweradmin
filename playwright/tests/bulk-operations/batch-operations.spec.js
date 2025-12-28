@@ -16,7 +16,7 @@ test.describe('Bulk and Batch Operations', () => {
 
   test('should access bulk registration page', async ({ page }) => {
     await page.goto('/index.php?page=bulk_registration');
-    await expect(page).toHaveURL(/.*zones\/bulk-registration/);
+    await expect(page).toHaveURL(/page=bulk_registration/);
     await expect(page.locator('h1, h2, h3, .page-title, form').first()).toBeVisible();
   });
 
@@ -60,13 +60,15 @@ test.describe('Bulk and Batch Operations', () => {
     }
   });
 
-  test('should access batch PTR record generation', async ({ page }) => {
-    await page.goto('/index.php?page=bulk_registration');
-    await expect(page).toHaveURL(/.*zones\/batch-ptr/);
+  // Skip: Batch PTR generation page doesn't exist in 3.x branch
+  test.skip('should access batch PTR record generation', async ({ page }) => {
+    await page.goto('/index.php?page=batch_ptr');
+    await expect(page).toHaveURL(/page=batch_ptr/);
     await expect(page.locator('h1, h2, h3, .page-title, form').first()).toBeVisible();
   });
 
-  test('should generate batch PTR records', async ({ page }) => {
+  // Skip: Batch PTR generation page doesn't exist in 3.x branch
+  test.skip('should generate batch PTR records', async ({ page }) => {
     await page.goto('/index.php?page=bulk_registration');
 
     const hasForm = await page.locator('form').count() > 0;

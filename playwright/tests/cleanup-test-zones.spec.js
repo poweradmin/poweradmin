@@ -45,13 +45,19 @@ test.describe('Cleanup Test Zones', () => {
 
       // From search-functionality.spec.js
       'search-test',
+
+      // From concurrent tests
+      'concurrent-test',
+
+      // From test domain workflows
+      'test-domain-',
     ];
 
     let deletedCount = 0;
 
     for (const pattern of testZonePatterns) {
       try {
-        await page.locator('[data-testid="list-zones-link"]').click();
+        await page.goto('/index.php?page=list_zones');
         await page.waitForTimeout(500);
 
         // Find all zones matching the pattern
@@ -59,10 +65,19 @@ test.describe('Cleanup Test Zones', () => {
 
         for (const row of rows) {
           try {
-            const deleteButton = row.locator('[data-testid^="delete-zone-"]');
-            if (await deleteButton.count() > 0) {
-              await deleteButton.first().click();
-              await page.locator('[data-testid="confirm-delete-zone"]').click();
+            const deleteLink = row.locator('a').filter({ hasText: /Delete/i });
+            if (await deleteLink.count() > 0) {
+              await deleteLink.first().click();
+
+              // Wait for confirmation page
+              await page.waitForTimeout(300);
+
+              // Look for confirm button
+              const confirmButton = page.locator('button, input[type="submit"]').filter({ hasText: /Yes|Confirm|Delete/i });
+              if (await confirmButton.count() > 0) {
+                await confirmButton.first().click();
+              }
+
               await page.waitForTimeout(500);
               deletedCount++;
               console.log(`Deleted zone matching: ${pattern}`);
