@@ -37,14 +37,11 @@ export default defineConfig({
     // Base URL to use in actions like `await page.goto('/')`
     baseURL: 'http://localhost:8080',
 
-    // Collect trace when retrying the failed test
-    trace: 'on-first-retry',
-
-    // Screenshot on failure
-    screenshot: 'only-on-failure',
-
-    // Video on failure
-    video: 'retain-on-failure',
+    // Disable heavy features on CI for performance
+    // Re-enable locally by setting CI=false or when investigating failures
+    trace: process.env.CI ? 'off' : 'on-first-retry',
+    screenshot: process.env.CI ? 'off' : 'only-on-failure',
+    video: process.env.CI ? 'off' : 'retain-on-failure',
 
     // Maximum time each action such as `click()` can take
     actionTimeout: 10 * 1000,
@@ -54,6 +51,9 @@ export default defineConfig({
   },
 
   // Configure projects for major browsers
+  // Default command (npm run test:e2e) runs Chromium only for fast local feedback
+  // Use npm run test:e2e:firefox or npm run test:e2e:webkit for other browsers
+  // Use npm run test:e2e:all to run all browsers
   projects: [
     {
       name: 'chromium',
