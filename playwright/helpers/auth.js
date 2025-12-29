@@ -41,11 +41,9 @@ export async function loginAndWaitForDashboard(page, username, password) {
  * @returns {Promise<void>}
  */
 export async function logout(page) {
-  // Look for logout button/link and click it
-  const logoutButton = page.locator('a:has-text("Logout"), button:has-text("Logout")').first();
-  if (await logoutButton.isVisible()) {
-    await logoutButton.click();
-  }
+  // Navigate directly to logout page for reliable logout
+  await page.goto('/index.php?page=logout');
+  await page.waitForURL(/login/);
 }
 
 /**

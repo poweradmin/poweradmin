@@ -2,175 +2,161 @@ import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
-test.describe('Bulk Record Operations', () => {
-  const testDomain = `bulk-rec-${Date.now()}.example.com`;
-  let zoneId = null;
+/**
+ * Tests for Bulk Zone Registration functionality
+ * Note: The bulk_registration page is for registering multiple ZONES, not records.
+ * This test file validates the bulk zone registration feature with focus on
+ * zone creation and automatic record generation.
+ */
+test.describe('Bulk Zone Registration', () => {
+  const timestamp = Date.now();
+  const testDomains = [
+    `bulk-zone-a-${timestamp}.example.com`,
+    `bulk-zone-b-${timestamp}.example.com`,
+    `bulk-zone-c-${timestamp}.example.com`
+  ];
 
-  test.beforeAll(async ({ browser }) => {
-    const page = await browser.newPage();
+  test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-
-    await page.goto('/index.php?page=add_zone_master');
-    await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(testDomain);
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-    await page.goto('/index.php?page=list_zones');
-    const row = page.locator(`tr:has-text("${testDomain}")`);
-    if (await row.count() > 0) {
-      const editLink = await row.locator('a[href*="page=edit"]').first().getAttribute('href');
-      const match = editLink?.match(/id=(\d+)/);
-      if (match) zoneId = match[1];
-    }
-    await page.close();
   });
 
-  test.describe('Bulk Registration Page', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
+  test.describe('Bulk Registration Page Access', () => {
     test('should access bulk registration page', async ({ page }) => {
-      if (!zoneId) test.skip();
-      await page.goto(`/index.php?page=bulk_registration&id=${zoneId}`);
+      await page.goto('/index.php?page=bulk_registration');
+      await expect(page).toHaveURL(/page=bulk_registration/);
       const bodyText = await page.locator('body').textContent();
-      expect(bodyText.toLowerCase()).toMatch(/bulk|registration|records/i);
+      expect(bodyText.toLowerCase()).toMatch(/bulk|registration|zones/i);
     });
 
     test('should display bulk input textarea', async ({ page }) => {
-      if (!zoneId) test.skip();
-      await page.goto(`/index.php?page=bulk_registration&id=${zoneId}`);
-      const textarea = page.locator('textarea');
-      if (await textarea.count() > 0) {
-        await expect(textarea.first()).toBeVisible();
-      }
+      await page.goto('/index.php?page=bulk_registration');
+      const textarea = page.locator('textarea[name="domains"]');
+      await expect(textarea).toBeVisible();
     });
 
-    test('should accept single record input', async ({ page }) => {
-      if (!zoneId) test.skip();
-      await page.goto(`/index.php?page=bulk_registration&id=${zoneId}`);
-      const textarea = page.locator('textarea').first();
-      if (await textarea.count() > 0) {
-        await textarea.fill('bulk1 A 192.168.1.1');
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
+    test('should display owner selection', async ({ page }) => {
+      await page.goto('/index.php?page=bulk_registration');
+      const ownerSelect = page.locator('select[name="owner"]');
+      await expect(ownerSelect).toBeVisible();
     });
 
-    test('should accept multiple records input', async ({ page }) => {
-      if (!zoneId) test.skip();
-      await page.goto(`/index.php?page=bulk_registration&id=${zoneId}`);
-      const textarea = page.locator('textarea').first();
-      if (await textarea.count() > 0) {
-        await textarea.fill('bulk2 A 192.168.1.2\nbulk3 A 192.168.1.3\nbulk4 A 192.168.1.4');
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
+    test('should display zone type selection', async ({ page }) => {
+      await page.goto('/index.php?page=bulk_registration');
+      const typeSelect = page.locator('select[name="dom_type"]');
+      await expect(typeSelect).toBeVisible();
     });
 
-    test('should handle empty input', async ({ page }) => {
-      if (!zoneId) test.skip();
-      await page.goto(`/index.php?page=bulk_registration&id=${zoneId}`);
+    test('should display template selection', async ({ page }) => {
+      await page.goto('/index.php?page=bulk_registration');
+      const templateSelect = page.locator('select[name="zone_template"]');
+      await expect(templateSelect).toBeVisible();
+    });
+  });
+
+  test.describe('Bulk Registration Form Submission', () => {
+    test('should handle empty input gracefully', async ({ page }) => {
+      await page.goto('/index.php?page=bulk_registration');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should handle invalid format', async ({ page }) => {
-      if (!zoneId) test.skip();
-      await page.goto(`/index.php?page=bulk_registration&id=${zoneId}`);
-      const textarea = page.locator('textarea').first();
-      if (await textarea.count() > 0) {
-        await textarea.fill('invalid format without proper fields');
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+    test('should register single zone', async ({ page }) => {
+      const singleDomain = `bulk-single-${timestamp}.example.com`;
+      await page.goto('/index.php?page=bulk_registration');
+
+      await page.locator('textarea[name="domains"]').fill(singleDomain);
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      // Verify success or check zone list
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+
+      // Clean up
+      await page.goto('/index.php?page=list_zones');
+      const row = page.locator(`tr:has-text("${singleDomain}")`);
+      if (await row.count() > 0) {
+        await row.locator('a[href*="delete_domain"]').first().click();
+        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
+        if (await yesBtn.count() > 0) await yesBtn.click();
       }
     });
 
-    test('should handle mixed valid and invalid records', async ({ page }) => {
-      if (!zoneId) test.skip();
-      await page.goto(`/index.php?page=bulk_registration&id=${zoneId}`);
-      const textarea = page.locator('textarea').first();
-      if (await textarea.count() > 0) {
-        await textarea.fill('valid A 192.168.1.5\ninvalid\nvalid2 A 192.168.1.6');
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
-    });
-  });
+    test('should register multiple zones', async ({ page }) => {
+      await page.goto('/index.php?page=bulk_registration');
 
-  test.describe('Bulk Registration - Different Record Types', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+      await page.locator('textarea[name="domains"]').fill(testDomains.join('\n'));
+      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+
+      // Verify success
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should add multiple A records', async ({ page }) => {
-      if (!zoneId) test.skip();
-      await page.goto(`/index.php?page=bulk_registration&id=${zoneId}`);
-      const textarea = page.locator('textarea').first();
-      if (await textarea.count() > 0) {
-        await textarea.fill('a1 A 10.0.0.1\na2 A 10.0.0.2\na3 A 10.0.0.3');
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
-      }
-    });
+    test('should show created zones in list', async ({ page }) => {
+      await page.goto('/index.php?page=list_zones');
 
-    test('should add mixed record types', async ({ page }) => {
-      if (!zoneId) test.skip();
-      await page.goto(`/index.php?page=bulk_registration&id=${zoneId}`);
-      const textarea = page.locator('textarea').first();
-      if (await textarea.count() > 0) {
-        await textarea.fill('web A 10.0.0.10\nmail MX 10 mail.example.com\nwww CNAME web');
-        await page.locator('button[type="submit"], input[type="submit"]').first().click();
-        const bodyText = await page.locator('body').textContent();
-        expect(bodyText).not.toMatch(/fatal|exception/i);
+      // Click "Show all" to show all zones regardless of letter filter
+      const showAllBtn = page.locator('a, button').filter({ hasText: 'Show all' });
+      if (await showAllBtn.count() > 0) {
+        await showAllBtn.first().click();
+        await page.waitForLoadState('networkidle');
       }
+
+      // Verify at least one test zone exists
+      const bodyText = await page.locator('body').textContent();
+      const hasTestZone = testDomains.some(domain => bodyText.includes(domain));
+      expect(hasTestZone).toBeTruthy();
     });
   });
 
   test.describe('Bulk Registration - User Permissions', () => {
     test('admin should access bulk registration', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      if (!zoneId) test.skip();
-      await page.goto(`/index.php?page=bulk_registration&id=${zoneId}`);
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/denied|permission/i);
+      await page.goto('/index.php?page=bulk_registration');
+      // Verify form elements are visible (admin has access)
+      const textarea = page.locator('textarea[name="domains"]');
+      await expect(textarea).toBeVisible();
     });
 
-    test('manager should access bulk registration for own zones', async ({ page }) => {
+    test('manager should access bulk registration', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      await page.goto('/index.php?page=list_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
-      if (await editLink.count() > 0) {
-        const href = await editLink.getAttribute('href');
-        const match = href?.match(/id=(\d+)/);
-        if (match) {
-          await page.goto(`/index.php?page=bulk_registration&id=${match[1]}`);
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
-        }
-      }
+      await page.goto('/index.php?page=bulk_registration');
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
+    });
+
+    test('viewer should not access bulk registration', async ({ page }) => {
+      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+      await page.goto('/index.php?page=bulk_registration');
+      const bodyText = await page.locator('body').textContent();
+      // Viewer should see permission denied or be redirected
+      const hasNoAccess = bodyText.toLowerCase().includes('permission') ||
+                          bodyText.toLowerCase().includes('denied') ||
+                          !page.url().includes('bulk_registration');
+      expect(hasNoAccess).toBeTruthy();
     });
   });
 
-  // Cleanup
+  // Cleanup test domains
   test.afterAll(async ({ browser }) => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+
     await page.goto('/index.php?page=list_zones');
-    const row = page.locator(`tr:has-text("${testDomain}")`);
-    if (await row.count() > 0) {
-      const deleteLink = row.locator('a[href*="delete_domain"]').first();
-      if (await deleteLink.count() > 0) {
-        await deleteLink.click();
-        const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
-        if (await yesBtn.count() > 0) await yesBtn.click();
+
+    for (const domain of testDomains) {
+      const row = page.locator(`tr:has-text("${domain}")`);
+      if (await row.count() > 0) {
+        const deleteLink = row.locator('a[href*="delete_domain"]').first();
+        if (await deleteLink.count() > 0) {
+          await deleteLink.click();
+          const yesBtn = page.locator('input[value="Yes"], button:has-text("Yes")').first();
+          if (await yesBtn.count() > 0) await yesBtn.click();
+          await page.waitForTimeout(300);
+        }
       }
     }
+
     await page.close();
   });
 });

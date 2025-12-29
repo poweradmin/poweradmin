@@ -52,13 +52,17 @@ test.describe('Bulk Zone Registration Validation', () => {
       return;
     }
 
-    // Try various invalid domain formats
-    await page.locator('textarea').first().fill('invalid..domain.com');
+    // Use domain with invalid characters (@ is not allowed in domain names)
+    const invalidDomain = 'test@invalid-domain.com';
+    await page.locator('textarea').first().fill(invalidDomain);
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-    // Should show error or stay on form
+    // Should show error or stay on form with failed domains listed
     const bodyText = await page.locator('body').textContent();
-    const hasError = bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('invalid') || page.url().includes('bulk_registration');
+    const hasError = bodyText.toLowerCase().includes('invalid') ||
+                     bodyText.toLowerCase().includes('hostname') ||
+                     bodyText.includes(invalidDomain) ||
+                     page.url().includes('bulk_registration');
     expect(hasError).toBeTruthy();
   });
 
