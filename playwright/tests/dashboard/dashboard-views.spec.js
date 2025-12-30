@@ -185,9 +185,20 @@ test.describe('Dashboard Views', () => {
 
     test('should navigate to add master zone', async ({ page }) => {
       await page.goto('/index.php?page=index');
-      const addMasterLink = page.locator('a[href*="add_zone_master"]').first();
+
+      // The add zone link may be in a dropdown menu
+      const addMasterLink = page.locator('a[href*="add_zone_master"]');
       if (await addMasterLink.count() > 0) {
-        await addMasterLink.click();
+        // Try to find and open the dropdown menu first if the link is hidden
+        const isVisible = await addMasterLink.first().isVisible();
+        if (!isVisible) {
+          // Look for the Zones dropdown button and click it
+          const zonesDropdown = page.locator('button:has-text("Zones"), [data-bs-toggle="dropdown"]:has-text("Zones")');
+          if (await zonesDropdown.count() > 0) {
+            await zonesDropdown.first().click();
+          }
+        }
+        await addMasterLink.first().click();
         await expect(page).toHaveURL(/add_zone_master/);
       }
     });

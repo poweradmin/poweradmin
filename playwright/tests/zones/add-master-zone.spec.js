@@ -4,7 +4,7 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Master Zone Management', () => {
   const testZone = `test-zone-${Date.now()}.com`;
-  const reverseZone = '1.168.192.in-addr.arpa';
+  const reverseZone = `${Date.now() % 256}.168.192.in-addr.arpa`;
 
   test.beforeEach(async ({ page }) => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);

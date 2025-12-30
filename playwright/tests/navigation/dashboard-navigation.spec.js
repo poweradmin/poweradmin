@@ -47,19 +47,22 @@ test.describe('Dashboard and Navigation', () => {
   test('should navigate to forward zones page', async ({ page }) => {
     await page.goto('/index.php?page=list_zones');
     await expect(page).toHaveURL(/page=list_zones/);
-    await expect(page.locator('h1, h2, h3, .page-title')).toBeVisible();
+    // Page may use various heading levels
+    await expect(page.locator('h1, h2, h3, h4, h5, .page-title').first()).toBeVisible();
   });
 
   test('should navigate to reverse zones page', async ({ page }) => {
     await page.goto('/index.php?page=list_zones');
     await expect(page).toHaveURL(/page=list_zones/);
-    await expect(page.locator('h1, h2, h3, .page-title')).toBeVisible();
+    // Page may use various heading levels
+    await expect(page.locator('h1, h2, h3, h4, h5, .page-title').first()).toBeVisible();
   });
 
   test('should navigate to users page', async ({ page }) => {
     await page.goto('/index.php?page=users');
     await expect(page).toHaveURL(/page=users/);
-    await expect(page.locator('h1, h2, h3, .page-title')).toBeVisible();
+    // Page may use various heading levels
+    await expect(page.locator('h1, h2, h3, h4, h5, .page-title').first()).toBeVisible();
   });
 
   test('should show dashboard cards or widgets', async ({ page }) => {
@@ -78,12 +81,14 @@ test.describe('Dashboard and Navigation', () => {
   test('should have breadcrumb navigation on sub-pages', async ({ page }) => {
     await page.goto('/index.php?page=add_user');
 
-    const hasBreadcrumb = await page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]').count() > 0;
+    const breadcrumbs = page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]');
+    const hasBreadcrumb = await breadcrumbs.count() > 0;
     if (hasBreadcrumb) {
-      await expect(page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]')).toBeVisible();
+      // Use first() to avoid strict mode violation when multiple elements match
+      await expect(breadcrumbs.first()).toBeVisible();
     } else {
       // Check for page title or heading
-      await expect(page.locator('h1, h2, h3, .page-title')).toBeVisible();
+      await expect(page.locator('h1, h2, h3, h4, h5, .page-title').first()).toBeVisible();
     }
   });
 
