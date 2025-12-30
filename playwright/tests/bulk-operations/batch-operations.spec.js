@@ -66,50 +66,6 @@ test.describe('Bulk and Batch Operations', () => {
     expect(hasTestDomain).toBeTruthy();
   });
 
-  // Skip: Batch PTR generation page doesn't exist in 3.x branch
-  test.skip('should access batch PTR record generation', async ({ page }) => {
-    await page.goto('/index.php?page=batch_ptr');
-    await expect(page).toHaveURL(/page=batch_ptr/);
-    await expect(page.locator('h1, h2, h3, .page-title, form').first()).toBeVisible();
-  });
-
-  // Skip: Batch PTR generation page doesn't exist in 3.x branch
-  test.skip('should generate batch PTR records', async ({ page }) => {
-    await page.goto('/index.php?page=bulk_registration');
-
-    const hasForm = await page.locator('form').count() > 0;
-    if (hasForm) {
-      // Fill in IP range for PTR generation
-      const hasStart = await page.locator('input[name*="start"], input[name*="from"]').count() > 0;
-      if (hasStart) {
-        await page.locator('input[name*="start"], input[name*="from"]').first().fill('192.168.1.10');
-      }
-
-      const hasEnd = await page.locator('input[name*="end"], input[name*="to"]').count() > 0;
-      if (hasEnd) {
-        await page.locator('input[name*="end"], input[name*="to"]').first().fill('192.168.1.20');
-      }
-
-      // Set hostname pattern
-      const hasHostname = await page.locator('input[name*="hostname"], input[name*="pattern"]').count() > 0;
-      if (hasHostname) {
-        await page.locator('input[name*="hostname"], input[name*="pattern"]').first().fill(`host-[IP].${testDomains[0]}.`);
-      }
-
-      // Select reverse zone if dropdown exists
-      const hasZone = await page.locator('select[name*="zone"]').count() > 0;
-      if (hasZone) {
-        await page.locator('select[name*="zone"]').first().selectOption({ index: 0 });
-      }
-
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      // Verify PTR generation
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).toMatch(/success|generated|created/i);
-    }
-  });
-
   test('should perform bulk zone deletion', async ({ page }) => {
     await page.goto('/index.php?page=list_zones');
 
