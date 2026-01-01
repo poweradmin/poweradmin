@@ -83,9 +83,10 @@ $session_key = 'YV4@SQ(Wa8l8L7fDlU3e_(XhuCyuuEifm68Xtuh!MNE#!L';
 $password_encryption = 'bcrypt';
 $password_encryption_cost = 10;     // bcrypt cost factor (10-12 recommended)
 
-// CSRF token validation
-$login_token_validation = false;    // Disabled for testing; enable in production
-$global_token_validation = false;   // Disabled for testing; enable in production
+// CSRF token validation (protects against cross-site request forgery)
+// E2E tests work correctly with CSRF enabled
+$login_token_validation = true;
+$global_token_validation = true;
 
 // =============================================================================
 // INTERFACE SETTINGS
