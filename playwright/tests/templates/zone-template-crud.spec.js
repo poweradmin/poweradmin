@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { ensureTemplateExists } from '../../helpers/templates.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Zone Template CRUD Operations', () => {
@@ -154,18 +155,13 @@ test.describe('Zone Template CRUD Operations', () => {
   });
 
   test.describe('Edit Template', () => {
-    let testTemplateCreated = false;
+    let templateId = null;
     const editTemplateName = `edit-test-${Date.now()}`;
 
     test.beforeAll(async ({ browser }) => {
       const page = await browser.newPage();
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-
-      await page.goto('/index.php?page=add_zone_templ');
-      await page.locator('input[name*="name"], input[name*="templ"]').first().fill(editTemplateName);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      testTemplateCreated = true;
+      templateId = await ensureTemplateExists(page, editTemplateName);
       await page.close();
     });
 
@@ -174,7 +170,7 @@ test.describe('Zone Template CRUD Operations', () => {
     });
 
     test('should access edit template page', async ({ page }) => {
-      if (!testTemplateCreated) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto('/index.php?page=list_zone_templ');
       const row = page.locator(`tr:has-text("${editTemplateName}")`);
@@ -189,7 +185,7 @@ test.describe('Zone Template CRUD Operations', () => {
     });
 
     test('should display current template name', async ({ page }) => {
-      if (!testTemplateCreated) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto('/index.php?page=list_zone_templ');
       const row = page.locator(`tr:has-text("${editTemplateName}")`);
@@ -207,7 +203,7 @@ test.describe('Zone Template CRUD Operations', () => {
     });
 
     test('should update template name', async ({ page }) => {
-      if (!testTemplateCreated) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto('/index.php?page=list_zone_templ');
       const row = page.locator(`tr:has-text("${editTemplateName}")`);
@@ -228,7 +224,7 @@ test.describe('Zone Template CRUD Operations', () => {
     });
 
     test('should update template description', async ({ page }) => {
-      if (!testTemplateCreated) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto('/index.php?page=list_zone_templ');
       const row = page.locator(`tr:has-text("${editTemplateName}")`).first();
@@ -373,22 +369,7 @@ test.describe('Zone Template CRUD Operations', () => {
     test.beforeAll(async ({ browser }) => {
       const page = await browser.newPage();
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-
-      await page.goto('/index.php?page=add_zone_templ');
-      await page.locator('input[name*="name"], input[name*="templ"]').first().fill(recordTemplateName);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      // Get template ID
-      await page.goto('/index.php?page=list_zone_templ');
-      const row = page.locator(`tr:has-text("${recordTemplateName}")`);
-      if (await row.count() > 0) {
-        const editLink = await row.locator('a[href*="edit_zone_templ"]').first().getAttribute('href');
-        const match = editLink?.match(/id=(\d+)/);
-        if (match) {
-          templateId = match[1];
-        }
-      }
-
+      templateId = await ensureTemplateExists(page, recordTemplateName);
       await page.close();
     });
 
@@ -397,14 +378,14 @@ test.describe('Zone Template CRUD Operations', () => {
     });
 
     test('should access add template record page', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await expect(page).toHaveURL(/add_zone_templ_record/);
     });
 
     test('should display record type selector', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
 
@@ -415,7 +396,7 @@ test.describe('Zone Template CRUD Operations', () => {
     });
 
     test('should add A record to template', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
 
@@ -440,7 +421,7 @@ test.describe('Zone Template CRUD Operations', () => {
     });
 
     test('should add MX record to template', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
 
@@ -459,7 +440,7 @@ test.describe('Zone Template CRUD Operations', () => {
     });
 
     test('should use [ZONE] placeholder in template record', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
 
@@ -473,7 +454,7 @@ test.describe('Zone Template CRUD Operations', () => {
     });
 
     test('should add TXT record to template', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
 

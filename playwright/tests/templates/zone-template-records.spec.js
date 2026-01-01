@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { ensureTemplateExists } from '../../helpers/templates.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Zone Template Records', () => {
@@ -9,18 +10,7 @@ test.describe('Zone Template Records', () => {
   test.beforeAll(async ({ browser }) => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-
-    await page.goto('/index.php?page=add_zone_templ');
-    await page.locator('input[name*="name"], input[name*="templ"]').first().fill(templateName);
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-    await page.goto('/index.php?page=list_zone_templ');
-    const row = page.locator(`tr:has-text("${templateName}")`);
-    if (await row.count() > 0) {
-      const editLink = await row.locator('a[href*="edit_zone_templ"]').first().getAttribute('href');
-      const match = editLink?.match(/id=(\d+)/);
-      if (match) templateId = match[1];
-    }
+    templateId = await ensureTemplateExists(page, templateName);
     await page.close();
   });
 
@@ -30,20 +20,20 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should access add template record page', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await expect(page).toHaveURL(/add_zone_templ_record/);
     });
 
     test('should display record type selector', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       const typeSelector = page.locator('select[name*="type"]');
       expect(await typeSelector.count()).toBeGreaterThan(0);
     });
 
     test('should add A record to template', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await page.locator('select[name*="type"]').first().selectOption('A');
       await page.locator('input[name*="name"]').first().fill('www');
@@ -54,7 +44,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should add AAAA record to template', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
       await page.locator('input[name*="name"]').first().fill('ipv6');
@@ -65,7 +55,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should add MX record with priority', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await page.locator('select[name*="type"]').first().selectOption('MX');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('mail.[ZONE]');
@@ -77,7 +67,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should add NS record with [ZONE] placeholder', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await page.locator('select[name*="type"]').first().selectOption('NS');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('ns1.[ZONE]');
@@ -87,7 +77,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should add TXT record for SPF', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill('@');
@@ -98,7 +88,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should add CNAME record', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await page.locator('select[name*="type"]').first().selectOption('CNAME');
       await page.locator('input[name*="name"]').first().fill('ftp');
@@ -109,7 +99,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should add SRV record', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await page.locator('select[name*="type"]').first().selectOption('SRV');
       await page.locator('input[name*="name"]').first().fill('_sip._tcp');
@@ -120,7 +110,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should reject empty record content', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await page.locator('select[name*="type"]').first().selectOption('A');
       await page.locator('input[name*="name"]').first().fill('empty');
@@ -136,7 +126,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should access edit template record page', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=edit_zone_templ&id=${templateId}`);
       const editLink = page.locator('a[href*="edit_zone_templ_record"]').first();
       if (await editLink.count() > 0) {
@@ -146,7 +136,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should display current record values', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=edit_zone_templ&id=${templateId}`);
       const editLink = page.locator('a[href*="edit_zone_templ_record"]').first();
       if (await editLink.count() > 0) {
@@ -160,7 +150,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should update template record', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=edit_zone_templ&id=${templateId}`);
       const editLink = page.locator('a[href*="edit_zone_templ_record"]').first();
       if (await editLink.count() > 0) {
@@ -182,7 +172,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should access delete template record confirmation', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=edit_zone_templ&id=${templateId}`);
       const deleteLink = page.locator('a[href*="delete_zone_templ_record"]').first();
       if (await deleteLink.count() > 0) {
@@ -192,7 +182,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should display delete confirmation message', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=edit_zone_templ&id=${templateId}`);
       const deleteLink = page.locator('a[href*="delete_zone_templ_record"]').first();
       if (await deleteLink.count() > 0) {
@@ -203,7 +193,7 @@ test.describe('Zone Template Records', () => {
     });
 
     test('should cancel delete and return to template', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=edit_zone_templ&id=${templateId}`);
       const deleteLink = page.locator('a[href*="delete_zone_templ_record"]').first();
       if (await deleteLink.count() > 0) {
@@ -220,7 +210,7 @@ test.describe('Zone Template Records', () => {
   test.describe('Template Record Permissions', () => {
     test('admin should manage template records', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await expect(page).toHaveURL(/add_zone_templ_record/);
     });

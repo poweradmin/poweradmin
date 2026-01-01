@@ -14,7 +14,7 @@ import zones from '../fixtures/zones.json' assert { type: 'json' };
  * @returns {Promise<string|null>} - Zone ID or null if not found
  */
 export async function findZoneIdByName(page, zoneName) {
-  await page.goto('/index.php?page=list_zones');
+  await page.goto('/index.php?page=list_zones&letter=all');
 
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
@@ -62,7 +62,7 @@ export async function getTestZoneId(page, zoneKey) {
  * @returns {Promise<{id: string, name: string}|null>} - Zone info or null if none found
  */
 export async function findAnyZoneId(page) {
-  await page.goto('/index.php?page=list_zones');
+  await page.goto('/index.php?page=list_zones&letter=all');
 
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
@@ -213,6 +213,68 @@ export function getZoneInfo(zoneKey) {
     throw new Error(`Unknown zone key: ${zoneKey}. Available: ${Object.keys(zones).join(', ')}`);
   }
   return zone;
+}
+
+/**
+ * Ensure a test zone from fixtures exists and return its ID
+ * Creates the zone if it doesn't exist
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @param {string} zoneKey - Key from zones.json (e.g., 'admin', 'manager', 'client')
+ * @returns {Promise<string|null>} - Zone ID or null if creation failed
+ */
+export async function ensureTestZoneExists(page, zoneKey) {
+  const zone = zones[zoneKey];
+  if (!zone) {
+    throw new Error(`Unknown zone key: ${zoneKey}. Available: ${Object.keys(zones).join(', ')}`);
+  }
+
+  return await ensureZoneExists(page, zone.name, zone.type.toLowerCase());
+}
+
+/**
+ * Get a zone ID for testing, trying multiple fallback options
+ * Uses manager zone first, then admin, then any available zone
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @returns {Promise<string|null>} - Zone ID or null if no zones available
+ */
+export async function getZoneIdForTest(page) {
+  // First try the manager zone
+  let zoneId = await getTestZoneId(page, 'manager');
+
+  if (!zoneId) {
+    // Fallback to admin zone
+    zoneId = await getTestZoneId(page, 'admin');
+  }
+
+  if (!zoneId) {
+    // Last resort: find any zone
+    const anyZone = await findAnyZoneId(page);
+    if (anyZone) {
+      zoneId = anyZone.id;
+    }
+  }
+
+  return zoneId;
+}
+
+/**
+ * Ensure any zone exists for testing
+ * Tries to find existing zones first, creates one if none exist
+ *
+ * @param {import('@playwright/test').Page} page - Playwright page object
+ * @returns {Promise<string|null>} - Zone ID or null if creation failed
+ */
+export async function ensureAnyZoneExists(page) {
+  // First try to find any existing zone
+  const anyZone = await findAnyZoneId(page);
+  if (anyZone && anyZone.id) {
+    return anyZone.id;
+  }
+
+  // No zones exist, create the manager zone
+  return await ensureTestZoneExists(page, 'manager');
 }
 
 // Export zones fixture for direct access

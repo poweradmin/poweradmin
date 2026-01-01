@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getTestZoneId, findAnyZoneId, zones } from '../../helpers/zones.js';
+import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Zone CRUD Operations', () => {
@@ -276,55 +276,34 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('should access zone edit page', async ({ page }) => {
-      const testZoneId = await getTestZoneId(page, 'admin');
-      if (!testZoneId) {
-        // Fallback: find any zone
-        const anyZone = await findAnyZoneId(page);
-        if (!anyZone) test.skip();
-        await page.goto(`/index.php?page=edit&id=${anyZone.id}`);
-      } else {
-        await page.goto(`/index.php?page=edit&id=${testZoneId}`);
-      }
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
+      await page.goto(`/index.php?page=edit&id=${zoneId}`);
       await expect(page).toHaveURL(/page=edit/);
     });
 
     test('should display zone records', async ({ page }) => {
-      const testZoneId = await getTestZoneId(page, 'admin');
-      if (!testZoneId) {
-        const anyZone = await findAnyZoneId(page);
-        if (!anyZone) test.skip();
-        await page.goto(`/index.php?page=edit&id=${anyZone.id}`);
-      } else {
-        await page.goto(`/index.php?page=edit&id=${testZoneId}`);
-      }
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
+      await page.goto(`/index.php?page=edit&id=${zoneId}`);
 
       const table = page.locator('table').first();
       await expect(table).toBeVisible();
     });
 
     test('should display zone metadata', async ({ page }) => {
-      const testZoneId = await getTestZoneId(page, 'admin');
-      if (!testZoneId) {
-        const anyZone = await findAnyZoneId(page);
-        if (!anyZone) test.skip();
-        await page.goto(`/index.php?page=edit&id=${anyZone.id}`);
-      } else {
-        await page.goto(`/index.php?page=edit&id=${testZoneId}`);
-      }
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
+      await page.goto(`/index.php?page=edit&id=${zoneId}`);
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/zone|owner|type/i);
     });
 
     test('should show add record button', async ({ page }) => {
-      const testZoneId = await getTestZoneId(page, 'admin');
-      if (!testZoneId) {
-        const anyZone = await findAnyZoneId(page);
-        if (!anyZone) test.skip();
-        await page.goto(`/index.php?page=edit&id=${anyZone.id}`);
-      } else {
-        await page.goto(`/index.php?page=edit&id=${testZoneId}`);
-      }
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
+      await page.goto(`/index.php?page=edit&id=${zoneId}`);
 
       const addBtn = page.locator('a[href*="add_record"], input[value*="Add"]');
       expect(await addBtn.count()).toBeGreaterThan(0);
@@ -340,26 +319,16 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('should access edit comment page', async ({ page }) => {
-      const testZoneId = await getTestZoneId(page, 'admin');
-      if (!testZoneId) {
-        const anyZone = await findAnyZoneId(page);
-        if (!anyZone) test.skip();
-        await page.goto(`/index.php?page=edit_comment&id=${anyZone.id}`);
-      } else {
-        await page.goto(`/index.php?page=edit_comment&id=${testZoneId}`);
-      }
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
+      await page.goto(`/index.php?page=edit_comment&id=${zoneId}`);
       await expect(page).toHaveURL(/edit_comment/);
     });
 
     test('should display comment textarea', async ({ page }) => {
-      const testZoneId = await getTestZoneId(page, 'admin');
-      if (!testZoneId) {
-        const anyZone = await findAnyZoneId(page);
-        if (!anyZone) test.skip();
-        await page.goto(`/index.php?page=edit_comment&id=${anyZone.id}`);
-      } else {
-        await page.goto(`/index.php?page=edit_comment&id=${testZoneId}`);
-      }
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
+      await page.goto(`/index.php?page=edit_comment&id=${zoneId}`);
 
       const textarea = page.locator('textarea').first();
       if (await textarea.count() > 0) {
@@ -368,14 +337,9 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('should update zone comment', async ({ page }) => {
-      const testZoneId = await getTestZoneId(page, 'admin');
-      if (!testZoneId) {
-        const anyZone = await findAnyZoneId(page);
-        if (!anyZone) test.skip();
-        await page.goto(`/index.php?page=edit_comment&id=${anyZone.id}`);
-      } else {
-        await page.goto(`/index.php?page=edit_comment&id=${testZoneId}`);
-      }
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
+      await page.goto(`/index.php?page=edit_comment&id=${zoneId}`);
 
       const textarea = page.locator('textarea').first();
       if (await textarea.count() > 0) {
@@ -388,14 +352,9 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('should handle comment with special characters', async ({ page }) => {
-      const testZoneId = await getTestZoneId(page, 'admin');
-      if (!testZoneId) {
-        const anyZone = await findAnyZoneId(page);
-        if (!anyZone) test.skip();
-        await page.goto(`/index.php?page=edit_comment&id=${anyZone.id}`);
-      } else {
-        await page.goto(`/index.php?page=edit_comment&id=${testZoneId}`);
-      }
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
+      await page.goto(`/index.php?page=edit_comment&id=${zoneId}`);
 
       const textarea = page.locator('textarea').first();
       if (await textarea.count() > 0) {
@@ -408,14 +367,9 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('should clear zone comment', async ({ page }) => {
-      const testZoneId = await getTestZoneId(page, 'admin');
-      if (!testZoneId) {
-        const anyZone = await findAnyZoneId(page);
-        if (!anyZone) test.skip();
-        await page.goto(`/index.php?page=edit_comment&id=${anyZone.id}`);
-      } else {
-        await page.goto(`/index.php?page=edit_comment&id=${testZoneId}`);
-      }
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
+      await page.goto(`/index.php?page=edit_comment&id=${zoneId}`);
 
       const textarea = page.locator('textarea').first();
       if (await textarea.count() > 0) {

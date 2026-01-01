@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { ensurePermTemplateExists } from '../../helpers/templates.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Permission Template CRUD Operations', () => {
@@ -137,21 +138,7 @@ test.describe('Permission Template CRUD Operations', () => {
     test.beforeAll(async ({ browser }) => {
       const page = await browser.newPage();
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-
-      await page.goto('/index.php?page=add_perm_templ');
-      await page.locator('input[name*="name"], input[name*="templ"]').first().fill(editTemplateName);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      await page.goto('/index.php?page=list_perm_templ');
-      const row = page.locator(`tr:has-text("${editTemplateName}")`);
-      if (await row.count() > 0) {
-        const editLink = await row.locator('a[href*="edit_perm_templ"]').first().getAttribute('href');
-        const match = editLink?.match(/id=(\d+)/);
-        if (match) {
-          templateId = match[1];
-        }
-      }
-
+      templateId = await ensurePermTemplateExists(page, editTemplateName);
       await page.close();
     });
 
@@ -160,14 +147,14 @@ test.describe('Permission Template CRUD Operations', () => {
     });
 
     test('should access edit template page', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=edit_perm_templ&id=${templateId}`);
       await expect(page).toHaveURL(/edit_perm_templ/);
     });
 
     test('should display current template name', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=edit_perm_templ&id=${templateId}`);
 
@@ -181,7 +168,7 @@ test.describe('Permission Template CRUD Operations', () => {
     });
 
     test('should update template name', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=edit_perm_templ&id=${templateId}`);
 
@@ -197,7 +184,7 @@ test.describe('Permission Template CRUD Operations', () => {
     });
 
     test('should add permissions to template', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=edit_perm_templ&id=${templateId}`);
 
@@ -212,7 +199,7 @@ test.describe('Permission Template CRUD Operations', () => {
     });
 
     test('should remove permissions from template', async ({ page }) => {
-      if (!templateId) test.skip();
+      expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=edit_perm_templ&id=${templateId}`);
 

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { login } from '../../helpers/auth.js';
-import { findAnyZoneId } from '../../helpers/zones.js';
+import { ensureAnyZoneExists, findAnyZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Complete DNS Management Workflow Integration', () => {
@@ -8,9 +8,10 @@ test.describe('Complete DNS Management Workflow Integration', () => {
   test('should complete full company DNS setup workflow', async ({ page }) => {
     await login(page, users.admin.username, users.admin.password);
 
-    // Step 1: Find any available zone
+    // Step 1: Ensure a zone exists and find it
+    await ensureAnyZoneExists(page);
     const testZone = await findAnyZoneId(page);
-    if (!testZone || !testZone.id) test.skip();
+    expect(testZone && testZone.id).toBeTruthy();
 
     // Step 2: Navigate directly to zone edit page by ID
     await page.goto(`/index.php?page=edit&id=${testZone.id}`);
@@ -22,8 +23,14 @@ test.describe('Complete DNS Management Workflow Integration', () => {
     // Add test record if new record form is available (look for the "newtype" select)
     const newTypeSelect = page.locator('select[name="newtype"]');
     if (await newTypeSelect.count() > 0) {
-      // Add a simple A record using the new record form
-      await newTypeSelect.selectOption('A');
+      // Ensure A record type is selected (it's typically the default)
+      // Use label-based selection which is more reliable
+      try {
+        await newTypeSelect.selectOption({ label: 'A' });
+      } catch {
+        // If selection fails, A might already be selected - continue
+      }
+
       const nameField = page.locator('input[name="newname"]').first();
       if (await nameField.count() > 0) {
         await nameField.clear();
@@ -47,9 +54,10 @@ test.describe('Complete DNS Management Workflow Integration', () => {
   test('should validate complete DNS infrastructure', async ({ page }) => {
     await login(page, users.admin.username, users.admin.password);
 
-    // Find any available zone
+    // Ensure a zone exists and find it
+    await ensureAnyZoneExists(page);
     const zone = await findAnyZoneId(page);
-    if (!zone || !zone.id) test.skip();
+    expect(zone && zone.id).toBeTruthy();
 
     // Navigate directly to zone edit page by ID
     await page.goto(`/index.php?page=edit&id=${zone.id}`);

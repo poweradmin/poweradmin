@@ -1,38 +1,17 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getTestZoneId, findAnyZoneId, zones } from '../../helpers/zones.js';
+import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('DNSSEC Key Management', () => {
   // Use existing admin-zone.example.com for DNSSEC testing
   const testZoneName = zones.admin.name;
 
-  // Helper function to get a valid zone ID for testing
-  async function getZoneIdForTest(page) {
-    // First try the admin zone
-    let zoneId = await getTestZoneId(page, 'admin');
-
-    if (!zoneId) {
-      // Fallback to manager zone
-      zoneId = await getTestZoneId(page, 'manager');
-    }
-
-    if (!zoneId) {
-      // Last resort: find any zone
-      const anyZone = await findAnyZoneId(page);
-      if (anyZone) {
-        zoneId = anyZone.id;
-      }
-    }
-
-    return zoneId;
-  }
-
   test.describe('DNSSEC Page Access', () => {
     test('admin should access DNSSEC page', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
       await expect(page).toHaveURL(/page=dnssec/);
@@ -40,8 +19,8 @@ test.describe('DNSSEC Key Management', () => {
 
     test('should display DNSSEC page title', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -72,8 +51,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should display key list or empty state', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -83,8 +62,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should display add key button', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -95,8 +74,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should show key details when keys exist', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -115,8 +94,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should access add key page', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
 
@@ -125,8 +104,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should display key type selector', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
 
@@ -137,8 +116,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should display algorithm selector', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
 
@@ -149,8 +128,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should display key size options', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
 
@@ -161,8 +140,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should add KSK key', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
 
@@ -186,8 +165,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should add ZSK key', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
 
@@ -211,8 +190,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should select different algorithms', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
 
@@ -237,8 +216,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should display activate/deactivate links', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -249,8 +228,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should access key edit page', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -262,8 +241,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should toggle key status', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -289,8 +268,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should display delete key links', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -301,8 +280,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should access delete confirmation page', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -314,8 +293,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should display delete confirmation', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -329,8 +308,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should cancel delete and return to DNSSEC page', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -353,8 +332,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should access DS records page', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec_ds_dnskey&id=${zoneId}`);
 
@@ -363,8 +342,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should display DS record link from DNSSEC page', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -375,8 +354,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should navigate to DS records from DNSSEC page', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -388,8 +367,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should display DS record content', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec_ds_dnskey&id=${zoneId}`);
 
@@ -419,8 +398,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should navigate from zone edit to DNSSEC', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=edit&id=${zoneId}`);
 
@@ -432,8 +411,8 @@ test.describe('DNSSEC Key Management', () => {
     });
 
     test('should have back to zone link from DNSSEC page', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 

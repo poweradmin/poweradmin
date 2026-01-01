@@ -5,6 +5,10 @@ import { defineConfig, devices } from '@playwright/test';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
+  // Global setup to ensure test data exists
+  // Temporarily disabled for testing
+  // globalSetup: './playwright/global-setup.js',
+
   testDir: './playwright/tests',
 
   // Maximum time one test can run for

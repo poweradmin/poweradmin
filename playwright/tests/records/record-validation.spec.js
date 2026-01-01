@@ -1,32 +1,11 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getTestZoneId, findAnyZoneId, zones } from '../../helpers/zones.js';
+import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Record Validation - All Types', () => {
   // Use existing manager-zone.example.com for record validation testing
   const testZoneName = zones.manager.name;
-
-  // Helper function to get a valid zone ID for testing
-  async function getZoneIdForTest(page) {
-    // First try the manager zone
-    let zoneId = await getTestZoneId(page, 'manager');
-
-    if (!zoneId) {
-      // Fallback to admin zone
-      zoneId = await getTestZoneId(page, 'admin');
-    }
-
-    if (!zoneId) {
-      // Last resort: find any zone
-      const anyZone = await findAnyZoneId(page);
-      if (anyZone) {
-        zoneId = anyZone.id;
-      }
-    }
-
-    return zoneId;
-  }
 
   test.describe('A Record Validation', () => {
     test.beforeEach(async ({ page }) => {
@@ -34,8 +13,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept valid private IP', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('A');
       await page.locator('input[name*="name"]').first().fill(`private-${Date.now()}`);
@@ -46,8 +25,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept valid public IP', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('A');
       await page.locator('input[name*="name"]').first().fill(`public-${Date.now()}`);
@@ -58,8 +37,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should reject IP with leading zeros', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('A');
       await page.locator('input[name*="name"]').first().fill(`leadingzero-${Date.now()}`);
@@ -70,8 +49,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should reject hostname instead of IP', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('A');
       await page.locator('input[name*="name"]').first().fill(`hostname-${Date.now()}`);
@@ -82,8 +61,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept localhost IP', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('A');
       await page.locator('input[name*="name"]').first().fill(`localhost-${Date.now()}`);
@@ -100,8 +79,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept full IPv6 address', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
       await page.locator('input[name*="name"]').first().fill(`ipv6-full-${Date.now()}`);
@@ -112,8 +91,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept compressed IPv6', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
       await page.locator('input[name*="name"]').first().fill(`ipv6-comp-${Date.now()}`);
@@ -124,8 +103,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept IPv6 loopback', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
       await page.locator('input[name*="name"]').first().fill(`ipv6-loop-${Date.now()}`);
@@ -136,8 +115,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should reject invalid IPv6', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('AAAA');
       await page.locator('input[name*="name"]').first().fill(`ipv6-inv-${Date.now()}`);
@@ -154,8 +133,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept MX with priority 0', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('MX');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('mail1.example.com');
@@ -167,8 +146,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept MX with high priority', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('MX');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('backup.example.com');
@@ -180,8 +159,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should reject MX with IP address', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('MX');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('192.168.1.1');
@@ -194,8 +173,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should reject negative priority', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('MX');
       await page.locator('input[name*="content"], input[name*="value"]').first().fill('mail.example.com');
@@ -215,8 +194,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept SPF record', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill(`spf-${Date.now()}`);
@@ -227,8 +206,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept DKIM record', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill(`sel${Date.now()}._domainkey`);
@@ -239,8 +218,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept DMARC record', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill(`_dmarc${Date.now()}`);
@@ -251,8 +230,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept long TXT record', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill(`long-txt-${Date.now()}`);
@@ -264,8 +243,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should handle quotes in TXT', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill(`quoted-${Date.now()}`);
@@ -282,8 +261,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept internal CNAME', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('CNAME');
       await page.locator('input[name*="name"]').first().fill(`alias-${Date.now()}`);
@@ -294,8 +273,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept external CNAME', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('CNAME');
       await page.locator('input[name*="name"]').first().fill(`external-${Date.now()}`);
@@ -306,8 +285,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should reject CNAME pointing to IP', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('CNAME');
       await page.locator('input[name*="name"]').first().fill(`cname-ip-${Date.now()}`);
@@ -325,8 +304,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept SRV for SIP', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('SRV');
       await page.locator('input[name*="name"]').first().fill(`_sip${Date.now()}._tcp`);
@@ -337,8 +316,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept SRV for XMPP', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('SRV');
       await page.locator('input[name*="name"]').first().fill(`_xmpp${Date.now()}._tcp`);
@@ -349,8 +328,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept SRV for LDAP', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('SRV');
       await page.locator('input[name*="name"]').first().fill(`_ldap${Date.now()}._tcp`);
@@ -367,8 +346,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept PTR record', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       const typeSelector = page.locator('select[name*="type"]').first();
       const options = await typeSelector.locator('option').allTextContents();
@@ -399,8 +378,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept NS for subdomain delegation', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('NS');
       await page.locator('input[name*="name"]').first().fill(`sub${Date.now()}`);
@@ -411,8 +390,8 @@ test.describe('Record Validation - All Types', () => {
     });
 
     test('should accept multiple NS records', async ({ page }) => {
-      const zoneId = await getZoneIdForTest(page);
-      if (!zoneId) test.skip();
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('NS');
       await page.locator('input[name*="name"]').first().fill(`sub2-${Date.now()}`);

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { findAnyZoneId } from '../../helpers/zones.js';
+import { ensureAnyZoneExists, findAnyZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Search Functionality', () => {
@@ -46,9 +46,10 @@ test.describe('Search Functionality', () => {
     });
 
     test('should search by exact zone name', async ({ page }) => {
-      // Find any existing zone to search for
+      // Ensure a zone exists and find it
+      await ensureAnyZoneExists(page);
       const zone = await findAnyZoneId(page);
-      if (!zone || !zone.name) test.skip();
+      expect(zone && zone.name).toBeTruthy();
 
       testDomain = zone.name;
       await page.goto('/index.php?page=search');
@@ -62,9 +63,10 @@ test.describe('Search Functionality', () => {
     });
 
     test('should search by partial zone name', async ({ page }) => {
-      // Find any existing zone
+      // Ensure a zone exists and find it
+      await ensureAnyZoneExists(page);
       const zone = await findAnyZoneId(page);
-      if (!zone || !zone.name) test.skip();
+      expect(zone && zone.name).toBeTruthy();
 
       await page.goto('/index.php?page=search');
 
@@ -89,9 +91,10 @@ test.describe('Search Functionality', () => {
     });
 
     test('should search case insensitively', async ({ page }) => {
-      // Find any zone to test case-insensitive search
+      // Ensure a zone exists and find it
+      await ensureAnyZoneExists(page);
       const zone = await findAnyZoneId(page);
-      if (!zone || !zone.name) test.skip();
+      expect(zone && zone.name).toBeTruthy();
 
       await page.goto('/index.php?page=search');
 
@@ -196,9 +199,10 @@ test.describe('Search Functionality', () => {
     });
 
     test('should display clickable search results', async ({ page }) => {
-      // Find any zone to search for
+      // Ensure a zone exists and find it
+      await ensureAnyZoneExists(page);
       const zone = await findAnyZoneId(page);
-      if (!zone || !zone.name) test.skip();
+      expect(zone && zone.name).toBeTruthy();
 
       await page.goto('/index.php?page=search');
 
@@ -211,9 +215,10 @@ test.describe('Search Functionality', () => {
     });
 
     test('should navigate to zone from search result', async ({ page }) => {
-      // Find any zone to search for
+      // Ensure a zone exists and find it
+      await ensureAnyZoneExists(page);
       const zone = await findAnyZoneId(page);
-      if (!zone || !zone.name) test.skip();
+      expect(zone && zone.name).toBeTruthy();
 
       await page.goto('/index.php?page=search');
 

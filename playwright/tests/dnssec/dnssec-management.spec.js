@@ -1,28 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { getTestZoneId, findAnyZoneId, zones } from '../../helpers/zones.js';
+import { ensureAnyZoneExists, getZoneIdForTest } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
-
-// Helper function to get a valid zone ID for testing
-async function getZoneIdForTest(page) {
-  // First try the admin zone
-  let zoneId = await getTestZoneId(page, 'admin');
-
-  if (!zoneId) {
-    // Fallback to manager zone
-    zoneId = await getTestZoneId(page, 'manager');
-  }
-
-  if (!zoneId) {
-    // Last resort: find any zone
-    const anyZone = await findAnyZoneId(page);
-    if (anyZone) {
-      zoneId = anyZone.id;
-    }
-  }
-
-  return zoneId;
-}
 
 test.describe('DNSSEC Management', () => {
   test.beforeEach(async ({ page }) => {
@@ -30,11 +9,8 @@ test.describe('DNSSEC Management', () => {
   });
 
   test('should handle DNSSEC page access with zone ID', async ({ page }) => {
-    const zoneId = await getZoneIdForTest(page);
-    if (!zoneId) {
-      test.info().annotations.push({ type: 'note', description: 'No zones available for DNSSEC testing' });
-      test.skip();
-    }
+    const zoneId = await ensureAnyZoneExists(page);
+    expect(zoneId).toBeTruthy();
 
     await page.goto(`/index.php?page=dnssec&id=${zoneId}`, { waitUntil: 'domcontentloaded' });
 
@@ -51,11 +27,8 @@ test.describe('DNSSEC Management', () => {
   });
 
   test('should show DNSSEC status for existing zone', async ({ page }) => {
-    const zoneId = await getZoneIdForTest(page);
-    if (!zoneId) {
-      test.info().annotations.push({ type: 'note', description: 'No zones available for DNSSEC testing' });
-      test.skip();
-    }
+    const zoneId = await ensureAnyZoneExists(page);
+    expect(zoneId).toBeTruthy();
 
     await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
@@ -64,11 +37,8 @@ test.describe('DNSSEC Management', () => {
   });
 
   test('should handle DNSSEC key addition page', async ({ page }) => {
-    const zoneId = await getZoneIdForTest(page);
-    if (!zoneId) {
-      test.info().annotations.push({ type: 'note', description: 'No zones available for DNSSEC testing' });
-      test.skip();
-    }
+    const zoneId = await ensureAnyZoneExists(page);
+    expect(zoneId).toBeTruthy();
 
     await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`, { waitUntil: 'domcontentloaded' });
 
@@ -86,11 +56,8 @@ test.describe('DNSSEC Management', () => {
   });
 
   test('should show DNSSEC key form fields if available', async ({ page }) => {
-    const zoneId = await getZoneIdForTest(page);
-    if (!zoneId) {
-      test.info().annotations.push({ type: 'note', description: 'No zones available for DNSSEC testing' });
-      test.skip();
-    }
+    const zoneId = await ensureAnyZoneExists(page);
+    expect(zoneId).toBeTruthy();
 
     await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`, { waitUntil: 'domcontentloaded' });
 
@@ -107,11 +74,8 @@ test.describe('DNSSEC Management', () => {
   });
 
   test('should validate DNSSEC permissions', async ({ page }) => {
-    const zoneId = await getZoneIdForTest(page);
-    if (!zoneId) {
-      test.info().annotations.push({ type: 'note', description: 'No zones available for DNSSEC testing' });
-      test.skip();
-    }
+    const zoneId = await ensureAnyZoneExists(page);
+    expect(zoneId).toBeTruthy();
 
     await page.goto(`/index.php?page=dnssec&id=${zoneId}`, { waitUntil: 'domcontentloaded' });
 
@@ -122,11 +86,8 @@ test.describe('DNSSEC Management', () => {
   });
 
   test('should show DNSSEC keys list if zone exists and has keys', async ({ page }) => {
-    const zoneId = await getZoneIdForTest(page);
-    if (!zoneId) {
-      test.info().annotations.push({ type: 'note', description: 'No zones available for DNSSEC testing' });
-      test.skip();
-    }
+    const zoneId = await ensureAnyZoneExists(page);
+    expect(zoneId).toBeTruthy();
 
     await page.goto(`/index.php?page=dnssec&id=${zoneId}`, { waitUntil: 'domcontentloaded' });
 
