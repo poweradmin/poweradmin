@@ -41,9 +41,9 @@ test.describe('Login Authentication', () => {
     });
 
     test('should display error message for invalid login', async ({ page }) => {
-      await page.locator('input[name="username"], input[name*="user"]').first().fill(users.invalidUser.username);
-      await page.locator('input[name="password"], input[type="password"]').first().fill(users.invalidUser.password);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await page.getByLabel('Username').fill(users.invalidUser.username);
+      await page.getByLabel('Password').fill(users.invalidUser.password);
+      await page.getByRole('button', { name: /go/i }).click();
       // Check for error message or alert
       const hasError = await page.locator('.alert-danger, .error, [data-testid="session-error"]').first().isVisible().catch(() => false);
       const bodyText = await page.locator('body').textContent();
@@ -66,8 +66,8 @@ test.describe('Login Authentication', () => {
     });
 
     test('should not login with empty password', async ({ page }) => {
-      await page.locator('input[name="username"], input[name*="user"]').first().fill(users.admin.username);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await page.getByLabel('Username').fill(users.admin.username);
+      await page.getByRole('button', { name: /go/i }).click();
       await expect(page).toHaveURL(/page=login/);
     });
   });

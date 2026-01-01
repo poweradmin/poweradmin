@@ -15,10 +15,10 @@
  */
 export async function login(page, username, password) {
   await page.goto('/index.php?page=login');
-  // Use flexible selectors that work in both 3.x and master branches
-  await page.locator('input[name="username"], input[name*="user"], [data-testid="username-input"]').first().fill(username);
-  await page.locator('input[name="password"], input[type="password"], [data-testid="password-input"]').first().fill(password);
-  await page.locator('button[type="submit"], input[type="submit"], [data-testid="login-button"]').first().click();
+  // Use Playwright's resilient locator APIs for better reliability
+  await page.getByLabel('Username').fill(username);
+  await page.getByLabel('Password').fill(password);
+  await page.getByRole('button', { name: /go/i }).click();
 }
 
 /**
