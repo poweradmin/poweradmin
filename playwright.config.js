@@ -5,9 +5,8 @@ import { defineConfig, devices } from '@playwright/test';
  * @see https://playwright.dev/docs/test-configuration
  */
 export default defineConfig({
-  // Global setup to ensure test data exists
-  // Temporarily disabled for testing
-  // globalSetup: './playwright/global-setup.js',
+  // Global setup to ensure test data exists before all tests run
+  globalSetup: './playwright/global-setup.js',
 
   testDir: './playwright/tests',
 
