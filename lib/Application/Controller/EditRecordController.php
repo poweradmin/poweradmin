@@ -68,10 +68,16 @@ class EditRecordController extends BaseController
 
         if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
             $this->showError(_('Invalid or unexpected input given.'));
+            return;
         }
         $record_id = (int)$_GET['id'];
         $dnsRecord = new DnsRecord($this->db, $this->getConfig());
         $zid = $dnsRecord->get_zone_id_from_record_id($record_id);
+
+        if (!$zid) {
+            $this->showError(_('Record does not exist or has been deleted.'));
+            return;
+        }
 
         $user_is_zone_owner = UserManager::verify_user_is_owner_zoneid($this->db, $zid);
 
