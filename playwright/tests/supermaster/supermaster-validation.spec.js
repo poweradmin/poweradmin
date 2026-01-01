@@ -200,7 +200,8 @@ test.describe('Supermaster Validation', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/index.php?page=list_supermasters');
       const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/denied|permission/i);
+      // Check for specific access denied messages
+      expect(bodyText).not.toMatch(/access denied|not authorized|you do not have/i);
     });
 
     test('manager should not access supermasters', async ({ page }) => {

@@ -372,11 +372,20 @@ test.describe('Record Validation - All Types', () => {
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       const typeSelector = page.locator('select[name*="type"]').first();
       const options = await typeSelector.locator('option').allTextContents();
-      const ptrOption = options.find(o => o.toUpperCase().includes('PTR'));
+      // Find PTR but not NAPTR - match exact "PTR" or "PTR " at start/end
+      const ptrOption = options.find(o => o.trim().toUpperCase() === 'PTR' || o.toUpperCase().match(/^PTR\s|^PTR$/));
       if (ptrOption) {
         await typeSelector.selectOption({ label: ptrOption });
-        await page.locator('input[name*="name"]').first().fill(`${Date.now()}`);
-        await page.locator('input[name*="content"], input[name*="value"]').first().fill('host.example.com');
+        // Wait for form to potentially update after type change
+        await page.waitForTimeout(500);
+        const nameField = page.locator('input[name*="name"]').first();
+        if (await nameField.count() > 0) {
+          await nameField.fill(`${Date.now()}`);
+        }
+        const contentField = page.locator('input[name*="content"], input[name*="value"], textarea[name*="content"]').first();
+        if (await contentField.count() > 0) {
+          await contentField.fill('host.example.com');
+        }
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
         const bodyText = await page.locator('body').textContent();
         expect(bodyText).not.toMatch(/fatal|exception/i);

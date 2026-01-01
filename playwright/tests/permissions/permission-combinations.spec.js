@@ -258,7 +258,8 @@ test.describe('Permission Combinations', () => {
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
       await page.goto('/index.php?page=list_perm_templ');
       const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/denied|permission/i);
+      // Check for access denied messages, not generic "permission" word
+      expect(bodyText).not.toMatch(/access denied|not authorized|you do not have/i);
     });
 
     test('manager should not access permission templates', async ({ page }) => {

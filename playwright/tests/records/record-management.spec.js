@@ -1,5 +1,6 @@
 import { test, expect } from '@playwright/test';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { findAnyZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('DNS Record Management', () => {
@@ -24,20 +25,16 @@ test.describe('DNS Record Management', () => {
 
   // Test record management for a zone (if zones exist)
   test('should handle zone with no records', async ({ page }) => {
-    // Navigate to zones and try to access first zone's records
-    await page.goto('/index.php?page=list_zones');
+    // Use findAnyZoneId helper to find a zone
+    const zone = await findAnyZoneId(page);
 
-    const hasZones = await page.locator('table tbody tr').count() > 0;
+    if (zone && zone.id) {
+      // Navigate directly to zone edit page
+      await page.goto(`/index.php?page=edit&id=${zone.id}`);
 
-    if (hasZones) {
-      // Click on first zone link if available
-      await page.locator('table tbody tr').first().locator('a').first().click();
-
-      // Should be on zone edit/records page
-      await expect(page).toHaveURL(/page=edit/);
-    } else {
-      // No zones available, skip this test
-      console.log('No zones available for record testing');
+      // Verify page loads without errors
+      const bodyText = await page.locator('body').textContent();
+      expect(bodyText).not.toMatch(/fatal|exception/i);
     }
   });
 

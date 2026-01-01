@@ -67,7 +67,7 @@ export async function findAnyZoneId(page) {
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
 
-  // Find first edit link
+  // Find first edit link - this usually contains the zone name as link text
   const editLink = page.locator('a[href*="page=edit"]').first();
 
   if (await editLink.count() === 0) {
@@ -81,13 +81,29 @@ export async function findAnyZoneId(page) {
     return null;
   }
 
-  // Try to get zone name from the row
-  const row = editLink.locator('xpath=ancestor::tr');
-  const zoneName = await row.locator('td').first().textContent().catch(() => 'unknown');
+  // Get zone name from the edit link text or look for zone name in the row
+  let zoneName = await editLink.textContent().catch(() => null);
+
+  // If link text is empty or just contains non-zone text, try to find zone name in row
+  if (!zoneName || zoneName.trim().length < 3 || zoneName.toLowerCase().includes('edit')) {
+    // Look for a td that contains a domain-like string
+    const row = editLink.locator('xpath=ancestor::tr');
+    const cells = row.locator('td');
+    const cellCount = await cells.count();
+
+    for (let i = 0; i < cellCount && i < 5; i++) {
+      const cellText = await cells.nth(i).textContent().catch(() => '');
+      // Look for domain-like text (contains a dot and looks like a zone name)
+      if (cellText && cellText.includes('.') && cellText.trim().length > 3) {
+        zoneName = cellText.trim();
+        break;
+      }
+    }
+  }
 
   return {
     id: match[1],
-    name: zoneName?.trim() || 'unknown'
+    name: zoneName?.trim() || null
   };
 }
 
