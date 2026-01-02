@@ -1,61 +1,55 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { test, expect } from '../../fixtures/test-fixtures.js';
 
 test.describe('Dashboard Views', () => {
   test.describe('Admin User Dashboard', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display dashboard', async ({ page }) => {
+    test('should display dashboard', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       await expect(page).toHaveURL(/page=index/);
     });
 
-    test('should display zone statistics', async ({ page }) => {
+    test('should display zone statistics', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/zone|domain/i);
     });
 
-    test('should display quick links', async ({ page }) => {
+    test('should display quick links', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const links = page.locator('a[href*="page="]');
       expect(await links.count()).toBeGreaterThan(0);
     });
 
-    test('should show admin-specific options', async ({ page }) => {
+    test('should show admin-specific options', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/user|admin|supermaster/i);
     });
 
-    test('should display user welcome', async ({ page }) => {
+    test('should display user welcome', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/welcome|logged|admin|dashboard/i);
     });
 
-    test('should show zone count', async ({ page }) => {
+    test('should show zone count', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).toMatch(/\d+|zone/i);
     });
 
-    test('should link to zones list', async ({ page }) => {
+    test('should link to zones list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const zonesLink = page.locator('a[href*="list_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
 
-    test('should link to users list', async ({ page }) => {
+    test('should link to users list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const usersLink = page.locator('a[href*="page=users"]');
       expect(await usersLink.count()).toBeGreaterThan(0);
     });
 
-    test('should link to search', async ({ page }) => {
+    test('should link to search', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const searchLink = page.locator('a[href*="page=search"]');
       expect(await searchLink.count()).toBeGreaterThan(0);
@@ -63,22 +57,18 @@ test.describe('Dashboard Views', () => {
   });
 
   test.describe('Manager User Dashboard', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-    });
-
-    test('should display dashboard', async ({ page }) => {
+    test('should display dashboard', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
       await expect(page).toHaveURL(/page=index/);
     });
 
-    test('should display zone count for manager', async ({ page }) => {
+    test('should display zone count for manager', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/zone|domain/i);
     });
 
-    test('should not show admin-only options', async ({ page }) => {
+    test('should not show admin-only options', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
       const usersLink = page.locator('a[href*="page=users"]:not([href*="add_user"])');
       // Manager should not see user management link
@@ -86,13 +76,13 @@ test.describe('Dashboard Views', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should show zones link', async ({ page }) => {
+    test('should show zones link', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
       const zonesLink = page.locator('a[href*="list_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
 
-    test('should show add zone options', async ({ page }) => {
+    test('should show add zone options', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
       const addLinks = page.locator('a[href*="add_zone"]');
       expect(await addLinks.count()).toBeGreaterThan(0);
@@ -100,29 +90,25 @@ test.describe('Dashboard Views', () => {
   });
 
   test.describe('Client User Dashboard', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
-    });
-
-    test('should display dashboard', async ({ page }) => {
+    test('should display dashboard', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=index');
       await expect(page).toHaveURL(/page=index/);
     });
 
-    test('should display zone count for client', async ({ page }) => {
+    test('should display zone count for client', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=index');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should show limited options', async ({ page }) => {
+    test('should show limited options', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=index');
       // Client should have limited options
       const addMasterLink = page.locator('a[href*="add_zone_master"]');
       expect(await addMasterLink.count()).toBe(0);
     });
 
-    test('should link to zones list', async ({ page }) => {
+    test('should link to zones list', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=index');
       const zonesLink = page.locator('a[href*="list_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
@@ -130,23 +116,19 @@ test.describe('Dashboard Views', () => {
   });
 
   test.describe('Viewer User Dashboard', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-    });
-
-    test('should display dashboard', async ({ page }) => {
+    test('should display dashboard', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=index');
       await expect(page).toHaveURL(/page=index/);
     });
 
-    test('should show read-only dashboard', async ({ page }) => {
+    test('should show read-only dashboard', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=index');
       // Viewer should not see add options
       const addLinks = page.locator('a[href*="add_zone"], input[value*="Add"]');
       expect(await addLinks.count()).toBe(0);
     });
 
-    test('should link to zones list', async ({ page }) => {
+    test('should link to zones list', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=index');
       const zonesLink = page.locator('a[href*="list_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
@@ -154,23 +136,19 @@ test.describe('Dashboard Views', () => {
   });
 
   test.describe('Dashboard Statistics', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display master zone count', async ({ page }) => {
+    test('should display master zone count', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/master|zone/i);
     });
 
-    test('should display slave zone count', async ({ page }) => {
+    test('should display slave zone count', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/slave|zone/i);
     });
 
-    test('should update after zone changes', async ({ page }) => {
+    test('should update after zone changes', async ({ adminPage: page }) => {
       // Get initial dashboard
       await page.goto('/index.php?page=index');
       const initialText = await page.locator('body').textContent();
@@ -179,11 +157,7 @@ test.describe('Dashboard Views', () => {
   });
 
   test.describe('Dashboard Navigation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should navigate to add master zone', async ({ page }) => {
+    test('should navigate to add master zone', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       // The add zone link may be in a dropdown menu
@@ -203,7 +177,7 @@ test.describe('Dashboard Views', () => {
       }
     });
 
-    test('should navigate to zones list', async ({ page }) => {
+    test('should navigate to zones list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const zonesLink = page.locator('a[href*="list_zones"]').first();
       if (await zonesLink.count() > 0) {
@@ -212,7 +186,7 @@ test.describe('Dashboard Views', () => {
       }
     });
 
-    test('should navigate to search', async ({ page }) => {
+    test('should navigate to search', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       const searchLink = page.locator('a[href*="page=search"]').first();
       if (await searchLink.count() > 0) {

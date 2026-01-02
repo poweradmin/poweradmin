@@ -1,82 +1,64 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { submitForm, selectByTestId, fillByTestId } from '../../helpers/forms.js';
+import { expectNoFatalError, hasErrorMessage } from '../../helpers/validation.js';
 
 test.describe('Record CRUD Operations', () => {
   // Use existing manager-zone.example.com for record testing (has comprehensive records)
   const testZoneName = zones.manager.name;
 
   test.describe('Add Record - A Record', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should add A record with valid IPv4', async ({ page }) => {
+    test('should add A record with valid IPv4', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
 
-      await page.locator('select[name*="type"]').first().selectOption('A');
+      await selectByTestId(page, 'record-type-select', 'A');
       // Use unique name with timestamp to avoid duplicate record errors
-      await page.locator('input[name*="name"]').first().fill(`www-${Date.now()}`);
-      await page.locator('input[name*="content"], input[name*="value"]').first().fill('192.168.1.100');
+      await fillByTestId(page, 'record-name-input', `www-${Date.now()}`);
+      await fillByTestId(page, 'record-content-input', '192.168.1.100');
+      await fillByTestId(page, 'record-ttl-input', '3600');
 
-      const ttlField = page.locator('input[name*="ttl"]').first();
-      if (await ttlField.count() > 0) {
-        await ttlField.fill('3600');
-      }
-
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception/i);
+      await submitForm(page);
+      await expectNoFatalError(page);
     });
 
-    test('should reject A record with invalid IPv4', async ({ page }) => {
+    test('should reject A record with invalid IPv4', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
 
-      await page.locator('select[name*="type"]').first().selectOption('A');
-      await page.locator('input[name*="name"]').first().fill('invalid-ip');
-      await page.locator('input[name*="content"], input[name*="value"]').first().fill('999.999.999.999');
+      await selectByTestId(page, 'record-type-select', 'A');
+      await fillByTestId(page, 'record-name-input', 'invalid-ip');
+      await fillByTestId(page, 'record-content-input', '999.999.999.999');
 
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
+      await submitForm(page);
 
       // Should show error or stay on form
-      const url = page.url();
-      const bodyText = await page.locator('body').textContent();
-      const hasError = bodyText.toLowerCase().includes('error') ||
-                       bodyText.toLowerCase().includes('invalid') ||
-                       url.includes('add_record');
+      const hasError = await hasErrorMessage(page) || page.url().includes('add_record');
       expect(hasError).toBeTruthy();
     });
 
-    test('should reject A record with empty content', async ({ page }) => {
+    test('should reject A record with empty content', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
 
-      await page.locator('select[name*="type"]').first().selectOption('A');
-      await page.locator('input[name*="name"]').first().fill('empty-test');
+      await selectByTestId(page, 'record-type-select', 'A');
+      await fillByTestId(page, 'record-name-input', 'empty-test');
       // Leave content empty
 
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
+      await submitForm(page);
       await expect(page).toHaveURL(/add_record|error/);
     });
   });
 
   test.describe('Add Record - AAAA Record', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should add AAAA record with valid IPv6', async ({ page }) => {
+    test('should add AAAA record with valid IPv6', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -92,7 +74,7 @@ test.describe('Record CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should add AAAA record with compressed IPv6', async ({ page }) => {
+    test('should add AAAA record with compressed IPv6', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -108,7 +90,7 @@ test.describe('Record CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should reject AAAA record with IPv4 address', async ({ page }) => {
+    test('should reject AAAA record with IPv4 address', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -130,11 +112,7 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Add Record - MX Record', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should add MX record with priority', async ({ page }) => {
+    test('should add MX record with priority', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -154,7 +132,7 @@ test.describe('Record CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should add MX record with high priority value', async ({ page }) => {
+    test('should add MX record with high priority value', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -176,11 +154,7 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Add Record - TXT Record', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should add TXT record with SPF', async ({ page }) => {
+    test('should add TXT record with SPF', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -199,7 +173,7 @@ test.describe('Record CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should add TXT record with DMARC', async ({ page }) => {
+    test('should add TXT record with DMARC', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -215,7 +189,7 @@ test.describe('Record CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should add TXT record with special characters', async ({ page }) => {
+    test('should add TXT record with special characters', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -233,11 +207,7 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Add Record - CNAME Record', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should add CNAME record', async ({ page }) => {
+    test('should add CNAME record', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -253,7 +223,7 @@ test.describe('Record CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should add CNAME pointing to external domain', async ({ page }) => {
+    test('should add CNAME pointing to external domain', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -271,11 +241,7 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Add Record - SRV Record', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should add SRV record', async ({ page }) => {
+    test('should add SRV record', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -298,11 +264,7 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Add Record - CAA Record', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should add CAA record', async ({ page }) => {
+    test('should add CAA record', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -326,11 +288,7 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Add Record - NS Record', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should add NS record for subdomain delegation', async ({ page }) => {
+    test('should add NS record for subdomain delegation', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -348,11 +306,7 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Edit Record', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access edit record page', async ({ page }) => {
+    test('should access edit record page', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -365,7 +319,7 @@ test.describe('Record CRUD Operations', () => {
       }
     });
 
-    test('should display record form with existing values', async ({ page }) => {
+    test('should display record form with existing values', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -384,7 +338,7 @@ test.describe('Record CRUD Operations', () => {
       }
     });
 
-    test('should update record content', async ({ page }) => {
+    test('should update record content', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -403,7 +357,7 @@ test.describe('Record CRUD Operations', () => {
       }
     });
 
-    test('should update record TTL', async ({ page }) => {
+    test('should update record TTL', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -426,11 +380,7 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Delete Record', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access delete record confirmation', async ({ page }) => {
+    test('should access delete record confirmation', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -443,7 +393,7 @@ test.describe('Record CRUD Operations', () => {
       }
     });
 
-    test('should display confirmation message', async ({ page }) => {
+    test('should display confirmation message', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -458,7 +408,7 @@ test.describe('Record CRUD Operations', () => {
       }
     });
 
-    test('should cancel delete and return to zone', async ({ page }) => {
+    test('should cancel delete and return to zone', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -478,11 +428,7 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('TTL Validation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should accept valid TTL value', async ({ page }) => {
+    test('should accept valid TTL value', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -503,7 +449,7 @@ test.describe('Record CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should reject negative TTL value', async ({ page }) => {
+    test('should reject negative TTL value', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -529,8 +475,7 @@ test.describe('Record CRUD Operations', () => {
   });
 
   test.describe('Permission Tests', () => {
-    test('admin should have full record access', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('admin should have full record access', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
 
@@ -541,8 +486,7 @@ test.describe('Record CRUD Operations', () => {
       expect(await addLink.count()).toBeGreaterThan(0);
     });
 
-    test('viewer should not see record modification links', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+    test('viewer should not see record modification links', async ({ viewerPage: page }) => {
 
       await page.goto('/index.php?page=list_zones');
       const row = page.locator('table tbody tr').first();

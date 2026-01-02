@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
@@ -6,11 +6,7 @@ test.describe('Zone Template Management', () => {
   const templateName = `pw-test-template-${Date.now()}`;
   const testZone = `template-test-${Date.now()}.com`;
 
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should list zone templates', async ({ page }) => {
+  test('should list zone templates', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zone_templ');
     await expect(page).toHaveURL(/page=list_zone_templ/);
 
@@ -23,7 +19,7 @@ test.describe('Zone Template Management', () => {
     }
   });
 
-  test('should add a new zone template', async ({ page }) => {
+  test('should add a new zone template', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_templ');
 
     // Fill template form
@@ -46,7 +42,7 @@ test.describe('Zone Template Management', () => {
     expect(hasSuccess).toBeTruthy();
   });
 
-  test('should add records to a zone template', async ({ page }) => {
+  test('should add records to a zone template', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zone_templ');
 
     // Find and select the template we created
@@ -84,7 +80,7 @@ test.describe('Zone Template Management', () => {
     }
   });
 
-  test('should apply a zone template when creating a zone', async ({ page }) => {
+  test('should apply a zone template when creating a zone', async ({ adminPage: page }) => {
     // Create a new zone with template - use fresh timestamp and random suffix to ensure uniqueness
     await page.goto('/index.php?page=add_zone_master');
 
@@ -124,7 +120,7 @@ test.describe('Zone Template Management', () => {
     expect(hasHandledResponse).toBeTruthy();
   });
 
-  test('should edit a zone template', async ({ page }) => {
+  test('should edit a zone template', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zone_templ');
 
     const row = page.locator(`tr:has-text("${templateName}")`);
@@ -148,7 +144,7 @@ test.describe('Zone Template Management', () => {
     }
   });
 
-  test('should delete a zone template', async ({ page }) => {
+  test('should delete a zone template', async ({ adminPage: page }) => {
     // First delete the test zone that uses the template
     await page.goto('/index.php?page=list_zones');
     let row = page.locator(`tr:has-text("${testZone}")`);

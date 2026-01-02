@@ -1,14 +1,8 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { findAnyZoneId } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('DNS Record Management', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should access zones list to manage records', async ({ page }) => {
+  test('should access zones list to manage records', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
     await expect(page).toHaveURL(/page=list_zones/);
 
@@ -24,7 +18,7 @@ test.describe('DNS Record Management', () => {
   });
 
   // Test record management for a zone (if zones exist)
-  test('should handle zone with no records', async ({ page }) => {
+  test('should handle zone with no records', async ({ adminPage: page }) => {
     // Use findAnyZoneId helper to find a zone
     const zone = await findAnyZoneId(page);
 
@@ -38,7 +32,7 @@ test.describe('DNS Record Management', () => {
     }
   });
 
-  test('should validate record form fields', async ({ page }) => {
+  test('should validate record form fields', async ({ adminPage: page }) => {
     // Visit a generic add record URL (will redirect if zone doesn't exist)
     await page.goto('/index.php?page=add_record&id=1', { waitUntil: 'networkidle' });
 
@@ -59,7 +53,7 @@ test.describe('DNS Record Management', () => {
     }
   });
 
-  test('should handle record type changes', async ({ page }) => {
+  test('should handle record type changes', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_record&id=1', { waitUntil: 'networkidle' });
 
     const hasTypeSelector = await page.locator('select[name*="type"]').count() > 0;
@@ -79,7 +73,7 @@ test.describe('DNS Record Management', () => {
     }
   });
 
-  test('should validate required fields for new record', async ({ page }) => {
+  test('should validate required fields for new record', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_record&id=1', { waitUntil: 'networkidle' });
 
     const hasForm = await page.locator('form').count() > 0;

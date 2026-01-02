@@ -1,14 +1,14 @@
-import { test, expect } from '@playwright/test';
+import { test, expect, users } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { submitForm, fillByTestId, selectByTestId } from '../../helpers/forms.js';
+import { expectNoFatalError, hasErrorMessage } from '../../helpers/validation.js';
 
 test.describe('Zone CRUD Operations', () => {
   const testDomain = `zone-crud-${Date.now()}.example.com`;
 
   test.describe('List Zones', () => {
-    test('admin should see all zones', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('admin should see all zones', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       await expect(page).toHaveURL(/page=list_zones/);
@@ -16,24 +16,21 @@ test.describe('Zone CRUD Operations', () => {
       await expect(table).toBeVisible();
     });
 
-    test('should display zone columns', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display zone columns', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/name|zone|type|records/i);
     });
 
-    test('should show zone type indicator', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should show zone type indicator', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/master|slave|native/i);
     });
 
-    test('should display pagination when many zones', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display pagination when many zones', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       // Check for pagination elements
@@ -43,22 +40,19 @@ test.describe('Zone CRUD Operations', () => {
       expect(typeof hasPagination).toBe('boolean');
     });
 
-    test('manager should see own zones', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('manager should see own zones', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       await expect(page).toHaveURL(/page=list_zones/);
     });
 
-    test('client should see assigned zones', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
+    test('client should see assigned zones', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       await expect(page).toHaveURL(/page=list_zones/);
     });
 
-    test('viewer should see zones in read-only mode', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+    test('viewer should see zones in read-only mode', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       // Viewer should not see add/delete buttons

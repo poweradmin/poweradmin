@@ -1,14 +1,8 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { test, expect } from '../../fixtures/test-fixtures.js';
 
 test.describe('Input Validation Edge Cases', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
   test.describe('Zone Name Validation', () => {
-    test('should reject zone names with invalid characters', async ({ page }) => {
+    test('should reject zone names with invalid characters', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_master');
 
       const nameInput = page.locator('input[name*="name"], input[name*="domain"]').first();
@@ -21,7 +15,7 @@ test.describe('Input Validation Edge Cases', () => {
       expect(hasError).toBeTruthy();
     });
 
-    test('should reject zone names that are too long', async ({ page }) => {
+    test('should reject zone names that are too long', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_master');
 
       // Generate a very long domain name (over 255 characters)
@@ -36,7 +30,7 @@ test.describe('Input Validation Edge Cases', () => {
       expect(hasError).toBeTruthy();
     });
 
-    test('should reject zone names with double dots', async ({ page }) => {
+    test('should reject zone names with double dots', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_master');
 
       const nameInput = page.locator('input[name*="name"], input[name*="domain"]').first();
@@ -49,7 +43,7 @@ test.describe('Input Validation Edge Cases', () => {
       expect(hasError).toBeTruthy();
     });
 
-    test('should handle unicode IDN zone names correctly', async ({ page }) => {
+    test('should handle unicode IDN zone names correctly', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_master');
 
       const nameInput = page.locator('input[name*="name"], input[name*="domain"]').first();
@@ -64,7 +58,7 @@ test.describe('Input Validation Edge Cases', () => {
   });
 
   test.describe('Record Validation', () => {
-    test('should validate IP addresses for A records', async ({ page }) => {
+    test('should validate IP addresses for A records', async ({ adminPage: page }) => {
       // Go to add record page (assuming zone with id=1 exists)
       await page.goto('/index.php?page=add_record&id=1', { waitUntil: 'domcontentloaded' });
 
@@ -89,7 +83,7 @@ test.describe('Input Validation Edge Cases', () => {
       }
     });
 
-    test('should validate hostnames for CNAME records', async ({ page }) => {
+    test('should validate hostnames for CNAME records', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_record&id=1', { waitUntil: 'domcontentloaded' });
 
       const hasForm = await page.locator('form').count() > 0;
@@ -108,7 +102,7 @@ test.describe('Input Validation Edge Cases', () => {
       }
     });
 
-    test('should handle TTL values', async ({ page }) => {
+    test('should handle TTL values', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_record&id=1', { waitUntil: 'domcontentloaded' });
 
       const hasForm = await page.locator('form').count() > 0;
@@ -128,7 +122,7 @@ test.describe('Input Validation Edge Cases', () => {
   });
 
   test.describe('User Input Validation', () => {
-    test('should validate email addresses for users', async ({ page }) => {
+    test('should validate email addresses for users', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       const hasForm = await page.locator('form').count() > 0;
@@ -160,7 +154,7 @@ test.describe('Input Validation Edge Cases', () => {
       }
     });
 
-    test('should validate password confirmation', async ({ page }) => {
+    test('should validate password confirmation', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       const hasForm = await page.locator('form').count() > 0;

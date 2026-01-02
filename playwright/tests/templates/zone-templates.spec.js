@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
@@ -6,18 +6,14 @@ test.describe('Zone Templates Management', () => {
   const templateName = `test-template-${Date.now()}`;
   const testDomain = `template-test-${Date.now()}.com`;
 
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should access zone templates page', async ({ page }) => {
+  test('should access zone templates page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zone_templ');
     await expect(page).toHaveURL(/page=list_zone_templ/);
     // Page may use various heading levels
     await expect(page.locator('h1, h2, h3, h4, h5, .page-title').first()).toBeVisible();
   });
 
-  test('should display zone templates list or empty state', async ({ page }) => {
+  test('should display zone templates list or empty state', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zone_templ');
 
     const hasTable = await page.locator('table, .table').count() > 0;
@@ -29,7 +25,7 @@ test.describe('Zone Templates Management', () => {
     }
   });
 
-  test('should create a new zone template', async ({ page }) => {
+  test('should create a new zone template', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_templ');
     await expect(page).toHaveURL(/page=add_zone_templ/);
 
@@ -56,7 +52,7 @@ test.describe('Zone Templates Management', () => {
     }
   });
 
-  test('should use template when creating new zone', async ({ page }) => {
+  test('should use template when creating new zone', async ({ adminPage: page }) => {
     // Navigate to add master zone
     await page.goto('/index.php?page=add_zone_master');
 
@@ -96,7 +92,7 @@ test.describe('Zone Templates Management', () => {
     expect(hasHandledResponse).toBeTruthy();
   });
 
-  test('should validate template form fields', async ({ page }) => {
+  test('should validate template form fields', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_templ');
 
     // Try to submit empty form
@@ -111,7 +107,7 @@ test.describe('Zone Templates Management', () => {
     expect(hasError).toBeTruthy();
   });
 
-  test('should show template usage statistics', async ({ page }) => {
+  test('should show template usage statistics', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zone_templ');
 
     // Check if templates show usage count or statistics

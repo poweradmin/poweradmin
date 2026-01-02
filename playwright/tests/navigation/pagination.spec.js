@@ -1,13 +1,7 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { test, expect } from '../../fixtures/test-fixtures.js';
 
 test.describe('Pagination Functionality', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should display pagination controls when zone list exceeds page size', async ({ page }) => {
+  test('should display pagination controls when zone list exceeds page size', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Check for pagination controls
@@ -21,7 +15,7 @@ test.describe('Pagination Functionality', () => {
     }
   });
 
-  test('should navigate to next page of zones', async ({ page }) => {
+  test('should navigate to next page of zones', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Check if pagination exists
@@ -36,7 +30,7 @@ test.describe('Pagination Functionality', () => {
     }
   });
 
-  test('should navigate to previous page of zones', async ({ page }) => {
+  test('should navigate to previous page of zones', async ({ adminPage: page }) => {
     // Start on page 2
     await page.goto('/index.php?page=list_zones&start=10');
 
@@ -51,7 +45,7 @@ test.describe('Pagination Functionality', () => {
     }
   });
 
-  test('should display correct page numbers in pagination', async ({ page }) => {
+  test('should display correct page numbers in pagination', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Check if page numbers are displayed
@@ -68,7 +62,7 @@ test.describe('Pagination Functionality', () => {
     }
   });
 
-  test('should maintain pagination when filtering zones', async ({ page }) => {
+  test('should maintain pagination when filtering zones', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Check if filter/search exists
@@ -88,7 +82,7 @@ test.describe('Pagination Functionality', () => {
     await expect(page.locator('body')).toBeVisible();
   });
 
-  test('should handle direct page navigation via URL', async ({ page }) => {
+  test('should handle direct page navigation via URL', async ({ adminPage: page }) => {
     // Navigate directly to page 2 using start parameter
     await page.goto('/index.php?page=list_zones&start=10');
 
@@ -97,7 +91,7 @@ test.describe('Pagination Functionality', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should display items per page selector if available', async ({ page }) => {
+  test('should display items per page selector if available', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Check for items per page dropdown
@@ -110,7 +104,7 @@ test.describe('Pagination Functionality', () => {
     }
   });
 
-  test('should show total count of items', async ({ page }) => {
+  test('should show total count of items', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Page should load successfully
@@ -118,7 +112,7 @@ test.describe('Pagination Functionality', () => {
     expect(bodyText).toBeTruthy();
   });
 
-  test('should handle pagination with records list', async ({ page }) => {
+  test('should handle pagination with records list', async ({ adminPage: page }) => {
     // Navigate to a zone edit page (if zones exist)
     await page.goto('/index.php?page=edit&id=1', { waitUntil: 'domcontentloaded' });
 
@@ -132,7 +126,7 @@ test.describe('Pagination Functionality', () => {
     }
   });
 
-  test('should preserve sort order across pages', async ({ page }) => {
+  test('should preserve sort order across pages', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Check if sorting is available

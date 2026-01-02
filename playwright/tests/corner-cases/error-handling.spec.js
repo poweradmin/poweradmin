@@ -1,14 +1,8 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { test, expect } from '../../fixtures/test-fixtures.js';
 
 test.describe('Error Handling and Edge Cases', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
   test.describe('Session Management', () => {
-    test('should handle forced logout and session expiration', async ({ page, context }) => {
+    test('should handle forced logout and session expiration', async ({ adminPage: page, context }) => {
       // Force expire the session
       await context.clearCookies();
 
@@ -19,7 +13,7 @@ test.describe('Error Handling and Edge Cases', () => {
       await expect(page).toHaveURL(/page=login/);
     });
 
-    test('should prevent CSRF attacks with token validation', async ({ page }) => {
+    test('should prevent CSRF attacks with token validation', async ({ adminPage: page }) => {
       // Visit a page with a form
       await page.goto('/index.php?page=add_zone_master');
 
@@ -48,7 +42,7 @@ test.describe('Error Handling and Edge Cases', () => {
   });
 
   test.describe('Concurrent Actions', () => {
-    test('should handle rapid sequential form submissions', async ({ page }) => {
+    test('should handle rapid sequential form submissions', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_master');
 
       const hasForm = await page.locator('form').count() > 0;
@@ -65,7 +59,7 @@ test.describe('Error Handling and Edge Cases', () => {
   });
 
   test.describe('Pagination Edge Cases', () => {
-    test('should handle navigation to non-existent pages', async ({ page }) => {
+    test('should handle navigation to non-existent pages', async ({ adminPage: page }) => {
       // Try to access an invalid page number
       await page.goto('/index.php?page=list_zones&letter=all&start=9999');
 
@@ -76,7 +70,7 @@ test.describe('Error Handling and Edge Cases', () => {
   });
 
   test.describe('Browser Navigation', () => {
-    test('should handle browser back button correctly', async ({ page }) => {
+    test('should handle browser back button correctly', async ({ adminPage: page }) => {
       // Navigate to zones list
       await page.goto('/index.php?page=list_zones');
 
@@ -92,7 +86,7 @@ test.describe('Error Handling and Edge Cases', () => {
   });
 
   test.describe('Direct URL Access', () => {
-    test('should handle direct access to edit pages with invalid IDs', async ({ page }) => {
+    test('should handle direct access to edit pages with invalid IDs', async ({ adminPage: page }) => {
       // Try to access a non-existent record
       await page.goto('/index.php?page=edit_record&id=999999999', { waitUntil: 'domcontentloaded' });
 
@@ -103,7 +97,7 @@ test.describe('Error Handling and Edge Cases', () => {
       expect(bodyText.toLowerCase()).toMatch(/does not exist|not found|error|invalid/i);
     });
 
-    test('should prevent unauthorized access to admin functions', async ({ page }) => {
+    test('should prevent unauthorized access to admin functions', async ({ adminPage: page }) => {
       // First logout
       await page.goto('/index.php?page=logout');
 
@@ -116,7 +110,7 @@ test.describe('Error Handling and Edge Cases', () => {
   });
 
   test.describe('Special Characters Handling', () => {
-    test('should properly escape HTML in user input display', async ({ page }) => {
+    test('should properly escape HTML in user input display', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
 
       // Enter HTML in search

@@ -1,6 +1,6 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { ensureAnyZoneExists, findAnyZoneId } from '../../helpers/zones.js';
+import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Search Functionality', () => {
@@ -8,44 +8,32 @@ test.describe('Search Functionality', () => {
   let testDomain = null;
 
   test.describe('Search Page Access', () => {
-    test('should access search page', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should access search page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
-
       await expect(page).toHaveURL(/page=search/);
     });
 
-    test('should display search form', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display search form', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
-
       const form = page.locator('form');
       await expect(form.first()).toBeVisible();
     });
 
-    test('should display search input field', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display search input field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
-
       const searchInput = page.locator('input[name*="search"], input[name*="query"], input[type="search"], input[type="text"]').first();
       await expect(searchInput).toBeVisible();
     });
 
-    test('should display search button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display search button', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
-
       const searchBtn = page.locator('button[type="submit"], input[type="submit"]');
       expect(await searchBtn.count()).toBeGreaterThan(0);
     });
   });
 
   test.describe('Zone Search', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should search by exact zone name', async ({ page }) => {
+    test('should search by exact zone name', async ({ adminPage: page }) => {
       // Ensure a zone exists and find it
       await ensureAnyZoneExists(page);
       const zone = await findAnyZoneId(page);
@@ -62,7 +50,7 @@ test.describe('Search Functionality', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should search by partial zone name', async ({ page }) => {
+    test('should search by partial zone name', async ({ adminPage: page }) => {
       // Ensure a zone exists and find it
       await ensureAnyZoneExists(page);
       const zone = await findAnyZoneId(page);
@@ -80,7 +68,7 @@ test.describe('Search Functionality', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should handle no results', async ({ page }) => {
+    test('should handle no results', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
 
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('nonexistent-zone-xyz123');
@@ -90,7 +78,7 @@ test.describe('Search Functionality', () => {
       expect(bodyText.toLowerCase()).toMatch(/no.*result|not.*found|no.*match|0.*result/i);
     });
 
-    test('should search case insensitively', async ({ page }) => {
+    test('should search case insensitively', async ({ adminPage: page }) => {
       // Ensure a zone exists and find it
       await ensureAnyZoneExists(page);
       const zone = await findAnyZoneId(page);
@@ -110,11 +98,7 @@ test.describe('Search Functionality', () => {
   });
 
   test.describe('Record Search', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should search by record name', async ({ page }) => {
+    test('should search by record name', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
 
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('www');
@@ -124,7 +108,7 @@ test.describe('Search Functionality', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should search by record content', async ({ page }) => {
+    test('should search by record content', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
 
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('192.168');
@@ -134,7 +118,7 @@ test.describe('Search Functionality', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should search by record type', async ({ page }) => {
+    test('should search by record type', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
 
       // Check if record type filter exists
@@ -151,11 +135,7 @@ test.describe('Search Functionality', () => {
   });
 
   test.describe('Search Features', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should handle empty search', async ({ page }) => {
+    test('should handle empty search', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
@@ -165,7 +145,7 @@ test.describe('Search Functionality', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should handle search with special characters', async ({ page }) => {
+    test('should handle search with special characters', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
 
       // Use simpler special characters that are less likely to cause issues
@@ -177,7 +157,7 @@ test.describe('Search Functionality', () => {
       expect(bodyText).not.toMatch(/fatal error|uncaught exception|sql error|syntax error/i);
     });
 
-    test('should handle very long search query', async ({ page }) => {
+    test('should handle very long search query', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
 
       const longQuery = 'a'.repeat(500);
@@ -188,7 +168,7 @@ test.describe('Search Functionality', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should display search result count', async ({ page }) => {
+    test('should display search result count', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
 
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('example');
@@ -198,7 +178,7 @@ test.describe('Search Functionality', () => {
       expect(bodyText.toLowerCase()).toMatch(/result|found|record|zone/i);
     });
 
-    test('should display clickable search results', async ({ page }) => {
+    test('should display clickable search results', async ({ adminPage: page }) => {
       // Ensure a zone exists and find it
       await ensureAnyZoneExists(page);
       const zone = await findAnyZoneId(page);
@@ -214,7 +194,7 @@ test.describe('Search Functionality', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should navigate to zone from search result', async ({ page }) => {
+    test('should navigate to zone from search result', async ({ adminPage: page }) => {
       // Ensure a zone exists and find it
       await ensureAnyZoneExists(page);
       const zone = await findAnyZoneId(page);
@@ -234,11 +214,7 @@ test.describe('Search Functionality', () => {
   });
 
   test.describe('Search with Wildcards', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should support asterisk wildcard', async ({ page }) => {
+    test('should support asterisk wildcard', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
 
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('*example*');
@@ -248,7 +224,7 @@ test.describe('Search Functionality', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should support question mark wildcard', async ({ page }) => {
+    test('should support question mark wildcard', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
 
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('test?');
@@ -260,29 +236,22 @@ test.describe('Search Functionality', () => {
   });
 
   test.describe('Permission Tests', () => {
-    test('manager should access search', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('manager should access search', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=search');
-
       await expect(page).toHaveURL(/page=search/);
     });
 
-    test('client should access search', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
+    test('client should access search', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=search');
-
       await expect(page).toHaveURL(/page=search/);
     });
 
-    test('viewer should access search', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+    test('viewer should access search', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=search');
-
       await expect(page).toHaveURL(/page=search/);
     });
 
-    test('manager should only see own zones in results', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('manager should only see own zones in results', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=search');
 
       await page.locator('input[name*="search"], input[name*="query"], input[type="text"]').first().fill('*');

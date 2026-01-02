@@ -1,18 +1,12 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Record Validation - All Types', () => {
   // Use existing manager-zone.example.com for record validation testing
   const testZoneName = zones.manager.name;
 
   test.describe('A Record Validation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should accept valid private IP', async ({ page }) => {
+    test('should accept valid private IP', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -24,7 +18,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/error|invalid/i);
     });
 
-    test('should accept valid public IP', async ({ page }) => {
+    test('should accept valid public IP', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -36,7 +30,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should reject IP with leading zeros', async ({ page }) => {
+    test('should reject IP with leading zeros', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -48,7 +42,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should reject hostname instead of IP', async ({ page }) => {
+    test('should reject hostname instead of IP', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -60,7 +54,7 @@ test.describe('Record Validation - All Types', () => {
       expect(url).toMatch(/add_record|error/);
     });
 
-    test('should accept localhost IP', async ({ page }) => {
+    test('should accept localhost IP', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -74,11 +68,7 @@ test.describe('Record Validation - All Types', () => {
   });
 
   test.describe('AAAA Record Validation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should accept full IPv6 address', async ({ page }) => {
+    test('should accept full IPv6 address', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -90,7 +80,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should accept compressed IPv6', async ({ page }) => {
+    test('should accept compressed IPv6', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -102,7 +92,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should accept IPv6 loopback', async ({ page }) => {
+    test('should accept IPv6 loopback', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -114,7 +104,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should reject invalid IPv6', async ({ page }) => {
+    test('should reject invalid IPv6', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -128,11 +118,7 @@ test.describe('Record Validation - All Types', () => {
   });
 
   test.describe('MX Record Validation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should accept MX with priority 0', async ({ page }) => {
+    test('should accept MX with priority 0', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -145,7 +131,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should accept MX with high priority', async ({ page }) => {
+    test('should accept MX with high priority', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -158,7 +144,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should reject MX with IP address', async ({ page }) => {
+    test('should reject MX with IP address', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -172,7 +158,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should reject negative priority', async ({ page }) => {
+    test('should reject negative priority', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -189,11 +175,7 @@ test.describe('Record Validation - All Types', () => {
   });
 
   test.describe('TXT Record Validation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should accept SPF record', async ({ page }) => {
+    test('should accept SPF record', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -205,7 +187,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should accept DKIM record', async ({ page }) => {
+    test('should accept DKIM record', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -217,7 +199,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should accept DMARC record', async ({ page }) => {
+    test('should accept DMARC record', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -229,7 +211,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should accept long TXT record', async ({ page }) => {
+    test('should accept long TXT record', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -242,7 +224,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should handle quotes in TXT', async ({ page }) => {
+    test('should handle quotes in TXT', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -256,11 +238,7 @@ test.describe('Record Validation - All Types', () => {
   });
 
   test.describe('CNAME Record Validation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should accept internal CNAME', async ({ page }) => {
+    test('should accept internal CNAME', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -272,7 +250,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should accept external CNAME', async ({ page }) => {
+    test('should accept external CNAME', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -284,7 +262,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should reject CNAME pointing to IP', async ({ page }) => {
+    test('should reject CNAME pointing to IP', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -299,11 +277,7 @@ test.describe('Record Validation - All Types', () => {
   });
 
   test.describe('SRV Record Validation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should accept SRV for SIP', async ({ page }) => {
+    test('should accept SRV for SIP', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -315,7 +289,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should accept SRV for XMPP', async ({ page }) => {
+    test('should accept SRV for XMPP', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -327,7 +301,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should accept SRV for LDAP', async ({ page }) => {
+    test('should accept SRV for LDAP', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -341,11 +315,7 @@ test.describe('Record Validation - All Types', () => {
   });
 
   test.describe('PTR Record Validation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should accept PTR record', async ({ page }) => {
+    test('should accept PTR record', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -373,11 +343,7 @@ test.describe('Record Validation - All Types', () => {
   });
 
   test.describe('NS Record Validation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should accept NS for subdomain delegation', async ({ page }) => {
+    test('should accept NS for subdomain delegation', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
@@ -389,7 +355,7 @@ test.describe('Record Validation - All Types', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should accept multiple NS records', async ({ page }) => {
+    test('should accept multiple NS records', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);

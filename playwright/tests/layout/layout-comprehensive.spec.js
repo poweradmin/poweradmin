@@ -1,14 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard, logout } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
+import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Layout - Footer', () => {
   test.describe('Admin User', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display footer', async ({ page }) => {
+    test('should display footer', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const footer = page.locator('footer, .footer, #footer');
@@ -17,14 +13,14 @@ test.describe('Layout - Footer', () => {
       }
     });
 
-    test('should display version info', async ({ page }) => {
+    test('should display version info', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/version|poweradmin|v\d/i);
     });
 
-    test('should display copyright', async ({ page }) => {
+    test('should display copyright', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const bodyText = await page.locator('body').textContent();
@@ -32,7 +28,7 @@ test.describe('Layout - Footer', () => {
       expect(bodyText).toMatch(/©|copyright|\d{4}|poweradmin/i);
     });
 
-    test('footer should be visible on zones page', async ({ page }) => {
+    test('footer should be visible on zones page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const footer = page.locator('footer, .footer, #footer');
@@ -41,7 +37,7 @@ test.describe('Layout - Footer', () => {
       }
     });
 
-    test('footer should be visible on users page', async ({ page }) => {
+    test('footer should be visible on users page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
 
       const footer = page.locator('footer, .footer, #footer');
@@ -52,11 +48,7 @@ test.describe('Layout - Footer', () => {
   });
 
   test.describe('Manager User', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-    });
-
-    test('should display footer', async ({ page }) => {
+    test('should display footer', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const footer = page.locator('footer, .footer, #footer');
@@ -67,11 +59,7 @@ test.describe('Layout - Footer', () => {
   });
 
   test.describe('Client User', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
-    });
-
-    test('should display footer', async ({ page }) => {
+    test('should display footer', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const footer = page.locator('footer, .footer, #footer');
@@ -82,11 +70,7 @@ test.describe('Layout - Footer', () => {
   });
 
   test.describe('Viewer User', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-    });
-
-    test('should display footer', async ({ page }) => {
+    test('should display footer', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const footer = page.locator('footer, .footer, #footer');
@@ -117,46 +101,42 @@ test.describe('Layout - Navigation', () => {
   });
 
   test.describe('Admin User Navigation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display navigation menu', async ({ page }) => {
+    test('should display navigation menu', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const nav = page.locator('nav, .navbar, .navigation, #menu, ul.nav');
       expect(await nav.count()).toBeGreaterThan(0);
     });
 
-    test('should show zones link', async ({ page }) => {
+    test('should show zones link', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const zonesLink = page.locator('a[href*="list_zones"], a:has-text("Zone")');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
 
-    test('should show users link', async ({ page }) => {
+    test('should show users link', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const usersLink = page.locator('a[href*="page=users"], a:has-text("User")');
       expect(await usersLink.count()).toBeGreaterThan(0);
     });
 
-    test('should show search link', async ({ page }) => {
+    test('should show search link', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const searchLink = page.locator('a[href*="page=search"], a:has-text("Search")');
       expect(await searchLink.count()).toBeGreaterThan(0);
     });
 
-    test('should show logout link', async ({ page }) => {
+    test('should show logout link', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const logoutLink = page.locator('a[href*="logout"], a:has-text("Logout")');
       expect(await logoutLink.count()).toBeGreaterThan(0);
     });
 
-    test('should show supermasters link', async ({ page }) => {
+    test('should show supermasters link', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const supermastersLink = page.locator('a[href*="supermaster"], a:has-text("Supermaster")');
@@ -165,7 +145,7 @@ test.describe('Layout - Navigation', () => {
       }
     });
 
-    test('should show permission templates link', async ({ page }) => {
+    test('should show permission templates link', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       // Link may be in dropdown menu, check if it exists in DOM
@@ -173,7 +153,7 @@ test.describe('Layout - Navigation', () => {
       expect(await templatesLink.count()).toBeGreaterThan(0);
     });
 
-    test('should navigate to zones page', async ({ page }) => {
+    test('should navigate to zones page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const zonesLink = page.locator('a[href*="list_zones"]').first();
@@ -183,7 +163,7 @@ test.describe('Layout - Navigation', () => {
       }
     });
 
-    test('should navigate to users page', async ({ page }) => {
+    test('should navigate to users page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const usersLink = page.locator('a[href*="page=users"]').first();
@@ -193,7 +173,7 @@ test.describe('Layout - Navigation', () => {
       }
     });
 
-    test('should logout successfully', async ({ page }) => {
+    test('should logout successfully', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       // Logout link may be in dropdown menu
@@ -216,25 +196,21 @@ test.describe('Layout - Navigation', () => {
   });
 
   test.describe('Manager User Navigation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-    });
-
-    test('should display navigation menu', async ({ page }) => {
+    test('should display navigation menu', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const nav = page.locator('nav, .navbar, .navigation, #menu, header');
       expect(await nav.count()).toBeGreaterThan(0);
     });
 
-    test('should show zones link', async ({ page }) => {
+    test('should show zones link', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const zonesLink = page.locator('a[href*="list_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
 
-    test('should not show users link', async ({ page }) => {
+    test('should not show users link', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const usersLink = page.locator('a[href*="page=users"]:not([href*="add_user"])');
@@ -244,7 +220,7 @@ test.describe('Layout - Navigation', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should show logout link', async ({ page }) => {
+    test('should show logout link', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const logoutLink = page.locator('a[href*="logout"], a:has-text("Logout")');
@@ -253,25 +229,21 @@ test.describe('Layout - Navigation', () => {
   });
 
   test.describe('Client User Navigation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
-    });
-
-    test('should display navigation menu', async ({ page }) => {
+    test('should display navigation menu', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const nav = page.locator('nav, .navbar, .navigation, #menu, header');
       expect(await nav.count()).toBeGreaterThan(0);
     });
 
-    test('should show zones link', async ({ page }) => {
+    test('should show zones link', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const zonesLink = page.locator('a[href*="list_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
 
-    test('should show logout link', async ({ page }) => {
+    test('should show logout link', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const logoutLink = page.locator('a[href*="logout"], a:has-text("Logout")');
@@ -280,11 +252,7 @@ test.describe('Layout - Navigation', () => {
   });
 
   test.describe('Viewer User Navigation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-    });
-
-    test('should display limited navigation menu', async ({ page }) => {
+    test('should display limited navigation menu', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=index');
 
       // Viewer should have limited menu items
@@ -292,14 +260,14 @@ test.describe('Layout - Navigation', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should not show add zone buttons', async ({ page }) => {
+    test('should not show add zone buttons', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const addBtn = page.locator('input[value*="Add master"], input[value*="Add slave"]');
       expect(await addBtn.count()).toBe(0);
     });
 
-    test('should show logout link', async ({ page }) => {
+    test('should show logout link', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const logoutLink = page.locator('a[href*="logout"], a:has-text("Logout")');
@@ -308,11 +276,7 @@ test.describe('Layout - Navigation', () => {
   });
 
   test.describe('Active Menu Highlighting', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should highlight current page in menu', async ({ page }) => {
+    test('should highlight current page in menu', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const activeLink = page.locator('.active, .current, [aria-current="page"]');
@@ -357,11 +321,7 @@ test.describe('Layout - Navigation', () => {
 
 test.describe('Layout - Page Structure', () => {
   test.describe('Dashboard', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display page title', async ({ page }) => {
+    test('should display page title', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       // Dashboard may use various heading levels
@@ -369,7 +329,7 @@ test.describe('Layout - Page Structure', () => {
       expect(await title.count()).toBeGreaterThan(0);
     });
 
-    test('should display main content area', async ({ page }) => {
+    test('should display main content area', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const content = page.locator('main, .content, #content, .container');
@@ -378,39 +338,35 @@ test.describe('Layout - Page Structure', () => {
   });
 
   test.describe('Common Elements', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should have proper HTML structure', async ({ page }) => {
+    test('should have proper HTML structure', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const html = page.locator('html');
       await expect(html).toBeVisible();
     });
 
-    test('should have head element', async ({ page }) => {
+    test('should have head element', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const title = await page.title();
       expect(title).toBeTruthy();
     });
 
-    test('should have body element', async ({ page }) => {
+    test('should have body element', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const body = page.locator('body');
       await expect(body).toBeVisible();
     });
 
-    test('should load CSS', async ({ page }) => {
+    test('should load CSS', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const stylesheets = page.locator('link[rel="stylesheet"]');
       expect(await stylesheets.count()).toBeGreaterThan(0);
     });
 
-    test('should load JavaScript', async ({ page }) => {
+    test('should load JavaScript', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
       const scripts = page.locator('script');
@@ -420,11 +376,7 @@ test.describe('Layout - Page Structure', () => {
 });
 
 test.describe('Layout - Breadcrumbs', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should display breadcrumbs on zone edit page', async ({ page }) => {
+  test('should display breadcrumbs on zone edit page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
     const editLink = page.locator('a[href*="page=edit"]').first();
 
@@ -438,7 +390,7 @@ test.describe('Layout - Breadcrumbs', () => {
     }
   });
 
-  test('should display breadcrumbs on add record page', async ({ page }) => {
+  test('should display breadcrumbs on add record page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
     const editLink = page.locator('a[href*="page=edit"]').first();
 

@@ -1,20 +1,15 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { test, expect } from '../../fixtures/test-fixtures.js';
+import { submitForm } from '../../helpers/forms.js';
 
 test.describe('User Management', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should access users list page', async ({ page }) => {
+  test('should access users list page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=users');
     await expect(page).toHaveURL(/page=users/);
     // Page title might be h5 or other heading level
     await expect(page.locator('h1, h2, h3, h4, h5, .page-title').first()).toBeVisible();
   });
 
-  test('should display users list or empty state', async ({ page }) => {
+  test('should display users list or empty state', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=users');
 
     // Should show either users table or empty state
@@ -27,13 +22,13 @@ test.describe('User Management', () => {
     }
   });
 
-  test('should access add user page', async ({ page }) => {
+  test('should access add user page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_user');
     await expect(page).toHaveURL(/page=add_user/);
     await expect(page.locator('form')).toBeVisible();
   });
 
-  test('should show user creation form fields', async ({ page }) => {
+  test('should show user creation form fields', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_user');
 
     // Username field
@@ -49,11 +44,11 @@ test.describe('User Management', () => {
     await expect(page.locator('input[type="password"]').first()).toBeVisible();
   });
 
-  test('should validate user creation form', async ({ page }) => {
+  test('should validate user creation form', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_user');
 
     // Try to submit empty form
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await submitForm(page);
 
     // Should show validation errors or stay on form
     const currentUrl = page.url();
@@ -64,7 +59,7 @@ test.describe('User Management', () => {
     expect(hasError).toBeTruthy();
   });
 
-  test('should require username for new user', async ({ page }) => {
+  test('should require username for new user', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_user');
 
     // Fill other fields but leave username empty
@@ -73,19 +68,19 @@ test.describe('User Management', () => {
       await emailField.fill('test@example.com');
     }
 
-    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await submitForm(page);
 
     // Should show validation error or stay on form
     await expect(page).toHaveURL(/page=add_user/);
   });
 
-  test('should have change password functionality', async ({ page }) => {
+  test('should have change password functionality', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');
     await expect(page).toHaveURL(/page=change_password/);
     await expect(page.locator('form')).toBeVisible();
   });
 
-  test('should show password change form fields', async ({ page }) => {
+  test('should show password change form fields', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');
 
     // Password fields should be visible

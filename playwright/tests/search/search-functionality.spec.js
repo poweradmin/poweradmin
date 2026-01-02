@@ -1,19 +1,13 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { test, expect } from '../../fixtures/test-fixtures.js';
 
 test.describe('Search Functionality', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should access search page', async ({ page }) => {
+  test('should access search page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
     await expect(page).toHaveURL(/page=search/);
     await expect(page.locator('form')).toBeVisible();
   });
 
-  test('should search for zones by exact name', async ({ page }) => {
+  test('should search for zones by exact name', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Fill in search input
@@ -28,7 +22,7 @@ test.describe('Search Functionality', () => {
     expect(bodyText).toMatch(/search|results|found/i);
   });
 
-  test('should search for zones by partial name', async ({ page }) => {
+  test('should search for zones by partial name', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Fill in search input with partial name
@@ -42,7 +36,7 @@ test.describe('Search Functionality', () => {
     expect(bodyText).toMatch(/search|results|found/i);
   });
 
-  test('should search for records by content', async ({ page }) => {
+  test('should search for records by content', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Fill in search with IP address
@@ -56,7 +50,7 @@ test.describe('Search Functionality', () => {
     expect(bodyText).toMatch(/search|results|found|no/i);
   });
 
-  test('should handle searches with no results', async ({ page }) => {
+  test('should handle searches with no results', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Search for non-existent domain
@@ -70,7 +64,7 @@ test.describe('Search Functionality', () => {
     expect(bodyText).toMatch(/no|not found|empty|results/i);
   });
 
-  test('should handle special characters in search', async ({ page }) => {
+  test('should handle special characters in search', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Search with special characters

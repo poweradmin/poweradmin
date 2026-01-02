@@ -1,13 +1,7 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import users from '../../fixtures/users.json' assert { type: 'json' };
+import { test, expect } from '../../fixtures/test-fixtures.js';
 
 test.describe('Dashboard and Navigation', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should display dashboard after login', async ({ page }) => {
+  test('should display dashboard after login', async ({ adminPage: page }) => {
     // Should be on dashboard/home page
     await expect(page).toHaveURL(/page=index/);
 
@@ -16,13 +10,13 @@ test.describe('Dashboard and Navigation', () => {
     expect(hasWelcomeText).toBeTruthy();
   });
 
-  test('should show user name on dashboard', async ({ page }) => {
+  test('should show user name on dashboard', async ({ adminPage: page }) => {
     const body = page.locator('body');
     const hasUserInfo = await body.getByText(/admin|Welcome/i).count() > 0;
     expect(hasUserInfo).toBeTruthy();
   });
 
-  test('should display main navigation menu', async ({ page }) => {
+  test('should display main navigation menu', async ({ adminPage: page }) => {
     await expect(page.locator('nav, .navbar, .navigation, header')).toBeVisible();
 
     // Check for key navigation items
@@ -30,7 +24,7 @@ test.describe('Dashboard and Navigation', () => {
     await expect(page.locator('body')).toContainText('Users');
   });
 
-  test('should have functional zone navigation links', async ({ page }) => {
+  test('should have functional zone navigation links', async ({ adminPage: page }) => {
     // Forward zones link
     const forwardLink = page.locator('a').filter({ hasText: 'Forward' });
     if (await forwardLink.count() > 0) {
@@ -44,28 +38,28 @@ test.describe('Dashboard and Navigation', () => {
     }
   });
 
-  test('should navigate to forward zones page', async ({ page }) => {
+  test('should navigate to forward zones page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
     await expect(page).toHaveURL(/page=list_zones/);
     // Page may use various heading levels
     await expect(page.locator('h1, h2, h3, h4, h5, .page-title').first()).toBeVisible();
   });
 
-  test('should navigate to reverse zones page', async ({ page }) => {
+  test('should navigate to reverse zones page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
     await expect(page).toHaveURL(/page=list_zones/);
     // Page may use various heading levels
     await expect(page.locator('h1, h2, h3, h4, h5, .page-title').first()).toBeVisible();
   });
 
-  test('should navigate to users page', async ({ page }) => {
+  test('should navigate to users page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=users');
     await expect(page).toHaveURL(/page=users/);
     // Page may use various heading levels
     await expect(page.locator('h1, h2, h3, h4, h5, .page-title').first()).toBeVisible();
   });
 
-  test('should show dashboard cards or widgets', async ({ page }) => {
+  test('should show dashboard cards or widgets', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=index');
 
     // Look for dashboard cards/widgets
@@ -78,7 +72,7 @@ test.describe('Dashboard and Navigation', () => {
     }
   });
 
-  test('should have breadcrumb navigation on sub-pages', async ({ page }) => {
+  test('should have breadcrumb navigation on sub-pages', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_user');
 
     const breadcrumbs = page.locator('.breadcrumb, nav[aria-label*="breadcrumb"]');
@@ -92,7 +86,7 @@ test.describe('Dashboard and Navigation', () => {
     }
   });
 
-  test('should handle responsive navigation', async ({ page }) => {
+  test('should handle responsive navigation', async ({ adminPage: page }) => {
     // Test mobile viewport
     await page.setViewportSize({ width: 768, height: 1024 });
     await page.goto('/index.php?page=index');
@@ -104,7 +98,7 @@ test.describe('Dashboard and Navigation', () => {
     await page.setViewportSize({ width: 1280, height: 720 });
   });
 
-  test('should maintain session across page navigation', async ({ page }) => {
+  test('should maintain session across page navigation', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=index');
     await page.goto('/index.php?page=users');
     await page.goto('/index.php?page=list_zones');
@@ -116,7 +110,7 @@ test.describe('Dashboard and Navigation', () => {
     expect(hasLoginText).toBeFalsy();
   });
 
-  test('should show appropriate error pages for invalid URLs', async ({ page }) => {
+  test('should show appropriate error pages for invalid URLs', async ({ adminPage: page }) => {
     const response = await page.goto('/index.php?page=nonexistent', { waitUntil: 'networkidle' });
 
     const bodyText = await page.locator('body').textContent();

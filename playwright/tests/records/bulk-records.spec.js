@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
@@ -16,37 +16,33 @@ test.describe('Bulk Zone Registration', () => {
     `bulk-zone-c-${timestamp}.example.com`
   ];
 
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
   test.describe('Bulk Registration Page Access', () => {
-    test('should access bulk registration page', async ({ page }) => {
+    test('should access bulk registration page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=bulk_registration');
       await expect(page).toHaveURL(/page=bulk_registration/);
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/bulk|registration|zones/i);
     });
 
-    test('should display bulk input textarea', async ({ page }) => {
+    test('should display bulk input textarea', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=bulk_registration');
       const textarea = page.locator('textarea[name="domains"]');
       await expect(textarea).toBeVisible();
     });
 
-    test('should display owner selection', async ({ page }) => {
+    test('should display owner selection', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=bulk_registration');
       const ownerSelect = page.locator('select[name="owner"]');
       await expect(ownerSelect).toBeVisible();
     });
 
-    test('should display zone type selection', async ({ page }) => {
+    test('should display zone type selection', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=bulk_registration');
       const typeSelect = page.locator('select[name="dom_type"]');
       await expect(typeSelect).toBeVisible();
     });
 
-    test('should display template selection', async ({ page }) => {
+    test('should display template selection', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=bulk_registration');
       const templateSelect = page.locator('select[name="zone_template"]');
       await expect(templateSelect).toBeVisible();
@@ -54,14 +50,14 @@ test.describe('Bulk Zone Registration', () => {
   });
 
   test.describe('Bulk Registration Form Submission', () => {
-    test('should handle empty input gracefully', async ({ page }) => {
+    test('should handle empty input gracefully', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=bulk_registration');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should register single zone', async ({ page }) => {
+    test('should register single zone', async ({ adminPage: page }) => {
       const singleDomain = `bulk-single-${timestamp}.example.com`;
       await page.goto('/index.php?page=bulk_registration');
 
@@ -82,7 +78,7 @@ test.describe('Bulk Zone Registration', () => {
       }
     });
 
-    test('should register multiple zones', async ({ page }) => {
+    test('should register multiple zones', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=bulk_registration');
 
       await page.locator('textarea[name="domains"]').fill(testDomains.join('\n'));
@@ -93,7 +89,7 @@ test.describe('Bulk Zone Registration', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should show created zones in list', async ({ page }) => {
+    test('should show created zones in list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       // Click "Show all" to show all zones regardless of letter filter
@@ -111,22 +107,20 @@ test.describe('Bulk Zone Registration', () => {
   });
 
   test.describe('Bulk Registration - User Permissions', () => {
-    test('admin should access bulk registration', async ({ page }) => {
+    test('admin should access bulk registration', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=bulk_registration');
       // Verify form elements are visible (admin has access)
       const textarea = page.locator('textarea[name="domains"]');
       await expect(textarea).toBeVisible();
     });
 
-    test('manager should access bulk registration', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('manager should access bulk registration', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=bulk_registration');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('viewer should not access bulk registration', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+    test('viewer should not access bulk registration', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=bulk_registration');
       const bodyText = await page.locator('body').textContent();
       // Viewer should see permission denied or be redirected

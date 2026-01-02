@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
@@ -21,18 +21,17 @@ test.describe('DNS Record Types Management', () => {
     await page.close();
   });
 
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-
-    // Navigate to the test domain's records
+  // Helper to navigate to test domain's records
+  async function navigateToTestDomain(page) {
     await page.goto('/index.php?page=list_zones');
     const row = page.locator(`tr:has-text("${testDomain}")`);
     if (await row.count() > 0) {
       await row.locator('a').first().click();
     }
-  });
+  }
 
-  test('should add A record successfully', async ({ page }) => {
+  test('should add A record successfully', async ({ adminPage: page }) => {
+    await navigateToTestDomain(page);
     const hasTypeSelector = await page.locator('select[name*="type"]').count() > 0;
 
     if (hasTypeSelector) {
@@ -59,7 +58,8 @@ test.describe('DNS Record Types Management', () => {
     }
   });
 
-  test('should add AAAA record successfully', async ({ page }) => {
+  test('should add AAAA record successfully', async ({ adminPage: page }) => {
+    await navigateToTestDomain(page);
     const hasTypeSelector = await page.locator('select[name*="type"]').count() > 0;
 
     if (hasTypeSelector) {
@@ -79,7 +79,8 @@ test.describe('DNS Record Types Management', () => {
     }
   });
 
-  test('should add MX record successfully', async ({ page }) => {
+  test('should add MX record successfully', async ({ adminPage: page }) => {
+    await navigateToTestDomain(page);
     const hasTypeSelector = await page.locator('select[name*="type"]').count() > 0;
 
     if (hasTypeSelector) {
@@ -99,7 +100,8 @@ test.describe('DNS Record Types Management', () => {
     }
   });
 
-  test('should add CNAME record successfully', async ({ page }) => {
+  test('should add CNAME record successfully', async ({ adminPage: page }) => {
+    await navigateToTestDomain(page);
     const hasTypeSelector = await page.locator('select[name*="type"]').count() > 0;
 
     if (hasTypeSelector) {
@@ -119,7 +121,8 @@ test.describe('DNS Record Types Management', () => {
     }
   });
 
-  test('should add TXT record successfully', async ({ page }) => {
+  test('should add TXT record successfully', async ({ adminPage: page }) => {
+    await navigateToTestDomain(page);
     const hasTypeSelector = await page.locator('select[name*="type"]').count() > 0;
 
     if (hasTypeSelector) {
@@ -140,7 +143,8 @@ test.describe('DNS Record Types Management', () => {
     }
   });
 
-  test('should add SRV record successfully', async ({ page }) => {
+  test('should add SRV record successfully', async ({ adminPage: page }) => {
+    await navigateToTestDomain(page);
     const hasTypeSelector = await page.locator('select[name*="type"]').count() > 0;
 
     if (hasTypeSelector) {

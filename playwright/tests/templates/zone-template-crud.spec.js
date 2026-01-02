@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensureTemplateExists } from '../../helpers/templates.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
@@ -8,15 +8,12 @@ test.describe('Zone Template CRUD Operations', () => {
   const templateDescription = 'Automated test template';
 
   test.describe('List Templates', () => {
-    test('admin should access templates list', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('admin should access templates list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
-
       await expect(page).toHaveURL(/page=list_zone_templ/);
     });
 
-    test('should display templates table or empty state', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display templates table or empty state', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
 
       const hasTable = await page.locator('table').count() > 0;
@@ -28,23 +25,19 @@ test.describe('Zone Template CRUD Operations', () => {
       }
     });
 
-    test('should display add template button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display add template button', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
 
       const addBtn = page.locator('a[href*="add_zone_templ"], input[value*="Add"], button:has-text("Add")');
       expect(await addBtn.count()).toBeGreaterThan(0);
     });
 
-    test('manager should access templates list', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('manager should access templates list', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
-
       await expect(page).toHaveURL(/page=list_zone_templ/);
     });
 
-    test('should show template owner column', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should show template owner column', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
 
       const hasTable = await page.locator('table').count() > 0;
@@ -56,24 +49,20 @@ test.describe('Zone Template CRUD Operations', () => {
   });
 
   test.describe('Add Template', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access add template page', async ({ page }) => {
+    test('should access add template page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_templ');
       await expect(page).toHaveURL(/page=add_zone_templ/);
       await expect(page.locator('form')).toBeVisible();
     });
 
-    test('should display template name field', async ({ page }) => {
+    test('should display template name field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_templ');
 
       const nameField = page.locator('input[name*="name"], input[name*="templ"]').first();
       await expect(nameField).toBeVisible();
     });
 
-    test('should display description field', async ({ page }) => {
+    test('should display description field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_templ');
 
       const descField = page.locator('input[name*="description"], textarea[name*="description"]');
@@ -82,7 +71,7 @@ test.describe('Zone Template CRUD Operations', () => {
       }
     });
 
-    test('should create template with name only', async ({ page }) => {
+    test('should create template with name only', async ({ adminPage: page }) => {
       const uniqueName = `${templateName}-nameonly`;
       await page.goto('/index.php?page=add_zone_templ');
 
@@ -97,7 +86,7 @@ test.describe('Zone Template CRUD Operations', () => {
       expect(hasSuccess).toBeTruthy();
     });
 
-    test('should create template with name and description', async ({ page }) => {
+    test('should create template with name and description', async ({ adminPage: page }) => {
       const uniqueName = `${templateName}-full`;
       await page.goto('/index.php?page=add_zone_templ');
 
@@ -114,7 +103,7 @@ test.describe('Zone Template CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should reject empty template name', async ({ page }) => {
+    test('should reject empty template name', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_templ');
 
       // Leave name empty and submit
@@ -128,7 +117,7 @@ test.describe('Zone Template CRUD Operations', () => {
       expect(hasError).toBeTruthy();
     });
 
-    test('should reject template name with only spaces', async ({ page }) => {
+    test('should reject template name with only spaces', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_templ');
 
       await page.locator('input[name*="name"], input[name*="templ"]').first().fill('   ');
@@ -142,7 +131,7 @@ test.describe('Zone Template CRUD Operations', () => {
       expect(hasError).toBeTruthy();
     });
 
-    test('should allow template name with special characters', async ({ page }) => {
+    test('should allow template name with special characters', async ({ adminPage: page }) => {
       const uniqueName = `${templateName}-special-chars-@#`;
       await page.goto('/index.php?page=add_zone_templ');
 
@@ -165,11 +154,7 @@ test.describe('Zone Template CRUD Operations', () => {
       await page.close();
     });
 
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access edit template page', async ({ page }) => {
+    test('should access edit template page', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto('/index.php?page=list_zone_templ');
@@ -184,7 +169,7 @@ test.describe('Zone Template CRUD Operations', () => {
       }
     });
 
-    test('should display current template name', async ({ page }) => {
+    test('should display current template name', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto('/index.php?page=list_zone_templ');
@@ -202,7 +187,7 @@ test.describe('Zone Template CRUD Operations', () => {
       }
     });
 
-    test('should update template name', async ({ page }) => {
+    test('should update template name', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto('/index.php?page=list_zone_templ');
@@ -223,7 +208,7 @@ test.describe('Zone Template CRUD Operations', () => {
       }
     });
 
-    test('should update template description', async ({ page }) => {
+    test('should update template description', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto('/index.php?page=list_zone_templ');
@@ -261,11 +246,7 @@ test.describe('Zone Template CRUD Operations', () => {
       await page.close();
     });
 
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access delete confirmation page', async ({ page }) => {
+    test('should access delete confirmation page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
       const row = page.locator(`tr:has-text("${deleteTemplateName}")`);
 
@@ -278,7 +259,7 @@ test.describe('Zone Template CRUD Operations', () => {
       }
     });
 
-    test('should display confirmation message', async ({ page }) => {
+    test('should display confirmation message', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
       const row = page.locator(`tr:has-text("${deleteTemplateName}")`);
 
@@ -293,7 +274,7 @@ test.describe('Zone Template CRUD Operations', () => {
       }
     });
 
-    test('should display yes and no buttons', async ({ page }) => {
+    test('should display yes and no buttons', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
       const row = page.locator(`tr:has-text("${deleteTemplateName}")`);
 
@@ -315,7 +296,7 @@ test.describe('Zone Template CRUD Operations', () => {
       }
     });
 
-    test('should cancel delete and return to list', async ({ page }) => {
+    test('should cancel delete and return to list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
       const row = page.locator(`tr:has-text("${deleteTemplateName}")`);
 
@@ -333,7 +314,7 @@ test.describe('Zone Template CRUD Operations', () => {
       }
     });
 
-    test('should delete template successfully', async ({ page }) => {
+    test('should delete template successfully', async ({ adminPage: page }) => {
       // Create a new template to delete
       const toDelete = `to-delete-${Date.now()}`;
       await page.goto('/index.php?page=add_zone_templ');
@@ -373,18 +354,14 @@ test.describe('Zone Template CRUD Operations', () => {
       await page.close();
     });
 
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access add template record page', async ({ page }) => {
+    test('should access add template record page', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
       await expect(page).toHaveURL(/add_zone_templ_record/);
     });
 
-    test('should display record type selector', async ({ page }) => {
+    test('should display record type selector', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
@@ -395,7 +372,7 @@ test.describe('Zone Template CRUD Operations', () => {
       }
     });
 
-    test('should add A record to template', async ({ page }) => {
+    test('should add A record to template', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
@@ -420,7 +397,7 @@ test.describe('Zone Template CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should add MX record to template', async ({ page }) => {
+    test('should add MX record to template', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
@@ -439,7 +416,7 @@ test.describe('Zone Template CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should use [ZONE] placeholder in template record', async ({ page }) => {
+    test('should use [ZONE] placeholder in template record', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
@@ -453,7 +430,7 @@ test.describe('Zone Template CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should add TXT record to template', async ({ page }) => {
+    test('should add TXT record to template', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=add_zone_templ_record&id=${templateId}`);
@@ -476,23 +453,19 @@ test.describe('Zone Template CRUD Operations', () => {
   });
 
   test.describe('Permission Tests', () => {
-    test('admin should have full template access', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('admin should have full template access', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
 
       const addBtn = page.locator('a[href*="add_zone_templ"], input[value*="Add"]');
       expect(await addBtn.count()).toBeGreaterThan(0);
     });
 
-    test('manager should access template list', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('manager should access template list', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
-
       await expect(page).toHaveURL(/list_zone_templ/);
     });
 
-    test('viewer should have read-only template access', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+    test('viewer should have read-only template access', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=list_zone_templ');
 
       const bodyText = await page.locator('body').textContent();
