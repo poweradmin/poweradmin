@@ -1,14 +1,9 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Migrations Page', () => {
   test.describe('Admin User - Permission Check', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should check if migrations page is accessible', async ({ page }) => {
+    test('should check if migrations page is accessible', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=migrations');
       // Page should either show migrations content or redirect
       const url = page.url();
@@ -18,7 +13,7 @@ test.describe('Migrations Page', () => {
       expect(isAccessible).toBeTruthy();
     });
 
-    test('should display migrations heading if accessible', async ({ page }) => {
+    test('should display migrations heading if accessible', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=migrations');
       const bodyText = await page.locator('body').textContent();
       if (page.url().includes('page=migrations')) {
@@ -26,7 +21,7 @@ test.describe('Migrations Page', () => {
       }
     });
 
-    test('should display migrations output if accessible', async ({ page }) => {
+    test('should display migrations output if accessible', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=migrations');
       if (page.url().includes('page=migrations')) {
         const bodyText = await page.locator('body').textContent();
@@ -35,7 +30,7 @@ test.describe('Migrations Page', () => {
       }
     });
 
-    test('should have pre element for output if accessible', async ({ page }) => {
+    test('should have pre element for output if accessible', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=migrations');
       if (page.url().includes('page=migrations')) {
         const pre = page.locator('pre');
@@ -47,8 +42,7 @@ test.describe('Migrations Page', () => {
   });
 
   test.describe('Manager User - Permission Check', () => {
-    test('should check manager access to migrations', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('should check manager access to migrations', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=migrations');
       // Manager likely should not have access to migrations
       const url = page.url();
@@ -60,8 +54,7 @@ test.describe('Migrations Page', () => {
   });
 
   test.describe('Client User - Permission Check', () => {
-    test('should check client access to migrations', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
+    test('should check client access to migrations', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=migrations');
       // Client should not have access to migrations
       const url = page.url();
@@ -73,8 +66,7 @@ test.describe('Migrations Page', () => {
   });
 
   test.describe('Viewer User - Permission Check', () => {
-    test('should check viewer access to migrations', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+    test('should check viewer access to migrations', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=migrations');
       // Viewer should not have access to migrations
       const url = page.url();

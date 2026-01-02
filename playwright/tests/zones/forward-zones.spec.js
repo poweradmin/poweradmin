@@ -1,19 +1,14 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Forward Zones Management', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should access forward zones page', async ({ page }) => {
+  test('should access forward zones page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
     await expect(page).toHaveURL(/page=list_zones/);
     await expect(page.locator('h1, h2, h3, .page-title, [data-testid*="title"]')).toBeVisible();
   });
 
-  test('should display zones list or empty state', async ({ page }) => {
+  test('should display zones list or empty state', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Should show either zones table or empty state message
@@ -28,7 +23,7 @@ test.describe('Forward Zones Management', () => {
     }
   });
 
-  test('should have add master zone button', async ({ page }) => {
+  test('should have add master zone button', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // The add button may be in the page or in the navigation menu
@@ -46,13 +41,13 @@ test.describe('Forward Zones Management', () => {
     }
   });
 
-  test('should navigate to add master zone page', async ({ page }) => {
+  test('should navigate to add master zone page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_master');
     await expect(page).toHaveURL(/page=add_zone_master/);
     await expect(page.locator('form, [data-testid*="form"]')).toBeVisible();
   });
 
-  test('should validate master zone creation form', async ({ page }) => {
+  test('should validate master zone creation form', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_master');
 
     // Try to submit empty form
@@ -62,7 +57,7 @@ test.describe('Forward Zones Management', () => {
     await expect(page).toHaveURL(/page=add_zone_master/);
   });
 
-  test('should show zone name field in master zone form', async ({ page }) => {
+  test('should show zone name field in master zone form', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_master');
 
     // Look for zone name input

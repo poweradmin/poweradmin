@@ -1,14 +1,10 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensureAnyZoneExists, getZoneIdForTest } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('DNSSEC Management', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should handle DNSSEC page access with zone ID', async ({ page }) => {
+  test('should handle DNSSEC page access with zone ID', async ({ adminPage: page }) => {
     const zoneId = await ensureAnyZoneExists(page);
     expect(zoneId).toBeTruthy();
 
@@ -26,7 +22,7 @@ test.describe('DNSSEC Management', () => {
     }
   });
 
-  test('should show DNSSEC status for existing zone', async ({ page }) => {
+  test('should show DNSSEC status for existing zone', async ({ adminPage: page }) => {
     const zoneId = await ensureAnyZoneExists(page);
     expect(zoneId).toBeTruthy();
 
@@ -36,7 +32,7 @@ test.describe('DNSSEC Management', () => {
     expect(bodyText).toMatch(/DNSSEC|security/i);
   });
 
-  test('should handle DNSSEC key addition page', async ({ page }) => {
+  test('should handle DNSSEC key addition page', async ({ adminPage: page }) => {
     const zoneId = await ensureAnyZoneExists(page);
     expect(zoneId).toBeTruthy();
 
@@ -55,7 +51,7 @@ test.describe('DNSSEC Management', () => {
     }
   });
 
-  test('should show DNSSEC key form fields if available', async ({ page }) => {
+  test('should show DNSSEC key form fields if available', async ({ adminPage: page }) => {
     const zoneId = await ensureAnyZoneExists(page);
     expect(zoneId).toBeTruthy();
 
@@ -73,7 +69,7 @@ test.describe('DNSSEC Management', () => {
     }
   });
 
-  test('should validate DNSSEC permissions', async ({ page }) => {
+  test('should validate DNSSEC permissions', async ({ adminPage: page }) => {
     const zoneId = await ensureAnyZoneExists(page);
     expect(zoneId).toBeTruthy();
 
@@ -85,7 +81,7 @@ test.describe('DNSSEC Management', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should show DNSSEC keys list if zone exists and has keys', async ({ page }) => {
+  test('should show DNSSEC keys list if zone exists and has keys', async ({ adminPage: page }) => {
     const zoneId = await ensureAnyZoneExists(page);
     expect(zoneId).toBeTruthy();
 
@@ -103,7 +99,7 @@ test.describe('DNSSEC Management', () => {
     }
   });
 
-  test('should handle DNSSEC navigation from zone management', async ({ page }) => {
+  test('should handle DNSSEC navigation from zone management', async ({ adminPage: page }) => {
     // Navigate to zones and look for DNSSEC links
     await page.goto('/index.php?page=list_zones');
 
@@ -119,11 +115,7 @@ test.describe('DNSSEC Management', () => {
 
 test.describe('Add DNSSEC Key', () => {
   test.describe('Admin User', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display add key page', async ({ page }) => {
+    test('should display add key page', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -134,7 +126,7 @@ test.describe('Add DNSSEC Key', () => {
       }
     });
 
-    test('should display add key form', async ({ page }) => {
+    test('should display add key form', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -145,7 +137,7 @@ test.describe('Add DNSSEC Key', () => {
       }
     });
 
-    test('should display key type select', async ({ page }) => {
+    test('should display key type select', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -156,7 +148,7 @@ test.describe('Add DNSSEC Key', () => {
       }
     });
 
-    test('should display bits select', async ({ page }) => {
+    test('should display bits select', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -167,7 +159,7 @@ test.describe('Add DNSSEC Key', () => {
       }
     });
 
-    test('should display algorithm select', async ({ page }) => {
+    test('should display algorithm select', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -178,7 +170,7 @@ test.describe('Add DNSSEC Key', () => {
       }
     });
 
-    test('should display submit button', async ({ page }) => {
+    test('should display submit button', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -189,7 +181,7 @@ test.describe('Add DNSSEC Key', () => {
       }
     });
 
-    test('should allow selecting key type', async ({ page }) => {
+    test('should allow selecting key type', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -203,8 +195,7 @@ test.describe('Add DNSSEC Key', () => {
   });
 
   test.describe('Manager User', () => {
-    test('should have access to add DNSSEC key for own zone', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('should have access to add DNSSEC key for own zone', async ({ managerPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -218,11 +209,7 @@ test.describe('Add DNSSEC Key', () => {
 
 test.describe('Edit DNSSEC Key', () => {
   test.describe('Page Structure', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display edit key page if key exists', async ({ page }) => {
+    test('should display edit key page if key exists', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -232,7 +219,7 @@ test.describe('Edit DNSSEC Key', () => {
       expect(bodyText.length).toBeGreaterThan(0);
     });
 
-    test('should display key information if page loads', async ({ page }) => {
+    test('should display key information if page loads', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -244,7 +231,7 @@ test.describe('Edit DNSSEC Key', () => {
       expect(bodyText.toLowerCase()).toMatch(/key|dnssec|error|not found/i);
     });
 
-    test('should display confirmation buttons if page loads', async ({ page }) => {
+    test('should display confirmation buttons if page loads', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -261,8 +248,7 @@ test.describe('Edit DNSSEC Key', () => {
   });
 
   test.describe('Navigation from DNSSEC Page', () => {
-    test('should have edit key link if keys exist', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should have edit key link if keys exist', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -277,11 +263,7 @@ test.describe('Edit DNSSEC Key', () => {
 
 test.describe('Delete DNSSEC Key', () => {
   test.describe('Page Structure', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display delete key page if key exists', async ({ page }) => {
+    test('should display delete key page if key exists', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -291,7 +273,7 @@ test.describe('Delete DNSSEC Key', () => {
       expect(bodyText.length).toBeGreaterThan(0);
     });
 
-    test('should display key information on delete page', async ({ page }) => {
+    test('should display key information on delete page', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -303,7 +285,7 @@ test.describe('Delete DNSSEC Key', () => {
       expect(bodyText.toLowerCase()).toMatch(/key|dnssec|error|not found|delete/i);
     });
 
-    test('should display confirmation message', async ({ page }) => {
+    test('should display confirmation message', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -315,7 +297,7 @@ test.describe('Delete DNSSEC Key', () => {
       }
     });
 
-    test('should display delete form', async ({ page }) => {
+    test('should display delete form', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -326,7 +308,7 @@ test.describe('Delete DNSSEC Key', () => {
       }
     });
 
-    test('should display confirm and cancel buttons', async ({ page }) => {
+    test('should display confirm and cancel buttons', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -343,8 +325,7 @@ test.describe('Delete DNSSEC Key', () => {
   });
 
   test.describe('Navigation from DNSSEC Page', () => {
-    test('should have delete key link if keys exist', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should have delete key link if keys exist', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -359,11 +340,7 @@ test.describe('Delete DNSSEC Key', () => {
 
 test.describe('DNSSEC DS and DNSKEY Records', () => {
   test.describe('Admin User', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display DS/DNSKEY page', async ({ page }) => {
+    test('should display DS/DNSKEY page', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -374,7 +351,7 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
       }
     });
 
-    test('should display DNSSEC public records heading', async ({ page }) => {
+    test('should display DNSSEC public records heading', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -385,7 +362,7 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
       }
     });
 
-    test('should display DNSKEY section', async ({ page }) => {
+    test('should display DNSKEY section', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -397,7 +374,7 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
       }
     });
 
-    test('should display DS section', async ({ page }) => {
+    test('should display DS section', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -409,7 +386,7 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
       }
     });
 
-    test('should display records containers', async ({ page }) => {
+    test('should display records containers', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -422,8 +399,7 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
   });
 
   test.describe('Navigation from DNSSEC Page', () => {
-    test('should have DS/DNSKEY link', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should have DS/DNSKEY link', async ({ adminPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 
@@ -436,8 +412,7 @@ test.describe('DNSSEC DS and DNSKEY Records', () => {
   });
 
   test.describe('Manager User', () => {
-    test('should have access to DS/DNSKEY page for own zone', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('should have access to DS/DNSKEY page for own zone', async ({ managerPage: page }) => {
       const zoneId = await getZoneIdForTest(page);
       if (!zoneId) test.skip();
 

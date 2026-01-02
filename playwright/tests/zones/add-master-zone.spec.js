@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
@@ -6,11 +6,7 @@ test.describe('Master Zone Management', () => {
   const testZone = `test-zone-${Date.now()}.com`;
   const reverseZone = `${Date.now() % 256}.168.192.in-addr.arpa`;
 
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should add a master zone successfully', async ({ page }) => {
+  test('should add a master zone successfully', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_master');
 
     // Fill in zone name
@@ -29,7 +25,7 @@ test.describe('Master Zone Management', () => {
     expect(hasSuccess).toBeTruthy();
   });
 
-  test('should add a reverse zone successfully', async ({ page }) => {
+  test('should add a reverse zone successfully', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_master');
 
     // Fill in reverse zone name
@@ -47,7 +43,7 @@ test.describe('Master Zone Management', () => {
     expect(hasSuccess).toBeTruthy();
   });
 
-  test('should add a record to a master zone successfully', async ({ page }) => {
+  test('should add a record to a master zone successfully', async ({ adminPage: page }) => {
     // First ensure we have a zone - go to zones list
     await page.goto('/index.php?page=list_zones');
 
@@ -97,7 +93,7 @@ test.describe('Master Zone Management', () => {
     }
   });
 
-  test('should delete a master zone successfully', async ({ page }) => {
+  test('should delete a master zone successfully', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Find zone and delete
@@ -123,7 +119,7 @@ test.describe('Master Zone Management', () => {
     }
   });
 
-  test('should delete a reverse zone successfully', async ({ page }) => {
+  test('should delete a reverse zone successfully', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Find reverse zone and delete

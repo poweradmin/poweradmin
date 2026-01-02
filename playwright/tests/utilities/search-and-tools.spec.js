@@ -1,13 +1,8 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Search and Utility Tools', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should access search page', async ({ page }) => {
+  test('should access search page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
     await expect(page).toHaveURL(/page=search/);
     // Verify page loads without errors
@@ -15,7 +10,7 @@ test.describe('Search and Utility Tools', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should show search form with query input', async ({ page }) => {
+  test('should show search form with query input', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Should have search input field
@@ -25,7 +20,7 @@ test.describe('Search and Utility Tools', () => {
     await expect(page.locator('button[type="submit"], input[type="submit"]')).toBeVisible();
   });
 
-  test('should handle empty search query', async ({ page }) => {
+  test('should handle empty search query', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Submit empty search
@@ -35,7 +30,7 @@ test.describe('Search and Utility Tools', () => {
     await expect(page).toHaveURL(/page=search/);
   });
 
-  test('should perform search with query', async ({ page }) => {
+  test('should perform search with query', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Enter search query
@@ -48,7 +43,7 @@ test.describe('Search and Utility Tools', () => {
     expect(bodyText).toMatch(/results|found|search/i);
   });
 
-  test('should access WHOIS tool', async ({ page }) => {
+  test('should access WHOIS tool', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
     await expect(page).toHaveURL(/page=search/);
     // Verify page loads without errors
@@ -56,7 +51,7 @@ test.describe('Search and Utility Tools', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should show WHOIS form fields', async ({ page }) => {
+  test('should show WHOIS form fields', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Verify search page loads
@@ -64,7 +59,7 @@ test.describe('Search and Utility Tools', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should validate WHOIS domain input', async ({ page }) => {
+  test('should validate WHOIS domain input', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Try to submit empty form
@@ -74,7 +69,7 @@ test.describe('Search and Utility Tools', () => {
     await expect(page).toHaveURL(/page=search/);
   });
 
-  test('should perform WHOIS lookup', async ({ page }) => {
+  test('should perform WHOIS lookup', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Verify search page loads without errors
@@ -82,7 +77,7 @@ test.describe('Search and Utility Tools', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should access RDAP tool if enabled', async ({ page }) => {
+  test('should access RDAP tool if enabled', async ({ adminPage: page }) => {
     // RDAP may not be available in 3.x, verify search page works
     await page.goto('/index.php?page=search', { waitUntil: 'domcontentloaded' });
 
@@ -90,7 +85,7 @@ test.describe('Search and Utility Tools', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should access database consistency tool if available', async ({ page }) => {
+  test('should access database consistency tool if available', async ({ adminPage: page }) => {
     // Database consistency tool may have different page name in 3.x
     await page.goto('/index.php?page=database_consistency', { waitUntil: 'domcontentloaded' });
 
@@ -103,7 +98,7 @@ test.describe('Search and Utility Tools', () => {
     }
   });
 
-  test('should show navigation menu items', async ({ page }) => {
+  test('should show navigation menu items', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=index');
 
     // Check for main navigation elements
@@ -115,7 +110,7 @@ test.describe('Search and Utility Tools', () => {
     expect(bodyText).toMatch(/Users|Administration/i);
   });
 
-  test('should have working logout functionality', async ({ page }) => {
+  test('should have working logout functionality', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=index');
 
     // Use direct logout URL for reliable testing

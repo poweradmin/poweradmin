@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
@@ -10,17 +10,13 @@ test.describe('Bulk and Batch Operations', () => {
     `${baseTestDomain}-3.com`
   ];
 
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should access bulk registration page', async ({ page }) => {
+  test('should access bulk registration page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=bulk_registration');
     await expect(page).toHaveURL(/page=bulk_registration/);
     await expect(page.locator('h1, h2, h3, .page-title, form').first()).toBeVisible();
   });
 
-  test('should perform bulk domain registration', async ({ page }) => {
+  test('should perform bulk domain registration', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=bulk_registration');
 
     const hasTextarea = await page.locator('textarea, input[name*="domains"], input[name*="zones"]').count() > 0;
@@ -50,7 +46,7 @@ test.describe('Bulk and Batch Operations', () => {
     }
   });
 
-  test('should verify bulk registered domains exist', async ({ page }) => {
+  test('should verify bulk registered domains exist', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Click "Show all" to show all zones regardless of letter filter
@@ -66,7 +62,7 @@ test.describe('Bulk and Batch Operations', () => {
     expect(hasTestDomain).toBeTruthy();
   });
 
-  test('should perform bulk zone deletion', async ({ page }) => {
+  test('should perform bulk zone deletion', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones&letter=all');
 
     // Check if bulk delete functionality exists (checkboxes + delete button)
@@ -94,7 +90,7 @@ test.describe('Bulk and Batch Operations', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should perform manual zone deletion', async ({ page }) => {
+  test('should perform manual zone deletion', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones&letter=all');
 
     // Find any delete link
@@ -106,7 +102,7 @@ test.describe('Bulk and Batch Operations', () => {
     }
   });
 
-  test('should handle bulk operations with validation errors', async ({ page }) => {
+  test('should handle bulk operations with validation errors', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=bulk_registration');
 
     const hasTextarea = await page.locator('textarea').count() > 0;
@@ -123,7 +119,7 @@ test.describe('Bulk and Batch Operations', () => {
     }
   });
 
-  test('should show bulk operation progress and results', async ({ page }) => {
+  test('should show bulk operation progress and results', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=bulk_registration');
 
     const hasTextarea = await page.locator('textarea').count() > 0;
@@ -149,7 +145,7 @@ test.describe('Bulk and Batch Operations', () => {
     }
   });
 
-  test('should handle bulk import from file', async ({ page }) => {
+  test('should handle bulk import from file', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=bulk_registration');
 
     const hasFileInput = await page.locator('input[type="file"]').count() > 0;
@@ -162,7 +158,7 @@ test.describe('Bulk and Batch Operations', () => {
     }
   });
 
-  test('should check for export functionality', async ({ page }) => {
+  test('should check for export functionality', async ({ adminPage: page }) => {
     // Check for export functionality on zones page
     await page.goto('/index.php?page=list_zones&letter=all');
 

@@ -1,19 +1,14 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Slave Zones Management', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should access add slave zone page', async ({ page }) => {
+  test('should access add slave zone page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_slave');
     await expect(page).toHaveURL(/page=add_zone_slave/);
     await expect(page.locator('form')).toBeVisible();
   });
 
-  test('should show slave zone form fields', async ({ page }) => {
+  test('should show slave zone form fields', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_slave');
 
     // Should have zone name field
@@ -27,7 +22,7 @@ test.describe('Slave Zones Management', () => {
     ).toBeVisible();
   });
 
-  test('should validate slave zone creation form', async ({ page }) => {
+  test('should validate slave zone creation form', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_slave');
 
     // Try to submit empty form
@@ -37,7 +32,7 @@ test.describe('Slave Zones Management', () => {
     await expect(page).toHaveURL(/page=add_zone_slave/);
   });
 
-  test('should require master server for slave zone', async ({ page }) => {
+  test('should require master server for slave zone', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_slave');
 
     // Fill zone name but leave master empty

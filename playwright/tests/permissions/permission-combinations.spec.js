@@ -1,42 +1,37 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Permission Combinations', () => {
   test.describe('Permission Template Management', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display permission templates list', async ({ page }) => {
+    test('should display permission templates list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       await expect(page).toHaveURL(/list_perm_templ/);
     });
 
-    test('should display add template button', async ({ page }) => {
+    test('should display add template button', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const addBtn = page.locator('a[href*="add_perm_templ"], input[value*="Add"]');
       expect(await addBtn.count()).toBeGreaterThan(0);
     });
 
-    test('should access add template page', async ({ page }) => {
+    test('should access add template page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       await expect(page).toHaveURL(/add_perm_templ/);
     });
 
-    test('should display permission checkboxes', async ({ page }) => {
+    test('should display permission checkboxes', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       const checkboxes = page.locator('input[type="checkbox"]');
       expect(await checkboxes.count()).toBeGreaterThan(0);
     });
 
-    test('should display template name field', async ({ page }) => {
+    test('should display template name field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       const nameField = page.locator('input[name*="name"], input[name*="templ"]');
       expect(await nameField.count()).toBeGreaterThan(0);
     });
 
-    test('should display description field', async ({ page }) => {
+    test('should display description field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       const descField = page.locator('textarea[name*="descr"], input[name*="descr"]');
       expect(await descField.count()).toBeGreaterThan(0);
@@ -44,35 +39,31 @@ test.describe('Permission Combinations', () => {
   });
 
   test.describe('Permission Options', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display zone permissions', async ({ page }) => {
+    test('should display zone permissions', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/zone/i);
     });
 
-    test('should display record permissions', async ({ page }) => {
+    test('should display record permissions', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/record/i);
     });
 
-    test('should display user permissions', async ({ page }) => {
+    test('should display user permissions', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/user/i);
     });
 
-    test('should display supermaster permissions', async ({ page }) => {
+    test('should display supermaster permissions', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/supermaster/i);
     });
 
-    test('should display search permissions', async ({ page }) => {
+    test('should display search permissions', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/search/i);
@@ -80,11 +71,7 @@ test.describe('Permission Combinations', () => {
   });
 
   test.describe('Template Creation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should create template with zone view only', async ({ page }) => {
+    test('should create template with zone view only', async ({ adminPage: page }) => {
       const templateName = `view-only-${Date.now()}`;
       await page.goto('/index.php?page=add_perm_templ');
       await page.locator('input[name*="name"]').first().fill(templateName);
@@ -109,7 +96,7 @@ test.describe('Permission Combinations', () => {
       }
     });
 
-    test('should create template with full zone management', async ({ page }) => {
+    test('should create template with full zone management', async ({ adminPage: page }) => {
       const templateName = `full-zone-${Date.now()}`;
       await page.goto('/index.php?page=add_perm_templ');
       await page.locator('input[name*="name"]').first().fill(templateName);
@@ -135,7 +122,7 @@ test.describe('Permission Combinations', () => {
       }
     });
 
-    test('should reject template without name', async ({ page }) => {
+    test('should reject template without name', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       const url = page.url();
@@ -144,11 +131,7 @@ test.describe('Permission Combinations', () => {
   });
 
   test.describe('Template Editing', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access edit template page', async ({ page }) => {
+    test('should access edit template page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const editLink = page.locator('a[href*="edit_perm_templ"]').first();
       if (await editLink.count() > 0) {
@@ -157,7 +140,7 @@ test.describe('Permission Combinations', () => {
       }
     });
 
-    test('should display current template permissions', async ({ page }) => {
+    test('should display current template permissions', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const editLink = page.locator('a[href*="edit_perm_templ"]').first();
       if (await editLink.count() > 0) {
@@ -167,7 +150,7 @@ test.describe('Permission Combinations', () => {
       }
     });
 
-    test('should update template permissions', async ({ page }) => {
+    test('should update template permissions', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const editLink = page.locator('a[href*="edit_perm_templ"]').first();
       if (await editLink.count() > 0) {
@@ -191,11 +174,7 @@ test.describe('Permission Combinations', () => {
   });
 
   test.describe('Template Deletion', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display delete option', async ({ page }) => {
+    test('should display delete option', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const deleteLink = page.locator('a[href*="delete_perm_templ"]');
       // Delete should be available for non-default templates
@@ -203,7 +182,7 @@ test.describe('Permission Combinations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should confirm before delete', async ({ page }) => {
+    test('should confirm before delete', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const deleteLink = page.locator('a[href*="delete_perm_templ"]').first();
       if (await deleteLink.count() > 0) {
@@ -213,7 +192,7 @@ test.describe('Permission Combinations', () => {
       }
     });
 
-    test('should cancel delete', async ({ page }) => {
+    test('should cancel delete', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const deleteLink = page.locator('a[href*="delete_perm_templ"]').first();
       if (await deleteLink.count() > 0) {
@@ -228,11 +207,7 @@ test.describe('Permission Combinations', () => {
   });
 
   test.describe('Template Assignment', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display template selector in user edit', async ({ page }) => {
+    test('should display template selector in user edit', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
       const editLink = page.locator('a[href*="edit_user"]').first();
       if (await editLink.count() > 0) {
@@ -244,7 +219,7 @@ test.describe('Permission Combinations', () => {
       }
     });
 
-    test('should display template selector in add user', async ({ page }) => {
+    test('should display template selector in add user', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
       const templateSelect = page.locator('select[name*="templ"], select[name*="template"]');
       if (await templateSelect.count() > 0) {
@@ -254,31 +229,27 @@ test.describe('Permission Combinations', () => {
   });
 
   test.describe('Permission Access Control', () => {
-    test('admin should access permission templates', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('admin should access permission templates', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const bodyText = await page.locator('body').textContent();
       // Check for access denied messages, not generic "permission" word
       expect(bodyText).not.toMatch(/access denied|not authorized|you do not have/i);
     });
 
-    test('manager should not access permission templates', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('manager should not access permission templates', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const bodyText = await page.locator('body').textContent();
       // Manager should not have access
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('client should not access permission templates', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
+    test('client should not access permission templates', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('viewer should not access permission templates', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+    test('viewer should not access permission templates', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);

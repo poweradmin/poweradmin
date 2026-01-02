@@ -1,13 +1,10 @@
-import { test, expect } from '@playwright/test';
-import { login } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { ensureAnyZoneExists, findAnyZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Complete DNS Management Workflow Integration', () => {
 
-  test('should complete full company DNS setup workflow', async ({ page }) => {
-    await login(page, users.admin.username, users.admin.password);
-
+  test('should complete full company DNS setup workflow', async ({ adminPage: page }) => {
     // Step 1: Ensure a zone exists and find it
     await ensureAnyZoneExists(page);
     const testZone = await findAnyZoneId(page);
@@ -51,9 +48,7 @@ test.describe('Complete DNS Management Workflow Integration', () => {
     }
   });
 
-  test('should validate complete DNS infrastructure', async ({ page }) => {
-    await login(page, users.admin.username, users.admin.password);
-
+  test('should validate complete DNS infrastructure', async ({ adminPage: page }) => {
     // Ensure a zone exists and find it
     await ensureAnyZoneExists(page);
     const zone = await findAnyZoneId(page);

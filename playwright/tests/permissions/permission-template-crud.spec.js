@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensurePermTemplateExists } from '../../helpers/templates.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
@@ -7,15 +7,13 @@ test.describe('Permission Template CRUD Operations', () => {
   const templateName = `perm-template-${Date.now()}`;
 
   test.describe('List Permission Templates', () => {
-    test('admin should access permission templates list', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('admin should access permission templates list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
 
       await expect(page).toHaveURL(/page=list_perm_templ/);
     });
 
-    test('should display templates table or empty state', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display templates table or empty state', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
 
       const hasTable = await page.locator('table').count() > 0;
@@ -27,16 +25,14 @@ test.describe('Permission Template CRUD Operations', () => {
       }
     });
 
-    test('should display add template button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display add template button', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
 
       const addBtn = page.locator('a[href*="add_perm_templ"], input[value*="Add"], button:has-text("Add")');
       expect(await addBtn.count()).toBeGreaterThan(0);
     });
 
-    test('non-admin should not access permission templates', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('non-admin should not access permission templates', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
 
       const bodyText = await page.locator('body').textContent();
@@ -49,23 +45,19 @@ test.describe('Permission Template CRUD Operations', () => {
   });
 
   test.describe('Add Permission Template', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access add template page', async ({ page }) => {
+    test('should access add template page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       await expect(page).toHaveURL(/page=add_perm_templ/);
     });
 
-    test('should display template name field', async ({ page }) => {
+    test('should display template name field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
 
       const nameField = page.locator('input[name*="name"], input[name*="templ"]').first();
       await expect(nameField).toBeVisible();
     });
 
-    test('should display description field', async ({ page }) => {
+    test('should display description field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
 
       const descField = page.locator('input[name*="descr"], textarea[name*="descr"]');
@@ -74,14 +66,14 @@ test.describe('Permission Template CRUD Operations', () => {
       }
     });
 
-    test('should display permission checkboxes', async ({ page }) => {
+    test('should display permission checkboxes', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
 
       const checkboxes = page.locator('input[type="checkbox"]');
       expect(await checkboxes.count()).toBeGreaterThan(0);
     });
 
-    test('should create template with name only', async ({ page }) => {
+    test('should create template with name only', async ({ adminPage: page }) => {
       const uniqueName = `${templateName}-nameonly`;
       await page.goto('/index.php?page=add_perm_templ');
 
@@ -92,7 +84,7 @@ test.describe('Permission Template CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should create template with permissions', async ({ page }) => {
+    test('should create template with permissions', async ({ adminPage: page }) => {
       const uniqueName = `${templateName}-withperms`;
       await page.goto('/index.php?page=add_perm_templ');
 
@@ -114,7 +106,7 @@ test.describe('Permission Template CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should reject empty template name', async ({ page }) => {
+    test('should reject empty template name', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
 
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
@@ -123,7 +115,7 @@ test.describe('Permission Template CRUD Operations', () => {
       expect(url).toMatch(/add_perm_templ/);
     });
 
-    test('should display permission categories', async ({ page }) => {
+    test('should display permission categories', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
 
       const bodyText = await page.locator('body').textContent();
@@ -142,18 +134,14 @@ test.describe('Permission Template CRUD Operations', () => {
       await page.close();
     });
 
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access edit template page', async ({ page }) => {
+    test('should access edit template page', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=edit_perm_templ&id=${templateId}`);
       await expect(page).toHaveURL(/edit_perm_templ/);
     });
 
-    test('should display current template name', async ({ page }) => {
+    test('should display current template name', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=edit_perm_templ&id=${templateId}`);
@@ -167,7 +155,7 @@ test.describe('Permission Template CRUD Operations', () => {
       }
     });
 
-    test('should update template name', async ({ page }) => {
+    test('should update template name', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=edit_perm_templ&id=${templateId}`);
@@ -183,7 +171,7 @@ test.describe('Permission Template CRUD Operations', () => {
       }
     });
 
-    test('should add permissions to template', async ({ page }) => {
+    test('should add permissions to template', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=edit_perm_templ&id=${templateId}`);
@@ -198,7 +186,7 @@ test.describe('Permission Template CRUD Operations', () => {
       }
     });
 
-    test('should remove permissions from template', async ({ page }) => {
+    test('should remove permissions from template', async ({ adminPage: page }) => {
       expect(templateId).toBeTruthy();
 
       await page.goto(`/index.php?page=edit_perm_templ&id=${templateId}`);
@@ -215,11 +203,7 @@ test.describe('Permission Template CRUD Operations', () => {
   });
 
   test.describe('Delete Permission Template', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access delete confirmation', async ({ page }) => {
+    test('should access delete confirmation', async ({ adminPage: page }) => {
       // Create a template to delete
       const toDelete = `delete-perm-${Date.now()}`;
       await page.goto('/index.php?page=add_perm_templ');
@@ -236,7 +220,7 @@ test.describe('Permission Template CRUD Operations', () => {
       }
     });
 
-    test('should display confirmation message', async ({ page }) => {
+    test('should display confirmation message', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const deleteLink = page.locator('a[href*="delete_perm_templ"]').first();
 
@@ -248,7 +232,7 @@ test.describe('Permission Template CRUD Operations', () => {
       }
     });
 
-    test('should cancel delete and return to list', async ({ page }) => {
+    test('should cancel delete and return to list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const deleteLink = page.locator('a[href*="delete_perm_templ"]').first();
 
@@ -263,7 +247,7 @@ test.describe('Permission Template CRUD Operations', () => {
       }
     });
 
-    test('should delete template successfully', async ({ page }) => {
+    test('should delete template successfully', async ({ adminPage: page }) => {
       // Create a template to delete
       const toDelete = `delete-success-perm-${Date.now()}`;
       await page.goto('/index.php?page=add_perm_templ');

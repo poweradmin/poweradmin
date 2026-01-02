@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
@@ -6,11 +6,7 @@ test.describe('Complete Domain Management Workflow', () => {
   const testDomain = `test-domain-${Date.now()}.com`;
   const testEmail = 'admin@example.com';
 
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should complete full domain creation workflow', async ({ page }) => {
+  test('should complete full domain creation workflow', async ({ adminPage: page }) => {
     // Step 1: Navigate to add master zone
     await page.goto('/index.php?page=add_zone_master');
     await expect(page).toHaveURL(/page=add_zone_master/);
@@ -38,7 +34,7 @@ test.describe('Complete Domain Management Workflow', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should add essential DNS records to the domain', async ({ page }) => {
+  test('should add essential DNS records to the domain', async ({ adminPage: page }) => {
     // Navigate to zones and find our test domain
     await page.goto('/index.php?page=list_zones');
 
@@ -74,7 +70,7 @@ test.describe('Complete Domain Management Workflow', () => {
     }
   });
 
-  test('should verify domain resolution and records', async ({ page }) => {
+  test('should verify domain resolution and records', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');
 
     // Check if test domain exists
@@ -91,7 +87,7 @@ test.describe('Complete Domain Management Workflow', () => {
     await expect(page).toHaveURL(/page=edit/);
   });
 
-  test('should handle domain search functionality', async ({ page }) => {
+  test('should handle domain search functionality', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=search');
 
     // Search for our test domain

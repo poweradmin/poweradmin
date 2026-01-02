@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
@@ -8,55 +8,48 @@ test.describe('User CRUD Operations', () => {
   const testPassword = 'TestP@ssw0rd123';
 
   test.describe('List Users', () => {
-    test('admin should access users list', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('admin should access users list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
 
       await expect(page).toHaveURL(/page=users/);
     });
 
-    test('should display users table', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display users table', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
 
       const table = page.locator('table').first();
       await expect(table).toBeVisible();
     });
 
-    test('should display add user button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display add user button', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
 
       const addBtn = page.locator('a[href*="add_user"], input[value*="Add"], button:has-text("Add")');
       expect(await addBtn.count()).toBeGreaterThan(0);
     });
 
-    test('should display user columns', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display user columns', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/username|email|name/);
     });
 
-    test('should show edit links for users', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should show edit links for users', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
 
       const editLinks = page.locator('a[href*="edit_user"]');
       expect(await editLinks.count()).toBeGreaterThan(0);
     });
 
-    test('should show delete links for users', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should show delete links for users', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
 
       const deleteLinks = page.locator('a[href*="delete_user"]');
       expect(await deleteLinks.count()).toBeGreaterThan(0);
     });
 
-    test('manager should not have user management actions', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('manager should not have user management actions', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=users');
 
       // Manager should either be denied access or have limited functionality
@@ -80,24 +73,20 @@ test.describe('User CRUD Operations', () => {
   });
 
   test.describe('Add User', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access add user page', async ({ page }) => {
+    test('should access add user page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
       await expect(page).toHaveURL(/page=add_user/);
       await expect(page.locator('form')).toBeVisible();
     });
 
-    test('should display username field', async ({ page }) => {
+    test('should display username field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       const usernameField = page.locator('input[name*="username"], input[name*="user"]').first();
       await expect(usernameField).toBeVisible();
     });
 
-    test('should display email field', async ({ page }) => {
+    test('should display email field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       const emailField = page.locator('input[name*="email"], input[type="email"]');
@@ -106,14 +95,14 @@ test.describe('User CRUD Operations', () => {
       }
     });
 
-    test('should display password fields', async ({ page }) => {
+    test('should display password fields', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       const passwordFields = page.locator('input[type="password"]');
       expect(await passwordFields.count()).toBeGreaterThanOrEqual(1);
     });
 
-    test('should create user with valid data', async ({ page }) => {
+    test('should create user with valid data', async ({ adminPage: page }) => {
       const uniqueUsername = `${testUsername}-valid`;
       await page.goto('/index.php?page=add_user');
 
@@ -140,7 +129,7 @@ test.describe('User CRUD Operations', () => {
       expect(hasSuccess).toBeTruthy();
     });
 
-    test('should reject empty username', async ({ page }) => {
+    test('should reject empty username', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       // Leave username empty
@@ -165,7 +154,7 @@ test.describe('User CRUD Operations', () => {
       expect(hasError).toBeTruthy();
     });
 
-    test('should reject duplicate username', async ({ page }) => {
+    test('should reject duplicate username', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       // Use existing admin username
@@ -193,7 +182,7 @@ test.describe('User CRUD Operations', () => {
       expect(hasError).toBeTruthy();
     });
 
-    test('should reject password mismatch', async ({ page }) => {
+    test('should reject password mismatch', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       await page.locator('input[name*="username"], input[name*="user"]').first().fill(`mismatch-${Date.now()}`);
@@ -217,7 +206,7 @@ test.describe('User CRUD Operations', () => {
       }
     });
 
-    test('should reject weak password', async ({ page }) => {
+    test('should reject weak password', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       await page.locator('input[name*="username"], input[name*="user"]').first().fill(`weakpwd-${Date.now()}`);
@@ -240,7 +229,7 @@ test.describe('User CRUD Operations', () => {
       expect(hasError).toBeTruthy();
     });
 
-    test('should reject invalid email format', async ({ page }) => {
+    test('should reject invalid email format', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       await page.locator('input[name*="username"], input[name*="user"]').first().fill(`invalidemail-${Date.now()}`);
@@ -293,11 +282,7 @@ test.describe('User CRUD Operations', () => {
       await page.close();
     });
 
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access edit user page', async ({ page }) => {
+    test('should access edit user page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
       const row = page.locator(`tr:has-text("${editUsername}")`);
 
@@ -308,7 +293,7 @@ test.describe('User CRUD Operations', () => {
       }
     });
 
-    test('should display current user data', async ({ page }) => {
+    test('should display current user data', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
       const row = page.locator(`tr:has-text("${editUsername}")`);
 
@@ -322,7 +307,7 @@ test.describe('User CRUD Operations', () => {
       }
     });
 
-    test('should update user email', async ({ page }) => {
+    test('should update user email', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
       const row = page.locator(`tr:has-text("${editUsername}")`);
 
@@ -341,7 +326,7 @@ test.describe('User CRUD Operations', () => {
       }
     });
 
-    test('should update user password', async ({ page }) => {
+    test('should update user password', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
       const row = page.locator(`tr:has-text("${editUsername}")`);
 
@@ -390,11 +375,7 @@ test.describe('User CRUD Operations', () => {
       await page.close();
     });
 
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access delete confirmation page', async ({ page }) => {
+    test('should access delete confirmation page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
       const row = page.locator(`tr:has-text("${deleteUsername}")`);
 
@@ -405,7 +386,7 @@ test.describe('User CRUD Operations', () => {
       }
     });
 
-    test('should display confirmation message', async ({ page }) => {
+    test('should display confirmation message', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
       const row = page.locator(`tr:has-text("${deleteUsername}")`);
 
@@ -418,7 +399,7 @@ test.describe('User CRUD Operations', () => {
       }
     });
 
-    test('should cancel delete and return to list', async ({ page }) => {
+    test('should cancel delete and return to list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
       const row = page.locator(`tr:has-text("${deleteUsername}")`);
 
@@ -434,7 +415,7 @@ test.describe('User CRUD Operations', () => {
       }
     });
 
-    test('should not allow deleting self', async ({ page }) => {
+    test('should not allow deleting self', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
       const row = page.locator('tr:has-text("admin")');
 
@@ -451,7 +432,7 @@ test.describe('User CRUD Operations', () => {
       }
     });
 
-    test('should delete user successfully', async ({ page }) => {
+    test('should delete user successfully', async ({ adminPage: page }) => {
       // Create a new user to delete
       const toDelete = `to-delete-${Date.now()}`;
       await page.goto('/index.php?page=add_user');
@@ -492,18 +473,14 @@ test.describe('User CRUD Operations', () => {
   });
 
   test.describe('User Permissions', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display permission options on add user', async ({ page }) => {
+    test('should display permission options on add user', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       const permOptions = page.locator('input[type="checkbox"], select[name*="perm"], input[name*="perm"]');
       expect(await permOptions.count()).toBeGreaterThan(0);
     });
 
-    test('should display permission template selector', async ({ page }) => {
+    test('should display permission template selector', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       const templateSelector = page.locator('select[name*="template"], select[name*="perm_templ"]');
@@ -512,7 +489,7 @@ test.describe('User CRUD Operations', () => {
       }
     });
 
-    test('should allow setting user as active/inactive', async ({ page }) => {
+    test('should allow setting user as active/inactive', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
 
       const activeCheckbox = page.locator('input[name*="active"], input[name*="status"]');
@@ -523,24 +500,21 @@ test.describe('User CRUD Operations', () => {
   });
 
   test.describe('Change Password', () => {
-    test('should access change password page', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should access change password page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
 
       await expect(page).toHaveURL(/page=change_password/);
       await expect(page.locator('form')).toBeVisible();
     });
 
-    test('should display current password field', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display current password field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
 
       const passwordFields = page.locator('input[type="password"]');
       expect(await passwordFields.count()).toBeGreaterThanOrEqual(2);
     });
 
-    test('should reject wrong current password', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should reject wrong current password', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
 
       const passwordFields = page.locator('input[type="password"]');
@@ -563,8 +537,7 @@ test.describe('User CRUD Operations', () => {
       }
     });
 
-    test('should reject mismatched new passwords', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should reject mismatched new passwords', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
 
       const passwordFields = page.locator('input[type="password"]');

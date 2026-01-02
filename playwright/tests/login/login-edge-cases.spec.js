@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { login, loginAndWaitForDashboard, logout } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 

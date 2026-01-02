@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { login, loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
@@ -88,21 +88,17 @@ test.describe('Login Authentication', () => {
 
 test.describe('User Permissions After Login', () => {
   test.describe('Admin User Permissions', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should have access to dashboard', async ({ page }) => {
+    test('should have access to dashboard', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
       await expect(page).toHaveURL(/page=index/);
     });
 
-    test('should have access to user administration', async ({ page }) => {
+    test('should have access to user administration', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=users');
       await expect(page).toHaveURL(/page=users/);
     });
 
-    test('should have access to permission templates', async ({ page }) => {
+    test('should have access to permission templates', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       await expect(page).toHaveURL(/page=list_perm_templ/);
       // Should show the page without being redirected to login
@@ -110,68 +106,64 @@ test.describe('User Permissions After Login', () => {
       expect(bodyText.toLowerCase()).toMatch(/permission|template/i);
     });
 
-    test('should have access to add permission template', async ({ page }) => {
+    test('should have access to add permission template', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_perm_templ');
       await expect(page).toHaveURL(/page=add_perm_templ/);
     });
 
-    test('should have access to zone list', async ({ page }) => {
+    test('should have access to zone list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       await expect(page).toHaveURL(/page=list_zones/);
     });
 
-    test('should have access to add master zone', async ({ page }) => {
+    test('should have access to add master zone', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_master');
       await expect(page).toHaveURL(/page=add_zone_master/);
     });
 
-    test('should have access to add slave zone', async ({ page }) => {
+    test('should have access to add slave zone', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_zone_slave');
       await expect(page).toHaveURL(/page=add_zone_slave/);
     });
 
-    test('should have access to search', async ({ page }) => {
+    test('should have access to search', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=search');
       await expect(page).toHaveURL(/page=search/);
     });
 
-    test('should have access to add user', async ({ page }) => {
+    test('should have access to add user', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_user');
       await expect(page).toHaveURL(/page=add_user/);
     });
   });
 
   test.describe('Manager User Permissions', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-    });
-
-    test('should have access to dashboard', async ({ page }) => {
+    test('should have access to dashboard', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
       await expect(page).toHaveURL(/page=index/);
     });
 
-    test('should have access to zone list', async ({ page }) => {
+    test('should have access to zone list', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       await expect(page).toHaveURL(/page=list_zones/);
     });
 
-    test('should have access to add master zone', async ({ page }) => {
+    test('should have access to add master zone', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=add_zone_master');
       await expect(page).toHaveURL(/page=add_zone_master/);
     });
 
-    test('should have access to add slave zone', async ({ page }) => {
+    test('should have access to add slave zone', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=add_zone_slave');
       await expect(page).toHaveURL(/page=add_zone_slave/);
     });
 
-    test('should have access to search', async ({ page }) => {
+    test('should have access to search', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=search');
       await expect(page).toHaveURL(/page=search/);
     });
 
-    test('should NOT have access to permission templates', async ({ page }) => {
+    test('should NOT have access to permission templates', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       // Should be redirected or show error
       const bodyText = await page.locator('body').textContent();
@@ -182,7 +174,7 @@ test.describe('User Permissions After Login', () => {
       expect(hasError || redirectedToLogin || !page.url().includes('list_perm_templ')).toBeTruthy();
     });
 
-    test('should NOT have access to add user', async ({ page }) => {
+    test('should NOT have access to add user', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=add_user');
       // Should be redirected or show error
       const hasAddUserForm = await page.locator('input[name="username"], input[name="fullname"]').count() > 0 &&
@@ -194,26 +186,22 @@ test.describe('User Permissions After Login', () => {
   });
 
   test.describe('Client User Permissions', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.client.username, users.client.password);
-    });
-
-    test('should have access to dashboard', async ({ page }) => {
+    test('should have access to dashboard', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=index');
       await expect(page).toHaveURL(/page=index/);
     });
 
-    test('should have access to zone list (own zones)', async ({ page }) => {
+    test('should have access to zone list (own zones)', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       await expect(page).toHaveURL(/page=list_zones/);
     });
 
-    test('should have access to search', async ({ page }) => {
+    test('should have access to search', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=search');
       await expect(page).toHaveURL(/page=search/);
     });
 
-    test('should NOT have access to add master zone', async ({ page }) => {
+    test('should NOT have access to add master zone', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=add_zone_master');
       const bodyText = await page.locator('body').textContent();
       const hasError = bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('denied');
@@ -221,7 +209,7 @@ test.describe('User Permissions After Login', () => {
       expect(hasError || !hasZoneForm).toBeTruthy();
     });
 
-    test('should NOT have access to permission templates', async ({ page }) => {
+    test('should NOT have access to permission templates', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const bodyText = await page.locator('body').textContent();
       // Client should see error message or be redirected
@@ -235,26 +223,22 @@ test.describe('User Permissions After Login', () => {
   });
 
   test.describe('Viewer User Permissions', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-    });
-
-    test('should have access to dashboard', async ({ page }) => {
+    test('should have access to dashboard', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=index');
       await expect(page).toHaveURL(/page=index/);
     });
 
-    test('should have access to zone list (view only)', async ({ page }) => {
+    test('should have access to zone list (view only)', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       await expect(page).toHaveURL(/page=list_zones/);
     });
 
-    test('should have access to search', async ({ page }) => {
+    test('should have access to search', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=search');
       await expect(page).toHaveURL(/page=search/);
     });
 
-    test('should NOT have access to add master zone', async ({ page }) => {
+    test('should NOT have access to add master zone', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=add_zone_master');
       const bodyText = await page.locator('body').textContent();
       const hasError = bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('denied');
@@ -262,7 +246,7 @@ test.describe('User Permissions After Login', () => {
       expect(hasError || !hasZoneForm).toBeTruthy();
     });
 
-    test('should NOT have access to add slave zone', async ({ page }) => {
+    test('should NOT have access to add slave zone', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=add_zone_slave');
       const bodyText = await page.locator('body').textContent();
       const hasError = bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('denied');
@@ -272,16 +256,12 @@ test.describe('User Permissions After Login', () => {
   });
 
   test.describe('No Permission User Permissions', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.noperm.username, users.noperm.password);
-    });
-
-    test('should have access to dashboard', async ({ page }) => {
+    test('should have access to dashboard', async ({ nopermPage: page }) => {
       await page.goto('/index.php?page=index');
       await expect(page).toHaveURL(/page=index/);
     });
 
-    test('should NOT have access to add master zone', async ({ page }) => {
+    test('should NOT have access to add master zone', async ({ nopermPage: page }) => {
       await page.goto('/index.php?page=add_zone_master');
       const bodyText = await page.locator('body').textContent();
       const hasError = bodyText.toLowerCase().includes('error') || bodyText.toLowerCase().includes('denied');
@@ -289,7 +269,7 @@ test.describe('User Permissions After Login', () => {
       expect(hasError || !hasZoneForm).toBeTruthy();
     });
 
-    test('should NOT have access to permission templates', async ({ page }) => {
+    test('should NOT have access to permission templates', async ({ nopermPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');
       const bodyText = await page.locator('body').textContent();
       const hasPermTable = bodyText.toLowerCase().includes('permission template') && !bodyText.toLowerCase().includes('error');
@@ -299,20 +279,17 @@ test.describe('User Permissions After Login', () => {
 });
 
 test.describe('Logout Functionality', () => {
-  test('should logout admin user successfully', async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+  test('should logout admin user successfully', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=logout');
     await expect(page).toHaveURL(/page=login/);
   });
 
-  test('should logout manager user successfully', async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+  test('should logout manager user successfully', async ({ managerPage: page }) => {
     await page.goto('/index.php?page=logout');
     await expect(page).toHaveURL(/page=login/);
   });
 
-  test('should not be able to access protected pages after logout', async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+  test('should not be able to access protected pages after logout', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=logout');
     await page.goto('/index.php?page=list_perm_templ');
     await expect(page).toHaveURL(/page=login/);

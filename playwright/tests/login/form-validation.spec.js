@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 
 test.describe('Login Form Validation', () => {
   test.beforeEach(async ({ page }) => {

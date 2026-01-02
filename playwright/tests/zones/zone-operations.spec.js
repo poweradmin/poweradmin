@@ -1,49 +1,43 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { ensureAnyZoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Zone Operations', () => {
   test.describe('SOA Record Management', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display SOA record in zone', async ({ adminPage: page }) => {
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
+
+      await page.goto(`/index.php?page=edit&id=${zoneId}`);
+      const soaRow = page.locator('tr:has-text("SOA")');
+      expect(await soaRow.count()).toBeGreaterThan(0);
     });
 
-    test('should display SOA record in zone', async ({ page }) => {
-      await page.goto('/index.php?page=list_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const soaRow = page.locator('tr:has-text("SOA")');
-        expect(await soaRow.count()).toBeGreaterThan(0);
-      }
-    });
+    test('should access SOA edit page', async ({ adminPage: page }) => {
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
 
-    test('should access SOA edit page', async ({ page }) => {
-      await page.goto('/index.php?page=list_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
-        const soaEditLink = page.locator('a[href*="edit_record"]:has-text("SOA"), tr:has-text("SOA") a[href*="edit_record"]').first();
-        if (await soaEditLink.count() > 0) {
-          await soaEditLink.click();
-          const bodyText = await page.locator('body').textContent();
-          expect(bodyText).not.toMatch(/fatal|exception/i);
-        }
-      }
-    });
-
-    test('should display SOA serial number', async ({ page }) => {
-      await page.goto('/index.php?page=list_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
-      if (await editLink.count() > 0) {
-        await editLink.click();
+      await page.goto(`/index.php?page=edit&id=${zoneId}`);
+      const soaEditLink = page.locator('a[href*="edit_record"]:has-text("SOA"), tr:has-text("SOA") a[href*="edit_record"]').first();
+      if (await soaEditLink.count() > 0) {
+        await soaEditLink.click();
         const bodyText = await page.locator('body').textContent();
-        // SOA should contain a serial number (typically format: YYYYMMDDNN)
-        expect(bodyText).toMatch(/\d{10}|\d{8}/);
+        expect(bodyText).not.toMatch(/fatal|exception/i);
       }
     });
 
-    test('should update SOA serial on record change', async ({ page }) => {
+    test('should display SOA serial number', async ({ adminPage: page }) => {
+      const zoneId = await ensureAnyZoneExists(page);
+      expect(zoneId).toBeTruthy();
+
+      await page.goto(`/index.php?page=edit&id=${zoneId}`);
+      const bodyText = await page.locator('body').textContent();
+      // SOA should contain a serial number (typically format: YYYYMMDDNN)
+      expect(bodyText).toMatch(/\d{10}|\d{8}/);
+    });
+
+    test('should update SOA serial on record change', async ({ adminPage: page }) => {
       const testDomain = `soa-test-${Date.now()}.example.com`;
 
       // Create zone
@@ -74,17 +68,13 @@ test.describe('Zone Operations', () => {
   });
 
   test.describe('Zone Type Operations', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display zone type in list', async ({ page }) => {
+    test('should display zone type in list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/master|slave|native/i);
     });
 
-    test('should create native zone', async ({ page }) => {
+    test('should create native zone', async ({ adminPage: page }) => {
       const testDomain = `native-${Date.now()}.example.com`;
 
       await page.goto('/index.php?page=add_zone_master');
@@ -107,7 +97,7 @@ test.describe('Zone Operations', () => {
       }
     });
 
-    test('should display slave zone master IP', async ({ page }) => {
+    test('should display slave zone master IP', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const slaveRow = page.locator('tr:has-text("SLAVE")').first();
       if (await slaveRow.count() > 0) {
@@ -118,11 +108,7 @@ test.describe('Zone Operations', () => {
   });
 
   test.describe('Zone Comments', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display zone comment', async ({ page }) => {
+    test('should display zone comment', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
@@ -135,7 +121,7 @@ test.describe('Zone Operations', () => {
       }
     });
 
-    test('should update zone comment', async ({ page }) => {
+    test('should update zone comment', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
@@ -156,18 +142,14 @@ test.describe('Zone Operations', () => {
   });
 
   test.describe('Zone Ownership', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display zone owner', async ({ page }) => {
+    test('should display zone owner', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const bodyText = await page.locator('body').textContent();
       // Zone list should show owner information
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should change zone owner', async ({ page }) => {
+    test('should change zone owner', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
@@ -181,7 +163,7 @@ test.describe('Zone Operations', () => {
       }
     });
 
-    test('should add multiple owners', async ({ page }) => {
+    test('should add multiple owners', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
@@ -197,23 +179,19 @@ test.describe('Zone Operations', () => {
   });
 
   test.describe('Zone Filtering', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should filter forward zones', async ({ page }) => {
+    test('should filter forward zones', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones&zone_sort_by=name&zone_sort_order=asc');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should filter reverse zones', async ({ page }) => {
+    test('should filter reverse zones', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones&reverse=1');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should sort zones by name', async ({ page }) => {
+    test('should sort zones by name', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const sortLink = page.locator('a[href*="zone_sort_by=name"]').first();
       if (await sortLink.count() > 0) {
@@ -223,7 +201,7 @@ test.describe('Zone Operations', () => {
       }
     });
 
-    test('should sort zones by type', async ({ page }) => {
+    test('should sort zones by type', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const sortLink = page.locator('a[href*="zone_sort_by=type"]').first();
       if (await sortLink.count() > 0) {
@@ -235,11 +213,7 @@ test.describe('Zone Operations', () => {
   });
 
   test.describe('Reverse Zones', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should create IPv4 reverse zone', async ({ page }) => {
+    test('should create IPv4 reverse zone', async ({ adminPage: page }) => {
       const testDomain = `1.168.192.in-addr.arpa`;
 
       await page.goto('/index.php?page=add_zone_master');
@@ -259,7 +233,7 @@ test.describe('Zone Operations', () => {
       }
     });
 
-    test('should add PTR record to reverse zone', async ({ page }) => {
+    test('should add PTR record to reverse zone', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones&reverse=1');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
@@ -275,11 +249,7 @@ test.describe('Zone Operations', () => {
   });
 
   test.describe('Zone Statistics', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display zone record count', async ({ page }) => {
+    test('should display zone record count', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
@@ -290,7 +260,7 @@ test.describe('Zone Operations', () => {
       }
     });
 
-    test('should display zone serial in list', async ({ page }) => {
+    test('should display zone serial in list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);

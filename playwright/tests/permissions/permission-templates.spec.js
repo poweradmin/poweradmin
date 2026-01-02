@@ -1,13 +1,8 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Permission Templates Management', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should access permission templates page', async ({ page }) => {
+  test('should access permission templates page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_perm_templ');
     await expect(page).toHaveURL(/page=list_perm_templ/);
     // Page should load without errors and display content
@@ -15,7 +10,7 @@ test.describe('Permission Templates Management', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should display permission templates list or empty state', async ({ page }) => {
+  test('should display permission templates list or empty state', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_perm_templ');
 
     // Should show either templates table or empty state
@@ -28,13 +23,13 @@ test.describe('Permission Templates Management', () => {
     }
   });
 
-  test('should access add permission template page', async ({ page }) => {
+  test('should access add permission template page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_perm_templ');
     await expect(page).toHaveURL(/page=add_perm_templ/);
     await expect(page.locator('form')).toBeVisible();
   });
 
-  test('should show permission template form fields', async ({ page }) => {
+  test('should show permission template form fields', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_perm_templ');
 
     // Should have template name field
@@ -51,7 +46,7 @@ test.describe('Permission Templates Management', () => {
     expect(hasPermissions).toBeTruthy();
   });
 
-  test('should validate permission template creation form', async ({ page }) => {
+  test('should validate permission template creation form', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_perm_templ');
 
     // Try to submit empty form
@@ -66,7 +61,7 @@ test.describe('Permission Templates Management', () => {
     expect(hasError).toBeTruthy();
   });
 
-  test('should show available permissions for template', async ({ page }) => {
+  test('should show available permissions for template', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_perm_templ');
 
     // Should show various permission options

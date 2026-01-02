@@ -1,5 +1,4 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 /**
@@ -9,17 +8,13 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
  * Tests that change the password must restore it via UI before completing.
  */
 test.describe.serial('Password Management', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should access change password page', async ({ page }) => {
+  test('should access change password page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');
     await expect(page).toHaveURL(/page=change_password/);
     await expect(page.locator('form')).toBeVisible();
   });
 
-  test('should display password form fields', async ({ page }) => {
+  test('should display password form fields', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');
 
     const passwordFields = page.locator('input[type="password"]');
@@ -27,7 +22,7 @@ test.describe.serial('Password Management', () => {
     expect(await passwordFields.count()).toBeGreaterThanOrEqual(2);
   });
 
-  test('should reject empty current password', async ({ page }) => {
+  test('should reject empty current password', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');
 
     const passwordFields = page.locator('input[type="password"]');
@@ -45,7 +40,7 @@ test.describe.serial('Password Management', () => {
     }
   });
 
-  test('should reject password confirmation mismatch', async ({ page }) => {
+  test('should reject password confirmation mismatch', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');
 
     const passwordFields = page.locator('input[type="password"]');
@@ -70,7 +65,7 @@ test.describe.serial('Password Management', () => {
     }
   });
 
-  test('should reject wrong current password', async ({ page }) => {
+  test('should reject wrong current password', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');
 
     const passwordFields = page.locator('input[type="password"]');
@@ -100,7 +95,7 @@ test.describe.serial('Password Management', () => {
    * This test changes the password and must restore it via UI.
    * Run this test last in the serial group.
    */
-  test('should change password successfully and restore it', async ({ page }) => {
+  test('should change password successfully and restore it', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');
 
     const hasForm = await page.locator('form').count() > 0;

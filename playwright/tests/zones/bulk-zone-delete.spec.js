@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
@@ -25,11 +25,7 @@ test.describe('Bulk Zone Deletion', () => {
   });
 
   test.describe('Bulk Delete Page', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access bulk delete page with selected zones', async ({ page }) => {
+    test('should access bulk delete page with selected zones', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       // Select multiple zones using checkboxes if available
@@ -47,7 +43,7 @@ test.describe('Bulk Zone Deletion', () => {
       }
     });
 
-    test('should display confirmation message', async ({ page }) => {
+    test('should display confirmation message', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
@@ -64,7 +60,7 @@ test.describe('Bulk Zone Deletion', () => {
       }
     });
 
-    test('should display zone names to be deleted', async ({ page }) => {
+    test('should display zone names to be deleted', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
@@ -82,7 +78,7 @@ test.describe('Bulk Zone Deletion', () => {
       }
     });
 
-    test('should display zone owner information', async ({ page }) => {
+    test('should display zone owner information', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
@@ -99,7 +95,7 @@ test.describe('Bulk Zone Deletion', () => {
       }
     });
 
-    test('should display Yes button', async ({ page }) => {
+    test('should display Yes button', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
@@ -116,7 +112,7 @@ test.describe('Bulk Zone Deletion', () => {
       }
     });
 
-    test('should display No button', async ({ page }) => {
+    test('should display No button', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
@@ -133,7 +129,7 @@ test.describe('Bulk Zone Deletion', () => {
       }
     });
 
-    test('should cancel bulk delete and return to zones list', async ({ page }) => {
+    test('should cancel bulk delete and return to zones list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
@@ -153,7 +149,7 @@ test.describe('Bulk Zone Deletion', () => {
       }
     });
 
-    test('should display breadcrumb navigation', async ({ page }) => {
+    test('should display breadcrumb navigation', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
@@ -174,11 +170,7 @@ test.describe('Bulk Zone Deletion', () => {
   });
 
   test.describe('Bulk Delete Execution', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should delete multiple zones when confirmed', async ({ page }) => {
+    test('should delete multiple zones when confirmed', async ({ adminPage: page }) => {
       // Create temporary zones for deletion test
       const tempZone1 = `temp-bulk-1-${Date.now()}.example.com`;
       const tempZone2 = `temp-bulk-2-${Date.now()}.example.com`;
@@ -224,8 +216,7 @@ test.describe('Bulk Zone Deletion', () => {
   });
 
   test.describe('Bulk Delete Permissions', () => {
-    test('admin should access bulk delete', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('admin should access bulk delete', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
@@ -234,16 +225,14 @@ test.describe('Bulk Zone Deletion', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('manager should access bulk delete for own zones', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('manager should access bulk delete for own zones', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('viewer should not have bulk delete option', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+    test('viewer should not have bulk delete option', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=list_zones');
 
       // Viewer should not see delete checkboxes or button

@@ -1,13 +1,9 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Bulk Zone Registration Validation', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should register single zone via bulk registration', async ({ page }) => {
+  test('should register single zone via bulk registration', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=bulk_registration');
 
     const hasTextarea = await page.locator('textarea').count() > 0;
@@ -25,7 +21,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should register multiple zones via bulk registration', async ({ page }) => {
+  test('should register multiple zones via bulk registration', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=bulk_registration');
 
     const hasTextarea = await page.locator('textarea').count() > 0;
@@ -43,7 +39,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should show error for malformed domain name', async ({ page }) => {
+  test('should show error for malformed domain name', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=bulk_registration');
 
     const hasTextarea = await page.locator('textarea').count() > 0;
@@ -66,7 +62,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(hasError).toBeTruthy();
   });
 
-  test('should prevent duplicate zone registration', async ({ page }) => {
+  test('should prevent duplicate zone registration', async ({ adminPage: page }) => {
     // First, create a zone
     await page.goto('/index.php?page=add_zone_master');
     await page.locator('input[name*="name"], input[name*="domain"]').first().fill('duplicate-test.com');
@@ -100,7 +96,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     }
   });
 
-  test('should handle zones with various valid TLDs', async ({ page }) => {
+  test('should handle zones with various valid TLDs', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=bulk_registration');
 
     const hasTextarea = await page.locator('textarea').count() > 0;

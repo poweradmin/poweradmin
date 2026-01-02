@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { login, loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
@@ -326,30 +326,26 @@ test.describe('Login Authentication', () => {
 
 test.describe('Password Management', () => {
   test.describe('Change Password Page', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access change password page', async ({ page }) => {
+    test('should access change password page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
       await expect(page).toHaveURL(/page=change_password/);
     });
 
-    test('should display current password field', async ({ page }) => {
+    test('should display current password field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
 
       const passwordFields = page.locator('input[type="password"]');
       expect(await passwordFields.count()).toBeGreaterThanOrEqual(2);
     });
 
-    test('should display new password field', async ({ page }) => {
+    test('should display new password field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
 
       const passwordFields = page.locator('input[type="password"]');
       expect(await passwordFields.count()).toBeGreaterThanOrEqual(2);
     });
 
-    test('should display confirm password field', async ({ page }) => {
+    test('should display confirm password field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
 
       const passwordFields = page.locator('input[type="password"]');
@@ -358,11 +354,7 @@ test.describe('Password Management', () => {
   });
 
   test.describe('Password Validation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should reject empty current password', async ({ page }) => {
+    test('should reject empty current password', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
 
       const passwordFields = page.locator('input[type="password"]');
@@ -380,7 +372,7 @@ test.describe('Password Management', () => {
       }
     });
 
-    test('should reject empty new password', async ({ page }) => {
+    test('should reject empty new password', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
 
       const passwordFields = page.locator('input[type="password"]');
@@ -398,7 +390,7 @@ test.describe('Password Management', () => {
       }
     });
 
-    test('should reject password confirmation mismatch', async ({ page }) => {
+    test('should reject password confirmation mismatch', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
 
       const passwordFields = page.locator('input[type="password"]');
@@ -423,7 +415,7 @@ test.describe('Password Management', () => {
     // Note: "should reject weak new password" test removed because the application
     // does not enforce password strength requirements and accepts weak passwords.
 
-    test('should reject wrong current password', async ({ page }) => {
+    test('should reject wrong current password', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=change_password');
 
       const passwordFields = page.locator('input[type="password"]');

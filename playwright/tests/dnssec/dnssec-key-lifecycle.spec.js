@@ -1,4 +1,4 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
@@ -8,11 +8,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
   const testZoneName = zones.admin.name;
 
   test.describe('Key Generation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access DNSSEC page for zone', async ({ page }) => {
+    test('should access DNSSEC page for zone', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
@@ -20,7 +16,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText.toLowerCase()).toMatch(/dnssec|key|secure/i);
     });
 
-    test('should display add key button', async ({ page }) => {
+    test('should display add key button', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
@@ -30,7 +26,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
     });
 
-    test('should access add key page', async ({ page }) => {
+    test('should access add key page', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
@@ -38,7 +34,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should display key type selector', async ({ page }) => {
+    test('should display key type selector', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
@@ -46,7 +42,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(await typeSelector.count()).toBeGreaterThan(0);
     });
 
-    test('should display algorithm selector', async ({ page }) => {
+    test('should display algorithm selector', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
@@ -56,7 +52,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
     });
 
-    test('should display key size selector', async ({ page }) => {
+    test('should display key size selector', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
@@ -66,7 +62,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
     });
 
-    test('should generate KSK key', async ({ page }) => {
+    test('should generate KSK key', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
@@ -81,7 +77,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should generate ZSK key', async ({ page }) => {
+    test('should generate ZSK key', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
@@ -98,11 +94,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
   });
 
   test.describe('Key Activation', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display key activation status', async ({ page }) => {
+    test('should display key activation status', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
@@ -110,7 +102,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText.toLowerCase()).toMatch(/active|inactive|status|key/i);
     });
 
-    test('should activate inactive key', async ({ page }) => {
+    test('should activate inactive key', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
@@ -122,7 +114,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
     });
 
-    test('should deactivate active key', async ({ page }) => {
+    test('should deactivate active key', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
@@ -136,11 +128,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
   });
 
   test.describe('DS Records', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should display DS records section', async ({ page }) => {
+    test('should display DS records section', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_ds_dnskey&id=${zoneId}`);
@@ -148,7 +136,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should display DNSKEY records', async ({ page }) => {
+    test('should display DNSKEY records', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_ds_dnskey&id=${zoneId}`);
@@ -156,7 +144,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText.toLowerCase()).toMatch(/dnskey|ds|key/i);
     });
 
-    test('should show DS record formats', async ({ page }) => {
+    test('should show DS record formats', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_ds_dnskey&id=${zoneId}`);
@@ -167,11 +155,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
   });
 
   test.describe('Key Deletion', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access delete key confirmation', async ({ page }) => {
+    test('should access delete key confirmation', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
@@ -182,7 +166,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
     });
 
-    test('should display delete confirmation message', async ({ page }) => {
+    test('should display delete confirmation message', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
@@ -194,7 +178,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
     });
 
-    test('should cancel key deletion', async ({ page }) => {
+    test('should cancel key deletion', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
@@ -211,8 +195,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
   });
 
   test.describe('DNSSEC Permissions', () => {
-    test('admin should access DNSSEC settings', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('admin should access DNSSEC settings', async ({ adminPage: page }) => {
       const zoneId = await ensureAnyZoneExists(page);
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
@@ -221,8 +204,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       expect(bodyText).not.toMatch(/you do not have|access denied|not authorized/i);
     });
 
-    test('manager should access DNSSEC for own zones', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('manager should access DNSSEC for own zones', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
@@ -236,8 +218,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
       }
     });
 
-    test('viewer should have appropriate DNSSEC access', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
+    test('viewer should have appropriate DNSSEC access', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=list_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {

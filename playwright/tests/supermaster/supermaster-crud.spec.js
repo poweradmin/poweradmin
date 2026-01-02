@@ -1,42 +1,37 @@
-import { test, expect } from '@playwright/test';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Supermaster CRUD Operations', () => {
   test.describe('List Supermasters', () => {
-    test('admin should access supermasters list', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('admin should access supermasters list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_supermasters');
 
       await expect(page).toHaveURL(/page=list_supermasters/);
     });
 
-    test('should display supermasters table or empty state', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display supermasters table or empty state', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_supermasters');
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/supermaster|no.*supermaster|empty|ip|nameserver/i);
     });
 
-    test('should display add supermaster button', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display add supermaster button', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_supermasters');
 
       const addBtn = page.locator('a[href*="add_supermaster"], input[value*="Add"], button:has-text("Add")');
       expect(await addBtn.count()).toBeGreaterThan(0);
     });
 
-    test('should display IP and nameserver columns', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+    test('should display IP and nameserver columns', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_supermasters');
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/ip|nameserver|master/i);
     });
 
-    test('non-admin should not access supermasters', async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
+    test('non-admin should not access supermasters', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=list_supermasters');
 
       const bodyText = await page.locator('body').textContent();
@@ -49,30 +44,26 @@ test.describe('Supermaster CRUD Operations', () => {
   });
 
   test.describe('Add Supermaster', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access add supermaster page', async ({ page }) => {
+    test('should access add supermaster page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_supermaster');
       await expect(page).toHaveURL(/page=add_supermaster/);
     });
 
-    test('should display IP field', async ({ page }) => {
+    test('should display IP field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_supermaster');
 
       const ipField = page.locator('input[name*="ip"], input[name*="master"]').first();
       await expect(ipField).toBeVisible();
     });
 
-    test('should display nameserver field', async ({ page }) => {
+    test('should display nameserver field', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_supermaster');
 
       const nsField = page.locator('input[name*="nameserver"], input[name*="ns"]').first();
       await expect(nsField).toBeVisible();
     });
 
-    test('should create supermaster with valid IPv4', async ({ page }) => {
+    test('should create supermaster with valid IPv4', async ({ adminPage: page }) => {
       const uniqueNs = `ns-${Date.now()}.example.com`;
       await page.goto('/index.php?page=add_supermaster');
 
@@ -91,7 +82,7 @@ test.describe('Supermaster CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should create supermaster with valid IPv6', async ({ page }) => {
+    test('should create supermaster with valid IPv6', async ({ adminPage: page }) => {
       const uniqueNs = `ns-ipv6-${Date.now()}.example.com`;
       await page.goto('/index.php?page=add_supermaster');
 
@@ -104,7 +95,7 @@ test.describe('Supermaster CRUD Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
-    test('should reject empty IP', async ({ page }) => {
+    test('should reject empty IP', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_supermaster');
 
       await page.locator('input[name*="nameserver"], input[name*="ns"]').first().fill('ns.example.com');
@@ -114,7 +105,7 @@ test.describe('Supermaster CRUD Operations', () => {
       expect(url).toMatch(/add_supermaster/);
     });
 
-    test('should reject empty nameserver', async ({ page }) => {
+    test('should reject empty nameserver', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_supermaster');
 
       await page.locator('input[name*="ip"], input[name*="master"]').first().fill('192.168.100.2');
@@ -124,7 +115,7 @@ test.describe('Supermaster CRUD Operations', () => {
       expect(url).toMatch(/add_supermaster/);
     });
 
-    test('should reject invalid IP format', async ({ page }) => {
+    test('should reject invalid IP format', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=add_supermaster');
 
       await page.locator('input[name*="ip"], input[name*="master"]').first().fill('999.999.999.999');
@@ -139,7 +130,7 @@ test.describe('Supermaster CRUD Operations', () => {
       expect(hasError).toBeTruthy();
     });
 
-    test('should reject duplicate supermaster', async ({ page }) => {
+    test('should reject duplicate supermaster', async ({ adminPage: page }) => {
       // First create a supermaster
       const uniqueNs = `ns-dup-${Date.now()}.example.com`;
       await page.goto('/index.php?page=add_supermaster');
@@ -164,11 +155,7 @@ test.describe('Supermaster CRUD Operations', () => {
   });
 
   test.describe('Delete Supermaster', () => {
-    test.beforeEach(async ({ page }) => {
-      await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-    });
-
-    test('should access delete confirmation', async ({ page }) => {
+    test('should access delete confirmation', async ({ adminPage: page }) => {
       // Create a supermaster to delete
       const uniqueNs = `ns-del-${Date.now()}.example.com`;
       await page.goto('/index.php?page=add_supermaster');
@@ -186,7 +173,7 @@ test.describe('Supermaster CRUD Operations', () => {
       }
     });
 
-    test('should display confirmation message', async ({ page }) => {
+    test('should display confirmation message', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_supermasters');
       const deleteLink = page.locator('a[href*="delete_supermaster"]').first();
 
@@ -198,7 +185,7 @@ test.describe('Supermaster CRUD Operations', () => {
       }
     });
 
-    test('should cancel delete and return to list', async ({ page }) => {
+    test('should cancel delete and return to list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_supermasters');
       const deleteLink = page.locator('a[href*="delete_supermaster"]').first();
 
@@ -213,7 +200,7 @@ test.describe('Supermaster CRUD Operations', () => {
       }
     });
 
-    test('should delete supermaster successfully', async ({ page }) => {
+    test('should delete supermaster successfully', async ({ adminPage: page }) => {
       // Create a supermaster to delete
       const uniqueNs = `ns-delsuc-${Date.now()}.example.com`;
       await page.goto('/index.php?page=add_supermaster');

@@ -1,5 +1,4 @@
-import { test } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../helpers/auth.js';
+import { test } from '../fixtures/test-fixtures.js';
 import users from '../fixtures/users.json' assert { type: 'json' };
 
 /**
@@ -9,8 +8,7 @@ import users from '../fixtures/users.json' assert { type: 'json' };
  * Usage: npx playwright test playwright/tests/cleanup-test-zones.spec.js
  */
 test.describe('Cleanup Test Zones', () => {
-  test('should remove all test zones created by automated tests', async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
+  test('should remove all test zones created by automated tests', async ({ adminPage: page }) => {
 
     const testZonePatterns = [
       // From search-wildcard-patterns.spec.js

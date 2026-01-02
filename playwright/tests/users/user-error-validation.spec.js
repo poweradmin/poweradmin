@@ -1,13 +1,8 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('User Management Error Validation', () => {
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should show error when changing password with incorrect current password', async ({ page }) => {
+  test('should show error when changing password with incorrect current password', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');
 
     const hasForm = await page.locator('form').count() > 0;
@@ -43,7 +38,7 @@ test.describe('User Management Error Validation', () => {
     expect(hasError).toBeTruthy();
   });
 
-  test('should show error when new passwords do not match', async ({ page }) => {
+  test('should show error when new passwords do not match', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');
 
     const hasForm = await page.locator('form').count() > 0;
@@ -76,7 +71,7 @@ test.describe('User Management Error Validation', () => {
     expect(currentUrl).toMatch(/change_password/);
   });
 
-  test('should validate password requirements', async ({ page }) => {
+  test('should validate password requirements', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');
 
     const hasForm = await page.locator('form').count() > 0;
@@ -105,7 +100,7 @@ test.describe('User Management Error Validation', () => {
     expect(currentUrl).toMatch(/change_password/);
   });
 
-  test('should validate required fields when editing user', async ({ page }) => {
+  test('should validate required fields when editing user', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=users');
 
     const editLinks = await page.locator('a[href*="edit_user"]').count();
@@ -128,7 +123,7 @@ test.describe('User Management Error Validation', () => {
     }
   });
 
-  test('should validate email format when creating user', async ({ page }) => {
+  test('should validate email format when creating user', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_user');
 
     const hasForm = await page.locator('form').count() > 0;
@@ -160,7 +155,7 @@ test.describe('User Management Error Validation', () => {
     await expect(page).toHaveURL(/add_user/);
   });
 
-  test('should require all mandatory fields for user creation', async ({ page }) => {
+  test('should require all mandatory fields for user creation', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_user');
 
     const hasForm = await page.locator('form').count() > 0;

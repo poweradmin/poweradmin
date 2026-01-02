@@ -1,16 +1,11 @@
-import { test, expect } from '@playwright/test';
-import { loginAndWaitForDashboard } from '../../helpers/auth.js';
+import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 test.describe('Supermaster Management', () => {
   const testIp = '192.168.100.100';
   const testNs = 'ns-test.example.com';
 
-  test.beforeEach(async ({ page }) => {
-    await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
-  });
-
-  test('should access supermaster list page', async ({ page }) => {
+  test('should access supermaster list page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_supermasters');
     await expect(page).toHaveURL(/page=list_supermasters/);
     // Verify page loads without errors
@@ -18,7 +13,7 @@ test.describe('Supermaster Management', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should show supermaster list page', async ({ page }) => {
+  test('should show supermaster list page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_supermasters');
 
     // Should show supermaster table or empty state
@@ -31,7 +26,7 @@ test.describe('Supermaster Management', () => {
     }
   });
 
-  test('should add a new supermaster', async ({ page }) => {
+  test('should add a new supermaster', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_supermaster');
 
     // Fill in supermaster details
@@ -58,7 +53,7 @@ test.describe('Supermaster Management', () => {
     expect(bodyText).not.toMatch(/fatal|exception/i);
   });
 
-  test('should list the created supermaster', async ({ page }) => {
+  test('should list the created supermaster', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_supermasters');
 
     // Should show the test supermaster we created
@@ -71,7 +66,7 @@ test.describe('Supermaster Management', () => {
     }
   });
 
-  test('should edit a supermaster', async ({ page }) => {
+  test('should edit a supermaster', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_supermasters');
 
     // Find the test supermaster and edit it
@@ -98,7 +93,7 @@ test.describe('Supermaster Management', () => {
     }
   });
 
-  test('should delete a supermaster', async ({ page }) => {
+  test('should delete a supermaster', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_supermasters');
 
     // Find the test supermaster and delete it
@@ -121,7 +116,7 @@ test.describe('Supermaster Management', () => {
     }
   });
 
-  test('should validate supermaster form', async ({ page }) => {
+  test('should validate supermaster form', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_supermaster');
 
     // Submit empty form
