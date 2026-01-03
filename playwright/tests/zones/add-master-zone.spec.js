@@ -6,8 +6,12 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
 test.describe.configure({ mode: 'serial' });
 
 test.describe('Master Zone Management', () => {
-  const testZone = `test-zone-${Date.now()}.com`;
-  const reverseZone = `${Date.now() % 256}.168.192.in-addr.arpa`;
+  const timestamp = Date.now();
+  const testZone = `test-zone-${timestamp}.com`;
+  // Use timestamp modulo to create valid reverse zone octets (0-255)
+  const octet1 = timestamp % 256;
+  const octet2 = Math.floor(timestamp / 1000) % 256;
+  const reverseZone = `${octet1}.${octet2}.10.in-addr.arpa`;
 
   test('should add a master zone successfully', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=add_zone_master');
