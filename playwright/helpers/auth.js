@@ -31,7 +31,9 @@ export async function login(page, username, password) {
  */
 export async function loginAndWaitForDashboard(page, username, password) {
   await login(page, username, password);
-  await page.waitForURL(/page=index/);
+  // Extended timeout for login - server-side session creation can be slower than regular navigation
+  await page.waitForURL(/page=index/, { timeout: 30000 });
+  await page.waitForLoadState('domcontentloaded');
 }
 
 /**
