@@ -16,7 +16,8 @@ export default defineConfig({
   // Test match pattern
   testMatch: /.*\.spec\.js/,
 
-  // Run tests in files in parallel
+  // Allow parallel test execution - read-only tests benefit from this
+  // Write tests are marked with test.describe.configure({ mode: 'serial' }) in their files
   fullyParallel: true,
 
   // Fail the build on CI if you accidentally left test.only in the source code
@@ -25,8 +26,9 @@ export default defineConfig({
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
 
-  // Run tests serially to avoid database/backend race conditions
-  workers: 1,
+  // 2 workers locally for parallel file execution, 1 on CI for stability
+  // Session conflicts may occur if two files use the same user simultaneously
+  workers: process.env.CI ? 1 : 2,
 
   // Reporter to use
   reporter: [

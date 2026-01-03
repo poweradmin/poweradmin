@@ -3,6 +3,9 @@ import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensureAnyZoneExists, getZoneIdForTest } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('DNSSEC Management', () => {
   test('should handle DNSSEC page access with zone ID', async ({ adminPage: page }) => {
     const zoneId = await ensureAnyZoneExists(page);

@@ -1,6 +1,9 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('DNSSEC Key Management', () => {
   // Use existing admin-zone.example.com for DNSSEC testing
   const testZoneName = zones.admin.name;

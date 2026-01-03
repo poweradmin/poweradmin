@@ -1,6 +1,9 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import { submitForm } from '../../helpers/forms.js';
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('User Management', () => {
   test('should access users list page', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=users');

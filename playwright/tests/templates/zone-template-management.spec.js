@@ -2,6 +2,9 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Zone Template Management', () => {
   const templateName = `pw-test-template-${Date.now()}`;
   const testZone = `template-test-${Date.now()}.com`;

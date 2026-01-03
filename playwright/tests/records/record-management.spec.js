@@ -1,6 +1,9 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import { findAnyZoneId } from '../../helpers/zones.js';
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('DNS Record Management', () => {
   test('should access zones list to manage records', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=list_zones');

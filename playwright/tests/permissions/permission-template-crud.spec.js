@@ -3,6 +3,9 @@ import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensurePermTemplateExists } from '../../helpers/templates.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Permission Template CRUD Operations', () => {
   const templateName = `perm-template-${Date.now()}`;
 

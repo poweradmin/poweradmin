@@ -2,6 +2,9 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
 import { ensureAnyZoneExists, findAnyZoneId } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Complete DNS Management Workflow Integration', () => {
 
   test('should complete full company DNS setup workflow', async ({ adminPage: page }) => {

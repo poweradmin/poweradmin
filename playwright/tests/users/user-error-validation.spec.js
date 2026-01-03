@@ -1,6 +1,9 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('User Management Error Validation', () => {
   test('should show error when changing password with incorrect current password', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=change_password');

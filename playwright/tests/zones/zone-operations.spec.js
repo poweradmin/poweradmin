@@ -3,6 +3,9 @@ import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensureAnyZoneExists } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Zone Operations', () => {
   test.describe('SOA Record Management', () => {
     test('should display SOA record in zone', async ({ adminPage: page }) => {

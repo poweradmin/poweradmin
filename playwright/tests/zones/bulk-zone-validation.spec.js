@@ -2,6 +2,9 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Bulk Zone Registration Validation', () => {
   test('should register single zone via bulk registration', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=bulk_registration');

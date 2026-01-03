@@ -1,7 +1,11 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Run sequentially within file, retry handles cross-file login conflicts
+test.describe.configure({ mode: 'serial', retries: 1 });
+
 test.describe('Permission Combinations', () => {
+
   test.describe('Permission Template Management', () => {
     test('should display permission templates list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=list_perm_templ');

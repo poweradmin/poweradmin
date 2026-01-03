@@ -1,6 +1,9 @@
 import { test } from '../fixtures/test-fixtures.js';
 import users from '../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 /**
  * Cleanup script to remove any leftover test zones
  * Run this manually if tests fail and leave orphaned test data

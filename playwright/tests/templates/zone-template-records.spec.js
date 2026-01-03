@@ -3,6 +3,9 @@ import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensureTemplateExists } from '../../helpers/templates.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Zone Template Records', () => {
   const templateName = `templ-rec-${Date.now()}`;
   let templateId = null;

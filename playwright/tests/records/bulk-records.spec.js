@@ -2,6 +2,9 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 /**
  * Tests for Bulk Zone Registration functionality
  * Note: The bulk_registration page is for registering multiple ZONES, not records.

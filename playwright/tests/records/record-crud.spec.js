@@ -4,6 +4,9 @@ import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
 import { submitForm, selectByTestId, fillByTestId } from '../../helpers/forms.js';
 import { expectNoFatalError, hasErrorMessage } from '../../helpers/validation.js';
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Record CRUD Operations', () => {
   // Use existing manager-zone.example.com for record testing (has comprehensive records)
   const testZoneName = zones.manager.name;

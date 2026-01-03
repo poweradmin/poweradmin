@@ -4,6 +4,9 @@ import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
 import { submitForm, fillByTestId, selectByTestId } from '../../helpers/forms.js';
 import { expectNoFatalError, hasErrorMessage } from '../../helpers/validation.js';
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Zone CRUD Operations', () => {
   const testDomain = `zone-crud-${Date.now()}.example.com`;
 

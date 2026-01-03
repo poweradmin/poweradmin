@@ -1,6 +1,9 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('List Zones', () => {
   test.describe('Admin User', () => {
     test('should display zones page', async ({ adminPage: page }) => {

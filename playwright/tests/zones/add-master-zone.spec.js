@@ -2,6 +2,9 @@ import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Master Zone Management', () => {
   const testZone = `test-zone-${Date.now()}.com`;
   const reverseZone = `${Date.now() % 256}.168.192.in-addr.arpa`;

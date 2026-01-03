@@ -3,6 +3,9 @@ import { loginAndWaitForDashboard } from '../../helpers/auth.js';
 import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('DNSSEC Key Lifecycle', () => {
   // Use existing admin-zone.example.com for DNSSEC testing
   const testZoneName = zones.admin.name;

@@ -1,6 +1,9 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
 
+// Write tests run serially to avoid database race conditions
+test.describe.configure({ mode: 'serial' });
+
 test.describe('Record Validation - All Types', () => {
   // Use existing manager-zone.example.com for record validation testing
   const testZoneName = zones.manager.name;
