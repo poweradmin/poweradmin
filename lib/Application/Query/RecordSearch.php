@@ -83,34 +83,71 @@ class RecordSearch extends BaseSearch
         $db_type = $this->config->get('db_type');
         $sort_records_by = $sort_records_by === 'name' ? SortHelper::getRecordSortOrder($records_table, $db_type, $record_sort_direction) : "$sort_records_by $record_sort_direction";
 
-        $recordsQuery = "
-        SELECT
-            $records_table.id,
-            $records_table.domain_id,
-            $records_table.name,
-            $records_table.type,
-            $records_table.content,
-            $records_table.ttl,
-            $records_table.prio,
-            $records_table.disabled,
-            z.id as zone_id,
-            z.owner,
-            u.id as user_id,
-            u.fullname" .
-            ($iface_record_comments ? ", c.comment" : "") . "
-        FROM
-            $records_table
-        LEFT JOIN zones z on $records_table.domain_id = z.domain_id
-        LEFT JOIN users u on z.owner = u.id" .
-            ($iface_record_comments ? " LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type" : "") . "
-        WHERE
-            ($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
-            ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
-            ($iface_record_comments && $parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') .
-            ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-            ($iface_search_group_records ? " GROUP BY $records_table.name, $records_table.content " : '') .
-            ' ORDER BY ' . $sort_records_by .
-            ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
+        // Build WHERE conditions for search
+        $whereConditions = "($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
+            ($reverse ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')';
+
+        // Build the main query with optional grouping via subquery for PostgreSQL compatibility
+        if ($iface_search_group_records) {
+            // Use subquery to get one representative record per (name, content) group
+            $recordsQuery = "
+            SELECT
+                r.id,
+                r.domain_id,
+                r.name,
+                r.type,
+                r.content,
+                r.ttl,
+                r.prio,
+                r.disabled,
+                z.id as zone_id,
+                z.owner,
+                u.id as user_id,
+                u.fullname" .
+                ($iface_record_comments ? ", c.comment" : "") . "
+            FROM
+                $records_table r
+            INNER JOIN (
+                SELECT MIN(id) as id
+                FROM $records_table
+                WHERE $whereConditions
+                GROUP BY name, content
+            ) grouped ON r.id = grouped.id
+            LEFT JOIN zones z on r.domain_id = z.domain_id
+            LEFT JOIN users u on z.owner = u.id" .
+                ($iface_record_comments ? " LEFT JOIN $comments_table c on r.domain_id = c.domain_id AND r.name = c.name AND r.type = c.type" : "") .
+                ($iface_record_comments && $parameters['comments'] ? " WHERE c.comment LIKE " . $this->db->quote($search_string, 'text') : '') .
+                ($permission_view == 'own' ? ($iface_record_comments && $parameters['comments'] ? ' AND' : ' WHERE') . ' z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
+                ' ORDER BY ' . str_replace($records_table . '.', 'r.', $sort_records_by) .
+                ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
+        } else {
+            $recordsQuery = "
+            SELECT
+                $records_table.id,
+                $records_table.domain_id,
+                $records_table.name,
+                $records_table.type,
+                $records_table.content,
+                $records_table.ttl,
+                $records_table.prio,
+                $records_table.disabled,
+                z.id as zone_id,
+                z.owner,
+                u.id as user_id,
+                u.fullname" .
+                ($iface_record_comments ? ", c.comment" : "") . "
+            FROM
+                $records_table
+            LEFT JOIN zones z on $records_table.domain_id = z.domain_id
+            LEFT JOIN users u on z.owner = u.id" .
+                ($iface_record_comments ? " LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type" : "") . "
+            WHERE
+                $whereConditions" .
+                ($iface_record_comments && $parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') .
+                ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
+                ' ORDER BY ' . $sort_records_by .
+                ' LIMIT ' . $iface_rowamount . ' OFFSET ' . $offset;
+        }
 
         $recordsResponse = $this->db->query($recordsQuery);
 
@@ -159,26 +196,33 @@ class RecordSearch extends BaseSearch
         $pdns_db_name = $this->config->get('pdns_db_name');
         $records_table = $pdns_db_name ? $pdns_db_name . '.records' : 'records';
         $comments_table = $pdns_db_name ? $pdns_db_name . '.comments' : 'comments';
-        $groupByClause = $iface_search_group_records ? "GROUP BY $records_table.name, $records_table.content" : '';
 
-        $recordsQuery = "
-        SELECT
-            COUNT(*)
-        FROM (
-            SELECT
-                $records_table.id
-            FROM
-                $records_table
+        // Build WHERE conditions
+        $whereConditions = "($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
+            ($parameters['reverse'] ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
+            ($parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') .
+            ($permission_view == 'own' ? ' AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '');
+
+        if ($iface_search_group_records) {
+            // Count distinct (name, content) groups using a PostgreSQL-compatible subquery
+            $recordsQuery = "
+            SELECT COUNT(*) FROM (
+                SELECT DISTINCT $records_table.name, $records_table.content
+                FROM $records_table
+                LEFT JOIN zones z on $records_table.domain_id = z.domain_id
+                LEFT JOIN users u on z.owner = u.id
+                LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type
+                WHERE $whereConditions
+            ) as grouped_records";
+        } else {
+            $recordsQuery = "
+            SELECT COUNT(*)
+            FROM $records_table
             LEFT JOIN zones z on $records_table.domain_id = z.domain_id
             LEFT JOIN users u on z.owner = u.id
             LEFT JOIN $comments_table c on $records_table.domain_id = c.domain_id AND $records_table.name = c.name AND $records_table.type = c.type
-            WHERE
-                ($records_table.name LIKE " . $this->db->quote($search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($search_string, 'text') .
-            ($parameters['reverse'] ? " OR $records_table.name LIKE " . $this->db->quote($reverse_search_string, 'text') . " OR $records_table.content LIKE " . $this->db->quote($reverse_search_string, 'text') : '') . ')' .
-            ($parameters['comments'] ? " OR c.comment LIKE " . $this->db->quote($search_string, 'text') : '') .
-            ($permission_view == 'own' ? 'AND z.owner = ' . $this->db->quote($_SESSION['userid'], 'integer') : '') .
-            " $groupByClause
-        ) as grouped_records";
+            WHERE $whereConditions";
+        }
 
         return (int)$this->db->queryOne($recordsQuery);
     }

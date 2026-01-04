@@ -22,18 +22,47 @@ export async function login(page, username, password) {
 }
 
 /**
- * Login and wait for dashboard
+ * Login and wait for dashboard with retry logic
+ *
+ * PHP server-side sessions can cause intermittent login failures when
+ * multiple tests run concurrently. This function retries on failure.
  *
  * @param {import('@playwright/test').Page} page - Playwright page object
  * @param {string} username - Username for login
  * @param {string} password - Password for login
+ * @param {number} maxRetries - Maximum number of retry attempts
  * @returns {Promise<void>}
  */
-export async function loginAndWaitForDashboard(page, username, password) {
-  await login(page, username, password);
-  // Extended timeout for login - server-side session creation can be slower than regular navigation
-  await page.waitForURL(/page=index/, { timeout: 30000 });
-  await page.waitForLoadState('domcontentloaded');
+export async function loginAndWaitForDashboard(page, username, password, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    await login(page, username, password);
+
+    // Check if login succeeded or failed
+    const url = page.url();
+    if (url.includes('page=index')) {
+      // Already on dashboard
+      await page.waitForLoadState('domcontentloaded');
+      return;
+    }
+
+    // Wait briefly for redirect or error message
+    try {
+      await page.waitForURL(/page=index/, { timeout: 5000 });
+      await page.waitForLoadState('domcontentloaded');
+      return; // Success
+    } catch {
+      // Check if authentication failed
+      const hasError = await page.locator('text=Authentication failed').count() > 0;
+      if (hasError && attempt < maxRetries) {
+        // Wait before retry to let session conflicts resolve
+        await page.waitForTimeout(1000 * attempt);
+        continue;
+      }
+      if (attempt === maxRetries) {
+        throw new Error(`Login failed after ${maxRetries} attempts for user: ${username}`);
+      }
+    }
+  }
 }
 
 /**

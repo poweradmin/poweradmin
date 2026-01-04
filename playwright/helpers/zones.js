@@ -59,16 +59,53 @@ export async function getTestZoneId(page, zoneKey) {
  * Useful when you just need a zone to work with
  *
  * @param {import('@playwright/test').Page} page - Playwright page object
+ * @param {boolean} excludeReverse - Whether to exclude reverse DNS zones (default: true)
  * @returns {Promise<{id: string, name: string}|null>} - Zone info or null if none found
  */
-export async function findAnyZoneId(page) {
+export async function findAnyZoneId(page, excludeReverse = true) {
   await page.goto('/index.php?page=list_zones&letter=all');
 
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
 
-  // Find first edit link - this usually contains the zone name as link text
-  const editLink = page.locator('a[href*="page=edit"]').first();
+  // Find edit links
+  const editLinks = page.locator('a[href*="page=edit"]');
+  const count = await editLinks.count();
+
+  // Find first suitable zone (excluding reverse zones if requested)
+  for (let i = 0; i < count; i++) {
+    const editLink = editLinks.nth(i);
+    const row = editLink.locator('xpath=ancestor::tr');
+    const rowText = await row.textContent().catch(() => '');
+
+    // Skip reverse zones (in-addr.arpa, ip6.arpa) if excludeReverse is true
+    if (excludeReverse && (rowText.includes('.in-addr.arpa') || rowText.includes('.ip6.arpa'))) {
+      continue;
+    }
+
+    const href = await editLink.getAttribute('href');
+    const match = href?.match(/id=(\d+)/);
+
+    if (match) {
+      // Get zone name from the row
+      const cells = row.locator('td');
+      const cellCount = await cells.count();
+      let zoneName = null;
+
+      for (let j = 0; j < cellCount && j < 5; j++) {
+        const cellText = await cells.nth(j).textContent().catch(() => '');
+        if (cellText && cellText.includes('.') && cellText.trim().length > 3) {
+          zoneName = cellText.trim();
+          break;
+        }
+      }
+
+      return { id: match[1], name: zoneName };
+    }
+  }
+
+  // Fallback to first edit link if no suitable zone found
+  const editLink = editLinks.first();
 
   if (await editLink.count() === 0) {
     return null;
