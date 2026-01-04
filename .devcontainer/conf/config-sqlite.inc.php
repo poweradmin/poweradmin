@@ -7,11 +7,8 @@ $db_user = '';
 $db_pass = '';
 $db_name = '';
 $db_type = 'sqlite';
-$db_file = '/data/poweradmin.db';
+$db_file = '/data/pdns.db';
 $db_debug = true;
-
-// PowerDNS database file (separate from Poweradmin)
-$pdns_db_file = '/data/pdns.db';
 
 // Security settings
 $session_key = 'sqlite-session-key-poweradmin-dev-2024';

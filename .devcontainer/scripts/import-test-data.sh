@@ -49,8 +49,7 @@ PGSQL_DATABASE="${PGSQL_DATABASE:-pdns}"
 PGSQL_CONTAINER="${PGSQL_CONTAINER:-postgres}"
 
 SQLITE_CONTAINER="${SQLITE_CONTAINER:-sqlite}"
-SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/poweradmin.db}"
-SQLITE_PDNS_DB_PATH="${SQLITE_PDNS_DB_PATH:-/data/db/powerdns.db}"
+SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/pdns.db}"
 
 echo -e "${BLUE}================================================${NC}"
 echo -e "${BLUE}  Poweradmin 3.x Test Data Import${NC}"

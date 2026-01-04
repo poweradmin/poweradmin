@@ -40,7 +40,8 @@ export default defineConfig({
   // Shared settings for all the projects below
   use: {
     // Base URL to use in actions like `await page.goto('/')`
-    baseURL: 'http://localhost:8080',
+    // Override with BASE_URL env var: BASE_URL=http://localhost:8081 npm run test:e2e
+    baseURL: process.env.BASE_URL || 'http://localhost:8080',
 
     // Disable heavy features on CI for performance
     // Re-enable locally by setting CI=false or when investigating failures
