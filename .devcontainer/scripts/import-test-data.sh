@@ -156,6 +156,45 @@ EOSQL
     echo -e "${GREEN}✅ PostgreSQL cleaned${NC}"
 }
 
+# Function to clean SQLite test data
+clean_sqlite() {
+    echo -e "${YELLOW}🧹 Cleaning SQLite test data...${NC}"
+
+    if ! check_container "$SQLITE_CONTAINER"; then
+        echo -e "${RED}❌ Container '$SQLITE_CONTAINER' is not running${NC}"
+        return 1
+    fi
+
+    docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" << 'EOSQL'
+-- Delete zone templates and their records
+DELETE FROM zone_templ_records;
+DELETE FROM zone_templ;
+
+-- Delete zone ownership records
+DELETE FROM zones;
+
+-- Delete test users (keep admin)
+DELETE FROM users WHERE username != 'admin';
+
+-- Delete permission template items for templates 2-5
+DELETE FROM perm_templ_items WHERE templ_id > 1;
+
+-- Delete permission templates (keep Administrator)
+DELETE FROM perm_templ WHERE id > 1;
+
+-- Delete all records
+DELETE FROM records;
+
+-- Delete all domains
+DELETE FROM domains;
+
+-- Ensure unique index on username to prevent duplicates
+CREATE UNIQUE INDEX IF NOT EXISTS idx_users_username ON users(username);
+EOSQL
+
+    echo -e "${GREEN}✅ SQLite cleaned${NC}"
+}
+
 # Function to import MySQL/MariaDB data
 import_mysql() {
     echo -e "${YELLOW}📦 Importing to MySQL/MariaDB...${NC}"
@@ -450,6 +489,14 @@ main() {
 
         if [ "$import_pgsql" = true ]; then
             if clean_pgsql; then
+                ((success_count++))
+            else
+                ((fail_count++))
+            fi
+        fi
+
+        if [ "$import_sqlite" = true ]; then
+            if clean_sqlite; then
                 ((success_count++))
             else
                 ((fail_count++))
