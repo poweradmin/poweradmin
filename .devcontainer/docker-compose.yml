@@ -1,6 +1,10 @@
 services:
-  app:
-    container_name: poweradmin
+  # =============================================================================
+  # PHP-FPM Application Containers (one per database type)
+  # =============================================================================
+
+  app-mysql:
+    container_name: poweradmin-mysql
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,31 +13,102 @@ services:
     volumes:
       - ../.:/app
       - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+      - ./conf/config-mysql.inc.php:/app/inc/config.inc.php
+      - ../..:/workspaces:cached
+    networks:
+      - internal
+    environment:
+      - PHP_IDE_CONFIG=serverName=localhost
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  app-pgsql:
+    container_name: poweradmin-pgsql
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VARIANT=${PHP_VERSION}-fpm-${DEBIAN_VERSION}
+    volumes:
+      - ../.:/app
+      - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+      - ./conf/config-pgsql.inc.php:/app/inc/config.inc.php
+      - ../..:/workspaces:cached
+    networks:
+      - internal
+    environment:
+      - PHP_IDE_CONFIG=serverName=localhost
+    depends_on:
+      pgsql:
+        condition: service_healthy
+
+  app-sqlite:
+    container_name: poweradmin-sqlite
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - VARIANT=${PHP_VERSION}-fpm-${DEBIAN_VERSION}
+    volumes:
+      - ../.:/app
+      - ./conf/error_reporting.ini:/usr/local/etc/php/conf.d/error_reporting.ini
+      - ./conf/config-sqlite.inc.php:/app/inc/config.inc.php
       - ../..:/workspaces:cached
       - sqlite_data:/data
     networks:
       - internal
-    ports:
-      - "9000:9000"
     environment:
       - PHP_IDE_CONFIG=serverName=localhost
     depends_on:
-      - mysql
-      - pgsql
       - sqlite
 
-  webserver:
+  # =============================================================================
+  # Web Servers (Nginx - one per database type)
+  # =============================================================================
+
+  web-mysql:
     image: nginx:latest
-    container_name: webserver
+    container_name: web-mysql
     networks:
       - internal
     ports:
       - "8080:80"
     volumes:
-      - ./conf/nginx.conf:/etc/nginx/conf.d/default.conf
+      - ./conf/nginx-mysql.conf:/etc/nginx/conf.d/default.conf
       - ../.:/app
     depends_on:
-      - app
+      - app-mysql
+
+  web-pgsql:
+    image: nginx:latest
+    container_name: web-pgsql
+    networks:
+      - internal
+    ports:
+      - "8081:80"
+    volumes:
+      - ./conf/nginx-pgsql.conf:/etc/nginx/conf.d/default.conf
+      - ../.:/app
+    depends_on:
+      - app-pgsql
+
+  web-sqlite:
+    image: nginx:latest
+    container_name: web-sqlite
+    networks:
+      - internal
+    ports:
+      - "8082:80"
+    volumes:
+      - ./conf/nginx-sqlite.conf:/etc/nginx/conf.d/default.conf
+      - ../.:/app
+    depends_on:
+      - app-sqlite
+
+  # =============================================================================
+  # Database Servers
+  # =============================================================================
 
   mysql:
     image: ${MYSQL_IMAGE}:${MYSQL_VERSION}
@@ -87,13 +162,69 @@ services:
     image: keinos/sqlite3
     container_name: sqlite
     user: "0:0"
+    networks:
+      - internal
     volumes:
       - sqlite_data:/data
-      - ../sql/pdns/47/schema.sqlite3.sql:/schema.sqlite3.sql
+      - ../sql/pdns/${PDNS_BRANCH}/schema.sqlite3.sql:/schema.sqlite3.sql
+      - ../sql/poweradmin-sqlite-db-structure.sql:/poweradmin-schema.sql
       - ./scripts/create-sqlite-db.sh:/init-db.sh
-    command: ["/bin/sh", "-c", "/init-db.sh && sqlite3"]
+    command: ["/bin/sh", "-c", "/init-db.sh && tail -f /dev/null"]
     stdin_open: true
     tty: true
+
+  # =============================================================================
+  # PowerDNS Servers (one per database type - all with DNSSEC enabled)
+  # =============================================================================
+
+  pdns-mysql:
+    image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    container_name: pdns-mysql
+    networks:
+      - internal
+    volumes:
+      - ./conf/pdns-mysql.conf:/etc/powerdns/pdns.conf
+    ports:
+      - "1053:53"
+      - "1053:53/udp"
+      - "8181:8081"
+    depends_on:
+      mysql:
+        condition: service_healthy
+
+  pdns-pgsql:
+    image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    container_name: pdns-pgsql
+    networks:
+      - internal
+    volumes:
+      - ./conf/pdns-pgsql.conf:/etc/powerdns/pdns.conf
+    ports:
+      - "1054:53"
+      - "1054:53/udp"
+      - "8182:8081"
+    depends_on:
+      pgsql:
+        condition: service_healthy
+
+  pdns-sqlite:
+    image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
+    container_name: pdns-sqlite
+    networks:
+      - internal
+    volumes:
+      - ./conf/pdns-sqlite.conf:/etc/powerdns/pdns.conf
+      - sqlite_data:/data
+    ports:
+      - "1055:53"
+      - "1055:53/udp"
+      - "8183:8081"
+    depends_on:
+      - sqlite
+
+  # =============================================================================
+  # Admin Tools
+  # =============================================================================
 
   adminer:
     image: adminer
@@ -106,17 +237,9 @@ services:
       - sqlite_data:/data
       - ./adminer/login-password-less.php:/var/www/html/plugins-enabled/login-password-less.php
 
-#  ldap:
-#    image: dinkel/openldap
-#    container_name: ldap
-#    networks:
-#      - internal
-#    environment:
-#      - SLAPD_PASSWORD=poweradmin
-#      - SLAPD_DOMAIN=poweradmin.org
-#      - SLAPD_ADDITIONAL_MODULES=memberof
-#    ports:
-#      - 389:389
+  # =============================================================================
+  # LDAP Server (optional - for LDAP authentication testing)
+  # =============================================================================
 
   ldap:
     image: osixia/openldap:1.5.0
@@ -149,21 +272,6 @@ services:
       - PHPLDAPADMIN_LDAP_HOSTS=ldap
     ports:
       - 8443:443
-
-  dns:
-    image: powerdns/pdns-auth-${PDNS_BRANCH}:${PDNS_VERSION}
-    container_name: powerdns
-    networks:
-      - internal
-    volumes:
-      - ./conf/pdns.conf:/etc/powerdns/pdns.conf
-    ports:
-      - "1053:53"
-      - "1053:53/udp"
-      - "8081:8081"
-    depends_on:
-      mysql:
-        condition: service_healthy
 
 volumes:
   mysql_data: { }
