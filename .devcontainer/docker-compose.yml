@@ -150,6 +150,7 @@ services:
       - pgsql_data:/var/lib/postgresql/data
       - ../sql/pdns/${PDNS_BRANCH}/schema.pgsql.sql:/docker-entrypoint-initdb.d/01-pdns.sql
       - ../sql/poweradmin-pgsql-db-structure.sql:/docker-entrypoint-initdb.d/02-poweradmin.sql
+      - ./scripts/init-pgsql-password.sql:/docker-entrypoint-initdb.d/03-set-password.sql
     ports:
       - "5432:5432"
     healthcheck:

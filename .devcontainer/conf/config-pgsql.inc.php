@@ -10,9 +10,6 @@ $db_type = 'pgsql';
 $db_charset = 'utf8';
 $db_debug = true;
 
-// Separate PowerDNS database
-$pdns_db_name = 'pdns';
-
 // Security settings
 $session_key = 'pgsql-session-key-poweradmin-dev-2024';
 $password_encryption = 'bcrypt';

@@ -293,6 +293,14 @@ import_sqlite() {
     if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-users-permissions-sqlite.sql" > /dev/null 2>&1; then
         echo -e "${GREEN}✅ SQLite users and zones imported${NC}"
 
+        # Ensure test user passwords are set correctly (INSERT OR IGNORE doesn't update existing users)
+        # Password: poweradmin123 (bcrypt hash with cost 12)
+        docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" << 'EOSQL'
+UPDATE users SET password = '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi'
+WHERE username IN ('admin', 'manager', 'client', 'viewer', 'noperm', 'inactive');
+EOSQL
+        echo -e "${GREEN}✅ SQLite test user passwords updated${NC}"
+
         # Import comprehensive DNS records
         if [ -f "$SQL_DIR/test-dns-records-sqlite.sql" ]; then
             echo -e "${YELLOW}📦 Importing comprehensive DNS records...${NC}"
