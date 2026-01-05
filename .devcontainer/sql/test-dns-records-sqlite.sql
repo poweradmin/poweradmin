@@ -288,6 +288,27 @@ SELECT d.id, 'mail.' || d.name, 'A', '192.0.2.221', 3600, 0
 FROM domains d WHERE d.name = 'xn--verstt-eua3l.info';
 
 -- =============================================================================
+-- DUPLICATE RECORDS FOR SEARCH GROUPING TESTS
+-- These records have IDENTICAL name AND content across different zones to test
+-- the iface_search_group_records configuration option
+-- =============================================================================
+
+-- Add truly duplicate records with IDENTICAL name AND content across zones
+-- When iface_search_group_records=true: shows 1 result (grouped)
+-- When iface_search_group_records=false: shows 3 results (individual)
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'duplicate-test.example.com', 'A', '10.88.88.88', 3600, 0, 0
+FROM domains d WHERE d.name = 'manager-zone.example.com';
+
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'duplicate-test.example.com', 'A', '10.88.88.88', 3600, 0, 0
+FROM domains d WHERE d.name = 'client-zone.example.com';
+
+INSERT OR IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT d.id, 'duplicate-test.example.com', 'A', '10.88.88.88', 3600, 0, 0
+FROM domains d WHERE d.name = 'shared-zone.example.com';
+
+-- =============================================================================
 -- VERIFICATION
 -- =============================================================================
 

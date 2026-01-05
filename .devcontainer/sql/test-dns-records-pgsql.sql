@@ -238,6 +238,41 @@ BEGIN
     END IF;
 END $$;
 
+-- =============================================================================
+-- DUPLICATE RECORDS FOR SEARCH GROUPING TESTS
+-- These records have IDENTICAL name AND content across different zones to test
+-- the iface_search_group_records configuration option
+-- =============================================================================
+
+DO $$
+DECLARE
+    zone_id INTEGER;
+BEGIN
+    -- Add truly duplicate records with IDENTICAL name AND content across zones
+    -- When iface_search_group_records=true: shows 1 result (grouped)
+    -- When iface_search_group_records=false: shows 3 results (individual)
+    SELECT id INTO zone_id FROM domains WHERE name = 'manager-zone.example.com';
+    IF zone_id IS NOT NULL THEN
+        INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
+        VALUES (zone_id, 'duplicate-test.example.com', 'A', '10.88.88.88', 3600, 0, false)
+        ON CONFLICT DO NOTHING;
+    END IF;
+
+    SELECT id INTO zone_id FROM domains WHERE name = 'client-zone.example.com';
+    IF zone_id IS NOT NULL THEN
+        INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
+        VALUES (zone_id, 'duplicate-test.example.com', 'A', '10.88.88.88', 3600, 0, false)
+        ON CONFLICT DO NOTHING;
+    END IF;
+
+    SELECT id INTO zone_id FROM domains WHERE name = 'shared-zone.example.com';
+    IF zone_id IS NOT NULL THEN
+        INSERT INTO records (domain_id, name, type, content, ttl, prio, disabled)
+        VALUES (zone_id, 'duplicate-test.example.com', 'A', '10.88.88.88', 3600, 0, false)
+        ON CONFLICT DO NOTHING;
+    END IF;
+END $$;
+
 -- Update sequence
 SELECT setval('records_id_seq', (SELECT COALESCE(MAX(id), 1) FROM records));
 

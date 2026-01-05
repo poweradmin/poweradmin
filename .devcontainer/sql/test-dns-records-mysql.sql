@@ -226,6 +226,30 @@ WHERE @zone_id IS NOT NULL
   );
 
 -- =============================================================================
+-- DUPLICATE RECORDS FOR SEARCH GROUPING TESTS
+-- These records have IDENTICAL name AND content across different zones to test
+-- the iface_search_group_records configuration option
+-- =============================================================================
+
+-- Add truly duplicate records with IDENTICAL name AND content across zones
+-- When iface_search_group_records=true: shows 1 result (grouped)
+-- When iface_search_group_records=false: shows 3 results (individual)
+SET @zone_id = (SELECT id FROM domains WHERE name = 'manager-zone.example.com' LIMIT 1);
+INSERT IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT @zone_id, 'duplicate-test.example.com', 'A', '10.88.88.88', 3600, 0, 0
+WHERE @zone_id IS NOT NULL;
+
+SET @zone_id = (SELECT id FROM domains WHERE name = 'client-zone.example.com' LIMIT 1);
+INSERT IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT @zone_id, 'duplicate-test.example.com', 'A', '10.88.88.88', 3600, 0, 0
+WHERE @zone_id IS NOT NULL;
+
+SET @zone_id = (SELECT id FROM domains WHERE name = 'shared-zone.example.com' LIMIT 1);
+INSERT IGNORE INTO records (domain_id, name, type, content, ttl, prio, disabled)
+SELECT @zone_id, 'duplicate-test.example.com', 'A', '10.88.88.88', 3600, 0, 0
+WHERE @zone_id IS NOT NULL;
+
+-- =============================================================================
 -- VERIFICATION
 -- =============================================================================
 
