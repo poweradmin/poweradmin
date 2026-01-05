@@ -10,27 +10,28 @@ test.describe('Login Authentication', () => {
   test.describe('Successful Login - All User Types', () => {
     test('should login admin user and redirect to dashboard', async ({ page }) => {
       await login(page, users.admin.username, users.admin.password);
-      await expect(page).toHaveURL(/page=index/);
+      // Dashboard URL: /index.php or /index.php?page=index (may have additional params)
+      await expect(page).toHaveURL(/index\.php($|\?page=index)/);
     });
 
     test('should login manager user and redirect to dashboard', async ({ page }) => {
       await login(page, users.manager.username, users.manager.password);
-      await expect(page).toHaveURL(/page=index/);
+      await expect(page).toHaveURL(/index\.php($|\?page=index)/);
     });
 
     test('should login client user and redirect to dashboard', async ({ page }) => {
       await login(page, users.client.username, users.client.password);
-      await expect(page).toHaveURL(/page=index/);
+      await expect(page).toHaveURL(/index\.php($|\?page=index)/);
     });
 
     test('should login viewer user and redirect to dashboard', async ({ page }) => {
       await login(page, users.viewer.username, users.viewer.password);
-      await expect(page).toHaveURL(/page=index/);
+      await expect(page).toHaveURL(/index\.php($|\?page=index)/);
     });
 
     test('should login noperm user and redirect to dashboard', async ({ page }) => {
       await login(page, users.noperm.username, users.noperm.password);
-      await expect(page).toHaveURL(/page=index/);
+      await expect(page).toHaveURL(/index\.php($|\?page=index)/);
     });
   });
 

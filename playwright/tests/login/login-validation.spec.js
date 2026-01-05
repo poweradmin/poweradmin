@@ -130,11 +130,14 @@ test.describe('Login Form Validation', () => {
       await page.locator('input[type="password"]').first().fill('password');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Should not log in and should not cause errors
+      // Should not log in and should not cause SQL errors
       const url = page.url();
       const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception|sql|syntax/i);
-      expect(url).toMatch(/login/);
+      // Check for actual error patterns, not generic "sql" (which matches "mysql" in title)
+      expect(bodyText).not.toMatch(/fatal error|exception|sql error|syntax error|sqlstate/i);
+      // Check user is NOT logged in (no dashboard content, still on login or error page)
+      expect(url).not.toMatch(/page=index/);
+      expect(bodyText).not.toMatch(/Dashboard|Welcome back|List zones/i);
     });
 
     test('should handle SQL injection attempt in password', async ({ page }) => {
@@ -142,11 +145,14 @@ test.describe('Login Form Validation', () => {
       await page.locator('input[type="password"]').first().fill("' OR '1'='1");
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      // Should not log in and should not cause errors
+      // Should not log in and should not cause SQL errors
       const url = page.url();
       const bodyText = await page.locator('body').textContent();
-      expect(bodyText).not.toMatch(/fatal|exception|sql|syntax/i);
-      expect(url).toMatch(/login/);
+      // Check for actual error patterns, not generic "sql" (which matches "mysql" in title)
+      expect(bodyText).not.toMatch(/fatal error|exception|sql error|syntax error|sqlstate/i);
+      // Check user is NOT logged in (no dashboard content, still on login or error page)
+      expect(url).not.toMatch(/page=index/);
+      expect(bodyText).not.toMatch(/Dashboard|Welcome back|List zones/i);
     });
 
     test('should handle XSS attempt in username', async ({ page }) => {
