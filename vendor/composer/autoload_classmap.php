@@ -1236,6 +1236,7 @@ return array(
     'Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever' => $baseDir . '/lib/Infrastructure/Utility/IpAddressRetriever.php',
     'Poweradmin\\Infrastructure\\Utility\\LanguageCode' => $baseDir . '/lib/Infrastructure/Utility/LanguageCode.php',
     'Poweradmin\\Infrastructure\\Utility\\NaturalSorting' => $baseDir . '/lib/Infrastructure/Utility/NaturalSorting.php',
+    'Poweradmin\\Infrastructure\\Utility\\ProtocolDetector' => $baseDir . '/lib/Infrastructure/Utility/ProtocolDetector.php',
     'Poweradmin\\Infrastructure\\Utility\\ReverseDomainHierarchySorting' => $baseDir . '/lib/Infrastructure/Utility/ReverseDomainHierarchySorting.php',
     'Poweradmin\\Infrastructure\\Utility\\ReverseDomainNaturalSorting' => $baseDir . '/lib/Infrastructure/Utility/ReverseDomainNaturalSorting.php',
     'Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting' => $baseDir . '/lib/Infrastructure/Utility/ReverseZoneSorting.php',

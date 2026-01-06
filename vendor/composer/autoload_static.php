@@ -1609,6 +1609,7 @@ class ComposerStaticInit69e2902df91bc724db96bb81f54b17f4
         'Poweradmin\\Infrastructure\\Utility\\IpAddressRetriever' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/IpAddressRetriever.php',
         'Poweradmin\\Infrastructure\\Utility\\LanguageCode' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/LanguageCode.php',
         'Poweradmin\\Infrastructure\\Utility\\NaturalSorting' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/NaturalSorting.php',
+        'Poweradmin\\Infrastructure\\Utility\\ProtocolDetector' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/ProtocolDetector.php',
         'Poweradmin\\Infrastructure\\Utility\\ReverseDomainHierarchySorting' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/ReverseDomainHierarchySorting.php',
         'Poweradmin\\Infrastructure\\Utility\\ReverseDomainNaturalSorting' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/ReverseDomainNaturalSorting.php',
         'Poweradmin\\Infrastructure\\Utility\\ReverseZoneSorting' => __DIR__ . '/../..' . '/lib/Infrastructure/Utility/ReverseZoneSorting.php',

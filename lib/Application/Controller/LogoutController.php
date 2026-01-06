@@ -34,6 +34,7 @@ use Poweradmin\Domain\Service\SessionService;
 use Poweradmin\Infrastructure\Logger\Logger;
 use Poweradmin\Infrastructure\Logger\LoggerHandlerFactory;
 use Poweradmin\Infrastructure\Service\RedirectService;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 
 class LogoutController extends BaseController
 {
@@ -250,15 +251,8 @@ class LogoutController extends BaseController
 
     private function getBaseUrl(): string
     {
-        // Check HTTPS server variable
-        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-            $scheme = 'https';
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-            // Check X-Forwarded-Proto header (for reverse proxies)
-            $scheme = 'https';
-        } else {
-            $scheme = 'http';
-        }
+        $protocolDetector = new ProtocolDetector();
+        $scheme = $protocolDetector->detect();
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         $basePrefix = $this->config->get('interface', 'base_url_prefix', '');
 

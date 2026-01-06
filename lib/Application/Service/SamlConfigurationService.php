@@ -24,6 +24,7 @@ namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Logger\Logger;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use ReflectionClass;
 
 class SamlConfigurationService extends LoggingService
@@ -128,15 +129,8 @@ class SamlConfigurationService extends LoggingService
         }
 
         // Fallback to detecting from server environment
-        // Check HTTPS server variable
-        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-            $scheme = 'https';
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-            // Check X-Forwarded-Proto header (for reverse proxies)
-            $scheme = 'https';
-        } else {
-            $scheme = 'http';
-        }
+        $protocolDetector = new ProtocolDetector();
+        $scheme = $protocolDetector->detect();
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         $prefix = $this->configManager->get('interface', 'base_url_prefix', '');
 

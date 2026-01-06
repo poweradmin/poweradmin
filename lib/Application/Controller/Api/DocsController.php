@@ -32,6 +32,7 @@
 namespace Poweradmin\Application\Controller\Api;
 
 use Poweradmin\BaseController;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
@@ -87,15 +88,8 @@ class DocsController extends BaseController
     private function generateSwaggerUI(): string
     {
         // Get the base URL for API docs
-        // Check HTTPS server variable
-        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-            $protocol = 'https';
-        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-            // Check X-Forwarded-Proto header (for reverse proxies)
-            $protocol = 'https';
-        } else {
-            $protocol = 'http';
-        }
+        $protocolDetector = new ProtocolDetector();
+        $protocol = $protocolDetector->detect();
         $host = $this->getValidatedHost();
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
         $baseUrl = $protocol . '://' . $host . $baseUrlPrefix;

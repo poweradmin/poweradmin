@@ -23,6 +23,7 @@
 namespace Poweradmin\Application\Service;
 
 use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 
 /**
  * Service for building absolute URLs
@@ -100,22 +101,8 @@ class UrlService
      */
     private function getProtocol(): string
     {
-        // Check HTTPS server variable
-        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
-            return 'https';
-        }
-
-        // Check X-Forwarded-Proto header (for reverse proxies)
-        if (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
-            return 'https';
-        }
-
-        // Check if running on standard HTTPS port
-        if (!empty($_SERVER['SERVER_PORT']) && $_SERVER['SERVER_PORT'] == '443') {
-            return 'https';
-        }
-
-        return 'http';
+        $protocolDetector = new ProtocolDetector();
+        return $protocolDetector->detect();
     }
 
     /**
