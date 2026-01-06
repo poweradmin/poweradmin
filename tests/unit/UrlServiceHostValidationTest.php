@@ -177,6 +177,99 @@ class UrlServiceHostValidationTest extends TestCase
         $this->assertStringNotContainsString('bin', $url);
     }
 
+    public function testProtocolDetectionWithHttpsOn(): void
+    {
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['HTTPS'] = 'on';
+
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => '',
+                'base_url_prefix' => ''
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+        $url = $urlService->getAbsoluteUrl('/test');
+
+        $this->assertStringStartsWith('https://', $url);
+    }
+
+    public function testProtocolDetectionWithHttpsOff(): void
+    {
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['HTTPS'] = 'off';
+
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => '',
+                'base_url_prefix' => ''
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+        $url = $urlService->getAbsoluteUrl('/test');
+
+        $this->assertStringStartsWith('http://', $url);
+    }
+
+    public function testProtocolDetectionWithForwardedProto(): void
+    {
+        // Simulate reverse proxy scenario: no HTTPS but X-Forwarded-Proto is set
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => '',
+                'base_url_prefix' => ''
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+        $url = $urlService->getAbsoluteUrl('/test');
+
+        $this->assertStringStartsWith('https://', $url);
+    }
+
+    public function testProtocolDetectionWithForwardedProtoWhenHttpsOff(): void
+    {
+        // Simulate reverse proxy: HTTPS=off but X-Forwarded-Proto=https
+        $_SERVER['HTTP_HOST'] = 'example.com';
+        $_SERVER['HTTPS'] = 'off';
+        $_SERVER['HTTP_X_FORWARDED_PROTO'] = 'https';
+
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => '',
+                'base_url_prefix' => ''
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+        $url = $urlService->getAbsoluteUrl('/test');
+
+        $this->assertStringStartsWith('https://', $url);
+    }
+
+    public function testProtocolDetectionDefaultsToHttp(): void
+    {
+        // No HTTPS indicators
+        $_SERVER['HTTP_HOST'] = 'example.com';
+
+        $config = $this->createMockConfig([
+            'interface' => [
+                'application_url' => '',
+                'base_url_prefix' => ''
+            ]
+        ]);
+
+        $urlService = new UrlService($config);
+        $url = $urlService->getAbsoluteUrl('/test');
+
+        $this->assertStringStartsWith('http://', $url);
+    }
+
     protected function tearDown(): void
     {
         // Clean up server variables

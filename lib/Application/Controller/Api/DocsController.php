@@ -87,8 +87,15 @@ class DocsController extends BaseController
     private function generateSwaggerUI(): string
     {
         // Get the base URL for API docs
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-        || (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ? 'https' : 'http';
+        // Check HTTPS server variable
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+            $protocol = 'https';
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            // Check X-Forwarded-Proto header (for reverse proxies)
+            $protocol = 'https';
+        } else {
+            $protocol = 'http';
+        }
         $host = $this->getValidatedHost();
         $baseUrlPrefix = $this->config->get('interface', 'base_url_prefix', '');
         $baseUrl = $protocol . '://' . $host . $baseUrlPrefix;

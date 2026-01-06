@@ -128,7 +128,15 @@ class SamlConfigurationService extends LoggingService
         }
 
         // Fallback to detecting from server environment
-        $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' ? 'https' : 'http';
+        // Check HTTPS server variable
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+            $scheme = 'https';
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            // Check X-Forwarded-Proto header (for reverse proxies)
+            $scheme = 'https';
+        } else {
+            $scheme = 'http';
+        }
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         $prefix = $this->configManager->get('interface', 'base_url_prefix', '');
 

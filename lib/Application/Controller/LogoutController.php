@@ -250,7 +250,15 @@ class LogoutController extends BaseController
 
     private function getBaseUrl(): string
     {
-        $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
+        // Check HTTPS server variable
+        if (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') {
+            $scheme = 'https';
+        } elseif (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') {
+            // Check X-Forwarded-Proto header (for reverse proxies)
+            $scheme = 'https';
+        } else {
+            $scheme = 'http';
+        }
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         $basePrefix = $this->config->get('interface', 'base_url_prefix', '');
 
