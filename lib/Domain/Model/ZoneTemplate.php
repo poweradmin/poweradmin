@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -702,6 +702,7 @@ class ZoneTemplate
         }
 
         $query = "SELECT zones.id,
+            zones.domain_id,
             $domains_table.name,
             $domains_table.type,
             Record_Count.count_records
@@ -712,7 +713,7 @@ class ZoneTemplate
             ) Record_Count ON Record_Count.domain_id=$domains_table.id
             WHERE 1=1" . $sql_add . "
             AND zones.zone_templ_id = :zone_templ_id
-            GROUP BY $domains_table.name, zones.id, $domains_table.type, Record_Count.count_records";
+            GROUP BY $domains_table.name, zones.id, zones.domain_id, $domains_table.type, Record_Count.count_records";
 
         try {
             $stmt = $this->db->prepare($query);
@@ -720,7 +721,7 @@ class ZoneTemplate
 
             $zone_list = [];
             while ($zone = $stmt->fetch()) {
-                $zone_list[] = $zone['id'];
+                $zone_list[] = $zone['domain_id'];
             }
             return $zone_list;
         } catch (Exception $e) {
