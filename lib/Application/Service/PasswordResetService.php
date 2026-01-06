@@ -26,6 +26,7 @@ use Poweradmin\Infrastructure\Configuration\ConfigurationInterface;
 use Poweradmin\Infrastructure\Repository\DbPasswordResetTokenRepository;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Utility\IpAddressRetriever;
+use Poweradmin\Infrastructure\Utility\ProtocolDetector;
 use Psr\Log\LoggerInterface;
 
 class PasswordResetService
@@ -194,7 +195,8 @@ class PasswordResetService
      */
     private function getResetUrl(string $token): string
     {
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $protocolDetector = new ProtocolDetector();
+        $protocol = $protocolDetector->detect();
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         $basePath = dirname($_SERVER['SCRIPT_NAME'] ?? '');
         $basePath = rtrim($basePath, '/');
