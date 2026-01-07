@@ -138,6 +138,11 @@ class DatabaseHelper
         $fill_perm_items = $this->db->prepare('INSERT INTO perm_items VALUES (?, ?, ?)');
         $def_permissions = PermissionHelper::getPermissionMappings();
         $this->schemaService->executeMultiple($fill_perm_items, $def_permissions);
+
+        // Sync PostgreSQL sequence after inserting with explicit IDs (fixes #942)
+        if ($dbType === 'pgsql') {
+            $this->db->exec("SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items))");
+        }
     }
 
     /**

@@ -65,6 +65,8 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES
                                                      (67,	'zone_delete_own',	'User is allowed to delete zones they own.'),
                                                      (68,	'zone_delete_others',	'User is allowed to delete zones owned by others.');
 
+SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items));
+
 CREATE SEQUENCE perm_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
 CREATE TABLE "public"."perm_templ" (
@@ -80,6 +82,8 @@ INSERT INTO "perm_templ" ("id", "name", "descr") VALUES
     (3,	'DNS Editor',	'Edit own zone records but cannot modify SOA and NS records.'),
     (4,	'Read Only',	'Read-only access to own zones with search capability.'),
     (5,	'No Access',	'Template with no permissions assigned. Suitable for inactive accounts or users pending permission assignment.');
+
+SELECT setval('perm_templ_id_seq', (SELECT MAX(id) FROM perm_templ));
 
 CREATE SEQUENCE perm_templ_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
@@ -112,6 +116,8 @@ INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (16,	3,	62),
     (17,	4,	43),
     (18,	4,	49);
+
+SELECT setval('perm_templ_items_id_seq', (SELECT MAX(id) FROM perm_templ_items));
 
 CREATE SEQUENCE records_zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
