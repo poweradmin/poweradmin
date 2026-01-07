@@ -66,6 +66,11 @@ class DatabaseHelper
         if (method_exists($fill_perm_items, 'free')) {
             $fill_perm_items->free();
         }
+
+        // Sync PostgreSQL sequence after inserting with explicit IDs (fixes #942)
+        if ($this->databaseCredentials['db_type'] === 'pgsql') {
+            $this->db->exec("SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items))");
+        }
     }
 
     public function createAdministratorUser($pa_pass, $default_config_file): void

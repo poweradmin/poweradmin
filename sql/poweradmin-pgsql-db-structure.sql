@@ -62,6 +62,8 @@ INSERT INTO "perm_items" ("id", "name", "descr") VALUES
                                                      (61,	'templ_perm_edit',	'User is allowed to edit existing permission templates.'),
                                                      (62,	'zone_content_edit_own_as_client',	'User is allowed to edit record, but not SOA and NS.');
 
+SELECT setval('perm_items_id_seq', (SELECT MAX(id) FROM perm_items));
+
 CREATE SEQUENCE perm_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
 CREATE TABLE "public"."perm_templ" (
@@ -74,6 +76,8 @@ CREATE TABLE "public"."perm_templ" (
 INSERT INTO "perm_templ" ("id", "name", "descr") VALUES
     (1,	'Administrator',	'Administrator template with full rights.');
 
+SELECT setval('perm_templ_id_seq', (SELECT MAX(id) FROM perm_templ));
+
 CREATE SEQUENCE perm_templ_items_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
 CREATE TABLE "public"."perm_templ_items" (
@@ -85,6 +89,8 @@ CREATE TABLE "public"."perm_templ_items" (
 
 INSERT INTO "perm_templ_items" ("id", "templ_id", "perm_id") VALUES
     (1,	1,	53);
+
+SELECT setval('perm_templ_items_id_seq', (SELECT MAX(id) FROM perm_templ_items));
 
 CREATE TABLE "public"."records_zone_templ" (
                                                "domain_id" integer,
@@ -110,6 +116,8 @@ CREATE TABLE "public"."users" (
 
 INSERT INTO "users" ("id", "username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap") VALUES
     (1,	'admin',	'$2y$12$10ei/WGJPcUY9Ea8/eVage9zBbxr0xxW82qJF/cfSyev/jX84WHQe',	'Administrator',	'admin@example.net',	'Administrator with full rights.',	1,	1,	0);
+
+SELECT setval('users_id_seq', (SELECT MAX(id) FROM users));
 
 CREATE SEQUENCE zone_templ_id_seq INCREMENT 1 MINVALUE 1 MAXVALUE 2147483647 CACHE 1;
 
