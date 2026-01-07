@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-CONFIG_FILE="/app/config/settings.php"
+# Default paths (CONFIG_FILE is set after secrets are processed in main())
 DB_DIR="/db"
 
 log() {
@@ -498,6 +498,9 @@ generate_config() {
         reverse_record_types="['$(echo "${PA_DNS_REVERSE_RECORD_TYPES}" | sed "s/,/','/g")']"
     fi
 
+    # Ensure parent directory exists for custom config paths
+    mkdir -p "$(dirname "${CONFIG_FILE}")"
+
     cat > "${CONFIG_FILE}" << EOF
 <?php
 
@@ -882,8 +885,8 @@ EOF
 print_config_summary() {
     log "=== Poweradmin Configuration Summary ==="
 
-    if [ -n "${PA_CONFIG_PATH}" ] && [ -f "${CONFIG_FILE}" ]; then
-        log "Configuration: Custom configuration file loaded from ${PA_CONFIG_PATH}"
+    if [ -n "${PA_CONFIG_PATH}" ]; then
+        log "Configuration: Custom configuration file at ${CONFIG_FILE}"
         log "Configuration details are managed by the custom config file."
     else
         log "Database Type: ${DB_TYPE}"
@@ -915,18 +918,28 @@ print_config_summary() {
 
 }
 
-# Set up proper file permissions
+# Set up proper file permissions for writable directories
 setup_permissions() {
     log "Setting up file permissions..."
 
-    # Ensure directories exist and have proper permissions
-    mkdir -p /app/config "${DB_DIR}"
+    # Fix ownership on writable volumes (entrypoint runs as root)
+    # This eliminates the need for volume pre-initialization
 
-    # Set ownership
-    chown -R www-data:www-data /app "${DB_DIR}"
+    # Database directory
+    if [ -d "${DB_DIR}" ]; then
+        chown -R www-data:www-data "${DB_DIR}"
+    fi
 
-    # Set permissions
-    chmod -R 755 /app "${DB_DIR}"
+    # Config directory (when using custom PA_CONFIG_PATH)
+    config_dir=$(dirname "${CONFIG_FILE}")
+    if [ "${config_dir}" != "/app/config" ] && [ -d "${config_dir}" ]; then
+        chown -R www-data:www-data "${config_dir}"
+    fi
+
+    # Caddy data directory (may fail on read-only filesystem, that's OK)
+    if [ -d "/var/caddy" ]; then
+        chown -R www-data:www-data /var/caddy 2>/dev/null || true
+    fi
 
     log "File permissions set successfully"
 }
@@ -938,20 +951,18 @@ main() {
     # 1. PA_CONFIG_PATH (custom config file) - highest priority
     # 2. Individual environment variables (with Docker secrets support) - fallback
 
-    # Process Docker secrets first
+    # Process Docker secrets first (must run before using any secret-provided variables)
     log "Processing Docker secrets..."
     process_secret_files
+
+    # Set CONFIG_FILE after secrets are processed (supports PA_CONFIG_PATH__FILE)
+    CONFIG_FILE="${PA_CONFIG_PATH:-/app/config/settings.php}"
 
     # Initialize SQLite database if needed (must run before admin user creation)
     init_sqlite_db
 
-    if [ -n "${PA_CONFIG_PATH}" ] && [ -f "${PA_CONFIG_PATH}" ]; then
-        log "Using custom configuration from: ${PA_CONFIG_PATH}"
-        cp "${PA_CONFIG_PATH}" "${CONFIG_FILE}"
-        chmod 644 "${CONFIG_FILE}"
-        chown www-data:www-data "${CONFIG_FILE}"
-    elif [ -f "${CONFIG_FILE}" ]; then
-        log "Using existing settings.php (generated from environment variables)"
+    if [ -f "${CONFIG_FILE}" ]; then
+        log "Using configuration file: ${CONFIG_FILE}"
     else
         log "No custom config found. Generating settings.php from environment variables..."
 
@@ -989,8 +1000,8 @@ main() {
     log "Configuration loaded successfully"
     log "Starting Poweradmin..."
 
-    # Execute the command
-    exec "$@"
+    # Drop privileges and execute the command as www-data
+    exec su-exec www-data "$@"
 }
 
 # Run main function with all arguments

@@ -557,7 +557,7 @@ docker run -d \
 
 | Variable | Description | Default | Required |
 |----------|-------------|---------|----------|
-| `PA_CONFIG_PATH` | Path to custom settings.php file | Empty | No |
+| `PA_CONFIG_PATH` | Path to configuration file (supports immutable containers) | `/app/config/settings.php` | No |
 
 ## Docker Compose Example
 
@@ -1018,6 +1018,93 @@ services:
 
 volumes:
   mysql_data:
+```
+
+### Immutable Container Deployment
+
+For enhanced security, you can run Poweradmin with a read-only root filesystem. Use `PA_CONFIG_PATH` to specify a configuration file location on a writable volume.
+
+```bash
+# Run with read-only filesystem - no volume pre-initialization needed
+docker run -d --name poweradmin -p 80:80 \
+  --read-only \
+  --tmpfs /tmp:rw,noexec,nosuid \
+  -v poweradmin-config:/config:rw \
+  -v poweradmin-db:/db:rw \
+  -e PA_CONFIG_PATH=/config/settings.php \
+  -e DB_TYPE=sqlite \
+  -e DB_FILE=/db/pdns.db \
+  poweradmin/poweradmin
+```
+
+Docker Compose example for immutable deployment:
+
+```yaml
+version: '3.8'
+services:
+  poweradmin:
+    image: poweradmin/poweradmin
+    read_only: true
+    ports:
+      - "80:80"
+    tmpfs:
+      - /tmp:rw,noexec,nosuid
+    environment:
+      - PA_CONFIG_PATH=/config/settings.php
+      - DB_TYPE=mysql
+      - DB_HOST=mysql
+      - DB_USER=poweradmin
+      - DB_PASS=password
+      - DB_NAME=poweradmin
+    volumes:
+      - poweradmin-config:/config:rw
+    depends_on:
+      - mysql
+
+  mysql:
+    image: mysql:8.0
+    environment:
+      - MYSQL_ROOT_PASSWORD=rootpassword
+      - MYSQL_DATABASE=poweradmin
+      - MYSQL_USER=poweradmin
+      - MYSQL_PASSWORD=password
+    volumes:
+      - mysql_data:/var/lib/mysql
+
+volumes:
+  poweradmin-config:
+  mysql_data:
+```
+
+Kubernetes deployment with immutable container:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: poweradmin
+spec:
+  template:
+    spec:
+      containers:
+        - name: poweradmin
+          image: poweradmin/poweradmin
+          securityContext:
+            readOnlyRootFilesystem: true
+          env:
+            - name: PA_CONFIG_PATH
+              value: /config/settings.php
+          volumeMounts:
+            - name: config
+              mountPath: /config
+            - name: tmp
+              mountPath: /tmp
+      volumes:
+        - name: config
+          persistentVolumeClaim:
+            claimName: poweradmin-config
+        - name: tmp
+          emptyDir: {}
 ```
 
 ## Performance Benefits

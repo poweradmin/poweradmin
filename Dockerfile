@@ -159,12 +159,19 @@ COPY <<EOF /etc/caddy/Caddyfile
 }
 EOF
 
+# Move Caddy data/config to /var/caddy to free up /config for user settings
+ENV XDG_CONFIG_HOME=/var/caddy
+ENV XDG_DATA_HOME=/var/caddy
+
 # Set proper ownership for www-data user
 RUN chown -R www-data:www-data /app /db \
-    && mkdir -p /data/caddy/locks /config/caddy \
-    && chown -R www-data:www-data /data/caddy /config/caddy
+    && mkdir -p /var/caddy/caddy \
+    && chown -R www-data:www-data /var/caddy
 
-USER www-data
+# Install su-exec for dropping privileges
+RUN apk add --no-cache su-exec
+
+# Run as root initially, entrypoint will drop to www-data
 
 EXPOSE 80
 
