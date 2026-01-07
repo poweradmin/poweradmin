@@ -1,0 +1,88 @@
+# LDAP Test Users for Poweradmin 4.x
+#
+# This LDIF file creates test users in the LDAP directory that correspond
+# to the database test users. Users can authenticate via LDAP instead of
+# the local password stored in the database.
+#
+# Password for all users: testpass123
+#
+# Usage:
+#   Automatically loaded by setup-ldap-test.sh
+#   Manual: ldapadd -x -D "cn=admin,dc=poweradmin,dc=org" -w poweradmin -f ldap-test-users.ldif
+
+# Create organizational unit for users
+dn: ou=users,dc=poweradmin,dc=org
+objectClass: organizationalUnit
+ou: users
+
+# ldap-admin - LDAP user with Administrator permissions (perm_templ=1)
+dn: uid=ldap-admin,ou=users,dc=poweradmin,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: ldap-admin
+sn: Admin
+givenName: LDAP
+cn: LDAP Admin
+displayName: LDAP Administrator
+uidNumber: 10000
+gidNumber: 10000
+userPassword: testpass123
+gecos: LDAP Administrator
+loginShell: /bin/bash
+homeDirectory: /home/ldap-admin
+mail: ldap-admin@poweradmin.org
+
+# ldap-manager - LDAP user with Zone Manager permissions (perm_templ=2)
+dn: uid=ldap-manager,ou=users,dc=poweradmin,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: ldap-manager
+sn: Manager
+givenName: LDAP
+cn: LDAP Manager
+displayName: LDAP Zone Manager
+uidNumber: 10001
+gidNumber: 10000
+userPassword: testpass123
+gecos: LDAP Zone Manager
+loginShell: /bin/bash
+homeDirectory: /home/ldap-manager
+mail: ldap-manager@poweradmin.org
+
+# ldap-client - LDAP user with Client Editor permissions (perm_templ=3)
+dn: uid=ldap-client,ou=users,dc=poweradmin,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: ldap-client
+sn: Client
+givenName: LDAP
+cn: LDAP Client
+displayName: LDAP Client Editor
+uidNumber: 10002
+gidNumber: 10000
+userPassword: testpass123
+gecos: LDAP Client Editor
+loginShell: /bin/bash
+homeDirectory: /home/ldap-client
+mail: ldap-client@poweradmin.org
+
+# ldap-viewer - LDAP user with Read Only permissions (perm_templ=4)
+dn: uid=ldap-viewer,ou=users,dc=poweradmin,dc=org
+objectClass: inetOrgPerson
+objectClass: posixAccount
+objectClass: shadowAccount
+uid: ldap-viewer
+sn: Viewer
+givenName: LDAP
+cn: LDAP Viewer
+displayName: LDAP Read Only
+uidNumber: 10003
+gidNumber: 10000
+userPassword: testpass123
+gecos: LDAP Read Only User
+loginShell: /bin/bash
+homeDirectory: /home/ldap-viewer
+mail: ldap-viewer@poweradmin.org

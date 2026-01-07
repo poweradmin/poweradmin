@@ -244,7 +244,7 @@ services:
       - "LDAP_BASE_DN=dc=poweradmin,dc=org"
       - LDAP_ADMIN_PASSWORD=poweradmin
     volumes:
-      - ./ldap/ldap-test-user.ldif:/ldap-test-user.ldif:ro
+      - ./ldap/ldap-test-users.ldif:/ldap-test-users.ldif:ro
     ports:
       - 389:389
       - 636:636
