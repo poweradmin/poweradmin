@@ -9,12 +9,16 @@
   },
   "scripts": {
     "test:e2e": "playwright test",
+    "test:e2e:mysql": "BASE_URL=http://localhost:8080 playwright test",
+    "test:e2e:pgsql": "BASE_URL=http://localhost:8081 playwright test",
+    "test:e2e:sqlite": "BASE_URL=http://localhost:8082 playwright test",
     "test:e2e:ui": "playwright test --ui",
     "test:e2e:headed": "playwright test --headed",
     "test:e2e:debug": "playwright test --debug",
     "test:e2e:chromium": "playwright test --project=chromium",
     "test:e2e:firefox": "playwright test --project=firefox",
     "test:e2e:webkit": "playwright test --project=webkit",
+    "test:e2e:all": "playwright test --project=chromium --project=firefox --project=webkit",
     "test:e2e:report": "playwright show-report"
   },
   "keywords": [],

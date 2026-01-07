@@ -56,7 +56,7 @@
 
         # Forward all API requests to index.php with proper query handling
         rewrite * /index.php{uri}
-        php_fastcgi app:9000 {
+        php_fastcgi app-sqlite:9000 {
             read_timeout 180s
             env HTTP_AUTHORIZATION {http.request.header.Authorization}
         }
@@ -65,7 +65,7 @@
     # Handle all other requests - Clean URL routing
     # Let Symfony Router handle all routing through index.php
     try_files {path} {path}/ /index.php{uri}
-    php_fastcgi app:9000 {
+    php_fastcgi app-sqlite:9000 {
         read_timeout 180s
         env HTTP_AUTHORIZATION {http.request.header.Authorization}
     }
