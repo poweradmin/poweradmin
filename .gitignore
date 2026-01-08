@@ -48,9 +48,10 @@ package-lock.json
 /*.log
 /npm-debug.log*
 
-# Cypress
-/cypress/videos
-/cypress/screenshots
+# Playwright
+/playwright-report/
+/playwright/.cache/
+/test-results/
 
 # PHP tools
 /.php-cs-fixer.cache
