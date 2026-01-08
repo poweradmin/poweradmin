@@ -173,6 +173,7 @@ return [
         'third_level_check' => false,              // Prevent creation of third-level domains (added in 2.1.7)
         'txt_auto_quote' => false,                 // Automatically quote TXT records (added in 3.9.2)
         'prevent_duplicate_ptr' => true,           // Prevent creation of multiple PTR records for same IP in batch operations (added in 4.0.0)
+        'custom_tlds' => [],                       // Custom TLDs to allow in CNAME targets (e.g., ['dn42', 'home', 'internal'])
 
         // Record Type Settings (added in 4.0.0)
         // Set to null to use all default types, or provide an array of specific types to show

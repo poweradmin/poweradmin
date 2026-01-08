@@ -307,8 +307,16 @@ class CNAMERecordValidator implements DnsRecordValidatorInterface
             return ValidationResult::failure(_('CNAME target must be a fully qualified domain name (FQDN). Single-label names are not allowed.'));
         }
 
-        // Check if last label looks like a valid TLD (at least 2 characters, all letters)
+        // Check if last label looks like a valid TLD
         $tld = end($labels);
+
+        // Check custom TLD whitelist first
+        $customTlds = $this->config->get('dns', 'custom_tlds', []);
+        if (is_array($customTlds) && in_array(strtolower($tld), array_map('strtolower', $customTlds), true)) {
+            return ValidationResult::success(true);
+        }
+
+        // Standard validation: TLD must be at least 2 chars and all alphabetic
         if (strlen($tld) < 2 || !ctype_alpha($tld)) {
             return ValidationResult::failure(_('CNAME target must be a fully qualified domain name (FQDN) with a valid top-level domain.'));
         }
