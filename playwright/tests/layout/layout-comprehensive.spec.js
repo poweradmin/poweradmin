@@ -29,7 +29,7 @@ test.describe('Layout - Footer', () => {
     });
 
     test('footer should be visible on zones page', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const footer = page.locator('footer, .footer, #footer');
       if (await footer.count() > 0) {
@@ -111,7 +111,7 @@ test.describe('Layout - Navigation', () => {
     test('should show zones link', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
-      const zonesLink = page.locator('a[href*="list_zones"], a:has-text("Zone")');
+      const zonesLink = page.locator('a[href*="list_forward_zones"], a:has-text("Zone")');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
 
@@ -156,10 +156,10 @@ test.describe('Layout - Navigation', () => {
     test('should navigate to zones page', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
 
-      const zonesLink = page.locator('a[href*="list_zones"]').first();
+      const zonesLink = page.locator('a[href*="list_forward_zones"]').first();
       if (await zonesLink.count() > 0) {
         await zonesLink.click();
-        await expect(page).toHaveURL(/list_zones/);
+        await expect(page).toHaveURL(/list_forward_zones/);
       }
     });
 
@@ -206,7 +206,7 @@ test.describe('Layout - Navigation', () => {
     test('should show zones link', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
 
-      const zonesLink = page.locator('a[href*="list_zones"]');
+      const zonesLink = page.locator('a[href*="list_forward_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
 
@@ -239,7 +239,7 @@ test.describe('Layout - Navigation', () => {
     test('should show zones link', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=index');
 
-      const zonesLink = page.locator('a[href*="list_zones"]');
+      const zonesLink = page.locator('a[href*="list_forward_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
 
@@ -261,7 +261,7 @@ test.describe('Layout - Navigation', () => {
     });
 
     test('should not show add zone buttons', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const addBtn = page.locator('input[value*="Add master"], input[value*="Add slave"]');
       expect(await addBtn.count()).toBe(0);
@@ -277,11 +277,11 @@ test.describe('Layout - Navigation', () => {
 
   test.describe('Active Menu Highlighting', () => {
     test('should highlight current page in menu', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const activeLink = page.locator('.active, .current, [aria-current="page"]');
       // Check if there's active state styling
-      const zonesLink = page.locator('a[href*="list_zones"]').first();
+      const zonesLink = page.locator('a[href*="list_forward_zones"]').first();
       if (await zonesLink.count() > 0) {
         await expect(zonesLink).toBeVisible();
       }
@@ -377,7 +377,7 @@ test.describe('Layout - Page Structure', () => {
 
 test.describe('Layout - Breadcrumbs', () => {
   test('should display breadcrumbs on zone edit page', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
     const editLink = page.locator('a[href*="page=edit"]').first();
 
     if (await editLink.count() > 0) {
@@ -391,7 +391,7 @@ test.describe('Layout - Breadcrumbs', () => {
   });
 
   test('should display breadcrumbs on add record page', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
     const editLink = page.locator('a[href*="page=edit"]').first();
 
     if (await editLink.count() > 0) {

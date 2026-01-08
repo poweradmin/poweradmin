@@ -39,7 +39,7 @@ test.describe('Dashboard Views', () => {
 
     test('should link to zones list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
-      const zonesLink = page.locator('a[href*="list_zones"]');
+      const zonesLink = page.locator('a[href*="list_forward_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
 
@@ -78,7 +78,7 @@ test.describe('Dashboard Views', () => {
 
     test('should show zones link', async ({ managerPage: page }) => {
       await page.goto('/index.php?page=index');
-      const zonesLink = page.locator('a[href*="list_zones"]');
+      const zonesLink = page.locator('a[href*="list_forward_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
 
@@ -110,7 +110,7 @@ test.describe('Dashboard Views', () => {
 
     test('should link to zones list', async ({ clientPage: page }) => {
       await page.goto('/index.php?page=index');
-      const zonesLink = page.locator('a[href*="list_zones"]');
+      const zonesLink = page.locator('a[href*="list_forward_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
   });
@@ -130,7 +130,7 @@ test.describe('Dashboard Views', () => {
 
     test('should link to zones list', async ({ viewerPage: page }) => {
       await page.goto('/index.php?page=index');
-      const zonesLink = page.locator('a[href*="list_zones"]');
+      const zonesLink = page.locator('a[href*="list_forward_zones"]');
       expect(await zonesLink.count()).toBeGreaterThan(0);
     });
   });
@@ -179,10 +179,10 @@ test.describe('Dashboard Views', () => {
 
     test('should navigate to zones list', async ({ adminPage: page }) => {
       await page.goto('/index.php?page=index');
-      const zonesLink = page.locator('a[href*="list_zones"]').first();
+      const zonesLink = page.locator('a[href*="list_forward_zones"]').first();
       if (await zonesLink.count() > 0) {
         await zonesLink.click();
-        await expect(page).toHaveURL(/list_zones/);
+        await expect(page).toHaveURL(/list_forward_zones/);
       }
     });
 

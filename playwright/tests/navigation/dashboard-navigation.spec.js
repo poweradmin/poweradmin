@@ -39,15 +39,15 @@ test.describe('Dashboard and Navigation', () => {
   });
 
   test('should navigate to forward zones page', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones');
-    await expect(page).toHaveURL(/page=list_zones/);
+    await page.goto('/index.php?page=list_forward_zones');
+    await expect(page).toHaveURL(/page=list_forward_zones/);
     // Page may use various heading levels
     await expect(page.locator('h1, h2, h3, h4, h5, .page-title').first()).toBeVisible();
   });
 
   test('should navigate to reverse zones page', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones');
-    await expect(page).toHaveURL(/page=list_zones/);
+    await page.goto('/index.php?page=list_forward_zones');
+    await expect(page).toHaveURL(/page=list_forward_zones/);
     // Page may use various heading levels
     await expect(page.locator('h1, h2, h3, h4, h5, .page-title').first()).toBeVisible();
   });
@@ -101,7 +101,7 @@ test.describe('Dashboard and Navigation', () => {
   test('should maintain session across page navigation', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=index');
     await page.goto('/index.php?page=users');
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
     await page.goto('/index.php?page=search');
 
     // Should still be logged in

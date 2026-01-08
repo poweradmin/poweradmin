@@ -6,8 +6,8 @@ test.describe.configure({ mode: 'serial' });
 
 test.describe('DNS Record Management', () => {
   test('should access zones list to manage records', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones');
-    await expect(page).toHaveURL(/page=list_zones/);
+    await page.goto('/index.php?page=list_forward_zones');
+    await expect(page).toHaveURL(/page=list_forward_zones/);
 
     // Should show zones or empty state
     const hasTable = await page.locator('table, .table').count() > 0;

@@ -50,7 +50,7 @@ test.describe('Bulk and Batch Operations', () => {
   });
 
   test('should verify bulk registered domains exist', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
 
     // Click "Show all" to show all zones regardless of letter filter
     const showAllBtn = page.locator('a, button').filter({ hasText: 'Show all' });
@@ -66,7 +66,7 @@ test.describe('Bulk and Batch Operations', () => {
   });
 
   test('should perform bulk zone deletion', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones&letter=all');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Check if bulk delete functionality exists (checkboxes + delete button)
     const hasCheckboxes = await page.locator('table input[type="checkbox"]').count() > 0;
@@ -94,7 +94,7 @@ test.describe('Bulk and Batch Operations', () => {
   });
 
   test('should perform manual zone deletion', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones&letter=all');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Find any delete link
     const deleteLink = page.locator('a[href*="delete_domain"]').first();
@@ -163,7 +163,7 @@ test.describe('Bulk and Batch Operations', () => {
 
   test('should check for export functionality', async ({ adminPage: page }) => {
     // Check for export functionality on zones page
-    await page.goto('/index.php?page=list_zones&letter=all');
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
 
     // Verify page loads without errors
     const bodyText = await page.locator('body').textContent();
@@ -187,7 +187,7 @@ test.describe('Bulk and Batch Operations', () => {
       const page = await browser.newPage();
       await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-      await page.goto('/index.php?page=list_zones&letter=all', { timeout: 10000 });
+      await page.goto('/index.php?page=list_forward_zones&letter=all', { timeout: 10000 });
 
       // Clean up test domains (limit to 5 total to avoid timeout)
       let cleaned = 0;

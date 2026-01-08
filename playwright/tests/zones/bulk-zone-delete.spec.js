@@ -29,7 +29,7 @@ test.describe('Bulk Zone Deletion', () => {
 
   test.describe('Bulk Delete Page', () => {
     test('should access bulk delete page with selected zones', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       // Select multiple zones using checkboxes if available
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
@@ -47,7 +47,7 @@ test.describe('Bulk Zone Deletion', () => {
     });
 
     test('should display confirmation message', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
       if (await checkboxes.count() >= 1) {
@@ -64,7 +64,7 @@ test.describe('Bulk Zone Deletion', () => {
     });
 
     test('should display zone names to be deleted', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
       if (await checkboxes.count() >= 1) {
@@ -82,7 +82,7 @@ test.describe('Bulk Zone Deletion', () => {
     });
 
     test('should display zone owner information', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
       if (await checkboxes.count() >= 1) {
@@ -99,7 +99,7 @@ test.describe('Bulk Zone Deletion', () => {
     });
 
     test('should display Yes button', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
       if (await checkboxes.count() >= 1) {
@@ -116,7 +116,7 @@ test.describe('Bulk Zone Deletion', () => {
     });
 
     test('should display No button', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
       if (await checkboxes.count() >= 1) {
@@ -133,7 +133,7 @@ test.describe('Bulk Zone Deletion', () => {
     });
 
     test('should cancel bulk delete and return to zones list', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
       if (await checkboxes.count() >= 1) {
@@ -146,14 +146,14 @@ test.describe('Bulk Zone Deletion', () => {
           const noBtn = page.locator('input[value="No"], button:has-text("No")').first();
           if (await noBtn.count() > 0) {
             await noBtn.click();
-            await expect(page).toHaveURL(/list_zones/);
+            await expect(page).toHaveURL(/list_forward_zones/);
           }
         }
       }
     });
 
     test('should display breadcrumb navigation', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
       if (await checkboxes.count() >= 1) {
@@ -188,7 +188,7 @@ test.describe('Bulk Zone Deletion', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Go to zones list and select for deletion
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const checkbox1 = page.locator(`tr:has-text("${tempZone1}") input[type="checkbox"]`).first();
       const checkbox2 = page.locator(`tr:has-text("${tempZone2}") input[type="checkbox"]`).first();
@@ -207,7 +207,7 @@ test.describe('Bulk Zone Deletion', () => {
             await page.waitForLoadState('networkidle');
 
             // Verify zones are deleted
-            await page.goto('/index.php?page=list_zones');
+            await page.goto('/index.php?page=list_forward_zones');
             const zone1Row = page.locator(`tr:has-text("${tempZone1}")`);
             const zone2Row = page.locator(`tr:has-text("${tempZone2}")`);
             expect(await zone1Row.count()).toBe(0);
@@ -220,7 +220,7 @@ test.describe('Bulk Zone Deletion', () => {
 
   test.describe('Bulk Delete Permissions', () => {
     test('admin should access bulk delete', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const checkboxes = page.locator('input[type="checkbox"][name*="zone"]');
       // Admin should see checkboxes for bulk operations
@@ -229,14 +229,14 @@ test.describe('Bulk Zone Deletion', () => {
     });
 
     test('manager should access bulk delete for own zones', async ({ managerPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
     test('viewer should not have bulk delete option', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       // Viewer should not see delete checkboxes or button
       const deleteBtn = page.locator('input[value*="Delete selected"], button:has-text("Delete selected")');
@@ -250,7 +250,7 @@ test.describe('Bulk Zone Deletion', () => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
     for (const domain of testZones) {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const row = page.locator(`tr:has-text("${domain}")`);
       if (await row.count() > 0) {
         const deleteLink = row.locator('a[href*="delete_domain"]').first();

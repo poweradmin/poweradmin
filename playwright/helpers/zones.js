@@ -14,7 +14,7 @@ import zones from '../fixtures/zones.json' assert { type: 'json' };
  * @returns {Promise<string|null>} - Zone ID or null if not found
  */
 export async function findZoneIdByName(page, zoneName) {
-  await page.goto('/index.php?page=list_zones&letter=all');
+  await page.goto('/index.php?page=list_forward_zones&letter=all');
 
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
@@ -63,7 +63,7 @@ export async function getTestZoneId(page, zoneKey) {
  * @returns {Promise<{id: string, name: string}|null>} - Zone info or null if none found
  */
 export async function findAnyZoneId(page, excludeReverse = true) {
-  await page.goto('/index.php?page=list_zones&letter=all');
+  await page.goto('/index.php?page=list_forward_zones&letter=all');
 
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);

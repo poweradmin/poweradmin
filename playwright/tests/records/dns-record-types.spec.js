@@ -26,7 +26,7 @@ test.describe('DNS Record Types Management', () => {
 
   // Helper to navigate to test domain's records
   async function navigateToTestDomain(page) {
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
     const row = page.locator(`tr:has-text("${testDomain}")`);
     if (await row.count() > 0) {
       await row.locator('a').first().click();
@@ -177,7 +177,7 @@ test.describe('DNS Record Types Management', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
     const row = page.locator(`tr:has-text("${testDomain}")`);
     if (await row.count() > 0) {
       const deleteLink = row.locator('a').filter({ hasText: /Delete/i });

@@ -88,7 +88,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     expect(hasDuplicateError).toBeTruthy();
 
     // Cleanup - delete the test zone
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
     const row = page.locator('tr:has-text("duplicate-test.com")');
     if (await row.count() > 0) {
       await row.locator('a').filter({ hasText: /Delete/i }).first().click();
@@ -123,7 +123,7 @@ test.describe('Bulk Zone Registration Validation', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
 
     // Delete test zones
     const testPatterns = ['bulktest', 'tldtest', 'duplicate-test'];

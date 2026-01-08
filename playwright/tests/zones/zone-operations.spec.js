@@ -49,7 +49,7 @@ test.describe('Zone Operations', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Get initial SOA
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const row = page.locator(`tr:has-text("${testDomain}")`);
       if (await row.count() > 0) {
         const editLink = row.locator('a[href*="page=edit"]').first();
@@ -59,7 +59,7 @@ test.describe('Zone Operations', () => {
         expect(bodyText).not.toMatch(/fatal|exception/i);
 
         // Cleanup
-        await page.goto('/index.php?page=list_zones');
+        await page.goto('/index.php?page=list_forward_zones');
         const deleteLink = page.locator(`tr:has-text("${testDomain}") a[href*="delete_domain"]`).first();
         if (await deleteLink.count() > 0) {
           await deleteLink.click();
@@ -72,7 +72,7 @@ test.describe('Zone Operations', () => {
 
   test.describe('Zone Type Operations', () => {
     test('should display zone type in list', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/master|slave|native/i);
     });
@@ -91,7 +91,7 @@ test.describe('Zone Operations', () => {
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
       // Cleanup
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const deleteLink = page.locator(`tr:has-text("${testDomain}") a[href*="delete_domain"]`).first();
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
@@ -101,7 +101,7 @@ test.describe('Zone Operations', () => {
     });
 
     test('should display slave zone master IP', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const slaveRow = page.locator('tr:has-text("SLAVE")').first();
       if (await slaveRow.count() > 0) {
         const bodyText = await slaveRow.textContent();
@@ -112,7 +112,7 @@ test.describe('Zone Operations', () => {
 
   test.describe('Zone Comments', () => {
     test('should display zone comment', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
@@ -125,7 +125,7 @@ test.describe('Zone Operations', () => {
     });
 
     test('should update zone comment', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
@@ -146,14 +146,14 @@ test.describe('Zone Operations', () => {
 
   test.describe('Zone Ownership', () => {
     test('should display zone owner', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const bodyText = await page.locator('body').textContent();
       // Zone list should show owner information
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
     test('should change zone owner', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
@@ -167,7 +167,7 @@ test.describe('Zone Operations', () => {
     });
 
     test('should add multiple owners', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
@@ -183,19 +183,19 @@ test.describe('Zone Operations', () => {
 
   test.describe('Zone Filtering', () => {
     test('should filter forward zones', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones&zone_sort_by=name&zone_sort_order=asc');
+      await page.goto('/index.php?page=list_forward_zones&zone_sort_by=name&zone_sort_order=asc');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
     test('should filter reverse zones', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones&reverse=1');
+      await page.goto('/index.php?page=list_forward_zones&reverse=1');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
     test('should sort zones by name', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const sortLink = page.locator('a[href*="zone_sort_by=name"]').first();
       if (await sortLink.count() > 0) {
         await sortLink.click();
@@ -205,7 +205,7 @@ test.describe('Zone Operations', () => {
     });
 
     test('should sort zones by type', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const sortLink = page.locator('a[href*="zone_sort_by=type"]').first();
       if (await sortLink.count() > 0) {
         await sortLink.click();
@@ -227,7 +227,7 @@ test.describe('Zone Operations', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
 
       // Cleanup
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const deleteLink = page.locator(`tr:has-text("${testDomain}") a[href*="delete_domain"]`).first();
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
@@ -237,7 +237,7 @@ test.describe('Zone Operations', () => {
     });
 
     test('should add PTR record to reverse zone', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones&reverse=1');
+      await page.goto('/index.php?page=list_forward_zones&reverse=1');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
@@ -253,7 +253,7 @@ test.describe('Zone Operations', () => {
 
   test.describe('Zone Statistics', () => {
     test('should display zone record count', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
@@ -264,7 +264,7 @@ test.describe('Zone Operations', () => {
     });
 
     test('should display zone serial in list', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });

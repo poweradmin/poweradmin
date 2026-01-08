@@ -208,7 +208,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('manager should access DNSSEC for own zones', async ({ managerPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
         const href = await editLink.getAttribute('href');
@@ -222,7 +222,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('viewer should have appropriate DNSSEC access', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const editLink = page.locator('a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
         const href = await editLink.getAttribute('href');

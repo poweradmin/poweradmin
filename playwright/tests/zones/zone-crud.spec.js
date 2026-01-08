@@ -12,29 +12,29 @@ test.describe('Zone CRUD Operations', () => {
 
   test.describe('List Zones', () => {
     test('admin should see all zones', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
-      await expect(page).toHaveURL(/page=list_zones/);
+      await expect(page).toHaveURL(/page=list_forward_zones/);
       const table = page.locator('table').first();
       await expect(table).toBeVisible();
     });
 
     test('should display zone columns', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/name|zone|type|records/i);
     });
 
     test('should show zone type indicator', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const bodyText = await page.locator('body').textContent();
       expect(bodyText.toLowerCase()).toMatch(/master|slave|native/i);
     });
 
     test('should display pagination when many zones', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       // Check for pagination elements
       const pagination = page.locator('.pagination, nav[aria-label*="pagination"], a[href*="start="]');
@@ -44,19 +44,19 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('manager should see own zones', async ({ managerPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
-      await expect(page).toHaveURL(/page=list_zones/);
+      await expect(page).toHaveURL(/page=list_forward_zones/);
     });
 
     test('client should see assigned zones', async ({ clientPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
-      await expect(page).toHaveURL(/page=list_zones/);
+      await expect(page).toHaveURL(/page=list_forward_zones/);
     });
 
     test('viewer should see zones in read-only mode', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       // Viewer should not see add/delete buttons
       const addBtn = page.locator('input[value*="Add master"], input[value*="Add slave"]');
@@ -110,7 +110,7 @@ test.describe('Zone CRUD Operations', () => {
                          bodyText.toLowerCase().includes('already') ||
                          bodyText.includes(uniqueDomain) ||
                          url.includes('page=edit') ||
-                         url.includes('page=list_zones');
+                         url.includes('page=list_forward_zones');
       expect(hasSuccess).toBeTruthy();
     });
 
@@ -391,7 +391,7 @@ test.describe('Zone CRUD Operations', () => {
       await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(toDelete);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const row = page.locator(`tr:has-text("${toDelete}")`);
 
       if (await row.count() > 0) {
@@ -402,7 +402,7 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('should display delete confirmation message', async ({ page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const deleteLink = page.locator('a[href*="delete_domain"]').first();
 
       if (await deleteLink.count() > 0) {
@@ -414,7 +414,7 @@ test.describe('Zone CRUD Operations', () => {
     });
 
     test('should cancel delete and return to previous page', async ({ page }) => {
-      await page.goto('/index.php?page=list_zones&letter=all');
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
       const deleteLink = page.locator('a[href*="delete_domain"]').first();
 
       if (await deleteLink.count() > 0) {
@@ -430,7 +430,7 @@ test.describe('Zone CRUD Operations', () => {
 
           // "No" button may go back to list or to edit page - both are valid
           const url = page.url();
-          const validReturn = url.includes('list_zones') || url.includes('page=edit');
+          const validReturn = url.includes('list_forward_zones') || url.includes('page=edit');
           expect(validReturn).toBeTruthy();
         }
       }
@@ -443,7 +443,7 @@ test.describe('Zone CRUD Operations', () => {
       await page.locator('input[name*="domain"], input[name*="zone"], input[name*="name"]').first().fill(toDelete);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const row = page.locator(`tr:has-text("${toDelete}")`);
 
       if (await row.count() > 0) {
@@ -455,7 +455,7 @@ test.describe('Zone CRUD Operations', () => {
           await yesBtn.click();
 
           // Verify deleted
-          await page.goto('/index.php?page=list_zones');
+          await page.goto('/index.php?page=list_forward_zones');
           const bodyText = await page.locator('body').textContent();
           expect(bodyText).not.toContain(toDelete);
         }
@@ -466,7 +466,7 @@ test.describe('Zone CRUD Operations', () => {
   test.describe('Permission Tests', () => {
     test('manager should have add zone buttons', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.manager.username, users.manager.password);
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const addBtn = page.locator('input[value*="Add"], button:has-text("Add")');
       expect(await addBtn.count()).toBeGreaterThan(0);
@@ -474,7 +474,7 @@ test.describe('Zone CRUD Operations', () => {
 
     test('client should not have add zone buttons', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.client.username, users.client.password);
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const addMasterBtn = page.locator('input[value*="Add master zone"]');
       expect(await addMasterBtn.count()).toBe(0);
@@ -482,7 +482,7 @@ test.describe('Zone CRUD Operations', () => {
 
     test('viewer should not have delete zone buttons', async ({ page }) => {
       await loginAndWaitForDashboard(page, users.viewer.username, users.viewer.password);
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       const deleteBtn = page.locator('a[href*="delete_domain"]');
       expect(await deleteBtn.count()).toBe(0);
@@ -494,18 +494,18 @@ test.describe('Zone CRUD Operations', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
 
     // Delete all test zones
     const patterns = ['zone-crud-', 'master-', 'slave-', 'dup-test-', 'template-zone-', 'idn-', 'edit-zone-', 'comment-zone-'];
 
     for (const pattern of patterns) {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const rows = page.locator(`tr`).filter({ hasText: new RegExp(pattern) });
       const count = await rows.count();
 
       for (let i = 0; i < count; i++) {
-        await page.goto('/index.php?page=list_zones');
+        await page.goto('/index.php?page=list_forward_zones');
         const row = page.locator(`tr`).filter({ hasText: new RegExp(pattern) }).first();
 
         if (await row.count() > 0) {

@@ -19,7 +19,7 @@ test.describe('Dashboard', () => {
     });
 
     test('should have List zones link', async ({ adminPage: page }) => {
-      const listZonesLink = page.locator('a[href*="page=list_zones"]').first();
+      const listZonesLink = page.locator('a[href*="page=list_forward_zones"]').first();
       await expect(listZonesLink).toBeVisible();
     });
 
@@ -92,8 +92,8 @@ test.describe('Dashboard', () => {
     });
 
     test('should navigate to list zones page', async ({ adminPage: page }) => {
-      await page.locator('a[href*="page=list_zones"]').first().click();
-      await expect(page).toHaveURL(/page=list_zones/);
+      await page.locator('a[href*="page=list_forward_zones"]').first().click();
+      await expect(page).toHaveURL(/page=list_forward_zones/);
     });
   });
 
@@ -153,7 +153,7 @@ test.describe('Dashboard', () => {
     });
 
     test('should have List zones link (view permission)', async ({ viewerPage: page }) => {
-      const listZonesLink = page.locator('a[href*="page=list_zones"]').first();
+      const listZonesLink = page.locator('a[href*="page=list_forward_zones"]').first();
       await expect(listZonesLink).toBeVisible();
     });
 

@@ -303,7 +303,7 @@ test.describe('Login Authentication', () => {
       await page.goto('/index.php?page=logout');
 
       // Try to access protected page
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       await expect(page).toHaveURL(/login/);
     });
   });

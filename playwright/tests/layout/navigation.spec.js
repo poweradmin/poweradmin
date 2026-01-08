@@ -5,7 +5,7 @@ test.describe('Header Navigation', () => {
     test('should not display user navigation items when not logged in', async ({ page }) => {
       await page.goto('/index.php?page=login');
       // Navigation should be minimal or hidden for logged-out users
-      const hasZonesNav = await page.locator('a[href*="list_zones"]').count() > 0;
+      const hasZonesNav = await page.locator('a[href*="list_forward_zones"]').count() > 0;
       const hasUsersNav = await page.locator('a[href*="page=users"]').count() > 0;
       // On login page, user-specific navigation should not be visible
       expect(hasZonesNav && hasUsersNav).toBeFalsy();
@@ -34,12 +34,12 @@ test.describe('Header Navigation', () => {
     });
 
     test('should display zones navigation', async ({ adminPage: page }) => {
-      const zonesLink = page.locator('a[href*="list_zones"]').first();
+      const zonesLink = page.locator('a[href*="list_forward_zones"]').first();
       await expect(zonesLink).toBeVisible();
     });
 
     test('should have access to list zones', async ({ adminPage: page }) => {
-      const listZonesLink = page.locator('a[href*="page=list_zones"]').first();
+      const listZonesLink = page.locator('a[href*="page=list_forward_zones"]').first();
       if (await listZonesLink.count() > 0) {
         await expect(listZonesLink).toBeVisible();
       }
@@ -140,7 +140,7 @@ test.describe('Header Navigation', () => {
     });
 
     test('should display zones navigation', async ({ managerPage: page }) => {
-      const zonesLink = page.locator('a[href*="list_zones"]').first();
+      const zonesLink = page.locator('a[href*="list_forward_zones"]').first();
       await expect(zonesLink).toBeVisible();
     });
 

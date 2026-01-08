@@ -72,7 +72,7 @@ test.describe('Bulk Zone Registration', () => {
       expect(bodyText).not.toMatch(/fatal|exception/i);
 
       // Clean up
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const row = page.locator(`tr:has-text("${singleDomain}")`);
       if (await row.count() > 0) {
         await row.locator('a[href*="delete_domain"]').first().click();
@@ -93,7 +93,7 @@ test.describe('Bulk Zone Registration', () => {
     });
 
     test('should show created zones in list', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       // Click "Show all" to show all zones regardless of letter filter
       const showAllBtn = page.locator('a, button').filter({ hasText: 'Show all' });
@@ -139,7 +139,7 @@ test.describe('Bulk Zone Registration', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
 
     for (const domain of testDomains) {
       const row = page.locator(`tr:has-text("${domain}")`);

@@ -90,7 +90,7 @@ test.describe('Zone Templates Management', () => {
                                bodyText.includes(uniqueTestDomain) ||
                                bodyText.toLowerCase().includes('error') ||
                                url.includes('page=edit') ||
-                               url.includes('page=list_zones') ||
+                               url.includes('page=list_forward_zones') ||
                                url.includes('page=add_zone_master');
     expect(hasHandledResponse).toBeTruthy();
   });
@@ -130,7 +130,7 @@ test.describe('Zone Templates Management', () => {
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
     // Delete test domain if it exists
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
     let bodyText = await page.locator('body').textContent();
 
     if (bodyText.includes(testDomain)) {

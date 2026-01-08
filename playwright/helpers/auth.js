@@ -18,7 +18,7 @@ export async function login(page, username, password) {
   // Use Playwright's resilient locator APIs for better reliability
   await page.getByLabel('Username').fill(username);
   await page.getByLabel('Password').fill(password);
-  await page.getByRole('button', { name: /go/i }).click();
+  await page.getByRole('button', { name: /log in/i }).click();
 }
 
 /**

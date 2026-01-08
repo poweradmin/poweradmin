@@ -39,7 +39,7 @@ test.describe('Complete Domain Management Workflow', () => {
 
   test('should add essential DNS records to the domain', async ({ adminPage: page }) => {
     // Navigate to zones and find our test domain
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
 
     // Check if test domain exists
     const bodyText = await page.locator('body').textContent();
@@ -74,7 +74,7 @@ test.describe('Complete Domain Management Workflow', () => {
   });
 
   test('should verify domain resolution and records', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
 
     // Check if test domain exists
     const bodyText = await page.locator('body').textContent();
@@ -107,7 +107,7 @@ test.describe('Complete Domain Management Workflow', () => {
     const page = await browser.newPage();
     await loginAndWaitForDashboard(page, users.admin.username, users.admin.password);
 
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
 
     // Find and delete the test domain
     const bodyText = await page.locator('body').textContent();

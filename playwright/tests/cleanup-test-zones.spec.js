@@ -58,7 +58,7 @@ test.describe('Cleanup Test Zones', () => {
 
     for (const pattern of testZonePatterns) {
       try {
-        await page.goto('/index.php?page=list_zones');
+        await page.goto('/index.php?page=list_forward_zones');
         await page.waitForTimeout(500);
 
         // Find all zones matching the pattern

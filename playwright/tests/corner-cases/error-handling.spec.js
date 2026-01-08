@@ -7,7 +7,7 @@ test.describe('Error Handling and Edge Cases', () => {
       await context.clearCookies();
 
       // Try to access a protected page
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       // Should redirect to login
       await expect(page).toHaveURL(/page=login/);
@@ -53,7 +53,7 @@ test.describe('Error Handling and Edge Cases', () => {
         await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
         // Should not error out
-        await expect(page).toHaveURL(/page=list_zones|page=edit/);
+        await expect(page).toHaveURL(/page=list_forward_zones|page=edit/);
       }
     });
   });
@@ -61,7 +61,7 @@ test.describe('Error Handling and Edge Cases', () => {
   test.describe('Pagination Edge Cases', () => {
     test('should handle navigation to non-existent pages', async ({ adminPage: page }) => {
       // Try to access an invalid page number
-      await page.goto('/index.php?page=list_zones&letter=all&start=9999');
+      await page.goto('/index.php?page=list_forward_zones&letter=all&start=9999');
 
       // Should show the page without crashing (may show empty or redirect)
       const bodyText = await page.locator('body').textContent();
@@ -72,7 +72,7 @@ test.describe('Error Handling and Edge Cases', () => {
   test.describe('Browser Navigation', () => {
     test('should handle browser back button correctly', async ({ adminPage: page }) => {
       // Navigate to zones list
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
 
       // Navigate to add zone
       await page.goto('/index.php?page=add_zone_master');
@@ -81,7 +81,7 @@ test.describe('Error Handling and Edge Cases', () => {
       await page.goBack();
 
       // Should be back on zones list
-      await expect(page).toHaveURL(/page=list_zones/);
+      await expect(page).toHaveURL(/page=list_forward_zones/);
     });
   });
 

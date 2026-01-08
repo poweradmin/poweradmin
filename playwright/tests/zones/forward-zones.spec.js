@@ -6,13 +6,13 @@ test.describe.configure({ mode: 'serial' });
 
 test.describe('Forward Zones Management', () => {
   test('should access forward zones page', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones');
-    await expect(page).toHaveURL(/page=list_zones/);
+    await page.goto('/index.php?page=list_forward_zones');
+    await expect(page).toHaveURL(/page=list_forward_zones/);
     await expect(page.locator('h1, h2, h3, .page-title, [data-testid*="title"]')).toBeVisible();
   });
 
   test('should display zones list or empty state', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
 
     // Should show either zones table or empty state message
     const hasTable = await page.locator('table, .table').count() > 0;
@@ -27,7 +27,7 @@ test.describe('Forward Zones Management', () => {
   });
 
   test('should have add master zone button', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
 
     // The add button may be in the page or in the navigation menu
     // Check for visible add buttons on the page itself

@@ -104,7 +104,7 @@ test.describe('DNSSEC Management', () => {
 
   test('should handle DNSSEC navigation from zone management', async ({ adminPage: page }) => {
     // Navigate to zones and look for DNSSEC links
-    await page.goto('/index.php?page=list_zones');
+    await page.goto('/index.php?page=list_forward_zones');
 
     const hasDnssecLinks = await page.locator('a').filter({ hasText: /DNSSEC|Security/i }).count();
     if (hasDnssecLinks > 0) {

@@ -491,7 +491,7 @@ test.describe('Record CRUD Operations', () => {
 
     test('viewer should not see record modification links', async ({ viewerPage: page }) => {
 
-      await page.goto('/index.php?page=list_zones');
+      await page.goto('/index.php?page=list_forward_zones');
       const row = page.locator('table tbody tr').first();
 
       if (await row.count() > 0) {
