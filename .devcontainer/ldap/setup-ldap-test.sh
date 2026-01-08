@@ -16,6 +16,7 @@
 # Prerequisites:
 #   - Docker containers must be running (docker-compose up)
 #   - LDAP container must be healthy
+#   - ldap-utils package must be installed (ldapsearch, ldapadd)
 #
 # =============================================================================
 
@@ -28,30 +29,38 @@ RED='\033[0;31m'
 YELLOW='\033[1;33m'
 NC='\033[0m' # No Color
 
-LDAP_CONTAINER="${LDAP_CONTAINER:-ldap}"
+# LDAP connection settings (connect via Docker network)
+LDAP_HOST="${LDAP_HOST:-ldap}"
+LDAP_URI="ldap://${LDAP_HOST}"
 LDAP_ADMIN_DN="cn=admin,dc=poweradmin,dc=org"
 LDAP_ADMIN_PW="poweradmin"
 LDAP_BASE_DN="dc=poweradmin,dc=org"
+
+# Path to LDIF file (relative to /app in container)
+LDIF_FILE="/app/.devcontainer/ldap/ldap-test-users.ldif"
 
 echo -e "${BLUE}================================================${NC}"
 echo -e "${BLUE}  Poweradmin 4.x LDAP Test Setup${NC}"
 echo -e "${BLUE}================================================${NC}"
 echo ""
 
-# Function to check if container is running
-check_container() {
-    local container=$1
-    if ! docker ps --format '{{.Names}}' | grep -q "^${container}$"; then
-        return 1
-    fi
-    return 0
-}
+# Check if ldapsearch is available
+if ! command -v ldapsearch &> /dev/null; then
+    echo -e "${RED}Error: ldapsearch not found. Please install ldap-utils package.${NC}"
+    exit 1
+fi
+
+# Check if LDIF file exists
+if [ ! -f "$LDIF_FILE" ]; then
+    echo -e "${RED}Error: LDIF file not found at $LDIF_FILE${NC}"
+    exit 1
+fi
 
 # Wait for LDAP service to be ready
-echo -e "${YELLOW}Waiting for LDAP service...${NC}"
+echo -e "${YELLOW}Waiting for LDAP service at ${LDAP_URI}...${NC}"
 timeout=60
 counter=0
-until docker exec "$LDAP_CONTAINER" ldapsearch -x -H ldap://localhost -b "$LDAP_BASE_DN" -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" >/dev/null 2>&1; do
+until ldapsearch -x -H "$LDAP_URI" -b "$LDAP_BASE_DN" -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" >/dev/null 2>&1; do
     sleep 1
     counter=$((counter + 1))
     if [ $counter -ge $timeout ]; then
@@ -66,16 +75,16 @@ echo -e "${GREEN}LDAP service is ready${NC}"
 # Check if users already exist
 echo ""
 echo -e "${YELLOW}Checking for existing LDAP users...${NC}"
-if docker exec "$LDAP_CONTAINER" ldapsearch -x -H ldap://localhost -b "ou=users,$LDAP_BASE_DN" -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" "(uid=ldap-admin)" 2>/dev/null | grep -q "uid=ldap-admin"; then
+if ldapsearch -x -H "$LDAP_URI" -b "ou=users,$LDAP_BASE_DN" -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" "(uid=ldap-admin)" 2>/dev/null | grep -q "uid=ldap-admin"; then
     echo -e "${GREEN}LDAP test users already exist${NC}"
 else
     # Add LDAP test users
     echo -e "${YELLOW}Adding LDAP test users...${NC}"
-    if docker exec "$LDAP_CONTAINER" ldapadd -x -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" -f /ldap-test-users.ldif 2>/dev/null; then
+    if ldapadd -x -H "$LDAP_URI" -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" -f "$LDIF_FILE" 2>/dev/null; then
         echo -e "${GREEN}LDAP test users created successfully${NC}"
     else
         # Try to determine if it's because they already exist
-        if docker exec "$LDAP_CONTAINER" ldapsearch -x -H ldap://localhost -b "ou=users,$LDAP_BASE_DN" -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" "(uid=ldap-admin)" 2>/dev/null | grep -q "uid=ldap-admin"; then
+        if ldapsearch -x -H "$LDAP_URI" -b "ou=users,$LDAP_BASE_DN" -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" "(uid=ldap-admin)" 2>/dev/null | grep -q "uid=ldap-admin"; then
             echo -e "${YELLOW}LDAP test users might already exist${NC}"
         else
             echo -e "${RED}Failed to create LDAP test users${NC}"
@@ -89,7 +98,7 @@ echo ""
 echo -e "${YELLOW}Verifying LDAP users...${NC}"
 users_found=0
 for user in ldap-admin ldap-manager ldap-client ldap-viewer; do
-    if docker exec "$LDAP_CONTAINER" ldapsearch -x -H ldap://localhost -b "ou=users,$LDAP_BASE_DN" -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" "(uid=$user)" 2>/dev/null | grep -q "uid=$user"; then
+    if ldapsearch -x -H "$LDAP_URI" -b "ou=users,$LDAP_BASE_DN" -D "$LDAP_ADMIN_DN" -w "$LDAP_ADMIN_PW" "(uid=$user)" 2>/dev/null | grep -q "uid=$user"; then
         echo -e "  ${GREEN}$user${NC}"
         users_found=$((users_found + 1))
     else

@@ -42,6 +42,9 @@ DB_USER="${DB_USER:-pdns}"
 DB_PASSWORD="${DB_PASSWORD:-poweradmin}"
 DB_NAME="${DB_NAME:-pdns}"
 
+# MySQL uses separate database for Poweradmin tables
+MYSQL_DB_NAME="${MYSQL_DB_NAME:-poweradmin}"
+
 MYSQL_CONTAINER="${MYSQL_CONTAINER:-mariadb}"
 PGSQL_CONTAINER="${PGSQL_CONTAINER:-postgres}"
 SQLITE_CONTAINER="${SQLITE_CONTAINER:-sqlite}"
@@ -70,7 +73,7 @@ clean_mysql() {
         return 1
     fi
 
-    docker exec -i "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" << 'EOSQL'
+    docker exec -i "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$MYSQL_DB_NAME" << 'EOSQL'
 -- Delete zone templates and their records (except admin's templates)
 DELETE ztr FROM zone_templ_records ztr
 INNER JOIN zone_templ zt ON ztr.zone_templ_id = zt.id
@@ -195,13 +198,13 @@ import_mysql() {
     fi
 
     # Import users, permissions, and zones
-    if docker exec -i "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < "$SQL_DIR/test-users-permissions-mysql.sql" 2>/dev/null; then
+    if docker exec -i "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$MYSQL_DB_NAME" < "$SQL_DIR/test-users-permissions-mysql.sql" 2>/dev/null; then
         echo -e "${GREEN}MySQL/MariaDB users and zones imported${NC}"
 
         # Import comprehensive DNS records
         if [ -f "$SQL_DIR/test-dns-records-mysql.sql" ]; then
             echo -e "${YELLOW}Importing comprehensive DNS records...${NC}"
-            if docker exec -i "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < "$SQL_DIR/test-dns-records-mysql.sql" 2>/dev/null; then
+            if docker exec -i "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$MYSQL_DB_NAME" < "$SQL_DIR/test-dns-records-mysql.sql" 2>/dev/null; then
                 echo -e "${GREEN}MySQL/MariaDB DNS records imported${NC}"
             else
                 echo -e "${YELLOW}DNS records import had issues (may already exist)${NC}"
