@@ -104,6 +104,23 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 
 **Compatibility note:** Poweradmin operates primarily at the database level with PowerDNS, using the PowerDNS API only for DNSSEC operations. This design provides broad compatibility across PowerDNS versions, as the database schema remains relatively stable between releases.
 
+## Version Support
+
+Poweradmin maintains multiple release branches:
+
+| Branch | Status | Support |
+|--------|--------|---------|
+| `develop` | Development | Experimental features, unstable |
+| `master` | Pre-release | Integration testing before release |
+| `release/4.x` | Stable | Current release with new features |
+| `release/3.x` | LTS | Bug fixes and security updates for at least 2 years |
+
+### Long-Term Support (LTS)
+
+The **3.9.x branch** is designated as Long-Term Support (LTS), starting with version 3.9.8. This branch will receive bug fixes and security updates for at least two years, providing a stable option for organizations that prefer stability over immediate upgrades to the 4.x series.
+
+For more details, see the [Poweradmin in 2025: Year in Review](https://www.poweradmin.org/p/poweradmin-in-2025-year-in-review) blog post.
+
 ## Contributing
 
 We welcome contributions to Poweradmin! As the sole maintainer of this non-profit project, I work alongside our amazing [contributors](https://github.com/poweradmin/poweradmin/graphs/contributors). See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
