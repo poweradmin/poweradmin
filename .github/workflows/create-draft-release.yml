@@ -65,13 +65,20 @@ jobs:
             echo "No releasable changes found"
           fi
 
+      - name: Get last tag
+        id: last_tag
+        run: |
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || echo "")
+          echo "tag=$LAST_TAG" >> "$GITHUB_OUTPUT"
+          echo "Last tag: $LAST_TAG"
+
       - name: Generate release notes with git-cliff
         if: steps.check_release.outputs.skip != 'true' && steps.check_changes.outputs.has_changes == 'true'
         uses: orhun/git-cliff-action@v4
         id: cliff
         with:
           config: cliff.toml
-          args: --unreleased --strip header
+          args: ${{ steps.last_tag.outputs.tag }}..HEAD --strip header
         env:
           OUTPUT: RELEASE_NOTES.md
         continue-on-error: true
