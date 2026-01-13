@@ -112,8 +112,9 @@ test.describe('Zone Operations', () => {
 
   test.describe('Zone Comments', () => {
     test('should display zone comment', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const commentField = page.locator('input[name*="comment"], textarea[name*="comment"]');
@@ -125,8 +126,9 @@ test.describe('Zone Operations', () => {
     });
 
     test('should update zone comment', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const commentLink = page.locator('a[href*="edit_comment"]').first();
@@ -153,8 +155,9 @@ test.describe('Zone Operations', () => {
     });
 
     test('should change zone owner', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const ownerLink = page.locator('a[href*="add_owner"], a[href*="change_owner"]').first();
@@ -167,8 +170,9 @@ test.describe('Zone Operations', () => {
     });
 
     test('should add multiple owners', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const addOwnerLink = page.locator('a[href*="add_owner"]').first();
@@ -189,7 +193,7 @@ test.describe('Zone Operations', () => {
     });
 
     test('should filter reverse zones', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones&reverse=1');
+      await page.goto('/index.php?page=list_reverse_zones');
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
     });
@@ -226,8 +230,8 @@ test.describe('Zone Operations', () => {
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
 
-      // Cleanup
-      await page.goto('/index.php?page=list_forward_zones');
+      // Cleanup - reverse zones are in the reverse zones list
+      await page.goto('/index.php?page=list_reverse_zones');
       const deleteLink = page.locator(`tr:has-text("${testDomain}") a[href*="delete_domain"]`).first();
       if (await deleteLink.count() > 0) {
         await deleteLink.click();
@@ -237,8 +241,9 @@ test.describe('Zone Operations', () => {
     });
 
     test('should add PTR record to reverse zone', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones&reverse=1');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_reverse_zones');
+      // Use table-specific selector to avoid matching dropdown links
+      const editLink = page.locator('table a[href*="page=edit"]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const addRecordLink = page.locator('a[href*="add_record"]').first();
@@ -253,8 +258,9 @@ test.describe('Zone Operations', () => {
 
   test.describe('Zone Statistics', () => {
     test('should display zone record count', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const bodyText = await page.locator('body').textContent();

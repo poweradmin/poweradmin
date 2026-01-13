@@ -17,7 +17,8 @@ test.describe('Migrations Page', () => {
       await page.goto('/index.php?page=migrations');
       const bodyText = await page.locator('body').textContent();
       if (page.url().includes('page=migrations')) {
-        expect(bodyText.toLowerCase()).toMatch(/migration|database|update/i);
+        // Migrations page may show CLI-only message or migration content
+        expect(bodyText.toLowerCase()).toMatch(/migration|database|update|command.line|cli/i);
       }
     });
 

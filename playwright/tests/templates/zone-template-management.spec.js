@@ -51,7 +51,14 @@ test.describe('Zone Template Management', () => {
     // Find and select the template we created
     const row = page.locator(`tr:has-text("${templateName}")`);
     if (await row.count() > 0) {
-      await row.locator('a').first().click();
+      // Click the edit link (with href*="edit_zone_templ"), not the first disabled link
+      const editLink = row.locator('a[href*="edit_zone_templ"]').first();
+      if (await editLink.count() > 0) {
+        await editLink.click();
+      } else {
+        // Fallback: click any enabled link
+        await row.locator('a:not(.disabled)').first().click();
+      }
 
       // Check if we can add records
       const hasRecordForm = await page.locator('select[name*="type"]').count() > 0;

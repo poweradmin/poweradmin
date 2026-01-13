@@ -7,6 +7,16 @@
 import zones from '../fixtures/zones.json' assert { type: 'json' };
 
 /**
+ * Check if a zone name is a reverse DNS zone
+ *
+ * @param {string} zoneName - Zone name to check
+ * @returns {boolean} - True if reverse zone
+ */
+export function isReverseZone(zoneName) {
+  return zoneName.endsWith('.in-addr.arpa') || zoneName.endsWith('.ip6.arpa');
+}
+
+/**
  * Find zone ID by zone name
  *
  * @param {import('@playwright/test').Page} page - Playwright page object
@@ -14,7 +24,12 @@ import zones from '../fixtures/zones.json' assert { type: 'json' };
  * @returns {Promise<string|null>} - Zone ID or null if not found
  */
 export async function findZoneIdByName(page, zoneName) {
-  await page.goto('/index.php?page=list_forward_zones&letter=all');
+  // Determine which zone list to check based on zone name
+  const listPage = isReverseZone(zoneName)
+    ? '/index.php?page=list_reverse_zones'
+    : '/index.php?page=list_forward_zones&letter=all';
+
+  await page.goto(listPage);
 
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
@@ -68,8 +83,8 @@ export async function findAnyZoneId(page, excludeReverse = true) {
   // Wait for table to load
   await page.waitForSelector('table', { timeout: 5000 }).catch(() => null);
 
-  // Find edit links
-  const editLinks = page.locator('a[href*="page=edit"]');
+  // Find edit links in table (not dropdown menu links like "Edit profile")
+  const editLinks = page.locator('table a[href*="page=edit&id="]');
   const count = await editLinks.count();
 
   // Find first suitable zone (excluding reverse zones if requested)
@@ -105,12 +120,11 @@ export async function findAnyZoneId(page, excludeReverse = true) {
   }
 
   // Fallback to first edit link if no suitable zone found
-  const editLink = editLinks.first();
-
-  if (await editLink.count() === 0) {
+  if (count === 0) {
     return null;
   }
 
+  const editLink = editLinks.first();
   const href = await editLink.getAttribute('href');
   const match = href?.match(/id=(\d+)/);
 

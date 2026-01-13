@@ -57,8 +57,9 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should edit any zone', async ({ adminPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const bodyText = await page.locator('body').textContent();
@@ -106,8 +107,9 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should edit own zones', async ({ managerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const bodyText = await page.locator('body').textContent();
@@ -124,8 +126,9 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should add records to own zones', async ({ managerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const addRecordLink = page.locator('a[href*="add_record"]').first();
@@ -170,8 +173,9 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should edit records in assigned zones', async ({ clientPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const bodyText = await page.locator('body').textContent();
@@ -180,8 +184,9 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should not edit SOA records', async ({ clientPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const soaEditLink = page.locator('a[href*="edit_record"]:has-text("SOA")');
@@ -217,8 +222,9 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should view zone details', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const bodyText = await page.locator('body').textContent();
@@ -227,8 +233,9 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should not have add record option', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const addRecordLink = page.locator('a[href*="add_record"]');
@@ -237,8 +244,9 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should not have edit record option', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const editRecordLink = page.locator('a[href*="edit_record"]');
@@ -247,8 +255,9 @@ test.describe('User Permission Combinations', () => {
     });
 
     test('should not have delete record option', async ({ viewerPage: page }) => {
-      await page.goto('/index.php?page=list_forward_zones');
-      const editLink = page.locator('a[href*="page=edit"]').first();
+      await page.goto('/index.php?page=list_forward_zones&letter=all');
+      // Use table-specific selector to avoid matching dropdown menu links
+      const editLink = page.locator('table a[href*="page=edit&id="]').first();
       if (await editLink.count() > 0) {
         await editLink.click();
         const deleteRecordLink = page.locator('a[href*="delete_record"]');

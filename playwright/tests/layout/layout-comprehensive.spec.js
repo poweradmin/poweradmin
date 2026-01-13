@@ -377,8 +377,9 @@ test.describe('Layout - Page Structure', () => {
 
 test.describe('Layout - Breadcrumbs', () => {
   test('should display breadcrumbs on zone edit page', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
-    const editLink = page.locator('a[href*="page=edit"]').first();
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
+    // Use table-specific selector to avoid matching dropdown menu links
+    const editLink = page.locator('table a[href*="page=edit&id="]').first();
 
     if (await editLink.count() > 0) {
       await editLink.click();
@@ -391,8 +392,9 @@ test.describe('Layout - Breadcrumbs', () => {
   });
 
   test('should display breadcrumbs on add record page', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=list_forward_zones');
-    const editLink = page.locator('a[href*="page=edit"]').first();
+    await page.goto('/index.php?page=list_forward_zones&letter=all');
+    // Use table-specific selector to avoid matching dropdown menu links
+    const editLink = page.locator('table a[href*="page=edit&id="]').first();
 
     if (await editLink.count() > 0) {
       await editLink.click();

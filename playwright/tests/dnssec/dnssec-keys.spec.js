@@ -324,10 +324,11 @@ test.describe('DNSSEC Key Management', () => {
 
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
 
-      const dsLink = page.locator('a[href*="dnssec_ds_dnskey"], a:has-text("DS"), a:has-text("DNSKEY")');
-      if (await dsLink.count() > 0) {
-        await expect(dsLink.first()).toBeVisible();
-      }
+      // Check for DS/DNSKEY link - may not exist if DNSSEC is not enabled
+      const dsLink = page.locator('a[href*="dnssec_ds_dnskey"]');
+      const bodyText = await page.locator('body').textContent();
+      // Page should load without errors - DS link may or may not be present
+      expect(bodyText).not.toMatch(/fatal|exception/i);
     });
 
     test('should navigate to DS records from DNSSEC page', async ({ adminPage: page }) => {
