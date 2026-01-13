@@ -25,6 +25,7 @@ Thumbs.db
 /.buildpath
 /.project
 /.vscode
+.phpactor.json
 
 # phpDocumentor
 /docs
