@@ -237,8 +237,8 @@ class NaturalSortingIntegrationTest extends TestCase
             $connection->exec("INSERT INTO $table (name) VALUES ('$data')");
         }
 
-        // Get the natural sort query
-        $query = "SELECT * FROM $table ORDER BY " . $this->naturalSorting->$sortMethod($table, $dbType, $direction);
+        // Get the natural sort query - pass column name 'name', not table name
+        $query = "SELECT * FROM $table ORDER BY " . $this->naturalSorting->$sortMethod('name', $dbType, $direction);
         $stmt = $connection->query($query);
         $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 

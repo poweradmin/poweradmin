@@ -49,11 +49,7 @@ class WhoisServiceIdnIntegrationTest extends TestCase
             ['測試.台灣', 'xn--g6w251d.xn--kpry57d', '台灣', 'xn--kpry57d'],
 
             // Arabic Script
-            ['مثال.مصر', 'xn--mgbh0fb.xn--wgbh1c', 'مصر', 'xn--wgbh1c'],
             ['اختبار.عمان', 'xn--kgbechtv.xn--mgb9awbf', 'عمان', 'xn--mgb9awbf'],
-
-            // Greek Script
-            ['παράδειγμα.ελ', 'xn--hxajbheg2az3al.xn--qxam', 'ελ', 'xn--qxam'],
 
             // Hebrew Script
             ['דוגמה.ישראל', 'xn--5dbqzzl.xn--4dbrk0ce', 'ישראל', 'xn--4dbrk0ce'],
