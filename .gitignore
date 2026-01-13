@@ -19,6 +19,7 @@ nbproject
 .buildpath
 .project
 .vscode
+.phpactor.json
 
 # phpDocumentor
 docs
