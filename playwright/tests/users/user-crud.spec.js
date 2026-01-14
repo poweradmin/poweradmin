@@ -111,6 +111,12 @@ test.describe('User CRUD Operations', () => {
 
       await page.locator('input[name*="username"], input[name*="user"]').first().fill(uniqueUsername);
 
+      // Fill fullname field (required)
+      const fullnameField = page.locator('input[name="fullname"]');
+      if (await fullnameField.count() > 0) {
+        await fullnameField.fill(`Test User ${uniqueUsername}`);
+      }
+
       const emailField = page.locator('input[name*="email"], input[type="email"]').first();
       if (await emailField.count() > 0) {
         await emailField.fill(`${uniqueUsername}@example.com`);
@@ -270,6 +276,12 @@ test.describe('User CRUD Operations', () => {
       await page.goto('/index.php?page=add_user');
       await page.locator('input[name*="username"], input[name*="user"]').first().fill(editUsername);
 
+      // Fill fullname field (required)
+      const fullnameField = page.locator('input[name="fullname"]');
+      if (await fullnameField.count() > 0) {
+        await fullnameField.fill(`Edit Test User`);
+      }
+
       const emailField = page.locator('input[name*="email"], input[type="email"]').first();
       if (await emailField.count() > 0) {
         await emailField.fill(`${editUsername}@example.com`);
@@ -363,6 +375,12 @@ test.describe('User CRUD Operations', () => {
       await page.goto('/index.php?page=add_user');
       await page.locator('input[name*="username"], input[name*="user"]').first().fill(deleteUsername);
 
+      // Fill fullname field (required)
+      const fullnameField = page.locator('input[name="fullname"]');
+      if (await fullnameField.count() > 0) {
+        await fullnameField.fill(`Delete Test User`);
+      }
+
       const emailField = page.locator('input[name*="email"], input[type="email"]').first();
       if (await emailField.count() > 0) {
         await emailField.fill(`${deleteUsername}@example.com`);
@@ -440,6 +458,12 @@ test.describe('User CRUD Operations', () => {
       const toDelete = `to-delete-${Date.now()}`;
       await page.goto('/index.php?page=add_user');
       await page.locator('input[name*="username"], input[name*="user"]').first().fill(toDelete);
+
+      // Fill fullname field (required)
+      const fullnameField = page.locator('input[name="fullname"]');
+      if (await fullnameField.count() > 0) {
+        await fullnameField.fill(`To Delete User`);
+      }
 
       const emailField = page.locator('input[name*="email"], input[type="email"]').first();
       if (await emailField.count() > 0) {

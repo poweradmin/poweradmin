@@ -207,7 +207,10 @@ test.describe('Zone Template CRUD Operations', () => {
 
           const nameField = page.locator('input[name*="name"], input[name*="templ"]').first();
           await nameField.fill(`${editTemplateName}-updated`);
-          await page.locator('button[type="submit"], input[type="submit"]').first().click();
+          // Click the edit/save button specifically (not the update_zones button)
+          const editButton = page.locator('button[name="edit"], button[name="save_as"]').first();
+          await editButton.scrollIntoViewIfNeeded();
+          await editButton.click();
 
           const bodyText = await page.locator('body').textContent();
           expect(bodyText).not.toMatch(/fatal|exception/i);

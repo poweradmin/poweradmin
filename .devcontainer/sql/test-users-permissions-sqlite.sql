@@ -25,6 +25,10 @@ INSERT OR REPLACE INTO perm_templ (id, name, descr) VALUES
 -- PERMISSION TEMPLATE ITEMS
 -- =============================================================================
 
+-- Ensure Administrator template (ID 1) has überuser permission
+-- This grants full system access
+INSERT OR IGNORE INTO perm_templ_items (templ_id, perm_id) VALUES (1, 53);
+
 -- Zone Manager (Template 2) permissions
 INSERT OR IGNORE INTO perm_templ_items (templ_id, perm_id) VALUES (2, 41);
 INSERT OR IGNORE INTO perm_templ_items (templ_id, perm_id) VALUES (2, 42);

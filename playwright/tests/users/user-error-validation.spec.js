@@ -106,9 +106,11 @@ test.describe('User Management Error Validation', () => {
   test('should validate required fields when editing user', async ({ adminPage: page }) => {
     await page.goto('/index.php?page=users');
 
-    const editLinks = await page.locator('a[href*="edit_user"]').count();
-    if (editLinks > 0) {
-      await page.locator('a[href*="edit_user"]').first().click();
+    // Look for edit links in the table, not the dropdown menu
+    const tableEditLinks = page.locator('table a[href*="edit_user"], .btn:has-text("Edit")');
+    const editLinksCount = await tableEditLinks.count();
+    if (editLinksCount > 0) {
+      await tableEditLinks.first().click();
 
       // Clear required field (e.g., username or email)
       const usernameField = page.locator('input[name*="username"]').first();

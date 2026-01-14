@@ -184,7 +184,8 @@ test.describe('Record Validation - All Types', () => {
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill(`spf-${Date.now()}`);
-      await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('v=spf1 include:_spf.google.com ~all');
+      // TXT records must be enclosed in quotes
+      await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('"v=spf1 include:_spf.google.com ~all"');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
@@ -196,7 +197,8 @@ test.describe('Record Validation - All Types', () => {
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill(`sel${Date.now()}._domainkey`);
-      await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GN');
+      // TXT records must be enclosed in quotes
+      await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('"v=DKIM1; k=rsa; p=MIGfMA0GCSqGSIb3DQEBAQUAA4GN"');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
@@ -208,7 +210,8 @@ test.describe('Record Validation - All Types', () => {
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill(`_dmarc${Date.now()}`);
-      await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('v=DMARC1; p=reject; rua=mailto:dmarc@example.com');
+      // TXT records must be enclosed in quotes
+      await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('"v=DMARC1; p=reject; rua=mailto:dmarc@example.com"');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);
@@ -220,7 +223,8 @@ test.describe('Record Validation - All Types', () => {
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill(`long-txt-${Date.now()}`);
-      const longText = 'a'.repeat(255);
+      // TXT records must be enclosed in quotes
+      const longText = '"' + 'a'.repeat(253) + '"';
       await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill(longText);
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       const bodyText = await page.locator('body').textContent();
@@ -233,7 +237,8 @@ test.describe('Record Validation - All Types', () => {
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
       await page.locator('select[name*="type"]').first().selectOption('TXT');
       await page.locator('input[name*="name"]').first().fill(`quoted-${Date.now()}`);
-      await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('key="value"');
+      // TXT records must be enclosed in quotes - testing nested quotes
+      await page.locator('input[name*="content"], input[name*="value"], textarea').first().fill('"key=value with spaces"');
       await page.locator('button[type="submit"], input[type="submit"]').first().click();
       const bodyText = await page.locator('body').textContent();
       expect(bodyText).not.toMatch(/fatal|exception/i);

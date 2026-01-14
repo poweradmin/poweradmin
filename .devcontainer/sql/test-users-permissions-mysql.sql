@@ -17,6 +17,11 @@
 
 USE poweradmin;
 
+-- Ensure Administrator template (ID 1) has überuser permission
+-- This grants full system access
+INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
+SELECT 1, 53 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 1 AND `perm_id` = 53);
+
 -- Template 2: Zone Manager - Full management of own zones
 INSERT INTO `perm_templ` (`id`, `name`, `descr`)
 SELECT 2, 'Zone Manager', 'Full zone management rights for own zones, can add master/slave zones'

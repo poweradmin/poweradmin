@@ -18,11 +18,12 @@ test.describe('Record CRUD Operations', () => {
 
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
 
-      await selectByTestId(page, 'record-type-select', 'A');
+      // Use class-based selectors that match the actual template
+      await page.locator('.record-type-select').first().selectOption('A');
       // Use unique name with timestamp to avoid duplicate record errors
-      await fillByTestId(page, 'record-name-input', `www-${Date.now()}`);
-      await fillByTestId(page, 'record-content-input', '192.168.1.100');
-      await fillByTestId(page, 'record-ttl-input', '3600');
+      await page.locator('.name-field').first().fill(`www-${Date.now()}`);
+      await page.locator('.record-content').first().fill('192.168.1.100');
+      await page.locator('input[name*="ttl"]').first().fill('3600');
 
       await submitForm(page);
       await expectNoFatalError(page);
@@ -34,9 +35,9 @@ test.describe('Record CRUD Operations', () => {
 
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
 
-      await selectByTestId(page, 'record-type-select', 'A');
-      await fillByTestId(page, 'record-name-input', 'invalid-ip');
-      await fillByTestId(page, 'record-content-input', '999.999.999.999');
+      await page.locator('.record-type-select').first().selectOption('A');
+      await page.locator('.name-field').first().fill('invalid-ip');
+      await page.locator('.record-content').first().fill('999.999.999.999');
 
       await submitForm(page);
 
@@ -51,8 +52,8 @@ test.describe('Record CRUD Operations', () => {
 
       await page.goto(`/index.php?page=add_record&id=${zoneId}`);
 
-      await selectByTestId(page, 'record-type-select', 'A');
-      await fillByTestId(page, 'record-name-input', 'empty-test');
+      await page.locator('.record-type-select').first().selectOption('A');
+      await page.locator('.name-field').first().fill('empty-test');
       // Leave content empty
 
       await submitForm(page);
