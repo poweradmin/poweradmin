@@ -30,11 +30,35 @@ class Tag extends AbstractAnnotation
     public $description = Generator::UNDEFINED;
 
     /**
+     * A short summary for display purposes.
+     *
+     * @since OpenAPI 3.2.0
+     * @var string
+     */
+    public $summary = Generator::UNDEFINED;
+
+    /**
      * Additional external documentation for this tag.
      *
      * @var ExternalDocumentation
      */
     public $externalDocs = Generator::UNDEFINED;
+
+    /**
+     * Name of the parent tag.
+     *
+     * @since OpenAPI 3.2.0
+     * @var string
+     */
+    public $parent = Generator::UNDEFINED;
+
+    /**
+     * Machine-readable category.
+     *
+     * @since OpenAPI 3.2.0
+     * @var string
+     */
+    public $kind = Generator::UNDEFINED;
 
     /**
      * @inheritdoc
@@ -47,6 +71,9 @@ class Tag extends AbstractAnnotation
     public static $_types = [
         'name' => 'string',
         'description' => 'string',
+        'summary' => 'string',
+        'parent' => 'string',
+        'kind' => 'string',
     ];
 
     /**
@@ -63,4 +90,17 @@ class Tag extends AbstractAnnotation
         ExternalDocumentation::class => 'externalDocs',
         Attachable::class => ['attachables'],
     ];
+
+    public function jsonSerialize(): \stdClass
+    {
+        $data = parent::jsonSerialize();
+
+        if ($this->_context->isVersion(['3.0.x', '3.1.x'])) {
+            unset($data->summary);
+            unset($data->parent);
+            unset($data->kind);
+        }
+
+        return $data;
+    }
 }
