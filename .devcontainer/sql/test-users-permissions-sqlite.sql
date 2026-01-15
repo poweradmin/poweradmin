@@ -51,15 +51,15 @@ INSERT OR IGNORE INTO perm_templ_items (templ_id, perm_id) VALUES (4, 49);
 -- =============================================================================
 -- TEST USERS
 -- =============================================================================
--- Password for all users: "poweradmin123" (bcrypt hashed)
+-- Password for all users: "Poweradmin123" (bcrypt hashed)
 
 INSERT OR REPLACE INTO users (id, username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES
-    (1, 'admin', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'System Administrator', 'admin@example.com', 'Full system administrator with full access', 1, 1, 0),
-    (2, 'manager', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Zone Manager', 'manager@example.com', 'Zone manager with full zone management rights', 2, 1, 0),
-    (3, 'client', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Client User', 'client@example.com', 'Client editor with limited editing rights', 3, 1, 0),
-    (4, 'viewer', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Read Only User', 'viewer@example.com', 'Read-only access for viewing zones', 4, 1, 0),
-    (5, 'noperm', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'No Permissions User', 'noperm@example.com', 'User with no permissions for testing access denied', 5, 1, 0),
-    (6, 'inactive', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Inactive User', 'inactive@example.com', 'Inactive user account for testing disabled login', 5, 0, 0);
+    (1, 'admin', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'System Administrator', 'admin@example.com', 'Full system administrator with full access', 1, 1, 0),
+    (2, 'manager', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'Zone Manager', 'manager@example.com', 'Zone manager with full zone management rights', 2, 1, 0),
+    (3, 'client', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'Client User', 'client@example.com', 'Client editor with limited editing rights', 3, 1, 0),
+    (4, 'viewer', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'Read Only User', 'viewer@example.com', 'Read-only access for viewing zones', 4, 1, 0),
+    (5, 'noperm', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'No Permissions User', 'noperm@example.com', 'User with no permissions for testing access denied', 5, 1, 0),
+    (6, 'inactive', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'Inactive User', 'inactive@example.com', 'Inactive user account for testing disabled login', 5, 0, 0);
 
 -- LDAP users
 INSERT OR REPLACE INTO users (id, username, password, fullname, email, description, perm_templ, active, use_ldap) VALUES

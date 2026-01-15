@@ -81,43 +81,73 @@ SELECT 4, 49 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id`
 -- =============================================================================
 -- TEST USERS
 -- =============================================================================
--- Password for all users: "poweradmin123" (bcrypt hashed)
+-- Password for all users: "Poweradmin123" (bcrypt hashed)
 
 -- Admin user
 INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)
-SELECT 1, 'admin', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'System Administrator', 'admin@example.com', 'Full system administrator with full access', 1, 1, 0
+SELECT 1, 'admin', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'System Administrator', 'admin@example.com', 'Full system administrator with full access', 1, 1, 0
 WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'admin');
 
 UPDATE `users` SET
-    `password` = '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi',
+    `password` = '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy',
     `fullname` = 'System Administrator',
     `email` = 'admin@example.com'
 WHERE `username` = 'admin';
 
 -- Manager user
 INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)
-SELECT 2, 'manager', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Zone Manager', 'manager@example.com', 'Zone manager with full zone management rights', 2, 1, 0
+SELECT 2, 'manager', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'Zone Manager', 'manager@example.com', 'Zone manager with full zone management rights', 2, 1, 0
 WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'manager');
+
+UPDATE `users` SET
+    `password` = '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy',
+    `fullname` = 'Zone Manager',
+    `email` = 'manager@example.com'
+WHERE `username` = 'manager';
 
 -- Client user
 INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)
-SELECT 3, 'client', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Client User', 'client@example.com', 'Client editor with limited editing rights', 3, 1, 0
+SELECT 3, 'client', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'Client User', 'client@example.com', 'Client editor with limited editing rights', 3, 1, 0
 WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'client');
+
+UPDATE `users` SET
+    `password` = '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy',
+    `fullname` = 'Client User',
+    `email` = 'client@example.com'
+WHERE `username` = 'client';
 
 -- Viewer user
 INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)
-SELECT 4, 'viewer', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Read Only User', 'viewer@example.com', 'Read-only access for viewing zones', 4, 1, 0
+SELECT 4, 'viewer', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'Read Only User', 'viewer@example.com', 'Read-only access for viewing zones', 4, 1, 0
 WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'viewer');
+
+UPDATE `users` SET
+    `password` = '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy',
+    `fullname` = 'Read Only User',
+    `email` = 'viewer@example.com'
+WHERE `username` = 'viewer';
 
 -- No permissions user
 INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)
-SELECT 5, 'noperm', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'No Permissions User', 'noperm@example.com', 'User with no permissions for testing access denied', 5, 1, 0
+SELECT 5, 'noperm', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'No Permissions User', 'noperm@example.com', 'User with no permissions for testing access denied', 5, 1, 0
 WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'noperm');
+
+UPDATE `users` SET
+    `password` = '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy',
+    `fullname` = 'No Permissions User',
+    `email` = 'noperm@example.com'
+WHERE `username` = 'noperm';
 
 -- Inactive user
 INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)
-SELECT 6, 'inactive', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Inactive User', 'inactive@example.com', 'Inactive user account for testing disabled login', 5, 0, 0
+SELECT 6, 'inactive', '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy', 'Inactive User', 'inactive@example.com', 'Inactive user account for testing disabled login', 5, 0, 0
 WHERE NOT EXISTS (SELECT 1 FROM `users` WHERE `username` = 'inactive');
+
+UPDATE `users` SET
+    `password` = '$2y$12$ePrwYICR/IF/tgZv5vwlK.BJygebrdvGkoYc9jyLExCPOzD1Vj0Zy',
+    `fullname` = 'Inactive User',
+    `email` = 'inactive@example.com'
+WHERE `username` = 'inactive';
 
 -- LDAP users
 INSERT INTO `users` (`id`, `username`, `password`, `fullname`, `email`, `description`, `perm_templ`, `active`, `use_ldap`)

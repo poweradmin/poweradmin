@@ -7,7 +7,7 @@
 #
 # This script imports:
 # - 5 permission templates with various permission levels
-# - 6 test users with different roles (password: poweradmin123)
+# - 6 test users with different roles (password: Poweradmin123)
 # - 4 LDAP users with different roles (password: testpass123)
 # - Multiple test domains (master, slave, native, reverse, IDN)
 # - Zone ownership records
@@ -338,15 +338,15 @@ show_summary() {
     echo -e "${BLUE}  Test Data Summary${NC}"
     echo -e "${BLUE}================================================${NC}"
     echo ""
-    echo -e "${GREEN}Local Test Users (password: poweradmin123):${NC}"
+    echo -e "${GREEN}Local Test Users (password: Poweradmin123):${NC}"
     echo "  Username  | Password       | Template        | Active"
     echo "  ----------|----------------|-----------------|-------"
-    echo "  admin     | poweradmin123  | Administrator   | Yes"
-    echo "  manager   | poweradmin123  | Zone Manager    | Yes"
-    echo "  client    | poweradmin123  | Client Editor   | Yes"
-    echo "  viewer    | poweradmin123  | Read Only       | Yes"
-    echo "  noperm    | poweradmin123  | No Access       | Yes"
-    echo "  inactive  | poweradmin123  | No Access       | No"
+    echo "  admin     | Poweradmin123  | Administrator   | Yes"
+    echo "  manager   | Poweradmin123  | Zone Manager    | Yes"
+    echo "  client    | Poweradmin123  | Client Editor   | Yes"
+    echo "  viewer    | Poweradmin123  | Read Only       | Yes"
+    echo "  noperm    | Poweradmin123  | No Access       | Yes"
+    echo "  inactive  | Poweradmin123  | No Access       | No"
     echo ""
     echo -e "${GREEN}LDAP Test Users (password: testpass123):${NC}"
     echo "  Username     | Password     | Template        | Active"

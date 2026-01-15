@@ -92,76 +92,60 @@ test.describe.serial('Password Management', () => {
   });
 
   /**
-   * This test changes the password and must restore it via UI.
-   * Run this test last in the serial group.
+   * Test that verifies the password change form submission works correctly.
+   * This test changes the password and then restores it to maintain test state.
    */
-  test('should change password successfully and restore it', async ({ adminPage: page }) => {
-    await page.goto('/index.php?page=change_password');
-
-    const hasForm = await page.locator('form').count() > 0;
-    if (!hasForm) {
-      test.info().annotations.push({ type: 'skip', description: 'Change password page not available' });
-      return;
-    }
-
-    const passwordFields = page.locator('input[type="password"]');
-    const count = await passwordFields.count();
-
-    if (count < 3) {
-      test.info().annotations.push({ type: 'skip', description: 'Not enough password fields found' });
-      return;
-    }
-
+  test('should change password successfully and restore it', async ({ page }) => {
+    const originalPassword = users.admin.password;
     const newPassword = 'NewAdmin456!';
 
-    // Step 1: Change password to new password
-    await passwordFields.nth(0).fill(users.admin.password);
+    // Step 1: Log in with original password
+    await page.goto('/index.php');
+    await page.locator('input[name="username"]').fill(users.admin.username);
+    await page.locator('input[name="password"]').fill(originalPassword);
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await expect(page).toHaveURL(/index\.php/);
+
+    // Step 2: Change password to new password
+    await page.goto('/index.php?page=change_password');
+    const passwordFields = page.locator('input[type="password"]');
+    await passwordFields.nth(0).fill(originalPassword);
     await passwordFields.nth(1).fill(newPassword);
     await passwordFields.nth(2).fill(newPassword);
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-    // Check if password was changed
+    // Should be logged out after password change
+    await expect(page).toHaveURL(/index\.php/);
+
+    // Step 3: Log in with new password
+    await page.locator('input[name="username"]').fill(users.admin.username);
+    await page.locator('input[name="password"]').fill(newPassword);
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await expect(page).toHaveURL(/index\.php/);
+
+    // Verify we're logged in (should see dashboard content)
     const bodyText = await page.locator('body').textContent();
-    const passwordChanged = bodyText.toLowerCase().includes('success') ||
-                           bodyText.toLowerCase().includes('changed') ||
-                           bodyText.toLowerCase().includes('updated');
+    expect(bodyText.toLowerCase()).toMatch(/welcome|dashboard|zones/i);
 
-    if (passwordChanged) {
-      // Step 2: Logout and login with new password
-      await page.goto('/index.php?page=logout');
-      await page.waitForURL(/login/);
+    // Step 4: Restore original password
+    await page.goto('/index.php?page=change_password');
+    const restoreFields = page.locator('input[type="password"]');
+    await restoreFields.nth(0).fill(newPassword);
+    await restoreFields.nth(1).fill(originalPassword);
+    await restoreFields.nth(2).fill(originalPassword);
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-      await page.locator('input[name="username"]').fill(users.admin.username);
-      await page.locator('input[name="password"]').fill(newPassword);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-      await page.waitForURL(/page=index/);
+    // Should be logged out again
+    await expect(page).toHaveURL(/index\.php/);
 
-      // Step 3: Change password back to original
-      await page.goto('/index.php?page=change_password');
+    // Step 5: Verify we can log in with original password
+    await page.locator('input[name="username"]').fill(users.admin.username);
+    await page.locator('input[name="password"]').fill(originalPassword);
+    await page.locator('button[type="submit"], input[type="submit"]').first().click();
+    await expect(page).toHaveURL(/index\.php/);
 
-      const passwordFields2 = page.locator('input[type="password"]');
-      await passwordFields2.nth(0).fill(newPassword);
-      await passwordFields2.nth(1).fill(users.admin.password);
-      await passwordFields2.nth(2).fill(users.admin.password);
-      await page.locator('button[type="submit"], input[type="submit"]').first().click();
-
-      // Verify password was restored - check for success or verify we can still access pages
-      const restoredText = await page.locator('body').textContent();
-      const passwordRestored = restoredText.toLowerCase().includes('success') ||
-                               restoredText.toLowerCase().includes('changed') ||
-                               restoredText.toLowerCase().includes('updated') ||
-                               restoredText.toLowerCase().includes('password has been') ||
-                               !restoredText.toLowerCase().includes('error');
-
-      // If not clearly successful, verify by accessing a protected page
-      if (!passwordRestored) {
-        await page.goto('/index.php?page=index');
-        const finalText = await page.locator('body').textContent();
-        // Should be logged in (not on login page)
-        expect(finalText.toLowerCase()).not.toMatch(/please.*log.*in|login.*form/i);
-      } else {
-        expect(passwordRestored).toBeTruthy();
-      }
-    }
+    // Verify login successful
+    const finalBodyText = await page.locator('body').textContent();
+    expect(finalBodyText.toLowerCase()).toMatch(/welcome|dashboard|zones/i);
   });
 });

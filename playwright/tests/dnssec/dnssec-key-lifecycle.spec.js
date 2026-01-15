@@ -1,18 +1,18 @@
 import { test, expect } from '../../fixtures/test-fixtures.js';
 import { loginAndWaitForDashboard } from '../../helpers/auth.js';
-import { ensureAnyZoneExists, zones } from '../../helpers/zones.js';
+import { ensureTestZoneExists, zones } from '../../helpers/zones.js';
 import users from '../../fixtures/users.json' assert { type: 'json' };
 
 // Write tests run serially to avoid database race conditions
 test.describe.configure({ mode: 'serial' });
 
 test.describe('DNSSEC Key Lifecycle', () => {
-  // Use existing admin-zone.example.com for DNSSEC testing
+  // Use admin-zone.example.com for DNSSEC testing (owned by admin user)
   const testZoneName = zones.admin.name;
 
   test.describe('Key Generation', () => {
     test('should access DNSSEC page for zone', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
       const bodyText = await page.locator('body').textContent();
@@ -20,7 +20,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should display add key button', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
       const addBtn = page.locator('a[href*="dnssec_add_key"], input[value*="Add"], button:has-text("Add")');
@@ -30,7 +30,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should access add key page', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
       const bodyText = await page.locator('body').textContent();
@@ -38,7 +38,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should display key type selector', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
       const typeSelector = page.locator('select[name*="type"], input[name*="type"], input[type="radio"]');
@@ -46,7 +46,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should display algorithm selector', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
       const algoSelector = page.locator('select[name*="algo"], select[name*="algorithm"]');
@@ -56,7 +56,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should display key size selector', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
       const sizeSelector = page.locator('select[name*="size"], select[name*="bits"], input[name*="size"]');
@@ -66,7 +66,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should generate KSK key', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
 
@@ -81,7 +81,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should generate ZSK key', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_add_key&id=${zoneId}`);
 
@@ -98,7 +98,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
 
   test.describe('Key Activation', () => {
     test('should display key activation status', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
       const bodyText = await page.locator('body').textContent();
@@ -106,7 +106,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should activate inactive key', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
       const activateLink = page.locator('a[href*="dnssec_activate"], a:has-text("Activate")').first();
@@ -118,7 +118,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should deactivate active key', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
       const deactivateLink = page.locator('a[href*="dnssec_deactivate"], a:has-text("Deactivate")').first();
@@ -132,7 +132,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
 
   test.describe('DS Records', () => {
     test('should display DS records section', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_ds_dnskey&id=${zoneId}`);
       const bodyText = await page.locator('body').textContent();
@@ -140,7 +140,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should display DNSKEY records', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_ds_dnskey&id=${zoneId}`);
       const bodyText = await page.locator('body').textContent();
@@ -148,7 +148,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should show DS record formats', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec_ds_dnskey&id=${zoneId}`);
       const bodyText = await page.locator('body').textContent();
@@ -159,7 +159,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
 
   test.describe('Key Deletion', () => {
     test('should access delete key confirmation', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
       const deleteLink = page.locator('a[href*="dnssec_delete_key"]').first();
@@ -170,7 +170,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should display delete confirmation message', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
       const deleteLink = page.locator('a[href*="dnssec_delete_key"]').first();
@@ -182,7 +182,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
     });
 
     test('should cancel key deletion', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
       const deleteLink = page.locator('a[href*="dnssec_delete_key"]').first();
@@ -199,7 +199,7 @@ test.describe('DNSSEC Key Lifecycle', () => {
 
   test.describe('DNSSEC Permissions', () => {
     test('admin should access DNSSEC settings', async ({ adminPage: page }) => {
-      const zoneId = await ensureAnyZoneExists(page);
+      const zoneId = await ensureTestZoneExists(page, 'admin');
       expect(zoneId).toBeTruthy();
       await page.goto(`/index.php?page=dnssec&id=${zoneId}`);
       const bodyText = await page.locator('body').textContent();
