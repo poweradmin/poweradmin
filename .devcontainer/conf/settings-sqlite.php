@@ -12,7 +12,7 @@ return [
      */
     'database' => [
         'type' => 'sqlite',
-        'file' => '/data/poweradmin.db',
+        'file' => '/data/pdns.db',
     ],
 
     /**

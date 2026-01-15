@@ -90,18 +90,49 @@ INSERT OR REPLACE INTO domains (id, name, type, master) VALUES
 -- ZONE OWNERSHIP (Poweradmin zones table)
 -- =============================================================================
 
-INSERT OR IGNORE INTO zones (domain_id, owner, comment, zone_templ_id) VALUES
-    (1, 1, 'Admin test zone', 0),
-    (2, 2, 'Manager test zone', 0),
-    (3, 3, 'Client test zone', 0),
-    (4, 2, 'Shared zone (manager)', 0),
-    (4, 3, 'Shared zone (client)', 0),
-    (5, 4, 'Viewer test zone', 0),
-    (6, 2, 'Native zone', 0),
-    (7, 1, 'Slave zone', 0),
-    (8, 1, 'Reverse IPv4 zone', 0),
-    (9, 1, 'Reverse IPv6 zone', 0),
-    (10, 2, 'IDN zone', 0);
+INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+SELECT 1, 1, 'Admin test zone', 0
+WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 1 AND owner = 1);
+
+INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+SELECT 2, 2, 'Manager test zone', 0
+WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 2 AND owner = 2);
+
+INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+SELECT 3, 3, 'Client test zone', 0
+WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 3 AND owner = 3);
+
+INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+SELECT 4, 2, 'Shared zone (manager)', 0
+WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 4 AND owner = 2);
+
+INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+SELECT 4, 3, 'Shared zone (client)', 0
+WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 4 AND owner = 3);
+
+INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+SELECT 5, 4, 'Viewer test zone', 0
+WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 5 AND owner = 4);
+
+INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+SELECT 6, 2, 'Native zone', 0
+WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 6 AND owner = 2);
+
+INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+SELECT 7, 1, 'Slave zone', 0
+WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 7 AND owner = 1);
+
+INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+SELECT 8, 1, 'Reverse IPv4 zone', 0
+WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 8 AND owner = 1);
+
+INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+SELECT 9, 1, 'Reverse IPv6 zone', 0
+WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 9 AND owner = 1);
+
+INSERT INTO zones (domain_id, owner, comment, zone_templ_id)
+SELECT 10, 2, 'IDN zone', 0
+WHERE NOT EXISTS (SELECT 1 FROM zones WHERE domain_id = 10 AND owner = 2);
 
 -- =============================================================================
 -- BASIC SOA AND NS RECORDS FOR EACH ZONE

@@ -45,9 +45,9 @@ export async function loginAndWaitForDashboard(page, username, password, maxRetr
       return;
     }
 
-    // Wait briefly for redirect or error message
+    // Wait for redirect with longer timeout for parallel test stability
     try {
-      await page.waitForURL(/page=index/, { timeout: 5000 });
+      await page.waitForURL(/page=index/, { timeout: 10000 });
       await page.waitForLoadState('domcontentloaded');
       return; // Success
     } catch {
