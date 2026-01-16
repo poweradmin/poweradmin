@@ -1,4 +1,11 @@
-# Poweradmin [![Composer](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml/badge.svg)](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml)
+# Poweradmin
+
+[![release](https://img.shields.io/github/v/release/poweradmin/poweradmin)](https://github.com/poweradmin/poweradmin/releases)
+[![validations](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml/badge.svg)](https://github.com/poweradmin/poweradmin/actions/workflows/php.yml)
+[![license](https://img.shields.io/badge/license-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![php version](https://img.shields.io/badge/php-8.1%2B-blue)](https://www.php.net/)
+[![docker pulls](https://img.shields.io/docker/pulls/poweradmin/poweradmin)](https://hub.docker.com/r/poweradmin/poweradmin)
+[![docker image size](https://img.shields.io/docker/image-size/poweradmin/poweradmin)](https://hub.docker.com/r/poweradmin/poweradmin)
 
 [Poweradmin](https://www.poweradmin.org) is a friendly web-based DNS administration tool for PowerDNS server. The
 interface supports most of
@@ -9,28 +16,40 @@ DNSSEC operations.
 
 - Supports all zone types (master, native, and slave)
 - Supermasters for automatic provisioning of slave zones
+- Zone templates for quick zone creation
+- Bulk operations for records and reverse DNS
 - IPv6 support
-- Multi-language support
-- DNSSEC operations
+- Multi-language support (15+ languages)
+- DNSSEC operations via PowerDNS API
 - Light and dark themes
+- Search functionality across zones and records
+- User and permission management with role-based access
 - Ability to add reverse records
-- LDAP authentication support with custom filter
+- Authentication options:
+  - Local database authentication
+  - LDAP authentication with custom filter
+  - SAML and OIDC authentication
+  - Multi-factor authentication (MFA/2FA) with TOTP
+- RESTful API with OpenAPI documentation (used by Terraform/OpenTofu provider)
+- Docker deployment with FrankenPHP
 
-## Disclaimer
+## Screenshots
 
-This project is not associated
-with [PowerDNS.com](https://www.powerdns.com/index.html), [Open-Xchange](https://www.open-xchange.com), or any other
-external parties.
-It is independently funded and maintained. If this project does not fulfill your requirements, please explore these
-alternative [options](https://github.com/PowerDNS/pdns/wiki/WebFrontends).
+### Login Screen
 
-## License
+![Login interface with multi-language and MFA support](https://docs.poweradmin.org/screenshots/light_login.png)
 
-This project is licensed under the GNU General Public License v3.0. See the LICENSE file for more details.
+### Dashboard
 
-## Supported by
+![Dashboard with quick actions and navigation](https://docs.poweradmin.org/screenshots/light_index_page.png)
 
-[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
+### Zone Management
+
+![Zone list with sorting and filtering](https://docs.poweradmin.org/screenshots/light_zone_list.png)
+
+### Zone Editor
+
+![Zone editor with inline record management](https://docs.poweradmin.org/screenshots/light_zone_edit.png)
 
 ## Requirements
 
@@ -42,13 +61,28 @@ This project is licensed under the GNU General Public License v3.0. See the LICE
 ## Tested on
 
 **Officially tested versions:**
-- **4.0.x (development)**: PHP 8.2.29, PowerDNS 4.9.5, MariaDB 10.11.15, PostgreSQL 16.3, SQLite 3.51.1
-- **3.9.x (stable)**: PHP 8.1.31, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
+- **master (development)**: PHP 8.2, PowerDNS 4.9.8, MariaDB 10.11, PostgreSQL 16.3
+- **release/4.x (stable)**: PHP 8.2, PowerDNS 4.9.5, MariaDB 10.11, PostgreSQL 16.3
+- **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
 
 **User-reported compatibility:**
 - PowerDNS 4.8.x, 4.9.x, and 5.0.x series have been reported to work correctly by community users
 
 **Compatibility note:** Poweradmin operates primarily at the database level with PowerDNS, using the PowerDNS API only for DNSSEC operations. This design provides broad compatibility across PowerDNS versions, as the database schema remains relatively stable between releases.
+
+## Version Support
+
+Poweradmin maintains multiple release branches:
+
+| Branch | Status | Support |
+|--------|--------|---------|
+| `master` | Development | Experimental features, unstable |
+| `release/4.x` | Stable | Current release with new features |
+| `release/3.x` | LTS | Bug fixes and security updates for at least 2 years |
+
+### Long-Term Support (LTS)
+
+The **3.x branch** is designated as Long-Term Support (LTS). This branch will receive bug fixes and security updates for at least two years, providing a stable option for organizations that prefer stability over immediate upgrades to the 4.x series.
 
 ## Installation
 
@@ -59,62 +93,70 @@ For detailed installation instructions, please visit [the official documentation
 * **Recommended method - via releases**:
     * Get the latest stable release from [releases](https://github.com/poweradmin/poweradmin/releases)
 * **For specific needs - via Git**:
-    * ⚠️ **Warning**: The master branch (4.0.x) is used for development and may be unstable. For production use, stick with the stable 3.9.x release.
+    * **Warning**: The master branch is used for development and may be unstable. For production use, stick with the stable release/4.x branch or use the `stable` Docker tag.
 
 ### Docker Deployment
 
-🐳 **Quick Start with Docker**:
+**Quick Start with Docker**:
 ```bash
 docker run -d \
   --name poweradmin \
   -p 8080:80 \
   -e DB_TYPE=sqlite \
   -e PA_CREATE_ADMIN=1 \
-  edmondas/poweradmin:latest
+  poweradmin/poweradmin:latest
 ```
 
-**Important**: 
+**Important**:
 - DB_TYPE environment variable is required (sqlite, mysql, pgsql)
 - No admin user is created by default for security reasons. Use `-e PA_CREATE_ADMIN=1` to create an admin user (a secure password will be auto-generated and shown in logs)
 
-* **Docker Hub**: `edmondas/poweradmin`
+* **Docker Hub**: `poweradmin/poweradmin`
 * **GitHub Container Registry**: `ghcr.io/poweradmin/poweradmin`
 * **Full documentation**: [DOCKER.md](DOCKER.md)
 * **Security with Docker Secrets**: [DOCKER-SECRETS.md](DOCKER-SECRETS.md)
 
 Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets integration, FrankenPHP for enhanced performance.
 
-## Screenshots
-
-### Log in
-
-![The login screen](https://docs.poweradmin.org/screenshots/ignite_login.png)
-
-### Zone list
-
-![List of zones](https://docs.poweradmin.org/screenshots/ignite_zone_list.png)
-
 ## Contributing
 
-We welcome contributions to improve Poweradmin. If you'd like to contribute, please follow the standard GitHub workflow
-of forking the repository, creating a branch, making changes, and submitting a pull request.
+We welcome contributions to Poweradmin! As the sole maintainer of this non-profit project, I work alongside our amazing [contributors](https://github.com/poweradmin/poweradmin/graphs/contributors). See [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-### Contribution Guidelines
+## Support the Project
 
-1. **Code Quality**: Ensure your code follows the project's style and standards
-2. **Testing**: Test your changes thoroughly before submitting
-3. **Documentation**: Include appropriate documentation for new features
+Poweradmin is independently developed and maintained. Your support helps keep the project alive and growing.
 
-### Attribution Policy
+[![JetBrains logo.](https://resources.jetbrains.com/storage/products/company/brand/logos/jetbrains.svg)](https://jb.gg/OpenSourceSupport)
 
-All meaningful contributions are credited in release notes. Please note:
+JetBrains provides IDE licenses used for development of this project.
 
-- Sometimes similar ideas come from multiple contributors; implementation quality determines which is merged
-- Contributions may be partially accepted or rewritten to maintain project consistency
-- Even if your exact code isn't used, your ideas will still be credited if they influence the final implementation
+### Organizations Supporting Development
 
-Please forgive me if I occasionally miss crediting someone in the release notes. Managing a project and preparing new
-versions while tracking all contributions is challenging. If you notice your contribution hasn't been acknowledged,
-please reach out - I'm always open to corrections and want to ensure everyone receives proper recognition.
+* HLkomm Telekommunikations GmbH
+* IRAM (Institut de Radioastronomie Millimétrique)
 
-Thank you for your contributions!
+### Individual Donors
+
+* Stefano Rizzetto
+* Asher Manangan
+* Michiel Visser
+* Gino Cremer
+* Arthur Mayer
+* Dylan Blanqué
+* trendymail
+
+For feature sponsorship, to speed up development of specific features, or to discuss ideas and issues, please [contact me](https://github.com/edmondas).
+
+## Related Projects
+
+* [terraform-provider-poweradmin](https://github.com/poweradmin/terraform-provider-poweradmin) - Terraform/OpenTofu provider for managing DNS zones and records through Poweradmin
+* [certbot-dns-poweradmin](https://github.com/poweradmin/certbot-dns-poweradmin) - Certbot DNS plugin for Poweradmin to automate Let's Encrypt certificate issuance with DNS-01 challenge
+* [external-dns-poweradmin-webhook](https://github.com/poweradmin/external-dns-poweradmin-webhook) - ExternalDNS webhook provider for Poweradmin to synchronize Kubernetes DNS records
+
+## Note
+
+Poweradmin is an independent community project, not affiliated with [PowerDNS.com](https://www.powerdns.com/index.html) or [Open-Xchange](https://www.open-xchange.com).
+
+## License
+
+This project is licensed under the GNU General Public License v3.0. See the LICENSE file for more details.
