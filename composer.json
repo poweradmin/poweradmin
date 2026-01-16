@@ -53,7 +53,7 @@
     "friendsofphp/php-cs-fixer": "^3.64",
     "vimeo/psalm": "^5.0.0",
     "phpmd/phpmd": "^2.15",
-    "phan/phan": "^5.5"
+    "phan/phan": "^6.0"
   },
   "scripts": {
     "docs": "tools/phpDocumentor",
