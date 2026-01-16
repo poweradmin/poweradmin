@@ -95,9 +95,9 @@ Features: Multi-database support (SQLite, MySQL, PostgreSQL), Docker secrets int
 ## Tested on
 
 **Officially tested versions:**
-- **master (development)**: PHP 8.2.29, PowerDNS 4.9.5, MariaDB 10.11.15, PostgreSQL 16.3, SQLite 3.51.1
-- **release/4.x (stable)**: PHP 8.1.31, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
-- **release/3.x (LTS)**: PHP 8.1.31, PowerDNS 4.7.4, MariaDB 10.11.10, MySQL 9.1.0, PostgreSQL 16.3, SQLite 3.45.3
+- **master (development)**: PHP 8.2, PowerDNS 4.9.8, MariaDB 10.11, PostgreSQL 16.3
+- **release/4.x (stable)**: PHP 8.2, PowerDNS 4.9.5, MariaDB 10.11, PostgreSQL 16.3
+- **release/3.x (LTS)**: PHP 8.1, PowerDNS 4.7.4, MariaDB 10.11, MySQL 9.1, PostgreSQL 16.3, SQLite 3.45
 
 **User-reported compatibility:**
 - PowerDNS 4.8.x, 4.9.x, and 5.0.x series have been reported to work correctly by community users
