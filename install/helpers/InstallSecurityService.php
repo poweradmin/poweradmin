@@ -49,7 +49,7 @@ class InstallSecurityService
         }
 
         if ($this->config['csrf']['enabled'] && $request->isMethod('POST')) {
-            $token = $request->get('install_token');
+            $token = $request->request->get('install_token');
             if (empty($token)) {
                 $errors['csrf'] = 'Security Token Missing: A required security token was not provided. Please start the installation from the beginning.';
             } elseif (!$this->csrfTokenService->validateToken($token, 'install_token')) {
@@ -68,11 +68,13 @@ class InstallSecurityService
 
         $clientIp = $this->getClientIp();
 
-        if (in_array($clientIp, $this->config['ip_access']['allowed_ips'])) {
+        $allowedIps = $this->config['ip_access']['allowed_ips'] ?? [];
+        if (in_array($clientIp, $allowedIps)) {
             return true;
         }
 
-        foreach ($this->config['ip_access']['allowed_ranges'] as $range) {
+        $allowedRanges = $this->config['ip_access']['allowed_ranges'] ?? [];
+        foreach ($allowedRanges as $range) {
             if ($this->ipInRange($clientIp, $range)) {
                 return true;
             }
