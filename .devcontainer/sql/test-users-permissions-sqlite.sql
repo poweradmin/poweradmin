@@ -69,6 +69,16 @@ INSERT OR REPLACE INTO users (id, username, password, fullname, email, descripti
     (10, 'ldap-viewer', '', 'LDAP Read Only', 'ldap-viewer@poweradmin.org', 'LDAP user with Read Only permissions', 4, 1, 1);
 
 -- =============================================================================
+-- API KEYS (for automated API testing)
+-- =============================================================================
+-- API key for testing: test-api-key-for-automated-testing-12345
+-- This key is linked to the admin user for full API access
+
+INSERT OR IGNORE INTO api_keys (name, secret_key, created_by, disabled, expires_at)
+SELECT 'API Test Key', 'test-api-key-for-automated-testing-12345', 1, 0, NULL
+WHERE NOT EXISTS (SELECT 1 FROM api_keys WHERE secret_key = 'test-api-key-for-automated-testing-12345');
+
+-- =============================================================================
 -- TEST DOMAINS (PowerDNS tables)
 -- =============================================================================
 

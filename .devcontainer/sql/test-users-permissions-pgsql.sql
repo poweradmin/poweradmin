@@ -144,6 +144,16 @@ VALUES (10, 'ldap-viewer', '', 'LDAP Read Only', 'ldap-viewer@poweradmin.org', '
 ON CONFLICT (id) DO UPDATE SET fullname = EXCLUDED.fullname;
 
 -- =============================================================================
+-- API KEYS (for automated API testing)
+-- =============================================================================
+-- API key for testing: test-api-key-for-automated-testing-12345
+-- This key is linked to the admin user for full API access
+
+INSERT INTO api_keys (name, secret_key, created_by, disabled, expires_at)
+SELECT 'API Test Key', 'test-api-key-for-automated-testing-12345', 1, false, NULL
+WHERE NOT EXISTS (SELECT 1 FROM api_keys WHERE secret_key = 'test-api-key-for-automated-testing-12345');
+
+-- =============================================================================
 -- TEST DOMAINS (PowerDNS tables)
 -- =============================================================================
 
@@ -394,3 +404,4 @@ SELECT setval('zones_id_seq', COALESCE((SELECT MAX(id) FROM zones), 1));
 SELECT setval('zone_templ_id_seq', COALESCE((SELECT MAX(id) FROM zone_templ), 1));
 SELECT setval('zone_templ_records_id_seq', COALESCE((SELECT MAX(id) FROM zone_templ_records), 1));
 SELECT setval('perm_templ_items_id_seq', COALESCE((SELECT MAX(id) FROM perm_templ_items), 1));
+SELECT setval('api_keys_id_seq', COALESCE((SELECT MAX(id) FROM api_keys), 1));
