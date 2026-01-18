@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -79,8 +79,24 @@ class BasicRouter
     {
         $page = $this->request['page'] ?? null;
 
-        // If no page is provided, go to default page
-        if ($page === null) {
+        // Clean up page parameter - extract path before query string, strip leading slashes
+        if ($page !== null) {
+            $page = explode('?', $page)[0];
+            $page = ltrim($page, '/');
+        }
+
+        // For API routes: extract route from REQUEST_URI to avoid collision with pagination 'page' parameter
+        // This allows API clients to use ?page=2 for pagination without breaking routing
+        if ($page === null || $page === '' || !str_starts_with($page, 'api/')) {
+            $requestUri = $_SERVER['REQUEST_URI'] ?? '';
+            $path = parse_url($requestUri, PHP_URL_PATH);
+            if ($path !== null && str_starts_with($path, '/api/')) {
+                $page = ltrim($path, '/');
+            }
+        }
+
+        // If no page is provided (null or empty string), go to default page
+        if ($page === null || $page === '') {
             if ($this->defaultPage !== null) {
                 $this->routeFound = true;
                 return $this->defaultPage;
@@ -89,8 +105,6 @@ class BasicRouter
                 throw new Error('No page specified and no default page configured');
             }
         }
-
-        $page = explode('?', $page)[0];
 
         // Handle RESTful API routes
         if (str_starts_with($page, 'api/')) {
