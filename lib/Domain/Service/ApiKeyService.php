@@ -32,7 +32,6 @@ use Poweradmin\Domain\Repository\ApiKeyRepositoryInterface;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
-use Random\RandomException;
 
 /**
  * Service for managing API keys

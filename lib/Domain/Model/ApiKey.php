@@ -24,7 +24,6 @@ namespace Poweradmin\Domain\Model;
 
 use DateTime;
 use JsonSerializable;
-use Random\RandomException;
 
 /**
  * Class ApiKey

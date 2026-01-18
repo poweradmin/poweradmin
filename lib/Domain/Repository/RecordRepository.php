@@ -25,7 +25,6 @@ namespace Poweradmin\Domain\Repository;
 use PDO;
 use Poweradmin\Domain\Model\Constants;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
-use Poweradmin\Infrastructure\Database\DbCompat;
 use Poweradmin\Infrastructure\Database\PDOCommon;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Infrastructure\Utility\SortHelper;
@@ -70,7 +69,7 @@ class RecordRepository implements RecordRepositoryInterface
 
         $stmt = $this->db->prepare("SELECT domain_id FROM $records_table WHERE id = :id");
         $stmt->execute([':id' => $rid]);
-        return $stmt->fetchColumn() ?: 0;
+        return (int) ($stmt->fetchColumn() ?: 0);
     }
 
     /**
@@ -86,7 +85,7 @@ class RecordRepository implements RecordRepositoryInterface
 
         $stmt = $this->db->prepare("SELECT COUNT(id) FROM $records_table WHERE domain_id = :zone_id AND type IS NOT NULL AND type != ''");
         $stmt->execute([':zone_id' => $zone_id]);
-        return $stmt->fetchColumn() ?: 0;
+        return (int) ($stmt->fetchColumn() ?: 0);
     }
 
     /**

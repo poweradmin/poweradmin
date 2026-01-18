@@ -21,7 +21,6 @@
  */
 
 use Poweradmin\Application\Routing\BasicRouter;
-use Poweradmin\Domain\Service\MfaSessionManager;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Service\MessageService;
 use Poweradmin\Pages;
