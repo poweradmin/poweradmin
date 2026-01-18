@@ -81,7 +81,6 @@ class ZonesController extends PublicApiController
     /**
      * Handle zone-related requests
      */
-    #[\Override]
     public function run(): void
     {
         $method = $this->request->getMethod();
@@ -612,8 +611,15 @@ class ZonesController extends PublicApiController
         schema: new OA\Schema(type: 'integer', example: 123)
     )]
     #[OA\Response(
-        response: 204,
-        description: 'Zone deleted successfully'
+        response: 200,
+        description: 'Zone deleted successfully',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', example: 'Zone deleted successfully'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
     )]
     #[OA\Response(
         response: 404,
@@ -646,7 +652,7 @@ class ZonesController extends PublicApiController
                 return $this->returnApiError($result['message'], $statusCode);
             }
 
-            return $this->returnApiResponse(null, true, 'Zone deleted successfully', 204, [
+            return $this->returnApiResponse(null, true, 'Zone deleted successfully', 200, [
                 'meta' => [
                     'zone_id' => $zoneId,
                     'timestamp' => date('Y-m-d H:i:s')

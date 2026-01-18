@@ -32,7 +32,6 @@
 namespace Poweradmin\Application\Controller\Api\V1;
 
 use Exception;
-use Override;
 use PDO;
 use Poweradmin\Application\Controller\Api\PublicApiController;
 use Poweradmin\Domain\Service\Dns\RecordManager;
@@ -80,7 +79,6 @@ class ZonesRecordsController extends PublicApiController
     /**
      * Handle zone records requests
      */
-    #[Override]
     public function run(): void
     {
         $method = $this->request->getMethod();
@@ -598,8 +596,15 @@ class ZonesRecordsController extends PublicApiController
         schema: new OA\Schema(type: 'integer')
     )]
     #[OA\Response(
-        response: 204,
-        description: 'Record deleted successfully'
+        response: 200,
+        description: 'Record deleted successfully',
+        content: new OA\JsonContent(
+            properties: [
+                new OA\Property(property: 'success', type: 'boolean', example: true),
+                new OA\Property(property: 'message', type: 'string', example: 'Record deleted successfully'),
+                new OA\Property(property: 'data', type: 'null')
+            ]
+        )
     )]
     #[OA\Response(
         response: 404,
@@ -637,11 +642,12 @@ class ZonesRecordsController extends PublicApiController
             // Get record type before deletion (for SOA serial update logic)
             $recordType = $existingRecord['type'];
 
-            // Use RecordManager to delete the record
+            // Delete the record using RecordManager which enforces permission checks
+            // API authentication sets $_SESSION['userid'] from the API key's associated user
             $success = $this->recordManager->deleteRecord($recordId);
 
             if (!$success) {
-                return $this->returnApiError('Failed to delete record', 500);
+                return $this->returnApiError('Failed to delete record: insufficient permissions or record not found', 403);
             }
 
             // Update SOA serial after deleting the record (except for SOA records themselves)
@@ -649,7 +655,7 @@ class ZonesRecordsController extends PublicApiController
                 $this->updateSOASerial($zoneId);
             }
 
-            return $this->returnApiResponse(null, true, 'Record deleted successfully', 204, [
+            return $this->returnApiResponse(null, true, 'Record deleted successfully', 200, [
                 'meta' => [
                     'zone_id' => $zoneId,
                     'record_id' => $recordId,

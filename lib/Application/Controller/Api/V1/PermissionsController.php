@@ -50,7 +50,6 @@ class PermissionsController extends PublicApiController
     /**
      * Handle permission requests
      */
-    #[\Override]
     public function run(): void
     {
         $method = $this->request->getMethod();
