@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -613,14 +613,7 @@ class ZonesController extends PublicApiController
     )]
     #[OA\Response(
         response: 204,
-        description: 'Zone deleted successfully',
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: 'success', type: 'boolean', example: true),
-                new OA\Property(property: 'message', type: 'string', example: 'Zone deleted successfully'),
-                new OA\Property(property: 'data', type: 'null')
-            ]
-        )
+        description: 'Zone deleted successfully'
     )]
     #[OA\Response(
         response: 404,

@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -599,14 +599,7 @@ class ZonesRecordsController extends PublicApiController
     )]
     #[OA\Response(
         response: 204,
-        description: 'Record deleted successfully',
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: 'success', type: 'boolean', example: true),
-                new OA\Property(property: 'message', type: 'string', example: 'Record deleted successfully'),
-                new OA\Property(property: 'data', type: 'null')
-            ]
-        )
+        description: 'Record deleted successfully'
     )]
     #[OA\Response(
         response: 404,
@@ -657,10 +650,10 @@ class ZonesRecordsController extends PublicApiController
             }
 
             return $this->returnApiResponse(null, true, 'Record deleted successfully', 204, [
-                'zone_id' => $zoneId,
-                'record_id' => $recordId,
-                'zone_name' => $zone['name'],
                 'meta' => [
+                    'zone_id' => $zoneId,
+                    'record_id' => $recordId,
+                    'zone_name' => $zone['name'],
                     'timestamp' => date('Y-m-d H:i:s')
                 ]
             ]);

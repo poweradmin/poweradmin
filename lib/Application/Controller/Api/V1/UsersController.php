@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -227,72 +227,9 @@ class UsersController extends PublicApiController
      * @param string|null $email Email to filter by
      * @return JsonResponse The JSON response
      */
-    #[OA\Get(
-        path: '/v1/users',
-        operationId: 'v1GetFilteredUsers',
-        description: 'Filter users list by username or email. Returns a list format similar to the regular users list but only for the matching user.',
-        summary: 'Get users filtered by username or email',
-        security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
-        tags: ['users']
-    )]
-    #[OA\Parameter(
-        name: 'username',
-        description: 'Filter by username (optional)',
-        in: 'query',
-        required: false,
-        schema: new OA\Schema(type: 'string')
-    )]
-    #[OA\Parameter(
-        name: 'email',
-        description: 'Filter by email (optional)',
-        in: 'query',
-        required: false,
-        schema: new OA\Schema(type: 'string')
-    )]
-    #[OA\Response(
-        response: 200,
-        description: 'Filtered users list',
-        content: new OA\JsonContent(
-            properties: [
-                new OA\Property(property: 'success', type: 'boolean', example: true),
-                new OA\Property(property: 'message', type: 'string', example: 'Users retrieved successfully'),
-                new OA\Property(
-                    property: 'data',
-                    type: 'array',
-                    items: new OA\Items(
-                        properties: [
-                            new OA\Property(property: 'user_id', type: 'integer', example: 1),
-                            new OA\Property(property: 'username', type: 'string', example: 'johndoe'),
-                            new OA\Property(property: 'fullname', type: 'string', example: 'John Doe'),
-                            new OA\Property(property: 'email', type: 'string', example: 'john@example.com'),
-                            new OA\Property(property: 'description', type: 'string', example: 'User description'),
-                            new OA\Property(property: 'active', type: 'boolean', example: true),
-                            new OA\Property(property: 'zone_count', type: 'integer', example: 5),
-                            new OA\Property(property: 'is_admin', type: 'boolean', example: false)
-                        ],
-                        type: 'object'
-                    )
-                ),
-                new OA\Property(
-                    property: 'pagination',
-                    properties: [
-                        new OA\Property(property: 'current_page', type: 'integer', example: 1),
-                        new OA\Property(property: 'per_page', type: 'integer', example: 50),
-                        new OA\Property(property: 'total', type: 'integer', example: 1),
-                        new OA\Property(property: 'last_page', type: 'integer', example: 1)
-                    ],
-                    type: 'object'
-                ),
-                new OA\Property(
-                    property: 'meta',
-                    properties: [
-                        new OA\Property(property: 'timestamp', type: 'string', example: '2025-05-09 08:30:00')
-                    ],
-                    type: 'object'
-                )
-            ]
-        )
-    )]
+    /**
+     * Get filtered users by username or email (internal method, not documented in OpenAPI)
+     */
     private function getFilteredUsers(?string $username, ?string $email): JsonResponse
     {
         try {
@@ -334,9 +271,24 @@ class UsersController extends PublicApiController
     #[OA\Get(
         path: '/v1/users',
         operationId: 'v1ListUsers',
-        summary: 'List all users',
+        summary: 'List all users or filter by username/email',
+        description: 'Returns a list of users. Use username or email parameter to filter, or page/per_page for pagination.',
         security: [['bearerAuth' => []], ['apiKeyHeader' => []]],
         tags: ['users']
+    )]
+    #[OA\Parameter(
+        name: 'username',
+        description: 'Filter by exact username (optional)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string')
+    )]
+    #[OA\Parameter(
+        name: 'email',
+        description: 'Filter by exact email (optional)',
+        in: 'query',
+        required: false,
+        schema: new OA\Schema(type: 'string')
     )]
     #[OA\Parameter(
         name: 'page',
