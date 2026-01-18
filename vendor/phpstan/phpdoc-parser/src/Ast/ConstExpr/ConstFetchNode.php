@@ -20,7 +20,6 @@ class ConstFetchNode implements ConstExprNode
 		$this->name = $name;
 	}
 
-
 	public function __toString(): string
 	{
 		if ($this->className === '') {
@@ -29,6 +28,20 @@ class ConstFetchNode implements ConstExprNode
 		}
 
 		return "{$this->className}::{$this->name}";
+	}
+
+	/**
+	 * @param array<string, mixed> $properties
+	 */
+	public static function __set_state(array $properties): self
+	{
+		$instance = new self($properties['className'], $properties['name']);
+		if (isset($properties['attributes'])) {
+			foreach ($properties['attributes'] as $key => $value) {
+				$instance->setAttribute($key, $value);
+			}
+		}
+		return $instance;
 	}
 
 }
