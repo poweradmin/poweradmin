@@ -38,9 +38,9 @@ use PHPUnit\Framework\TestCase;
  */
 class RecordRepositoryFilteredRecordsTest extends TestCase
 {
-    private PDO $mysqlConnection;
-    private PDO $pgsqlConnection;
-    private PDO $sqliteConnection;
+    private ?PDO $mysqlConnection = null;
+    private ?PDO $pgsqlConnection = null;
+    private ?PDO $sqliteConnection = null;
 
     private const TEST_RECORDS = [
         ['name' => 'www.example.com', 'type' => 'A', 'content' => '192.168.1.1', 'ttl' => 3600, 'prio' => 0, 'disabled' => 0],

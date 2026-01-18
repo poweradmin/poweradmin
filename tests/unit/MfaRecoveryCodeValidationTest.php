@@ -34,7 +34,7 @@ class MfaRecoveryCodeValidationTest extends TestCase
 {
     private function createUserMfa(int $userId = 1, string $type = 'app'): UserMfa
     {
-        return UserMfa::create($userId, $type);
+        return UserMfa::create($userId, false, null, null, $type);
     }
 
     /**
