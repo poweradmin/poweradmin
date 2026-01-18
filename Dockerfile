@@ -46,7 +46,7 @@ RUN apk upgrade --no-cache
 # Install required packages and PHP extensions
 RUN apk add --no-cache --virtual .build-deps \
     gettext-dev \
-    postgresql15-dev \
+    postgresql17-dev \
     icu-dev \
     openldap-dev \
     libxml2-dev \
@@ -60,8 +60,8 @@ RUN apk add --no-cache --virtual .build-deps \
     bash \
     mariadb-client \
     mariadb-connector-c \
-    postgresql15-client \
-    postgresql15-dev \
+    postgresql17-client \
+    postgresql17-dev \
     libpq \
     libldap \
     libxml2 \
@@ -81,9 +81,11 @@ WORKDIR /app
 COPY . .
 
 # Copy and set permissions for entrypoint script, create directories
+# Remove any existing config to ensure entrypoint generates fresh config from env vars
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh \
-    && mkdir -p /db /app/config
+    && mkdir -p /db /app/config \
+    && rm -f /app/config/settings.php
 
 # Create Caddyfile for FrankenPHP
 COPY <<EOF /etc/caddy/Caddyfile
@@ -136,6 +138,22 @@ COPY <<EOF /etc/caddy/Caddyfile
     # Zone records collection routes
     @api_zone_records_collection path_regexp zone_records_col ^/api/v1/zones/([0-9]+)/records/?$
     rewrite @api_zone_records_collection /index.php?page=api/v1/zones_records/{re.zone_records_col.1}
+
+    # Permission templates individual routes
+    @api_permission_templates_individual path_regexp perm_tpl ^/api/v1/permission_templates/([0-9]+)/?$
+    rewrite @api_permission_templates_individual /index.php?page=api/v1/permission_templates/{re.perm_tpl.1}
+
+    # Permission templates collection route
+    @api_permission_templates_collection path_regexp ^/api/v1/permission_templates/?$
+    rewrite @api_permission_templates_collection /index.php?page=api/v1/permission_templates
+
+    # Permissions individual routes
+    @api_permissions_individual path_regexp perms ^/api/v1/permissions/([0-9]+)/?$
+    rewrite @api_permissions_individual /index.php?page=api/v1/permissions/{re.perms.1}
+
+    # Permissions collection route
+    @api_permissions_collection path_regexp ^/api/v1/permissions/?$
+    rewrite @api_permissions_collection /index.php?page=api/v1/permissions
 
     # Rewrite API base paths (fallback)
     @api_fallback path_regexp api_fall ^/api(/(.*))?$

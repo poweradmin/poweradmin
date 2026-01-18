@@ -68,6 +68,7 @@ psalm.xml
 .php-cs-fixer.cache
 .php-cs-fixer.php
 nginx.conf.example
+Caddyfile.example
 .htaccess
 .hadolint.yaml
 cliff.toml
