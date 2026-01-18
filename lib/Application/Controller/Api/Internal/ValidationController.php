@@ -77,7 +77,6 @@ class ValidationController extends InternalApiController
                 $response = $this->validateRecord();
                 $response->send();
                 exit;
-                break;
             default:
                 $response = $this->returnErrorResponse('Unknown action', 400);
                 $response->send();
