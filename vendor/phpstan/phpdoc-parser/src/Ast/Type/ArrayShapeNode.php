@@ -42,7 +42,6 @@ class ArrayShapeNode implements TypeNode
 		$this->kind = $kind;
 	}
 
-
 	/**
 	 * @param ArrayShapeItemNode[] $items
 	 * @param self::KIND_* $kind
@@ -61,7 +60,6 @@ class ArrayShapeNode implements TypeNode
 		return new self($items, false, $unsealedType, $kind);
 	}
 
-
 	public function __toString(): string
 	{
 		$items = $this->items;
@@ -71,6 +69,20 @@ class ArrayShapeNode implements TypeNode
 		}
 
 		return $this->kind . '{' . implode(', ', $items) . '}';
+	}
+
+	/**
+	 * @param array<string, mixed> $properties
+	 */
+	public static function __set_state(array $properties): self
+	{
+		$instance = new self($properties['items'], $properties['sealed'], $properties['unsealedType'], $properties['kind']);
+		if (isset($properties['attributes'])) {
+			foreach ($properties['attributes'] as $key => $value) {
+				$instance->setAttribute($key, $value);
+			}
+		}
+		return $instance;
 	}
 
 }

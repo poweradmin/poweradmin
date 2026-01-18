@@ -52,7 +52,6 @@ class PermissionTemplatesController extends PublicApiController
     /**
      * Handle permission template requests
      */
-    #[\Override]
     public function run(): void
     {
         $method = $this->request->getMethod();

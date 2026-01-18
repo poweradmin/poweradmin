@@ -82,7 +82,6 @@ class UsersController extends PublicApiController
     /**
      * Handle user-related requests
      */
-    #[\Override]
     public function run(): void
     {
         $method = $this->request->getMethod();

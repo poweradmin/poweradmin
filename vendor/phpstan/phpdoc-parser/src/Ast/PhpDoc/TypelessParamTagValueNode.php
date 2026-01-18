@@ -27,12 +27,25 @@ class TypelessParamTagValueNode implements PhpDocTagValueNode
 		$this->description = $description;
 	}
 
-
 	public function __toString(): string
 	{
 		$reference = $this->isReference ? '&' : '';
 		$variadic = $this->isVariadic ? '...' : '';
 		return trim("{$reference}{$variadic}{$this->parameterName} {$this->description}");
+	}
+
+	/**
+	 * @param array<string, mixed> $properties
+	 */
+	public static function __set_state(array $properties): self
+	{
+		$instance = new self($properties['isVariadic'], $properties['parameterName'], $properties['description'], $properties['isReference']);
+		if (isset($properties['attributes'])) {
+			foreach ($properties['attributes'] as $key => $value) {
+				$instance->setAttribute($key, $value);
+			}
+		}
+		return $instance;
 	}
 
 }

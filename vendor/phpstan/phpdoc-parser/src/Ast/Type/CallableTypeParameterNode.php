@@ -31,7 +31,6 @@ class CallableTypeParameterNode implements Node
 		$this->isOptional = $isOptional;
 	}
 
-
 	public function __toString(): string
 	{
 		$type = "{$this->type} ";
@@ -39,6 +38,20 @@ class CallableTypeParameterNode implements Node
 		$isVariadic = $this->isVariadic ? '...' : '';
 		$isOptional = $this->isOptional ? '=' : '';
 		return trim("{$type}{$isReference}{$isVariadic}{$this->parameterName}") . $isOptional;
+	}
+
+	/**
+	 * @param array<string, mixed> $properties
+	 */
+	public static function __set_state(array $properties): self
+	{
+		$instance = new self($properties['type'], $properties['isReference'], $properties['isVariadic'], $properties['parameterName'], $properties['isOptional']);
+		if (isset($properties['attributes'])) {
+			foreach ($properties['attributes'] as $key => $value) {
+				$instance->setAttribute($key, $value);
+			}
+		}
+		return $instance;
 	}
 
 }
