@@ -122,7 +122,7 @@ class BatchReverseRecordCreator
 
         // Calculate network details based on CIDR
         $ipLong = ip2long($ip);
-        $netmask = ~(pow(2, (32 - $cidr)) - 1);
+        $netmask = IpHelper::getCidrNetmask($cidr);
         $networkAddress = $ipLong & $netmask;
 
         // Get octets for the network address
@@ -139,7 +139,7 @@ class BatchReverseRecordCreator
         $errors = [];
 
         // Calculate number of hosts based on CIDR
-        $hostCount = pow(2, (32 - $cidr));
+        $hostCount = IpHelper::getCidrBlockSize($cidr);
 
         // Limit the number of records to prevent excessive processing
         // /24 = 256, /23 = 512, /22 = 1024, /21 = 2048, /20 = 4096

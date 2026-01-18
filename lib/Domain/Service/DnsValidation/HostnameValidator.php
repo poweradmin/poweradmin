@@ -24,6 +24,7 @@ namespace Poweradmin\Domain\Service\DnsValidation;
 
 use Poweradmin\Domain\Model\TopLevelDomain;
 use Poweradmin\Domain\Service\Validation\ValidationResult;
+use Poweradmin\Domain\Utility\IpHelper;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 
 /**
@@ -185,8 +186,8 @@ class HostnameValidator
 
                         // Validate that subnet number is aligned with prefix
                         // For example, 0/26 is valid, but 65/26 is not (should be 64/26)
-                        $blockSize = pow(2, 32 - $prefix);
-                        if ($subnetInt % $blockSize != 0) {
+                        if (!IpHelper::isSubnetAligned($subnetInt, $prefix)) {
+                            $blockSize = IpHelper::getCidrBlockSize($prefix);
                             return ValidationResult::failure(
                                 sprintf(
                                     _('Subnet %d is not aligned with prefix /%d. Should be multiple of %d.'),
