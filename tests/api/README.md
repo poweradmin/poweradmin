@@ -9,12 +9,13 @@ This directory contains comprehensive API testing scripts using shell and curl, 
 # Navigate to API test directory
 cd tests/api/
 
-# Setup configuration (interactive)
-./run-tests.sh setup
+# For devcontainer: test data must be loaded first
+.devcontainer/scripts/import-test-data.sh
 
-# Or manually copy and edit config
-cp .env.api-test.example .env.api-test
-# Edit .env.api-test with your settings
+# Configuration files are pre-configured for devcontainer:
+# - .env.api-test.mysql - MySQL on port 8080 (default)
+# - .env.api-test.pgsql - PostgreSQL on port 8081
+# - .env.api-test.sqlite - SQLite on port 8082
 ```
 
 ### 2. Run Tests
@@ -39,6 +40,51 @@ cp .env.api-test.example .env.api-test
 # Clean up test data
 ./run-tests.sh clean
 ```
+
+### 3. Multi-Database Testing (Devcontainer)
+
+The test suite supports running against all three database backends in the devcontainer environment:
+
+**Database-specific testing:**
+```bash
+# Test against MySQL (nginx, port 8080)
+./run-tests.sh --db mysql test all
+
+# Test against PostgreSQL (apache, port 8081)
+./run-tests.sh --db pgsql test all
+
+# Test against SQLite (caddy, port 8082)
+./run-tests.sh --db sqlite test all
+```
+
+**Test all databases sequentially:**
+```bash
+./run-tests.sh test:all-dbs
+```
+
+**Using npm scripts:**
+```bash
+npm run test:api              # MySQL (default)
+npm run test:api:mysql        # MySQL explicitly
+npm run test:api:pgsql        # PostgreSQL
+npm run test:api:sqlite       # SQLite
+npm run test:api:all-dbs      # All databases
+```
+
+**Configuration files:**
+- `.env.api-test.mysql` - MySQL configuration (port 8080) - **default**
+- `.env.api-test.pgsql` - PostgreSQL configuration (port 8081)
+- `.env.api-test.sqlite` - SQLite configuration (port 8082)
+
+**Prerequisites for devcontainer testing:**
+1. Devcontainer must be running with all database services
+2. Test data must be loaded: `.devcontainer/scripts/import-test-data.sh`
+3. API key `test-api-key-for-automated-testing-12345` is included in test data
+
+**Web servers per database:**
+- MySQL: nginx (port 8080)
+- PostgreSQL: apache (port 8081)
+- SQLite: caddy (port 8082)
 
 ## Test Scripts
 

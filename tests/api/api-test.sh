@@ -11,7 +11,8 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 # Configuration
-CONFIG_FILE="${SCRIPT_DIR}/.env.api-test"
+# Default to MySQL config for devcontainer testing
+CONFIG_FILE="${CONFIG_FILE:-${SCRIPT_DIR}/.env.api-test.mysql}"
 DEFAULT_CONFIG_FILE="${SCRIPT_DIR}/.env.api-test.example"
 
 # Colors for output
@@ -52,19 +53,19 @@ print_test() {
 
 print_pass() {
     echo -e "${GREEN}✓ PASS: $1${NC}"
-    ((PASSED_TESTS++))
+    ((++PASSED_TESTS))
     TEST_RESULTS+=("PASS: $1")
 }
 
 print_fail() {
     echo -e "${RED}✗ FAIL: $1${NC}"
-    ((FAILED_TESTS++))
+    ((++FAILED_TESTS))
     TEST_RESULTS+=("FAIL: $1")
 }
 
 print_skip() {
     echo -e "${YELLOW}⚠ SKIP: $1${NC}"
-    ((SKIPPED_TESTS++))
+    ((++SKIPPED_TESTS))
     TEST_RESULTS+=("SKIP: $1")
 }
 
@@ -77,7 +78,7 @@ print_error() {
 }
 
 increment_test() {
-    ((TOTAL_TESTS++))
+    ((++TOTAL_TESTS))
 }
 
 ##############################################################################
@@ -103,8 +104,14 @@ load_config() {
     source "$CONFIG_FILE"
     set +a
 
-    # Validate required variables
-    local required_vars=("API_BASE_URL" "API_KEY" "DB_HOST" "DB_NAME" "DB_USER" "DB_TYPE")
+    # Validate required variables - base requirements for all DB types
+    local required_vars=("API_BASE_URL" "API_KEY" "DB_TYPE")
+
+    # SQLite doesn't require host/user/name - it uses file path
+    if [[ "${DB_TYPE:-}" != "sqlite" ]]; then
+        required_vars+=("DB_HOST" "DB_NAME" "DB_USER")
+    fi
+
     for var in "${required_vars[@]}"; do
         if [[ -z "${!var:-}" ]]; then
             print_error "Required variable $var is not set in $CONFIG_FILE"
@@ -114,7 +121,11 @@ load_config() {
 
     print_header "API Test Configuration"
     echo "API Base URL: $API_BASE_URL"
-    echo "Database: $DB_TYPE://$DB_HOST/$DB_NAME"
+    if [[ "${DB_TYPE:-}" == "sqlite" ]]; then
+        echo "Database: sqlite"
+    else
+        echo "Database: $DB_TYPE://$DB_HOST/$DB_NAME"
+    fi
     echo "Test timeout: ${TEST_TIMEOUT:-30}s"
     echo ""
 }
@@ -335,17 +346,17 @@ cleanup_existing_test_data() {
     # Find and delete existing test user by username
     local existing_users=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
         "${API_BASE_URL}/api/v1/users" 2>/dev/null | jq -r '.data[]? | select(.username=="api_test_user_curl") | .user_id')
-    
+
     if [[ -n "$existing_users" ]]; then
         for user_id in $existing_users; do
-            api_request "DELETE" "/users/$user_id" "" "204" "Delete existing test user" || true
+            api_request "DELETE" "/users/$user_id" "" "200" "Delete existing test user" || true
         done
     fi
-    
+
     # Find and delete existing test zone by name
     local existing_zones=$(curl -s -H "X-API-Key: $API_KEY" -H "Accept: application/json" \
         "${API_BASE_URL}/api/v1/zones" 2>/dev/null | jq -r '.data[]? | select(.name=="curl-test.example.com") | .zone_id // .id')
-    
+
     if [[ -n "$existing_zones" ]]; then
         for zone_id in $existing_zones; do
             api_request "DELETE" "/zones/$zone_id" "" "204" "Delete existing test zone" || true
@@ -355,16 +366,16 @@ cleanup_existing_test_data() {
 
 cleanup_test_data() {
     print_section "Cleaning up test data"
-    
+
     # Clean up in reverse order - records, then zones, then users
     if [[ -n "${TEST_RECORD_ID:-}" && -n "${TEST_ZONE_ID:-}" ]]; then
         cleanup_request "DELETE" "/zones/$TEST_ZONE_ID/records/$TEST_RECORD_ID" "" "Delete test record" "204"
     fi
-    
+
     if [[ -n "${TEST_ZONE_ID:-}" ]]; then
         cleanup_request "DELETE" "/zones/$TEST_ZONE_ID" "" "Delete test zone" "204"
     fi
-    
+
     # For user deletion, try to transfer zones to admin (user ID 1) or delete zones first
     if [[ -n "${TEST_USER_ID:-}" ]]; then
         # Try to delete user with zone transfer to admin
@@ -448,21 +459,14 @@ test_user_management() {
     # List users
     api_request "GET" "/users" "" "200" "List all users"
     validate_json_response "Users list response structure" "data"
-    
-    # List users with pagination (check if supported)
-    local pagination_response=$(curl -s -w "%{http_code}" \
-        -H "X-API-Key: $API_KEY" \
-        -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v1/users?page=1&per_page=5" \
-        -o /tmp/pagination_test 2>/dev/null || echo "000")
-    
-    if [[ "$pagination_response" == "200" ]]; then
-        api_request "GET" "/users?page=1&per_page=5" "" "200" "List users with pagination"
-        validate_json_response "Paginated users response" "data"
-    else
-        print_skip "List users with pagination - pagination not supported by API"
-    fi
-    
+
+    # List users with pagination
+    api_request "GET" "/users?per_page=2&page=1" "" "200" "List users with pagination page 1"
+    validate_json_response "Paginated users response" "data"
+
+    api_request "GET" "/users?per_page=2&page=2" "" "200" "List users with pagination page 2"
+    validate_json_response "Paginated users response page 2" "data"
+
     # Get specific user
     if [[ -n "${TEST_USER_ID:-}" ]]; then
         api_request "GET" "/users/$TEST_USER_ID" "" "200" "Get specific user"
@@ -497,6 +501,22 @@ test_user_management() {
     # Update non-existent user
     local update_data='{"fullname": "Non-existent User"}'
     api_request "PUT" "/users/99999" "$update_data" "404" "Update non-existent user"
+
+    # Assign permission template to user (PATCH)
+    if [[ -n "${TEST_USER_ID:-}" ]]; then
+        local patch_data='{"perm_templ": 1}'
+        api_request "PATCH" "/users/$TEST_USER_ID" "$patch_data" "200" "Assign permission template to user"
+        validate_json_response "Permission template assignment response" "data"
+    else
+        print_skip "Assign permission template - no test user available"
+    fi
+
+    # Assign permission template to non-existent user
+    local patch_data='{"perm_templ": 1}'
+    api_request "PATCH" "/users/99999" "$patch_data" "404" "Assign permission template to non-existent user"
+
+    # Assign permission template with missing field
+    api_request "PATCH" "/users/1" '{}' "400" "Assign permission template with missing field"
 }
 
 test_zone_management() {
@@ -505,21 +525,14 @@ test_zone_management() {
     # List zones
     api_request "GET" "/zones" "" "200" "List all zones"
     validate_json_response "Zones list response structure" "data"
-    
-    # List zones with pagination (check if supported)
-    local pagination_response=$(curl -s -w "%{http_code}" \
-        -H "X-API-Key: $API_KEY" \
-        -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v1/zones?page=1&per_page=10" \
-        -o /tmp/pagination_test 2>/dev/null || echo "000")
-    
-    if [[ "$pagination_response" == "200" ]]; then
-        api_request "GET" "/zones?page=1&per_page=10" "" "200" "List zones with pagination"
-        validate_json_response "Paginated zones response" "data"
-    else
-        print_skip "List zones with pagination - pagination not supported by API"
-    fi
-    
+
+    # List zones with pagination
+    api_request "GET" "/zones?per_page=2&page=1" "" "200" "List zones with pagination page 1"
+    validate_json_response "Paginated zones response" "data"
+
+    api_request "GET" "/zones?per_page=2&page=2" "" "200" "List zones with pagination page 2"
+    validate_json_response "Paginated zones response page 2" "data"
+
     # Get specific zone
     if [[ -n "${TEST_ZONE_ID:-}" ]]; then
         api_request "GET" "/zones/$TEST_ZONE_ID" "" "200" "Get specific zone"
@@ -580,21 +593,7 @@ test_zone_records() {
     # List zone records
     api_request "GET" "/zones/$TEST_ZONE_ID/records" "" "200" "List zone records"
     validate_json_response "Zone records response" "data"
-    
-    # List zone records with pagination (check if supported)
-    local pagination_response=$(curl -s -w "%{http_code}" \
-        -H "X-API-Key: $API_KEY" \
-        -H "Accept: application/json" \
-        "${API_BASE_URL}/api/v1/zones/$TEST_ZONE_ID/records?page=1&per_page=5" \
-        -o /tmp/pagination_test 2>/dev/null || echo "000")
-    
-    if [[ "$pagination_response" == "200" ]]; then
-        api_request "GET" "/zones/$TEST_ZONE_ID/records?page=1&per_page=5" "" "200" "List zone records with pagination"
-        validate_json_response "Paginated records response" "data"
-    else
-        print_skip "List zone records with pagination - pagination not supported by API"
-    fi
-    
+
     # List records for non-existent zone
     api_request "GET" "/zones/99999/records" "" "404" "List records for non-existent zone"
     

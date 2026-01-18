@@ -10,8 +10,18 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 API_TEST_SCRIPT="$SCRIPT_DIR/api-test.sh"
 LOAD_TEST_SCRIPT="$SCRIPT_DIR/api-load-test.sh"
-CONFIG_FILE="$SCRIPT_DIR/.env.api-test"
 CONFIG_EXAMPLE="$SCRIPT_DIR/.env.api-test.example"
+
+# Database-specific config files
+CONFIG_MYSQL="$SCRIPT_DIR/.env.api-test.mysql"
+CONFIG_PGSQL="$SCRIPT_DIR/.env.api-test.pgsql"
+CONFIG_SQLITE="$SCRIPT_DIR/.env.api-test.sqlite"
+
+# Default to MySQL config
+CONFIG_FILE="$CONFIG_MYSQL"
+
+# Selected database (can be overridden by --db flag)
+SELECTED_DB=""
 
 # Colors
 RED='\033[0;31m'
@@ -28,9 +38,15 @@ usage() {
     echo "Commands:"
     echo "  setup              Setup test configuration"
     echo "  test [SUITE]       Run API tests"
+    echo "  test:all-dbs       Run API tests against all databases"
     echo "  load [TYPE]        Run load tests"
     echo "  check              Check test prerequisites"
     echo "  clean              Clean up test data"
+    echo ""
+    echo "Database Options:"
+    echo "  --db mysql         Use MySQL config (port 8080)"
+    echo "  --db pgsql         Use PostgreSQL config (port 8081)"
+    echo "  --db sqlite        Use SQLite config (port 8082)"
     echo ""
     echo "Test Suites:"
     echo "  all                Run all tests (default)"
@@ -52,17 +68,108 @@ usage() {
     echo "  $0 setup"
     echo "  $0 test auth"
     echo "  $0 test all"
+    echo "  $0 --db pgsql test all"
+    echo "  $0 test:all-dbs"
     echo "  $0 load rate-limit"
     echo "  $0 check"
 }
 
+select_database_config() {
+    local db_type="$1"
+
+    case "$db_type" in
+        mysql)
+            if [[ -f "$CONFIG_MYSQL" ]]; then
+                CONFIG_FILE="$CONFIG_MYSQL"
+                echo -e "${BLUE}Using MySQL configuration (port 8080)${NC}"
+            else
+                echo -e "${RED}MySQL config not found: $CONFIG_MYSQL${NC}"
+                return 1
+            fi
+            ;;
+        pgsql|postgres|postgresql)
+            if [[ -f "$CONFIG_PGSQL" ]]; then
+                CONFIG_FILE="$CONFIG_PGSQL"
+                echo -e "${BLUE}Using PostgreSQL configuration (port 8081)${NC}"
+            else
+                echo -e "${RED}PostgreSQL config not found: $CONFIG_PGSQL${NC}"
+                return 1
+            fi
+            ;;
+        sqlite)
+            if [[ -f "$CONFIG_SQLITE" ]]; then
+                CONFIG_FILE="$CONFIG_SQLITE"
+                echo -e "${BLUE}Using SQLite configuration (port 8082)${NC}"
+            else
+                echo -e "${RED}SQLite config not found: $CONFIG_SQLITE${NC}"
+                return 1
+            fi
+            ;;
+        *)
+            echo -e "${RED}Unknown database type: $db_type${NC}"
+            echo "Valid options: mysql, pgsql, sqlite"
+            return 1
+            ;;
+    esac
+
+    return 0
+}
+
+run_tests_all_databases() {
+    local suite="${1:-all}"
+    local total_passed=0
+    local total_failed=0
+    local db_results=()
+
+    echo -e "${BLUE}================================${NC}"
+    echo -e "${BLUE}Running API Tests on All Databases${NC}"
+    echo -e "${BLUE}================================${NC}"
+    echo ""
+
+    for db in mysql pgsql sqlite; do
+        echo -e "\n${BLUE}=== Testing $db database ===${NC}\n"
+
+        if select_database_config "$db"; then
+            if check_config && test_api_connection; then
+                if run_api_tests "$suite"; then
+                    db_results+=("${GREEN}$db: PASSED${NC}")
+                    ((total_passed++))
+                else
+                    db_results+=("${RED}$db: FAILED${NC}")
+                    ((total_failed++))
+                fi
+            else
+                db_results+=("${YELLOW}$db: SKIPPED (connection failed)${NC}")
+            fi
+        else
+            db_results+=("${YELLOW}$db: SKIPPED (config not found)${NC}")
+        fi
+    done
+
+    echo ""
+    echo -e "${BLUE}================================${NC}"
+    echo -e "${BLUE}Multi-Database Test Summary${NC}"
+    echo -e "${BLUE}================================${NC}"
+    for result in "${db_results[@]}"; do
+        echo -e "  $result"
+    done
+    echo ""
+    echo "Databases passed: $total_passed"
+    echo "Databases failed: $total_failed"
+
+    if [[ $total_failed -gt 0 ]]; then
+        return 1
+    fi
+    return 0
+}
+
 check_dependencies() {
     local missing_deps=()
-    
+
     command -v curl >/dev/null 2>&1 || missing_deps+=("curl")
     command -v jq >/dev/null 2>&1 || missing_deps+=("jq")
     command -v bc >/dev/null 2>&1 || missing_deps+=("bc")
-    
+
     if [[ ${#missing_deps[@]} -gt 0 ]]; then
         echo -e "${RED}Missing dependencies: ${missing_deps[*]}${NC}"
         echo ""
@@ -80,7 +187,7 @@ check_dependencies() {
         echo ""
         return 1
     fi
-    
+
     return 0
 }
 
@@ -165,27 +272,34 @@ check_config() {
         echo "Run '$0 setup' to create configuration"
         return 1
     fi
-    
+
     # Load and validate configuration
     set -a
     source "$CONFIG_FILE"
     set +a
-    
-    local required_vars=("API_BASE_URL" "API_KEY" "DB_HOST" "DB_NAME" "DB_USER" "DB_TYPE")
+
+    # Base required vars for all database types
+    local required_vars=("API_BASE_URL" "API_KEY" "DB_TYPE")
+
+    # SQLite doesn't require host/user/name - it uses file path
+    if [[ "${DB_TYPE:-}" != "sqlite" ]]; then
+        required_vars+=("DB_HOST" "DB_NAME" "DB_USER")
+    fi
+
     local missing_vars=()
-    
+
     for var in "${required_vars[@]}"; do
         if [[ -z "${!var:-}" ]]; then
             missing_vars+=("$var")
         fi
     done
-    
+
     if [[ ${#missing_vars[@]} -gt 0 ]]; then
         echo -e "${RED}Missing configuration variables: ${missing_vars[*]}${NC}"
         echo "Please edit $CONFIG_FILE or run '$0 setup'"
         return 1
     fi
-    
+
     return 0
 }
 
@@ -219,14 +333,16 @@ test_api_connection() {
 
 run_api_tests() {
     local suite="${1:-all}"
-    
+
     echo -e "${BLUE}Running API tests: $suite${NC}"
     echo ""
-    
+
     if [[ ! -x "$API_TEST_SCRIPT" ]]; then
         chmod +x "$API_TEST_SCRIPT"
     fi
-    
+
+    # Export CONFIG_FILE so api-test.sh can use it
+    export CONFIG_FILE
     "$API_TEST_SCRIPT" "$suite"
 }
 
@@ -308,7 +424,35 @@ clean_test_data() {
 }
 
 main() {
-    case "${1:-}" in
+    local args=()
+    local command=""
+
+    # Parse arguments
+    while [[ $# -gt 0 ]]; do
+        case "$1" in
+            --db|--database)
+                if [[ -n "${2:-}" ]]; then
+                    if ! select_database_config "$2"; then
+                        exit 1
+                    fi
+                    shift 2
+                else
+                    echo -e "${RED}--db requires a database type (mysql, pgsql, sqlite)${NC}"
+                    exit 1
+                fi
+                ;;
+            *)
+                args+=("$1")
+                shift
+                ;;
+        esac
+    done
+
+    # Get command from remaining args
+    command="${args[0]:-}"
+    local suite="${args[1]:-all}"
+
+    case "$command" in
         "setup")
             if ! check_dependencies; then
                 exit 1
@@ -319,13 +463,19 @@ main() {
             if ! check_prerequisites; then
                 exit 1
             fi
-            run_api_tests "${2:-all}"
+            run_api_tests "$suite"
+            ;;
+        "test:all-dbs"|"test:all")
+            if ! check_dependencies; then
+                exit 1
+            fi
+            run_tests_all_databases "$suite"
             ;;
         "load")
             if ! check_prerequisites; then
                 exit 1
             fi
-            run_load_tests "${2:-all}"
+            run_load_tests "$suite"
             ;;
         "check")
             check_prerequisites
@@ -341,7 +491,7 @@ main() {
             exit 1
             ;;
         *)
-            echo -e "${RED}Unknown command: $1${NC}"
+            echo -e "${RED}Unknown command: $command${NC}"
             echo ""
             usage
             exit 1
