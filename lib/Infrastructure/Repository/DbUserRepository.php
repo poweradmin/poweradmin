@@ -28,16 +28,20 @@ use Poweradmin\Domain\Model\UserId;
 use Poweradmin\Domain\Repository\UserRepository;
 use Poweradmin\Infrastructure\Configuration\ConfigurationManager;
 use Poweradmin\Infrastructure\Database\DbCompat;
+use Poweradmin\Infrastructure\Database\PdnsTable;
+use Poweradmin\Infrastructure\Database\TableNameService;
 
 class DbUserRepository implements UserRepository
 {
     private object $db;
     private ConfigurationManager $config;
+    private TableNameService $tableNameService;
 
     public function __construct($db, ConfigurationManager $config)
     {
         $this->db = $db;
         $this->config = $config;
+        $this->tableNameService = new TableNameService($config);
     }
 
     public function canViewOthersContent(UserId $user): bool
@@ -232,9 +236,10 @@ class DbUserRepository implements UserRepository
      */
     public function getUserZones(int $userId): array
     {
-        $query = "SELECT z.id, d.name, d.type 
-                  FROM zones z 
-                  INNER JOIN domains d ON z.domain_id = d.id 
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+        $query = "SELECT z.id, d.name, d.type
+                  FROM zones z
+                  INNER JOIN $domains_table d ON z.domain_id = d.id
                   WHERE z.owner = :userId";
         $stmt = $this->db->prepare($query);
         $stmt->execute([':userId' => $userId]);
