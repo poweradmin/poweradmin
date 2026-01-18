@@ -105,6 +105,9 @@
   "config": {
     "platform": {
       "php": "8.1"
+    },
+    "allow-plugins": {
+      "cweagans/composer-patches": true
     }
   },
   "archive": {
