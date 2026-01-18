@@ -71,7 +71,8 @@
     "phpstan/phpstan": "^2.1",
     "friendsofphp/php-cs-fixer": "^v3.84.0",
     "vimeo/psalm": "^5.26",
-    "phpmd/phpmd": "^2.15"
+    "phpmd/phpmd": "^2.15",
+    "phan/phan": "^6.0"
   },
   "scripts": {
     "docs": "tools/phpDocumentor",
@@ -95,6 +96,19 @@
         "@analyse:phpstan"
     ],
 
+    "compat:8.1": "phan --target-php-version=8.1 --allow-polyfill-parser",
+    "compat:8.2": "phan --target-php-version=8.2 --allow-polyfill-parser",
+    "compat:8.3": "phan --target-php-version=8.3 --allow-polyfill-parser",
+    "compat:8.4": "phan --target-php-version=8.4 --allow-polyfill-parser",
+    "compat:8.5": "phan --target-php-version=8.5 --allow-polyfill-parser",
+    "compat:all": [
+        "@compat:8.1",
+        "@compat:8.2",
+        "@compat:8.3",
+        "@compat:8.4",
+        "@compat:8.5"
+    ],
+
     "post-create-project-cmd": [
       "rm -rf install/",
       "rm -rf tests/"
@@ -103,6 +117,9 @@
   "config": {
     "platform": {
       "php": "8.1"
+    },
+    "allow-plugins": {
+      "cweagans/composer-patches": true
     }
   },
   "archive": {

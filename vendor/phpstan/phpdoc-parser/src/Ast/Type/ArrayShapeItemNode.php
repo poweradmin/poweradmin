@@ -4,6 +4,7 @@ namespace PHPStan\PhpDocParser\Ast\Type;
 
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprIntegerNode;
 use PHPStan\PhpDocParser\Ast\ConstExpr\ConstExprStringNode;
+use PHPStan\PhpDocParser\Ast\ConstExpr\ConstFetchNode;
 use PHPStan\PhpDocParser\Ast\Node;
 use PHPStan\PhpDocParser\Ast\NodeAttributes;
 use function sprintf;
@@ -13,7 +14,7 @@ class ArrayShapeItemNode implements Node
 
 	use NodeAttributes;
 
-	/** @var ConstExprIntegerNode|ConstExprStringNode|IdentifierTypeNode|null */
+	/** @var ConstExprIntegerNode|ConstExprStringNode|ConstFetchNode|IdentifierTypeNode|null */
 	public $keyName;
 
 	public bool $optional;
@@ -21,7 +22,7 @@ class ArrayShapeItemNode implements Node
 	public TypeNode $valueType;
 
 	/**
-	 * @param ConstExprIntegerNode|ConstExprStringNode|IdentifierTypeNode|null $keyName
+	 * @param ConstExprIntegerNode|ConstExprStringNode|ConstFetchNode|IdentifierTypeNode|null $keyName
 	 */
 	public function __construct($keyName, bool $optional, TypeNode $valueType)
 	{
@@ -29,7 +30,6 @@ class ArrayShapeItemNode implements Node
 		$this->optional = $optional;
 		$this->valueType = $valueType;
 	}
-
 
 	public function __toString(): string
 	{
@@ -43,6 +43,20 @@ class ArrayShapeItemNode implements Node
 		}
 
 		return (string) $this->valueType;
+	}
+
+	/**
+	 * @param array<string, mixed> $properties
+	 */
+	public static function __set_state(array $properties): self
+	{
+		$instance = new self($properties['keyName'], $properties['optional'], $properties['valueType']);
+		if (isset($properties['attributes'])) {
+			foreach ($properties['attributes'] as $key => $value) {
+				$instance->setAttribute($key, $value);
+			}
+		}
+		return $instance;
 	}
 
 }
