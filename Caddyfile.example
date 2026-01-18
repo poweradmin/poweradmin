@@ -1,6 +1,10 @@
-:80 {
+# Caddy configuration example for Poweradmin
+# This configuration should be placed in your Caddyfile
+# Based on the devcontainer configuration
+
+your-domain.com {
     # Set the root directory
-    root * /app
+    root * /path/to/poweradmin
 
     # Enable access logs
     log {
@@ -56,13 +60,13 @@
 
         # Forward API requests to index.php with page parameter (router handles leading slash)
         rewrite * /index.php?page={path}&{query}
-        reverse_proxy app-sqlite:9000 {
+        reverse_proxy localhost:9000 {
             transport fastcgi {
                 split .php
                 read_timeout 180s
                 env HTTP_AUTHORIZATION {http.request.header.Authorization}
             }
-            # Handle 204 No Content responses properly
+            # Handle 204 No Content responses properly (fixes PHP-FPM/Caddy issue)
             @empty status 204
             handle_response @empty {
                 header Content-Length "0"
@@ -74,7 +78,7 @@
     # Handle PHP files - must be executed, not served as static text
     @phpfiles path *.php
     handle @phpfiles {
-        php_fastcgi app-sqlite:9000 {
+        php_fastcgi localhost:9000 {
             read_timeout 180s
             env HTTP_AUTHORIZATION {http.request.header.Authorization}
         }
@@ -86,7 +90,7 @@
         @rewritable not file
         handle @rewritable {
             rewrite * /index.php?page={path}&{query}
-            php_fastcgi app-sqlite:9000 {
+            php_fastcgi localhost:9000 {
                 read_timeout 180s
                 env HTTP_AUTHORIZATION {http.request.header.Authorization}
             }
