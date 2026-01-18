@@ -94,7 +94,7 @@ class DnssecDeleteKeyController extends BaseController
                 if ($result && !$keyStillExists) {
                     $this->setMessage('dnssec', 'success', _('Zone key has been deleted successfully.'));
                 } else {
-                    error_log("DNSSEC key deletion verification failed: domain=$domain_name, key_id=$key_id, api_result=$result, key_exists=$keyStillExists");
+                    error_log("DNSSEC key deletion verification failed: domain=$domain_name, key_id=$key_id, api_result=" . ($result ? 'true' : 'false') . ", key_exists=" . ($keyStillExists ? 'true' : 'false'));
                     $this->setMessage('dnssec', 'error', _('Failed to delete the zone key.'));
                 }
 
