@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -123,14 +123,8 @@ class EditRecordController extends BaseController
             return;
         }
 
-        // Use the new hostname-only display if enabled
-        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
-        if ($display_hostname_only) {
-            $record['record_name'] = DnsHelper::stripZoneSuffix($record['name'], $zone_name);
-        } else {
-            // Legacy behavior - simple string replacement
-            $record['record_name'] = trim(str_replace(htmlspecialchars($zone_name), '', htmlspecialchars($record["name"])), '.');
-        }
+        // Strip zone suffix from record name for display (fix for issue #958)
+        $record['record_name'] = DnsHelper::stripZoneSuffix($record['name'], $zone_name);
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name);
