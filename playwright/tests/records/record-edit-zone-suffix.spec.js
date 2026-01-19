@@ -10,6 +10,12 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
  *
  * Bug: str_replace() was used which replaces ALL occurrences of zone name
  * Fix: Use suffix-stripping logic that only removes the trailing zone name
+ *
+ * Note: The display format depends on the `display_hostname_only` config setting:
+ * - When true: Shows hostname only (zone suffix stripped), e.g., "test.example.com.sub"
+ * - When false (default): Shows full FQDN, e.g., "test.example.com.sub.example.com"
+ *
+ * In both cases, the record name should NOT contain double dots (..) which was the bug symptom.
  */
 test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
   test.beforeEach(async ({ page }) => {
@@ -93,10 +99,17 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
 
     // THE BUG CHECK: Name should NOT contain double dots (..)
     // Bug causes: "{prefix}..sub" (zone name stripped from ALL occurrences)
-    // Correct: "{prefix}.{zoneName}.sub" (only trailing zone suffix removed)
+    // Correct behavior depends on display_hostname_only config:
+    // - When true: "{prefix}.{zoneName}.sub" (only trailing zone suffix removed)
+    // - When false (default): "{prefix}.{zoneName}.sub.{zoneName}" (full FQDN)
     expect(nameValue, 'Name should not contain ".." (double dots indicate bug #958)').not.toContain('..');
     expect(nameValue, `Name should contain zone name "${zoneName}"`).toContain(zoneName);
-    expect(nameValue, 'Name should match entered hostname').toBe(recordHostname);
+
+    // The displayed value is either hostname-only or full FQDN depending on display_hostname_only config
+    const expectedFullName = `${recordHostname}.${zoneName}`;
+    const isHostnameOnly = nameValue === recordHostname;
+    const isFullFqdn = nameValue === expectedFullName;
+    expect(isHostnameOnly || isFullFqdn, `Name should be either "${recordHostname}" (hostname-only) or "${expectedFullName}" (full FQDN), got "${nameValue}"`).toBe(true);
   });
 
   test('should handle simple record names correctly', async ({ page }) => {
@@ -158,8 +171,18 @@ test.describe('Record Edit - Zone Suffix Stripping (Issue #958)', () => {
     await page.goto(`/zones/${zoneId}/records/${recordId}/edit`);
     await page.waitForLoadState('networkidle');
 
-    // Simple hostname should remain unchanged
+    // Simple hostname display depends on display_hostname_only config:
+    // - When true: Shows hostname only, e.g., "simple123456"
+    // - When false (default): Shows full FQDN, e.g., "simple123456.example.com"
     const nameValue = await page.locator('input[name*="name"]').first().inputValue();
-    expect(nameValue).toBe(uniqueHostname);
+
+    // Get zone name from the page to construct expected full FQDN
+    const zoneNameCell = firstZoneRow.locator('td').nth(1);
+    const zoneName = (await zoneNameCell.textContent())?.trim();
+
+    const expectedFullName = zoneName ? `${uniqueHostname}.${zoneName}` : uniqueHostname;
+    const isHostnameOnly = nameValue === uniqueHostname;
+    const isFullFqdn = nameValue === expectedFullName;
+    expect(isHostnameOnly || isFullFqdn, `Name should be either "${uniqueHostname}" (hostname-only) or "${expectedFullName}" (full FQDN), got "${nameValue}"`).toBe(true);
   });
 });

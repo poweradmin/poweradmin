@@ -123,8 +123,11 @@ class EditRecordController extends BaseController
             return;
         }
 
-        // Strip zone suffix from record name for display (fix for issue #958)
-        $record['record_name'] = DnsHelper::stripZoneSuffix($record['name'], $zone_name);
+        // Strip zone suffix from record name for display when display_hostname_only is enabled (fix for issue #958)
+        $display_hostname_only = $this->config->get('interface', 'display_hostname_only', false);
+        if ($display_hostname_only) {
+            $record['record_name'] = DnsHelper::stripZoneSuffix($record['name'], $zone_name);
+        }
 
         if (str_starts_with($zone_name, "xn--")) {
             $idn_zone_name = DnsIdnService::toUtf8($zone_name);
@@ -148,6 +151,7 @@ class EditRecordController extends BaseController
             'iface_record_comments' => $iface_record_comments,
             'comment' => $recordComment ? $recordComment->getComment() : '',
             'is_reverse_zone' => DnsHelper::isReverseZone($zone_name),
+            'display_hostname_only' => $display_hostname_only,
         ]);
     }
 
