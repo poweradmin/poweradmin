@@ -1,0 +1,63 @@
+{
+  "admin": {
+    "name": "admin-zone.example.com",
+    "type": "MASTER",
+    "owner": "admin",
+    "description": "Admin's test zone with basic records"
+  },
+  "manager": {
+    "name": "manager-zone.example.com",
+    "type": "MASTER",
+    "owner": "manager",
+    "description": "Manager's test zone with comprehensive DNS records"
+  },
+  "client": {
+    "name": "client-zone.example.com",
+    "type": "MASTER",
+    "owner": "client",
+    "description": "Client's test zone with comprehensive DNS records"
+  },
+  "shared": {
+    "name": "shared-zone.example.com",
+    "type": "MASTER",
+    "owner": ["manager", "client"],
+    "description": "Multi-owner zone shared between manager and client"
+  },
+  "viewer": {
+    "name": "viewer-zone.example.com",
+    "type": "MASTER",
+    "owner": "viewer",
+    "description": "Viewer's read-only test zone"
+  },
+  "native": {
+    "name": "native-zone.example.org",
+    "type": "NATIVE",
+    "owner": "manager",
+    "description": "Native zone type for testing"
+  },
+  "slave": {
+    "name": "slave-zone.example.net",
+    "type": "SLAVE",
+    "owner": "admin",
+    "description": "Slave zone for replication testing"
+  },
+  "reverseIPv4": {
+    "name": "2.0.192.in-addr.arpa",
+    "type": "MASTER",
+    "owner": "admin",
+    "description": "IPv4 reverse zone for PTR records"
+  },
+  "reverseIPv6": {
+    "name": "8.b.d.0.1.0.0.2.ip6.arpa",
+    "type": "MASTER",
+    "owner": "admin",
+    "description": "IPv6 reverse zone for PTR records"
+  },
+  "idn": {
+    "name": "xn--verstt-eua3l.info",
+    "displayName": "översätt.info",
+    "type": "MASTER",
+    "owner": "manager",
+    "description": "Internationalized domain name zone (Swedish for 'translate')"
+  }
+}

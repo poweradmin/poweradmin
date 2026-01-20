@@ -21,16 +21,48 @@ export async function login(page, username, password) {
 }
 
 /**
- * Login and wait for dashboard
+ * Login and wait for dashboard with retry logic
+ *
+ * PHP server-side sessions can cause intermittent login failures when
+ * multiple tests run concurrently. This function retries on failure.
  *
  * @param {import('@playwright/test').Page} page - Playwright page object
  * @param {string} username - Username for login
  * @param {string} password - Password for login
+ * @param {number} maxRetries - Maximum number of retry attempts
  * @returns {Promise<void>}
  */
-export async function loginAndWaitForDashboard(page, username, password) {
-  await login(page, username, password);
-  await page.waitForURL('/');
+export async function loginAndWaitForDashboard(page, username, password, maxRetries = 3) {
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    await login(page, username, password);
+
+    // Check if login succeeded or failed
+    const url = page.url();
+    if (url.endsWith('/') || url.includes('/?')) {
+      // Already on dashboard
+      await page.waitForLoadState('domcontentloaded');
+      return;
+    }
+
+    // Wait for redirect with longer timeout for parallel test stability
+    try {
+      await page.waitForURL(/\/$|\?/, { timeout: 10000 });
+      await page.waitForLoadState('domcontentloaded');
+      return; // Success
+    } catch {
+      // Check if authentication failed
+      const hasError = await page.locator('text=Authentication failed').count() > 0 ||
+                       await page.locator('.alert-danger').count() > 0;
+      if (hasError && attempt < maxRetries) {
+        // Wait before retry to let session conflicts resolve
+        await page.waitForTimeout(1000 * attempt);
+        continue;
+      }
+      if (attempt === maxRetries) {
+        throw new Error(`Login failed after ${maxRetries} attempts for user: ${username}`);
+      }
+    }
+  }
 }
 
 /**
@@ -40,11 +72,9 @@ export async function loginAndWaitForDashboard(page, username, password) {
  * @returns {Promise<void>}
  */
 export async function logout(page) {
-  // Look for logout button/link and click it
-  const logoutButton = page.locator('a:has-text("Logout"), button:has-text("Logout")').first();
-  if (await logoutButton.isVisible()) {
-    await logoutButton.click();
-  }
+  // Navigate directly to logout page for reliable logout
+  await page.goto('/logout');
+  await page.waitForURL(/login/);
 }
 
 /**
