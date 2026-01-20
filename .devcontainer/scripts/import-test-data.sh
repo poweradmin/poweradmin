@@ -49,7 +49,7 @@ PGSQL_DATABASE="${PGSQL_DATABASE:-pdns}"
 PGSQL_CONTAINER="${PGSQL_CONTAINER:-postgres}"
 
 SQLITE_CONTAINER="${SQLITE_CONTAINER:-sqlite}"
-SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/poweradmin.db}"
+SQLITE_DB_PATH="${SQLITE_DB_PATH:-/data/pdns.db}"
 
 echo -e "${BLUE}================================================${NC}"
 echo -e "${BLUE}  Poweradmin Test Data Import${NC}"
@@ -151,7 +151,7 @@ clean_sqlite() {
 
     docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" << 'EOSQL'
 -- Attach PowerDNS database
-ATTACH DATABASE '/data/db/powerdns.db' AS pdns;
+ATTACH DATABASE '/data/pdns.db' AS pdns;
 
 -- Delete zone ownership records
 DELETE FROM zones;
@@ -289,7 +289,7 @@ import_sqlite() {
         return 0
     else
         echo -e "${RED}❌ SQLite import failed${NC}"
-        echo -e "${YELLOW}Note: Ensure PowerDNS database exists at /data/db/powerdns.db in the container${NC}"
+        echo -e "${YELLOW}Note: Ensure PowerDNS database exists at /data/pdns.db in the container${NC}"
         return 1
     fi
 }
@@ -355,7 +355,7 @@ main() {
                 echo "  PGSQL_DATABASE      PostgreSQL database (default: pdns)"
                 echo "  PGSQL_CONTAINER     PostgreSQL container name (default: postgres)"
                 echo "  SQLITE_CONTAINER    SQLite container name (default: sqlite)"
-                echo "  SQLITE_DB_PATH      SQLite database path (default: /data/poweradmin.db)"
+                echo "  SQLITE_DB_PATH      SQLite database path (default: /data/pdns.db)"
                 exit 0
                 ;;
             *)

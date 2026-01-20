@@ -7,19 +7,17 @@
 -- - 5 test users with different permission levels
 -- - 4 test domains with various ownership patterns including multi-owner zones
 --
--- IMPORTANT: This script requires the PowerDNS database to be attached since
--- the domains and records tables are in a separate SQLite database file.
+-- Usage: sqlite3 /data/pdns.db < test-users-permissions-sqlite.sql
 --
--- Usage: sqlite3 /data/poweradmin.db < test-users-permissions-sqlite.sql
---
--- For devcontainer: The script automatically attaches /data/db/powerdns.db
--- and qualifies all PowerDNS table references with the 'pdns' alias.
+-- For devcontainer: All tables (both Poweradmin and PowerDNS) are in /data/pdns.db.
+-- The script attaches the same database as 'pdns' alias for consistency with
+-- MySQL/PostgreSQL scripts that use separate databases.
 
 -- =============================================================================
--- ATTACH POWERDNS DATABASE
+-- ATTACH DATABASE ALIAS
 -- =============================================================================
--- Attach the PowerDNS database so we can access domains and records tables
-ATTACH DATABASE '/data/db/powerdns.db' AS pdns;
+-- Create 'pdns' alias for consistent table references across database types
+ATTACH DATABASE '/data/pdns.db' AS pdns;
 
 -- =============================================================================
 -- PERMISSION TEMPLATES
