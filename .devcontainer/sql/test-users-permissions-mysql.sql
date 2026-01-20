@@ -60,6 +60,7 @@ INSERT IGNORE INTO `domains` (`name`, `type`) VALUES
 ('client-zone.example.com', 'MASTER'),
 ('shared-zone.example.com', 'MASTER'),
 ('xn--verstt-eua3l.info', 'MASTER'),
+('xn--mnchen-3ya.de', 'MASTER'),
 ('xn--80aejmjbdxvpe2k.net', 'MASTER'),
 ('xn--ob0bz7i69i99fm8qgkfwlc.com', 'MASTER'),
 ('xn--chtnbin-rwa9e0573b.vn', 'MASTER');
@@ -76,7 +77,7 @@ SELECT
     0
 FROM `domains` d
 WHERE d.`name` IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com',
-                   'xn--verstt-eua3l.info', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn')
+                   'xn--verstt-eua3l.info', 'xn--mnchen-3ya.de', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn')
   AND NOT EXISTS (
     SELECT 1 FROM `records` r WHERE r.`domain_id` = d.`id` AND r.`type` = 'SOA'
   );
@@ -86,7 +87,7 @@ INSERT INTO `records` (`domain_id`, `name`, `type`, `content`, `ttl`, `prio`)
 SELECT d.`id`, d.`name`, 'NS', 'ns1.example.com.', 86400, 0
 FROM `domains` d
 WHERE d.`name` IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com',
-                   'xn--verstt-eua3l.info', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn')
+                   'xn--verstt-eua3l.info', 'xn--mnchen-3ya.de', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn')
   AND NOT EXISTS (
     SELECT 1 FROM `records` r WHERE r.`domain_id` = d.`id` AND r.`type` = 'NS' AND r.`content` = 'ns1.example.com.'
   );
@@ -95,7 +96,7 @@ INSERT INTO `records` (`domain_id`, `name`, `type`, `content`, `ttl`, `prio`)
 SELECT d.`id`, d.`name`, 'NS', 'ns2.example.com.', 86400, 0
 FROM `domains` d
 WHERE d.`name` IN ('admin-zone.example.com', 'manager-zone.example.com', 'client-zone.example.com', 'shared-zone.example.com',
-                   'xn--verstt-eua3l.info', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn')
+                   'xn--verstt-eua3l.info', 'xn--mnchen-3ya.de', 'xn--80aejmjbdxvpe2k.net', 'xn--ob0bz7i69i99fm8qgkfwlc.com', 'xn--chtnbin-rwa9e0573b.vn')
   AND NOT EXISTS (
     SELECT 1 FROM `records` r WHERE r.`domain_id` = d.`id` AND r.`type` = 'NS' AND r.`content` = 'ns2.example.com.'
   );
@@ -152,6 +153,60 @@ FROM pdns.`domains` d
 CROSS JOIN poweradmin.`users` u
 WHERE d.`name` = 'shared-zone.example.com'
   AND u.`username` IN ('manager', 'client')
+  AND NOT EXISTS (
+    SELECT 1 FROM `zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
+  );
+
+-- =============================================================================
+-- IDN ZONES OWNERSHIP
+-- =============================================================================
+
+-- Swedish IDN (översätt.info) owned by manager
+INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
+SELECT d.`id`, u.`id`, 0
+FROM pdns.`domains` d
+CROSS JOIN poweradmin.`users` u
+WHERE d.`name` = 'xn--verstt-eua3l.info' AND u.`username` = 'manager'
+  AND NOT EXISTS (
+    SELECT 1 FROM `zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
+  );
+
+-- German IDN (münchen.de) owned by admin
+INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
+SELECT d.`id`, u.`id`, 0
+FROM pdns.`domains` d
+CROSS JOIN poweradmin.`users` u
+WHERE d.`name` = 'xn--mnchen-3ya.de' AND u.`username` = 'admin'
+  AND NOT EXISTS (
+    SELECT 1 FROM `zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
+  );
+
+-- Russian IDN (автоэлектрик.net) owned by manager
+INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
+SELECT d.`id`, u.`id`, 0
+FROM pdns.`domains` d
+CROSS JOIN poweradmin.`users` u
+WHERE d.`name` = 'xn--80aejmjbdxvpe2k.net' AND u.`username` = 'manager'
+  AND NOT EXISTS (
+    SELECT 1 FROM `zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
+  );
+
+-- Korean IDN (베스트공포닷컴.com) owned by client
+INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
+SELECT d.`id`, u.`id`, 0
+FROM pdns.`domains` d
+CROSS JOIN poweradmin.`users` u
+WHERE d.`name` = 'xn--ob0bz7i69i99fm8qgkfwlc.com' AND u.`username` = 'client'
+  AND NOT EXISTS (
+    SELECT 1 FROM `zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
+  );
+
+-- Vietnamese IDN (chợtânbiên.vn) owned by viewer
+INSERT INTO `zones` (`domain_id`, `owner`, `zone_templ_id`)
+SELECT d.`id`, u.`id`, 0
+FROM pdns.`domains` d
+CROSS JOIN poweradmin.`users` u
+WHERE d.`name` = 'xn--chtnbin-rwa9e0573b.vn' AND u.`username` = 'viewer'
   AND NOT EXISTS (
     SELECT 1 FROM `zones` z WHERE z.`domain_id` = d.`id` AND z.`owner` = u.`id`
   );
@@ -217,5 +272,15 @@ ORDER BY d.`name`, u.`username`;
 -- manager-zone.example.com    | manager
 -- client-zone.example.com     | client
 -- shared-zone.example.com     | manager, client (multi-owner)
+--
+-- IDN Zones (Internationalized Domain Names):
+-- -------------------------------------------
+-- Punycode                    | Display Name           | Owner
+-- ----------------------------|------------------------|--------
+-- xn--verstt-eua3l.info       | översätt.info          | manager (Swedish)
+-- xn--mnchen-3ya.de           | münchen.de             | admin (German)
+-- xn--80aejmjbdxvpe2k.net     | автоэлектрик.net       | manager (Russian)
+-- xn--ob0bz7i69i99fm8qgkfwlc.com | 베스트공포닷컴.com  | client (Korean)
+-- xn--chtnbin-rwa9e0573b.vn   | chợtânbiên.vn          | viewer (Vietnamese)
 --
 -- =============================================================================
