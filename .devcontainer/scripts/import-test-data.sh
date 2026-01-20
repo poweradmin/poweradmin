@@ -73,6 +73,7 @@ clean_mysql() {
         return 1
     fi
 
+    # Clean Poweradmin tables
     docker exec -i "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$MYSQL_DB_NAME" << 'EOSQL'
 -- Delete zone templates and their records (except admin's templates)
 DELETE ztr FROM zone_templ_records ztr
@@ -92,11 +93,12 @@ DELETE FROM perm_templ_items WHERE templ_id > 1;
 
 -- Delete permission templates (keep Administrator)
 DELETE FROM perm_templ WHERE id > 1;
+EOSQL
 
--- Delete all records
+    # Clean PowerDNS tables (in pdns database)
+    docker exec -i "$MYSQL_CONTAINER" mysql -u"$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" << 'EOSQL' 2>/dev/null || true
+-- Delete all records and domains
 DELETE FROM records;
-
--- Delete all domains
 DELETE FROM domains;
 EOSQL
 
@@ -114,11 +116,11 @@ clean_pgsql() {
 
     docker exec -i -e PGPASSWORD="$DB_PASSWORD" "$PGSQL_CONTAINER" psql -U "$DB_USER" -d "$DB_NAME" << 'EOSQL'
 -- Delete zone templates and their records
-DELETE FROM zone_templ_records;
-DELETE FROM zone_templ;
+DELETE FROM zone_templ_records WHERE true;
+DELETE FROM zone_templ WHERE true;
 
 -- Delete zone ownership records
-DELETE FROM zones;
+DELETE FROM zones WHERE true;
 
 -- Delete test users (keep admin)
 DELETE FROM users WHERE username != 'admin';
@@ -129,17 +131,29 @@ DELETE FROM perm_templ_items WHERE templ_id > 1;
 -- Delete permission templates (keep Administrator)
 DELETE FROM perm_templ WHERE id > 1;
 
--- Delete all records
-DELETE FROM records;
-
--- Delete all domains
-DELETE FROM domains;
+-- Delete all records and domains (if tables exist)
+DO $$
+BEGIN
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'records') THEN
+        DELETE FROM records;
+    END IF;
+    IF EXISTS (SELECT FROM information_schema.tables WHERE table_name = 'domains') THEN
+        DELETE FROM domains;
+    END IF;
+END $$;
 
 -- Reset sequences
 SELECT setval('perm_templ_id_seq', 1);
 SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1));
-SELECT setval('domains_id_seq', 1);
-SELECT setval('records_id_seq', 1);
+DO $$
+BEGIN
+    IF EXISTS (SELECT FROM pg_class WHERE relname = 'domains_id_seq') THEN
+        PERFORM setval('domains_id_seq', 1);
+    END IF;
+    IF EXISTS (SELECT FROM pg_class WHERE relname = 'records_id_seq') THEN
+        PERFORM setval('records_id_seq', 1);
+    END IF;
+END $$;
 SELECT setval('zones_id_seq', 1);
 SELECT setval('zone_templ_id_seq', 1);
 EOSQL
@@ -156,13 +170,14 @@ clean_sqlite() {
         return 1
     fi
 
-    docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" << 'EOSQL'
+    # Clean Poweradmin tables (ignore errors if PowerDNS tables don't exist)
+    docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" << 'EOSQL' 2>/dev/null || true
 -- Delete zone templates and their records
-DELETE FROM zone_templ_records;
-DELETE FROM zone_templ;
+DELETE FROM zone_templ_records WHERE 1=1;
+DELETE FROM zone_templ WHERE 1=1;
 
 -- Delete zone ownership records
-DELETE FROM zones;
+DELETE FROM zones WHERE 1=1;
 
 -- Delete test users (keep admin)
 DELETE FROM users WHERE username != 'admin';
@@ -173,11 +188,9 @@ DELETE FROM perm_templ_items WHERE templ_id > 1;
 -- Delete permission templates (keep Administrator)
 DELETE FROM perm_templ WHERE id > 1;
 
--- Delete all records
-DELETE FROM records;
-
--- Delete all domains
-DELETE FROM domains;
+-- Delete all records and domains (if tables exist)
+DELETE FROM records WHERE 1=1;
+DELETE FROM domains WHERE 1=1;
 EOSQL
 
     echo -e "${GREEN}SQLite cleaned${NC}"
@@ -265,6 +278,23 @@ import_sqlite() {
     if [ ! -f "$SQL_DIR/test-users-permissions-sqlite.sql" ]; then
         echo -e "${RED}SQLite SQL file not found: $SQL_DIR/test-users-permissions-sqlite.sql${NC}"
         return 1
+    fi
+
+    # Check if PowerDNS schema exists, import if needed
+    local has_domains_table=$(docker exec "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" "SELECT name FROM sqlite_master WHERE type='table' AND name='domains';" 2>/dev/null || echo "")
+
+    if [ -z "$has_domains_table" ]; then
+        echo -e "${YELLOW}PowerDNS schema not found, importing...${NC}"
+        local pdns_schema="$SCRIPT_DIR/pdns/modules/gsqlite3backend/schema.sqlite3.sql"
+        if [ -f "$pdns_schema" ]; then
+            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$pdns_schema" > /dev/null 2>&1; then
+                echo -e "${GREEN}PowerDNS schema imported${NC}"
+            else
+                echo -e "${YELLOW}PowerDNS schema import had issues (may already exist)${NC}"
+            fi
+        else
+            echo -e "${YELLOW}PowerDNS schema file not found at $pdns_schema${NC}"
+        fi
     fi
 
     # Import users, permissions, and zones
