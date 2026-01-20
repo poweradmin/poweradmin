@@ -1,6 +1,25 @@
 #!/bin/bash
-# Import test data into running Docker databases
-# This script imports test users, permissions, and domains into all database types
+# =============================================================================
+# Import Test Data Script for Poweradmin
+# =============================================================================
+#
+# Purpose: Import comprehensive test data into running Docker databases
+#
+# This script imports:
+# - Test users with different permission levels (password: Poweradmin123)
+# - Test domains (master zones)
+# - Zone ownership records
+# - Comprehensive DNS records for UI testing
+#
+# Usage:
+#   ./import-test-data.sh           # Import to all databases
+#   ./import-test-data.sh --mysql   # Import to MySQL/MariaDB only
+#   ./import-test-data.sh --pgsql   # Import to PostgreSQL only
+#   ./import-test-data.sh --sqlite  # Import to SQLite only
+#   ./import-test-data.sh --clean   # Clean databases before import
+#   ./import-test-data.sh --help    # Show help
+#
+# =============================================================================
 
 set -e
 
@@ -44,6 +63,116 @@ check_container() {
         return 1
     fi
     return 0
+}
+
+# Function to clean MySQL/MariaDB test data
+clean_mysql() {
+    echo -e "${YELLOW}🧹 Cleaning MySQL/MariaDB test data...${NC}"
+
+    if ! check_container "$MYSQL_CONTAINER"; then
+        echo -e "${RED}❌ Container '$MYSQL_CONTAINER' is not running${NC}"
+        return 1
+    fi
+
+    docker exec -i "$MYSQL_CONTAINER" mysql -u"$MYSQL_USER" -p"$MYSQL_PASSWORD" << 'EOSQL'
+USE poweradmin;
+
+-- Delete zone ownership records
+DELETE FROM zones;
+
+-- Delete test users (keep admin if exists)
+DELETE FROM users WHERE username != 'admin';
+
+-- Delete permission template items for templates 2-5
+DELETE FROM perm_templ_items WHERE templ_id > 1;
+
+-- Delete permission templates (keep Administrator)
+DELETE FROM perm_templ WHERE id > 1;
+
+USE pdns;
+
+-- Delete all records
+DELETE FROM records;
+
+-- Delete all domains
+DELETE FROM domains;
+EOSQL
+
+    echo -e "${GREEN}✅ MySQL/MariaDB cleaned${NC}"
+}
+
+# Function to clean PostgreSQL test data
+clean_pgsql() {
+    echo -e "${YELLOW}🧹 Cleaning PostgreSQL test data...${NC}"
+
+    if ! check_container "$PGSQL_CONTAINER"; then
+        echo -e "${RED}❌ Container '$PGSQL_CONTAINER' is not running${NC}"
+        return 1
+    fi
+
+    docker exec -i -e PGPASSWORD="$PGSQL_PASSWORD" "$PGSQL_CONTAINER" psql -U "$PGSQL_USER" -d "$PGSQL_DATABASE" << 'EOSQL'
+-- Delete zone ownership records
+DELETE FROM zones;
+
+-- Delete test users (keep admin if exists)
+DELETE FROM users WHERE username != 'admin';
+
+-- Delete permission template items for templates 2-5
+DELETE FROM perm_templ_items WHERE templ_id > 1;
+
+-- Delete permission templates (keep Administrator)
+DELETE FROM perm_templ WHERE id > 1;
+
+-- Delete all records
+DELETE FROM records;
+
+-- Delete all domains
+DELETE FROM domains;
+
+-- Reset sequences
+SELECT setval('perm_templ_id_seq', 1);
+SELECT setval('users_id_seq', COALESCE((SELECT MAX(id) FROM users), 1));
+SELECT setval('domains_id_seq', 1);
+SELECT setval('records_id_seq', 1);
+SELECT setval('zones_id_seq', 1);
+EOSQL
+
+    echo -e "${GREEN}✅ PostgreSQL cleaned${NC}"
+}
+
+# Function to clean SQLite test data
+clean_sqlite() {
+    echo -e "${YELLOW}🧹 Cleaning SQLite test data...${NC}"
+
+    if ! check_container "$SQLITE_CONTAINER"; then
+        echo -e "${RED}❌ Container '$SQLITE_CONTAINER' is not running${NC}"
+        return 1
+    fi
+
+    docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" << 'EOSQL'
+-- Attach PowerDNS database
+ATTACH DATABASE '/data/db/powerdns.db' AS pdns;
+
+-- Delete zone ownership records
+DELETE FROM zones;
+
+-- Delete test users (keep admin if exists)
+DELETE FROM users WHERE username != 'admin';
+
+-- Delete permission template items for templates 2-5
+DELETE FROM perm_templ_items WHERE templ_id > 1;
+
+-- Delete permission templates (keep Administrator)
+DELETE FROM perm_templ WHERE id > 1;
+
+-- Delete all records from PowerDNS database
+DELETE FROM pdns.records;
+
+-- Delete all domains from PowerDNS database
+DELETE FROM pdns.domains;
+EOSQL
+
+    echo -e "${GREEN}✅ SQLite cleaned${NC}"
 }
 
 # Function to import MySQL/MariaDB data
@@ -171,6 +300,7 @@ main() {
     local import_pgsql=false
     local import_sqlite=false
     local import_all=true
+    local do_clean=false
 
     # Parse command line arguments
     while [[ $# -gt 0 ]]; do
@@ -190,6 +320,10 @@ main() {
                 import_all=false
                 shift
                 ;;
+            --clean)
+                do_clean=true
+                shift
+                ;;
             --help|-h)
                 echo "Usage: $0 [OPTIONS]"
                 echo ""
@@ -199,9 +333,16 @@ main() {
                 echo "  --mysql       Import to MySQL/MariaDB only"
                 echo "  --pgsql       Import to PostgreSQL only"
                 echo "  --sqlite      Import to SQLite only"
+                echo "  --clean       Clean databases before import"
                 echo "  --help, -h    Show this help message"
                 echo ""
-                echo "If no options specified, imports to all available databases"
+                echo "If no database options specified, imports to all available databases"
+                echo ""
+                echo "Examples:"
+                echo "  $0                    # Import to all databases"
+                echo "  $0 --mysql            # Import to MySQL only"
+                echo "  $0 --clean --mysql    # Clean and import to MySQL"
+                echo "  $0 --clean            # Clean and import to all databases"
                 echo ""
                 echo "Environment variables:"
                 echo "  MYSQL_USER          MySQL username (default: pdns)"
@@ -234,6 +375,27 @@ main() {
 
     local success_count=0
     local fail_count=0
+
+    # Execute clean operations if requested
+    if [ "$do_clean" = true ]; then
+        echo -e "${BLUE}Cleaning databases before import...${NC}"
+        echo ""
+
+        if [ "$import_mysql" = true ]; then
+            clean_mysql || true
+            echo ""
+        fi
+
+        if [ "$import_pgsql" = true ]; then
+            clean_pgsql || true
+            echo ""
+        fi
+
+        if [ "$import_sqlite" = true ]; then
+            clean_sqlite || true
+            echo ""
+        fi
+    fi
 
     # Execute imports
     if [ "$import_mysql" = true ]; then
@@ -278,7 +440,7 @@ main() {
         echo ""
         echo -e "${BLUE}Test credentials:${NC}"
         echo "  Username: admin, manager, client, viewer, noperm, inactive"
-        echo "  Password: poweradmin123"
+        echo "  Password: Poweradmin123"
         echo ""
         echo -e "${BLUE}Test zones:${NC}"
         echo "  - admin-zone.example.com (owner: admin)"
