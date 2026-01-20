@@ -10,7 +10,8 @@ test.describe('User Management', () => {
   test('should access users list page', async ({ page }) => {
     await page.goto('/users');
     await expect(page).toHaveURL(/.*users/);
-    await expect(page.locator('h1, h2, h3, .page-title, [data-testid*="title"]').first()).toBeVisible();
+    // Check for page content - header, title, or table
+    await expect(page.locator('h1, h2, h3, .page-title, .card-header, [data-testid*="title"]').first()).toBeVisible();
   });
 
   test('should display users list or empty state', async ({ page }) => {

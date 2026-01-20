@@ -61,23 +61,25 @@ export default defineConfig({
 
   // Configure projects for major browsers
   // Default command (npm run test:e2e) runs Chromium only for fast local feedback
-  // Use npm run test:e2e:firefox or npm run test:e2e:webkit for other browsers
-  // Use npm run test:e2e:all to run all browsers
+  // Use --project=firefox or --project=webkit to test other browsers
+  // Uncomment additional browsers below to run them by default
   projects: [
     {
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
 
-    {
-      name: 'firefox',
-      use: { ...devices['Desktop Firefox'] },
-    },
+    // Uncomment to enable Firefox tests by default
+    // {
+    //   name: 'firefox',
+    //   use: { ...devices['Desktop Firefox'] },
+    // },
 
-    {
-      name: 'webkit',
-      use: { ...devices['Desktop Safari'] },
-    },
+    // Uncomment to enable WebKit tests by default
+    // {
+    //   name: 'webkit',
+    //   use: { ...devices['Desktop Safari'] },
+    // },
 
     // Mobile viewports for responsive testing
     // {

@@ -13,7 +13,8 @@ test.describe('Zone Templates Management', () => {
   test('should access zone templates page', async ({ page }) => {
     await page.goto('/zones/templates');
     await expect(page).toHaveURL(/.*zones\/templates/);
-    await expect(page.locator('h1, h2, h3, .page-title, [data-testid*="title"]').first()).toBeVisible();
+    // Page uses card-header with strong element instead of h1-3
+    await expect(page.locator('.card-header strong, .card-header, .breadcrumb').first()).toBeVisible();
   });
 
   test('should display zone templates list or empty state', async ({ page }) => {

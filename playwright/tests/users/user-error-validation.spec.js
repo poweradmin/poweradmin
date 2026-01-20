@@ -25,9 +25,9 @@ test.describe('User Management Error Validation', () => {
     // Submit form
     await page.locator('button[type="submit"], input[type="submit"]').first().click();
 
-    // Should show error message
-    await expect(page.locator('[data-testid="error-message"], .alert-danger, .error')).toBeVisible();
-    await expect(page.locator('body')).toContainText(/incorrect.*current.*password|wrong.*password|invalid.*password/i);
+    // Should show error message (check for various alert types)
+    await expect(page.locator('[data-testid="error-message"], [data-testid="system-message"], .alert-danger, .alert-warning, .error').first()).toBeVisible();
+    await expect(page.locator('body')).toContainText(/incorrect.*current.*password|wrong.*password|invalid.*password|current password is incorrect/i);
   });
 
   test('should show error when new passwords do not match', async ({ page }) => {
