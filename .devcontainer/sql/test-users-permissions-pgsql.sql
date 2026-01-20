@@ -17,32 +17,32 @@
 -- =============================================================================
 -- TEST USERS
 -- =============================================================================
--- Password for all users: "poweradmin123" (bcrypt hashed)
--- Use: password_hash('poweradmin123', PASSWORD_BCRYPT, ['cost' => 12])
+-- Password for all users: "Poweradmin123" (bcrypt hashed)
+-- Use: password_hash('Poweradmin123', PASSWORD_BCRYPT, ['cost' => 12])
 
 -- Use NOT EXISTS to skip users if they already exist
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'admin', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'System Administrator', 'admin@example.com', 'Full system administrator with überuser access', 1, 1, 0, 'sql'
+SELECT 'admin', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'System Administrator', 'admin@example.com', 'Full system administrator with überuser access', 1, 1, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'admin');
 
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'manager', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Zone Manager', 'manager@example.com', 'Can manage own zones and templates', 2, 1, 0, 'sql'
+SELECT 'manager', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Zone Manager', 'manager@example.com', 'Can manage own zones and templates', 2, 1, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'manager');
 
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'client', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Client User', 'client@example.com', 'Limited editing rights - cannot edit SOA/NS records', 3, 1, 0, 'sql'
+SELECT 'client', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Client User', 'client@example.com', 'Limited editing rights - cannot edit SOA/NS records', 3, 1, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'client');
 
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'viewer', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Read Only User', 'viewer@example.com', 'Read-only access to zones', 4, 1, 0, 'sql'
+SELECT 'viewer', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Read Only User', 'viewer@example.com', 'Read-only access to zones', 4, 1, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'viewer');
 
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'noperm', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'No Permission User', 'noperm@example.com', 'Active user with no permissions', 5, 1, 0, 'sql'
+SELECT 'noperm', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'No Permission User', 'noperm@example.com', 'Active user with no permissions', 5, 1, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'noperm');
 
 INSERT INTO "users" ("username", "password", "fullname", "email", "description", "perm_templ", "active", "use_ldap", "auth_method")
-SELECT 'inactive', '$2y$12$rwnIW4KUbgxh4GC9f8.WKeqcy1p6zBHaHy.SRNmiNcjMwMXIjy/Vi', 'Inactive User', 'inactive@example.com', 'Inactive account - cannot login', 5, 0, 0, 'sql'
+SELECT 'inactive', '$2y$10$39tapIc.ibhXb8xHHfAPrOf.RQZHXhYsQNiVdqY0POC4GD6HNg43u', 'Inactive User', 'inactive@example.com', 'Inactive account - cannot login', 5, 0, 0, 'sql'
 WHERE NOT EXISTS (SELECT 1 FROM "users" WHERE "username" = 'inactive');
 
 -- Update sequence to avoid conflicts
@@ -208,12 +208,12 @@ ORDER BY d."name", u."username";
 -- -------------------
 -- Username  | Password       | Template        | Active | Description
 -- ----------|----------------|-----------------|--------|---------------------------
--- admin     | poweradmin123  | Administrator   | Yes    | Full system access (überuser)
--- manager   | poweradmin123  | Zone Manager    | Yes    | Can manage own zones (11 perms)
--- client    | poweradmin123  | Client Editor   | Yes    | Limited editing, no SOA/NS (4 perms)
--- viewer    | poweradmin123  | Read Only       | Yes    | View-only access (2 perms)
--- noperm    | poweradmin123  | No Access       | Yes    | Can login but has no permissions (0 perms)
--- inactive  | poweradmin123  | No Access       | No     | Cannot login - inactive account
+-- admin     | Poweradmin123  | Administrator   | Yes    | Full system access (überuser)
+-- manager   | Poweradmin123  | Zone Manager    | Yes    | Can manage own zones (11 perms)
+-- client    | Poweradmin123  | Client Editor   | Yes    | Limited editing, no SOA/NS (4 perms)
+-- viewer    | Poweradmin123  | Read Only       | Yes    | View-only access (2 perms)
+-- noperm    | Poweradmin123  | No Access       | Yes    | Can login but has no permissions (0 perms)
+-- inactive  | Poweradmin123  | No Access       | No     | Cannot login - inactive account
 --
 -- Test Domains Created:
 -- ---------------------
