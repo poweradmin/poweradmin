@@ -388,6 +388,39 @@ class RecordRepository implements RecordRepositoryInterface
     }
 
     /**
+     * Get serial numbers for multiple zones in a single query (batch optimization)
+     *
+     * @param array $zoneIds Array of zone IDs
+     * @return array<int, string> Array mapping zone ID to serial number
+     */
+    public function getSerialsByZoneIds(array $zoneIds): array
+    {
+        if (empty($zoneIds)) {
+            return [];
+        }
+
+        $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
+        $placeholders = implode(',', array_fill(0, count($zoneIds), '?'));
+
+        $stmt = $this->db->prepare("SELECT domain_id, content FROM $records_table WHERE type = 'SOA' AND domain_id IN ($placeholders)");
+
+        $paramIndex = 1;
+        foreach ($zoneIds as $zoneId) {
+            $stmt->bindValue($paramIndex, $zoneId, PDO::PARAM_INT);
+            $paramIndex++;
+        }
+        $stmt->execute();
+
+        $serials = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $rr_soa_fields = explode(" ", $row['content']);
+            $serials[$row['domain_id']] = $rr_soa_fields[2] ?? '';
+        }
+
+        return $serials;
+    }
+
+    /**
      * Get filtered records from a domain with search capabilities
      *
      * Note: Excludes PowerDNS Empty Non-Terminal (ENT) records.

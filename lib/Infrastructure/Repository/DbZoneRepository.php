@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -274,13 +274,6 @@ class DbZoneRepository implements ZoneRepositoryInterface
                     'users' => []
                 ];
 
-                // Add serial number if requested
-                if ($showSerial) {
-                    // Create RecordRepository to get the serial
-                    $recordRepository = new RecordRepository($this->db, $this->config);
-                    $zones[$name]['serial'] = $recordRepository->getSerialByZid($row['id']);
-                }
-
                 // Add template information if requested
                 if ($showTemplate) {
                     // For reverse zones, template info might not be as relevant, but keeping consistency
@@ -293,7 +286,61 @@ class DbZoneRepository implements ZoneRepositoryInterface
             $zones[$name]['users'][] = $row['username'];
         }
 
+        // Batch fetch serial numbers (optimization: N+1 → 1 query)
+        if ($showSerial && !empty($zones)) {
+            $zoneIds = array_map(fn($zone) => $zone['id'], $zones);
+            $recordRepository = new RecordRepository($this->db, $this->config);
+            $serials = $recordRepository->getSerialsByZoneIds($zoneIds);
+
+            foreach ($zones as $name => &$zone) {
+                $zone['serial'] = $serials[$zone['id']] ?? '';
+            }
+            unset($zone); // Break reference
+        }
+
         return $zones;
+    }
+
+    /**
+     * Get all reverse zone counts in a single query (optimization)
+     *
+     * @param string $permType Permission type ('all', 'own')
+     * @param int $userId User ID (used when permType is 'own')
+     * @return array{count_all: int, count_ipv4: int, count_ipv6: int}
+     */
+    public function getReverseZoneCounts(string $permType, int $userId): array
+    {
+        $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
+
+        // Base query with conditional aggregation for all three counts
+        $query = "SELECT
+                    COUNT(DISTINCT d.id) AS count_all,
+                    COUNT(DISTINCT CASE WHEN d.name LIKE '%.in-addr.arpa' THEN d.id END) AS count_ipv4,
+                    COUNT(DISTINCT CASE WHEN d.name LIKE '%.ip6.arpa' THEN d.id END) AS count_ipv6
+                  FROM $domains_table d";
+
+        // Join with zones table for permission filtering if needed
+        if ($permType === 'own') {
+            $query .= " INNER JOIN zones z ON d.id = z.domain_id AND z.owner = :user_id";
+        }
+
+        // Filter to reverse zones only
+        $query .= " WHERE (d.name LIKE '%.in-addr.arpa' OR d.name LIKE '%.ip6.arpa')";
+
+        $stmt = $this->db->prepare($query);
+
+        if ($permType === 'own') {
+            $stmt->bindValue(':user_id', $userId, PDO::PARAM_INT);
+        }
+
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return [
+            'count_all' => (int)($result['count_all'] ?? 0),
+            'count_ipv4' => (int)($result['count_ipv4'] ?? 0),
+            'count_ipv6' => (int)($result['count_ipv6'] ?? 0),
+        ];
     }
 
     /**
@@ -530,6 +577,11 @@ class DbZoneRepository implements ZoneRepositoryInterface
     /**
      * Find forward zones associated with reverse zones through PTR records
      *
+     * Optimized 3-step approach instead of slow LIKE JOIN:
+     * 1. Fetch all PTR records for reverse zones
+     * 2. Extract domain suffixes from PTR content in PHP
+     * 3. Look up forward zones with exact IN() match (uses indexes)
+     *
      * @param array $reverseZoneIds Array of reverse zone IDs
      * @return array Array of PTR record matches with forward zone information
      */
@@ -542,38 +594,100 @@ class DbZoneRepository implements ZoneRepositoryInterface
         $records_table = $this->tableNameService->getTable(PdnsTable::RECORDS);
         $domains_table = $this->tableNameService->getTable(PdnsTable::DOMAINS);
 
-        // Build placeholders for the IN clause
+        // Step 1: Fetch all PTR records for the reverse zones
         $placeholders = implode(',', array_fill(0, count($reverseZoneIds), '?'));
+        $ptrQuery = "SELECT domain_id, content FROM $records_table
+                     WHERE domain_id IN ($placeholders) AND type = 'PTR'";
 
-        // Get database-compatible concatenation function
-        $db_type = $this->config->get('database', 'type');
-        $concat_expr = DbCompat::concat($db_type, ["'%'", 'd.name']);
-
-        // Single optimized query that joins PTR records with forward zones
-        $query = "SELECT 
-                    r.domain_id AS reverse_domain_id, 
-                    d.id AS forward_domain_id, 
-                    d.name AS forward_domain_name,
-                    r.content AS ptr_content
-                  FROM $records_table r
-                  JOIN $domains_table d ON r.content LIKE $concat_expr
-                  WHERE r.domain_id IN ($placeholders)
-                    AND r.type = 'PTR'
-                    AND d.name NOT LIKE '%.arpa'
-                  ORDER BY LENGTH(d.name) DESC";
-
-        $stmt = $this->db->prepare($query);
-
-        // Bind all zone IDs
+        $stmt = $this->db->prepare($ptrQuery);
         $paramIndex = 1;
         foreach ($reverseZoneIds as $zoneId) {
             $stmt->bindValue($paramIndex, $zoneId, PDO::PARAM_INT);
             $paramIndex++;
         }
+        $stmt->execute();
+        $ptrRecords = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+        if (empty($ptrRecords)) {
+            return [];
+        }
+
+        // Step 2: Extract all possible domain suffixes from PTR content
+        $domainSuffixes = [];
+        $ptrByContent = [];
+        foreach ($ptrRecords as $ptr) {
+            $content = rtrim($ptr['content'], '.');
+            if (empty($content)) {
+                continue;
+            }
+
+            $ptrByContent[$content][] = $ptr['domain_id'];
+
+            // Generate all possible domain suffixes
+            // e.g., "host.example.com" -> ["host.example.com", "example.com", "com"]
+            $parts = explode('.', $content);
+            for ($i = 0; $i < count($parts); $i++) {
+                $suffix = implode('.', array_slice($parts, $i));
+                if (!empty($suffix) && substr_count($suffix, '.') > 0) { // At least one dot (not a TLD)
+                    $domainSuffixes[$suffix] = true;
+                }
+            }
+        }
+
+        if (empty($domainSuffixes)) {
+            return [];
+        }
+
+        // Step 3: Look up forward zones with exact match (uses indexes)
+        $suffixList = array_keys($domainSuffixes);
+        $suffixPlaceholders = implode(',', array_fill(0, count($suffixList), '?'));
+
+        $zoneQuery = "SELECT id, name FROM $domains_table
+                      WHERE name IN ($suffixPlaceholders) AND name NOT LIKE '%.arpa'";
+
+        $stmt = $this->db->prepare($zoneQuery);
+        $paramIndex = 1;
+        foreach ($suffixList as $suffix) {
+            $stmt->bindValue($paramIndex, $suffix, PDO::PARAM_STR);
+            $paramIndex++;
+        }
         $stmt->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        // Build lookup map of forward zones
+        $forwardZones = [];
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $forwardZones[$row['name']] = $row;
+        }
+
+        if (empty($forwardZones)) {
+            return [];
+        }
+
+        // Build result by matching PTR content to forward zones
+        $results = [];
+        foreach ($ptrRecords as $ptr) {
+            $content = rtrim($ptr['content'], '.');
+            if (empty($content)) {
+                continue;
+            }
+
+            // Find the longest matching forward zone for this PTR content
+            $parts = explode('.', $content);
+            for ($i = 0; $i < count($parts); $i++) {
+                $suffix = implode('.', array_slice($parts, $i));
+                if (isset($forwardZones[$suffix])) {
+                    $results[] = [
+                        'reverse_domain_id' => $ptr['domain_id'],
+                        'forward_domain_id' => $forwardZones[$suffix]['id'],
+                        'forward_domain_name' => $forwardZones[$suffix]['name'],
+                        'ptr_content' => $ptr['content']
+                    ];
+                    break; // Use longest match only
+                }
+            }
+        }
+
+        return $results;
     }
 
     /**

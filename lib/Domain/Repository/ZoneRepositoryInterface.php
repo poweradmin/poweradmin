@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -92,6 +92,15 @@ interface ZoneRepositoryInterface
      * @return array Array of PTR record matches with forward zone information
      */
     public function findForwardZonesByPtrRecords(array $reverseZoneIds): array;
+
+    /**
+     * Get all reverse zone counts in a single query (optimization)
+     *
+     * @param string $permType Permission type ('all', 'own')
+     * @param int $userId User ID (used when permType is 'own')
+     * @return array{count_all: int, count_ipv4: int, count_ipv6: int}
+     */
+    public function getReverseZoneCounts(string $permType, int $userId): array;
 
     /**
      * Check if zone exists by ID

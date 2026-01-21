@@ -4,7 +4,7 @@
  *  See <https://www.poweradmin.org> for more details.
  *
  *  Copyright 2007-2010 Rejo Zenger <rejo@zenger.nl>
- *  Copyright 2010-2025 Poweradmin Development Team
+ *  Copyright 2010-2026 Poweradmin Development Team
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -116,20 +116,18 @@ class ListReverseZonesController extends BaseController
 
         // Get the reverse zone filter type from the request
         $reverse_zone_type = $this->zoneSortingService->getReverseZoneTypeFilter();
+        $loggedInUserId = $this->userContextService->getLoggedInUserId();
 
-        // Always get the total count of ALL reverse zones (regardless of filter)
-        $count_all_reverse_zones = $this->zoneService->countReverseZones(
-            $perm_view,
-            $this->userContextService->getLoggedInUserId(),
-            'all',  // Always count all reverse zones for the total
-            $zone_sort_by,
-            $zone_sort_direction
-        );
+        // Get all counts in a single query (optimization: 4 queries → 1)
+        $zoneCounts = $this->zoneService->getReverseZoneCounts($perm_view, $loggedInUserId);
+        $count_all_reverse_zones = $zoneCounts['count_all'];
+        $count_ipv4_zones = $zoneCounts['count_ipv4'];
+        $count_ipv6_zones = $zoneCounts['count_ipv6'];
 
         // Get the actual zones for the current page with efficient DB filtering
         $reverse_zones = $this->zoneService->getReverseZones(
             $perm_view,
-            $this->userContextService->getLoggedInUserId(),
+            $loggedInUserId,
             $reverse_zone_type,
             $row_start,
             $iface_rowamount,
@@ -145,25 +143,18 @@ class ListReverseZonesController extends BaseController
             $reverse_zones = $this->zoneSortingService->applySortingToZones($reverse_zones, $zone_sort_by, $sort_type);
         }
 
-        // Get counts for each type
-        $count_ipv4_zones = $this->zoneService->countReverseZones(
-            $perm_view,
-            $this->userContextService->getLoggedInUserId(),
-            'ipv4',
-            $zone_sort_by,
-            $zone_sort_direction
-        );
+        // Get associated forward zones only if enabled (configurable for performance)
+        $showForwardZoneAssociations = $this->config->get('interface', 'show_forward_zone_associations', true);
+        $associatedForwardZones = $showForwardZoneAssociations
+            ? $this->forwardZoneAssociationService->getAssociatedForwardZones($reverse_zones)
+            : [];
 
-        $count_ipv6_zones = $this->zoneService->countReverseZones(
-            $perm_view,
-            $this->userContextService->getLoggedInUserId(),
-            'ipv6',
-            $zone_sort_by,
-            $zone_sort_direction
-        );
-
-        // Get associated forward zones (if needed)
-        $associatedForwardZones = $this->forwardZoneAssociationService->getAssociatedForwardZones($reverse_zones);
+        // Calculate pagination count based on current filter (using pre-computed counts)
+        $pagination_count = match ($reverse_zone_type) {
+            'ipv4' => $count_ipv4_zones,
+            'ipv6' => $count_ipv6_zones,
+            default => $count_all_reverse_zones,
+        };
 
         $this->render('list_reverse_zones.html', [
             'zones' => $reverse_zones,
@@ -177,16 +168,7 @@ class ListReverseZonesController extends BaseController
             'iface_zonelist_template' => $iface_zonelist_template,
             'iface_zonelist_fullname' => $iface_zonelist_fullname,
             'pdnssec_use' => $pdnssec_use,
-            'pagination' => $this->createAndPresentPagination(
-                $this->zoneService->countReverseZones(
-                    $perm_view,
-                    $this->userContextService->getLoggedInUserId(),
-                    $reverse_zone_type,  // Use current filter instead of 'all'
-                    $zone_sort_by,
-                    $zone_sort_direction
-                ),
-                $iface_rowamount
-            ),
+            'pagination' => $this->createAndPresentPagination($pagination_count, $iface_rowamount),
             'session_userlogin' => $this->userContextService->getLoggedInUsername(),
             'perm_edit' => $perm_edit,
             'perm_delete' => $perm_delete,
