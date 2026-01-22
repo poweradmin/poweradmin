@@ -297,6 +297,25 @@ import_sqlite() {
         fi
     fi
 
+    # Check if Poweradmin schema exists, import if needed
+    local has_users_table=$(docker exec "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" "SELECT name FROM sqlite_master WHERE type='table' AND name='users';" 2>/dev/null || echo "")
+
+    if [ -z "$has_users_table" ]; then
+        echo -e "${YELLOW}Poweradmin schema not found, importing...${NC}"
+        local poweradmin_schema="$SCRIPT_DIR/../../sql/poweradmin-sqlite-db-structure.sql"
+        if [ -f "$poweradmin_schema" ]; then
+            if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$poweradmin_schema" > /dev/null 2>&1; then
+                echo -e "${GREEN}Poweradmin schema imported${NC}"
+            else
+                echo -e "${RED}Poweradmin schema import failed${NC}"
+                return 1
+            fi
+        else
+            echo -e "${RED}Poweradmin schema file not found at $poweradmin_schema${NC}"
+            return 1
+        fi
+    fi
+
     # Import users, permissions, and zones
     if docker exec -i "$SQLITE_CONTAINER" sqlite3 "$SQLITE_DB_PATH" < "$SQL_DIR/test-users-permissions-sqlite.sql" > /dev/null 2>&1; then
         echo -e "${GREEN}SQLite users and zones imported${NC}"
