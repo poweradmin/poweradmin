@@ -21,9 +21,10 @@ import users from '../../fixtures/users.json' assert { type: 'json' };
  */
 test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
   // Use unique zone name based on timestamp to avoid conflicts
+  // Using last 4 digits of timestamp converted to hex nibbles for better uniqueness
   const timestamp = Date.now();
-  const uniqueNibble = String(timestamp).slice(-1); // Last digit for uniqueness
-  const ipv6Zone = `${uniqueNibble}.b.d.0.1.0.0.2.ip6.arpa`;
+  const uniqueHex = (timestamp % 65536).toString(16).padStart(4, '0');
+  const ipv6Zone = `${uniqueHex.split('').join('.')}.b.d.0.1.0.0.2.ip6.arpa`;
   let zoneId = null;
 
   test.beforeEach(async ({ page }) => {
@@ -184,14 +185,23 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
     // - Hostname only: 1.0.0.0...0.0.0.0
     // But it should NEVER be just the zone name or empty
 
-    // Check that it's not just the zone name (the bug behavior)
-    const isJustZoneName = recordName.trim() === ipv6Zone || recordName.trim() === '@';
-    expect(isJustZoneName, `Record name should not be just the zone name. Got: "${recordName}"`).toBe(false);
+    // CRITICAL: Check that it's not just the zone name (the bug behavior from issue #959)
+    const normalizedRecordName = recordName.trim().toLowerCase();
+    const normalizedZoneName = ipv6Zone.toLowerCase();
+    const isJustZoneName = normalizedRecordName === normalizedZoneName || normalizedRecordName === '@';
+    expect(isJustZoneName, `BUG #959: Record name should not be just the zone name "${ipv6Zone}". Got: "${recordName}"`).toBe(false);
 
-    // The record should contain at least part of the nibbles we entered
-    // Check for the first few nibbles
-    const containsUserInput = recordName.includes('1.0.0.0') || recordName.includes('0.0.0.0');
-    expect(containsUserInput, `Record name should contain user-entered nibbles. Got: "${recordName}"`).toBe(true);
+    // The record should START with the nibbles we entered (not just contain them somewhere)
+    const startsWithNibbles = recordName.startsWith('1.0.0.0') || recordName.startsWith('0.0.0.0');
+    expect(startsWithNibbles, `Record name should start with user-entered nibbles. Got: "${recordName}"`).toBe(true);
+
+    // Additional validation: record name should either be:
+    // 1. Just the nibbles (display_hostname_only = true): "1.0.0.0.0.0.0.0..."
+    // 2. Full FQDN (display_hostname_only = false): "1.0.0.0.0.0.0.0...8.b.d.0.1.0.0.2.ip6.arpa"
+    const expectedFqdnSuffix = `.${ipv6Zone}`;
+    const isFullFqdn = normalizedRecordName.endsWith(expectedFqdnSuffix.toLowerCase());
+    const isHostnameOnly = !normalizedRecordName.includes('.ip6.arpa');
+    expect(isFullFqdn || isHostnameOnly, `Record name should be valid format. Got: "${recordName}"`).toBe(true);
   });
 
   test('should edit PTR record and preserve name correctly', async ({ page }) => {
@@ -249,13 +259,15 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
     // The name should contain the nibbles, not just be empty or the zone name
     expect(nameValue, 'Name field should not be empty').not.toBe('');
 
-    // Check it's not just '@' (zone apex) or the zone name
-    const isApexOrZone = nameValue.trim() === '@' || nameValue.trim() === ipv6Zone;
-    expect(isApexOrZone, `Edit form should show user's nibbles, not zone apex. Got: "${nameValue}"`).toBe(false);
+    // CRITICAL: Check it's not just '@' (zone apex) or the zone name (bug #959)
+    const normalizedNameValue = nameValue.trim().toLowerCase();
+    const normalizedZoneName = ipv6Zone.toLowerCase();
+    const isApexOrZone = normalizedNameValue === '@' || normalizedNameValue === normalizedZoneName;
+    expect(isApexOrZone, `BUG #959: Edit form should show user's nibbles, not zone name "${ipv6Zone}". Got: "${nameValue}"`).toBe(false);
 
-    // Should contain part of the nibbles
-    const hasNibbles = nameValue.includes('1.0.0.0') || nameValue.includes('0.0.0.0');
-    expect(hasNibbles, `Edit form should preserve nibble input. Got: "${nameValue}"`).toBe(true);
+    // Should START with the nibbles (not just contain them somewhere)
+    const startsWithNibbles = nameValue.startsWith('1.0.0.0') || nameValue.startsWith('0.0.0.0');
+    expect(startsWithNibbles, `Edit form should preserve nibble input at start. Got: "${nameValue}"`).toBe(true);
   });
 
   test('should delete IPv6 reverse zone (cleanup)', async ({ page }) => {
@@ -295,9 +307,10 @@ test.describe.serial('IPv6 PTR Record Management (Issue #959)', () => {
  */
 test.describe('IPv6 PTR - Short Nibble Sequence', () => {
   const timestamp = Date.now();
-  const uniqueNibble = String(timestamp).slice(-2);
+  // Using last 4 digits of timestamp converted to hex nibbles for better uniqueness
+  const uniqueHex = ((timestamp + 1) % 65536).toString(16).padStart(4, '0');
   // Use a longer zone prefix so we only need to add a few nibbles
-  const ipv6Zone = `0.0.0.0.0.0.0.0.0.0.0.0.${uniqueNibble}.b.d.0.1.0.0.2.ip6.arpa`;
+  const ipv6Zone = `0.0.0.0.0.0.0.0.0.0.${uniqueHex.split('').join('.')}.b.d.0.1.0.0.2.ip6.arpa`;
   let zoneId = null;
 
   test.beforeEach(async ({ page }) => {
