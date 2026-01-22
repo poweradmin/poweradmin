@@ -20,7 +20,7 @@ USE poweradmin;
 -- Ensure Administrator template (ID 1) has überuser permission
 -- This grants full system access
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 1, 53 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 1 AND `perm_id` = 53);
+SELECT 1, 53 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 1 AND `perm_id` = 53);
 
 -- Template 2: Zone Manager - Full management of own zones
 INSERT INTO `perm_templ` (`id`, `name`, `descr`)
@@ -48,35 +48,35 @@ WHERE NOT EXISTS (SELECT 1 FROM `perm_templ` WHERE `id` = 5);
 
 -- Zone Manager (Template 2) permissions:
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 2, 41 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 41);
+SELECT 2, 41 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 41);
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 2, 42 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 42);
+SELECT 2, 42 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 42);
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 2, 43 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 43);
+SELECT 2, 43 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 43);
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 2, 44 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 44);
+SELECT 2, 44 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 44);
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 2, 45 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 45);
+SELECT 2, 45 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 45);
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 2, 49 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 49);
+SELECT 2, 49 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 49);
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 2, 56 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 56);
+SELECT 2, 56 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 2 AND `perm_id` = 56);
 
 -- Client Editor (Template 3) permissions:
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 3, 43 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 3 AND `perm_id` = 43);
+SELECT 3, 43 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 3 AND `perm_id` = 43);
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 3, 62 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 3 AND `perm_id` = 62);
+SELECT 3, 62 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 3 AND `perm_id` = 62);
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 3, 49 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 3 AND `perm_id` = 49);
+SELECT 3, 49 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 3 AND `perm_id` = 49);
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 3, 56 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 3 AND `perm_id` = 56);
+SELECT 3, 56 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 3 AND `perm_id` = 56);
 
 -- Read Only (Template 4) permissions:
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 4, 43 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 4 AND `perm_id` = 43);
+SELECT 4, 43 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 4 AND `perm_id` = 43);
 INSERT INTO `perm_templ_items` (`templ_id`, `perm_id`)
-SELECT 4, 49 WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 4 AND `perm_id` = 49);
+SELECT 4, 49 FROM DUAL WHERE NOT EXISTS (SELECT 1 FROM `perm_templ_items` WHERE `templ_id` = 4 AND `perm_id` = 49);
 
 -- =============================================================================
 -- TEST USERS
