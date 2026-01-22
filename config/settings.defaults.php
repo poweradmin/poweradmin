@@ -126,6 +126,7 @@ return [
         'show_migrations' => false,           // Show migrations menu item (experimental)
         'display_hostname_only' => false,     // Display only hostname part in zone edit form (strips zone suffix) (added in 4.0.0)
         'enable_consistency_checks' => false, // Enable database consistency checks page (added in 4.0.0)
+        'show_forward_zone_associations' => true, // Show associated forward zones in reverse zone list (added in 4.0.5)
     ],
 
     /**

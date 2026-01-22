@@ -156,8 +156,11 @@ class ListReverseZonesController extends BaseController
             $zone_sort_direction
         );
 
-        // Get associated forward zones (if needed)
-        $associatedForwardZones = $this->forwardZoneAssociationService->getAssociatedForwardZones($reverse_zones);
+        // Get associated forward zones only if enabled (can be disabled for performance with large datasets)
+        $showForwardZoneAssociations = $this->config->get('interface', 'show_forward_zone_associations', true);
+        $associatedForwardZones = $showForwardZoneAssociations
+            ? $this->forwardZoneAssociationService->getAssociatedForwardZones($reverse_zones)
+            : [];
 
         $this->render('list_reverse_zones.html', [
             'zones' => $reverse_zones,
